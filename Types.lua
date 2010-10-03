@@ -566,7 +566,7 @@ end
 for category, textures in pairs(WeakAuras.texture_types) do
   for path, name in pairs(textures) do
     if(L.textures[category] and L.textures[category][path]) then
-      textures[path] = L[category][path];
+      textures[path] = L.textures[category][path];
     end
   end
 end
