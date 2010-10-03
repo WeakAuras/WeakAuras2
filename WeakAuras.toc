@@ -1,0 +1,28 @@
+## Interface: 30300
+## Title: WeakAuras
+## Author: Mirrored
+## Version: 1.0
+## Notes: Shows textures on-screen based on combat messages or auras. Designed to have as little CPU impact as possible.
+## X-Author-Server: Dragonmaw US
+## X-Author-Faction: Horde
+## X-Email: mirror@uga.edu
+## X-Category: Interface Enhancements
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: WeakAurasSaved
+Init.lua
+
+Localization-enUS.lua
+
+Prototypes.lua
+Types.lua
+WeakAuras.lua
+
+RegionTypes\progresstexture.lua
+RegionTypes\texture.lua
+RegionTypes\aurabar.lua
+RegionTypes\icon.lua
+RegionTypes\text.lua
+RegionTypes\timer.lua
+RegionTypes\group.lua
+RegionTypes\dynamicgroup.lua
