@@ -2,7 +2,7 @@
 ## Title: WeakAuras
 ## Author: Mirrored
 ## Version: 1.0
-## Notes: Shows textures on-screen based on combat messages or auras. Designed to have as little CPU impact as possible.
+## Notes: Shows textures/icons/text on-screen based on buffs, debuffs, and other triggers.
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde
 ## X-Email: mirror@uga.edu
@@ -10,6 +10,8 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
+embeds.xml
+
 Init.lua
 
 Localization-enUS.lua
