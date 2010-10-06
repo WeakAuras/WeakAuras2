@@ -342,20 +342,14 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           hidden = hidden,
           width = "half",
           image = function()
-            if(trigger["use_"..realname] and trigger[realname] and iconCache[trigger[realname]]) then
+            if(trigger["use_"..realname] and trigger[realname]) then
               if(arg.type == "aura") then
-                return trigger[realname] and iconCache[trigger[realname]] or "", 18, 18;
+                return iconCache[trigger[realname]] or "", 18, 18;
               elseif(arg.type == "spell") then
-                local _, icon;
-                if(trigger[realname]) then
-                  _, _, icon = GetSpellInfo(trigger[realname]);
-                end
+                local _, _, icon = GetSpellInfo(trigger[realname]);
                 return icon or "", 18, 18;
               elseif(arg.type == "item") then
-                local icon;
-                if(trigger[realname]) then
-                  icon = GetItemIcon(trigger[realname]);
-                end
+                local icon = GetItemIcon(trigger[realname]);
                 return icon or "", 18, 18;
               end
             else
@@ -373,7 +367,15 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
-            trigger[realname] = v;
+            local fixedInput = v;
+            if(arg.type == "aura") then
+              fixedInput = WeakAuras.CorrectAuraName(v);
+            elseif(arg.type == "spell") then
+              fixedInput = GetSpellInfo(v) or "Invalid Spell Name";
+            elseif(arg.type == "item") then
+              fixedInput = GetItemInfo(v) or "Invalid Item Name/Link";
+            end
+            trigger[realname] = fixedInput;
             WeakAuras.Add(data);
             WeakAuras.ScanForLoads();
             WeakAuras.SetThumbnail(data);
@@ -384,8 +386,16 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         };
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
-            trigger[realname] = v;
-            data.untrigger[realname] = v;
+            local fixedInput = v;
+            if(arg.type == "aura") then
+              fixedInput = WeakAuras.CorrectAuraName(v);
+            elseif(arg.type == "spell") then
+              fixedInput = GetSpellInfo(v);
+            elseif(arg.type == "item") then
+              fixedInput = GetItemInfo(v);
+            end
+            trigger[realname] = fixedInput;
+            data.untrigger[realname] = fixedInput;
             WeakAuras.Add(data);
             WeakAuras.ScanForLoads();
             WeakAuras.SetThumbnail(data);
@@ -2386,7 +2396,7 @@ function WeakAuras.AddOption(id, data)
     name1 = {
       type = "input",
       name = L["Aura Name"],
-      desc = L["Must be spelled correctly!"],
+      desc = L["Enter an aura name, partial aura name, or spell id"],
       order = 12,
       hidden = function() return not (data.trigger.type == "aura"); end,
       get = function(info) return data.trigger.names[1] end,
@@ -2396,7 +2406,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 1);
           end
         else
-          data.trigger.names[1] = v;
+          data.trigger.names[1] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2433,7 +2443,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 2);
           end
         else
-          data.trigger.names[2] = v;
+          data.trigger.names[2] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2470,7 +2480,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 3);
           end
         else
-          data.trigger.names[3] = v;
+          data.trigger.names[3] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2507,7 +2517,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 4);
           end
         else
-          data.trigger.names[4] = v;
+          data.trigger.names[4] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2544,7 +2554,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 5);
           end
         else
-          data.trigger.names[5] = v;
+          data.trigger.names[5] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2581,7 +2591,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 6);
           end
         else
-          data.trigger.names[6] = v;
+          data.trigger.names[6] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2618,7 +2628,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 7);
           end
         else
-          data.trigger.names[7] = v;
+          data.trigger.names[7] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2655,7 +2665,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 8);
           end
         else
-          data.trigger.names[8] = v;
+          data.trigger.names[8] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -2692,7 +2702,7 @@ function WeakAuras.AddOption(id, data)
             tremove(data.trigger.names, 9);
           end
         else
-          data.trigger.names[9] = v;
+          data.trigger.names[9] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -5151,4 +5161,48 @@ function WeakAuras.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end
+end
+
+function WeakAuras.CorrectAuraName(input)
+  local spellId = tonumber(input);
+  if(spellId) then
+    local name, _, icon = GetSpellInfo(spellId);
+    if(name) then
+      db.iconCache[name] = db.iconCache[name] or icon;
+      return name;
+    else
+      return "Invalid Spell ID";
+    end
+  else
+    local ret = WeakAuras.BestKeyMatch(input, db.iconCache);
+    if(ret == "") then
+      return "No Match Found";
+    else
+      return ret;
+    end
+  end
+end
+
+function WeakAuras.BestKeyMatch(nearkey, table)
+  for key, value in pairs(table) do
+    if(nearkey:lower() == key:lower()) then
+      return key;
+    end
+  end
+  local bestKey = "";
+  local bestDistance = math.huge;
+  local partialMatches = {};
+  for key, value in pairs(table) do
+    if(key:lower():find(nearkey:lower())) then
+      partialMatches[key] = value;
+    end
+  end
+  for key, value in pairs(partialMatches) do
+    local distance = Lev(nearkey, key);
+    if(distance < bestDistance) then
+      bestKey = key;
+      bestDistance = distance;
+    end
+  end
+  return bestKey;
 end
