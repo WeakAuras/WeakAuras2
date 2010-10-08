@@ -469,6 +469,7 @@ L["Move this display up in its group's order"] = "Move this display up in its gr
 L["Move this display down in its group's order"] = "Move this display down in its group's order"
 L["Expansion is disabled because this group has no children"] = "Expansion is disabled because this group has no children"
 L["Add a new display"] = "Add a new display"
+L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 
 --Sound names - low priority for localization
 L.sounds = {
