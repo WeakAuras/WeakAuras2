@@ -405,6 +405,9 @@ L["Ungroup"] = "Ungroup"
 L["Group (verb)"] = "Group"
 L["Move Up"] = "Move Up"
 L["Move Down"] = "Move Down"
+L["First Tree"] = "First Tree"
+L["Second Tree"] = "Second Tree"
+L["Third Tree"] = "Third Tree"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"

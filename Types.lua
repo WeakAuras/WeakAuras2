@@ -174,7 +174,6 @@ WeakAuras.subevent_suffix_types = {
   _RESURRECT = L["Resurrect"]
 };
 WeakAuras.power_types = {
-  [-2] = L["Health"],
   [0] = L["Mana"],
   [1] = L["Rage"],
   [2] = L["Focus"],
@@ -207,9 +206,13 @@ WeakAuras.orientation_types = {
   VERTICAL = L["Bottom to Top"],
   VERTICAL_INVERSE = L["Top to Bottom"]
 };
+local _, firstTabName = GetTalentTabInfo(1);
+local _, secondTabName = GetTalentTabInfo(2);
+local _, thirdTabName = GetTalentTabInfo(3);
 WeakAuras.spec_types = {
-  [1] = L["Primary"],
-  [2] = L["Secondary"]
+  [1] = L["First Tree"]..(firstTabName and " ("..firstTabName..")" or ""),
+  [2] = L["Second Tree"]..(secondTabName and " ("..secondTabName..")" or ""),
+  [3] = L["Third Tree"]..(thirdTabName and " ("..thirdTabName..")" or "")
 };
 WeakAuras.totem_types = {
   [1] = L["Fire"],

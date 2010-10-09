@@ -259,40 +259,57 @@ local function modify(parent, region, data)
     background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scalex * data.backgroundOffset, scaley * data.backgroundOffset);
   end
   
-  local function Update(self)
-    local time = GetTime();
-    local duration = region.duration;
-    local expirationTime = region.expirationTime;
+  local function UpdateTime()
+    local remaining = region.expirationTime - GetTime();
+    local progress = remaining / region.duration;
     
-    local progress = (expirationTime - time) / duration;
     if(data.inverse) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
-    self:SetValue(progress);
+    region:SetValue(progress);
   end
   
-  function region:SetDurationInfo(duration, expirationTime, static)
+  local function UpdateValue(value, total)
+    local progress = 1
+    if(total > 0) then
+      progress = value / total;
+    end
+    if(data.inverse) then
+      progress = 1 - progress;
+    end
+    progress = progress > 0.0001 and progress or 0.0001;
+    region:SetValue(progress);
+  end
+  
+  local function UpdateCustom()
+    UpdateValue(region.customValueFunc());
+  end
+  
+  function region:SetDurationInfo(duration, expirationTime, customValue)
     region.duration = duration;
     region.expirationTime = expirationTime;
     
-    if(static) then
-      local progress = 1
-      if(expirationTime > 0) then
-        progress = duration / expirationTime;
+    if(customValue) then
+      if(type(customValue) == "function") then
+        local value, total = customValue();
+        if(total > 0 and value < total) then
+          region.customValueFunc = customValue;
+          region:SetScript("OnUpdate", UpdateCustom);
+        else
+          UpdateValue(duration, expirationTime);
+          region:SetScript("OnUpdate", nil);
+        end
+      else
+        UpdateValue(duration, expirationTime);
+        region:SetScript("OnUpdate", nil);
       end
-      if(data.inverse) then
-        progress = 1 - progress;
-      end
-      progress = progress > 0.0001 and progress or 0.0001;
-      region:SetScript("OnUpdate", nil);
-      region:SetValue(progress);
     else
       if(duration > 0.01) then
-        region:SetScript("OnUpdate", Update);
+        region:SetScript("OnUpdate", UpdateTime);
       else
-        region:SetScript("OnUpdate", nil);
         region:SetValue(1);
+        region:SetScript("OnUpdate", nil);
       end
     end
   end

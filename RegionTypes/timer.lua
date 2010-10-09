@@ -48,12 +48,9 @@ local function modify(parent, region, data)
   region:ClearAllPoints();
   region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
   
-  local function Update(self)
-    local time = GetTime();
-    local duration = region.duration;
-    local expirationTime = region.expirationTime;
+  local function UpdateTime()
+    local remaining = region.expirationTime - GetTime();
     
-    local remaining = (expirationTime - time);
     local remainingStr = "";
     if(remaining > 60) then
       remainingStr = string.format("%i:", math.floor(remaining / 60));
@@ -64,21 +61,41 @@ local function modify(parent, region, data)
     else
       remainingStr = " ";
     end
-    self.text:SetText(remainingStr);
+    text:SetText(remainingStr);
   end
   
-  function region:SetDurationInfo(duration, expirationTime, static)
+  local function UpdateValue(value, total)
+    text:SetText(string.format("%i", value));
+  end
+  
+  local function UpdateCustom()
+    UpdateValue(region.customValueFunc());
+  end
+  
+  function region:SetDurationInfo(duration, expirationTime, customValue)
     region.duration = duration;
     region.expirationTime = expirationTime;
-    if(static) then
-      region:SetScript("OnUpdate", nil);
-      text:SetText(string.format("%i", duration));
+    
+    if(customValue) then
+      if(type(customValue) == "function") then
+        local value, total = customValue();
+        if(total > 0 and value < total) then
+          region.customValueFunc = customValue;
+          region:SetScript("OnUpdate", UpdateCustom);
+        else
+          UpdateValue(duration, expirationTime);
+          region:SetScript("OnUpdate", nil);
+        end
+      else
+        UpdateValue(duration, expirationTime);
+        region:SetScript("OnUpdate", nil);
+      end
     else
       if(duration > 0.01) then
-        region:SetScript("OnUpdate", Update);
+        region:SetScript("OnUpdate", UpdateTime);
       else
+        text:SetText(" ");
         region:SetScript("OnUpdate", nil);
-        text:SetText("Inf");
       end
     end
   end

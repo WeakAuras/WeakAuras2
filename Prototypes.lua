@@ -1,5 +1,5 @@
 ﻿local L = WeakAuras.L;
-  
+
 WeakAuras.function_strings = {
   count = [[
 return function(count)
@@ -372,7 +372,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Health"],
     init = function(trigger)
-      return "if not(UnitExists('"..(trigger.unit or "").."')) then return false end\nlocal unit = unit or '"..(trigger.unit or "").."'\n";
+      return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
     end,
     args = {
       {
@@ -394,6 +394,10 @@ WeakAuras.event_prototypes = {
         display = L["Health (%)"],
         type = "number",
         init = "(UnitHealth(unit) / UnitHealthMax(unit)) * 100"
+      },
+      {
+        hidden = true,
+        test = "UnitExists(concernedUnit)"
       }
     },
     durationFunc = function(trigger)
@@ -401,211 +405,6 @@ WeakAuras.event_prototypes = {
     end,
     automatic = true
   },
-  
-  --[[ -------------------------------------------------------------------------------- ]
-     [ The following code is only valid until 4.0                                       ]
-  --]] -------------------------------------------------------------------------------- ]
-  ["Mana"] = {
-    events = {
-      "UNIT_MANA",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
-    force_events = {
-      "player",
-      "target",
-      "focus"
-    },
-    name = L["Mana"],
-    init = function(trigger)
-      return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
-    end,
-    args = {
-      {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "select",
-        init = "arg",
-        values = "actual_unit_types"
-      },
-      {
-        name = "power",
-        display = L["Mana"],
-        type = "number",
-        init = "UnitPowerType(unit) == 0 and UnitPower(unit) or 0"
-      },
-      {
-        name = "percentpower",
-        display = L["Mana (%)"],
-        type = "number",
-        init = "UnitPowerType(unit) == 0 and (UnitPower(unit) / UnitPowerMax(unit)) * 100 or 0"
-      },
-      {
-        name = "unitExists",
-        display = L["Unit Exists"],
-        type = "toggle",
-        init = "UnitExists(concernedUnit)"
-      }
-    },
-    durationFunc = function(trigger)
-      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), true;
-    end,
-    automatic = true
-  },
-  ["Rage"] = {
-    events = {
-      "UNIT_RAGE",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
-    force_events = {
-      "player",
-      "target",
-      "focus"
-    },
-    name = L["Rage"],
-    init = function(trigger)
-      return "if not(UnitExists('"..(trigger.unit or "").."')) then return false end\nlocal unit = unit or '"..(trigger.unit or "").."'\n";
-    end,
-    args = {
-      {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "select",
-        init = "arg",
-        values = "actual_unit_types"
-      },
-      {
-        name = "power",
-        display = L["Rage"],
-        type = "number",
-        init = "UnitPowerType(unit) == 1 and UnitPower(unit) or 0"
-      }
-    },
-    durationFunc = function(trigger)
-      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), true;
-    end,
-    automatic = true
-  },
-  ["Focus"] = {
-    events = {
-      "UNIT_FOCUS",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
-    force_events = {
-      "player",
-      "target",
-      "focus"
-    },
-    name = L["Focus"],
-    init = function(trigger)
-      return "if not(UnitExists('"..(trigger.unit or "").."')) then return false end\nlocal unit = unit or '"..(trigger.unit or "").."'\n";
-    end,
-    args = {
-      {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "select",
-        init = "arg",
-        values = "actual_unit_types"
-      },
-      {
-        name = "power",
-        display = L["Focus"],
-        type = "number",
-        init = "UnitPowerType(unit) == 2 and UnitPower(unit) or 0"
-      }
-    },
-    durationFunc = function(trigger)
-      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), true;
-    end,
-    automatic = true
-  },
-  ["Energy"] = {
-    events = {
-      "UNIT_ENERGY",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
-    force_events = {
-      "player",
-      "target",
-      "focus"
-    },
-    name = L["Energy"],
-    init = function(trigger)
-      return "if not(UnitExists('"..(trigger.unit or "").."')) then return false end\nlocal unit = unit or '"..(trigger.unit or "").."'\n";
-    end,
-    args = {
-      {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "select",
-        init = "arg",
-        values = "actual_unit_types"
-      },
-      {
-        name = "power",
-        display = L["Energy"],
-        type = "number",
-        init = "UnitPowerType(unit) == 3 and UnitPower(unit) or 0"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), true;
-    end,
-    automatic = true
-  },
-  ["Runic Power"] = {
-    events = {
-      "UNIT_RUNIC_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
-    force_events = {
-      "player",
-      "target",
-      "focus"
-    },
-    name = L["Runic Power"],
-    init = function(trigger)
-      return "if not(UnitExists('"..(trigger.unit or "").."')) then return false end\nlocal unit = unit or '"..(trigger.unit or "").."'\n";
-    end,
-    args = {
-      {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "select",
-        init = "arg",
-        values = "actual_unit_types"
-      },
-      {
-        name = "power",
-        display = L["Runic Power"],
-        type = "number",
-        init = "UnitPowerType(unit) == 6 and UnitPower(unit) or 0"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), true;
-    end,
-    automatic = true
-  },
-  --[[ -------------------------------------------------------------------------------- ]
-     [ End Patch 4.0 non-compliant code                                                 ]
-  --]] -------------------------------------------------------------------------------- ]
-  
-  
-  --[[ -------------------------------------------------------------------------------- ]
-     [ Patch 4.0 compliant subsitute                                                    ]
-  --]] -------------------------------------------------------------------------------- ]
-  --[[
   ["Power"] = {
     events = {
       "UNIT_POWER",
@@ -619,7 +418,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Power"],
     init = function(trigger)
-      return "if not(UnitExists('"..(trigger.unit or "").."')) then return false end\nlocal unit = unit or '"..(trigger.unit or "").."'\n";
+      return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
     end,
     args = {
       {
@@ -632,7 +431,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "powertype",
-        required = true,
+        --required = true,
         display = L["Power Type"],
         type = "select",
         values = "power_types",
@@ -649,14 +448,17 @@ WeakAuras.event_prototypes = {
         display = L["Power (%)"],
         type = "number",
         init = "(UnitPower(unit) / UnitPowerMax(unit)) * 100"
+      },
+      {
+        hidden = true,
+        test = "UnitExists(concernedUnit)"
       }
     },
     durationFunc = function(trigger)
-      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), true;
+      return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), function() return UnitPower(trigger.unit), UnitPowerMax(trigger.unit) end;
     end,
     automatic = true
   },
-  ]]
   --Todo: Give useful options to condition based on GUID and flag info
   --Todo: Allow options to pass information from combat message to the display?
   ["Combat Log"] = {
@@ -893,18 +695,14 @@ WeakAuras.event_prototypes = {
   ["Cooldown (Spell)"] = {
     events = {
       "SPELL_UPDATE_COOLDOWN",
-      "UNIT_RUNIC_POWER",
-      "UNIT_ENERGY",
-      "UNIT_FOCUS",
-      "UNIT_RAGE",
-      "UNIT_MANA",
+      "UNIT_POWER",
       "ACTIONBAR_UPDATE_COOLDOWN"
     },
     force_events = true,
-    name = "Cooldown (Spell)",
+    name = "Cooldown Progress (Spell)",
     init = function(trigger)
       trigger.spellName = trigger.spellName or "";
-      return "local startTime, duration = GetSpellCooldown('"..trigger.spellName.."');";
+      return "local startTime, duration = GetSpellCooldown('"..trigger.spellName.."');\nstartTime = startTime or 0;\nduration = duration or 0;\n";
     end,
     args = {
       {
@@ -931,6 +729,53 @@ WeakAuras.event_prototypes = {
     end,
     automaticrequired = true
   },
+  ["Cooldown Ready (Spell)"] = {
+    events = {
+      "SPELL_UPDATE_COOLDOWN",
+      "UNIT_POWER",
+      "ACTIONBAR_UPDATE_COOLDOWN"
+    },
+    name = "Cooldown Ready (Spell)",
+    init = function(trigger)
+      trigger.spellName = trigger.spellName or "";
+      local ret = [[
+local startTime, duration = GetSpellCooldown("%s");
+startTime = startTime or 0;
+duration = duration or 0;
+local cooledDown;
+if(startTime == 0 and WeakAuras.spellCooldownCache["%s"] and WeakAuras.spellCooldownCache["%s"] ~= 0) then
+  cooledDown = true;
+elseif(duration > 1.51 and startTime > 0) then
+  local timer = LibStub("AceTimer-3.0");
+  if(WeakAuras.spellCooldownReadyTimers["%s"]) then
+    timer:CancelTimer(WeakAuras.spellCooldownReadyTimers["%s"], true);
+  end
+  WeakAuras.spellCooldownReadyTimers["%s"] = timer:ScheduleTimer(function() WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN") end, startTime + duration - GetTime());
+end
+WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
+]];
+      return ret:format(trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName);
+    end,
+    args = {
+      {
+        name = "spellName",
+        required = true,
+        display = L["Spell"],
+        type = "spell",
+        test = "cooledDown"
+      }
+    },
+    durationFunc = function(trigger)
+      local startTime, duration = GetSpellCooldown(trigger.spellName);
+      return duration, startTime + duration;
+    end,
+    nameFunc = function(trigger) return trigger.spellName; end,
+    iconFunc = function(trigger)
+      local _, _, icon = GetSpellInfo(trigger.spellName);
+      return icon;
+    end
+  },
+  --[[
   ["Cooldown (Item)"] = {
     events = {
       "SPELL_UPDATE_COOLDOWN",
@@ -968,6 +813,7 @@ WeakAuras.event_prototypes = {
     end,
     automaticrequired = true
   },
+  ]]
   ["Action Usable"] = {
     events = {
       "SPELL_UPDATE_USABLE",
@@ -977,14 +823,14 @@ WeakAuras.event_prototypes = {
     name = "Action Usable",
     init = function(trigger)
       trigger.spellName = trigger.spellName or "";
-      return "local usable = IsUsableSpell('"..trigger.spellName.."');";
+      return "local spellName = '"..trigger.spellName.."';\n";
     end,
     args = {
       {
         name = "spellName",
         display = L["Spell"],
         type = "spell",
-        test = "IsUsableSpell('%s')"
+        test = "IsUsableSpell(spellName)"
       },
       --This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       --IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
@@ -992,7 +838,7 @@ WeakAuras.event_prototypes = {
         name = "targetRequired",
         display = L["Require Valid Target"],
         type = "toggle",
-        test = "IsSpellInRange('%s')"
+        test = "IsSpellInRange(spellName)"
       }
     },
     nameFunc = function(trigger)
@@ -1056,7 +902,8 @@ WeakAuras.event_prototypes = {
   },
   ["Item Count"] = {
     events = {
-      "UNIT_INVENTORY_CHANGED"
+      "BAG_UPDATE",
+      "UNIT_SPELLCAST_SUCCEEDED"
     },
     force_events = true,
     name = "Item Count",
@@ -1075,12 +922,14 @@ WeakAuras.event_prototypes = {
       {
         name = "includeBank",
         display = L["Include Bank"],
-        type = "toggle"
+        type = "toggle",
+        test = "true"
       },
       {
         name = "includeCharges",
         display = L["Include Charges"],
-        type = "toggle"
+        type = "toggle",
+        test = "true"
       },
       {
         name = "count",
@@ -1233,7 +1082,7 @@ WeakAuras.event_prototypes = {
   --[[
   ["Weapon Enchanted"] = {
     events = {
-      "UNIT_INVENTORY_CHANGED"
+      "BAG_UPDATE"
     },
     force_events = true,
     name = L["Weapon Enchanted"],
@@ -1286,7 +1135,8 @@ WeakAuras.event_prototypes = {
         name = "messageType",
         display = L["Message Type"],
         type = "select",
-        values = "chat_message_types"
+        values = "chat_message_types",
+        test = "event=='%s'"
       },
       {
         name = "message",
@@ -1369,7 +1219,9 @@ WeakAuras.event_prototypes = {
     automaticrequired = true
   },
   ["Item Equipped"] = {
-    events = {"UNIT_INVENTORY_CHANGED"},
+    events = {
+      "UNIT_INVENTORY_CHANGED"
+    },
     force_events = true,
     name = L["Item Equipped"],
     init = function(trigger)

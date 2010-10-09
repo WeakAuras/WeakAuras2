@@ -320,20 +320,6 @@ local function modify(parent, region, data)
     end
     region:SetHeight(data.height * scaley);
     icon:SetHeight(iconsize * scaley);
-    
-    if(icon_mirror_h) then
-      if(icon_mirror_v) then
-        icon:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-      else
-        icon:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-      end
-    else
-      if(icon_mirror_v) then
-        icon:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-      else
-        icon:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-      end
-    end
   end
   
   if(data.timer) then
@@ -364,19 +350,16 @@ local function modify(parent, region, data)
     text:SetText((data.auto and name or data.displayText) or data.id);
   end
   
-  local function Update(self)
-    local time = GetTime();
-    local duration = region.duration;
-    local expirationTime = region.expirationTime;
+  local function UpdateTime()
+    local remaining = region.expirationTime - GetTime();
+    local progress = remaining / region.duration;
     
-    local progress = (expirationTime - time) / duration;
     if(data.inverse) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
-    self.bar:SetValue(progress);
+    bar:SetValue(progress);
     
-    local remaining = (expirationTime - time);
     local remainingStr = "";
     if(remaining > 60) then
       remainingStr = string.format("%i:", math.floor(remaining / 60));
@@ -387,32 +370,51 @@ local function modify(parent, region, data)
     else
       remainingStr = " ";
     end
-    self.timer:SetText(remainingStr);
+    timer:SetText(remainingStr);
   end
   
-  function region:SetDurationInfo(duration, expirationTime, static)
+  local function UpdateValue(value, total)
+    local progress = 1
+    if(total > 0) then
+      progress = value / total;
+    end
+    if(data.inverse) then
+      progress = 1 - progress;
+    end
+    progress = progress > 0.0001 and progress or 0.0001;
+    timer:SetText(string.format("%i", value));
+    bar:SetValue(progress);
+  end
+  
+  local function UpdateCustom()
+    UpdateValue(region.customValueFunc());
+  end
+  
+  function region:SetDurationInfo(duration, expirationTime, customValue)
     region.duration = duration;
     region.expirationTime = expirationTime;
     
-    if(static) then
-      local progress = 1
-      if(expirationTime > 0) then
-        progress = duration / expirationTime;
+    if(customValue) then
+      if(type(customValue) == "function") then
+        local value, total = customValue();
+        if(total > 0 and value < total) then
+          region.customValueFunc = customValue;
+          region:SetScript("OnUpdate", UpdateCustom);
+        else
+          UpdateValue(duration, expirationTime);
+          region:SetScript("OnUpdate", nil);
+        end
+      else
+        UpdateValue(duration, expirationTime);
+        region:SetScript("OnUpdate", nil);
       end
-      if(data.inverse) then
-        progress = 1 - progress;
-      end
-      progress = progress > 0.0001 and progress or 0.0001;
-      region:SetScript("OnUpdate", nil);
-      timer:SetText(string.format("%i", duration));
-      bar:SetValue(progress);
     else
       if(duration > 0.01) then
-        region:SetScript("OnUpdate", Update);
+        region:SetScript("OnUpdate", UpdateTime);
       else
-        region:SetScript("OnUpdate", nil);
         bar:SetValue(1);
         timer:SetText(" ");
+        region:SetScript("OnUpdate", nil);
       end
     end
   end

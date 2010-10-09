@@ -51,6 +51,9 @@ WeakAuras.pending_controls = {};
 local pending_controls = WeakAuras.pending_controls;
 local pending_conditions_check;
 
+WeakAuras.spellCooldownCache = {};
+WeakAuras.spellCooldownReadyTimers = {};
+
 local function_strings = WeakAuras.function_strings;
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
@@ -339,13 +342,13 @@ function WeakAuras.ConstructFunction(prototype, data, subPrefix, subSuffix, fiel
     end
     if(enable) then
       local name = arg.name;
-      if not(arg.name) then
+      if not(arg.name or arg.hidden) then
         tinsert(input, "_");
       else
         if(arg.init == "arg") then
           tinsert(input, name);
         end
-        if(((trigger["use_"..name] or arg.required) and trigger[name]) or arg.type == "tristate" or arg.type == "toggle") then
+        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or ((trigger["use_"..name] or arg.required) and trigger[name])) then
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
           end
@@ -355,11 +358,19 @@ function WeakAuras.ConstructFunction(prototype, data, subPrefix, subSuffix, fiel
             if(trigger["use_"..name] == false) then
               test = "(not "..name..")";
             elseif(trigger["use_"..name]) then
-              test = name;
+              if(arg.test) then
+                test = "("..arg.test:format(trigger[name])..")";
+              else
+                test = name;
+              end
             end
           elseif(arg.type == "toggle") then
             if(trigger["use_"..name]) then
-              test = name;
+              if(arg.test) then
+                test = "("..arg.test:format(trigger[name])..")";
+              else
+                test = name;
+              end
             end
           elseif(arg.test) then
             test = "("..arg.test:format(trigger[name])..")";
@@ -720,7 +731,7 @@ function WeakAuras.UpdateAll(frame, elapsed)
 end
 
 function WeakAuras.ScanForLoads()
-  local player, class, zone, spec = UnitName("player"), UnitClass("player"), GetRealZoneText(), GetActiveTalentGroup();
+  local player, class, zone, spec = UnitName("player"), UnitClass("player"), GetRealZoneText(), GetPrimaryTalentTree();
   local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
   local size, difficulty;
   size = type;
@@ -1238,7 +1249,11 @@ function WeakAuras.pAdd(data)
         if not(trigger.event) then
           error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
         elseif not(event_prototypes[trigger.event]) then
-          error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\"");
+          if(event_protyptes["Health"]) then
+            trigger.event = "Health";
+          else
+            error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
+          end
         elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
           error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
         else
@@ -1791,7 +1806,29 @@ function WeakAuras.GetData(id)
 end
 
 function WeakAuras.CanHaveDuration(data)
-  if((data.trigger.type == "aura" and not (data.trigger.inverse or data.trigger.unit == "party" or data.trigger.unit == "raid")) or (data.trigger.type ~= "event" and ((data.trigger.event and WeakAuras.event_prototypes[data.trigger.event] and WeakAuras.event_prototypes[data.trigger.event].durationFunc) or (data.trigger.unevent == "timed" and data.trigger.duration)))) then
+  if(
+    (
+      data.trigger.type == "aura" and not(
+        data.trigger.inverse
+        or data.trigger.unit == "party"
+        or data.trigger.unit == "raid"
+      )
+    )
+    or (
+      data.trigger.type == "event"
+      and (
+        (
+          data.trigger.event
+          and WeakAuras.event_prototypes[data.trigger.event]
+          and WeakAuras.event_prototypes[data.trigger.event].durationFunc
+        )
+        or (
+          data.trigger.unevent == "timed"
+          and data.trigger.duration
+        )
+      )
+    )
+  ) then
     return true;
   else
     return false;
@@ -1799,7 +1836,25 @@ function WeakAuras.CanHaveDuration(data)
 end
 
 function WeakAuras.CanHaveAuto(data)
-  if((data.trigger.type == "aura" and not (data.trigger.inverse or data.trigger.unit == "party" or data.trigger.unit == "raid")) or (data.trigger.type == "event" and data.trigger.event and WeakAuras.event_prototypes[data.trigger.event] and (WeakAuras.event_prototypes[data.trigger.event].iconFunc or WeakAuras.event_prototypes[data.trigger.event].nameFunc))) then
+  if(
+    (
+      data.trigger.type == "aura"
+      and not (
+        data.trigger.inverse
+        or data.trigger.unit == "party"
+        or data.trigger.unit == "raid"
+      )
+    )
+    or (
+      data.trigger.type == "event"
+      and data.trigger.event
+      and WeakAuras.event_prototypes[data.trigger.event]
+      and (
+        WeakAuras.event_prototypes[data.trigger.event].iconFunc
+        or WeakAuras.event_prototypes[data.trigger.event].nameFunc
+      )
+    )
+  ) then
     return true;
   else
     return false;
