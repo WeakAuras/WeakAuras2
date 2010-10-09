@@ -135,7 +135,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
       hidden = function() return not arg.enable(data.trigger) end;
     end
     local name = arg.name;
-    if(name) then
+    if(name and not arg.hidden) then
       local realname = name;
       if(triggertype == "untrigger") then
         name = "untrigger_"..name;
@@ -2960,7 +2960,7 @@ function WeakAuras.AddOption(id, data)
   end
   data.trigger.event = data.trigger.event or "Health";
   data.trigger.subeventPrefix = data.trigger.subeventPrefix or "SPELL"
-  data.trigger.subeventSuffix = data.trigger.subeventSuffix or "_CAST_SUCCESS";
+  data.trigger.subeventSuffix = data.trigger.subeventSuffix or "_CAST_START";
   functions.load_options();
   
   if(data.regionType == "group" or data.regionType == "dynamicgroup") then
