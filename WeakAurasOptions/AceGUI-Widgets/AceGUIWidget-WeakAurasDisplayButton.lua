@@ -53,10 +53,14 @@ local methods = {
     Show_Long_Tooltip(self.frame, self.frame.description)
   end,
 	["SetTitle"] = function(self, title)
+        self.titletext = title;
 		self.title:SetText(title);
 	end,
   ["GetTitle"] = function(self)
-    return self.title:GetText();
+    if not(self.titletext) then
+        error("Oh noes");
+    end
+    return self.titletext;
   end,
   ["SetDescription"] = function(self, ...)
     self.frame.description = {...};
@@ -449,7 +453,7 @@ local function Constructor()
   renamebox.func = function() --[[By default, do nothing!]] end;
   renamebox.ids = {};
   renamebox:SetScript("OnEnterPressed", function()
-    if(renamebox.ids[renamebox:GetText()] and button.title:GetText() ~= renamebox:GetText()) then
+    if((renamebox.ids[renamebox:GetText()] and button.title:GetText() ~= renamebox:GetText()) or renamebox:GetText() == "") then
       renamebox:SetText(button.title:GetText());
     else
       renamebox.func();
