@@ -1,7 +1,7 @@
 ## Interface: 40000
 ## Title: WeakAuras
 ## Author: Mirrored
-## Version: 1.1
+## Version: 1.2
 ## Notes: Shows textures/icons/text on-screen based on buffs, debuffs, and other triggers.
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde

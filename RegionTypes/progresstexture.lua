@@ -20,7 +20,8 @@ local default = {
   xOffset = 0,
   yOffset = 0,
   font = "Friz Quadrata TT",
-  fontSize = 12
+  fontSize = 12,
+  stickyDuration = false
 };
 
 local function create(parent)
@@ -287,7 +288,9 @@ local function modify(parent, region, data)
   end
   
   function region:SetDurationInfo(duration, expirationTime, customValue)
-    region.duration = duration;
+    if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
+      region.duration = duration;
+    end
     region.expirationTime = expirationTime;
     
     if(customValue) then

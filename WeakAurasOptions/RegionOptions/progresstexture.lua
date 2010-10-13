@@ -112,6 +112,12 @@ local function createOptions(id, data)
       bigStep = 0.01,
       isPercent = true
     },
+    stickyDuration = {
+      type = "toggle",
+      name = L["Sticky Duration"],
+      desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
+      order = 55
+    },
     spacer = {
       type = "header",
       name = "",

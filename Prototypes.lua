@@ -447,7 +447,7 @@ WeakAuras.event_prototypes = {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "(UnitPower(unit) / UnitPowerMax(unit)) * 100"
+        init = "(UnitPower(unit) / UnitPowerMax(unit)) * 100;"
       },
       {
         hidden = true,

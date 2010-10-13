@@ -14,7 +14,8 @@ local default = {
   xOffset = 0,
   yOffset = 0,
   font = "Friz Quadrata TT",
-  fontSize = 12
+  fontSize = 12,
+  stickyDuration = false
 };
 
 local function create(parent)
@@ -117,8 +118,16 @@ local function modify(parent, region, data)
   
   if(data.cooldown and WeakAuras.CanHaveDuration(data)) then
     cooldown:Show();
-    function region:SetDurationInfo(duration, expirationTime)
-      cooldown:SetCooldown(expirationTime - duration, duration);
+    function region:SetDurationInfo(duration, expirationTime, customValue)
+      if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
+        region.duration = duration;
+      end
+      if(customValue) then
+        cooldown:Show();
+        cooldown:SetCooldown(expirationTime - region.duration, region.duration);
+      else
+        cooldown:Hide();
+      end
     end
   else
     cooldown:Hide();

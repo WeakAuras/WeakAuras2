@@ -9,7 +9,7 @@ function SlashCmdList.WEAKAURAS(msg)
       print("WeakAurasOptions could not be loaded:", reason);
     end
   end
-  WeakAuras.ToggleOptions();
+  WeakAuras.ToggleOptions(msg == "force");
 end
 
 local paused = false;
@@ -28,15 +28,10 @@ WeakAuras.regionTypes = {};
 local regionTypes = WeakAuras.regionTypes;
 
 WeakAuras.forceable_events = {};
-
-local iconCache = {};
-local iconHash = {};
     
 local from_files = {};
 
 local timers = {};
-local event_dynamics = {};
-local aura_dynamics = {};
 
 local loaded_events = {};
 WeakAuras.loaded_events = loaded_events;
@@ -316,15 +311,23 @@ function WeakAuras.ParseNumber(numString)
   end
 end
 
-function WeakAuras.ConstructFunction(prototype, data, subPrefix, subSuffix, field, inverse)
+function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, subSuffix, field, inverse)
   local trigger;
-  if(field == "untrigger") then
-    data.untrigger = data.untrigger or {};
-    trigger = data.untrigger;
-  elseif(field == "load") then
+  if(field == "load") then
     trigger = data.load;
+  elseif(field == "untrigger") then
+    if(triggernum == 0) then
+      data.untrigger = data.untrigger or {};
+      trigger = data.untrigger;
+    else
+      trigger = data.additional_triggers[triggernum].untrigger;
+    end
   else
-    trigger = data.trigger;
+    if(triggernum == 0) then
+      trigger = data.trigger;
+    else
+      trigger = data.additional_triggers[triggernum].trigger;
+    end
   end
   local input = {"event"};
   local required = {};
@@ -338,7 +341,7 @@ function WeakAuras.ConstructFunction(prototype, data, subPrefix, subSuffix, fiel
   for index, arg in pairs(prototype.args) do
     local enable = true;
     if(type(arg.enable) == "function") then
-      enable = arg.enable(data.trigger);
+      enable = arg.enable(trigger);
     end
     if(enable) then
       local name = arg.name;
@@ -421,6 +424,13 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     
     WeakAurasSaved = WeakAurasSaved or {};
     db = WeakAurasSaved;
+    
+    --Deprecated fields with *lots* of data, clear them out
+    db.iconCache = nil;
+    db.iconHash = nil;
+    
+    db.tempIconCache = db.tempIconCache or {};
+
     db.displays = db.displays or {};
     local toAdd = {};
     for id, data in pairs(db.displays) do
@@ -431,39 +441,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       end
     end
     WeakAuras.AddMany(unpack(toAdd));
-    
-    --Builds a cache of name/icon pairs from existing spell data
-    --Why? Because if you call GetSpellInfo with a spell name, it only works if the spell is an actual castable ability,
-    --but if you call it with a spell id, you can get buffs, talents, etc. This is useful for displaying faux aura information
-    --for displays that are not actually connected to auras (for non-automatic icon displays with predefined icons)
-    --Also builds a hash where icon keys return tables of all spell names that use that icon
-    --
-    --This is a very slow operation, so it's only done once, and the result is subsequently saved
-    if(db.locale ~= GetLocale()) then
-      for i=1,75000 do
-        local name, _, icon = GetSpellInfo(i);
-        if(name) then
-          iconCache[name] = icon;
-        end
-        if(icon) then
-          iconHash[icon] = iconHash[icon] or {};
-          if not(tContains(iconHash[icon], name)) then
-            tinsert(iconHash[icon], name);
-          end
-        end
-      end
-      
-      db.locale = GetLocale();
-      db.iconCache = iconCache;
-      db.iconHash = iconHash;
-    else
-      iconCache = db.iconCache;
-      iconHash = db.iconHash;
-    end
-    
-    WeakAuras.iconCache = iconCache;
-    WeakAuras.iconHash = iconHash;
-    
     WeakAuras.AddIfNecessary(from_files);
     
     WeakAuras.Resume();
@@ -491,11 +468,8 @@ end);
 function WeakAuras.Pause()
   paused = true;
   --Forcibly hide all displays and end all dynamics
-  for id, data in pairs(events) do
-    data.region:Collapse();
-  end
-  for id, data in pairs(auras) do
-    data.region:Collapse();
+  for id, region in pairs(regions) do
+    region.region:Collapse();
   end
 end
 
@@ -531,8 +505,10 @@ function WeakAuras.ScanAurasRaid()
       WeakAuras.ScanAuras(uid);
     end
   elseif(loaded_auras["raid"]) then
-    for id, data in pairs(loaded_auras["raid"]) do
-      WeakAuras.SetAuraVisibility(id, data, nil, unit, 0, math.huge);
+    for id, triggers in pairs(loaded_auras["raid"]) do
+      for triggernum, data in pairs(triggers) do
+        WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
+      end
     end
   end
 end
@@ -551,18 +527,22 @@ function WeakAuras.ScanAll()
   for eventName, events in pairs(loaded_events) do
     if(eventName == "COMBAT_LOG_EVENT_UNFILTERED") then
       for subeventName, subevents in pairs(events) do
-        for id, eventData in pairs(subevents) do
-          if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
-            eventData.region:Expand();
-            WeakAuras.SetEventDynamics(id, eventData);
+        for id, triggers in pairs(subevents) do
+          for triggernum, eventData in pairs(triggers) do
+            if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
+              eventData.region:Expand();
+              WeakAuras.SetEventDynamics(id, triggernum, eventData);
+            end
           end
         end
       end
     else
-      for id, eventData in pairs(events) do
-        if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
-          eventData.region:Expand();
-          WeakAuras.SetEventDynamics(id, eventData);
+      for id, triggers in pairs(events) do
+        for triggernum, eventData in pairs(triggers) do
+          if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
+            eventData.region:Expand();
+            WeakAuras.SetEventDynamics(id, triggernum, eventData);
+          end
         end
       end
     end
@@ -614,16 +594,15 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
       event_list = event_list[arg2];
     end
-    for id, data in pairs(event_list) do
-      if(data.trigger) then
-        if(data.trigger(event, arg1, arg2, ...)) then
-          WeakAuras.ActivateEvent(id, data);
-          if(data.duration) then
-            WeakAuras.ActivateEventTimer(id, data.duration);
-          end
-        else
-          if(data.untrigger and data.untrigger(event, arg1, arg2, ...)) then
-            WeakAuras.EndEvent(id);
+    for id, triggers in pairs(event_list) do
+      for triggernum, data in pairs(triggers) do
+        if(data.trigger) then
+          if(data.trigger(event, arg1, arg2, ...)) then
+            WeakAuras.ActivateEvent(id, triggernum, data);
+          else
+            if(data.untrigger and data.untrigger(event, arg1, arg2, ...)) then
+              WeakAuras.EndEvent(id, triggernum);
+            end
           end
         end
       end
@@ -631,83 +610,113 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   end
 end
 
-function WeakAuras.ActivateEvent(id, data)
-  data.region.active = true;
+function WeakAuras.ActivateEvent(id, triggernum, data)
   if(WeakAuras.PassesConditionChecks(id)) then
-    data.region:Expand();
+    if(data.numAdditionalTriggers > 0) then
+      if(data.region:EnableTrigger(triggernum)) then
+        data.region.active = true;
+      end
+    else
+      data.region.active = true;
+      data.region:Expand();
+    end
   end
-  WeakAuras.SetEventDynamics(id, data);
+  WeakAuras.SetEventDynamics(id, triggernum, data);
 end
 
-function WeakAuras.SetEventDynamics(id, data)
-  local trigger = db.displays[id] and db.displays[id].trigger;
-  if(data.duration) then
-    WeakAuras.ActivateEventTimer(id, data.duration);
-    if(data.region.SetDurationInfo) then
-      data.region:SetDurationInfo(data.duration, GetTime() + data.duration);
-    end
-    duration_cache:SetDurationInfo(id, data.duration, GetTime() + data.duration);
+function WeakAuras.SetEventDynamics(id, triggernum, data)
+  local trigger;
+  if(triggernum == 0) then
+    trigger = db.displays[id] and db.displays[id].trigger;
   else
-    if(data.durationFunc) then
-      local duration, expirationTime, static = data.durationFunc(trigger);
-      if(duration > 0.01 and not static) then
-        local hideOnExpire = true;
-        if(data.expiredHideFunc) then
-          hideOnExpire = data.expiredHideFunc(trigger);
+    trigger = db.displays[id] and db.displays[id].additional_triggers
+              and db.displays[id].additional_triggers[triggernum]
+              and db.displays[id].additional_triggers[triggernum].trigger;
+  end
+  if(trigger) then
+    if(data.duration) then
+      WeakAuras.ActivateEventTimer(id, triggernum, data.duration);
+      if(triggernum == 0) then
+        if(data.region.SetDurationInfo) then
+          data.region:SetDurationInfo(data.duration, GetTime() + data.duration);
         end
-        if(hideOnExpire) then
-          WeakAuras.ActivateEventTimer(id, expirationTime - GetTime());
+        duration_cache:SetDurationInfo(id, data.duration, GetTime() + data.duration);
+      end
+    else
+      if(data.durationFunc) then
+        local duration, expirationTime, static = data.durationFunc(trigger);
+        if(duration > 0.01 and not static) then
+          local hideOnExpire = true;
+          if(data.expiredHideFunc) then
+            hideOnExpire = data.expiredHideFunc(trigger);
+          end
+          if(hideOnExpire) then
+            WeakAuras.ActivateEventTimer(id, triggernum, expirationTime - GetTime());
+          end
+        end
+        if(triggernum == 0) then
+          if(data.region.SetDurationInfo) then
+            data.region:SetDurationInfo(duration, expirationTime, static);
+          end
+          duration_cache:SetDurationInfo(id, duration, expirationTime);
+        end
+      elseif(triggernum == 0) then
+        if(data.region.SetDurationInfo) then
+          data.region:SetDurationInfo(0, math.huge);
+        end
+        duration_cache:SetDurationInfo(id, 0, math.huge);
+      end
+    end
+    if(triggernum == 0) then
+      if(data.region.SetName) then
+        if(data.nameFunc) then
+          data.region:SetName(data.nameFunc(trigger));
+        else
+          data.region:SetName();
         end
       end
-      if(data.region.SetDurationInfo) then
-        data.region:SetDurationInfo(duration, expirationTime, static);
+      if(data.region.SetIcon) then
+        if(data.iconFunc) then
+          data.region:SetIcon(data.iconFunc(trigger));
+        else
+          data.region:SetIcon();
+        end
       end
-      duration_cache:SetDurationInfo(id, duration, expirationTime);
-    else
-      if(data.region.SetDurationInfo) then
-        data.region:SetDurationInfo(0, math.huge);
+      if(data.region.SetStacks) then
+        if(data.stacksFunc) then
+          data.region:SetStacks(data.stacksFunc(trigger));
+        else
+          data.region:SetStacks();
+        end
       end
-      duration_cache:SetDurationInfo(id, 0, math.huge);
     end
-  end
-  if(data.region.SetName) then
-    if(data.nameFunc) then
-      data.region:SetName(data.nameFunc(trigger));
-    else
-      data.region:SetName();
-    end
-  end
-  if(data.region.SetIcon) then
-    if(data.iconFunc) then
-      data.region:SetIcon(data.iconFunc(trigger));
-    else
-      data.region:SetIcon();
-    end
-  end
-  if(data.region.SetStacks) then
-    if(data.stacksFunc) then
-      data.region:SetStacks(data.stacksFunc(trigger));
-    else
-      data.region:SetStacks();
-    end
+  else
+    error("Event with id \""..id.." and trigger number "..triggernum.." tried to activate, but does not exist");
   end
 end
 
-function WeakAuras.ActivateEventTimer(id, duration)
-  if(timers[id]) then
-    timer:CancelTimer(timers[id], true);
+function WeakAuras.ActivateEventTimer(id, triggernum, duration)
+  if(timers[id] and timers[id][triggernum]) then
+    timer:CancelTimer(timers[id][triggernum], true);
   end
-  timers[id] = timer:ScheduleTimer(function(id) WeakAuras.EndEvent(id) end, duration, id);
+  timers[id] = timers[id] or {};
+  timers[id][triggernum] = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum) end, duration);
 end
 
-function WeakAuras.EndEvent(id)
-  local data = events[id];
+function WeakAuras.EndEvent(id, triggernum)
+  local data = events[id] and events[id][triggernum];
   if(data) then
-    data.region.active = nil;
-    data.region:Collapse();
-    if(timers[id]) then
-      timer:CancelTimer(timers[id], true);
-      timers[id] = nil;
+    if(data.numAdditionalTriggers > 0) then
+      if(data.region:DisableTrigger(triggernum)) then
+        data.region.active = nil;
+      end
+    else
+      data.region.active = nil;
+      data.region:Collapse();
+    end
+    if(timers[id] and timers[id][triggernum]) then
+      timer:CancelTimer(timers[id][triggernum], true);
+      timers[id][triggernum] = nil;
     end
   end
 end
@@ -731,6 +740,7 @@ function WeakAuras.UpdateAll(frame, elapsed)
 end
 
 function WeakAuras.ScanForLoads()
+  local typefunc = type;
   local player, class, zone, spec = UnitName("player"), UnitClass("player"), GetRealZoneText(), GetPrimaryTalentTree();
   local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
   local size, difficulty;
@@ -764,22 +774,33 @@ function WeakAuras.ScanForLoads()
     end
   end
   local shouldBeLoaded;
-  for id, data in pairs(auras) do
-    shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", player, class, spec, zone, size, difficulty);
-    if(shouldBeLoaded and not loaded[id]) then
-      WeakAuras.LoadAura(id, data);
-    end
-    if(loaded[id] and not shouldBeLoaded) then
-      WeakAuras.UnloadAura(id, data);
+  for id, triggers in pairs(auras) do
+    for triggernum, data in pairs(triggers) do
+      shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", player, class, spec, zone, size, difficulty);
+      if(shouldBeLoaded
+          and not (
+            loaded[id]
+            and loaded[id][triggernum]
+          )
+        ) then
+        WeakAuras.LoadAura(id, triggernum, data);
+      end
+      if(loaded[id] and loaded[id][triggernum] and not shouldBeLoaded) then
+        WeakAuras.UnloadAura(id, data);
+        data.region:Collapse();
+      end
     end
   end
-  for id, data in pairs(events) do
-    shouldBeLoaded = data.load and data.load("ScanForLoads_Events", player, class, spec, zone, size, difficulty);
-    if(shouldBeLoaded and not loaded[id]) then
-      WeakAuras.LoadEvent(id, data);
-    end
-    if(loaded[id] and not shouldBeLoaded) then
-      WeakAuras.UnloadEvent(id, data);
+  for id, triggers in pairs(events) do
+    for triggernum, data in pairs(triggers) do
+      shouldBeLoaded = data.load and data.load("ScanForLoads_Events", player, class, spec, zone, size, difficulty);
+      if(shouldBeLoaded and not (loaded[id] and loaded[id][triggernum])) then
+        WeakAuras.LoadEvent(id, triggernum, data);
+      end
+      if(loaded[id] and loaded[id][triggernum] and not shouldBeLoaded) then
+        WeakAuras.UnloadEvent(id, data);
+        data.region:Collapse();
+      end
     end
   end
   for id, data in pairs(db.displays) do
@@ -791,9 +812,13 @@ function WeakAuras.ScanForLoads()
             any_loaded = true;
           end
         end
-        loaded[id] = any_loaded;
+        loaded[id] = {
+          [0] = any_loaded
+        };
       else
-        loaded[id] = true;
+        loaded[id] = {
+          [0] = true
+        };
       end
     end
   end
@@ -817,10 +842,12 @@ function WeakAuras.UnloadAll()
   wipe(loaded);
 end
 
-function WeakAuras.LoadAura(id, data)
-  loaded[id] = true;
+function WeakAuras.LoadAura(id, triggernum, data)
+  loaded[id] = loaded[id] or {};
+  loaded[id][triggernum] = true;
   loaded_auras[data.unit] = loaded_auras[data.unit] or {};
-  loaded_auras[data.unit][id] = data;
+  loaded_auras[data.unit][id] = loaded_auras[data.unit][id] or {};
+  loaded_auras[data.unit][id][triggernum] = data;
 end
 
 function WeakAuras.UnloadAura(id, data)
@@ -830,16 +857,19 @@ function WeakAuras.UnloadAura(id, data)
   end
 end
 
-function WeakAuras.LoadEvent(id, data)
-  loaded[id] = true;
+function WeakAuras.LoadEvent(id, triggernum, data)
+  loaded[id] = loaded[id] or {};
+  loaded[id][triggernum] = true;
   local events = event_prototypes[data.event] and event_prototypes[data.event].events or {}
   for index, event in pairs(events) do
     loaded_events[event] = loaded_events[event] or {};
     if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
       loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
-      loaded_events[event][data.subevent][id] = data;
+      loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
+      loaded_events[event][data.subevent][id][triggernum] = data;
     else
-      loaded_events[event][id] = data;
+      loaded_events[event][id] = loaded_events[event][id] or {};
+      loaded_events[event][id][triggernum] = data;
     end
   end
 end
@@ -896,44 +926,46 @@ function WeakAuras.ScanAuras(unit)
   if(aura_list) then
     unit = unit == "party0" and "player" or unit;
     local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = true;
-    for id,data in pairs(aura_list) do
-      local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-      local active = false;
-      for index, checkname in pairs(data.names) do
-        name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
-        if(name and data.count(count)) then
-          active = true;
-          iconCache[name] = icon;
-          if(aura_object) then
-            aura_object:AssertAura(checkname, GetUnitName(unit, true));
-          else
-            WeakAuras.SetAuraVisibility(id, data, true, unit, duration, expirationTime, name, icon, count);
-            break;
+    for id,triggers in pairs(aura_list) do
+      for triggernum, data in pairs(triggers) do
+        local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
+        local active = false;
+        for index, checkname in pairs(data.names) do
+          name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
+          if(name and data.count(count)) then
+            active = true;
+            db.tempIconCache[name] = icon;
+            if(aura_object) then
+              aura_object:AssertAura(checkname, GetUnitName(unit, true));
+            else
+              WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
+              break;
+            end
+          elseif(aura_object) then
+            aura_object:DeassertAura(checkname, GetUnitName(unit, true));
           end
-        elseif(aura_object) then
-          aura_object:DeassertAura(checkname, GetUnitName(unit, true));
         end
-      end
-      if(aura_object) then
-        if(data.group_count) then
-          local count, max = aura_object:GetNumber(data.names), aura_object:GetMaxNumber();
-          local satisfies_count = data.group_count(count, max);
-          if(satisfies_count) then
-            WeakAuras.SetAuraVisibility(id, data, true, unit, 0, math.huge);
+        if(aura_object) then
+          if(data.group_count) then
+            local count, max = aura_object:GetNumber(data.names), aura_object:GetMaxNumber();
+            local satisfies_count = data.group_count(count, max);
+            if(satisfies_count) then
+              WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, 0, math.huge);
+            else
+              WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
+            end
           else
-            WeakAuras.SetAuraVisibility(id, data, nil, unit, 0, math.huge);
+            error("Group-based aura \""..id.."\" does not have a group counting function.");
           end
-        else
-          error("Group-based aura \""..id.."\" does not have a group counting function.");
+        elseif not(active) then
+          WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
         end
-      elseif not(active) then
-        WeakAuras.SetAuraVisibility(id, data, nil, unit, 0, math.huge);
       end
     end
   end
 end
 
-function WeakAuras.SetAuraVisibility(id, data, active, unit, duration, expirationTime, name, icon, count)
+function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count)
   local show;
   if(active ~= nil) then
     if(data.inverse) then
@@ -954,22 +986,33 @@ function WeakAuras.SetAuraVisibility(id, data, active, unit, duration, expiratio
   end
   
   if(show) then
-    if(data.region.SetDurationInfo) then
-      data.region:SetDurationInfo(duration, expirationTime);
+    if(triggernum == 0) then
+      if(data.region.SetDurationInfo) then
+        data.region:SetDurationInfo(duration, expirationTime);
+      end
+      duration_cache:SetDurationInfo(id, duration, expirationTime);
+      if(data.region.SetName) then
+        data.region:SetName(name);
+      end
+      if(data.region.SetIcon) then
+        data.region:SetIcon(icon);
+      end
+      if(data.region.SetStacks) then
+        data.region:SetStacks(count);
+      end
     end
-    duration_cache:SetDurationInfo(id, duration, expirationTime);
-    if(data.region.SetName) then
-      data.region:SetName(name);
+
+    if(data.numAdditionalTriggers > 0) then
+      data.region:EnableTrigger(triggernum);
+    else
+      data.region:Expand();
     end
-    if(data.region.SetIcon) then
-      data.region:SetIcon(icon);
-    end
-    if(data.region.SetStacks) then
-      data.region:SetStacks(count);
-    end
-    data.region:Expand();
   else
-    data.region:Collapse();
+    if(data.numAdditionalTriggers > 0) then
+      data.region:DisableTrigger(triggernum)
+    else
+      data.region:Collapse();
+    end
   end
 end
 
@@ -992,19 +1035,23 @@ function WeakAuras.ConditionsChanged()
   for eventName, events in pairs(loaded_events) do
     if(eventName == "COMBAT_LOG_EVENT_UNFILTERED") then
       for subeventName, subevents in pairs(events) do
-        for id, eventData in pairs(subevents) do
-          if not(eventData.region) then
-            print("No region for", id);
-          end
-          if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
-            eventData.region:Expand();
+        for id, triggers in pairs(subevents) do
+          for triggernum, eventData in pairs(triggers) do
+            if not(eventData.region) then
+              print("No region for", id);
+            end
+            if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
+              eventData.region:Expand();
+            end
           end
         end
       end
     else
-      for id, eventData in pairs(events) do
-        if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
-          eventData.region:Expand();
+      for id, triggers in pairs(events) do
+        for triggernum, eventData in pairs(triggers) do
+          if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
+            eventData.region:Expand();
+          end
         end
       end
     end
@@ -1048,7 +1095,6 @@ function WeakAuras.Delete(data)
   auras[id] = nil;
   events[id] = nil;
   loaded[id] = nil;
-  aura_dynamics[id] = nil;
   
   for i,v in pairs(loaded_events) do
     v[id] = nil;
@@ -1191,142 +1237,155 @@ function WeakAuras.pAdd(data)
     data.actions = data.actions or {};
     data.actions.start = data.actions.start or {};
     data.actions.finish = data.actions.finish or {};
-    local loadFunc = WeakAuras.LoadFunction(WeakAuras.ConstructFunction(load_prototype, data, nil, nil, "load"));
+    local loadFunc = WeakAuras.LoadFunction(WeakAuras.ConstructFunction(load_prototype, data, nil, nil, nil, "load"));
     
-    local trigger = data.trigger;
-    local triggerType;
-    if(trigger and type(trigger) == "table") then
-      triggerType = trigger.type;
-      if(triggerType == "aura") then
-        trigger.names = trigger.names or {};
-        trigger.unit = trigger.unit or "player";
-        trigger.debuffType = trigger.debuffType or "HELPFUL";
-        
-        local countFunc, countFuncStr;
-        if(trigger.useCount) then
-          countFuncStr = function_strings.count:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
-        else
-          countFuncStr = function_strings.always;
-        end
-        countFunc = WeakAuras.LoadFunction(countFuncStr);
-        
-        local group_countFunc, group_countFuncStr;
-        if(trigger.unit == "raid" or trigger.unit == "party") then
-          local count, countType = WeakAuras.ParseNumber(trigger.group_count);
-          if(trigger.group_countOperator and count and countType) then
-            if(countType == "whole") then
-              group_countFuncStr = function_strings.count:format(trigger.group_countOperator, count);
-            else
-              group_countFuncStr = function_strings.count_fraction:format(trigger.group_countOperator, count);
-            end
-          else
-            group_countFuncStr = function_strings.count:format(">", 0);
-          end
-          group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
-          for index, auraname in pairs(trigger.names) do
-            aura_cache[trigger.unit]:Watch(auraname);
-          end
-        end
-        
-        events[id] = nil;
-        auras[id] = {
-          count = countFunc,
-          group_count = group_countFunc,
-          load = loadFunc,
-          bar = data.bar,
-          timer = data.timer,
-          cooldown = data.cooldown,
-          icon = data.icon,
-          debuffType = trigger.debuffType,
-          names = trigger.names,
-          unit = trigger.unit,
-          useCount = trigger.useCount,
-          ownOnly = trigger.ownOnly,
-          inverse = trigger.inverse,
-          region = region
-        };
-      elseif(triggerType == "event") then
-        if not(trigger.event) then
-          error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
-        elseif not(event_prototypes[trigger.event]) then
-          if(event_protyptes["Health"]) then
-            trigger.event = "Health";
-          else
-            error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
-          end
-        elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
-          error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
-        else
-          local triggerFuncStr, triggerFunc;
-          if(trigger.event == "Combat Log") then
-            triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, trigger.subeventPrefix, trigger.subeventSuffix);
-          else
-            triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data);
-          end
-          --print(id, "trigger")
-          --print(triggerFuncStr);
-          triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
-          WeakAuras.triggerFunc = triggerFunc;
-          WeakAuras.triggerStr = triggerFuncStr;
+    events[id] = nil;
+    auras[id] = nil;
+    
+    for triggernum=0,9 do
+      local trigger, untrigger;
+      if(triggernum == 0) then
+        trigger = data.trigger;
+        untrigger = data.untrigger;
+      elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+        trigger = data.additional_triggers[triggernum].trigger;
+        untrigger = data.additional_triggers[triggernum].untrigger;
+      end
+      local triggerType;
+      if(trigger and type(trigger) == "table") then
+        triggerType = trigger.type;
+        if(triggerType == "aura") then
+          trigger.names = trigger.names or {};
+          trigger.unit = trigger.unit or "player";
+          trigger.debuffType = trigger.debuffType or "HELPFUL";
           
-          local untriggerFuncStr, untriggerFunc
-          if(trigger.unevent == "custom") then
-            if(trigger.event == "Combat Log") then
-              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, trigger.subeventPrefix, trigger.subeventSuffix, "untrigger");
-            else
-              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, nil, nil, "untrigger");
-            end
-          elseif(trigger.unevent == "auto") then
-            untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, nil, nil, nil, true);
+          local countFunc, countFuncStr;
+          if(trigger.useCount) then
+            countFuncStr = function_strings.count:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
+          else
+            countFuncStr = function_strings.always;
           end
-          if(untriggerFuncStr) then
-            --print(id, "untrigger")
-            --print(untriggerFuncStr);
-            untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr);
-            WeakAuras.untriggerFunc = untriggerFunc;
-            WeakAuras.untriggerStr = untriggerFuncStr;
+          countFunc = WeakAuras.LoadFunction(countFuncStr);
+          
+          local group_countFunc, group_countFuncStr;
+          if(trigger.unit == "raid" or trigger.unit == "party") then
+            local count, countType = WeakAuras.ParseNumber(trigger.group_count);
+            if(trigger.group_countOperator and count and countType) then
+              if(countType == "whole") then
+                group_countFuncStr = function_strings.count:format(trigger.group_countOperator, count);
+              else
+                group_countFuncStr = function_strings.count_fraction:format(trigger.group_countOperator, count);
+              end
+            else
+              group_countFuncStr = function_strings.count:format(">", 0);
+            end
+            group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
+            for index, auraname in pairs(trigger.names) do
+              aura_cache[trigger.unit]:Watch(auraname);
+            end
           end
           
-          auras[id] = nil;
-          events[id] = {
-            trigger = triggerFunc,
-            untrigger = untriggerFunc,
+          auras[id] = auras[id] or {};
+          auras[id][triggernum] = {
+            count = countFunc,
+            group_count = group_countFunc,
             load = loadFunc,
             bar = data.bar,
             timer = data.timer,
             cooldown = data.cooldown,
             icon = data.icon,
-            event = trigger.event,
-            subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
-            unevent = trigger.unevent,
-            durationFunc = event_prototypes[trigger.event].durationFunc,
-            nameFunc = event_prototypes[trigger.event].nameFunc,
-            iconFunc = event_prototypes[trigger.event].iconFunc,
-            stacksFunc = event_prototypes[trigger.event].stacksFunc,
-            expiredHideFunc = event_prototypes[trigger.event].expiredHideFunc,
-            region = region
+            debuffType = trigger.debuffType,
+            names = trigger.names,
+            unit = trigger.unit,
+            useCount = trigger.useCount,
+            ownOnly = trigger.ownOnly,
+            inverse = trigger.inverse,
+            region = region,
+            numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
           };
-          local prototype = event_prototypes[trigger.event];
-          if(prototype) then
-            for index, event in pairs(prototype.events) do
-              frame:RegisterEvent(event);
-              if(prototype.force_events) then
-                WeakAuras.forceable_events[event] = prototype.force_events;
+        elseif(triggerType == "event") then
+          if not(trigger.event) then
+            error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
+          elseif not(event_prototypes[trigger.event]) then
+            if(event_protyptes["Health"]) then
+              trigger.event = "Health";
+            else
+              error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
+            end
+          elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
+            error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
+          else
+            local triggerFuncStr, triggerFunc;
+            if(trigger.event == "Combat Log") then
+              triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix);
+            else
+              triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum);
+            end
+            --print(id, "trigger")
+            --print(triggerFuncStr);
+            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
+            WeakAuras.triggerFunc = triggerFunc;
+            WeakAuras.triggerStr = triggerFuncStr;
+            
+            local untriggerFuncStr, untriggerFunc
+            if(trigger.unevent == "custom") then
+              if(trigger.event == "Combat Log") then
+                untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix, "untrigger");
+              else
+                untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, "untrigger");
+              end
+            elseif(trigger.unevent == "auto") then
+              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, nil, true);
+            end
+            if(untriggerFuncStr) then
+              --print(id, "untrigger")
+              --print(untriggerFuncStr);
+              untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr);
+              WeakAuras.untriggerFunc = untriggerFunc;
+              WeakAuras.untriggerStr = untriggerFuncStr;
+            end
+            
+            events[id] = events[id] or {};
+            events[id][triggernum] = {
+              trigger = triggerFunc,
+              untrigger = untriggerFunc,
+              load = loadFunc,
+              bar = data.bar,
+              timer = data.timer,
+              cooldown = data.cooldown,
+              icon = data.icon,
+              event = trigger.event,
+              subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
+              unevent = trigger.unevent,
+              durationFunc = event_prototypes[trigger.event].durationFunc,
+              nameFunc = event_prototypes[trigger.event].nameFunc,
+              iconFunc = event_prototypes[trigger.event].iconFunc,
+              stacksFunc = event_prototypes[trigger.event].stacksFunc,
+              expiredHideFunc = event_prototypes[trigger.event].expiredHideFunc,
+              region = region,
+              numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
+            };
+
+            local prototype = event_prototypes[trigger.event];
+            if(prototype) then
+              for index, event in pairs(prototype.events) do
+                frame:RegisterEvent(event);
+                if(prototype.force_events) then
+                  WeakAuras.forceable_events[event] = prototype.force_events;
+                end
               end
             end
+
+            if(trigger.unevent == "timed") then
+              events[id][triggernum].duration = tonumber(data.trigger.duration);
+            end
           end
-          
-          if(trigger.unevent == "timed") then
-            events[id].duration = tonumber(data.trigger.duration);
-          end
+        elseif(triggerType) then
+          error("Improper arguments to WeakAuras.Add - display "..id.." trigger type \""..triggerType.."\" is not supported for trigger number "..triggernum);
+        else
+          print("Improper arguments to WeakAuras.Add - display "..id.." trigger type not defined for trigger number "..triggernum);
         end
-      elseif(triggerType) then
-        error("Improper arguments to WeakAuras.Add - trigger type \""..triggerType.."\" is not supported");
-      else
-        error("Improper arguments to WeakAuras.Add - trigger type not defined");
       end
-    else
-      error("Improper arguments to WeakAuras.Add - trigger not a valid table");
     end
     
     if not(temporary) then
@@ -1472,6 +1531,41 @@ function WeakAuras.SetRegion(data)
               end)) then
                 WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
               end
+            end
+          end
+        end
+
+        if(data.additional_triggers and #data.additional_triggers > 0) then
+          region.trigger_count = region.trigger_count or 0;
+          region.triggers = region.trigger or {};
+
+          function region:TestTriggers(trigger_count)
+            if(trigger_count > #data.additional_triggers) then
+              region:Expand();
+              return true;
+            else
+              region:Collapse();
+              return false;
+            end
+          end
+
+          function region:EnableTrigger(triggernum)
+            if not(region.triggers[triggernum]) then
+              region.triggers[triggernum] = true;
+              region.trigger_count = region.trigger_count + 1;
+              return region:TestTriggers(region.trigger_count);
+            else
+              return nil;
+            end
+          end
+
+          function region:DisableTrigger(triggernum)
+            if(region.triggers[triggernum]) then
+              region.triggers[triggernum] = nil;
+              region.trigger_count = region.trigger_count - 1;
+              return not region:TestTriggers(region.trigger_count);
+            else
+              return nil;
             end
           end
         end

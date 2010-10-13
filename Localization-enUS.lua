@@ -280,6 +280,7 @@ L["Enabled"] = "Enabled"
 L["Disabled"] = "Disabled"
 L["Display"] = "Display"
 L["Trigger"] = "Trigger"
+L["Triggers"] = "Triggers"
 L["Load"] = "Load"
 L["Actions"] = "Actions"
 L["On Show"] = "On Show"
@@ -408,6 +409,19 @@ L["Move Down"] = "Move Down"
 L["First Tree"] = "First Tree"
 L["Second Tree"] = "Second Tree"
 L["Third Tree"] = "Third Tree"
+L["Main Trigger"] = "Main Trigger"
+L["Trigger 2"] = "Trigger 2"
+L["Trigger 3"] = "Trigger 3"
+L["Trigger 4"] = "Trigger 4"
+L["Trigger 5"] = "Trigger 5"
+L["Trigger 6"] = "Trigger 6"
+L["Trigger 7"] = "Trigger 7"
+L["Trigger 8"] = "Trigger 8"
+L["Trigger 9"] = "Trigger 9"
+L["Trigger 9"] = "Trigger 10"
+L["Add Trigger"] = "Add Trigger"
+L["Delete Trigger"] = "Delete Trigger"
+L["Sticky Duration"] = "Sticky Duration"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
@@ -473,6 +487,7 @@ L["Move this display down in its group's order"] = "Move this display down in it
 L["Expansion is disabled because this group has no children"] = "Expansion is disabled because this group has no children"
 L["Add a new display"] = "Add a new display"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
+L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."
 
 --Sound names - low priority for localization
 L.sounds = {
@@ -526,8 +541,41 @@ L.sounds = {
 }
 
 --Texture names - low priority for localization
-L["Icons"] = "Icons"
 L.textures = {};
+L["Cataclysm Alerts"] = "Cataclysm Alerts"
+L.textures["Cataclysm Alerts"] = {
+  ["Textures\\SpellActivationOverlays\\Arcane_Missiles"] = "Arcane Missiles",
+  ["Textures\\SpellActivationOverlays\\Art_of_War"] = "Art of War",
+  ["Textures\\SpellActivationOverlays\\Blood_Surge"] = "Blood Surge",
+  ["Textures\\SpellActivationOverlays\\Brain_Freeze"] = "Brain Freeze",
+  ["Textures\\SpellActivationOverlays\\Eclipse_Moon"] = "Eclipse Moon",
+  ["Textures\\SpellActivationOverlays\\Eclipse_Sun"] = "Eclipse Sun",
+  ["Textures\\SpellActivationOverlays\\Focus_Fire"] = "Focus Fire",
+  ["Textures\\SpellActivationOverlays\\Frozen_Fingers"] = "Frozen Fingers",
+  ["Textures\\SpellActivationOverlays\\GenericArc_01"] = "Generic Arc 1",
+  ["Textures\\SpellActivationOverlays\\GenericArc_02"] = "Generic Arc 2",
+  ["Textures\\SpellActivationOverlays\\GenericArc_03"] = "Generic Arc 3",
+  ["Textures\\SpellActivationOverlays\\GenericArc_04"] = "Generic Arc 4",
+  ["Textures\\SpellActivationOverlays\\GenericArc_05"] = "Generic Arc 5",
+  ["Textures\\SpellActivationOverlays\\GenericArc_06"] = "Generic Arc 6",
+  ["Textures\\SpellActivationOverlays\\GenericTop_01"] = "Generic Top 1",
+  ["Textures\\SpellActivationOverlays\\GenericTop_02"] = "Generic Top 2",
+  ["Textures\\SpellActivationOverlays\\Grand_Crusader"] = "Grand Crusader",
+  ["Textures\\SpellActivationOverlays\\Hot_Streak"] = "Hot Streak",
+  ["Textures\\SpellActivationOverlays\\Imp_Empowerment"] = "Imp Empowerment",
+  ["Textures\\SpellActivationOverlays\\Lock_and_Load"] = "Lock and Load",
+  ["Textures\\SpellActivationOverlays\\Maelstrom_Weapon"] = "Maelstrom Weapon",
+  ["Textures\\SpellActivationOverlays\\Master_Marksman"] = "Master Marksman",
+  ["Textures\\SpellActivationOverlays\\Natures_Grace"] = "Nature's Grace",
+  ["Textures\\SpellActivationOverlays\\Nightfall"] = "Nightfall",
+  ["Textures\\SpellActivationOverlays\\Rime"] = "Rime",
+  ["Textures\\SpellActivationOverlays\\Slice_and_Dice"] = "Slice and Dice",
+  ["Textures\\SpellActivationOverlays\\Sudden_Death"] = "Sudden Death",
+  ["Textures\\SpellActivationOverlays\\Sudden_Doom"] = "Sudden Doom",
+  ["Textures\\SpellActivationOverlays\\Surge_of_Light"] = "Surge of Light",
+  ["Textures\\SpellActivationOverlays\\Sword_and_Board"] = "Sword and Board"
+};
+L["Icons"] = "Icons"
 L.textures["Icons"] = {
     ["Spells\\Agility_128"] = "Paw",
     ["Spells\\ArrowFeather01"] = "Feathers",
