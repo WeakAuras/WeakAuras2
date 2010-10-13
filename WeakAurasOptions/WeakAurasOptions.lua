@@ -8,15 +8,17 @@ local L = WeakAuras.L;
 
 local ADDON_NAME = "WeakAurasOptions";
 
+local GetSpellInfo = GetSpellInfo;
+
 local regionOptions = {};
 local displayButtons = {};
 local optionReloads = {};
+local optionTriggerChoices = {};
 local thumbnails = {};
 local displayOptions = {};
 WeakAuras.displayOptions = displayOptions;
 
-local iconCache = WeakAuras.iconCache;
-local iconHash = WeakAuras.iconHash;
+local iconCache = {};
 
 --This function computes the Levenshtein distance between two strings
 --It is based on the Wagner-Fisher algorithm
@@ -116,15 +118,55 @@ local function union(table1, table2)
   return meta;
 end
 
-function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggertype, unevent)
-  local trigger;
-  data.untrigger = data.untrigger or {};
-  if(triggertype == "untrigger") then
-    trigger = data.untrigger;
-  elseif(triggertype == "load") then
+function WeakAuras.CreateIconCache(callback)
+  local cacheFrame = CreateFrame("Frame");
+  local id = 95000;
+  cacheFrame:SetAllPoints(UIParent);
+  cacheFrame:SetScript("OnUpdate", function()
+    local start = GetTime();
+    while(GetTime() - start < 0.01) do
+      id = id - 1;
+      if(id > 0) then
+        local name, _, icon = GetSpellInfo(id);
+        if(name) then
+          iconCache[name] = icon;
+        end
+      end
+    end
+    if(id < 1) then
+      cacheFrame:SetScript("OnUpdate", nil);
+      if(callback) then
+        callback();
+      end
+    end
+  end);
+end
+
+function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
+  local trigger, untrigger;
+  if(triggertype == "load") then
     trigger = data.load;
+  elseif(triggernum == 0) then
+    data.untrigger = data.untrigger or {};
+    if(triggertype == "untrigger") then
+      trigger = data.untrigger;
+    else
+      trigger = data.trigger;
+      untrigger = data.untrigger;
+    end
+  elseif(triggernum >= 1 and triggernum <= 9) then
+    data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
+    if(triggertype == "untrigger") then
+      trigger = data.additional_triggers[triggernum].untrigger;
+    else
+      trigger = data.additional_triggers[triggernum].trigger;
+      untrigger = data.additional_triggers[triggernum].untrigger;
+    end
   else
-    trigger = data.trigger;
+    error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
+  end
+  if not(trigger) then
+    print(data.id, triggernum, triggertype);
   end
   unevent = unevent or trigger.unevent;
   local options = {};
@@ -132,7 +174,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
   for index, arg in pairs(prototype.args) do
     local hidden = nil;
     if(type(arg.enable) == "function") then
-      hidden = function() return not arg.enable(data.trigger) end;
+      hidden = function() return not arg.enable(trigger) end;
     end
     local name = arg.name;
     if(name and not arg.hidden) then
@@ -227,7 +269,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           end
         };
         if(arg.required and not triggertype) then
-          options[name.."_operator"].set = function(info, v) trigger[realname.."_operator"] = v; data.untrigger[realname.."_operator"] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
+          options[name.."_operator"].set = function(info, v) trigger[realname.."_operator"] = v; untrigger[realname.."_operator"] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
         elseif(arg.required and triggertype == "untrigger") then
           options[name.."_operator"] = nil;
           order = order - 1;
@@ -252,7 +294,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           end
         };
         if(arg.required and not triggertype) then
-          options[name].set = function(info, v) trigger[realname] = v; data.untrigger[realname] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
+          options[name].set = function(info, v) trigger[realname] = v; untrigger[realname] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
         elseif(arg.required and triggertype == "untrigger") then
           options[name] = nil;
           order = order - 1;
@@ -277,7 +319,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           end
         };
         if(arg.required and not triggertype) then
-          options[name].set = function(info, v) trigger[realname] = v; data.untrigger[realname] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
+          options[name].set = function(info, v) trigger[realname] = v; untrigger[realname] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
         elseif(arg.required and triggertype == "untrigger") then
           options[name] = nil;
           order = order - 1;
@@ -303,7 +345,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           end
         };
         if(arg.required and not triggertype) then
-          options[name.."_operator"].set = function(info, v) trigger[realname.."_operator"] = v; data.untrigger[realname.."_operator"] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
+          options[name.."_operator"].set = function(info, v) trigger[realname.."_operator"] = v; untrigger[realname.."_operator"] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
         elseif(arg.required and triggertype == "untrigger") then
           options[name.."_operator"] = nil;
           order = order - 1;
@@ -328,7 +370,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           end
         };
         if(arg.required and not triggertype) then
-          options[name].set = function(info, v) trigger[realname] = v; data.untrigger[realname] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
+          options[name].set = function(info, v) trigger[realname] = v; untrigger[realname] = v; WeakAuras.Add(data); WeakAuras.ScanForLoads(); WeakAuras.SortDisplayButtons(); end
         elseif(arg.required and triggertype == "untrigger") then
           options[name] = nil;
           order = order - 1;
@@ -395,7 +437,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               fixedInput = GetItemInfo(v);
             end
             trigger[realname] = fixedInput;
-            data.untrigger[realname] = fixedInput;
+            untrigger[realname] = fixedInput;
             WeakAuras.Add(data);
             WeakAuras.ScanForLoads();
             WeakAuras.SetThumbnail(data);
@@ -431,7 +473,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            data.untrigger[realname] = v;
+            untrigger[realname] = v;
             WeakAuras.Add(data);
             WeakAuras.ScanForLoads();
             WeakAuras.SetThumbnail(data);
@@ -468,7 +510,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
       options.unevent.width = "double";
     end
     if(unevent == "custom") then
-      local unevent_options = WeakAuras.ConstructOptions(prototype, data, order, subPrefix, subSuffix, "untrigger");
+      local unevent_options = WeakAuras.ConstructOptions(prototype, data, order, subPrefix, subSuffix, triggernum, "untrigger");
       options = union(options, unevent_options);
     end
     if(prototype.automatic) then
@@ -485,6 +527,7 @@ end
 local frame;
 
 local db;
+local odb;
 local loaded = WeakAuras.loaded;
 local options;
 local newOptions;
@@ -496,6 +539,32 @@ loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(addon == ADDON_NAME) then
     db = WeakAurasSaved;
+    WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
+    odb = WeakAurasOptionsSaved;
+    
+    --Builds a cache of name/icon pairs from existing spell data
+    --Why? Because if you call GetSpellInfo with a spell name, it only works if the spell is an actual castable ability,
+    --but if you call it with a spell id, you can get buffs, talents, etc. This is useful for displaying faux aura information
+    --for displays that are not actually connected to auras (for non-automatic icon displays with predefined icons)
+    --Also builds a hash where icon keys return tables of all spell names that use that icon
+    --
+    --This is a very slow operation, so it's only done once, and the result is subsequently saved
+    odb.iconCache = odb.iconCache or {};
+    iconCache = odb.iconCache;
+    local _, build = GetBuildInfo();
+    local locale = GetLocale();
+    if(odb.locale ~= locale or odb.build ~= build or forceCacheReset) then
+      WeakAuras.CreateIconCache();
+
+      odb.build = build;
+      odb.locale = locale;
+    end
+
+    --Updates the icon cache with whatever icons WeakAuras core has actually used.
+    --This helps keep name<->icon matches relevant.
+    for name, icon in pairs(db.tempIconCache) do
+      iconCache[name] = icon;
+    end
   end
 end);
 
@@ -530,16 +599,17 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   end
 end
 
-function WeakAuras.ToggleOptions()
+function WeakAuras.ToggleOptions(forceCacheReset)
   if(frame) then
     WeakAuras.HideOptions();
   else
-    WeakAuras.ShowOptions();
+    WeakAuras.ShowOptions(forceCacheReset);
   end
 end
 
-function WeakAuras.ShowOptions()
+function WeakAuras.ShowOptions(forceCacheReset)
   WeakAuras.Pause();
+
   if not(frame) then
     frame = WeakAuras.CreateFrame();
   end
@@ -1149,14 +1219,6 @@ function WeakAuras.AddOption(id, data)
         type = "group",
         name = L["Trigger"],
         order = 20,
-        get = function(info) return data.trigger[info[#info]] end,
-        set = function(info, v)
-          data.trigger[info[#info]] = (v ~= "" and v) or nil;
-          WeakAuras.Add(data);
-          WeakAuras.SetThumbnail(data);
-          WeakAuras.SetIconNames(data);
-          WeakAuras.UpdateDisplayButton(data);
-        end,
         args = {}
       },
       load = {
@@ -2374,595 +2436,10 @@ function WeakAuras.AddOption(id, data)
     }
   };
   
-  local aura_options = {
-    useName = {
-      type = "toggle",
-      name = L["Aura(s)"],
-      width = "half",
-      order = 10,
-      hidden = function() return not (data.trigger.type == "aura"); end,
-      disabled = true,
-      get = function() return true end
-    },
-    name1icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[1]] or "", 18, 18 end,
-      order = 11,
-      disabled = function() return not iconCache[data.trigger.names[1]] end,
-      hidden = function() return not (data.trigger.type == "aura"); end,
-    },
-    name1 = {
-      type = "input",
-      name = L["Aura Name"],
-      desc = L["Enter an aura name, partial aura name, or spell id"],
-      order = 12,
-      hidden = function() return not (data.trigger.type == "aura"); end,
-      get = function(info) return data.trigger.names[1] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[1]) then
-            tremove(data.trigger.names, 1);
-          end
-        else
-          data.trigger.names[1] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name2space = {
-      type = "execute",
-      name = L["or"],
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 13,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[1]); end,
-    },
-    name2icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[2]] or "", 18, 18 end,
-      order = 14,
-      disabled = function() return not iconCache[data.trigger.names[2]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[1]); end,
-    },
-    name2 = {
-      type = "input",
-      order = 15,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[1]); end,
-      get = function(info) return data.trigger.names[2] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[2]) then
-            tremove(data.trigger.names, 2);
-          end
-        else
-          data.trigger.names[2] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name3space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 16,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[2]); end,
-    },
-    name3icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[3]] or "", 18, 18 end,
-      order = 17,
-      disabled = function() return not iconCache[data.trigger.names[3]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[2]); end,
-    },
-    name3 = {
-      type = "input",
-      order = 18,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[2]); end,
-      get = function(info) return data.trigger.names[3] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[3]) then
-            tremove(data.trigger.names, 3);
-          end
-        else
-          data.trigger.names[3] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name4space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 19,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[3]); end,
-    },
-    name4icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[4]] or "", 18, 18 end,
-      order = 20,
-      disabled = function() return not iconCache[data.trigger.names[4]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[3]); end,
-    },
-    name4 = {
-      type = "input",
-      order = 21,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[3]); end,
-      get = function(info) return data.trigger.names[4] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[4]) then
-            tremove(data.trigger.names, 4);
-          end
-        else
-          data.trigger.names[4] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name5space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 22,
-      disabled = function() return not iconCache[data.trigger.names[5]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[4]); end,
-    },
-    name5icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[5]] or "", 18, 18 end,
-      order = 23,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[4]); end,
-    },
-    name5 = {
-      type = "input",
-      order = 24,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[4]); end,
-      get = function(info) return data.trigger.names[5] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[5]) then
-            tremove(data.trigger.names, 5);
-          end
-        else
-          data.trigger.names[5] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name6space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 25,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[5]); end,
-    },
-    name6icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[6]] or "", 18, 18 end,
-      order = 26,
-      disabled = function() return not iconCache[data.trigger.names[6]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[5]); end,
-    },
-    name6 = {
-      type = "input",
-      order = 27,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[5]); end,
-      get = function(info) return data.trigger.names[6] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[6]) then
-            tremove(data.trigger.names, 6);
-          end
-        else
-          data.trigger.names[6] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name7space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 28,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[6]); end,
-    },
-    name7icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[7]] or "", 18, 18 end,
-      order = 29,
-      disabled = function() return not iconCache[data.trigger.names[7]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[6]); end,
-    },
-    name7 = {
-      type = "input",
-      order = 30,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[6]); end,
-      get = function(info) return data.trigger.names[7] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[7]) then
-            tremove(data.trigger.names, 7);
-          end
-        else
-          data.trigger.names[7] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name8space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 31,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[7]); end,
-    },
-    name8icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[8]] or "", 18, 18 end,
-      order = 32,
-      disabled = function() return not iconCache[data.trigger.names[8]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[7]); end,
-    },
-    name8 = {
-      type = "input",
-      order = 33,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[7]); end,
-      get = function(info) return data.trigger.names[8] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[8]) then
-            tremove(data.trigger.names, 8);
-          end
-        else
-          data.trigger.names[8] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    name9space = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return "", 0, 0 end,
-      order = 34,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[8]); end,
-    },
-    name9icon = {
-      type = "execute",
-      name = "",
-      width = "half",
-      image = function() return iconCache[data.trigger.names[9]] or "", 18, 18 end,
-      order = 35,
-      disabled = function() return not iconCache[data.trigger.names[9]] end,
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[8]); end,
-    },
-    name9 = {
-      type = "input",
-      order = 36,
-      name = "",
-      hidden = function() return not (data.trigger.type == "aura" and data.trigger.names[8]); end,
-      get = function(info) return data.trigger.names[9] end,
-      set = function(info, v)
-        if(v == "") then
-          if(data.trigger.names[9]) then
-            tremove(data.trigger.names, 9);
-          end
-        else
-          data.trigger.names[9] = WeakAuras.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
-    useUnit = {
-      type = "toggle",
-      name = L["Unit"],
-      order = 40,
-      disabled = true,
-      hidden = function() return not (data.trigger.type == "aura"); end,
-      get = function() return true end
-    },
-    unit = {
-      type = "select",
-      name = L["Unit"],
-      order = 41,
-      values = unit_types,
-      hidden = function() return not (data.trigger.type == "aura"); end
-    },
-    useGroup_count = {
-      type = "toggle",
-      name = L["Group Member Count"],
-      disabled = true,
-      hidden = function() return not (data.trigger.type == "aura" and (data.trigger.unit == "raid" or data.trigger.unit == "party")); end,
-      get = function() return true; end,
-      order = 45
-    },
-    group_countOperator = {
-      type = "select",
-      name = L["Operator"],
-      order = 46,
-      width = "half",
-      values = operator_types,
-      hidden = function() return not (data.trigger.type == "aura" and (data.trigger.unit == "raid" or data.trigger.unit == "party")); end,
-      get = function() return data.trigger.group_countOperator; end
-    },
-    group_count = {
-      type = "input",
-      name = L["Count"],
-      desc = function()
-        local groupType = unit_types[data.trigger.unit or ""] or "|cFFFF0000error|r";
-        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
-      end,
-      order = 47,
-      width = "half",
-      hidden = function() return not (data.trigger.type == "aura" and (data.trigger.unit == "raid" or data.trigger.unit == "party")); end,
-      get = function() return data.trigger.group_count; end,
-      set = function(info, v) if(WeakAuras.ParseNumber(v)) then data.trigger.group_count = v; else data.trigger.group_count = ""; end end
-    },
-    useDebuffType = {
-      type = "toggle",
-      name = L["Aura Type"],
-      order = 50,
-      disabled = true,
-      hidden = function() return not (data.trigger.type == "aura"); end,
-      get = function() return true end
-    },
-    debuffType = {
-      type = "select",
-      name = L["Aura Type"],
-      order = 51,
-      values = debuff_types,
-      hidden = function() return not (data.trigger.type == "aura"); end
-    },
-    useCount = {
-      type = "toggle",
-      name = L["Stack Count"],
-      hidden = function() return not (data.trigger.type == "aura"); end,
-      order = 60
-    },
-    countOperator = {
-      type = "select",
-      name = L["Operator"],
-      order = 62,
-      width = "half",
-      values = operator_types,
-      disabled = function() return not data.trigger.useCount; end,
-      hidden = function() return not data.trigger.type == "aura"; end,
-      get = function() return data.trigger.useCount and data.trigger.countOperator or nil end
-    },
-    count = {
-      type = "input",
-      name = L["Stack Count"],
-      order = 65,
-      width = "half",
-      disabled = function() return not data.trigger.useCount; end,
-      hidden = function() return not data.trigger.type == "aura"; end,
-      get = function() return data.trigger.useCount and data.trigger.count or nil end
-    },
-    ownOnly = {
-      type = "toggle",
-      name = L["Own Only"],
-      desc = "Only match auras cast by the player",
-      order = 70,
-      hidden = function() return not (data.trigger.type == "aura"); end
-    },
-    inverse = {
-      type = "toggle",
-      name = L["Inverse"],
-      desc = "Activate when the given aura(s) |cFFFF0000can't|r be found",
-      order = 75,
-      hidden = function() return not (data.trigger.type == "aura"); end
-    }
-  };
-  
-  local trigger_options = {
-    typedesc = {
-      type = "toggle",
-      name = L["Type"],
-      order = 0,
-      disabled = true,
-      get = function() return true end
-    },
-    type = {
-      type = "select",
-      name = L["Type"],
-      desc = L["The type of trigger"],
-      order = 2,
-      values = trigger_types
-    },
-    event = {
-      type = "select",
-      name = L["Event"],
-      order = 4,
-      width = "double",
-      values = event_types,
-      hidden = function() return not (data.trigger.type == "event"); end
-    },
-    subeventPrefix = {
-      type = "select",
-      name = L["Message Prefix"],
-      order = 6,
-      values = subevent_prefix_types,
-      hidden = function() return not (data.trigger.type == "event" and data.trigger.event == "Combat Log"); end
-    },
-    subeventSuffix = {
-      type = "select",
-      name = L["Message Suffix"],
-      order = 7,
-      values = subevent_suffix_types,
-      hidden = function() return not (data.trigger.type == "event" and data.trigger.event == "Combat Log" and subevent_actual_prefix_types[data.trigger.subeventPrefix]); end
-    },
-    header = {
-      type = "header",
-      name = L["Trigger"],
-      order = 8
-    },
-    conditionsHeader = {
-      type = "header",
-      name = L["Conditions"],
-      order = 80
-    }
-  };
-  
-  local order = 81;
-  for type, condition in pairs(WeakAuras.conditions) do
-    trigger_options[type] = {
-      type = "toggle",
-      name = function(input)
-        if(input == "default") then
-          return condition.display;
-        else
-          local value = data.conditions[type];
-          if(value == nil) then return condition.display;
-          elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..condition.display;
-          else return "|cFF00FF00"..condition.display; end
-        end
-      end,
-      desc = function()
-        local value = data.conditions[type];
-        if(value == nil) then return L["This condition will not be tested"];
-        elseif(value == false) then return L["This display will only show when |cFFFF0000 Not %s"]:format(condition.display);
-        else return L["This display will only show when |cFF00FF00%s"]:format(condition.display); end
-      end,
-      get = function() 
-        local value = data.conditions[type];
-        if(value == nil) then return false;
-        elseif(value == false) then return "false";
-        else return "true"; end
-      end,
-      set = function(info, v)
-        if(v) then
-          data.conditions[type] = true;
-        else
-          local value = data.conditions[type];
-          if(value == false) then data.conditions[type] = nil;
-          else data.conditions[type] = false end
-        end
-      end,
-      order = order
-    };
-    order = order + 1;
-  end
-  
-  --This wacky practice of keeping these two functions in a table is so that they can both access each other
-  --It's dirty but effective. Why not just make them non-local functions in the WeakAuras table? I don't know!
-  local functions = {};
-  
-  functions.load_options = function()
-    if(data.trigger.type == "aura") then
-      displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
-    elseif(data.trigger.type == "event") then
-      if(WeakAuras.event_prototypes[data.trigger.event]) then
-        if(data.trigger.event == "Combat Log") then
-          displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[data.trigger.event], data, 10, (data.trigger.subeventPrefix or ""), (data.trigger.subeventSuffix or "")));
-        else
-          displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[data.trigger.event], data, 10));
-        end
-        if(displayOptions[id].args.trigger.args.unevent) then
-          displayOptions[id].args.trigger.args.unevent.set = functions.options_set;
-        end
-        if(displayOptions[id].args.trigger.args.subeventPrefix) then
-          displayOptions[id].args.trigger.args.subeventPrefix.set = function(info, v)
-            if not(subevent_actual_prefix_types[v]) then
-              data.trigger.subeventSuffix = "";
-            end
-            functions.options_set(info, v);
-          end
-        end
-        if(displayOptions[id].args.trigger.args.subeventSuffix) then
-          displayOptions[id].args.trigger.args.subeventSuffix.set = functions.options_set;
-        end
-      else
-        print("No prototype for", data.trigger.event);
-        displayOptions[id].args.trigger.args = union(trigger_options, {});
-      end
-    end
-    
-    displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, "load");
-  end
-  
-  functions.options_set = function(info, v)
-    data.trigger[info[#info]] = v;
-    functions.load_options();
-    WeakAuras.Add(data);
-    WeakAuras.SetThumbnail(data);
-    WeakAuras.SetIconNames(data);
-    WeakAuras.UpdateDisplayButton(data);
-  end
-  
-  trigger_options.type.set = functions.options_set;
-  trigger_options.event.set = function(info, v, ...)
-    local prototype = WeakAuras.event_prototypes[v];
-    if(prototype) then
-      if(prototype.automatic or prototype.automaticrequired) then
-        data.trigger.unevent = "auto";
-      else
-        data.trigger.unevent = "timed";
-      end
-    end
-    functions.options_set(info, v, ...);
-  end
-  data.trigger.event = data.trigger.event or "Health";
-  data.trigger.subeventPrefix = data.trigger.subeventPrefix or "SPELL"
-  data.trigger.subeventSuffix = data.trigger.subeventSuffix or "_CAST_START";
-  functions.load_options();
-  
+  WeakAuras.ReloadTriggerOptions(data);
+end
+
+local function unused()
   if(data.regionType == "group" or data.regionType == "dynamicgroup") then
     removeFuncs(displayOptions[id]);
     
@@ -3080,7 +2557,653 @@ function WeakAuras.AddOption(id, data)
     functions.load_options();
     WeakAuras.ReloadGroupRegionOptions(data);
   end
-  optionReloads[id] = functions.load_options
+end
+
+function WeakAuras.ReloadTriggerOptions(data)
+  local id = data.id;
+  optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
+  local trigger, untrigger;
+  print(id, optionTriggerChoices[id]);
+  if(optionTriggerChoices[id] == 0) then
+    trigger = data.trigger;
+    untrigger = data.untrigger;
+  else
+    trigger = data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
+    untrigger = data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
+  end
+  
+  local aura_options = {
+    useName = {
+      type = "toggle",
+      name = L["Aura(s)"],
+      width = "half",
+      order = 10,
+      hidden = function() return not (trigger.type == "aura"); end,
+      disabled = true,
+      get = function() return true end
+    },
+    name1icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[1]] or "", 18, 18 end,
+      order = 11,
+      disabled = function() return not iconCache[trigger.names[1]] end,
+      hidden = function() return not (trigger.type == "aura"); end
+    },
+    name1 = {
+      type = "input",
+      name = L["Aura Name"],
+      desc = L["Enter an aura name, partial aura name, or spell id"],
+      order = 12,
+      hidden = function() return not (trigger.type == "aura"); end,
+      get = function(info) return trigger.names[1] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[1]) then
+            tremove(trigger.names, 1);
+          end
+        else
+          trigger.names[1] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name2space = {
+      type = "execute",
+      name = L["or"],
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 13,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[1]); end,
+    },
+    name2icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[2]] or "", 18, 18 end,
+      order = 14,
+      disabled = function() return not iconCache[trigger.names[2]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[1]); end,
+    },
+    name2 = {
+      type = "input",
+      order = 15,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[1]); end,
+      get = function(info) return trigger.names[2] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[2]) then
+            tremove(trigger.names, 2);
+          end
+        else
+          trigger.names[2] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name3space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 16,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[2]); end,
+    },
+    name3icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[3]] or "", 18, 18 end,
+      order = 17,
+      disabled = function() return not iconCache[trigger.names[3]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[2]); end,
+    },
+    name3 = {
+      type = "input",
+      order = 18,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[2]); end,
+      get = function(info) return trigger.names[3] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[3]) then
+            tremove(trigger.names, 3);
+          end
+        else
+          trigger.names[3] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name4space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 19,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[3]); end,
+    },
+    name4icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[4]] or "", 18, 18 end,
+      order = 20,
+      disabled = function() return not iconCache[trigger.names[4]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[3]); end,
+    },
+    name4 = {
+      type = "input",
+      order = 21,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[3]); end,
+      get = function(info) return trigger.names[4] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[4]) then
+            tremove(trigger.names, 4);
+          end
+        else
+          trigger.names[4] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name5space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 22,
+      disabled = function() return not iconCache[trigger.names[5]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[4]); end,
+    },
+    name5icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[5]] or "", 18, 18 end,
+      order = 23,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[4]); end,
+    },
+    name5 = {
+      type = "input",
+      order = 24,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[4]); end,
+      get = function(info) return trigger.names[5] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[5]) then
+            tremove(trigger.names, 5);
+          end
+        else
+          trigger.names[5] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name6space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 25,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[5]); end,
+    },
+    name6icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[6]] or "", 18, 18 end,
+      order = 26,
+      disabled = function() return not iconCache[trigger.names[6]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[5]); end,
+    },
+    name6 = {
+      type = "input",
+      order = 27,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[5]); end,
+      get = function(info) return trigger.names[6] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[6]) then
+            tremove(trigger.names, 6);
+          end
+        else
+          trigger.names[6] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name7space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 28,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[6]); end,
+    },
+    name7icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[7]] or "", 18, 18 end,
+      order = 29,
+      disabled = function() return not iconCache[trigger.names[7]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[6]); end,
+    },
+    name7 = {
+      type = "input",
+      order = 30,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[6]); end,
+      get = function(info) return trigger.names[7] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[7]) then
+            tremove(trigger.names, 7);
+          end
+        else
+          trigger.names[7] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name8space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 31,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[7]); end,
+    },
+    name8icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[8]] or "", 18, 18 end,
+      order = 32,
+      disabled = function() return not iconCache[trigger.names[8]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[7]); end,
+    },
+    name8 = {
+      type = "input",
+      order = 33,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[7]); end,
+      get = function(info) return trigger.names[8] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[8]) then
+            tremove(trigger.names, 8);
+          end
+        else
+          trigger.names[8] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    name9space = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return "", 0, 0 end,
+      order = 34,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[8]); end,
+    },
+    name9icon = {
+      type = "execute",
+      name = "",
+      width = "half",
+      image = function() return iconCache[trigger.names[9]] or "", 18, 18 end,
+      order = 35,
+      disabled = function() return not iconCache[trigger.names[9]] end,
+      hidden = function() return not (trigger.type == "aura" and trigger.names[8]); end,
+    },
+    name9 = {
+      type = "input",
+      order = 36,
+      name = "",
+      hidden = function() return not (trigger.type == "aura" and trigger.names[8]); end,
+      get = function(info) return trigger.names[9] end,
+      set = function(info, v)
+        if(v == "") then
+          if(trigger.names[9]) then
+            tremove(trigger.names, 9);
+          end
+        else
+          trigger.names[9] = WeakAuras.CorrectAuraName(v);
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    },
+    useUnit = {
+      type = "toggle",
+      name = L["Unit"],
+      order = 40,
+      disabled = true,
+      hidden = function() return not (trigger.type == "aura"); end,
+      get = function() return true end
+    },
+    unit = {
+      type = "select",
+      name = L["Unit"],
+      order = 41,
+      values = unit_types,
+      hidden = function() return not (trigger.type == "aura"); end
+    },
+    useGroup_count = {
+      type = "toggle",
+      name = L["Group Member Count"],
+      disabled = true,
+      hidden = function() return not (trigger.type == "aura" and (trigger.unit == "raid" or trigger.unit == "party")); end,
+      get = function() return true; end,
+      order = 45
+    },
+    group_countOperator = {
+      type = "select",
+      name = L["Operator"],
+      order = 46,
+      width = "half",
+      values = operator_types,
+      hidden = function() return not (trigger.type == "aura" and (trigger.unit == "raid" or trigger.unit == "party")); end,
+      get = function() return trigger.group_countOperator; end
+    },
+    group_count = {
+      type = "input",
+      name = L["Count"],
+      desc = function()
+        local groupType = unit_types[trigger.unit or ""] or "|cFFFF0000error|r";
+        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
+      end,
+      order = 47,
+      width = "half",
+      hidden = function() return not (trigger.type == "aura" and (trigger.unit == "raid" or trigger.unit == "party")); end,
+      get = function() return trigger.group_count; end,
+      set = function(info, v) if(WeakAuras.ParseNumber(v)) then trigger.group_count = v; else trigger.group_count = ""; end end
+    },
+    useDebuffType = {
+      type = "toggle",
+      name = L["Aura Type"],
+      order = 50,
+      disabled = true,
+      hidden = function() return not (trigger.type == "aura"); end,
+      get = function() return true end
+    },
+    debuffType = {
+      type = "select",
+      name = L["Aura Type"],
+      order = 51,
+      values = debuff_types,
+      hidden = function() return not (trigger.type == "aura"); end
+    },
+    useCount = {
+      type = "toggle",
+      name = L["Stack Count"],
+      hidden = function() return not (trigger.type == "aura"); end,
+      order = 60
+    },
+    countOperator = {
+      type = "select",
+      name = L["Operator"],
+      order = 62,
+      width = "half",
+      values = operator_types,
+      disabled = function() return not trigger.useCount; end,
+      hidden = function() return not trigger.type == "aura"; end,
+      get = function() return trigger.useCount and trigger.countOperator or nil end
+    },
+    count = {
+      type = "input",
+      name = L["Stack Count"],
+      order = 65,
+      width = "half",
+      disabled = function() return not trigger.useCount; end,
+      hidden = function() return not trigger.type == "aura"; end,
+      get = function() return trigger.useCount and trigger.count or nil end
+    },
+    ownOnly = {
+      type = "toggle",
+      name = L["Own Only"],
+      desc = "Only match auras cast by the player",
+      order = 70,
+      hidden = function() return not (trigger.type == "aura"); end
+    },
+    inverse = {
+      type = "toggle",
+      name = L["Inverse"],
+      desc = "Activate when the given aura(s) |cFFFF0000can't|r be found",
+      order = 75,
+      hidden = function() return not (trigger.type == "aura"); end
+    }
+  };
+  
+  local trigger_options = {
+    addTrigger = {
+      type = "execute",
+      name = "Add Trigger",
+      order = 0,
+      disabled = function() return data.additional_triggers and #data.additional_triggers >= 9; end,
+      func = function()
+        data.additional_triggers = data.additional_triggers or {};
+        tinsert(data.additional_triggers, {trigger = {}, untrigger = {}});
+      end
+    },
+    chooseTrigger = {
+      type = "select",
+      name = "Choose Trigger",
+      order = 1,
+      disabled = function() return not(data.additional_triggers and #data.additional_triggers >= 1); end,
+      values = function()
+        local ret = {[0] = L["Main Trigger"]};
+        if(data.additional_triggers) then
+          for index, trigger in pairs(data.additional_triggers) do
+            ret[index] = L["Trigger "..(index + 1)];
+          end
+        end
+        return ret;
+      end,
+      get = function() return optionTriggerChoices[id]; end,
+      set = function(info, v) optionTriggerChoices[id] = v; WeakAuras.ReloadTriggerOptions(data); end
+    },
+    triggerHeader = {
+      type = "header",
+      name = function()
+        if(optionTriggerChoices[id] == 0) then
+          return L["Main Trigger"];
+        else
+          return L["Trigger "..(optionTriggerChoices[id] + 1)];
+        end
+      end,
+      order = 2
+    },
+    deleteTrigger = {
+      type = "execute",
+      name = L["Delete Trigger"],
+      order = 3,
+      width = "double",
+      hidden = function() return optionTriggerChoices[id] == 0; end
+    },
+    typedesc = {
+      type = "toggle",
+      name = L["Type"],
+      order = 5,
+      disabled = true,
+      get = function() return true end
+    },
+    type = {
+      type = "select",
+      name = L["Type"],
+      desc = L["The type of trigger"],
+      order = 6,
+      values = trigger_types
+    },
+    event = {
+      type = "select",
+      name = L["Event"],
+      order = 7,
+      width = "double",
+      values = event_types,
+      hidden = function() return not (trigger.type == "event"); end
+    },
+    subeventPrefix = {
+      type = "select",
+      name = L["Message Prefix"],
+      order = 8,
+      values = subevent_prefix_types,
+      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log"); end
+    },
+    subeventSuffix = {
+      type = "select",
+      name = L["Message Suffix"],
+      order = 9,
+      values = subevent_suffix_types,
+      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and subevent_actual_prefix_types[trigger.subeventPrefix]); end
+    },
+    conditionsHeader = {
+      type = "header",
+      name = L["Conditions"],
+      order = 80
+    }
+  };
+  
+  local order = 81;
+  for type, condition in pairs(WeakAuras.conditions) do
+    trigger_options[type] = {
+      type = "toggle",
+      name = function(input)
+        if(input == "default") then
+          return condition.display;
+        else
+          local value = data.conditions[type];
+          if(value == nil) then return condition.display;
+          elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..condition.display;
+          else return "|cFF00FF00"..condition.display; end
+        end
+      end,
+      desc = function()
+        local value = data.conditions[type];
+        if(value == nil) then return L["This condition will not be tested"];
+        elseif(value == false) then return L["This display will only show when |cFFFF0000 Not %s"]:format(condition.display);
+        else return L["This display will only show when |cFF00FF00%s"]:format(condition.display); end
+      end,
+      get = function() 
+        local value = data.conditions[type];
+        if(value == nil) then return false;
+        elseif(value == false) then return "false";
+        else return "true"; end
+      end,
+      set = function(info, v)
+        if(v) then
+          data.conditions[type] = true;
+        else
+          local value = data.conditions[type];
+          if(value == false) then data.conditions[type] = nil;
+          else data.conditions[type] = false end
+        end
+      end,
+      order = order
+    };
+    order = order + 1;
+  end
+  
+  local function options_set(info, v)
+    trigger[info[#info]] = v;
+    WeakAuras.Add(data);
+    WeakAuras.SetThumbnail(data);
+    WeakAuras.SetIconNames(data);
+    WeakAuras.UpdateDisplayButton(data);
+    WeakAuras.ReloadTriggerOptions(data);
+  end
+  print("trigger type", id, trigger.type);
+  if(trigger.type == "aura") then
+    displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
+  elseif(trigger.type == "event") then
+    if(WeakAuras.event_prototypes[trigger.event]) then
+      if(trigger.event == "Combat Log") then
+        displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, (trigger.subeventPrefix or ""), (trigger.subeventSuffix or ""), optionTriggerChoices[id]));
+      else
+        displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, nil, nil, optionTriggerChoices[id]));
+      end
+      if(displayOptions[id].args.trigger.args.unevent) then
+        displayOptions[id].args.trigger.args.unevent.set = options_set;
+      end
+      if(displayOptions[id].args.trigger.args.subeventPrefix) then
+        displayOptions[id].args.trigger.args.subeventPrefix.set = function(info, v)
+          if not(subevent_actual_prefix_types[v]) then
+            trigger.subeventSuffix = "";
+          end
+          options_set(info, v);
+        end
+      end
+      if(displayOptions[id].args.trigger.args.subeventSuffix) then
+        displayOptions[id].args.trigger.args.subeventSuffix.set = options_set;
+      end
+    else
+      print("No prototype for", trigger.event);
+      displayOptions[id].args.trigger.args = union(trigger_options, {});
+    end
+  else
+    displayOptions[id].args.trigger.args = union(trigger_options, {});
+  end
+  
+  displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
+  
+  trigger_options.type.set = options_set;
+  trigger_options.event.set = function(info, v, ...)
+    local prototype = WeakAuras.event_prototypes[v];
+    if(prototype) then
+      if(prototype.automatic or prototype.automaticrequired) then
+        trigger.unevent = "auto";
+      else
+        trigger.unevent = "timed";
+      end
+    end
+    options_set(info, v, ...);
+  end
+  trigger.event = trigger.event or "Health";
+  trigger.subeventPrefix = trigger.subeventPrefix or "SPELL"
+  trigger.subeventSuffix = trigger.subeventSuffix or "_CAST_START";
+  
+  displayOptions[id].args.trigger.get = function(info) return trigger[info[#info]] end;
+  displayOptions[id].args.trigger.set = function(info, v)
+    trigger[info[#info]] = (v ~= "" and v) or nil;
+    WeakAuras.Add(data);
+    WeakAuras.SetThumbnail(data);
+    WeakAuras.SetIconNames(data);
+    WeakAuras.UpdateDisplayButton(data);
+  end;
 end
 
 function WeakAuras.ReloadGroupRegionOptions(data)
@@ -3710,40 +3833,49 @@ function WeakAuras.CreateFrame()
   
   local function iconPickFill(subname, doSort)
     iconPickScroll:ReleaseChildren();
-    
+
+    local distances = {};
+    local names = {};
+
     local num = 0;
     if(subname ~= "") then
-      for path, names in pairs(iconHash) do
+      for name, path in pairs(iconCache) do
         local bestDistance = math.huge;
         local bestName;
-        for index, name in pairs(names) do
-          if(name:find(subname)) then
-            if(doSort) then
-              local distance = Lev(name, path:sub(17));
-              if(distance < bestDistance) then
-                bestName = name;
-                bestDistance = distance;
+        if(name:find(subname) or path:find(subname)) then
+          if(doSort) then
+            local distance = Lev(name, path:sub(17));
+            if(distances[path]) then
+              if(distance < distances[path]) then
+                names[path] = name;
+                distances[path] = distance;
               end
             else
-              bestName = name;
-              break;
+              names[path] = name;
+              distances[path] = distance;
+              num = num + 1;
+            end
+          else
+            if(not names[path]) then
+              names[path] = name;
+              num = num + 1;
             end
           end
         end
-        if(bestName) then
-          num = num + 1;
-          local button = AceGUI:Create("WeakAurasIconButton");
-          button:SetName(bestName);
-          button:SetTexture(path);
-          button:SetClick(function()
-            iconPick:Pick(path);
-          end);
-          iconPickScroll:AddChild(button);
-          
-          if(num >= 60) then
-            break;
-          end
+
+        if(num >= 60) then
+          break;
         end
+      end
+
+      for path, name in pairs(names) do
+        local button = AceGUI:Create("WeakAurasIconButton");
+        button:SetName(name);
+        button:SetTexture(path);
+        button:SetClick(function()
+          iconPick:Pick(path);
+        end);
+        iconPickScroll:AddChild(button);
       end
     end
   end
@@ -4583,7 +4715,7 @@ function WeakAuras.CreateFrame()
         displayButtons[childId]:PriorityShow(1);
       end
     end
-    optionReloads[id]();
+    WeakAuras.ReloadTriggerOptions(data);
     self:FillOptions(displayOptions[id]);
     WeakAuras.regions[id].region:Collapse();
     WeakAuras.regions[id].region:Expand();

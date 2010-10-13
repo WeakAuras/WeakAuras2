@@ -1,7 +1,7 @@
 ## Interface: 40000
 ## Title: WeakAuras Options
 ## Author: Mirrored
-## Version: 1.1
+## Version: 1.2
 ## Notes: Options for WeakAuras
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde
@@ -10,6 +10,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras
+## SavedVariables: WeakAurasOptionsSaved
 WeakAurasOptions.lua
 RegionOptions\aurabar.lua
 RegionOptions\texture.lua
