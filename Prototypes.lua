@@ -241,10 +241,10 @@ WeakAuras.anim_presets = {
   },
   pulse = {
     type = "custom",
-    duration = 0.5,
+    duration = 0.75,
     use_scale = true,
-    scalex = 1.1,
-    scaley = 1.1,
+    scalex = 1.05,
+    scaley = 1.05,
     scaleType = "pulse"
   },
   alphaPulse = {
@@ -368,7 +368,8 @@ WeakAuras.event_prototypes = {
     force_events = {
       "player",
       "target",
-      "focus"
+      "focus",
+      "pet"
     },
     name = L["Health"],
     init = function(trigger)
@@ -414,7 +415,8 @@ WeakAuras.event_prototypes = {
     force_events = {
       "player",
       "target",
-      "focus"
+      "focus",
+      "pet"
     },
     name = L["Power"],
     init = function(trigger)
@@ -456,6 +458,47 @@ WeakAuras.event_prototypes = {
     },
     durationFunc = function(trigger)
       return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), function() return UnitPower(trigger.unit), UnitPowerMax(trigger.unit) end;
+    end,
+    automatic = true
+  },
+  ["Holy Power"] = {
+    events = {
+      "UNIT_POWER",
+      "PLAYER_TARGET_CHANGED",
+      "PLAYER_FOCUS_CHANGED"
+    },
+    force_events = {
+      "player",
+      "target",
+      "focus",
+      "pet"
+    },
+    name = L["Holy Power"],
+    init = function(trigger)
+      return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+    end,
+    args = {
+      {
+        name = "unit",
+        required = true,
+        display = L["Unit"],
+        type = "select",
+        init = "arg",
+        values = "actual_unit_types"
+      },
+      {
+        name = "power",
+        display = L["Holy Power"],
+        type = "number",
+        init = "UnitPower(unit, 9)"
+      },
+      {
+        hidden = true,
+        test = "UnitExists(concernedUnit)"
+      }
+    },
+    durationFunc = function(trigger)
+      return UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9), function() return UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9) end;
     end,
     automatic = true
   },
@@ -699,7 +742,7 @@ WeakAuras.event_prototypes = {
       "ACTIONBAR_UPDATE_COOLDOWN"
     },
     force_events = true,
-    name = "Cooldown Progress (Spell)",
+    name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or "";
       return "local startTime, duration = GetSpellCooldown('"..trigger.spellName.."');\nstartTime = startTime or 0;\nduration = duration or 0;\n";
@@ -735,7 +778,7 @@ WeakAuras.event_prototypes = {
       "UNIT_POWER",
       "ACTIONBAR_UPDATE_COOLDOWN"
     },
-    name = "Cooldown Ready (Spell)",
+    name = L["Cooldown Ready (Spell)"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or "";
       local ret = [[
@@ -775,14 +818,13 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
       return icon;
     end
   },
-  --[[
-  ["Cooldown (Item)"] = {
+  ["Cooldown Progress (Item)"] = {
     events = {
       "SPELL_UPDATE_COOLDOWN",
       "ACTIONBAR_UPDATE_COOLDOWN"
     },
     force_events = true,
-    name = "Cooldown (Item)",
+    name = L["Cooldown Progress (Item)"],
     init = function(trigger)
       trigger.itemName = trigger.itemName or "";
       return "local startTime, duration = GetItemCooldown('"..trigger.itemName.."');";
@@ -806,31 +848,90 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      return trigger.itemName;
+      local name = GetItemInfo(trigger.itemName);
+      return name;
     end,
     iconFunc = function(trigger)
-      return GetItemIcon(trigger.itemName);
+      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName);
+      return icon;
     end,
     automaticrequired = true
   },
-  ]]
+  ["Cooldown Ready (Item)"] = {
+    events = {
+      "SPELL_UPDATE_COOLDOWN",
+      "ACTIONBAR_UPDATE_COOLDOWN"
+    },
+    name = L["Cooldown Ready (Item)"],
+    init = function(trigger)
+      trigger.spellName = trigger.spellName or "";
+      local ret = [[
+local startTime, duration = GetItemCooldown(%i);
+startTime = startTime or 0;
+duration = duration or 0;
+local cooledDown;
+if(startTime == 0 and WeakAuras.itemCooldownCache[%i] and WeakAuras.itemCooldownCache[%i] ~= 0) then
+  cooledDown = true;
+elseif(duration > 1.51 and startTime > 0) then
+  local timer = LibStub("AceTimer-3.0");
+  if(WeakAuras.itemCooldownReadyTimers[%i]) then
+    timer:CancelTimer(WeakAuras.itemCooldownReadyTimers[%i], true);
+  end
+  WeakAuras.itemCooldownReadyTimers[%i] = timer:ScheduleTimer(function() WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN") end, startTime + duration - GetTime());
+end
+WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
+]];
+      return ret:format(trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName);
+    end,
+    args = {
+      {
+        name = "itemName",
+        required = true,
+        display = L["Item"],
+        type = "item",
+        test = "cooledDown"
+      }
+    },
+    durationFunc = function(trigger)
+      local startTime, duration = GetItemCooldown(trigger.itemName);
+      return duration, startTime + duration;
+    end,
+    nameFunc = function(trigger)
+      local name = GetItemInfo(trigger.itemName);
+      return name;
+    end,
+    iconFunc = function(trigger)
+      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName);
+      return icon;
+    end
+  },
   ["Action Usable"] = {
     events = {
       "SPELL_UPDATE_USABLE",
-      "PLAYER_TARGET_CHANGED"
+      "PLAYER_TARGET_CHANGED",
+      "SPELL_UPDATE_COOLDOWN",
+      "UNIT_POWER",
+      "ACTIONBAR_UPDATE_COOLDOWN"
     },
     force_events = true,
-    name = "Action Usable",
+    name = L["Action Usable"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or "";
-      return "local spellName = '"..trigger.spellName.."';\n";
+      local ret = [[
+local spellName = "%s";
+local startTime, duration = GetSpellCooldown(spellName);
+startTime = startTime or 0;
+duration = duration or 0;
+onCooldown = duration > 1.51;
+]]
+      return ret:format(trigger.spellName);
     end,
     args = {
       {
         name = "spellName",
         display = L["Spell"],
         type = "spell",
-        test = "IsUsableSpell(spellName)"
+        test = "IsUsableSpell(spellName) and not onCooldown"
       },
       --This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       --IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
@@ -855,7 +956,7 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
       "PLAYER_TOTEM_UPDATE"
     },
     force_events = true,
-    name = "Totem",
+    name = L["Totem"],
     init = function(trigger)
       trigger.totemType = trigger.totemType or 1;
       return "local _, totemName, startTime, duration = GetTotemInfo('"..trigger.totemType.."');";
@@ -906,7 +1007,7 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
       "UNIT_SPELLCAST_SUCCEEDED"
     },
     force_events = true,
-    name = "Item Count",
+    name = L["Item Count"],
     init = function(trigger)
       trigger.itemName = trigger.itemName or 1;
       return "local count = GetItemCount('"..trigger.itemName.."', "..(trigger.use_includeBank and "true" or "nil")..", "..(trigger.use_includeCharges and "true" or "nil")..");\n";
@@ -954,7 +1055,7 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
       "UPDATE_SHAPESHIFT_FORM"
     },
     force_events = true,
-    name = "Stance/Form/Aura",
+    name = L["Stance/Form/Aura"],
     init = function()
     return "local form = GetShapeshiftForm();\n local _, class = UnitClass('player');\n"
     end,
@@ -1040,7 +1141,8 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
     nameFunc = function(trigger)
       local _, class = UnitClass("player");
       if(class == trigger.class) then
-        local _, name = GetShapeshiftFormInfo(GetShapeshiftForm());
+        local form = GetShapeshiftForm();
+        local _, name = form > 0 and GetShapeshiftFormInfo(form) or "Humanoid";
         return name;
       else
         local types = WeakAuras[class:lower().."_form_types"];
@@ -1052,7 +1154,8 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
     iconFunc = function(trigger)
       local _, class = UnitClass("player");
       if(class == trigger.class) then
-        local icon = GetShapeshiftFormInfo(GetShapeshiftForm());
+        local form = GetShapeshiftForm();
+        local icon = form > 0 and GetShapeshiftFormInfo(form) or "Interface\\Icons\\Achievement_Character_Human_Male";
         return icon;
       else
         return nil;
@@ -1158,7 +1261,7 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
       "RUNE_TYPE_UPDATE"
     },
     force_events = true,
-    name = "Death Knight Rune",
+    name = L["Death Knight Rune"],
     init = function(trigger)
       trigger.rune = trigger.rune or 1;
       return "local death = (GetRuneType("..trigger.rune..") == 4);\nlocal _, _, ready = GetRuneCooldown("..trigger.rune..");\n";
@@ -1185,7 +1288,7 @@ WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
     },
     durationFunc = function(trigger)
       local startTime, duration, ready = GetRuneCooldown(trigger.rune);
-      if(startTime > 0) then
+      if(startTime and startTime > 0) then
         return duration, startTime + duration;
       else
         return 0, math.huge;

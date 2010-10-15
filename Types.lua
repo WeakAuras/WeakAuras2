@@ -17,12 +17,14 @@ WeakAuras.unit_types = {
   target = L["Target"],
   focus = L["Focus"],
   raid = L["Raid"],
-  party = L["Party"]
+  party = L["Party"],
+  pet = L["Pet"]
 };
 WeakAuras.actual_unit_types = {
   player = L["Player"],
   target = L["Target"],
-  focus = L["Focus"]
+  focus = L["Focus"],
+  pet = L["Pet"]
 };
 WeakAuras.threat_unit_types = {
   target = L["Target"],
@@ -178,6 +180,7 @@ WeakAuras.power_types = {
   [1] = L["Rage"],
   [2] = L["Focus"],
   [3] = L["Energy"],
+  [4] = L["Happiness"],
   [6] = L["Runic Power"]
 };
 WeakAuras.miss_types = {

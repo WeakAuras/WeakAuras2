@@ -14,12 +14,11 @@ local function createOptions(id, data)
       disabled = function() return data.sameTexture; end,
       get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end
     },
-    space1 = {
-      type = "execute",
+    mirror = {
+      type = "toggle",
       width = "half",
-      name = "",
-      order = 10,
-      image = function() return "", 0, 0 end
+      name = L["Mirror"],
+      order = 10
     },
     chooseForegroundTexture = {
       type = "execute",
@@ -65,7 +64,7 @@ local function createOptions(id, data)
       name = L["Orientation"],
       order = 35,
       values = WeakAuras.orientation_types,
-      set = function(info, v)
+      --[[set = function(info, v)
         local previous = data.orientation:find("HORIZONTAL") and "HORIZONTAL" or "VERTICAL";
         data.orientation = v;
         local new = data.orientation:find("HORIZONTAL") and "HORIZONTAL" or "VERTICAL";
@@ -77,7 +76,7 @@ local function createOptions(id, data)
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
-      end
+      end]]
     },
     compress = {
       type = "toggle",
@@ -189,52 +188,236 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * scale * data.backgroundOffset, -1 * scale * data.backgroundOffset);
   background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scale * data.backgroundOffset, scale * data.backgroundOffset);
   
-  local progress = 3/5;
-  if(data.orientation == "HORIZONTAL_INVERSE") then
+  region.mirror_h = data.mirror;
+  
+  local function orientHorizontalInverse()
+    foreground:ClearAllPoints();
     foreground:SetPoint("RIGHT", region, "RIGHT");
+    region.orientation = "HORIZONTAL_INVERSE";
     if(data.compress) then
-      foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-      foreground:SetWidth(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
     else
-      foreground:SetTexCoord(1-progress,0 , 1-progress,1 , 1,0 , 1,1);
-      foreground:SetWidth(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-    end
-   elseif(data.orientation == "HORIZONTAL") then
-    foreground:SetPoint("LEFT", region, "LEFT");
-    if(data.compress) then
-      foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-      foreground:SetWidth(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-    else
-      foreground:SetTexCoord(0,0 , 0,1 , progress,0 , progress,1);
-      foreground:SetWidth(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-    end
-  elseif(data.orientation == "VERTICAL_INVERSE") then
-    foreground:SetPoint("TOP", region, "TOP");
-    if(data.compress) then
-      foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-      foreground:SetHeight(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-    else
-      foreground:SetTexCoord(0,0 , 0,progress , 1,0 , 1,progress);
-      foreground:SetHeight(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-    end
-  elseif(data.orientation == "VERTICAL") then
-    foreground:SetPoint("BOTTOM", region, "BOTTOM");
-    if(data.compress) then
-      foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-      foreground:SetHeight(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-    else
-      foreground:SetTexCoord(0,1-progress , 0,1 , 1,1-progress , 1,1);
-      foreground:SetHeight(region:GetWidth() * progress);
-      background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1 , 1,0 , 1-progress,1 , 1-progress,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(1-progress,1 , 1-progress,0 , 1,1 , 1,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,0 , 1,1 , 1-progress,0 , 1-progress,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(1-progress,0 , 1-progress,1 , 1,0 , 1,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
     end
   end
+  local function orientHorizontal()
+    foreground:ClearAllPoints();
+    foreground:SetPoint("LEFT", region, "LEFT");
+    region.orientation = "HORIZONTAL";
+    if(data.compress) then
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
+    else
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(progress,1 , progress,0 , 0,1 , 0,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,1 , 0,0 , progress,1 , progress,0);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(progress,0 , progress,1 , 0,0 , 0,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,0 , 0,1 , progress,0 , progress,1);
+            foreground:SetWidth(region:GetWidth() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
+    end
+  end
+  local function orientVerticalInverse()
+    foreground:ClearAllPoints();
+    foreground:SetPoint("TOP", region, "TOP");
+    region.orientation = "VERTICAL_INVERSE";
+    if(data.compress) then
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
+    else
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,progress , 1,0 , 0,progress , 0,0);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,progress , 0,0 , 1,progress , 1,0);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,0 , 1,progress , 0,0 , 0,progress);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,0 , 0,progress , 1,0 , 1,progress);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
+    end
+  end
+  local function orientVertical()
+    foreground:ClearAllPoints();
+    foreground:SetPoint("BOTTOM", region, "BOTTOM");
+    region.orientation = "VERTICAL";
+    if(data.compress) then
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
+    else
+      function region:SetValue(progress)
+        if(region.mirror_v) then
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1 , 1,1-progress , 0,1 , 0,1-progress);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+          else
+            foreground:SetTexCoord(0,1 , 0,1-progress , 1,1 , 1,1-progress);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+          end
+        else
+          if(region.mirror_h) then
+            foreground:SetTexCoord(1,1-progress , 1,1 , 0,1-progress , 0,1);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+          else
+            foreground:SetTexCoord(0,1-progress , 0,1 , 1,1-progress , 1,1);
+            foreground:SetHeight(region:GetHeight() * progress);
+            background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+          end
+        end
+      end
+    end
+  end
+  
+  if(data.orientation == "HORIZONTAL_INVERSE") then
+    orientHorizontalInverse();
+  elseif(data.orientation == "HORIZONTAL") then
+    orientHorizontal();
+  elseif(data.orientation == "VERTICAL_INVERSE") then
+    orientVerticalInverse();
+  elseif(data.orientation == "VERTICAL") then
+    orientVertical();
+  end
+  
+  region:SetValue(3/5);
 end
 
 local function createIcon()

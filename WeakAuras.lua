@@ -48,6 +48,8 @@ local pending_conditions_check;
 
 WeakAuras.spellCooldownCache = {};
 WeakAuras.spellCooldownReadyTimers = {};
+WeakAuras.itemCooldownCache = {};
+WeakAuras.itemCooldownReadyTimers = {};
 
 local function_strings = WeakAuras.function_strings;
 local anim_function_strings = WeakAuras.anim_function_strings;
@@ -467,9 +469,11 @@ end);
 
 function WeakAuras.Pause()
   paused = true;
-  --Forcibly hide all displays and end all dynamics
+  --Forcibly hide all displays, and clear all trigger information (it will be restored on Resume due to forced events)
   for id, region in pairs(regions) do
     region.region:Collapse();
+    region.region.trigger_count = 0;
+    region.region.triggers = 0;
   end
 end
 
@@ -514,6 +518,11 @@ function WeakAuras.ScanAurasRaid()
 end
 
 function WeakAuras.ScanAll()
+  for id, region in pairs(regions) do
+    region.region:Collapse();
+    region.region.trigger_count = 0;
+    region.region.triggers = 0;
+  end
   WeakAuras.ReloadAll();
   for unit, auras in pairs(loaded_auras) do
     if(unit == "party") then
@@ -775,32 +784,25 @@ function WeakAuras.ScanForLoads()
   end
   local shouldBeLoaded;
   for id, triggers in pairs(auras) do
-    for triggernum, data in pairs(triggers) do
-      shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", player, class, spec, zone, size, difficulty);
-      if(shouldBeLoaded
-          and not (
-            loaded[id]
-            and loaded[id][triggernum]
-          )
-        ) then
-        WeakAuras.LoadAura(id, triggernum, data);
-      end
-      if(loaded[id] and loaded[id][triggernum] and not shouldBeLoaded) then
-        WeakAuras.UnloadAura(id, data);
-        data.region:Collapse();
-      end
+    local _, data = next(triggers);
+    shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", player, class, spec, zone, size, difficulty);
+    if(shouldBeLoaded and not loaded[id]) then
+      WeakAuras.LoadAura(id, triggers);
+    end
+    if(loaded[id] and not shouldBeLoaded) then
+      WeakAuras.UnloadAura(id);
+      data.region:Collapse();
     end
   end
   for id, triggers in pairs(events) do
-    for triggernum, data in pairs(triggers) do
-      shouldBeLoaded = data.load and data.load("ScanForLoads_Events", player, class, spec, zone, size, difficulty);
-      if(shouldBeLoaded and not (loaded[id] and loaded[id][triggernum])) then
-        WeakAuras.LoadEvent(id, triggernum, data);
-      end
-      if(loaded[id] and loaded[id][triggernum] and not shouldBeLoaded) then
-        WeakAuras.UnloadEvent(id, data);
-        data.region:Collapse();
-      end
+    local _, data = next(triggers);
+    shouldBeLoaded = data.load and data.load("ScanForLoads_Events", player, class, spec, zone, size, difficulty);
+    if(shouldBeLoaded and not loaded[id]) then
+      WeakAuras.LoadEvent(id, triggers);
+    end
+    if(loaded[id] and not shouldBeLoaded) then
+      WeakAuras.UnloadEvent(id);
+      data.region:Collapse();
     end
   end
   for id, data in pairs(db.displays) do
@@ -812,13 +814,9 @@ function WeakAuras.ScanForLoads()
             any_loaded = true;
           end
         end
-        loaded[id] = {
-          [0] = any_loaded
-        };
+        loaded[id] = any_loaded;
       else
-        loaded[id] = {
-          [0] = true
-        };
+        loaded[id] = true;
       end
     end
   end
@@ -829,7 +827,7 @@ WeakAuras.loadFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-WeakAuras.loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
+WeakAuras.loadFrame:SetScript("OnEvent", WeakAuras.ScanAll);
 
 function WeakAuras.ReloadAll()
   WeakAuras.UnloadAll();
@@ -842,39 +840,43 @@ function WeakAuras.UnloadAll()
   wipe(loaded);
 end
 
-function WeakAuras.LoadAura(id, triggernum, data)
-  loaded[id] = loaded[id] or {};
-  loaded[id][triggernum] = true;
-  loaded_auras[data.unit] = loaded_auras[data.unit] or {};
-  loaded_auras[data.unit][id] = loaded_auras[data.unit][id] or {};
-  loaded_auras[data.unit][id][triggernum] = data;
+function WeakAuras.LoadAura(id, triggers)
+  loaded[id] = true;
+  
+  for triggernum, data in pairs(triggers) do
+    loaded_auras[data.unit] = loaded_auras[data.unit] or {};
+    loaded_auras[data.unit][id] = loaded_auras[data.unit][id] or {};
+    loaded_auras[data.unit][id][triggernum] = data;
+  end
 end
 
-function WeakAuras.UnloadAura(id, data)
+function WeakAuras.UnloadAura(id)
   loaded[id] = nil;
   for unitname, auras in pairs(loaded_auras) do
     auras[id] = nil;
   end
 end
 
-function WeakAuras.LoadEvent(id, triggernum, data)
-  loaded[id] = loaded[id] or {};
-  loaded[id][triggernum] = true;
-  local events = event_prototypes[data.event] and event_prototypes[data.event].events or {}
-  for index, event in pairs(events) do
-    loaded_events[event] = loaded_events[event] or {};
-    if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
-      loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
-      loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
-      loaded_events[event][data.subevent][id][triggernum] = data;
-    else
-      loaded_events[event][id] = loaded_events[event][id] or {};
-      loaded_events[event][id][triggernum] = data;
+function WeakAuras.LoadEvent(id, triggers)
+  loaded[id] = true;
+  
+  for triggernum, data in pairs(triggers) do
+    local events = event_prototypes[data.event] and event_prototypes[data.event].events or {}
+    for index, event in pairs(events) do
+      loaded_events[event] = loaded_events[event] or {};
+      if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
+        loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
+        loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
+        loaded_events[event][data.subevent][id][triggernum] = data;
+      else
+        loaded_events[event][id] = loaded_events[event][id] or {};
+        loaded_events[event][id][triggernum] = data;
+      end
     end
   end
 end
 
-function WeakAuras.UnloadEvent(id, data)
+function WeakAuras.UnloadEvent(id)
   loaded[id] = nil;
   for eventname, events in pairs(loaded_events) do
     if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then

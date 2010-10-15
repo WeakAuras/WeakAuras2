@@ -9,6 +9,9 @@ local L = WeakAuras.L;
 local ADDON_NAME = "WeakAurasOptions";
 
 local GetSpellInfo = GetSpellInfo;
+local GetItemInfo = GetItemInfo;
+
+local iconCache = {};
 
 local regionOptions = {};
 local displayButtons = {};
@@ -17,8 +20,6 @@ local optionTriggerChoices = {};
 local thumbnails = {};
 local displayOptions = {};
 WeakAuras.displayOptions = displayOptions;
-
-local iconCache = {};
 
 --This function computes the Levenshtein distance between two strings
 --It is based on the Wagner-Fisher algorithm
@@ -142,6 +143,7 @@ function WeakAuras.CreateIconCache(callback)
   end);
 end
 
+
 function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
   local trigger, untrigger;
   if(triggertype == "load") then
@@ -164,9 +166,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
     end
   else
     error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
-  end
-  if not(trigger) then
-    print(data.id, triggernum, triggertype);
   end
   unevent = unevent or trigger.unevent;
   local options = {};
@@ -391,7 +390,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 local _, _, icon = GetSpellInfo(trigger[realname]);
                 return icon or "", 18, 18;
               elseif(arg.type == "item") then
-                local icon = GetItemIcon(trigger[realname]);
+                local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
                 return icon or "", 18, 18;
               end
             else
@@ -407,7 +406,22 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           order = order,
           hidden = hidden,
           disabled = function() return not trigger["use_"..realname]; end,
-          get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
+          get = function()
+            if(arg.type == "item") then
+              if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
+                local name = GetItemInfo(trigger[realname]);
+                if(name) then
+                  return name;
+                else
+                  return "Invalid Item Name/ID/Link";
+                end
+              else
+                return nil;
+              end
+            else
+              return trigger["use_"..realname] and trigger[realname] or nil;
+            end
+          end,
           set = function(info, v)
             local fixedInput = v;
             if(arg.type == "aura") then
@@ -415,7 +429,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             elseif(arg.type == "spell") then
               fixedInput = GetSpellInfo(v) or "Invalid Spell Name";
             elseif(arg.type == "item") then
-              fixedInput = GetItemInfo(v) or "Invalid Item Name/Link";
+              fixedInput = WeakAuras.CorrectItemName(v);
             end
             trigger[realname] = fixedInput;
             WeakAuras.Add(data);
@@ -2563,7 +2577,6 @@ function WeakAuras.ReloadTriggerOptions(data)
   local id = data.id;
   optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
   local trigger, untrigger;
-  print(id, optionTriggerChoices[id]);
   if(optionTriggerChoices[id] == 0) then
     trigger = data.trigger;
     untrigger = data.untrigger;
@@ -3146,7 +3159,6 @@ function WeakAuras.ReloadTriggerOptions(data)
     WeakAuras.UpdateDisplayButton(data);
     WeakAuras.ReloadTriggerOptions(data);
   end
-  print("trigger type", id, trigger.type);
   if(trigger.type == "aura") then
     displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
   elseif(trigger.type == "event") then
@@ -5300,13 +5312,13 @@ function WeakAuras.CorrectAuraName(input)
   if(spellId) then
     local name, _, icon = GetSpellInfo(spellId);
     if(name) then
-      db.iconCache[name] = db.iconCache[name] or icon;
+      iconCache[name] = iconCache[name] or icon;
       return name;
     else
       return "Invalid Spell ID";
     end
   else
-    local ret = WeakAuras.BestKeyMatch(input, db.iconCache);
+    local ret = WeakAuras.BestKeyMatch(input, iconCache);
     if(ret == "") then
       return "No Match Found";
     else
@@ -5314,6 +5326,27 @@ function WeakAuras.CorrectAuraName(input)
     end
   end
 end
+
+function WeakAuras.CorrectItemName(input)
+  local inputId = tonumber(input);
+  if(inputId) then
+    local name = GetItemInfo(itemId);
+    if(name) then
+      return inputId;
+    else
+      return nil;
+    end
+  else
+    local _, link = GetItemInfo(input);
+    if(link) then
+      local itemId = link:match("item:(%d+)");
+      return tonumber(itemId);
+    else
+      return nil;
+    end
+  end
+end
+    
 
 function WeakAuras.BestKeyMatch(nearkey, table)
   for key, value in pairs(table) do
