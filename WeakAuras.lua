@@ -473,7 +473,7 @@ function WeakAuras.Pause()
   for id, region in pairs(regions) do
     region.region:Collapse();
     region.region.trigger_count = 0;
-    region.region.triggers = 0;
+    region.region.triggers = {};
   end
 end
 
@@ -521,7 +521,7 @@ function WeakAuras.ScanAll()
   for id, region in pairs(regions) do
     region.region:Collapse();
     region.region.trigger_count = 0;
-    region.region.triggers = 0;
+    region.region.triggers = {};
   end
   WeakAuras.ReloadAll();
   for unit, auras in pairs(loaded_auras) do
@@ -1539,9 +1539,10 @@ function WeakAuras.SetRegion(data)
 
         if(data.additional_triggers and #data.additional_triggers > 0) then
           region.trigger_count = region.trigger_count or 0;
-          region.triggers = region.trigger or {};
+          region.triggers = region.triggers or {};
 
           function region:TestTriggers(trigger_count)
+            print("Multi-trigger", id, "-", trigger_count, "of", #data.additional_triggers);
             if(trigger_count > #data.additional_triggers) then
               region:Expand();
               return true;

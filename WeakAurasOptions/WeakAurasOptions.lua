@@ -148,24 +148,28 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
   local trigger, untrigger;
   if(triggertype == "load") then
     trigger = data.load;
-  elseif(triggernum == 0) then
-    data.untrigger = data.untrigger or {};
-    if(triggertype == "untrigger") then
-      trigger = data.untrigger;
-    else
-      trigger = data.trigger;
-      untrigger = data.untrigger;
-    end
-  elseif(triggernum >= 1 and triggernum <= 9) then
-    data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
-    if(triggertype == "untrigger") then
-      trigger = data.additional_triggers[triggernum].untrigger;
-    else
-      trigger = data.additional_triggers[triggernum].trigger;
-      untrigger = data.additional_triggers[triggernum].untrigger;
-    end
+  elseif(data.controlledChildren) then
+    trigger, untrigger = {}, {};
   else
-    error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
+    if(triggernum == 0) then
+      data.untrigger = data.untrigger or {};
+      if(triggertype == "untrigger") then
+        trigger = data.untrigger;
+      else
+        trigger = data.trigger;
+        untrigger = data.untrigger;
+      end
+    elseif(triggernum >= 1 and triggernum <= 9) then
+      data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
+      if(triggertype == "untrigger") then
+        trigger = data.additional_triggers[triggernum].untrigger;
+      else
+        trigger = data.additional_triggers[triggernum].trigger;
+        untrigger = data.additional_triggers[triggernum].untrigger;
+      end
+    else
+      error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
+    end
   end
   unevent = unevent or trigger.unevent;
   local options = {};
@@ -985,12 +989,12 @@ local function replaceNameDescFuncs(intable, data)
       if(childData) then
         local childOption = displayOptions[childId];
         if not(childOption) then
-          return "error"
+          return "error 1";
         end
         for i=1,#info do
           childOption = childOption.args[info[i]];
           if not(childOption) then
-            return "error"
+            return "error 2 - "..childId.." - "..table.concat(info, ", ").." - "..i;
           end
         end
         local name;
@@ -1099,7 +1103,7 @@ local function replaceNameDescFuncs(intable, data)
                       r, g, b = r or 1, g or 1, b or 1;
                       tinsert(values, ("|cFF%2x%2x%2x%s"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, childId));
                     elseif(intable.type == "select") then
-                      local selectValues = intable.values;
+                      local selectValues = type(intable.values) == "table" and intable.values or intable.values();
                       local key = childOptionTable[i].get(info);
                       local display = key and selectValues[key] or L["None"];
                       tinsert(values, "|cFFE0E000"..childId..": |r"..display);
@@ -2454,135 +2458,47 @@ function WeakAuras.AddOption(id, data)
 end
 
 local function unused()
-  if(data.regionType == "group" or data.regionType == "dynamicgroup") then
-    removeFuncs(displayOptions[id]);
-    
-    displayOptions[id].get = function(info, ...) return getAll(data, info, ...); end;
-    displayOptions[id].set = function(info, ...)
-      setAll(data, info, ...);
-      WeakAuras.Add(data);
-      WeakAuras.SetThumbnail(data);
-      WeakAuras.ResetMoverSizer();
-    end
-    displayOptions[id].hidden = function(info, ...) return hiddenAll(data, info, ...); end;
-    displayOptions[id].disabled = function(info, ...) return disabledAll(data, info, ...); end;
-    
-    replaceNameDescFuncs(displayOptions[id], data);
-    replaceImageFuncs(displayOptions[id], data);
-    
-    regionOption = regionOptions[data.regionType].create(id, data);
-    displayOptions[id].args.group = {
-      type = "group",
-      name = L["Group"],
-      order = 0,
-      get = function(info)
-        if(info.type == "color") then
-          data[info[#info]] = data[info[#info]] or {};
-          local c = data[info[#info]];
-          return c[1], c[2], c[3], c[4];
-        else
-          return data[info[#info]];
-        end
-      end,
-      set = function(info, v, g, b, a)
-        if(info.type == "color") then
-          data[info[#info]] = data[info[#info]] or {};
-          local c = data[info[#info]];
-          c[1], c[2], c[3], c[4] = v, g, b, a;
-        elseif(info.type == "toggle") then
-          data[info[#info]] = v;
-        else
-          data[info[#info]] = (v ~= "" and v) or nil;
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.ResetMoverSizer();
-      end,
-      hidden = function() return false end,
-      disabled = function() return false end,
-      args = regionOption
-    };
-    
-    functions.load_options = function()
-      if(getAll(data, {"trigger", "type"}) == "aura") then
-        displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
-        displayOptions[id].args.trigger.args.type.set = functions.options_set;
-      elseif(getAll(data, {"trigger", "type"}) == "event") then
-        local event = getAll(data, {"trigger", "event"});
-        local unevent = getAll(data, {"trigger", "unevent"});
-        if(event and WeakAuras.event_prototypes[event]) then
-          if(event == "Combat Log") then
-            local subeventPrefix = getAll(data, {"trigger", "subeventPrefix"});
-            local subeventSuffix = getAll(data, {"trigger", "subeventSuffix"});
-            if(subeventPrefix and subeventSuffix) then
-              displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, subeventPrefix, subeventSuffix, nil, unevent));
-            end
-          else
-            displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, nil, nil, nil, unevent));
-          end
-        else
-          error("No prototype for "..data.trigger.event);
-          displayOptions[id].args.trigger.args = union(trigger_options, {});
-        end
-        removeFuncs(displayOptions[id].args.trigger);
-        replaceNameDescFuncs(displayOptions[id].args.trigger, data);
-        replaceImageFuncs(displayOptions[id].args.trigger, data);
-        
-        if(displayOptions[id].args.trigger.args.unevent) then
-          displayOptions[id].args.trigger.args.unevent.set = functions.options_set;
-        end
-        if(displayOptions[id].args.trigger.args.subeventPrefix) then
-          displayOptions[id].args.trigger.args.subeventPrefix.set = function(info, v)
-            if not(subevent_actual_prefix_types[v]) then
-              data.trigger.subeventSuffix = "";
-            end
-            functions.options_set(info, v);
-          end
-        end
-        if(displayOptions[id].args.trigger.args.subeventSuffix) then
-          displayOptions[id].args.trigger.args.subeventSuffix.set = functions.options_set;
-        end
-        
-        displayOptions[id].args.trigger.args.type.set = functions.options_set;
-        displayOptions[id].args.trigger.args.event.set = functions.options_set;
-      elseif(getAll(data, {"trigger", "type"}) == nil) then
-        displayOptions[id].args.trigger.args = trigger_options;
-        displayOptions[id].args.trigger.args.type.set = functions.options_set;
-      end
-      
-      displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, "load");
-      removeFuncs(displayOptions[id].args.load);
-      replaceNameDescFuncs(displayOptions[id].args.load, data);
-      replaceImageFuncs(displayOptions[id].args.load, data);
-    end
-    
-    functions.options_set = function(info, ...)
-      setAll(data, info, ...);
-      functions.load_options();
-      WeakAuras.Add(data);
-      WeakAuras.SetThumbnail(data);
-      WeakAuras.SetIconNames(data);
-      WeakAuras.UpdateDisplayButton(data);
-    end
-    
-    trigger_options.type.set = functions.options_set;
-    trigger_options.event.set = functions.options_set;
-    functions.load_options();
-    WeakAuras.ReloadGroupRegionOptions(data);
-  end
 end
 
 function WeakAuras.ReloadTriggerOptions(data)
   local id = data.id;
-  optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
   local trigger, untrigger;
-  if(optionTriggerChoices[id] == 0) then
-    trigger = data.trigger;
-    untrigger = data.untrigger;
+  if(data.controlledChildren) then
+    optionTriggerChoices[id] = nil;
+    for index, childId in pairs(data.controlledChildren) do
+      if not(optionTriggerChoices[id]) then
+        optionTriggerChoices[id] = optionTriggerChoices[childId];
+        trigger = WeakAuras.GetData(childId).trigger;
+        untrigger = WeakAuras.GetData(childId).untrigger;
+      else
+        if(optionTriggerChoices[id] ~= optionTriggerChoices[childId]) then
+          trigger, untrigger = {}, {};
+          optionTriggerChoices[id] = -1;
+          break;
+        end
+      end
+    end
+    
+    optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
+    
+    if(optionTriggerChoices[id] >= 0) then
+      for index, childId in pairs(data.controlledChildren) do
+        local childData = WeakAuras.GetData(childId);
+        if(childData) then
+          optionTriggerChoices[childId] = optionTriggerChoices[id];
+          WeakAuras.ReloadTriggerOptions(childData);
+        end
+      end
+    end
   else
-    trigger = data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
-    untrigger = data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
+    optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
+    if(optionTriggerChoices[id] == 0) then
+      trigger = data.trigger;
+      untrigger = data.untrigger;
+    else
+      trigger = data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
+      untrigger = data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
+    end
   end
   
   local aura_options = {
@@ -3029,18 +2945,53 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 0,
       disabled = function() return data.additional_triggers and #data.additional_triggers >= 9; end,
       func = function()
-        data.additional_triggers = data.additional_triggers or {};
-        tinsert(data.additional_triggers, {trigger = {}, untrigger = {}});
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            if(childData) then
+              childData.additional_triggers = childData.additional_triggers or {};
+              tinsert(childData.additional_triggers, {trigger = {}, untrigger = {}});
+              optionTriggerChoices[childId] = #childData.additional_triggers;
+              WeakAuras.ReloadTriggerOptions(childData);
+            end
+          end
+        else
+          data.additional_triggers = data.additional_triggers or {};
+          tinsert(data.additional_triggers, {trigger = {}, untrigger = {}});
+          optionTriggerChoices[id] = #data.additional_triggers;
+        end
+        WeakAuras.ReloadTriggerOptions(data);
       end
     },
     chooseTrigger = {
       type = "select",
       name = "Choose Trigger",
       order = 1,
-      disabled = function() return not(data.additional_triggers and #data.additional_triggers >= 1); end,
       values = function()
         local ret = {[0] = L["Main Trigger"]};
-        if(data.additional_triggers) then
+        if(data.controlledChildren) then
+          for index=1,9 do
+            local all, none, any = true, true, false;
+            for _, childId in pairs(data.controlledChildren) do
+              local childData = WeakAuras.GetData(childId);
+              if(childData) then
+                none = false;
+                if(childData.additional_triggers and childData.additional_triggers[index]) then
+                  any = true;
+                else
+                  all = false;
+                end
+              end
+            end
+            if not(none) then
+              if(all) then
+                ret[index] = L["Trigger "..(index + 1)];
+              elseif(any) then
+                ret[index] = "|cFF777777"..L["Trigger "..(index + 1)];
+              end
+            end
+          end
+        elseif(data.additional_triggers) then
           for index, trigger in pairs(data.additional_triggers) do
             ret[index] = L["Trigger "..(index + 1)];
           end
@@ -3048,15 +2999,24 @@ function WeakAuras.ReloadTriggerOptions(data)
         return ret;
       end,
       get = function() return optionTriggerChoices[id]; end,
-      set = function(info, v) optionTriggerChoices[id] = v; WeakAuras.ReloadTriggerOptions(data); end
+      set = function(info, v)
+        if(v == 0 or (data.additional_triggers and data.additional_triggers[v])) then
+          optionTriggerChoices[id] = v;
+          WeakAuras.ReloadTriggerOptions(data);
+        end
+      end
     },
     triggerHeader = {
       type = "header",
-      name = function()
-        if(optionTriggerChoices[id] == 0) then
-          return L["Main Trigger"];
+      name = function(info)
+        if(info == "default") then
+          return L["Multiple Triggers"];
         else
-          return L["Trigger "..(optionTriggerChoices[id] + 1)];
+          if(optionTriggerChoices[id] == 0) then
+            return L["Main Trigger"];
+          else
+            return L["Trigger "..(optionTriggerChoices[id] + 1)];
+          end
         end
       end,
       order = 2
@@ -3066,6 +3026,22 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Delete Trigger"],
       order = 3,
       width = "double",
+      func = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            if(childData) then
+              tremove(childData.additional_triggers, optionTriggerChoices[childId]);
+              optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
+              WeakAuras.ReloadTriggerOptions(childData);
+            end
+          end
+        else
+          tremove(data.additional_triggers, optionTriggerChoices[id]);
+          optionTriggerChoices[id] = optionTriggerChoices[id] - 1;
+        end
+        WeakAuras.ReloadTriggerOptions(data);
+      end,
       hidden = function() return optionTriggerChoices[id] == 0; end
     },
     typedesc = {
@@ -3151,30 +3127,50 @@ function WeakAuras.ReloadTriggerOptions(data)
     order = order + 1;
   end
   
-  local function options_set(info, v)
-    trigger[info[#info]] = v;
-    WeakAuras.Add(data);
-    WeakAuras.SetThumbnail(data);
-    WeakAuras.SetIconNames(data);
-    WeakAuras.UpdateDisplayButton(data);
-    WeakAuras.ReloadTriggerOptions(data);
-  end
-  if(trigger.type == "aura") then
-    displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
-  elseif(trigger.type == "event") then
-    if(WeakAuras.event_prototypes[trigger.event]) then
-      if(trigger.event == "Combat Log") then
-        displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, (trigger.subeventPrefix or ""), (trigger.subeventSuffix or ""), optionTriggerChoices[id]));
+  if(data.controlledChildren) then
+    local function options_set(info, ...)
+      setAll(data, info, ...);
+      WeakAuras.Add(data);
+      WeakAuras.SetThumbnail(data);
+      WeakAuras.SetIconNames(data);
+      WeakAuras.UpdateDisplayButton(data);
+      WeakAuras.ReloadTriggerOptions(data);
+    end
+    
+    removeFuncs(displayOptions[id]);
+    
+    if(optionTriggerChoices[id] >= 0 and getAll(data, {"trigger", "type"}) == "aura") then
+      displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
+      removeFuncs(displayOptions[id].args.trigger);
+      displayOptions[id].args.trigger.args.type.set = options_set;
+    elseif(optionTriggerChoices[id] >= 0 and getAll(data, {"trigger", "type"}) == "event") then
+      local event = getAll(data, {"trigger", "event"});
+      local unevent = getAll(data, {"trigger", "unevent"});
+      if(event and WeakAuras.event_prototypes[event]) then
+        if(event == "Combat Log") then
+          local subeventPrefix = getAll(data, {"trigger", "subeventPrefix"});
+          local subeventSuffix = getAll(data, {"trigger", "subeventSuffix"});
+          if(subeventPrefix and subeventSuffix) then
+            displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, subeventPrefix, subeventSuffix, optionTriggerChoices[id], nil, unevent));
+          end
+        else
+          displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, nil, nil, optionTriggerChoices[id], nil, unevent));
+        end
       else
-        displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, nil, nil, optionTriggerChoices[id]));
+        displayOptions[id].args.trigger.args = union(trigger_options, {});
+        removeFuncs(displayOptions[id].args.trigger);
       end
+      removeFuncs(displayOptions[id].args.trigger);
+      replaceNameDescFuncs(displayOptions[id].args.trigger, data);
+      replaceImageFuncs(displayOptions[id].args.trigger, data);
+      
       if(displayOptions[id].args.trigger.args.unevent) then
         displayOptions[id].args.trigger.args.unevent.set = options_set;
       end
       if(displayOptions[id].args.trigger.args.subeventPrefix) then
         displayOptions[id].args.trigger.args.subeventPrefix.set = function(info, v)
           if not(subevent_actual_prefix_types[v]) then
-            trigger.subeventSuffix = "";
+            data.trigger.subeventSuffix = "";
           end
           options_set(info, v);
         end
@@ -3182,40 +3178,138 @@ function WeakAuras.ReloadTriggerOptions(data)
       if(displayOptions[id].args.trigger.args.subeventSuffix) then
         displayOptions[id].args.trigger.args.subeventSuffix.set = options_set;
       end
+      
+      displayOptions[id].args.trigger.args.type.set = options_set;
+      displayOptions[id].args.trigger.args.event.set = options_set;
+    else--[[if(getAll(data, {"trigger", "type"}) == nil) then]]
+      displayOptions[id].args.trigger.args = trigger_options;
+      removeFuncs(displayOptions[id].args.trigger);
+    end
+    
+    displayOptions[id].get = function(info, ...) return getAll(data, info, ...); end;
+    displayOptions[id].set = function(info, ...)
+      setAll(data, info, ...);
+      WeakAuras.Add(data);
+      WeakAuras.SetThumbnail(data);
+      WeakAuras.ResetMoverSizer();
+    end
+    displayOptions[id].hidden = function(info, ...) return hiddenAll(data, info, ...); end;
+    displayOptions[id].disabled = function(info, ...) return disabledAll(data, info, ...); end;
+    
+    trigger_options.chooseTrigger.set = options_set;
+    trigger_options.type.set = options_set;
+    trigger_options.event.set = options_set;
+    
+    replaceNameDescFuncs(displayOptions[id], data);
+    replaceImageFuncs(displayOptions[id], data);
+    
+    regionOption = regionOptions[data.regionType].create(id, data);
+    displayOptions[id].args.group = {
+      type = "group",
+      name = L["Group"],
+      order = 0,
+      get = function(info)
+        if(info.type == "color") then
+          data[info[#info]] = data[info[#info]] or {};
+          local c = data[info[#info]];
+          return c[1], c[2], c[3], c[4];
+        else
+          return data[info[#info]];
+        end
+      end,
+      set = function(info, v, g, b, a)
+        if(info.type == "color") then
+          data[info[#info]] = data[info[#info]] or {};
+          local c = data[info[#info]];
+          c[1], c[2], c[3], c[4] = v, g, b, a;
+        elseif(info.type == "toggle") then
+          data[info[#info]] = v;
+        else
+          data[info[#info]] = (v ~= "" and v) or nil;
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.ResetMoverSizer();
+      end,
+      hidden = function() return false end,
+      disabled = function() return false end,
+      args = regionOption
+    };
+    
+    displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
+    removeFuncs(displayOptions[id].args.load);
+    replaceNameDescFuncs(displayOptions[id].args.load, data);
+    replaceImageFuncs(displayOptions[id].args.load, data);
+    
+    WeakAuras.ReloadGroupRegionOptions(data);
+  else
+    local function options_set(info, v)
+      trigger[info[#info]] = v;
+      WeakAuras.Add(data);
+      WeakAuras.SetThumbnail(data);
+      WeakAuras.SetIconNames(data);
+      WeakAuras.UpdateDisplayButton(data);
+      WeakAuras.ReloadTriggerOptions(data);
+    end
+    if(trigger.type == "aura") then
+      displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
+    elseif(trigger.type == "event") then
+      if(WeakAuras.event_prototypes[trigger.event]) then
+        if(trigger.event == "Combat Log") then
+          displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, (trigger.subeventPrefix or ""), (trigger.subeventSuffix or ""), optionTriggerChoices[id]));
+        else
+          displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, nil, nil, optionTriggerChoices[id]));
+        end
+        if(displayOptions[id].args.trigger.args.unevent) then
+          displayOptions[id].args.trigger.args.unevent.set = options_set;
+        end
+        if(displayOptions[id].args.trigger.args.subeventPrefix) then
+          displayOptions[id].args.trigger.args.subeventPrefix.set = function(info, v)
+            if not(subevent_actual_prefix_types[v]) then
+              trigger.subeventSuffix = "";
+            end
+            options_set(info, v);
+          end
+        end
+        if(displayOptions[id].args.trigger.args.subeventSuffix) then
+          displayOptions[id].args.trigger.args.subeventSuffix.set = options_set;
+        end
+      else
+        print("No prototype for", trigger.event);
+        displayOptions[id].args.trigger.args = union(trigger_options, {});
+      end
     else
-      print("No prototype for", trigger.event);
       displayOptions[id].args.trigger.args = union(trigger_options, {});
     end
-  else
-    displayOptions[id].args.trigger.args = union(trigger_options, {});
-  end
-  
-  displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
-  
-  trigger_options.type.set = options_set;
-  trigger_options.event.set = function(info, v, ...)
-    local prototype = WeakAuras.event_prototypes[v];
-    if(prototype) then
-      if(prototype.automatic or prototype.automaticrequired) then
-        trigger.unevent = "auto";
-      else
-        trigger.unevent = "timed";
+    
+    displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
+    
+    trigger_options.type.set = options_set;
+    trigger_options.event.set = function(info, v, ...)
+      local prototype = WeakAuras.event_prototypes[v];
+      if(prototype) then
+        if(prototype.automatic or prototype.automaticrequired) then
+          trigger.unevent = "auto";
+        else
+          trigger.unevent = "timed";
+        end
       end
+      options_set(info, v, ...);
     end
-    options_set(info, v, ...);
+    trigger.event = trigger.event or "Health";
+    trigger.subeventPrefix = trigger.subeventPrefix or "SPELL"
+    trigger.subeventSuffix = trigger.subeventSuffix or "_CAST_START";
+    
+    displayOptions[id].args.trigger.get = function(info) return trigger[info[#info]] end;
+    displayOptions[id].args.trigger.set = function(info, v)
+      trigger[info[#info]] = (v ~= "" and v) or nil;
+      WeakAuras.Add(data);
+      WeakAuras.SetThumbnail(data);
+      WeakAuras.SetIconNames(data);
+      WeakAuras.UpdateDisplayButton(data);
+    end;
   end
-  trigger.event = trigger.event or "Health";
-  trigger.subeventPrefix = trigger.subeventPrefix or "SPELL"
-  trigger.subeventSuffix = trigger.subeventSuffix or "_CAST_START";
-  
-  displayOptions[id].args.trigger.get = function(info) return trigger[info[#info]] end;
-  displayOptions[id].args.trigger.set = function(info, v)
-    trigger[info[#info]] = (v ~= "" and v) or nil;
-    WeakAuras.Add(data);
-    WeakAuras.SetThumbnail(data);
-    WeakAuras.SetIconNames(data);
-    WeakAuras.UpdateDisplayButton(data);
-  end;
 end
 
 function WeakAuras.ReloadGroupRegionOptions(data)

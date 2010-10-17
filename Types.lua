@@ -749,6 +749,7 @@ WeakAuras.chat_message_types = {
   CHAT_MSG_CHANNEL = L["Channel"],
   CHAT_MSG_EMOTE = L["Emote"],
   CHAT_MSG_GUILD = L["Guild"],
+  CHAT_MSG_MONSTER_YELL = L["Monster Yell"],
   CHAT_MSG_OFFICER = L["Officer"],
   CHAT_MSG_PARTY = L["Party"],
   CHAT_MSG_RAID = L["Raid"],

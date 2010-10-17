@@ -1218,6 +1218,7 @@ onCooldown = duration > 1.51;
       "CHAT_MSG_CHANNEL",
       "CHAT_MSG_EMOTE",
       "CHAT_MSG_GUILD",
+      "CHAT_MSG_MONSTER_YELL",
       "CHAT_MSG_OFFICER",
       "CHAT_MSG_PARTY",
       "CHAT_MSG_PARTY_LEADER",
