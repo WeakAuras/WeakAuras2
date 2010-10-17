@@ -2,7 +2,7 @@
 local halfroot2 = root2/2;
   
 local default = {
-  texture = "Interface\\PVPFrame\\PVP-Banner-Emblem-3",
+  texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
   width = 200,
   height = 200,
   color = {1, 0, 0, 0.75},

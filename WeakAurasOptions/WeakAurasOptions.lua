@@ -422,6 +422,17 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               else
                 return nil;
               end
+            elseif(arg.type == "spell") then
+              if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
+                local name = GetSpellInfo(trigger[realname]);
+                if(name) then
+                  return name;
+                else
+                  return "Invalid Spell Name/ID/Link";
+                end
+              else
+                return nil;
+              end
             else
               return trigger["use_"..realname] and trigger[realname] or nil;
             end
@@ -431,7 +442,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             if(arg.type == "aura") then
               fixedInput = WeakAuras.CorrectAuraName(v);
             elseif(arg.type == "spell") then
-              fixedInput = GetSpellInfo(v) or "Invalid Spell Name";
+              fixedInput = WeakAuras.CorrectSpellName(v);
             elseif(arg.type == "item") then
               fixedInput = WeakAuras.CorrectItemName(v);
             end
@@ -683,7 +694,9 @@ function WeakAuras.LockUpdateInfo()
         if(data) then
           if(WeakAuras.CanHaveDuration(data)) then
             if(region.region.SetDurationInfo) then
-              region.region:SetDurationInfo(12, GetTime() + 8 - (frame.count + frame.elapsed));
+              if not(frame.count ~= 0 and region.region.cooldown and region.region.cooldown:IsVisible()) then
+                region.region:SetDurationInfo(12, GetTime() + 8 - (frame.count + frame.elapsed));
+              end
             end
             WeakAuras.duration_cache:SetDurationInfo(id, 12, GetTime() + 8 - (frame.count + frame.elapsed));
           else
@@ -5418,6 +5431,21 @@ function WeakAuras.CorrectAuraName(input)
     else
       return ret;
     end
+  end
+end
+
+function WeakAuras.CorrectSpellName(input)
+  local link;
+  if(input:sub(1,1) == "\124") then
+    link = input;
+  else
+    link = GetSpellLink(input);
+  end
+  if(link) then
+    local itemId = link:match("spell:(%d+)");
+    return tonumber(itemId);
+  else
+    return nil;
   end
 end
 

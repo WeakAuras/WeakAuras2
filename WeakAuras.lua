@@ -1090,9 +1090,11 @@ function WeakAuras.Delete(data)
     end
   end
   
+  regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:Hide();
   WeakAuras.EndEvent(id);
   
+  regions[id].region = nil;
   regions[id] = nil;
   auras[id] = nil;
   events[id] = nil;
@@ -1384,8 +1386,6 @@ function WeakAuras.pAdd(data)
           end
         elseif(triggerType) then
           error("Improper arguments to WeakAuras.Add - display "..id.." trigger type \""..triggerType.."\" is not supported for trigger number "..triggernum);
-        else
-          print("Improper arguments to WeakAuras.Add - display "..id.." trigger type not defined for trigger number "..triggernum);
         end
       end
     end
@@ -1656,7 +1656,7 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
     valid = true;
   end
   if(valid) then
-    local selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation, translateFunc, alphaFunc, scaleFunc, rotateFunc;
+    local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation, translateFunc, alphaFunc, scaleFunc, rotateFunc;
     if(animations[key]) then
       if(animations[key].type == type and not loop) then
         return "no replace";
@@ -1721,12 +1721,34 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
       region:Rotate(startRotation);
     end
     
+    duration = WeakAuras.ParseNumber(anim.duration) or 0;
+    progress = 0;
+    if(namespace == "display" and type == "main" and not onFinished) then
+      local data = WeakAuras.GetData(id);
+      if(data and data.parent) then
+        local parentData = WeakAuras.GetData(data.parent);
+        if(parentData and parentData.controlledChildren) then
+          for index, childId in pairs(parentData.controlledChildren) do
+            if(
+              childId ~= id
+              and animations[namespace..childId]
+              and animations[namespace..childId].type == "main"
+              and duration == animations[namespace..childId].duration
+            ) then
+              progress = animations[namespace..childId].progress;
+              break;
+            end
+          end
+        end
+      end
+    end
+    
     if(loop) then
       onFinished = function() WeakAuras.Animate(namespace, id, type, inAnim, region, inverse, onFinished, loop) end
     end
     
     animations[key] = {
-      progress = 0,
+      progress = progress,
       startX = startX,
       startY = startY,
       startAlpha = startAlpha,
@@ -1747,7 +1769,7 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
       selfPoint = selfPoint,
       anchor = anchor,
       anchorPoint = anchorPoint,
-      duration = WeakAuras.ParseNumber(anim.duration) or 0,
+      duration = duration,
       duration_type = anim.duration_type or "seconds",
       inverse = inverse,
       type = type,
@@ -1926,7 +1948,21 @@ function WeakAuras.CanHaveDuration(data)
       )
     )
   ) then
-    return true;
+    if(
+      data.trigger.type == "event"
+      and data.trigger.event
+      and WeakAuras.event_prototypes[data.trigger.event]
+      and WeakAuras.event_prototypes[data.trigger.event].durationFunc
+    ) then
+      local _, _, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
+      if(custom) then
+        return "custom";
+      else
+        return "timed";
+      end
+    else
+      return "timed";
+    end
   else
     return false;
   end

@@ -151,8 +151,8 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = "Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-46.blp",
-    color = {0.25, .5, 1, 1},
+    texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+    color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
     rotation = 0;

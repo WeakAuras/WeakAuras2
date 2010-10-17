@@ -88,6 +88,15 @@ local function createOptions(id, data)
       max = 24,
       step = 1
     },
+    zoom = {
+      type = "range",
+      name = L["Zoom"],
+      order = 48,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
+    },
     stickyDuration = {
       type = "toggle",
       name = L["Sticky Duration"],
@@ -114,6 +123,8 @@ end
 
 local function modifyThumbnail(parent, icon, data, fullModify)
   icon:SetAlpha(data.alpha);
+  local texWidth = 0.25 * data.zoom;
+  icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
   
   function icon:SetIcon(path)
     local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);

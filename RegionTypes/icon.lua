@@ -15,7 +15,8 @@ local default = {
   yOffset = 0,
   font = "Friz Quadrata TT",
   fontSize = 12,
-  stickyDuration = false
+  stickyDuration = false,
+  zoom = 0
 };
 
 local function create(parent)
@@ -71,6 +72,9 @@ local function modify(parent, region, data)
   stacks:SetFont(fontPath, data.fontSize, "OUTLINE");
   stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
   
+  local texWidth = 0.25 * data.zoom;
+  icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
+  
   cooldown:SetReverse(not data.inverse);
   
   function region:SetStacks(count)
@@ -116,17 +120,16 @@ local function modify(parent, region, data)
     end
   end
   
-  if(data.cooldown and WeakAuras.CanHaveDuration(data)) then
-    cooldown:Show();
+  if(data.cooldown and WeakAuras.CanHaveDuration(data) == "timed") then
     function region:SetDurationInfo(duration, expirationTime, customValue)
       if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
         region.duration = duration;
       end
       if(customValue) then
+        cooldown:Hide();
+      else
         cooldown:Show();
         cooldown:SetCooldown(expirationTime - region.duration, region.duration);
-      else
-        cooldown:Hide();
       end
     end
   else

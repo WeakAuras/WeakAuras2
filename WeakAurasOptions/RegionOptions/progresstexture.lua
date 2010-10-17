@@ -422,7 +422,7 @@ end
 
 local function createIcon()
   local data = {
-    foregroundTexture = "Interface\\PVPFrame\\PVP-Banner-Emblem-3",
+    foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
     sameTexture = true,
     backgroundOffset = 2,
     blendMode = "BLEND",
@@ -431,11 +431,20 @@ local function createIcon()
     orientation = "VERTICAL",
     alpha = 1.0,
     foregroundColor = {1, 1, 1, 1},
-    backgroundColor = {0, 0, 0, 0.5}
+    backgroundColor = {0.5, 0.5, 0.5, 0.5}
   };
   
   local thumbnail = createThumbnail(UIParent);
   modifyThumbnail(UIParent, thumbnail, data, nil, 32);
+  
+  thumbnail.elapsed = 0;
+  thumbnail:SetScript("OnUpdate", function(self, elapsed)
+    thumbnail.elapsed = thumbnail.elapsed + elapsed;
+    if(thumbnail.elapsed > 4) then
+      thumbnail.elapsed = thumbnail.elapsed - 4;
+    end
+    thumbnail.region:SetValue((4 - thumbnail.elapsed) / 4);
+  end);
   
   return thumbnail;
 end

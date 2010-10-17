@@ -1,8 +1,8 @@
 ﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
   
 local default = {
-  foregroundTexture = "Interface\\PVPFrame\\PVP-Banner-Emblem-3",
-  backgroundTexture = "Interface\\PVPFrame\\PVP-Banner-Emblem-3",
+  foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+  backgroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
   sameTexture = true,
   compress = false,
   blendMode = "BLEND",
@@ -13,8 +13,7 @@ local default = {
   inverse = false,
   alpha = 1.0,
   foregroundColor = {1, 1, 1, 1},
-  backgroundColor = {0, 0, 0, 0.5},
-  textColor = {1, 1, 1, 1},
+  backgroundColor = {0.5, 0.5, 0.5, 0.5},
   selfPoint = "CENTER",
   anchorPoint = "CENTER",
   xOffset = 0,

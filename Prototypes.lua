@@ -744,8 +744,8 @@ WeakAuras.event_prototypes = {
     force_events = true,
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
-      trigger.spellName = trigger.spellName or "";
-      return "local startTime, duration = GetSpellCooldown('"..trigger.spellName.."');\nstartTime = startTime or 0;\nduration = duration or 0;\n";
+      trigger.spellName = trigger.spellName or 0;
+      return "local startTime, duration = GetSpellCooldown("..(type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'")..");\nstartTime = startTime or 0;\nduration = duration or 0;\n";
     end,
     args = {
       {
@@ -780,24 +780,25 @@ WeakAuras.event_prototypes = {
     },
     name = L["Cooldown Ready (Spell)"],
     init = function(trigger)
-      trigger.spellName = trigger.spellName or "";
+      trigger.spellName = trigger.spellName or 0;
+      local spellName = type(trigger.spellName) == "number" and trigger.spellName or "\""..trigger.spellName.."\"";
       local ret = [[
-local startTime, duration = GetSpellCooldown("%s");
+local startTime, duration = GetSpellCooldown(%s);
 startTime = startTime or 0;
 duration = duration or 0;
 local cooledDown;
-if(startTime == 0 and WeakAuras.spellCooldownCache["%s"] and WeakAuras.spellCooldownCache["%s"] ~= 0) then
+if(startTime == 0 and WeakAuras.spellCooldownCache[%s] and WeakAuras.spellCooldownCache[%s] ~= 0) then
   cooledDown = true;
 elseif(duration > 1.51 and startTime > 0) then
   local timer = LibStub("AceTimer-3.0");
-  if(WeakAuras.spellCooldownReadyTimers["%s"]) then
-    timer:CancelTimer(WeakAuras.spellCooldownReadyTimers["%s"], true);
+  if(WeakAuras.spellCooldownReadyTimers[%s]) then
+    timer:CancelTimer(WeakAuras.spellCooldownReadyTimers[%s], true);
   end
-  WeakAuras.spellCooldownReadyTimers["%s"] = timer:ScheduleTimer(function() WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN") end, startTime + duration - GetTime());
+  WeakAuras.spellCooldownReadyTimers[%s] = timer:ScheduleTimer(function() WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN") end, startTime + duration - GetTime());
 end
-WeakAuras.spellCooldownCache["%s"] = duration > 1.51 and startTime or 0;
+WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
 ]];
-      return ret:format(trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName, trigger.spellName);
+      return ret:format(spellName, spellName, spellName, spellName, spellName, spellName, spellName);
     end,
     args = {
       {
@@ -917,14 +918,15 @@ WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
     name = L["Action Usable"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or "";
+      local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
       local ret = [[
-local spellName = "%s";
+local spellName = %s;
 local startTime, duration = GetSpellCooldown(spellName);
 startTime = startTime or 0;
 duration = duration or 0;
 onCooldown = duration > 1.51;
 ]]
-      return ret:format(trigger.spellName);
+      return ret:format(spellName);
     end,
     args = {
       {
