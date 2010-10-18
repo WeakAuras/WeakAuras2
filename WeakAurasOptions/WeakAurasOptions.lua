@@ -5452,7 +5452,7 @@ end
 function WeakAuras.CorrectItemName(input)
   local inputId = tonumber(input);
   if(inputId) then
-    local name = GetItemInfo(itemId);
+    local name = GetItemInfo(inputId);
     if(name) then
       return inputId;
     else

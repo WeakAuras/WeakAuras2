@@ -745,11 +745,13 @@ WeakAuras.event_prototypes = {
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      return [[
-local startTime, duration = GetSpellCooldown("..(type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'")..");
+      local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
+      local ret = [[
+local startTime, duration = GetSpellCooldown(%s);
 startTime = startTime or 0;
 duration = duration or 0;
 ]];
+      return ret:format(spellName);
     end,
     args = {
       {
@@ -766,14 +768,21 @@ duration = duration or 0;
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = GetSpellCooldown(trigger.spellName);
+      local startTime, duration = GetSpellCooldown(trigger.spellName or 0);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
     end,
-    nameFunc = function(trigger) return trigger.spellName; end,
+    nameFunc = function(trigger)
+      local name = GetSpellInfo(trigger.spellName or 0);
+      if(name) then
+        return name;
+      else
+        return "Invalid";
+      end
+    end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName);
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
     end,
     automaticrequired = true
@@ -816,14 +825,21 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = GetSpellCooldown(trigger.spellName);
+      local startTime, duration = GetSpellCooldown(trigger.spellName or 0);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
     end,
-    nameFunc = function(trigger) return trigger.spellName; end,
+    nameFunc = function(trigger)
+      local name = GetSpellInfo(trigger.spellName or 0);
+      if(name) then
+        return name;
+      else
+        return "Invalid";
+      end
+    end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName);
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
     end
   },
@@ -835,8 +851,8 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
     force_events = true,
     name = L["Cooldown Progress (Item)"],
     init = function(trigger)
-      trigger.itemName = trigger.itemName or "";
-      return "local startTime, duration = GetItemCooldown('"..trigger.itemName.."');";
+      trigger.itemName = type(trigger.itemName) == "number" and trigger.itemName or 0;
+      return "local startTime, duration = GetItemCooldown("..trigger.itemName..");";
     end,
     args = {
       {
@@ -853,15 +869,21 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = GetItemCooldown(trigger.itemName);
+      local startTime, duration = GetItemCooldown(type(trigger.itemName) == "number" and trigger.itemName or 0);
+      startTime = startTime or 0;
+      duration = duration or 0;
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName);
-      return name;
+      local name = GetItemInfo(trigger.itemName or 0);
+      if(name) then
+        return name;
+      else
+        return "Invalid";
+      end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName);
+      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
       return icon;
     end,
     automaticrequired = true
@@ -873,7 +895,8 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
     },
     name = L["Cooldown Ready (Item)"],
     init = function(trigger)
-      trigger.spellName = trigger.spellName or "";
+      trigger.itemName = type(trigger.itemName) == "number" and trigger.itemName or 0;
+      local itemName = trigger.itemName;
       local ret = [[
 local startTime, duration = GetItemCooldown(%i);
 startTime = startTime or 0;
@@ -890,7 +913,7 @@ elseif(duration > 1.51 and startTime > 0) then
 end
 WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
 ]];
-      return ret:format(trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName, trigger.itemName);
+      return ret:format(itemName, itemName, itemName, itemName, itemName, itemName, itemName);
     end,
     args = {
       {
@@ -902,15 +925,21 @@ WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = GetItemCooldown(trigger.itemName);
+      local startTime, duration = GetItemCooldown(trigger.itemName or 0);
+      startTime = startTime or 0;
+      duration = duration or 0;
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName);
-      return name;
+      local name = GetItemInfo(trigger.itemName or 0);
+      if(name) then
+        return name;
+      else
+        return "Invalid";
+      end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName);
+      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
       return icon;
     end
   },
@@ -925,7 +954,7 @@ WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
     force_events = true,
     name = L["Action Usable"],
     init = function(trigger)
-      trigger.spellName = trigger.spellName or "";
+      trigger.spellName = trigger.spellName or 0;
       local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
       local ret = [[
 local spellName = %s;
@@ -953,10 +982,15 @@ onCooldown = duration > 1.51;
       }
     },
     nameFunc = function(trigger)
-      return trigger.spellName;
+      local name = GetSpellInfo(trigger.spellName or 0);
+      if(name) then
+        return name;
+      else
+        return "Invalid";
+      end
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName);
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
     end,
     automaticrequired = true
