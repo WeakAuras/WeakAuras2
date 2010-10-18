@@ -1542,7 +1542,6 @@ function WeakAuras.SetRegion(data)
           region.triggers = region.triggers or {};
 
           function region:TestTriggers(trigger_count)
-            print("Multi-trigger", id, "-", trigger_count, "of", #data.additional_triggers);
             if(trigger_count > #data.additional_triggers) then
               region:Expand();
               return true;
