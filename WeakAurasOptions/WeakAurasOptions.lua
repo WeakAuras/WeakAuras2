@@ -2886,7 +2886,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       type = "input",
       name = L["Count"],
       desc = function()
-        local groupType = unit_types[trigger.unit or ""] or "|cFFFF0000error|r";
+        local groupType = unit_types[trigger.unit or "group"] or "|cFFFF0000error|r";
         return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
       end,
       order = 47,
