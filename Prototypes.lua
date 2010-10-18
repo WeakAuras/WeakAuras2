@@ -745,7 +745,11 @@ WeakAuras.event_prototypes = {
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      return "local startTime, duration = GetSpellCooldown("..(type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'")..");\nstartTime = startTime or 0;\nduration = duration or 0;\n";
+      return [[
+local startTime, duration = GetSpellCooldown("..(type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'")..");
+startTime = startTime or 0;
+duration = duration or 0;
+]];
     end,
     args = {
       {
@@ -763,6 +767,8 @@ WeakAuras.event_prototypes = {
     },
     durationFunc = function(trigger)
       local startTime, duration = GetSpellCooldown(trigger.spellName);
+      startTime = startTime or 0;
+      duration = duration or 0;
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger) return trigger.spellName; end,
@@ -811,6 +817,8 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
     },
     durationFunc = function(trigger)
       local startTime, duration = GetSpellCooldown(trigger.spellName);
+      startTime = startTime or 0;
+      duration = duration or 0;
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger) return trigger.spellName; end,
