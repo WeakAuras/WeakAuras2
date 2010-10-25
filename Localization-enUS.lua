@@ -435,6 +435,8 @@ L["Holy Power"] = "Holy Power"
 L["Pet"] = "Pet"
 L["Multiple Triggers"] = "Multiple Triggers"
 L["Monster Yell"] = "Monster Yell"
+L["Shards"] = "Shards"
+L["Hide When Not In Group"] = "Hide When Not In Group"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"

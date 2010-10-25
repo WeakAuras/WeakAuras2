@@ -2869,7 +2869,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       type = "toggle",
       name = L["Group Member Count"],
       disabled = true,
-      hidden = function() return not (trigger.type == "aura" and (trigger.unit == "raid" or trigger.unit == "party")); end,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       get = function() return true; end,
       order = 45
     },
@@ -2879,7 +2879,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 46,
       width = "half",
       values = operator_types,
-      hidden = function() return not (trigger.type == "aura" and (trigger.unit == "raid" or trigger.unit == "party")); end,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       get = function() return trigger.group_countOperator; end
     },
     group_count = {
@@ -2891,9 +2891,16 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       order = 47,
       width = "half",
-      hidden = function() return not (trigger.type == "aura" and (trigger.unit == "raid" or trigger.unit == "party")); end,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       get = function() return trigger.group_count; end,
       set = function(info, v) if(WeakAuras.ParseNumber(v)) then trigger.group_count = v; else trigger.group_count = ""; end end
+    },
+    hideAlone = {
+      type = "toggle",
+      name = L["Hide When Not In Group"],
+      order = 48,
+      width = "double",
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },
     useDebuffType = {
       type = "toggle",

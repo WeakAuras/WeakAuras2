@@ -51,6 +51,8 @@ WeakAuras.spellCooldownReadyTimers = {};
 WeakAuras.itemCooldownCache = {};
 WeakAuras.itemCooldownReadyTimers = {};
 
+local inGroup;
+
 local function_strings = WeakAuras.function_strings;
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
@@ -93,40 +95,30 @@ end
 
 local aura_cache = {};
 do
-  aura_cache.raid = {};
-  aura_cache.raid.max = 0;
-  aura_cache.raid.watched = {};
-  aura_cache.raid.players = {};
-  aura_cache.party = {};
-  aura_cache.party.max = 0;
-  aura_cache.party.watched = {};
-  aura_cache.party.players = {};
+  aura_cache.max = 0;
+  aura_cache.watched = {};
+  aura_cache.players = {};
   
-  aura_cache.raid.ForceUpdate = function() WeakAuras.ScanAurasRaid() end;
-  aura_cache.party.ForceUpdate = function() WeakAuras.ScanAurasParty() end;
+  function aura_cache.ForceUpdate()
+    WeakAuras.ScanAurasGroup()
+  end
   
-  local function Watch(self, auraname)
+  function aura_cache.Watch(self, auraname)
     self.watched[auraname] = self.watched[auraname] or {};
     self.watched[auraname].number = self.watched[auraname].number or 0;
     self.watched[auraname].players = self.watched[auraname].players or {};
     self:ForceUpdate()
   end
-  aura_cache.raid.Watch = Watch;
-  aura_cache.party.Watch = Watch;
   
-  local function Unwatch(self, auraname)
+  function aura_cache.Unwatch(self, auraname)
     self.watched[auraname] = nil;
   end
-  aura_cache.raid.Unwatch = Unwatch;
-  aura_cache.party.Unwatch = Unwatch;
   
-  local function GetMaxNumber(self)
+  function aura_cache.GetMaxNumber(self)
     return self.max;
   end
-  aura_cache.raid.GetMaxNumber = GetMaxNumber;
-  aura_cache.party.GetMaxNumber = GetMaxNumber;
   
-  local function GetNumber(self, names)
+  function aura_cache.GetNumber(self, names)
     if(#names == 1) then
       return self.watched[names[1]] and self.watched[names[1]].number;
     else
@@ -147,28 +139,45 @@ do
       return num;
     end
   end
-  aura_cache.raid.GetNumber = GetNumber;
-  aura_cache.party.GetNumber = GetNumber;
   
-  local function AssertAura(self, auraname, playername)
+  function aura_cache.GetDynamicInfo(self, names)
+    local bestDuration, bestExpirationTime, bestName, bestIcon = 0, math.huge, "", "";
+    for _, auraname in pairs(names) do
+      if(self.watched[auraname]) then
+        for playername, durationInfo in pairs(self.watched[auraname].players) do
+          if(durationInfo.expirationTime < bestExpirationTime) then
+            bestDuration = durationInfo.duration;
+            bestExpirationTime = durationInfo.expirationTime;
+            bestName = durationInfo.name;
+            bestIcon = durationInfo.icon;
+          end
+        end
+      end
+    end
+    
+    return bestDuration, bestExpirationTime, bestName, bestIcon;
+  end
+  
+  function aura_cache.AssertAura(self, auraname, playername, duration, expirationTime, name, icon)
     if not(self.watched[auraname].players[playername]) then
-      self.watched[auraname].players[playername] = true;
       self.watched[auraname].number = self.watched[auraname].number + 1;
     end
+    self.watched[auraname].players[playername] = {
+      duration = duration,
+      expirationTime = expirationTime,
+      name = name,
+      icon = icon
+    };
   end
-  aura_cache.raid.AssertAura = AssertAura;
-  aura_cache.party.AssertAura = AssertAura;
   
-  local function DeassertAura(self, auraname, playername)
+  function aura_cache.DeassertAura(self, auraname, playername)
     if(self.watched[auraname] and self.watched[auraname].players[playername]) then
       self.watched[auraname].players[playername] = nil;
       self.watched[auraname].number = self.watched[auraname].number - 1;
     end
   end
-  aura_cache.raid.DeassertAura = DeassertAura;
-  aura_cache.party.DeassertAura = DeassertAura;
   
-  local function AssertMember(self, playername, forceupdate)
+  function aura_cache.AssertMember(self, playername, forceupdate)
     if not(self.players[playername]) then
       self.players[playername] = true;
       self.max = self.max + 1;
@@ -178,10 +187,8 @@ do
       self:ForceUpdate();
     end
   end
-  aura_cache.raid.AssertMember = AssertMember;
-  aura_cache.party.AssertMember = AssertMember;
   
-  local function DeassertMember(self, playername)
+  function aura_cache.DeassertMember(self, playername)
     if(self.players[playername]) then
       self.players[playername] = nil;
       for auraname, _ in pairs(self.watched) do
@@ -190,10 +197,8 @@ do
       self.max = self.max - 1;
     end
   end
-  aura_cache.raid.DeassertMember = DeassertMember;
-  aura_cache.party.DeassertMember = DeassertMember;
   
-  local function AssertMemberList(self, playernames)
+  function aura_cache.AssertMemberList(self, playernames)
     local toAdd = {};
     local toDelete = {};
     for playername, _ in pairs(playernames) do
@@ -215,8 +220,6 @@ do
     end
     self:ForceUpdate();
   end
-  aura_cache.raid.AssertMemberList = AssertMemberList;
-  aura_cache.party.AssertMemberList = AssertMemberList;
 end
 WeakAuras.aura_cache = aura_cache;
 
@@ -227,8 +230,7 @@ groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function()
   local numRaid = GetNumRaidMembers();
   local numParty = GetNumPartyMembers();
-  local raidMembers = {};
-  local partyMembers = {[GetUnitName("player")] = true};
+  local groupMembers = {};
   
   local groupCutoff = 8;
   if(numRaid > 0 and IsInInstance()) then
@@ -240,19 +242,27 @@ groupFrame:SetScript("OnEvent", function()
     end
   end
   
-  for i=1,numRaid do
-    local name, _, subgroup = GetRaidRosterInfo(i);
-    if(name and subgroup <= groupCutoff) then
-      raidMembers[name] = true;
+  inGroup = true;
+  if(numRaid > 0) then
+    for i=1,numRaid do
+      local name, _, subgroup = GetRaidRosterInfo(i);
+      if(name and subgroup <= groupCutoff) then
+        groupMembers[name] = true;
+      end
     end
+    aura_cache:AssertMemberList(groupMembers);
+  else
+    groupMembers[GetUnitName("player")] = true;
+    if(numParty > 0) then
+      for i=1,numParty do
+        local uid = "party"..i;
+        groupMembers[GetUnitName(uid)] = true;
+      end
+    else
+      inGroup = false;
+    end
+    aura_cache:AssertMemberList(groupMembers);
   end
-  aura_cache.raid:AssertMemberList(raidMembers);
-  
-  for i=1,numParty do
-    local uid = "party"..i;
-    partyMembers[GetUnitName(uid)] = true;
-  end
-  aura_cache.party:AssertMemberList(partyMembers);
 end);
 
 local duration_cache = {};
@@ -459,8 +469,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAuras.ScanAuras("player");
     WeakAuras.ScanAuras("target");
     WeakAuras.ScanAuras("focus");
-    WeakAuras.ScanAurasParty();
-    WeakAuras.ScanAurasRaid();
+    WeakAuras.ScanAurasGroup();
     WeakAuras.ForceEvents();
     
     squelch_actions = false;
@@ -491,30 +500,31 @@ function WeakAuras.Toggle()
 end
 
 function WeakAuras.ScanAurasParty()
-  local numParty = GetNumPartyMembers();
-  if(numParty > 0) then
-    for i=1,numParty do
-      local uid = "party"..i;
-      WeakAuras.ScanAuras(uid);
-    end
-  end
-  WeakAuras.ScanAuras("player");
 end
 
-function WeakAuras.ScanAurasRaid()
+function WeakAuras.ScanAurasGroup()
   local numRaid = GetNumRaidMembers();
   if(numRaid > 0) then
     for i=1,numRaid do
       local uid = "raid"..i;
       WeakAuras.ScanAuras(uid);
     end
-  elseif(loaded_auras["raid"]) then
+  --[[elseif(loaded_auras["raid"]) then
     for id, triggers in pairs(loaded_auras["raid"]) do
       for triggernum, data in pairs(triggers) do
         WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
       end
+    end]]
+  else
+    local numParty = GetNumPartyMembers();
+    if(numParty > 0) then
+      for i=1,numParty do
+        local uid = "party"..i;
+        WeakAuras.ScanAuras(uid);
+      end
     end
   end
+  WeakAuras.ScanAuras("player");
 end
 
 function WeakAuras.ScanAll()
@@ -525,10 +535,8 @@ function WeakAuras.ScanAll()
   end
   WeakAuras.ReloadAll();
   for unit, auras in pairs(loaded_auras) do
-    if(unit == "party") then
-      WeakAuras.ScanAurasParty();
-    elseif(unit == "raid") then
-      WeakAuras.ScanAurasRaid();
+    if(unit == "group") then
+      WeakAuras.ScanAurasGroup();
     else
       WeakAuras.ScanAuras(unit);
     end
@@ -579,9 +587,7 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
       --This throttles aura scans to only happen at most once per frame
       if(loaded_auras[arg1]) then
         pending_aura_scans[arg1] = true;
-      elseif(loaded_auras["raid"] and arg1:sub(0, 4) == "raid") then
-        pending_aura_scans[arg1] = true;
-      elseif(loaded_auras["party"] and arg1:sub(0, 5) == "party") then
+      elseif(loaded_auras["group"] and (arg1:sub(0, 4) == "raid" or arg1:sub(0, 5) == "party")) then
         pending_aura_scans[arg1] = true;
       end
     end
@@ -911,15 +917,15 @@ function WeakAuras.ScanAuras(unit)
   if(unit == "raid") then error("incorrect unit 'raid'!") end
   local aura_list, aura_object;
   if(unit:sub(0, 4) == "raid") then
-    if(aura_cache.raid.players[GetUnitName(unit, true)]) then
-      aura_list = loaded_auras["raid"];
-      aura_object = aura_cache.raid;
+    if(aura_cache.players[GetUnitName(unit, true)]) then
+      aura_list = loaded_auras["group"];
+      aura_object = aura_cache;
     end
   elseif(unit:sub(0, 5) == "party") then
-    aura_list = loaded_auras["party"];
-    aura_object = aura_cache.party;
+    aura_list = loaded_auras["group"];
+    aura_object = aura_cache;
   else
-    if(unit == "player" and loaded_auras["party"]) then
+    if(unit == "player" and loaded_auras["group"]) then
       WeakAuras.ScanAuras("party0");
     end
     aura_list = loaded_auras[unit];
@@ -938,7 +944,7 @@ function WeakAuras.ScanAuras(unit)
             active = true;
             db.tempIconCache[name] = icon;
             if(aura_object) then
-              aura_object:AssertAura(checkname, GetUnitName(unit, true));
+              aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon);
             else
               WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
               break;
@@ -951,8 +957,12 @@ function WeakAuras.ScanAuras(unit)
           if(data.group_count) then
             local count, max = aura_object:GetNumber(data.names), aura_object:GetMaxNumber();
             local satisfies_count = data.group_count(count, max);
+            if(data.hideAlone and not inGroup) then
+              satisfies_count = false;
+            end
             if(satisfies_count) then
-              WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, 0, math.huge);
+              local duration, expirationTime, name, icon = aura_cache:GetDynamicInfo(data.names);
+              WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
             else
               WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
             end
@@ -1025,10 +1035,8 @@ function WeakAuras.ConditionsChanged()
     end
   end
   for unit, auras in pairs(loaded_auras) do
-    if(unit == "raid") then
-      WeakAuras.ScanAurasRaid();
-    elseif(unit == "party") then
-      WeakAuras.ScanAurasParty();
+    if(unit == "group") then
+      WeakAuras.ScanAurasGroup();
     else
       WeakAuras.ScanAuras(unit);
     end
@@ -1272,7 +1280,7 @@ function WeakAuras.pAdd(data)
           countFunc = WeakAuras.LoadFunction(countFuncStr);
           
           local group_countFunc, group_countFuncStr;
-          if(trigger.unit == "raid" or trigger.unit == "party") then
+          if(trigger.unit == "group") then
             local count, countType = WeakAuras.ParseNumber(trigger.group_count);
             if(trigger.group_countOperator and count and countType) then
               if(countType == "whole") then
@@ -1285,7 +1293,7 @@ function WeakAuras.pAdd(data)
             end
             group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
             for index, auraname in pairs(trigger.names) do
-              aura_cache[trigger.unit]:Watch(auraname);
+              aura_cache:Watch(auraname);
             end
           end
           
@@ -1305,9 +1313,10 @@ function WeakAuras.pAdd(data)
             ownOnly = trigger.ownOnly,
             inverse = trigger.inverse,
             region = region,
-            numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
+            numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
+            hideAlone = trigger.hideAlone
           };
-        elseif(triggerType == "event") then
+        elseif(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
           elseif not(event_prototypes[trigger.event]) then
@@ -1446,7 +1455,7 @@ function WeakAuras.SetRegion(data)
       else
         local region;
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
-          region = regionTypes[regionType].create(frame);
+          region = regionTypes[regionType].create(frame, data);
           regions[id] = {
             regionType = regionType,
             region = region
@@ -1926,11 +1935,8 @@ end
 function WeakAuras.CanHaveDuration(data)
   if(
     (
-      data.trigger.type == "aura" and not(
-        data.trigger.inverse
-        or data.trigger.unit == "party"
-        or data.trigger.unit == "raid"
-      )
+      data.trigger.type == "aura"
+      and not data.trigger.inverse
     )
     or (
       data.trigger.type == "event"
@@ -1971,11 +1977,7 @@ function WeakAuras.CanHaveAuto(data)
   if(
     (
       data.trigger.type == "aura"
-      and not (
-        data.trigger.inverse
-        or data.trigger.unit == "party"
-        or data.trigger.unit == "raid"
-      )
+      and not data.trigger.inverse
     )
     or (
       data.trigger.type == "event"

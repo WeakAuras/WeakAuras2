@@ -502,6 +502,47 @@ WeakAuras.event_prototypes = {
     end,
     automatic = true
   },
+  ["Shards"] = {
+    events = {
+      "UNIT_POWER",
+      "PLAYER_TARGET_CHANGED",
+      "PLAYER_FOCUS_CHANGED"
+    },
+    force_events = {
+      "player",
+      "target",
+      "focus",
+      "pet"
+    },
+    name = L["Shards"],
+    init = function(trigger)
+      return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+    end,
+    args = {
+      {
+        name = "unit",
+        required = true,
+        display = L["Unit"],
+        type = "select",
+        init = "arg",
+        values = "actual_unit_types"
+      },
+      {
+        name = "power",
+        display = L["Shards"],
+        type = "number",
+        init = "UnitPower(unit, 10)"
+      },
+      {
+        hidden = true,
+        test = "UnitExists(concernedUnit)"
+      }
+    },
+    durationFunc = function(trigger)
+      return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10), function() return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10) end;
+    end,
+    automatic = true
+  },
   --Todo: Give useful options to condition based on GUID and flag info
   --Todo: Allow options to pass information from combat message to the display?
   ["Combat Log"] = {
@@ -798,10 +839,12 @@ duration = duration or 0;
       trigger.spellName = trigger.spellName or 0;
       local spellName = type(trigger.spellName) == "number" and trigger.spellName or "\""..trigger.spellName.."\"";
       local ret = [[
-local startTime, duration = GetSpellCooldown(%s);
+local spellName = %s;
+local startTime, duration = GetSpellCooldown(spellName);
 startTime = startTime or 0;
 duration = duration or 0;
 local cooledDown;
+print(spellName, startTime, duration, WeakAuras.spellCooldownCache[spellName]);
 if(startTime == 0 and WeakAuras.spellCooldownCache[%s] and WeakAuras.spellCooldownCache[%s] ~= 0) then
   cooledDown = true;
 elseif(duration > 1.51 and startTime > 0) then
@@ -824,12 +867,12 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
         test = "cooledDown"
       }
     },
-    durationFunc = function(trigger)
+    --[[durationFunc = function(trigger)
       local startTime, duration = GetSpellCooldown(trigger.spellName or 0);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
-    end,
+    end,]]
     nameFunc = function(trigger)
       local name = GetSpellInfo(trigger.spellName or 0);
       if(name) then

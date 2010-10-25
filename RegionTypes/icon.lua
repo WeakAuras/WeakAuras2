@@ -19,7 +19,7 @@ local default = {
   zoom = 0
 };
 
-local function create(parent)
+local function create(parent, data)
   local font = "GameFontHighlight";
   
   local region = CreateFrame("FRAME", nil, parent);
@@ -32,7 +32,19 @@ local function create(parent)
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
   icon:SetAllPoints(region);
   
-  local cooldown = CreateFrame("COOLDOWN", nil, region);
+  --This section creates a unique frame id for the cooldown frame so that it can be created with a global reference
+  --The reason is so that WeakAuras cooldown frames can interact properly with OmniCC (i.e., put on its blacklist for timer overlays)
+  local id = data.id;
+  local frameId = id:lower():gsub(" ", "_");
+  if(_G[frameId]) then
+    local baseFrameId = frameId;
+    local num = 2;
+    while(_G[frameId]) do
+      frameId = baseFrameId..num;
+      num = num + 1;
+    end
+  end
+  local cooldown = CreateFrame("COOLDOWN", "WeakAurasCooldown"..frameId, region);
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
   

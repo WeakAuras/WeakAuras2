@@ -16,8 +16,7 @@ WeakAuras.unit_types = {
   player = L["Player"],
   target = L["Target"],
   focus = L["Focus"],
-  raid = L["Raid"],
-  party = L["Party"],
+  group = L["Group"],
   pet = L["Pet"]
 };
 WeakAuras.actual_unit_types = {
