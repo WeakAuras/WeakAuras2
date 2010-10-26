@@ -1274,7 +1274,7 @@ function WeakAuras.pAdd(data)
           else
             countFuncStr = function_strings.always;
           end
-          WeakAuras.LoadFunction(countFuncStr);
+          countFunc = WeakAuras.LoadFunction(countFuncStr);
           
           local group_countFunc, group_countFuncStr;
           if(trigger.unit == "group") then
