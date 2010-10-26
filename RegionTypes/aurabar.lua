@@ -330,7 +330,7 @@ local function modify(parent, region, data)
   end
   if(data.icon) then
     function region:SetIcon(path)
-      local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
+      local success = icon:SetTexture(WeakAuras.CanHaveAuto(data) and data.auto and path or data.displayIcon) and (WeakAuras.CanHaveAuto(data) and data.auto and path or data.displayIcon);
       if not(success) then
         icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
       end
@@ -348,7 +348,7 @@ local function modify(parent, region, data)
   end
   
   function region:SetName(name)
-    text:SetText((data.auto and name or data.displayText) or data.id);
+    text:SetText((WeakAuras.CanHaveAuto(data) and data.auto and name or data.displayText) or data.id);
   end
   
   local function UpdateTime()

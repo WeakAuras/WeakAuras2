@@ -499,9 +499,6 @@ function WeakAuras.Toggle()
   end
 end
 
-function WeakAuras.ScanAurasParty()
-end
-
 function WeakAuras.ScanAurasGroup()
   local numRaid = GetNumRaidMembers();
   if(numRaid > 0) then
@@ -1277,7 +1274,7 @@ function WeakAuras.pAdd(data)
           else
             countFuncStr = function_strings.always;
           end
-          countFunc = WeakAuras.LoadFunction(countFuncStr);
+          WeakAuras.LoadFunction(countFuncStr);
           
           local group_countFunc, group_countFuncStr;
           if(trigger.unit == "group") then
@@ -1978,6 +1975,7 @@ function WeakAuras.CanHaveAuto(data)
     (
       data.trigger.type == "aura"
       and not data.trigger.inverse
+      and not WeakAuras.CanGroupShowWithZero(data)
     )
     or (
       data.trigger.type == "event"
@@ -1990,6 +1988,28 @@ function WeakAuras.CanHaveAuto(data)
     )
   ) then
     return true;
+  else
+    return false;
+  end
+end
+
+function WeakAuras.CanGroupShowWithZero(data)
+  local trigger = data.trigger;
+  local group_countFunc, group_countFuncStr;
+  if(trigger.unit == "group") then
+    local count, countType = WeakAuras.ParseNumber(trigger.group_count);
+    if(trigger.group_countOperator and count and countType) then
+      if(countType == "whole") then
+        group_countFuncStr = function_strings.count:format(trigger.group_countOperator, count);
+      else
+        group_countFuncStr = function_strings.count_fraction:format(trigger.group_countOperator, count);
+      end
+    else
+      group_countFuncStr = function_strings.count:format(">", 0);
+    end
+    group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
+    
+    return group_countFunc(0, 1);
   else
     return false;
   end

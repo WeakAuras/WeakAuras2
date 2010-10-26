@@ -722,7 +722,7 @@ end
 
 function WeakAuras.SetIconName(data, region)
   local name, icon;
-  if(data.trigger.type == "aura" and not (data.trigger.inverse or data.trigger.unit == "party" or data.trigger.unit == "raid")) then
+  if(data.trigger.type == "aura" and not (data.trigger.inverse or WeakAuras.CanGroupShowWithZero(data))) then
     --Try to get an icon from the icon cache
     for index, checkname in pairs(data.trigger.names) do
       if(iconCache[checkname]) then
