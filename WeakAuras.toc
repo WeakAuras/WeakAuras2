@@ -10,6 +10,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
+## OptionalDeps: SharedMedia, SharedMediaAdditionalFonts
 embeds.xml
 
 Init.lua
