@@ -1,5 +1,6 @@
 local ADDON_NAME = "WeakAuras";
-local timer = LibStub("AceTimer-3.0");
+local timer = {};
+LibStub("AceTimer-3.0"):Embed(timer);
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
@@ -363,7 +364,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
         if(arg.init == "arg") then
           tinsert(input, name);
         end
-        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or ((trigger["use_"..name] or arg.required) and trigger[name])) then
+        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
           end
@@ -378,6 +379,24 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
               else
                 test = name;
               end
+            end
+          elseif(arg.type == "multiselect") then
+            if(trigger["use_"..name] == false) then
+              test = "(";
+              local any = false;
+              for value, _ in pairs(trigger[name].multi) do
+                test = test..name.."=="..(tonumber(value) or "'"..value.."'").." or ";
+                any = true;
+              end
+              if(any) then
+                test = test:sub(0, -5);
+              else
+                test = "(false";
+              end
+              test = test..")";
+            elseif(trigger["use_"..name]) then
+              local value = trigger[name].single;
+              test = trigger[name].single and "("..name.."=="..(tonumber(value) or "'"..value.."'")..")";
             end
           elseif(arg.type == "toggle") then
             if(trigger["use_"..name]) then
@@ -396,7 +415,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
               test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
             end
           else
-            test = "("..name..(trigger[name.."_operator"] or "==")..(number or "'"..trigger[name].."'")..")";
+            test = "("..name..(trigger[name.."_operator"] or "==")..(number or "'"..(trigger[name] or "").."'")..")";
           end
           if(arg.required) then
             tinsert(required, test);
@@ -506,12 +525,6 @@ function WeakAuras.ScanAurasGroup()
       local uid = "raid"..i;
       WeakAuras.ScanAuras(uid);
     end
-  --[[elseif(loaded_auras["raid"]) then
-    for id, triggers in pairs(loaded_auras["raid"]) do
-      for triggernum, data in pairs(triggers) do
-        WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
-      end
-    end]]
   else
     local numParty = GetNumPartyMembers();
     if(numParty > 0) then
@@ -625,12 +638,23 @@ end
 function WeakAuras.ActivateEvent(id, triggernum, data)
   if(WeakAuras.PassesConditionChecks(id)) then
     if(data.numAdditionalTriggers > 0) then
-      if(data.region:EnableTrigger(triggernum)) then
-        data.region.active = true;
+      if(data.inverse) then
+        if(data.region:DisableTrigger(triggernum)) then
+          data.region.active = nil;
+        end
+      else
+        if(data.region:EnableTrigger(triggernum)) then
+          data.region.active = true;
+        end
       end
     else
-      data.region.active = true;
-      data.region:Expand();
+      if(data.inverse) then
+        data.region.active = nil;
+        data.region:Collapse();
+      else
+        data.region.active = true;
+        data.region:Expand();
+      end
     end
   end
   WeakAuras.SetEventDynamics(id, triggernum, data);
@@ -715,21 +739,35 @@ function WeakAuras.ActivateEventTimer(id, triggernum, duration)
   timers[id][triggernum] = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum) end, duration);
 end
 
-function WeakAuras.EndEvent(id, triggernum)
+function WeakAuras.EndEvent(id, triggernum, force)
   local data = events[id] and events[id][triggernum];
   if(data) then
     if(data.numAdditionalTriggers > 0) then
-      if(data.region:DisableTrigger(triggernum)) then
-        data.region.active = nil;
+      if(data.inverse and not force) then
+        if(data.region:EnableTrigger(triggernum)) then
+          data.region.active = true;
+        end
+      else
+        if(data.region:DisableTrigger(triggernum)) then
+          data.region.active = nil;
+        end
       end
     else
-      data.region.active = nil;
-      data.region:Collapse();
+      if(data.inverse and not force) then
+        data.region.active = true;
+        data.region:Expand();
+      else
+        data.region.active = nil;
+        data.region:Collapse();
+      end
     end
     if(timers[id] and timers[id][triggernum]) then
       timer:CancelTimer(timers[id][triggernum], true);
       timers[id][triggernum] = nil;
     end
+  end
+  if not(force) then
+    WeakAuras.SetEventDynamics(id, triggernum, data);
   end
 end
 
@@ -1097,7 +1135,7 @@ function WeakAuras.Delete(data)
   
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:Hide();
-  WeakAuras.EndEvent(id);
+  WeakAuras.EndEvent(id, 0, true);
   
   regions[id].region = nil;
   regions[id] = nil;
@@ -1183,6 +1221,26 @@ function WeakAuras.AddIfNecessary(table)
   end
 end
 
+--Takes as input a table of display data and attempts to update it to be compatible with the current version
+function WeakAuras.Modernize(data)
+  local load = data.load;
+  for index, prototype in pairs(WeakAuras.load_prototype.args) do
+    if(prototype.type == "multiselect") then
+      local protoname = prototype.name;
+      if(not load[protoname] or type(load[protoname]) ~= "table") then
+        local value = load[protoname];
+        load[protoname] = {};
+        if(value) then
+          load[protoname].single = value;
+        end
+      end
+      load[protoname].multi = load[protoname].multi or {};
+    elseif(load[protoname] and type(load[protoname]) == "table") then
+      load[protoname] = nil;
+    end
+  end
+end
+
 function WeakAuras.AddMany(...)
   local table = {...};
   local idtable = {};
@@ -1228,6 +1286,7 @@ end
 
 --Dummy add function to protect errors from propagating out of the real add function
 function WeakAuras.Add(data)
+  WeakAuras.Modernize(data);
   local status, err = pcall(WeakAuras.pAdd, data);
   if not(status) then
     print(err);
@@ -1246,7 +1305,10 @@ function WeakAuras.pAdd(data)
     data.actions = data.actions or {};
     data.actions.start = data.actions.start or {};
     data.actions.finish = data.actions.finish or {};
-    local loadFunc = WeakAuras.LoadFunction(WeakAuras.ConstructFunction(load_prototype, data, nil, nil, nil, "load"));
+    local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data, nil, nil, nil, "load")
+    local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
+    --print("load", id);
+    --print(loadFuncStr);
     
     events[id] = nil;
     auras[id] = nil;
@@ -1331,8 +1393,8 @@ function WeakAuras.pAdd(data)
             else
               triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum);
             end
-            --print(id, "trigger")
-            --print(triggerFuncStr);
+            print(id, "trigger")
+            print(triggerFuncStr);
             triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
             WeakAuras.triggerFunc = triggerFunc;
             WeakAuras.triggerStr = triggerFuncStr;
@@ -1365,6 +1427,7 @@ function WeakAuras.pAdd(data)
               cooldown = data.cooldown,
               icon = data.icon,
               event = trigger.event,
+              inverse = trigger.use_inverse,
               subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
               unevent = trigger.unevent,
               durationFunc = event_prototypes[trigger.event].durationFunc,
@@ -1948,6 +2011,7 @@ function WeakAuras.CanHaveDuration(data)
           and data.trigger.duration
         )
       )
+      and not data.trigger.use_inverse
     )
   ) then
     if(

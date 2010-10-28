@@ -21,12 +21,6 @@ externals:
   url: svn://svn.wowace.com/wow/libsharedmedia-3-0/mainline/trunk
  libs/LibDataBroker-1.1:
   url: git://github.com/tekkub/libdatabroker-1-1.git
- SharedMedia:
-  url: svn://svn.wowace.com/wow/sharedmedia/mainline/trunk
- SharedMediaAdditionalFonts:
-  url: svn://svn.wowace.com/wow/shared-media-additional-fonts/mainline/trunk
 
 move-folders:
  WeakAuras/WeakAurasOptions: WeakAurasOptions
- WeakAuras/SharedMedia: SharedMedia
- WeakAuras/SharedMediaAdditionalFonts: SharedMediaAdditionalFonts

@@ -305,14 +305,14 @@ WeakAuras.load_prototype = {
     {
       name = "class",
       display = "Player Class",
-      type = "select",
+      type = "multiselect",
       values = "class_types",
       init = "arg"
     },
     {
       name = "spec",
       display = "Talent Specialization",
-      type = "select",
+      type = "multiselect",
       values = "spec_types",
       init = "arg"
     },
@@ -325,7 +325,7 @@ WeakAuras.load_prototype = {
     {
       name = "size",
       display = "Instance Type",
-      type = "select",
+      type = "multiselect",
       values = "group_types",
       init = "arg"
     },
@@ -792,6 +792,7 @@ local startTime, duration = GetSpellCooldown(%s);
 startTime = startTime or 0;
 duration = duration or 0;
 ]];
+      --ret = ret..(trigger.use_inverse and "local inverse = true;" or "local inverse = false;").."\n";
       return ret:format(spellName);
     end,
     args = {
@@ -799,17 +800,26 @@ duration = duration or 0;
         name = "spellName",
         display = L["Spell"],
         type = "spell",
-        test = "startTime > 0"
+        test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
       },
       {
         name = "cooldownDuration",
         display = L["Ignore GCD"],
         type = "toggle",
         test = "duration > 1.51"
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = GetSpellCooldown(trigger.spellName or 0);
+      local startTime, duration;
+      if not(trigger.use_inverse) then
+        startTime, duration = GetSpellCooldown(trigger.spellName or 0);
+      end
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
@@ -1000,7 +1010,8 @@ WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
       trigger.spellName = trigger.spellName or 0;
       local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
       local ret = [[
-local spellName = %s;
+local spell = %s;
+local spellName = GetSpellInfo(spell);
 local startTime, duration = GetSpellCooldown(spellName);
 startTime = startTime or 0;
 duration = duration or 0;
@@ -1013,7 +1024,7 @@ onCooldown = duration > 1.51;
         name = "spellName",
         display = L["Spell"],
         type = "spell",
-        test = "IsUsableSpell(spellName) and not onCooldown"
+        test = "IsUsableSpell(spell) and not onCooldown"
       },
       --This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       --IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
@@ -1021,7 +1032,7 @@ onCooldown = duration > 1.51;
         name = "targetRequired",
         display = L["Require Valid Target"],
         type = "toggle",
-        test = "IsSpellInRange(spellName)"
+        test = "IsSpellInRange(spellName or '')"
       }
     },
     nameFunc = function(trigger)

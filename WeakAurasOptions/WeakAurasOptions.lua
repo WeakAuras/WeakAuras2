@@ -218,6 +218,39 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           hidden = hidden,
           order = order
         };
+      elseif(arg.type == "multiselect") then
+        options["use_"..name] = {
+          type = "toggle",
+          name = arg.display,
+          get = function() 
+            local value = trigger["use_"..realname];
+            if(value == nil) then return false;
+            elseif(value == false) then return "false";
+            else return "true"; end
+          end,
+          set = function(info, v)
+            if(v) then
+              trigger["use_"..realname] = true;
+            else
+              local value = trigger["use_"..realname];
+              if(value == false) then trigger["use_"..realname] = nil;
+              else
+                trigger["use_"..realname] = false
+                if(trigger[realname].single) then
+                  trigger[realname].multi[trigger[realname].single] = true;
+                end
+              end
+            end
+            WeakAuras.Add(data);
+            WeakAuras.ScanForLoads();
+            WeakAuras.SetThumbnail(data);
+            WeakAuras.SetIconNames(data);
+            WeakAuras.UpdateDisplayButton(data);
+            WeakAuras.SortDisplayButtons();
+          end,
+          hidden = hidden,
+          order = order
+        };
       else
         options["use_"..name] = {
           type = "toggle",
@@ -515,6 +548,91 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           order = order - 1;
         end
         order = order + 1;
+      elseif(arg.type == "multiselect") then
+        options[name] = {
+          type = "select",
+          name = arg.display,
+          order = order,
+          values = WeakAuras[arg.values],
+          hidden = function() return hidden or trigger["use_"..realname] == false; end,
+          disabled = function() return not trigger["use_"..realname]; end,
+          get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
+          set = function(info, v)
+            trigger[realname].single = v;
+            WeakAuras.Add(data);
+            WeakAuras.ScanForLoads();
+            WeakAuras.SetThumbnail(data);
+            WeakAuras.SetIconNames(data);
+            WeakAuras.UpdateDisplayButton(data);
+            WeakAuras.SortDisplayButtons();
+          end
+        };
+        if(arg.required and not triggertype) then
+          options[name].set = function(info, v)
+            trigger[realname].single = v;
+            untrigger[realname].single = v;
+            WeakAuras.Add(data);
+            WeakAuras.ScanForLoads();
+            WeakAuras.SetThumbnail(data);
+            WeakAuras.SetIconNames(data);
+            WeakAuras.UpdateDisplayButton(data);
+            WeakAuras.SortDisplayButtons();
+          end
+        end
+        
+        options["multiselect_"..name] = {
+          type = "multiselect",
+          name = "",
+          order = order,
+          hidden = function() return hidden or trigger["use_"..realname] ~= false; end,
+          values = WeakAuras[arg.values],
+          --width = "half",
+          get = function(info, v)
+            if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
+              return trigger[realname].multi[v];
+            end
+          end,
+          set = function(info, v)
+            if(trigger[realname].multi[v]) then
+              trigger[realname].multi[v] = nil;
+            else
+              trigger[realname].multi[v] = true;
+            end
+            WeakAuras.Add(data);
+            WeakAuras.ScanForLoads();
+            WeakAuras.SetThumbnail(data);
+            WeakAuras.SetIconNames(data);
+            WeakAuras.UpdateDisplayButton(data);
+            WeakAuras.SortDisplayButtons();
+          end
+        };
+        if(arg.required and not triggertype) then
+          options[name].set = function(info, v)
+            if(trigger[realname].multi[v]) then
+              trigger[realname].multi[v] = nil;
+            else
+              trigger[realname].multi[v] = true;
+            end
+            if(untrigger[realname].multi[v]) then
+              untrigger[realname].multi[v] = nil;
+            else
+              untrigger[realname].multi[v] = true;
+            end
+            WeakAuras.Add(data);
+            WeakAuras.ScanForLoads();
+            WeakAuras.SetThumbnail(data);
+            WeakAuras.SetIconNames(data);
+            WeakAuras.UpdateDisplayButton(data);
+            WeakAuras.SortDisplayButtons();
+          end
+        end
+        
+        if(arg.required and triggertype == "untrigger") then
+          options[name] = nil;
+          options["multiselect_"..name] = nil;
+        else
+          order = order + 1;
+        end
       end
     end
   end
@@ -3060,6 +3178,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           tremove(data.additional_triggers, optionTriggerChoices[id]);
           optionTriggerChoices[id] = optionTriggerChoices[id] - 1;
         end
+        WeakAuras.Add(data);
         WeakAuras.ReloadTriggerOptions(data);
       end,
       hidden = function() return optionTriggerChoices[id] == 0; end
