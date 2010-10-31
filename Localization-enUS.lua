@@ -437,6 +437,12 @@ L["Multiple Triggers"] = "Multiple Triggers"
 L["Monster Yell"] = "Monster Yell"
 L["Shards"] = "Shards"
 L["Hide When Not In Group"] = "Hide When Not In Group"
+L["Custom Trigger"] = "Custom Trigger"
+L["Custom Untrigger"] = "Custom Untrigger"
+L["Event(s)"] = "Event(s)"
+L["Every Frame"] = "Every Frame"
+L["Check On..."] = "Check On..."
+L["Event Type"] = "Event Type"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
@@ -503,6 +509,29 @@ L["Expansion is disabled because this group has no children"] = "Expansion is di
 L["Add a new display"] = "Add a new display"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."
+L["Custom trigger status tooltip"] = [[
+Choose which events cause the custom trigger to be checked.
+Since this is a status-type trigger, the specified events may be called by WeakAuras without the expected arguments.
+Multiple events can be specified using commas or spaces.
+
+|cFF4444FFFor example:|r
+UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+]]
+L["Custom trigger event tooltip"] = [[
+Choose which events cause the custom trigger to be checked.
+Multiple events can be specified using commas or spaces.
+
+|cFF4444FFFor example:|r
+UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+]]
+L["Custom untrigger event tooltip"] = [[
+Choose which events cause the custom un-trigger to be checked.
+This can be different than the events defined for the trigger.
+Multiple events can be specified using commas or spaces.
+
+|cFF4444FFFor example:|r
+UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+]]
 
 --Sound names - low priority for localization
 L.sounds = {

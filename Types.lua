@@ -2,7 +2,9 @@
   
 WeakAuras.trigger_types = {
   aura = L["Aura"],
-  event = L["Other"]
+  status = L["Status"],
+  event = L["Event"],
+  custom = L["Custom"]
 };
 WeakAuras.debuff_types = {
   HELPFUL = L["Buff"],
@@ -108,6 +110,10 @@ WeakAuras.blend_types = {
   ADD = L["Glow"],
   BLEND = L["Opaque"],
 };
+WeakAuras.check_types = {
+  update = L["Every Frame"],
+  event = L["Event(s)"]
+}
 WeakAuras.point_types = {
   BOTTOMLEFT = L["Bottom Left"],
   BOTTOM = L["Bottom"],
@@ -121,7 +127,15 @@ WeakAuras.point_types = {
 };
 WeakAuras.event_types = {};
 for name, prototype in pairs(WeakAuras.event_prototypes) do
-  WeakAuras.event_types[name] = prototype.name;
+  if(prototype.type == "event") then
+    WeakAuras.event_types[name] = prototype.name;
+  end
+end
+WeakAuras.status_types = {};
+for name, prototype in pairs(WeakAuras.event_prototypes) do
+  if(prototype.type == "status") then
+    WeakAuras.status_types[name] = prototype.name;
+  end
 end
 WeakAuras.subevent_prefix_types = {
   SWING = L["Swing"],
@@ -637,6 +651,10 @@ WeakAuras.rune_specific_types = {
   [4] = L["Unholy Rune #2"],
   [5] = L["Frost Rune #1"],
   [6] = L["Frost Rune #2"]
+};
+WeakAuras.custom_trigger_types = {
+  ["event"] = L["Event"],
+  ["status"] = L["Status"]
 };
 WeakAuras.eventend_types = {
   ["timed"] = L["Timed"],

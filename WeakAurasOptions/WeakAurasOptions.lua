@@ -71,6 +71,7 @@ local single_form_types = WeakAuras.single_form_types;
 local blend_types = WeakAuras.blend_types;
 local point_types = WeakAuras.point_types;
 local event_types = WeakAuras.event_types;
+local status_types = WeakAuras.status_types;
 local subevent_prefix_types = WeakAuras.subevent_prefix_types;
 local subevent_actual_prefix_types = WeakAuras.subevent_actual_prefix_types;
 local subevent_suffix_types = WeakAuras.subevent_suffix_types;
@@ -86,6 +87,8 @@ local operator_types = WeakAuras.operator_types;
 local string_operator_types = WeakAuras.string_operator_types;
 local weapon_types = WeakAuras.weapon_types;
 local rune_specific_types = WeakAuras.rune_specific_types;
+local check_types = WeakAuras.check_types;
+local custom_trigger_types = WeakAuras.custom_trigger_types;
 local eventend_types = WeakAuras.eventend_types;
 local autoeventend_types = WeakAuras.autoeventend_types;
 local justify_types = WeakAuras.justify_types;
@@ -848,7 +851,7 @@ function WeakAuras.SetIconName(data, region)
         break;
       end
     end
-  elseif(data.trigger.type == "event" and data.trigger.event and WeakAuras.event_prototypes[data.trigger.event]) then
+  elseif((data.trigger.type == "event" or data.trigger.type == "status") and data.trigger.event and WeakAuras.event_prototypes[data.trigger.event]) then
     if(WeakAuras.event_prototypes[data.trigger.event].iconFunc) then
       icon = WeakAuras.event_prototypes[data.trigger.event].iconFunc(data.trigger);
     end
@@ -1191,7 +1194,7 @@ local function replaceNameDescFuncs(intable, data)
             if(name == "") then
               return name;
             else
-              return "|cFF4080FF"..name;
+              return "|cFF4080FF"..(name or "error");
             end
           end
         end
@@ -2588,9 +2591,6 @@ function WeakAuras.AddOption(id, data)
   WeakAuras.ReloadTriggerOptions(data);
 end
 
-local function unused()
-end
-
 function WeakAuras.ReloadTriggerOptions(data)
   local id = data.id;
   local trigger, untrigger;
@@ -3195,15 +3195,45 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Type"],
       desc = L["The type of trigger"],
       order = 6,
-      values = trigger_types
+      values = trigger_types,
+      set = function(info, v)
+        trigger.type = v;
+        if(trigger.event) then
+          local prototype = WeakAuras.event_prototypes[trigger.event];
+          if(prototype) then
+            if(v == "status" and prototype.type == "event") then
+              trigger.event = "Health";
+            elseif(v == "event" and prototype.type == "status") then
+              trigger.event = "Chat Message";
+            end
+          end
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.ReloadTriggerOptions(data);
+      end
     },
     event = {
       type = "select",
-      name = L["Event"],
+      name = function()
+        if(trigger.type == "event") then
+          return L["Event"];
+        elseif(trigger.type == "status") then
+          return L["Status"];
+        end
+      end,
       order = 7,
       width = "double",
-      values = event_types,
-      hidden = function() return not (trigger.type == "event"); end
+      values = function()
+        if(trigger.type == "event") then
+          return event_types;
+        elseif(trigger.type == "status") then
+          return status_types;
+        end
+      end,
+      hidden = function() return not (trigger.type == "event" or trigger.type == "status"); end
     },
     subeventPrefix = {
       type = "select",
@@ -3218,6 +3248,195 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 9,
       values = subevent_suffix_types,
       hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and subevent_actual_prefix_types[trigger.subeventPrefix]); end
+    },
+    custom_type = {
+      type = "select",
+      name = L["Event Type"],
+      order = 7,
+      width = "double",
+      values = custom_trigger_types,
+      hidden = function() return not (trigger.type == "custom") end
+    },
+    check = {
+      type = "select",
+      name = L["Check On..."],
+      order = 8,
+      values = check_types,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "status" and trigger.check ~= "update") end,
+      get = function() return trigger.check end,
+      set = function(info, v)
+        trigger.check = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    check2 = {
+      type = "select",
+      name = L["Check On..."],
+      order = 8,
+      width = "double",
+      values = check_types,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "status" and trigger.check == "update") end,
+      get = function() return trigger.check end,
+      set = function(info, v)
+        trigger.check = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    events = {
+      type = "input",
+      name = L["Event(s)"],
+      desc = L["Custom trigger status tooltip"],
+      order = 9,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "status" and trigger.check ~= "update") end,
+      get = function() return trigger.events end,
+      set = function(info, v)
+        trigger.events = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    events2 = {
+      type = "input",
+      name = L["Event(s)"],
+      desc = L["Custom trigger event tooltip"],
+      width = "double",
+      order = 9,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.check ~= "update") end,
+      get = function() return trigger.events end,
+      set = function(info, v)
+        trigger.events = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    custom_trigger = {
+      type = "input",
+      name = L["Custom Trigger"],
+      order = 10,
+      multiline = true,
+      width = "double",
+      hidden = function() return not (trigger.type == "custom") end,
+      get = function() return trigger.custom end,
+      set = function(info, v)
+        trigger.custom = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    custom_trigger_error = {
+      type = "description",
+      name = function()
+        if not(trigger.custom) then
+          return "";
+        end
+        local _, errorString = loadstring("return "..trigger.custom);
+        return errorString and "|cFFFF0000"..errorString or "";
+      end,
+      width = "double",
+      order = 11,
+      hidden = function()
+        if not(trigger.type == "custom" and trigger.custom) then
+          return true;
+        else
+          local loadedFunction, errorString = loadstring("return "..trigger.custom);
+          if(errorString and not loadedFunction) then
+            return false;
+          else
+            return true;
+          end
+        end
+      end
+    },
+    custom_hide = {
+      type = "select",
+      name = L["Hide"],
+      order = 12,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+      values = eventend_types,
+      get = function() trigger.custom_hide = trigger.custom_hide or "timed"; return trigger.custom_hide end,
+      set = function(info, v)
+        trigger.custom_hide = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    custom_hide2 = {
+      type = "select",
+      name = L["Hide"],
+      order = 12,
+      width = "double",
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide == "custom") end,
+      values = eventend_types,
+      get = function() return trigger.custom_hide end,
+      set = function(info, v)
+        trigger.custom_hide = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    duration = {
+      type = "input",
+      name = L["Duration (s)"],
+      order = 13,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end
+    },
+    custom_untrigger = {
+      type = "input",
+      name = L["Custom Untrigger"],
+      order = 14,
+      multiline = true,
+      width = "double",
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide == "custom")) end,
+      get = function() return untrigger and untrigger.custom end,
+      set = function(info, v)
+        if(untrigger) then
+          untrigger.custom = v;
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    custom_untrigger_error = {
+      type = "description",
+      name = function()
+        if not(untrigger and untrigger.custom) then
+          return "";
+        end
+        local _, errorString = loadstring("return "..(untrigger and untrigger.custom or ""));
+        return errorString and "|cFFFF0000"..errorString or "";
+      end,
+      width = "double",
+      order = 15,
+      hidden = function()
+        if not(trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide == "custom") and untrigger and untrigger.custom) then
+          return true;
+        else
+          local loadedFunction, errorString = loadstring("return "..(untrigger and untrigger.custom or ""));
+          if(errorString and not loadedFunction) then
+            return false;
+          else
+            return true;
+          end
+        end
+      end
     },
     conditionsHeader = {
       type = "header",
@@ -3260,6 +3479,10 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(value == false) then data.conditions[type] = nil;
           else data.conditions[type] = false end
         end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
       end,
       order = order
     };
@@ -3282,7 +3505,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
       removeFuncs(displayOptions[id].args.trigger);
       displayOptions[id].args.trigger.args.type.set = options_set;
-    elseif(optionTriggerChoices[id] >= 0 and getAll(data, {"trigger", "type"}) == "event") then
+    elseif(optionTriggerChoices[id] >= 0 and (getAll(data, {"trigger", "type"}) == "event" or getAll(data, {"trigger", "type"}) == "status")) then
       local event = getAll(data, {"trigger", "event"});
       local unevent = getAll(data, {"trigger", "unevent"});
       if(event and WeakAuras.event_prototypes[event]) then
@@ -3393,7 +3616,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     end
     if(trigger.type == "aura") then
       displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
-    elseif(trigger.type == "event") then
+    elseif(trigger.type == "event" or trigger.type == "status") then
       if(WeakAuras.event_prototypes[trigger.event]) then
         if(trigger.event == "Combat Log") then
           displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, (trigger.subeventPrefix or ""), (trigger.subeventSuffix or ""), optionTriggerChoices[id]));
@@ -3424,7 +3647,6 @@ function WeakAuras.ReloadTriggerOptions(data)
     
     displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
     
-    trigger_options.type.set = options_set;
     trigger_options.event.set = function(info, v, ...)
       local prototype = WeakAuras.event_prototypes[v];
       if(prototype) then
@@ -5214,8 +5436,12 @@ function WeakAuras.UpdateDisplayButton(data)
             namestable[1][1] = L["Aura:"];
           end
         end
-      elseif(data.trigger.type == "event") then
-        tinsert(namestable, {L["Trigger:"], (event_types[data.trigger.event] or L["Undefined"])});
+      elseif(data.trigger.type == "event" or data.trigger.type == "status") then
+        if(data.trigger.type == "event") then
+          tinsert(namestable, {L["Trigger:"], (event_types[data.trigger.event] or L["Undefined"])});
+        else
+          tinsert(namestable, {L["Trigger:"], (status_types[data.trigger.event] or L["Undefined"])});
+        end
         if(data.trigger.event == "Combat Log" and data.trigger.subeventPrefix and data.trigger.subeventSuffix) then
           tinsert(namestable, {L["Message type:"], (subevent_prefix_types[data.trigger.subeventPrefix] or L["Undefined"]).." "..(subevent_suffix_types[data.trigger.subeventSuffix] or L["Undefined"])});
         end

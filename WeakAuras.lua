@@ -61,6 +61,24 @@ local load_prototype = WeakAuras.load_prototype;
 local event_prototypes = WeakAuras.event_prototypes;
 local conditions = WeakAuras.conditions;
 
+function WeakAuras.split(input)
+  input = input or "";
+  local ret = {};
+  local split, element = true;
+  split = input:find("[,%s]");
+  while(split) do
+    element, input = input:sub(1, split-1), input:sub(split+1);
+    if(element ~= "") then
+      tinsert(ret, element);
+    end
+    split = input:find("[,%s]");
+  end
+  if(input ~= "") then
+    tinsert(ret, input);
+  end
+  return ret;
+end
+
 function WeakAuras.validate(input, default)
   for field, defaultValue in pairs(default) do
     if(type(defaultValue) == "table" and type(input[field]) ~= "table") then
@@ -415,6 +433,9 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
               test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
             end
           else
+            if(type(trigger[name]) == "table") then
+              trigger[name] = "error";
+            end
             test = "("..name..(trigger[name.."_operator"] or "==")..(number or "'"..(trigger[name] or "").."'")..")";
           end
           if(arg.required) then
@@ -902,7 +923,7 @@ function WeakAuras.LoadEvent(id, triggers)
   loaded[id] = true;
   
   for triggernum, data in pairs(triggers) do
-    local events = event_prototypes[data.event] and event_prototypes[data.event].events or {}
+    local events = data.events or {};
     for index, event in pairs(events) do
       loaded_events[event] = loaded_events[event] or {};
       if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
@@ -1239,6 +1260,20 @@ function WeakAuras.Modernize(data)
       load[protoname] = nil;
     end
   end
+  for triggernum=0,9 do
+    local trigger, untrigger;
+    if(triggernum == 0) then
+      trigger = data.trigger;
+    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+      trigger = data.additional_triggers[triggernum].trigger;
+    end
+    if(trigger and trigger.event and (trigger.type == "status" or trigger.type == "event")) then
+      local prototype = event_prototypes[trigger.event];
+      if(prototype) then
+        trigger.type = prototype.type;
+      end
+    end
+  end
 end
 
 function WeakAuras.AddMany(...)
@@ -1375,83 +1410,113 @@ function WeakAuras.pAdd(data)
             numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
             hideAlone = trigger.hideAlone
           };
-        elseif(triggerType == "status" or triggerType == "event") then
-          if not(trigger.event) then
-            error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
-          elseif not(event_prototypes[trigger.event]) then
-            if(event_protyptes["Health"]) then
-              trigger.event = "Health";
-            else
-              error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
-            end
-          elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
-            error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
-          else
-            local triggerFuncStr, triggerFunc;
-            if(trigger.event == "Combat Log") then
-              triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix);
-            else
-              triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum);
-            end
-            print(id, "trigger")
-            print(triggerFuncStr);
-            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
-            WeakAuras.triggerFunc = triggerFunc;
-            WeakAuras.triggerStr = triggerFuncStr;
-            
-            local untriggerFuncStr, untriggerFunc
-            if(trigger.unevent == "custom") then
-              if(trigger.event == "Combat Log") then
-                untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix, "untrigger");
+        elseif(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
+          local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
+          local trigger_events = {};
+          if(triggerType == "status" or triggerType == "event") then
+            if not(trigger.event) then
+              error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
+            elseif not(event_prototypes[trigger.event]) then
+              if(event_protyptes["Health"]) then
+                trigger.event = "Health";
               else
-                untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, "untrigger");
+                error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
               end
-            elseif(trigger.unevent == "auto") then
-              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, nil, true);
-            end
-            if(untriggerFuncStr) then
-              --print(id, "untrigger")
-              --print(untriggerFuncStr);
-              untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr);
-              WeakAuras.untriggerFunc = untriggerFunc;
-              WeakAuras.untriggerStr = untriggerFuncStr;
-            end
-            
-            events[id] = events[id] or {};
-            events[id][triggernum] = {
-              trigger = triggerFunc,
-              untrigger = untriggerFunc,
-              load = loadFunc,
-              bar = data.bar,
-              timer = data.timer,
-              cooldown = data.cooldown,
-              icon = data.icon,
-              event = trigger.event,
-              inverse = trigger.use_inverse,
-              subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
-              unevent = trigger.unevent,
-              durationFunc = event_prototypes[trigger.event].durationFunc,
-              nameFunc = event_prototypes[trigger.event].nameFunc,
-              iconFunc = event_prototypes[trigger.event].iconFunc,
-              stacksFunc = event_prototypes[trigger.event].stacksFunc,
-              expiredHideFunc = event_prototypes[trigger.event].expiredHideFunc,
-              region = region,
-              numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
-            };
-
-            local prototype = event_prototypes[trigger.event];
-            if(prototype) then
-              for index, event in pairs(prototype.events) do
-                frame:RegisterEvent(event);
-                if(prototype.force_events) then
-                  WeakAuras.forceable_events[event] = prototype.force_events;
+            elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
+              error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
+            else
+              if(trigger.event == "Combat Log") then
+                triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix);
+              else
+                triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum);
+              end
+              --print(id, "trigger")
+              --print(triggerFuncStr);
+              triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
+              WeakAuras.triggerFunc = triggerFunc;
+              WeakAuras.triggerStr = triggerFuncStr;
+              
+              if(trigger.unevent == "custom") then
+                if(trigger.event == "Combat Log") then
+                  untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix, "untrigger");
+                else
+                  untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, "untrigger");
+                end
+              elseif(trigger.unevent == "auto") then
+                untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, nil, true);
+              end
+              if(untriggerFuncStr) then
+                --print(id, "untrigger")
+                --print(untriggerFuncStr);
+                untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr);
+                WeakAuras.untriggerFunc = untriggerFunc;
+                WeakAuras.untriggerStr = untriggerFuncStr;
+              end
+              
+              local prototype = event_prototypes[trigger.event];
+              if(prototype) then
+                trigger_events = prototype.events;
+                for index, event in ipairs(trigger_events) do
+                  frame:RegisterEvent(event);
+                  if(prototype.force_events) then
+                    WeakAuras.forceable_events[event] = prototype.force_events;
+                  end
                 end
               end
             end
-
-            if(trigger.unevent == "timed") then
-              events[id][triggernum].duration = tonumber(data.trigger.duration);
+          else
+            triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""));
+            if(trigger.custom_type == "status" or trigger.custom_hide == "custom") then
+              untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
             end
+            
+            trigger_events = WeakAuras.split(trigger.events);
+            for index, event in pairs(trigger_events) do
+              frame:RegisterEvent(event);
+              if(trigger.custom_type == "status") then
+                WeakAuras.forceable_events[event] = true;
+              end
+            end
+          end
+            
+          events[id] = events[id] or {};
+          events[id][triggernum] = {
+            trigger = triggerFunc,
+            untrigger = untriggerFunc,
+            load = loadFunc,
+            bar = data.bar,
+            timer = data.timer,
+            cooldown = data.cooldown,
+            icon = data.icon,
+            event = trigger.event,
+            events = trigger_events,
+            inverse = trigger.use_inverse,
+            subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
+            unevent = trigger.unevent,
+            durationFunc = triggerType ~= "custom" and event_prototypes[trigger.event].durationFunc,
+            nameFunc = triggerType ~= "custom" and event_prototypes[trigger.event].nameFunc,
+            iconFunc = triggerType ~= "custom" and event_prototypes[trigger.event].iconFunc,
+            stacksFunc = triggerType ~= "custom" and event_prototypes[trigger.event].stacksFunc,
+            expiredHideFunc = triggerType ~= "custom" and event_prototypes[trigger.event].expiredHideFunc,
+            region = region,
+            numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
+          };
+
+          if(
+            (
+              (
+                triggerType == "status"
+                or triggerType == "event"
+              )
+              and trigger.unevent == "timed"
+            )
+            or (
+              triggerType == "custom"
+              and trigger.custom_type == "event"
+              and trigger.custom_hide == "timed"
+            )
+          ) then
+            events[id][triggernum].duration = tonumber(trigger.duration);
           end
         elseif(triggerType) then
           error("Improper arguments to WeakAuras.Add - display "..id.." trigger type \""..triggerType.."\" is not supported for trigger number "..triggernum);
@@ -1999,7 +2064,10 @@ function WeakAuras.CanHaveDuration(data)
       and not data.trigger.inverse
     )
     or (
-      data.trigger.type == "event"
+      (
+        data.trigger.type == "event"
+        or data.trigger.type == "status"
+      )
       and (
         (
           data.trigger.event
@@ -2012,6 +2080,12 @@ function WeakAuras.CanHaveDuration(data)
         )
       )
       and not data.trigger.use_inverse
+    )
+    or (
+      data.trigger.type == "custom"
+      and data.trigger.custom_type == "event"
+      and data.trigger.custom_hide == "timed"
+      and data.trigger.duration
     )
   ) then
     if(
@@ -2042,7 +2116,10 @@ function WeakAuras.CanHaveAuto(data)
       and not WeakAuras.CanGroupShowWithZero(data)
     )
     or (
-      data.trigger.type == "event"
+      (
+        data.trigger.type == "event"
+        or data.trigger.type == "status"
+      )
       and data.trigger.event
       and WeakAuras.event_prototypes[data.trigger.event]
       and (

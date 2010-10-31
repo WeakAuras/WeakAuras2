@@ -341,6 +341,7 @@ WeakAuras.load_prototype = {
 
 WeakAuras.event_prototypes = {
   ["Combo Points"] = {
+    type = "status",
     events = {
       "UNIT_COMBO_POINTS"
     },
@@ -360,6 +361,7 @@ WeakAuras.event_prototypes = {
     automatic = true
   },
   ["Health"] = {
+    type = "status",
     events = {
       "UNIT_HEALTH",
       "PLAYER_TARGET_CHANGED",
@@ -407,6 +409,7 @@ WeakAuras.event_prototypes = {
     automatic = true
   },
   ["Power"] = {
+    type = "status",
     events = {
       "UNIT_POWER",
       "PLAYER_TARGET_CHANGED",
@@ -462,6 +465,7 @@ WeakAuras.event_prototypes = {
     automatic = true
   },
   ["Holy Power"] = {
+    type = "status",
     events = {
       "UNIT_POWER",
       "PLAYER_TARGET_CHANGED",
@@ -503,6 +507,7 @@ WeakAuras.event_prototypes = {
     automatic = true
   },
   ["Shards"] = {
+    type = "status",
     events = {
       "UNIT_POWER",
       "PLAYER_TARGET_CHANGED",
@@ -546,6 +551,7 @@ WeakAuras.event_prototypes = {
   --Todo: Give useful options to condition based on GUID and flag info
   --Todo: Allow options to pass information from combat message to the display?
   ["Combat Log"] = {
+    type = "event",
     events = {
       "COMBAT_LOG_EVENT_UNFILTERED"
     },
@@ -777,6 +783,7 @@ WeakAuras.event_prototypes = {
     }
   },
   ["Cooldown (Spell)"] = {
+    type = "status",
     events = {
       "SPELL_UPDATE_COOLDOWN",
       "UNIT_POWER",
@@ -839,6 +846,7 @@ duration = duration or 0;
     automaticrequired = true
   },
   ["Cooldown Ready (Spell)"] = {
+    type = "event",
     events = {
       "SPELL_UPDATE_COOLDOWN",
       "UNIT_POWER",
@@ -854,7 +862,6 @@ local startTime, duration = GetSpellCooldown(spellName);
 startTime = startTime or 0;
 duration = duration or 0;
 local cooledDown;
-print(spellName, startTime, duration, WeakAuras.spellCooldownCache[spellName]);
 if(startTime == 0 and WeakAuras.spellCooldownCache[%s] and WeakAuras.spellCooldownCache[%s] ~= 0) then
   cooledDown = true;
 elseif(duration > 1.51 and startTime > 0) then
@@ -897,6 +904,7 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
     end
   },
   ["Cooldown Progress (Item)"] = {
+    type = "status",
     events = {
       "SPELL_UPDATE_COOLDOWN",
       "ACTIONBAR_UPDATE_COOLDOWN"
@@ -942,6 +950,7 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
     automaticrequired = true
   },
   ["Cooldown Ready (Item)"] = {
+    type = "event",
     events = {
       "SPELL_UPDATE_COOLDOWN",
       "ACTIONBAR_UPDATE_COOLDOWN"
@@ -997,6 +1006,7 @@ WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
     end
   },
   ["Action Usable"] = {
+    type = "status",
     events = {
       "SPELL_UPDATE_USABLE",
       "PLAYER_TARGET_CHANGED",
@@ -1050,6 +1060,7 @@ onCooldown = duration > 1.51;
     automaticrequired = true
   },
   ["Totem"] = {
+    type = "status",
     events = {
       "PLAYER_TOTEM_UPDATE"
     },
@@ -1100,6 +1111,7 @@ onCooldown = duration > 1.51;
     automaticrequired = true
   },
   ["Item Count"] = {
+    type = "status",
     events = {
       "BAG_UPDATE",
       "UNIT_SPELLCAST_SUCCEEDED"
@@ -1149,6 +1161,7 @@ onCooldown = duration > 1.51;
     automaticrequired = true
   },
   ["Stance/Form/Aura"] = {
+    type = "status",
     events = {
       "UPDATE_SHAPESHIFT_FORM"
     },
@@ -1266,6 +1279,7 @@ onCooldown = duration > 1.51;
   --Since any UI element that allows you to set your tracking should display what tracking you have on.
   --[[
   ["Tracking"] = {
+    type = "status",
     event = "MINIMAP_UPDATE_TRACKING",
     name = L["Tracking"],
     init = function() return "local tracking = GetTracking
@@ -1282,6 +1296,7 @@ onCooldown = duration > 1.51;
   --than it is worth. Thus, Weapon Enchant triggers are NYI.
   --[[
   ["Weapon Enchanted"] = {
+    type = "status",
     events = {
       "BAG_UPDATE"
     },
@@ -1309,6 +1324,7 @@ onCooldown = duration > 1.51;
   },
   ]]
   ["Chat Message"] = {
+    type = "event",
     events = {
       "CHAT_MSG_BATTLEGROUND",
       "CHAT_MSG_BATTLEGROUND_LEADER",
@@ -1355,6 +1371,7 @@ onCooldown = duration > 1.51;
     }
   },
   ["Death Knight Rune"] = {
+    type = "status",
     events = {
       "RUNE_POWER_UPDATE",
       "RUNE_TYPE_UPDATE"
@@ -1421,6 +1438,7 @@ onCooldown = duration > 1.51;
     automaticrequired = true
   },
   ["Item Equipped"] = {
+    type = "status",
     events = {
       "UNIT_INVENTORY_CHANGED"
     },
@@ -1446,6 +1464,7 @@ onCooldown = duration > 1.51;
     automaticrequired = true
   },
   ["Threat Situation"] = {
+    type = "status",
     events = {
       "UNIT_THREAT_SITUATION_UPDATE",
       "PLAYER_TARGET_CHANGED"
