@@ -848,32 +848,12 @@ duration = duration or 0;
   ["Cooldown Ready (Spell)"] = {
     type = "event",
     events = {
-      "SPELL_UPDATE_COOLDOWN",
-      "UNIT_POWER",
-      "ACTIONBAR_UPDATE_COOLDOWN"
+      "SPELL_COOLDOWN_READY"
     },
     name = L["Cooldown Ready (Spell)"],
     init = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and trigger.spellName or "\""..trigger.spellName.."\"";
-      local ret = [[
-local spellName = %s;
-local startTime, duration = GetSpellCooldown(spellName);
-startTime = startTime or 0;
-duration = duration or 0;
-local cooledDown;
-if(startTime == 0 and WeakAuras.spellCooldownCache[%s] and WeakAuras.spellCooldownCache[%s] ~= 0) then
-  cooledDown = true;
-elseif(duration > 1.51 and startTime > 0) then
-  local timer = LibStub("AceTimer-3.0");
-  if(WeakAuras.spellCooldownReadyTimers[%s]) then
-    timer:CancelTimer(WeakAuras.spellCooldownReadyTimers[%s], true);
-  end
-  WeakAuras.spellCooldownReadyTimers[%s] = timer:ScheduleTimer(function() WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN") end, startTime + duration - GetTime());
-end
-WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
-]];
-      return ret:format(spellName, spellName, spellName, spellName, spellName, spellName, spellName);
+      trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+      WeakAuras.WatchSpellCooldown(trigger.spellName);
     end,
     args = {
       {
@@ -881,15 +861,9 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
         required = true,
         display = L["Spell"],
         type = "spell",
-        test = "cooledDown"
+        init = "arg"
       }
     },
-    --[[durationFunc = function(trigger)
-      local startTime, duration = GetSpellCooldown(trigger.spellName or 0);
-      startTime = startTime or 0;
-      duration = duration or 0;
-      return duration, startTime + duration;
-    end,]]
     nameFunc = function(trigger)
       local name = GetSpellInfo(trigger.spellName or 0);
       if(name) then
@@ -952,30 +926,12 @@ WeakAuras.spellCooldownCache[%s] = duration > 1.51 and startTime or 0;
   ["Cooldown Ready (Item)"] = {
     type = "event",
     events = {
-      "SPELL_UPDATE_COOLDOWN",
-      "ACTIONBAR_UPDATE_COOLDOWN"
+      "ITEM_COOLDOWN_READY"
     },
     name = L["Cooldown Ready (Item)"],
     init = function(trigger)
-      trigger.itemName = type(trigger.itemName) == "number" and trigger.itemName or 0;
-      local itemName = trigger.itemName;
-      local ret = [[
-local startTime, duration = GetItemCooldown(%i);
-startTime = startTime or 0;
-duration = duration or 0;
-local cooledDown;
-if(startTime == 0 and WeakAuras.itemCooldownCache[%i] and WeakAuras.itemCooldownCache[%i] ~= 0) then
-  cooledDown = true;
-elseif(duration > 1.51 and startTime > 0) then
-  local timer = LibStub("AceTimer-3.0");
-  if(WeakAuras.itemCooldownReadyTimers[%i]) then
-    timer:CancelTimer(WeakAuras.itemCooldownReadyTimers[%i], true);
-  end
-  WeakAuras.itemCooldownReadyTimers[%i] = timer:ScheduleTimer(function() WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN") end, startTime + duration - GetTime());
-end
-WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
-]];
-      return ret:format(itemName, itemName, itemName, itemName, itemName, itemName, itemName);
+      trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+      WeakAuras.WatchItemCooldown(trigger.itemName);
     end,
     args = {
       {
@@ -983,15 +939,9 @@ WeakAuras.itemCooldownCache[%i] = duration > 1.51 and startTime or 0;
         required = true,
         display = L["Item"],
         type = "item",
-        test = "cooledDown"
+        init = "arg"
       }
     },
-    durationFunc = function(trigger)
-      local startTime, duration = GetItemCooldown(trigger.itemName or 0);
-      startTime = startTime or 0;
-      duration = duration or 0;
-      return duration, startTime + duration;
-    end,
     nameFunc = function(trigger)
       local name = GetItemInfo(trigger.itemName or 0);
       if(name) then

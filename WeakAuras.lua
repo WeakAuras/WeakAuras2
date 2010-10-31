@@ -284,6 +284,87 @@ groupFrame:SetScript("OnEvent", function()
   end
 end);
 
+do
+  local cdReadyFrame;
+  
+  local spellCdReadyCache = {};
+  local itemCdReadyCache = {};
+  local spellCdReadyTimers = {};
+  local itemCdReadyTimers = {};
+  
+  function WeakAuras.InitCooldownReady()
+    local cdReadyFrame = CreateFrame("FRAME");
+    cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+    cdReadyFrame:RegisterEvent("UNIT_POWER");
+    cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
+    cdReadyFrame:SetScript("OnEvent", WeakAuras.CheckCooldownReady);
+  end
+  
+  function WeakAuras.CheckCooldownReady()
+    for id, oldStartTime in pairs(spellCdReadyCache) do
+      local startTime, duration = GetSpellCooldown(id);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      if(startTime == 0 and oldStartTime ~= 0) then
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
+      elseif(duration > 1.51 and startTime > 0) then
+        if(spellCdReadyTimers[id]) then
+          timer:CancelTimer(spellCdReadyTimers[id], true);
+        end
+        local function callback()
+          spellCdReadyTimers[id] = nil;
+          WeakAuras.CheckCooldownReady();
+        end
+        spellCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
+      end
+      spellCdReadyCache[id] = duration > 1.51 and startTime or 0;
+    end
+    
+    for id, oldStartTime in pairs(itemCdReadyCache) do
+      local startTime, duration = GetItemCooldown(id);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      if(startTime == 0 and oldStartTime ~= 0) then
+        WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+      elseif(duration > 1.51 and startTime > 0) then
+        if(itemCdReadyTimers[id]) then
+          timer:CancelTimer(itemCdReadyTimers[id], true);
+        end
+        local function callback()
+          itemCdReadyTimers[id] = nil;
+          WeakAuras.CheckCooldownReady();
+        end
+        itemCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
+      end
+      itemCdReadyCache[id] = duration > 1.51 and startTime or 0;
+    end
+  end
+  
+  function WeakAuras.WatchSpellCooldown(id)
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+    
+    id = id or 0;
+    local startTime, duration = GetSpellCooldown(id);
+    if(startTime) then
+      spellCdReadyCache[id] = startTime;
+    end
+  end
+  
+  function WeakAuras.WatchItemCooldown(id)
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+    
+    id = id or 0;
+    local startTime, duration = GetItemCooldown(id);
+    if(startTime) then
+      itemCdReadyCache[id] = startTime;
+    end
+  end
+end
+
 local duration_cache = {};
 do
   function duration_cache:SetDurationInfo(id, duration, expirationTime)
@@ -448,7 +529,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
     end
   end
   local ret = "return function("..table.concat(input, ", ")..")\n";
-  ret = ret..init;
+  ret = ret..(init or "");
   ret = ret.."if(";
   ret = ret..((#required > 0) and table.concat(required, " and ").." and " or "");
   if(inverse) then
@@ -2153,5 +2234,71 @@ function WeakAuras.CanGroupShowWithZero(data)
     return group_countFunc(0, 1);
   else
     return false;
+  end
+end
+
+
+function WeakAuras.CorrectAuraName(input)
+  local spellId = tonumber(input);
+  if(spellId) then
+    local name, _, icon = GetSpellInfo(spellId);
+    if(name) then
+      iconCache[name] = iconCache[name] or icon;
+      return name;
+    else
+      return "Invalid Spell ID";
+    end
+  else
+    local ret = WeakAuras.BestKeyMatch(input, iconCache);
+    if(ret == "") then
+      return "No Match Found";
+    else
+      return ret;
+    end
+  end
+end
+
+function WeakAuras.CorrectSpellName(input)
+  local inputId = tonumber(input);
+  if(inputId) then
+    local name = GetSpellInfo(inputId);
+    if(name) then
+      return inputId;
+    else
+      return nil;
+    end
+  elseif(input) then
+    local link;
+    if(input:sub(1,1) == "\124") then
+      link = input;
+    else
+      link = GetSpellLink(input);
+    end
+    if(link) then
+      local itemId = link:match("spell:(%d+)");
+      return tonumber(itemId);
+    else
+      return nil;
+    end
+  end
+end
+
+function WeakAuras.CorrectItemName(input)
+  local inputId = tonumber(input);
+  if(inputId) then
+    local name = GetItemInfo(inputId);
+    if(name) then
+      return inputId;
+    else
+      return nil;
+    end
+  elseif(input) then
+    local _, link = GetItemInfo(input);
+    if(link) then
+      local itemId = link:match("item:(%d+)");
+      return tonumber(itemId);
+    else
+      return nil;
+    end
   end
 end

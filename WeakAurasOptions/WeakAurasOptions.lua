@@ -478,7 +478,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             if(arg.type == "aura") then
               fixedInput = WeakAuras.CorrectAuraName(v);
             elseif(arg.type == "spell") then
+                print(fixedInput);
               fixedInput = WeakAuras.CorrectSpellName(v);
+                print(fixedInput);
             elseif(arg.type == "item") then
               fixedInput = WeakAuras.CorrectItemName(v);
             end
@@ -497,9 +499,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             if(arg.type == "aura") then
               fixedInput = WeakAuras.CorrectAuraName(v);
             elseif(arg.type == "spell") then
-              fixedInput = GetSpellInfo(v);
+                print(fixedInput);
+              fixedInput = WeakAuras.CorrectSpellName(v);
+                print(fixedInput);
             elseif(arg.type == "item") then
-              fixedInput = GetItemInfo(v);
+              fixedInput = WeakAuras.CorrectItemName(v);
             end
             trigger[realname] = fixedInput;
             untrigger[realname] = fixedInput;
@@ -5765,62 +5769,6 @@ function WeakAuras.ResetMoverSizer()
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end
 end
-
-function WeakAuras.CorrectAuraName(input)
-  local spellId = tonumber(input);
-  if(spellId) then
-    local name, _, icon = GetSpellInfo(spellId);
-    if(name) then
-      iconCache[name] = iconCache[name] or icon;
-      return name;
-    else
-      return "Invalid Spell ID";
-    end
-  else
-    local ret = WeakAuras.BestKeyMatch(input, iconCache);
-    if(ret == "") then
-      return "No Match Found";
-    else
-      return ret;
-    end
-  end
-end
-
-function WeakAuras.CorrectSpellName(input)
-  local link;
-  if(input:sub(1,1) == "\124") then
-    link = input;
-  else
-    link = GetSpellLink(input);
-  end
-  if(link) then
-    local itemId = link:match("spell:(%d+)");
-    return tonumber(itemId);
-  else
-    return nil;
-  end
-end
-
-function WeakAuras.CorrectItemName(input)
-  local inputId = tonumber(input);
-  if(inputId) then
-    local name = GetItemInfo(inputId);
-    if(name) then
-      return inputId;
-    else
-      return nil;
-    end
-  else
-    local _, link = GetItemInfo(input);
-    if(link) then
-      local itemId = link:match("item:(%d+)");
-      return tonumber(itemId);
-    else
-      return nil;
-    end
-  end
-end
-    
 
 function WeakAuras.BestKeyMatch(nearkey, table)
   for key, value in pairs(table) do
