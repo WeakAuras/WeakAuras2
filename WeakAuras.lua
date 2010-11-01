@@ -834,11 +834,13 @@ function WeakAuras.SetEventDynamics(id, triggernum, data)
 end
 
 function WeakAuras.ActivateEventTimer(id, triggernum, duration)
-  if(timers[id] and timers[id][triggernum]) then
-    timer:CancelTimer(timers[id][triggernum], true);
+  if not(paused) then
+    if(timers[id] and timers[id][triggernum]) then
+      timer:CancelTimer(timers[id][triggernum], true);
+    end
+    timers[id] = timers[id] or {};
+    timers[id][triggernum] = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum) end, duration);
   end
-  timers[id] = timers[id] or {};
-  timers[id][triggernum] = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum) end, duration);
 end
 
 function WeakAuras.EndEvent(id, triggernum, force)

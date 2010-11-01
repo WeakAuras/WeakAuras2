@@ -310,6 +310,7 @@ local methods = {
     self.title:Show();
     self.data = {};
     self.frame:ClearAllPoints();
+    self:SetViewRegion();
   end
 }
 

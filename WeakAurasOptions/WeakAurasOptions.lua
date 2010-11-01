@@ -225,6 +225,16 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         options["use_"..name] = {
           type = "toggle",
           name = arg.display,
+          desc = function()
+            local v = trigger["use_"..realname];
+            if(v == true) then
+              return L["Multiselect single tooltip"];
+            elseif(v == false) then
+              return L["Multiselect multiple tooltip"];
+            else
+              return L["Multiselect ignored tooltip"];
+            end
+          end,
           get = function() 
             local value = trigger["use_"..realname];
             if(value == nil) then return false;
@@ -478,9 +488,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             if(arg.type == "aura") then
               fixedInput = WeakAuras.CorrectAuraName(v);
             elseif(arg.type == "spell") then
-                print(fixedInput);
               fixedInput = WeakAuras.CorrectSpellName(v);
-                print(fixedInput);
             elseif(arg.type == "item") then
               fixedInput = WeakAuras.CorrectItemName(v);
             end
@@ -499,9 +507,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             if(arg.type == "aura") then
               fixedInput = WeakAuras.CorrectAuraName(v);
             elseif(arg.type == "spell") then
-                print(fixedInput);
               fixedInput = WeakAuras.CorrectSpellName(v);
-                print(fixedInput);
             elseif(arg.type == "item") then
               fixedInput = WeakAuras.CorrectItemName(v);
             end
@@ -589,7 +595,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         
         options["multiselect_"..name] = {
           type = "multiselect",
-          name = "",
+          name = arg.display,
           order = order,
           hidden = function() return hidden or trigger["use_"..realname] ~= false; end,
           values = WeakAuras[arg.values],
@@ -612,6 +618,14 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
           end
+        };
+        options["multiselectspace_"..name] = {
+          type = "execute",
+          name = "",
+          order = (order - 0.5),
+          hidden = function() return hidden or trigger["use_"..realname] ~= false; end,
+          disabled = true,
+          image = function() return "", 52, 52 end
         };
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
@@ -926,7 +940,7 @@ local function removeFuncs(intable)
   end
 end
 
-local function getAll(data, info)
+local function getAll(data, info, ...)
   local combinedValues = {};
   local first = true;
   for index, childId in ipairs(data.controlledChildren) do
@@ -941,7 +955,7 @@ local function getAll(data, info)
       end
       for i=#childOptionTable,0,-1 do
         if(childOptionTable[i].get) then
-          local values = {childOptionTable[i].get(info)};
+          local values = {childOptionTable[i].get(info, ...)};
           if(first) then
             combinedValues = values;
             first = false;
@@ -3547,7 +3561,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       
       displayOptions[id].args.trigger.args.type.set = options_set;
       displayOptions[id].args.trigger.args.event.set = options_set;
-    else--[[if(getAll(data, {"trigger", "type"}) == nil) then]]
+    else
       displayOptions[id].args.trigger.args = trigger_options;
       removeFuncs(displayOptions[id].args.trigger);
     end
@@ -3736,7 +3750,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       type = "range",
       name = L["Width"],
       order = 60,
-      softMin = 0,
+      min = 1,
       softMax = screenWidth,
       bigStep = 1
     },
@@ -3744,7 +3758,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       type = "range",
       name = L["Height"],
       order = 65,
-      softMin = 0,
+      min = 1,
       softMax = screenHeight,
       bigStep = 1
     },
@@ -4273,19 +4287,19 @@ function WeakAuras.CreateFrame()
     texturePick.Close();
   end
   
-  local texturePickClose = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
-	texturePickClose:SetScript("OnClick", texturePick.Close)
-	texturePickClose:SetPoint("BOTTOMRIGHT", -27, 11)
-	texturePickClose:SetHeight(20)
-	texturePickClose:SetWidth(100)
-	texturePickClose:SetText(L["Okay"])
-  
   local texturePickCancel = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
 	texturePickCancel:SetScript("OnClick", texturePick.CancelClose)
-	texturePickCancel:SetPoint("RIGHT", texturePickClose, "LEFT", -10, 0)
+	texturePickCancel:SetPoint("BOTTOMRIGHT", -27, 11)
 	texturePickCancel:SetHeight(20)
 	texturePickCancel:SetWidth(100)
 	texturePickCancel:SetText(L["Cancel"])
+    
+  local texturePickClose = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
+	texturePickClose:SetScript("OnClick", texturePick.Close)
+	texturePickClose:SetPoint("RIGHT", texturePickCancel, "LEFT", -10, 0)
+	texturePickClose:SetHeight(20)
+	texturePickClose:SetWidth(100)
+	texturePickClose:SetText(L["Okay"])
   
   local iconPick = AceGUI:Create("InlineGroup");
   iconPick.frame:SetParent(frame);
@@ -4448,19 +4462,19 @@ function WeakAuras.CreateFrame()
     iconPick.Close();
   end
   
-  local iconPickClose = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
-	iconPickClose:SetScript("OnClick", iconPick.Close);
-	iconPickClose:SetPoint("BOTTOMRIGHT", -27, 11);
-	iconPickClose:SetHeight(20);
-	iconPickClose:SetWidth(100);
-	iconPickClose:SetText(L["Okay"]);
-  
   local iconPickCancel = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
 	iconPickCancel:SetScript("OnClick", iconPick.CancelClose);
-	iconPickCancel:SetPoint("RIGHT", iconPickClose, "LEFT", -10, 0);
+	iconPickCancel:SetPoint("BOTTOMRIGHT", -27, 11);
 	iconPickCancel:SetHeight(20);
 	iconPickCancel:SetWidth(100);
 	iconPickCancel:SetText(L["Cancel"]);
+  
+  local iconPickClose = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
+	iconPickClose:SetScript("OnClick", iconPick.Close);
+	iconPickClose:SetPoint("RIGHT", iconPickCancel, "LEFT", -10, 0);
+	iconPickClose:SetHeight(20);
+	iconPickClose:SetWidth(100);
+	iconPickClose:SetText(L["Okay"]);
   
   iconPickScroll.frame:SetPoint("BOTTOM", iconPickClose, "TOP", 0, 10);
   
@@ -5767,6 +5781,26 @@ end
 function WeakAuras.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
+  end
+end
+
+function WeakAuras.CorrectAuraName(input)
+  local spellId = tonumber(input);
+  if(spellId) then
+    local name, _, icon = GetSpellInfo(spellId);
+    if(name) then
+      iconCache[name] = iconCache[name] or icon;
+      return name;
+    else
+      return "Invalid Spell ID";
+    end
+  else
+    local ret = WeakAuras.BestKeyMatch(input, iconCache);
+    if(ret == "") then
+      return "No Match Found";
+    else
+      return ret;
+    end
   end
 end
 

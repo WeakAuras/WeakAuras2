@@ -532,6 +532,15 @@ Multiple events can be specified using commas or spaces.
 |cFF4444FFFor example:|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 ]]
+L["Multiselect ignored tooltip"] = [[
+|cFFFF0000Ignored|r - |cFF777777Single|r - |cFF777777Multiple|r
+This option will not be used to determine when this display should load]]
+L["Multiselect single tooltip"] = [[
+|cFF777777Ignored|r - |cFF00FF00Single|r - |cFF777777Multiple|r
+Only a single matching value can be picked]]
+L["Multiselect multiple tooltip"] = [[
+|cFF777777Ignored|r - |cFF777777Single|r - |cFF00FF00Multiple|r
+Any number of matching values can be picked]]
 
 --Sound names - low priority for localization
 L.sounds = {
