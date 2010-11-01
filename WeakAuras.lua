@@ -2239,27 +2239,6 @@ function WeakAuras.CanGroupShowWithZero(data)
   end
 end
 
-
-function WeakAuras.CorrectAuraName(input)
-  local spellId = tonumber(input);
-  if(spellId) then
-    local name, _, icon = GetSpellInfo(spellId);
-    if(name) then
-      iconCache[name] = iconCache[name] or icon;
-      return name;
-    else
-      return "Invalid Spell ID";
-    end
-  else
-    local ret = WeakAuras.BestKeyMatch(input, iconCache);
-    if(ret == "") then
-      return "No Match Found";
-    else
-      return ret;
-    end
-  end
-end
-
 function WeakAuras.CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then
