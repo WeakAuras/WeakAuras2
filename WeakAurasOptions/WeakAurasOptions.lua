@@ -4321,13 +4321,15 @@ function WeakAuras.CreateFrame()
 
     local distances = {};
     local names = {};
-
+    
+    subname = subname:lower();
+    
     local num = 0;
     if(subname ~= "") then
       for name, path in pairs(iconCache) do
         local bestDistance = math.huge;
         local bestName;
-        if(name:find(subname) or path:find(subname)) then
+        if(name:lower():find(subname) or path:lower():find(subname)) then
           if(doSort) then
             local distance = Lev(name, path:sub(17));
             if(distances[path]) then
