@@ -14,14 +14,14 @@ local function createOptions(id, data)
       name = L["Align"],
       order = 10,
       values = WeakAuras.align_types,
-      hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT") end,
+      hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") end,
     },
     rotated_align = {
       type = "select",
       name = L["Align"],
       order = 10,
       values = WeakAuras.rotated_align_types,
-      hidden = function() return (data.grow == "UP" or data.grow == "DOWN") end,
+      hidden = function() return (data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") end,
       get = function() return data.align; end,
       set = function(info, v) data.align = v; WeakAuras.Add(data); end
     },
@@ -29,9 +29,8 @@ local function createOptions(id, data)
       type = "range",
       name = L["Space"],
       order = 15,
-      min = 0,
-      max = 100,
-      step = 0.1,
+      softMin = 0,
+      softMax = 100,
       bigStep = 1
     },
     stagger = {
@@ -87,7 +86,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   size = size or 24;
   
   local selfPoint;
-  if(data.grow == "RIGHT") then
+  if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
     selfPoint = "LEFT";
     if(data.align == "LEFT") then
       selfPoint = "TOP"..selfPoint;
@@ -108,7 +107,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     elseif(data.align == "RIGHT") then
       selfPoint = selfPoint.."RIGHT";
     end
-  elseif(data.grow == "DOWN") then
+  elseif(data.grow == "DOWN" or data.grow == "VERTICAL") then
     selfPoint = "TOP";
     if(data.align == "LEFT") then
       selfPoint = selfPoint.."LEFT";
@@ -133,7 +132,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       end
     end
   end
-  if(data.grow == "LEFT" or data.grow == "RIGHT") then
+  if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
     maxHeight = maxHeight + (math.abs(data.stagger) * (#data.controlledChildren - 1));
   else
     maxWidth = maxWidth + (math.abs(data.stagger) * (#data.controlledChildren - 1));
@@ -151,7 +150,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   region:SetHeight(maxHeight * scale);
   
   local xOffset, yOffset = 0, 0;
-  if(data.grow == "RIGHT" or data.grow == "LEFT") then
+  if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
     if(data.align == "LEFT" and data.stagger > 0) then
       yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
     elseif(data.align == "RIGHT" and data.stagger < 0) then
@@ -201,7 +200,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       region.children[index]:SetPoint(selfPoint, region, selfPoint, xOffset * scale, yOffset * scale);
       region.children[index]:SetWidth(childData.width * scale);
       region.children[index]:SetHeight(childData.height * scale);
-      if(data.grow == "RIGHT") then
+      if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
         xOffset = xOffset + (childData.width + data.space);
         yOffset = yOffset + data.stagger;
       elseif(data.grow == "LEFT") then
@@ -210,7 +209,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       elseif(data.grow == "UP") then
         yOffset = yOffset + (childData.height + data.space);
         xOffset = xOffset + data.stagger;
-      elseif(data.grow == "DOWN") then
+      elseif(data.grow == "DOWN" or data.grow == "VERTICAL") then
         yOffset = yOffset - (childData.height + data.space);
         xOffset = xOffset + data.stagger;
       end

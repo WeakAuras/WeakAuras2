@@ -673,7 +673,9 @@ WeakAuras.grow_types = {
   ["LEFT"] = L["Left"],
   ["RIGHT"] = L["Right"],
   ["UP"] = L["Up"],
-  ["DOWN"] = L["Down"]
+  ["DOWN"] = L["Down"],
+  ["HORIZONTAL"] = L["Centered Horizontal"],
+  ["VERTICAL"] = L["Centered Vertical"]
 };
 WeakAuras.align_types = {
   ["LEFT"] = L["Left"],

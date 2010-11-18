@@ -443,6 +443,8 @@ L["Event(s)"] = "Event(s)"
 L["Every Frame"] = "Every Frame"
 L["Check On..."] = "Check On..."
 L["Event Type"] = "Event Type"
+L["Centered Horizontal"] = "Centered Horizontal"
+L["Centered Vertical"] = "Centered Vertical"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"

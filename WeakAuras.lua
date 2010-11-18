@@ -968,11 +968,11 @@ function WeakAuras.ScanForLoads()
 end
 
 WeakAuras.loadFrame = CreateFrame("FRAME");
-WeakAuras.loadFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+WeakAuras.loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-WeakAuras.loadFrame:SetScript("OnEvent", WeakAuras.ScanAll);
+WeakAuras.loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
 function WeakAuras.ReloadAll()
   WeakAuras.UnloadAll();
@@ -1431,13 +1431,17 @@ function WeakAuras.pAdd(data)
     events[id] = nil;
     auras[id] = nil;
     
+    local register_for_frame_updates = false;
+    
     for triggernum=0,9 do
       local trigger, untrigger;
       if(triggernum == 0) then
         trigger = data.trigger;
+        data.untrigger = data.untrigger or {};
         untrigger = data.untrigger;
       elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
         trigger = data.additional_triggers[triggernum].trigger;
+        data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
         untrigger = data.additional_triggers[triggernum].untrigger;
       end
       local triggerType;
@@ -1553,11 +1557,16 @@ function WeakAuras.pAdd(data)
               untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
             end
             
-            trigger_events = WeakAuras.split(trigger.events);
-            for index, event in pairs(trigger_events) do
-              frame:RegisterEvent(event);
-              if(trigger.custom_type == "status") then
-                WeakAuras.forceable_events[event] = true;
+            if(trigger.custom_type == "status" and trigger.check == "update") then
+              register_for_frame_updates = true;
+              trigger_events = {"FRAME_UPDATE"};
+            else
+              trigger_events = WeakAuras.split(trigger.events);
+              for index, event in pairs(trigger_events) do
+                frame:RegisterEvent(event);
+                if(trigger.custom_type == "status") then
+                  WeakAuras.forceable_events[event] = true;
+                end
               end
             end
           end
@@ -1605,6 +1614,12 @@ function WeakAuras.pAdd(data)
           error("Improper arguments to WeakAuras.Add - display "..id.." trigger type \""..triggerType.."\" is not supported for trigger number "..triggernum);
         end
       end
+    end
+    
+    if(register_for_frame_updates) then
+      WeakAuras.RegisterEveryFrameUpdate(id);
+    else
+      WeakAuras.UnregisterEveryFrameUpdate(id);
     end
     
     if not(temporary) then
@@ -2280,6 +2295,42 @@ function WeakAuras.CorrectItemName(input)
       return tonumber(itemId);
     else
       return nil;
+    end
+  end
+end
+
+do
+  local update_clients = {};
+  local update_clients_num = 0;
+  local update_frame;
+  local updating = false;
+  
+  function WeakAuras.RegisterEveryFrameUpdate(id)
+    if not(update_clients[id]) then
+      update_clients[id] = true;
+      update_clients_num = update_clients_num + 1;
+    end
+    if not(update_frame) then
+      update_frame = CreateFrame("FRAME");
+    end
+    if not(updating) then
+      update_frame:SetScript("OnUpdate", function()
+        if not(paused) then
+          WeakAuras.ScanEvents("FRAME_UPDATE");
+        end
+      end);
+      updating = true;
+    end
+  end
+
+  function WeakAuras.UnregisterEveryFrameUpdate(id)
+    if(update_clients[id]) then
+      update_clients[id] = nil;
+      update_clients_num = update_clients_num - 1;
+    end
+    if(update_clients_num == 0 and update_frame and updating) then
+      update_frame:SetScript("OnUpdate", nil);
+      updating = false;
     end
   end
 end

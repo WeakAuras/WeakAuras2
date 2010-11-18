@@ -6,6 +6,7 @@ local default = {
   align = "CENTER",
   space = 2,
   stagger = 0,
+  animate = false,
   anchorPoint = "CENTER",
   xOffset = 0,
   yOffset = 0
@@ -26,6 +27,7 @@ local function modify(parent, region, data)
   region.toShow = region.toShow or {};
   
   local selfPoint;
+  local actualSelfPoint;
   if(data.grow == "RIGHT") then
     selfPoint = "LEFT";
     if(data.align == "LEFT") then
@@ -33,6 +35,7 @@ local function modify(parent, region, data)
     elseif(data.align == "RIGHT") then
       selfPoint = "BOTTOM"..selfPoint;
     end
+    actualSelfPoint = selfPoint;
   elseif(data.grow == "LEFT") then
     selfPoint = "RIGHT";
     if(data.align == "LEFT") then
@@ -40,6 +43,7 @@ local function modify(parent, region, data)
     elseif(data.align == "RIGHT") then
       selfPoint = "BOTTOM"..selfPoint;
     end
+    actualSelfPoint = selfPoint;
   elseif(data.grow == "UP") then
     selfPoint = "BOTTOM";
     if(data.align == "LEFT") then
@@ -47,17 +51,40 @@ local function modify(parent, region, data)
     elseif(data.align == "RIGHT") then
       selfPoint = selfPoint.."RIGHT";
     end
-  elseif(data.grow == "DOWN") then
+    actualSelfPoint = selfPoint;
+  elseif(data.grow == "DOWN" ) then
     selfPoint = "TOP";
     if(data.align == "LEFT") then
       selfPoint = selfPoint.."LEFT";
     elseif(data.align == "RIGHT") then
       selfPoint = selfPoint.."RIGHT";
     end
+    actualSelfPoint = selfPoint;
+  elseif(data.grow == "HORIZONTAL") then
+    selfPoint = "LEFT";
+    actualSelfPoint = "CENTER";
+    if(data.align == "LEFT") then
+      selfPoint = "TOP"..selfPoint;
+      actualSelfPoint = "TOP";
+    elseif(data.align == "RIGHT") then
+      selfPoint = "BOTTOM"..selfPoint;
+      actualSelfPoint = "BOTTOM";
+    end
+  elseif(data.grow == "VERTICAL") then
+    selfPoint = "TOP";
+    actualSelfPoint = "CENTER";
+    if(data.align == "LEFT") then
+      selfPoint = selfPoint.."LEFT";
+      actualSelfPoint = "LEFT";
+    elseif(data.align == "RIGHT") then
+      selfPoint = selfPoint.."RIGHT";
+      actualSelfPoint = "RIGHT";
+    end
   end
-  data.selfPoint = selfPoint;
+  data.selfPoint = actualSelfPoint;
+    
   region:ClearAllPoints();
-  region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+  region:SetPoint(actualSelfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
   
   for index, childId in ipairs(data.controlledChildren) do
     if not(region.trays[index]) then
@@ -80,7 +107,7 @@ local function modify(parent, region, data)
   
   function region:PositionChildren()
     local xOffset, yOffset = 0, 0;
-    if(data.grow == "RIGHT" or data.grow == "LEFT") then
+    if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
       if(data.align == "LEFT" and data.stagger > 0) then
         yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
       elseif(data.align == "RIGHT" and data.stagger < 0) then
@@ -106,6 +133,39 @@ local function modify(parent, region, data)
       end
     end
     
+    local centerXOffset, centerYOffset = 0, 0;
+    if(data.grow == "HORIZONTAL" or data.grow == "VERTICAL") then
+      local currentWidth, currentHeight = 0, 0;
+      local num = 0;
+      for index, childId in pairs(data.controlledChildren) do
+        local childData = WeakAuras.GetData(childId);
+        local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
+        if(childData and childRegion) then
+          if(((childRegion:IsVisible() and not (region.toHide[childId] or region.groupHiding[childId])) or region.toShow[childId]) and not (WeakAuras.IsAnimating("display", childId) == "finish")) then
+            if(data.grow == "HORIZONTAL") then
+              currentWidth = currentWidth + childData.width;
+              num = num + 1;
+            elseif(data.grow == "VERTICAL") then
+              currentHeight = currentHeight + childData.height;
+              num = num + 1;
+            end
+          end
+        end
+      end
+      
+      if(data.grow == "HORIZONTAL") then
+        currentWidth = currentWidth + (data.space * max(num - 1, 0));
+        centerXOffset = ((data.width - currentWidth) / 2);
+        centerYOffset = 0;
+      elseif(data.grow == "VERTICAL") then
+        currentHeight = currentHeight + (data.space * max(num - 1, 0));
+        centerYOffset = ((data.height - currentHeight) / 2);
+        centerXOffset = 0;
+      end
+    end
+    xOffset = xOffset + centerXOffset;
+    yOffset = yOffset - centerYOffset;
+    
     for index, childId in pairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
@@ -120,7 +180,7 @@ local function modify(parent, region, data)
           region.trays[index]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
           childRegion:ClearAllPoints();
           childRegion:SetPoint(selfPoint, region.trays[index], selfPoint);
-          if(data.grow == "RIGHT") then
+          if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
             xOffset = xOffset + (childData.width + data.space);
             yOffset = yOffset + data.stagger;
           elseif(data.grow == "LEFT") then
@@ -129,7 +189,7 @@ local function modify(parent, region, data)
           elseif(data.grow == "UP") then
             yOffset = yOffset + (childData.height + data.space);
             xOffset = xOffset + data.stagger;
-          elseif(data.grow == "DOWN") then
+          elseif(data.grow == "DOWN" or data.grow == "VERTICAL") then
             yOffset = yOffset - (childData.height + data.space);
             xOffset = xOffset + data.stagger;
           end
@@ -147,7 +207,14 @@ local function modify(parent, region, data)
           elseif(data.grow == "DOWN") then
             hiddenYOffset = yOffset + (childData.height + data.space);
             hiddenXOffset = xOffset - data.stagger;
+          elseif(data.grow == "HORIZONTAL") then
+            hiddenXOffset = xOffset - ((childData.width + data.space) * (xOffset / data.width));
+            hiddenYOffset = yOffset - data.stagger;
+          elseif(data.grow == "VERTICAL") then
+            hiddenYOffset = yOffset - ((childData.height + data.space) * (yOffset / data.height));
+            hiddenXOffset = xOffset - data.stagger;
           end
+          
           region.trays[index]:ClearAllPoints();
           region.trays[index]:SetPoint(selfPoint, region, selfPoint, hiddenXOffset, hiddenYOffset);
           childRegion:ClearAllPoints();
@@ -247,7 +314,7 @@ local function modify(parent, region, data)
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
-      if(data.grow == "LEFT" or data.grow == "RIGHT") then
+      if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
         maxWidth = maxWidth + childData.width;
         maxWidth = maxWidth + (index > 1 and data.space or 0);
         maxHeight = math.max(maxHeight, childData.height);
