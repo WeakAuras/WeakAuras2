@@ -577,6 +577,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAuras.AddIfNecessary(from_files);
     
     WeakAuras.Resume();
+    squelch_actions = true;
     
     WeakAuras.conditionsFrame = CreateFrame("FRAME");
     for type, data in pairs(conditions) do
@@ -593,7 +594,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAuras.ScanAurasGroup();
     WeakAuras.ForceEvents();
     
-    squelch_actions = false;
+    local enterFrame = CreateFrame("FRAME");
+    enterFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    enterFrame:SetScript("OnEvent", function(self, event)
+      timer:ScheduleTimer(function() squelch_actions = false; end, 1);
+    end);
   end
 end);
 
@@ -609,7 +614,9 @@ end
 
 function WeakAuras.Resume()
   paused = false;
+  squelch_actions = true;
   WeakAuras.ScanAll();
+  squelch_actions = false;
 end
 
 function WeakAuras.Toggle()
@@ -706,6 +713,11 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
       if(loaded_events[event] and loaded_events[event][arg2]) then
         WeakAuras.ScanEvents(event, arg1, arg2, ...);
+      end
+      --This is triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
+      --the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
+      if(loaded_events["COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"]) then
+        WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
       end
     else
       if(loaded_events[event]) then
@@ -1053,7 +1065,9 @@ function WeakAuras.PassesConditionChecks(id)
 end
 
 function WeakAuras.ScanAuras(unit)
-  if(unit == "raid") then error("incorrect unit 'raid'!") end
+  local old_unit = WeakAuras.CurrentUnit;
+  WeakAuras.CurrentUnit = unit;
+  
   local aura_list, aura_object;
   if(unit:sub(0, 4) == "raid") then
     if(aura_cache.players[GetUnitName(unit, true)]) then
@@ -1114,6 +1128,7 @@ function WeakAuras.ScanAuras(unit)
       end
     end
   end
+  WeakAuras.CurrentUnit = old_unit;
 end
 
 function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count)
@@ -1563,7 +1578,16 @@ function WeakAuras.pAdd(data)
             else
               trigger_events = WeakAuras.split(trigger.events);
               for index, event in pairs(trigger_events) do
-                frame:RegisterEvent(event);
+                if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+                  --This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
+                  --but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
+                  --COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
+                  --that are already in place. Replacing all those checks would be a pain in the ass.
+                  trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
+                  frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+                else
+                  frame:RegisterEvent(event);
+                end
                 if(trigger.custom_type == "status") then
                   WeakAuras.forceable_events[event] = true;
                 end
