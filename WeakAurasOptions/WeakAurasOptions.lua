@@ -3527,13 +3527,17 @@ function WeakAuras.ReloadTriggerOptions(data)
       local event = getAll(data, {"trigger", "event"});
       local unevent = getAll(data, {"trigger", "unevent"});
       if(event and WeakAuras.event_prototypes[event]) then
+        local trigger_options_created;
         if(event == "Combat Log") then
           local subeventPrefix = getAll(data, {"trigger", "subeventPrefix"});
           local subeventSuffix = getAll(data, {"trigger", "subeventSuffix"});
           if(subeventPrefix and subeventSuffix) then
+            trigger_options_created = true;
             displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, subeventPrefix, subeventSuffix, optionTriggerChoices[id], nil, unevent));
           end
-        else
+        end
+        
+        if not(trigger_options_created) then
           displayOptions[id].args.trigger.args = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, nil, nil, optionTriggerChoices[id], nil, unevent));
         end
       else
@@ -3559,8 +3563,12 @@ function WeakAuras.ReloadTriggerOptions(data)
         displayOptions[id].args.trigger.args.subeventSuffix.set = options_set;
       end
       
-      displayOptions[id].args.trigger.args.type.set = options_set;
-      displayOptions[id].args.trigger.args.event.set = options_set;
+      if(displayOptions[id].args.trigger.args.type) then
+        displayOptions[id].args.trigger.args.type.set = options_set;
+      end
+      if(displayOptions[id].args.trigger.args.event) then
+        displayOptions[id].args.trigger.args.event.set = options_set;
+      end
     else
       displayOptions[id].args.trigger.args = trigger_options;
       removeFuncs(displayOptions[id].args.trigger);

@@ -27,6 +27,10 @@ WeakAuras.actual_unit_types = {
   focus = L["Focus"],
   pet = L["Pet"]
 };
+WeakAuras.eclipse_types = {
+  moon = L["Lunar"],
+  sun = L["Solar"]
+};
 WeakAuras.threat_unit_types = {
   target = L["Target"],
   none = L["At Least One Enemy"]
@@ -45,19 +49,20 @@ WeakAuras.class_for_stance_types = {
   ["PRIEST"] = "|cFFFFFFFF"..L["Priest"],
   ["ROGUE"] = "|cFFFFF569"..L["Rogue"],
   ["SHAMAN"] = "|cFF2459FF"..L["Shaman"],
-  ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"],
+  ["WARLOCK"] = "|cFF9482C9"..L["Warlock"],
+  ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
 };
 WeakAuras.class_types = {
-  ["Death Knight"] = "|cFFC41F3B"..L["Death Knight"],
-  ["Druid"] = "|cFFFF7D0A"..L["Druid"],
-  ["Hunter"] = "|cFFABD473"..L["Hunter"],
-  ["Mage"] = "|cFF69CCF0"..L["Mage"],
-  ["Paladin"] = "|cFFF58CBA"..L["Paladin"],
-  ["Priest"] = "|cFFFFFFFF"..L["Priest"],
-  ["Rogue"] = "|cFFFFF569"..L["Rogue"],
-  ["Shaman"] = "|cFF2459FF"..L["Shaman"],
-  ["Warlock"] = "|cFF9482C9"..L["Warlock"],
-  ["Warrior"] = "|cFFC79C6E"..L["Warrior"],
+  ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"],
+  ["DRUID"] = "|cFFFF7D0A"..L["Druid"],
+  ["HUNTER"] = "|cFFABD473"..L["Hunter"],
+  ["MAGE"] = "|cFF69CCF0"..L["Mage"],
+  ["PALADIN"] = "|cFFF58CBA"..L["Paladin"],
+  ["PRIEST"] = "|cFFFFFFFF"..L["Priest"],
+  ["ROGUE"] = "|cFFFFF569"..L["Rogue"],
+  ["SHAMAN"] = "|cFF2459FF"..L["Shaman"],
+  ["WARLOCK"] = "|cFF9482C9"..L["Warlock"],
+  ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
 };
 WeakAuras.deathknight_form_types = {
   [0] = L["None"],
@@ -96,6 +101,10 @@ WeakAuras.rogue_form_types = {
 WeakAuras.shaman_form_types = {
   [0] = L["Humanoid"],
   [1] = L["Ghost Wolf"]
+};
+WeakAuras.warlock_form_types = {
+  [0] = L["Normal"],
+  [2] = L["Metamorphosis"]
 };
 WeakAuras.warrior_form_types = {
   [0] = L["None"],

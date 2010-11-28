@@ -536,7 +536,7 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Shards"],
         type = "number",
-        init = "UnitPower(unit, 10)"
+        init = "UnitPower(unit, 7)"
       },
       {
         hidden = true,
@@ -544,8 +544,97 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10), function() return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10) end;
+      return UnitPower(trigger.unit, 7), UnitPowerMax(trigger.unit, 7), true;
     end,
+    automatic = true
+  },
+  ["Eclipse Power"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER",
+      "PLAYER_TARGET_CHANGED",
+      "PLAYER_FOCUS_CHANGED"
+    },
+    force_events = {
+      "player",
+      "target",
+      "focus",
+      "pet"
+    },
+    name = L["Eclipse Power"],
+    init = function(trigger)
+      return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+    end,
+    args = {
+      {
+        name = "unit",
+        required = true,
+        display = L["Unit"],
+        type = "select",
+        init = "arg",
+        values = "actual_unit_types"
+      },
+      {
+        name = "eclipsetype",
+        --required = true,
+        display = L["Eclipse Type"],
+        type = "select",
+        values = "eclipse_types",
+        test = "true"
+      },
+      {
+        name = "lunar_power",
+        display = L["Lunar Power"],
+        type = "number",
+        init = "math.min(UnitPower(unit, 8), -0) * -1",
+        enable = function(trigger)
+          return trigger.eclipsetype == "moon"
+        end
+      },
+      {
+        name = "solar_power",
+        display = L["Solar Power"],
+        type = "number",
+        init = "math.max(UnitPower(unit, 8), 0)",
+        enable = function(trigger)
+          return trigger.eclipsetype == "sun"
+        end
+      },
+      {
+        hidden = true,
+        test = "UnitExists(concernedUnit)"
+      }
+    },
+    durationFunc = function(trigger)
+      if(trigger.eclipsetype == "moon") then
+        local lunar_power = math.min(UnitPower(trigger.unit, 8), -0) * -1;
+        return lunar_power, UnitPowerMax(trigger.unit, 8), true;
+      elseif(trigger.eclipsetype == "sun") then
+        local solar_power = math.max(UnitPower(trigger.unit, 8), 0);
+        return solar_power, UnitPowerMax(trigger.unit, 8), true;
+      else
+        return 0, 0, true;
+      end
+    end,
+    automatic = true
+  },
+  ["Eclipse Direction"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER"
+    },
+    force_events = true,
+    name = L["Eclipse Direction"],
+    args = {
+      {
+        name = "eclipse_direction",
+        --required = true,
+        display = L["Eclipse Direction"],
+        type = "select",
+        values = "eclipse_types",
+        init = "GetEclipseDirection()"
+      }
+    },
     automatic = true
   },
   --Todo: Give useful options to condition based on GUID and flag info
@@ -585,14 +674,17 @@ WeakAuras.event_prototypes = {
         name = "destunit",
         display = L["Destination Unit"],
         type = "select",
-        test = "UnitIsUnit(dest, '%s')",
+        test = "dest and UnitIsUnit(dest, '%s')",
         values = "actual_unit_types"
       },
       {
         name = "dest",
         display = L["Destination Name"],
         type = "string",
-        init = "arg"
+        init = "arg",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end
       },
       {}, --destFlags ignored with _ argument
       {
@@ -1186,6 +1278,16 @@ onCooldown = duration > 1.51;
         test = "form == %s",
         enable = function(trigger)
           return trigger.class == "SHAMAN";
+        end
+      },
+      {
+        name = "warlock_form",
+        display = L["Form (Warlock)"],
+        type = "select",
+        values = "warlock_form_types",
+        test = "form == %s",
+        enable = function(trigger)
+          return trigger.class == "WARLOCK";
         end
       },
       {

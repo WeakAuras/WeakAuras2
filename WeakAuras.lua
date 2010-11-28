@@ -246,7 +246,7 @@ local groupFrame = CreateFrame("FRAME");
 groupFrame:RegisterEvent("RAID_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PARTY_MEMBERS_CHANGED");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-groupFrame:SetScript("OnEvent", function()
+groupFrame:SetScript("OnEvent", function(self, event)
   local numRaid = GetNumRaidMembers();
   local numParty = GetNumPartyMembers();
   local groupMembers = {};
@@ -275,7 +275,7 @@ groupFrame:SetScript("OnEvent", function()
     if(numParty > 0) then
       for i=1,numParty do
         local uid = "party"..i;
-        groupMembers[GetUnitName(uid)] = true;
+        groupMembers[GetUnitName(uid, true)] = true;
       end
     else
       inGroup = false;
@@ -558,6 +558,10 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAurasSaved = WeakAurasSaved or {};
     db = WeakAurasSaved;
     
+    --Defines the action squelch period after login
+    --Stored in SavedVariables so it can be changed by the user if they find it necessary
+    db.login_squelch_time = db.login_squelch_time or 10;
+    
     --Deprecated fields with *lots* of data, clear them out
     db.iconCache = nil;
     db.iconHash = nil;
@@ -585,7 +589,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         WeakAuras.conditionsFrame:RegisterEvent(event);
       end
     end
-    WeakAuras.conditionsFrame:SetScript("OnEvent", function(self, event) if not(paused) then pending_conditions_check = GetTime(); end end);
+    
+    WeakAuras.conditionsFrame:SetScript("OnEvent", function(self, event)
+      if not(paused) then
+        pending_conditions_check = GetTime();
+      end
+    end);
     
     WeakAuras.ScanForLoads();
     WeakAuras.ScanAuras("player");
@@ -597,7 +606,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     local enterFrame = CreateFrame("FRAME");
     enterFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     enterFrame:SetScript("OnEvent", function(self, event)
-      timer:ScheduleTimer(function() squelch_actions = false; end, 1);
+      timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);
     end);
   end
 end);
@@ -907,7 +916,8 @@ end
 
 function WeakAuras.ScanForLoads()
   local typefunc = type;
-  local player, class, zone, spec = UnitName("player"), UnitClass("player"), GetRealZoneText(), GetPrimaryTalentTree();
+  local player, zone, spec = UnitName("player"), GetRealZoneText(), GetPrimaryTalentTree();
+  local _, class = UnitClass("player");
   local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
   local size, difficulty;
   size = type;
@@ -1343,6 +1353,7 @@ end
 --Takes as input a table of display data and attempts to update it to be compatible with the current version
 function WeakAuras.Modernize(data)
   local load = data.load;
+  --Convert load options into single/multi format
   for index, prototype in pairs(WeakAuras.load_prototype.args) do
     if(prototype.type == "multiselect") then
       local protoname = prototype.name;
@@ -1358,6 +1369,8 @@ function WeakAuras.Modernize(data)
       load[protoname] = nil;
     end
   end
+  
+  --Add status/event information to triggers
   for triggernum=0,9 do
     local trigger, untrigger;
     if(triggernum == 0) then
@@ -1369,6 +1382,31 @@ function WeakAuras.Modernize(data)
       local prototype = event_prototypes[trigger.event];
       if(prototype) then
         trigger.type = prototype.type;
+      end
+    end
+  end
+  
+  --Change English-language class tokens to locale-agnostic versions
+  local class_agnosticize = {
+    ["Death Knight"] = "DEATHKNIGHT",
+    ["Druid"] = "DRUID",
+    ["Hunter"] = "HUNTER",
+    ["Mage"] = "MAGE",
+    ["Pladain"] = "PALADIN",
+    ["Priest"] = "PRIEST",
+    ["Rogue"] = "ROGUE",
+    ["Shaman"] = "SHAMAN",
+    ["Warlock"] = "WARLOCK",
+    ["Warrior"] = "WARRIOR"
+  };
+  if(load.class.single) then
+    load.class.single = class_agnosticize[load.class.single] or load.class.single;
+  end
+  if(load.class.multi) then
+    for i,v in pairs(load.class.multi) do
+      if(class_agnosticize[i]) then
+        load.class.multi[class_agnosticize[i]] = true;
+        load.class.multi[i] = nil;
       end
     end
   end
@@ -2234,7 +2272,7 @@ function WeakAuras.CanHaveAuto(data)
   if(
     (
       data.trigger.type == "aura"
-      and not data.trigger.inverse
+      and not data.trigger.use_inverse
       and not WeakAuras.CanGroupShowWithZero(data)
     )
     or (
