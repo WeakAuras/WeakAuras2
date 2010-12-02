@@ -42,7 +42,7 @@ WeakAuras.unit_threat_situation_types = {
   [2] = "|cFFFF9900"..L["Tanking But Not Highest"],
   [3] = "|cFFFF0000"..L["Tanking And Highest"]
 };
-WeakAuras.class_for_stance_types = {
+--[[WeakAuras.class_for_stance_types = {
   ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"],
   ["DRUID"] = "|cFFFF7D0A"..L["Druid"],
   ["PALADIN"] = "|cFFF58CBA"..L["Paladin"],
@@ -51,7 +51,7 @@ WeakAuras.class_for_stance_types = {
   ["SHAMAN"] = "|cFF2459FF"..L["Shaman"],
   ["WARLOCK"] = "|cFF9482C9"..L["Warlock"],
   ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
-};
+};]]
 WeakAuras.class_types = {
   ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"],
   ["DRUID"] = "|cFFFF7D0A"..L["Druid"],
@@ -64,7 +64,30 @@ WeakAuras.class_types = {
   ["WARLOCK"] = "|cFF9482C9"..L["Warlock"],
   ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
 };
-WeakAuras.deathknight_form_types = {
+WeakAuras.form_types = {};
+local function update_forms()
+  wipe(WeakAuras.form_types);
+  WeakAuras.form_types[0] = "0 - "..L["Humanoid"]
+  for i = 1, GetNumShapeshiftForms() do
+    local _, name = GetShapeshiftFormInfo(i);
+    if(name) then
+      WeakAuras.form_types[i] = i.." - "..name
+    end
+  end
+end
+local form_frame = CreateFrame("frame");
+form_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
+form_frame:SetScript("OnEvent", update_forms);
+form_frame:SetScript("OnUpdate", function()
+  if(GetNumShapeshiftForms()) then
+    update_forms();
+    Debug = GetTime();
+    form_frame:SetScript("OnUpdate", nil);
+  end
+end);
+form_frame:SetAllPoints(UIParent);
+
+--[[WeakAuras.deathknight_form_types = {
   [0] = L["None"],
   [1] = L["Blood"],
   [2] = L["Frost"],
@@ -114,7 +137,7 @@ WeakAuras.warrior_form_types = {
 };
 WeakAuras.single_form_types = {
   [0] = L["Humanoid"]
-};
+};]]
 WeakAuras.blend_types = {
   ADD = L["Glow"],
   BLEND = L["Opaque"],
@@ -696,6 +719,14 @@ WeakAuras.rotated_align_types = {
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Bottom"]
 };
+WeakAuras.icon_side_types = {
+  ["LEFT"] = L["Left"],
+  ["RIGHT"] = L["Right"]
+};
+WeakAuras.rotated_icon_side_types = {
+  ["LEFT"] = L["Top"],
+  ["RIGHT"] = L["Bottom"]
+};
 WeakAuras.anim_types = {
   none = L["None"],
   preset = L["Preset"],
@@ -799,6 +830,14 @@ WeakAuras.send_chat_message_types = {
   RAID = L["Raid"],
   RAID_WARNING = L["Raid Warning"],
   BATTLEGROUND = L["Battleground"]
+};
+WeakAuras.group_aura_name_info_types = {
+  aura = L["Aura Name"],
+  players = L["Player(s) Affected"]
+};
+WeakAuras.group_aura_stack_info_types = {
+  count = L["Number Affected"],
+  stack = L["Aura Stack"]
 };
 WeakAuras.sound_types = {
   [" custom"] = "Custom",

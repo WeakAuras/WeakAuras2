@@ -160,7 +160,7 @@ do
   end
   
   function aura_cache.GetDynamicInfo(self, names)
-    local bestDuration, bestExpirationTime, bestName, bestIcon = 0, math.huge, "", "";
+    local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount = 0, math.huge, "", "", 0;
     for _, auraname in pairs(names) do
       if(self.watched[auraname]) then
         for playername, durationInfo in pairs(self.watched[auraname].players) do
@@ -169,15 +169,29 @@ do
             bestExpirationTime = durationInfo.expirationTime;
             bestName = durationInfo.name;
             bestIcon = durationInfo.icon;
+            bestCount = durationInfo.count;
           end
         end
       end
     end
     
-    return bestDuration, bestExpirationTime, bestName, bestIcon;
+    return bestDuration, bestExpirationTime, bestName, bestIcon, bestCount;
   end
   
-  function aura_cache.AssertAura(self, auraname, playername, duration, expirationTime, name, icon)
+  function aura_cache.GetAffected(self, names)
+    local affected = {};
+    for _, auraname in pairs(names) do
+      if(self.watched[auraname]) then
+        for playername, _ in pairs(self.watched[auraname].players) do
+          affected[playername] = true;
+        end
+      end
+    end
+    
+    return affected;
+  end
+  
+  function aura_cache.AssertAura(self, auraname, playername, duration, expirationTime, name, icon, count)
     if not(self.watched[auraname].players[playername]) then
       self.watched[auraname].number = self.watched[auraname].number + 1;
     end
@@ -185,7 +199,8 @@ do
       duration = duration,
       expirationTime = expirationTime,
       name = name,
-      icon = icon
+      icon = icon,
+      count = count
     };
   end
   
@@ -292,6 +307,8 @@ do
   local spellCdReadyTimers = {};
   local itemCdReadyTimers = {};
   
+  local gcdTimer;
+  
   function WeakAuras.InitCooldownReady()
     local cdReadyFrame = CreateFrame("FRAME");
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
@@ -307,15 +324,23 @@ do
       duration = duration or 0;
       if(startTime == 0 and oldStartTime ~= 0) then
         WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
-      elseif(duration > 1.51 and startTime > 0) then
-        if(spellCdReadyTimers[id]) then
-          timer:CancelTimer(spellCdReadyTimers[id], true);
+      elseif(startTime > 0) then
+        if(duration > 1.51) then
+          if(spellCdReadyTimers[id]) then
+            timer:CancelTimer(spellCdReadyTimers[id], true);
+          end
+          local function callback()
+            spellCdReadyTimers[id] = nil;
+            WeakAuras.CheckCooldownReady();
+          end
+          spellCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
+        elseif not(gcdTimer) then
+          local function callback()
+            gcdTimer = nil;
+            WeakAuras.ScanEvents("GCD_ENDED");
+          end
+          gcdTimer = timer:ScheduleTimer(callback, startTime + duration - GetTime() + 0.05);
         end
-        local function callback()
-          spellCdReadyTimers[id] = nil;
-          WeakAuras.CheckCooldownReady();
-        end
-        spellCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
       end
       spellCdReadyCache[id] = duration > 1.51 and startTime or 0;
     end
@@ -326,15 +351,23 @@ do
       duration = duration or 0;
       if(startTime == 0 and oldStartTime ~= 0) then
         WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
-      elseif(duration > 1.51 and startTime > 0) then
-        if(itemCdReadyTimers[id]) then
-          timer:CancelTimer(itemCdReadyTimers[id], true);
+      elseif(startTime > 0) then
+        if(duration > 1.51) then
+          if(itemCdReadyTimers[id]) then
+            timer:CancelTimer(itemCdReadyTimers[id], true);
+          end
+          local function callback()
+            itemCdReadyTimers[id] = nil;
+            WeakAuras.CheckCooldownReady();
+          end
+          itemCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
+        elseif not(gcdTimer) then
+          local function callback()
+            gcdTimer = nil;
+            WeakAuras.ScanEvents("GCD_ENDED");
+          end
+          gcdTimer = timer:ScheduleTimer(callback, startTime + duration - GetTime() + 0.05);
         end
-        local function callback()
-          itemCdReadyTimers[id] = nil;
-          WeakAuras.CheckCooldownReady();
-        end
-        itemCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
       end
       itemCdReadyCache[id] = duration > 1.51 and startTime or 0;
     end
@@ -761,24 +794,15 @@ end
 function WeakAuras.ActivateEvent(id, triggernum, data)
   if(WeakAuras.PassesConditionChecks(id)) then
     if(data.numAdditionalTriggers > 0) then
-      if(data.inverse) then
-        if(data.region:DisableTrigger(triggernum)) then
-          data.region.active = nil;
-        end
-      else
-        if(data.region:EnableTrigger(triggernum)) then
-          data.region.active = true;
-        end
+      if(data.region:EnableTrigger(triggernum)) then
+        data.region.active = true;
       end
     else
-      if(data.inverse) then
-        data.region.active = nil;
-        data.region:Collapse();
-      else
-        data.region.active = true;
-        data.region:Expand();
-      end
+      data.region.active = true;
+      data.region:Expand();
     end
+  else
+    WeakAuras.EndEvent(id, triggernum);
   end
   WeakAuras.SetEventDynamics(id, triggernum, data);
 end
@@ -868,23 +892,12 @@ function WeakAuras.EndEvent(id, triggernum, force)
   local data = events[id] and events[id][triggernum];
   if(data) then
     if(data.numAdditionalTriggers > 0) then
-      if(data.inverse and not force) then
-        if(data.region:EnableTrigger(triggernum)) then
-          data.region.active = true;
-        end
-      else
-        if(data.region:DisableTrigger(triggernum)) then
-          data.region.active = nil;
-        end
+      if(data.region:DisableTrigger(triggernum)) then
+        data.region.active = nil;
       end
     else
-      if(data.inverse and not force) then
-        data.region.active = true;
-        data.region:Expand();
-      else
-        data.region.active = nil;
-        data.region:Collapse();
-      end
+      data.region.active = nil;
+      data.region:Collapse();
     end
     if(timers[id] and timers[id][triggernum]) then
       timer:CancelTimer(timers[id][triggernum], true);
@@ -954,10 +967,10 @@ function WeakAuras.ScanForLoads()
     local _, data = next(triggers);
     shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", player, class, spec, zone, size, difficulty);
     if(shouldBeLoaded and not loaded[id]) then
-      WeakAuras.LoadAura(id, triggers);
+      WeakAuras.LoadDisplay(id);
     end
     if(loaded[id] and not shouldBeLoaded) then
-      WeakAuras.UnloadAura(id);
+      WeakAuras.UnloadDisplay(id);
       data.region:Collapse();
     end
   end
@@ -965,10 +978,10 @@ function WeakAuras.ScanForLoads()
     local _, data = next(triggers);
     shouldBeLoaded = data.load and data.load("ScanForLoads_Events", player, class, spec, zone, size, difficulty);
     if(shouldBeLoaded and not loaded[id]) then
-      WeakAuras.LoadEvent(id, triggers);
+      WeakAuras.LoadDisplay(id);
     end
     if(loaded[id] and not shouldBeLoaded) then
-      WeakAuras.UnloadEvent(id);
+      WeakAuras.UnloadDisplay(id);
       data.region:Collapse();
     end
   end
@@ -1007,27 +1020,14 @@ function WeakAuras.UnloadAll()
   wipe(loaded);
 end
 
-function WeakAuras.LoadAura(id, triggers)
-  loaded[id] = true;
-  
-  for triggernum, data in pairs(triggers) do
+do
+  local function LoadAura(id, triggernum, data)
     loaded_auras[data.unit] = loaded_auras[data.unit] or {};
     loaded_auras[data.unit][id] = loaded_auras[data.unit][id] or {};
     loaded_auras[data.unit][id][triggernum] = data;
   end
-end
-
-function WeakAuras.UnloadAura(id)
-  loaded[id] = nil;
-  for unitname, auras in pairs(loaded_auras) do
-    auras[id] = nil;
-  end
-end
-
-function WeakAuras.LoadEvent(id, triggers)
-  loaded[id] = true;
-  
-  for triggernum, data in pairs(triggers) do
+    
+  local function LoadEvent(id, triggernum, data)
     local events = data.events or {};
     for index, event in pairs(events) do
       loaded_events[event] = loaded_events[event] or {};
@@ -1041,17 +1041,42 @@ function WeakAuras.LoadEvent(id, triggers)
       end
     end
   end
-end
-
-function WeakAuras.UnloadEvent(id)
-  loaded[id] = nil;
-  for eventname, events in pairs(loaded_events) do
-    if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
-      for subeventname, subevents in pairs(events) do
-        subevents[id] = nil;
+  
+  function WeakAuras.LoadDisplay(id)
+    loaded[id] = true;
+    
+    if(auras[id]) then
+      for triggernum, data in pairs(auras[id]) do
+        if(auras[id] and auras[id][triggernum]) then
+          LoadAura(id, triggernum, data);
+        end
       end
-    else
-      events[id] = nil;
+    end
+    
+    if(events[id]) then
+      for triggernum, data in pairs(events[id]) do
+        if(events[id] and events[id][triggernum]) then
+          LoadEvent(id, triggernum, data);
+        end
+      end
+    end
+  end
+  
+  function WeakAuras.UnloadDisplay(id)
+    loaded[id] = nil;
+    
+    for unitname, auras in pairs(loaded_auras) do
+      auras[id] = nil;
+    end
+    
+    for eventname, events in pairs(loaded_events) do
+      if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
+        for subeventname, subevents in pairs(events) do
+          subevents[id] = nil;
+        end
+      else
+        events[id] = nil;
+      end
     end
   end
 end
@@ -1107,7 +1132,7 @@ function WeakAuras.ScanAuras(unit)
             active = true;
             db.tempIconCache[name] = icon;
             if(aura_object) then
-              aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon);
+              aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count);
             else
               WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
               break;
@@ -1118,13 +1143,35 @@ function WeakAuras.ScanAuras(unit)
         end
         if(aura_object) then
           if(data.group_count) then
-            local count, max = aura_object:GetNumber(data.names), aura_object:GetMaxNumber();
-            local satisfies_count = data.group_count(count, max);
+            local aura_count, max = aura_object:GetNumber(data.names), aura_object:GetMaxNumber();
+            local satisfies_count = data.group_count(aura_count, max);
+            
             if(data.hideAlone and not inGroup) then
               satisfies_count = false;
             end
             if(satisfies_count) then
-              local duration, expirationTime, name, icon = aura_cache:GetDynamicInfo(data.names);
+              local duration, expirationTime, name, icon, count = aura_cache:GetDynamicInfo(data.names);
+              
+              if(data.name_info == "players") then
+                local affected = aura_cache:GetAffected(data.names);
+                local num = 0;
+                name = "";
+                for affected_name, _ in pairs(affected) do
+                  local space = affected_name:find(" ");
+                  name = name..(space and affected_name:sub(0, space - 1).."*" or affected_name)..", ";
+                  num = num + 1;
+                end
+                if(num == 0) then
+                  name = WeakAuras.L["None"];
+                else
+                  name = name:sub(0, -3);
+                end
+              end
+              
+              if(data.stack_info == "count") then
+                count = aura_count;
+              end
+              
               WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
             else
               WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, 0, math.huge);
@@ -1171,7 +1218,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
         data.region:SetName(name);
       end
       if(data.region.SetIcon) then
-        data.region:SetIcon(icon);
+        data.region:SetIcon(icon or "Interface\\Icons\\INV_Misc_QuestionMark");
       end
       if(data.region.SetStacks) then
         data.region:SetStacks(count);
@@ -1410,6 +1457,20 @@ function WeakAuras.Modernize(data)
       end
     end
   end
+  
+  --Give Name Info and Stack Info options to group auras
+  for triggernum=0,9 do
+    local trigger, untrigger;
+    if(triggernum == 0) then
+      trigger = data.trigger;
+    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+      trigger = data.additional_triggers[triggernum].trigger;
+    end
+    if(trigger and trigger.type == "aura" and trigger.unit and trigger.unit == "group") then
+      trigger.name_info = trigger.name_info or "aura";
+      trigger.stack_info = trigger.stack_info or "count";
+    end
+  end
 end
 
 function WeakAuras.AddMany(...)
@@ -1548,7 +1609,9 @@ function WeakAuras.pAdd(data)
             inverse = trigger.inverse,
             region = region,
             numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
-            hideAlone = trigger.hideAlone
+            hideAlone = trigger.hideAlone,
+            stack_info = trigger.stack_info,
+            name_info = trigger.name_info
           };
         elseif(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
           local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
@@ -2272,8 +2335,7 @@ function WeakAuras.CanHaveAuto(data)
   if(
     (
       data.trigger.type == "aura"
-      and not data.trigger.use_inverse
-      and not WeakAuras.CanGroupShowWithZero(data)
+      and not data.trigger.inverse
     )
     or (
       (
@@ -2311,6 +2373,22 @@ function WeakAuras.CanGroupShowWithZero(data)
     group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
     
     return group_countFunc(0, 1);
+  else
+    return false;
+  end
+end
+
+function WeakAuras.CanShowNameInfo(data)
+  if(data.regionType == "aurabar") then
+    return true;
+  else
+    return false;
+  end
+end
+
+function WeakAuras.CanShowStackInfo(data)
+  if(data.regionType == "aurabar" or data.regionType == "icon") then
+    return true;
   else
     return false;
   end

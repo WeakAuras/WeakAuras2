@@ -20,7 +20,9 @@ local default = {
   yOffset = 0,
   font = "Friz Quadrata TT",
   fontSize = 12,
-  stickyDuration = false
+  stickyDuration = false,
+  icon_side = "RIGHT",
+  stacks = true
 };
 
 local function create(parent)
@@ -108,13 +110,23 @@ local function modify(parent, region, data)
     region.orientation = "HORIZONTAL_INVERSE";
     timer:SetWidth(0);
     text:SetWidth(0);
-    icon:SetPoint("LEFT", region, "LEFT");
-    background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
-    bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
     if(data.icon) then
-      background:SetPoint("TOPLEFT", icon, "TOPRIGHT");
-      bar:SetPoint("TOPLEFT", icon, "TOPRIGHT");
+      if(data.icon_side == "LEFT") then
+        icon:SetPoint("LEFT", region, "LEFT");
+        background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        background:SetPoint("TOPLEFT", icon, "TOPRIGHT");
+        bar:SetPoint("TOPLEFT", icon, "TOPRIGHT");
+      else
+        icon:SetPoint("RIGHT", region, "RIGHT");
+        background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
+        bar:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
+        background:SetPoint("TOPRIGHT", icon, "TOPLEFT");
+        bar:SetPoint("TOPRIGHT", icon, "TOPLEFT");
+      end
     else
+      background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+      bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
       background:SetPoint("TOPLEFT", region, "TOPLEFT");
       bar:SetPoint("TOPLEFT", region, "TOPLEFT");
     end
@@ -144,15 +156,25 @@ local function modify(parent, region, data)
     region.orientation = "HORIZONTAL";
     timer:SetWidth(0);
     text:SetWidth(0);
-    icon:SetPoint("RIGHT", region, "RIGHT");
-    background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
-    bar:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
     if(data.icon) then
-      background:SetPoint("TOPRIGHT", icon, "TOPLEFT");
-      bar:SetPoint("TOPRIGHT", icon, "TOPLEFT");
+      if(data.icon_side == "LEFT") then
+        icon:SetPoint("LEFT", region, "LEFT");
+        background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        background:SetPoint("TOPLEFT", icon, "TOPRIGHT");
+        bar:SetPoint("TOPLEFT", icon, "TOPRIGHT");
+      else
+        icon:SetPoint("RIGHT", region, "RIGHT");
+        background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
+        bar:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
+        background:SetPoint("TOPRIGHT", icon, "TOPLEFT");
+        bar:SetPoint("TOPRIGHT", icon, "TOPLEFT");
+      end
     else
-      background:SetPoint("TOPRIGHT", region, "TOPRIGHT");
-      bar:SetPoint("TOPRIGHT", region, "TOPRIGHT");
+      background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+      bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+      background:SetPoint("TOPLEFT", region, "TOPLEFT");
+      bar:SetPoint("TOPLEFT", region, "TOPLEFT");
     end
     text:SetPoint("LEFT", bar, "LEFT", 2, 0);
     timer:SetPoint("RIGHT", bar, "RIGHT", -2, 0);
@@ -180,15 +202,25 @@ local function modify(parent, region, data)
     region.orientation = "VERTICAL_INVERSE";
     timer:SetWidth(data.height);
     text:SetWidth(data.height);
-    icon:SetPoint("BOTTOM", region, "BOTTOM");
-    background:SetPoint("TOPLEFT", region, "TOPLEFT");
-    bar:SetPoint("TOPLEFT", region, "TOPLEFT");
     if(data.icon) then
-      background:SetPoint("BOTTOMRIGHT", icon, "TOPRIGHT");
-      bar:SetPoint("BOTTOMRIGHT", icon, "TOPRIGHT");
+      if(data.icon_side == "LEFT") then
+        icon:SetPoint("TOP", region, "TOP");
+        background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        background:SetPoint("TOPLEFT", icon, "BOTTOMLEFT");
+        bar:SetPoint("TOPLEFT", icon, "BOTTOMLEFT");
+      else
+        icon:SetPoint("BOTTOM", region, "BOTTOM");
+        background:SetPoint("TOPRIGHT", region, "TOPRIGHT");
+        bar:SetPoint("TOPRIGHT", region, "TOPRIGHT");
+        background:SetPoint("BOTTOMLEFT", icon, "TOPLEFT");
+        bar:SetPoint("BOTTOMLEFT", icon, "TOPLEFT");
+      end
     else
       background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
       bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+      background:SetPoint("TOPLEFT", region, "TOPLEFT");
+      bar:SetPoint("TOPLEFT", region, "TOPLEFT");
     end
     text:SetPoint("TOP", bar, "TOP", 0, -2);
     timer:SetPoint("BOTTOM", bar, "BOTTOM", 0, 2);
@@ -216,13 +248,23 @@ local function modify(parent, region, data)
     region.orientation = "VERTICAL";
     timer:SetWidth(data.height);
     text:SetWidth(data.height);
-    icon:SetPoint("TOP", region, "TOP");
-    background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
-    bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
     if(data.icon) then
-      background:SetPoint("TOPLEFT", icon, "BOTTOMLEFT");
-      bar:SetPoint("TOPLEFT", icon, "BOTTOMLEFT");
+      if(data.icon_side == "LEFT") then
+        icon:SetPoint("TOP", region, "TOP");
+        background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+        background:SetPoint("TOPLEFT", icon, "BOTTOMLEFT");
+        bar:SetPoint("TOPLEFT", icon, "BOTTOMLEFT");
+      else
+        icon:SetPoint("BOTTOM", region, "BOTTOM");
+        background:SetPoint("TOPRIGHT", region, "TOPRIGHT");
+        bar:SetPoint("TOPRIGHT", region, "TOPRIGHT");
+        background:SetPoint("BOTTOMLEFT", icon, "TOPLEFT");
+        bar:SetPoint("BOTTOMLEFT", icon, "TOPLEFT");
+      end
     else
+      background:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
+      bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
       background:SetPoint("TOPLEFT", region, "TOPLEFT");
       bar:SetPoint("TOPLEFT", region, "TOPLEFT");
     end
@@ -330,12 +372,20 @@ local function modify(parent, region, data)
   end
   if(data.icon) then
     function region:SetIcon(path)
-      local success = icon:SetTexture(WeakAuras.CanHaveAuto(data) and data.auto and path or data.displayIcon) and (WeakAuras.CanHaveAuto(data) and data.auto and path or data.displayIcon);
-      if not(success) then
-        icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-      end
+      icon:SetTexture(
+        WeakAuras.CanHaveAuto(data)
+        and data.auto
+        and path ~= ""
+        and path
+        or data.displayIcon
+        or "Interface\\Icons\\INV_Misc_QuestionMark"
+      )
     end
-    stacks:Show();
+    if(data.stacks) then
+      stacks:Show();
+    else
+      stacks:Hide();
+    end
     icon:Show();
   else
     stacks:Hide();

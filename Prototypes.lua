@@ -879,33 +879,37 @@ WeakAuras.event_prototypes = {
     events = {
       "SPELL_UPDATE_COOLDOWN",
       "UNIT_POWER",
-      "ACTIONBAR_UPDATE_COOLDOWN"
+      "ACTIONBAR_UPDATE_COOLDOWN",
+      "SPELL_COOLDOWN_READY",
+      "GCD_ENDED"
     },
     force_events = true,
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
+      WeakAuras.WatchSpellCooldown(trigger.spellName);
       local ret = [[
 local startTime, duration = GetSpellCooldown(%s);
 startTime = startTime or 0;
 duration = duration or 0;
+local inverse = %s;
+local ignoreGCD = %s
 ]];
-      --ret = ret..(trigger.use_inverse and "local inverse = true;" or "local inverse = false;").."\n";
-      return ret:format(spellName);
+      return ret:format(spellName, (trigger.use_inverse and "true" or "false"), (trigger.use_cooldownDuration and "true" or "false"));
     end,
     args = {
       {
         name = "spellName",
         display = L["Spell"],
         type = "spell",
-        test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+        test = "(inverse and ((ignoreGCD and duration <= 1.51) or (startTime == 0))) or (not inverse and startTime > 0)"
       },
       {
         name = "cooldownDuration",
         display = L["Ignore GCD"],
         type = "toggle",
-        test = "duration > 1.51"
+        test = "inverse or duration > 1.51"
       },
       {
         name = "inverse",
@@ -1110,7 +1114,11 @@ onCooldown = duration > 1.51;
     name = L["Totem"],
     init = function(trigger)
       trigger.totemType = trigger.totemType or 1;
-      return "local _, totemName, startTime, duration = GetTotemInfo('"..trigger.totemType.."');";
+      local ret = [[
+local totemType = %i;
+local _, totemName, startTime, duration = GetTotemInfo(totemType);
+]]
+      return ret:format(trigger.totemType);
     end,
     args = {
       {
@@ -1214,91 +1222,11 @@ onCooldown = duration > 1.51;
     end,
     args = {
       {
-        name = "class",
-        display = L["Class"],
-        required = true,
+        name = "form",
+        display = L["Form"],
         type = "select",
-        values = "class_for_stance_types"
-      },
-      {
-        name = "dk_form",
-        display = L["Presence (DK)"],
-        type = "select",
-        values = "deathknight_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "DEATHKNIGHT";
-        end
-      },
-      {
-        name = "druid_form",
-        display = L["Form (Druid)"],
-        type = "select",
-        values = "druid_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "DRUID";
-        end
-      },
-      {
-        name = "paladin_form",
-        display = L["Aura (Paladin)"],
-        type = "select",
-        values = "paladin_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "PALADIN";
-        end
-      },
-      {
-        name = "priest_form",
-        display = L["Form (Priest)"],
-        type = "select",
-        values = "priest_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "PRIEST";
-        end
-      },
-      {
-        name = "rogue_form",
-        display = L["Presence (Rogue)"],
-        type = "select",
-        values = "rogue_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "ROGUE";
-        end
-      },
-      {
-        name = "shaman_form",
-        display = L["Form (Shaman)"],
-        type = "select",
-        values = "shaman_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "SHAMAN";
-        end
-      },
-      {
-        name = "warlock_form",
-        display = L["Form (Warlock)"],
-        type = "select",
-        values = "warlock_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "WARLOCK";
-        end
-      },
-      {
-        name = "warrior_form",
-        display = L["Stance (Warrior)"],
-        type = "select",
-        values = "warrior_form_types",
-        test = "form == %s",
-        enable = function(trigger)
-          return trigger.class == "WARRIOR";
-        end
+        values = "form_types",
+        test = "form == %s"
       }
     },
     nameFunc = function(trigger)
@@ -1543,6 +1471,23 @@ onCooldown = duration > 1.51;
       }
     },
     automatic = true
+  },
+  ["Crowd Controlled"] = {
+    type = "status",
+    events = {
+      "UNIT_AURA"
+    },
+    force_events = true,
+    name = L["Crowd Controlled"],
+    args = {
+      {
+        name = "controlled",
+        display = L["Crowd Controlled"],
+        type = "tristate",
+        init = "not HasFullControl()"
+      }
+    },
+    automaticrequired = true
   }
 };
 

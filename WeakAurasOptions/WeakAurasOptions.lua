@@ -110,6 +110,8 @@ local send_chat_message_types = WeakAuras.send_chat_message_types;
 local sound_types = WeakAuras.sound_types;
 local duration_types = WeakAuras.duration_types;
 local duration_types_no_choice = WeakAuras.duration_types_no_choice;
+local group_aura_name_info_types = WeakAuras.group_aura_name_info_types;
+local group_aura_stack_info_types = WeakAuras.group_aura_stack_info_types;
 
 local function union(table1, table2)
   local meta = {};
@@ -3029,7 +3031,47 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "half",
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       get = function() return trigger.group_count; end,
-      set = function(info, v) if(WeakAuras.ParseNumber(v)) then trigger.group_count = v; else trigger.group_count = ""; end end
+      set = function(info, v)
+        if(WeakAuras.ParseNumber(v)) then
+          trigger.group_count = v;
+        else
+          trigger.group_count = "";
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    name_info = {
+      type = "select",
+      name = L["Name Info"],
+      order = 47.3,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+      disabled = function() return not WeakAuras.CanShowNameInfo(data); end,
+      get = function()
+        if(WeakAuras.CanShowNameInfo(data)) then
+          return trigger.name_info;
+        else
+          return nil;
+        end
+      end,
+      values = group_aura_name_info_types
+    },
+    stack_info = {
+      type = "select",
+      name = L["Stack Info"],
+      order = 47.6,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+      disabled = function() return not WeakAuras.CanShowStackInfo(data); end,
+      get = function()
+        if(WeakAuras.CanShowStackInfo(data)) then
+          return trigger.stack_info;
+        else
+          return nil;
+        end
+      end,
+      values = group_aura_stack_info_types
     },
     hideAlone = {
       type = "toggle",
@@ -5452,28 +5494,47 @@ function WeakAuras.UpdateDisplayButton(data)
         else
           namestable[1] = L["No Children"];
         end
-      elseif(data.trigger.type == "aura") then
-        for index, name in pairs(data.trigger.names) do
-          local icon = iconCache[name] or "Interface\\Icons\\INV_Misc_QuestionMark";
-          tinsert(namestable, {" ", name, icon});
-        end
-        if(#namestable > 0) then
-          if(#namestable > 1) then
-            namestable[1][1] = L["Auras:"];
-          else
-            namestable[1][1] = L["Aura:"];
+      else
+        for triggernum = 0, 9 do
+          local trigger;
+          if(triggernum == 0) then
+            trigger = data.trigger;
+          elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+            trigger = data.additional_triggers[triggernum].trigger;
+          end
+          if(trigger) then
+            if(trigger.type == "aura") then
+              for index, name in pairs(trigger.names) do
+                local left = " ";
+                if(index == 1) then
+                  if(#namestable > 0) then
+                    if(#namestable > 1) then
+                      left = L["Auras:"];
+                    else
+                      left = L["Aura:"];
+                    end
+                  end
+                end
+                local icon = iconCache[name] or "Interface\\Icons\\INV_Misc_QuestionMark";
+                tinsert(namestable, {left, name, icon});
+              end
+            elseif(trigger.type == "event" or trigger.type == "status") then
+              if(trigger.type == "event") then
+                tinsert(namestable, {L["Trigger:"], (event_types[trigger.event] or L["Undefined"])});
+              else
+                tinsert(namestable, {L["Trigger:"], (status_types[trigger.event] or L["Undefined"])});
+              end
+              if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
+                tinsert(namestable, {L["Message type:"], (subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
+              end
+            else
+              tinsert(namestable, {L["Trigger:"], L["Custom"]});
+            end
           end
         end
-      elseif(data.trigger.type == "event" or data.trigger.type == "status") then
-        if(data.trigger.type == "event") then
-          tinsert(namestable, {L["Trigger:"], (event_types[data.trigger.event] or L["Undefined"])});
-        else
-          tinsert(namestable, {L["Trigger:"], (status_types[data.trigger.event] or L["Undefined"])});
-        end
-        if(data.trigger.event == "Combat Log" and data.trigger.subeventPrefix and data.trigger.subeventSuffix) then
-          tinsert(namestable, {L["Message type:"], (subevent_prefix_types[data.trigger.subeventPrefix] or L["Undefined"]).." "..(subevent_suffix_types[data.trigger.subeventSuffix] or L["Undefined"])});
-        end
       end
+      Things = Things or {};
+      Things[id] = namestable;
       local regionData = regionOptions[data.regionType or ""]
       local displayName = regionData and regionData.displayName or "";
       button:SetDescription({data.id, displayName}, unpack(namestable));
@@ -5799,7 +5860,7 @@ function WeakAuras.CorrectAuraName(input)
   if(spellId) then
     local name, _, icon = GetSpellInfo(spellId);
     if(name) then
-      iconCache[name] = iconCache[name] or icon;
+      iconCache[name] = icon;
       return name;
     else
       return "Invalid Spell ID";

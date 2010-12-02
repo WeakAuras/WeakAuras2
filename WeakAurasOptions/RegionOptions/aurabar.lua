@@ -100,23 +100,59 @@ local function createOptions(id, data)
       order = 25,
       values = WeakAuras.orientation_types,
       set = function(info, v)
-        local previous = data.orientation:find("HORIZONTAL") and "HORIZONTAL" or "VERTICAL";
-        data.orientation = v;
-        local new = data.orientation:find("HORIZONTAL") and "HORIZONTAL" or "VERTICAL";
-        if(previous ~= new) then
+        if(
+          (
+            data.orientation:find("INVERSE")
+            and not v:find("INVERSE")
+          ) 
+          or (
+            v:find("INVERSE")
+            and not data.orientation:find("INVERSE")
+          )
+        ) then
+          data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
+        end
+        
+        if(
+          (
+            data.orientation:find("HORIZONTAL")
+            and v:find("VERTICAL")
+          )
+          or (
+            data.orientation:find("VERTICAL")
+            and v:find("HORIZONTAL")
+          )
+        ) then
           local temp = data.width;
           data.width = data.height;
           data.height = temp;
+          data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
         end
+        data.orientation = v;
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
+        WeakAuras.ResetMoverSizer();
       end
     },
     inverse = {
       type = "toggle",
       name = L["Inverse"],
+      width = "half",
       order = 35
+    },
+    icon_side = {
+      type = "select",
+      name = L["Icon"],
+      width = "half",
+      values = function()
+        if(data.orientation:find("HORIZONTAL")) then
+          return WeakAuras.icon_side_types;
+        else
+          return WeakAuras.rotated_icon_side_types;
+        end
+      end,
+      order = 37
     },
     barColor = {
       type = "color",
@@ -160,11 +196,16 @@ local function createOptions(id, data)
       max = 25,
       step = 1
     },
+    stacks = {
+      type = "toggle",
+      name = L["Stacks"],
+      order = 48
+    },
     stickyDuration = {
       type = "toggle",
       name = L["Sticky Duration"],
       desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
-      order = 47
+      order = 49
     },
     spacer = {
       type = "header",
