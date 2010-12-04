@@ -1872,8 +1872,6 @@ function WeakAuras.SetRegion(data)
           parent:PositionChildren();
           function region:Collapse()
             if(region:IsVisible()) then
-              print("|cFFFF2222"..id.." (grouped)");
-              print(debugstack());
               parent.toHide[id] = true;
               WeakAuras.PerformActions(data, "finish");
               WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, function()
@@ -1897,8 +1895,6 @@ function WeakAuras.SetRegion(data)
         else
           function region:Collapse()
             if(region:IsVisible()) then
-              print("|cFFFF2222"..id.." (ungrouped)");
-              print(debugstack());
               WeakAuras.PerformActions(data, "finish");
               if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, function()
                 region:Hide();
