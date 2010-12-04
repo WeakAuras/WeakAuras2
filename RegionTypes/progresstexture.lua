@@ -83,6 +83,7 @@ local function modify(parent, region, data)
     region.orientation = "HORIZONTAL_INVERSE";
     if(data.compress) then
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
@@ -107,6 +108,7 @@ local function modify(parent, region, data)
       end
     else
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,1 , 1,0 , 1-progress,1 , 1-progress,0);
@@ -141,6 +143,7 @@ local function modify(parent, region, data)
     region.orientation = "HORIZONTAL";
     if(data.compress) then
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
@@ -165,6 +168,7 @@ local function modify(parent, region, data)
       end
     else
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(progress,1 , progress,0 , 0,1 , 0,0);
@@ -199,6 +203,7 @@ local function modify(parent, region, data)
     region.orientation = "VERTICAL_INVERSE";
     if(data.compress) then
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
@@ -223,6 +228,7 @@ local function modify(parent, region, data)
       end
     else
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,progress , 1,0 , 0,progress , 0,0);
@@ -257,6 +263,7 @@ local function modify(parent, region, data)
     region.orientation = "VERTICAL";
     if(data.compress) then
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
@@ -281,6 +288,7 @@ local function modify(parent, region, data)
       end
     else
       function region:SetValue(progress)
+        region.progress = progress;
         if(region.mirror_v) then
           if(region.mirror_h) then
             foreground:SetTexCoord(1,1 , 1,1-progress , 0,1 , 0,1-progress);
@@ -358,8 +366,13 @@ local function modify(parent, region, data)
     
     region:SetWidth(data.width * scalex);
     region:SetHeight(data.height * scaley);
-    foreground:SetWidth(data.width * scalex);
-    foreground:SetHeight(data.height * scaley);
+    if(data.orientation == "HORIZONTAL_INVERSE" or data.orientation == "HORIZONTAL") then
+      foreground:SetWidth(data.width * scalex * (region.progress or 1));
+      foreground:SetHeight(data.height * scaley);
+    else
+      foreground:SetWidth(data.width * scalex);
+      foreground:SetHeight(data.height * scaley * (region.progress or 1));
+    end
     background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * scalex * data.backgroundOffset, -1 * scaley * data.backgroundOffset);
     background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scalex * data.backgroundOffset, scaley * data.backgroundOffset);
   end

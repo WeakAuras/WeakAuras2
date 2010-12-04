@@ -123,15 +123,15 @@ local function modify(parent, region, data)
     
     if(mirror_h) then
       if(mirror_v) then
-        icon:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
+        icon:SetTexCoord(1-texWidth,1-texWidth , 1-texWidth,texWidth , texWidth,1-texWidth , texWidth,texWidth);
       else
-        icon:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
+        icon:SetTexCoord(1-texWidth,texWidth , 1-texWidth,1-texWidth , texWidth,texWidth , texWidth,1-texWidth);
       end
     else
       if(mirror_v) then
-        icon:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
+        icon:SetTexCoord(texWidth,1-texWidth , texWidth,texWidth , 1-texWidth,1-texWidth , 1-texWidth,texWidth);
       else
-        icon:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+        icon:SetTexCoord(texWidth,texWidth , texWidth,1-texWidth , 1-texWidth,texWidth , 1-texWidth,1-texWidth);
       end
     end
   end
@@ -141,7 +141,7 @@ local function modify(parent, region, data)
       if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
         region.duration = duration;
       end
-      if(customValue) then
+      if(customValue or duration <= 0.01) then
         cooldown:Hide();
       else
         cooldown:Show();
