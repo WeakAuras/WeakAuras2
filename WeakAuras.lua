@@ -1,6 +1,7 @@
 local ADDON_NAME = "WeakAuras";
-local timer = {};
-LibStub("AceTimer-3.0"):Embed(timer);
+WeakAurasTimers = {}
+LibStub("AceTimer-3.0"):Embed(WeakAurasTimers);
+local timer = WeakAurasTimers;
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
@@ -13,6 +14,7 @@ function SlashCmdList.WEAKAURAS(msg)
   WeakAuras.ToggleOptions(msg == "force");
 end
 
+local paused = false;
 local paused = false;
 local squelch_actions = true;
 
@@ -310,10 +312,9 @@ do
   local gcdTimer;
   
   function WeakAuras.InitCooldownReady()
-    local cdReadyFrame = CreateFrame("FRAME");
+    cdReadyFrame = CreateFrame("FRAME");
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("UNIT_POWER");
-    cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
     cdReadyFrame:SetScript("OnEvent", WeakAuras.CheckCooldownReady);
   end
   
@@ -322,24 +323,28 @@ do
       local startTime, duration = GetSpellCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
+      local time = GetTime();
+      local endTime = startTime + duration;
+      
       if(startTime == 0 and oldStartTime ~= 0) then
         WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
       elseif(startTime > 0) then
         if(duration > 1.51) then
-          if(spellCdReadyTimers[id]) then
-            timer:CancelTimer(spellCdReadyTimers[id], true);
+          spellCdReadyTimers[id] = spellCdReadyTimers[id] or {};
+          local timerData = spellCdReadyTimers[id];
+          if((not timerData.endTime) or timerData.endTime ~= endTime) then
+            if(timerData.endTime and timerData.endTime > time and timerData.handle) then
+              timer:CancelTimer(timerData.handle);
+            end
+            timerData.handle = timer:ScheduleTimer(WeakAuras.CheckCooldownReady, endTime - time);
+            timerData.endTime = endTime;
           end
-          local function callback()
-            spellCdReadyTimers[id] = nil;
-            WeakAuras.CheckCooldownReady();
-          end
-          spellCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
         elseif not(gcdTimer) then
           local function callback()
             gcdTimer = nil;
             WeakAuras.ScanEvents("GCD_ENDED");
           end
-          gcdTimer = timer:ScheduleTimer(callback, startTime + duration - GetTime() + 0.05);
+          gcdTimer = timer:ScheduleTimer(callback, endTime - time);
         end
       end
       spellCdReadyCache[id] = duration > 1.51 and startTime or 0;
@@ -349,24 +354,27 @@ do
       local startTime, duration = GetItemCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
+      local time = GetTime();
+      local endTime = startTime + duration;
+      
       if(startTime == 0 and oldStartTime ~= 0) then
         WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
       elseif(startTime > 0) then
         if(duration > 1.51) then
-          if(itemCdReadyTimers[id]) then
-            timer:CancelTimer(itemCdReadyTimers[id], true);
+          itemCdReadyTimers[id] = itemCdReadyTimers[id] or {};
+          local timerData = itemCdReadyTimers[id];
+          if((not timerData.endTime) or timerData.endTime ~= endTime) then
+            if(timerData.endTime > time and timerData.handle) then
+              timer:CancelTimer(timerData.handle);
+            end
+            timerData.handle = timer:ScheduleTimer(WeakAuras.CheckCooldownReady, endTime - time);
           end
-          local function callback()
-            itemCdReadyTimers[id] = nil;
-            WeakAuras.CheckCooldownReady();
-          end
-          itemCdReadyTimers[id] = timer:ScheduleTimer(callback, startTime + duration - GetTime());
         elseif not(gcdTimer) then
           local function callback()
             gcdTimer = nil;
             WeakAuras.ScanEvents("GCD_ENDED");
           end
-          gcdTimer = timer:ScheduleTimer(callback, startTime + duration - GetTime() + 0.05);
+          gcdTimer = timer:ScheduleTimer(callback, endTime - time);
         end
       end
       itemCdReadyCache[id] = duration > 1.51 and startTime or 0;
