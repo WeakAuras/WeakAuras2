@@ -121,7 +121,9 @@ do
   aura_cache.players = {};
   
   function aura_cache.ForceUpdate()
-    WeakAuras.ScanAurasGroup()
+    if not(paused) then
+      WeakAuras.ScanAurasGroup()
+    end
   end
   
   function aura_cache.Watch(self, auraname)
@@ -327,7 +329,9 @@ do
       local endTime = startTime + duration;
       
       if(startTime == 0 and oldStartTime ~= 0) then
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
+        if not(paused) then
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
+        end
       elseif(startTime > 0) then
         if(duration > 1.51) then
           spellCdReadyTimers[id] = spellCdReadyTimers[id] or {};
@@ -342,7 +346,9 @@ do
         elseif not(gcdTimer) then
           local function callback()
             gcdTimer = nil;
-            WeakAuras.ScanEvents("GCD_ENDED");
+            if not(paused) then
+              WeakAuras.ScanEvents("GCD_ENDED");
+            end
           end
           gcdTimer = timer:ScheduleTimer(callback, endTime - time);
         end
@@ -358,7 +364,9 @@ do
       local endTime = startTime + duration;
       
       if(startTime == 0 and oldStartTime ~= 0) then
-        WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+        if not(paused) then
+          WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+        end
       elseif(startTime > 0) then
         if(duration > 1.51) then
           itemCdReadyTimers[id] = itemCdReadyTimers[id] or {};
@@ -372,7 +380,9 @@ do
         elseif not(gcdTimer) then
           local function callback()
             gcdTimer = nil;
-            WeakAuras.ScanEvents("GCD_ENDED");
+            if not(paused) then
+              WeakAuras.ScanEvents("GCD_ENDED");
+            end
           end
           gcdTimer = timer:ScheduleTimer(callback, endTime - time);
         end
@@ -925,13 +935,15 @@ function WeakAuras.UpdateAll(frame, elapsed)
     frame.elapsed = frame.elapsed - anim_delay;
     WeakAuras.UpdateAnimations(elapsed);
   end
-  for unit, _ in pairs(pending_aura_scans) do
-    pending_aura_scans[unit] = nil;
-    WeakAuras.ScanAuras(unit);
-  end
-  if(pending_conditions_check and GetTime() - pending_conditions_check > 0.5) then
-    pending_conditions_check = nil;
-    WeakAuras.ConditionsChanged();
+  if not(paused) then
+    for unit, _ in pairs(pending_aura_scans) do
+      pending_aura_scans[unit] = nil;
+      WeakAuras.ScanAuras(unit);
+    end
+    if(pending_conditions_check and GetTime() - pending_conditions_check > 0.5) then
+      pending_conditions_check = nil;
+      WeakAuras.ConditionsChanged();
+    end
   end
 end
 
@@ -1248,38 +1260,40 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
 end
 
 function WeakAuras.ConditionsChanged()
-  for id, region in pairs(regions) do
-    if(region.region:IsVisible() and not(WeakAuras.PassesConditionChecks(id))) then
-      region.region:Collapse();
+  if not(paused) then
+    for id, region in pairs(regions) do
+      if(region.region:IsVisible() and not(WeakAuras.PassesConditionChecks(id))) then
+        region.region:Collapse();
+      end
     end
-  end
-  for unit, auras in pairs(loaded_auras) do
-    if(unit == "group") then
-      WeakAuras.ScanAurasGroup();
-    else
-      WeakAuras.ScanAuras(unit);
+    for unit, auras in pairs(loaded_auras) do
+      if(unit == "group") then
+        WeakAuras.ScanAurasGroup();
+      else
+        WeakAuras.ScanAuras(unit);
+      end
     end
-  end
-  WeakAuras.ForceEvents();
-  for eventName, events in pairs(loaded_events) do
-    if(eventName == "COMBAT_LOG_EVENT_UNFILTERED") then
-      for subeventName, subevents in pairs(events) do
-        for id, triggers in pairs(subevents) do
-          for triggernum, eventData in pairs(triggers) do
-            if not(eventData.region) then
-              print("No region for", id);
-            end
-            if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
-              eventData.region:Expand();
+    WeakAuras.ForceEvents();
+    for eventName, events in pairs(loaded_events) do
+      if(eventName == "COMBAT_LOG_EVENT_UNFILTERED") then
+        for subeventName, subevents in pairs(events) do
+          for id, triggers in pairs(subevents) do
+            for triggernum, eventData in pairs(triggers) do
+              if not(eventData.region) then
+                print("No region for", id);
+              end
+              if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
+                eventData.region:Expand();
+              end
             end
           end
         end
-      end
-    else
-      for id, triggers in pairs(events) do
-        for triggernum, eventData in pairs(triggers) do
-          if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
-            eventData.region:Expand();
+      else
+        for id, triggers in pairs(events) do
+          for triggernum, eventData in pairs(triggers) do
+            if(eventData.region.active and WeakAuras.PassesConditionChecks(id)) then
+              eventData.region:Expand();
+            end
           end
         end
       end
@@ -1858,6 +1872,8 @@ function WeakAuras.SetRegion(data)
           parent:PositionChildren();
           function region:Collapse()
             if(region:IsVisible()) then
+              print("|cFFFF2222"..id.." (grouped)");
+              print(debugstack());
               parent.toHide[id] = true;
               WeakAuras.PerformActions(data, "finish");
               WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, function()
@@ -1881,6 +1897,8 @@ function WeakAuras.SetRegion(data)
         else
           function region:Collapse()
             if(region:IsVisible()) then
+              print("|cFFFF2222"..id.." (ungrouped)");
+              print(debugstack());
               WeakAuras.PerformActions(data, "finish");
               if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, function()
                 region:Hide();
