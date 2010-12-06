@@ -1133,6 +1133,10 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
         display = L["Totem Name"],
         type = "aura",
         init = "arg"
+      },
+      {
+        hidden = true,
+        test = "startTime ~= 0"
       }
     },
     durationFunc = function(trigger)
