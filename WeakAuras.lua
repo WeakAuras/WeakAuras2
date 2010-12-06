@@ -2496,3 +2496,87 @@ do
     end
   end
 end
+
+do
+  local mh = GetInventorySlotInfo("MainHandSlot")
+  local oh = GetInventorySlotInfo("SecondaryHandSlot")
+
+  local mh_name;
+  local mh_exp;
+  local mh_dur;
+  local mh_icon = GetInventoryItemTexture("player", mh);
+  
+  local oh_name;
+  local oh_exp;
+  local oh_dur;
+  local oh_icon = GetInventoryItemTexture("player", oh);
+  
+  local tenchFrame;
+  local tenchTip;
+  
+  function WeakAuras.TenchInit()
+    if not(tenchFrame) then
+      tenchFrame = CreateFrame("Frame");
+      tenchFrame:RegisterEvent("UNIT_AURA");
+      
+      tenchTip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate"); -- Tooltip name cannot be nil
+      tenchTip:SetOwner(WorldFrame, "ANCHOR_NONE");
+      tenchTip:AddFontStrings(
+        tenchTip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+        tenchTip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+      );
+      
+      local function getTenchName(id)
+        tenchTip:SetInventoryItem("player", id);
+        local lines = { tenchTip:GetRegions() };
+        for i,v in ipairs(lines) do
+          if(v:GetObjectType() == "FontString") then
+            local text = v:GetText();
+            if(text) then
+              local _, _, name = text:find("^(.+) %(%d+ [^%)]+%)$");
+              if(name) then
+                return name;
+              end
+            end
+          end
+        end
+        
+        return "Unknown"
+      end
+      
+      local function tenchUpdate(self, event, arg1)
+        if(arg1 == "player") then
+          local _, mh_rem, _, _, oh_rem = GetWeaponEnchantInfo();
+          local time = GetTime();
+          local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
+          local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
+          if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
+            mh_exp = mh_exp_new;
+            mh_dur = mh_rem and mh_rem / 1000;
+            mh_name = mh_exp and getTenchName(mh) or "None";
+            mh_icon = GetInventoryItemTexture("player", mh)
+            WeakAuras.ScanEvents("MAINHAND_TENCH_UPDATE");
+          end
+          if(math.abs((oh_exp or 0) - (oh_exp_new or 0)) > 1) then
+            oh_exp = oh_exp_new;
+            oh_dur = oh_rem and oh_rem / 1000;
+            oh_name = oh_exp and getTenchName(oh) or "None";
+            oh_icon = GetInventoryItemTexture("player", oh)
+            WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
+          end
+        end
+      end
+      
+      tenchFrame:SetScript("OnEvent", tenchUpdate);
+      tenchUpdate("init", "UNIT_AURA", "player");
+    end
+  end
+  
+  function WeakAuras.GetMHTenchInfo()
+    return mh_exp, mh_dur, mh_name, mh_icon;
+  end
+  
+  function WeakAuras.GetOHTenchInfo()
+    return oh_exp, oh_dur, oh_name, oh_icon;
+  end
+end

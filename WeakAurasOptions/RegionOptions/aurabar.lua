@@ -145,14 +145,26 @@ local function createOptions(id, data)
       type = "select",
       name = L["Icon"],
       width = "half",
-      values = function()
-        if(data.orientation:find("HORIZONTAL")) then
-          return WeakAuras.icon_side_types;
-        else
-          return WeakAuras.rotated_icon_side_types;
-        end
-      end,
+      values = WeakAuras.icon_side_types,
+      hidden = function() return not data.orientation:find("HORIZONTAL") end,
       order = 37
+    },
+    icon_side2 = {
+      type = "select",
+      name = L["Icon"],
+      width = "half",
+      values = WeakAuras.rotated_icon_side_types,
+      hidden = function() return data.orientation:find("HORIZONTAL") end,
+      order = 37,
+      get = function()
+        return data.icon_side;
+      end,
+      set = function(info, v)
+        data.icon_side = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+      end
     },
     barColor = {
       type = "color",

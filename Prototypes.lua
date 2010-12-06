@@ -1275,38 +1275,60 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
     }
   },
   ]]
-  --Weapon Enchant events give very little information, and there does not seem to be any proper UI function
-  --to get the desired information - the only way to get it is to parse tooltips, and that seems like more work
-  --than it is worth. Thus, Weapon Enchant triggers are NYI.
-  --[[
-  ["Weapon Enchanted"] = {
+  ["Weapon Enchant"] = {
     type = "status",
     events = {
-      "BAG_UPDATE"
+      "MAINHAND_TENCH_UPDATE",
+      "OFFHAND_TENCH_UPDATE"
     },
     force_events = true,
-    name = L["Weapon Enchanted"],
+    name = L["Weapon Enchant"],
     init = function(trigger)
-      if(trigger.weapon == "main") then
-        return "local enchanted = GetWeaponEnchantInfo()";
-      elseif(trigger.weapon == "off") then
-        return "local _, _, _, enchanted = GetWeaponEnchantInfo()";
-      else
-        return "local enchanted";
-      end
+      WeakAuras.TenchInit();
+      return "local weapon = '"..(trigger.weapon or "none").."'\n";
     end,
     args = {
       {
         name = "weapon",
         display = L["Weapon"],
-        required = true,
         type = "select",
         values = "weapon_types",
-        test = "enchanted"
+        test = "(weapon == 'main' and WeakAuras.GetMHTenchInfo() or weapon == 'off' and WeakAuras.GetOHTenchInfo())"
       }
-    } 
+    },
+    durationFunc = function(trigger)
+      local expirationTime, duration;
+      if(trigger.weapon == "main") then
+        expirationTime, duration = WeakAuras.GetMHTenchInfo();
+      elseif(trigger.weapon == "off") then
+        expirationTime, duration = WeakAuras.GetOHTenchInfo();
+      end
+      if(expirationTime) then
+        return duration, expirationTime;
+      else
+        return 0, math.huge;
+      end
+    end,
+    nameFunc = function(trigger)
+      local _, name;
+      if(trigger.weapon == "main") then
+        _, _, name = WeakAuras.GetMHTenchInfo();
+      elseif(trigger.weapon == "off") then
+        _, _, name = WeakAuras.GetOHTenchInfo();
+      end
+      return name;
+    end,
+    iconFunc = function(trigger)
+      local _, icon;
+      if(trigger.weapon == "main") then
+        _, _, _, icon = WeakAuras.GetMHTenchInfo();
+      elseif(trigger.weapon == "off") then
+        _, _, _, icon = WeakAuras.GetOHTenchInfo();
+      end
+      return icon;
+    end,
+    automaticrequired = true
   },
-  ]]
   ["Chat Message"] = {
     type = "event",
     events = {
