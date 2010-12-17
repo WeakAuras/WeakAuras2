@@ -63,6 +63,18 @@ local load_prototype = WeakAuras.load_prototype;
 local event_prototypes = WeakAuras.event_prototypes;
 local conditions = WeakAuras.conditions;
 
+local levelColors = {
+  [1] = "|cFF77FF77",
+  [2] = "|cFF7777FF",
+  [3] = "|cFFFF7777"
+};
+
+local function debug(msg, level)
+  level = (level and levelColors[level] and level) or 2;
+  msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
+  ChatFrame3:AddMessage(levelColors[level]..msg);
+end
+
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};
@@ -898,11 +910,31 @@ end
 
 function WeakAuras.ActivateEventTimer(id, triggernum, duration)
   if not(paused) then
+    local expirationTime = GetTime() + duration;
+    local doTimer;
     if(timers[id] and timers[id][triggernum]) then
-      timer:CancelTimer(timers[id][triggernum], true);
+      if(timers[id][triggernum].expirationTime ~= expirationTime) then
+        timer:CancelTimer(timers[id][triggernum].handle);
+        doTimer = "change";
+      else
+        debug("Timer for "..id.." ("..triggernum..") did not change");
+      end
+    else
+      doTimer = "new";
     end
-    timers[id] = timers[id] or {};
-    timers[id][triggernum] = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum) end, duration);
+    
+    if(doTimer) then
+      timers[id] = timers[id] or {};
+      timers[id][triggernum] = timers[id][triggernum] or {};
+      local record = timers[id][triggernum];
+      if(doTimer == "change") then
+        debug("Timer for "..id.." ("..triggernum..") changed from "..(record.expirationTime or "none").." to "..expirationTime);
+      elseif(doTimer == "new") then
+        debug("Timer for "..id.." ("..triggernum..") will end at "..expirationTime);
+      end
+      record.handle = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum, true) end, duration);
+      record.expirationTime = expirationTime;
+    end
   end
 end
 
@@ -918,7 +950,7 @@ function WeakAuras.EndEvent(id, triggernum, force)
       data.region:Collapse();
     end
     if(timers[id] and timers[id][triggernum]) then
-      timer:CancelTimer(timers[id][triggernum], true);
+      timer:CancelTimer(timers[id][triggernum].handle, true);
       timers[id][triggernum] = nil;
     end
   end

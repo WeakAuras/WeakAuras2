@@ -464,6 +464,7 @@ L["Name Info"] = "Name Info"
 L["Stack Info"] = "Stack Info"
 L["Icon Info"] = "Icon Info"
 L["Duration Info"] = "Duration Info"
+L["Alternate Power"] = "Alternate Power"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"

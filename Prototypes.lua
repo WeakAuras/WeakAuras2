@@ -506,6 +506,61 @@ WeakAuras.event_prototypes = {
     end,
     automatic = true
   },
+  ["Alternate Power"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER",
+      "PLAYER_TARGET_CHANGED",
+      "PLAYER_FOCUS_CHANGED"
+    },
+    force_events = {
+      "player",
+      "target",
+      "focus",
+      "pet"
+    },
+    name = L["Alternate Power"],
+    init = function(trigger)
+      local ret = [[
+local unit = unit or '%s'
+local concernedUnit = '%s'
+local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
+]]
+      return ret:format(trigger.unit or "", trigger.unit or "", trigger.unit or "");
+    end,
+    args = {
+      {
+        name = "unit",
+        required = true,
+        display = L["Unit"],
+        type = "select",
+        init = "arg",
+        values = "actual_unit_types"
+      },
+      {
+        name = "power",
+        display = L["Alternate Power"],
+        type = "number",
+        init = "UnitPower(unit, 10)"
+      },
+      {
+        hidden = true,
+        test = "UnitExists(concernedUnit) and name"
+      }
+    },
+    durationFunc = function(trigger)
+      return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10), function() return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10) end;
+    end,
+    nameFunc = function(trigger)
+      local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo(trigger.unit);
+      return name;
+    end,
+    iconFunc = function(trigger)
+      local icon = UnitAlternatePowerTextureInfo(trigger.unit, 0);
+      return icon;
+    end,
+    automatic = true
+  },
   ["Shards"] = {
     type = "status",
     events = {
