@@ -741,6 +741,11 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end
       },
+      {
+        enable = function(trigger)
+          return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end
+      },
       {}, --destFlags ignored with _ argument
       {
         enable = function(trigger)
@@ -1313,23 +1318,6 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
     end,
     automaticrequired = true
   },
-  --Is tracking even a useful thing to include? Possibly just delete this one!
-  --Commented out until I can decide what to do with this. Tracking seems too useless to spend any time on,
-  --Since any UI element that allows you to set your tracking should display what tracking you have on.
-  --[[
-  ["Tracking"] = {
-    type = "status",
-    event = "MINIMAP_UPDATE_TRACKING",
-    name = L["Tracking"],
-    init = function() return "local tracking = GetTracking
-    args = {
-      {
-        name = "tracking",
-        display = L["Tracking"]
-      }
-    }
-  },
-  ]]
   ["Weapon Enchant"] = {
     type = "status",
     events = {
