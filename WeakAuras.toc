@@ -20,7 +20,6 @@ Localization-enUS.lua
 Prototypes.lua
 Types.lua
 WeakAuras.lua
-Links.lua
 Transmission.lua
 
 RegionTypes\progresstexture.lua
