@@ -1003,3 +1003,5 @@ L.textures["PowerAuras Words"] = {
 
 -- Errors - Low priority for localization
 L["This region of type \"%s\" has no configuration options."] = "This region of type \"%s\" has no configuration options."
+L["Requested display does not exist"] = "Requested display does not exist"
+L["Requested display not authorized"] = "Requested display not authorized"

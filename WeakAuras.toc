@@ -1,8 +1,8 @@
 ## Interface: 40000
 ## Title: WeakAuras
 ## Author: Mirrored
-## Version: 1.2
-## Notes: Shows textures/icons/text on-screen based on buffs, debuffs, and other triggers.
+## Version: 1.3
+## Notes: A powerful, comprehensive utilty for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde
 ## X-Email: mirror@uga.edu
@@ -20,6 +20,8 @@ Localization-enUS.lua
 Prototypes.lua
 Types.lua
 WeakAuras.lua
+Links.lua
+Transmission.lua
 
 RegionTypes\progresstexture.lua
 RegionTypes\texture.lua

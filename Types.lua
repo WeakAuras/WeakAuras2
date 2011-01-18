@@ -750,6 +750,7 @@ WeakAuras.anim_scale_types = {
 WeakAuras.anim_alpha_types = {
   straight = L["Normal"],
   alphaPulse = L["Pulse"],
+  hide = L["Hide"],
   custom = L["Custom Function"]
 };
 WeakAuras.anim_rotate_types = {
