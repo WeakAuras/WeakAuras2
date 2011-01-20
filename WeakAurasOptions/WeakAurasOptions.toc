@@ -12,14 +12,7 @@
 ## Dependencies: WeakAuras
 ## SavedVariables: WeakAurasOptionsSaved
 WeakAurasOptions.lua
-RegionOptions\aurabar.lua
-RegionOptions\texture.lua
-RegionOptions\icon.lua
-RegionOptions\text.lua
-RegionOptions\timer.lua
-RegionOptions\group.lua
-RegionOptions\dynamicgroup.lua
-RegionOptions\progresstexture.lua
+
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua

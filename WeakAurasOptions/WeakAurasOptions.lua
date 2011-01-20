@@ -11,9 +11,11 @@ local ADDON_NAME = "WeakAurasOptions";
 local GetSpellInfo = GetSpellInfo;
 local GetItemInfo = GetItemInfo;
 
+WeakAuras.transmitCache = {};
+
 local iconCache = {};
 
-local regionOptions = {};
+local regionOptions = WeakAuras.regionOptions;
 local displayButtons = {};
 local optionReloads = {};
 local optionTriggerChoices = {};
@@ -738,37 +740,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     end
 end);
 
-function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description)
-    if not(name) then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined");
-    elseif(type(name) ~= "string") then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not a string");
-    elseif not(createFunction) then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not defined");
-    elseif(type(createFunction) ~= "function") then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not a function");
-    elseif not(icon) then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not defined");
-    elseif not(type(icon) == "string" or type(icon) == "function") then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not a string or a function")
-    elseif not(displayName) then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not defined".." "..name);
-    elseif(type(displayName) ~= "string") then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not a string");
-    elseif(regionOptions[name]) then
-        error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined");
-    else
-        regionOptions[name] = {
-            create = createFunction,
-            icon = icon,
-            displayName = displayName,
-            createThumbnail = createThumbnail,
-            modifyThumbnail = modifyThumbnail,
-            description = description
-        };
-    end
-end
-
 function WeakAuras.OptionsFrame()
 	if(frame) then
 		return frame;
@@ -888,6 +859,8 @@ function WeakAuras.SetIconName(data, region)
         end
     end
     
+	WeakAuras.transmitCache[data.id] = icon;
+	
     if(region.SetIcon) then
         region:SetIcon(icon);
     end
@@ -5520,8 +5493,8 @@ function WeakAuras.UpdateDisplayButton(data)
                             for index, name in pairs(trigger.names) do
                                 local left = " ";
                                 if(index == 1) then
-                                    if(#namestable > 0) then
-                                        if(#namestable > 1) then
+                                    if(#trigger.names > 0) then
+                                        if(#trigger.names > 1) then
                                             left = L["Auras:"];
                                         else
                                             left = L["Aura:"];
@@ -5546,8 +5519,6 @@ function WeakAuras.UpdateDisplayButton(data)
                     end
                 end
             end
-            Things = Things or {};
-            Things[id] = namestable;
             local regionData = regionOptions[data.regionType or ""]
             local displayName = regionData and regionData.displayName or "";
             button:SetDescription({data.id, displayName}, unpack(namestable));
