@@ -1,5 +1,201 @@
 local L = WeakAuras.L;
 
+local version = 1301;
+local versionString = "1.3 r59";
+
+local regionOptions = WeakAuras.regionOptions;
+local regionTypes = WeakAuras.regionTypes;
+local event_types = WeakAuras.event_types;
+local status_types = WeakAuras.status_types;
+
+local bytetoB64 = {
+	[0]="a","b","c","d","e","f","g","h",
+	"i","j","k","l","m","n","o","p",
+	"q","r","s","t","u","v","w","x",
+	"y","z","A","B","C","D","E","F",
+	"G","H","I","J","K","L","M","N",
+	"O","P","Q","R","S","T","U","V",
+	"W","X","Y","Z","0","1","2","3",
+	"4","5","6","7","8","9","-","_"
+}
+
+local B64tobyte = {
+	  a =  0,  b =  1,  c =  2,  d =  3,  e =  4,  f =  5,  g =  6,  h =  7,
+	  i =  8,  j =  9,  k = 10,  l = 11,  m = 12,  n = 13,  o = 14,  p = 15,
+	  q = 16,  r = 17,  s = 18,  t = 19,  u = 20,  v = 21,  w = 22,  x = 23,
+	  y = 24,  z = 25,  A = 26,  B = 27,  C = 28,  D = 29,  E = 30,  F = 31,
+	  G = 32,  H = 33,  I = 34,  J = 35,  K = 36,  L = 37,  M = 38,  N = 39,
+	  O = 40,  P = 41,  Q = 42,  R = 43,  S = 44,  T = 45,  U = 46,  V = 47,
+	  W = 48,  X = 49,  Y = 50,  Z = 51,["0"]=52,["1"]=53,["2"]=54,["3"]=55,
+	["4"]=56,["5"]=57,["6"]=58,["7"]=59,["8"]=60,["9"]=61,["-"]=62,["_"]=63
+}
+
+local string_char = string.char
+local bit_band = bit.band
+local bit_lshift = bit.lshift
+local bit_rshift = bit.rshift
+
+--This code is based on the Encode7Bit algorithm from LibCompress
+--Credit goes to Galmok of European Stormrage (Horde), galmok@gmail.com
+local encodeB64Table = {};
+
+function WeakAuras.encodeB64(str)
+	local B64 = encodeB64Table;
+	local remainder = 0;
+	local remainder_length = 0;
+	local encoded_size = 0;
+	local l=#str
+	for i=1,l do
+		code = string.byte(str, i);
+		remainder = remainder + bit_lshift(code, remainder_length);
+		remainder_length = remainder_length + 8;
+		while(remainder_length) >= 6 do
+			encoded_size = encoded_size + 1;
+			B64[encoded_size] = bytetoB64[bit_band(remainder, 63)];
+			remainder = bit_rshift(remainder, 6);
+			remainder_length = remainder_length - 6;
+		end
+	end
+	if remainder_length > 0 then
+		encoded_size = encoded_size + 1;
+		B64[encoded_size] = bytetoB64[remainder];
+	end
+	return table.concat(B64, "", 1, encoded_size)
+end
+
+local decodeB64Table = {}
+
+function WeakAuras.decodeB64(str)
+	local bit8 = decodeB64Table;
+	local decoded_size = 0;
+	local ch;
+	local i = 1;
+	local bitfield_len = 0;
+	local bitfield = 0;
+	local l = #str;
+	while true do
+		if bitfield_len >= 8 then
+			decoded_size = decoded_size + 1;
+			bit8[decoded_size] = string_char(bit_band(bitfield, 255));
+			bitfield = bit_rshift(bitfield, 8);
+			bitfield_len = bitfield_len - 8;
+		end
+		ch = B64tobyte[str:sub(i, i)];
+		bitfield = bitfield + bit_lshift(ch or 0, bitfield_len);
+		bitfield_len = bitfield_len + 6;
+		if i > l then
+			break;
+		end
+		i = i + 1;
+	end
+	return table.concat(bit8, "", 1, decoded_size)
+end
+
+function WeakAuras.tableAdd(augend, addend)
+	local function recurse(augend, addend)
+		for i,v in pairs(addend) do
+			if(type(v) == "table") then
+				augend[i] = augend[i] or {};
+				recurse(augend[i], addend[i]);
+			else
+				augend[i] = augend[i] ~= nil and augend[i] or v;
+			end
+		end
+	end
+	recurse(augend, addend);
+end
+	
+function WeakAuras.tableSubtract(minuend, subtrahend)
+	local function recurse(minuend, subtrahend)
+		for i,v in pairs(subtrahend) do
+			if(minuend[i]) then
+				if(type(minuend[i]) == "table" and type(v) == "table") then
+					if(recurse(minuend[i], v)) then
+						minuend[i] = nil;
+					end
+				else
+					if(minuend[i] == v) then
+						minuend[i] = nil;
+					end
+				end
+			end
+		end
+		local num = 0;
+		for i,v in pairs(minuend) do
+			num = num + 1;
+		end
+		return num == 0;
+	end
+	recurse(minuend, subtrahend);
+end
+
+function WeakAuras.DisplayStub(regionType)
+	local stub = {
+		["untrigger"] = {
+		},
+		["animation"] = {
+			["start"] = {
+				["duration_type"] = "seconds",
+				["type"] = "none"
+			},
+			["main"] = {
+				["duration_type"] = "seconds",
+				["type"] = "none"
+			},
+			["finish"] = {
+				["duration_type"] = "seconds",
+				["type"] = "none"
+			}
+		},
+		["trigger"] = {
+			["type"] = "aura",
+			["subeventPrefix"] = "SPELL",
+			["subeventSuffix"] = "_CAST_START",
+			["debuffType"] = "HELPFUL",
+			["names"] = {},
+			["event"] = "Health",
+			["unit"] = "player"
+		},
+		["actions"] = {
+			["start"] = {
+			},
+			["finish"] = {
+			}
+		},
+		["conditions"] = {
+		},
+		["load"] = {
+			["class"] = {
+				["multi"] = {
+				}
+			},
+			["spec"] = {
+				["multi"] = {
+				}
+			},
+			["size"] = {
+				["multi"] = {
+				}
+			}
+		}
+	}
+	
+	WeakAuras.validate(stub, regionTypes[regionType].default);
+	
+	return stub;
+end
+
+function WeakAuras.CompressDisplay(data)
+	local copiedData = {};
+	WeakAuras.DeepCopy(data, copiedData);
+	WeakAuras.tableSubtract(copiedData, WeakAuras.DisplayStub(copiedData.regionType));
+	return copiedData;
+end
+
+function WeakAuras.DecompressDisplay(data)
+	WeakAuras.tableAdd(data, WeakAuras.DisplayStub(data.regionType));
+end
+
 local function Hooked_AddMessage(self, msg, ...)
 	local newMsg = "";
 	local remaining = msg;
@@ -47,10 +243,16 @@ function WeakAuras.ShowTooltip(content)
 	ItemRefTooltip:Show();
 end
 
+local tooltipLoading;
+
 local Original = ChatFrame_OnHyperlinkShow;
 ChatFrame_OnHyperlinkShow = function(self, link, text, button)
-	if(ItemRefTooltip.WeakAuras_Tooltip_Texture) then
-		ItemRefTooltip.WeakAuras_Tooltip_Texture:Hide();
+	if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
+		ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:Hide();
+	end
+	if(ItemRefTooltip.WeakAuras_Tooltip_Thumbanil_Frame) then
+		ItemRefTooltip.WeakAuras_Tooltip_Thumbanil_Frame:Hide();
+		ItemRefTooltip.WeakAuras_Tooltip_Thumbanil_Frame = nil;
 	end
 	if(ItemRefTooltip.WeakAuras_Tooltip_Button) then
 		ItemRefTooltip.WeakAuras_Tooltip_Button:Hide();
@@ -64,6 +266,7 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button)
 				{2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
 				{1, "Requesting display information from "..characterName.."...", 1, 0.82, 0}
 			});
+			tooltipLoading = true;
 			WeakAuras.RequestDisplay(characterName, displayName);
 		else
 			WeakAuras.ShowTooltip({
@@ -77,19 +280,28 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button)
 end
 
 local Compresser = LibStub:GetLibrary("LibCompress");
-local Encoder = Compresser:GetChatEncodeTable();
+local Encoder = Compresser:GetAddonEncodeTable()
 LibStub("AceSerializer-3.0"):Embed(WeakAuras);
 LibStub("AceComm-3.0"):Embed(WeakAuras);
 
-function WeakAuras.TableToString(inTable)
+function WeakAuras.TableToString(inTable, forChat)
 	local serialized = WeakAuras:Serialize(inTable);
-	local compressed = Compresser:CompressHuffman(serialized);
-	return Encoder:Encode(compressed);
+	local compressed = Compresser:Compress(serialized);
+	if(forChat) then
+		return WeakAuras.encodeB64(compressed);
+	else
+		return Encoder:Encode(compressed);
+	end
 end
 
-function WeakAuras.StringToTable(inString)
-	local decoded = Encoder:Decode(inString);
-	local decompressed, errorMsg = Compresser:DecompressHuffman(decoded);
+function WeakAuras.StringToTable(inString, fromChat)
+	local decoded;
+	if(fromChat) then
+		decoded = WeakAuras.decodeB64(inString);
+	else
+		decoded = Encoder:Decode(inString);
+	end
+	local decompressed, errorMsg = Compresser:Decompress(decoded);
 	if(not decompressed) then
 		print("Error decompressing: "..errorMsg);
 		return;
@@ -102,34 +314,58 @@ function WeakAuras.StringToTable(inString)
 	return deserialized;
 end
 
-function WeakAuras.DisplayToString(id)
+function WeakAuras.DisplayToString(id, forChat)
 	local data = WeakAuras.GetData(id);
 	if(data) then
 		local transmit = {
-			messageType = "display",
-			owner = GetUnitName("player"),
-			id = id,
-			display = data
+			m = "d",
+			d = WeakAuras.CompressDisplay(data),
+			v = version,
+			s = versionString
 		};
-		return WeakAuras.TableToString(transmit);
+		if(WeakAuras.transmitCache and WeakAuras.transmitCache[id]) then
+			transmit.i = WeakAuras.transmitCache[id];
+		end
+		if(data.trigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.iconCache) then
+			transmit.a = {};
+			for i,v in pairs(data.trigger.names) do
+				transmit.a[v] = WeakAurasOptionsSaved.iconCache[v];
+			end
+		end
+		if(data.controlledChildren) then
+			transmit.children = {};
+			for i,v in pairs(data.controlledChildren) do
+				local childData = WeakAuras.GetData(v);
+				if(childData) then
+					transmit.children[v] = WeakAuras.CompressDisplay(childData);
+				end
+			end
+		end
+		if(WeakAuras.transmitCache) then
+		end
+		return WeakAuras.TableToString(transmit, forChat);
 	else
 		return "";
 	end
 end
 
+function WeakAuras.ImportString(str)
+	--import with b64 encoding
+end
+
 function WeakAuras.RequestDisplay(characterName, displayName)
 	local transmit = {
-		messageType = "displayRequest",
-		displayName = displayName
+		m = "dR",
+		d = displayName
 	};
-	WeakAuras:SendCommMessage("WeakAuras", WeakAuras.TableToString(transmit), "WHISPER", characterName);
+	local transmitString = WeakAuras.TableToString(transmit);
+	WeakAuras:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
 end
 
 function WeakAuras.TransmitError(errorMsg, characterName, displayName)
 	local transmit = {
-		messageType = "displayError",
-		displayName = displayName,
-		errorMsg = errorMsg
+		m = "dE",
+		eM = errorMsg
 	};
 	WeakAuras:SendCommMessage("WeakAuras", WeakAuras.TableToString(transmit), "WHISPER", characterName);
 end
@@ -137,108 +373,202 @@ end
 function WeakAuras.TransmitDisplay(id, characterName)
 	local encoded = WeakAuras.DisplayToString(id);
 	if(encoded ~= "") then
-		WeakAuras:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName);
+		WeakAuras:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(_, done, total)
+			WeakAuras:SendCommMessage("WeakAurasProgress", done.." "..total, "WHISPER", characterName, "ALERT");
+		end);
 	else
-		WeakAuras.TransmitError("does not exist", characterName, displayName);
+		WeakAuras.TransmitError("dne", characterName, displayName);
 	end
 end
 
+WeakAuras:RegisterComm("WeakAurasProgress", function(prefix, message, ditribution, sender)
+	if(tooltipLoading and ItemRefTooltip:IsVisible()) then
+		local stats = WeakAuras.split(message);
+		local done = tonumber(stats[1]);
+		local total = tonumber(stats[2]);
+		if(done and total and total >= done) then
+			local red = min(255, (1 - done / total) * 511);
+			local green = min(255, (done / total) * 511);
+			WeakAuras.ShowTooltip({
+				{2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+				{1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
+				{2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
+			});
+		end
+	end
+end);
+
 WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
 	local received = WeakAuras.StringToTable(message);
-	if(received and received.messageType) then
-		if(received.messageType == "display") then
-			local tooltip = {
-				{2, "WeakAuras", received.id, 0.5, 0, 1, 1, 1, 1},
-				{1, "From: "..received.owner, 0, 1, 0},
-			};
-			local function traverse(inTable, depth)
-				for i,v in pairs(inTable) do
-					if(type(v) == "table") then
-						tinsert(tooltip, {2, ("  "):rep(depth)..i..":", "table", 1, 1, 1, 1, 1, 1});
-						--tinsert(tooltip, {1, ("  "):rep(depth)..i..":", 1, 1, 1});
-						--traverse(v, depth + 1);
-					else
-						local display;
-						if(type(v) == "boolean") then
-							if(v) then
-								display = "true";
-							else
-								display = "false";
-							end
-						else
-							display = ""..v;
-						end
-						tinsert(tooltip, {2, ("  "):rep(depth)..i..":", display, 1, 1, 1, 1, 1, 1});
-					end
-				end
-			end
-			traverse(received.display, 0);
-			tinsert(tooltip, {1, " "});
-			tinsert(tooltip, {1, " "});
-			WeakAuras.ShowTooltip(tooltip);
-			if not(ItemRefTooltip.WeakAuras_Tooltip_Texture) then
-				ItemRefTooltip.WeakAuras_Tooltip_Texture = ItemRefTooltip:CreateTexture();
-			end
-			if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
-				ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate2")
-			end
-			importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
-			importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
-			importbutton:SetText("Import");
-			importbutton:SetWidth(100);
-			importbutton:SetScript("OnClick", function()
-				local id = received.id
-				local num = 2;
-				while(WeakAurasSaved.displays[id]) do
-					id = received.id..num;
-					num = num + 1;
-				end
-				received.display.id = id;
-				received.display.parent = nil;
-				if(received.display.controlledChildren) then
-					received.display.controlledChildren = {};
-				end
-				WeakAuras.Add(received.display);
-				if not(IsAddOnLoaded("WeakAurasOptions")) then
-					local loaded, reason = LoadAddOn("WeakAurasOptions");
-					if not(loaded) then
-						print("WeakAurasOptions could not be loaded:", reason);
-					end
-				end
-				local optionsFrame = WeakAuras.OptionsFrame();
-				if not(optionsFrame) then
-					WeakAuras.ToggleOptions();
-					optionsFrame = WeakAuras.OptionsFrame();
-				end
-				WeakAuras.NewDisplayButton(received.display);
-			end);
-			importbutton:Show();
-			local texture = ItemRefTooltip.WeakAuras_Tooltip_Texture;
-			texture:SetWidth(32);
-			texture:SetHeight(32);
-			local _, _, icon = GetSpellInfo(95375);
-			texture:SetTexture(received.display.displayIcon or icon);
-			texture:SetPoint("RIGHT", ItemRefTooltip, "LEFT");
-			texture:SetPoint("TOP", ItemRefTooltip, "TOP", 0, -4);
-			texture:Show();
-		elseif(received.messageType == "displayRequest") then
-			--if(WeakAuras.linked[received.displayName]) then
-				WeakAuras.TransmitDisplay(received.displayName, sender);
-			--else
-			--	WeakAuras.TransmitError("not authorized", sender, received.displayName);
-			--end
-		elseif(received.messageType == "displayError") then
-			if(received.errorMsg == "does not exist") then
+	if(received and received.m) then
+		if(received.m == "d") then
+			tooltipLoading = nil;
+			if(version ~= received.v) then
+				local errorMsg = version > received.v and L["Version error recevied lower"] or L["Version error recevied higher"]
 				WeakAuras.ShowTooltip({
-					{2, "WeakAuras", received.displayName, 0.5, 0, 1, 1, 1, 1},
+					{1, "WeakAuras", 0.5, 0, 1},
+					{1, errorMsg:format(received.s, versionString), 1, 0, 0}
+				});
+			else
+				local data = received.d;
+				WeakAuras.DecompressDisplay(data);
+				
+				local regionType = data.regionType;
+				local regionData = regionOptions[regionType or ""]
+				local displayName = regionData and regionData.displayName or "";
+				
+				local tooltip = {
+					{2, data.id, "          ", 0.5, 0, 1},
+					{2, displayName, "          ", 1, 0.82, 0},
+					{1, " ", 1, 1, 1}
+				};
+				
+				if(data.controlledChildren) then
+					for index, childId in pairs(data.controlledChildren) do
+						tinsert(tooltip, {2, " ", childId, 1, 1, 1, 1, 1, 1});
+					end
+					if(#tooltip > 3) then
+						tooltip[4][2] = L["Children:"];
+					else
+						tooltip[4][2] = L["No Children"];
+					end
+				else
+					for triggernum = 0, 9 do
+						local trigger;
+						if(triggernum == 0) then
+							trigger = data.trigger;
+						elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+							trigger = data.additional_triggers[triggernum].trigger;
+						end
+						if(trigger) then
+							if(trigger.type == "aura") then
+								for index, name in pairs(trigger.names) do
+									local left = " ";
+									if(index == 1) then
+										if(#trigger.names > 0) then
+											if(#trigger.names > 1) then
+												left = L["Auras:"];
+											else
+												left = L["Aura:"];
+											end
+										end
+									end
+									
+									tinsert(tooltip, {2, left, name..(received.a and received.a[name] and (" |T"..received.a[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
+								end
+							elseif(trigger.type == "event" or trigger.type == "status") then
+								if(trigger.type == "event") then
+									tinsert(tooltip, {2, L["Trigger:"], (event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+								else
+									tinsert(tooltip, {2, L["Trigger:"], (status_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+								end
+								if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
+									tinsert(tooltip, {2, L["Message type:"], (subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+								end
+							else
+								tinsert(tooltip, {2, L["Trigger:"], L["Custom"], 1, 1, 1, 1, 1, 1});
+							end
+						end
+					end
+				end
+				
+				tinsert(tooltip, {1, " "});
+				tinsert(tooltip, {2, L["From"]..": "..sender, "                         ", 0, 1, 0});
+				
+				WeakAuras.ShowTooltip(tooltip);
+				if not(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
+					ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = CreateFrame("frame", nil, ItemRefTooltip);
+				end
+				if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
+					ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate2")
+				end
+				importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
+				importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
+				importbutton:SetText("Import");
+				importbutton:SetWidth(100);
+				importbutton:SetScript("OnClick", function()
+					local id = received.d.id
+					local num = 2;
+					while(WeakAurasSaved.displays[id]) do
+						id = received.d.id..num;
+						num = num + 1;
+					end
+					received.d.id = id;
+					received.d.parent = nil;
+					WeakAuras.Add(received.d);
+					if not(IsAddOnLoaded("WeakAurasOptions")) then
+						local loaded, reason = LoadAddOn("WeakAurasOptions");
+						if not(loaded) then
+							print("WeakAurasOptions could not be loaded:", reason);
+						end
+					end
+					local optionsFrame = WeakAuras.OptionsFrame();
+					if not(optionsFrame) then
+						WeakAuras.ToggleOptions();
+						optionsFrame = WeakAuras.OptionsFrame();
+					end
+					WeakAuras.NewDisplayButton(received.d);
+					
+					if(received.d.controlledChildren) then
+						for i,v in pairs(received.d.controlledChildren) do
+							if(received.c[v]) then
+								WeakAuras.DecompressDisplay(received.c[v]);
+								local id = v;
+								local num = 2;
+								while(WeakAurasSaved.displays[id]) do
+									id = received.d.id..num;
+									num = num + 1;
+								end
+								received.c[v].id = id;
+								WeakAuras.Add(received.c[v]);
+								WeakAuras.NewDisplayButton(received.c[v]);
+							end
+						end
+					end
+				end);
+				importbutton:Show();
+				
+				local thumbnail_frame = ItemRefTooltip.WeakAuras_Tooltip_Thumbnail;
+				thumbnail_frame:SetWidth(40);
+				thumbnail_frame:SetHeight(40);
+				thumbnail_frame:SetPoint("TOPRIGHT", ItemRefTooltip, "TOPRIGHT", -27, -7);
+				
+				local thumbnail;
+				thumbnail = regionOptions[regionType].createThumbnail(thumbnail_frame, regionTypes[regionType].create);                
+				WeakAuras.validate(data, regionTypes[regionType].default);
+				regionOptions[regionType].modifyThumbnail(thumbnail_frame, thumbnail, data, regionTypes[regionType].modify);
+				ItemRefTooltip.WeakAuras_Tooltip_Thumbanil_Frame = thumbnail;
+				
+				thumbnail:SetAllPoints(thumbnail_frame);
+				if(thumbnail.SetIcon) then
+					thumbnail:SetIcon(received.i);
+				end
+				thumbnail_frame:Show();
+			end
+		elseif(received.m == "dR") then
+			--if(WeakAuras.linked[received.d]) then
+				WeakAuras.TransmitDisplay(received.d, sender);
+			--else
+			--	WeakAuras.TransmitError("not authorized", sender, received.d);
+			--end
+		elseif(received.m == "dE") then
+			tooltipLoading = nil;
+			if(received.eM == "dne") then
+				WeakAuras.ShowTooltip({
+					{1, "WeakAuras", 0.5, 0, 1},
 					{1, L["Requested display does not exist"], 1, 0, 0}
 				});
-			elseif(received.errorMsg == "not authorized") then
+			elseif(received.eM == "na") then
 				WeakAuras.ShowTooltip({
-					{2, "WeakAuras", received.displayName, 0.5, 0, 1, 1, 1, 1},
+					{1, "WeakAuras", 0.5, 0, 1},
 					{1, L["Requested display not authorized"], 1, 0, 0}
 				});
 			end
 		end
+	elseif(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail and ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:IsVisible()) then
+		WeakAuras.ShowTooltip({
+			{1, "WeakAuras", 0.5, 0, 1},
+			{1, L["Transmission error"], 1, 0, 0}
+		});
 	end
 end);

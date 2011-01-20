@@ -30,3 +30,12 @@ RegionTypes\text.lua
 RegionTypes\timer.lua
 RegionTypes\group.lua
 RegionTypes\dynamicgroup.lua
+
+RegionOptions\aurabar.lua
+RegionOptions\texture.lua
+RegionOptions\icon.lua
+RegionOptions\text.lua
+RegionOptions\timer.lua
+RegionOptions\group.lua
+RegionOptions\dynamicgroup.lua
+RegionOptions\progresstexture.lua

@@ -465,6 +465,7 @@ L["Stack Info"] = "Stack Info"
 L["Icon Info"] = "Icon Info"
 L["Duration Info"] = "Duration Info"
 L["Alternate Power"] = "Alternate Power"
+L["From"] = "From"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
@@ -1005,3 +1006,8 @@ L.textures["PowerAuras Words"] = {
 L["This region of type \"%s\" has no configuration options."] = "This region of type \"%s\" has no configuration options."
 L["Requested display does not exist"] = "Requested display does not exist"
 L["Requested display not authorized"] = "Requested display not authorized"
+L["Version error recevied lower"] = "This display is incompatible with your version of WeakAuras - it was created by version %s, but you have version %s. Please tell the person you received it from to update their version of WeakAuras."
+L["Version error recevied higher"] = "This display is incompatible with your version of WeakAuras - it was created by version %s, but you have version %s. Please update your version of WeakAuras."
+L["Transmission error"] = "Transmission error"
+L["Requesting display information"] = "Requesting display information from %s..."
+L["Receiving display information"] = "Receiving display information from %s..."

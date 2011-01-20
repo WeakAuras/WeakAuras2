@@ -30,6 +30,8 @@ local loaded = WeakAuras.loaded;
 
 WeakAuras.regionTypes = {};
 local regionTypes = WeakAuras.regionTypes;
+WeakAuras.regionOptions = {};
+local regionOptions = WeakAuras.regionOptions;
 
 WeakAuras.forceable_events = {};
         
@@ -1417,6 +1419,20 @@ function WeakAuras.Rename(data, newid)
     end
 end
 
+function WeakAuras.DeepCopy(source, dest)
+	local function recurse(source, dest)
+		for i,v in pairs(source) do
+			if(type(v) == "table") then
+				dest[i] = type(dest[i]) == "table" and dest[i] or {};
+				recurse(v, dest[i]);
+			else
+				dest[i] = v;
+			end
+		end
+	end
+	recurse(source, dest);
+end
+
 function WeakAuras.Copy(sourceid, destid)
     local sourcedata = db.displays[sourceid];
     local destdata = db.displays[destid];
@@ -1424,17 +1440,7 @@ function WeakAuras.Copy(sourceid, destid)
         local oldParent = destdata.parent;
         local oldChildren = destdata.controlledChildren;
         wipe(destdata);
-        local function deepcopy(source, dest)
-            for i,v in pairs(source) do
-                if(type(v) == "table") then
-                    dest[i] = type(dest[i]) == "table" and dest[i] or {};
-                    deepcopy(v, dest[i]);
-                else
-                    dest[i] = v;
-                end
-            end
-        end
-        deepcopy(sourcedata, destdata);
+        WeakAuras.DeepCopy(sourcedata, destdata);
         destdata.id = destid;
         destdata.parent = oldParent;
         destdata.controlledChildren = oldChildren;
@@ -1848,9 +1854,35 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
     end
 end
 
---Dummy function so that region type options registrations don't return errors if WeakAurasOptions is not loaded
---WeakAurasOptions redefines this function to do something useful
-function WeakAuras.RegisterRegionOptions()
+function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description)
+    if not(name) then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined");
+    elseif(type(name) ~= "string") then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not a string");
+    elseif not(createFunction) then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not defined");
+    elseif(type(createFunction) ~= "function") then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not a function");
+    elseif not(icon) then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not defined");
+    elseif not(type(icon) == "string" or type(icon) == "function") then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not a string or a function")
+    elseif not(displayName) then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not defined".." "..name);
+    elseif(type(displayName) ~= "string") then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not a string");
+    elseif(regionOptions[name]) then
+        error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined");
+    else
+        regionOptions[name] = {
+            create = createFunction,
+            icon = icon,
+            displayName = displayName,
+            createThumbnail = createThumbnail,
+            modifyThumbnail = modifyThumbnail,
+            description = description
+        };
+    end
 end
 
 function WeakAuras.SetRegion(data)

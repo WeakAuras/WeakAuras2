@@ -186,4 +186,12 @@ PowerAurasMedia/Sounds/wilhelm.ogg -text
 PowerAurasMedia/Sounds/wlaugh.ogg -text
 PowerAurasMedia/Sounds/wolf5.ogg -text
 PowerAurasMedia/Sounds/yeehaw.ogg -text
+RegionOptions/aurabar.lua -text
+RegionOptions/dynamicgroup.lua -text
+RegionOptions/group.lua -text
+RegionOptions/icon.lua -text
+RegionOptions/progresstexture.lua -text
+RegionOptions/text.lua -text
+RegionOptions/texture.lua -text
+RegionOptions/timer.lua -text
 /Transmission.lua -text
