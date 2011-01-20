@@ -1,7 +1,7 @@
 local L = WeakAuras.L;
 
 local version = 1301;
-local versionString = "1.3 r59";
+local versionString = "1.3 r61";
 
 local regionOptions = WeakAuras.regionOptions;
 local regionTypes = WeakAuras.regionTypes;
@@ -333,11 +333,11 @@ function WeakAuras.DisplayToString(id, forChat)
 			end
 		end
 		if(data.controlledChildren) then
-			transmit.children = {};
+			transmit.c = {};
 			for i,v in pairs(data.controlledChildren) do
 				local childData = WeakAuras.GetData(v);
 				if(childData) then
-					transmit.children[v] = WeakAuras.CompressDisplay(childData);
+					transmit.c[v] = WeakAuras.CompressDisplay(childData);
 				end
 			end
 		end
@@ -495,7 +495,7 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
 					end
 					received.d.id = id;
 					received.d.parent = nil;
-					WeakAuras.Add(received.d);
+					
 					if not(IsAddOnLoaded("WeakAurasOptions")) then
 						local loaded, reason = LoadAddOn("WeakAurasOptions");
 						if not(loaded) then
@@ -507,24 +507,30 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
 						WeakAuras.ToggleOptions();
 						optionsFrame = WeakAuras.OptionsFrame();
 					end
-					WeakAuras.NewDisplayButton(received.d);
 					
 					if(received.d.controlledChildren) then
+						local newControlledChildren = {};
 						for i,v in pairs(received.d.controlledChildren) do
 							if(received.c[v]) then
 								WeakAuras.DecompressDisplay(received.c[v]);
 								local id = v;
 								local num = 2;
 								while(WeakAurasSaved.displays[id]) do
-									id = received.d.id..num;
+									id = v..num;
 									num = num + 1;
 								end
+								received.c[v].parent = received.d.id;
 								received.c[v].id = id;
+								newControlledChildren[i] = id;
 								WeakAuras.Add(received.c[v]);
 								WeakAuras.NewDisplayButton(received.c[v]);
 							end
 						end
+						received.d.controlledChildren = newControlledChildren;
 					end
+					
+					WeakAuras.Add(received.d);
+					WeakAuras.NewDisplayButton(received.d);
 				end);
 				importbutton:Show();
 				
