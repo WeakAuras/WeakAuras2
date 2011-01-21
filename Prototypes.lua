@@ -942,11 +942,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
     ["Cooldown (Spell)"] = {
         type = "status",
         events = {
-            "SPELL_UPDATE_COOLDOWN",
-            "UNIT_POWER",
-            "ACTIONBAR_UPDATE_COOLDOWN",
             "SPELL_COOLDOWN_READY",
-            "GCD_ENDED"
+			"SPELL_COOLDOWN_CHANGED",
+			"SPELL_COOLDOWN_STARTED"
         },
         force_events = true,
         name = L["Cooldown Progress (Spell)"],
@@ -955,42 +953,36 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
             WeakAuras.WatchSpellCooldown(trigger.spellName);
             local ret = [[
-local startTime, duration = GetSpellCooldown(%s);
-startTime = startTime or 0;
-duration = duration or 0;
+local startTime, duration = WeakAuras.GetSpellCooldown(%s);
 local inverse = %s;
-local ignoreGCD = %s
 ]];
-            return ret:format(spellName, (trigger.use_inverse and "true" or "false"), (trigger.use_cooldownDuration and "true" or "false"));
+            return ret:format(spellName, (trigger.use_inverse and "true" or "false"));
         end,
         args = {
             {
                 name = "spellName",
+				required = true,
                 display = L["Spell"],
                 type = "spell",
-                test = "(inverse and ((ignoreGCD and duration <= 1.51) or (startTime == 0))) or (not inverse and startTime > 0)"
-            },
-            {
-                name = "cooldownDuration",
-                display = L["Ignore GCD"],
-                type = "toggle",
-                test = "inverse or duration > 1.51"
+				init = "arg"
             },
             {
                 name = "inverse",
                 display = L["Inverse"],
                 type = "toggle",
                 test = "true"
-            }
+            },
+			{
+				hidden = true,
+				test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+			}
         },
         durationFunc = function(trigger)
             local startTime, duration;
             if not(trigger.use_inverse) then
-                startTime, duration = GetSpellCooldown(trigger.spellName or 0);
+                startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0);
             end
-            startTime = startTime or 0;
-            duration = duration or 0;
-            return duration, startTime + duration;
+            return duration or 0, startTime + duration or 0;
         end,
         nameFunc = function(trigger)
             local name = GetSpellInfo(trigger.spellName or 0);
@@ -1041,31 +1033,43 @@ local ignoreGCD = %s
     ["Cooldown Progress (Item)"] = {
         type = "status",
         events = {
-            "SPELL_UPDATE_COOLDOWN",
-            "ACTIONBAR_UPDATE_COOLDOWN"
+            "ITEM_COOLDOWN_READY",
+			"ITEM_COOLDOWN_CHANGED",
+			"ITEM_COOLDOWN_STARTED"
         },
         force_events = true,
         name = L["Cooldown Progress (Item)"],
         init = function(trigger)
-            trigger.itemName = type(trigger.itemName) == "number" and trigger.itemName or 0;
-            return "local startTime, duration = GetItemCooldown("..trigger.itemName..");";
+            trigger.itemName = trigger.itemName or 0;
+            local itemName = (type(trigger.itemName) == "number" and trigger.itemName or 0);
+            WeakAuras.WatchItemCooldown(trigger.itemName);
+            local ret = [[
+local startTime, duration = WeakAuras.GetItemCooldown(%s);
+local inverse = %s;
+]];
+            return ret:format(itemName, (trigger.use_inverse and "true" or "false"));
         end,
         args = {
             {
                 name = "itemName",
+				required = true,
                 display = L["Item"],
                 type = "item",
-                test = "startTime > 0"
+				init = "arg"
             },
             {
-                name = "cooldownDuration",
-                display = L["Ignore GCD"],
+                name = "inverse",
+                display = L["Inverse"],
                 type = "toggle",
-                test = "duration > 1.51"
-            }
+                test = "true"
+            },
+			{
+				hidden = true,
+				test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+			}
         },
         durationFunc = function(trigger)
-            local startTime, duration = GetItemCooldown(type(trigger.itemName) == "number" and trigger.itemName or 0);
+            local startTime, duration = WeakAuras.GetItemCooldown(type(trigger.itemName) == "number" and trigger.itemName or 0);
             startTime = startTime or 0;
             duration = duration or 0;
             return duration, startTime + duration;
