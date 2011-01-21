@@ -73,11 +73,11 @@ local levelColors = {
 };
 
 local function debug(msg, level)
-	if(db.debug) then
-		level = (level and levelColors[level] and level) or 2;
-		msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
-		ChatFrame3:AddMessage(levelColors[level]..msg);
-	end
+    if(db.debug) then
+        level = (level and levelColors[level] and level) or 2;
+        msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
+        ChatFrame3:AddMessage(levelColors[level]..msg);
+    end
 end
 
 function WeakAuras.split(input)
@@ -323,14 +323,14 @@ end);
 do
     local cdReadyFrame;
     
-	local spells = {};
-	local spellCdDurs = {};
-	local spellCdExps = {};
+    local spells = {};
+    local spellCdDurs = {};
+    local spellCdExps = {};
     local spellCdHandles = {};
-	
-	local items = {};
-	local itemCdDurs = {};
-	local itemCdExps = {};
+    
+    local items = {};
+    local itemCdDurs = {};
+    local itemCdExps = {};
     local itemCdHandles = {};
     
     local gcdTimer;
@@ -341,78 +341,76 @@ do
         cdReadyFrame:SetScript("OnEvent", WeakAuras.CheckCooldownReady);
     end
     
-	function WeakAuras.GetSpellCooldown(id)
-		if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
-			return spellCdExps[id] - spellCdDurs[id], spellCdDurs[id];
-		else
-			return 0, 0;
-		end
-	end
-	
-	function WeakAuras.GetItemCooldown(id)
-		if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
-			return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id];
-		else
-			return 0, 0;
-		end
-	end
-	
-	local function SpellCooldownFinished(id)
-		spellCdHandles[id] = nil;
-		spellCdDurs[id] = nil;
-		spellCdExps[id] = nil;
-		WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
-	end
-	
-	local function ItemCooldownFinished(id)
-		itemCdHandles[id] = nil;
-		itemCdDurs[id] = nil;
-		itemCdExps[id] = nil;
-		print("ITEM_COOLDOWN_READY", id);
-		WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
-	end
-	
+    function WeakAuras.GetSpellCooldown(id)
+        if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
+            return spellCdExps[id] - spellCdDurs[id], spellCdDurs[id];
+        else
+            return 0, 0;
+        end
+    end
+    
+    function WeakAuras.GetItemCooldown(id)
+        if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
+            return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id];
+        else
+            return 0, 0;
+        end
+    end
+    
+    local function SpellCooldownFinished(id)
+        spellCdHandles[id] = nil;
+        spellCdDurs[id] = nil;
+        spellCdExps[id] = nil;
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
+    end
+    
+    local function ItemCooldownFinished(id)
+        itemCdHandles[id] = nil;
+        itemCdDurs[id] = nil;
+        itemCdExps[id] = nil;
+        WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+    end
+    
     function WeakAuras.CheckCooldownReady()
         for id, _ in pairs(spells) do
             local startTime, duration = GetSpellCooldown(id);
             startTime = startTime or 0;
             duration = duration or 0;
             local time = GetTime();
-			
-			if(duration > 1.51) then
-				--On non-GCD cooldown
-				local endTime = startTime + duration;
-				
-				if not(spellCdExps[id]) then
-					--New cooldown
-					spellCdDurs[id] = duration;
-					spellCdExps[id] = endTime;
-					spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-					WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
-				elseif(spellCdExps[id] ~= endTime) then
-					--Cooldown is now different
-					if(spellCdHandles[id]) then
-						timer:CancelTimer(spellCdHandles[id]);
-					end
-					spellCdDurs[id] = duration;
-					spellCdExps[id] = endTime;
-					spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-					WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
-				end
-			elseif(duration > 0) then
-				--GCD
-				--Do nothing
-			else
-				if(spellCdExps[id]) then
-					--Somehow CheckCooldownReady caught the spell cooldown before the timer callback
-					--This shouldn't happen, but if it doesn, no problem
-					print("CheckCooldownReady occurred before timer callback for", id);
-					if(spellCdHandles[id]) then
-						timer:CancelTimer(spellCdHandles[id]);
-					end
-					SpellCooldownFinished(id);
-				end
-			end
+            
+            if(duration > 1.51) then
+                --On non-GCD cooldown
+                local endTime = startTime + duration;
+                
+                if not(spellCdExps[id]) then
+                    --New cooldown
+                    spellCdDurs[id] = duration;
+                    spellCdExps[id] = endTime;
+                    spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
+                elseif(spellCdExps[id] ~= endTime) then
+                    --Cooldown is now different
+                    if(spellCdHandles[id]) then
+                        timer:CancelTimer(spellCdHandles[id]);
+                    end
+                    spellCdDurs[id] = duration;
+                    spellCdExps[id] = endTime;
+                    spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+                end
+            elseif(duration > 0) then
+                --GCD
+                --Do nothing
+            else
+                if(spellCdExps[id]) then
+                    --Somehow CheckCooldownReady caught the spell cooldown before the timer callback
+                    --This shouldn't happen, but if it doesn, no problem
+                    if(spellCdHandles[id]) then
+                        timer:CancelTimer(spellCdHandles[id]);
+                    end
+                    SpellCooldownFinished(id);
+                end
+            end
         end
         
         for id, _ in pairs(items) do
@@ -420,43 +418,40 @@ do
             startTime = startTime or 0;
             duration = duration or 0;
             local time = GetTime();
-			
-			if(duration > 1.51) then
-				--On non-GCD cooldown
-				local endTime = startTime + duration;
-				
-				if not(itemCdExps[id]) then
-					--New cooldown
-					itemCdDurs[id] = duration;
-					itemCdExps[id] = endTime;
-					itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-					print("ITEM_COOLDOWN_STARTED", id);
-					WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
-				elseif(itemCdExps[id] ~= endTime) then
-					--Cooldown is now different
-					if(itemCdHandles[id]) then
-						timer:CancelTimer(itemCdHandles[id]);
-					end
-					itemCdDurs[id] = duration;
-					itemCdExps[id] = endTime;
-					itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-					print("ITEM_COOLDOWN_CHANGED", id);
-					WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
-				end
-			elseif(duration > 0) then
-				--GCD
-				--Do nothing
-			else
-				if(itemCdExps[id]) then
-					--Somehow CheckCooldownReady caught the item cooldown before the timer callback
-					--This shouldn't happen, but if it doesn, no problem
-					print("CheckCooldownReady occurred before timer callback for", id);
-					if(itemCdHandles[id]) then
-						timer:CancelTimer(itemCdHandles[id]);
-					end
-					ItemCooldownFinished(id);
-				end
-			end
+            
+            if(duration > 1.51) then
+                --On non-GCD cooldown
+                local endTime = startTime + duration;
+                
+                if not(itemCdExps[id]) then
+                    --New cooldown
+                    itemCdDurs[id] = duration;
+                    itemCdExps[id] = endTime;
+                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
+                elseif(itemCdExps[id] ~= endTime) then
+                    --Cooldown is now different
+                    if(itemCdHandles[id]) then
+                        timer:CancelTimer(itemCdHandles[id]);
+                    end
+                    itemCdDurs[id] = duration;
+                    itemCdExps[id] = endTime;
+                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+                end
+            elseif(duration > 0) then
+                --GCD
+                --Do nothing
+            else
+                if(itemCdExps[id]) then
+                    --Somehow CheckCooldownReady caught the item cooldown before the timer callback
+                    --This shouldn't happen, but if it doesn, no problem
+                    if(itemCdHandles[id]) then
+                        timer:CancelTimer(itemCdHandles[id]);
+                    end
+                    ItemCooldownFinished(id);
+                end
+            end
         end
     end
     
@@ -466,16 +461,16 @@ do
         end
         
         id = id or 0;
-		spells[id] = true;
+        spells[id] = true;
         local startTime, duration = GetSpellCooldown(id);
         if(duration > 1.51) then
-			local time = GetTime();
-			local endTime = startTime + duration - time();
+            local time = GetTime();
+            local endTime = startTime + duration - time();
             spellCdDurs[id] = duration;
-			spellCdExps[id] = startTime + duration - GetTime();
-			if not(spellCdHandles[id]) then
-				spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-			end
+            spellCdExps[id] = startTime + duration - GetTime();
+            if not(spellCdHandles[id]) then
+                spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+            end
         end
     end
     
@@ -485,15 +480,15 @@ do
         end
         
         id = id or 0;
-		items[id] = true;
+        items[id] = true;
         local startTime, duration = GetItemCooldown(id);
         if(duration > 1.51) then
-			local endTime = startTime + duration - GetTime();
+            local endTime = startTime + duration - GetTime();
             itemCdDurs[id] = duration;
-			itemCdExps[id] = endTime;
-			if not(itemCdHandles[id]) then
-				itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-			end
+            itemCdExps[id] = endTime;
+            if not(itemCdHandles[id]) then
+                itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+            end
         end
     end
 end
@@ -504,17 +499,17 @@ do
         duration_cache[id] = duration_cache[id] or {};
         duration_cache[id].duration = duration;
         duration_cache[id].expirationTime = expirationTime;
-		duration_cache[id].isValue = isValue;
+        duration_cache[id].isValue = isValue;
     end
     
     function duration_cache:GetDurationInfo(id)
         if(duration_cache[id]) then
-			if(type(duration_cache[id].isValue) == "function") then
-				local value, maxValue = duration_cache[id].isValue();
-				return value, maxValue, true;
-			else
-				return duration_cache[id].duration, duration_cache[id].expirationTime, duration_cache[id].isValue;
-			end
+            if(type(duration_cache[id].isValue) == "function") then
+                local value, maxValue = duration_cache[id].isValue();
+                return value, maxValue, true;
+            else
+                return duration_cache[id].duration, duration_cache[id].expirationTime, duration_cache[id].isValue;
+            end
         else
             return 0, math.huge;
         end
@@ -919,7 +914,7 @@ function WeakAuras.SetEventDynamics(id, triggernum, data)
     else
         trigger = db.displays[id] and db.displays[id].additional_triggers
             and db.displays[id].additional_triggers[triggernum]
-			and db.displays[id].additional_triggers[triggernum].trigger;
+            and db.displays[id].additional_triggers[triggernum].trigger;
     end
     if(trigger) then
         if(data.duration) then
@@ -1485,17 +1480,17 @@ function WeakAuras.Rename(data, newid)
 end
 
 function WeakAuras.DeepCopy(source, dest)
-	local function recurse(source, dest)
-		for i,v in pairs(source) do
-			if(type(v) == "table") then
-				dest[i] = type(dest[i]) == "table" and dest[i] or {};
-				recurse(v, dest[i]);
-			else
-				dest[i] = v;
-			end
-		end
-	end
-	recurse(source, dest);
+    local function recurse(source, dest)
+        for i,v in pairs(source) do
+            if(type(v) == "table") then
+                dest[i] = type(dest[i]) == "table" and dest[i] or {};
+                recurse(v, dest[i]);
+            else
+                dest[i] = v;
+            end
+        end
+    end
+    recurse(source, dest);
 end
 
 function WeakAuras.Copy(sourceid, destid)
@@ -2370,12 +2365,12 @@ function WeakAuras.UpdateAnimations()
                 if(anim.type == "start" or anim.type == "finish") then
                     finished = true;
                 end
-			else
-				if(isValue) then
-					anim.progress = (duration / expirationTime) / anim.duration;
-				else
-					anim.progress = (1 - ((expirationTime - time) / duration)) / anim.duration;
-				end
+            else
+                if(isValue) then
+                    anim.progress = (duration / expirationTime) / anim.duration;
+                else
+                    anim.progress = (1 - ((expirationTime - time) / duration)) / anim.duration;
+                end
                 local iteration = math.floor(anim.progress);
                 anim.progress = anim.progress - iteration;
                 if not(anim.iteration) then

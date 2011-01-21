@@ -133,9 +133,9 @@ return function(progress, start, delta)
     return start + math.sin(angle) * delta
 end
 ]],
-	hide = [[
+    hide = [[
 return function()
-	return 0
+    return 0
 end
 ]]
 };
@@ -943,8 +943,8 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
         type = "status",
         events = {
             "SPELL_COOLDOWN_READY",
-			"SPELL_COOLDOWN_CHANGED",
-			"SPELL_COOLDOWN_STARTED"
+            "SPELL_COOLDOWN_CHANGED",
+            "SPELL_COOLDOWN_STARTED"
         },
         force_events = true,
         name = L["Cooldown Progress (Spell)"],
@@ -961,10 +961,10 @@ local inverse = %s;
         args = {
             {
                 name = "spellName",
-				required = true,
+                required = true,
                 display = L["Spell"],
                 type = "spell",
-				init = "arg"
+                init = "arg"
             },
             {
                 name = "inverse",
@@ -972,10 +972,10 @@ local inverse = %s;
                 type = "toggle",
                 test = "true"
             },
-			{
-				hidden = true,
-				test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
-			}
+            {
+                hidden = true,
+                test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+            }
         },
         durationFunc = function(trigger)
             local startTime, duration;
@@ -1034,8 +1034,8 @@ local inverse = %s;
         type = "status",
         events = {
             "ITEM_COOLDOWN_READY",
-			"ITEM_COOLDOWN_CHANGED",
-			"ITEM_COOLDOWN_STARTED"
+            "ITEM_COOLDOWN_CHANGED",
+            "ITEM_COOLDOWN_STARTED"
         },
         force_events = true,
         name = L["Cooldown Progress (Item)"],
@@ -1052,10 +1052,10 @@ local inverse = %s;
         args = {
             {
                 name = "itemName",
-				required = true,
+                required = true,
                 display = L["Item"],
                 type = "item",
-				init = "arg"
+                init = "arg"
             },
             {
                 name = "inverse",
@@ -1063,10 +1063,10 @@ local inverse = %s;
                 type = "toggle",
                 test = "true"
             },
-			{
-				hidden = true,
-				test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
-			}
+            {
+                hidden = true,
+                test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+            }
         },
         durationFunc = function(trigger)
             local startTime, duration = WeakAuras.GetItemCooldown(type(trigger.itemName) == "number" and trigger.itemName or 0);
