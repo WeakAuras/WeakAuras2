@@ -463,15 +463,17 @@ do
         end
         
         id = id or 0;
-        spells[id] = true;
-        local startTime, duration = GetSpellCooldown(id);
-        if(duration > 1.51) then
-            local time = GetTime();
-            local endTime = startTime + duration - time();
-            spellCdDurs[id] = duration;
-            spellCdExps[id] = startTime + duration - GetTime();
-            if not(spellCdHandles[id]) then
-                spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+        if not(spells[id]) then
+            spells[id] = true;
+            local startTime, duration = GetSpellCooldown(id);
+            if(duration > 1.51) then
+                local time = GetTime();
+                local endTime = startTime + duration;
+                spellCdDurs[id] = duration;
+                spellCdExps[id] = endTime;
+                if not(spellCdHandles[id]) then
+                    spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+                end
             end
         end
     end
@@ -482,15 +484,30 @@ do
         end
         
         id = id or 0;
-        items[id] = true;
-        local startTime, duration = GetItemCooldown(id);
-        if(duration > 1.51) then
-            local endTime = startTime + duration - GetTime();
-            itemCdDurs[id] = duration;
-            itemCdExps[id] = endTime;
-            if not(itemCdHandles[id]) then
-                itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+        if not(items[id]) then
+            items[id] = true;
+            local startTime, duration = GetItemCooldown(id);
+            if(duration > 1.51) then
+                local time = GetTime();
+                local endTime = startTime + duration;
+                itemCdDurs[id] = duration;
+                itemCdExps[id] = endTime;
+                if not(itemCdHandles[id]) then
+                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+                end
             end
+        end
+    end
+    
+    function WeakAuras.SpellCooldownForce()
+        for id, _ in pairs(spells) do
+            WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+        end
+    end
+    
+    function WeakAuras.ItemCooldownForce()
+        for id, _ in pairs(items) do
+            WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
         end
     end
 end
@@ -836,6 +853,10 @@ function WeakAuras.ForceEvents()
             for index, arg1 in pairs(v) do
                 WeakAuras.ScanEvents(event, arg1);
             end
+        elseif(event == "SPELL_COOLDOWN_FORCE") then
+            WeakAuras.SpellCooldownForce();
+        elseif(event == "ITEM_COOLDOWN_FORCE") then
+            WeakAuras.ItemCooldownForce();
         else
             WeakAuras.ScanEvents(event);
         end
@@ -909,7 +930,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data)
     WeakAuras.SetEventDynamics(id, triggernum, data);
 end
 
-function WeakAuras.SetEventDynamics(id, triggernum, data)
+function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
     local trigger;
     if(triggernum == 0) then
         trigger = db.displays[id] and db.displays[id].trigger;
@@ -920,7 +941,9 @@ function WeakAuras.SetEventDynamics(id, triggernum, data)
     end
     if(trigger) then
         if(data.duration) then
-            WeakAuras.ActivateEventTimer(id, triggernum, data.duration);
+            if not(ending) then
+                WeakAuras.ActivateEventTimer(id, triggernum, data.duration);
+            end
             if(triggernum == 0) then
                 if(data.region.SetDurationInfo) then
                     data.region:SetDurationInfo(data.duration, GetTime() + data.duration);
@@ -935,7 +958,7 @@ function WeakAuras.SetEventDynamics(id, triggernum, data)
                     if(data.expiredHideFunc) then
                         hideOnExpire = data.expiredHideFunc(trigger);
                     end
-                    if(hideOnExpire) then
+                    if(hideOnExpire and not ending) then
                         WeakAuras.ActivateEventTimer(id, triggernum, expirationTime - GetTime());
                     end
                 end
@@ -982,30 +1005,41 @@ end
 
 function WeakAuras.ActivateEventTimer(id, triggernum, duration)
     if not(paused) then
-        local expirationTime = GetTime() + duration;
-        local doTimer;
-        if(timers[id] and timers[id][triggernum]) then
-            if(timers[id][triggernum].expirationTime ~= expirationTime) then
-                timer:CancelTimer(timers[id][triggernum].handle);
-                doTimer = "change";
-            else
-                debug("Timer for "..id.." ("..triggernum..") did not change");
-            end
+        local trigger;
+        if(triggernum == 0) then
+            trigger = db.displays[id] and db.displays[id].trigger;
         else
-            doTimer = "new";
+            trigger = db.displays[id] and db.displays[id].additional_triggers
+                and db.displays[id].additional_triggers[triggernum]
+                and db.displays[id].additional_triggers[triggernum].trigger;
         end
-        
-        if(doTimer) then
-            timers[id] = timers[id] or {};
-            timers[id][triggernum] = timers[id][triggernum] or {};
-            local record = timers[id][triggernum];
-            if(doTimer == "change") then
-                debug("Timer for "..id.." ("..triggernum..") changed from "..(record.expirationTime or "none").." to "..expirationTime);
-            elseif(doTimer == "new") then
-                debug("Timer for "..id.." ("..triggernum..") will end at "..expirationTime);
+        if(trigger and trigger.type == "event") then
+            local expirationTime = GetTime() + duration;
+            local doTimer;
+            if(timers[id] and timers[id][triggernum]) then
+                if(timers[id][triggernum].expirationTime ~= expirationTime) then
+                    timer:CancelTimer(timers[id][triggernum].handle);
+                    doTimer = "change";
+                else
+                    debug("Timer for "..id.." ("..triggernum..") did not change");
+                end
+            else
+                doTimer = "new";
             end
-            record.handle = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum, true) end, duration);
-            record.expirationTime = expirationTime;
+            
+            if(doTimer) then
+                timers[id] = timers[id] or {};
+                timers[id][triggernum] = timers[id][triggernum] or {};
+                local record = timers[id][triggernum];
+                if(doTimer == "change") then
+                    debug("Timer for "..id.." ("..triggernum..") changed from "..(record.expirationTime or "none").." to "..expirationTime);
+                elseif(doTimer == "new") then
+                    debug("Timer for "..id.." ("..triggernum..") will end at "..expirationTime.." ("..duration..")");
+                    debug(debugstack(1, 5), 2);
+                end
+                record.handle = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum, true) end, duration);
+                record.expirationTime = expirationTime;
+            end
         end
     end
 end
@@ -1027,7 +1061,7 @@ function WeakAuras.EndEvent(id, triggernum, force)
         end
     end
     if not(force) then
-        WeakAuras.SetEventDynamics(id, triggernum, data);
+        WeakAuras.SetEventDynamics(id, triggernum, data, true);
     end
 end
 
@@ -1651,8 +1685,9 @@ function WeakAuras.Add(data)
     WeakAuras.Modernize(data);
     local status, err = pcall(WeakAuras.pAdd, data);
     if not(status) then
-        print(err);
+        print("|cFFFF0000WeakAuras error: "..err);
         debug(err, 3);
+        debug(debugstack(1, 6), 2);
     end
 end
 
@@ -1792,9 +1827,12 @@ function WeakAuras.pAdd(data)
                                 trigger_events = prototype.events;
                                 for index, event in ipairs(trigger_events) do
                                     frame:RegisterEvent(event);
-                                    if(prototype.force_events) then
+                                    if(type(prototype.force_events) == "boolean" or type(prototype.force_events) == "table") then
                                         WeakAuras.forceable_events[event] = prototype.force_events;
                                     end
+                                end
+                                if(type(prototype.force_events) == "string") then
+                                    WeakAuras.forceable_events[prototype.force_events] = true;
                                 end
                             end
                         end

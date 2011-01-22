@@ -946,7 +946,7 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             "SPELL_COOLDOWN_CHANGED",
             "SPELL_COOLDOWN_STARTED"
         },
-        force_events = true,
+        force_events = "SPELL_COOLDOWN_FORCE",
         name = L["Cooldown Progress (Spell)"],
         init = function(trigger)
             trigger.spellName = trigger.spellName or 0;
@@ -982,7 +982,9 @@ local inverse = %s;
             if not(trigger.use_inverse) then
                 startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0);
             end
-            return duration or 0, startTime + duration or 0;
+            startTime = startTime or 0;
+            duration = duration or 0;
+            return duration, startTime + duration;
         end,
         nameFunc = function(trigger)
             local name = GetSpellInfo(trigger.spellName or 0);
@@ -1037,7 +1039,7 @@ local inverse = %s;
             "ITEM_COOLDOWN_CHANGED",
             "ITEM_COOLDOWN_STARTED"
         },
-        force_events = true,
+        force_events = "ITEM_COOLDOWN_FORCE",
         name = L["Cooldown Progress (Item)"],
         init = function(trigger)
             trigger.itemName = trigger.itemName or 0;
