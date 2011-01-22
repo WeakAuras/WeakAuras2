@@ -467,6 +467,8 @@ L["Duration Info"] = "Duration Info"
 L["Alternate Power"] = "Alternate Power"
 L["From"] = "From"
 L["Copy settings from..."] = "Copy settings from..."
+L["Close"] = "Close"
+L["Delete children and group"] = "Delete children and group"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
@@ -533,6 +535,8 @@ L["Expansion is disabled because this group has no children"] = "Expansion is di
 L["Add a new display"] = "Add a new display"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."
+L["Right-click for more options"] = "Right-click for more options"
+L["Shift-click to create chat link"] = "Shift-click to create a |cFF8800FF[Chat Link]"
 L["Custom trigger status tooltip"] = [[
 Choose which events cause the custom trigger to be checked.
 Since this is a status-type trigger, the specified events may be called by WeakAuras without the expected arguments.

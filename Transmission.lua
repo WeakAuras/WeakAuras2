@@ -1,7 +1,7 @@
 local L = WeakAuras.L;
 
-local version = 1301;
-local versionString = "1.3 r63";
+local version = 1302;
+local versionString = "1.3b1";
 
 local regionOptions = WeakAuras.regionOptions;
 local regionTypes = WeakAuras.regionTypes;
@@ -98,7 +98,9 @@ function WeakAuras.tableAdd(augend, addend)
                 augend[i] = augend[i] or {};
                 recurse(augend[i], addend[i]);
             else
-                augend[i] = augend[i] ~= nil and augend[i] or v;
+                if(augend[i] == nil) then
+                    augend[i] = v;
+                end
             end
         end
     end
@@ -108,7 +110,7 @@ end
 function WeakAuras.tableSubtract(minuend, subtrahend)
     local function recurse(minuend, subtrahend)
         for i,v in pairs(subtrahend) do
-            if(minuend[i]) then
+            if(minuend[i] ~= nil) then
                 if(type(minuend[i]) == "table" and type(v) == "table") then
                     if(recurse(minuend[i], v)) then
                         minuend[i] = nil;
@@ -188,6 +190,8 @@ end
 function WeakAuras.CompressDisplay(data)
     local copiedData = {};
     WeakAuras.DeepCopy(data, copiedData);
+    copiedData.controlledChildren = nil;
+    copiedData.parent = nil;
     WeakAuras.tableSubtract(copiedData, WeakAuras.DisplayStub(copiedData.regionType));
     return copiedData;
 end
@@ -262,12 +266,19 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button)
         if(characterName and displayName) then
             characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
             displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-            WeakAuras.ShowTooltip({
-                {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-                {1, "Requesting display information from "..characterName.."...", 1, 0.82, 0}
-            });
-            tooltipLoading = true;
-            WeakAuras.RequestDisplay(characterName, displayName);
+            if(IsShiftKeyDown()) then
+                local editbox = GetCurrentKeyBoardFocus();
+                if(editbox) then
+                    editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
+                end
+            else
+                WeakAuras.ShowTooltip({
+                    {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+                    {1, "Requesting display information from "..characterName.."...", 1, 0.82, 0}
+                });
+                tooltipLoading = true;
+                WeakAuras.RequestDisplay(characterName, displayName);
+            end
         else
             WeakAuras.ShowTooltip({
                 {1, "WeakAuras", 0.5, 0, 1},
@@ -317,6 +328,7 @@ end
 function WeakAuras.DisplayToString(id, forChat)
     local data = WeakAuras.GetData(id);
     if(data) then
+        local children = data.controlledChildren;
         local transmit = {
             m = "d",
             d = WeakAuras.CompressDisplay(data),
@@ -332,12 +344,12 @@ function WeakAuras.DisplayToString(id, forChat)
                 transmit.a[v] = WeakAurasOptionsSaved.iconCache[v];
             end
         end
-        if(data.controlledChildren) then
+        if(children) then
             transmit.c = {};
-            for i,v in pairs(data.controlledChildren) do
+            for i,v in pairs(children) do
                 local childData = WeakAuras.GetData(v);
                 if(childData) then
-                    transmit.c[v] = WeakAuras.CompressDisplay(childData);
+                    transmit.c[i] = WeakAuras.CompressDisplay(childData);
                 end
             end
         end
@@ -423,14 +435,14 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
                     {1, " ", 1, 1, 1}
                 };
                 
-                if(data.controlledChildren) then
-                    for index, childId in pairs(data.controlledChildren) do
-                        tinsert(tooltip, {2, " ", childId, 1, 1, 1, 1, 1, 1});
+                if(received.c) then
+                    for index, childData in pairs(received.c) do
+                        tinsert(tooltip, {2, " ", childData.id, 1, 1, 1, 1, 1, 1});
                     end
                     if(#tooltip > 3) then
                         tooltip[4][2] = L["Children:"];
                     else
-                        tooltip[4][2] = L["No Children"];
+                        tinsert(tooltip, {1, L["No Children:"], 1, 1, 1});
                     end
                 else
                     for triggernum = 0, 9 do
@@ -487,50 +499,60 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
                 importbutton:SetText("Import");
                 importbutton:SetWidth(100);
                 importbutton:SetScript("OnClick", function()
-                    local id = received.d.id
-                    local num = 2;
-                    while(WeakAurasSaved.displays[id]) do
-                        id = received.d.id..num;
-                        num = num + 1;
-                    end
-                    received.d.id = id;
-                    received.d.parent = nil;
-                    
                     if not(IsAddOnLoaded("WeakAurasOptions")) then
                         local loaded, reason = LoadAddOn("WeakAurasOptions");
                         if not(loaded) then
                             print("WeakAurasOptions could not be loaded:", reason);
                         end
                     end
+                        
                     local optionsFrame = WeakAuras.OptionsFrame();
                     if not(optionsFrame) then
                         WeakAuras.ToggleOptions();
                         optionsFrame = WeakAuras.OptionsFrame();
                     end
                     
-                    if(received.d.controlledChildren) then
-                        local newControlledChildren = {};
-                        for i,v in pairs(received.d.controlledChildren) do
-                            if(received.c[v]) then
-                                WeakAuras.DecompressDisplay(received.c[v]);
-                                local id = v;
-                                local num = 2;
-                                while(WeakAurasSaved.displays[id]) do
-                                    id = v..num;
-                                    num = num + 1;
-                                end
-                                received.c[v].parent = received.d.id;
-                                received.c[v].id = id;
-                                newControlledChildren[i] = id;
-                                WeakAuras.Add(received.c[v]);
-                                WeakAuras.NewDisplayButton(received.c[v]);
-                            end
+                    local function importData(data)
+                        local id = data.id
+                        local num = 2;
+                        while(WeakAurasSaved.displays[id]) do
+                            id = data.id.." "..num;
+                            num = num + 1;
                         end
-                        received.d.controlledChildren = newControlledChildren;
+                        data.id = id;
+                        data.parent = nil;
+                        
+                        WeakAuras.Add(data);
+                        WeakAuras.NewDisplayButton(data);
                     end
                     
-                    WeakAuras.Add(received.d);
-                    WeakAuras.NewDisplayButton(received.d);
+                    importData(data);
+                    
+                    if(received.c) then
+                        for index, childData in pairs(received.c) do
+                            importData(childData);
+                            tinsert(data.controlledChildren, childData.id);
+                            childData.parent = data.id;
+                            WeakAuras.Add(data);
+                            WeakAuras.Add(childData);
+                        end
+                        
+                        for index, id in pairs(data.controlledChildren) do
+                            local childButton = WeakAuras.GetDisplayButton(id);
+                            childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+                            childButton:SetGroupOrder(index, #data.controlledChildren);
+                        end
+                        
+                        local button = WeakAuras.GetDisplayButton(data.id);
+                        button.callbacks.UpdateExpandButton();
+                        WeakAuras.UpdateDisplayButton(data);
+                        WeakAuras.ReloadGroupRegionOptions(data);
+                        WeakAuras.SortDisplayButtons();
+                    end
+                    
+                    WeakAuras.Add(data);
+                    ItemRefTooltip:Hide();
+                    WeakAuras.PickDisplay(data.id);
                 end);
                 importbutton:Show();
                 
@@ -538,6 +560,28 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
                 thumbnail_frame:SetWidth(40);
                 thumbnail_frame:SetHeight(40);
                 thumbnail_frame:SetPoint("TOPRIGHT", ItemRefTooltip, "TOPRIGHT", -27, -7);
+                
+                if(received.c) then
+                    data.controlledChildren = {};
+                    for index, childData in pairs(received.c) do
+                        WeakAuras.DecompressDisplay(childData);
+                        data.controlledChildren[index] = childData.id;
+                    end
+                end
+                
+                --WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
+                --the tooltip, it will look to the incoming transmission data for child data. This allows thumbnails of incoming
+                --groups to be constructed properly.
+                local RegularGetData = WeakAuras.GetData;
+                WeakAuras.GetData = function(id)
+                    if(received.c) then
+                        for index, childData in pairs(received.c) do
+                            if(childData.id == id) then
+                                return childData;
+                            end
+                        end
+                    end
+                end
                 
                 local thumbnail;
                 thumbnail = regionOptions[regionType].createThumbnail(thumbnail_frame, regionTypes[regionType].create);                
@@ -550,6 +594,9 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
                     thumbnail:SetIcon(received.i);
                 end
                 thumbnail_frame:Show();
+                
+                data.controlledChildren = nil;
+                WeakAuras.GetData = RegularGetData;
             end
         elseif(received.m == "dR") then
             --if(WeakAuras.linked[received.d]) then

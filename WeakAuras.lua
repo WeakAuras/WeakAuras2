@@ -1,6 +1,7 @@
 local ADDON_NAME = "WeakAuras";
-WeakAurasTimers = {}
+WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end});
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers);
+
 local timer = WeakAurasTimers;
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
@@ -72,13 +73,14 @@ local levelColors = {
     [3] = "|cFFFF7777"
 };
 
-local function debug(msg, level)
+function WeakAuras.debug(msg, level)
     if(db.debug) then
         level = (level and levelColors[level] and level) or 2;
         msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
         ChatFrame3:AddMessage(levelColors[level]..msg);
     end
 end
+local debug = WeakAuras.debug;
 
 function WeakAuras.split(input)
     input = input or "";
@@ -1650,6 +1652,7 @@ function WeakAuras.Add(data)
     local status, err = pcall(WeakAuras.pAdd, data);
     if not(status) then
         print(err);
+        debug(err, 3);
     end
 end
 
@@ -2716,3 +2719,16 @@ do
         return oh_exp, oh_dur, oh_name, oh_icon;
     end
 end
+
+function WeakAuras.GetTimerTable()
+    return LibStub("AceTimer-3.0").selfs[WeakAurasTimers];
+end
+
+function WeakAuras.GetNumTimers()
+    local num = 0;
+    for i,v in pairs(WeakAuras.GetTimerTable()) do
+        num = num + 1;
+    end
+    return num - 1;
+end
+    

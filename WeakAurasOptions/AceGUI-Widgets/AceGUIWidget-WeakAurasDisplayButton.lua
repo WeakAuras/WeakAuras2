@@ -53,19 +53,28 @@ local methods = {
         local data = self.data;
         self.callbacks = {};
         
+        local function UpdateGroupOrders(data)
+            if(data.controlledChildren) then
+                local total = #data.controlledChildren;
+                for index, id in pairs(data.controlledChildren) do
+                    local button = WeakAuras.GetDisplayButton(id);
+                    button:SetGroupOrder(index, total);
+                end
+            end
+        end
+        
         function self.callbacks.OnClickNormal(_, mouseButton)
             if(IsShiftKeyDown()) then
                 local editbox = GetCurrentKeyBoardFocus();
                 if(editbox) then
-                    editbox:Insert(text);
+                    editbox:Insert("[WeakAuras: "..UnitName("player").." - "..data.id.."]");
                 end
             else
                 if(mouseButton == "RightButton") then
                     Hide_Tooltip();
-                    EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU")
-                else
-                    WeakAuras.PickDisplay(data.id);
+                    EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
                 end
+                WeakAuras.PickDisplay(data.id);
             end
         end
 
@@ -76,6 +85,7 @@ local methods = {
             WeakAuras.SortDisplayButtons();
             WeakAuras.AddOption(self.copying.id, self.copying);
             WeakAuras.OptionsFrame():PickDisplay(self.copying.id);
+            WeakAuras.UpdateDisplayButton(self.copying);
             WeakAuras.SetCopying();
             self:ReloadTooltip();
         end
@@ -103,7 +113,9 @@ local methods = {
             WeakAuras.Add(data);
             WeakAuras.Add(self.grouping);
             WeakAuras.SetGrouping();
+            WeakAuras.UpdateDisplayButton(data);
             WeakAuras.ReloadGroupRegionOptions(data);
+            UpdateGroupOrders(data);
             WeakAuras.SortDisplayButtons();
             self:ReloadTooltip();
         end
@@ -124,7 +136,27 @@ local methods = {
         end
 
         function self.callbacks.OnDeleteClick()
-            --do some confirmation window
+            local parentData = data.parent and WeakAuras.GetData(data.parent);
+            local parentButton = data.parent and WeakAuras.GetDisplayButton(data.parent);
+            WeakAuras.DeleteOption(data);
+            if(parentData) then
+                UpdateGroupOrders(parentData);
+            end
+            if(parentButton) then
+                parentButton.callbacks.UpdateExpandButton();
+            end
+        end
+        
+        function self.callbacks.OnDeleteAllClick()
+            if(data.controlledChildren) then
+                local toDelete = {};
+                for index, id in pairs(data.controlledChildren) do
+                    toDelete[index] = WeakAuras.GetData(id);
+                end
+                for index, childData in pairs(toDelete) do
+                    WeakAuras.DeleteOption(childData);
+                end
+            end
             WeakAuras.DeleteOption(data);
         end
 
@@ -147,6 +179,8 @@ local methods = {
             self:SetGroup();
             data.parent = nil;
             WeakAuras.Add(data);
+            UpdateGroupOrders(parentData);
+            WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.SortDisplayButtons();
         end
 
@@ -174,8 +208,9 @@ local methods = {
                         WeakAuras.SortDisplayButtons();
                         local updata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = -32};
                         local downdata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = 32};
-                        WeakAuras.Animate("button", parentData.controlledChildren[index-1], "main", updata, self.frame, true);
+                        WeakAuras.Animate("button", parentData.controlledChildren[index-1], "main", updata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
                         WeakAuras.Animate("button", parentData.controlledChildren[index], "main", downdata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
+                        WeakAuras.UpdateDisplayButton(parentData);
                     end
                 else
                     error("Display thinks it is a member of a group which does not control it");
@@ -209,8 +244,9 @@ local methods = {
                         WeakAuras.SortDisplayButtons()
                         local updata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = -32};
                         local downdata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = 32};
-                        WeakAuras.Animate("button", parentData.controlledChildren[index+1], "main", downdata, self.frame, true);
+                        WeakAuras.Animate("button", parentData.controlledChildren[index+1], "main", downdata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
                         WeakAuras.Animate("button", parentData.controlledChildren[index], "main", updata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
+                        WeakAuras.UpdateDisplayButton(parentData);
                     end
                 else
                     error("Display thinks it is a member of a group which does not control it");
@@ -255,23 +291,23 @@ local methods = {
         end
 
         function self.callbacks.OnRenameClick()
-            if(title:IsVisible()) then
-                title:Hide();
-                renamebox:SetText(title:GetText());
-                renamebox:Show();
+            if(self.title:IsVisible()) then
+                self.title:Hide();
+                self.renamebox:SetText(self.title:GetText());
+                self.renamebox:Show();
             else
-                title:Show();
-                renamebox:Hide();
+                self.title:Show();
+                self.renamebox:Hide();
             end
         end
 
         function self.callbacks.OnRenameAction(newid)
             local oldid = data.id;
-            WeakAuras.OptionsFrame().buttonsScroll:DeleteChild(displayButtons[id]);
             WeakAuras.OptionsFrame():ClearPicks();
-            thumbnails[oldid].region:Hide();
-            thumbnails[oldid] = nil;
-            displayButtons[oldid] = nil;
+            WeakAuras.OptionsFrame().buttonsScroll:DeleteChild(self);
+            WeakAuras.thumbnails[oldid].region:Hide();
+            WeakAuras.thumbnails[oldid] = nil;
+            WeakAuras.displayButtons[oldid] = nil;
             WeakAuras.Rename(data, newid);
             WeakAuras.ScanForLoads();
             local newData = WeakAuras.GetData(newid);
@@ -295,14 +331,34 @@ local methods = {
                 func = self.callbacks.OnCopyClick
             },
             {
+                text = " ",
+                notClickable = 1,
+                notCheckable = 1,
+            },
+            {
                 text = L["Delete"],
                 notCheckable = 1,
                 func = self.callbacks.OnDeleteClick
+            },
+            {
+                text = " ",
+                notClickable = 1,
+                notCheckable = 1,
+            },
+            {
+                text = L["Close"],
+                notCheckable = 1,
+                func = function() WeakAuras_DropDownMenu:Hide() end
             }
         }
         if(data.controlledChildren) then
-            self:SetViewClick(OnViewClick);
-            self:SetViewTest(ViewTest);
+            tinsert(self.menu, 5, {
+                text = L["Delete children and group"],
+                notCheckable = 1,
+                func = self.callbacks.OnDeleteAllClick
+            });
+            self:SetViewClick(self.callbacks.OnViewClick);
+            self:SetViewTest(self.callbacks.ViewTest);
             self:DisableGroup();
             self:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
             self.callbacks.UpdateExpandButton();
@@ -313,7 +369,7 @@ local methods = {
         self:SetNormalTooltip();
         self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
         self:Enable();
-        self:SetViewRegion(WeakAuras.regions[data.id].region);
+        self:SetRenameAction(self.callbacks.OnRenameAction);
         self.group:SetScript("OnClick", self.callbacks.OnGroupClick);
         self.ungroup:SetScript("OnClick", self.callbacks.OnUngroupClick);
         self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
@@ -386,6 +442,9 @@ local methods = {
                 end
             end
         end
+        tinsert(namestable, " ");
+        tinsert(namestable, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+        tinsert(namestable, {" ", "|cFF00FFFF"..L["Shift-click to create chat link"]});
         local regionData = WeakAuras.regionOptions[data.regionType or ""]
         local displayName = regionData and regionData.displayName or "";
         self:SetDescription({data.id, displayName}, unpack(namestable));
@@ -394,7 +453,7 @@ local methods = {
         Show_Long_Tooltip(self.frame, self.frame.description)
     end,
     ["SetCopying"] = function(self, copyingData)
-        self.copying = self.copyingData;
+        self.copying = copyingData;
         if(self.copying) then
             if(self.data.id == self.copying.id) then
                 self:SetDescription(L["Cancel"], L["Do not copy any settings"]);

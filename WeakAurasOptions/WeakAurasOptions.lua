@@ -18,9 +18,11 @@ local iconCache = {};
 
 local regionOptions = WeakAuras.regionOptions;
 local displayButtons = {};
+WeakAuras.displayButtons = displayButtons;
 local optionReloads = {};
 local optionTriggerChoices = {};
-local thumbnails = {};
+WeakAuras.thumbnails = {};
+local thumbnails = WeakAuras.thumbnails;
 local displayOptions = {};
 WeakAuras.displayOptions = displayOptions;
 
@@ -762,8 +764,8 @@ function WeakAuras.DeleteOption(data)
     end
     
     WeakAuras.Delete(data);
-    frame.buttonsScroll:DeleteChild(displayButtons[id]);
     frame:ClearPicks();
+    frame.buttonsScroll:DeleteChild(displayButtons[id]);
     thumbnails[id].region:Hide();
     thumbnails[id] = nil;
     displayButtons[id] = nil;
@@ -777,6 +779,7 @@ function WeakAuras.DeleteOption(data)
         end
         WeakAuras.Add(parentData);
         WeakAuras.ReloadGroupRegionOptions(parentData);
+        WeakAuras.UpdateDisplayButton(parentData);
     end
 end
 
@@ -4563,7 +4566,7 @@ function WeakAuras.CreateFrame()
                 tremove(buttonsScroll.children, index);
             end
         end
-        AceGUI:Release(delete);
+        delete:OnRelease();
         buttonsScroll:DoLayout();
     end
     frame.buttonsScroll = buttonsScroll;
@@ -5279,7 +5282,7 @@ function WeakAuras.NewDisplayButton(data)
     WeakAuras.SetIconNames(data);
     WeakAuras.SortDisplayButtons();
     pickonupdate = id;
-    displayButtons[id].rename:Click();
+    displayButtons[id].callbacks.OnRenameClick();
 end
 
 function WeakAuras.LayoutDisplayButtons()
@@ -5453,8 +5456,12 @@ function WeakAuras.EnsureDisplayButton(data)
     local id = data.id;
     if not(displayButtons[id]) then
         displayButtons[id] = AceGUI:Create("WeakAurasDisplayButton");
-        displayButtons[id]:SetData(data);
-        displayButtons[id]:Initialize();
+        if(displayButtons[id]) then
+            displayButtons[id]:SetData(data);
+            displayButtons[id]:Initialize();
+        else
+            print("Error creating button for", id);
+        end
     end
 end
 

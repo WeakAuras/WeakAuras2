@@ -1,7 +1,7 @@
 ## Interface: 40000
 ## Title: WeakAuras Options
 ## Author: Mirrored
-## Version: 1.2
+## Version: 1.3
 ## Notes: Options for WeakAuras
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde
