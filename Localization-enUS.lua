@@ -477,6 +477,9 @@ L["Add to new Dynamic Group"] = "Add to new Dynamic Group"
 L["Delete all"] = "Delete all"
 L["Multiple Displays"] = "Multiple Displays"
 L["Temporary Group"] = "Temporary Group"
+L["Progress"] = "Progress"
+L["Total"] = "Total"
+L["Add Dynamic Text"] = "Add Dynamic Text"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
@@ -526,7 +529,7 @@ L["Shows a spell icon with an optional a cooldown overlay"] = "Shows a spell ico
 L["Shows a texture that changes based on duration"] = "Shows a texture that changes based on duration"
 L["Shows a custom texture"] = "Shows a custom texture"
 L["Shows the remaining or expended time for an aura or timed event"] = "Shows the remaining or expended time for an aura or timed event"
-L["Shows one or more lines of text"] = "Shows one or more lines of text"
+L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "Shows one or more lines of text, which can include dynamic information such as progress or stacks"
 L["This display is not currently loaded"] = "This display is not currently loaded"
 L["This display is currently loaded"] = "This display is currently loaded"
 L["Hide this group's children"] = "Hide this group's children"

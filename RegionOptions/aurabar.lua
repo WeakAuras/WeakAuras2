@@ -4,12 +4,12 @@ local L = WeakAuras.L
 local function createOptions(id, data)
     local options = {
         texture = {
-                        type = "select",
-                        dialogControl = "LSM30_Statusbar",
-                        order = 0,
+            type = "select",
+            dialogControl = "LSM30_Statusbar",
+            order = 0,
             width = "double",
-                        name = L["Bar Texture"],
-                        values = AceGUIWidgetLSMlists.statusbar
+            name = L["Bar Texture"],
+            values = AceGUIWidgetLSMlists.statusbar
         },
         text = {
             type = "toggle",

@@ -1,53 +1,183 @@
 ﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
-  
+    
 local default = {
-  displayText = "New",
-  outline = true,
-  color = {1, 1, 1, 1},
-  justify = "CENTER",
-  selfPoint = "BOTTOM",
-  anchorPoint = "CENTER",
-  xOffset = 0,
-  yOffset = 0,
-  font = "Friz Quadrata TT",
-  fontSize = 12
+    displayText = "New",
+    outline = true,
+    color = {1, 1, 1, 1},
+    justify = "CENTER",
+    selfPoint = "BOTTOM",
+    anchorPoint = "CENTER",
+    xOffset = 0,
+    yOffset = 0,
+    font = "Friz Quadrata TT",
+    fontSize = 12
 };
 
 local function create(parent)
-  local region = CreateFrame("FRAME", nil, parent);
-  region:SetMovable(true);
-  
-  local text = region:CreateFontString(nil, "OVERLAY");
-  region.text = text;
-  text:SetNonSpaceWrap(true);
-  
-  return region;
+    local region = CreateFrame("FRAME", nil, parent);
+    region:SetMovable(true);
+    
+    local text = region:CreateFontString(nil, "OVERLAY");
+    region.text = text;
+    text:SetNonSpaceWrap(true);
+    
+    region.values = {};
+    region.duration = 0;
+    region.expirationTime = math.huge;
+    
+    return region;
 end
 
 local function modify(parent, region, data)
-  local text = region.text;
-  
-  local fontPath = SharedMedia:Fetch("font", data.font);
-  text:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or nil);
-  text:SetTextHeight(data.fontSize);
-  text:SetText(data.displayText);
-  text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
-  text:SetJustifyH(data.justify);
-  
-  text:ClearAllPoints();
-  text:SetPoint("CENTER", UIParent, "CENTER");
-  data.width = text:GetWidth() + 16;
-  data.height = text:GetHeight() + 16;
-  region:SetWidth(data.width);
-  region:SetHeight(data.height);
-  text:ClearAllPoints();
-  text:SetPoint("CENTER", region, "CENTER");
-  
-  region:ClearAllPoints();
-  region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
-  
-  function region:SetDurationInfo()
-  end
+    local text = region.text;
+    
+    local fontPath = SharedMedia:Fetch("font", data.font);
+    text:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or nil);
+    text:SetTextHeight(data.fontSize);
+    text:SetText(data.displayText);
+    text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
+    text:SetJustifyH(data.justify);
+    
+    text:ClearAllPoints();
+    text:SetPoint("CENTER", UIParent, "CENTER");
+    data.width = text:GetWidth() + 16;
+    data.height = text:GetHeight() + 16;
+    region:SetWidth(data.width);
+    region:SetHeight(data.height);
+    text:ClearAllPoints();
+    text:SetPoint("CENTER", region, "CENTER");
+    
+    region:ClearAllPoints();
+    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    
+    local function UpdateText()
+        local textStr = data.displayText;
+        for symbol, v in pairs(WeakAuras.dynamic_texts) do
+            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+        end
+        text:SetText(textStr);
+    end
+    
+    if(data.displayText:find("%%c") and data.customText) then
+        customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        if not(region.customTextUpdateFrame) then
+            region.customTextUpdateFrame = CreateFrame("frame");
+        end
+        local values = region.values;
+        region.customTextUpdateFrame:SetScript("OnUpdate", function()
+            local custom = customTextFunc(values.progress, values.duration, values.name, values.icon, values.stacks);
+            values.custom = custom;
+            UpdateText();
+        end);
+    elseif(region.customTextUpdateFrame) then
+        region.customTextUpdateFrame:SetScript("OnUpdate", nil);
+    end
+    
+    local function UpdateTime()
+        local remaining = region.expirationTime - GetTime();
+        local progress = remaining / region.duration;
+        
+        if(data.inverse) then
+            progress = 1 - progress;
+        end
+        progress = progress > 0.0001 and progress or 0.0001;
+        
+        local remainingStr = "";
+        if(remaining > 60) then
+            remainingStr = string.format("%i:", math.floor(remaining / 60));
+            remaining = remaining % 60;
+            remainingStr = remainingStr..string.format("%02i", remaining);
+        elseif(remaining > 0) then
+            remainingStr = remainingStr..string.format("%.1f", remaining);
+        else
+            remainingStr = "INF";
+        end
+        region.values.progress = remainingStr;
+        
+        local duration = region.duration;
+        local durationStr = "";
+        if(duration > 60) then
+            durationStr = string.format("%i:", math.floor(duration / 60));
+            duration = duration % 60;
+            durationStr = durationStr..string.format("%02i", duration);
+        elseif(duration > 0) then
+            durationStr = durationStr..string.format("%.1f", duration);
+        else
+            durationStr = "INF";
+        end
+        region.values.duration = durationStr;
+        UpdateText();
+    end
+    
+    local function UpdateValue(value, total)
+        region.values.progress = values;
+        region.values.duration = total;
+        UpdateText();
+    end
+    
+    local function UpdateCustom()
+        UpdateValue(region.customValueFunc());
+    end
+    
+    function region:SetDurationInfo(duration, expirationTime, customValue)
+        if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
+            region.duration = duration;
+        end
+        region.expirationTime = expirationTime;
+        
+        if(customValue) then
+            if(type(customValue) == "function") then
+                local value, total = customValue();
+                if(total > 0 and value < total) then
+                    region.customValueFunc = customValue;
+                    region:SetScript("OnUpdate", UpdateCustom);
+                else
+                    UpdateValue(duration, expirationTime);
+                    region:SetScript("OnUpdate", nil);
+                    UpdateText();
+                end
+            else
+                UpdateValue(duration, expirationTime);
+                region:SetScript("OnUpdate", nil);
+                UpdateText();
+            end
+        else
+            if(duration > 0.01) then
+                region:SetScript("OnUpdate", UpdateTime);
+            else
+                region:SetScript("OnUpdate", nil);
+                UpdateText();
+            end
+        end
+    end
+    
+    function region:SetStacks(count)
+        if(count and count > 0) then
+            region.values.stacks = count;
+        else
+            region.values.stacks = 0;
+        end
+        UpdateText();
+    end
+    
+    function region:SetIcon(path)
+        local icon = (
+            WeakAuras.CanHaveAuto(data)
+            and path ~= ""
+            and path
+            or data.displayIcon
+            or "Interface\\Icons\\INV_Misc_QuestionMark"
+        );
+        region.values.icon = "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t";
+        UpdateText();
+    end
+    
+    function region:SetName(name)
+        region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
+        UpdateText();
+    end
+    
+    UpdateText();
 end
 
 WeakAuras.RegisterRegionType("text", create, modify, default);

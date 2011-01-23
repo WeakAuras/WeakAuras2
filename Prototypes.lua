@@ -1631,3 +1631,40 @@ WeakAuras.conditions = {
         end
     }
 };
+
+WeakAuras.dynamic_texts = {
+    ["%%p"] = {
+        unescaped = "%p",
+        name = L["Progress"],
+        value = "progress",
+        static = "8.0"
+    },
+    ["%%t"] = {
+        unescaped = "%t",
+        name = L["Total"],
+        value = "duration",
+        static = "12.0"
+    },
+    ["%%n"] = {
+        unescaped = "%n",
+        name = L["Name"],
+        value = "name",
+    },
+    ["%%i"] = {
+        unescaped = "%i",
+        name = L["Icon"],
+        value = "icon"
+    },
+    ["%%s"] = {
+        unescaped = "%s",
+        name = L["Stacks"],
+        value = "stacks",
+        static = 1
+    },
+    ["%%c"] = {
+        unescaped = "%c",
+        name = L["Custom"],
+        value = "custom",
+        static = L["Custom"]
+    }
+};
