@@ -26,6 +26,177 @@ local thumbnails = WeakAuras.thumbnails;
 local displayOptions = {};
 WeakAuras.displayOptions = displayOptions;
 
+local tempGroup = {
+    id = {"tempGroup"},
+    regionType = "group",
+    controlledChildren = {},
+    load = {},
+    trigger = {},
+    anchorPoint = "CENTER",
+    xOffset = 0,
+    yOffset = 0
+};
+function WeakAuras.MultipleDisplayTooltipDesc()
+    local desc = {{L["Multiple Displays"], L["Temporary Group"]}};
+    for index, id in pairs(tempGroup.controlledChildren) do
+        desc[index + 1] = {" ", id};
+    end
+    desc[2][1] = L["Children:"]
+    tinsert(desc, " ");
+    tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+    return desc;
+end
+function WeakAuras.MultipleDisplayTooltipMenu()
+    local menu = {
+        {
+            text = L["Add to new Group"],
+            notCheckable = 1,
+            func = function()
+                local new_id = tempGroup.controlledChildren[1].." Group";
+                local num = 2;
+                while(WeakAuras.GetData(new_id)) do
+                    new_id = "New "..num;
+                    num = num + 1;
+                end
+                
+                local data = {
+                    id = new_id,
+                    regionType = "group",
+                    trigger = {},
+                    load = {}
+                };
+                WeakAuras.Add(data);
+                WeakAuras.NewDisplayButton(data);
+                
+                for index, childId in pairs(tempGroup.controlledChildren) do
+                    local childData = WeakAuras.GetData(childId);
+                    tinsert(data.controlledChildren, childId);
+                    childData.parent = data.id;
+                    WeakAuras.Add(data);
+                    WeakAuras.Add(childData);
+                end
+                
+                for index, id in pairs(data.controlledChildren) do
+                    local childButton = WeakAuras.GetDisplayButton(id);
+                    childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+                    childButton:SetGroupOrder(index, #data.controlledChildren);
+                end
+                
+                local button = WeakAuras.GetDisplayButton(data.id);
+                button.callbacks.UpdateExpandButton();
+                WeakAuras.UpdateDisplayButton(data);
+                WeakAuras.ReloadGroupRegionOptions(data);
+                WeakAuras.SortDisplayButtons();
+                button:Expand();
+            end
+        },
+        {
+            text = L["Add to new Dynamic Group"],
+            notCheckable = 1,
+            func = function()
+                local new_id = tempGroup.controlledChildren[1].." Group";
+                local num = 2;
+                while(WeakAuras.GetData(new_id)) do
+                    new_id = "New "..num;
+                    num = num + 1;
+                end
+                
+                local data = {
+                    id = new_id,
+                    regionType = "dynamicgroup",
+                    trigger = {},
+                    load = {}
+                };
+                WeakAuras.Add(data);
+                WeakAuras.NewDisplayButton(data);
+                
+                for index, childId in pairs(tempGroup.controlledChildren) do
+                    local childData = WeakAuras.GetData(childId);
+                    tinsert(data.controlledChildren, childId);
+                    childData.parent = data.id;
+                    WeakAuras.Add(data);
+                    WeakAuras.Add(childData);
+                end
+                
+                for index, id in pairs(data.controlledChildren) do
+                    local childButton = WeakAuras.GetDisplayButton(id);
+                    childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+                    childButton:SetGroupOrder(index, #data.controlledChildren);
+                end
+                
+                local button = WeakAuras.GetDisplayButton(data.id);
+                button.callbacks.UpdateExpandButton();
+                WeakAuras.UpdateDisplayButton(data);
+                WeakAuras.ReloadGroupRegionOptions(data);
+                WeakAuras.SortDisplayButtons();
+                button:Expand();
+            end
+        },
+        {
+            text = " ",
+            notCheckable = 1,
+            notClickable = 1
+        },
+        {
+            text = L["Delete all"],
+            notCheckable = 1,
+            func = function()
+                for index, id in pairs(tempGroup.controlledChildren) do
+                    local toDelete = {};
+                    local parents = {};
+                    for index, id in pairs(tempGroup.controlledChildren) do
+                        local childData = WeakAuras.GetData(id);
+                        toDelete[index] = childData;
+                        if(childData.parent) then
+                            parents[childData.parent] = true;
+                        end
+                    end
+                    for index, childData in pairs(toDelete) do
+                        WeakAuras.DeleteOption(childData);
+                    end
+                    for id, _ in pairs(parents) do
+                        local parentData = WeakAuras.GetData(id);
+                        local parentButton = WeakAuras.GetDisplayButton(id);
+                        WeakAuras.UpdateGroupOrders(parentData);
+                        if(#parentData.controlledChildren == 0) then
+                            parentButton:DisableExpand();
+                        else
+                            parentButton:EnableExpand();
+                        end
+                        parentButton:SetNormalTooltip();
+                    end
+                end
+                WeakAuras.SortDisplayButtons();
+            end
+        },
+        {
+            text = " ",
+            notClickable = 1,
+            notCheckable = 1,
+        },
+        {
+            text = L["Close"],
+            notCheckable = 1,
+            func = function() WeakAuras_DropDownMenu:Hide() end
+        }
+    };
+    local anyGrouped = false;
+    for index, id in pairs(tempGroup.controlledChildren) do
+        local childData = WeakAuras.GetData(id);
+        if(childData and childData.parent) then
+            anyGrouped = true;
+            break;
+        end
+    end
+    if(anyGrouped) then
+        menu[1].notClickable = 1;
+        menu[1].text = "|cFF777777"..menu[1].text;
+        menu[2].notClickable = 1;
+        menu[2].text = "|cFF777777"..menu[2].text;
+    end
+    return menu;
+end
+
 --This function computes the Levenshtein distance between two strings
 --It is based on the Wagner-Fisher algorithm
 --
@@ -152,7 +323,6 @@ function WeakAuras.CreateIconCache(callback)
         end
     end);
 end
-
 
 function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
     local trigger, untrigger;
@@ -805,11 +975,12 @@ function WeakAuras.ShowOptions(forceCacheReset)
     if not(frame) then
         frame = WeakAuras.CreateFrame();
     end
+    frame.buttonsScroll.frame:Show();
+    WeakAuras.AddOption(tempGroup.id, tempGroup);
+    WeakAuras.LockUpdateInfo();
     WeakAuras.BuildOptions();
-    WeakAuras.LayoutDisplayButtons();
     frame:Show();
     frame:PickOption("New");
-    WeakAuras.LockUpdateInfo();
 end
 
 function WeakAuras.HideOptions()
@@ -829,10 +1000,34 @@ function WeakAuras.HideOptions()
     end
     frame = nil;
     for id, data in pairs(WeakAuras.regions) do
+        if not(data.region.Collapse) then
+            print(id);
+        end
         data.region:Collapse();
     end
     WeakAuras.ReloadAll();
     WeakAuras.Resume();
+end
+
+function WeakAuras.DoConfigUpdate()
+    for id, region in pairs(WeakAuras.regions) do
+        local data = db.displays[id];
+        if(data) then
+            if(WeakAuras.CanHaveDuration(data)) then
+                if(region.region.SetDurationInfo) then
+                    if not(frame.count ~= 0 and region.region.cooldown and region.region.cooldown:IsVisible()) then
+                        region.region:SetDurationInfo(12, GetTime() + 8 - (frame.count + frame.elapsed));
+                    end
+                end
+                WeakAuras.duration_cache:SetDurationInfo(id, 12, GetTime() + 8 - (frame.count + frame.elapsed));
+            else
+                if(region.region.SetDurationInfo) then
+                    region.region:SetDurationInfo(0, math.huge);
+                end
+                WeakAuras.duration_cache:SetDurationInfo(id, 0, math.huge);
+            end
+        end
+    end
 end
 
 function WeakAuras.LockUpdateInfo()
@@ -843,24 +1038,7 @@ function WeakAuras.LockUpdateInfo()
         if(frame.elapsed > 1) then
             frame.elapsed = frame.elapsed - 1;
             frame.count = (frame.count + 1) % 4;
-            for id, region in pairs(WeakAuras.regions) do
-                local data = db.displays[id];
-                if(data) then
-                    if(WeakAuras.CanHaveDuration(data)) then
-                        if(region.region.SetDurationInfo) then
-                            if not(frame.count ~= 0 and region.region.cooldown and region.region.cooldown:IsVisible()) then
-                                region.region:SetDurationInfo(12, GetTime() + 8 - (frame.count + frame.elapsed));
-                            end
-                        end
-                        WeakAuras.duration_cache:SetDurationInfo(id, 12, GetTime() + 8 - (frame.count + frame.elapsed));
-                    else
-                        if(region.region.SetDurationInfo) then
-                            region.region:SetDurationInfo(0, math.huge);
-                        end
-                        WeakAuras.duration_cache:SetDurationInfo(id, 0, math.huge);
-                    end
-                end
-            end
+            WeakAuras.DoConfigUpdate();
         end
     end);
 end
@@ -904,16 +1082,107 @@ function WeakAuras.SetIconName(data, region)
 end
 
 function WeakAuras.BuildOptions()
-    for id, data in pairs(db.displays) do
-        if not(data.regionType == "group" or data.regionType == "dynamicgroup") then
-            WeakAuras.AddOption(id, data);
-        end
+    local total = 0;
+    for _,_ in pairs(db.displays) do
+        total = total + 1;
     end
-    for id, data in pairs(db.displays) do
-        if(data.regionType == "group" or data.regionType == "dynamicgroup") then
-            WeakAuras.AddOption(id, data);
+    local num = 0;
+    local id, data = next(db.displays);
+    dynFrame:SetScript("OnUpdate", function()
+        local start = GetTime();
+        while(GetTime() - start < 0.01 and data) do
+            if(data) then
+                if not(data.regionType == "group" or data.regionType == "dynamicgroup") then
+                    WeakAuras.AddOption(id, data);
+                    num = num + 1;
+                end
+            end
+            frame.loadProgress:SetText(L["Creating options: "]..num.."/"..total);
+            id, data = next(db.displays, id);
         end
+        
+        if not(data) then
+            local id, data = next(db.displays);
+            dynFrame:SetScript("OnUpdate", function()
+                local start = GetTime();
+                while(GetTime() - start < 0.01 and data) do
+                    if(data) then
+                        if(data.regionType == "group" or data.regionType == "dynamicgroup") then
+                            WeakAuras.AddOption(id, data);
+                            num = num + 1;
+                        end
+                    end
+                    frame.loadProgress:SetText(L["Creating options: "]..num.."/"..total);
+                    id, data = next(db.displays, id);
+                end
+                
+                if not(data) then
+                    frame.loadProgress:SetText(L["Creating options: "]..num.."/"..total);
+                    WeakAuras.LayoutDisplayButtons();
+                end
+            end);
+        end
+    end);
+end
+
+function WeakAuras.LayoutDisplayButtons()
+    frame.buttonsScroll:AddChild(frame.newButton);
+    frame.buttonsScroll:AddChild(frame.loadedButton);
+    local total = 0;
+    for _,_ in pairs(db.displays) do
+        total = total + 1;
     end
+    local num = 0;
+    local id, data = next(db.displays);
+    dynFrame:SetScript("OnUpdate", function()
+        local start = GetTime();
+        while(GetTime() - start < 0.01 and data) do
+            if(data) then
+                if(loaded[data.id]) then
+                    WeakAuras.EnsureDisplayButton(data);
+                    WeakAuras.UpdateDisplayButton(data);
+                    local button = displayButtons[data.id]
+                    frame.buttonsScroll:AddChild(button);
+                    button:PriorityShow(1);
+                    WeakAuras.SetIconNames(data);
+                    --WeakAuras.regions[data.id].region:SetStacks(1);
+                    WeakAuras.SortDisplayButtons();
+                    num = num + 1;
+                end
+            end
+            frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
+            id, data = next(db.displays, id);
+        end
+        
+        if not(data) then
+            frame.buttonsScroll:AddChild(frame.unloadedButton);
+            
+            local id, data = next(db.displays);
+            dynFrame:SetScript("OnUpdate", function()
+                local start = GetTime();
+                while(GetTime() - start < 0.01 and data) do
+                    if(data) then
+                        if not(loaded[data.id]) then
+                            WeakAuras.EnsureDisplayButton(data);
+                            WeakAuras.UpdateDisplayButton(data);
+                            frame.buttonsScroll:AddChild(displayButtons[data.id]);
+                            WeakAuras.SetIconNames(data);
+                            --WeakAuras.regions[data.id].region:SetStacks(1);
+                            WeakAuras.SortDisplayButtons();
+                            num = num + 1;
+                        end
+                    end
+                    frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
+                    id, data = next(db.displays, id);
+                end
+                
+                if not(data) then
+                    dynFrame:SetScript("OnUpdate", nil);
+                    frame.loadProgress:Hide();
+                end
+            end);
+        end
+    end);
 end
 
 local function filterAnimPresetTypes(intable, id)
@@ -3634,9 +3903,11 @@ function WeakAuras.ReloadTriggerOptions(data)
         displayOptions[id].get = function(info, ...) return getAll(data, info, ...); end;
         displayOptions[id].set = function(info, ...)
             setAll(data, info, ...);
-            WeakAuras.Add(data);
-            WeakAuras.SetThumbnail(data);
-            WeakAuras.ResetMoverSizer();
+            if(type(id) == "string") then
+                WeakAuras.Add(data);
+                WeakAuras.SetThumbnail(data);
+                WeakAuras.ResetMoverSizer();
+            end
         end
         displayOptions[id].hidden = function(info, ...) return hiddenAll(data, info, ...); end;
         displayOptions[id].disabled = function(info, ...) return disabledAll(data, info, ...); end;
@@ -3753,6 +4024,9 @@ function WeakAuras.ReloadTriggerOptions(data)
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
         end;
+    end
+    if(type(id) ~= "string") then
+        displayOptions[id].args.group = nil;
     end
 end
 
@@ -4554,6 +4828,11 @@ function WeakAuras.CreateFrame()
     buttonsContainer.frame:Show();
     frame.buttonsContainer = buttonsContainer;
     
+    local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
+    loadProgress:SetText(L["Creating options: "].."0/0");
+    frame.loadProgress = loadProgress;
+    
     local buttonsScroll = AceGUI:Create("ScrollFrame");
     buttonsScroll:SetLayout("flow");
     buttonsScroll.width = "fill";
@@ -5190,6 +5469,8 @@ function WeakAuras.CreateFrame()
     end
     
     frame.ClearPicks = function(self, except)
+        frame.pickedDisplay = nil;
+        wipe(tempGroup.controlledChildren);
         for id, button in pairs(displayButtons) do
             button:ClearPick();
         end
@@ -5251,6 +5532,7 @@ function WeakAuras.CreateFrame()
     frame.PickDisplay = function(self, id)
         self:ClearPicks();
         displayButtons[id]:Pick();
+        self.pickedDisplay = id;
         local data = db.displays[id];
         if(data.controlledChildren) then
             for index, childId in pairs(data.controlledChildren) do
@@ -5263,7 +5545,31 @@ function WeakAuras.CreateFrame()
         WeakAuras.regions[id].region:Expand();
         self.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id]);
         local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1);
-        frame.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+        self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+    end
+    
+    frame.PickDisplayMultiple = function(self, id)
+        if not(self.pickedDisplay) then
+            self:PickDisplay(id);
+        else
+            local wasGroup = false;
+            if(type(self.pickedDisplay) == "string") then
+                if(WeakAuras.GetData(self.pickedDisplay).controlledChildren) then
+                    wasGroup = true;
+                else
+                    tinsert(tempGroup.controlledChildren, self.pickedDisplay);
+                end
+            end
+            if(wasGroup) then
+                self:PickDisplay(id);
+            else
+                self.pickedDisplay = tempGroup;
+                displayButtons[id]:Pick();
+                tinsert(tempGroup.controlledChildren, id);
+                WeakAuras.ReloadTriggerOptions(tempGroup);
+                self:FillOptions(displayOptions[tempGroup.id]);
+            end
+        end
     end
     
     return frame;
@@ -5285,55 +5591,14 @@ function WeakAuras.NewDisplayButton(data)
     displayButtons[id].callbacks.OnRenameClick();
 end
 
-function WeakAuras.LayoutDisplayButtons()
-    frame.buttonsScroll:AddChild(frame.newButton);
-    frame.buttonsScroll:AddChild(frame.loadedButton);
-    
-    local id, data = next(db.displays);
-    dynFrame:SetScript("OnUpdate", function()
-        local start = GetTime();
-        while(GetTime() - start < 0.01 and data) do
-            if(data) then
-                if(loaded[data.id]) then
-                    WeakAuras.EnsureDisplayButton(data);
-                    WeakAuras.UpdateDisplayButton(data);
-                    local button = displayButtons[data.id]
-                    frame.buttonsScroll:AddChild(button);
-                    button:PriorityShow(1);
-                    WeakAuras.SetIconNames(data);
-                    --WeakAuras.regions[data.id].region:SetStacks(1);
-                    WeakAuras.SortDisplayButtons();
-                end
-            end
-            id, data = next(db.displays, id);
+function WeakAuras.UpdateGroupOrders(data)
+    if(data.controlledChildren) then
+        local total = #data.controlledChildren;
+        for index, id in pairs(data.controlledChildren) do
+            local button = WeakAuras.GetDisplayButton(id);
+            button:SetGroupOrder(index, total);
         end
-        
-        if not(data) then
-            frame.buttonsScroll:AddChild(frame.unloadedButton);
-            
-            local id, data = next(db.displays);
-            dynFrame:SetScript("OnUpdate", function()
-                local start = GetTime();
-                while(GetTime() - start < 0.01 and data) do
-                    if(data) then
-                        if not(loaded[data.id]) then
-                            WeakAuras.EnsureDisplayButton(data);
-                            WeakAuras.UpdateDisplayButton(data);
-                            frame.buttonsScroll:AddChild(displayButtons[data.id]);
-                            WeakAuras.SetIconNames(data);
-                            --WeakAuras.regions[data.id].region:SetStacks(1);
-                            WeakAuras.SortDisplayButtons();
-                        end
-                    end
-                    id, data = next(db.displays, id);
-                end
-                
-                if not(data) then
-                    dynFrame:SetScript("OnUpdate", nil);
-                end
-            end);
-        end
-    end);
+    end
 end
 
 function WeakAuras.SortDisplayButtons()
@@ -5436,8 +5701,33 @@ WeakAuras.loadFrame:SetScript("OnEvent", function()
     end
 end);
 
+function WeakAuras.IsPickedMultiple()
+    if(frame.pickedDisplay == tempGroup) then
+        return true;
+    else
+        return false;
+    end
+end
+
+function WeakAuras.IsDisplayPicked(id)
+    if(frame.pickedDisplay == tempGroup) then
+        for index, childId in pairs(tempGroup.controlledChildren) do
+            if(id == childId) then
+                return true;
+            end
+        end
+        return false;
+    else
+        return frame.pickedDisplay == id;
+    end
+end
+
 function WeakAuras.PickDisplay(id)
     frame:PickDisplay(id);
+end
+
+function WeakAuras.PickDisplayMultiple(id)
+    frame:PickDisplayMultiple(id);
 end
 
 function WeakAuras.GetDisplayButton(id)

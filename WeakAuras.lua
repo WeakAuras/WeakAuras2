@@ -1685,8 +1685,9 @@ function WeakAuras.Add(data)
     WeakAuras.Modernize(data);
     local status, err = pcall(WeakAuras.pAdd, data);
     if not(status) then
-        print("|cFFFF0000WeakAuras error: "..err);
-        debug(err, 3);
+        local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
+        print("|cFFFF0000WeakAuras "..id..": "..err);
+        debug(id..": "..err, 3);
         debug(debugstack(1, 6), 2);
     end
 end

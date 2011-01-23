@@ -53,18 +53,11 @@ local methods = {
         local data = self.data;
         self.callbacks = {};
         
-        local function UpdateGroupOrders(data)
-            if(data.controlledChildren) then
-                local total = #data.controlledChildren;
-                for index, id in pairs(data.controlledChildren) do
-                    local button = WeakAuras.GetDisplayButton(id);
-                    button:SetGroupOrder(index, total);
-                end
-            end
-        end
-        
         function self.callbacks.OnClickNormal(_, mouseButton)
-            if(IsShiftKeyDown()) then
+            if(IsControlKeyDown() and not data.controlledChildren) then
+                WeakAuras.PickDisplayMultiple(data.id);
+                self:ReloadTooltip();
+            elseif(IsShiftKeyDown()) then
                 local editbox = GetCurrentKeyBoardFocus();
                 if(editbox) then
                     editbox:Insert("[WeakAuras: "..UnitName("player").." - "..data.id.."]");
@@ -72,9 +65,18 @@ local methods = {
             else
                 if(mouseButton == "RightButton") then
                     Hide_Tooltip();
-                    EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
+                    if(WeakAuras.IsDisplayPicked(data.id) and WeakAuras.IsPickedMultiple()) then
+                        EasyMenu(WeakAuras.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
+                    else
+                        EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
+                        if not(WeakAuras.IsDisplayPicked(data.id)) then
+                            WeakAuras.PickDisplay(data.id);
+                        end
+                    end
+                else
+                    WeakAuras.PickDisplay(data.id);
+                    self:ReloadTooltip();
                 end
-                WeakAuras.PickDisplay(data.id);
             end
         end
 
@@ -115,7 +117,7 @@ local methods = {
             WeakAuras.SetGrouping();
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.ReloadGroupRegionOptions(data);
-            UpdateGroupOrders(data);
+            WeakAuras.UpdateGroupOrders(data);
             WeakAuras.SortDisplayButtons();
             self:ReloadTooltip();
         end
@@ -140,11 +142,61 @@ local methods = {
             local parentButton = data.parent and WeakAuras.GetDisplayButton(data.parent);
             WeakAuras.DeleteOption(data);
             if(parentData) then
-                UpdateGroupOrders(parentData);
+                WeakAuras.UpdateGroupOrders(parentData);
             end
             if(parentButton) then
                 parentButton.callbacks.UpdateExpandButton();
             end
+        end
+        
+        function self.callbacks.OnDuplicateClick()
+            local new_id = data.id;
+            local num = 2;
+            while(WeakAuras.GetData(new_id)) do
+                new_id = data.id.." "..num;
+                num = num + 1;
+            end
+            
+            local newData = {};
+            WeakAuras.DeepCopy(data, newData);
+            newData.id = new_id;
+            newData.parent = nil;
+            WeakAuras.Add(newData);
+            WeakAuras.NewDisplayButton(newData);
+            if(data.parent) then
+                local parentData = WeakAuras.GetData(data.parent);
+                local index;
+                for i, childId in pairs(parentData.controlledChildren) do
+                    if(childId == data.id) then
+                        index = i;
+                        break;
+                    end
+                end
+                if(index) then
+                    local newIndex = index + 1;
+                    if(newIndex > #parentData.controlledChildren) then
+                        tinsert(parentData.controlledChildren, newData.id);
+                    else
+                        tinsert(parentData.controlledChildren, index + 1, newData.id);
+                    end
+                    newData.parent = data.parent;
+                    WeakAuras.Add(parentData);
+                    WeakAuras.Add(newData);
+                        
+                    for index, id in pairs(parentData.controlledChildren) do
+                        local childButton = WeakAuras.GetDisplayButton(id);
+                        childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup");
+                        childButton:SetGroupOrder(index, #parentData.controlledChildren);
+                    end
+                        
+                    local button = WeakAuras.GetDisplayButton(parentData.id);
+                    button.callbacks.UpdateExpandButton();
+                    WeakAuras.UpdateDisplayButton(parentData);
+                    WeakAuras.ReloadGroupRegionOptions(parentData);
+                end
+            end
+            WeakAuras.SortDisplayButtons();
+            WeakAuras.DoConfigUpdate();
         end
         
         function self.callbacks.OnDeleteAllClick()
@@ -179,7 +231,7 @@ local methods = {
             self:SetGroup();
             data.parent = nil;
             WeakAuras.Add(data);
-            UpdateGroupOrders(parentData);
+            WeakAuras.UpdateGroupOrders(parentData);
             WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.SortDisplayButtons();
         end
@@ -363,6 +415,11 @@ local methods = {
             self:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
             self.callbacks.UpdateExpandButton();
         else
+            tinsert(self.menu, 3, {
+                text = L["Duplicate"],
+                notCheckable = 1,
+                func = self.callbacks.OnDuplicateClick
+            });
             self:SetViewRegion(WeakAuras.regions[data.id].region);
             self:EnableGroup();
         end
@@ -444,13 +501,20 @@ local methods = {
         end
         tinsert(namestable, " ");
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+        if not(data.controlledChildren) then
+            tinsert(namestable, {" ", "|cFF00FFFF"..L["Control-click to select multiple displays"]});
+        end
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Shift-click to create chat link"]});
         local regionData = WeakAuras.regionOptions[data.regionType or ""]
         local displayName = regionData and regionData.displayName or "";
         self:SetDescription({data.id, displayName}, unpack(namestable));
     end,
-    ["ReloadTooltip"] = function(self)
-        Show_Long_Tooltip(self.frame, self.frame.description)
+    ["ReloadTooltip"] = function(self)if(
+        WeakAuras.IsPickedMultiple() and WeakAuras.IsDisplayPicked(self.data.id)) then
+            Show_Long_Tooltip(self.frame, WeakAuras.MultipleDisplayTooltipDesc());
+        else
+            Show_Long_Tooltip(self.frame, self.frame.description);
+        end
     end,
     ["SetCopying"] = function(self, copyingData)
         self.copying = copyingData;
@@ -577,6 +641,7 @@ local methods = {
     end,
     ["SetData"] = function(self, data)
         self.data = data;
+        self.frame.id = data.id;
     end,
     ["GetData"] = function(self)
         return self.data;
@@ -771,7 +836,13 @@ local function Constructor()
     
     button.description = {};
     
-    button:SetScript("OnEnter", function() Show_Long_Tooltip(button, button.description) end);
+    button:SetScript("OnEnter", function()
+        if(WeakAuras.IsPickedMultiple() and WeakAuras.IsDisplayPicked(button.id)) then
+            Show_Long_Tooltip(button, WeakAuras.MultipleDisplayTooltipDesc());
+        else
+            Show_Long_Tooltip(button, button.description);
+        end
+    end);
     button:SetScript("OnLeave", Hide_Tooltip);
     
     local view = CreateFrame("BUTTON", nil, button);
@@ -835,6 +906,7 @@ local function Constructor()
     renamebox:SetPoint("TOP", button, "TOP");
     renamebox:SetPoint("LEFT", icon, "RIGHT", 6, 0);
     renamebox:SetPoint("RIGHT", button, "RIGHT", -4, 0);
+    renamebox:SetFont("Fonts\\FRIZQT__.TTF", 10);
     renamebox:Hide();
     
     renamebox.func = function() --[[By default, do nothing!]] end;
