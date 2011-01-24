@@ -2162,7 +2162,13 @@ function WeakAuras.PerformActions(data, type)
         end
         
         if(actions.do_message and actions.message_type and actions.message) then
-            if(actions.message_type == "WHISPER") then
+            if(actions.message_type == "PRINT") then
+                DEFAULT_CHAT_FRAME:AddMessage(actions.message, actions.r or 1, actions.g or 1, actions.b or 1);
+            elseif(actions.message_type == "COMBAT") then
+                if(CombatText_AddMessage) then
+                    CombatText_AddMessage(actions.message, COMBAT_TEXT_SCROLL_FUNCTION, actions.r or 1, actions.g or 1, actions.b or 1);
+                end
+            elseif(actions.message_type == "WHISPER") then
                 if(actions.message_dest) then
                     if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
                         WeakAuras.Announce(actions.message, "WHISPER", nil, UnitName("target"), data.id, type);

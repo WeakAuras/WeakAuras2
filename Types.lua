@@ -830,7 +830,9 @@ WeakAuras.send_chat_message_types = {
   OFFICER = L["Officer"],
   RAID = L["Raid"],
   RAID_WARNING = L["Raid Warning"],
-  BATTLEGROUND = L["Battleground"]
+  BATTLEGROUND = L["Battleground"],
+  COMBAT = L["Blizzard Combat Text"],
+  PRINT = L["Chat Frame"]
 };
 WeakAuras.group_aura_name_info_types = {
   aura = L["Aura Name"],

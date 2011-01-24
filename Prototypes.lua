@@ -1125,24 +1125,26 @@ local inverse = %s;
     ["Action Usable"] = {
         type = "status",
         events = {
+            "SPELL_COOLDOWN_READY",
+            "SPELL_COOLDOWN_CHANGED",
+            "SPELL_COOLDOWN_STARTED",
             "SPELL_UPDATE_USABLE",
             "PLAYER_TARGET_CHANGED",
-            "SPELL_UPDATE_COOLDOWN",
-            "UNIT_POWER",
-            "ACTIONBAR_UPDATE_COOLDOWN"
+            "UNIT_POWER"
         },
         force_events = true,
         name = L["Action Usable"],
         init = function(trigger)
             trigger.spellName = trigger.spellName or 0;
             local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
+            WeakAuras.WatchSpellCooldown(spellName);
             local ret = [[
 local spell = %s;
 local spellName = GetSpellInfo(spell);
-local startTime, duration = GetSpellCooldown(spellName);
+local startTime, duration = WeakAuras.GetSpellCooldown(spell);
 startTime = startTime or 0;
 duration = duration or 0;
-onCooldown = duration > 1.51;
+local onCooldown = duration > 1.51;
 ]]
             return ret:format(spellName);
         end,

@@ -480,6 +480,8 @@ L["Temporary Group"] = "Temporary Group"
 L["Progress"] = "Progress"
 L["Total"] = "Total"
 L["Add Dynamic Text"] = "Add Dynamic Text"
+L["Blizzard Combat Text"] = "Blizzard Combat Text"
+L["Chat Frame"] = "Chat Frame"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
