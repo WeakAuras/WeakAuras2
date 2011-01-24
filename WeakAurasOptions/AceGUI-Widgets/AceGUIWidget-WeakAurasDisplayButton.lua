@@ -355,19 +355,31 @@ local methods = {
 
         function self.callbacks.OnRenameAction(newid)
             local oldid = data.id;
-            WeakAuras.OptionsFrame():ClearPicks();
-            WeakAuras.OptionsFrame().buttonsScroll:DeleteChild(self);
-            WeakAuras.thumbnails[oldid].region:Hide();
-            WeakAuras.thumbnails[oldid] = nil;
-            WeakAuras.displayButtons[oldid] = nil;
-            WeakAuras.Rename(data, newid);
-            WeakAuras.ScanForLoads();
-            local newData = WeakAuras.GetData(newid);
-            WeakAuras.AddDisplayButton(newData);
-            WeakAuras.SetCopying();
-            WeakAuras.SetGrouping();
-            WeakAuras.Add(newData);
-            WeakAuras.SortDisplayButtons();
+            if not(newid == oldid) then
+                local temp;
+                
+                WeakAuras.Rename(data, newid);
+                
+                WeakAuras.thumbnails[newid] = WeakAuras.thumbnails[oldid];
+                WeakAuras.thumbnails[oldid] = nil;
+                WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
+                WeakAuras.displayButtons[oldid] = nil;
+                WeakAuras.displayOptions[newid] = WeakAuras.displayOptions[oldid];
+                WeakAuras.displayOptions[oldid] = nil;
+                
+                WeakAuras.displayButtons[newid]:SetTitle(newid);
+                
+                if(data.controlledChildren) then
+                    for index, childId in pairs(data.controlledChildren) do
+                        WeakAuras.displayButtons[childId]:SetGroup(newid);
+                    end
+                end
+                
+                WeakAuras.SetCopying();
+                WeakAuras.SetGrouping();
+                WeakAuras.SortDisplayButtons();
+                WeakAuras.PickDisplay(newid);
+            end
         end
         
         self:SetTitle(data.id);

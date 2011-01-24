@@ -53,11 +53,6 @@ WeakAuras.pending_controls = {};
 local pending_controls = WeakAuras.pending_controls;
 local pending_conditions_check;
 
-WeakAuras.spellCooldownCache = {};
-WeakAuras.spellCooldownReadyTimers = {};
-WeakAuras.itemCooldownCache = {};
-WeakAuras.itemCooldownReadyTimers = {};
-
 local inGroup;
 
 local function_strings = WeakAuras.function_strings;
@@ -1490,6 +1485,7 @@ function WeakAuras.Delete(data)
 end
 
 function WeakAuras.Rename(data, newid)
+    local oldid = data.id;
     if(data.parent) then
         local parentData = db.displays[data.parent];
         if(parentData.controlledChildren) then
@@ -1501,9 +1497,20 @@ function WeakAuras.Rename(data, newid)
         end
     end
     
-    WeakAuras.Delete(data);
-    data.id = newid;
-    WeakAuras.Add(data);
+    local temp
+    
+    regions[newid] = regions[oldid];
+    regions[oldid] = nil;
+    auras[newid] = auras[oldid];
+    auras[oldid] = nil;
+    events[newid] = events[oldid];
+    events[oldid] = nil;
+    loaded[newid] = loaded[oldid];
+    loaded[oldid] = nil;
+    db.displays[newid] = db.displays[oldid];
+    db.displays[oldid] = nil;
+    
+    db.displays[newid].id = newid;
     
     if(data.controlledChildren) then
         for index, childId in pairs(data.controlledChildren) do

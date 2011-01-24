@@ -1145,7 +1145,9 @@ function WeakAuras.LayoutDisplayButtons()
                     frame.buttonsScroll:AddChild(button);
                     button:PriorityShow(1);
                     WeakAuras.SetIconNames(data);
-                    --WeakAuras.regions[data.id].region:SetStacks(1);
+                    if(WeakAuras.regions[data.id].region.SetStacks) then
+                        WeakAuras.regions[data.id].region:SetStacks(1);
+                    end
                     WeakAuras.SortDisplayButtons();
                     num = num + 1;
                 end
@@ -1167,7 +1169,9 @@ function WeakAuras.LayoutDisplayButtons()
                             WeakAuras.UpdateDisplayButton(data);
                             frame.buttonsScroll:AddChild(displayButtons[data.id]);
                             WeakAuras.SetIconNames(data);
-                            --WeakAuras.regions[data.id].region:SetStacks(1);
+                            if(WeakAuras.regions[data.id].region.SetStacks) then
+                                WeakAuras.regions[data.id].region:SetStacks(1);
+                            end
                             WeakAuras.SortDisplayButtons();
                             num = num + 1;
                         end
@@ -1739,7 +1743,20 @@ function WeakAuras.AddOption(id, data)
                         name = "",
                         order = 3,
                         image = function() return "", 0, 0 end,
-                        hidden = function() return not(data.actions.start.message_type == "WHISPER" or data.actions.start.message_type == "CHANNEL") end
+                        hidden = function() return not(data.actions.start.message_type == "WHISPER" or data.actions.start.message_type == "CHANNEL" or data.actions.start.message_type == "COMBAT" or data.actions.start.message_type == "PRINT") end
+                    },
+                    start_message_color = {
+                        type = "color",
+                        name = L["Color"],
+                        order = 3,
+                        hasAlpha = false,
+                        hidden = function() return not(data.actions.start.message_type == "COMBAT" or data.actions.start.message_type == "PRINT") end,
+                        get = function() return data.actions.start.r or 1, data.actions.start.g or 1, data.actions.start.b or 1 end,
+                        set = function(info, r, g, b)
+                            data.actions.start.r = r;
+                            data.actions.start.g = g;
+                            data.actions.start.b = b;
+                        end
                     },
                     start_message_dest = {
                         type = "input",
