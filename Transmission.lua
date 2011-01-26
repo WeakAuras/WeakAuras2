@@ -1,7 +1,7 @@
 local L = WeakAuras.L;
 
 local version = 1302;
-local versionString = "1.3b3";
+local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;
 local regionTypes = WeakAuras.regionTypes;

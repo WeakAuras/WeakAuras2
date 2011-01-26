@@ -302,41 +302,53 @@ WeakAuras.anim_presets = {
 WeakAuras.load_prototype = {
     args = {
         {
+            name = "combat",
+            display = L["In Combat"],
+            type = "tristate",
+            init = "UnitAffectingCombat('player')"
+        },
+        {
             name = "name",
-            display = "Player Name",
+            display = L["Player Name"],
             type = "string",
             init = "arg"
         },
         {
             name = "class",
-            display = "Player Class",
+            display = L["Player Class"],
             type = "multiselect",
             values = "class_types",
             init = "arg"
         },
         {
             name = "spec",
-            display = "Talent Specialization",
+            display = L["Talent Specialization"],
             type = "multiselect",
             values = "spec_types",
             init = "arg"
         },
         {
+            name = "level",
+            display = L["Player Level"],
+            type = "number",
+            init = "arg"
+        },
+        {
             name = "zone",
-            display = "Zone",
+            display = L["Zone"],
             type = "string",
             init = "arg"
         },
         {
             name = "size",
-            display = "Instance Type",
+            display = L["Instance Type"],
             type = "multiselect",
             values = "group_types",
             init = "arg"
         },
         {
             name = "difficulty",
-            display = "Dungeon Difficulty",
+            display = L["Dungeon Difficulty"],
             type = "select",
             values = "difficulty_types",
             init = "arg"
@@ -713,7 +725,7 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
                 name = "sourceunit",
                 display = L["Source Unit"],
                 type = "select",
-                test = "UnitIsUnit(source, '%s')",
+                test = "source and UnitIsUnit(source, '%s')",
                 values = "actual_unit_types",
                 enable = function(trigger)
                     return not (trigger.subeventPrefix == "ENVIRONMENTAL")
@@ -1570,67 +1582,166 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
             }
         },
         automaticrequired = true
-    }
-};
-
-WeakAuras.conditions = {
-    combat = {
-        display = L["In Combat"],
+    },
+    ["Cast"] = {
+        type = "status",
+        events = {
+            "UNIT_SPELLCAST_CHANNEL_START",
+            "UNIT_SPELLCAST_CHANNEL_STOP",
+            "UNIT_SPELLCAST_CHANNEL_UPDATE",
+            "UNIT_SPELLCAST_START",
+            "UNIT_SPELLCAST_STOP",
+            "UNIT_SPELLCAST_DELAYED",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = true,
+        name = L["Cast"],
+        init = function(trigger)
+            trigger.unit = trigger.unit or "";
+            local ret = [[
+local unit = "%s"
+local spell, interruptible, _;
+local castType;
+spell, _, _, _, _, _, _, _, interruptible = UnitCastingInfo(unit)
+if(spell) then
+    castType = "cast"
+else
+    spell, _, _, _, _, _, _, _, interruptible = UnitChannelInfo(unit)
+    if(spell) then
+        castType = "channel"
+    end
+end
+interruptible = not interruptible;
+]];
+            return ret:format(trigger.unit);
+        end,
+        args = {
+            {
+                name = "unit",
+                display = L["Unit"],
+                type = "select",
+                init = "arg",
+                values = "actual_unit_types",
+                required = true
+            },
+            {
+                name = "spell",
+                display = L["Spell Name"],
+                type = "string"
+            },
+            {
+                name = "castType",
+                display = L["Cast Type"],
+                type = "select",
+                values = "cast_types"
+            },
+            {
+                name = "interruptible",
+                display = L["Interruptible"],
+                type = "tristate"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(unit) and spell"
+            }
+        },
+        durationFunc = function(trigger)
+            local _, _, _, _, startTime, endTime = UnitCastingInfo(trigger.unit);
+            if not(startTime) then
+                local _, _, _, _, startTime, endTime = UnitChannelInfo(trigger.unit);
+                if not(startTime) then
+                    return 0, math.huge;
+                else
+                    return (endTime - startTime)/1000, endTime/1000;
+                end
+            else
+                return (endTime - startTime)/1000, endTime/1000, nil, true;
+            end
+        end,
+        nameFunc = function(trigger)
+            local name = UnitCastingInfo(trigger.unit);
+            if not(name) then
+                local name = UnitChannelInfo(trigger.unit);
+                if not(name) then
+                    return trigger.spell or L["Spell Name"];
+                else
+                    return name;
+                end
+            else
+                return name;
+            end
+        end,
+        iconFunc = function(trigger)
+            local _, _, _, icon = UnitCastingInfo(trigger.unit);
+            if not(icon) then
+                local _, _, _, icon = UnitChannelInfo(trigger.unit);
+                if not(icon) then
+                    return "Interface\\AddOns\\WeakAuras\\icon";
+                else
+                    return icon;
+                end
+            else
+                return icon;
+            end
+        end,
+        automaticrequired = true
+    },
+    ["Conditions"] = {
+        type = "status",
         events = {
             "PLAYER_REGEN_ENABLED",
-            "PLAYER_REGEN_DISABLED"
-        },
-        func = function()
-            return UnitAffectingCombat("player")
-        end
-    },
-    pvpflagged = {
-        display = L["PvP Flagged"],
-        events = {
-            "PLAYER_FLAGS_CHANGED"
-        },
-        func = function()
-            return UnitIsPVP("player")
-        end
-    },
-    alive = {
-        display = L["Alive"],
-        events = {
+            "PLAYER_REGEN_DISABLED",
+            "PLAYER_FLAGS_CHANGED",
             "PLAYER_DEAD",
             "PLAYER_ALIVE",
-            "PLAYER_UNGHOST"
-        },
-        func = function()
-            return not UnitIsDeadOrGhost("player")
-        end
-    },
-    vehicle = {
-        display = L["In Vehicle"],
-        events = {
+            "PLAYER_UNGHOST",
             "UNIT_ENTERED_VEHICLE",
-            "UNIT_EXITED_VEHICLE"
+            "UNIT_EXITED_VEHICLE",
+            "PLAYER_UPDATE_RESTING",
+            "MOUNTED_UPDATE"
         },
-        func = function()
-            return UnitInVehicle("player")
-        end
-    },
-    resting = {
-        display = L["Resting"],
-        events = {
-            "PLAYER_UPDATE_RESTING"
+        force_events = true,
+        name = L["Conditions"],
+        init = function(trigger)
+            if(trigger.use_mounted ~= nil) then
+                WeakAuras.WatchForMounts();
+            end
+            return "";
+        end,
+        args = {
+            {
+                name = "pvpflagged",
+                display = L["PvP Flagged"],
+                type = "tristate",
+                init = "UnitIsPVP('player')"
+            },
+            {
+                name = "alive",
+                display = L["Alive"],
+                type = "tristate",
+                init = "not UnitIsDeadOrGhost('player')"
+            },
+            {
+                name = "vehicle",
+                display = L["In Vehicle"],
+                type = "tristate",
+                init = "UnitInVehicle('player')"
+            },
+            {
+                name = "resting",
+                display = L["Resting"],
+                type = "tristate",
+                init = "IsResting()"
+            },
+            {
+                name = "mounted",
+                display = L["Mounted"],
+                type = "tristate",
+                init = "IsMounted()"
+            }
         },
-        func = function()
-            return IsResting()
-        end
-    },
-    mounted = {
-        display = L["Mounted"],
-        events = {
-            "COMPANION_UPDATE"
-        },
-        func = function()
-            return IsMounted()
-        end
+        automaticrequired = true
     }
 };
 

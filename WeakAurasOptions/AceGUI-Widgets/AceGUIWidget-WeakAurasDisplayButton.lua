@@ -364,8 +364,8 @@ local methods = {
                 WeakAuras.thumbnails[oldid] = nil;
                 WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
                 WeakAuras.displayButtons[oldid] = nil;
-                WeakAuras.displayOptions[newid] = WeakAuras.displayOptions[oldid];
                 WeakAuras.displayOptions[oldid] = nil;
+                WeakAuras.AddOption(newid, data);
                 
                 WeakAuras.displayButtons[newid]:SetTitle(newid);
                 
@@ -424,8 +424,8 @@ local methods = {
             self:SetViewClick(self.callbacks.OnViewClick);
             self:SetViewTest(self.callbacks.ViewTest);
             self:DisableGroup();
-            self:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
             self.callbacks.UpdateExpandButton();
+            self:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
         else
             tinsert(self.menu, 3, {
                 text = L["Duplicate"],
@@ -573,9 +573,6 @@ local methods = {
         self.title:SetText(title);
     end,
     ["GetTitle"] = function(self)
-        if not(self.titletext) then
-            error("Oh noes");
-        end
         return self.titletext;
     end,
     ["SetDescription"] = function(self, ...)
@@ -799,14 +796,15 @@ local methods = {
         self:EnableGroup();
         self.renamebox:Hide();
         self.title:Show();
-        self.data = nil;
+        local id = self.data.id;
         self.frame:SetScript("OnEnter", nil);
         self.frame:SetScript("OnLeave", nil);
         self.frame:SetScript("OnClick", nil);
-        self.frame:EnableMouse(false);
+        --self.frame:EnableMouse(false);
         self.frame:ClearAllPoints();
         self.frame:Hide();
         self.frame = nil;
+        self.data = nil;
     end
 }
 

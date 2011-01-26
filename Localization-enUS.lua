@@ -464,24 +464,6 @@ L["Name Info"] = "Name Info"
 L["Stack Info"] = "Stack Info"
 L["Icon Info"] = "Icon Info"
 L["Duration Info"] = "Duration Info"
-L["Alternate Power"] = "Alternate Power"
-L["From"] = "From"
-L["Copy settings from..."] = "Copy settings from..."
-L["Close"] = "Close"
-L["Delete children and group"] = "Delete children and group"
-L["Creating options: "] = "Creating options: "
-L["Creating buttons: "] = "Creating buttons: "
-L["Duplicate"] = "Duplicate"
-L["Add to new Group"] = "Add to new Group"
-L["Add to new Dynamic Group"] = "Add to new Dynamic Group"
-L["Delete all"] = "Delete all"
-L["Multiple Displays"] = "Multiple Displays"
-L["Temporary Group"] = "Temporary Group"
-L["Progress"] = "Progress"
-L["Total"] = "Total"
-L["Add Dynamic Text"] = "Add Dynamic Text"
-L["Blizzard Combat Text"] = "Blizzard Combat Text"
-L["Chat Frame"] = "Chat Frame"
 
 --UI Tooltips
 L["Not all children have the same value for this option"] = "Not all children have the same value for this option"
@@ -531,7 +513,6 @@ L["Shows a spell icon with an optional a cooldown overlay"] = "Shows a spell ico
 L["Shows a texture that changes based on duration"] = "Shows a texture that changes based on duration"
 L["Shows a custom texture"] = "Shows a custom texture"
 L["Shows the remaining or expended time for an aura or timed event"] = "Shows the remaining or expended time for an aura or timed event"
-L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "Shows one or more lines of text, which can include dynamic information such as progress or stacks"
 L["This display is not currently loaded"] = "This display is not currently loaded"
 L["This display is currently loaded"] = "This display is currently loaded"
 L["Hide this group's children"] = "Hide this group's children"
@@ -548,11 +529,6 @@ L["Expansion is disabled because this group has no children"] = "Expansion is di
 L["Add a new display"] = "Add a new display"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."
-L["Right-click for more options"] = "Right-click for more options"
-L["Control-click to select multiple displays"] = "Control-click to select multiple displays"
-L["Shift-click to create chat link"] = "Shift-click to create a |cFF8800FF[Chat Link]"
-L["Requesting display information"] = "Requesting display information from %s..."
-L["Receiving display information"] = "Receiving display information from %s..."
 L["Custom trigger status tooltip"] = [[
 Choose which events cause the custom trigger to be checked.
 Since this is a status-type trigger, the specified events may be called by WeakAuras without the expected arguments.
@@ -1025,8 +1001,84 @@ L.textures["PowerAuras Words"] = {
 
 -- Errors - Low priority for localization
 L["This region of type \"%s\" has no configuration options."] = "This region of type \"%s\" has no configuration options."
+
+
+--Added in r73
+L["Alternate Power"] = "Alternate Power"
+L["From"] = "From"
+L["Copy settings from..."] = "Copy settings from..."
+L["Close"] = "Close"
+L["Delete children and group"] = "Delete children and group"
+L["Creating options: "] = "Creating options: "
+L["Creating buttons: "] = "Creating buttons: "
+L["Duplicate"] = "Duplicate"
+L["Add to new Group"] = "Add to new Group"
+L["Add to new Dynamic Group"] = "Add to new Dynamic Group"
+L["Delete all"] = "Delete all"
+L["Multiple Displays"] = "Multiple Displays"
+L["Temporary Group"] = "Temporary Group"
+L["Progress"] = "Progress"
+L["Total"] = "Total"
+L["Add Dynamic Text"] = "Add Dynamic Text"
+L["Blizzard Combat Text"] = "Blizzard Combat Text"
+L["Chat Frame"] = "Chat Frame"
+L["Use Full Scan (High CPU)"] = "Use Full Scan (High CPU)"
+L["Player Name"] = "Player Name"
+L["Player Class"] = "Player Class"
+L["Talent Specialization"] = "Talent Specialization"
+L["Player Level"] = "Player Level"
+L["Zone"] = "Zone"
+L["Instance Type"] = "Instance Type"
+L["Dungeon Difficulty"] = "Dungeon Difficulty"
+L["Cast"] = "Cast"
+L["Cast Type"] = "Cast Type"
+L["Channel (Spell)"] = "Channel"
+L["Interruptible"] = "Interruptible"
+L["Tooltip"] = "Tooltip"
+L["Stealable"] = "Stealable"
+L["Spell ID"] = "Spell ID"
+L["Debuff Type"] = "Debuff Type"
+L["Magic"] = "Magic"
+L["Curse"] = "Curse"
+L["Disease"] = "Disease"
+L["Poison"] = "Poison"
+L["Enrage"] = "Enrage"
+L["Use tooltip \"size\" instead of stacks"] = "Use tooltip \"size\" instead of stacks"
+L["Paused"] = "Paused"
+
+L["By |cFF69CCF0Mirrored|r of Dragonmaw(US) Horde"] = "By |cFF69CCF0Mirrored|r of Dragonmaw(US) Horde"
+L["Click to close configuration"] = "Click to close configuration"
+L["Click to open configuration"] = "Click to open configuration"
+L["Shift-Click to resume"] = "Shift-Click to resume"
+L["Shift-Click to pause"] = "Shift-Click to pause"
+L["Right-click for more options"] = "Right-click for more options"
+L["Control-click to select multiple displays"] = "Control-click to select multiple displays"
+L["Shift-click to create chat link"] = "Shift-click to create a |cFF8800FF[Chat Link]"
+L["Requesting display information"] = "Requesting display information from %s..."
+L["Receiving display information"] = "Receiving display information from %s..."
+
+L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "Shows one or more lines of text, which can include dynamic information such as progress or stacks"
+
 L["Requested display does not exist"] = "Requested display does not exist"
 L["Requested display not authorized"] = "Requested display not authorized"
 L["Version error recevied lower"] = "This display is incompatible with your version of WeakAuras - it was created by version %s, but you have version %s. Please tell the person you received it from to update their version of WeakAuras."
 L["Version error recevied higher"] = "This display is incompatible with your version of WeakAuras - it was created by version %s, but you have version %s. Please update your version of WeakAuras."
 L["Transmission error"] = "Transmission error"
+
+L["Shapes"] = "Shapes"
+
+L.textures["Shapes"] = {
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth"] = "Smooth Circle",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth_Border"] = "Smooth Circle with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Squirrel"] = "Spiralled Circle",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Squirrel_Border"] = "Spiralled Circle with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_White"] = "Circle",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_White_Border"] = "Circle with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth"] = "Smooth Square",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border"] = "Smooth Square with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border2"] = "Smooth Square with Border 2",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel"] = "Spiralled Square",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel_Border"] = "Spiralled Square with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White"] = "Square",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
+}

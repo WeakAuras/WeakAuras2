@@ -1,4 +1,18 @@
 * text=auto !eol
+/Localization-esES.lua -text
+Media/Textures/Circle_Smooth.tga -text
+Media/Textures/Circle_Smooth_Border.tga -text
+Media/Textures/Circle_Squirrel.tga -text
+Media/Textures/Circle_Squirrel_Border.tga -text
+Media/Textures/Circle_White.tga -text
+Media/Textures/Circle_White_Border.tga -text
+Media/Textures/Square_Smooth.tga -text
+Media/Textures/Square_Smooth_Border.tga -text
+Media/Textures/Square_Smooth_Border2.tga -text
+Media/Textures/Square_Squirrel.tga -text
+Media/Textures/Square_Squirrel_Border.tga -text
+Media/Textures/Square_White.tga -text
+Media/Textures/Square_White_Border.tga -text
 PowerAurasMedia/Auras/Aura1.tga -text
 PowerAurasMedia/Auras/Aura10.tga -text
 PowerAurasMedia/Auras/Aura100.tga -text
@@ -195,3 +209,4 @@ RegionOptions/text.lua -text
 RegionOptions/texture.lua -text
 RegionOptions/timer.lua -text
 /Transmission.lua -text
+/icon.tga -text

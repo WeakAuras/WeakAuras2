@@ -401,11 +401,11 @@ local function modify(parent, region, data)
         text:SetText((WeakAuras.CanHaveAuto(data) and data.auto and name or data.displayText) or data.id);
     end
     
-    local function UpdateTime()
+    local function UpdateTime(self, elaps, inverse)
         local remaining = region.expirationTime - GetTime();
         local progress = remaining / region.duration;
         
-        if(data.inverse) then
+        if((data.inverse and not inverse) or (inverse and not data.inverse)) then
             progress = 1 - progress;
         end
         progress = progress > 0.0001 and progress or 0.0001;
@@ -417,11 +417,15 @@ local function modify(parent, region, data)
             remaining = remaining % 60;
             remainingStr = remainingStr..string.format("%02i", remaining);
         elseif(remaining > 0) then
-                remainingStr = remainingStr..string.format("%.1f", remaining);
+            remainingStr = remainingStr..string.format("%.1f", remaining);
         else
             remainingStr = " ";
         end
         timer:SetText(remainingStr);
+    end
+    
+    local function UpdateTimeInverse(self, elaps)
+        UpdateTime(self, elaps, true);
     end
     
     local function UpdateValue(value, total)
@@ -441,7 +445,7 @@ local function modify(parent, region, data)
         UpdateValue(region.customValueFunc());
     end
     
-    function region:SetDurationInfo(duration, expirationTime, customValue)
+    function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
         if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
             region.duration = duration;
         end
@@ -463,7 +467,11 @@ local function modify(parent, region, data)
             end
         else
             if(duration > 0.01) then
-                region:SetScript("OnUpdate", UpdateTime);
+                if(inverse) then
+                    region:SetScript("OnUpdate", UpdateTimeInverse);
+                else
+                    region:SetScript("OnUpdate", UpdateTime);
+                end
             else
                 bar:SetValue(1);
                 timer:SetText(" ");
