@@ -461,7 +461,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 };
             end
             if(arg.type == "toggle" or arg.type == "tristate") then
-                options["use_"..name].width = "double";
+                options["use_"..name].width = arg.width or "double";
             elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
                 options["use_"..name].width = "half";
             end
@@ -4687,6 +4687,8 @@ function WeakAuras.CreateFrame()
                 frame.texturePick.frame:Show();
             elseif(frame.window == "icon") then
                 frame.iconPick.frame:Show();
+            elseif(frame.window == "importexport") then
+                frame.importexport.frame:Show();
             end
             minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp");
             minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp");
@@ -4696,6 +4698,7 @@ function WeakAuras.CreateFrame()
             frame.buttonsContainer.frame:Hide();
             frame.texturePick.frame:Hide();
             frame.iconPick.frame:Hide();
+            frame.importexport.frame:Hide();
             frame.container.frame:Hide();
             minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp");
             minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp");
@@ -5093,6 +5096,61 @@ function WeakAuras.CreateFrame()
     iconPickClose:SetText(L["Okay"]);
     
     iconPickScroll.frame:SetPoint("BOTTOM", iconPickClose, "TOP", 0, 10);
+    
+    local importexport = AceGUI:Create("InlineGroup");
+    importexport.frame:SetParent(frame);
+    importexport.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
+    importexport.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+    importexport.frame:Hide();
+    importexport:SetLayout("flow");
+    frame.importexport = importexport;
+    
+    local importexportbox = AceGUI:Create("MultiLineEditBox");
+    importexportbox:SetWidth(400);
+    importexportbox:SetNumLines(27);
+    importexport:AddChild(importexportbox);
+    
+    local importexportClose = CreateFrame("Button", nil, importexport.frame, "UIPanelButtonTemplate");
+    importexportClose:SetScript("OnClick", function() importexport:Close() end);
+    importexportClose:SetPoint("BOTTOMRIGHT", -27, 13);
+    importexportClose:SetHeight(20);
+    importexportClose:SetWidth(100);
+    importexportClose:SetText(L["Done"])
+    
+    function importexport.Open(self, mode, id)
+        if(frame.window == "texture") then
+            frame.texturePick:CancelClose();
+        elseif(frame.window == "icon") then
+            frame.iconPick:CancelClose();
+        end
+        frame.container.frame:Hide();
+        frame.buttonsContainer.frame:Hide();
+        self.frame:Show();
+        frame.window = "importexport";
+        if(mode == "export") then
+            if(id) then
+                local displayStr = WeakAuras.DisplayToString(id, true);
+                importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
+                importexportbox.editBox:SetScript("OnChar", function() importexportbox:SetText(displayStr); importexportbox.editBox:HighlightText(); end);
+                importexportbox.editBox:SetScript("OnMouseUp", function() importexportbox.editBox:HighlightText(); end);
+                importexportbox:SetLabel(id.." - "..#displayStr);
+                importexportbox.button:Hide();
+                importexportbox:SetText(displayStr);
+                importexportbox.editBox:HighlightText();
+                importexportbox:SetFocus();
+            end
+        elseif(mode == "import") then
+            --NYI
+        end
+    end
+    
+    function importexport.Close(self)
+        importexportbox:ClearFocus();
+        self.frame:Hide();
+        frame.container.frame:Show();
+        frame.buttonsContainer.frame:Show();
+        frame.window = "default";
+    end
     
     local buttonsContainer = AceGUI:Create("InlineGroup");
     buttonsContainer:SetWidth(170);
@@ -5849,6 +5907,10 @@ function WeakAuras.CreateFrame()
     return frame;
 end
 
+function WeakAuras.ExportToString(id)
+    frame.importexport:Open("export", id);
+end
+
 function WeakAuras.NewDisplayButton(data)
     local id = data.id;
     WeakAuras.ScanForLoads();
@@ -6005,7 +6067,12 @@ function WeakAuras.PickDisplayMultiple(id)
 end
 
 function WeakAuras.GetDisplayButton(id)
-    return displayButtons[id];
+    if(displayButtons[id]) then
+        return displayButtons[id];
+    elseif(id == "Cast") then
+        --WeakAuras.debug("No button for "..id, 3);
+        --WeakAuras.debug(debugstack());
+    end
 end
 
 function WeakAuras.AddDisplayButton(data)
@@ -6019,6 +6086,9 @@ end
 function WeakAuras.EnsureDisplayButton(data)
     local id = data.id;
     if not(displayButtons[id]) then
+        if(id == "Cast") then
+            WeakAuras.debug("Creating Cast", 1);
+        end
         displayButtons[id] = AceGUI:Create("WeakAurasDisplayButton");
         if(displayButtons[id]) then
             displayButtons[id]:SetData(data);

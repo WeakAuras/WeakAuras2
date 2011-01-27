@@ -1082,3 +1082,11 @@ L.textures["Shapes"] = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White"] = "Square",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
 }
+
+--Added in r74
+L["Never"] = "Never"
+L["Import"] = "Import"
+L["Export"] = "Export"
+L["Export to string..."] = "Export to string..."
+L["Import from string..."] = "Import from string..."
+L["Done"] = "Done"

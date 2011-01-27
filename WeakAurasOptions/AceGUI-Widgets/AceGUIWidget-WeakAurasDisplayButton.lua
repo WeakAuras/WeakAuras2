@@ -400,6 +400,16 @@ local methods = {
                 notCheckable = 1,
             },
             {
+                text = L["Export to string..."],
+                notCheckable = 1,
+                func = function() WeakAuras.ExportToString(data.id) end
+            },
+            {
+                text = " ",
+                notClickable = 1,
+                notCheckable = 1,
+            },
+            {
                 text = L["Delete"],
                 notCheckable = 1,
                 func = self.callbacks.OnDeleteClick
@@ -416,7 +426,7 @@ local methods = {
             }
         }
         if(data.controlledChildren) then
-            tinsert(self.menu, 5, {
+            tinsert(self.menu, 7, {
                 text = L["Delete children and group"],
                 notCheckable = 1,
                 func = self.callbacks.OnDeleteAllClick
@@ -922,7 +932,9 @@ local function Constructor()
     renamebox.func = function() --[[By default, do nothing!]] end;
     renamebox.ids = {};
     renamebox:SetScript("OnEnterPressed", function()
-        if((renamebox.ids[renamebox:GetText()] and button.title:GetText() ~= renamebox:GetText()) or renamebox:GetText() == "") then
+        local oldid = button.title:GetText();
+        local newid = renamebox:GetText();
+        if(newid == "" or (newid ~= oldid and WeakAuras.GetData(newid))) then
             renamebox:SetText(button.title:GetText());
         else
             renamebox.func();
