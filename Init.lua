@@ -1,7 +1,7 @@
 ﻿WeakAuras = {}
 WeakAuras.L = {}
 
-WeakAuras.versionString = "1.3b3 r74"
+WeakAuras.versionString = GetAddOnMetadata("WeakAuras", "Version");
 
 WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
 WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"

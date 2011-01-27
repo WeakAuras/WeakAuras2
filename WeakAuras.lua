@@ -1130,6 +1130,7 @@ function WeakAuras.EndEvent(id, triggernum, force)
     end
 end
 
+local inCombat = UnitAffectingCombat("player");
 local playerLevel = UnitLevel("player");
 function WeakAuras.ScanForLoads(self, event, arg1)
     if(event == "PLAYER_LEVEL_UP") then
@@ -1140,6 +1141,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     local _, class = UnitClass("player");
     local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
     local size, difficulty;
+    local incombat = UnitAffectingCombat("player");
     size = type;
     if(type == "raid") then
         if(maxPlayers == 10) then
@@ -1169,12 +1171,14 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. Please report this as a bug.");
         end
     end
+    local changed = 0;
     local shouldBeLoaded;
     for id, triggers in pairs(auras) do
         local _, data = next(triggers);
-        shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", player, class, spec, playerLevel, zone, size, difficulty);
+        shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, player, class, spec, playerLevel, zone, size, difficulty);
         if(shouldBeLoaded and not loaded[id]) then
             WeakAuras.LoadDisplay(id);
+            changed = changed + 1;
         end
         if(loaded[id] and not shouldBeLoaded) then
             WeakAuras.UnloadDisplay(id);
@@ -1183,9 +1187,10 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     end
     for id, triggers in pairs(events) do
         local _, data = next(triggers);
-        shouldBeLoaded = data.load and data.load("ScanForLoads_Events", player, class, spec, playerLevel, zone, size, difficulty);
+        shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, player, class, spec, playerLevel, zone, size, difficulty);
         if(shouldBeLoaded and not loaded[id]) then
             WeakAuras.LoadDisplay(id);
+            changed = changed + 1;
         end
         if(loaded[id] and not shouldBeLoaded) then
             WeakAuras.UnloadDisplay(id);
@@ -1207,6 +1212,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             end
         end
     end
+    if(changed > 0) then
+        WeakAuras.ForceEvents();
+    end
 end
 
 WeakAuras.loadFrame = CreateFrame("FRAME");
@@ -1215,6 +1223,8 @@ WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
 WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 WeakAuras.loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
+WeakAuras.loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
+WeakAuras.loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 WeakAuras.loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
 function WeakAuras.ReloadAll()

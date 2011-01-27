@@ -306,7 +306,7 @@ WeakAuras.load_prototype = {
             display = L["In Combat"],
             type = "tristate",
             width = "normal",
-            init = "UnitAffectingCombat('player')"
+            init = "arg"
         },
         {
             name = "never",
