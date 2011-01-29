@@ -42,6 +42,11 @@ return function(progress, startX, startY, scaleX, scaleY)
     return startX + (progress * (scaleX - startX)), startY + (progress * (scaleY - startY))
 end
 ]],
+    straightColor = [[
+return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+    return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
+end
+]],
     circle = [[
 return function(progress, startX, startY, deltaX, deltaY)
     local angle = progress * 2 * math.pi

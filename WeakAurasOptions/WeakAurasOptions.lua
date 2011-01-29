@@ -277,6 +277,7 @@ local anim_translate_types = WeakAuras.anim_translate_types;
 local anim_scale_types = WeakAuras.anim_scale_types;
 local anim_alpha_types = WeakAuras.anim_alpha_types;
 local anim_rotate_types = WeakAuras.anim_rotate_types;
+local anim_color_types = WeakAuras.anim_color_types;
 local group_types = WeakAuras.group_types;
 local difficulty_types = WeakAuras.difficulty_types;
 local anim_start_preset_types = WeakAuras.anim_start_preset_types;
@@ -996,7 +997,7 @@ function WeakAuras.ShowOptions(forceCacheReset)
 end
 
 function WeakAuras.HideOptions()
-    dynFrame:SetScript("OnUpdate", nil);
+    --dynFrame:SetScript("OnUpdate", nil);
     WeakAuras.UnlockUpdateInfo();
     if(frame) then
         frame:Hide();
@@ -2328,6 +2329,72 @@ function WeakAuras.AddOption(id, data)
                         bigStep = 3,
                         hidden = function() return (data.animation.start.type ~= "custom" or not WeakAuras.regions[id].region.Rotate) end
                     },
+                    start_use_color = {
+                        type = "toggle",
+                        name = L["Color"],
+                        order = 48.2,
+                        hidden = function() return (data.animation.start.type ~= "custom" or not WeakAuras.regions[id].region.Color) end
+                    },
+                    start_colorType = {
+                        type = "select",
+                        name = L["Type"],
+                        order = 48.5,
+                        values = anim_color_types,
+                        hidden = function() return (data.animation.start.type ~= "custom" or not WeakAuras.regions[id].region.Color) end
+                    },
+                    start_colorFunc = {
+                        type = "input",
+                        multiline = true,
+                        name = L["Custom Function"],
+                        width = "double",
+                        order = 48.7,
+                        hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.colorType ~= "custom" or not (data.animation.start.use_color and WeakAuras.regions[id].region.Color) end,
+                        get = function() return data.animation.start.colorFunc and data.animation.start.colorFunc:sub(8); end,
+                        set = function(info, v) data.animation.start.colorFunc = "return "..(v or ""); WeakAuras.Add(data); end
+                    },
+                    start_colorFuncError = {
+                        type = "description",
+                        name = function()
+                            if not(data.animation.start.colorFunc) then
+                                return "";
+                            end
+                            local _, errorString = loadstring(data.animation.start.colorFunc or "");
+                            return errorString and "|cFFFF0000"..errorString or "";
+                        end,
+                        width = "double",
+                        order = 49,
+                        hidden = function()
+                            if(data.animation.start.type ~= "custom" or data.animation.start.colorType ~= "custom" or not (data.animation.start.use_color and WeakAuras.regions[id].region.Color)) then
+                                return true;
+                            else
+                                local loadedFunction, errorString = loadstring(data.animation.start.colorFunc or "");
+                                if(errorString and not loadedFunction) then
+                                    return false;
+                                else
+                                    return true;
+                                end
+                            end
+                        end
+                    },
+                    start_color = {
+                        type = "color",
+                        name = L["Color"],
+                        width = "double",
+                        order = 49.5,
+                        hidden = function() return (data.animation.start.type ~= "custom" or not WeakAuras.regions[id].region.Color) end,
+                        get = function()
+                            return data.animation.start.colorR,
+                                   data.animation.start.colorG,
+                                   data.animation.start.colorB,
+                                   data.animation.start.colorA;
+                        end,
+                        set = function(info, r, g, b, a)
+                            data.animation.start.colorR = r;
+                            data.animation.start.colorG = g;
+                            data.animation.start.colorB = b;
+                            data.animation.start.colorA = a;
+                        end
+                    },
                     main_header = {
                         type = "header",
                         name = L["Main"],
@@ -2637,6 +2704,72 @@ function WeakAuras.AddOption(id, data)
                         bigStep = 3,
                         hidden = function() return (data.animation.main.type ~= "custom" or not WeakAuras.regions[id].region.Rotate) end
                     },
+                    main_use_color = {
+                        type = "toggle",
+                        name = L["Color"],
+                        order = 68.2,
+                        hidden = function() return (data.animation.main.type ~= "custom" or not WeakAuras.regions[id].region.Color) end
+                    },
+                    main_colorType = {
+                        type = "select",
+                        name = L["Type"],
+                        order = 68.5,
+                        values = anim_color_types,
+                        hidden = function() return (data.animation.main.type ~= "custom" or not WeakAuras.regions[id].region.Color) end
+                    },
+                    main_colorFunc = {
+                        type = "input",
+                        multiline = true,
+                        name = L["Custom Function"],
+                        width = "double",
+                        order = 68.7,
+                        hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.colorType ~= "custom" or not (data.animation.main.use_color and WeakAuras.regions[id].region.Color) end,
+                        get = function() return data.animation.main.colorFunc and data.animation.main.colorFunc:sub(8); end,
+                        set = function(info, v) data.animation.main.colorFunc = "return "..(v or ""); WeakAuras.Add(data); end
+                    },
+                    main_colorFuncError = {
+                        type = "description",
+                        name = function()
+                            if not(data.animation.main.colorFunc) then
+                                return "";
+                            end
+                            local _, errorString = loadstring(data.animation.main.colorFunc or "");
+                            return errorString and "|cFFFF0000"..errorString or "";
+                        end,
+                        width = "double",
+                        order = 69,
+                        hidden = function()
+                            if(data.animation.main.type ~= "custom" or data.animation.main.colorType ~= "custom" or not (data.animation.main.use_color and WeakAuras.regions[id].region.Color)) then
+                                return true;
+                            else
+                                local loadedFunction, errorString = loadstring(data.animation.main.colorFunc or "");
+                                if(errorString and not loadedFunction) then
+                                    return false;
+                                else
+                                    return true;
+                                end
+                            end
+                        end
+                    },
+                    main_color = {
+                        type = "color",
+                        name = L["Color"],
+                        width = "double",
+                        order = 69.5,
+                        hidden = function() return (data.animation.main.type ~= "custom" or not WeakAuras.regions[id].region.Color) end,
+                        get = function()
+                            return data.animation.main.colorR,
+                                   data.animation.main.colorG,
+                                   data.animation.main.colorB,
+                                   data.animation.main.colorA;
+                        end,
+                        set = function(info, r, g, b, a)
+                            data.animation.main.colorR = r;
+                            data.animation.main.colorG = g;
+                            data.animation.main.colorB = b;
+                            data.animation.main.colorA = a;
+                        end
+                    },
                     finish_header = {
                         type = "header",
                         name = L["Finish"],
@@ -2922,6 +3055,72 @@ function WeakAuras.AddOption(id, data)
                         softMax = 360,
                         bigStep = 3,
                         hidden = function() return (data.animation.finish.type ~= "custom" or not WeakAuras.regions[id].region.Rotate) end
+                    },
+                    finish_use_color = {
+                        type = "toggle",
+                        name = L["Color"],
+                        order = 88.2,
+                        hidden = function() return (data.animation.finish.type ~= "custom" or not WeakAuras.regions[id].region.Color) end
+                    },
+                    finish_colorType = {
+                        type = "select",
+                        name = L["Type"],
+                        order = 88.5,
+                        values = anim_color_types,
+                        hidden = function() return (data.animation.finish.type ~= "custom" or not WeakAuras.regions[id].region.Color) end
+                    },
+                    finish_colorFunc = {
+                        type = "input",
+                        multiline = true,
+                        name = L["Custom Function"],
+                        width = "double",
+                        order = 88.7,
+                        hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.colorType ~= "custom" or not (data.animation.finish.use_color and WeakAuras.regions[id].region.Color) end,
+                        get = function() return data.animation.finish.colorFunc and data.animation.finish.colorFunc:sub(8); end,
+                        set = function(info, v) data.animation.finish.colorFunc = "return "..(v or ""); WeakAuras.Add(data); end
+                    },
+                    finish_colorFuncError = {
+                        type = "description",
+                        name = function()
+                            if not(data.animation.finish.colorFunc) then
+                                return "";
+                            end
+                            local _, errorString = loadstring(data.animation.finish.colorFunc or "");
+                            return errorString and "|cFFFF0000"..errorString or "";
+                        end,
+                        width = "double",
+                        order = 89,
+                        hidden = function()
+                            if(data.animation.finish.type ~= "custom" or data.animation.finish.colorType ~= "custom" or not (data.animation.finish.use_color and WeakAuras.regions[id].region.Color)) then
+                                return true;
+                            else
+                                local loadedFunction, errorString = loadstring(data.animation.finish.colorFunc or "");
+                                if(errorString and not loadedFunction) then
+                                    return false;
+                                else
+                                    return true;
+                                end
+                            end
+                        end
+                    },
+                    finish_color = {
+                        type = "color",
+                        name = L["Color"],
+                        width = "double",
+                        order = 89.5,
+                        hidden = function() return (data.animation.finish.type ~= "custom" or not WeakAuras.regions[id].region.Color) end,
+                        get = function()
+                            return data.animation.finish.colorR,
+                                   data.animation.finish.colorG,
+                                   data.animation.finish.colorB,
+                                   data.animation.finish.colorA;
+                        end,
+                        set = function(info, r, g, b, a)
+                            data.animation.finish.colorR = r;
+                            data.animation.finish.colorG = g;
+                            data.animation.finish.colorB = b;
+                            data.animation.finish.colorA = a;
+                        end
                     }
                 }
             }
@@ -5108,6 +5307,7 @@ function WeakAuras.CreateFrame()
     local importexportbox = AceGUI:Create("MultiLineEditBox");
     importexportbox:SetWidth(400);
     importexportbox:SetNumLines(27);
+    importexportbox.button:Hide();
     importexport:AddChild(importexportbox);
     
     local importexportClose = CreateFrame("Button", nil, importexport.frame, "UIPanelButtonTemplate");
@@ -5133,6 +5333,7 @@ function WeakAuras.CreateFrame()
                 importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
                 importexportbox.editBox:SetScript("OnChar", function() importexportbox:SetText(displayStr); importexportbox.editBox:HighlightText(); end);
                 importexportbox.editBox:SetScript("OnMouseUp", function() importexportbox.editBox:HighlightText(); end);
+                importexportbox.editBox:SetScript("OnTextChanged", nil);
                 importexportbox:SetLabel(id.." - "..#displayStr);
                 importexportbox.button:Hide();
                 importexportbox:SetText(displayStr);
@@ -5140,7 +5341,18 @@ function WeakAuras.CreateFrame()
                 importexportbox:SetFocus();
             end
         elseif(mode == "import") then
-            --NYI
+            importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
+            importexportbox.editBox:SetScript("OnChar", nil);
+            importexportbox.editBox:SetScript("OnMouseUp", nil);
+            importexportbox.editBox:SetScript("OnTextChanged", function()
+                local str = importexportbox:GetText();
+                importexportbox:SetLabel(""..#str);
+                if(#str > 20) then
+                    WeakAuras.ImportString(str);
+                end
+            end);
+            importexportbox:SetText("");
+            importexportbox:SetFocus();
         end
     end
     
@@ -5462,7 +5674,7 @@ function WeakAuras.CreateFrame()
         moversizer:ScaleCorners(region:GetWidth(), region:GetHeight());
         
         mover.startMoving = function()
-            WeakAuras.CancelAnimation("display", data.id, true, true, true, true);
+            WeakAuras.CancelAnimation("display", data.id, true, true, true, true, true);
             mover:ClearAllPoints();
             if(data.regionType == "group") then
                 mover:SetPoint(mover.selfPoint, region, mover.anchorPoint, region.blx, region.bly);
@@ -5523,7 +5735,7 @@ function WeakAuras.CreateFrame()
         if(region:IsResizable()) then
             moversizer.startSizing = function(point)
                 mover.isMoving = true;
-                WeakAuras.CancelAnimation("display", data.id, true, true, true, true);
+                WeakAuras.CancelAnimation("display", data.id, true, true, true, true, true);
                 local rSelfPoint, rAnchor, rAnchorPoint, rXOffset, rYOffset = region:GetPoint(1);
                 region:StartSizing(point);
                 local textpoint, anchorpoint;
@@ -5856,6 +6068,37 @@ function WeakAuras.CreateFrame()
                 end);
                 containerScroll:AddChild(button);
             end
+            local importButton = AceGUI:Create("WeakAurasNewButton");
+            importButton:SetTitle(L["Import"]);
+            
+            local data = {
+                outline = false,
+                color = {1, 1, 1, 1},
+                justify = "CENTER",
+                font = "Friz Quadrata TT",
+                fontSize = 8,
+                displayText = [[
+b4vmErLxtfM
+xu5fDEn1CEn
+vmUmJyZ4hyY
+DtnEnvBEnfz
+EnfzErLxtjx
+zNL2BUrvEWv
+MxtfwDYfMyH
+jNxtLgzEnLt
+LDNx051u25L
+tXmdmY4fDE5]];
+            };
+            
+            local thumbnail = regionOptions["text"].createThumbnail(UIParent);
+            regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data);
+            thumbnail.mask:SetPoint("BOTTOMLEFT", thumbnail, "BOTTOMLEFT", 3, 3);
+            thumbnail.mask:SetPoint("TOPRIGHT", thumbnail, "TOPRIGHT", -3, -3);
+            
+            importButton:SetIcon(thumbnail);
+            importButton:SetDescription(L["Import a display from an encoded string"]);
+            importButton:SetClick(WeakAuras.ImportFromString);
+            containerScroll:AddChild(importButton);
         else
             error("An options button other than New was selected... but there are no other options buttons!");
         end
@@ -5909,6 +6152,14 @@ end
 
 function WeakAuras.ExportToString(id)
     frame.importexport:Open("export", id);
+end
+
+function WeakAuras.ImportFromString()
+    frame.importexport:Open("import");
+end
+
+function WeakAuras.CloseImportExport()
+    frame.importexport:Close();
 end
 
 function WeakAuras.NewDisplayButton(data)

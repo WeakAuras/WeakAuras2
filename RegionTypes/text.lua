@@ -73,6 +73,19 @@ local function modify(parent, region, data)
         region.customTextUpdateFrame:SetScript("OnUpdate", nil);
     end
     
+    function region:Color(r, g, b, a)
+        region.color_r = r;
+        region.color_g = g;
+        region.color_b = b;
+        region.color_a = a;
+        text:SetTextColor(r, g, b, a);
+    end
+    
+    function region:GetColor()
+        return region.color_r or data.color[1], region.color_g or data.color[2],
+               region.color_b or data.color[3], region.color_a or data.color[4];
+    end
+    
     local function UpdateTime()
         local remaining = region.expirationTime - GetTime();
         local progress = remaining / region.duration;

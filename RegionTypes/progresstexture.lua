@@ -377,6 +377,19 @@ local function modify(parent, region, data)
         background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scalex * data.backgroundOffset, scaley * data.backgroundOffset);
     end
     
+    function region:Color(r, g, b, a)
+        region.color_r = r;
+        region.color_g = g;
+        region.color_b = b;
+        region.color_a = a;
+        foreground:SetVertexColor(r, g, b, a);
+    end
+    
+    function region:GetColor()
+        return region.color_r or data.foregroundColor[1], region.color_g or data.foregroundColor[2],
+               region.color_b or data.foregroundColor[3], region.color_a or data.foregroundColor[4];
+    end
+    
     local function UpdateTime(self, elaps, inverse)
         local remaining = region.expirationTime - GetTime();
         local progress = remaining / region.duration;

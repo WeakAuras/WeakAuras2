@@ -382,6 +382,16 @@ local methods = {
             end
         end
         
+        self.frame.terribleCodeOrganizationHackTable = {};
+        
+        function self.frame.terribleCodeOrganizationHackTable.IsGroupingOrCopying()
+            return self.grouping or self.copying;
+        end
+        
+        function self.frame.terribleCodeOrganizationHackTable.SetNormalTooltip()
+            self:SetNormalTooltip();
+        end
+        
         self:SetTitle(data.id);
         self.menu = {
             {
@@ -395,9 +405,9 @@ local methods = {
                 func = self.callbacks.OnCopyClick
             },
             {
-                text = " ",
-                notClickable = 1,
+                text = L["Set tooltip description"],
                 notCheckable = 1,
+                func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, true) end
             },
             {
                 text = L["Export to string..."],
@@ -521,6 +531,10 @@ local methods = {
                 end
             end
         end
+        if(data.desc and data.desc ~= "") then
+            tinsert(namestable, " ");
+            tinsert(namestable, "|cFFFFD100\""..data.desc.."\"");
+        end
         tinsert(namestable, " ");
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
         if not(data.controlledChildren) then
@@ -577,6 +591,11 @@ local methods = {
             self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
             self:Enable();
         end
+    end,
+    ["ShowTooltip"] = function(self)
+    end,
+    ["GetGroupOrCopying"] = function(self)
+        return self.group or self.copying;
     end,
     ["SetTitle"] = function(self, title)
         self.titletext = title;
@@ -860,6 +879,9 @@ local function Constructor()
         if(WeakAuras.IsPickedMultiple() and WeakAuras.IsDisplayPicked(button.id)) then
             Show_Long_Tooltip(button, WeakAuras.MultipleDisplayTooltipDesc());
         else
+            if not(button.terribleCodeOrganizationHackTable.IsGroupingOrCopying()) then
+                button.terribleCodeOrganizationHackTable.SetNormalTooltip();
+            end
             Show_Long_Tooltip(button, button.description);
         end
     end);
@@ -930,7 +952,6 @@ local function Constructor()
     renamebox:Hide();
     
     renamebox.func = function() --[[By default, do nothing!]] end;
-    renamebox.ids = {};
     renamebox:SetScript("OnEnterPressed", function()
         local oldid = button.title:GetText();
         local newid = renamebox:GetText();
@@ -1038,6 +1059,7 @@ local function Constructor()
         view = view,
         rename = rename,
         renamebox = renamebox,
+        descbox = descbox,
         group = group,
         ungroup = ungroup,
         upgroup = upgroup,

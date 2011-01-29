@@ -1088,5 +1088,9 @@ L["Never"] = "Never"
 L["Import"] = "Import"
 L["Export"] = "Export"
 L["Export to string..."] = "Export to string..."
-L["Import from string..."] = "Import from string..."
 L["Done"] = "Done"
+
+--Added in 1.3b4
+L["Set tooltip description"] = "Set tooltip description"
+L["Import a display from an encoded string"] = "Import a display from an encoded string"
+L["Gradient"] = "Gradient"

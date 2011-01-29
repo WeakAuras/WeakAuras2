@@ -782,6 +782,9 @@ WeakAuras.anim_rotate_types = {
     wobble = L["Wobble"],
     custom = L["Custom Function"]
 };
+WeakAuras.anim_color_types = {
+    straightColor = L["Gradient"]
+};
 WeakAuras.group_types = {
     none = L["No Instance"],
     party = L["5 Man Dungeon"],

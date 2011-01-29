@@ -85,7 +85,21 @@ local function modify(parent, region, data)
     background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
     
     texture:SetTexture(texturePath);
-    texture:SetVertexColor(data.barColor[1], data.barColor[2], data.barColor[3], data.barColor[4]);
+    
+    function region:Color(r, g, b, a)
+        region.color_r = r;
+        region.color_g = g;
+        region.color_b = b;
+        region.color_a = a;
+        texture:SetVertexColor(r, g, b, a);
+    end
+    
+    function region:GetColor()
+        return region.color_r or data.barColor[1], region.color_g or data.barColor[2],
+               region.color_b or data.barColor[3], region.color_a or data.barColor[4];
+    end
+    
+    region:Color(data.barColor[1], data.barColor[2], data.barColor[3], data.barColor[4]);
     
     text:SetFont(fontPath, data.fontSize);
     text:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);

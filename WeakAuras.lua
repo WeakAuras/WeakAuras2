@@ -765,6 +765,7 @@ loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
     if(event == "ADDON_LOADED") then
         if(addon == ADDON_NAME) then
+            frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
             frame:RegisterEvent("PLAYER_TARGET_CHANGED");
             frame:RegisterEvent("UNIT_AURA");
             frame:SetScript("OnEvent", WeakAuras.HandleEvent);
@@ -910,10 +911,14 @@ function WeakAuras.ForceEvents()
 end
 
 local aura_scan_cooldowns = {};
+WeakAuras.aura_scan_cooldowns = aura_scan_cooldowns;
 local checkingScanCooldowns;
 local scanCooldownFrame = CreateFrame("frame");
 
 local checkScanCooldownsFunc = function()
+    for unit,_ in pairs(aura_scan_cooldowns) do
+        WeakAuras.ScanAuras(unit);
+    end
     wipe(aura_scan_cooldowns);
     checkingScanCooldowns = nil;
     scanCooldownFrame:SetScript("OnUpdate", nil);
@@ -923,12 +928,13 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
     if not(paused) then
         if(event == "PLAYER_TARGET_CHANGED") then
             WeakAuras.ScanAuras("target");
+        elseif(event == "PLAYER_FOCUS_CHANGED") then
+            WeakAuras.ScanAuras("target");
         elseif(event == "UNIT_AURA") then
             --This throttles aura scans to only happen at most once per frame
             if(loaded_auras[arg1]) then
                 if not(aura_scan_cooldowns[arg1]) then
                     aura_scan_cooldowns[arg1] = true;
-                    WeakAuras.ScanAuras(arg1);
                     if not(checkingScanCooldowns) then
                         checkingScanCooldowns = true;
                         scanCooldownFrame:SetScript("OnUpdate", checkScanCooldownsFunc);
@@ -937,7 +943,6 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
             elseif(loaded_auras["group"] and (arg1:sub(0, 4) == "raid" or arg1:sub(0, 5) == "party")) then
                 if not(aura_scan_cooldowns[arg1]) then
                     aura_scan_cooldowns[arg1] = true;
-                    WeakAuras.ScanAuras(arg1);
                     if not(checkingScanCooldowns) then
                         checkingScanCooldowns = true;
                         scanCooldownFrame:SetScript("OnUpdate", checkScanCooldownsFunc);
@@ -2128,7 +2133,7 @@ function WeakAuras.SetRegion(data)
                     end
                 end
                 
-                local anim_cancelled = WeakAuras.CancelAnimation("display", id, true, true, true);
+                local anim_cancelled = WeakAuras.CancelAnimation("display", id, true, true, true, true, true);
                 
                 local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
                 
@@ -2378,6 +2383,9 @@ function WeakAuras.UpdateAnimations()
         if(anim.rotateFunc and anim.region.Rotate) then
             anim.region:Rotate(anim.rotateFunc(progress, anim.startRotation, anim.rotate));
         end
+        if(anim.colorFunc and anim.region.Color) then
+            anim.region:Color(anim.colorFunc(progress, anim.startR, anim.startG, anim.startB, anim.startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA));
+        end
         if(finished) then
             if not(anim.loop) then
                 if(anim.startX) then
@@ -2397,6 +2405,11 @@ function WeakAuras.UpdateAnimations()
                 if(anim.startRotation) then
                     if(anim.region.Rotate) then
                         anim.region:Rotate(anim.startRotation);
+                    end
+                end
+                if(anim.startR and anim.startG and anim.startB and anim.startA) then
+                    if(anim.region.Color) then
+                        anim.region:Color(anim.startR, anim.startG, anim.startB, anim.startA);
                     end
                 end
                 animations[id] = nil;
@@ -2422,14 +2435,15 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
     local key = namespace..id;
     local inAnim = anim;
     local valid;
-    if(anim and anim.type == "custom" and anim.duration and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate))) then
+    if(anim and anim.type == "custom" and anim.duration and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
         valid = true;
     elseif(anim and anim.type == "preset" and anim.preset and anim_presets[anim.preset]) then
         anim = anim_presets[anim.preset];
         valid = true;
     end
     if(valid) then
-        local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation, translateFunc, alphaFunc, scaleFunc, rotateFunc;
+        local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation;
+        local startR, startG, startB, startA, translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc;
         if(animations[key]) then
             if(animations[key].type == type and not loop) then
                 return "no replace";
@@ -2444,6 +2458,14 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
             startWidth, startHeight = animations[key].startWidth, animations[key].startHeight;
             anim.rotate = anim.rotate or 0;
             startRotation = animations[key].startRotation;
+            anim.colorR = anim.colorR or 1;
+            anim.colorG = anim.colorG or 1;
+            anim.colorB = anim.colorB or 1;
+            anim.colorA = anim.colorA or 1;
+            startR = animations[key].startR;
+            startG = animations[key].startG;
+            startB = animations[key].startB;
+            startA = animations[key].startA;
         else
             anim.x = anim.x or 0;
             anim.y = anim.y or 0;
@@ -2455,6 +2477,15 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
             startWidth, startHeight = region:GetWidth(), region:GetHeight();
             anim.rotate = anim.rotate or 0;
             startRotation = region.GetRotation and region:GetRotation() or 0;
+            anim.colorR = anim.colorR or 1;
+            anim.colorG = anim.colorG or 1;
+            anim.colorB = anim.colorB or 1;
+            anim.colorA = anim.colorA or 1;
+            if(region.GetColor) then
+                startR, startG, startB, startA = region:GetColor();
+            else
+                startR, startG, startB, startA = 1, 1, 1, 1;
+            end
         end
         
         if(anim.use_translate) then
@@ -2493,6 +2524,15 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
         elseif(region.Rotate) then
             region:Rotate(startRotation);
         end
+        if(anim.use_color) then
+            if not(anim.colorType == "custom" and anim.colorFunc) then
+                anim.colorType = anim.colorType or "straightColor";
+                anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
+            end
+            colorFunc = WeakAuras.LoadFunction(anim.colorFunc);
+        elseif(region.Color) then
+            region:Color(startR, startG, startB, startA);
+        end
         
         duration = WeakAuras.ParseNumber(anim.duration) or 0;
         progress = 0;
@@ -2528,16 +2568,25 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
             startWidth = startWidth,
             startHeight = startHeight,
             startRotation = startRotation,
+            startR = startR,
+            startG = startG,
+            startB = startB,
+            startA = startA,
             dX = (anim.use_translate and anim.x),
             dY = (anim.use_translate and anim.y),
             dAlpha = (anim.use_alpha and (anim.alpha - startAlpha)),
             scaleX = (anim.use_scale and anim.scalex),
             scaleY = (anim.use_scale and anim.scaley),
             rotate = anim.rotate,
+            colorR = (anim.use_color and anim.colorR),
+            colorG = (anim.use_color and anim.colorG),
+            colorB = (anim.use_color and anim.colorB),
+            colorA = (anim.use_color and anim.colorA),
             translateFunc = translateFunc,
             alphaFunc = alphaFunc,
             scaleFunc = scaleFunc,
             rotateFunc = rotateFunc,
+            colorFunc = colorFunc,
             region = region,
             selfPoint = selfPoint,
             anchor = anchor,
@@ -2558,7 +2607,7 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
     else
         if(animations[key]) then
             if(animations[key].type ~= type or loop) then
-                WeakAuras.CancelAnimation(namespace, id, true, true, true, true);
+                WeakAuras.CancelAnimation(namespace, id, true, true, true, true, true);
             end
         end
         return false;
@@ -2575,7 +2624,7 @@ function WeakAuras.IsAnimating(namespace, id)
     end
 end
 
-function WeakAuras.CancelAnimation(namespace, id, resetPos, resetAlpha, resetScale, resetRotation, doOnFinished)
+function WeakAuras.CancelAnimation(namespace, id, resetPos, resetAlpha, resetScale, resetRotation, resetColor, doOnFinished)
     local key = namespace..id;
     local anim = animations[key];
     if(anim) then
@@ -2596,6 +2645,9 @@ function WeakAuras.CancelAnimation(namespace, id, resetPos, resetAlpha, resetSca
         end
         if(resetRotation and anim.region.Rotate) then
             anim.region:Rotate(anim.startRotation);
+        end
+        if(resetColor and anim.region.Color) then
+            anim.region:Color(anim.startR, anim.startG, anim.startB, anim.startA);
         end
         
         animations[key] = nil;
