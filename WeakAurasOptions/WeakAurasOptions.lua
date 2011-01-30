@@ -463,8 +463,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             end
             if(arg.type == "toggle" or arg.type == "tristate") then
                 options["use_"..name].width = arg.width or "double";
-            elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
-                options["use_"..name].width = "half";
             end
             if(arg.required) then
                 trigger["use_"..realname] = true;
@@ -610,7 +608,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                     name = "",
                     order = order,
                     hidden = hidden,
-                    width = "half",
+                    width = "normal",
                     image = function()
                         if(trigger["use_"..realname] and trigger[realname]) then
                             if(arg.type == "aura") then
@@ -634,6 +632,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                     name = arg.display,
                     order = order,
                     hidden = hidden,
+                    width = "double",
                     disabled = function() return not trigger["use_"..realname]; end,
                     get = function()
                         if(arg.type == "item") then
@@ -1735,6 +1734,7 @@ function WeakAuras.AddOption(id, data)
                     if(value == "sound" or value == "sound_path") then
                         PlaySoundFile(v);
                     end
+                    WeakAuras.Add(data);
                 end,
                 args = {
                     start_header = {
@@ -2001,7 +2001,9 @@ function WeakAuras.AddOption(id, data)
                         scalex = "use_scale",
                         scaley = "use_scale",
                         rotateType = "use_rotate",
-                        rotate = "use_rotate"
+                        rotate = "use_rotate",
+                        colorType = "use_color",
+                        color = "use_color"
                     }
                     if(split) then
                         local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
@@ -3739,6 +3741,31 @@ function WeakAuras.ReloadTriggerOptions(data)
             hidden = function() return not (trigger.type == "aura" and trigger.fullscan) end,
             order = 55
         },
+        useRem = {
+            type = "toggle",
+            name = L["Remaining Time"],
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            order = 56
+        },
+        remOperator = {
+            type = "select",
+            name = L["Operator"],
+            order = 57,
+            width = "half",
+            values = operator_types,
+            disabled = function() return not trigger.useRem; end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            get = function() return trigger.useRem and trigger.remOperator or nil end
+        },
+        rem = {
+            type = "input",
+            name = L["Remaining Time"],
+            order = 58,
+            width = "half",
+            disabled = function() return not trigger.useRem; end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            get = function() return trigger.useRem and trigger.rem or nil end
+        },
         useCount = {
             type = "toggle",
             name = L["Stack Count"],
@@ -5007,9 +5034,11 @@ function WeakAuras.CreateFrame()
         else
             self.data[self.field] = texturePath;
         end
-        WeakAuras.Add(self.data);
-        WeakAuras.SetIconNames(self.data);
-        WeakAuras.SetThumbnail(self.data);
+        if(type(self.data.id) == "string") then
+            WeakAuras.Add(self.data);
+            WeakAuras.SetIconNames(self.data);
+            WeakAuras.SetThumbnail(self.data);
+        end
         texturePick:UpdateList();
         local status = texturePickDropdown.status or texturePickDropdown.localstatus
         texturePickDropdown.dropdown:SetText(texturePickDropdown.list[status.selected]);
@@ -5047,7 +5076,7 @@ function WeakAuras.CreateFrame()
                 b = data.color[3] or 1,
                 a = data.color[4] or 1,
                 rotate = data.rotate,
-                discrete_rotation =    data.discrete_rotation or 0,
+                discrete_rotation = data.discrete_rotation or 0,
                 rotation = data.rotation or 0,
                 mirror = data.mirror,
                 blendMode = data.blendMode or "ADD"
@@ -5058,12 +5087,19 @@ function WeakAuras.CreateFrame()
         self.frame:Show();
         frame.window = "texture";
         local picked = false;
+        local _, givenPath
+        if(type(self.givenPath) == "string") then
+            givenPath = self.givenPath;
+        else
+            _, givenPath = next(self.givenPath);
+        end
+        WeakAuras.debug(givenPath, 3);
         for categoryName, category in pairs(texture_types) do
             if not(picked) then
                 for texturePath, textureName in pairs(category) do
-                    if(texturePath == self.givenPath) then
+                    if(texturePath == givenPath) then
                         texturePickDropdown:SetGroup(categoryName);
-                        self:Pick(self.givenPath);
+                        self:Pick(givenPath);
                         picked = true;
                         break;
                     end
@@ -5093,8 +5129,8 @@ function WeakAuras.CreateFrame()
                 if(childData) then
                     childData[texturePick.field] = texturePick.givenPath[childId];
                     WeakAuras.Add(childData);
-                    WeakAuras.SetThumbnail(self.data);
-                    WeakAuras.SetIconNames(self.data);
+                    WeakAuras.SetThumbnail(childData);
+                    WeakAuras.SetIconNames(childData);
                 end
             end
         else
@@ -6131,13 +6167,13 @@ tXmdmY4fDE5]];
             if(type(self.pickedDisplay) == "string") then
                 if(WeakAuras.GetData(self.pickedDisplay).controlledChildren) then
                     wasGroup = true;
-                else
+                elseif not(WeakAuras.IsDisplayPicked(id)) then
                     tinsert(tempGroup.controlledChildren, self.pickedDisplay);
                 end
             end
             if(wasGroup) then
                 self:PickDisplay(id);
-            else
+            elseif not(WeakAuras.IsDisplayPicked(id)) then
                 self.pickedDisplay = tempGroup;
                 displayButtons[id]:Pick();
                 tinsert(tempGroup.controlledChildren, id);
@@ -6160,6 +6196,23 @@ end
 
 function WeakAuras.CloseImportExport()
     frame.importexport:Close();
+end
+
+function WeakAuras.ConvertDisplay(data, newType)
+    local id = data.id;
+    --thumbnails[id].region:SetScript("OnUpdate", nil);
+    thumbnails[id].region:Hide();
+    thumbnails[id] = nil;
+    
+    WeakAuras.Convert(data, newType);
+    displayButtons[id]:SetViewRegion(WeakAuras.regions[id].region);
+    displayButtons[id]:Initialize();
+    displayOptions[id] = nil;
+    WeakAuras.AddOption(id, data);
+    frame:FillOptions(displayOptions[id]);
+    WeakAuras.UpdateDisplayButton(data);
+    frame.mover.moving.region = WeakAuras.regions[id].region;
+    WeakAuras.ResetMoverSizer();
 end
 
 function WeakAuras.NewDisplayButton(data)

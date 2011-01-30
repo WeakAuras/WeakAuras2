@@ -447,7 +447,26 @@ local methods = {
             self.callbacks.UpdateExpandButton();
             self:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
         else
+            local convertMenu = {};
+            for regionType, regionData in pairs(WeakAuras.regionOptions) do
+                if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= "timer" and regionType ~= data.regionType) then
+                    tinsert(convertMenu, {
+                        text = regionData.displayName,
+                        notCheckable = 1,
+                        func = function()
+                            WeakAuras.ConvertDisplay(data, regionType);
+                            WeakAuras_DropDownMenu:Hide();
+                        end
+                    });
+                end
+            end
             tinsert(self.menu, 3, {
+                text = L["Convert to..."],
+                notCheckable = 1,
+                hasArrow = true,
+                menuList = convertMenu
+            });
+            tinsert(self.menu, 4, {
                 text = L["Duplicate"],
                 notCheckable = 1,
                 func = self.callbacks.OnDuplicateClick

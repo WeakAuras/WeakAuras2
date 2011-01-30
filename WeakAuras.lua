@@ -65,9 +65,10 @@ local load_prototype = WeakAuras.load_prototype;
 local event_prototypes = WeakAuras.event_prototypes;
 
 local levelColors = {
-    [1] = "|cFF77FF77",
-    [2] = "|cFF7777FF",
-    [3] = "|cFFFF7777"
+    [0] = "|cFFFFFFFF",
+    [1] = "|cFF40FF40",
+    [2] = "|cFF6060FF",
+    [3] = "|cFFFF4040"
 };
 
 function WeakAuras.debug(msg, level)
@@ -561,15 +562,11 @@ do
     end
     
     function WeakAuras.SpellCooldownForce()
-        for id, _ in pairs(spells) do
-            WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
-        end
+        WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
     end
     
     function WeakAuras.ItemCooldownForce()
-        for id, _ in pairs(items) do
-            WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
-        end
+        WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
     end
 end
 
@@ -868,7 +865,7 @@ function WeakAuras.ScanAll()
             WeakAuras.ScanAuras(unit);
         end
     end
-    for eventName, events in pairs(loaded_events) do
+    --[[for eventName, events in pairs(loaded_events) do
         if(eventName == "COMBAT_LOG_EVENT_UNFILTERED") then
             for subeventName, subevents in pairs(events) do
                 for id, triggers in pairs(subevents) do
@@ -890,7 +887,7 @@ function WeakAuras.ScanAll()
                 end
             end
         end
-    end
+    end]]
     WeakAuras.ForceEvents();
 end
 
@@ -929,7 +926,7 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
         if(event == "PLAYER_TARGET_CHANGED") then
             WeakAuras.ScanAuras("target");
         elseif(event == "PLAYER_FOCUS_CHANGED") then
-            WeakAuras.ScanAuras("target");
+            WeakAuras.ScanAuras("focus");
         elseif(event == "UNIT_AURA") then
             --This throttles aura scans to only happen at most once per frame
             if(loaded_auras[arg1]) then
@@ -992,10 +989,10 @@ end
 function WeakAuras.ActivateEvent(id, triggernum, data)
     if(data.numAdditionalTriggers > 0) then
         if(data.region:EnableTrigger(triggernum)) then
-            data.region.active = true;
+            --data.region.active = true;
         end
     else
-        data.region.active = true;
+        --data.region.active = true;
         data.region:Expand();
     end
     WeakAuras.SetEventDynamics(id, triggernum, data);
@@ -1119,10 +1116,10 @@ function WeakAuras.EndEvent(id, triggernum, force)
     if(data) then
         if(data.numAdditionalTriggers > 0) then
             if(data.region:DisableTrigger(triggernum)) then
-                data.region.active = nil;
+                --data.region.active = nil;
             end
         else
-            data.region.active = nil;
+            --data.region.active = nil;
             data.region:Collapse();
         end
         if(timers[id] and timers[id][triggernum]) then
@@ -1306,6 +1303,7 @@ end
 
 local aura_scan_cache = {};
 function WeakAuras.ScanAuras(unit)
+    local time = GetTime();
     aura_scan_cache[unit] = aura_scan_cache[unit] or {};
     aura_scan_cache[unit].up_to_date = 0;
     
@@ -1332,6 +1330,7 @@ function WeakAuras.ScanAuras(unit)
         unit = unit == "party0" and "player" or unit;
         local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = true;
         local tooltip, debuffClass, tooltipSize;
+        local remaining, checkPassed;
         for id,triggers in pairs(aura_list) do
             for triggernum, data in pairs(triggers) do
                 local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
@@ -1371,7 +1370,7 @@ function WeakAuras.ScanAuras(unit)
                         if(data.subcount) then
                             count = tooltipSize;
                         end
-                        if(data.count(count) and data.scanFunc(name, tooltip, stealable, spellId, debuffClass)) then
+                        if(((not data.count) or data.count(count)) and data.scanFunc(name, tooltip, stealable, spellId, debuffClass)) then
                             db.tempIconCache[name] = icon;
                             WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
                             active = true;
@@ -1414,7 +1413,20 @@ function WeakAuras.ScanAuras(unit)
                 else
                     for index, checkname in pairs(data.names) do
                         name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
-                        if(name and data.count(count)) then
+                        checkPassed = false;
+                        if(name and ((not data.count) or data.count(count))) then
+                            remaining = expirationTime - time;
+                            checkPassed = true;
+                            if(data.remFunc) then
+                                if not(data.remFunc(remaining)) then
+                                    checkPassed = false;
+                                end
+                                if(remaining > data.rem) then
+                                    WeakAuras.ScheduleAuraScan(unit, time + (remaining - data.rem));
+                                end
+                            end
+                        end
+                        if(checkPassed) then
                             active = true;
                             db.tempIconCache[name] = icon;
                             if(aura_object) then
@@ -1608,6 +1620,19 @@ function WeakAuras.Rename(data, newid)
             end
         end
     end
+end
+
+function WeakAuras.Convert(data, newType)
+    local id = data.id;
+    regions[id].region:SetScript("OnUpdate", nil);
+    regions[id].region:Hide();
+    WeakAuras.EndEvent(id, 0, true);
+    
+    regions[id].region = nil;
+    regions[id] = nil;
+    
+    data.regionType = newType;
+    WeakAuras.Add(data);
 end
 
 function WeakAuras.DeepCopy(source, dest)
@@ -1859,10 +1884,14 @@ function WeakAuras.pAdd(data)
                     local countFunc, countFuncStr;
                     if(trigger.useCount) then
                         countFuncStr = function_strings.count:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
-                    else
-                        countFuncStr = function_strings.always;
+                        countFunc = WeakAuras.LoadFunction(countFuncStr);
                     end
-                    countFunc = WeakAuras.LoadFunction(countFuncStr);
+                    
+                    local remFunc, remFuncStr;
+                    if(trigger.useRem) then
+                        remFuncStr = function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0);
+                        remFunc = WeakAuras.LoadFunction(remFuncStr);
+                    end
                     
                     local group_countFunc, group_countFuncStr;
                     if(trigger.unit == "group") then
@@ -1918,6 +1947,8 @@ function WeakAuras.pAdd(data)
                     auras[id] = auras[id] or {};
                     auras[id][triggernum] = {
                         count = countFunc,
+                        remFunc = remFunc,
+                        rem = tonumber(trigger.rem) or 0,
                         group_count = group_countFunc,
                         fullscan = trigger.fullscan,
                         subcount = trigger.subcount,
@@ -2883,6 +2914,7 @@ end
 do
     local mh = GetInventorySlotInfo("MainHandSlot")
     local oh = GetInventorySlotInfo("SecondaryHandSlot")
+    local th = GetInventorySlotInfo("RangedSlot")
 
     local mh_name;
     local mh_exp;
@@ -2894,13 +2926,18 @@ do
     local oh_dur;
     local oh_icon = GetInventoryItemTexture("player", oh);
     
+    local th_name;
+    local th_exp;
+    local th_dur;
+    local th_icon = GetInventoryItemTexture("player", th);
+    
     local tenchFrame;
     local tenchTip;
     
     function WeakAuras.TenchInit()
         if not(tenchFrame) then
             tenchFrame = CreateFrame("Frame");
-            tenchFrame:RegisterEvent("UNIT_AURA");
+            tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
             
             tenchTip = WeakAuras.GetHiddenTooltip();
             
@@ -2924,10 +2961,11 @@ do
             
             local function tenchUpdate(self, event, arg1)
                 if(arg1 == "player") then
-                    local _, mh_rem, _, _, oh_rem = GetWeaponEnchantInfo();
+                    local _, mh_rem, _, _, oh_rem, _, _, th_rem = GetWeaponEnchantInfo();
                     local time = GetTime();
                     local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
                     local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
+                    local th_exp_new = th_rem and (time + (th_rem / 1000));
                     if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
                         mh_exp = mh_exp_new;
                         mh_dur = mh_rem and mh_rem / 1000;
@@ -2942,11 +2980,18 @@ do
                         oh_icon = GetInventoryItemTexture("player", oh)
                         WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
                     end
+                    if(math.abs((th_exp or 0) - (th_exp_new or 0)) > 1) then
+                        th_exp = th_exp_new;
+                        th_dur = th_rem and th_rem / 1000;
+                        th_name = th_exp and getTenchName(th) or "None";
+                        th_icon = GetInventoryItemTexture("player", th)
+                        WeakAuras.ScanEvents("THROWN_TENCH_UPDATE");
+                    end
                 end
             end
             
             tenchFrame:SetScript("OnEvent", tenchUpdate);
-            tenchUpdate("init", "UNIT_AURA", "player");
+            tenchUpdate("init", "UNIT_INVENTORY_CHANGED", "player");
         end
     end
     
@@ -2956,6 +3001,10 @@ do
     
     function WeakAuras.GetOHTenchInfo()
         return oh_exp, oh_dur, oh_name, oh_icon;
+    end
+    
+    function WeakAuras.GetThrownTenchInfo()
+        return th_exp, th_dur, th_name, th_icon;
     end
 end
 
@@ -2974,18 +3023,41 @@ do
     end
 end
 
+do
+    local scheduled_scans = {
+        cooldowns = {}
+    };
+    
+    function WeakAuras.ScheduleAuraScan(unit, fireTime)
+        scheduled_scans[unit] = scheduled_scans[unit] or {};
+        if not(scheduled_scans[unit][fireTime]) then
+            WeakAuras.debug("Scheduled aura scan for "..unit.." at "..fireTime);
+            local doScan = function()
+                WeakAuras.debug("Performing aura scan for "..unit.." at "..fireTime.." ("..GetTime()..")");
+                scheduled_scans[unit][fireTime] = nil;
+                WeakAuras.ScanAuras(unit);
+            end
+            scheduled_scans[unit][fireTime] = timer:ScheduleTimer(doScan, fireTime - GetTime() + 0.1);
+        end
+    end
+    
+    local function doCooldownScan(fireTime)
+        WeakAuras.debug("Performing cooldown scan at "..fireTime.." ("..GetTime()..")");
+        scheduled_scans.cooldowns[fireTime] = nil;
+        WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+    end
+    function WeakAuras.ScheduleCooldownScan(fireTime)
+        if not(scheduled_scans.cooldowns[fireTime]) then
+            WeakAuras.debug("Scheduled cooldown scan at "..fireTime);
+            scheduled_scans.cooldowns[fireTime] = timer:ScheduleTimer(doCooldownScan, fireTime - GetTime() + 0.1, fireTime);
+        end
+    end
+ end
+
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
     local tooltip = WeakAuras.GetHiddenTooltip();
     tooltip:SetUnitAura(unit, index, filter);
     local lines = { tooltip:GetRegions() };
-    --[[for i,v in ipairs(lines) do
-        if(v:GetObjectType() == "FontString") then
-            local text = v:GetText();
-            if(text) then
-                print(i, "-", text);
-            end
-        end
-    end]]
     local tooltipText = lines[12] and lines[12]:GetObjectType() == "FontString" and lines[12]:GetText() or "";
     local debuffType = lines[11] and lines[11]:GetObjectType() == "FontString" and lines[11]:GetText() or "";
     local found = false;

@@ -107,6 +107,16 @@ return function(progress, start, delta)
     return start + (((math.sin(angle) + 1)/2) * delta)
 end
 ]],
+    pulseColor = [[
+return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+    local angle = (progress * 2 * math.pi) - (math.pi / 2)
+    local newProgress = ((math.sin(angle) + 1)/2);
+    return r1 + (newProgress * (r2 - r1)),
+           g1 + (newProgress * (g2 - g1)),
+           b1 + (newProgress * (b2 - b1)),
+           a1 + (newProgress * (a2 - a1))
+end
+]],
     fauxspin = [[
 return function(progress, startX, startY, scaleX, scaleY)
     local angle = progress * 2 * math.pi
@@ -969,7 +979,8 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
         events = {
             "SPELL_COOLDOWN_READY",
             "SPELL_COOLDOWN_CHANGED",
-            "SPELL_COOLDOWN_STARTED"
+            "SPELL_COOLDOWN_STARTED",
+            "COOLDOWN_REMAINING_CHECK"
         },
         force_events = "SPELL_COOLDOWN_FORCE",
         name = L["Cooldown Progress (Spell)"],
@@ -981,6 +992,17 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
 local startTime, duration = WeakAuras.GetSpellCooldown(%s);
 local inverse = %s;
 ]];
+            if(trigger.use_remaining and not trigger.use_inverse) then
+                local ret2 = [[
+local expirationTime = startTime + duration
+local remaining = expirationTime - GetTime();
+local remainingCheck = %s;
+if(remaining > remainingCheck) then
+    WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+end
+]];
+                ret = ret..ret2:format(tonumber(trigger.remaining or 0));
+            end
             return ret:format(spellName, (trigger.use_inverse and "true" or "false"));
         end,
         args = {
@@ -989,7 +1011,13 @@ local inverse = %s;
                 required = true,
                 display = L["Spell"],
                 type = "spell",
-                init = "arg"
+                test = "true"
+            },
+            {
+                name = "remaining",
+                display = L["Remaining Time"],
+                type = "number",
+                enable = function(trigger) return not(trigger.use_inverse) end
             },
             {
                 name = "inverse",
@@ -1062,7 +1090,8 @@ local inverse = %s;
         events = {
             "ITEM_COOLDOWN_READY",
             "ITEM_COOLDOWN_CHANGED",
-            "ITEM_COOLDOWN_STARTED"
+            "ITEM_COOLDOWN_STARTED",
+            "COOLDOWN_REMAINING_CHECK"
         },
         force_events = "ITEM_COOLDOWN_FORCE",
         name = L["Cooldown Progress (Item)"],
@@ -1074,6 +1103,17 @@ local inverse = %s;
 local startTime, duration = WeakAuras.GetItemCooldown(%s);
 local inverse = %s;
 ]];
+            if(trigger.use_remaining and not trigger.use_inverse) then
+                local ret2 = [[
+local expirationTime = startTime + duration
+local remaining = expirationTime - GetTime();
+local remainingCheck = %s;
+if(remaining > remainingCheck) then
+    WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+end
+]];
+                ret = ret..ret2:format(tonumber(trigger.remaining or 0));
+            end
             return ret:format(itemName, (trigger.use_inverse and "true" or "false"));
         end,
         args = {
@@ -1082,7 +1122,14 @@ local inverse = %s;
                 required = true,
                 display = L["Item"],
                 type = "item",
-                init = "arg"
+                test = "true"
+            },
+            {
+                name = "remaining",
+                display = L["Remaining Time"],
+                type = "number",
+                enable = function(trigger) return not(trigger.use_inverse) end,
+                init = "remaining"
             },
             {
                 name = "inverse",
@@ -1360,13 +1407,19 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
         type = "status",
         events = {
             "MAINHAND_TENCH_UPDATE",
-            "OFFHAND_TENCH_UPDATE"
+            "OFFHAND_TENCH_UPDATE",
+            "THROWN_TENCH_UPDATE"
         },
         force_events = true,
         name = L["Weapon Enchant"],
         init = function(trigger)
             WeakAuras.TenchInit();
-            return "local weapon = '"..(trigger.weapon or "none").."'\n";
+            local ret = [[
+local weapon = '%s'
+local exists = (weapon == 'main' and WeakAuras.GetMHTenchInfo()) or (weapon == 'off' and WeakAuras.GetOHTenchInfo()) or (weapon == 'thrown' and WeakAuras.GetThrownTenchInfo())
+local inverse = %s
+]];
+            return ret:format(trigger.weapon or "none", trigger.use_inverse and "true" or "false");
         end,
         args = {
             {
@@ -1374,7 +1427,13 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
                 display = L["Weapon"],
                 type = "select",
                 values = "weapon_types",
-                test = "(weapon == 'main' and WeakAuras.GetMHTenchInfo() or weapon == 'off' and WeakAuras.GetOHTenchInfo())"
+                test = "(inverse and not exists) or (not inverse and exists)"
+            },
+            {
+                name = "inverse",
+                display = L["Inverse"],
+                type = "toggle",
+                test = "true"
             }
         },
         durationFunc = function(trigger)
@@ -1383,6 +1442,8 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
                 expirationTime, duration = WeakAuras.GetMHTenchInfo();
             elseif(trigger.weapon == "off") then
                 expirationTime, duration = WeakAuras.GetOHTenchInfo();
+            elseif(trigger.weapon == "thrown") then
+                expirationTime, duration = WeakAuras.GetThrownTenchInfo();
             end
             if(expirationTime) then
                 return duration, expirationTime;
@@ -1396,6 +1457,8 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
                 _, _, name = WeakAuras.GetMHTenchInfo();
             elseif(trigger.weapon == "off") then
                 _, _, name = WeakAuras.GetOHTenchInfo();
+            elseif(trigger.weapon == "thrown") then
+                _, _, name = WeakAuras.GetThrownTenchInfo();
             end
             return name;
         end,
@@ -1405,6 +1468,8 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
                 _, _, _, icon = WeakAuras.GetMHTenchInfo();
             elseif(trigger.weapon == "off") then
                 _, _, _, icon = WeakAuras.GetOHTenchInfo();
+            elseif(trigger.weapon == "thrown") then
+                _, _, _, icon = WeakAuras.GetThrownTenchInfo();
             end
             return icon;
         end,

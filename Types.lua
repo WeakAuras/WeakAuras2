@@ -1,4 +1,6 @@
 ﻿local L = WeakAuras.L;
+
+local LSM = LibStub("LibSharedMedia-3.0");
     
 WeakAuras.trigger_types = {
     aura = L["Aura"],
@@ -697,7 +699,8 @@ WeakAuras.string_operator_types = {
 };
 WeakAuras.weapon_types = {
     ["main"] = L["Main Hand"],
-    ["off"] = L["Off Hand"]
+    ["off"] = L["Off Hand"],
+    ["thrown"] = L["Thrown"]
 };
 WeakAuras.rune_specific_types = {
     [1] = L["Blood Rune #1"],
@@ -783,7 +786,9 @@ WeakAuras.anim_rotate_types = {
     custom = L["Custom Function"]
 };
 WeakAuras.anim_color_types = {
-    straightColor = L["Gradient"]
+    straightColor = L["Gradient"],
+    pulseColor = L["Gradient Pulse"],
+    custom = L["Custom Function"]
 };
 WeakAuras.group_types = {
     none = L["No Instance"],
@@ -923,6 +928,10 @@ for path, name in pairs(WeakAuras.sound_types) do
     if(L.sounds[path]) then
         WeakAuras.sound_types[path] = L.sounds[path]
     end
+end
+local SharedMediaSounds = LSM:HashTable("sound");
+for name, path in pairs(SharedMediaSounds) do
+    WeakAuras.sound_types[path] = name;
 end
 WeakAuras.duration_types = {
     seconds = L["Seconds"],

@@ -1094,3 +1094,9 @@ L["Done"] = "Done"
 L["Set tooltip description"] = "Set tooltip description"
 L["Import a display from an encoded string"] = "Import a display from an encoded string"
 L["Gradient"] = "Gradient"
+
+--Added in r78
+L["Gradient Pulse"] = "Gradient Pulse"
+L["Remaining Time"] = "Remaining Time"
+L["Convert to..."] = "Convert to..."
+L["Thrown"] = "Thrown"
