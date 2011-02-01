@@ -65,7 +65,7 @@ local function modify(parent, region, data)
         end
         local values = region.values;
         region.customTextUpdateFrame:SetScript("OnUpdate", function()
-            local custom = customTextFunc(values.progress, values.duration, values.name, values.icon, values.stacks);
+            local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
             values.custom = custom;
             UpdateText();
         end);

@@ -1,4 +1,58 @@
 ﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+
+-- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function
+-- to the enhance the abilities of Progress Textures.
+
+-- NOTES:
+--  Most SetValue() changes are quite equal (among compress/non-compress)
+--  (There is no GUI button for mirror_v, but mirror_h)
+--  New/Used variables
+--   region.user_x (0) - User defined center x-shift [-1, 1]
+--   region.user_y (0) - User defined center y-shift [-1, 1]
+--   region.mirror_v (false) - Mirroring along x-axis [bool]
+--   region.mirror_h (false) - Mirroring along y-axis [bool]
+--   region.cos_rotation (1) - cos(ANGLE), precalculated cos-function for given ANGLE [-1, 1]
+--   region.sin_rotation (0) - sin(ANGLE), precalculated cos-function for given ANGLE [-1, 1]
+--   region.scale (1.0) - user defined scaling [1, INF]
+--   region.full_rotation (false) - Allow full rotation [bool]
+
+
+local function ApplyTransform(x, y, region)
+  -- 1) Translate texture-coords to user-defined center
+  x = x - 0.5
+  y = y - 0.5
+  
+  -- 2) Shrink texture by 1/sqrt(2)
+  x = x * 1.4142
+  y = y * 1.4142
+  
+  -- 3) Scale texture by user-defined amount
+  x = x / region.scale_x
+  y = y / region.scale_y
+  
+  -- 4) Apply mirroring if defined
+  if region.mirror_h then
+	x = -x
+  end
+  if region.mirror_v then
+	y = -y
+  end
+  
+  -- 5) Rotate texture by user-defined value
+  --[[local x_tmp = region.cos_rotation * x - region.sin_rotation * y
+  local y_tmp = region.sin_rotation * x + region.cos_rotation * y
+  x = x_tmp
+  y = y_tmp]]
+  x, y = region.cos_rotation * x - region.sin_rotation * y, region.sin_rotation * x + region.cos_rotation * y
+  
+  -- 6) Translate texture-coords back to (0,0)
+  x = x + 0.5 + region.user_x
+  y = y + 0.5 + region.user_y
+
+  -- Return results
+  return x, y
+end
+
     
 local default = {
     foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
@@ -14,6 +68,11 @@ local default = {
     alpha = 1.0,
     foregroundColor = {1, 1, 1, 1},
     backgroundColor = {0.5, 0.5, 0.5, 0.5},
+    user_x = 0,
+    user_y = 0,
+    crop_x = 0.41,
+    crop_y = 0.41,
+    rotation = 0,
     selfPoint = "CENTER",
     anchorPoint = "CENTER",
     xOffset = 0,
@@ -72,244 +131,149 @@ local function modify(parent, region, data)
     background:SetPoint("TOPRIGHT", region, "TOPRIGHT", data.backgroundOffset, data.backgroundOffset);
     
     region.mirror_h = data.mirror;
+    region.scale_x = 1 + (data.crop_x or 0.41);
+    region.scale_y = 1 + (data.crop_y or 0.41);
+    region.rotation = data.rotation or 0;
+    region.cos_rotation = cos(region.rotation);
+    region.sin_rotation = sin(region.rotation);
+    region.user_x = -1 * (data.user_x or 0);
+    region.user_y = data.user_y or 0;
     
-    local function orientHorizontalInverse()
+    local function orientHorizontal()
         foreground:ClearAllPoints();
-        if(region.mirror_h) then
-            foreground:SetPoint("LEFT", region, "LEFT");
-        else
-            foreground:SetPoint("RIGHT", region, "RIGHT");
-        end
+        foreground:SetPoint("LEFT", region, "LEFT");
         region.orientation = "HORIZONTAL_INVERSE";
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
+				
+				local ULx, ULy = ApplyTransform(0, 0, region)
+				local LLx, LLy = ApplyTransform(0, 1, region)
+				local URx, URy = ApplyTransform(1, 0, region)
+				local LRx, LRy = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+				foreground:SetWidth(region:GetWidth() * progress);
+				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
             end
         else
             function region:SetValue(progress)
                 region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1 , 1,0 , 1-progress,1 , 1-progress,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(1-progress,1 , 1-progress,0 , 1,1 , 1,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,0 , 1,1 , 1-progress,0 , 1-progress,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(1-progress,0 , 1-progress,1 , 1,0 , 1,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
+				
+				local ULx , ULy  = ApplyTransform(0, 0, region)
+				local LLx , LLy  = ApplyTransform(0, 1, region)
+				local URx , URy  = ApplyTransform(progress, 0, region)
+				local URx_, URy_ = ApplyTransform(1, 0, region)
+				local LRx , LRy  = ApplyTransform(progress, 1, region)
+				local LRx_, LRy_ = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx , URy , LRx , LRy );
+				foreground:SetWidth(region:GetWidth() * progress);
+				background:SetTexCoord(ULx, ULy, LLx, LLy, URx_, URy_, LRx_, LRy_);
             end
         end
     end
-    local function orientHorizontal()
+    local function orientHorizontalInverse()
         foreground:ClearAllPoints();
-        if(region.mirror_h) then
-            foreground:SetPoint("RIGHT", region, "RIGHT");
-        else
-            foreground:SetPoint("LEFT", region, "LEFT");
-        end
+        foreground:SetPoint("RIGHT", region, "RIGHT");
         region.orientation = "HORIZONTAL";
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
+				
+				local ULx, ULy = ApplyTransform(0, 0, region)
+				local LLx, LLy = ApplyTransform(0, 1, region)
+				local URx, URy = ApplyTransform(1, 0, region)
+				local LRx, LRy = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+				foreground:SetWidth(region:GetWidth() * progress);
+				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
             end
         else
             function region:SetValue(progress)
                 region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(progress,1 , progress,0 , 0,1 , 0,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,1 , 0,0 , progress,1 , progress,0);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(progress,0 , progress,1 , 0,0 , 0,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,0 , 0,1 , progress,0 , progress,1);
-                        foreground:SetWidth(region:GetWidth() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
-            end
-        end
-    end
-    local function orientVerticalInverse()
-        foreground:ClearAllPoints();
-        if(region.mirror_v) then
-            foreground:SetPoint("BOTTOM", region, "BOTTOM");
-        else
-            foreground:SetPoint("TOP", region, "TOP");
-        end
-        region.orientation = "VERTICAL_INVERSE";
-        if(data.compress) then
-            function region:SetValue(progress)
-                region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
-            end
-        else
-            function region:SetValue(progress)
-                region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,progress , 1,0 , 0,progress , 0,0);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,progress , 0,0 , 1,progress , 1,0);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,0 , 1,progress , 0,0 , 0,progress);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,0 , 0,progress , 1,0 , 1,progress);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
+				
+				local ULx , ULy  = ApplyTransform(1-progress, 0, region)
+				local ULx_, ULy_ = ApplyTransform(0, 0, region)
+				local LLx , LLy  = ApplyTransform(1-progress, 1, region)
+				local LLx_, LLy_ = ApplyTransform(0, 1, region)
+				local URx , URy  = ApplyTransform(1, 0, region)
+				local LRx , LRy  = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx , ULy , LLx , LLy , URx, URy, LRx, LRy);
+				foreground:SetWidth(region:GetWidth() * progress);
+				background:SetTexCoord(ULx_, ULy_, LLx_, LLy_, URx, URy, LRx, LRy);
             end
         end
     end
     local function orientVertical()
         foreground:ClearAllPoints();
-        if(region.mirror_v) then
-            foreground:SetPoint("TOP", region, "TOP");
-        else
-            foreground:SetPoint("BOTTOM", region, "BOTTOM");
-        end
-        region.orientation = "VERTICAL";
+        foreground:SetPoint("BOTTOM", region, "BOTTOM");
+        region.orientation = "VERTICAL_INVERSE";
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
+				
+				
+				local ULx, ULy = ApplyTransform(0, 0, region)
+				local LLx, LLy = ApplyTransform(0, 1, region)
+				local URx, URy = ApplyTransform(1, 0, region)
+				local LRx, LRy = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+				foreground:SetHeight(region:GetHeight() * progress);
+				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
             end
         else
             function region:SetValue(progress)
                 region.progress = progress;
-                if(region.mirror_v) then
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1 , 1,1-progress , 0,1 , 0,1-progress);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-                    else
-                        foreground:SetTexCoord(0,1 , 0,1-progress , 1,1 , 1,1-progress);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-                    end
-                else
-                    if(region.mirror_h) then
-                        foreground:SetTexCoord(1,1-progress , 1,1 , 0,1-progress , 0,1);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-                    else
-                        foreground:SetTexCoord(0,1-progress , 0,1 , 1,1-progress , 1,1);
-                        foreground:SetHeight(region:GetHeight() * progress);
-                        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-                    end
-                end
+				
+				local ULx , ULy  = ApplyTransform(0, 1-progress, region)
+				local ULx_, ULy_ = ApplyTransform(0, 0, region)
+				local LLx , LLy  = ApplyTransform(0, 1, region)
+				local URx , URy  = ApplyTransform(1, 1-progress, region)
+				local URx_, URy_ = ApplyTransform(1, 0, region)
+				local LRx , LRy  = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+				foreground:SetHeight(region:GetHeight() * progress);
+				background:SetTexCoord(ULx_, ULy_, LLx, LLy, URx_, URy_, LRx, LRy);
+            end
+        end
+    end
+    local function orientVerticalInverse()
+        foreground:ClearAllPoints();
+        foreground:SetPoint("TOP", region, "TOP");
+        region.orientation = "VERTICAL";
+        if(data.compress) then
+            function region:SetValue(progress)
+                region.progress = progress;
+				
+				
+				local ULx, ULy = ApplyTransform(0, 0, region)
+				local LLx, LLy = ApplyTransform(0, 1, region)
+				local URx, URy = ApplyTransform(1, 0, region)
+				local LRx, LRy = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+				foreground:SetHeight(region:GetHeight() * progress);
+				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+            end
+        else
+            function region:SetValue(progress)
+                region.progress = progress;
+				
+				local ULx , ULy  = ApplyTransform(0, 0, region)
+				local LLx , LLy  = ApplyTransform(0, progress, region)
+				local LLx_, LLy_ = ApplyTransform(0, 1, region)
+				local URx , URy  = ApplyTransform(1, 0, region)
+				local LRx , LRy  = ApplyTransform(1, progress, region)
+				local LRx_, LRy_ = ApplyTransform(1, 1, region)
+				
+				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+				foreground:SetHeight(region:GetHeight() * progress);
+				background:SetTexCoord(ULx, ULy, LLx_, LLy_, URx, URy, LRx_, LRy_);
             end
         end
     end
@@ -335,9 +299,9 @@ local function modify(parent, region, data)
             region.mirror_h = data.mirror;
         end
         if(region.mirror_h) then
-            if(data.orientation == "HORIZONTAL") then
+            if(data.orientation == "HORIZONTAL_INVERSE") then
                 foreground:SetPoint("RIGHT", region, "RIGHT");
-            elseif(data.orientation == "HORIZONTAL_INVERSE") then
+            elseif(data.orientation == "HORIZONTAL") then
                 foreground:SetPoint("LEFT", region, "LEFT");
             end
         else
@@ -350,9 +314,9 @@ local function modify(parent, region, data)
         if(scaley < 0) then
             region.mirror_v = true;
             scaley = scaley * -1;
-            if(data.orientation == "VERTICAL") then
+            if(data.orientation == "VERTICAL_INVERSE") then
                 foreground:SetPoint("TOP", region, "TOP");
-            elseif(data.orientation == "VERTICAL_INVERSE") then
+            elseif(data.orientation == "VERTICAL") then
                 foreground:SetPoint("BOTTOM", region, "BOTTOM");
             end
         else
@@ -375,6 +339,17 @@ local function modify(parent, region, data)
         end
         background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * scalex * data.backgroundOffset, -1 * scaley * data.backgroundOffset);
         background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scalex * data.backgroundOffset, scaley * data.backgroundOffset);
+    end
+    
+    function region:Rotate(angle)
+        region.rotation = angle or 0;
+        region.cos_rotation = cos(region.rotation);
+        region.sin_rotation = sin(region.rotation);
+        region:SetValue(region.progress);
+    end
+    
+    function region:GetRotation()
+        return region.rotation;
     end
     
     function region:Color(r, g, b, a)

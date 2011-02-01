@@ -1100,3 +1100,9 @@ L["Gradient Pulse"] = "Gradient Pulse"
 L["Remaining Time"] = "Remaining Time"
 L["Convert to..."] = "Convert to..."
 L["Thrown"] = "Thrown"
+
+--Added in 1.3.0
+L["Re-center X"] = "Re-center X"
+L["Re-center Y"] = "Re-center Y"
+L["Crop X"] = "Crop X"
+L["Crop Y"] = "Crop Y"

@@ -1262,8 +1262,9 @@ local onCooldown = duration > 1.51;
             local ret = [[
 local totemType = %i;
 local _, totemName, startTime, duration = GetTotemInfo(totemType);
+local inverse = %s;
 ]]
-            return ret:format(trigger.totemType);
+            return ret:format(trigger.totemType, trigger.use_inverse and "true" or "false");
         end,
         args = {
             {
@@ -1280,8 +1281,14 @@ local _, totemName, startTime, duration = GetTotemInfo(totemType);
                 init = "arg"
             },
             {
+                name = "inverse",
+                display = L["Inverse"],
+                type = "toggle",
+                test = "true"
+            },
+            {
                 hidden = true,
-                test = "startTime ~= 0"
+                test = "(inverse and startTime == 0) or (startTime ~= 0 and not inverse)"
             }
         },
         durationFunc = function(trigger)

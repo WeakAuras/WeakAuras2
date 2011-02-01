@@ -1,4 +1,4 @@
-local ADDON_NAME = "WeakAuras";
+﻿local ADDON_NAME = "WeakAuras";
 local versionString = WeakAuras.versionString;
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end});
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers);
@@ -1603,8 +1603,10 @@ function WeakAuras.Rename(data, newid)
     regions[oldid] = nil;
     auras[newid] = auras[oldid];
     auras[oldid] = nil;
+    loaded_auras[oldid] = nil;
     events[newid] = events[oldid];
     events[oldid] = nil;
+    loaded_events[oldid] = nil;
     loaded[newid] = loaded[oldid];
     loaded[oldid] = nil;
     db.displays[newid] = db.displays[oldid];
@@ -2959,39 +2961,41 @@ do
                 return "Unknown";
             end
             
-            local function tenchUpdate(self, event, arg1)
-                if(arg1 == "player") then
-                    local _, mh_rem, _, _, oh_rem, _, _, th_rem = GetWeaponEnchantInfo();
-                    local time = GetTime();
-                    local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
-                    local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
-                    local th_exp_new = th_rem and (time + (th_rem / 1000));
-                    if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
-                        mh_exp = mh_exp_new;
-                        mh_dur = mh_rem and mh_rem / 1000;
-                        mh_name = mh_exp and getTenchName(mh) or "None";
-                        mh_icon = GetInventoryItemTexture("player", mh)
-                        WeakAuras.ScanEvents("MAINHAND_TENCH_UPDATE");
-                    end
-                    if(math.abs((oh_exp or 0) - (oh_exp_new or 0)) > 1) then
-                        oh_exp = oh_exp_new;
-                        oh_dur = oh_rem and oh_rem / 1000;
-                        oh_name = oh_exp and getTenchName(oh) or "None";
-                        oh_icon = GetInventoryItemTexture("player", oh)
-                        WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
-                    end
-                    if(math.abs((th_exp or 0) - (th_exp_new or 0)) > 1) then
-                        th_exp = th_exp_new;
-                        th_dur = th_rem and th_rem / 1000;
-                        th_name = th_exp and getTenchName(th) or "None";
-                        th_icon = GetInventoryItemTexture("player", th)
-                        WeakAuras.ScanEvents("THROWN_TENCH_UPDATE");
-                    end
+            local function tenchUpdate()
+                local _, mh_rem, _, _, oh_rem, _, _, th_rem = GetWeaponEnchantInfo();
+                local time = GetTime();
+                local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
+                local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
+                local th_exp_new = th_rem and (time + (th_rem / 1000));
+                if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
+                    mh_exp = mh_exp_new;
+                    mh_dur = mh_rem and mh_rem / 1000;
+                    mh_name = mh_exp and getTenchName(mh) or "None";
+                    mh_icon = GetInventoryItemTexture("player", mh)
+                    WeakAuras.ScanEvents("MAINHAND_TENCH_UPDATE");
+                end
+                if(math.abs((oh_exp or 0) - (oh_exp_new or 0)) > 1) then
+                    oh_exp = oh_exp_new;
+                    oh_dur = oh_rem and oh_rem / 1000;
+                    oh_name = oh_exp and getTenchName(oh) or "None";
+                    oh_icon = GetInventoryItemTexture("player", oh)
+                    WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
+                end
+                if(math.abs((th_exp or 0) - (th_exp_new or 0)) > 1) then
+                    th_exp = th_exp_new;
+                    th_dur = th_rem and th_rem / 1000;
+                    th_name = th_exp and getTenchName(th) or "None";
+                    th_icon = GetInventoryItemTexture("player", th)
+                    WeakAuras.ScanEvents("THROWN_TENCH_UPDATE");
                 end
             end
             
-            tenchFrame:SetScript("OnEvent", tenchUpdate);
-            tenchUpdate("init", "UNIT_INVENTORY_CHANGED", "player");
+            tenchFrame:SetScript("OnEvent", function(self, event, arg1)
+                if(arg1 == "player") then
+                    timer:ScheduleTimer(tenchUpdate, 0.1);
+                end
+            end);
+            tenchUpdate();
         end
     end
     
