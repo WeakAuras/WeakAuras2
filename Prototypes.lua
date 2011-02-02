@@ -383,7 +383,9 @@ WeakAuras.event_prototypes = {
     ["Combo Points"] = {
         type = "status",
         events = {
-            "UNIT_COMBO_POINTS"
+            "UNIT_COMBO_POINTS",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
         },
         force_events = true,
         name = L["Combo Points"],

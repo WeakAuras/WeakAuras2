@@ -695,7 +695,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
                             test = "(";
                             local any = false;
                             for value, _ in pairs(trigger[name].multi) do
-                                test = test..name.."=="..(tonumber(value) or "'"..value.."'").." or ";
+                                test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
                                 any = true;
                             end
                             if(any) then
@@ -706,7 +706,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
                             test = test..")";
                         elseif(trigger["use_"..name]) then
                             local value = trigger[name].single;
-                            test = trigger[name].single and "("..name.."=="..(tonumber(value) or "'"..value.."'")..")";
+                            test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
                         end
                     elseif(arg.type == "toggle") then
                         if(trigger["use_"..name]) then
@@ -720,7 +720,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
                         test = "("..arg.test:format(trigger[name])..")";
                     elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
                         if(trigger[name.."_operator"] == "==") then
-                            test = "("..name.."=='"..trigger[name].."')";
+                            test = "("..name.."==\""..trigger[name].."\")";
                         else
                             test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
                         end
@@ -728,7 +728,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
                         if(type(trigger[name]) == "table") then
                             trigger[name] = "error";
                         end
-                        test = "("..name..(trigger[name.."_operator"] or "==")..(number or "'"..(trigger[name] or "").."'")..")";
+                        test = "("..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
                     end
                     if(arg.required) then
                         tinsert(required, test);
