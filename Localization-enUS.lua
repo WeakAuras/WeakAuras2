@@ -1106,3 +1106,6 @@ L["Re-center X"] = "Re-center X"
 L["Re-center Y"] = "Re-center Y"
 L["Crop X"] = "Crop X"
 L["Crop Y"] = "Crop Y"
+
+--Added in 1.3.1
+L["Name"] = "Name"

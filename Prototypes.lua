@@ -1846,7 +1846,7 @@ WeakAuras.dynamic_texts = {
     ["%%n"] = {
         unescaped = "%n",
         name = L["Name"],
-        value = "name",
+        value = "name"
     },
     ["%%i"] = {
         unescaped = "%i",

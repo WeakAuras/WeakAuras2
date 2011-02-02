@@ -17,8 +17,8 @@ L["Party"] = "Grupo"
 L["At Least One Enemy"] = "Como Mínimo un Enemigo"
 L["Lower Than Tank"] = "Menor Que el Tanque"
 L["Higher Than Tank"] = "Mayor Que el Tanque"
-L["Tanking But Not Highest"] = "Tanqueando pero no el mas Alto"
-L["Tanking And Highest"] = "Tanqueando y el mas Alto"
+L["Tanking But Not Highest"] = "Tanqueando pero no el mas alto"
+L["Tanking And Highest"] = "Tanqueando y el más alto"
 L["Death Knight"] = "Death Knight"
 L["Druid"] = "Druida"
 L["Hunter"] = "Cazador"
@@ -35,7 +35,7 @@ L["Frost"] = "Escarcha"
 L["Unholy"] = "Profano"
 L["Humanoid"] = "Humanoide"
 L["Bear"] = "Oso"
-L["Aquatic"] = "Acuatico"
+L["Aquatic"] = "Acuático"
 L["Cat"] = "Gato"
 L["Travel"] = "Viaje"
 L["Moonkin/Tree/Flight(Feral)"] = "Moonkin/Árbol/Volar(Feroz)"
@@ -110,11 +110,11 @@ L["Health"] = "Salud"
 L["Mana"] = "Mana"
 L["Rage"] = "Rabia"
 L["Focus"] = "Foco"
-L["Energy"] = "Vigor"
+L["Energy"] = "Energía"
 L["Runic Power"] = "Poder Rúnico"
 L["Absorb"] = "Absorción"
 L["Block"] = "Bloqueo"
-L["Deflect"] = "Deflejar"
+L["Deflect"] = "Desviar"
 L["Dodge"] = "Esquivar"
 L["Evade"] = "Evadir"
 L["Immune"] = "Inmune"
@@ -160,7 +160,7 @@ L["Custom"] = "Personalizado"
 L["Automatic"] = "Automático"
 L["Up"] = "Arriba"
 L["Down"] = "Abajo"
-L["Preset"] = "Por Defenco"
+L["Preset"] = "Por Defecto"
 L["Circle"] = "Círculo"
 L["Spiral"] = "Espiral"
 L["Spiral In And Out"] = "Espiral de Dentro a Fuera"
@@ -171,17 +171,17 @@ L["Spin"] = "Girar"
 L["Flip"] = "Voltear"
 L["Back and Forth"] = "De Atrás a Adelante"
 L["Wobble"] = "Temblar"
-L["No Instance"] = "Instance"
+L["No Instance"] = "Fuera de Instancias"
 L["5 Man Dungeon"] = "Mazmorra de 5 Jugadores"
 L["10 Man Raid"] = "Banda de 10 Jugadores"
 L["25 Man Raid"] = "Banda de 25 Jugadores"
 L["Battleground"] = "Campo de Batalla"
 L["Arena"] = "Arena"
 L["Heroic"] = "Heroico"
-L["Slide from Top"] = ""
-L["Slide from Left"] = "Arrastrar De la Izquierda"
-L["Slide from Right"] = "Arrastrar De la Derecha"
-L["Slide from Bottom"] = "Arrastrar De Abajo"
+L["Slide from Top"] = "Arrastrar Desde Arriba"
+L["Slide from Left"] = "Arrastrar Desde la Izquierda"
+L["Slide from Right"] = "Arrastrar Desde la Derecha"
+L["Slide from Bottom"] = "Arrastrar Desde Abajo"
 L["Fade In"] = "Aparecer"
 L["Grow"] = "Crecer"
 L["Shrink"] = "Encojerse"
@@ -202,7 +202,7 @@ L["Guild"] = "Hermandad"
 L["Officer"] = "Oficial"
 L["Party"] = "Grupo"
 L["Raid"] = "Banda"
-L["Boss Emote"] = "Jefe - Emocion"
+L["Boss Emote"] = "Jefe - Emoción"
 L["Raid Warning"] = "Alerta de Banda"
 L["Say"] = "Decir"
 L["Whisper"] = "Susurro"
@@ -214,9 +214,9 @@ L["Unit"] = "Unidad"
 L["Health (%)"] = "Vida (%)"
 L["Mana (%)"] = "Mana (%)"
 L["Unit Exists"] = "Unidad Existe"
-L["Power"] = "Vigor"
-L["Power Type"] = "Tipo de Vigor"
-L["Power (%)"] = "Vigor  (%)"
+L["Power"] = "Energía"
+L["Power Type"] = "Tipo de Energía"
+L["Power (%)"] = "Energía  (%)"
 L["Combat Log"] = "Registro de Combate"
 L["Source Unit"] = "Unidad Origen"
 L["Source Name"] = "Nombre del Origen"
@@ -470,7 +470,7 @@ L["Icon Info"] = "Información del Icono"
 L["Duration Info"] = "Información de Duración"
 
 --UI Tooltips
-L["Not all children have the same value for this option"] = "No todos los descendientes contienen la misma configuración."
+L["Not all children have the same value for this option"] = "No todos los hijos contienen la misma configuración."
 L["The duration of the animation in seconds."] = "Duración de la animación (en segundos)."
 L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "Ignorar animaciones de inicio y final: la animación principal se repetirá hasta que el aura se oculte."
 L["Animation relative duration description"] = [[
@@ -499,7 +499,7 @@ L["The type of trigger"] = "Tipo de Activador"
 L["This condition will not be tested"] = "Esta condición se ignorará."
 L["This display will only show when |cFFFF0000 Not %s"] = "Ésta aura solo se mostrará cuando |cFFFF0000 No %s"
 L["This display will only show when |cFF00FF00%s"] = "Ésta aura solo se mostrará cuando |cFF00FF00%s"
-L["The children of this group have different display types, so their display options cannot be set as a group."] = "No todos los descendientes contienen la misma configuración, así que no los puedes configurar bajo el mismo perfil."
+L["The children of this group have different display types, so their display options cannot be set as a group."] = "No todos los hijos contienen la misma configuración, así que no los puedes configurar bajo el mismo perfil."
 L["Expand all loaded displays"] = "Desplegar todas las auras"
 L["Collapse all loaded displays"] = "Plegar todas las auras"
 L["Toggle the visibility of all loaded displays"] = "Alterar la visibilidad de todas las auras cargadas"
@@ -520,8 +520,8 @@ L["Shows the remaining or expended time for an aura or timed event"] = "Muestra 
 L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "Muestra una (o más) lineas de texto"
 L["This display is not currently loaded"] = "Ésta aura NO está activa"
 L["This display is currently loaded"] = "Ésta aura está activa"
-L["Hide this group's children"] = "Esconder descendientes"
-L["Show this group's children"] = "Mostrar descendientes"
+L["Hide this group's children"] = "Esconder hijos"
+L["Show this group's children"] = "Mostrar hijos"
 L["Deletes this display - |cFF8080FFShift|r must be held down while clicking"] = "Eliminar aura - Pulsa |cFF8080FFShift|r a la vez (por seguridad)"
 L["Toggle the visibility of this display"] = "Modifica la visibilidad del aura"
 L["Copy settings from another display"] = "Copiar configuración de otra aura"
@@ -530,7 +530,7 @@ L["Put this display in a group"] = "Poner aura dentro de un grupo"
 L["Remove this display from its group"] = "Sacar éste aura del grupo"
 L["Move this display up in its group's order"] = "Mover arriba (dentro del grupo)"
 L["Move this display down in its group's order"] = "Mover abajo (dentro del grupo)"
-L["Expansion is disabled because this group has no children"] = "No se puede expandir un grupo que no contenga descendientes!"
+L["Expansion is disabled because this group has no children"] = "No se puede expandir un grupo que no contenga hijos!"
 L["Add a new display"] = "Nueva aura"
 L["Enter an aura name, partial aura name, or spell id"] = "Introduce el nombre del aura (total o parcial), o el identificador del aura"
 L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "Prevenir que el temporizador siga contando cuando el aura se refresca. Ten cuidado, pueden aparecer problemas si usas múltiples auras con múltiples duraciones."
@@ -544,7 +544,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 ]]
 L["Custom trigger event tooltip"] = [[
 Escoje qué eventos quieres que chequeen el disparador personalizado.
-Multiple events can be specified using commas or spaces.
+Múltiples eventos pueden ser especificados, sepáralos con comas o espacios.
 
 |cFF4444FFPor Ejemplo:|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
@@ -552,7 +552,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 L["Custom untrigger event tooltip"] = [[
 Escoje qué eventos quieres que chequeen el disparador personalizado.
 Puede diferir de los eventos definidos por el disparador.
-Multiple events can be specified using commas or spaces.
+Múltiples eventos pueden ser especificados, sepáralos con comas o espacios.
 
 |cFF4444FFPor Ejemplo:|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
@@ -562,10 +562,10 @@ L["Multiselect ignored tooltip"] = [[
 Ésta opción no será usada al determinar cuándo se mostrará el aura]]
 L["Multiselect single tooltip"] = [[
 |cFF777777Ignorado|r - |cFF00FF00Único|r - |cFF777777Múltiple|r
-Only a single matching value can be picked]]
+Sólo un valor coincidente puede ser escogido.]]
 L["Multiselect multiple tooltip"] = [[
 |cFF777777Ignorado|r - |cFF777777Único|r - |cFF00FF00Múltiple|r
-Cualquier combinación de números es posible.]]
+Cualquier combinación de valores es posible.]]
 
 --Sound names - low priority for localization
 L.sounds = {
@@ -993,16 +993,124 @@ L.textures["PowerAuras Separated"] = {
 }
 L["PowerAuras Words"] = "PowerAuras Words"
 L.textures["PowerAuras Words"] = {
-    [WeakAuras.PowerAurasPath.."Aura20"] = "Vigor",
-    [WeakAuras.PowerAurasPath.."Aura37"] = "Mermado",
-    [WeakAuras.PowerAurasPath.."Aura38"] = "Aturdido",
-    [WeakAuras.PowerAurasPath.."Aura39"] = "Silenciado",
-    [WeakAuras.PowerAurasPath.."Aura40"] = "Inmovilizado",
-    [WeakAuras.PowerAurasPath.."Aura41"] = "Desdorientado",
-    [WeakAuras.PowerAurasPath.."Aura42"] = "Deshechizar",
-    [WeakAuras.PowerAurasPath.."Aura43"] = "Peligro",
-    [WeakAuras.PowerAurasPath.."Aura44"] = "Beneficio"
+    [WeakAuras.PowerAurasPath.."Aura20"] = "Power",
+    [WeakAuras.PowerAurasPath.."Aura37"] = "Slow",
+    [WeakAuras.PowerAurasPath.."Aura38"] = "Stun",
+    [WeakAuras.PowerAurasPath.."Aura39"] = "Silence",
+    [WeakAuras.PowerAurasPath.."Aura40"] = "Root",
+    [WeakAuras.PowerAurasPath.."Aura41"] = "Disorient",
+    [WeakAuras.PowerAurasPath.."Aura42"] = "Dispell",
+    [WeakAuras.PowerAurasPath.."Aura43"] = "Danger",
+    [WeakAuras.PowerAurasPath.."Aura44"] = "Buff"
 }
 
 -- Errors - Low priority for localization
 L["This region of type \"%s\" has no configuration options."] = "Tu región \"%s\" no ha sido traducida aun... lo cual no tendría sentido, lo acabo de traducir :)"
+
+
+--Added in r73
+L["Alternate Power"] = "Energía Alternativa"
+L["From"] = "Desde"
+L["Copy settings from..."] = "Copiar configuraci'on desde..."
+L["Close"] = "Cerrar"
+L["Delete children and group"] = "Eliminar grupo (incluyendo hijos)"
+L["Creating options: "] = "Crear opciones: "
+L["Creating buttons: "] = "Crear pulsadores: "
+L["Duplicate"] = "Duplicar"
+L["Add to new Group"] = "Añadir al nuevo Grupo"
+L["Add to new Dynamic Group"] = "Añadir al nuevo Grupo Dinámico"
+L["Delete all"] = "Eliminar todo"
+L["Multiple Displays"] = "Múltiples auras"
+L["Temporary Group"] = "Grupo Temporal"
+L["Progress"] = "Progreso"
+L["Total"] = "Total"
+L["Add Dynamic Text"] = "Añadir Texto Dinámico"
+L["Blizzard Combat Text"] = "Texto de Combate de Blizzard"
+L["Chat Frame"] = "Pantalla de Chat"
+L["Use Full Scan (High CPU)"] = "Escaneo Total (carga el procesador)"
+L["Player Name"] = "Nombre del Jugador"
+L["Player Class"] = "Clase del Jugador"
+L["Talent Specialization"] = "Especialización de Talentos"
+L["Player Level"] = "Nivel del Personaje"
+L["Zone"] = "Zona"
+L["Instance Type"] = "Tipo de Instancia"
+L["Dungeon Difficulty"] = "Dificultad de la Mazmorra"
+L["Cast"] = "Lanzar Hechizo"
+L["Cast Type"] = "Tipo de Hechizo"
+L["Channel (Spell)"] = "Canalizar Hechizo"
+L["Interruptible"] = "Interrumpible"
+L["Tooltip"] = "Descriptión emergente"
+L["Stealable"] = "Puede Robarse"
+L["Spell ID"] = "ID de Hechizo"
+L["Debuff Type"] = "Tipo de Perjuicio"
+L["Magic"] = "Magia"
+L["Curse"] = "Maldición"
+L["Disease"] = "Enfermedad"
+L["Poison"] = "Veneno"
+L["Enrage"] = "Enfurecido"
+L["Use tooltip \"size\" instead of stacks"] = "Usa \"tamaño\" en vez de acumulaciones"
+L["Paused"] = "Pausado"
+
+L["By |cFF69CCF0Mirrored|r of Dragonmaw(US) Horde"] = "Por |cFF69CCF0Mirrored|r de la Hodra de Dragonmaw(USA)"
+L["Click to close configuration"] = "Clic para cerrar la configuración"
+L["Click to open configuration"] = "Clic para abrir la configuración"
+L["Shift-Click to resume"] = "Shift-Clic para continuar"
+L["Shift-Click to pause"] = "Shift-Click para pausar"
+L["Right-click for more options"] = "Clic derecho para más opciones"
+L["Control-click to select multiple displays"] = "Control-clic para seleccionar múltiples auras"
+L["Shift-click to create chat link"] = "Shift-clic para crear un |cFF8800FF[Link en el Chat]"
+L["Requesting display information"] = "Pidiendo información del aura a %s..."
+L["Receiving display information"] = "Recibiendo información de aura desde %s..."
+
+L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "Muestra una o varias lineas de texto, capaz de contener información cambiante como acumulaciones y/o progresos"
+
+L["Requested display does not exist"] = "El aura pedida no existe"
+L["Requested display not authorized"] = "El aura pedida no está autorizada"
+L["Version error recevied lower"] = "Éste aura es incompatible con tu versión de WeakAuras - se creó con la versión %s y tu tienes la versión %s. Pídele que se baje la última versión de WeakAuras"
+L["Version error recevied higher"] = "Éste aura es incompatible con tu versión de WeakAuras - se creó con la versión %s pero tu tienes la versión %s. Bájate la última versión de WeakAuras"
+L["Transmission error"] = "Error de transmisión"
+
+L["Shapes"] = "Formas"
+
+L.textures["Shapes"] = {
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth"] = "Smooth Circle",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth_Border"] = "Smooth Circle with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Squirrel"] = "Spiralled Circle",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Squirrel_Border"] = "Spiralled Circle with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_White"] = "Circle",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_White_Border"] = "Circle with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth"] = "Smooth Square",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border"] = "Smooth Square with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border2"] = "Smooth Square with Border 2",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel"] = "Spiralled Square",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel_Border"] = "Spiralled Square with Border",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White"] = "Square",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
+}
+
+--Added in r74
+L["Never"] = "Nunca"
+L["Import"] = "Importar"
+L["Export"] = "Exportar"
+L["Export to string..."] = "Exportar como texto cifrado..."
+L["Done"] = "Finalizado"
+
+--Added in 1.3b4
+L["Set tooltip description"] = "Personalizar definición"
+L["Import a display from an encoded string"] = "Importar un aura desde un texto cifrado"
+L["Gradient"] = "Degradado"
+
+--Added in r78
+L["Gradient Pulse"] = "Degradado de Pulso"
+L["Remaining Time"] = "Tiempo Restante"
+L["Convert to..."] = "Convertir a..."
+L["Thrown"] = "Arma Arrojadiza"
+
+--Added in 1.3.0
+L["Re-center X"] = "Re-centrar X"
+L["Re-center Y"] = "Re-centrar Y"
+L["Crop X"] = "Cortar X"
+L["Crop Y"] = "Cortar Y"
+
+--Added in 1.3.1
+L["Name"] = "Nombre"

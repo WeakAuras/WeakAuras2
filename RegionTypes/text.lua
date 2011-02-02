@@ -32,7 +32,7 @@ local function modify(parent, region, data)
     local text = region.text;
     
     local fontPath = SharedMedia:Fetch("font", data.font);
-    text:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or nil);
+    text:SetFont(fontPath, data.fontSize <= 25 and data.fontSize or 25, data.outline and "OUTLINE" or nil);
     text:SetTextHeight(data.fontSize);
     text:SetText(data.displayText);
     text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
@@ -59,7 +59,7 @@ local function modify(parent, region, data)
     end
     
     if(data.displayText:find("%%c") and data.customText) then
-        customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
         if not(region.customTextUpdateFrame) then
             region.customTextUpdateFrame = CreateFrame("frame");
         end
