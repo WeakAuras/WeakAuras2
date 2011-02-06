@@ -991,7 +991,8 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
             WeakAuras.WatchSpellCooldown(trigger.spellName);
             local ret = [[
-local startTime, duration = WeakAuras.GetSpellCooldown(%s);
+local spellname = %s
+local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
 local inverse = %s;
 ]];
             if(trigger.use_remaining and not trigger.use_inverse) then
@@ -1302,8 +1303,11 @@ local inverse = %s;
             return totemName;
         end,
         iconFunc = function(trigger)
+            local icon;
             local _, totemName = GetTotemInfo(trigger.totemType);
-            local icon = GetSpellTexture(totemName);
+            if(totemName) then
+                icon = GetSpellTexture(totemName);
+            end
             if(icon) then
                 return icon;
             else
@@ -1786,9 +1790,10 @@ interruptible = not interruptible;
             "UNIT_ENTERED_VEHICLE",
             "UNIT_EXITED_VEHICLE",
             "PLAYER_UPDATE_RESTING",
-            "MOUNTED_UPDATE"
+            "MOUNTED_UPDATE",
+            "CONDITIONS_CHECK"
         },
-        force_events = true,
+        force_events = "CONDITIONS_CHECK",
         name = L["Conditions"],
         init = function(trigger)
             if(trigger.use_mounted ~= nil) then

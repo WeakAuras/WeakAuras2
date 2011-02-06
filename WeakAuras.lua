@@ -23,7 +23,7 @@ end
 
 local db;
 
-local paused = false;
+local paused = true;
 local squelch_actions = true;
 
 WeakAuras.regions = {};
@@ -528,6 +528,8 @@ do
         if not(spells[id]) then
             spells[id] = true;
             local startTime, duration = GetSpellCooldown(id);
+            startTime = startTime or 0;
+            duration = duration or 0;
             if(duration > 1.51) then
                 local time = GetTime();
                 local endTime = startTime + duration;
@@ -793,14 +795,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             WeakAuras.AddIfNecessary(from_files);
             
             WeakAuras.Resume();
-            squelch_actions = true;
-            
-            WeakAuras.ScanForLoads();
-            WeakAuras.ScanAuras("player");
-            WeakAuras.ScanAuras("target");
-            WeakAuras.ScanAuras("focus");
-            WeakAuras.ScanAurasGroup();
-            WeakAuras.ForceEvents();
         end
     elseif(event == "PLAYER_ENTERING_WORLD") then
         timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);
@@ -813,7 +807,8 @@ function WeakAuras.Pause()
     for id, region in pairs(regions) do
         region.region:Collapse();
         region.region.trigger_count = 0;
-        region.region.triggers = {};
+        region.region.triggers = region.region.triggers or {};
+        wipe(region.region.triggers);
     end
 end
 
@@ -855,7 +850,8 @@ function WeakAuras.ScanAll()
     for id, region in pairs(regions) do
         region.region:Collapse();
         region.region.trigger_count = 0;
-        region.region.triggers = {};
+        region.region.triggers = region.region.triggers or {};
+        wipe(region.region.triggers);
     end
     WeakAuras.ReloadAll();
     for unit, auras in pairs(loaded_auras) do
@@ -1177,13 +1173,16 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     local shouldBeLoaded;
     for id, triggers in pairs(auras) do
         local _, data = next(triggers);
-        shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, player, class, spec, playerLevel, zone, size, difficulty);
+        shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, player, class, spec, playerLevel, zone, size, difficulty);
         if(shouldBeLoaded and not loaded[id]) then
             WeakAuras.LoadDisplay(id);
             changed = changed + 1;
         end
         if(loaded[id] and not shouldBeLoaded) then
             WeakAuras.UnloadDisplay(id);
+            data.region.trigger_count = 0;
+            data.region.triggers = data.region.triggers or {};
+            wipe(data.region.triggers);
             data.region:Collapse();
         end
     end
@@ -1196,6 +1195,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
         if(loaded[id] and not shouldBeLoaded) then
             WeakAuras.UnloadDisplay(id);
+            data.region.trigger_count = 0;
+            data.region.triggers = data.region.triggers or {};
+            wipe(data.region.triggers);
             data.region:Collapse();
         end
     end
@@ -1856,8 +1858,8 @@ function WeakAuras.pAdd(data)
         data.actions.finish = data.actions.finish or {};
         local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data, nil, nil, nil, "load")
         local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
-        --WeakAuras.debug("load: "..id);
-        --print(loadFuncStr);
+        WeakAuras.debug(id.." - Load", 1);
+        WeakAuras.debug(loadFuncStr);
         
         events[id] = nil;
         auras[id] = nil;
