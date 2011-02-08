@@ -1372,7 +1372,7 @@ function WeakAuras.ScanAuras(unit)
                         if(data.subcount) then
                             count = tooltipSize;
                         end
-                        if(((not data.count) or data.count(count)) and data.scanFunc(name, tooltip, stealable, spellId, debuffClass)) then
+                        if(((not data.count) or data.count(count)) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                             db.tempIconCache[name] = icon;
                             WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
                             active = true;
