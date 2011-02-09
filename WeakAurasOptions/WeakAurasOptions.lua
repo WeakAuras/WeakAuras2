@@ -304,20 +304,26 @@ end
 
 function WeakAuras.CreateIconCache(callback)
     local cacheFrame = CreateFrame("Frame");
-    local id = 95000;
+    local id = 1;
+    local misses = 0;
     cacheFrame:SetAllPoints(UIParent);
     cacheFrame:SetScript("OnUpdate", function()
         local start = GetTime();
         while(GetTime() - start < 0.01) do
-            id = id - 1;
-            if(id > 0) then
+            id = id + 1;
+            if(misses < 200) then
                 local name, _, icon = GetSpellInfo(id);
                 if(name) then
-                    iconCache[name] = icon;
+                    if not(iconCache[name]) then
+                        iconCache[name] = icon;
+                    end
+                    misses = 0;
+                else
+                    misses = misses + 1;
                 end
             end
         end
-        if(id < 1) then
+        if(misses >= 200) then
             cacheFrame:SetScript("OnUpdate", nil);
             if(callback) then
                 callback();
@@ -898,11 +904,13 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         iconCache = odb.iconCache;
         local _, build = GetBuildInfo();
         local locale = GetLocale();
-        if(odb.locale ~= locale or odb.build ~= build or forceCacheReset) then
+        local version = WealAuras.versionString
+        if(odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
             WeakAuras.CreateIconCache();
 
             odb.build = build;
             odb.locale = locale;
+            odb.version = version;
         end
 
         --Updates the icon cache with whatever icons WeakAuras core has actually used.

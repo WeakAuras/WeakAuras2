@@ -1109,3 +1109,19 @@ L["Crop Y"] = "Crop Y"
 
 --Added in 1.3.1
 L["Name"] = "Name"
+
+--Added in 1.3.2
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Backlash"] = "Backslash"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Berserk"] = "Berserk"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Blood_Boil"] = "Blood Boil"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Dark_Transformation"] = "Dark Transformation"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Denounce"] = "Denounce"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Feral_OmenOfClarity"] = "Omen of Clarity (Feral)"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Fulmination"] = "Fulmination"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Fury_of_Stormrage"] = "Fury of Stormrage"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Hand_of_Light"] = "Hand of Light"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Killing_Machine"] = "Killing Machine"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Molten_Core"] = "Molten Core"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Necropolis"] = "Necropolis"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Serendipity"] = "Serendipity"
+L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Shooting_Stars"] = "Shooting Stars"
