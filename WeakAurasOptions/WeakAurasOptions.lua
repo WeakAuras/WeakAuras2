@@ -904,7 +904,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         iconCache = odb.iconCache;
         local _, build = GetBuildInfo();
         local locale = GetLocale();
-        local version = WealAuras.versionString
+        local version = WeakAuras.versionString
         if(odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
             WeakAuras.CreateIconCache();
 
