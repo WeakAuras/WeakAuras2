@@ -465,7 +465,8 @@ WeakAuras.event_prototypes = {
         },
         name = L["Power"],
         init = function(trigger)
-            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+            trigger.unit = trigger.unit or "player";
+            return "local unit = unit or '"..trigger.unit.."'\nlocal concernedUnit = '"..trigger.unit.."'\n";
         end,
         args = {
             {

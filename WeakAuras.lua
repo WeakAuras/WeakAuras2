@@ -1077,7 +1077,7 @@ function WeakAuras.ActivateEventTimer(id, triggernum, duration)
                 and db.displays[id].additional_triggers[triggernum]
                 and db.displays[id].additional_triggers[triggernum].trigger;
         end
-        if(trigger and trigger.type == "event") then
+        if(trigger and trigger.type == "event" or trigger.type == "custom") then
             local expirationTime = GetTime() + duration;
             local doTimer;
             if(timers[id] and timers[id][triggernum]) then
