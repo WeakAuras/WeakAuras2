@@ -1173,7 +1173,7 @@ end
         },
         name = L["Cooldown Ready (Item)"],
         init = function(trigger)
-            trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+            trigger.itemName = trigger.itemName or 0;
             WeakAuras.WatchItemCooldown(trigger.itemName);
         end,
         args = {
