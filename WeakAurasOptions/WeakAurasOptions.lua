@@ -2960,7 +2960,7 @@ function WeakAuras.AddOption(id, data)
                         multiline = true,
                         name = L["Custom Function"],
                         width = "double",
-                        order = 63.3,
+                        order = 83.3,
                         hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.scaleType ~= "custom" or not (data.animation.finish.use_scale and WeakAuras.regions[id].region.Scale) end,
                         get = function() return data.animation.finish.scaleFunc and data.animation.finish.scaleFunc:sub(8); end,
                         set = function(info, v) data.animation.finish.scaleFunc = "return "..(v or ""); WeakAuras.Add(data); end
@@ -2975,7 +2975,7 @@ function WeakAuras.AddOption(id, data)
                             return errorString and "|cFFFF0000"..errorString or "";
                         end,
                         width = "double",
-                        order = 63.6,
+                        order = 83.6,
                         hidden = function()
                             if(data.animation.finish.type ~= "custom" or data.animation.finish.scaleType ~= "custom" or not (data.animation.finish.use_scale and WeakAuras.regions[id].region.Scale)) then
                                 return true;

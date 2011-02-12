@@ -861,29 +861,6 @@ function WeakAuras.ScanAll()
             WeakAuras.ScanAuras(unit);
         end
     end
-    --[[for eventName, events in pairs(loaded_events) do
-        if(eventName == "COMBAT_LOG_EVENT_UNFILTERED") then
-            for subeventName, subevents in pairs(events) do
-                for id, triggers in pairs(subevents) do
-                    for triggernum, eventData in pairs(triggers) do
-                        if(eventData.region.active) then
-                            eventData.region:Expand();
-                            WeakAuras.SetEventDynamics(id, triggernum, eventData);
-                        end
-                    end
-                end
-            end
-        else
-            for id, triggers in pairs(events) do
-                for triggernum, eventData in pairs(triggers) do
-                    if(eventData.region.active) then
-                        eventData.region:Expand();
-                        WeakAuras.SetEventDynamics(id, triggernum, eventData);
-                    end
-                end
-            end
-        end
-    end]]
     WeakAuras.ForceEvents();
 end
 
@@ -1217,6 +1194,13 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
     end
     if(changed > 0) then
+        for unit, auras in pairs(loaded_auras) do
+            if(unit == "group") then
+                WeakAuras.ScanAurasGroup();
+            else
+                WeakAuras.ScanAuras(unit);
+            end
+        end
         WeakAuras.ForceEvents();
     end
 end
@@ -1492,13 +1476,13 @@ end
 function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count)
     local show;
     if(active ~= nil) then
-        if(data.inverse) then
+        if(data.inverse and UnitExists(unit)) then
             show = false;
         else
             show = true;
         end
     else
-        if(data.inverse) then
+        if(data.inverse and UnitExists(unit)) then
             show = true;
         else
             show = false;
