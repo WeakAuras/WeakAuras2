@@ -400,6 +400,9 @@ WeakAuras.event_prototypes = {
         durationFunc = function(trigger)
             return GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', 'target'), 5, true;
         end,
+        stacksFunc = function(trigger)
+            return GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', 'target');
+        end,
         automatic = true
     },
     ["Health"] = {
@@ -545,7 +548,10 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9), function() return UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9) end;
+            return UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, 9);
         end,
         automatic = true
     },
@@ -643,6 +649,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
         },
         durationFunc = function(trigger)
             return UnitPower(trigger.unit, 7), UnitPowerMax(trigger.unit, 7), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, 7);
         end,
         automatic = true
     },
