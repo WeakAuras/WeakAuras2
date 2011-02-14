@@ -6,6 +6,8 @@ local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 
 local timer = WeakAurasTimers;
 
+local WeakAuras = WeakAuras;
+
 function WeakAuras.OpenOptions(msg)
     if not(IsAddOnLoaded("WeakAurasOptions")) then
         local loaded, reason = LoadAddOn("WeakAurasOptions");
@@ -887,9 +889,9 @@ local scanCooldownFrame = CreateFrame("frame");
 
 local checkScanCooldownsFunc = function()
     for unit,_ in pairs(aura_scan_cooldowns) do
+        aura_scan_cooldowns[unit] = nil;
         WeakAuras.ScanAuras(unit);
     end
-    wipe(aura_scan_cooldowns);
     checkingScanCooldowns = nil;
     scanCooldownFrame:SetScript("OnUpdate", nil);
 end
@@ -962,10 +964,8 @@ end
 function WeakAuras.ActivateEvent(id, triggernum, data)
     if(data.numAdditionalTriggers > 0) then
         if(data.region:EnableTrigger(triggernum)) then
-            --data.region.active = true;
         end
     else
-        --data.region.active = true;
         data.region:Expand();
     end
     WeakAuras.SetEventDynamics(id, triggernum, data);
@@ -1160,7 +1160,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             data.region.trigger_count = 0;
             data.region.triggers = data.region.triggers or {};
             wipe(data.region.triggers);
-            data.region:Collapse();
+            if not(paused) then
+                data.region:Collapse();
+            end
         end
     end
     for id, triggers in pairs(events) do
@@ -1175,7 +1177,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             data.region.trigger_count = 0;
             data.region.triggers = data.region.triggers or {};
             wipe(data.region.triggers);
-            data.region:Collapse();
+            if not(paused) then
+                data.region:Collapse();
+            end
         end
     end
     for id, data in pairs(db.displays) do
@@ -1193,7 +1197,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             end
         end
     end
-    if(changed > 0) then
+    if(changed > 0 and not paused) then
         for unit, auras in pairs(loaded_auras) do
             if(unit == "group") then
                 WeakAuras.ScanAurasGroup();
@@ -2176,15 +2180,22 @@ function WeakAuras.SetRegion(data)
                     data.animation.main.duration_type = "seconds";
                     data.animation.finish.duration_type = "seconds";
                 end
+                
+                local startMainAnimation = function()
+                    WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
+                end
+                
+                local hideRegion = function()
+                    region:Hide();
+                end
+                
                 if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
                     parent:PositionChildren();
                     function region:Collapse()
                         if(region:IsVisible()) then
                             parent.toHide[id] = true;
                             WeakAuras.PerformActions(data, "finish");
-                            WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, function()
-                                region:Hide();
-                            end, nil, true)
+                            WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, true)
                             parent:ControlChildren();
                         end
                     end
@@ -2192,9 +2203,7 @@ function WeakAuras.SetRegion(data)
                         parent.toShow[id] = true;
                         if(WeakAuras.IsAnimating("display", id) == "finish" or parent.groupHiding[id] or not region:IsVisible()) then
                             WeakAuras.PerformActions(data, "start");
-                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, function()
-                                WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
-                            end)) then
+                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation)) then
                                 WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
                             end
                         end
@@ -2204,9 +2213,7 @@ function WeakAuras.SetRegion(data)
                     function region:Collapse()
                         if(region:IsVisible()) then
                             WeakAuras.PerformActions(data, "finish");
-                            if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, function()
-                                region:Hide();
-                            end, nil, true)) then
+                            if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, true)) then
                                 region:Hide();
                             end
                         end
@@ -2215,9 +2222,7 @@ function WeakAuras.SetRegion(data)
                         if(WeakAuras.IsAnimating("display", id) == "finish" or not region:IsVisible()) then
                             region:Show();
                             WeakAuras.PerformActions(data, "start");
-                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, function()
-                                WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
-                            end)) then
+                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation)) then
                                 WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
                             end
                         end
@@ -3106,8 +3111,8 @@ local colorDelay = 2;
 local r, g, b = 0.8, 0, 1;
 local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
 local tooltip_update_frame = CreateFrame("FRAME");
-local LKADB;
-LKADB = LDB:NewDataObject("WeakAuras", {
+local Broker_WeakAuras;
+Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
     type = "data source",
     text = "WeakAuras",
     icon = "Interface\\AddOns\\WeakAuras\\icon.tga",
@@ -3130,9 +3135,9 @@ LKADB = LDB:NewDataObject("WeakAuras", {
                 r, g, b = r2, g2, b2;
                 r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
             end
-            LKADB.iconR = r + (r2 - r) * colorElapsed / colorDelay;
-            LKADB.iconG = g + (g2 - g) * colorElapsed / colorDelay;
-            LKADB.iconB = b + (b2 - b) * colorElapsed / colorDelay;
+            Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
+            Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
+            Broker_WeakAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
         end);
     
         local elapsed = 0;

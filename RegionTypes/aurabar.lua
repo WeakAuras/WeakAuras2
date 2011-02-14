@@ -22,7 +22,8 @@ local default = {
     fontSize = 12,
     stickyDuration = false,
     icon_side = "RIGHT",
-    stacks = true
+    stacks = true,
+    rotateText = "NONE"
 };
 
 local function create(parent)
@@ -33,32 +34,32 @@ local function create(parent)
     region:SetResizable(true);
     region:SetMinResize(1, 1);
     
-    local bar = CreateFrame("FRAME", nil, region);
+    local bar = CreateFrame("statusbar", nil, region);
+    bar:SetMinMaxValues(0, 1);
     region.bar = bar;
     
     local background = bar:CreateTexture(nil, "BACKGROUND");
     region.background = background;
     
-    local texture = bar:CreateTexture(nil, "OVERLAY");
-    region.texture = texture;
-    texture:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT");
-    texture:SetPoint("TOPLEFT", bar, "TOPLEFT");
-    
     local timer = bar:CreateFontString(nil, "OVERLAY", font);
     region.timer = timer;
-    timer:SetText("00:00");
+    timer:SetText("0.0");
     timer:SetNonSpaceWrap(true);
+    timer:SetPoint("center");
     
-    local text = bar:CreateFontString(nil, "OVERLAY");
+    local text = bar:CreateFontString(nil, "OVERLAY", font);
     region.text = text;
+    text:SetText("Error");
     text:SetNonSpaceWrap(true);
+    text:SetPoint("center");
     
     local icon = region:CreateTexture();
     region.icon = icon;
     icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
     
-    local stacks = bar:CreateFontString(nil, "OVERLAY");
+    local stacks = bar:CreateFontString(nil, "OVERLAY", font);
     region.stacks = stacks;
+    stacks:SetText(1);
     stacks:ClearAllPoints();
     stacks:SetPoint("CENTER", icon, "CENTER");
     
@@ -68,8 +69,56 @@ local function create(parent)
     return region;
 end
 
+local function stoprotation(self)
+    self:Pause();
+end
+
+local function animRotate(object, degrees)
+    if(object.animationGroup or degrees ~= 0) then
+        object.animationGroup = object.animationGroup or object:CreateAnimationGroup();
+        local ag = object.animationGroup;
+        ag.rotate = ag.rotate or ag:CreateAnimation("rotation");
+        local r = ag.rotate;
+        
+        ag:Stop();
+        r:Stop();
+        
+        if(degrees ~= 0) then
+            r:SetOrigin(point or "center", xo or 0, yo or 0);
+            r:SetDegrees(degrees);
+            r:SetDuration(0);
+            r:SetEndDelay(1);
+            r:SetScript("OnUpdate", stoprotation);
+            r:Play();
+            ag:Play();
+        end
+    end
+end
+
+local function getRotateOffset(object, degrees, point)
+    if(degrees ~= 0) then
+        local xo, yo;
+        local originoffset = object:GetStringHeight() / 2;
+        xo = -1 * originoffset * sin(degrees);
+        yo = originoffset * (cos(degrees) - 1);
+        if(point == "BOTTOM") then
+            yo = yo + (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+        elseif(point == "TOP") then
+            yo = yo - (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+        elseif(point == "RIGHT") then
+            xo = xo + (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+        elseif(point == "LEFT") then
+            xo = xo - (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+        end
+        
+        return xo, yo;
+    else
+        return 0, 0;
+    end
+end
+
 local function modify(parent, region, data)
-    local bar, background, texture, timer, text, icon, stacks = region.bar, region.background, region.texture, region.timer, region.text, region.icon, region.stacks;
+    local bar, background, timer, text, icon, stacks = region.bar, region.background, region.timer, region.text, region.icon, region.stacks;
     
     region:SetWidth(data.width);
     region:SetHeight(data.height);
@@ -84,7 +133,8 @@ local function modify(parent, region, data)
     background:SetTexture(texturePath);
     background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
     
-    texture:SetTexture(texturePath);
+    bar:SetStatusBarTexture(texturePath);
+    local texture = bar:GetStatusBarTexture();
     
     function region:Color(r, g, b, a)
         region.color_r = r;
@@ -114,16 +164,26 @@ local function modify(parent, region, data)
     stacks:SetFont(fontPath, data.fontSize, "OUTLINE");
     stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
     
+    local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
+    animRotate(text, textDegrees);
+    animRotate(timer, textDegrees);
+    animRotate(stacks, textDegrees);
+    
+    local orientationInverse;
+    local xo, yo;
+    
+    xo, yo = getRotateOffset(stacks, textDegrees, "CENTER");
+    stacks:SetPoint("CENTER", icon, "CENTER", xo, yo);
+    
     local function orientHorizontalInverse()
         icon:ClearAllPoints();
-        texture:ClearAllPoints();
         background:ClearAllPoints();
         bar:ClearAllPoints();
-        text:ClearAllPoints();
-        timer:ClearAllPoints();
         region.orientation = "HORIZONTAL_INVERSE";
-        timer:SetWidth(0);
-        text:SetWidth(0);
+        bar:SetOrientation("HORIZONTAL");
+        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+        orientationInverse = true;
+        bar:SetRotatesTexture(false);
         if(data.icon) then
             if(data.icon_side == "LEFT") then
                 icon:SetPoint("LEFT", region, "LEFT");
@@ -144,32 +204,21 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        text:SetPoint("RIGHT", bar, "RIGHT", -2, 0);
-        timer:SetPoint("LEFT", bar, "LEFT", 2, 0);
-        texture:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT");
-        texture:SetPoint("TOPRIGHT", bar, "TOPRIGHT");
-        function bar:SetValue(progress)
-            if(region.mirror_v) then
-                texture:SetTexCoord(progress,1 , progress,0 , 0,1 , 0,0);
-                texture:SetWidth(bar:GetWidth() * progress);
-                background:SetTexCoord(1,1 , 1,0 , 0,1 , 0,0);
-            else
-                texture:SetTexCoord(progress,0 , progress,1 , 0,0 , 0,1);
-                texture:SetWidth(bar:GetWidth() * progress);
-                background:SetTexCoord(1,0 , 1,1 , 0,0 , 0,1);
-            end
-        end
+        xo, yo = getRotateOffset(text, textDegrees, "RIGHT");
+        text:ClearAllPoints();
+        text:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
+        xo, yo = getRotateOffset(timer, textDegrees, "LEFT");
+        timer:ClearAllPoints();
+        timer:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
     end
     local function orientHorizontal()
         icon:ClearAllPoints();
-        texture:ClearAllPoints();
         background:ClearAllPoints();
         bar:ClearAllPoints();
-        text:ClearAllPoints();
-        timer:ClearAllPoints();
         region.orientation = "HORIZONTAL";
-        timer:SetWidth(0);
-        text:SetWidth(0);
+        bar:SetOrientation("HORIZONTAL");
+        background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
+        bar:SetRotatesTexture(false);
         if(data.icon) then
             if(data.icon_side == "LEFT") then
                 icon:SetPoint("LEFT", region, "LEFT");
@@ -190,32 +239,22 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        text:SetPoint("LEFT", bar, "LEFT", 2, 0);
-        timer:SetPoint("RIGHT", bar, "RIGHT", -2, 0);
-        texture:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT");
-        texture:SetPoint("TOPLEFT", bar, "TOPLEFT");
-        function bar:SetValue(progress)
-            if(region.mirror_v) then
-                texture:SetTexCoord(0,1 , 0,0 , progress,1 , progress,0);
-                texture:SetWidth(bar:GetWidth() * progress);
-                background:SetTexCoord(0,1 , 0,0 , 1,1 , 1,0);
-            else
-                texture:SetTexCoord(0,0 , 0,1 , progress,0 , progress,1);
-                texture:SetWidth(bar:GetWidth() * progress);
-                background:SetTexCoord(0,0 , 0,1 , 1,0 , 1,1);
-            end
-        end
+        xo, yo = getRotateOffset(text, textDegrees, "LEFT");
+        text:ClearAllPoints();
+        text:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
+        xo, yo = getRotateOffset(timer, textDegrees, "RIGHT");
+        timer:ClearAllPoints();
+        timer:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
     end
     local function orientVerticalInverse()
         icon:ClearAllPoints();
-        texture:ClearAllPoints();
         background:ClearAllPoints();
         bar:ClearAllPoints();
-        text:ClearAllPoints();
-        timer:ClearAllPoints();
         region.orientation = "VERTICAL_INVERSE";
-        timer:SetWidth(data.height);
-        text:SetWidth(data.height);
+        bar:SetOrientation("VERTICAL");
+        background:SetTexCoord(1,0 , 0,0 , 1,1 , 0,1);
+        orientationInverse = true;
+        bar:SetRotatesTexture(true);
         if(data.icon) then
             if(data.icon_side == "LEFT") then
                 icon:SetPoint("TOP", region, "TOP");
@@ -236,32 +275,21 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        text:SetPoint("TOP", bar, "TOP", 0, -2);
-        timer:SetPoint("BOTTOM", bar, "BOTTOM", 0, 2);
-        texture:SetPoint("TOPLEFT", bar, "TOPLEFT");
-        texture:SetPoint("TOPRIGHT", bar, "TOPRIGHT");
-        function bar:SetValue(progress)
-            if(region.mirror_h) then
-                texture:SetTexCoord(0,1 , progress,1 , 0,0 , progress,0);
-                texture:SetHeight(bar:GetHeight() * progress);
-                background:SetTexCoord(0,1 , 1,1 , 0,0 , 1,0);
-            else
-                texture:SetTexCoord(0,0 , progress,0 , 0,1 , progress,1);
-                texture:SetHeight(bar:GetHeight() * progress);
-                background:SetTexCoord(0,0 , 1,0 , 0,1 , 1,1);
-            end
-        end
+        xo, yo = getRotateOffset(text, textDegrees, "TOP");
+        text:ClearAllPoints();
+        text:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
+        xo, yo = getRotateOffset(timer, textDegrees, "BOTTOM");
+        timer:ClearAllPoints();
+        timer:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
     end
     local function orientVertical()
         icon:ClearAllPoints();
-        texture:ClearAllPoints();
         background:ClearAllPoints();
         bar:ClearAllPoints();
-        text:ClearAllPoints();
-        timer:ClearAllPoints();
         region.orientation = "VERTICAL";
-        timer:SetWidth(data.height);
-        text:SetWidth(data.height);
+        bar:SetOrientation("VERTICAL");
+        background:SetTexCoord(1,0 , 0,0 , 1,1 , 0,1);
+        bar:SetRotatesTexture(true);
         if(data.icon) then
             if(data.icon_side == "LEFT") then
                 icon:SetPoint("TOP", region, "TOP");
@@ -282,32 +310,26 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        text:SetPoint("BOTTOM", bar, "BOTTOM", 0, 2);
-        timer:SetPoint("TOP", bar, "TOP", 0, -2);
-        texture:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT");
-        texture:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT");
-        function bar:SetValue(progress)
-            if(region.mirror_h) then
-                texture:SetTexCoord(progress,1 , 0,1 , progress,0 , 0,0);
-                texture:SetHeight(bar:GetHeight() * progress);
-                background:SetTexCoord(1,1 , 0,1 , 1,0 , 0,0);
-            else
-                texture:SetTexCoord(progress,0 , 0,0 , progress,1 , 0,1);
-                texture:SetHeight(bar:GetHeight() * progress);
-                background:SetTexCoord(1,0 , 0,0 , 1,1 , 0,1);
-            end
-        end
+        xo, yo = getRotateOffset(text, textDegrees, "BOTTOM");
+        text:ClearAllPoints();
+        text:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
+        xo, yo = getRotateOffset(timer, textDegrees, "TOP");
+        timer:ClearAllPoints();
+        timer:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
     end
     
-    if(data.orientation == "HORIZONTAL_INVERSE") then
-        orientHorizontalInverse();
-    elseif(data.orientation == "HORIZONTAL") then
-        orientHorizontal();
-    elseif(data.orientation == "VERTICAL_INVERSE") then
-        orientVerticalInverse();
-    elseif(data.orientation == "VERTICAL") then
-        orientVertical();
+    local function orient()
+        if(data.orientation == "HORIZONTAL_INVERSE") then
+            orientHorizontalInverse();
+        elseif(data.orientation == "HORIZONTAL") then
+            orientHorizontal();
+        elseif(data.orientation == "VERTICAL_INVERSE") then
+            orientVerticalInverse();
+        elseif(data.orientation == "VERTICAL") then
+            orientVertical();
+        end
     end
+    orient();
     
     function region:SetStacks(count)
         if(count and count > 0) then
@@ -411,21 +433,47 @@ local function modify(parent, region, data)
         text:Hide();
     end
     
+    local displayName, shouldOrient;
     function region:SetName(name)
-        text:SetText((WeakAuras.CanHaveAuto(data) and data.auto and name or data.displayText) or data.id);
+        displayName = (WeakAuras.CanHaveAuto(data) and data.auto and name or data.displayText) or data.id;
+        shouldOrient = false;
+        if(not text.displayName or #text.displayName ~= #displayName) then
+            shouldOrient = true;
+        end
+        if(text.displayName ~= displayName) then
+            text:SetText(displayName);
+            text.displayName = displayName;
+        end
+        if(shouldOrient) then
+            orient();
+        end
     end
     
+    local displayValue, remaining, progress, remainingStr, shouldOrient;
     local function UpdateTime(self, elaps, inverse)
-        local remaining = region.expirationTime - GetTime();
-        local progress = remaining / region.duration;
+        remaining = region.expirationTime - GetTime();
+        progress = remaining / region.duration;
         
-        if((data.inverse and not inverse) or (inverse and not data.inverse)) then
+        if(
+            (
+                not orientationInverse and (
+                    (data.inverse and not inverse) 
+                    or (inverse and not data.inverse)
+                )
+            )
+            or (
+                orientationInverse and not (
+                    (data.inverse and not inverse) 
+                    or (inverse and not data.inverse)
+                )
+            )
+        ) then
             progress = 1 - progress;
         end
         progress = progress > 0.0001 and progress or 0.0001;
         bar:SetValue(progress);
         
-        local remainingStr = "";
+        remainingStr = "";
         if(remaining > 60) then
             remainingStr = string.format("%i:", math.floor(remaining / 60));
             remaining = remaining % 60;
@@ -435,7 +483,17 @@ local function modify(parent, region, data)
         else
             remainingStr = " ";
         end
-        timer:SetText(remainingStr);
+        shouldOrient = false;
+        if(not timer.displayValue or #timer.displayValue ~= #remainingStr) then
+            shouldOrient = true;
+        end
+        if(timer.displayValue ~= remainingStr) then
+            timer:SetText(remainingStr);
+            timer.displayValue = remainingStr;
+        end
+        if(shouldOrient) then
+            orient();
+        end
     end
     
     local function UpdateTimeInverse(self, elaps)
@@ -443,15 +501,26 @@ local function modify(parent, region, data)
     end
     
     local function UpdateValue(value, total)
-        local progress = 1
+        progress = 1
         if(total > 0) then
             progress = value / total;
         end
-        if(data.inverse) then
+        if((not orientationInverse and data.inverse) or (orientationInverse and not data.inverse)) then
             progress = 1 - progress;
         end
         progress = progress > 0.0001 and progress or 0.0001;
-        timer:SetText(string.format("%i", value));
+        displayValue = string.format("%i", value);
+        shouldOrient = false;
+        if(not timer.displayValue or #timer.displayValue ~= #displayValue) then
+            shouldOrient = true;
+        end
+        if(timer.displayValue ~= displayValue) then
+            timer:SetText(displayValue);
+            timer.displayValue = displayValue;
+        end
+        if(shouldOrient) then
+            orient();
+        end
         bar:SetValue(progress);
     end
     

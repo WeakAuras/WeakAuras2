@@ -94,6 +94,35 @@ local function createOptions(id, data)
             order = 18,
             func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
         },
+        icon_side = {
+            type = "select",
+            name = L["Icon"],
+            values = WeakAuras.icon_side_types,
+            hidden = function() return not data.orientation:find("HORIZONTAL") end,
+            order = 19
+        },
+        icon_side2 = {
+            type = "select",
+            name = L["Icon"],
+            values = WeakAuras.rotated_icon_side_types,
+            hidden = function() return data.orientation:find("HORIZONTAL") end,
+            order = 19,
+            get = function()
+                return data.icon_side;
+            end,
+            set = function(info, v)
+                data.icon_side = v;
+                WeakAuras.Add(data);
+                WeakAuras.SetThumbnail(data);
+                WeakAuras.SetIconNames(data);
+            end
+        },
+        rotateText = {
+            type = "select",
+            name = L["Rotate Text"],
+            values = WeakAuras.text_rotate_types,
+            order = 19.5
+        },
         orientation = {
             type = "select",
             name = L["Orientation"],
@@ -127,7 +156,14 @@ local function createOptions(id, data)
                     data.width = data.height;
                     data.height = temp;
                     data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
+                    
+                    if(data.rotateText == "LEFT" or data.rotateText == "RIGHT") then
+                        data.rotateText = "NONE";
+                    elseif(data.rotateText == "NONE") then
+                        data.rotateText = "LEFT"
+                    end
                 end
+                
                 data.orientation = v;
                 WeakAuras.Add(data);
                 WeakAuras.SetThumbnail(data);
@@ -138,33 +174,7 @@ local function createOptions(id, data)
         inverse = {
             type = "toggle",
             name = L["Inverse"],
-            width = "half",
             order = 35
-        },
-        icon_side = {
-            type = "select",
-            name = L["Icon"],
-            width = "half",
-            values = WeakAuras.icon_side_types,
-            hidden = function() return not data.orientation:find("HORIZONTAL") end,
-            order = 37
-        },
-        icon_side2 = {
-            type = "select",
-            name = L["Icon"],
-            width = "half",
-            values = WeakAuras.rotated_icon_side_types,
-            hidden = function() return data.orientation:find("HORIZONTAL") end,
-            order = 37,
-            get = function()
-                return data.icon_side;
-            end,
-            set = function(info, v)
-                data.icon_side = v;
-                WeakAuras.Add(data);
-                WeakAuras.SetThumbnail(data);
-                WeakAuras.SetIconNames(data);
-            end
         },
         barColor = {
             type = "color",

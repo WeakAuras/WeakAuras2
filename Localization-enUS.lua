@@ -1125,3 +1125,6 @@ L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Molten_Core"]
 L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Necropolis"] = "Necropolis"
 L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Serendipity"] = "Serendipity"
 L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Shooting_Stars"] = "Shooting Stars"
+
+--Added in 1.3.3
+L["Rotate Text"] = "Rotate Text"
