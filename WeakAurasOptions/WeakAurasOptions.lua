@@ -3188,12 +3188,19 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "double",
             order = 9,
         },
+        autoclone = {
+            type = "toggle",
+            name = L["Show all matches (Auto-clone)"],
+            width = "double",
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
+            order = 9.5
+        },
         useName = {
             type = "toggle",
             name = L["Aura(s)"],
             width = "half",
             order = 10,
-            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
             disabled = true,
             get = function() return true end
         },
@@ -3223,14 +3230,14 @@ function WeakAuras.ReloadTriggerOptions(data)
             type = "toggle",
             name = L["Tooltip"],
             order = 13,
-            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
         },
         tooltip_operator = {
             type = "select",
             name = L["Operator"],
             order = 14,
             disabled = function() return not trigger.use_tooltip end,
-            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end,
             values = WeakAuras.string_operator_types
         },
         tooltip = {
@@ -3239,7 +3246,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "double",
             order = 15,
             disabled = function() return not trigger.use_tooltip end,
-            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
         },
         use_stealable = {
             type = "toggle",
@@ -3251,7 +3258,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             end,
             width = "double",
             order = 16,
-            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function()
                 local value = trigger.use_stealable;
                 if(value == nil) then return false;
@@ -3274,14 +3281,14 @@ function WeakAuras.ReloadTriggerOptions(data)
             type = "toggle",
             name = L["Spell ID"],
             order = 17,
-            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
         },
         spellId = {
             type = "input",
             name = L["Spell ID"],
             order = 18,
             disabled = function() return not trigger.use_spellId end,
-            hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
+            hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
         },
         use_debuffClass = {
             type = "toggle",
@@ -3297,6 +3304,43 @@ function WeakAuras.ReloadTriggerOptions(data)
             hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
             values = WeakAuras.debuff_class_types
         },
+        multiuse_name = {
+            type = "toggle",
+            name = L["Aura Name"],
+            width = "half",
+            order = 10,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end,
+            disabled = true,
+            get = function() return true end
+        },
+        multiicon = {
+            type = "execute",
+            name = "",
+            width = "half",
+            image = function() return trigger.name and iconCache[trigger.name] or "", 18, 18 end,
+            order = 11,
+            disabled = function() return not trigger.name and iconCache[trigger.name] end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end
+        },
+        multiname = {
+            type = "input",
+            name = L["Aura Name"],
+            desc = L["Enter an aura name, partial aura name, or spell id"],
+            order = 12,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end,
+            get = function(info) return trigger.name end,
+            set = function(info, v)
+                if(v == "") then
+                    trigger.name = nil;
+                else
+                    trigger.name = WeakAuras.CorrectAuraName(v);
+                end
+                WeakAuras.Add(data);
+                WeakAuras.SetThumbnail(data);
+                WeakAuras.SetIconNames(data);
+                WeakAuras.UpdateDisplayButton(data);
+            end,
+        },
         name1icon = {
             type = "execute",
             name = "",
@@ -3304,14 +3348,14 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[1]] or "", 18, 18 end,
             order = 11,
             disabled = function() return not iconCache[trigger.names[1]] end,
-            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end
         },
         name1 = {
             type = "input",
             name = L["Aura Name"],
             desc = L["Enter an aura name, partial aura name, or spell id"],
             order = 12,
-            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[1] end,
             set = function(info, v)
                 if(v == "") then
@@ -3333,7 +3377,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 13,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name2icon = {
             type = "execute",
@@ -3342,13 +3386,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[2]] or "", 18, 18 end,
             order = 14,
             disabled = function() return not iconCache[trigger.names[2]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name2 = {
             type = "input",
             order = 15,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[2] end,
             set = function(info, v)
                 if(v == "") then
@@ -3370,7 +3414,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 16,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name3icon = {
             type = "execute",
@@ -3379,13 +3423,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[3]] or "", 18, 18 end,
             order = 17,
             disabled = function() return not iconCache[trigger.names[3]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name3 = {
             type = "input",
             order = 18,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[3] end,
             set = function(info, v)
                 if(v == "") then
@@ -3407,7 +3451,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 19,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name4icon = {
             type = "execute",
@@ -3416,13 +3460,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[4]] or "", 18, 18 end,
             order = 20,
             disabled = function() return not iconCache[trigger.names[4]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name4 = {
             type = "input",
             order = 21,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[4] end,
             set = function(info, v)
                 if(v == "") then
@@ -3445,7 +3489,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return "", 0, 0 end,
             order = 22,
             disabled = function() return not iconCache[trigger.names[5]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name5icon = {
             type = "execute",
@@ -3453,13 +3497,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return iconCache[trigger.names[5]] or "", 18, 18 end,
             order = 23,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name5 = {
             type = "input",
             order = 24,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[5] end,
             set = function(info, v)
                 if(v == "") then
@@ -3481,7 +3525,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 25,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name6icon = {
             type = "execute",
@@ -3490,13 +3534,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[6]] or "", 18, 18 end,
             order = 26,
             disabled = function() return not iconCache[trigger.names[6]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name6 = {
             type = "input",
             order = 27,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[6] end,
             set = function(info, v)
                 if(v == "") then
@@ -3518,7 +3562,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 28,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name7icon = {
             type = "execute",
@@ -3527,13 +3571,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[7]] or "", 18, 18 end,
             order = 29,
             disabled = function() return not iconCache[trigger.names[7]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name7 = {
             type = "input",
             order = 30,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[7] end,
             set = function(info, v)
                 if(v == "") then
@@ -3555,7 +3599,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 31,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name8icon = {
             type = "execute",
@@ -3564,13 +3608,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[8]] or "", 18, 18 end,
             order = 32,
             disabled = function() return not iconCache[trigger.names[8]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name8 = {
             type = "input",
             order = 33,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[8] end,
             set = function(info, v)
                 if(v == "") then
@@ -3592,7 +3636,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             image = function() return "", 0, 0 end,
             order = 34,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name9icon = {
             type = "execute",
@@ -3601,13 +3645,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             image = function() return iconCache[trigger.names[9]] or "", 18, 18 end,
             order = 35,
             disabled = function() return not iconCache[trigger.names[9]] end,
-            hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
         },
         name9 = {
             type = "input",
             order = 36,
             name = "",
-            hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function(info) return trigger.names[9] end,
             set = function(info, v)
                 if(v == "") then
@@ -3644,7 +3688,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             end,
             hidden = function() return not (trigger.type == "aura"); end,
             get = function()
-                if(trigger.fullscan and trigger.unit == "group") then
+                if(trigger.fullscan and (trigger.unit == "group" or trigger.unit == "multi")) then
                     trigger.unit = "player";
                 end
                 return trigger.unit;
@@ -3689,6 +3733,13 @@ function WeakAuras.ReloadTriggerOptions(data)
                 WeakAuras.SetIconNames(data);
                 WeakAuras.UpdateDisplayButton(data);
             end
+        },
+        groupclone = {
+            type = "toggle",
+            name = L["Show all matches (Auto-clone)"],
+            width = "double",
+            hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+            order = 47.1
         },
         name_info = {
             type = "select",
@@ -3752,7 +3803,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         useRem = {
             type = "toggle",
             name = L["Remaining Time"],
-            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
             order = 56
         },
         remOperator = {
@@ -3762,7 +3813,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             values = operator_types,
             disabled = function() return not trigger.useRem; end,
-            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function() return trigger.useRem and trigger.remOperator or nil end
         },
         rem = {
@@ -3771,13 +3822,13 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 58,
             width = "half",
             disabled = function() return not trigger.useRem; end,
-            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan); end,
+            hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
             get = function() return trigger.useRem and trigger.rem or nil end
         },
         useCount = {
             type = "toggle",
             name = L["Stack Count"],
-            hidden = function() return not (trigger.type == "aura"); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
             order = 60
         },
         countOperator = {
@@ -3787,7 +3838,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             width = "half",
             values = operator_types,
             disabled = function() return not trigger.useCount; end,
-            hidden = function() return not trigger.type == "aura"; end,
+            hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
             get = function() return trigger.useCount and trigger.countOperator or nil end
         },
         count = {
@@ -3796,7 +3847,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 65,
             width = "half",
             disabled = function() return not trigger.useCount; end,
-            hidden = function() return not trigger.type == "aura"; end,
+            hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
             get = function() return trigger.useCount and trigger.count or nil end
         },
         ownOnly = {
@@ -3811,7 +3862,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             name = L["Inverse"],
             desc = "Activate when the given aura(s) |cFFFF0000can't|r be found",
             order = 75,
-            hidden = function() return not (trigger.type == "aura"); end
+            hidden = function() return not (trigger.type == "aura" and (not trigger.autoclone) and trigger.unit ~= "multi"); end
         }
     };
     
@@ -6249,7 +6300,7 @@ function WeakAuras.UpdateGroupOrders(data)
     end
 end
 
-function WeakAuras.SortDisplayButtons()
+function WeakAuras.SortDisplayButtons(filter)
     wipe(frame.buttonsScroll.children);
     tinsert(frame.buttonsScroll.children, frame.newButton);
     tinsert(frame.buttonsScroll.children, frame.loadedButton);

@@ -1128,3 +1128,7 @@ L.textures["Cataclysm Alerts"]["Textures\\SpellActivationOverlays\\Shooting_Star
 
 --Added in 1.3.3
 L["Rotate Text"] = "Rotate Text"
+
+--Added in 1.4b1
+L["Show all matches (Auto-clone)"] = "Show all matches (Auto-clone)"
+L["Multi-target"] = "Multi-target"

@@ -1693,6 +1693,8 @@ local inverse = %s
             "UNIT_SPELLCAST_START",
             "UNIT_SPELLCAST_STOP",
             "UNIT_SPELLCAST_DELAYED",
+            "UNIT_SPELLCAST_INTERRUPTIBLE",
+            "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
             "PLAYER_TARGET_CHANGED",
             "PLAYER_FOCUS_CHANGED"
         },
@@ -1708,7 +1710,7 @@ spell, _, _, _, _, _, _, _, interruptible = UnitCastingInfo(unit)
 if(spell) then
     castType = "cast"
 else
-    spell, _, _, _, _, _, _, _, interruptible = UnitChannelInfo(unit)
+    spell, _, _, _, _, _, _, interruptible = UnitChannelInfo(unit)
     if(spell) then
         castType = "channel"
     end
