@@ -1132,3 +1132,9 @@ L["Rotate Text"] = "Rotate Text"
 --Added in 1.4b1
 L["Show all matches (Auto-clone)"] = "Show all matches (Auto-clone)"
 L["Multi-target"] = "Multi-target"
+
+--Added in r98
+L["No tooltip text"] = "No tooltip text"
+L["1 Match"] = "1 Match"
+L["%i Matches"] = "%i Matches"
+L["Expand Text Editor"] = "Expand Text Editor"

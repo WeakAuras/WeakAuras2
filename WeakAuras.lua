@@ -630,6 +630,7 @@ function duration_cache:GetDurationInfo(id)
 end
 WeakAuras.duration_cache = duration_cache;
 
+
 do
     local combatAuraFrame;
     
@@ -786,10 +787,13 @@ do
             elseif(message == "SPELL_AURA_REMOVED") then
                 for id, triggers in pairs(loaded_auras[spellName]) do
                     for triggernum, data in pairs(triggers) do
-                        data.GUIDs = data.GUIDs or {};
-                        data.GUIDs[destGUID] = nil;
-                        
-                        updateRegion(id, data, triggernum);
+                        if((not data.ownOnly) or UnitIsUnit(sourceName or "", "player")) then
+                            WeakAuras.debug("Removed "..spellName.." from "..destGUID.." ("..(data.GUIDs and data.GUIDs[destGUID] and data.GUIDs[destGUID].unitName or "error")..") - "..(data.ownOnly and "own only" or "not own only")..", "..sourceName, 3);
+                            data.GUIDs = data.GUIDs or {};
+                            data.GUIDs[destGUID] = nil;
+                            
+                            updateRegion(id, data, triggernum);
+                        end
                     end
                 end
             end
@@ -803,6 +807,7 @@ do
             if(pendingTracks[GUID]) then
                 for spellName,_ in pairs(pendingTracks[GUID]) do
                     updateSpell(spellName, unit, GUID);
+                    pendingTracks[GUID][spellName] = nil;
                 end
             end
         end
@@ -813,6 +818,25 @@ do
             if(pendingTracks[GUID]) then
                 for spellName,_ in pairs(pendingTracks[GUID]) do
                     updateSpell(spellName, unit, GUID);
+                    pendingTracks[GUID][spellName] = nil;
+                end
+            end
+        end
+    end
+    
+    local function checkExists()
+        for unit, auras in pairs(loaded_auras) do
+            if not(WeakAuras.unit_types[unit]) then
+                for id, triggers in pairs(auras) do
+                    for triggernum, data in pairs(triggers) do
+                        if(data.GUIDs) then
+                            for GUID, GUIDData in pairs(data.GUIDs) do
+                                data.GUIDs[GUID] = nil;
+                                
+                                updateRegion(id, data, triggernum);
+                            end
+                        end
+                    end
                 end
             end
         end
@@ -821,16 +845,21 @@ do
     local function handleEvent(frame, event, ...)
         if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
             combatLog(...);
+        elseif(event:find("ZONE")) then
+            checkExists();
         else
             uidTrack(...);
         end
     end
     
     function WeakAuras.InitMultiAura()
-        combatAuraFrame = CreateFrame("frame");
-        combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-        combatAuraFrame:RegisterEvent("UNIT_TARGET");
-        combatAuraFrame:SetScript("OnEvent", handleEvent);
+        if not(combatAuraFrame) then
+            combatAuraFrame = CreateFrame("frame");
+            combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            combatAuraFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+            combatAuraFrame:RegisterEvent("UNIT_TARGET");
+            combatAuraFrame:SetScript("OnEvent", handleEvent);
+        end
     end
 end
 
@@ -1114,7 +1143,7 @@ function WeakAuras.ScanAll()
     for unit, auras in pairs(loaded_auras) do
         if(unit == "group") then
             WeakAuras.ScanAurasGroup();
-        else
+        elseif(WeakAuras.unit_types[unit]) then
             WeakAuras.ScanAuras(unit);
         end
     end
@@ -1456,7 +1485,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         for unit, auras in pairs(loaded_auras) do
             if(unit == "group") then
                 WeakAuras.ScanAurasGroup();
-            else
+            elseif(WeakAuras.unit_types[unit]) then
                 WeakAuras.ScanAuras(unit);
             end
         end
@@ -2131,6 +2160,11 @@ function WeakAuras.pAdd(data)
         error("Improper arguments to WeakAuras.Add - id not defined");
     else
         local region = WeakAuras.SetRegion(data);
+        if(WeakAuras.clones[id]) then
+            for cloneNum, _ in pairs(WeakAuras.clones[id]) do
+                WeakAuras.SetRegion(data, cloneNum);
+            end
+        end
         
         data.load = data.load or {};
         data.actions = data.actions or {};

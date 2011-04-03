@@ -15,6 +15,7 @@ local dynFrame = CreateFrame("frame");
 WeakAuras.transmitCache = {};
 
 local iconCache = {};
+local idCache = {};
 
 local regionOptions = WeakAuras.regionOptions;
 local displayButtons = {};
@@ -317,6 +318,10 @@ function WeakAuras.CreateIconCache(callback)
                     if not(iconCache[name]) then
                         iconCache[name] = icon;
                     end
+                    if not(idCache[name]) then
+                        idCache[name] = {}
+                    end
+                    idCache[name][id] = true;
                     misses = 0;
                 else
                     misses = misses + 1;
@@ -902,6 +907,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         --This is a very slow operation, so it's only done once, and the result is subsequently saved
         odb.iconCache = odb.iconCache or {};
         iconCache = odb.iconCache;
+        odb.idCache = odb.idCache or {};
+        idCache = odb.idCache;
         local _, build = GetBuildInfo();
         local locale = GetLocale();
         local version = WeakAuras.versionString
@@ -1834,7 +1841,15 @@ function WeakAuras.AddOption(id, data)
                         name = L["Custom Code"],
                         order = 13,
                         multiline = true,
-                        width = "double",
+                        hidden = function() return not data.actions.start.do_custom end
+                    },
+                    start_expand = {
+                        type = "execute",
+                        order = 14,
+                        name = L["Expand Text Editor"],
+                        func = function()
+                            WeakAuras.TextEditor(data, {"actions", "start", "custom"}, true)
+                        end,
                         hidden = function() return not data.actions.start.do_custom end
                     },
                     start_customError = {
@@ -1938,6 +1953,15 @@ function WeakAuras.AddOption(id, data)
                         order = 33,
                         multiline = true,
                         width = "double",
+                        hidden = function() return not data.actions.finish.do_custom end
+                    },
+                    finish_expand = {
+                        type = "execute",
+                        order = 34,
+                        name = L["Expand Text Editor"],
+                        func = function()
+                            WeakAuras.TextEditor(data, {"actions", "finish", "custom"}, true)
+                        end,
                         hidden = function() return not data.actions.finish.do_custom end
                     },
                     finish_customError = {
@@ -2103,7 +2127,6 @@ function WeakAuras.AddOption(id, data)
                         type = "input",
                         multiline = true,
                         name = L["Custom Function"],
-                        width = "double",
                         order = 35.3,
                         hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.alphaType ~= "custom" or not data.animation.start.use_alpha end,
                         get = function() return data.animation.start.alphaFunc and data.animation.start.alphaFunc:sub(8); end,
@@ -3140,6 +3163,29 @@ function WeakAuras.AddOption(id, data)
     WeakAuras.ReloadTriggerOptions(data);
 end
 
+
+function WeakAuras.GetSpellTooltipText(id)
+    local tooltip = WeakAuras.GetHiddenTooltip();
+    tooltip:SetSpellByID(id);
+    local lines = { tooltip:GetRegions() };
+    local i = 1;
+    local tooltipText = "";
+    while(lines[i]) do
+        if(lines[i]:GetObjectType() == "FontString") then
+            if(lines[i]:GetText()) then
+                if(tooltipText == "") then
+                    tooltipText = lines[i]:GetText();
+                else
+                    tooltipText = tooltipText.." - "..lines[i]:GetText();
+                end
+            end
+        end
+        i = i + 1;
+    end
+    tooltipText = tooltipText or L["No tooltip text"];
+    return tooltipText;
+end
+
 function WeakAuras.ReloadTriggerOptions(data)
     local id = data.id;
     local trigger, untrigger;
@@ -3178,6 +3224,44 @@ function WeakAuras.ReloadTriggerOptions(data)
         else
             trigger = data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
             untrigger = data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
+        end
+    end
+    
+    local function getAuraMatchesLabel(name)
+        local ids = idCache[name]
+        if(ids) then
+            local descText = "";
+            local numMatches = 0;
+            for id, _ in pairs(ids) do
+                numMatches = numMatches + 1;
+            end
+            if(numMatches == 1) then
+                return L["1 Match"];
+            else
+                return L["%i Matches"]:format(numMatches);
+            end
+        else
+            return "";
+        end
+    end
+    
+    local function getAuraMatchesList(name)
+        local ids = idCache[name]
+        if(ids) then
+            local descText = "";
+            for id, _ in pairs(ids) do
+                local name, _, icon = GetSpellInfo(id);
+                if(icon) then
+                    if(descText == "") then
+                        descText = "|T"..icon..":0|t: "..id;
+                    else
+                        descText = descText.."\n|T"..icon..":0|t: "..id;
+                    end
+                end
+            end
+            return descText;
+        else
+            return "";
         end
     end
     
@@ -3343,7 +3427,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name1icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[1]) end,
+            desc = function() return getAuraMatchesList(trigger.names[1]) end,
             width = "half",
             image = function() return iconCache[trigger.names[1]] or "", 18, 18 end,
             order = 11,
@@ -3381,7 +3466,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name2icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[2]) end,
+            desc = function() return getAuraMatchesList(trigger.names[2]) end,
             width = "half",
             image = function() return iconCache[trigger.names[2]] or "", 18, 18 end,
             order = 14,
@@ -3418,7 +3504,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name3icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[3]) end,
+            desc = function() return getAuraMatchesList(trigger.names[3]) end,
             width = "half",
             image = function() return iconCache[trigger.names[3]] or "", 18, 18 end,
             order = 17,
@@ -3455,7 +3542,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name4icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[4]) end,
+            desc = function() return getAuraMatchesList(trigger.names[4]) end,
             width = "half",
             image = function() return iconCache[trigger.names[4]] or "", 18, 18 end,
             order = 20,
@@ -3493,7 +3581,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name5icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[5]) end,
+            desc = function() return getAuraMatchesList(trigger.names[5]) end,
             width = "half",
             image = function() return iconCache[trigger.names[5]] or "", 18, 18 end,
             order = 23,
@@ -3529,7 +3618,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name6icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[6]) end,
+            desc = function() return getAuraMatchesList(trigger.names[6]) end,
             width = "half",
             image = function() return iconCache[trigger.names[6]] or "", 18, 18 end,
             order = 26,
@@ -3566,7 +3656,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name7icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[7]) end,
+            desc = function() return getAuraMatchesList(trigger.names[7]) end,
             width = "half",
             image = function() return iconCache[trigger.names[7]] or "", 18, 18 end,
             order = 29,
@@ -3603,7 +3694,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name8icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[8]) end,
+            desc = function() return getAuraMatchesList(trigger.names[8]) end,
             width = "half",
             image = function() return iconCache[trigger.names[8]] or "", 18, 18 end,
             order = 32,
@@ -3640,7 +3732,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         name9icon = {
             type = "execute",
-            name = "",
+            name = function() return getAuraMatchesLabel(trigger.names[9]) end,
+            desc = function() return getAuraMatchesList(trigger.names[9]) end,
             width = "half",
             image = function() return iconCache[trigger.names[9]] or "", 18, 18 end,
             order = 35,
@@ -4974,6 +5067,8 @@ function WeakAuras.CreateFrame()
                 frame.iconPick.frame:Show();
             elseif(frame.window == "importexport") then
                 frame.importexport.frame:Show();
+            elseif(frame.window == "texteditor") then
+                frame.texteditor.frame:Show();
             end
             minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp");
             minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp");
@@ -4984,6 +5079,7 @@ function WeakAuras.CreateFrame()
             frame.texturePick.frame:Hide();
             frame.iconPick.frame:Hide();
             frame.importexport.frame:Hide();
+            frame.texteditor.frame:Hide();
             frame.container.frame:Hide();
             minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp");
             minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp");
@@ -5457,6 +5553,162 @@ function WeakAuras.CreateFrame()
         frame.container.frame:Show();
         frame.buttonsContainer.frame:Show();
         frame.window = "default";
+    end
+    
+    local texteditor = AceGUI:Create("InlineGroup");
+    texteditor.frame:SetParent(frame);
+    texteditor.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
+    texteditor.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+    texteditor.frame:Hide();
+    texteditor:SetLayout("flow");
+    frame.texteditor = texteditor;
+    
+    local texteditorbox = AceGUI:Create("MultiLineEditBox");
+    texteditorbox:SetWidth(400);
+    texteditorbox:SetNumLines(25);
+    texteditorbox.button:Hide();
+    texteditor:AddChild(texteditorbox);
+    
+    local texteditorCancel = CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
+    texteditorCancel:SetScript("OnClick", function() texteditor:CancelClose() end);
+    texteditorCancel:SetPoint("BOTTOMRIGHT", -27, 13);
+    texteditorCancel:SetHeight(20);
+    texteditorCancel:SetWidth(100);
+    texteditorCancel:SetText(L["Cancel"]);
+    
+    local texteditorClose = CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
+    texteditorClose:SetScript("OnClick", function() texteditor:Close() end);
+    texteditorClose:SetPoint("RIGHT", texteditorCancel, "LEFT", -10, 0)
+    texteditorClose:SetHeight(20);
+    texteditorClose:SetWidth(100);
+    texteditorClose:SetText(L["Done"]);
+    
+    local texteditorError = texteditor.frame:CreateFontString(nil, "OVERLAY");
+    texteditorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
+    texteditorError:SetJustifyH("LEFT");
+    texteditorError:SetJustifyV("TOP");
+    texteditorError:SetTextColor(1, 0, 0);
+    texteditorError:SetPoint("TOPLEFT", texteditorbox.frame, "BOTTOMLEFT", 5, 25);
+    texteditorError:SetPoint("BOTTOMRIGHT", texteditorCancel, "TOPRIGHT");
+    
+    local function valueFromPath(data, path)
+        if(#path == 1) then
+            return data[path[1]];
+        else
+            local reducedPath = {};
+            for i=2,#path do
+                reducedPath[i-1] = path[i];
+            end
+            return valueFromPath(data[path[1]], reducedPath);
+        end
+    end
+    
+    local function valueToPath(data, path, value)
+        if(#path == 1) then
+            data[path[1]] = value;
+        else
+            local reducedPath = {};
+            for i=2,#path do
+                reducedPath[i-1] = path[i];
+            end
+            valueToPath(data[path[1]], reducedPath, value);
+        end
+    end
+    
+    function texteditor.Open(self, data, path, enclose)
+        self.data = data;
+        self.path = path;
+        if(frame.window == "texture") then
+            frame.texturePick:CancelClose();
+        elseif(frame.window == "icon") then
+            frame.iconPick:CancelClose();
+        end
+        frame.container.frame:Hide();
+        frame.buttonsContainer.frame:Hide();
+        self.frame:Show();
+        frame.window = "texteditor";
+        local title = (type(data.id) == "string" and data.id or L["Temporary Group"]).." -";
+        for index, field in pairs(path) do
+            title = title.." "..field:sub(1, 1):upper()..field:sub(2);
+        end
+        texteditorbox:SetLabel(title);
+        texteditorbox.editBox:SetScript("OnEscapePressed", function() texteditor:CancelClose(); end);
+        texteditorbox.editBox:SetScript("OnChar", nil);
+        texteditorbox.editBox:SetScript("OnMouseUp", nil);
+        texteditorbox.editBox:SetScript("OnTextChanged", function()
+            local str = texteditorbox:GetText();
+            if not(str) then
+                texteditorError:SetText("");
+            else
+                local _, errorString
+                if(enclose) then
+                    _, errorString = loadstring("return function() "..str.." end");
+                else
+                    _, errorString = loadstring("return "..str);
+                end
+                texteditorError:SetText(errorString or "");
+            end
+        end);
+        if(data.controlledChildren) then
+            local singleText;
+            local sameTexts = true;
+            local combinedText = "";
+            for index, childId in pairs(data.controlledChildren) do
+                local childData = WeakAuras.GetData(childId);
+                local text = valueFromPath(childData, path);
+                if not(singleText) then
+                    singleText = text;
+                else
+                    if not(singleText == text) then
+                        sameTexts = false;
+                    end
+                end
+                if not(combinedText == "") then
+                    combinedText = combinedText.."\n\n";
+                end
+                combinedText = combinedText.."--"..childId.."\n";
+                combinedText = combinedText..(valueFromPath(childData, path) or "");
+            end
+            if(sameTexts) then
+                texteditorbox:SetText(singleText or "");
+            else
+                texteditorbox:SetText(combinedText);
+            end
+        else
+            texteditorbox:SetText(valueFromPath(data, path) or "");
+        end
+        texteditorbox:SetFocus();
+    end
+    
+    function texteditor.CancelClose(self)
+        texteditorbox:ClearFocus();
+        self.frame:Hide();
+        frame.container.frame:Show();
+        frame.buttonsContainer.frame:Show();
+        frame.window = "default";
+    end
+    
+    function texteditor.Close(self)
+        if(self.data.controlledChildren) then
+            for index, childId in pairs(self.data.controlledChildren) do
+                local childData = WeakAuras.GetData(childId);
+                valueToPath(childData, self.path, texteditorbox:GetText());
+                WeakAuras.Add(childData);
+            end
+        else
+            valueToPath(self.data, self.path, texteditorbox:GetText());
+            WeakAuras.Add(self.data);
+        end
+        
+        texteditorbox:ClearFocus();
+        self.frame:Hide();
+        frame.container.frame:Show();
+        frame.buttonsContainer.frame:Show();
+        frame.window = "default";
+        
+        frame:RefreshPick();
+        if(type(id) == "string") then
+        end
     end
     
     local buttonsContainer = AceGUI:Create("InlineGroup");
@@ -6242,7 +6494,19 @@ tXmdmY4fDE5]];
         end
     end
     
+    frame.RefreshPick = function(self)
+        if(type(self.pickedDisplay) == "string") then
+            self:FillOptions(displayOptions[self.pickedDisplay]);
+        else
+            self:FillOptions(displayOptions[tempGroup.id]);
+        end
+    end
+    
     return frame;
+end
+
+function WeakAuras.TextEditor(...)
+    frame.texteditor:Open(...);
 end
 
 function WeakAuras.ExportToString(id)
