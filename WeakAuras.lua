@@ -706,6 +706,7 @@ do
                         region:SetDurationInfo(auradata.duration, auradata.expirationTime);
                     end
                     --TODO: HOW DOES THIS WORK WITH CLONES??
+                    --STILL HAVE NO IDEA
                     duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime);
                     if(region.SetName) then
                         region:SetName(auradata.unitName);
@@ -831,9 +832,11 @@ do
                     for triggernum, data in pairs(triggers) do
                         if(data.GUIDs) then
                             for GUID, GUIDData in pairs(data.GUIDs) do
-                                data.GUIDs[GUID] = nil;
-                                
-                                updateRegion(id, data, triggernum);
+                                if(GUIDData.expirationTime and GUIDData.expirationTime + 2 < GetTime()) then
+                                    data.GUIDs[GUID] = nil;
+                                    
+                                    updateRegion(id, data, triggernum);
+                                end
                             end
                         end
                     end
@@ -845,8 +848,6 @@ do
     local function handleEvent(frame, event, ...)
         if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
             combatLog(...);
-        elseif(event:find("ZONE")) then
-            checkExists();
         else
             uidTrack(...);
         end
@@ -856,9 +857,9 @@ do
         if not(combatAuraFrame) then
             combatAuraFrame = CreateFrame("frame");
             combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-            combatAuraFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
             combatAuraFrame:RegisterEvent("UNIT_TARGET");
             combatAuraFrame:SetScript("OnEvent", handleEvent);
+            timer:ScheduleRepeatingTimer(checkExists, 10)
         end
     end
 end
@@ -2571,7 +2572,7 @@ function WeakAuras.SetRegion(data, cloneNum)
                     region.triggers = region.triggers or {};
 
                     function region:TestTriggers(trigger_count)
-                        if(trigger_count > #data.additional_triggers) then
+                        if(trigger_count > ((data.disjunctive and 0) or #data.additional_triggers)) then
                             region:Expand();
                             return true;
                         else
@@ -2692,10 +2693,10 @@ function WeakAuras.PerformActions(data, type)
         if(actions.do_sound and actions.sound) then
             if(actions.sound == " custom") then
                 if(actions.sound_path) then
-                    PlaySoundFile(actions.sound_path);
+                    PlaySoundFile(actions.sound_path, actions.sound_channel);
                 end
             else
-                PlaySoundFile(actions.sound);
+                PlaySoundFile(actions.sound, actions.sound_channel);
             end
         end
         

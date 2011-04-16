@@ -23,6 +23,7 @@ Prototypes.lua
 Types.lua
 WeakAuras.lua
 Transmission.lua
+ForAllIndentsAndPurposes.lua
 
 RegionTypes\progresstexture.lua
 RegionTypes\texture.lua

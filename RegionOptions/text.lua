@@ -49,13 +49,24 @@ local function createOptions(id, data)
         },
         customText = {
             type = "input",
-            width = "double",
+            width = "normal",
             hidden = function()
                 return not data.displayText:find("%%c")
             end,
             multiline = true,
             name = L["Custom Function"],
             order = 37
+        },
+        customText_expand = {
+            type = "execute",
+            order = 38,
+            name = L["Expand Text Editor"],
+            func = function()
+                WeakAuras.TextEditor(data, {"customText"})
+            end,
+            hidden = function()
+                return not data.displayText:find("%%c")
+            end,
         },
         color = {
             type = "color",
