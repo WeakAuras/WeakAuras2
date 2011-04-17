@@ -3065,7 +3065,7 @@ function WeakAuras.CancelAnimation(namespace, id, resetPos, resetAlpha, resetSca
 end
 
 function WeakAuras.GetData(id)
-    return db.displays[id];
+    return id and db.displays[id];
 end
 
 function WeakAuras.CanHaveDuration(data)

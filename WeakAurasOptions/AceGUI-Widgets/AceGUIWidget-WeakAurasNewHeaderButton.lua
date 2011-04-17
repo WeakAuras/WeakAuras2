@@ -22,7 +22,7 @@ Methods
 -------------------------------------------------------------------------------]]
 local methods = {
 	["OnAcquire"] = function(self)
-		self:SetWidth(150);
+		self:SetWidth(1000);
 		self:SetHeight(20);
 	end,
 	["SetText"] = function(self, text)
@@ -53,7 +53,7 @@ local function Constructor()
   local name = Type..AceGUI:GetNextWidgetNum(Type)
 	local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(20);
-  button:SetWidth(150);
+  button:SetWidth(1000);
   button:SetDisabledFontObject("GameFontNormal");
   
   local background = button:CreateTexture(nil, "BACKGROUND");

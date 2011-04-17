@@ -46,7 +46,7 @@ Methods
 -------------------------------------------------------------------------------]]
 local methods = {
     ["OnAcquire"] = function(self)
-        self:SetWidth(150);
+        self:SetWidth(1000);
         self:SetHeight(32);
     end,
     ["Initialize"] = function(self)
@@ -445,7 +445,7 @@ local methods = {
             self:SetViewTest(self.callbacks.ViewTest);
             self:DisableGroup();
             self.callbacks.UpdateExpandButton();
-            self:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
+            self:SetOnExpandCollapse(function() WeakAuras.debug("expandcollapse", 3); WeakAuras.SortDisplayButtons(nil, true) end);
         else
             local convertMenu = {};
             for regionType, regionData in pairs(WeakAuras.regionOptions) do
@@ -864,7 +864,7 @@ local function Constructor()
     local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
     local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
     button:SetHeight(32);
-    button:SetWidth(150);
+    button:SetWidth(1000);
     button.dgroup = nil;
     button.data = {};
     

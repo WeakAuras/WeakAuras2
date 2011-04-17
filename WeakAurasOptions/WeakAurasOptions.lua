@@ -1106,6 +1106,51 @@ function WeakAuras.SetIconName(data, region)
     end
 end
 
+function WeakAuras.GetSortedOptionsLists()
+    local loadedSorted, unloadedSorted = {}, {};
+    local to_sort = {};
+    for id, data in pairs(db.displays) do
+        if(data.parent) then
+            --Do nothing; children will be added later
+        elseif(loaded[id]) then
+            tinsert(to_sort, id);
+        end
+    end
+    table.sort(to_sort, function(a, b) return a < b end);
+    for _, id in ipairs(to_sort) do
+        tinsert(loadedSorted, id);
+        local data = WeakAuras.GetData(id);
+        local controlledChildren = data.controlledChildren;
+        if(controlledChildren) then
+            for _, childId in pairs(controlledChildren) do
+                tinsert(loadedSorted, childId);
+            end
+        end
+    end
+    
+    wipe(to_sort);
+    for id, data in pairs(db.displays) do
+        if(data.parent) then
+            --Do nothing; children will be added later
+        elseif not(loaded[id]) then
+            tinsert(to_sort, id);
+        end
+    end
+    table.sort(to_sort, function(a, b) return a < b end);
+    for _, id in ipairs(to_sort) do
+        tinsert(unloadedSorted, id);
+        local data = WeakAuras.GetData(id);
+        local controlledChildren = data.controlledChildren;
+        if(controlledChildren) then
+            for _, childId in pairs(controlledChildren) do
+                tinsert(unloadedSorted, childId);
+            end
+        end
+    end
+    
+    return loadedSorted, unloadedSorted;
+end
+
 function WeakAuras.BuildOptions()
     local total = 0;
     for _,_ in pairs(db.displays) do
@@ -1151,6 +1196,8 @@ function WeakAuras.BuildOptions()
 end
 
 function WeakAuras.LayoutDisplayButtons()
+    local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
+    
     frame.buttonsScroll:AddChild(frame.newButton);
     frame.buttonsScroll:AddChild(frame.loadedButton);
     local total = 0;
@@ -1158,27 +1205,28 @@ function WeakAuras.LayoutDisplayButtons()
         total = total + 1;
     end
     local num = 0;
-    local id, data = next(db.displays);
+    local index, id = next(loadedSorted);
+    local data = WeakAuras.GetData(id);
     dynFrame:SetScript("OnUpdate", function()
         local start = GetTime();
         while(GetTime() - start < 0.01 and data) do
             if(data) then
-                if(loaded[data.id]) then
-                    WeakAuras.EnsureDisplayButton(data);
-                    WeakAuras.UpdateDisplayButton(data);
-                    local button = displayButtons[data.id]
-                    frame.buttonsScroll:AddChild(button);
-                    WeakAuras.SetIconNames(data);
-                    if(WeakAuras.regions[data.id].region.SetStacks) then
-                        WeakAuras.regions[data.id].region:SetStacks(1);
-                    end
-                    WeakAuras.SortDisplayButtons();
-                    num = num + 1;
+                WeakAuras.EnsureDisplayButton(data);
+                WeakAuras.UpdateDisplayButton(data);
+                local button = displayButtons[data.id]
+                frame.buttonsScroll:AddChild(button);
+                WeakAuras.SetIconNames(data);
+                if(WeakAuras.regions[data.id].region.SetStacks) then
+                    WeakAuras.regions[data.id].region:SetStacks(1);
                 end
+                num = num + 1;
             end
             frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
-            id, data = next(db.displays, id);
+            index, id = next(loadedSorted, index);
+            data = WeakAuras.GetData(id);
         end
+        
+        WeakAuras.SortDisplayButtons();
         
         if not(data) then
             for id, button in pairs(displayButtons) do
@@ -1189,30 +1237,33 @@ function WeakAuras.LayoutDisplayButtons()
             
             frame.buttonsScroll:AddChild(frame.unloadedButton);
             
-            local id, data = next(db.displays);
+            index, id = next(unloadedSorted);
+            data = WeakAuras.GetData(id);
             dynFrame:SetScript("OnUpdate", function()
                 local start = GetTime();
                 while(GetTime() - start < 0.01 and data) do
                     if(data) then
-                        if not(loaded[data.id]) then
-                            WeakAuras.EnsureDisplayButton(data);
-                            WeakAuras.UpdateDisplayButton(data);
-                            frame.buttonsScroll:AddChild(displayButtons[data.id]);
-                            WeakAuras.SetIconNames(data);
-                            if(WeakAuras.regions[data.id].region.SetStacks) then
-                                WeakAuras.regions[data.id].region:SetStacks(1);
-                            end
-                            WeakAuras.SortDisplayButtons();
-                            num = num + 1;
+                        WeakAuras.EnsureDisplayButton(data);
+                        WeakAuras.UpdateDisplayButton(data);
+                        frame.buttonsScroll:AddChild(displayButtons[data.id]);
+                        WeakAuras.SetIconNames(data);
+                        if(WeakAuras.regions[data.id].region.SetStacks) then
+                            WeakAuras.regions[data.id].region:SetStacks(1);
                         end
+                        num = num + 1;
                     end
                     frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
-                    id, data = next(db.displays, id);
+                    index, id = next(unloadedSorted, index);
+                    data = WeakAuras.GetData(id);
                 end
                 
                 if not(data) then
                     dynFrame:SetScript("OnUpdate", nil);
                     frame.loadProgress:Hide();
+                    
+                    WeakAuras.SortDisplayButtons();
+                    frame.filterInput:Show();
+                    frame.filterInputClear:Show();
                 end
             end);
         end
@@ -5153,10 +5204,10 @@ function WeakAuras.CreateFrame()
         insets = { left = 8, right = 8, top = 8, bottom = 8 }
     });
     frame:SetBackdropColor(0, 0, 0, 1);
-    frame:SetWidth(610);
-    frame:SetHeight(492);
     frame:EnableMouse(true);
     frame:SetMovable(true);
+    frame:SetResizable(true);
+    frame:SetMinResize(610, 240);
     frame:SetFrameStrata("DIALOG");
     frame.window = "default";
     
@@ -5170,6 +5221,16 @@ function WeakAuras.CreateFrame()
     end
     frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
     frame:Hide();
+    
+    local width, height;
+    if(db.frame) then
+        width, height = db.frame.width, db.frame.height;
+    end
+    if not(width and height) then
+        width, height = 630, 492;
+    end
+    frame:SetWidth(width);
+    frame:SetHeight(height);
     
     local close = CreateFrame("Frame", nil, frame);
     close:SetWidth(17)
@@ -5254,6 +5315,57 @@ function WeakAuras.CreateFrame()
     local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
     titletext:SetText(L["WeakAuras Options"]);
+    
+    local sizer_sw = CreateFrame("button",nil,frame);
+    sizer_sw:SetPoint("bottomleft",frame,"bottomleft",0,0);
+    sizer_sw:SetWidth(25);
+    sizer_sw:SetHeight(25);
+    sizer_sw:EnableMouse();
+    sizer_sw:SetScript("OnMouseDown", function() frame:StartSizing("bottomleft") end);
+    sizer_sw:SetScript("OnMouseUp", function()
+        frame:StopMovingOrSizing()
+        db.frame = db.frame or {};
+        db.frame.width = frame:GetWidth();
+        db.frame.height = frame:GetHeight();
+    end);
+    frame.sizer_sw = sizer_sw;
+    
+    sizer_sw_texture = sizer_sw:CreateTexture(nil, "OVERLAY");
+    sizer_sw_texture:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up");
+    sizer_sw_texture:SetTexCoord(1, 0, 0, 1);
+    sizer_sw_texture:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
+    sizer_sw_texture:SetPoint("topright", sizer_sw, "topright");
+    sizer_sw:SetNormalTexture(sizer_sw_texture);
+    
+    sizer_sw_texture_pushed = sizer_sw:CreateTexture(nil, "OVERLAY");
+    sizer_sw_texture_pushed:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down");
+    sizer_sw_texture_pushed:SetTexCoord(1, 0, 0, 1);
+    sizer_sw_texture_pushed:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
+    sizer_sw_texture_pushed:SetPoint("topright", sizer_sw, "topright");
+    sizer_sw:SetPushedTexture(sizer_sw_texture_pushed);
+    
+    sizer_sw_texture_highlight = sizer_sw:CreateTexture(nil, "OVERLAY");
+    sizer_sw_texture_highlight:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight");
+    sizer_sw_texture_highlight:SetTexCoord(1, 0, 0, 1);
+    sizer_sw_texture_highlight:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
+    sizer_sw_texture_highlight:SetPoint("topright", sizer_sw, "topright");
+    sizer_sw:SetHighlightTexture(sizer_sw_texture_highlight);
+    
+    -- local line1 = sizer_sw:CreateTexture(nil, "BACKGROUND")
+    -- line1:SetWidth(14)
+    -- line1:SetHeight(14)
+    -- line1:SetPoint("bottomleft", 8, 8)
+    -- line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+    -- local x = 0.1 * 14/17
+		-- line1:SetTexCoord(0.05,0.5 - x, 0.5 + x,0.5, 0.05 - x,0.5, 0.05,0.5 + x)
+
+    -- local line2 = sizer_sw:CreateTexture(nil, "BACKGROUND")
+    -- line2:SetWidth(8)
+    -- line2:SetHeight(8)
+    -- line2:SetPoint("bottomleft", 8, 8)
+    -- line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+    -- local x = 0.1 * 8/17
+		-- line2:SetTexCoord(0.05,0.5 - x, 0.5 + x,0.5, 0.05 - x,0.5, 0.05,0.5 + x)
     --------------------------------------------------------
     
 
@@ -5323,16 +5435,17 @@ function WeakAuras.CreateFrame()
     local container = AceGUI:Create("InlineGroup");
     container.frame:SetParent(frame);
     container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
-    container.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 187, -10);
+    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -423, -10);
     container.frame:Show();
     container.titletext:Hide();
     frame.container = container;
     
     local texturePick = AceGUI:Create("InlineGroup");
     texturePick.frame:SetParent(frame);
-    texturePick.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
+    texturePick.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 42);
     texturePick.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
     texturePick.frame:Hide();
+    texturePick:SetLayout("flow");
     frame.texturePick = texturePick;
     texturePick.children = {};
     texturePick.categories = {};
@@ -5341,13 +5454,13 @@ function WeakAuras.CreateFrame()
     texturePickDropdown:SetLayout("fill");
     texturePickDropdown.width = "fill";
     texturePickDropdown:SetHeight(390);
-    texturePick:SetLayout("flow");
+    texturePick:SetLayout("fill");
     texturePick:AddChild(texturePickDropdown);
     texturePickDropdown.list = {};
     texturePickDropdown:SetGroupList(texturePickDropdown.list);
     
     local texturePickScroll = AceGUI:Create("ScrollFrame");
-    texturePickScroll.width = 370;
+    texturePickScroll:SetWidth(540);
     texturePickScroll:SetLayout("flow");
     texturePickDropdown:AddChild(texturePickScroll);
     
@@ -5516,7 +5629,7 @@ function WeakAuras.CreateFrame()
     
     local texturePickCancel = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
     texturePickCancel:SetScript("OnClick", texturePick.CancelClose)
-    texturePickCancel:SetPoint("BOTTOMRIGHT", -27, 11)
+    texturePickCancel:SetPoint("BOTTOMRIGHT", -27, -23)
     texturePickCancel:SetHeight(20)
     texturePickCancel:SetWidth(100)
     texturePickCancel:SetText(L["Cancel"])
@@ -5712,12 +5825,11 @@ function WeakAuras.CreateFrame()
     importexport.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
     importexport.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
     importexport.frame:Hide();
-    importexport:SetLayout("flow");
+    importexport:SetLayout("fill");
     frame.importexport = importexport;
     
     local importexportbox = AceGUI:Create("MultiLineEditBox");
     importexportbox:SetWidth(400);
-    importexportbox:SetNumLines(27);
     importexportbox.button:Hide();
     importexport:AddChild(importexportbox);
     
@@ -5780,14 +5892,13 @@ function WeakAuras.CreateFrame()
     texteditor.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
     texteditor.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
     texteditor.frame:Hide();
-    texteditor:SetLayout("flow");
+    texteditor:SetLayout("fill");
     frame.texteditor = texteditor;
     
     local SharedMedia = LibStub("LibSharedMedia-3.0");
     
     local texteditorbox = AceGUI:Create("MultiLineEditBox");
     texteditorbox:SetWidth(400);
-    texteditorbox:SetNumLines(25);
     texteditorbox.button:Hide();
     local fontPath = SharedMedia:Fetch("font", "Jack Input");
     if(fontPath) then
@@ -6000,6 +6111,7 @@ function WeakAuras.CreateFrame()
     buttonsContainer.frame:SetParent(frame);
     buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12);
     buttonsContainer.frame:SetPoint("TOP", frame, "TOP", 0, -10);
+    buttonsContainer.frame:SetPoint("right", container.frame, "left", -17);
     buttonsContainer.frame:Show();
     frame.buttonsContainer = buttonsContainer;
     
@@ -6007,6 +6119,47 @@ function WeakAuras.CreateFrame()
     loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
     loadProgress:SetText(L["Creating options: "].."0/0");
     frame.loadProgress = loadProgress;
+    
+    local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", buttonsContainer.frame, "InputBoxTemplate");
+    
+    filterInput:SetAutoFocus(false);
+    filterInput:SetScript("OnTextChanged", function(...) WeakAuras.SortDisplayButtons(filterInput:GetText()) end);
+    filterInput:SetScript("OnEnterPressed", function(...) filterInput:ClearFocus() end);
+    filterInput:SetScript("OnEscapePressed", function(...) filterInput:SetText(""); filterInput:ClearFocus() end);
+    filterInput:SetWidth(150);
+    filterInput:SetPoint("BOTTOMLEFT", buttonsContainer.frame, "TOPLEFT", 2, -18);
+    filterInput:SetPoint("TOPLEFT", buttonsContainer.frame, "TOPLEFT", 2, -2);
+    --Fix from page 181-182 of World of Warcraft Programming: A Guide and Reference for Creating WoW Addon by James Whitehead
+    WeakAurasFilterInputMiddle:ClearAllPoints();
+    WeakAurasFilterInputMiddle:SetPoint("BOTTOMLEFT", WeakAurasFilterInputLeft, "BOTTOMRIGHT");
+    WeakAurasFilterInputMiddle:SetPoint("TOPRIGHT", WeakAurasFilterInputRight, "TOPLEFT");
+    --
+    WeakAurasFilterInputLeft:ClearAllPoints();
+    WeakAurasFilterInputLeft:SetPoint("bottomleft", filterInput, "bottomleft");
+    WeakAurasFilterInputLeft:SetPoint("topleft", filterInput, "topleft");
+    WeakAurasFilterInputRight:ClearAllPoints();
+    WeakAurasFilterInputRight:SetPoint("bottomright", filterInput, "bottomright");
+    WeakAurasFilterInputRight:SetPoint("topright", filterInput, "topright");
+    filterInput:SetTextInsets(16, 0, 0, 0);
+    local searchIcon = filterInput:CreateTexture(nil, "overlay");
+    searchIcon:SetTexture("Interface\\Common\\UI-Searchbox-Icon");
+    searchIcon:SetVertexColor(0.6, 0.6, 0.6);
+    searchIcon:SetWidth(14);
+    searchIcon:SetHeight(14);
+    searchIcon:SetPoint("left", filterInput, "left", 3, -1);
+    filterInput:SetFont("Fonts\\FRIZQT__.TTF", 10);
+    frame.filterInput = filterInput;
+    filterInput:Hide();
+    
+    local filterInputClear = CreateFrame("BUTTON", nil, buttonsContainer.frame);
+    frame.filterInputClear = filterInputClear;
+    filterInputClear:SetWidth(12);
+    filterInputClear:SetHeight(12);
+    filterInputClear:SetPoint("left", filterInput, "right", 0, -1);
+    filterInputClear:SetNormalTexture("Interface\\Common\\VoiceChat-Muted");
+    filterInputClear:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
+    filterInputClear:SetScript("OnClick", function() filterInput:SetText(""); filterInput:ClearFocus() end);
+    filterInputClear:Hide();
     
     local buttonsScroll = AceGUI:Create("ScrollFrame");
     buttonsScroll:SetLayout("flow");
@@ -6754,6 +6907,15 @@ tXmdmY4fDE5]];
         self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
     end
     
+    frame.CenterOnPicked = function(self)
+        local centerId = type(self.pickedDisplay) == "string" and self.pickedDisplay or self.pickedDisplay.controlledChildren[1];
+        
+        if(displayButtons[centerId]) then
+            local _, _, _, _, yOffset = displayButtons[centerId].frame:GetPoint(1);
+            self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+        end
+    end
+    
     frame.PickDisplayMultiple = function(self, id)
         if not(self.pickedDisplay) then
             self:PickDisplay(id);
@@ -6848,15 +7010,41 @@ function WeakAuras.UpdateGroupOrders(data)
     end
 end
 
-function WeakAuras.SortDisplayButtons(filter)
+local previousFilter;
+function WeakAuras.SortDisplayButtons(filter, overrideReset)
+    local recenter = false;
+    filter = filter or (overrideReset and previousFilter or "");
+    if(frame.filterInput:GetText() ~= filter) then
+        frame.filterInput:SetText(filter);
+    end
+    if(previousFilter and previousFilter ~= "" and (filter == "" or not filter)) then
+        recenter = true;
+    end
+    previousFilter = filter;
+    filter = filter:lower();
+    
     wipe(frame.buttonsScroll.children);
     tinsert(frame.buttonsScroll.children, frame.newButton);
     tinsert(frame.buttonsScroll.children, frame.loadedButton);
     local numLoaded = 0;
     local to_sort = {};
     local children = {};
+    local containsFilter = false;
     for id, child in pairs(displayButtons) do
-        if(frame.loadedButton:GetExpanded()) then
+        containsFilter = false;
+        local data = WeakAuras.GetData(id);
+        if(filter and data.controlledChildren) then
+            for index, childId in pairs(data.controlledChildren) do
+                if(childId:lower():find(filter)) then
+                    containsFilter = true;
+                    break;
+                end
+            end
+        end
+        if(
+            frame.loadedButton:GetExpanded()
+            and (not filter or id:lower():find(filter) or containsFilter)
+        ) then
             child.frame:Show();
             local group = child:GetGroup();
             if(group) then
@@ -6900,7 +7088,20 @@ function WeakAuras.SortDisplayButtons(filter)
     wipe(to_sort);
     wipe(children);
     for id, child in pairs(displayButtons) do
-        if(frame.unloadedButton:GetExpanded()) then
+        containsFilter = false;
+        local data = WeakAuras.GetData(id);
+        if(filter and data.controlledChildren) then
+            for index, childId in pairs(data.controlledChildren) do
+                if(childId:lower():find(filter)) then
+                    containsFilter = true;
+                    break;
+                end
+            end
+        end
+        if(
+            frame.unloadedButton:GetExpanded()
+            and (not filter or id:lower():find(filter) or containsFilter)
+        ) then
             local group = child:GetGroup();
             if(group) then
                 if not(loaded[group]) then
@@ -6939,6 +7140,9 @@ function WeakAuras.SortDisplayButtons(filter)
     end
     
     frame.buttonsScroll:DoLayout();
+    if(recenter) then
+        frame:CenterOnPicked();
+    end
 end
 
 WeakAuras.loadFrame:SetScript("OnEvent", function()
@@ -6978,11 +7182,8 @@ function WeakAuras.PickDisplayMultiple(id)
 end
 
 function WeakAuras.GetDisplayButton(id)
-    if(displayButtons[id]) then
+    if(id and displayButtons[id]) then
         return displayButtons[id];
-    elseif(id == "Cast") then
-        --WeakAuras.debug("No button for "..id, 3);
-        --WeakAuras.debug(debugstack());
     end
 end
 
@@ -6997,9 +7198,6 @@ end
 function WeakAuras.EnsureDisplayButton(data)
     local id = data.id;
     if not(displayButtons[id]) then
-        if(id == "Cast") then
-            WeakAuras.debug("Creating Cast", 1);
-        end
         displayButtons[id] = AceGUI:Create("WeakAurasDisplayButton");
         if(displayButtons[id]) then
             displayButtons[id]:SetData(data);
