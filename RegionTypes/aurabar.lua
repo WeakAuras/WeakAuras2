@@ -5,6 +5,8 @@ local default = {
     auto = true,
     timer = true,
     text = true,
+    displayTextRight = "%p",
+    displayTextLeft = "%n",
     texture = "Blizzard",
     width = 200,
     height = 15,
@@ -63,6 +65,7 @@ local function create(parent)
     stacks:ClearAllPoints();
     stacks:SetPoint("CENTER", icon, "CENTER");
     
+    region.values = {};
     region.duration = 0;
     region.expirationTime = math.huge;
     
@@ -331,12 +334,65 @@ local function modify(parent, region, data)
     end
     orient();
     
+    local textStr, shouldOrient;
+    local function UpdateText()
+        shouldOrient = false;
+        
+        textStr = data.displayTextLeft or "";
+        for symbol, v in pairs(WeakAuras.dynamic_texts) do
+            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+        end
+        
+        if(not text.displayTextLeft or #text.displayTextLeft ~= #textStr) then
+            shouldOrient = true;
+        end
+        if(text.displayTextLeft ~= textStr) then
+            text:SetText(textStr);
+            text.displayTextLeft = textStr;
+        end
+        
+        textStr = data.displayTextRight or "";
+        for symbol, v in pairs(WeakAuras.dynamic_texts) do
+            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+        end
+        
+        if(not timer.displayTextRight or #timer.displayTextRight ~= #textStr) then
+            shouldOrient = true;
+        end
+        if(timer.displayTextLeft ~= textStr) then
+            timer:SetText(textStr);
+            timer.displayTextLeft = textStr;
+        end
+        
+        if(shouldOrient) then
+            orient();
+        end
+    end
+    
+    if((data.displayTextLeft:find("%%c") or data.displayTextRight:find("%%c")) and data.customText) then
+        local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        if not(region.customTextUpdateFrame) then
+            region.customTextUpdateFrame = CreateFrame("frame");
+        end
+        local values = region.values;
+        region.customTextUpdateFrame:SetScript("OnUpdate", function()
+            local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
+            values.custom = custom;
+            UpdateText();
+        end);
+    elseif(region.customTextUpdateFrame) then
+        region.customTextUpdateFrame:SetScript("OnUpdate", nil);
+    end
+    
     function region:SetStacks(count)
         if(count and count > 0) then
+            region.values.stacks = count;
             stacks:SetText(count);
         else
+            region.values.stacks = 0;
             stacks:SetText("");
         end
+        UpdateText();
     end
     
     function region:Scale(scalex, scaley)
@@ -408,14 +464,17 @@ local function modify(parent, region, data)
     end
     if(data.icon) then
         function region:SetIcon(path)
-            icon:SetTexture(
+            local iconPath = (
                 WeakAuras.CanHaveAuto(data)
                 and data.auto
                 and path ~= ""
                 and path
                 or data.displayIcon
                 or "Interface\\Icons\\INV_Misc_QuestionMark"
-            )
+            );
+            icon:SetTexture(iconPath);
+            region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
+            UpdateText();
         end
         if(data.stacks) then
             stacks:Show();
@@ -433,20 +492,9 @@ local function modify(parent, region, data)
         text:Hide();
     end
     
-    local displayName, shouldOrient;
     function region:SetName(name)
-        displayName = (WeakAuras.CanHaveAuto(data) and data.auto and name or data.displayText) or data.id;
-        shouldOrient = false;
-        if(not text.displayName or #text.displayName ~= #displayName) then
-            shouldOrient = true;
-        end
-        if(text.displayName ~= displayName) then
-            text:SetText(displayName);
-            text.displayName = displayName;
-        end
-        if(shouldOrient) then
-            orient();
-        end
+        region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
+        UpdateText();
     end
     
     local displayValue, remaining, progress, remainingStr, shouldOrient;
@@ -479,21 +527,25 @@ local function modify(parent, region, data)
             remaining = remaining % 60;
             remainingStr = remainingStr..string.format("%02i", remaining);
         elseif(remaining > 0) then
-            remainingStr = remainingStr..string.format("%.1f", remaining);
+            remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
         else
             remainingStr = " ";
         end
-        shouldOrient = false;
-        if(not timer.displayValue or #timer.displayValue ~= #remainingStr) then
-            shouldOrient = true;
+        region.values.progress = remainingStr;
+        
+        local duration = region.duration;
+        local durationStr = "";
+        if(duration > 60) then
+            durationStr = string.format("%i:", math.floor(duration / 60));
+            duration = duration % 60;
+            durationStr = durationStr..string.format("%02i", duration);
+        elseif(duration > 0) then
+            durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+        else
+            durationStr = "INF";
         end
-        if(timer.displayValue ~= remainingStr) then
-            timer:SetText(remainingStr);
-            timer.displayValue = remainingStr;
-        end
-        if(shouldOrient) then
-            orient();
-        end
+        region.values.duration = durationStr;
+        UpdateText();
     end
     
     local function UpdateTimeInverse(self, elaps)
@@ -509,18 +561,9 @@ local function modify(parent, region, data)
             progress = 1 - progress;
         end
         progress = progress > 0.0001 and progress or 0.0001;
-        displayValue = string.format("%i", value);
-        shouldOrient = false;
-        if(not timer.displayValue or #timer.displayValue ~= #displayValue) then
-            shouldOrient = true;
-        end
-        if(timer.displayValue ~= displayValue) then
-            timer:SetText(displayValue);
-            timer.displayValue = displayValue;
-        end
-        if(shouldOrient) then
-            orient();
-        end
+        region.values.progress = value;
+        region.values.duration = total;
+        UpdateText();
         bar:SetValue(progress);
     end
     
@@ -557,8 +600,8 @@ local function modify(parent, region, data)
                 end
             else
                 bar:SetValue(1);
-                timer:SetText(" ");
                 region:SetScript("OnUpdate", nil);
+                UpdateText();
             end
         end
     end

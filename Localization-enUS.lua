@@ -1149,3 +1149,22 @@ L["Master"] = "Master"
 L["Sound Effects"] = "Sound Effects"
 L["Ambience"] = "Ambience"
 L["Music"] = "Music"
+L["Choose whether the displayed icon is automatic or defined manually"] = "Choose whether the displayed icon is automatic or defined manually"
+L["Dynamic text tooltip"] = [[
+There are several special codes available to make this text dynamic:
+
+|cFFFF0000%p|r - Progress - The remaining time of a timer, or a non-timer value
+|cFFFF0000%t|r - Total - The maximum duration of a timer, or a maximum non-timer value
+|cFFFF0000%n|r - Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name
+|cFFFF0000%i|r - Icon - The icon associated with the display
+|cFFFF0000%s|r - Stacks - The number of stacks of an aura (usually)
+|cFFFF0000%c|r - Custom - Allows you to define a custom Lua function that returns a string value to be displayed]]
+L["Left Text"] = "Left Text"
+L["Right Text"] = "Right Text"
+L["Top Text"] = "Top Text"
+L["Bottom Text"] = "Bottom Text"
+L["Remaining Time Precision"] = "Remaining Time Precision"
+L["Total Time Precision"] = "Total Time Precision"
+L["Text Position"] = "Text Position"
+L["Outside"] = "Outside"
+L["Inside"] = "Inside"

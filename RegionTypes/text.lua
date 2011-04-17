@@ -101,7 +101,7 @@ local function modify(parent, region, data)
             remaining = remaining % 60;
             remainingStr = remainingStr..string.format("%02i", remaining);
         elseif(remaining > 0) then
-            remainingStr = remainingStr..string.format("%.1f", remaining);
+            remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
         else
             remainingStr = "INF";
         end
@@ -114,7 +114,7 @@ local function modify(parent, region, data)
             duration = duration % 60;
             durationStr = durationStr..string.format("%02i", duration);
         elseif(duration > 0) then
-            durationStr = durationStr..string.format("%.1f", duration);
+            durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
         else
             durationStr = "INF";
         end
@@ -123,7 +123,7 @@ local function modify(parent, region, data)
     end
     
     local function UpdateValue(value, total)
-        region.values.progress = values;
+        region.values.progress = value;
         region.values.duration = total;
         UpdateText();
     end
@@ -152,7 +152,6 @@ local function modify(parent, region, data)
             else
                 UpdateValue(duration, expirationTime);
                 region:SetScript("OnUpdate", nil);
-                UpdateText();
             end
         else
             if(duration > 0.01) then

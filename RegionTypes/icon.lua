@@ -8,7 +8,9 @@ local default = {
     height = 64,
     alpha = 1.0,
     textColor = {1, 1, 1, 1},
+    displayStacks = "%s",
     stacksPoint = "BOTTOMRIGHT",
+    stacksContainment = "INSIDE",
     selfPoint = "CENTER",
     anchorPoint = "CENTER",
     xOffset = 0,
@@ -51,6 +53,7 @@ local function create(parent, data)
     local stacks = region:CreateFontString(nil, "OVERLAY");
     region.stacks = stacks;
     
+    region.values = {};
     region.duration = 0;
     region.expirationTime = math.huge;
     
@@ -80,7 +83,12 @@ local function modify(parent, region, data)
         syo = data.height / -10;
     end
     stacks:ClearAllPoints();
-    stacks:SetPoint(data.stacksPoint, icon, data.stacksPoint, sxo, syo);
+    if(data.stacksContainment == "INSIDE") then
+        stacks:SetPoint(data.stacksPoint, icon, data.stacksPoint, sxo, syo);
+    else
+        local selfPoint = WeakAuras.inverse_point_types[data.stacksPoint];
+        stacks:SetPoint(selfPoint, icon, data.stacksPoint, -0.5 * sxo, -0.5 * syo);
+    end
     stacks:SetFont(fontPath, data.fontSize, "OUTLINE");
     stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
     
@@ -89,23 +97,123 @@ local function modify(parent, region, data)
     
     cooldown:SetReverse(not data.inverse);
     
-    function region:SetStacks(count)
-        if(count and count > 0) then
-            stacks:SetText(count);
-        else
-            stacks:SetText("");
+    
+    local textStr;
+    local function UpdateText()
+        textStr = data.displayStacks or "";
+        for symbol, v in pairs(WeakAuras.dynamic_texts) do
+            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+        end
+        
+        if(stacks.displayStacks ~= textStr) then
+            stacks:SetText(textStr);
+            stacks.displayStacks = textStr;
         end
     end
     
+    function region:SetStacks(count)
+        if(count and count > 0) then
+            region.values.stacks = count;
+        else
+            region.values.stacks = " ";
+        end
+        UpdateText();
+    end
+    
     function region:SetIcon(path)
-        icon:SetTexture(
+        local iconPath = (
             WeakAuras.CanHaveAuto(data)
             and data.auto
             and path ~= ""
             and path
             or data.displayIcon
             or "Interface\\Icons\\INV_Misc_QuestionMark"
-        )
+        );
+        icon:SetTexture(iconPath);
+        region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
+        UpdateText();
+    end
+    
+    function region:SetName(name)
+        region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
+        UpdateText();
+    end
+    
+    local function UpdateTime()
+        local remaining = region.expirationTime - GetTime();
+        local progress = remaining / region.duration;
+        
+        if(data.inverse) then
+            progress = 1 - progress;
+        end
+        progress = progress > 0.0001 and progress or 0.0001;
+        
+        local remainingStr = "";
+        if(remaining > 60) then
+            remainingStr = string.format("%i:", math.floor(remaining / 60));
+            remaining = remaining % 60;
+            remainingStr = remainingStr..string.format("%02i", remaining);
+        elseif(remaining > 0) then
+            remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+        else
+            remainingStr = "INF";
+        end
+        region.values.progress = remainingStr;
+        
+        local duration = region.duration;
+        local durationStr = "";
+        if(duration > 60) then
+            durationStr = string.format("%i:", math.floor(duration / 60));
+            duration = duration % 60;
+            durationStr = durationStr..string.format("%02i", duration);
+        elseif(duration > 0) then
+            durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+        else
+            durationStr = "INF";
+        end
+        region.values.duration = durationStr;
+        UpdateText();
+    end
+    
+    local function UpdateValue(value, total)
+        region.values.progress = value;
+        region.values.duration = total;
+        UpdateText();
+    end
+    
+    local function UpdateCustom()
+        UpdateValue(region.customValueFunc());
+    end
+    
+    local function UpdateDurationInfo(duration, expirationTime, customValue)
+        if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
+            region.duration = duration;
+        end
+        region.expirationTime = expirationTime;
+        
+        if(customValue) then
+            if(type(customValue) == "function") then
+                local value, total = customValue();
+                if(total > 0 and value < total) then
+                    region.customValueFunc = customValue;
+                    region:SetScript("OnUpdate", UpdateCustom);
+                else
+                    UpdateValue(duration, expirationTime);
+                    region:SetScript("OnUpdate", nil);
+                    UpdateText();
+                end
+            else
+                UpdateValue(duration, expirationTime);
+                region:SetScript("OnUpdate", nil);
+            end
+        else
+            if(duration > 0.01) then
+                region:SetScript("OnUpdate", UpdateTime);
+            else
+                region:SetScript("OnUpdate", nil);
+                UpdateText();
+            end
+        end
     end
     
     function region:Scale(scalex, scaley)
@@ -147,11 +255,12 @@ local function modify(parent, region, data)
                 cooldown:Show();
                 cooldown:SetCooldown(expirationTime - region.duration, region.duration);
             end
+            UpdateDurationInfo(duration, expirationTime, customValue)
         end
     else
         cooldown:Hide();
-        function region:SetDurationInfo()
-            --do nothing
+        function region:SetDurationInfo(duration, expirationTime, customValue)
+            UpdateDurationInfo(duration, expirationTime, customValue)
         end
     end
 end

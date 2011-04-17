@@ -7,6 +7,8 @@ local function createOptions(id, data)
     local options = {
         displayText = {
             type = "input",
+            width = "double",
+            desc = L["Dynamic text tooltip"],
             multiline = true,
             name = L["Display Text"],
             order = 10,
@@ -21,26 +23,6 @@ local function createOptions(id, data)
                 v = v:gsub("|cFFFF0000", "");
                 v = v:gsub("|r", "");
                 data.displayText = v;
-                WeakAuras.Add(data);
-                WeakAuras.SetThumbnail(data);
-                WeakAuras.SetIconNames(data);
-                WeakAuras.ResetMoverSizer();
-            end
-        },
-        addDynamic = {
-            type = "select",
-            name = L["Add Dynamic Text"],
-            order = 35,
-            values = function()
-                local ret = {};
-                for symbol, v in pairs(WeakAuras.dynamic_texts) do
-                    ret[v.unescaped] = v.name;
-                end
-                return ret;
-            end,
-            get = function() return nil; end,
-            set = function(info, v)
-                data.displayText = data.displayText..v;
                 WeakAuras.Add(data);
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);
@@ -67,6 +49,32 @@ local function createOptions(id, data)
             hidden = function()
                 return not data.displayText:find("%%c")
             end,
+        },
+        progressPrecision = {
+            type = "select",
+            order = 39,
+            name = L["Remaining Time Precision"],
+            values = WeakAuras.precision_types,
+            get = function() return data.progressPrecision or 1 end,
+            hidden = function()
+                return not (data.displayText:find("%%p") or data.displayText:find("%%t"));
+            end,
+            disabled = function()
+                return not data.displayText:find("%%p");
+            end
+        },
+        totalPrecision = {
+            type = "select",
+            order = 39.5,
+            name = L["Total Time Precision"],
+            values = WeakAuras.precision_types,
+            get = function() return data.totalPrecision or 1 end,
+            hidden = function()
+                return not (data.displayText:find("%%p") or data.displayText:find("%%t"));
+            end,
+            disabled = function()
+                return not data.displayText:find("%%t");
+            end
         },
         color = {
             type = "color",

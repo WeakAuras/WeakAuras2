@@ -11,51 +11,25 @@ local function createOptions(id, data)
             name = L["Bar Texture"],
             values = AceGUIWidgetLSMlists.statusbar
         },
-        text = {
-            type = "toggle",
-            name = L["Text"],
-            desc = "Set the visibility of the aura name",
-            width = "half",
-            order = 4
-        },
-        timer = {
-            type = "toggle",
-            name = L["Timer"],
-            desc = "Set the visibility of the timer",
-            width = "half",
-            order = 2,
-            disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-            get = function() return WeakAuras.CanHaveDuration(data) and data.timer; end
-        },
         icon = {
             type = "toggle",
             name = L["Icon"],
-            desc = "Set the visibility of the aura icon",
-            width = "half",
-            order = 6
+            order = 2
         },
         auto = {
             type = "toggle",
             name = L["Auto"],
-            desc = "Choose whether the displayed text and icon are automatic or pre-defined",
-            width = "half",
-            order = 8,
+            desc = L["Choose whether the displayed icon is automatic or defined manually"],
+            order = 4,
             disabled = function() return not WeakAuras.CanHaveAuto(data); end,
             get = function() return WeakAuras.CanHaveAuto(data) and data.auto end
-        },
-        displayText = {
-            type = "input",
-            name = L["Display Text"],
-            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            disabled = function() return not data.text end,
-            order = 10
         },
         displayIcon = {
             type = "input",
             name = L["Display Icon"],
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
             disabled = function() return not data.icon end,
-            order = 12,
+            order = 5,
             get = function()
                 if(data.displayIcon) then
                     return data.displayIcon:sub(17);
@@ -70,20 +44,13 @@ local function createOptions(id, data)
                 WeakAuras.SetIconNames(data);
             end
         },
-        displaySpace1 = {
-            type = "execute",
-            name = "",
-            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            image = function() return "", 0, 0 end,
-            order = 14
-        },
-        displaySpace2 = {
+        displaySpace = {
             type = "execute",
             name = "",
             width = "half",
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
             image = function() return data.displayIcon or "", 18, 18 end,
-            order = 16
+            order = 6
         },
         chooseIcon = {
             type = "execute",
@@ -91,8 +58,109 @@ local function createOptions(id, data)
             width = "half",
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
             disabled = function() return not data.icon end,
-            order = 18,
+            order = 7,
             func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
+        },
+        displayTextLeft = {
+            type = "input",
+            name = function()
+                if(data.orientation == "HORIZONTAL") then
+                    return L["Left Text"];
+                elseif(data.orientation == "HORIZONTAL_INVERSE") then
+                    return L["Right Text"];
+                elseif(data.orientation == "VERTICAL") then
+                    return L["Bottom Text"];
+                else
+                    return L["Top Text"];
+                end
+            end,
+            desc = L["Dynamic text tooltip"],
+            order = 9
+        },
+        displayTextRight = {
+            type = "input",
+            name = function()
+                if(data.orientation == "HORIZONTAL") then
+                    return L["Right Text"];
+                elseif(data.orientation == "HORIZONTAL_INVERSE") then
+                    return L["Left Text"];
+                elseif(data.orientation == "VERTICAL") then
+                    return L["Top Text"];
+                else
+                    return L["Bottom Text"];
+                end
+            end,
+            desc = L["Dynamic text tooltip"],
+            order = 10
+        },
+        progressPrecision = {
+            type = "select",
+            order = 11,
+            name = L["Remaining Time Precision"],
+            values = WeakAuras.precision_types,
+            get = function() return data.progressPrecision or 1 end,
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%p")
+                    or data.displayTextLeft:find("%%t")
+                    or data.displayTextRight:find("%%p")
+                    or data.displayTextRight:find("%%t")
+                );
+            end,
+            disabled = function()
+                return not (
+                    data.displayTextLeft:find("%%p")
+                    or data.displayTextRight:find("%%p")
+                );
+            end,
+        },
+        totalPrecision = {
+            type = "select",
+            order = 11.5,
+            name = L["Total Time Precision"],
+            values = WeakAuras.precision_types,
+            get = function() return data.totalPrecision or 1 end,
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%p")
+                    or data.displayTextLeft:find("%%t")
+                    or data.displayTextRight:find("%%p")
+                    or data.displayTextRight:find("%%t")
+                );
+            end,
+            disabled = function()
+                return not (
+                    data.displayTextLeft:find("%%t")
+                    or data.displayTextRight:find("%%t")
+                );
+            end,
+        },
+        customText = {
+            type = "input",
+            width = "normal",
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%c")
+                    or data.displayTextRight:find("%%c")
+                );
+            end,
+            multiline = true,
+            name = L["Custom Function"],
+            order = 37
+        },
+        customText_expand = {
+            type = "execute",
+            order = 38,
+            name = L["Expand Text Editor"],
+            func = function()
+                WeakAuras.TextEditor(data, {"customText"})
+            end,
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%c")
+                    or data.displayTextRight:find("%%c")
+                );
+            end
         },
         icon_side = {
             type = "select",

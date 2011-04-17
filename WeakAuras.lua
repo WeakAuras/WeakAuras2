@@ -1581,7 +1581,9 @@ local aura_scan_cache = {};
 function WeakAuras.ScanAuras(unit)
     local time = GetTime();
     aura_scan_cache[unit] = aura_scan_cache[unit] or {};
-    aura_scan_cache[unit].up_to_date = 0;
+    for i,v in pairs(aura_scan_cache[unit]) do
+        v.up_to_date = 0;
+    end
     
     local old_unit = WeakAuras.CurrentUnit;
     WeakAuras.CurrentUnit = unit;
@@ -1612,13 +1614,15 @@ function WeakAuras.ScanAuras(unit)
                 local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
                 local active = false;
                 if(data.fullscan) then
+                    aura_scan_cache[unit][filter] = aura_scan_cache[unit][filter] or {up_to_date = 0};
+                    
                     local index = 1;
                     local cloneNum = 0;
-                    if(aura_scan_cache[unit].up_to_date < index) then
+                    if(aura_scan_cache[unit][filter].up_to_date < index) then
                         name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, index, filter);
                         tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
-                        aura_scan_cache[unit][index] = aura_scan_cache[unit][index] or {};
-                        local current_aura = aura_scan_cache[unit][index];
+                        aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
+                        local current_aura = aura_scan_cache[unit][filter][index];
                         current_aura.name = name;
                         current_aura.icon = icon;
                         current_aura.count = count;
@@ -1629,9 +1633,9 @@ function WeakAuras.ScanAuras(unit)
                         current_aura.tooltip = tooltip;
                         current_aura.debuffClass = debuffClass;
                         current_aura.tooltipSize = tooltipSize;
-                        aura_scan_cache[unit].up_to_date = index;
+                        aura_scan_cache[unit][filter].up_to_date = index;
                     else
-                        local current_aura = aura_scan_cache[unit][index];
+                        local current_aura = aura_scan_cache[unit][filter][index];
                         name = current_aura.name;
                         icon = current_aura.icon;
                         count = current_aura.count;
@@ -1660,11 +1664,11 @@ function WeakAuras.ScanAuras(unit)
                             end
                         end
                         index = index + 1;
-                        if(aura_scan_cache[unit].up_to_date < index) then
+                        if(aura_scan_cache[unit][filter].up_to_date < index) then
                             name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, index, filter);
                             tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
-                            aura_scan_cache[unit][index] = aura_scan_cache[unit][index] or {};
-                            local current_aura = aura_scan_cache[unit][index];
+                            aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
+                            local current_aura = aura_scan_cache[unit][filter][index];
                             current_aura.name = name;
                             current_aura.icon = icon;
                             current_aura.count = count;
@@ -1677,7 +1681,7 @@ function WeakAuras.ScanAuras(unit)
                             current_aura.tooltipSize = tooltipSize;
                             aura_scan_cache[unit].up_to_date = index;
                         else
-                            local current_aura = aura_scan_cache[unit][index];
+                            local current_aura = aura_scan_cache[unit][filter][index];
                             name = current_aura.name;
                             icon = current_aura.icon;
                             count = current_aura.count;
@@ -2097,6 +2101,17 @@ function WeakAuras.Modernize(data)
             end
             data.conditions = nil;
         end
+    end
+    
+    --Add dynamic text info to progress bars
+    if(data.regionType == "aurabar") then
+        data.displayTextLeft = data.displayTextLeft or "%n";
+        data.displayTextRight = data.displayTextRight or "%p";
+    end
+    
+    --Add dynamic text info to icons
+    if(data.regionType == "icon") then
+        data.displayStacks = data.displayStacks or "%s";
     end
 end
 

@@ -2,6 +2,12 @@
 
 local LSM = LibStub("LibSharedMedia-3.0");
 
+WeakAuras.precision_types = {
+    [0] = "12",
+    [1] = "12.3",
+    [2] = "12.34",
+    [3] = "12.345"
+};
 WeakAuras.sound_channel_types = {
     Master = L["Master"],
     SFX = L["Sound Effects"],
@@ -177,6 +183,21 @@ WeakAuras.point_types = {
     TOPLEFT = L["Top Left"],
     LEFT = L["Left"],
     CENTER = L["Center"]
+};
+WeakAuras.inverse_point_types = {
+    BOTTOMLEFT = "TOPRIGHT",
+    BOTTOM = "TOP",
+    BOTTOMRIGHT = "TOPLEFT",
+    RIGHT = "LEFT",
+    TOPRIGHT = "BOTTOMLEFT",
+    TOP = "BOTTOM",
+    TOPLEFT = "BOTTOMRIGHT",
+    LEFT = "RIGHT",
+    CENTER = "CENTER"
+};
+WeakAuras.containment_types = {
+    OUTSIDE = L["Outside"],
+    INSIDE = L["Inside"]
 };
 WeakAuras.event_types = {};
 for name, prototype in pairs(WeakAuras.event_prototypes) do
