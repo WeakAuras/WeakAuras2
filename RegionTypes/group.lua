@@ -64,8 +64,6 @@ local function modify(parent, region, data)
     
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
-    region:SetWidth(region.trx - region.blx);
-    region:SetHeight(region.try - region.bly);
     
     local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
     if(lowestRegion) then    
