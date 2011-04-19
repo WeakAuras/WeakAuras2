@@ -48,6 +48,44 @@ local function createOptions(id, data)
             name = L["Animated Expand and Collapse"],
             order = 30
         },
+        border = {
+            type = "select",
+            dialogControl = "LSM30_Border",
+            name = L["Border"],
+            order = 35,
+            values = AceGUIWidgetLSMlists.border
+        },
+        background = {
+            type = "select",
+            dialogControl = "LSM30_Background",
+            name = L["Background"],
+            order = 40,
+            values = function()
+                local list = {};
+                for i,v in pairs(AceGUIWidgetLSMlists.background) do
+                    list[i] = v;
+                end
+                list["None"] = L["None"];
+                
+                return list;
+            end
+        },
+        borderOffset = {
+            type = "range",
+            name = L["Border Offset"],
+            order = 45,
+            softMin = 0,
+            softMax = 32,
+            bigStep = 1
+        },
+        backgroundInset = {
+            type = "range",
+            name = L["Background Inset"],
+            order = 47,
+            softMin = 0,
+            softMax = 32,
+            bigStep = 1
+        },
         spacer = {
             type = "header",
             name = "",

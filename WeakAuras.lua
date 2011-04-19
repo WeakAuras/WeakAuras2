@@ -2174,6 +2174,8 @@ function WeakAuras.pAdd(data)
     local id = data.id;
     if not(id) then
         error("Improper arguments to WeakAuras.Add - id not defined");
+    elseif(data.controlledChildren) then
+        WeakAuras.SetRegion(data);
     else
         local region = WeakAuras.SetRegion(data);
         if(WeakAuras.clones[id]) then
@@ -2562,7 +2564,7 @@ function WeakAuras.SetRegion(data, cloneNum)
                         end
                         parent:ControlChildren();
                     end
-                else
+                elseif not(data.controlledChildren) then
                     function region:Collapse()
                         if(region:IsVisible()) then
                             WeakAuras.PerformActions(data, "finish");
@@ -2579,6 +2581,15 @@ function WeakAuras.SetRegion(data, cloneNum)
                                 WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
                             end
                         end
+                    end
+                else
+                    function region:Collapse()
+                        WeakAuras.debug(data.id.." -  Collapse", 3);
+                        WeakAuras.debug(debugstack());
+                    end
+                    function region:Expand()
+                        WeakAuras.debug(data.id.." - Expand", 3);
+                        WeakAuras.debug(debugstack());
                     end
                 end
 
@@ -3197,6 +3208,21 @@ end
 
 function WeakAuras.CanShowStackInfo(data)
     if(data.regionType == "aurabar" or data.regionType == "icon") then
+        return true;
+    else
+        return false;
+    end
+end
+
+function WeakAuras.CanHaveClones(data)
+    local trigger = data.trigger;
+    if(
+        trigger.type == "aura" and (
+            (trigger.fullscan and trigger.autoclone)
+            or (trigger.unit == "group" and trigger.groupclone)
+            or (trigger.unit == "multi")
+        )
+    ) then
         return true;
     else
         return false;

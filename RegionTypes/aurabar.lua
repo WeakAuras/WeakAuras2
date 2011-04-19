@@ -13,6 +13,8 @@ local default = {
     orientation = "HORIZONTAL",
     inverse = false,
     alpha = 1.0,
+    border = "None",
+    borderOffset = 16,
     barColor = {1, 0, 0, 1},
     backgroundColor = {0, 0, 0, 0.5},
     textColor = {1, 1, 1, 1},
@@ -42,6 +44,9 @@ local function create(parent)
     
     local background = bar:CreateTexture(nil, "BACKGROUND");
     region.background = background;
+    
+    local border = CreateFrame("frame", nil, region);
+    region.border = border;
     
     local timer = bar:CreateFontString(nil, "OVERLAY", font);
     region.timer = timer;
@@ -121,7 +126,7 @@ local function getRotateOffset(object, degrees, point)
 end
 
 local function modify(parent, region, data)
-    local bar, background, timer, text, icon, stacks = region.bar, region.background, region.timer, region.text, region.icon, region.stacks;
+    local bar, background, border, timer, text, icon, stacks = region.bar, region.background, region.border, region.timer, region.text, region.icon, region.stacks;
     
     region:SetWidth(data.width);
     region:SetHeight(data.height);
@@ -135,6 +140,15 @@ local function modify(parent, region, data)
     
     background:SetTexture(texturePath);
     background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+    
+    local border = region.border;
+    local edgeFile = SharedMedia:Fetch("border", data.border or "");
+    border:SetBackdrop({
+        edgeFile = edgeFile,
+        edgeSize = 16
+    });
+    border:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
+    border:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
     
     bar:SetStatusBarTexture(texturePath);
     local texture = bar:GetStatusBarTexture();

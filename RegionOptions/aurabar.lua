@@ -286,6 +286,21 @@ local function createOptions(id, data)
             max = 25,
             step = 1
         },
+        border = {
+            type = "select",
+            dialogControl = "LSM30_Border",
+            name = L["Border"],
+            order = 47.3,
+            values = AceGUIWidgetLSMlists.border
+        },
+        borderOffset = {
+            type = "range",
+            name = L["Border Offset"],
+            order = 47.7,
+            softMin = 0,
+            softMax = 32,
+            bigStep = 1
+        },
         stacks = {
             type = "toggle",
             name = L["Stacks"],

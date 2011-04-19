@@ -2,6 +2,10 @@
     
 local default = {
     controlledChildren = {},
+    border = "None",
+    borderOffset = 16,
+    background = "None",
+    backgroundInset = 0,
     grow = "DOWN",
     align = "CENTER",
     space = 2,
@@ -16,12 +20,34 @@ local function create(parent)
     local region = CreateFrame("FRAME", nil, parent);
     region:SetMovable(true);
     
+    local background = CreateFrame("frame", nil, region);
+    region.background = background;
+    
     region.trays = {};
     
     return region;
 end
 
 local function modify(parent, region, data)
+    local background = region.background;
+    local bgFile = SharedMedia:Fetch("background", data.background or "");
+    local edgeFile = SharedMedia:Fetch("border", data.border or "");
+    background:SetBackdrop({
+        bgFile = bgFile,
+        edgeFile = edgeFile,
+        tile = false,
+        tileSize = 0,
+        edgeSize = 16,
+        insets = {
+            left = data.backgroundInset,
+            right = data.backgroundInset,
+            top = data.backgroundInset,
+            bottom = data.backgroundInset
+        }
+    });
+    background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
+    background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
+    
     local selfPoint;
     local actualSelfPoint;
     if(data.grow == "RIGHT") then
@@ -276,7 +302,8 @@ local function modify(parent, region, data)
         
         region:PositionChildren();
         
-        
+        local anyVisible = false;
+        local minX, maxX, minY, maxY;
         for index, regionData in pairs(region.controlledRegions) do
             childId = regionData.id;
             childData = regionData.data;
@@ -320,7 +347,23 @@ local function modify(parent, region, data)
                         childRegion:Hide();
                     end
                 end
+                
+                if(childRegion:IsVisible()) then
+                    anyVisible = true;
+                    local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom();
+                    minX = minX and min(regionLeft, minX) or regionLeft;
+                    maxX = maxX and max(regionRight, maxX) or regionRight;
+                    minY = minY and min(regionBottom, minY) or regionBottom;
+                    maxY = maxY and max(regionTop, maxY) or regionTop;
+                end
             end
+        end
+        if(anyVisible) then
+            region:SetWidth(maxX - minX);
+            region:SetHeight(maxY - minY);
+            region:Show();
+        else
+            region:Hide();
         end
     end    
     

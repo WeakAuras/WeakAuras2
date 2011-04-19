@@ -999,6 +999,33 @@ function WeakAuras.ShowOptions(forceCacheReset)
     end
     frame.buttonsScroll.frame:Show();
     WeakAuras.LockUpdateInfo();
+    
+    for id, data in pairs(db.displays) do
+        local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
+        if(region) then
+            region:SetScript("OnShow", function()
+                if(WeakAuras.CanHaveClones(data)) then
+                    local cloneRegion = WeakAuras.EnsureClone(id, 1);
+                    cloneRegion:Show();
+                    
+                    cloneRegion = WeakAuras.EnsureClone(id, 2);
+                    cloneRegion:Show();
+                    
+                    if(data.parent and WeakAuras.regions[data.parent]) then
+                        WeakAuras.regions[data.parent].region:ControlChildren();
+                    end
+                    
+                    WeakAuras.SetIconNames(data);
+                end
+            end);
+            region:SetScript("OnHide", function()
+                if(WeakAuras.clones[id]) then
+                    WeakAuras.HideClones(id, 0);
+                end
+            end);
+        end
+    end
+    
     frame:Show();
     frame:PickOption("New");
     if not(firstLoad) then
@@ -1013,13 +1040,19 @@ end
 function WeakAuras.HideOptions()
     --dynFrame:SetScript("OnUpdate", nil);
     WeakAuras.UnlockUpdateInfo();
+    
+    for id, data in pairs(db.displays) do
+        local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
+        if(region) then
+            region:SetScript("OnShow", nil);
+            region:SetScript("OnHide", nil);
+        end
+    end
+    
     if(frame) then
         frame:Hide();
     end
     for id, data in pairs(WeakAuras.regions) do
-        if not(data.region.Collapse) then
-            print(id);
-        end
         data.region:Collapse();
     end
     WeakAuras.ReloadAll();
@@ -1035,21 +1068,31 @@ function WeakAuras.IsOptionsOpen()
 end
 
 function WeakAuras.DoConfigUpdate()
+    local function GiveDynamicInfo(id, region, data)
+        if(WeakAuras.CanHaveDuration(data)) then
+            if(region.SetDurationInfo) then
+                if not(frame.count ~= 0 and region.cooldown and region.cooldown:IsVisible()) then
+                    region:SetDurationInfo(12, GetTime() + 8 - (frame.count + frame.elapsed));
+                end
+            end
+            WeakAuras.duration_cache:SetDurationInfo(id, 12, GetTime() + 8 - (frame.count + frame.elapsed));
+        else
+            if(region.SetDurationInfo) then
+                region:SetDurationInfo(0, math.huge);
+            end
+            WeakAuras.duration_cache:SetDurationInfo(id, 0, math.huge);
+        end
+    end
+    
     for id, region in pairs(WeakAuras.regions) do
         local data = db.displays[id];
         if(data) then
-            if(WeakAuras.CanHaveDuration(data)) then
-                if(region.region.SetDurationInfo) then
-                    if not(frame.count ~= 0 and region.region.cooldown and region.region.cooldown:IsVisible()) then
-                        region.region:SetDurationInfo(12, GetTime() + 8 - (frame.count + frame.elapsed));
-                    end
+            GiveDynamicInfo(id, region.region, data);
+            
+            if(WeakAuras.clones[id]) then
+                for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
+                    GiveDynamicInfo(id, cloneRegion, data);
                 end
-                WeakAuras.duration_cache:SetDurationInfo(id, 12, GetTime() + 8 - (frame.count + frame.elapsed));
-            else
-                if(region.region.SetDurationInfo) then
-                    region.region:SetDurationInfo(0, math.huge);
-                end
-                WeakAuras.duration_cache:SetDurationInfo(id, 0, math.huge);
             end
         end
     end
@@ -1075,6 +1118,11 @@ end
 function WeakAuras.SetIconNames(data)
     WeakAuras.SetIconName(data, WeakAuras.regions[data.id].region);
     WeakAuras.SetIconName(data, thumbnails[data.id].region);
+    if(WeakAuras.clones[data.id]) then
+        for index, cloneRegion in pairs(WeakAuras.clones[data.id]) do
+            WeakAuras.SetIconName(data, cloneRegion);
+        end
+    end
 end
 
 function WeakAuras.SetIconName(data, region)
