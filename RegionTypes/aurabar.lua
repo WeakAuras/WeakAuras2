@@ -221,12 +221,14 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        xo, yo = getRotateOffset(text, textDegrees, "RIGHT");
-        text:ClearAllPoints();
-        text:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
         xo, yo = getRotateOffset(timer, textDegrees, "LEFT");
         timer:ClearAllPoints();
         timer:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
+        xo, yo = getRotateOffset(text, textDegrees, "RIGHT");
+        text:ClearAllPoints();
+        text:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
+        --text:SetPoint("LEFT", timer, "RIGHT");
+        --text:SetJustifyH("RIGHT");
     end
     local function orientHorizontal()
         icon:ClearAllPoints();
@@ -256,12 +258,14 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        xo, yo = getRotateOffset(text, textDegrees, "LEFT");
-        text:ClearAllPoints();
-        text:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
         xo, yo = getRotateOffset(timer, textDegrees, "RIGHT");
         timer:ClearAllPoints();
         timer:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
+        xo, yo = getRotateOffset(text, textDegrees, "LEFT");
+        text:ClearAllPoints();
+        text:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
+        --text:SetPoint("RIGHT", timer, "LEFT");
+        --text:SetJustifyH("LEFT");
     end
     local function orientVerticalInverse()
         icon:ClearAllPoints();
@@ -292,12 +296,14 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        xo, yo = getRotateOffset(text, textDegrees, "TOP");
-        text:ClearAllPoints();
-        text:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
         xo, yo = getRotateOffset(timer, textDegrees, "BOTTOM");
         timer:ClearAllPoints();
         timer:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
+        xo, yo = getRotateOffset(text, textDegrees, "TOP");
+        text:ClearAllPoints();
+        text:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
+        --text:SetPoint("BOTTOM", timer, "TOP");
+        --text:SetJustifyV("TOP");
     end
     local function orientVertical()
         icon:ClearAllPoints();
@@ -327,12 +333,14 @@ local function modify(parent, region, data)
             background:SetPoint("TOPLEFT", region, "TOPLEFT");
             bar:SetPoint("TOPLEFT", region, "TOPLEFT");
         end
-        xo, yo = getRotateOffset(text, textDegrees, "BOTTOM");
-        text:ClearAllPoints();
-        text:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
         xo, yo = getRotateOffset(timer, textDegrees, "TOP");
         timer:ClearAllPoints();
         timer:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
+        xo, yo = getRotateOffset(text, textDegrees, "BOTTOM");
+        text:ClearAllPoints();
+        text:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
+        --text:SetPoint("TOP", timer, "BOTTOM");
+        --text:SetJustifyV("BOTTOM");
     end
     
     local function orient()

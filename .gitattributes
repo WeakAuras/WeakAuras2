@@ -206,9 +206,11 @@ RegionOptions/aurabar.lua -text
 RegionOptions/dynamicgroup.lua -text
 RegionOptions/group.lua -text
 RegionOptions/icon.lua -text
+RegionOptions/model.lua -text
 RegionOptions/progresstexture.lua -text
 RegionOptions/text.lua -text
 RegionOptions/texture.lua -text
 RegionOptions/timer.lua -text
+RegionTypes/model.lua -text
 /Transmission.lua -text
 /icon.tga -text

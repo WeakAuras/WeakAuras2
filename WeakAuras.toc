@@ -33,6 +33,7 @@ RegionTypes\text.lua
 RegionTypes\timer.lua
 RegionTypes\group.lua
 RegionTypes\dynamicgroup.lua
+RegionTypes\model.lua
 
 RegionOptions\aurabar.lua
 RegionOptions\texture.lua
@@ -41,4 +42,5 @@ RegionOptions\text.lua
 RegionOptions\timer.lua
 RegionOptions\group.lua
 RegionOptions\dynamicgroup.lua
+RegionOptions\model.lua
 RegionOptions\progresstexture.lua

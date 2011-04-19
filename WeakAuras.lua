@@ -2566,6 +2566,9 @@ function WeakAuras.SetRegion(data, cloneNum)
                         end
                     end
                     function region:Expand()
+                        if(regionType == "model") then
+                            region:EnsureModel();
+                        end
                         region.toShow = true;
                         if(WeakAuras.IsAnimating("display", id) == "finish" or region.groupHiding or not region:IsVisible()) then
                             WeakAuras.PerformActions(data, "start");
@@ -2585,6 +2588,9 @@ function WeakAuras.SetRegion(data, cloneNum)
                         end
                     end
                     function region:Expand()
+                        if(regionType == "model") then
+                            region:EnsureModel();
+                        end
                         if(WeakAuras.IsAnimating("display", id) == "finish" or not region:IsVisible()) then
                             region:Show();
                             WeakAuras.PerformActions(data, "start");
@@ -2594,14 +2600,9 @@ function WeakAuras.SetRegion(data, cloneNum)
                         end
                     end
                 else
-                    function region:Collapse()
-                        WeakAuras.debug(data.id.." -  Collapse", 3);
-                        WeakAuras.debug(debugstack());
-                    end
-                    function region:Expand()
-                        WeakAuras.debug(data.id.." - Expand", 3);
-                        WeakAuras.debug(debugstack());
-                    end
+                    --Stubs that allow for polymorphism
+                    function region:Collapse() end
+                    function region.Expand() end
                 end
 
                 if(data.additional_triggers and #data.additional_triggers > 0) then
