@@ -6,7 +6,7 @@ local default = {
     inverse = false,
     width = 64,
     height = 64,
-    alpha = 1.0,
+    color = {1, 1, 1, 1},
     textColor = {1, 1, 1, 1},
     displayStacks = "%s",
     stacksPoint = "BOTTOMRIGHT",
@@ -97,6 +97,20 @@ local function modify(parent, region, data)
     
     cooldown:SetReverse(not data.inverse);
     
+    function region:Color(r, g, b, a)
+        region.color_r = r;
+        region.color_g = g;
+        region.color_b = b;
+        region.color_a = a;
+        region.icon:SetVertexColor(r, g, b, a);
+    end
+    
+    function region:GetColor()
+        return region.color_r or data.color[1], region.color_g or data.color[2],
+               region.color_b or data.color[3], region.color_a or data.color[4];
+    end
+    
+    region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
     
     local textStr;
     local function UpdateText()

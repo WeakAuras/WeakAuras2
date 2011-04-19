@@ -2103,15 +2103,26 @@ function WeakAuras.Modernize(data)
         end
     end
     
-    --Add dynamic text info to progress bars
+    --Add dynamic text info to Progress Bars
+    --Also onvert custom displayText to new displayText
     if(data.regionType == "aurabar") then
-        data.displayTextLeft = data.displayTextLeft or "%n";
+        data.displayTextLeft = data.displayTextLeft or (not data.auto and data.displayText) or "%n";
         data.displayTextRight = data.displayTextRight or "%p";
     end
     
     --Add dynamic text info to icons
+    --Aldo convert alpha to color
     if(data.regionType == "icon") then
         data.displayStacks = data.displayStacks or "%s";
+        if(not data.color) then
+            data.color = {1, 1, 1, data.alpha};
+        end
+    end
+    
+    --Convert Timers to Texts
+    if(data.regionType == "timer") then
+        data.regionType = "text";
+        data.displayText = "%p";
     end
 end
 

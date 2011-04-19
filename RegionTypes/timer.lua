@@ -101,4 +101,5 @@ local function modify(parent, region, data)
   end
 end
 
-WeakAuras.RegisterRegionType("timer", create, modify, default);
+--Timers are deprecated! Use Texts instead!
+--WeakAuras.RegisterRegionType("timer", create, modify, default);

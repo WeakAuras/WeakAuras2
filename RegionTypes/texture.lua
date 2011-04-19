@@ -32,7 +32,6 @@ local function modify(parent, region, data)
     region.texture:SetTexture(data.texture);
     region:SetWidth(data.width);
     region:SetHeight(data.height);
-    region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
     region.texture:SetBlendMode(data.blendMode);
     --region.texture:SetRotation((data.rotation / 180) * math.pi);
     region:ClearAllPoints();
@@ -114,6 +113,8 @@ local function modify(parent, region, data)
         return region.color_r or data.color[1], region.color_g or data.color[2],
                region.color_b or data.color[3], region.color_a or data.color[4];
     end
+    
+    region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
     
     if(data.rotate) then
         function region:Rotate(degrees)

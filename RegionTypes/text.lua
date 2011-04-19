@@ -35,7 +35,6 @@ local function modify(parent, region, data)
     text:SetFont(fontPath, data.fontSize <= 25 and data.fontSize or 25, data.outline and "OUTLINE" or nil);
     text:SetTextHeight(data.fontSize);
     text:SetText(data.displayText);
-    text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
     text:SetJustifyH(data.justify);
     
     text:ClearAllPoints();
@@ -85,6 +84,8 @@ local function modify(parent, region, data)
         return region.color_r or data.color[1], region.color_g or data.color[2],
                region.color_b or data.color[3], region.color_a or data.color[4];
     end
+    
+    region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
     
     local function UpdateTime()
         local remaining = region.expirationTime - GetTime();

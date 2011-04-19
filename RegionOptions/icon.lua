@@ -102,14 +102,11 @@ local function createOptions(id, data)
                 return not data.displayStacks:find("%%t");
             end
         },
-        alpha = {
-            type = "range",
-            name = L["Alpha"],
-            order = 7,
-            min = 0,
-            max = 1,
-            bigStep = 0.01,
-            isPercent = true
+        color = {
+            type = "color",
+            name = L["Color"],
+            hasAlpha = true,
+            order = 7
         },
         font = {
             type = "select",

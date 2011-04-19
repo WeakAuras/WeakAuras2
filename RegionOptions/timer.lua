@@ -110,4 +110,5 @@ local function createIcon()
   return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("timer", createOptions, createIcon, L["Timer"], createThumbnail, modifyThumbnail, L["Shows the remaining or expended time for an aura or timed event"]);
+--Timers are deprecated! Use Texts instead!
+--WeakAuras.RegisterRegionOptions("timer", createOptions, createIcon, L["Timer"], createThumbnail, modifyThumbnail, L["Shows the remaining or expended time for an aura or timed event"]);
