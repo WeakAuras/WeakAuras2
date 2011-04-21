@@ -213,4 +213,5 @@ RegionOptions/texture.lua -text
 RegionOptions/timer.lua -text
 RegionTypes/model.lua -text
 /Transmission.lua -text
+WeakAurasOptions/ModelPaths.lua -text
 /icon.tga -text

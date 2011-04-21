@@ -37,7 +37,6 @@ local function modify(parent, region, data)
     
     model:SetModel(data.model_path);
     model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(rad(data.rotation));
     
     if(data.advance) then
         local elapsed = 0;
@@ -74,6 +73,9 @@ local function modify(parent, region, data)
     function region:GetRotation()
         return region.rotation;
     end
+    
+    
+    model:Rotate(data.rotation);
     
     function region:EnsureModel()
         model:SetModel(data.model_path);

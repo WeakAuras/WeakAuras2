@@ -1689,7 +1689,7 @@ function WeakAuras.ScanAuras(unit)
                             current_aura.tooltip = tooltip;
                             current_aura.debuffClass = debuffClass;
                             current_aura.tooltipSize = tooltipSize;
-                            aura_scan_cache[unit].up_to_date = index;
+                            aura_scan_cache[unit][filter].up_to_date = index;
                         else
                             local current_aura = aura_scan_cache[unit][filter][index];
                             name = current_aura.name;

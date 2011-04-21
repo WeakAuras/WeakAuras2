@@ -5445,6 +5445,8 @@ function WeakAuras.CreateFrame()
                 frame.texturePick.frame:Show();
             elseif(frame.window == "icon") then
                 frame.iconPick.frame:Show();
+            elseif(frame.window == "model") then
+                frame.modelPick.frame:Show();
             elseif(frame.window == "importexport") then
                 frame.importexport.frame:Show();
             elseif(frame.window == "texteditor") then
@@ -5458,6 +5460,7 @@ function WeakAuras.CreateFrame()
             frame.buttonsContainer.frame:Hide();
             frame.texturePick.frame:Hide();
             frame.iconPick.frame:Hide();
+            frame.modelPick.frame:Hide();
             frame.importexport.frame:Hide();
             frame.texteditor.frame:Hide();
             frame.container.frame:Hide();
@@ -5854,7 +5857,7 @@ function WeakAuras.CreateFrame()
     
     local iconPickCancel = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
     iconPickCancel:SetScript("OnClick", iconPick.CancelClose);
-    iconPickCancel:SetPoint("BOTTOMRIGHT", -27, 11);
+    iconPickCancel:SetPoint("bottomright", frame, "bottomright", -27, 11);
     iconPickCancel:SetHeight(20);
     iconPickCancel:SetWidth(100);
     iconPickCancel:SetText(L["Cancel"]);
@@ -5867,6 +5870,184 @@ function WeakAuras.CreateFrame()
     iconPickClose:SetText(L["Okay"]);
     
     iconPickScroll.frame:SetPoint("BOTTOM", iconPickClose, "TOP", 0, 10);
+    
+    local modelPick = AceGUI:Create("InlineGroup");
+    modelPick.frame:SetParent(frame);
+    modelPick.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 87);
+    modelPick.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+    modelPick.frame:Hide();
+    modelPick:SetLayout("flow");
+    frame.modelPick = modelPick;
+    
+    local modelPickZ = AceGUI:Create("Slider");
+    modelPickZ:SetSliderValues(-2, 2, 0.05);
+    modelPickZ:SetLabel(L["Z Offset"]);
+    modelPickZ.frame:SetParent(modelPick.frame);
+    modelPickZ:SetCallback("OnValueChanged", function()
+        modelPick:Pick(nil, modelPickZ:GetValue());
+    end);
+    
+    local modelPickX = AceGUI:Create("Slider");
+    modelPickX:SetSliderValues(-2, 2, 0.05);
+    modelPickX:SetLabel(L["X Offset"]);
+    modelPickX.frame:SetParent(modelPick.frame);
+    modelPickX:SetCallback("OnValueChanged", function()
+        modelPick:Pick(nil, nil, modelPickX:GetValue());
+    end);
+    
+    local modelPickY = AceGUI:Create("Slider");
+    modelPickY:SetSliderValues(-2, 2, 0.05);
+    modelPickY:SetLabel(L["Y Offset"]);
+    modelPickY.frame:SetParent(modelPick.frame);
+    modelPickY:SetCallback("OnValueChanged", function()
+        modelPick:Pick(nil, nil, nil, modelPickY:GetValue());
+    end);
+    
+    local modelTree = AceGUI:Create("TreeGroup");
+    modelPick.frame:SetScript("OnUpdate", function()
+        local frameWidth = frame:GetWidth();
+        local sliderWidth = (frameWidth - 50) / 3;
+        
+        modelTree:SetTreeWidth(frameWidth - 370);
+        
+        modelPickZ.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
+        modelPickZ.frame:SetPoint("bottomright", frame, "bottomleft", 15 + sliderWidth, 43);
+        
+        modelPickX.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + sliderWidth, 43);
+        modelPickX.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (2 * sliderWidth), 43);
+        
+        modelPickY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (2 * sliderWidth), 43);
+        modelPickY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (3 * sliderWidth), 43);
+    end);
+    modelPick:SetLayout("fill");
+    modelTree:SetTree(WeakAuras.ModelPaths);
+    modelTree:SetCallback("OnGroupSelected", function(self, event, value)
+        path = string.gsub(value, "\001", "/");
+        if(string.lower(string.sub(path, -3, -1)) == ".m2") then
+            model_path = path;
+            modelPick:Pick(model_path);
+        end
+    end);
+    modelPick:AddChild(modelTree);
+    
+    local model = CreateFrame("PlayerModel", nil, modelPick.content);
+    model:SetAllPoints(modelTree.content);
+    model:SetFrameStrata("FULLSCREEN");
+    modelPick.model = model;
+    
+    function modelPick.Pick(self, model_path, model_z, model_x, model_y)
+        model_path = model_path or self.data.model_path;
+        model_z = model_z or self.data.model_z;
+        model_x = model_x or self.data.model_x;
+        model_y = model_y or self.data.model_y;
+        
+        self.model:SetModel(model_path);
+        self.model:SetPosition(model_z,model_x, model_y);
+        self.model:SetFacing(rad(self.data.rotation));
+        if(self.data.controlledChildren) then
+            for index, childId in pairs(self.data.controlledChildren) do
+                local childData = WeakAuras.GetData(childId);
+                if(childData) then
+                    childData.model_path = model_path;
+                    childData.model_z = model_z;
+                    childData.model_x = model_x;
+                    childData.model_y = model_y;
+                    WeakAuras.Add(childData);
+                    WeakAuras.SetThumbnail(childData);
+                    WeakAuras.SetIconNames(childData);
+                end
+            end
+        else
+            self.data.model_path = model_path;
+            self.data.model_z = model_z;
+            self.data.model_x = model_x;
+            self.data.model_y = model_y;
+            WeakAuras.Add(self.data);
+            WeakAuras.SetThumbnail(self.data);
+            WeakAuras.SetIconNames(self.data);
+        end
+    end
+    
+    function modelPick.Open(self, data)
+        self.data = data;
+        self.model:SetModel(data.model_path);
+        self.model:SetPosition(data.model_z, data.model_x, data.model_y);
+        self.model:SetFacing(rad(data.rotation));
+        
+        modelPickZ:SetValue(data.model_z);
+        modelPickZ.editbox:SetText(("%.2f"):format(data.model_z));
+        modelPickX:SetValue(data.model_x);
+        modelPickX.editbox:SetText(("%.2f"):format(data.model_x));
+        modelPickY:SetValue(data.model_y);
+        modelPickY.editbox:SetText(("%.2f"):format(data.model_y));
+        
+        if(data.controlledChildren) then
+            self.givenModel = {};
+            self.givenZ = {};
+            self.givenX = {};
+            self.givenY = {};
+            for index, childId in pairs(data.controlledChildren) do
+                local childData = WeakAuras.GetData(childId);
+                if(childData) then
+                    self.givenModel[childId] = childData.model_path;
+                    self.givenZ[childId] = childData.model_z;
+                    self.givenX[childId] = childData.model_x;
+                    self.givenY[childId] = childData.model_y;
+                end
+            end
+        else
+            self.givenModel = data.model_path;
+            self.givenZ = data.model_z;
+            self.givenX = data.model_x;
+            self.givenY = data.model_y;
+        end
+        frame.container.frame:Hide();
+        frame.buttonsContainer.frame:Hide();
+        self.frame:Show();
+        frame.window = "model";
+    end
+    
+    function modelPick.Close()
+        modelPick.frame:Hide();
+        frame.container.frame:Show();
+        frame.buttonsContainer.frame:Show();
+        frame.window = "default";
+        AceConfigDialog:Open("WeakAuras", container);
+    end
+    
+    function modelPick.CancelClose(self)
+        if(modelPick.data.controlledChildren) then
+            for index, childId in pairs(modelPick.data.controlledChildren) do
+                local childData = WeakAuras.GetData(childId);
+                if(childData) then
+                    childData.model_path = modelPick.givenModel[childId];
+                    childData.model_z = modelPick.givenZ[childId];
+                    childData.model_x = modelPick.givenX[childId];
+                    childData.model_y = modelPick.givenY[childId];
+                    WeakAuras.Add(childData);
+                    WeakAuras.SetThumbnail(childData);
+                    WeakAuras.SetIconNames(childData);
+                end
+            end
+        else
+            modelPick:Pick(modelPick.givenPath, modelPick.givenZ, modelPick.givenX, modelPick.givenY);
+        end
+        modelPick.Close();
+    end
+    
+    local modelPickCancel = CreateFrame("Button", nil, modelPick.frame, "UIPanelButtonTemplate");
+    modelPickCancel:SetScript("OnClick", modelPick.CancelClose);
+    modelPickCancel:SetPoint("bottomright", frame, "bottomright", -27, 16);
+    modelPickCancel:SetHeight(20);
+    modelPickCancel:SetWidth(100);
+    modelPickCancel:SetText(L["Cancel"]);
+    
+    local modelPickClose = CreateFrame("Button", nil, modelPick.frame, "UIPanelButtonTemplate");
+    modelPickClose:SetScript("OnClick", modelPick.Close);
+    modelPickClose:SetPoint("RIGHT", modelPickCancel, "LEFT", -10, 0);
+    modelPickClose:SetHeight(20);
+    modelPickClose:SetWidth(100);
+    modelPickClose:SetText(L["Okay"]);
     
     local importexport = AceGUI:Create("InlineGroup");
     importexport.frame:SetParent(frame);
@@ -5893,6 +6074,8 @@ function WeakAuras.CreateFrame()
             frame.texturePick:CancelClose();
         elseif(frame.window == "icon") then
             frame.iconPick:CancelClose();
+        elseif(frame.window == "model") then
+            frame.modelPick:CancelClose();
         end
         frame.container.frame:Hide();
         frame.buttonsContainer.frame:Hide();
@@ -7328,6 +7511,10 @@ end
 
 function WeakAuras.OpenIconPick(data, field)
     frame.iconPick:Open(data, field);
+end
+
+function WeakAuras.OpenModelPick(data, field)
+    frame.modelPick:Open(data, field);
 end
 
 function WeakAuras.ResetMoverSizer()

@@ -69,7 +69,8 @@ local function createOptions(id, data)
             max = 150,
             step = 1,
             bigStep = 1,
-            order = 35
+            order = 35,
+            disabled = function() return not data.advance end
         },
         rotation = {
             type = "range",
@@ -96,15 +97,14 @@ local function createThumbnail(parent, fullCreate)
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);
     
-    local border = borderframe:CreateTexture(nil, "OVERLAY");
+    local border = borderframe:CreateTexture(nil, "Overlay");
     border:SetAllPoints(borderframe);
     border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
     border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
     
-    local model = CreateFrame("PlayerModel", nil, borderframe);
+    local model = CreateFrame("PlayerModel", nil, WeakAuras.OptionsFrame() or UIParent);
     borderframe.model = model;
-    model:SetPoint("bottomleft", borderframe, "bottomleft", 200, 0);
-    model:SetPoint("topright", borderframe, "topright", 200, 0);
+    model:SetFrameStrata("FULLSCREEN");
     
     return borderframe;
 end
@@ -112,8 +112,42 @@ end
 local function modifyThumbnail(parent, region, data, fullModify, size)
     local model = region.model
     
-    model:SetWidth(32);
-    model:SetHeight(32);
+    if(region:GetFrameStrata() == "TOOLTIP") then
+        model:SetParent(region);
+        model:SetAllPoints(region);
+        model:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        model:SetParent(WeakAuras.OptionsFrame() or UIParent);
+        model:ClearAllPoints();
+        region:SetScript("OnUpdate", function()
+            local x, y = region:GetCenter();
+            local optionsFrame = WeakAuras.OptionsFrame();
+            if(optionsFrame) then
+                model:ClearAllPoints();
+                model:SetPoint("center", UIParent, "bottomleft", x, y);
+                local scrollBottom = optionsFrame.buttonsContainer.frame:GetBottom();
+                local scrollTop = optionsFrame.buttonsContainer.frame:GetTop() and (optionsFrame.buttonsContainer.frame:GetTop() - 16);
+                if(
+                    optionsFrame.buttonsContainer:IsVisible()
+                    and region:GetTop() and scrollTop
+                    and region:GetTop() < scrollTop
+                    and region:GetBottom() and scrollBottom
+                    and region:GetBottom() > scrollBottom
+                ) then
+                    model:Show();
+                else
+                    model:Hide();
+                end
+            else
+                model:Hide();
+            end
+        end);
+        region:SetScript("OnShow", function() model:Show() end);
+        region:SetScript("OnHide", function() model:Hide() end);
+    end
+    
+    model:SetWidth(region:GetWidth() - 2);
+    model:SetHeight(region:GetHeight() - 2);
     model:SetPoint("center", region, "center");
     model:SetModel(data.model_path);
     model:SetScript("OnShow", function()
@@ -128,7 +162,7 @@ local function createIcon()
         model_path = "Creature/Arthaslichking/arthaslichking.m2",
         model_x = 0,
         model_y = 0,
-        model_z = 0,
+        model_z = 0.35,
         sequence = 1,
         advance = false,
         rotation = 0,
