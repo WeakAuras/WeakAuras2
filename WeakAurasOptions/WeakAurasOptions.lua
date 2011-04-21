@@ -6956,11 +6956,13 @@ tXmdmY4fDE5]];
     end
     
     frame.CenterOnPicked = function(self)
-        local centerId = type(self.pickedDisplay) == "string" and self.pickedDisplay or self.pickedDisplay.controlledChildren[1];
-        
-        if(displayButtons[centerId]) then
-            local _, _, _, _, yOffset = displayButtons[centerId].frame:GetPoint(1);
-            self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+        if(self.pickedDisplay) then
+            local centerId = type(self.pickedDisplay) == "string" and self.pickedDisplay or self.pickedDisplay.controlledChildren[1];
+            
+            if(displayButtons[centerId]) then
+                local _, _, _, _, yOffset = displayButtons[centerId].frame:GetPoint(1);
+                self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+            end
         end
     end
     
@@ -7195,7 +7197,7 @@ end
 
 WeakAuras.loadFrame:SetScript("OnEvent", function()
     WeakAuras.ScanForLoads();
-    if(frame) then
+    if(frame and frame:IsVisible()) then
         WeakAuras.SortDisplayButtons();
     end
 end);

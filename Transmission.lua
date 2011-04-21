@@ -281,7 +281,7 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button)
     if(ItemRefTooltip.WeakAuras_Desc_Box) then
         ItemRefTooltip.WeakAuras_Desc_Box:Hide();
     end
-    if(link:find("weakauras")) then
+    if(link == "weakauras") then
         local _, _, characterName, displayName = text:find("|Hweakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
         if(characterName and displayName) then
             characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");

@@ -520,7 +520,9 @@ local function modify(parent, region, data)
     end
     
     local displayValue, remaining, progress, remainingStr, shouldOrient;
+    local CPUUsage = 0;
     local function UpdateTime(self, elaps, inverse)
+        debugprofilestart();
         remaining = region.expirationTime - GetTime();
         progress = remaining / region.duration;
         
@@ -568,13 +570,17 @@ local function modify(parent, region, data)
         end
         region.values.duration = durationStr;
         UpdateText();
+        CPUUsage = CPUUsage + debugprofilestop();
     end
     
     local function UpdateTimeInverse(self, elaps)
+        debugprofilestart();
         UpdateTime(self, elaps, true);
+        CPUUsage = CPUUsage + debugprofilestop();
     end
     
     local function UpdateValue(value, total)
+        debugprofilestart();
         progress = 1
         if(total > 0) then
             progress = value / total;
@@ -587,10 +593,13 @@ local function modify(parent, region, data)
         region.values.duration = total;
         UpdateText();
         bar:SetValue(progress);
+        CPUUsage = CPUUsage + debugprofilestop();
     end
     
     local function UpdateCustom()
+        debugprofilestart();
         UpdateValue(region.customValueFunc());
+        CPUUsage = CPUUsage + debugprofilestop();
     end
     
     function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
@@ -626,6 +635,10 @@ local function modify(parent, region, data)
                 UpdateText();
             end
         end
+    end
+    
+    function region:GetCPUUsage()
+        return CPUUsage;
     end
 end
 

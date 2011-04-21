@@ -112,7 +112,6 @@ form_frame:SetScript("OnUpdate", function()
         form_frame:SetScript("OnUpdate", nil);
     end
 end);
-form_frame:SetAllPoints(UIParent);
 
 --[[WeakAuras.deathknight_form_types = {
     [0] = L["None"],
