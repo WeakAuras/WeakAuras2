@@ -61,6 +61,8 @@ local animations = WeakAuras.animations;
 WeakAuras.pending_controls = {};
 local pending_controls = WeakAuras.pending_controls;
 
+WeakAuras.frames = {};
+
 local inGroup;
 
 local function_strings = WeakAuras.function_strings;
@@ -379,6 +381,7 @@ end
 WeakAuras.aura_cache = aura_cache;
 
 local groupFrame = CreateFrame("FRAME");
+WeakAuras.frames["Group Makeup Handler"] = groupFrame;
 groupFrame:RegisterEvent("RAID_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PARTY_MEMBERS_CHANGED");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -422,6 +425,7 @@ end);
 
 do
     local cdReadyFrame;
+    WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
     
     local spells = {};
     local spellCdDurs = {};
@@ -633,6 +637,7 @@ WeakAuras.duration_cache = duration_cache;
 
 do
     local combatAuraFrame;
+    WeakAuras.frames["Multi-target Aura Trigger Handler"] = combatAuraFrame;
     
     local pendingTracks = {};
     
@@ -1025,8 +1030,10 @@ end
 local pending_aura_scans = {};
 
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
+WeakAuras.frames["WeakAuras Main Frame"] = frame;
 frame:SetAllPoints(UIParent);
 local loadedFrame = CreateFrame("FRAME");
+WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
@@ -1171,6 +1178,7 @@ local aura_scan_cooldowns = {};
 WeakAuras.aura_scan_cooldowns = aura_scan_cooldowns;
 local checkingScanCooldowns;
 local scanCooldownFrame = CreateFrame("frame");
+WeakAuras.frames["Aura Scan Cooldown"] = scanCooldownFrame;
 
 local checkScanCooldownsFunc = function()
     for unit,_ in pairs(aura_scan_cooldowns) do
@@ -1494,15 +1502,17 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     end
 end
 
-WeakAuras.loadFrame = CreateFrame("FRAME");
-WeakAuras.loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED");
-WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
-WeakAuras.loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-WeakAuras.loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
-WeakAuras.loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
-WeakAuras.loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
-WeakAuras.loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
+local loadFrame = CreateFrame("FRAME");
+WeakAuras.loadFrame = loadFrame;
+WeakAuras.frames["Display Load Handling"] = loadFrame;
+loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+loadFrame:RegisterEvent("ZONE_CHANGED");
+loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
+loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
+loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
+loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
+loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
 function WeakAuras.ReloadAll()
     WeakAuras.UnloadAll();
@@ -3290,6 +3300,7 @@ do
     local update_clients = {};
     local update_clients_num = 0;
     local update_frame;
+    WeakAuras.frames["Custom Trigger Every Frame Updater"] = update_frame;
     local updating = false;
     
     function WeakAuras.RegisterEveryFrameUpdate(id)
@@ -3343,6 +3354,7 @@ do
     local th_icon = GetInventoryItemTexture("player", th);
     
     local tenchFrame;
+    WeakAuras.frames["Temporary Enchant Handler"] = tenchFrame;
     local tenchTip;
     
     function WeakAuras.TenchInit()
@@ -3524,11 +3536,13 @@ local function tooltip_draw()
 end
 
 local colorFrame = CreateFrame("frame");
+WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
 local colorElapsed = 0;
 local colorDelay = 2;
 local r, g, b = 0.8, 0, 1;
 local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
 local tooltip_update_frame = CreateFrame("FRAME");
+WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 local Broker_WeakAuras;
 Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
     type = "data source",
@@ -3592,6 +3606,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
 
 do
     local mountedFrame;
+    WeakAuras.frames["Mount Use Handler"] = mountedFrame;
     function WeakAuras.WatchForMounts()
         if not(mountedFrame) then
             mountedFrame = CreateFrame("frame");
@@ -3615,5 +3630,31 @@ do
                 mountedFrame:SetScript("OnUpdate", checkForMounted);
             end)
         end
+    end
+ end
+ 
+ local FrameTimes = {};
+ function WeakAuras.ProfileFrames(all)
+    UpdateAddOnCPUUsage();
+    for name, frame in pairs(WeakAuras.frames) do
+        local FrameTime = GetFrameCPUUsage(frame);
+        FrameTimes[name] = FrameTimes[name] or 0;
+        if(all or FrameTime > FrameTimes[name]) then
+            print("|cFFFF0000"..name.."|r -", FrameTime, "-", FrameTime - FrameTimes[name]);
+        end
+        FrameTimes[name] = FrameTime;
+    end
+ end
+ 
+ local DisplayTimes = {};
+ function WeakAuras.ProfileDisplays(all)
+    UpdateAddOnCPUUsage();
+    for id, regionData in pairs(WeakAuras.regions) do
+        local DisplayTime = GetFrameCPUUsage(regionData.region, true);
+        DisplayTimes[id] = DisplayTimes[id] or 0;
+        if(all or DisplayTime > DisplayTimes[id]) then
+            print("|cFFFF0000"..id.."|r -", DisplayTime, "-", DisplayTime - DisplayTimes[id]);
+        end
+        DisplayTimes[id] = DisplayTime;
     end
  end
