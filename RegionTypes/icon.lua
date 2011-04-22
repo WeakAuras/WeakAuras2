@@ -68,7 +68,6 @@ local function modify(parent, region, data)
     
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
-    region:SetAlpha(data.alpha);
     
     local fontPath = SharedMedia:Fetch("font", data.font);
     local sxo, syo = 0, 0;

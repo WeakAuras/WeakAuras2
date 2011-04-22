@@ -157,7 +157,6 @@ local function createThumbnail(parent, fullCreate)
 end
 
 local function modifyThumbnail(parent, icon, data, fullModify)
-    icon:SetAlpha(data.alpha);
     local texWidth = 0.25 * data.zoom;
     icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
     
