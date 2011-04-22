@@ -362,7 +362,7 @@ local function modify(parent, region, data)
         
         textStr = data.displayTextLeft or "";
         for symbol, v in pairs(WeakAuras.dynamic_texts) do
-            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+            textStr = textStr:gsub(symbol, region.values[v.value] or "");
         end
         
         if(not text.displayTextLeft or #text.displayTextLeft ~= #textStr) then
@@ -375,7 +375,7 @@ local function modify(parent, region, data)
         
         textStr = data.displayTextRight or "";
         for symbol, v in pairs(WeakAuras.dynamic_texts) do
-            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+            textStr = textStr:gsub(symbol, region.values[v.value] or "");
         end
         
         if(not timer.displayTextRight or #timer.displayTextRight ~= #textStr) then

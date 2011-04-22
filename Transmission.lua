@@ -1,6 +1,6 @@
 local L = WeakAuras.L;
 
-local version = 1302;
+local version = 1400;
 local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;

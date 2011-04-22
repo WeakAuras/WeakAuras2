@@ -115,7 +115,7 @@ local function modify(parent, region, data)
     local function UpdateText()
         textStr = data.displayStacks or "";
         for symbol, v in pairs(WeakAuras.dynamic_texts) do
-            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
+            textStr = textStr:gsub(symbol, region.values[v.value] or "");
         end
         
         if(stacks.displayStacks ~= textStr) then

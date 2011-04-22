@@ -121,36 +121,41 @@ local function modify(parent, region, data)
             local childData = WeakAuras.GetData(childId);
             region.controlledRegions[regionIndex].id = childId;
             region.controlledRegions[regionIndex].data = childData;
-            region.controlledRegions[regionIndex].num = nil;
             region.controlledRegions[regionIndex].region = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
+            region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
             dataIndex = dataIndex + 1;
             regionIndex = regionIndex + 1;
             if(childData and WeakAuras.clones[childId]) then
-                for cloneNum, cloneRegion in pairs(WeakAuras.clones[childId]) do
+                for cloneId, cloneRegion in pairs(WeakAuras.clones[childId]) do
                     if not(region.controlledRegions[regionIndex]) then
                         region.controlledRegions[regionIndex] = {};
                     end
                     region.controlledRegions[regionIndex].id = childId;
                     region.controlledRegions[regionIndex].data = childData;
-                    region.controlledRegions[regionIndex].num = cloneNum;
+                    region.controlledRegions[regionIndex].cloneId = cloneId;
                     region.controlledRegions[regionIndex].region = cloneRegion;
+                    region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
                     regionIndex = regionIndex + 1;
                 end
             end
+        end
+        while(region.controlledRegions[regionIndex]) do
+            region.controlledRegions[regionIndex] = nil;
+            regionIndex = regionIndex + 1;
         end
     end
     
     function region:EnsureTrays()
         region:EnsureControlledRegions();
         for index, regionData in ipairs(region.controlledRegions) do
-            if not(region.trays[index]) then
-                region.trays[index] = CreateFrame("Frame", nil, region);
+            if not(region.trays[regionData.key]) then
+                region.trays[regionData.key] = CreateFrame("Frame", nil, region);
             end
             if(regionData.data and regionData.region) then
-                region.trays[index]:SetWidth(regionData.data.width);
-                region.trays[index]:SetHeight(regionData.data.height);
+                region.trays[regionData.key]:SetWidth(regionData.data.width);
+                region.trays[regionData.key]:SetHeight(regionData.data.height);
                 regionData.region:ClearAllPoints();
-                regionData.region:SetPoint(selfPoint, region.trays[index], selfPoint);
+                regionData.region:SetPoint(selfPoint, region.trays[regionData.key], selfPoint);
             end
         end
     end
@@ -196,7 +201,7 @@ local function modify(parent, region, data)
                 childData = regionData.data;
                 childRegion = regionData.region;
                 if(childData and childRegion) then
-                    if(((childRegion:IsVisible() and not (childRegion.toHide or childRegion.groupHiding)) or childRegion.toShow) and not (WeakAuras.IsAnimating(regionData.num and "clone"..regionData.num or "display", childId) == "finish")) then
+                    if(((childRegion:IsVisible() and not (childRegion.toHide or childRegion.groupHiding)) or childRegion.toShow) and not (WeakAuras.IsAnimating(childRegion) == "finish")) then
                         if(data.grow == "HORIZONTAL") then
                             currentWidth = currentWidth + childData.width;
                             num = num + 1;
@@ -231,14 +236,14 @@ local function modify(parent, region, data)
                     childRegion.groupHiding = nil;
                 end
                 
-                if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(regionData.num and "clone"..regionData.num or "display", childId) == "finish")) then
-                    if not(region.trays[index]) then
-                        print(data.id, index, childId);
+                if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
+                    if not(region.trays[regionData.key]) then
+                        print(data.id, regionData.key, childId);
                     end
-                    region.trays[index]:ClearAllPoints();
-                    region.trays[index]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
+                    region.trays[regionData.key]:ClearAllPoints();
+                    region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
                     childRegion:ClearAllPoints();
-                    childRegion:SetPoint(selfPoint, region.trays[index], selfPoint);
+                    childRegion:SetPoint(selfPoint, region.trays[regionData.key], selfPoint);
                     if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
                         xOffset = xOffset + (childData.width + data.space);
                         yOffset = yOffset + data.stagger;
@@ -274,10 +279,10 @@ local function modify(parent, region, data)
                         hiddenXOffset = xOffset - data.stagger;
                     end
                     
-                    region.trays[index]:ClearAllPoints();
-                    region.trays[index]:SetPoint(selfPoint, region, selfPoint, hiddenXOffset, hiddenYOffset);
+                    region.trays[regionData.key]:ClearAllPoints();
+                    region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, hiddenXOffset, hiddenYOffset);
                     childRegion:ClearAllPoints();
-                    childRegion:SetPoint(selfPoint, region.trays[index], selfPoint);
+                    childRegion:SetPoint(selfPoint, region.trays[regionData.key], selfPoint);
                 end
             end
         end
@@ -294,10 +299,10 @@ local function modify(parent, region, data)
     function region:DoControlChildren()
         local previous = {};
         for index, regionData in pairs(region.controlledRegions) do
-            local _, _, _, previousX, previousY = region.trays[index]:GetPoint(1);
+            local _, _, _, previousX, previousY = region.trays[regionData.key]:GetPoint(1);
             previousX = previousX or 0;
             previousY = previousY or 0;
-            previous[regionData.id] = {x = previousX, y = previousY};
+            previous[regionData.key] = {x = previousX, y = previousY};
         end
         
         region:PositionChildren();
@@ -305,35 +310,36 @@ local function modify(parent, region, data)
         local anyVisible = false;
         local minX, maxX, minY, maxY;
         for index, regionData in pairs(region.controlledRegions) do
-            childId = regionData.id;
-            childData = regionData.data;
-            childRegion = regionData.region;
+            local childId = regionData.id;
+            local childData = regionData.data;
+            local childRegion = regionData.region;
             if(childData and childRegion) then
                 if(childRegion.toShow) then
                     childRegion:Show();
                     childRegion.toShow = nil;
                 end
                 
-                local _, _, _, xOffset, yOffset = region.trays[index]:GetPoint(1);
-                local previousX, previousY = previous[childId].x, previous[childId].y;
-                if(childRegion:IsVisible() and data.animate) then
+                local _, _, _, xOffset, yOffset = region.trays[regionData.key]:GetPoint(1);
+                local previousX, previousY = previous[regionData.key].x, previous[regionData.key].y;
+                local xDelta, yDelta = previousX - xOffset, previousY - yOffset
+                if(childRegion:IsVisible() and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
                     local anim = {
                         type = "custom",
                         duration = 0.2,
                         use_translate = true,
-                        x = previousX - xOffset,
-                        y = previousY - yOffset
+                        x = xDelta,
+                        y = yDelta
                     };
                     if(childRegion.toHide) then
                         childRegion.toHide = nil;
-                        if(WeakAuras.IsAnimating("display", childId) == "finish") then
+                        if(WeakAuras.IsAnimating(childRegion) == "finish") then
                             --childRegion will be hidden by its own animation, so the tray animation does not need to hide it
                         else
                             childRegion.groupHiding = true;
                         end
                     end
-                    WeakAuras.CancelAnimation(index.."tray", data.id);
-                    WeakAuras.Animate(index.."tray", data.id, "tray", anim, region.trays[index], true, function()
+                    WeakAuras.CancelAnimation(region.trays[regionData.key], nil, nil, nil, nil, nil, true);
+                    WeakAuras.Animate("tray"..regionData.key, data.id, "tray", anim, region.trays[regionData.key], true, function()
                         if(childRegion.groupHiding) then
                             childRegion.groupHiding = nil;
                             childRegion:Hide();
@@ -341,7 +347,7 @@ local function modify(parent, region, data)
                     end);
                 elseif(childRegion.toHide) then
                     childRegion.toHide = nil;
-                    if(WeakAuras.IsAnimating("display", childId) == "finish") then
+                    if(WeakAuras.IsAnimating(childRegion) == "finish") then
                         --childRegion will be hidden by its own animation, so it does not need to be hidden immediately
                     else
                         childRegion:Hide();
