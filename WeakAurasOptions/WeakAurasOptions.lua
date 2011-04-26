@@ -1026,7 +1026,7 @@ function WeakAuras.ShowOptions(forceCacheReset)
             end);
             region:SetScript("OnHide", function()
                 if(WeakAuras.clones[id]) then
-                    WeakAuras.HideClones(id, 0);
+                    WeakAuras.HideAllClones(id);
                 end
             end);
         end

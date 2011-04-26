@@ -320,7 +320,7 @@ local function modify(parent, region, data)
                 end
                 
                 local _, _, _, xOffset, yOffset = region.trays[regionData.key]:GetPoint(1);
-                local previousX, previousY = previous[regionData.key].x, previous[regionData.key].y;
+                local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or 0, previous[regionData.key] and previous[regionData.key].y or 0;
                 local xDelta, yDelta = previousX - xOffset, previousY - yOffset
                 if(childRegion:IsVisible() and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
                     local anim = {

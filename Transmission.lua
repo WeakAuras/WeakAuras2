@@ -723,7 +723,7 @@ function WeakAuras.TransmitDisplay(id, characterName)
     end
 end
 
-WeakAuras:RegisterComm("WeakAurasProgress", function(prefix, message, ditribution, sender)
+WeakAuras:RegisterComm("WeakAurasProg", function(prefix, message, ditribution, sender)
     if(tooltipLoading and ItemRefTooltip:IsVisible()) then
         local stats = WeakAuras.split(message);
         local done = tonumber(stats[1]);
