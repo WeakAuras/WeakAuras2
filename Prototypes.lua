@@ -757,6 +757,12 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             {}, --messageType ignored with _ argument (it is checked before the dynamic function)
             {}, --sourceGUID ignored with _ argument
             {
+                enable = function()
+                    local _, _, _, tocversion = GetBuildInfo()
+                    return tocversion > 40000
+                end
+            }, --new Combat Log Event argument hideCaster added in 4.1 - ignore it with _ if the toc version is 4.1 or later
+            {
                 name = "sourceunit",
                 display = L["Source Unit"],
                 type = "select",

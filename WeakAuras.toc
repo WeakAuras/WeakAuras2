@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 40100
 ## Title: WeakAuras
 ## Author: Mirrored
 ## Version: @project-version@

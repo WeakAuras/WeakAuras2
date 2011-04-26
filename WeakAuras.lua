@@ -3643,10 +3643,10 @@ do
             end)
         end
     end
- end
+end
  
- local FrameTimes = {};
- function WeakAuras.ProfileFrames(all)
+local FrameTimes = {};
+function WeakAuras.ProfileFrames(all)
     UpdateAddOnCPUUsage();
     for name, frame in pairs(WeakAuras.frames) do
         local FrameTime = GetFrameCPUUsage(frame);
@@ -3656,10 +3656,10 @@ do
         end
         FrameTimes[name] = FrameTime;
     end
- end
+end
  
- local DisplayTimes = {};
- function WeakAuras.ProfileDisplays(all)
+local DisplayTimes = {};
+function WeakAuras.ProfileDisplays(all)
     UpdateAddOnCPUUsage();
     for id, regionData in pairs(WeakAuras.regions) do
         local DisplayTime = GetFrameCPUUsage(regionData.region, true);
@@ -3669,4 +3669,40 @@ do
         end
         DisplayTimes[id] = DisplayTime;
     end
- end
+end
+
+function WeakAuras.CombatEventWarning(silentIfNone)
+    local offendList = {};
+    for id, data in pairs(db.displays) do
+        for triggernum=0,9 do
+            local trigger, untrigger;
+            if(triggernum == 0) then
+                trigger = data.trigger;
+            elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+                trigger = data.additional_triggers[triggernum].trigger;
+            end
+            if(trigger and trigger.type == "custom") then
+                if not(trigger.custom_type == "status" and trigger.check == "update") then
+                    for index, event in pairs(WeakAuras.split(trigger.events)) do
+                        if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+                            offendList[id] = true;
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    if(next(offendList)) then
+        print("|cFF8800FFWeakAuras|r has detected you have updated from World of Warcraft version 4.0.6 to version 4.1.");
+        print("In 4.1, Blizzard changed the behavior of the COMBAT_LOG_EVENT_UNFILTERED event, giving it another argument.");
+        print("|cFF8800FFWeakAuras|r automatically accounts for this in most circumstances, but you have Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events. You will need to update them manually.");
+        print("If you don't know how to do this, please see http://www.wowace.com/addons/weakauras/forum/21024-4-1-change/ for instructions and/or help.")
+        print("The following displays have Custom Triggers that use the COMBAT_LOG_EVENT_UNFILTERED event:");
+        for id,_ in pairs(offendList) do
+            print("  "..id);
+        end
+    elseif not(silentIfNone) then
+        print("You have no displays with Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events.");
+    end
+end

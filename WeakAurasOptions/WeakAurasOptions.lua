@@ -912,6 +912,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         local _, build = GetBuildInfo();
         local locale = GetLocale();
         local version = WeakAuras.versionString
+        
+        --Check for 4.0 to 4.1 upgrade to give warning about Combat Log Event Unfiltered change
+        if(tonumber(odb.build) <= 13623 and tonumber(build) > 13623) then
+            WeakAuras.CombatEventWarning(true);
+        end
+        
         if(odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
             WeakAuras.CreateIconCache();
 
