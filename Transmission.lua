@@ -716,7 +716,7 @@ function WeakAuras.TransmitDisplay(id, characterName)
     local encoded = WeakAuras.DisplayToString(id);
     if(encoded ~= "") then
         WeakAuras:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(_, done, total)
-            WeakAuras:SendCommMessage("WeakAurasProgress", done.." "..total, "WHISPER", characterName, "ALERT");
+            WeakAuras:SendCommMessage("WeakAurasPro", done.." "..total, "WHISPER", characterName, "ALERT");
         end);
     else
         WeakAuras.TransmitError("dne", characterName, displayName);
