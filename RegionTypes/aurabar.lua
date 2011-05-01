@@ -27,7 +27,8 @@ local default = {
     stickyDuration = false,
     icon_side = "RIGHT",
     stacks = true,
-    rotateText = "NONE"
+    rotateText = "NONE",
+    frameStrata = 1
 };
 
 local function create(parent)
@@ -127,6 +128,12 @@ end
 
 local function modify(parent, region, data)
     local bar, background, border, timer, text, icon, stacks = region.bar, region.background, region.border, region.timer, region.text, region.icon, region.stacks;
+    
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
     
     region:SetWidth(data.width);
     region:SetHeight(data.height);

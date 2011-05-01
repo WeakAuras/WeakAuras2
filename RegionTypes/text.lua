@@ -10,7 +10,8 @@ local default = {
     xOffset = 0,
     yOffset = 0,
     font = "Friz Quadrata TT",
-    fontSize = 12
+    fontSize = 12,
+    frameStrata = 1
 };
 
 local function create(parent)
@@ -30,6 +31,12 @@ end
 
 local function modify(parent, region, data)
     local text = region.text;
+    
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
     
     local fontPath = SharedMedia:Fetch("font", data.font);
     text:SetFont(fontPath, data.fontSize <= 25 and data.fontSize or 25, data.outline and "OUTLINE" or nil);

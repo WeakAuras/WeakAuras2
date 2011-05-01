@@ -405,6 +405,60 @@ WeakAuras.event_prototypes = {
         end,
         automatic = true
     },
+    ["Unit Characteristics"] = {
+        type = "status",
+        events = {
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = true,
+        name = L["Unit Characteristics"],
+        init = function(trigger)
+            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+        end,
+        args = {
+            {
+                name = "unit",
+                required = true,
+                display = L["Unit"],
+                type = "select",
+                init = "arg",
+                values = "actual_unit_types"
+            },
+            {
+                name = "name",
+                display = L["Name"],
+                type = "string",
+                init = "UnitName(unit)"
+            },
+            {
+                name = "class",
+                display = L["Class"],
+                type = "select",
+                init = "select(2, UnitClass(unit))",
+                values = "class_types"
+            },
+            {
+                name = "hostility",
+                display = L["Hostility"],
+                type = "select",
+                init = "UnitIsEnemy('player', unit) and 'hostile' or 'friendly'",
+                values = "hostility_types"
+            },
+            {
+                name = "character",
+                display = L["Character Type"],
+                type = "select",
+                init = "UnitIsPlayer(unit) and 'player' or 'npc'",
+                values = "character_types"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(concernedUnit)"
+            }
+        },
+        automatic = true
+    },
     ["Health"] = {
         type = "status",
         events = {

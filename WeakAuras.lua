@@ -1666,6 +1666,7 @@ function WeakAuras.ScanAuras(unit)
                         current_aura.tooltip = tooltip;
                         current_aura.debuffClass = debuffClass;
                         current_aura.tooltipSize = tooltipSize;
+                        current_aura.unitCaster = unitCaster;
                         aura_scan_cache[unit][filter].up_to_date = index;
                     else
                         local current_aura = aura_scan_cache[unit][filter][index];
@@ -1679,12 +1680,13 @@ function WeakAuras.ScanAuras(unit)
                         tooltip = current_aura.tooltip;
                         debuffClass = current_aura.debuffClass;
                         tooltipSize = current_aura.tooltipSize;
+                        unitCaster = current_aura.unitCaster;
                     end
                     while(name) do
                         if(data.subcount) then
                             count = tooltipSize;
                         end
-                        if(((not data.count) or data.count(count)) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
+                        if(((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster)) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                             db.tempIconCache[name] = icon;
                             if(data.autoclone) then
                                 local cloneId = name.."-"..unitCaster;
@@ -1716,6 +1718,7 @@ function WeakAuras.ScanAuras(unit)
                             current_aura.tooltip = tooltip;
                             current_aura.debuffClass = debuffClass;
                             current_aura.tooltipSize = tooltipSize;
+                            current_aura.unitCaster = unitCaster;
                             aura_scan_cache[unit][filter].up_to_date = index;
                         else
                             local current_aura = aura_scan_cache[unit][filter][index];
@@ -1729,6 +1732,7 @@ function WeakAuras.ScanAuras(unit)
                             tooltip = current_aura.tooltip;
                             debuffClass = current_aura.debuffClass;
                             tooltipSize = current_aura.tooltipSize;
+                            unitCaster = current_aura.unitCaster
                         end
                     end
                     if not(active) then
@@ -1745,7 +1749,7 @@ function WeakAuras.ScanAuras(unit)
                     for index, checkname in pairs(data.names) do
                         name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
                         checkPassed = false;
-                        if(name and ((not data.count) or data.count(count))) then
+                        if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster))) then
                             remaining = expirationTime - time;
                             checkPassed = true;
                             if(data.remFunc) then

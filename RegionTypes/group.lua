@@ -4,7 +4,8 @@ local default = {
     controlledChildren = {},
     anchorPoint = "CENTER",
     xOffset = 0,
-    yOffset = 0
+    yOffset = 0,
+    frameStrata = 1
 };
 
 local function create(parent)
@@ -45,6 +46,12 @@ local function getRect(data)
 end
 
 local function modify(parent, region, data)
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
+    
     data.selfPoint = "BOTTOMLEFT";
     local leftest, rightest, lowest, highest = 0, 0, 0, 0;
     for index, childId in ipairs(data.controlledChildren) do

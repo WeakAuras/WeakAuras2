@@ -676,8 +676,8 @@ function WeakAuras.ImportString(str)
     if(received and type(received) == "table" and received.m) then
         if(received.m == "d") then
             tooltipLoading = nil;
-            if(version ~= received.v) then
-                local errorMsg = version > received.v and L["Version error recevied lower"] or L["Version error recevied higher"]
+            if(version < received.v) then
+                local errorMsg = L["Version error recevied higher"]
                 WeakAuras.ShowTooltip({
                     {1, "WeakAuras", 0.5333, 0, 1},
                     {1, errorMsg:format(received.s, versionString), 1, 0, 0}

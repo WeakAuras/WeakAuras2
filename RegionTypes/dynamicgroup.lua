@@ -10,10 +10,12 @@ local default = {
     align = "CENTER",
     space = 2,
     stagger = 0,
+    sort = "none",
     animate = false,
     anchorPoint = "CENTER",
     xOffset = 0,
-    yOffset = 0
+    yOffset = 0,
+    frameStrata = 1
 };
 
 local function create(parent)
@@ -30,6 +32,13 @@ end
 
 local function modify(parent, region, data)
     local background = region.background;
+    
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
+    
     local bgFile = SharedMedia:Fetch("background", data.background or "");
     local edgeFile = SharedMedia:Fetch("border", data.border or "");
     background:SetBackdrop({

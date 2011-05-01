@@ -80,7 +80,8 @@ local default = {
     font = "Friz Quadrata TT",
     fontSize = 12,
     stickyDuration = false,
-    mirror = false
+    mirror = false,
+    frameStrata = 1
 };
 
 local function create(parent)
@@ -105,6 +106,12 @@ end
 
 local function modify(parent, region, data)
     local bar, background, foreground, timer = region.bar, region.background, region.foreground, region.timer;
+    
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
     
     region:SetWidth(data.width);
     region:SetHeight(data.height);

@@ -4249,15 +4249,41 @@ function WeakAuras.ReloadTriggerOptions(data)
         },
         ownOnly = {
             type = "toggle",
-            name = L["Own Only"],
-            desc = "Only match auras cast by the player",
+            name = function()
+                local value = trigger.ownOnly;
+                if(value == nil) then return L["Own Only"];
+                elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..L["Own Only"];
+                else return "|cFF00FF00"..L["Own Only"]; end
+            end,
+            desc = function()
+                local value = trigger.ownOnly;
+                if(value == nil) then return L["Only match auras cast by the player"];
+                elseif(value == false) then return L["Only match auras cast by people other than the player"];
+                else return L["Only match auras cast by the player"]; end
+            end,
+            get = function()
+                local value = trigger.ownOnly;
+                if(value == nil) then return false;
+                elseif(value == false) then return "false";
+                else return "true"; end
+            end,
+            set = function(info, v)
+                if(v) then
+                    trigger.ownOnly = true;
+                else
+                    local value = trigger.ownOnly;
+                    if(value == false) then trigger.ownOnly = nil;
+                    else trigger.ownOnly = false end
+                end
+                WeakAuras.Add(data);
+            end,
             order = 70,
             hidden = function() return not (trigger.type == "aura"); end
         },
         inverse = {
             type = "toggle",
             name = L["Inverse"],
-            desc = "Activate when the given aura(s) |cFFFF0000can't|r be found",
+            desc = L["Activate when the given aura(s) |cFFFF0000can't|r be found"],
             order = 75,
             hidden = function() return not (trigger.type == "aura" and (not trigger.autoclone) and trigger.unit ~= "multi"); end
         }
@@ -5281,6 +5307,12 @@ function WeakAuras.AddPositionOptions(input, id, data)
                     end
                 end
             end
+        },
+        frameStrata = {
+            type = "select",
+            name = L["Frame Strata"],
+            order = 90,
+            values = WeakAuras.frame_strata_types
         }
     };
     

@@ -12,7 +12,8 @@
     selfPoint = "CENTER",
     anchorPoint = "CENTER",
     xOffset = 0,
-    yOffset = 0
+    yOffset = 0,
+    frameStrata = 1
 };
 
 local function create(parent)
@@ -29,6 +30,12 @@ local function create(parent)
 end
 
 local function modify(parent, region, data)
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
+    
     local model = region;
     region:SetWidth(data.width);
     region:SetHeight(data.height);

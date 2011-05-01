@@ -2,6 +2,25 @@
 
 local LSM = LibStub("LibSharedMedia-3.0");
 
+WeakAuras.frame_strata_types = {
+    [1] = L["Inherited"],
+    [2] = "BACKGROUND",
+    [3] = "LOW",
+    [4] = "MEDIUM",
+    [5] = "HIGH",
+    [6] = "DIALOG",
+    [7] = "FULLSCREEN",
+    [8] = "FULLSCREEN_DIALOG",
+    [9] = "TOOLTIP"
+};
+WeakAuras.hostility_types = {
+    hostile = L["Hostile"],
+    friendly = L["Friendly"]
+};
+WeakAuras.character_types = {
+    player = L["Player Character"],
+    npc = L["Non-player Character"]
+};
 WeakAuras.group_sort_types = {
     ascending = L["Ascending"],
     descending = L["Descending"],
