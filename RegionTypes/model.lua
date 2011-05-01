@@ -43,7 +43,6 @@ local function modify(parent, region, data)
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
     
     model:SetModel(data.model_path);
-    print("Model path set");
     model:SetPosition(data.model_z, data.model_x, data.model_y);
     
     if(data.advance) then

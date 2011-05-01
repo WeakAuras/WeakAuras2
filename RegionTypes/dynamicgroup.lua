@@ -120,32 +120,42 @@ local function modify(parent, region, data)
     region.controlledRegions = {};
     
     function region:EnsureControlledRegions()
+        local anyIndexInfo = false;
         local dataIndex = 1;
         local regionIndex = 1;
         while(dataIndex <= #data.controlledChildren) do
-            if not(region.controlledRegions[regionIndex]) then
-                region.controlledRegions[regionIndex] = {};
-            end
             local childId = data.controlledChildren[dataIndex];
             local childData = WeakAuras.GetData(childId);
-            region.controlledRegions[regionIndex].id = childId;
-            region.controlledRegions[regionIndex].data = childData;
-            region.controlledRegions[regionIndex].region = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
-            region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
-            dataIndex = dataIndex + 1;
-            regionIndex = regionIndex + 1;
-            if(childData and WeakAuras.clones[childId]) then
-                for cloneId, cloneRegion in pairs(WeakAuras.clones[childId]) do
-                    if not(region.controlledRegions[regionIndex]) then
-                        region.controlledRegions[regionIndex] = {};
-                    end
-                    region.controlledRegions[regionIndex].id = childId;
-                    region.controlledRegions[regionIndex].data = childData;
-                    region.controlledRegions[regionIndex].cloneId = cloneId;
-                    region.controlledRegions[regionIndex].region = cloneRegion;
-                    region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
-                    regionIndex = regionIndex + 1;
+            local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
+            if(childRegion) then
+                if not(region.controlledRegions[regionIndex]) then
+                    region.controlledRegions[regionIndex] = {};
                 end
+                region.controlledRegions[regionIndex].id = childId;
+                region.controlledRegions[regionIndex].data = childData;
+                region.controlledRegions[regionIndex].region = childRegion;
+                region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
+                anyIndexInfo = anyIndexInfo or childRegion.index;
+                region.controlledRegions[regionIndex].dataIndex = dataIndex;
+                dataIndex = dataIndex + 1;
+                regionIndex = regionIndex + 1;
+                if(childData and WeakAuras.clones[childId]) then
+                    for cloneId, cloneRegion in pairs(WeakAuras.clones[childId]) do
+                        if not(region.controlledRegions[regionIndex]) then
+                            region.controlledRegions[regionIndex] = {};
+                        end
+                        region.controlledRegions[regionIndex].id = childId;
+                        region.controlledRegions[regionIndex].data = childData;
+                        region.controlledRegions[regionIndex].cloneId = cloneId;
+                        region.controlledRegions[regionIndex].region = cloneRegion;
+                        region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
+                        anyIndexInfo = anyIndexInfo or cloneRegion.index;
+                        region.controlledRegions[regionIndex].dataIndex = dataIndex;
+                        regionIndex = regionIndex + 1;
+                    end
+                end
+            else
+                dataIndex = dataIndex + 1;
             end
         end
         while(region.controlledRegions[regionIndex]) do
@@ -185,6 +195,21 @@ local function modify(parent, region, data)
                     or math.huge
                 )
             end);
+        elseif(anyIndexInfo) then
+            table.sort(region.controlledRegions, function(a, b)
+                if not(a) then
+                    return 1 < 2;
+                elseif not(b) then
+                    return 2 < 1;
+                end
+                return (
+                    (
+                        a.region.dataIndex == b.region.dataIndex
+                        and (a.region.index or 0) < (b.region.index or 0)
+                    )
+                    or (a.region.dataIndex or 0) < (b.region.dataIndex or 0)
+                )
+            end)
         end
     end
     

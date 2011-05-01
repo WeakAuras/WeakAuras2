@@ -1663,6 +1663,7 @@ function WeakAuras.ScanAuras(unit)
                     local index = 1;
                     if(aura_scan_cache[unit][filter].up_to_date < index) then
                         name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, index, filter);
+                        unitCaster = unitCaster or "unknown";
                         tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                         aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
                         local current_aura = aura_scan_cache[unit][filter][index];
@@ -1701,7 +1702,7 @@ function WeakAuras.ScanAuras(unit)
                             if(data.autoclone) then
                                 local cloneId = name.."-"..unitCaster;
                                 if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
-                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId);
+                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId, index);
                                     clones[id][cloneId].expirationTime = expirationTime;
                                 end
                                 active = true;
@@ -1715,6 +1716,7 @@ function WeakAuras.ScanAuras(unit)
                         index = index + 1;
                         if(aura_scan_cache[unit][filter].up_to_date < index) then
                             name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, index, filter);
+                            unitCaster = unitCaster or "unknown";
                             tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                             aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
                             local current_aura = aura_scan_cache[unit][filter][index];
@@ -1854,7 +1856,7 @@ function WeakAuras.ScanAuras(unit)
     WeakAuras.CurrentUnit = old_unit;
 end
 
-function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count, cloneId)
+function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count, cloneId, index)
     local region;
     local showClones;
     
@@ -1865,6 +1867,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
             showClones = true;
         end
         region = WeakAuras.EnsureClone(id, cloneId);
+        region.index = index;
     else
         region = data.region;
     end
