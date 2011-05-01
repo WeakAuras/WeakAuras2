@@ -1205,3 +1205,7 @@ L["Only match auras cast by people other than the player"] = "Only match auras c
 L["Activate when the given aura(s) |cFFFF0000can't|r be found"] = "Activate when the given aura(s) |cFFFF0000can't|r be found"
 L["Frame Strata"] = "Frame Strata"
 L["Inherited"] = "Inherited"
+
+--Added in r125
+L["Circular"] = "Circular"
+L["Radius"] = "Radius"

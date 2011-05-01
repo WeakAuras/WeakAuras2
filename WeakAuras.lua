@@ -1948,9 +1948,7 @@ function WeakAuras.Delete(data)
     regions[id].region:Hide();
     WeakAuras.EndEvent(id, 0, true);
     
-    if(clones[id]) then
-        WeakAuras.HideAllClones(id);
-    end
+    WeakAuras.HideAllClones(id);
     
     regions[id].region = nil;
     regions[id] = nil;
@@ -2752,6 +2750,7 @@ function WeakAuras.EnsureClone(id, cloneId)
             clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
         end
         WeakAuras.SetRegion(data, cloneId);
+        clones[id][cloneId]:Expand();
     end
     return clones[id][cloneId];
 end

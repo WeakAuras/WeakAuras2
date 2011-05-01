@@ -15,13 +15,14 @@ local function createOptions(id, data)
             order = 10,
             values = WeakAuras.align_types,
             hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") end,
+            disabled = function() return data.grow == "CIRCLE" end
         },
         rotated_align = {
             type = "select",
             name = L["Align"],
             order = 10,
             values = WeakAuras.rotated_align_types,
-            hidden = function() return (data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") end,
+            hidden = function() return (data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE") end,
             get = function() return data.align; end,
             set = function(info, v) data.align = v; WeakAuras.Add(data); end
         },
@@ -31,7 +32,17 @@ local function createOptions(id, data)
             order = 15,
             softMin = 0,
             softMax = 100,
-            bigStep = 1
+            bigStep = 1,
+            hidden = function() return data.grow == "CIRCLE" end
+        },
+        radius = {
+            type = "range",
+            name = L["Radius"],
+            order = 15,
+            softMin = 0,
+            softMax = 500,
+            bigStep = 1,
+            hidden = function() return data.grow ~= "CIRCLE" end
         },
         stagger = {
             type = "range",
@@ -40,7 +51,17 @@ local function createOptions(id, data)
             min = -50,
             max = 50,
             step = 0.1,
-            bigStep = 1
+            bigStep = 1,
+            hidden = function() return data.grow == "CIRCLE" end
+        },
+        rotation = {
+            type = "range",
+            name = L["Rotation"],
+            order = 15,
+            min = 0,
+            max = 360,
+            bigStep = 3,
+            hidden = function() return data.grow ~= "CIRCLE" end
         },
         animate = {
             type = "toggle",
@@ -158,6 +179,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         elseif(data.align == "RIGHT") then
             selfPoint = selfPoint.."RIGHT";
         end
+    elseif(data.grow == "CIRCLE") then
+        selfPoint = "CENTER";
+        actualSelfPoint = "CENTER";
     end
     data.selfPoint = selfPoint;
     
@@ -194,35 +218,44 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     region:SetHeight(maxHeight * scale);
     
     local xOffset, yOffset = 0, 0;
-    if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
-        if(data.align == "LEFT" and data.stagger > 0) then
-            yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
-        elseif(data.align == "RIGHT" and data.stagger < 0) then
-            yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
-        elseif(data.align == "CENTER") then
-            if(data.stagger < 0) then
-                yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
-            else
-                yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
+    if(math.abs(data.stagger) > 0.1 and not data.grow == "CIRCLE") then
+        if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
+            if(data.align == "LEFT" and data.stagger > 0) then
+                yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
+            elseif(data.align == "RIGHT" and data.stagger < 0) then
+                yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
+            elseif(data.align == "CENTER") then
+                if(data.stagger < 0) then
+                    yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
+                else
+                    yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
+                end
             end
-        end
-    else
-        if(data.align == "LEFT" and data.stagger < 0) then
-            xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1));
-        elseif(data.align == "RIGHT" and data.stagger > 0) then
-            xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1));
-        elseif(data.align == "CENTER") then
-            if(data.stagger < 0) then
-                xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
-            else
-                xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
+        else
+            if(data.align == "LEFT" and data.stagger < 0) then
+                xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1));
+            elseif(data.align == "RIGHT" and data.stagger > 0) then
+                xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1));
+            elseif(data.align == "CENTER") then
+                if(data.stagger < 0) then
+                    xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
+                else
+                    xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
+                end
             end
         end
     end
     
+    local angle = data.rotation or 0;
+    local angleInc = 360 / (#data.controlledChildren ~= 0 and #data.controlledChildren or 1);
     for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
+            if(data.grow == "CIRCLE") then
+                yOffset = cos(angle) * data.radius * -1;
+                xOffset = sin(angle) * data.radius;
+                angle = angle + angleInc;
+            end
             if not(region.children[index]) then
                 region.children[index] = CreateFrame("FRAME", nil, region);
                 region.children[index].texture = region.children[index]:CreateTexture(nil, "OVERLAY");

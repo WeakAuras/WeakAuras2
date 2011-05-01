@@ -6970,11 +6970,11 @@ function WeakAuras.CreateFrame()
         local midx = (distance / 2) * cos(angle);
         local midy = (distance / 2) * sin(angle);
         self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy);
-        if((midx > 0 and self.text:GetRight() > moversizer:GetLeft()) or (midx < 0 and self.text:GetLeft() < moversizer:GetRight())) then
-            if(midy > 0 and self.text:GetTop() > moversizer:GetBottom()) then
-                midy = midy - (self.text:GetTop() - moversizer:GetBottom());
-            elseif(midy < 0 and self.text:GetBottom() < moversizer:GetTop()) then
-                midy = midy + (moversizer:GetTop() - self.text:GetBottom());
+        if((midx > 0 and (self.text:GetRight() or 0) > (moversizer:GetLeft() or 0)) or (midx < 0 and (self.text:GetLeft() or 0) < (moversizer:GetRight() or 0))) then
+            if(midy > 0 and (self.text:GetTop() or 0) > (moversizer:GetBottom() or 0)) then
+                midy = midy - ((self.text:GetTop() or 0) - (moversizer:GetBottom() or 0));
+            elseif(midy < 0 and (self.text:GetBottom() or 0) < (moversizer:GetTop() or 0)) then
+                midy = midy + ((moversizer:GetTop() or 0) - (self.text:GetBottom() or 0));
             end
         end
         self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy);
@@ -7186,11 +7186,6 @@ tXmdmY4fDE5]];
         local data = WeakAuras.GetData(id);
         
         local function finishPicking()
-            if(data.controlledChildren) then
-                for index, childId in pairs(data.controlledChildren) do
-                    displayButtons[childId]:PriorityShow(1);
-                end
-            end
             displayButtons[id]:Pick();
             self.pickedDisplay = id;
             local data = db.displays[id];
@@ -7201,6 +7196,11 @@ tXmdmY4fDE5]];
             self.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id]);
             local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1);
             self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+            if(data.controlledChildren) then
+                for index, childId in pairs(data.controlledChildren) do
+                    displayButtons[childId]:PriorityShow(1);
+                end
+            end
         end
         
         local list = {};

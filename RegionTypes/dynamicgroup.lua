@@ -15,6 +15,8 @@ local default = {
     anchorPoint = "CENTER",
     xOffset = 0,
     yOffset = 0,
+    radius = 200,
+    rotation = 0,
     frameStrata = 1
 };
 
@@ -111,6 +113,9 @@ local function modify(parent, region, data)
             selfPoint = selfPoint.."RIGHT";
             actualSelfPoint = "RIGHT";
         end
+    elseif(data.grow == "CIRCLE") then
+        selfPoint = "CENTER";
+        actualSelfPoint = "CENTER";
     end
     data.selfPoint = actualSelfPoint;
         
@@ -234,66 +239,97 @@ local function modify(parent, region, data)
         region:EnsureTrays();
         local childId, childData, childRegion;
         local xOffset, yOffset = 0, 0;
-        if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
-            if(data.align == "LEFT" and data.stagger > 0) then
-                yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1));
-            elseif(data.align == "RIGHT" and data.stagger < 0) then
-                yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1));
-            elseif(data.align == "CENTER") then
-                if(data.stagger < 0) then
-                    yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
-                else
-                    yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
+        if(math.abs(data.stagger) > 0.1 and not data.grow == "CIRCLE") then
+            if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
+                if(data.align == "LEFT" and data.stagger > 0) then
+                    yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1));
+                elseif(data.align == "RIGHT" and data.stagger < 0) then
+                    yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1));
+                elseif(data.align == "CENTER") then
+                    if(data.stagger < 0) then
+                        yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
+                    else
+                        yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
+                    end
                 end
-            end
-        else
-            if(data.align == "LEFT" and data.stagger < 0) then
-                xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1));
-            elseif(data.align == "RIGHT" and data.stagger > 0) then
-                xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1));
-            elseif(data.align == "CENTER") then
-                if(data.stagger < 0) then
-                    xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
-                else
-                    xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
+            else
+                if(data.align == "LEFT" and data.stagger < 0) then
+                    xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1));
+                elseif(data.align == "RIGHT" and data.stagger > 0) then
+                    xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1));
+                elseif(data.align == "CENTER") then
+                    if(data.stagger < 0) then
+                        xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
+                    else
+                        xOffset = xOffset - (data.stagger * (#region.controlledRegions - 1) / 2);
+                    end
                 end
             end
         end
         
-        local centerXOffset, centerYOffset = 0, 0;
+        local numVisible = 0;
         if(data.grow == "HORIZONTAL" or data.grow == "VERTICAL") then
             local currentWidth, currentHeight = 0, 0;
-            local num = 0;
             for index, regionData in pairs(region.controlledRegions) do
                 childId = regionData.id;
                 childData = regionData.data;
                 childRegion = regionData.region;
                 if(childData and childRegion) then
-                    if(((childRegion:IsVisible() and not (childRegion.toHide or childRegion.groupHiding)) or childRegion.toShow) and not (WeakAuras.IsAnimating(childRegion) == "finish")) then
+                    if(
+                        (
+                            (
+                                childRegion:IsVisible()
+                                and not(
+                                    childRegion.toHide or childRegion.groupHiding
+                                )
+                            )
+                            or childRegion.toShow
+                        )
+                        and not (WeakAuras.IsAnimating(childRegion) == "finish")
+                    ) then
                         if(data.grow == "HORIZONTAL") then
                             currentWidth = currentWidth + childData.width;
-                            num = num + 1;
+                            numVisible = numVisible + 1;
                         elseif(data.grow == "VERTICAL") then
                             currentHeight = currentHeight + childData.height;
-                            num = num + 1;
+                            numVisible = numVisible + 1;
                         end
                     end
                 end
             end
-            
             if(data.grow == "HORIZONTAL") then
-                currentWidth = currentWidth + (data.space * max(num - 1, 0));
-                centerXOffset = ((data.width - currentWidth) / 2);
-                centerYOffset = 0;
+                currentWidth = currentWidth + (data.space * max(numVisible - 1, 0));
+                region:SetWidth(currentWidth > 0 and currentWidth or 1);
             elseif(data.grow == "VERTICAL") then
-                currentHeight = currentHeight + (data.space * max(num - 1, 0));
-                centerYOffset = ((data.height - currentHeight) / 2);
-                centerXOffset = 0;
+                currentHeight = currentHeight + (data.space * max(numVisible - 1, 0));
+                region:SetHeight(currentHeight > 0 and currentHeight or 1);
+            end
+        elseif(data.grow == "CIRCLE") then
+            for index, regionData in pairs(region.controlledRegions) do
+                childId = regionData.id;
+                childData = regionData.data;
+                childRegion = regionData.region;
+                if(childData and childRegion) then
+                    if(
+                        (
+                            (
+                                childRegion:IsVisible()
+                                and not(
+                                    childRegion.toHide or childRegion.groupHiding
+                                )
+                            )
+                            or childRegion.toShow
+                        )
+                        and not (WeakAuras.IsAnimating(childRegion) == "finish")
+                    ) then
+                        numVisible = numVisible + 1;
+                    end
+                end
             end
         end
-        xOffset = xOffset + centerXOffset;
-        yOffset = yOffset - centerYOffset;
         
+        local angle = data.rotation or 0;
+        local angleInc = 360 / (numVisible ~= 0 and numVisible or 1);
         for index, regionData in pairs(region.controlledRegions) do
             childId = regionData.id;
             childData = regionData.data;
@@ -305,6 +341,11 @@ local function modify(parent, region, data)
                 end
                 
                 if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
+                    if(data.grow == "CIRCLE") then
+                        yOffset = cos(angle) * data.radius * -1;
+                        xOffset = sin(angle) * data.radius;
+                        angle = angle + angleInc;
+                    end
                     region.trays[regionData.key]:ClearAllPoints();
                     region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
                     childRegion:ClearAllPoints();
@@ -324,7 +365,7 @@ local function modify(parent, region, data)
                     end
                 else
                     local hiddenXOffset, hiddenYOffset;
-                    if(data.grow == "RIGHT") then
+                    if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
                         hiddenXOffset = xOffset - (childData.width + data.space);
                         hiddenYOffset = yOffset - data.stagger;
                     elseif(data.grow == "LEFT") then
@@ -333,15 +374,12 @@ local function modify(parent, region, data)
                     elseif(data.grow == "UP") then
                         hiddenYOffset = yOffset - (childData.height + data.space);
                         hiddenXOffset = xOffset - data.stagger;
-                    elseif(data.grow == "DOWN") then
+                    elseif(data.grow == "DOWN" or data.grow == "VERTICAL") then
                         hiddenYOffset = yOffset + (childData.height + data.space);
                         hiddenXOffset = xOffset - data.stagger;
-                    elseif(data.grow == "HORIZONTAL") then
-                        hiddenXOffset = xOffset - ((childData.width + data.space) * (xOffset / data.width));
-                        hiddenYOffset = yOffset - data.stagger;
-                    elseif(data.grow == "VERTICAL") then
-                        hiddenYOffset = yOffset - ((childData.height + data.space) * (yOffset / data.height));
-                        hiddenXOffset = xOffset - data.stagger;
+                    elseif(data.grow == "CIRCLE") then
+                        hiddenYOffset = cos(angle - angleInc) * data.radius * -1;
+                        hiddenXOffset = sin(angle - angleInc) * data.radius;
                     end
                     
                     region.trays[regionData.key]:ClearAllPoints();
@@ -364,7 +402,7 @@ local function modify(parent, region, data)
     function region:DoControlChildren()
         local previous = {};
         for index, regionData in pairs(region.controlledRegions) do
-            local _, _, _, previousX, previousY = region.trays[regionData.key]:GetPoint(1);
+            local previousX, previousY = region.trays[regionData.key]:GetCenter();
             previousX = previousX or 0;
             previousY = previousY or 0;
             previous[regionData.key] = {x = previousX, y = previousY};
@@ -385,7 +423,9 @@ local function modify(parent, region, data)
                     childRegion.toShow = nil;
                 end
                 
-                local _, _, _, xOffset, yOffset = region.trays[regionData.key]:GetPoint(1);
+                local xOffset, yOffset = region.trays[regionData.key]:GetCenter();
+                xOffset = xOffset or 0;
+                yOffset = yOffset or 0;
                 local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or previousPreviousX or 0, previous[regionData.key] and previous[regionData.key].y or previousPreviousY or 0;
                 local xDelta, yDelta = previousX - xOffset, previousY - yOffset;
                 previousPreviousX, previousPreviousY = previousX, previousY;

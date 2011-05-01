@@ -802,7 +802,8 @@ WeakAuras.grow_types = {
     ["UP"] = L["Up"],
     ["DOWN"] = L["Down"],
     ["HORIZONTAL"] = L["Centered Horizontal"],
-    ["VERTICAL"] = L["Centered Vertical"]
+    ["VERTICAL"] = L["Centered Vertical"],
+    ["CIRCLE"] = L["Circular"]
 };
 WeakAuras.text_rotate_types = {
     ["LEFT"] = L["Left"],
