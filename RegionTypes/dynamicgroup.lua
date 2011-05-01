@@ -156,12 +156,14 @@ local function modify(parent, region, data)
         if(data.sort == "ascending") then
             table.sort(region.controlledRegions, function(a, b)
                 return (
-                    a.region.expirationTime
+                    a.region
+                    and a.region.expirationTime
                     and a.region.expirationTime > 0
                     and a.region.expirationTime
                     or math.huge
                 ) < (
-                    b.region.expirationTime
+                    b.region
+                    and b.region.expirationTime
                     and b.region.expirationTime > 0
                     and b.region.expirationTime
                     or math.huge
@@ -170,12 +172,14 @@ local function modify(parent, region, data)
         elseif(data.sort == "descending") then
             table.sort(region.controlledRegions, function(a, b) 
                 return (
-                    a.region.expirationTime
+                    a.region
+                    and a.region.expirationTime
                     and a.region.expirationTime > 0
                     and a.region.expirationTime
                     or math.huge
                 ) > (
-                    b.region.expirationTime
+                    b.region
+                    and b.region.expirationTime
                     and b.region.expirationTime > 0
                     and b.region.expirationTime
                     or math.huge
@@ -403,8 +407,8 @@ local function modify(parent, region, data)
             end
         end
         if(anyVisible) then
-            region:SetWidth(maxX - minX);
-            region:SetHeight(maxY - minY);
+            region:SetWidth((maxX or 0) - (minX or 0));
+            region:SetHeight((maxY or 0) - (minY or 0));
             region:Show();
         else
             region:Hide();

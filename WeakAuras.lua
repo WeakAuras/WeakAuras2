@@ -228,6 +228,7 @@ do
         self.watched[auraname] = self.watched[auraname] or {};
         self.watched[auraname].number = self.watched[auraname].number or 0;
         self.watched[auraname].players = self.watched[auraname].players or {};
+        self.watched[auraname].recentChanges = self.watched[auraname].recentChanges or {};
         self:ForceUpdate()
     end
     
@@ -335,6 +336,7 @@ do
                 icon = icon,
                 count = count
             };
+            self.watched[auraname].recentChanges[playername] = true;
             return true;
         else
             local auradata = self.watched[auraname].players[playername];
@@ -344,9 +346,10 @@ do
                 auradata.name = name;
                 auradata.icon = icon;
                 auradata.count = count;
+                self.watched[auraname].recentChanges[playername] = true;
                 return true;
             else
-                return self.reloading;
+                return self.reloading or self.watched[auraname].recentChanges[playername];
             end
         end
     end
@@ -355,9 +358,16 @@ do
         if(self.watched[auraname] and self.watched[auraname].players[playername]) then
             self.watched[auraname].players[playername] = nil;
             self.watched[auraname].number = self.watched[auraname].number - 1;
+            self.watched[auraname].recentChanges[playername] = true;
             return true;
         else
-            return false;
+            return self.reloading or self.watched[auraname].recentChanges[playername];
+        end
+    end
+    
+    function aura_cache.ClearRecentChanges(self)
+        for auraname, t in pairs(self.watched) do
+            wipe(t.recentChanges);
         end
     end
     
@@ -1691,7 +1701,7 @@ function WeakAuras.ScanAuras(unit)
                             if(data.autoclone) then
                                 local cloneId = name.."-"..unitCaster;
                                 if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
-                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime > 0 and expirationTime or math.huge, name, icon, count, cloneId);
+                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId);
                                     clones[id][cloneId].expirationTime = expirationTime;
                                 end
                                 active = true;
@@ -1838,6 +1848,9 @@ function WeakAuras.ScanAuras(unit)
             end
         end
     end
+    
+    aura_cache:ClearRecentChanges();
+    
     WeakAuras.CurrentUnit = old_unit;
 end
 
@@ -1867,7 +1880,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
     if(show) then
         if(triggernum == 0) then
             if(region.SetDurationInfo) then
-                region:SetDurationInfo(duration, expirationTime);
+                region:SetDurationInfo(duration, expirationTime > 0 and expirationTime or math.huge);
             end
             --TODO: HOW DOES THIS WORK WITH CLONES??
             duration_cache:SetDurationInfo(id, duration, expirationTime);
@@ -2741,15 +2754,19 @@ function WeakAuras.EnsureClone(id, cloneId)
 end
 
 function WeakAuras.HideAllClones(id)
-    for i,v in pairs(clones[id]) do
-        v:Collapse();
+    if(clones[id]) then
+        for i,v in pairs(clones[id]) do
+            v:Collapse();
+        end
     end
 end
 
 function WeakAuras.HideAllClonesExcept(id, list)
-    for i,v in pairs(clones[id]) do
-        if not(list[i]) then
-            v:Collapse();
+    if(clones[id]) then
+        for i,v in pairs(clones[id]) do
+            if not(list[i]) then
+                v:Collapse();
+            end
         end
     end
 end

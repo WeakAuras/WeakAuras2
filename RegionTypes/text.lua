@@ -4,7 +4,7 @@ local default = {
     displayText = "New",
     outline = true,
     color = {1, 1, 1, 1},
-    justify = "CENTER",
+    justify = "LEFT",
     selfPoint = "BOTTOM",
     anchorPoint = "CENTER",
     xOffset = 0,
@@ -42,16 +42,17 @@ local function modify(parent, region, data)
     text:SetFont(fontPath, data.fontSize <= 25 and data.fontSize or 25, data.outline and "OUTLINE" or nil);
     text:SetTextHeight(data.fontSize);
     text:SetText(data.displayText);
+    text.displayText = data.displayText;
     text:SetJustifyH(data.justify);
     
     text:ClearAllPoints();
     text:SetPoint("CENTER", UIParent, "CENTER");
-    data.width = text:GetWidth() + 16;
-    data.height = text:GetHeight() + 16;
+    data.width = text:GetWidth();
+    data.height = text:GetHeight();
     region:SetWidth(data.width);
     region:SetHeight(data.height);
     text:ClearAllPoints();
-    text:SetPoint("CENTER", region, "CENTER");
+    text:SetPoint(data.justify, region, data.justify);
     
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
@@ -61,7 +62,23 @@ local function modify(parent, region, data)
         for symbol, v in pairs(WeakAuras.dynamic_texts) do
             textStr = textStr:gsub(symbol, region.values[v.value] or "?");
         end
-        text:SetText(textStr);
+        
+        if(textStr ~= text.displayText) then
+            text:SetText(textStr);
+        end
+        if(#textStr ~= #text.displayText) then
+            data.width = text:GetWidth();
+            data.height = text:GetHeight();
+            region:SetWidth(data.width);
+            region:SetHeight(data.height);
+            if(data.parent) then
+                WeakAuras.regions[data.parent].region:ControlChildren();
+            else
+                region:ClearAllPoints();
+                region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+            end
+        end
+        text.displayText = textStr;
     end
     
     if(data.displayText:find("%%c") and data.customText) then

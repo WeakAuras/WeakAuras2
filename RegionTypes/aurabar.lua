@@ -61,7 +61,7 @@ local function create(parent)
     text:SetNonSpaceWrap(true);
     text:SetPoint("center");
     
-    local icon = region:CreateTexture();
+    local icon = region:CreateTexture(nil, "OVERLAY");
     region.icon = icon;
     icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
     

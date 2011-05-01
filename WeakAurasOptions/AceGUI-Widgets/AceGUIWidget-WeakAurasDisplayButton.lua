@@ -392,6 +392,14 @@ local methods = {
             self:SetNormalTooltip();
         end
         
+        function self.frame.terribleCodeOrganizationHackTable.OnShow()
+            WeakAuras.UpdateCloneConfig(data);
+        end
+        
+        function self.frame.terribleCodeOrganizationHackTable.OnHide()
+            WeakAuras.HideAllClones(data.id);
+        end
+        
         self:SetTitle(data.id);
         self.menu = {
             {
@@ -925,6 +933,7 @@ local function Constructor()
         if(priority >= self.visibility) then
             self.visibility = priority;
             if(self.region and self.region.Expand) then
+                button.terribleCodeOrganizationHackTable.OnShow();
                 self.region:Expand();
             end
         end
@@ -933,6 +942,7 @@ local function Constructor()
         if(priority >= self.visibility) then
             self.visibility = 0;
             if(self.region and self.region.Collapse) then
+                button.terribleCodeOrganizationHackTable.OnHide();
                 self.region:Collapse();
             end
         end
