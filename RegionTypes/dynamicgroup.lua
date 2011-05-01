@@ -143,6 +143,36 @@ local function modify(parent, region, data)
             region.controlledRegions[regionIndex] = nil;
             regionIndex = regionIndex + 1;
         end
+        
+        if(data.sort == "ascending") then
+            table.sort(region.controlledRegions, function(a, b)
+                return (
+                    a.region.expirationTime
+                    and a.region.expirationTime > 0
+                    and a.region.expirationTime
+                    or math.huge
+                ) < (
+                    b.region.expirationTime
+                    and b.region.expirationTime > 0
+                    and b.region.expirationTime
+                    or math.huge
+                )
+            end);
+        elseif(data.sort == "descending") then
+            table.sort(region.controlledRegions, function(a, b) 
+                return (
+                    a.region.expirationTime
+                    and a.region.expirationTime > 0
+                    and a.region.expirationTime
+                    or math.huge
+                ) > (
+                    b.region.expirationTime
+                    and b.region.expirationTime > 0
+                    and b.region.expirationTime
+                    or math.huge
+                )
+            end);
+        end
     end
     
     function region:EnsureTrays()
@@ -237,9 +267,6 @@ local function modify(parent, region, data)
                 end
                 
                 if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
-                    if not(region.trays[regionData.key]) then
-                        print(data.id, regionData.key, childId);
-                    end
                     region.trays[regionData.key]:ClearAllPoints();
                     region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
                     childRegion:ClearAllPoints();
@@ -309,6 +336,7 @@ local function modify(parent, region, data)
         
         local anyVisible = false;
         local minX, maxX, minY, maxY;
+        local previousPreviousX, previousPreviousY;
         for index, regionData in pairs(region.controlledRegions) do
             local childId = regionData.id;
             local childData = regionData.data;
@@ -320,8 +348,9 @@ local function modify(parent, region, data)
                 end
                 
                 local _, _, _, xOffset, yOffset = region.trays[regionData.key]:GetPoint(1);
-                local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or 0, previous[regionData.key] and previous[regionData.key].y or 0;
-                local xDelta, yDelta = previousX - xOffset, previousY - yOffset
+                local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or previousPreviousX or 0, previous[regionData.key] and previous[regionData.key].y or previousPreviousY or 0;
+                local xDelta, yDelta = previousX - xOffset, previousY - yOffset;
+                previousPreviousX, previousPreviousY = previousX, previousY;
                 if(childRegion:IsVisible() and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
                     local anim = {
                         type = "custom",

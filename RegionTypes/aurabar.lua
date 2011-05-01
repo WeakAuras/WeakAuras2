@@ -520,9 +520,9 @@ local function modify(parent, region, data)
     end
     
     local displayValue, remaining, progress, remainingStr, shouldOrient;
-    local CPUUsage = 0;
+    --local CPUUsage = 0;
     local function UpdateTime(self, elaps, inverse)
-        debugprofilestart();
+        --debugprofilestart();
         remaining = region.expirationTime - GetTime();
         progress = remaining / region.duration;
         
@@ -546,7 +546,9 @@ local function modify(parent, region, data)
         bar:SetValue(progress);
         
         remainingStr = "";
-        if(remaining > 60) then
+        if(remaining == math.huge) then
+            remainingStr = " ";
+        elseif(remaining > 60) then
             remainingStr = string.format("%i:", math.floor(remaining / 60));
             remaining = remaining % 60;
             remainingStr = remainingStr..string.format("%02i", remaining);
@@ -566,17 +568,17 @@ local function modify(parent, region, data)
         elseif(duration > 0) then
             durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
         else
-            durationStr = "INF";
+            durationStr = " ";
         end
         region.values.duration = durationStr;
         UpdateText();
-        CPUUsage = CPUUsage + debugprofilestop();
+        --CPUUsage = CPUUsage + debugprofilestop();
     end
     
     local function UpdateTimeInverse(self, elaps)
-        debugprofilestart();
+        --debugprofilestart();
         UpdateTime(self, elaps, true);
-        CPUUsage = CPUUsage + debugprofilestop();
+        --CPUUsage = CPUUsage + debugprofilestop();
     end
     
     local function UpdateValue(value, total)
@@ -593,13 +595,13 @@ local function modify(parent, region, data)
         region.values.duration = total;
         UpdateText();
         bar:SetValue(progress);
-        CPUUsage = CPUUsage + debugprofilestop();
+        --CPUUsage = CPUUsage + debugprofilestop();
     end
     
     local function UpdateCustom()
         debugprofilestart();
         UpdateValue(region.customValueFunc());
-        CPUUsage = CPUUsage + debugprofilestop();
+        --CPUUsage = CPUUsage + debugprofilestop();
     end
     
     function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
@@ -632,14 +634,14 @@ local function modify(parent, region, data)
             else
                 bar:SetValue(1);
                 region:SetScript("OnUpdate", nil);
-                UpdateText();
+                UpdateTime();
             end
         end
     end
     
-    function region:GetCPUUsage()
-        return CPUUsage;
-    end
+    --function region:GetCPUUsage()
+    --    return CPUUsage;
+    --end
 end
 
 WeakAuras.RegisterRegionType("aurabar", create, modify, default);

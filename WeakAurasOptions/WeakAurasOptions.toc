@@ -12,7 +12,6 @@
 ## Dependencies: WeakAuras
 ## SavedVariables: WeakAurasOptionsSaved
 WeakAurasOptions.lua
-ModelPaths.lua
 
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua

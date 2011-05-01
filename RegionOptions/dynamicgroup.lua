@@ -86,6 +86,12 @@ local function createOptions(id, data)
             softMax = 32,
             bigStep = 1
         },
+        sort = {
+            type = "select",
+            name = L["Sort"],
+            order = 48,
+            values = WeakAuras.group_sort_types
+        },
         spacer = {
             type = "header",
             name = "",

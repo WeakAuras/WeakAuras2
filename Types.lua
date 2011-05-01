@@ -2,6 +2,11 @@
 
 local LSM = LibStub("LibSharedMedia-3.0");
 
+WeakAuras.group_sort_types = {
+    ascending = L["Ascending"],
+    descending = L["Descending"],
+    none = L["None"]
+};
 WeakAuras.precision_types = {
     [0] = "12",
     [1] = "12.3",

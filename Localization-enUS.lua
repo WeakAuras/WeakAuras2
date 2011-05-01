@@ -1176,3 +1176,17 @@ L["Model"] = "Model"
 L["Z Offset"] = "Z Offset"
 L["Animate"] = "Animate"
 L["Animation Sequence"] = "Animation Sequence"
+
+--Added in r120
+L["Clone option enabled dialog"] = [[
+You have enabled an option that uses |cFFFF0000Auto-cloning|r.
+
+|cFFFF0000Auto-cloning|r causes a display to be automatically duplicated to display multiple sources of information.
+Unless you put this display in a |cFF22AA22Dynamic Group|r, all the clones will be displayed on top of each other in a big heap.
+
+Would you like this display to be placed in a new |cFF22AA22Dynamic Group|r?]]
+L["Yes"] = "Yes"
+L["No"] = "No"
+L["Sort"] = "Sort"
+L["Ascending"] = "Ascending"
+L["Descending"] = "Descending"

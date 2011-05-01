@@ -918,7 +918,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             WeakAuras.CombatEventWarning(true);
         end
         
-        if(odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
+        local num = 0;
+        for i,v in pairs(odb.iconCache) do
+            num = num + 1;
+        end
+        
+        if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
             WeakAuras.CreateIconCache();
 
             odb.build = build;
@@ -990,6 +995,36 @@ function WeakAuras.ToggleOptions(forceCacheReset)
     end
 end
 
+function WeakAuras.UpdateCloneConfig(data)
+    if(WeakAuras.CanHaveClones(data)) then
+        local cloneRegion = WeakAuras.EnsureClone(data.id, 1);
+        cloneRegion:Show();
+        
+        cloneRegion = WeakAuras.EnsureClone(data.id, 2);
+        cloneRegion:Show();
+        
+        if(data.parent and WeakAuras.regions[data.parent]) then
+            WeakAuras.regions[data.parent].region:ControlChildren();
+        end
+        
+        WeakAuras.SetIconNames(data);
+    end
+end
+
+function WeakAuras.HookVisibilityFunctions(id, data)
+    local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
+    if(region) then
+        region:SetScript("OnShow", function()
+            WeakAuras.UpdateCloneConfig(data);
+        end);
+        region:SetScript("OnHide", function()
+            if(WeakAuras.clones[id]) then
+                WeakAuras.HideAllClones(id);
+            end
+        end);
+    end
+end
+
 function WeakAuras.ShowOptions(forceCacheReset)
     WeakAuras.Pause();
     
@@ -1007,29 +1042,7 @@ function WeakAuras.ShowOptions(forceCacheReset)
     WeakAuras.LockUpdateInfo();
     
     for id, data in pairs(db.displays) do
-        local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
-        if(region) then
-            region:SetScript("OnShow", function()
-                if(WeakAuras.CanHaveClones(data)) then
-                    local cloneRegion = WeakAuras.EnsureClone(id, 1);
-                    cloneRegion:Show();
-                    
-                    cloneRegion = WeakAuras.EnsureClone(id, 2);
-                    cloneRegion:Show();
-                    
-                    if(data.parent and WeakAuras.regions[data.parent]) then
-                        WeakAuras.regions[data.parent].region:ControlChildren();
-                    end
-                    
-                    WeakAuras.SetIconNames(data);
-                end
-            end);
-            region:SetScript("OnHide", function()
-                if(WeakAuras.clones[id]) then
-                    WeakAuras.HideAllClones(id);
-                end
-            end);
-        end
+        WeakAuras.HookVisibilityFunctions(id, data)
     end
     
     frame:Show();
@@ -3538,6 +3551,16 @@ function WeakAuras.ReloadTriggerOptions(data)
             name = L["Show all matches (Auto-clone)"],
             width = "double",
             hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
+            set = function(info, v)
+                trigger.autoclone = v;
+                if(v == true) then
+                    WeakAuras.ShowCloneDialog(data);
+                    WeakAuras.UpdateCloneConfig(data);
+                else
+                    WeakAuras.HideAllClones(data.id);
+                end
+                WeakAuras.Add(data);
+            end,
             order = 9.5
         },
         useName = {
@@ -4041,6 +4064,16 @@ function WeakAuras.ReloadTriggerOptions(data)
                 end
             end,
             hidden = function() return not (trigger.type == "aura"); end,
+            set = function(info, v)
+                trigger.unit = v;
+                if(v == "multi") then
+                    WeakAuras.ShowCloneDialog(data);
+                    WeakAuras.UpdateCloneConfig(data);
+                else
+                    WeakAuras.HideAllClones(data.id);
+                end
+                WeakAuras.Add(data);
+            end,
             get = function()
                 if(trigger.fullscan and (trigger.unit == "group" or trigger.unit == "multi")) then
                     trigger.unit = "player";
@@ -4093,6 +4126,16 @@ function WeakAuras.ReloadTriggerOptions(data)
             name = L["Show all matches (Auto-clone)"],
             width = "double",
             hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+            set = function(info, v)
+                trigger.groupclone = v;
+                if(v == true) then
+                    WeakAuras.ShowCloneDialog(data);
+                    WeakAuras.UpdateCloneConfig(data);
+                else
+                    WeakAuras.HideAllClones(data.id);
+                end
+                WeakAuras.Add(data);
+            end,
             order = 47.1
         },
         name_info = {
@@ -5910,6 +5953,7 @@ function WeakAuras.CreateFrame()
     end);
     
     local modelTree = AceGUI:Create("TreeGroup");
+    modelPick.modelTree = modelTree;
     modelPick.frame:SetScript("OnUpdate", function()
         local frameWidth = frame:GetWidth();
         local sliderWidth = (frameWidth - 50) / 3;
@@ -7086,6 +7130,7 @@ function WeakAuras.CreateFrame()
                     };
                     WeakAuras.Add(data);
                     WeakAuras.NewDisplayButton(data);
+                    WeakAuras.HookVisibilityFunctions(new_id, data)
                 end);
                 containerScroll:AddChild(button);
             end
@@ -7520,6 +7565,14 @@ function WeakAuras.OpenIconPick(data, field)
 end
 
 function WeakAuras.OpenModelPick(data, field)
+    if not(IsAddOnLoaded("WeakAurasModelPaths")) then
+        local loaded, reason = LoadAddOn("WeakAurasModelPaths");
+        if not(loaded) then
+            print("WeakAuras Model Paths could not be loaded:", reason);
+            WeakAuras.ModelPaths = {};
+        end
+        frame.modelPick.modelTree:SetTree(WeakAuras.ModelPaths);
+    end
     frame.modelPick:Open(data, field);
 end
 
@@ -7571,4 +7624,66 @@ function WeakAuras.BestKeyMatch(nearkey, table)
         end
     end
     return bestKey;
+end
+
+function WeakAuras.ShowCloneDialog(data)
+    if(
+        not(
+            data.parent
+            and WeakAuras.GetData(data.parent)
+            and WeakAuras.GetData(data.parent).regionType == "dynamicgroup"
+        )
+        and not(odb.preventCloneDialog)
+    ) then
+        StaticPopupDialogs["WEAKAURAS_CLONE_OPTION_ENABLED"] = {
+            text = L["Clone option enabled dialog"],
+            button1 = L["Yes"],
+            button2 = L["No"],
+            button3 = L["Never"],
+            OnAccept = function()
+                local new_id = data.id.." Group";
+                local num = 2;
+                while(WeakAuras.GetData(new_id)) do
+                    new_id = "New "..num;
+                    num = num + 1;
+                end
+                
+                local parentData = {
+                    id = new_id,
+                    regionType = "dynamicgroup",
+                    trigger = {},
+                    load = {}
+                };
+                WeakAuras.Add(parentData);
+                WeakAuras.NewDisplayButton(parentData);
+                
+                tinsert(parentData.controlledChildren, data.id);
+                data.parent = parentData.id;
+                WeakAuras.Add(parentData);
+                WeakAuras.Add(data);
+                
+                local button = WeakAuras.GetDisplayButton(data.id);
+                button:SetGroup(parentData.id, true);
+                button:SetGroupOrder(1, #parentData.controlledChildren);
+                
+                local parentButton = WeakAuras.GetDisplayButton(parentData.id);
+                parentButton.callbacks.UpdateExpandButton();
+                WeakAuras.UpdateDisplayButton(parentData);
+                WeakAuras.ReloadGroupRegionOptions(parentData);
+                WeakAuras.SortDisplayButtons();
+                parentButton:Expand();
+            end,
+            OnCancel = function()
+                --do nothing
+            end,
+            OnAlt = function()
+                odb.preventCloneDialog = true
+            end,
+            hideOnEscape = true,
+            whileDead = true,
+            timeout = 0
+        };
+        
+        StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
+    end
 end

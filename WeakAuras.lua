@@ -210,6 +210,14 @@ do
     aura_cache.watched = {};
     aura_cache.players = {};
     
+    function aura_cache.Reloading()
+        aura_cache.reloading = true;
+    end
+    
+    function aura_cache:DoneReloading()
+        aura_cache.reloading = nil;
+    end
+    
     function aura_cache.ForceUpdate()
         if not(paused) then
             WeakAuras.ScanAurasGroup()
@@ -320,20 +328,36 @@ do
     function aura_cache.AssertAura(self, auraname, playername, duration, expirationTime, name, icon, count)
         if not(self.watched[auraname].players[playername]) then
             self.watched[auraname].number = self.watched[auraname].number + 1;
+            self.watched[auraname].players[playername] = {
+                duration = duration,
+                expirationTime = expirationTime,
+                name = name,
+                icon = icon,
+                count = count
+            };
+            return true;
+        else
+            local auradata = self.watched[auraname].players[playername];
+            if(expirationTime ~= auradata.expirationTime) then
+                auradata.duration = duration;
+                auradata.expirationTime = expirationTime;
+                auradata.name = name;
+                auradata.icon = icon;
+                auradata.count = count;
+                return true;
+            else
+                return self.reloading;
+            end
         end
-        self.watched[auraname].players[playername] = {
-            duration = duration,
-            expirationTime = expirationTime,
-            name = name,
-            icon = icon,
-            count = count
-        };
     end
     
     function aura_cache.DeassertAura(self, auraname, playername)
         if(self.watched[auraname] and self.watched[auraname].players[playername]) then
             self.watched[auraname].players[playername] = nil;
             self.watched[auraname].number = self.watched[auraname].number - 1;
+            return true;
+        else
+            return false;
         end
     end
     
@@ -644,45 +668,45 @@ do
     
     local pendingTracks = {};
     
-	local UIDsfromGUID = {};
-	local GUIDfromUID = {};
-	
-	function WeakAuras.SetUID(GUID, UID)
-		WeakAuras.ReleaseUID(UID);
-		if not(UIDsfromGUID[GUID]) then
-			UIDsfromGUID[GUID] = {};
-		end
-		UIDsfromGUID[GUID][UID] = true;
-		GUIDfromUID[UID] = GUID;
-	end
-	
-	function WeakAuras.ReleaseUID(UID)
-		if(GUIDfromUID[UID]) then
-			if(UIDsfromGUID[GUIDfromUID[UID]] and UIDsfromGUID[GUIDfromUID[UID]][UID]) then
-				UIDsfromGUID[GUIDfromUID[UID]][UID] = nil;
-			else
-				--If this code is reached, it means there was some kind of coordination error between the two lists
-				--This shouldn't ever happen, but it is recoverable
-				--Search through the whole UIDsfromGUID table and remove all instances of UID
-				for GUID,UIDs in pairs(UIDsfromGUID) do
-					for iUID,v in pairs(UIDs) do
-						if(iUID == UID or iUID == UID) then
-							UIDs[iUID] = nil;
-						end
-					end
-				end
-			end
-		end
-		GUIDfromUID[UID] = nil;
-	end
-	
-	function WeakAuras.GetUID(GUID)
-		if not(UIDsfromGUID[GUID]) then
-			return nil;
-		end
-		--iterate through key/value pairs from the table of UIDs that are registered for this GUID, until a *confirmed* match is found
+    local UIDsfromGUID = {};
+    local GUIDfromUID = {};
+    
+    function WeakAuras.SetUID(GUID, UID)
+        WeakAuras.ReleaseUID(UID);
+        if not(UIDsfromGUID[GUID]) then
+            UIDsfromGUID[GUID] = {};
+        end
+        UIDsfromGUID[GUID][UID] = true;
+        GUIDfromUID[UID] = GUID;
+    end
+    
+    function WeakAuras.ReleaseUID(UID)
+        if(GUIDfromUID[UID]) then
+            if(UIDsfromGUID[GUIDfromUID[UID]] and UIDsfromGUID[GUIDfromUID[UID]][UID]) then
+                UIDsfromGUID[GUIDfromUID[UID]][UID] = nil;
+            else
+                --If this code is reached, it means there was some kind of coordination error between the two lists
+                --This shouldn't ever happen, but it is recoverable
+                --Search through the whole UIDsfromGUID table and remove all instances of UID
+                for GUID,UIDs in pairs(UIDsfromGUID) do
+                    for iUID,v in pairs(UIDs) do
+                        if(iUID == UID or iUID == UID) then
+                            UIDs[iUID] = nil;
+                        end
+                    end
+                end
+            end
+        end
+        GUIDfromUID[UID] = nil;
+    end
+    
+    function WeakAuras.GetUID(GUID)
+        if not(UIDsfromGUID[GUID]) then
+            return nil;
+        end
+        --iterate through key/value pairs from the table of UIDs that are registered for this GUID, until a *confirmed* match is found
         --confirming is necessary in case UIDs are not always released correctly (which may actually be close to impossible)
-		for returnUID,v in pairs(UIDsfromGUID[GUID]) do
+        for returnUID,v in pairs(UIDsfromGUID[GUID]) do
             --check the validity of this entry 
             if(UnitGUID(returnUID) == GUID) then
                 return returnUID;
@@ -691,7 +715,7 @@ do
             end
         end
         return nil;
-	end
+    end
     
     local function updateRegion(id, data, triggernum, GUID)
         local auradata = data.GUIDs[GUID];
@@ -755,7 +779,7 @@ do
         end
     end
     
-    local function combatLog(_, message, _, sourceName, _, destGUID, destName, _, _, spellName, _, auraType, amount)
+    local function combatLog(_, message, _, _, sourceName, _, destGUID, destName, _, _, spellName, _, auraType, amount)
         if(loaded_auras[spellName]) then
             if(message == "SPELL_AURA_APPLIED" or message == "SPELL_AURA_REFRESH" or message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
                 local unit = WeakAuras.GetUID(destGUID);
@@ -1140,6 +1164,7 @@ function WeakAuras.ScanAll()
     end
     
     WeakAuras.ReloadAll();
+    
     for unit, auras in pairs(loaded_auras) do
         if(unit == "group") then
             WeakAuras.ScanAurasGroup();
@@ -1507,8 +1532,10 @@ loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
 function WeakAuras.ReloadAll()
+    aura_cache:Reloading();
     WeakAuras.UnloadAll();
     WeakAuras.ScanForLoads();
+    aura_cache:DoneReloading();
 end
 
 function WeakAuras.UnloadAll()
@@ -1661,7 +1688,10 @@ function WeakAuras.ScanAuras(unit)
                             db.tempIconCache[name] = icon;
                             if(data.autoclone) then
                                 local cloneId = name.."-"..unitCaster;
-                                WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId);
+                                if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
+                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime > 0 and expirationTime or math.huge, name, icon, count, cloneId);
+                                    clones[id][cloneId].expirationTime = expirationTime;
+                                end
                                 active = true;
                                 cloneIdList[cloneId] = true;
                             else
@@ -1731,8 +1761,8 @@ function WeakAuras.ScanAuras(unit)
                             active = true;
                             db.tempIconCache[name] = icon;
                             if(aura_object) then
-                                aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count);
-                                if(data.groupclone) then
+                                local changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count);
+                                if(data.groupclone and changed) then
                                     groupcloneToUpdate[GetUnitName(unit, true)] = true;
                                 end
                             else
@@ -1740,8 +1770,8 @@ function WeakAuras.ScanAuras(unit)
                                 break;
                             end
                         elseif(aura_object) then
-                            aura_object:DeassertAura(checkname, GetUnitName(unit, true));
-                            if(data.groupclone) then
+                            local changed = aura_object:DeassertAura(checkname, GetUnitName(unit, true));
+                            if(data.groupclone and changed) then
                                 groupcloneToUpdate[GetUnitName(unit, true)] = true;
                             end
                         end
@@ -1893,8 +1923,14 @@ function WeakAuras.Delete(data)
     end
     
     regions[id].region:SetScript("OnUpdate", nil);
+    regions[id].region:SetScript("OnShow", nil);
+    regions[id].region:SetScript("OnHide", nil);
     regions[id].region:Hide();
     WeakAuras.EndEvent(id, 0, true);
+    
+    if(clones[id]) then
+        WeakAuras.HideAllClones(id);
+    end
     
     regions[id].region = nil;
     regions[id] = nil;
@@ -1939,6 +1975,11 @@ function WeakAuras.Rename(data, newid)
     loaded[oldid] = nil;
     db.displays[newid] = db.displays[oldid];
     db.displays[oldid] = nil;
+    
+    if(clones[oldid]) then
+        clones[newid] = clones[oldid];
+        clones[oldid] = nil;
+    end
     
     db.displays[newid].id = newid;
     
@@ -2494,6 +2535,10 @@ function WeakAuras.pAdd(data)
             db.displays[id] = data;
         end
         
+        if(WeakAuras.CanHaveClones(data)) then
+            clones[id] = clones[id] or {};
+        end
+        
         if not(paused) then
             region:Collapse();
             WeakAuras.ScanForLoads();
@@ -2570,7 +2615,9 @@ function WeakAuras.SetRegion(data, cloneId)
                 end
                 
                 if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
-                    parent:PositionChildren();
+                    if not(cloneId) then
+                        parent:PositionChildren();
+                    end
                     function region:Collapse()
                         if(region:IsVisible()) then
                             region.toHide = true;
@@ -2580,6 +2627,9 @@ function WeakAuras.SetRegion(data, cloneId)
                         end
                     end
                     function region:Expand()
+                        if(regionType == "model") then
+                            region:EnsureModel();
+                        end
                         region.toShow = true;
                         if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or not region:IsVisible()) then
                             WeakAuras.PerformActions(data, "start");
@@ -2599,6 +2649,9 @@ function WeakAuras.SetRegion(data, cloneId)
                         end
                     end
                     function region:Expand()
+                        if(regionType == "model") then
+                            region:EnsureModel()
+                        end
                         if(WeakAuras.IsAnimating(region) == "finish" or not region:IsVisible()) then
                             region:Show();
                             WeakAuras.PerformActions(data, "start");

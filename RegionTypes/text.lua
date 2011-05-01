@@ -97,14 +97,16 @@ local function modify(parent, region, data)
         progress = progress > 0.0001 and progress or 0.0001;
         
         local remainingStr = "";
-        if(remaining > 60) then
+        if(remaining == math.huge) then
+            remainingStr = " ";
+        elseif(remaining > 60) then
             remainingStr = string.format("%i:", math.floor(remaining / 60));
             remaining = remaining % 60;
             remainingStr = remainingStr..string.format("%02i", remaining);
         elseif(remaining > 0) then
             remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
         else
-            remainingStr = "INF";
+            remainingStr = " ";
         end
         region.values.progress = remainingStr;
         
