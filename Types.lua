@@ -2,6 +2,10 @@
 
 local LSM = LibStub("LibSharedMedia-3.0");
 
+WeakAuras.circular_group_constant_factor_types = {
+    RADIUS = L["Radius"],
+    SPACING = L["Spacing"]
+}
 WeakAuras.frame_strata_types = {
     [1] = L["Inherited"],
     [2] = "BACKGROUND",

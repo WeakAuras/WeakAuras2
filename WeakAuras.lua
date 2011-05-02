@@ -2750,8 +2750,8 @@ function WeakAuras.EnsureClone(id, cloneId)
             clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
         end
         WeakAuras.SetRegion(data, cloneId);
-        clones[id][cloneId]:Expand();
     end
+    clones[id][cloneId]:Expand();
     return clones[id][cloneId];
 end
 
@@ -3234,9 +3234,9 @@ function WeakAuras.CanHaveDuration(data)
             and WeakAuras.event_prototypes[data.trigger.event]
             and WeakAuras.event_prototypes[data.trigger.event].durationFunc
         ) then
-            local _, _, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
+            local current, maximum, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
             if(custom) then
-                return "custom";
+                return {current = current, maximum = maximum};
             else
                 return "timed";
             end

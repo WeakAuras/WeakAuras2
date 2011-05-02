@@ -17,6 +17,7 @@ local default = {
     yOffset = 0,
     radius = 200,
     rotation = 0,
+    constantFactor = "RADIUS",
     frameStrata = 1
 };
 
@@ -30,6 +31,15 @@ local function create(parent)
     region.trays = {};
     
     return region;
+end
+
+function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
+    local dX, dY = x - originX, y - originY;
+    
+    local r = math.sqrt(dX * dX + dY * dY);
+    local theta = atan2(dY, dX);
+    
+    return r, theta;
 end
 
 local function modify(parent, region, data)
@@ -235,11 +245,94 @@ local function modify(parent, region, data)
     
     region:EnsureTrays();
     
+    function region:DoResize()
+        local numVisible = 0;
+        local minX, maxX, minY, maxY;
+        for index, regionData in pairs(region.controlledRegions) do
+            local childId = regionData.id;
+            local childData = regionData.data;
+            local childRegion = regionData.region;
+            if(childData and childRegion) then
+                if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
+                    numVisible = numVisible + 1;
+                    local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom();
+                    if(regionLeft and regionRight and regionTop and regionBottom) then
+                        minX = minX and min(regionLeft, minX) or regionLeft;
+                        maxX = maxX and max(regionRight, maxX) or regionRight;
+                        minY = minY and min(regionBottom, minY) or regionBottom;
+                        maxY = maxY and max(regionTop, maxY) or regionTop;
+                    end
+                end
+            end
+        end
+        if(numVisible > 0) then
+            minX, maxX, minY, maxY = minX or 0, maxX or 0, minY or 0, maxY or 0;
+            if(data.grow == "CIRCLE") then
+                local originX, originY = region:GetCenter();
+                originX = originX or 0;
+                originY = originY or 0;
+                if(originX - minX > maxX - originX) then
+                    maxX = originX + (originX - minX);
+                elseif(originX - minX < maxX - originX) then
+                    minX = originX - (maxX - originX);
+                end
+                if(originY - minY > maxY - originY) then
+                    maxY = originY + (originY - minY);
+                elseif(originY - minY < maxY - originY) then
+                    minY = originY - (maxY - originY);
+                end
+            end
+            region:Show();
+            local newWidth, newHeight = maxX - minX, maxY - minY;
+            newWidth = newWidth > 0 and newWidth or 16;
+            newHeight = newHeight > 0 and newHeight or 16;
+            region:SetWidth(newWidth);
+            region.currentWidth = newWidth;
+            region:SetHeight(newHeight);
+            region.currentHeight = newHeight;
+            if(data.animate and region.previousWidth and region.previousHeight) then
+                local anim = {
+                    type = "custom",
+                    duration = 0.2,
+                    use_scale = true,
+                    scalex = region.previousWidth / newWidth,
+                    scaley = region.previousHeight / newHeight
+                };
+                
+                WeakAuras.Animate("group", data.id, "start", anim, region, true);
+            end
+            region.previousWidth = newWidth;
+            region.previousHeight = newHeight;
+        else
+            if(data.animate) then
+                local anim = {
+                    type = "custom",
+                    duration = 0.2,
+                    use_scale = true,
+                    scalex = 0.1,
+                    scaley = 0.1
+                };
+                
+                WeakAuras.Animate("group", data.id, "finish", anim, region, nil, function()
+                    region:Hide();
+                end)
+            else
+                region:Hide();
+            end
+            region.previousWidth = 1;
+            region.previousHeight = 1;
+        end
+        
+        if(WeakAuras.IsOptionsOpen()) then
+            WeakAuras.OptionsFrame().moversizer:ReAnchor();
+        end
+    end
+    
     function region:PositionChildren()
         region:EnsureTrays();
         local childId, childData, childRegion;
         local xOffset, yOffset = 0, 0;
-        if(math.abs(data.stagger) > 0.1 and not data.grow == "CIRCLE") then
+        if not(data.grow == "CIRCLE") then
             if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
                 if(data.align == "LEFT" and data.stagger > 0) then
                     yOffset = yOffset - (data.stagger * (#region.controlledRegions - 1));
@@ -330,6 +423,18 @@ local function modify(parent, region, data)
         
         local angle = data.rotation or 0;
         local angleInc = 360 / (numVisible ~= 0 and numVisible or 1);
+        local radius = 0;
+        if(data.grow == "CIRCLE") then
+            if(data.constantFactor == "RADIUS") then
+                radius = data.radius;
+            else
+                if(numVisible <= 1) then
+                    radius = 0;
+                else
+                    radius = (numVisible * data.space) / (2 * math.pi);
+                end
+            end
+        end
         for index, regionData in pairs(region.controlledRegions) do
             childId = regionData.id;
             childData = regionData.data;
@@ -342,8 +447,8 @@ local function modify(parent, region, data)
                 
                 if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
                     if(data.grow == "CIRCLE") then
-                        yOffset = cos(angle) * data.radius * -1;
-                        xOffset = sin(angle) * data.radius;
+                        yOffset = cos(angle) * radius * -1;
+                        xOffset = sin(angle) * radius;
                         angle = angle + angleInc;
                     end
                     region.trays[regionData.key]:ClearAllPoints();
@@ -378,8 +483,8 @@ local function modify(parent, region, data)
                         hiddenYOffset = yOffset + (childData.height + data.space);
                         hiddenXOffset = xOffset - data.stagger;
                     elseif(data.grow == "CIRCLE") then
-                        hiddenYOffset = cos(angle - angleInc) * data.radius * -1;
-                        hiddenXOffset = sin(angle - angleInc) * data.radius;
+                        hiddenYOffset = cos(angle - angleInc) * radius * -1;
+                        hiddenXOffset = sin(angle - angleInc) * radius;
                     end
                     
                     region.trays[regionData.key]:ClearAllPoints();
@@ -389,6 +494,8 @@ local function modify(parent, region, data)
                 end
             end
         end
+        
+        region:DoResize();
     end
     
     function region:ControlChildren()
@@ -410,8 +517,6 @@ local function modify(parent, region, data)
         
         region:PositionChildren();
         
-        local anyVisible = false;
-        local minX, maxX, minY, maxY;
         local previousPreviousX, previousPreviousY;
         for index, regionData in pairs(region.controlledRegions) do
             local childId = regionData.id;
@@ -430,13 +535,63 @@ local function modify(parent, region, data)
                 local xDelta, yDelta = previousX - xOffset, previousY - yOffset;
                 previousPreviousX, previousPreviousY = previousX, previousY;
                 if(childRegion:IsVisible() and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
-                    local anim = {
-                        type = "custom",
-                        duration = 0.2,
-                        use_translate = true,
-                        x = xDelta,
-                        y = yDelta
-                    };
+                    local anim;
+                    if(data.grow == "CIRCLE") then
+                        local originX, originY = region:GetCenter();
+                        local radius1, previousAngle = WeakAuras.GetPolarCoordinates(previousX, previousY, originX, originY);
+                        local radius2, newAngle = WeakAuras.GetPolarCoordinates(xOffset, yOffset, originX, originY);
+                        local dAngle = newAngle - previousAngle;
+                        dAngle = (
+                            (dAngle > 180 and dAngle - 360)
+                            or (dAngle < -180 and dAngle + 360)
+                            or dAngle
+                        );
+                        if(math.abs(radius1 - radius2) > 0.1) then
+                            local translateFunc = [[
+return function(progress, _, _, previousAngle, dAngle)
+    local previousRadius, dRadius = %f, %f;
+    local radius = previousRadius + (1 - progress) * dRadius;
+    local angle = previousAngle + (1 - progress) * dAngle;
+    return cos(angle) * radius, sin(angle) * radius;
+end
+]]
+                            anim = {
+                                type = "custom",
+                                duration = 0.2,
+                                use_translate = true,
+                                translateType = "custom",
+                                translateFunc = translateFunc:format(radius1, radius2 - radius1),
+                                x = previousAngle,
+                                y = dAngle
+                            };
+                        else
+                            local translateFunc = [[
+return function(progress, _, _, previousAngle, dAngle)
+    local radius = %f;
+    local angle = previousAngle + (1 - progress) * dAngle;
+    return cos(angle) * radius, sin(angle) * radius;
+end
+]]
+                            anim = {
+                                type = "custom",
+                                duration = 0.2,
+                                use_translate = true,
+                                translateType = "custom",
+                                translateFunc = translateFunc:format(radius1),
+                                x = previousAngle,
+                                y = dAngle
+                            };
+                        end
+                    end
+                    if not(anim) then
+                        anim = {
+                            type = "custom",
+                            duration = 0.2,
+                            use_translate = true,
+                            x = xDelta,
+                            y = yDelta
+                        };
+                    end
                     if(childRegion.toHide) then
                         childRegion.toHide = nil;
                         if(WeakAuras.IsAnimating(childRegion) == "finish") then
@@ -460,30 +615,7 @@ local function modify(parent, region, data)
                         childRegion:Hide();
                     end
                 end
-                
-                if(childRegion:IsVisible()) then
-                    anyVisible = true;
-                    local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom();
-                    minX = minX and min(regionLeft, minX) or regionLeft;
-                    maxX = maxX and max(regionRight, maxX) or regionRight;
-                    minY = minY and min(regionBottom, minY) or regionBottom;
-                    maxY = maxY and max(regionTop, maxY) or regionTop;
-                end
             end
-        end
-        if(anyVisible) then
-            region:SetWidth((maxX or 0) - (minX or 0));
-            region:SetHeight((maxY or 0) - (minY or 0));
-            region:Show();
-        else
-            region:Hide();
-        end
-    end    
-    
-    for index, childId in pairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        if(childData) then
-            WeakAuras.Add(childData);
         end
     end
     
@@ -501,34 +633,59 @@ local function modify(parent, region, data)
         end
     end
     
-    local maxWidth, maxHeight = 0, 0;
-    for index, regionData in pairs(region.controlledRegions) do
-        childId = regionData.id;
-        childData = regionData.data;
-        if(childData) then
-            if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-                maxWidth = maxWidth + childData.width;
-                maxWidth = maxWidth + (index > 1 and data.space or 0);
-                maxHeight = math.max(maxHeight, childData.height);
-            else
-                maxHeight = maxHeight + childData.height;
-                maxHeight = maxHeight + (index > 1 and data.space or 0);
-                maxWidth = math.max(maxWidth, childData.width);
-            end
-        end
-    end
-    if(data.grow == "LEFT" or data.grow == "RIGHT") then
-        maxHeight = maxHeight + (math.abs(data.stagger) * (#data.controlledChildren - 1));
-    else
-        maxWidth = maxWidth + (math.abs(data.stagger) * (#data.controlledChildren - 1));
-    end
+    -- local maxWidth, maxHeight = 0, 0;
+    -- local radius = 0;
+    -- if(data.grow == "CIRCLE") then
+        -- if(data.constantFactor == "RADIUS") then
+            -- radius = data.radius;
+        -- else
+            -- if(#region.controlledRegions == 1) then
+                -- radius = 0;
+            -- else
+                -- radius = (#region.controlledRegions * data.space) / (2 * math.pi)
+            -- end
+        -- end
+    -- end
+    -- for index, regionData in pairs(region.controlledRegions) do
+        -- childId = regionData.id;
+        -- childData = regionData.data;
+        -- if(childData) then
+            -- if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
+                -- maxWidth = maxWidth + childData.width;
+                -- maxWidth = maxWidth + (index > 1 and data.space or 0);
+                -- maxHeight = math.max(maxHeight, childData.height);
+            -- elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
+                -- maxHeight = maxHeight + childData.height;
+                -- maxHeight = maxHeight + (index > 1 and data.space or 0);
+                -- maxWidth = math.max(maxWidth, childData.width);
+            -- elseif(data.grow == "CIRCLE") then
+                -- maxWidth = math.max(maxWidth, childData.width);
+                -- maxHeight = math.max(maxHeight, childData.height);
+            -- end
+        -- end
+    -- end
+    -- if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
+        -- maxHeight = maxHeight + (math.abs(data.stagger) * (#region.controlledRegions - 1));
+    -- elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
+        -- maxWidth = maxWidth + (math.abs(data.stagger) * (#region.controlledRegions - 1));
+    -- elseif(data.grow == "CIRCLE") then
+        -- maxWidth = maxWidth + (2 * radius);
+        -- maxHeight = maxHeight + (2 * radius);
+    -- end
     
-    maxWidth = (maxWidth and maxWidth > 16 and maxWidth) or 16;
-    maxHeight = (maxHeight and maxHeight > 16 and maxHeight) or 16;
+    -- maxWidth = (maxWidth and maxWidth > 16 and maxWidth) or 16;
+    -- maxHeight = (maxHeight and maxHeight > 16 and maxHeight) or 16;
     
-    data.width, data.height = maxWidth, maxHeight;
-    region:SetWidth(data.width);
-    region:SetHeight(data.height);
+    -- data.width, data.height = maxWidth, maxHeight;
+    -- region:SetWidth(data.width);
+    -- region:SetHeight(data.height);
+    data.width = region.currentWidth;
+    data.height = region.currentHeight;
+    
+    function region:Scale(scalex, scaley)
+        region:SetWidth((region.currentWidth or 16) * scalex);
+        region:SetHeight((region.currentHeight or 16) * scaley);
+    end
 end
 
 WeakAuras.RegisterRegionType("dynamicgroup", create, modify, default);

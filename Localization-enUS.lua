@@ -1209,3 +1209,7 @@ L["Inherited"] = "Inherited"
 --Added in r125
 L["Circular"] = "Circular"
 L["Radius"] = "Radius"
+
+--Added in r126
+L["Constant Factor"] = "Constant Factor"
+L["Spacing"] = "Spacing"

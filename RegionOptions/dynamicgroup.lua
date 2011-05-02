@@ -14,7 +14,7 @@ local function createOptions(id, data)
             name = L["Align"],
             order = 10,
             values = WeakAuras.align_types,
-            hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") end,
+            hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE") end,
             disabled = function() return data.grow == "CIRCLE" end
         },
         rotated_align = {
@@ -26,22 +26,29 @@ local function createOptions(id, data)
             get = function() return data.align; end,
             set = function(info, v) data.align = v; WeakAuras.Add(data); end
         },
+        constantFactor = {
+            type = "select",
+            name = L["Constant Factor"],
+            order = 10,
+            values = WeakAuras.circular_group_constant_factor_types,
+            hidden = function() return data.grow ~= "CIRCLE" end
+        },
         space = {
             type = "range",
             name = L["Space"],
             order = 15,
             softMin = 0,
-            softMax = 100,
+            softMax = 300,
             bigStep = 1,
-            hidden = function() return data.grow == "CIRCLE" end
+            hidden = function() return data.grow == "CIRCLE" and data.constantFactor == "RADIUS" end
         },
-        radius = {
+        rotation = {
             type = "range",
-            name = L["Radius"],
+            name = L["Rotation"],
             order = 15,
-            softMin = 0,
-            softMax = 500,
-            bigStep = 1,
+            min = 0,
+            max = 360,
+            bigStep = 3,
             hidden = function() return data.grow ~= "CIRCLE" end
         },
         stagger = {
@@ -54,14 +61,14 @@ local function createOptions(id, data)
             bigStep = 1,
             hidden = function() return data.grow == "CIRCLE" end
         },
-        rotation = {
+        radius = {
             type = "range",
-            name = L["Rotation"],
-            order = 15,
-            min = 0,
-            max = 360,
-            bigStep = 3,
-            hidden = function() return data.grow ~= "CIRCLE" end
+            name = L["Radius"],
+            order = 20,
+            softMin = 0,
+            softMax = 500,
+            bigStep = 1,
+            hidden = function() return not(data.grow == "CIRCLE" and data.constantFactor == "RADIUS") end
         },
         animate = {
             type = "toggle",
@@ -186,24 +193,42 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     data.selfPoint = selfPoint;
     
     local maxWidth, maxHeight = 0, 0;
+    local radius = 0;
+    if(data.grow == "CIRCLE") then
+        if(data.constantFactor == "RADIUS") then
+            radius = data.radius;
+        else
+            if(#data.controlledChildren == 1) then
+                radius = 0;
+            else
+                radius = (#data.controlledChildren * data.space) / (2 * math.pi)
+            end
+        end
+    end
     for index, childId in ipairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-            if(data.grow == "LEFT" or data.grow == "RIGHT") then
+            if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
                 maxWidth = maxWidth + childData.width;
                 maxWidth = maxWidth + (index > 1 and data.space or 0);
                 maxHeight = math.max(maxHeight, childData.height);
-            else
+            elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
                 maxHeight = maxHeight + childData.height;
                 maxHeight = maxHeight + (index > 1 and data.space or 0);
                 maxWidth = math.max(maxWidth, childData.width);
+            elseif(data.grow == "CIRCLE") then
+                maxWidth = math.max(maxWidth, childData.width);
+                maxHeight = math.max(maxHeight, childData.height);
             end
         end
     end
     if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
         maxHeight = maxHeight + (math.abs(data.stagger) * (#data.controlledChildren - 1));
-    else
+    elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
         maxWidth = maxWidth + (math.abs(data.stagger) * (#data.controlledChildren - 1));
+    elseif(data.grow == "CIRCLE") then
+        maxWidth = maxWidth + (2 * radius);
+        maxHeight = maxHeight + (2 * radius);
     end
     
     local scale;
@@ -248,12 +273,24 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     
     local angle = data.rotation or 0;
     local angleInc = 360 / (#data.controlledChildren ~= 0 and #data.controlledChildren or 1);
+    local radius = 0;
+    if(data.grow == "CIRCLE") then
+        if(data.constantFactor == "RADIUS") then
+            radius = data.radius;
+        else
+            if(#data.controlledChildren <= 1) then
+                radius = 0;
+            else
+                radius = (#data.controlledChildren * data.space) / (2 * math.pi);
+            end
+        end
+    end
     for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
             if(data.grow == "CIRCLE") then
-                yOffset = cos(angle) * data.radius * -1;
-                xOffset = sin(angle) * data.radius;
+                yOffset = cos(angle) * radius * -1;
+                xOffset = sin(angle) * radius;
                 angle = angle + angleInc;
             end
             if not(region.children[index]) then
@@ -301,7 +338,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     end
     region.children[index].texture:SetTexture(1, 1, 1);
     region.children[index]:ClearAllPoints();
-    if(data.grow == "RIGHT" or data.grow == "LEFT") then
+    if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
         region.children[index]:SetWidth(size);
         region.children[index]:SetHeight(1);
         if(data.align == "LEFT") then
@@ -311,7 +348,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         else
             region.children[index]:SetPoint("CENTER", region, "CENTER");
         end
-    else
+    elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
         region.children[index]:SetWidth(1);
         region.children[index]:SetHeight(size);
         if(data.align == "LEFT") then
@@ -321,6 +358,10 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         else
             region.children[index]:SetPoint("CENTER", region, "CENTER");
         end
+    elseif(data.grow == "CIRCLE") then
+        region.children[index]:SetWidth(1);
+        region.children[index]:SetHeight(1);
+        region.children[index]:SetPoint("CENTER", region, "CENTER");
     end
 end
 

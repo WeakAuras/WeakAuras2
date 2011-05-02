@@ -1070,7 +1070,7 @@ end
 
 function WeakAuras.DoConfigUpdate()
     local function GiveDynamicInfo(id, region, data, cloneNum)
-        if(WeakAuras.CanHaveDuration(data)) then
+        if(WeakAuras.CanHaveDuration(data) == "timed") then
             local rem = GetTime() + 8 - (frame.count + frame.elapsed);
             if(cloneNum) then
                 rem = rem + (cloneNum == 1 and (frame.count >= 1 and 1 or -3) or (frame.count >= 2 and 2 or -2));
@@ -1081,6 +1081,13 @@ function WeakAuras.DoConfigUpdate()
                 end
             end
             WeakAuras.duration_cache:SetDurationInfo(id, 12, rem, cloneNum);
+        elseif(type(WeakAuras.CanHaveDuration(data)) == "table") then
+            local demoValues = WeakAuras.CanHaveDuration(data);
+            local current, maximum = demoValues.current or 10, demoValues.maximum or 100;
+            if(region.SetDurationInfo) then
+                region:SetDurationInfo(current, maximum);
+            end
+            WeakAuras.duration_cache:SetDurationInfo(id, current, maximum, cloneNum);
         else
             if(region.SetDurationInfo) then
                 region:SetDurationInfo(0, math.huge);
@@ -6728,6 +6735,31 @@ function WeakAuras.CreateFrame()
         moversizer.tr:SetHeight(size);
         moversizer.tl:SetWidth(size);
         moversizer.tl:SetHeight(size);
+    end
+    
+    moversizer.ReAnchor = function(self)
+        if(mover.moving.region) then
+            self:AnchorPoints(mover.moving.region, mover.moving.data);
+        end
+    end
+    
+    moversizer.AnchorPoints = function(self, region, data)
+        local xOff, yOff;
+        mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1);
+        mover:ClearAllPoints();
+        moversizer:ClearAllPoints();
+        if(data.regionType == "group") then
+            mover:SetWidth(region.trx - region.blx);
+            mover:SetHeight(region.try - region.bly);
+            mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff + region.blx, yOff + region.bly);
+        else
+            mover:SetWidth(region:GetWidth());
+            mover:SetHeight(region:GetHeight());
+            mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff);
+        end
+        moversizer:SetPoint("BOTTOMLEFT", mover, "BOTTOMLEFT", -8, -8);
+        moversizer:SetPoint("TOPRIGHT", mover, "TOPRIGHT", 8, 8);
+        moversizer:ScaleCorners(region:GetWidth(), region:GetHeight());
     end
     
     moversizer.SetToRegion = function(self, region, data)
