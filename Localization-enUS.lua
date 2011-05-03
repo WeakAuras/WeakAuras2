@@ -1213,3 +1213,7 @@ L["Radius"] = "Radius"
 --Added in r126
 L["Constant Factor"] = "Constant Factor"
 L["Spacing"] = "Spacing"
+
+--Added in r128
+L["Specific Unit"] = "Specific Unit"
+L["Can be a name or a UID (e.g., party1). Only works on friendly players in your group."] = "Can be a name or a UID (e.g., party1). Only works on friendly players in your group."

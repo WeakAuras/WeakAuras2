@@ -715,7 +715,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                     order = order - 2;
                 end
                 order = order + 1;
-            elseif(arg.type == "select") then
+            elseif(arg.type == "select" or arg.type == "unit") then
                 options[name] = {
                     type = "select",
                     name = arg.display,
@@ -723,9 +723,20 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                     hidden = hidden,
                     values = WeakAuras[arg.values],
                     disabled = function() return not trigger["use_"..realname]; end,
-                    get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
+                    get = function()
+                        if(arg.type == "unit" and trigger["use_specific_"..realname]) then
+                            return "member";
+                        end
+                        return trigger["use_"..realname] and trigger[realname] or nil;
+                    end,
                     set = function(info, v)
                         trigger[realname] = v;
+                        if(arg.type == "unit" and v == "member") then
+                            trigger["use_specific_"..realname] = true;
+                            trigger[realname] = UnitName("player");
+                        else
+                            trigger["use_specific_"..realname] = nil;
+                        end
                         WeakAuras.Add(data);
                         WeakAuras.ScanForLoads();
                         WeakAuras.SetThumbnail(data);
@@ -737,7 +748,17 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 if(arg.required and not triggertype) then
                     options[name].set = function(info, v)
                         trigger[realname] = v;
+                        if(arg.type == "unit" and v == "member") then
+                            trigger["use_specific_"..realname] = true;
+                        else
+                            trigger["use_specific_"..realname] = nil;
+                        end
                         untrigger[realname] = v;
+                        if(arg.type == "unit" and v == "member") then
+                            untrigger["use_specific_"..realname] = true;
+                        else
+                            untrigger["use_specific_"..realname] = nil;
+                        end
                         WeakAuras.Add(data);
                         WeakAuras.ScanForLoads();
                         WeakAuras.SetThumbnail(data);
@@ -750,6 +771,36 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                     order = order - 1;
                 end
                 order = order + 1;
+                if(arg.type == "unit" and not (arg.required and triggertype == "untrigger")) then
+                    options["use_specific_"..name] = {
+                        type = "toggle",
+                        name = L["Specific Unit"],
+                        order = order,
+                        hidden = function() return (not trigger["use_specific_"..realname]) or (type(hidden) == "function" and hidden() or hidden) end,
+                        get = function() return true end,
+                        set = function(info, v)
+                            trigger["use_specific_"..realname] = nil;
+                            options[name].set(info, "player");
+                        end
+                    }
+                    order = order + 1;
+                    options["specific_"..name] = {
+                        type = "input",
+                        name = L["Specific Unit"],
+                        desc = L["Can be a name or a UID (e.g., party1). Only works on friendly players in your group."],
+                        order = order,
+                        hidden = function() return (not trigger["use_specific_"..realname]) or (type(hidden) == "function" and hidden() or hidden) end,
+                        get = function() return trigger[realname] end,
+                        set = function(info, v)
+                            trigger[realname] = v;
+                            if(arg.required and not triggetype) then
+                                untrigger[realname] = v;
+                            end
+                            WeakAuras.Add(data);
+                        end
+                    };
+                    order = order + 1;
+                end
             elseif(arg.type == "multiselect") then
                 options[name] = {
                     type = "select",
@@ -4067,6 +4118,21 @@ function WeakAuras.ReloadTriggerOptions(data)
                 end
                 return trigger.unit;
             end
+        },
+        useSpecificUnit = {
+            type = "toggle",
+            name = L["Specific Unit"],
+            order = 42,
+            disabled = true,
+            hidden = function() return not (trigger.type == "aura" and trigger.unit == "member") end,
+            get = function() return true end
+        },
+        specificUnit = {
+            type = "input",
+            name = L["Specific Unit"],
+            order = 43,
+            desc = L["Can be a name or a UID (e.g., party1). Only works on friendly players in your group."],
+            hidden = function() return not (trigger.type == "aura" and trigger.unit == "member") end
         },
         useGroup_count = {
             type = "toggle",

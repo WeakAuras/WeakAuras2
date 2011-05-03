@@ -73,8 +73,16 @@ WeakAuras.unit_types = {
     target = L["Target"],
     focus = L["Focus"],
     group = L["Group"],
+    member = L["Specific Unit"],
     pet = L["Pet"],
     multi = L["Multi-target"]
+};
+WeakAuras.actual_unit_types_with_specific = {
+    player = L["Player"],
+    target = L["Target"],
+    focus = L["Focus"],
+    pet = L["Pet"],
+    member = L["Specific Unit"]
 };
 WeakAuras.actual_unit_types = {
     player = L["Player"],

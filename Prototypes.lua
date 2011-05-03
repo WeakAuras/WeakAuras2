@@ -421,9 +421,9 @@ WeakAuras.event_prototypes = {
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "name",
@@ -481,9 +481,9 @@ WeakAuras.event_prototypes = {
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "health",
@@ -530,9 +530,9 @@ WeakAuras.event_prototypes = {
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "powertype",
@@ -586,9 +586,9 @@ WeakAuras.event_prototypes = {
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "power",
@@ -636,9 +636,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "power",
@@ -686,9 +686,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "power",
@@ -731,9 +731,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
                 name = "unit",
                 required = true,
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "eclipsetype",
@@ -819,9 +819,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             {
                 name = "sourceunit",
                 display = L["Source Unit"],
-                type = "select",
+                type = "unit",
                 test = "source and UnitIsUnit(source, '%s')",
-                values = "actual_unit_types",
+                values = "actual_unit_types_with_specific",
                 enable = function(trigger)
                     return not (trigger.subeventPrefix == "ENVIRONMENTAL")
                 end
@@ -840,9 +840,9 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             {
                 name = "destunit",
                 display = L["Destination Unit"],
-                type = "select",
+                type = "unit",
                 test = "dest and UnitIsUnit(dest, '%s')",
-                values = "actual_unit_types"
+                values = "actual_unit_types_with_specific"
             },
             {
                 name = "dest",
@@ -1783,9 +1783,9 @@ interruptible = not interruptible;
             {
                 name = "unit",
                 display = L["Unit"],
-                type = "select",
+                type = "unit",
                 init = "arg",
-                values = "actual_unit_types",
+                values = "actual_unit_types_with_specific",
                 required = true
             },
             {
