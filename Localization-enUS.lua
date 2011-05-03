@@ -1217,3 +1217,9 @@ L["Spacing"] = "Spacing"
 --Added in r128
 L["Specific Unit"] = "Specific Unit"
 L["Can be a name or a UID (e.g., party1). Only works on friendly players in your group."] = "Can be a name or a UID (e.g., party1). Only works on friendly players in your group."
+
+--Added in r129
+L["Global Cooldown"] = "Global Cooldown"
+L["Reference Spell"] = "Reference Spell"
+L["Swing Timer"] = "Swing Timer"
+L["Ranged"] = "Ranged"

@@ -783,6 +783,11 @@ WeakAuras.weapon_types = {
     ["off"] = L["Off Hand"],
     ["thrown"] = L["Thrown"]
 };
+WeakAuras.swing_types = {
+    ["main"] = L["Main Hand"],
+    ["off"] = L["Off Hand"],
+    ["range"] = L["Ranged"]
+};
 WeakAuras.rune_specific_types = {
     [1] = L["Blood Rune #1"],
     [2] = L["Blood Rune #2"],

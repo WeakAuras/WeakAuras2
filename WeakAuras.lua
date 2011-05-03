@@ -461,6 +461,122 @@ groupFrame:SetScript("OnEvent", function(self, event)
 end);
 
 do
+    local mh = GetInventorySlotInfo("MainHandSlot")
+    local oh = GetInventorySlotInfo("SecondaryHandSlot")
+    local ra = GetInventorySlotInfo("RangedSlot")
+    
+    local swingTimerFrame;
+    local lastSwingMain, lastSwingOff, lastSwingRange;
+    local swingDurationMain, swingDurationOff, swingDurationRange;
+    local mainTimer, offTimer, rangeTimer;
+    
+    function WeakAuras.GetSwingTimerInfo(hand)
+        if(hand == "main") then
+            local itemId = GetInventoryItemID("player", mh);
+            local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+            if(lastSwingMain) then
+                return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
+            else
+                return 0, math.huge, name, icon;
+            end
+        elseif(hand == "off") then
+            local itemId = GetInventoryItemID("player", oh);
+            local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+            if(lastSwingOff) then
+                return swingDurationOff, lastSwingOff + swingDurationOff, name, icon;
+            else
+                return 0, math.huge, name, icon;
+            end
+        elseif(hand == "range") then
+            local itemId = GetInventoryItemID("player", ra);
+            local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+            if(lastSwingRange) then
+                return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
+            else
+                return 0, math,huge, name, icon;
+            end
+        end
+        
+        return 0, math.huge;
+    end
+    
+    local function swingEnd(hand)
+        if(hand == "main") then
+            lastSwingMain, swingDurationMain = nil, nil;
+        elseif(hand == "off") then
+            lastSwingOff, swingDurationOff = nil, nil;
+        elseif(hand == "range") then
+            lastSwingRange, swingDurationRange = nil, nil;
+        end
+        WeakAuras.ScanEvents("SWING_TIMER_END");
+    end
+    
+    local function swingTimerCheck(frame, event, _, message, _, _, source)
+        if(UnitIsUnit(source or "", "player")) then
+            if(message == "SWING_DAMAGE" or message == "SWING_MISSED") then
+                local event;
+                local currentTime = GetTime();
+                local mainSpeed, offSpeed = UnitAttackSpeed("player");
+                offSpeed = offSpeed or 0;
+                if not(lastSwingMain) then
+                    lastSwingMain = currentTime;
+                    swingDurationMain = mainSpeed;
+                    event = "SWING_TIMER_START";
+                    mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
+                elseif(OffhandHasWeapon() and not lastSwingOff) then
+                    lastSwingOff = currentTime;
+                    swingDurationOff = offSpeed;
+                    event = "SWING_TIMER_START";
+                    offTimer = timer:ScheduleTimer(swingEnd, offSpeed, "off");
+                else
+                    --A swing occurred while both weapons are supposed to be on cooldown
+                    --Simply refresh the timer of the weapon swing which would have ended sooner
+                    local mainRem, offRem = (lastSwingMain or math.huge) + mainSpeed - currentTime, (lastSwingOff or math.huge) + offSpeed - currentTime;
+                    if(mainRem < offRem or not OffhandHasWeapon()) then
+                        timer:CancelTimer(mainTimer, true);
+                        lastSwingMain = currentTime;
+                        swingDurationMain = mainSpeed;
+                        event = "SWING_TIMER_CHANGE";
+                        mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
+                    else
+                        timer:CancelTimer(mainTimer, true);
+                        lastSwingOff = currentTime;
+                        swingDurationOff = offSpeed;
+                        event = "SWING_TIMER_CHANGE";
+                        offTimer = timer:ScheduleTimer(swingEnd, offSpeed, "off");
+                    end
+                end
+                
+                WeakAuras.ScanEvents(event);
+            elseif(message == "RANGE_DAMAGE" or message == "RANGE_MISSED") then
+                local event;
+                local currentTime = GetTime();
+                local speed = UnitRangedDamage("player");
+                if(lastSwingRange) then
+                    timer:CancelTimer(rangeTimer, true);
+                    event = "SWING_TIMER_CHANGE";
+                else
+                    event = "SWING_TIMER_START";
+                end
+                lastSwingRange = currentTime;
+                swingDurationRange = speed;
+                rangeTimer = timer:ScheduleTimer(swingEnd, speed, "range");
+                
+                WeakAuras.ScanEvents(event);
+            end
+        end
+    end
+    
+    function WeakAuras.InitSwingTimer()
+        if not(swingTimerFrame) then
+            swingTimerFrame = CreateFrame("frame");
+            swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+            swingTimerFrame:SetScript("OnEvent", swingTimerCheck);
+        end
+    end
+end
+
+do
     local cdReadyFrame;
     WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
     
@@ -474,12 +590,30 @@ do
     local itemCdExps = {};
     local itemCdHandles = {};
     
-    local gcdTimer;
+    local gcdReference;
+    local gcdStart;
+    local gcdDuration;
+    local gcdSpellName;
+    local gcdSpellIcon;
+    local gcdEndCheck;
     
     function WeakAuras.InitCooldownReady()
         cdReadyFrame = CreateFrame("FRAME");
         cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
-        cdReadyFrame:SetScript("OnEvent", WeakAuras.CheckCooldownReady);
+        cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
+            if(event == "SPELL_UPDATE_COOLDOWN") then
+                WeakAuras.CheckCooldownReady();
+            elseif(event == "UNIT_SPELLCAST_SENT") then
+                local unit, name = ...;
+                if(unit == "player") then
+                    if(gcdSpellName ~= name) then
+                        local icon = GetSpellTexture(name);
+                        gcdSpellName = name;
+                        gcdSpellIcon = icon;
+                    end
+                end
+            end
+        end);
     end
     
     function WeakAuras.GetSpellCooldown(id)
@@ -498,6 +632,14 @@ do
         end
     end
     
+    function WeakAuras.GetGCDInfo()
+        if(gcdStart) then
+            return gcdDuration, gcdStart + gcdDuration, gcdSpellName or "Invalid", gcdSpellIcon or "Interface\\Icons\\INV_Misc_QuestionMark";
+        else
+            return 0, math.huge, gcdSpellName or "Invalid", gcdSpellIcon or "Interface\\Icons\\INV_Misc_QuestionMark";
+        end
+    end
+    
     local function SpellCooldownFinished(id)
         spellCdHandles[id] = nil;
         spellCdDurs[id] = nil;
@@ -512,7 +654,38 @@ do
         WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
     end
     
+    local function CheckGCD()
+        local event;
+        local startTime, duration = GetSpellCooldown(gcdReference);
+        if(duration and duration > 0) then
+            if not(gcdStart) then
+                event = "GCD_START";
+            elseif(gcdStart ~= startTime) then
+                event = "GCD_CHANGE";
+            end
+            gcdStart, gcdDuration = startTime, duration;
+            local endCheck = startTime + duration + 0.1;
+            if(gcdEndCheck ~= endCheck) then
+                gcdEndCheck = endCheck;
+                timer:ScheduleTimer(CheckGCD, duration + 0.1);
+            end
+        else
+            if(gcdStart) then
+                event = "GCD_END"
+            end
+            gcdStart, gcdDuration = nil, nil;
+            gcdEndCheck = 0;
+        end
+        if(event) then
+            WeakAuras.ScanEvents(event);
+        end
+    end
+    
     function WeakAuras.CheckCooldownReady()
+        if(gcdReference) then
+            CheckGCD();
+        end
+        
         for id, _ in pairs(spells) do
             local startTime, duration = GetSpellCooldown(id);
             startTime = startTime or 0;
@@ -594,6 +767,15 @@ do
                 end
             end
         end
+    end
+    
+    function WeakAuras.WatchGCD(id)
+        if not(cdReadyFrame) then
+            WeakAuras.InitCooldownReady();
+        end
+        cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+        cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+        gcdReference = id;
     end
     
     function WeakAuras.WatchSpellCooldown(id)
@@ -2408,7 +2590,7 @@ function WeakAuras.pAdd(data)
                         if not(trigger.event) then
                             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
                         elseif not(event_prototypes[trigger.event]) then
-                            if(event_protyptes["Health"]) then
+                            if(event_prototypes["Health"]) then
                                 trigger.event = "Health";
                             else
                                 error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
