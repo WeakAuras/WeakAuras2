@@ -18,6 +18,7 @@ Init.lua
 
 Localization-enUS.lua
 Localization-esES.lua
+Localization-deDE.lua
 
 Prototypes.lua
 Types.lua

@@ -1006,7 +1006,9 @@ do
                             data.GUIDs = data.GUIDs or {};
                             data.GUIDs[destGUID] = nil;
                             
-                            clones[id][destGUID]:Collapse();
+                            if(clones[id] and clones[id][destGUID]) then
+                                clones[id][destGUID]:Collapse();
+                            end
                         end
                     end
                 end
@@ -3414,7 +3416,10 @@ function WeakAuras.CanHaveDuration(data)
         )
     ) then
         if(
-            data.trigger.type == "event"
+            (
+                data.trigger.type == "event"
+                or data.trigger.type == "status"
+            )
             and data.trigger.event
             and WeakAuras.event_prototypes[data.trigger.event]
             and WeakAuras.event_prototypes[data.trigger.event].durationFunc
