@@ -1268,6 +1268,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             db.tempIconCache = db.tempIconCache or {};
 
             db.displays = db.displays or {};
+            
+            WeakAuras.SyncParentChildRelationships();
+            
             local toAdd = {};
             for id, data in pairs(db.displays) do
                 if(id == data.id) then
@@ -1276,7 +1279,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
                     error("Corrupt entry in WeakAuras saved displays");
                 end
             end
-            WeakAuras.AddMany(unpack(toAdd));
+            WeakAuras.AddMany(toAdd);
             WeakAuras.AddIfNecessary(from_files);
             
             WeakAuras.Resume();
@@ -2383,8 +2386,49 @@ function WeakAuras.Modernize(data)
     end
 end
 
-function WeakAuras.AddMany(...)
-    local table = {...};
+function WeakAuras.SyncParentChildRelationships()
+    local childToParent = {};
+    local parentToChild = {};
+    for id, data in pairs(db.displays) do
+        if(data.parent) then
+            if(data.controlledChildren) then
+                
+            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
+                --A display cannot have both children and a parent
+                data.parent = nil;
+            elseif(db.displays[data.parent] and db.displays[data.parent].controlledChildren) then
+                childToParent[id] = data.parent;
+                parentToChild[data.parent] = parentToChild[data.parent] or {};
+                parentToChild[data.parent][id] = true;
+            else
+                print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
+                data.parent = nil;
+            end
+        end
+    end
+    
+    for id, data in pairs(db.displays) do
+        if(data.controlledChildren) then
+            for index, childId in pairs(data.controlledChildren) do
+                if not(childToParent[childId] and childToParent[childId] == id) then
+                    print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "thinks it controls", childId, "but does not");
+                    tremove(data.controlledChildren, index);
+                end
+            end
+            
+            if(parentToChild[id]) then
+                for childId, _ in pairs(parentToChild[id]) do
+                    if not(tContains(data.controlledChildren, childId)) then
+                        print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
+                        tinsert(data.controlledChildren, childId);
+                    end
+                end
+            end
+        end
+    end
+end
+
+function WeakAuras.AddMany(table)
     local idtable = {};
     for _, data in ipairs(table) do
         idtable[data.id] = data;

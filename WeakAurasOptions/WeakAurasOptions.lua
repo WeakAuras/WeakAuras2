@@ -303,6 +303,30 @@ local function union(table1, table2)
     return meta;
 end
 
+AceGUI:RegisterLayout("AbsoluteList", function(content, children)
+    local yOffset = 0;
+    for i = 1, #children do
+        local child = children[i]
+        
+        local frame = child.frame;
+        frame:ClearAllPoints();
+        frame:Show();
+        
+        frame:SetPoint("LEFT", content);
+        frame:SetPoint("RIGHT", content);
+        frame:SetPoint("TOP", content, "TOP", 0, yOffset)
+        
+        if child.DoLayout then
+            child:DoLayout()
+        end
+        
+        yOffset = yOffset - ((frame.height or frame:GetHeight() or 0) + 2);
+    end
+    if(content.obj.LayoutFinished) then
+        content.obj:LayoutFinished(nil, yOffset * -1);
+    end
+end);
+
 function WeakAuras.CreateIconCache(callback)
     local cacheFrame = CreateFrame("Frame");
     local id = 1;
@@ -6528,7 +6552,7 @@ function WeakAuras.CreateFrame()
     filterInputClear:Hide();
     
     local buttonsScroll = AceGUI:Create("ScrollFrame");
-    buttonsScroll:SetLayout("flow");
+    buttonsScroll:SetLayout("AbsoluteList");
     buttonsScroll.width = "fill";
     buttonsScroll.height = "fill";
     buttonsContainer:SetLayout("fill");
