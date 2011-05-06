@@ -1452,6 +1452,9 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
         if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
             event_list = event_list[arg2];
         end
+        if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+            event = "COMBAT_LOG_EVENT_UNFILTERED");
+        end
         for id, triggers in pairs(event_list) do
             for triggernum, data in pairs(triggers) do
                 if(data.trigger) then
@@ -2383,6 +2386,22 @@ function WeakAuras.Modernize(data)
     if(data.regionType == "timer") then
         data.regionType = "text";
         data.displayText = "%p";
+    end
+    
+    --Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
+    for triggernum=0,9 do
+        local trigger, untrigger;
+        if(triggernum == 0) then
+            trigger = data.trigger;
+        elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+            trigger = data.additional_triggers[triggernum].trigger;
+        end
+        if(trigger and trigger.custom) then
+            trigger.custom = trigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
+        end
+        if(untrigger and untrigger.custom) then
+            untrigger.custom = untrigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
+        end
     end
 end
 
