@@ -3870,6 +3870,9 @@ function WeakAuras.ReloadTriggerOptions(data)
                         tremove(trigger.names, 1);
                     end
                 else
+                    if(tonumber(v)) then
+                        WeakAuras.ShowSpellIDDialog(trigger, v);
+                    end
                     trigger.names[1] = WeakAuras.CorrectAuraName(v);
                 end
                 WeakAuras.Add(data);
@@ -7896,6 +7899,35 @@ function WeakAuras.ShowCloneDialog(data)
         };
         
         StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
+    end
+end
+
+function WeakAuras.ShowSpellIDDialog(trigger, id)
+    if not(odb.preventSpellIDDialog) then
+        StaticPopupDialogs["WEAKAURAS_SPELLID_CHECK"] = {
+            text = L["Spell ID dialog"],
+            button1 = L["Yes"],
+            button2 = L["No"],
+            button3 = L["Never"],
+            OnAccept = function()
+                trigger.fullscan = true;
+                trigger.use_spellId = true;
+                trigger.spellId = id;
+                
+                AceConfigDialog:Open("WeakAuras", frame.container);
+            end,
+            OnCancel = function()
+                --do nothing
+            end,
+            OnAlt = function()
+                odb.preventSpellIDDialog = true
+            end,
+            hideOnEscape = true,
+            whileDead = true,
+            timeout = 0
+        };
+        
+        StaticPopup_Show("WEAKAURAS_SPELLID_CHECK");
     end
 end
 

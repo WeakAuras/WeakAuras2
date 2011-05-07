@@ -1229,3 +1229,12 @@ L["Frame"] = "Frame"
 L["Button Glow"] = "Button Glow"
 L["Glow Action"] = "Glow Action"
 L["Show"] = "Show"
+
+--Added in r134
+L["Spell ID dialog"] = [[
+You have specified an aura by |cFFFF0000spell ID|r.
+
+By default, |cFF8800FFWeakAuras|r cannot distinguish between auras with the same name but different |cFFFF0000spell ID|r.
+However, if the Use Full Scan option is enabled, |cFF8800FFWeakAuras|r can search for specific |cFFFF0000spell ID|rs.
+
+Would you like to enable Use Full Scan to match this |cFFFF0000spell ID|r?]]
