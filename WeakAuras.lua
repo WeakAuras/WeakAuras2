@@ -7,6 +7,7 @@ local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 local timer = WeakAurasTimers;
 
 local WeakAuras = WeakAuras;
+local L = WeakAuras.L;
 
 function WeakAuras.OpenOptions(msg)
     if not(IsAddOnLoaded("WeakAurasOptions")) then
@@ -24,6 +25,11 @@ function SlashCmdList.WEAKAURAS(msg)
 end
 
 local db;
+
+local registeredFromAddons;
+
+WeakAuras.collisions = {};
+local collisions = WeakAuras.collisions;
 
 local paused = true;
 local squelch_actions = true;
@@ -1280,7 +1286,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
                 end
             end
             WeakAuras.AddMany(toAdd);
-            WeakAuras.AddIfNecessary(from_files);
+            WeakAuras.AddManyFromAddons(from_files);
+            
+            WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
             
             WeakAuras.Resume();
         end
@@ -2246,20 +2254,132 @@ function WeakAuras.Copy(sourceid, destid)
     end
 end
 
-function WeakAuras.Register(data)
-    tinsert(from_files, data);
+function WeakAuras.Register(addonName, data, force)
+    tinsert(from_files, {addonName, data, force});
 end
 
-function WeakAuras.AddIfNecessary(table)
-    for _, data in ipairs(table) do
-        local id = data.id;
-        if(id) then
-            if(db.displays[id]) then
-                --This display was already in the saved variables
+function WeakAuras.AddManyFromAddons(table)
+    for _, addData in ipairs(table) do
+        WeakAuras.AddFromAddon(addData[1], addData[2], addData[3]);
+    end
+end
+
+function WeakAuras.AddFromAddon(addonName, data, force)
+    local id = data.id;
+    if(id) then
+        if(db.registered[id]) then
+            --This display was already registered
+        elseif(db.displays[id]) then
+            --ID collision
+            collisions[id] = data;
+        else
+            WeakAuras.Add(data);
+        end
+    end
+end
+
+function WeakAuras.ResolveCollisions(onFinished)
+    local num = 0;
+    for id, _ in pairs(collisions) do
+        num = num + 1;
+    end
+    
+    if(num > 0) then
+        local baseText;
+        local buttonText;
+        if(registeredFromAddons) then
+            if(num == 1) then
+                baseText = L["Resolve collisions dialog singular"];
+                buttonText = L["Done"];
             else
-                WeakAuras.Add(data);
+                baseText = L["Resolve collisions dialog"];
+                buttonText = L["Next"];
+            end
+        else
+            if(num == 1) then
+                baseText = L["Resolve collisions dialog startup singular"];
+                buttonText = L["Done"];
+            else
+                baseText = L["Resolve collisions dialog startup"];
+                buttonText = L["Next"];
             end
         end
+        
+        local resolved = {};
+        local numResolved = 0;
+        local currentId = next(collisions);
+        
+        local function UpdateText(popup)
+            popup.text:SetText(baseText..(numResolved or "error").."/"..(num or "error"));
+        end
+        
+        StaticPopupDialogs["WEAKAURAS_RESOLVE_COLLISIONS"] = {
+            text = L["Resolve collisions dialog"],
+            button1 = buttonText,
+            OnAccept = function(self)
+                --Do the collision resolution
+                local newId = self.editBox:GetText();
+                if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
+                    WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
+                else
+                    local data = WeakAuras.GetData(currentId);
+                    if(data) then
+                        WeakAuras.Rename(data, newId);
+                    else
+                        print("Data not found");
+                    end
+                end
+                
+                WeakAuras.Add(collisions[currentId]);
+                resolved[currentId] = newId;
+                numResolved = numResolved + 1;
+                
+                --Get the next id to resolve
+                currentId = next(collisions, currentId);
+                if(currentId) then
+                    --There is another conflict to resolve - hook OnHide to reshow the dialog as soon as it hides
+                    self:SetScript("OnHide", function(self)
+                        self:Show();
+                        UpdateText(self);
+                        self.editBox:SetText(currentId);
+                        self:SetScript("OnHide", nil);
+                        if not(next(collisions, currentId)) then
+                            self.button1:SetText(L["Done"]);
+                        end
+                    end);
+                else
+                    self.editBox:SetScript("OnTextChanged", nil);
+                    wipe(collisions);
+                    if(onFinished) then
+                        onFinished();
+                    end
+                end
+            end,
+            hasEditBox = true,
+            hasWideEditBox = true,
+            hideOnEscape = true,
+            whileDead = true,
+            showAlert = true,
+            timeout = 0
+        };
+        
+        popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
+        popup.editBox:SetScript("OnTextChanged", function(self)
+            local newid = self:GetText();
+            if(collisions[newid] or db.displays[newid]) then
+                popup.button1:Disable();
+            else
+                popup.button1:Enable();
+            end
+        end);
+        popup.editBox:SetText(currentId);
+        popup.text:SetJustifyH("left");
+        popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\icon.tga");
+        popup.icon:SetVertexColor(0.833, 0, 1);
+        
+        UpdateText(popup);
+    elseif(onFinished) then
+        onFinished();
     end
 end
 

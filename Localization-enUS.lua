@@ -1238,3 +1238,30 @@ By default, |cFF8800FFWeakAuras|r cannot distinguish between auras with the same
 However, if the Use Full Scan option is enabled, |cFF8800FFWeakAuras|r can search for specific |cFFFF0000spell ID|rs.
 
 Would you like to enable Use Full Scan to match this |cFFFF0000spell ID|r?]]
+
+--Added in r135
+L["Resolve collisions dialog startup singular"] = [[
+You have installed an addon that defines a |cFF8800FFWeakAuras|r display that has the same name as one of your existing displays.
+
+You need to rename your display to make room for the addon display.
+
+Resolved: |cFFFF0000]]
+L["Resolve collisions dialog startup"] = [[
+You have installed an addon that defines |cFF8800FFWeakAuras|r displays that have the same names as some of your existing displays.
+
+You need to rename your displays to make room for the addon displays.
+
+Resolved: |cFFFF0000]]
+L["Resolve collisions dialog singular"] = [[
+You have enabled an addon that defines a |cFF8800FFWeakAuras|r display that has the same name as one of your existing displays.
+
+You need to rename your display to make room for the addon display.
+
+Resolved: |cFFFF0000]]
+L["Resolve collisions dialog"] = [[
+You have enabled an addon that defines |cFF8800FFWeakAuras|r displays that have the same names as some of your existing displays.
+
+You need to rename your displays to make room for the addon displays.
+
+Resolved: |cFFFF0000]]
+L["Next"] = "Next"
