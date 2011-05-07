@@ -1681,6 +1681,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             wipe(data.region.triggers);
             if not(paused) then
                 data.region:Collapse();
+                WeakAuras.HideAllClones(id);
             end
         end
     end
@@ -1698,6 +1699,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             wipe(data.region.triggers);
             if not(paused) then
                 data.region:Collapse();
+                WeakAuras.HideAllClones(id);
             end
         end
     end
