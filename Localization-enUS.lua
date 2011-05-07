@@ -1223,3 +1223,9 @@ L["Global Cooldown"] = "Global Cooldown"
 L["Reference Spell"] = "Reference Spell"
 L["Swing Timer"] = "Swing Timer"
 L["Ranged"] = "Ranged"
+
+--Added in r132
+L["Frame"] = "Frame"
+L["Button Glow"] = "Button Glow"
+L["Glow Action"] = "Glow Action"
+L["Show"] = "Show"

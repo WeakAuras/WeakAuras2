@@ -1452,8 +1452,9 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
         if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
             event_list = event_list[arg2];
         end
+        --This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaorund so that custom triggers that check the event argument will work as expected
         if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-            event = "COMBAT_LOG_EVENT_UNFILTERED");
+            event = "COMBAT_LOG_EVENT_UNFILTERED";
         end
         for id, triggers in pairs(event_list) do
             for triggernum, data in pairs(triggers) do
@@ -3085,6 +3086,24 @@ function WeakAuras.PerformActions(data, type)
         if(actions.do_custom and actions.custom) then
             local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
             func();
+        end
+        
+        if(actions.do_glow and actions.glow_action and actions.glow_frame) then
+            local glow_frame;
+            if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
+                local frame_name = actions.glow_frame:sub(11);
+                if(regions[frame_name]) then
+                    glow_frame = regions[frame_name].region;
+                end
+            else
+                glow_frame = _G[frame_name];
+            end
+            
+            if(actions.glow_action == "show") then
+                ActionButton_ShowOverlayGlow(glow_frame);
+            elseif(actions.glow_action == "hide") then
+                ActionButton_HideOverlayGlow(glow_frame);
+            end
         end
     end
 end

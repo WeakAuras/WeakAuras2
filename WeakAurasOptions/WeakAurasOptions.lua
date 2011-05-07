@@ -199,6 +199,30 @@ function WeakAuras.MultipleDisplayTooltipMenu()
     return menu;
 end
 
+local function valueFromPath(data, path)
+    if(#path == 1) then
+        return data[path[1]];
+    else
+        local reducedPath = {};
+        for i=2,#path do
+            reducedPath[i-1] = path[i];
+        end
+        return valueFromPath(data[path[1]], reducedPath);
+    end
+end
+
+local function valueToPath(data, path, value)
+    if(#path == 1) then
+        data[path[1]] = value;
+    else
+        local reducedPath = {};
+        for i=2,#path do
+            reducedPath[i-1] = path[i];
+        end
+        valueToPath(data[path[1]], reducedPath, value);
+    end
+end
+
 --This function computes the Levenshtein distance between two strings
 --It is based on the Wagner-Fisher algorithm
 --
@@ -1160,7 +1184,7 @@ function WeakAuras.DoConfigUpdate()
             local demoValues = WeakAuras.CanHaveDuration(data);
             local current, maximum = demoValues.current or 10, demoValues.maximum or 100;
             if(region.SetDurationInfo) then
-                region:SetDurationInfo(current, maximum, true);
+                region:SetDurationInfo(current, maximum);
             end
             WeakAuras.duration_cache:SetDurationInfo(id, current, maximum, cloneNum);
         else
@@ -2016,6 +2040,32 @@ function WeakAuras.AddOption(id, data)
                         hidden = function() return data.actions.start.sound ~= " custom" end,
                         disabled = function() return not data.actions.start.do_sound end
                     },
+                    start_do_glow = {
+                        type = "toggle",
+                        name = L["Button Glow"],
+                        order = 10.1
+                    },
+                    start_glow_action = {
+                        type = "select",
+                        name = L["Glow Action"],
+                        order = 10.2,
+                        values = WeakAuras.glow_action_types,
+                        disabled = function() return not data.actions.start.do_glow end
+                    },
+                    start_glow_frame = {
+                        type = "input",
+                        name = L["Frame"],
+                        order = 10.3,
+                        hidden = function() return not data.actions.start.do_glow end
+                    },
+                    start_choose_glow_frame = {
+                        type = "execute",
+                        name = L["Choose"],
+                        order = 10.4,
+                        func = function()
+                            WeakAuras.StartFrameChooser(data, {"actions", "start", "glow_frame"});
+                        end
+                    },
                     start_do_custom = {
                         type = "toggle",
                         name = L["Custom"],
@@ -2136,6 +2186,32 @@ function WeakAuras.AddOption(id, data)
                         width = "double",
                         hidden = function() return data.actions.finish.sound ~= " custom" end,
                         disabled = function() return not data.actions.finish.do_sound end
+                    },
+                    finish_do_glow = {
+                        type = "toggle",
+                        name = L["Button Glow"],
+                        order = 30.1
+                    },
+                    finish_glow_action = {
+                        type = "select",
+                        name = L["Glow Action"],
+                        order = 30.2,
+                        values = WeakAuras.glow_action_types,
+                        disabled = function() return not data.actions.finish.do_glow end
+                    },
+                    finish_glow_frame = {
+                        type = "input",
+                        name = L["Frame"],
+                        order = 30.3,
+                        hidden = function() return not data.actions.finish.do_glow end
+                    },
+                    finish_choose_glow_frame = {
+                        type = "execute",
+                        name = L["Choose"],
+                        order = 30.4,
+                        func = function()
+                            WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
+                        end
                     },
                     finish_do_custom = {
                         type = "toggle",
@@ -6357,30 +6433,6 @@ function WeakAuras.CreateFrame()
     texteditorError:SetPoint("TOPLEFT", texteditorbox.frame, "BOTTOMLEFT", 5, 25);
     texteditorError:SetPoint("BOTTOMRIGHT", texteditorCancel, "TOPRIGHT");
     
-    local function valueFromPath(data, path)
-        if(#path == 1) then
-            return data[path[1]];
-        else
-            local reducedPath = {};
-            for i=2,#path do
-                reducedPath[i-1] = path[i];
-            end
-            return valueFromPath(data[path[1]], reducedPath);
-        end
-    end
-    
-    local function valueToPath(data, path, value)
-        if(#path == 1) then
-            data[path[1]] = value;
-        else
-            local reducedPath = {};
-            for i=2,#path do
-                reducedPath[i-1] = path[i];
-            end
-            valueToPath(data[path[1]], reducedPath, value);
-        end
-    end
-    
     function texteditor.Open(self, data, path, enclose, addReturn)
         self.data = data;
         self.path = path;
@@ -7048,21 +7100,6 @@ function WeakAuras.CreateFrame()
     end
         
     mover:SetScript("OnUpdate", function(self, elaps)
-        if(IsShiftKeyDown()) then
-            self.goalAlpha = 0.1;
-        else
-            self.goalAlpha = 1;
-        end
-        
-        if(self.currentAlpha ~= self.goalAlpha) then
-            self.currentAlpha = self.currentAlpha or self:GetAlpha();
-            local newAlpha = (self.currentAlpha < self.goalAlpha) and self.currentAlpha + (elaps * 4) or self.currentAlpha - (elaps * 4);
-            local newAlpha = (newAlpha > 1 and 1) or (newAlpha < 0.1 and 0.1) or newAlpha;
-            mover:SetAlpha(newAlpha);
-            moversizer:SetAlpha(newAlpha);
-            self.currentAlpha = newAlpha;
-        end
-            
         local region = self.moving.region;
         local data = self.moving.data;
         if not(self.isMoving) then
@@ -7859,5 +7896,84 @@ function WeakAuras.ShowCloneDialog(data)
         };
         
         StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
+    end
+end
+
+do
+    local frameChooserFrame;
+    local frameChooserBox;
+    local controlsTooltip;
+    local oldFocus;
+    local oldFocusName;
+    
+    function WeakAuras.StartFrameChooser(data, path)
+        if not(frameChooserFrame) then
+            frameChooserFrame = CreateFrame("frame");
+            frameChooserBox = CreateFrame("frame", nil, frameChooserFrame);
+            frameChooserBox:SetFrameStrata("TOOLTIP");
+            frameChooserBox:SetBackdrop({
+                edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                edgeSize = 12,
+                insets = {left = 0, right = 0, top = 0, bottom = 0}
+            });
+            frameChooserBox:SetBackdropBorderColor(0, 1, 0);
+            frameChooserBox:Hide();
+        end
+        local givenValue = valueFromPath(data, path);
+        
+        frameChooserFrame:SetScript("OnUpdate", function()
+            if(IsMouseButtonDown("RightButton")) then
+                valueToPath(data, path, givenValue);
+                AceConfigDialog:Open("WeakAuras", frame.container);
+                WeakAuras.StopFrameChooser();
+            elseif(IsMouseButtonDown("LeftButton") and oldFocusName) then
+                WeakAuras.StopFrameChooser();
+            else
+                SetCursor("CAST_CURSOR");
+                
+                local focus = GetMouseFocus();
+                local focusName;
+                
+                if(focus) then
+                    focusName = focus:GetName();
+                    if(focusName == "WorldFrame" or not focusName) then
+                        focusName = nil;
+                        for id, regionData in pairs(WeakAuras.regions) do
+                            if(regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
+                                focus = regionData.region;
+                                focusName = "WeakAuras:"..id;
+                            end
+                        end
+                    end
+                    
+                    if(focus ~= oldFocus) then
+                        if(focusName) then
+                            frameChooserBox:SetPoint("bottomleft", focus, "bottomleft", -4, -4);
+                            frameChooserBox:SetPoint("topright", focus, "topright", 4, 4);
+                            frameChooserBox:Show();
+                        end
+                        
+                        if(focusName ~= oldFocusName) then
+                            valueToPath(data, path, focusName);
+                            oldFocusName = focusName;
+                            AceConfigDialog:Open("WeakAuras", frame.container);
+                        end
+                        oldFocus = focus;
+                    end
+                end
+                
+                if not(focusName) then
+                    frameChooserBox:Hide();
+                end
+            end
+        end);
+    end
+    
+    function WeakAuras.StopFrameChooser()
+        if(frameChooserFrame) then
+            frameChooserFrame:SetScript("OnUpdate", nil);
+            frameChooserBox:Hide();
+        end
+        ResetCursor();
     end
 end
