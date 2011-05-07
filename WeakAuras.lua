@@ -1456,10 +1456,10 @@ end
 
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
     local event_list = loaded_events[event];
+    if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+        event_list = event_list and event_list[arg2];
+    end
     if(event_list) then
-        if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-            event_list = event_list[arg2];
-        end
         --This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaorund so that custom triggers that check the event argument will work as expected
         if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
             event = "COMBAT_LOG_EVENT_UNFILTERED";
