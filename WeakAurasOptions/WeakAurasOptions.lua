@@ -1184,7 +1184,7 @@ function WeakAuras.DoConfigUpdate()
             local demoValues = WeakAuras.CanHaveDuration(data);
             local current, maximum = demoValues.current or 10, demoValues.maximum or 100;
             if(region.SetDurationInfo) then
-                region:SetDurationInfo(current, maximum);
+                region:SetDurationInfo(current, maximum, true);
             end
             WeakAuras.duration_cache:SetDurationInfo(id, current, maximum, cloneNum);
         else
@@ -7103,6 +7103,21 @@ function WeakAuras.CreateFrame()
     end
         
     mover:SetScript("OnUpdate", function(self, elaps)
+        if(IsShiftKeyDown()) then
+            self.goalAlpha = 0.1;
+        else
+            self.goalAlpha = 1;
+        end
+        
+        if(self.currentAlpha ~= self.goalAlpha) then
+            self.currentAlpha = self.currentAlpha or self:GetAlpha();
+            local newAlpha = (self.currentAlpha < self.goalAlpha) and self.currentAlpha + (elaps * 4) or self.currentAlpha - (elaps * 4);
+            local newAlpha = (newAlpha > 1 and 1) or (newAlpha < 0.1 and 0.1) or newAlpha;
+            mover:SetAlpha(newAlpha);
+            moversizer:SetAlpha(newAlpha);
+            self.currentAlpha = newAlpha;
+        end
+            
         local region = self.moving.region;
         local data = self.moving.data;
         if not(self.isMoving) then
