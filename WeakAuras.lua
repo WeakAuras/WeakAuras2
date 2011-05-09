@@ -16,7 +16,7 @@ function WeakAuras.OpenOptions(msg)
             print("WeakAurasOptions could not be loaded:", reason);
         end
     end
-    WeakAuras.ToggleOptions(msg == "force");
+    WeakAuras.ToggleOptions(msg);
 end
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
@@ -27,6 +27,8 @@ end
 local db;
 
 local registeredFromAddons;
+WeakAuras.addons = {};
+local addons = WeakAuras.addons;
 
 WeakAuras.collisions = {};
 local collisions = WeakAuras.collisions;
@@ -1274,6 +1276,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             db.tempIconCache = db.tempIconCache or {};
 
             db.displays = db.displays or {};
+            db.registered = db.registered or {};
             
             WeakAuras.SyncParentChildRelationships();
             
@@ -1287,6 +1290,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             end
             WeakAuras.AddMany(toAdd);
             WeakAuras.AddManyFromAddons(from_files);
+            WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
             
             WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
             
@@ -2256,8 +2260,24 @@ function WeakAuras.Copy(sourceid, destid)
     end
 end
 
-function WeakAuras.Register(addonName, data, force)
-    tinsert(from_files, {addonName, data, force});
+function WeakAuras.RegisterAddon(addon, displayName, description, icon)
+    if(addons[addon]) then
+        addons[addon].displayName = displayName;
+        addons[addon].description = description;
+        addons[addon].icon = icon;
+        addons[addon].displays = addons[addon].displays or {};
+    else
+        addons[addon] = {
+            displayName = displayName,
+            description = description,
+            icon = icon,
+            displays = {}
+        };
+    end
+end
+
+function WeakAuras.RegisterDisplay(addon, data, force)
+    tinsert(from_files, {addon, data, force});
 end
 
 function WeakAuras.AddManyFromAddons(table)
@@ -2266,18 +2286,31 @@ function WeakAuras.AddManyFromAddons(table)
     end
 end
 
-function WeakAuras.AddFromAddon(addonName, data, force)
+function WeakAuras.AddFromAddon(addon, data, force)
     local id = data.id;
-    if(id) then
+    if(id and addons[addon]) then
+        addons[addon].displays[id] = data;
         if(db.registered[id]) then
             --This display was already registered
-        elseif(db.displays[id]) then
-            --ID collision
-            collisions[id] = data;
-        else
-            WeakAuras.Add(data);
+            --It is unnecessary to add it again
+        elseif(force and not db.registered[id] == false) then
+            if(db.displays[id]) then
+                --ID collision
+                collisions[id] = {addon, data};
+            else
+                db.registered[id] = addon;
+                WeakAuras.Add(data);
+            end
         end
     end
+end
+
+function WeakAuras.CollisionResolved(addon, data, force)
+    WeakAuras.AddFromAddon(addon, data, force);
+end
+
+function WeakAuras.IsDefinedByAddon(id)
+    return db.registered[id];
 end
 
 function WeakAuras.ResolveCollisions(onFinished)
@@ -2316,7 +2349,7 @@ function WeakAuras.ResolveCollisions(onFinished)
         end
         
         StaticPopupDialogs["WEAKAURAS_RESOLVE_COLLISIONS"] = {
-            text = L["Resolve collisions dialog"],
+            text = baseText,
             button1 = buttonText,
             OnAccept = function(self)
                 --Do the collision resolution
@@ -2332,7 +2365,7 @@ function WeakAuras.ResolveCollisions(onFinished)
                     end
                 end
                 
-                WeakAuras.Add(collisions[currentId]);
+                WeakAuras.CollisionResolved(collisions[currentId][1], collisions[currentId][2], true);
                 resolved[currentId] = newId;
                 numResolved = numResolved + 1;
                 
@@ -2353,6 +2386,7 @@ function WeakAuras.ResolveCollisions(onFinished)
                     self.editBox:SetScript("OnTextChanged", nil);
                     wipe(collisions);
                     if(onFinished) then
+                        print("Doing onFinished after collisions");
                         onFinished();
                     end
                 end
@@ -2381,6 +2415,7 @@ function WeakAuras.ResolveCollisions(onFinished)
         
         UpdateText(popup);
     elseif(onFinished) then
+        print("Doing onFinished cause no collisions");
         onFinished();
     end
 end
@@ -2528,14 +2563,15 @@ function WeakAuras.Modernize(data)
     end
 end
 
-function WeakAuras.SyncParentChildRelationships()
+function WeakAuras.SyncParentChildRelationships(silent)
     local childToParent = {};
     local parentToChild = {};
     for id, data in pairs(db.displays) do
         if(data.parent) then
             if(data.controlledChildren) then
-                
-            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
+                if not(silent) then
+                    print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
+                end
                 --A display cannot have both children and a parent
                 data.parent = nil;
             elseif(db.displays[data.parent] and db.displays[data.parent].controlledChildren) then
@@ -2543,7 +2579,9 @@ function WeakAuras.SyncParentChildRelationships()
                 parentToChild[data.parent] = parentToChild[data.parent] or {};
                 parentToChild[data.parent][id] = true;
             else
-                print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
+                if not(silent) then
+                    print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
+                end
                 data.parent = nil;
             end
         end
@@ -2553,7 +2591,9 @@ function WeakAuras.SyncParentChildRelationships()
         if(data.controlledChildren) then
             for index, childId in pairs(data.controlledChildren) do
                 if not(childToParent[childId] and childToParent[childId] == id) then
-                    print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "thinks it controls", childId, "but does not");
+                    if not(silent) then
+                        print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "thinks it controls", childId, "but does not");
+                    end
                     tremove(data.controlledChildren, index);
                 end
             end
@@ -2561,7 +2601,9 @@ function WeakAuras.SyncParentChildRelationships()
             if(parentToChild[id]) then
                 for childId, _ in pairs(parentToChild[id]) do
                     if not(tContains(data.controlledChildren, childId)) then
-                        print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
+                        if not(silent) then
+                            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
+                        end
                         tinsert(data.controlledChildren, childId);
                     end
                 end
@@ -4176,3 +4218,101 @@ function WeakAuras.CombatEventWarning(silentIfNone)
         print("You have no displays with Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events.");
     end
 end
+
+WeakAuras.RegisterAddon("test", "New Addon", "this is the description for the new addon");
+WeakAuras.RegisterDisplay("test", {
+    ["outline"] = true,
+    ["fontSize"] = 200,
+    ["color"] = {
+        0.1254901960784314, -- [1]
+        1, -- [2]
+        0, -- [3]
+        1, -- [4]
+    },
+    ["displayText"] = "NEW DISPLAY",
+    ["yOffset"] = 0,
+    ["regionType"] = "text",
+    ["actions"] = {
+        ["start"] = {
+        },
+        ["finish"] = {
+        },
+    },
+    ["justify"] = "RIGHT",
+    ["selfPoint"] = "BOTTOM",
+    ["trigger"] = {
+        ["type"] = "custom",
+        ["subeventSuffix"] = "_CAST_START",
+        ["duration"] = "2",
+        ["event"] = "Chat Message",
+        ["subeventPrefix"] = "SPELL",
+        ["custom_hide"] = "timed",
+        ["custom"] = "function(event, _, icon)\n  if(icon:find(\"herb\")) then\n    return true\n  end\nend",
+        ["events"] = "ITEM_PUSH",
+        ["custom_type"] = "event",
+        ["unit"] = "player",
+        ["names"] = {
+        },
+        ["use_messageType"] = false,
+        ["debuffType"] = "HELPFUL",
+    },
+    ["xOffset"] = 0.000210085599633203,
+    ["frameStrata"] = 1,
+    ["width"] = 930.4222016163872,
+    ["untrigger"] = {
+    },
+    ["font"] = "Friz Quadrata TT",
+    ["anchorPoint"] = "CENTER",
+    ["id"] = "NEW DISPLAY",
+    ["height"] = 200.0000027354896,
+    ["animation"] = {
+        ["start"] = {
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+        },
+        ["main"] = {
+            ["colorR"] = 1,
+            ["duration_type"] = "seconds",
+            ["alphaType"] = "straight",
+            ["colorB"] = 0.04313725490196078,
+            ["colorG"] = 0,
+            ["alphaFunc"] = "return function(progress, start, delta)\n    return start + (progress * delta)\nend",
+            ["use_translate"] = true,
+            ["use_alpha"] = true,
+            ["type"] = "custom",
+            ["duration"] = "2",
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY)\n    return startX + (progress * deltaX), startY + (progress * deltaY)\nend\n",
+            ["scaley"] = 1,
+            ["alpha"] = 0,
+            ["colorA"] = 1,
+            ["y"] = 200,
+            ["x"] = 0,
+            ["use_color"] = true,
+            ["translateType"] = "straightTranslate",
+            ["colorFunc"] = "return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)\n    return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))\nend\n",
+            ["rotate"] = 0,
+            ["colorType"] = "straightColor",
+            ["scalex"] = 1,
+        },
+        ["finish"] = {
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+        },
+    },
+    ["load"] = {
+        ["class"] = {
+            ["multi"] = {
+            },
+        },
+        ["spec"] = {
+            ["multi"] = {
+            },
+        },
+        ["size"] = {
+            ["multi"] = {
+            },
+        },
+    },
+    ["desc"] = "This display displays the word 'HERBLER' in the largest and most noticeable manner possible whenever you obtain an herb. Why 'HERBLER'? It's a mystery...",
+}
+);

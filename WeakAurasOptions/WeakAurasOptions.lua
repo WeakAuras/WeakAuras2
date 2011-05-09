@@ -1086,11 +1086,11 @@ function WeakAuras.OptionsFrame()
     end
 end
 
-function WeakAuras.ToggleOptions(forceCacheReset)
+function WeakAuras.ToggleOptions(msg)
     if(frame and frame:IsVisible()) then
         WeakAuras.HideOptions();
     else
-        WeakAuras.ShowOptions(forceCacheReset);
+        WeakAuras.ShowOptions(msg);
     end
 end
 
@@ -1110,7 +1110,7 @@ function WeakAuras.UpdateCloneConfig(data)
     end
 end
 
-function WeakAuras.ShowOptions(forceCacheReset)
+function WeakAuras.ShowOptions(msg)
     WeakAuras.Pause();
     
     local firstLoad = true;
@@ -1119,7 +1119,7 @@ function WeakAuras.ShowOptions(forceCacheReset)
         frame = WeakAuras.CreateFrame();
         frame.buttonsScroll.frame:Show();
         WeakAuras.AddOption(tempGroup.id, tempGroup);
-        WeakAuras.LayoutDisplayButtons();
+        WeakAuras.LayoutDisplayButtons(msg);
     else
         firstLoad = false;
     end
@@ -1345,10 +1345,13 @@ function WeakAuras.BuildOptions(list, callback)
     end);
 end
 
-function WeakAuras.LayoutDisplayButtons()
+function WeakAuras.LayoutDisplayButtons(msg)
     local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
     
     frame.buttonsScroll:AddChild(frame.newButton);
+    if(frame.addonsButton) then
+        frame.buttonsScroll:AddChild(frame.addonsButton);
+    end
     frame.buttonsScroll:AddChild(frame.loadedButton);
     local total = 0;
     for _,_ in pairs(db.displays) do
@@ -1376,7 +1379,7 @@ function WeakAuras.LayoutDisplayButtons()
             data = WeakAuras.GetData(id);
         end
         
-        WeakAuras.SortDisplayButtons();
+        WeakAuras.SortDisplayButtons(msg);
         
         if not(data) then
             for id, button in pairs(displayButtons) do
@@ -1411,7 +1414,7 @@ function WeakAuras.LayoutDisplayButtons()
                     dynFrame:SetScript("OnUpdate", nil);
                     frame.loadProgress:Hide();
                     
-                    WeakAuras.SortDisplayButtons();
+                    WeakAuras.SortDisplayButtons(msg);
                     frame.filterInput:Show();
                     frame.filterInputClear:Show();
                 end
@@ -7183,6 +7186,18 @@ function WeakAuras.CreateFrame()
     end);
     frame.newButton = newButton;
     
+    local numAddons = 0;
+    for addon, addonData in pairs(WeakAuras.addons) do
+        numAddons = numAddons + 1;
+    end
+    if(numAddons > 0) then
+        local addonsButton = AceGUI:Create("WeakAurasNewHeaderButton");
+        addonsButton:SetText(L["Addons"]);
+        addonsButton:SetDescription(L["Manage displays defined by Addons"]);
+        addonsButton:SetClick(function() frame:PickOption("Addons") end);
+        frame.addonsButton = addonsButton;
+    end
+    
     local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton");
     loadedButton:SetText(L["Loaded"]);
     loadedButton:Disable();
@@ -7288,6 +7303,9 @@ function WeakAuras.CreateFrame()
             button:ClearPick();
         end
         newButton:ClearPick();
+        if(frame.addonsButton) then
+            frame.addonsButton:ClearPick();
+        end
         loadedButton:ClearPick();
         unloadedButton:ClearPick();
         container:ReleaseChildren();
@@ -7368,8 +7386,18 @@ tXmdmY4fDE5]];
             importButton:SetDescription(L["Import a display from an encoded string"]);
             importButton:SetClick(WeakAuras.ImportFromString);
             containerScroll:AddChild(importButton);
+        elseif(option == "Addons") then
+            frame.addonsButton:Pick();
+            
+            local containerScroll = AceGUI:Create("ScrollFrame");
+            containerScroll:SetLayout("AbsoluteList");
+            container:SetLayout("fill");
+            container:AddChild(containerScroll);
+            
+            WeakAuras.CreateImportButtons();
+            WeakAuras.SortImportButtons(containerScroll);
         else
-            error("An options button other than New was selected... but there are no other options buttons!");
+            error("An options button other than New or Addons was selected... but there are no other options buttons!");
         end
     end
     
@@ -7538,6 +7566,9 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
     
     wipe(frame.buttonsScroll.children);
     tinsert(frame.buttonsScroll.children, frame.newButton);
+    if(frame.addonsButton) then
+        tinsert(frame.buttonsScroll.children, frame.addonsButton);
+    end
     tinsert(frame.buttonsScroll.children, frame.loadedButton);
     local numLoaded = 0;
     local to_sort = {};
@@ -7706,6 +7737,9 @@ function WeakAuras.AddDisplayButton(data)
     frame.buttonsScroll:AddChild(displayButtons[data.id]);
     WeakAuras.AddOption(data.id, data);
     WeakAuras.SetIconNames(data);
+    if(WeakAuras.regions[data.id] and WeakAuras.regions[data.id].region.SetStacks) then
+        WeakAuras.regions[data.id].region:SetStacks(1);
+    end
 end
 
 function WeakAuras.EnsureDisplayButton(data)
@@ -7949,7 +7983,6 @@ end
 do
     local frameChooserFrame;
     local frameChooserBox;
-    local controlsTooltip;
     local oldFocus;
     local oldFocusName;
     
@@ -8022,5 +8055,261 @@ do
             frameChooserBox:Hide();
         end
         ResetCursor();
+    end
+end
+
+do
+    local importAddonButtons = {};
+    local importDisplayButtons = {};
+    
+    local collisions = WeakAuras.collisions;
+
+    function WeakAuras.CreateImportButtons()
+        wipe(importAddonButtons);
+        wipe(importDisplayButtons);
+        for addonName, addonData in pairs(WeakAuras.addons) do
+            local addonButton = AceGUI:Create("WeakAurasImportButton");
+            importAddonButtons[addonName] = addonButton;
+            addonButton:SetTitle(addonData.displayName);
+            addonButton:SetIcon(addonData.icon);
+            addonButton:SetDescription(addonData.description);
+            addonButton:SetClick(function()
+                if(addonButton.checkbox:GetChecked()) then
+                    for id, data in pairs(addonData.displays) do
+                        local childButton = importDisplayButtons[id];
+                        childButton.checkbox:SetChecked(true);
+                        WeakAuras.EnableAddonDisplay(id);
+                    end
+                else
+                    for id, data in pairs(addonData.displays) do
+                        local childButton = importDisplayButtons[id];
+                        childButton.checkbox:SetChecked(false);
+                        WeakAuras.DisableAddonDisplay(id);
+                    end
+                end
+                WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
+            end);
+            
+            local function UpdateAddonChecked()
+                local shouldBeChecked = true;
+                for id, data in pairs(addonData.displays) do
+                    if not(WeakAuras.IsDefinedByAddon(id)) then
+                        shouldBeChecked = false;
+                        break;
+                    end
+                end
+                addonButton.checkbox:SetChecked(shouldBeChecked);
+            end
+            
+            local numAddonDisplays = 0;
+            for id, data in pairs(addonData.displays) do
+                if(data.controlledChildren) then
+                    numAddonDisplays = numAddonDisplays + 1;
+                    local groupButton = AceGUI:Create("WeakAurasImportButton");
+                    importDisplaysButtons[id] = groupButton;
+                    
+                    groupButton:SetTitle(id);
+                    groupButton:SetDescription(data.desc);
+                    
+                    local numGroupDisplays = 0;
+                    
+                    local function UpdateGroupChecked()
+                        local shouldBeChecked = true;
+                        for index, childId in pairs(data.controlledChildren) do
+                            if not(WeakAuras.IsDefinedByAddon(childId)) then
+                                shouldBeChecked = false;
+                                break;
+                            end
+                        end
+                        groupButton.checkbox:SetChecked(shouldBeChecked);
+                        UpdateAddonChecked();
+                    end
+                    
+                    for index, childId in pairs(data.controlledChildren) do
+                        numGroupDisplays = numGroupDisplays + 1;
+                        numAddonDisplays = numAddonDisplays + 1;
+                        local childButton = AceGUI:Create("WeakAurasImportButton");
+                        importDisplayButtons[childId] = childButton;
+                        
+                        local data = WeakAuras.addons[addon].displays[childId];
+                        
+                        childButton:SetTitle(childId);
+                        childButton:SetDescription(data.desc);
+                        childButton:SetExpandVisible(false);
+                        childButton:SetLevel(3);
+                        
+                        childButton:SetClick(function()
+                            if(childButton.checkbox:GetChecked()) then
+                                WeakAuras.EnableAddonDisplay(childId);
+                            else
+                                WeakAuras.DisableAddonDisplay(childId);
+                            end
+                            WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
+                            UpdateGroupChecked();
+                        end);
+                        childButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(childId));
+                    end
+                    
+                    groupButton:SetClick(function()
+                        if(groupButton.checkbox:GetChecked()) then
+                            for index, childId in pairs(data.controlledChildren) do
+                                local childButton = importDisplayButtons[childId];
+                                childButton.checkbox:SetChecked(true);
+                                WeakAuras.EnableAddonDisplay(childId);
+                            end
+                        else
+                            for index, childId in pairs(data.controlledChildren) do
+                                local childButton = importDisplayButtons[childId];
+                                childButton.checkbox:SetChecked(false);
+                                WeakAuras.DisableAddonDisplay(childId);
+                            end
+                        end
+                        WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
+                        UpdateAddonChecked();
+                    end);
+                    groupButton:SetExpandVisible(true);
+                    if(numGroupDisplays > 0) then
+                        groupButton:EnableExpand();
+                        groupButton:SetOnExpandCollapse(WeakAuras.SortImportButtons);
+                    end
+                    groupButton:SetLevel(2);
+                    UpdateGroupChecked();
+                elseif not(importDisplayButtons[id]) then
+                    numAddonDisplays = numAddonDisplays + 1;
+                    local displayButton = AceGUI:Create("WeakAurasImportButton");
+                    importDisplayButtons[id] = displayButton;
+                    
+                    displayButton:SetTitle(id);
+                    displayButton:SetDescription(data.desc);
+                    displayButton:SetExpandVisible(false);
+                    displayButton:SetLevel(2);
+                    
+                    displayButton:SetClick(function()
+                        if(displayButton.checkbox:GetChecked()) then
+                            WeakAuras.EnableAddonDisplay(id);
+                        else
+                            WeakAuras.DisableAddonDisplay(id);
+                        end
+                        WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
+                        UpdateAddonChecked();
+                    end);
+                    displayButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(id));
+                end
+            end
+            
+            addonButton:SetExpandVisible(true);
+            if(numAddonDisplays > 0) then
+                addonButton:EnableExpand();
+                addonButton:SetOnExpandCollapse(WeakAuras.SortImportButtons);
+            end
+            addonButton:SetLevel(1);
+            UpdateAddonChecked();
+        end
+    end
+    
+    local container = nil;
+    function WeakAuras.SortImportButtons(newContainer)
+        container = newContainer or container;
+        wipe(container.children);
+        local toSort = {};
+        for addon, addonData in pairs(WeakAuras.addons) do
+            container:AddChild(importAddonButtons[addon]);
+            wipe(toSort);
+            for id, data in pairs(addonData.displays) do
+                if not(data.parent) then
+                    tinsert(toSort, id);
+                end
+            end
+            table.sort(toSort, function(a, b) return a < b end);
+            for index, id in ipairs(toSort) do
+                if(importAddonButtons[addon]:GetExpanded()) then
+                    importDisplayButtons[id].frame:Show();
+                    container:AddChild(importDisplayButtons[id]);
+                else
+                    importDisplayButtons[id].frame:Hide();
+                end
+                if(addonData.displays[id].controlledChildren) then
+                    for childIndex, childId in pairs(addonData.displays[id].controlledChildren) do
+                        if(importAddonButtons[addon]:GetExpanded() and importDisplayButtons[id]:GetExpanded()) then
+                            importDisplayButtons[childId].frame:Show();
+                            container:AddChild(importDisplayButtons[childId]);
+                        else
+                            importDisplayButtons[childId].frame:Hide();
+                        end
+                    end
+                end
+            end
+        end
+        
+        container:DoLayout();
+    end
+    
+    function WeakAuras.EnableAddonDisplay(id)
+        if not(db.registered[id]) then
+            local addon, data;
+            for addonName, addonData in pairs(WeakAuras.addons) do
+                if(addonData.displays[id]) then
+                    addon = addonName;
+                    data = addonData.displays[id];
+                    break;
+                end
+            end
+            
+            if(db.displays[id]) then
+                --ID collision
+                collisions[id] = {addon, data};
+            else
+                db.registered[id] = addon;
+                WeakAuras.Add(data);
+                WeakAuras.AddDisplayButton(data);
+            end
+        end
+    end
+    
+    --This function overrides the WeakAuras.CollisionResolved that is defined in WeakAuras.lua, ensuring that sidebar buttons are created properly after collision resolution
+    function WeakAuras.CollisionResolved(addon, data, force)
+        WeakAuras.EnableAddonDisplay(data.id);
+    end
+
+    function WeakAuras.DisableAddonDisplay(id)
+        db.registered[id] = false;
+        local data = WeakAuras.GetData(id);
+        if(data) then
+            local parentData;
+            if(data.parent) then
+                parentData = db.displays[data.parent];
+            end
+            
+            if(data.controlledChildren) then
+                for index, childId in pairs(data.controlledChildren) do
+                    local childButton = displayButtons[childId];
+                    if(childButton) then
+                        childButton:SetGroup();
+                    end
+                    local childData = db.displays[childId];
+                    if(childData) then
+                        childData.parent = nil;
+                    end
+                end
+            end
+            
+            WeakAuras.Delete(data);
+            frame.buttonsScroll:DeleteChild(displayButtons[id]);
+            thumbnails[id].region:Hide();
+            thumbnails[id] = nil;
+            displayButtons[id] = nil;
+            
+            if(parentData and parentData.controlledChildren) then
+                for index, childId in pairs(parentData.controlledChildren) do
+                    local childButton = displayButtons[childId];
+                    if(childButton) then
+                        childButton:SetGroupOrder(index, #parentData.controlledChildren);
+                    end
+                end
+                WeakAuras.Add(parentData);
+                WeakAuras.ReloadGroupRegionOptions(parentData);
+                WeakAuras.UpdateDisplayButton(parentData);
+            end
+        end
     end
 end

@@ -215,4 +215,5 @@ RegionTypes/model.lua -text
 /Transmission.lua -text
 WeakAurasModelPaths/ModelPaths.lua -text
 WeakAurasModelPaths/WeakAurasModelPaths.toc -text
+WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasImportButton.lua -text
 /icon.tga -text

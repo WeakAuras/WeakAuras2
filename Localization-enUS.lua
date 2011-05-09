@@ -1265,3 +1265,7 @@ You need to rename your displays to make room for the addon displays.
 
 Resolved: |cFFFF0000]]
 L["Next"] = "Next"
+
+--Added in r139
+L["Addons"] = "Addons"
+L["Manage displays defined by Addons"] = "Manage displays defined by Addons"
