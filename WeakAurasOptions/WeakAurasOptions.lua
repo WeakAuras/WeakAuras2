@@ -6626,6 +6626,32 @@ function WeakAuras.CreateFrame()
     end
     frame.buttonsScroll = buttonsScroll;
     
+    function buttonsScroll:IsChildInView(child)
+        if(child:GetParent() == buttonsScroll) then
+            if(child:IsVisible()) then
+                local _, _, _, _, childTop = region:GetPoint(1);
+                local childBottom = childTop + child:GetHeight();
+                local scrollTop, scrollBottom = self:GetScrollPos();
+                if(childTop < scrollTop) then
+                    return "above";
+                elseif(childBottom > scrollBottom) then
+                    return "below";
+                else
+                    return true;
+                end
+            else
+                return "hidden";
+            end
+        else
+            return nil;
+        end
+    end
+    
+    function buttonsScroll:GetScrollPos()
+        local status = self.status or self.localstatus;
+        return status.offset, status.offset + self.scrollframe:GetHeight();
+    end
+    
     function buttonsScroll:SetScrollPos(top, bottom)
         local status = self.status or self.localstatus;
         local viewheight = self.scrollframe:GetHeight();
@@ -7298,6 +7324,7 @@ function WeakAuras.CreateFrame()
     
     frame.ClearPicks = function(self, except)
         frame.pickedDisplay = nil;
+        frame.pickedOption = nil;
         wipe(tempGroup.controlledChildren);
         for id, button in pairs(displayButtons) do
             button:ClearPick();
@@ -7315,6 +7342,7 @@ function WeakAuras.CreateFrame()
     frame.PickOption = function(self, option)
         self:ClearPicks();
         self.moversizer:Hide();
+        self.pickedOption = option;
         if(option == "New") then
             newButton:Pick();
             

@@ -1,0 +1,14 @@
+## Interface: 40100
+## Title: WeakAuras Tutorials
+## Author: Mirrored
+## Version: @project-version@
+## Notes: Tutorials for WeakAuras
+## X-Author-Server: Dragonmaw US
+## X-Author-Faction: Horde
+## X-Email: mirror@uga.edu
+## X-Category: Interface Enhancements
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+
+TutorialCore.lua
