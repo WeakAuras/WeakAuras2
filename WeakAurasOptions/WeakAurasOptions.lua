@@ -1991,6 +1991,7 @@ function WeakAuras.AddOption(id, data)
                             data.actions.start.r = r;
                             data.actions.start.g = g;
                             data.actions.start.b = b;
+                            WeakAuras.Add(data);
                         end
                     },
                     start_message_dest = {
@@ -2033,7 +2034,7 @@ function WeakAuras.AddOption(id, data)
                         order = 8.5,
                         values = WeakAuras.sound_channel_types,
                         disabled = function() return not data.actions.start.do_sound end,
-                        get = function() return data.actions.start.sound_channel or "Master" end
+                        get = function() return data.actions.start.sound_channel or "SFX" end
                     },
                     start_sound_path = {
                         type = "input",
@@ -2139,6 +2140,20 @@ function WeakAuras.AddOption(id, data)
                         order = 23,
                         image = function() return "", 0, 0 end,
                         hidden = function() return not(data.actions.finish.message_type == "WHISPER" or data.actions.finish.message_type == "CHANNEL") end
+                    },
+                    finish_message_color = {
+                        type = "color",
+                        name = L["Color"],
+                        order = 23,
+                        hasAlpha = false,
+                        hidden = function() return not(data.actions.finish.message_type == "COMBAT" or data.actions.finish.message_type == "PRINT") end,
+                        get = function() return data.actions.finish.r or 1, data.actions.finish.g or 1, data.actions.finish.b or 1 end,
+                        set = function(info, r, g, b)
+                            data.actions.finish.r = r;
+                            data.actions.finish.g = g;
+                            data.actions.finish.b = b;
+                            WeakAuras.Add(data);
+                        end
                     },
                     finish_message_dest = {
                         type = "input",
