@@ -217,5 +217,6 @@ WeakAurasModelPaths/ModelPaths.lua -text
 WeakAurasModelPaths/WeakAurasModelPaths.toc -text
 WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasImportButton.lua -text
 WeakAurasTutorials/TutorialCore.lua -text
+WeakAurasTutorials/Tutorials/beginner.lua -text
 WeakAurasTutorials/WeakAurasTutorials.toc -text
 /icon.tga -text

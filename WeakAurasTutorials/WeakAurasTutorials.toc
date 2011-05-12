@@ -12,3 +12,5 @@
 ## Dependencies: WeakAuras, WeakAurasOptions
 
 TutorialCore.lua
+
+Tutorials\beginner.lua

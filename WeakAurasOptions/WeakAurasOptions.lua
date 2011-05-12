@@ -5738,6 +5738,56 @@ function WeakAuras.CreateFrame()
     minimizebg_r:SetWidth(10)
     minimizebg_r:SetHeight(40)
     
+    local _, _, _, enabled, loadable = GetAddOnInfo("WeakAurasTutorials");
+    if(enabled and loadable) then
+        local tutorial = CreateFrame("Frame", nil, frame);
+        tutorial:SetWidth(17)
+        tutorial:SetHeight(40)
+        tutorial:SetPoint("TOPRIGHT", -100, 12)
+        
+        local tutorialbg = tutorial:CreateTexture(nil, "BACKGROUND")
+        tutorialbg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+        tutorialbg:SetTexCoord(0.31, 0.67, 0, 0.63)
+        tutorialbg:SetAllPoints(tutorial);
+
+        local tutorialbutton = CreateFrame("BUTTON", nil, tutorial)
+        tutorialbutton:SetWidth(30);
+        tutorialbutton:SetHeight(30);
+        tutorialbutton:SetPoint("CENTER", tutorial, "CENTER", 1, -1);
+        tutorialbutton:SetNormalTexture("Interface\\GossipFrame\\DailyActiveQuestIcon");
+        tutorialbutton:GetNormalTexture():ClearAllPoints();
+        tutorialbutton:GetNormalTexture():SetSize(16, 16);
+        tutorialbutton:GetNormalTexture():SetPoint("center", -2, 0);
+        tutorialbutton:SetPushedTexture("Interface\\GossipFrame\\DailyActiveQuestIcon");
+        tutorialbutton:GetPushedTexture():ClearAllPoints();
+        tutorialbutton:GetPushedTexture():SetSize(16, 16);
+        tutorialbutton:GetPushedTexture():SetPoint("center", -2, -2);
+        tutorialbutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
+        tutorialbutton:SetScript("OnClick", function()
+            if not(IsAddOnLoaded("WeakAurasTutorials")) then
+                local loaded, reason = LoadAddOn("WeakAurasTutorials");
+                if not(loaded) then
+                    print("WeakAurasTutorials could not be loaded:", reason);
+                end
+            end
+            WeakAuras.ToggleTutorials();
+        end);
+        
+        local tutorialbg_l = tutorial:CreateTexture(nil, "BACKGROUND")
+        tutorialbg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+        tutorialbg_l:SetTexCoord(0.235, 0.275, 0, 0.63)
+        tutorialbg_l:SetPoint("RIGHT", tutorialbg, "LEFT")
+        tutorialbg_l:SetWidth(10)
+        tutorialbg_l:SetHeight(40)
+
+        local tutorialbg_r = tutorial:CreateTexture(nil, "BACKGROUND")
+        tutorialbg_r:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+        tutorialbg_r:SetTexCoord(0.72, 0.76, 0, 0.63)
+        tutorialbg_r:SetPoint("LEFT", tutorialbg, "RIGHT")
+        tutorialbg_r:SetWidth(10)
+        tutorialbg_r:SetHeight(40)
+    end
+    
     local container = AceGUI:Create("InlineGroup");
     container.frame:SetParent(frame);
     container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
@@ -6642,9 +6692,13 @@ function WeakAuras.CreateFrame()
     frame.buttonsScroll = buttonsScroll;
     
     function buttonsScroll:IsChildInView(child)
-        if(child:GetParent() == buttonsScroll) then
+        if not(child.GetParent) then
+            child = child.frame;
+        end
+        if(child:GetParent() == buttonsScroll.content) then
             if(child:IsVisible()) then
-                local _, _, _, _, childTop = region:GetPoint(1);
+                local _, _, _, _, childTop = child:GetPoint(1);
+                childTop = childTop * -1;
                 local childBottom = childTop + child:GetHeight();
                 local scrollTop, scrollBottom = self:GetScrollPos();
                 if(childTop < scrollTop) then

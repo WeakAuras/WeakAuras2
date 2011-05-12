@@ -1,3 +1,6 @@
+local AceGUI = LibStub("AceGUI-3.0");
+local L = WeakAuras.L;
+
 local tutFrame;
 local tutorials = WeakAuras.tutorials
 local optionsFrame;
@@ -5,86 +8,116 @@ if(WeakAuras.OptionsFrame) then
     optionsFrame = WeakAuras.OptionsFrame()
 end
 
+function WeakAuras.ToggleTutorials()
+    if(tutFrame and tutFrame:IsVisible()) then
+        WeakAuras.HideTutorials();
+    else
+        WeakAuras.ShowTutorials();
+    end
+end
+
+function WeakAuras.ShowTutorials()
+    if not(tutFrame) then
+        WeakAuras.CreateTutorialsFrame()
+    end
+    tutFrame:Show();
+    WeakAuras.ShowTutorialHome();
+end
+
+function WeakAuras.HideTutorials()
+    if(tutFrame) then
+        WeakAuras.ContinuouslyPointTutorialToPath(nil);
+        tutFrame:Hide();
+    end
+end
+
+function WeakAuras.TutorialsFrame()
+    return tutFrame;
+end
+
 do
     local elapsed = 0;
-    local anchorDelay = 1;
+    local anchorDelay = 0.1;
     local anchorPath;
     
-    local function ContinuosAnchorUpdate(frame, elaps)
+    local pointingFrame;
+    
+    local function ContinuousPointUpdate(frame, elaps)
         elapsed = elapsed + elaps;
         if(elapsed > anchorDelay) then
             elapsed = elapsed - anchorDelay;
             
-            WeakAuras.AnchorTutorialToPath(anchorPath);
+            WeakAuras.PointTutorialToPath(anchorPath);
         end
     end
 
-    function WeakAuras.ContinuouslyAnchorTutorialToPath(path);
+    function WeakAuras.ContinuouslyPointTutorialToPath(path)
         if(path) then
             anchorPath = path;
+            tutFrame.stepFrame:SetScript("OnUpdate", ContinuousPointUpdate);
         else
-            tutFrame:SetScript("OnUpdate", nil);
+            tutFrame.stepFrame:SetScript("OnUpdate", nil);
         end
     end
     
     local toSort = {};
-    function WeakAuras.AnchorTutorialToPath(path)
+    function WeakAuras.PointTutorialToPath(path)
         if(optionsFrame and optionsFrame:IsVisible()) then
             if(path[1] == "new") then
                 if(optionsFrame.pickedOption == "New") then
                     if(path[2]) then
                         for index, child in pairs(optionsFrame.container.children) do
                             if(child:GetName() == path[2]) then
-                                WeakAuras.AnchorTutorialToFrame(child);
+                                WeakAuras.PointTutorialToFrame(child);
                             end
                         end
                     else
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.container);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.container);
                     end
                 else
                     local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(optionsFrame.newButton);
                     if(sidebarVisible == true) then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.newButton);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.newButton);
                     elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
                     elseif(sidebarVisible == "hidden") then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
                     end
                 end
             elseif(path[1] == "addons") then
                 if(optionsFrame.pickedOption == "Addons") then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.container);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.container);
                 else
                     local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(optionsFrame.addonsButton);
                     if(sidebarVisible == true) then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.addonsButton);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.addonsButton);
                     elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
                     elseif(sidebarVisible == "hidden") then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll);
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
                     end
                 end
             elseif(path[1] == "loaded") then
                 local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(optionsFrame.loadedButton);
                 if(sidebarVisible == true) then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.loadedButton);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.loadedButton);
                 elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
                 elseif(sidebarVisible == "hidden") then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
                 end
             elseif(path[1] == "unloaded") then
                 local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(optionsFrameunloadedButton);
                 if(sidebarVisible == true) then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.unloadedButton);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.unloadedButton);
                 elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
                 elseif(sidebarVisible == "hidden") then
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll);
+                    WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
                 end
             elseif(path[1] == "display") then
                 local id;
-                if(path[2] ~= "") then
+                if(path[2] and path[2] ~= "") then
                     id = path[2];
                 elseif(optionsFrame.pickedDisplay) then
                     if(type(optionsFrame.pickedDisplay) == "table") then
@@ -94,95 +127,155 @@ do
                     end
                 end
                 
-                if(id) then
-                    local button = WeakAuras.displayButtons[id];
-                    local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(button);
+                local picked = type(optionsFrame.pickedDisplay) == "string" and optionsFrame.pickedDisplay;
+                
+                local button = WeakAuras.displayButtons[id];
+                local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(button);
+                
+                if(path[3] == "button") then
                     if(sidebarVisible == true) then
-                        if(step[3] == "button") then
-                            if(step[4]) then
-                                local buttonPiece = button[step[4]];
-                                WeakAuras.AnchorTutorialToFrame(buttonPiece);
-                            else
-                                WeakAuras.AnchorTutorialToFrame(button);
+                        if(path[4]) then
+                            local buttonPiece = button[path[4]];
+                            WeakAuras.PointTutorialToFrame(buttonPiece);
+                        else
+                            WeakAuras.PointTutorialToFrame(button);
+                        end
+                    elseif(sidebarVisible == "above" or sidebarVisible == "below") then
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                    elseif(sidebarVisible == "hidden") then
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
+                    end
+                elseif(path[3] == "options") then
+                    if(id == picked) then
+                        local optionsTable = WeakAuras.displayOptions[id];
+                        local tabName = optionsTable and optionsTable.args[path[4]] and optionsTable.args[path[4]].name
+                        local tabFrame;
+                        local tabSelected = false;
+                        for i,v in pairs(WeakAuras.OptionsFrame().container.children[1].tabs) do
+                            if(v:GetText() == tabName) then
+                                tabFrame = v;
+                                if(v.selected) then
+                                    tabSelected = true;
+                                end
                             end
-                        elseif(step[3] == "options") then
-                            if(step[4]) then
-                                local optionsTable = WeakAuras.displayOptions[id];
-                                local tabName = optionsTable and optionsTable.args[step[4]] and optionsTable.args[step[4]].name
-                                local tabFrame;
-                                local tabSelected = false;
-                                for i,v in pairs(WeakAuras.OptionsFrame().container.children[1].tabs) do
-                                    if(v:GetText() == tabName) then
-                                        tabFrame = v;
-                                        if(v.selected) then
-                                            tabSelected = true;
-                                        end
+                        end
+                        
+                        if(tabFrame and path[5]) then
+                            if not(tabSelected) then
+                                WeakAuras.PointTutorialToFrame(tabFrame);
+                            elseif(WeakAuras.OptionsFrame().container.children[1].children[1].children) then
+                                wipe(toSort);
+                                
+                                for optionName, optionTable in pairs(optionsTable.args[path[4]].args) do
+                                    tinsert(toSort, {name = optionName, table = optionTable});
+                                end
+                                table.sort(toSort, function(a,b) return a.table.order < b.table.order end);
+                                
+                                local optionIndex;
+                                for index, optionData in pairs(toSort) do
+                                    if(optionData.name == path[5]) then
+                                        optionIndex = index;
+                                        break;
                                     end
                                 end
                                 
-                                if(tabFrame and step[5]) then
-                                    if not(tabSelected) then
-                                        WeakAuras.AnchorTutorialToFrame(tabFrame);
-                                    elseif(WeakAuras.OptionsFrame().container.children[1].children[1].children) then
-                                        wipe(toSort);
-                                        
-                                        for optionName, optionTable in pairs(optionsTable.args[step[4]].args) do
-                                            tinsert(toSort, {name = optionName, table = optionTable});
-                                        end
-                                        table.sort(toSort, function(a,b) return a.table.order < b.table.order end);
-                                        
-                                        local optionIndex;
-                                        for index, optionData in pairs(toSort) do
-                                            if(optionData.name == step[5]) then
-                                                optionIndex = index;
-                                                break;
-                                            end
-                                        end
-                                        
-                                        if(optionIndex and WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]) then
-                                            WeakAuras.AnchorTutorialToFrame(WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]);
-                                        else
-                                            WeakAuras.AnchorTutorialToFrame(optionsFrame.container);
-                                        end
-                                    else
-                                        WeakAuras.AnchorTutorialToFrame(optionsFrame.container);
-                                    end
+                                if(optionIndex and WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]) then
+                                    WeakAuras.PointTutorialToFrame(WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]);
                                 else
-                                    WeakAuras.AnchorTutorialToFrame(optionsFrame.container);
+                                    WeakAuras.PointTutorialToFrame(optionsFrame.container);
                                 end
                             else
-                                WeakAuras.AnchorTutorialToFrame(optionsFrame.container);
+                                WeakAuras.PointTutorialToFrame(optionsFrame.container);
                             end
+                        else
+                            WeakAuras.PointTutorialToFrame(optionsFrame.container);
                         end
-                    elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
-                    elseif(sidebarVisible == "hidden") then
-                        WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll);
+                    else
+                        if(sidebarVisible == true) then
+                            WeakAuras.PointTutorialToFrame(button);
+                        elseif(sidebarVisible == "above" or sidebarVisible == "below") then
+                            WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                        elseif(sidebarVisible == "hidden") then
+                            WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
+                        end
                     end
                 else
-                    WeakAuras.AnchorTutorialToFrame(optionsFrame.buttonsScroll);
+                    if(sidebarVisible == true) then
+                        WeakAuras.PointTutorialToFrame(button);
+                    elseif(sidebarVisible == "above" or sidebarVisible == "below") then
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                    elseif(sidebarVisible == "hidden") then
+                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
+                    end
                 end
             end
         end
     end
     
-    function WeakAuras.AnchorTutorialToFrame(frame)
-        --get edges of options frame and moversizer, determine how tutorial frame best fits in between the two
-        --position tutorial frame accordingly
-        
-        WeakAuras.PointTutorialToFrame(frame);
-    end
-    
+    local pl, pb, pw, ph;
     function WeakAuras.PointTutorialToFrame(frame)
-        --calculate angle between closest edge of tutorial frame and anchor frame
+        if not(pl and pb and pw and ph) then
+            pl, pb, pw, ph = tutFrame.frame:GetRect();
+        end
+        if not(pointingFrame) then
+            pointingFrame = CreateFrame("frame", nil, tutFrame.stepFrame);
+            pointingFrame:SetFrameStrata("TOOLTIP");
+            pointingFrame:SetBackdrop({
+                edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                edgeSize = 16,
+                insets = {left = 0, right = 0, top = 0, bottom = 0}
+            });
+            pointingFrame:SetBackdropBorderColor(0.7, 0.7, 1);
+            function pointingFrame:Scale(scalex, scaley)
+                pointingFrame:SetWidth(pw * scalex);
+                pointingFrame:SetHeight(ph * scaley);
+            end
+        end
         
-        --appropriately remove border of tutorial frame and required angle
-        --add a border (a glow animation, posssibly?) around the anchor frame
-        --draw the "arrow" from the edge of the tutorial frame to the anchor frame
+        local width, height;
+        if not(frame.GetRect) then
+            frame = frame.frame;
+        end
+        if(frame.GetRect) then
+            local l, b, w, h = frame:GetRect();
+            l = l - 8;
+            b = b - 8
+            w = w + 16;
+            h = h + 16;
+        
+            if(l~=pl or b~=pb or w~=pw or h~=ph) then
+                WeakAuras.CancelAnimation(pointingFrame, true, true, true, true, true);
+                
+                pointingFrame:SetSize(w, h);
+                pointingFrame:SetPoint("center", frame, "center");
+                
+                local anim = {
+                    duration = 0.25,
+                    type = "custom",
+                    use_scale = true,
+                    scalex = pw/w,
+                    scaley = ph/h,
+                    use_translate = true,
+                    x = (pl+pw/2) - (l+w/2),
+                    y = (pb+ph/2) - (b+h/2)
+                };
+                WeakAuras.Animate("frame", "tutorial-pointingFrame", "start", anim, pointingFrame, true, function()
+                    WeakAuras.Animate("frame", "tutorial-pointingFrame", "main", {type="preset",preset="pulse"}, pointingFrame, false, nil, true);
+                end);
+                --WeakAuras.Animate("frame", "tutorial-pointingFrame", "main", {type="preset",preset="pulse"}, pointingFrame, false, nil, true);
+                pl, pb, pw, ph = l, b, w, h;
+                WeakAuras.UpdateAnimations();
+            end
+        else
+            WeakAuras.CancelAnimation(pointingFrame, true, true, true, true, true);
+            print("Invalid frame input");
+            pointingFrame:Hide();
+        end
     end
 end
 
-function WeakAuras.ShowTutorialPicker()
+function WeakAuras.ShowTutorialHome()
+    WeakAuras.ContinuouslyPointTutorialToPath(nil);
     tutFrame.stepFrame:Hide();
     tutFrame.homeFrame:Show();
 end
@@ -195,13 +288,27 @@ function WeakAuras.PlayTutorial(tutData, step)
     step = step or 1;
     local stepData = tutData.steps[step];
     
-    WeakAuras.ContinuouslyAnchorTutorialToPath(stepData.path);
+    stepFrame.title:SetText(stepData.title or "");
+    if(stepData.texture) then
+        stepFrame.texture:SetSize(stepData.texture.width, stepData.texture.height);
+        stepFrame.texture:SetTexture(stepData.texture.path);
+        stepFrame.texture:Show();
+    else
+        stepFrame.texture:SetSize(100, 1);
+        stepFrame.texture:Hide();
+    end
+    stepFrame.text:SetText(stepData.text or "");
+    stepFrame.scroll:RecalculateHeight()
+    
+    WeakAuras.ContinuouslyPointTutorialToPath(stepData.path);
     
     if(tutData.steps[step - 1]) then
         stepFrame.previous:Enable();
         stepFrame.previous:SetScript("OnClick", function()
             WeakAuras.PlayTutorial(tutData, step - 1);
         end);
+    else
+        stepFrame.previous:Disable();
     end
     
     if(tutData.steps[step + 1]) then
@@ -209,32 +316,124 @@ function WeakAuras.PlayTutorial(tutData, step)
         stepFrame.next:SetScript("OnClick", function()
             WeakAuras.PlayTutorial(tutData, step + 1);
         end);
+    else
+        stepFrame.next:Disable();
     end
 end
 
 function WeakAuras.CreateTutorialsFrame()
-    tutFrame = CreateFrame("frame");
-    --Init with yellow border stuff
+    tutFrame = AceGUI:Create("Frame");
+    tutFrame:SetTitle(L["WeakAuras Tutorials"]);
+    tutFrame:SetWidth(400);
+    tutFrame:SetHeight(400);
     
-    --Text area
-    --Texture area?
-    --Maybe just a configurable region?
-    
-    local stepFrame = CreateFrame("frame", nil, tutFrame);
+    local stepFrame = CreateFrame("frame", nil, tutFrame.frame);
     tutFrame.stepFrame = stepFrame;
-    --Next button
-    --Previous button
-    --Home button
+    stepFrame:SetAllPoints(tutFrame.frame);
+    
+    local stepFrameContent = AceGUI:Create("InlineGroup");
+    stepFrame.content = stepFrameContent;
+    stepFrameContent.frame:SetParent(stepFrame);
+    stepFrameContent.frame:SetPoint("top", stepFrame, "top", 0, -10);
+    stepFrameContent.frame:SetPoint("left", stepFrame, "left", 17, 0);
+    stepFrameContent.frame:SetPoint("right", stepFrame, "right", -17, 0);
+    stepFrameContent.frame:SetPoint("bottom", stepFrame, "bottom", 0, 67);
+    stepFrameContent:SetLayout("fill");
+    
+    local stepFrameScroll = AceGUI:Create("ScrollFrame");
+    stepFrame.scroll = stepFrameScroll;
+    stepFrameContent:AddChild(stepFrameScroll);
+    stepFrameScroll:SetLayout("fill");
+    
+    local stepTitle = stepFrameScroll.content:CreateFontString(nil, "OVERLAY", "GameFontHighlightHuge");
+    stepFrame.title = stepTitle;
+    stepTitle:SetJustifyH("LEFT");
+    stepTitle:SetPoint("TOPLEFT", stepFrameScroll.content, "TOPLEFT", 40, -5);
+    
+    local stepTexture = stepFrameScroll.content:CreateTexture(nil, "OVERLAY");
+    stepFrame.texture = stepTexture;
+    stepTexture:SetWidth(100);
+    stepTexture:SetHeight(1);
+    stepTexture:SetPoint("TOP", stepFrameScroll.content, "TOP", 0, -35);
+    stepTexture:Hide();
+    
+    local stepText = stepFrameScroll.content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    stepFrame.text = stepText;
+    stepText:SetJustifyH("LEFT");
+    stepText:SetJustifyV("TOP");
+    stepText:SetWordWrap(true);
+    stepText:SetPoint("left", stepFrameScroll.content, "left", 20, 0);
+    stepText:SetPoint("top", stepTexture, "bottom", 0, -20);
+    --stepText:SetPoint("right", stepFrameScroll.content, "right", -30);
+    stepText:SetWidth(250);
+    stepFrameScroll.content:SetScript("OnUpdate", function()
+        stepText:SetWidth(stepFrameScroll.content:GetWidth() - 40);
+    end);
+    
+    function stepFrameScroll.RecalculateHeight()
+        local height = 50 + stepTexture:GetHeight() + stepText:GetHeight();
+        stepFrameScroll.content:SetHeight(height);
+        stepFrameScroll:FixScroll();
+    end
+    
+    local stepFrameNext = CreateFrame("Button", nil, stepFrame, "UIPanelButtonTemplate");
+    stepFrame.next = stepFrameNext;
+    stepFrameNext:SetPoint("BOTTOMRIGHT", -27, 44);
+    stepFrameNext:SetHeight(20);
+    stepFrameNext:SetWidth(100);
+    stepFrameNext:SetText(L["Next"]);
+        
+    local stepFrameHome = CreateFrame("Button", nil, stepFrame, "UIPanelButtonTemplate");
+    stepFrame.home = stepFrameHome;
+    stepFrameHome:SetPoint("BOTTOM", 0, 44);
+    stepFrameHome:SetHeight(20);
+    stepFrameHome:SetWidth(100);
+    stepFrameHome:SetText(L["Home"]);
+    stepFrameHome:SetScript("OnClick", WeakAuras.ShowTutorialHome);
+    
+    local stepFramePrevious = CreateFrame("Button", nil, stepFrame, "UIPanelButtonTemplate");
+    stepFrame.previous = stepFramePrevious;
+    stepFramePrevious:SetPoint("BOTTOMLEFT", 27, 44);
+    stepFramePrevious:SetHeight(20);
+    stepFramePrevious:SetWidth(100);
+    stepFramePrevious:SetText(L["Previous"]);
+    
     stepFrame:Hide();
     
-    local homeFrame = CreateFrame("frame", nil, tutFrame);
+    local homeFrame = CreateFrame("frame", nil, tutFrame.frame);
     tutFrame.homeFrame = homeFrame;
+    homeFrame:SetAllPoints(tutFrame.frame);
+    
+    local homeFrameContent = AceGUI:Create("InlineGroup");
+    homeFrame.content = homeFrameContent;
+    homeFrameContent.frame:SetParent(homeFrame);
+    homeFrameContent.frame:SetPoint("top", homeFrame, "top", 0, -10);
+    homeFrameContent.frame:SetPoint("left", homeFrame, "left", 17, 0);
+    homeFrameContent.frame:SetPoint("right", homeFrame, "right", -17, 0);
+    homeFrameContent.frame:SetPoint("bottom", homeFrame, "bottom", 0, 37);
+    homeFrameContent:SetLayout("fill");
+    
+    local homeFrameScroll = AceGUI:Create("ScrollFrame");
+    homeFrame.scroll = homeFrameScroll;
+    homeFrameContent:AddChild(homeFrameScroll);
+    homeFrameScroll:SetLayout("AbsoluteList");
+    
     for tutName, tutData in pairs(tutorials) do
-        --make an entry for this tutorial
-        --sections?
-        --expand/collapse?
-        --new AceGUI widget?
+        local tutButton = AceGUI:Create("WeakAurasNewButton");
+        tutButton:SetTitle(tutData.displayName);
+        tutButton:SetDescription(tutData.description);
+        if(type(tutData.icon) == "string") then
+            tutButton:SetIcon(tutData.icon);
+        elseif(type(tutData.icon) == "function") then
+            tutButton:SetIcon(tutData.icon());
+        end
         
-        --OnClick, WeakAuras.PlayTutorial(tutData)
+        tutButton:SetClick(function()
+            WeakAuras.PlayTutorial(tutData);
+        end);
+        
+        homeFrameScroll:AddChild(tutButton);
     end
+    
+    homeFrameScroll:DoLayout();
 end

@@ -30,6 +30,9 @@ local registeredFromAddons;
 WeakAuras.addons = {};
 local addons = WeakAuras.addons;
 
+WeakAuras.tutorials = {};
+local tutorials = WeakAuras.tutorials;
+
 WeakAuras.collisions = {};
 local collisions = WeakAuras.collisions;
 
@@ -2386,7 +2389,6 @@ function WeakAuras.ResolveCollisions(onFinished)
                     self.editBox:SetScript("OnTextChanged", nil);
                     wipe(collisions);
                     if(onFinished) then
-                        print("Doing onFinished after collisions");
                         onFinished();
                     end
                 end
@@ -2415,7 +2417,6 @@ function WeakAuras.ResolveCollisions(onFinished)
         
         UpdateText(popup);
     elseif(onFinished) then
-        print("Doing onFinished cause no collisions");
         onFinished();
     end
 end
@@ -4217,6 +4218,15 @@ function WeakAuras.CombatEventWarning(silentIfNone)
     elseif not(silentIfNone) then
         print("You have no displays with Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events.");
     end
+end
+
+function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps)
+    tutorials[name] = {
+        displayName = displayName,
+        description = description,
+        icon = icon,
+        steps = steps
+    };
 end
 
 WeakAuras.RegisterAddon("test", "New Addon", "this is the description for the new addon");

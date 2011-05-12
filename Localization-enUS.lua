@@ -1269,3 +1269,8 @@ L["Next"] = "Next"
 --Added in r139
 L["Addons"] = "Addons"
 L["Manage displays defined by Addons"] = "Manage displays defined by Addons"
+
+--Added in r142
+L["WeakAuras Tutorials"] = "WeakAuras Tutorials"
+L["Previous"] = "Previous"
+L["Home"] = "Home"
