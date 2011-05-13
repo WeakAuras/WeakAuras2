@@ -351,6 +351,12 @@ AceGUI:RegisterLayout("AbsoluteList", function(content, children)
     end
 end);
 
+--Builds a cache of name/icon pairs from existing spell data
+--Why? Because if you call GetSpellInfo with a spell name, it only works if the spell is an actual castable ability,
+--but if you call it with a spell id, you can get buffs, talents, etc. This is useful for displaying faux aura information
+--for displays that are not actually connected to auras (for non-automatic icon displays with predefined icons)
+--
+--This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function WeakAuras.CreateIconCache(callback)
     local cacheFrame = CreateFrame("Frame");
     local id = 1;
@@ -997,13 +1003,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
         odb = WeakAurasOptionsSaved;
         
-        --Builds a cache of name/icon pairs from existing spell data
-        --Why? Because if you call GetSpellInfo with a spell name, it only works if the spell is an actual castable ability,
-        --but if you call it with a spell id, you can get buffs, talents, etc. This is useful for displaying faux aura information
-        --for displays that are not actually connected to auras (for non-automatic icon displays with predefined icons)
-        --Also builds a hash where icon keys return tables of all spell names that use that icon
-        --
-        --This is a very slow operation, so it's only done once, and the result is subsequently saved
         odb.iconCache = odb.iconCache or {};
         iconCache = odb.iconCache;
         odb.idCache = odb.idCache or {};
@@ -1130,7 +1129,7 @@ function WeakAuras.ShowOptions(msg)
     frame:PickOption("New");
     if not(firstLoad) then
         for id, button in pairs(displayButtons) do
-            if(loaded[id]) then
+            if(loaded[id] ~= nil) then
                 button:PriorityShow(1);
             end
         end
@@ -1383,7 +1382,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
         
         if not(data) then
             for id, button in pairs(displayButtons) do
-                if(loaded[id]) then
+                if(loaded[id] ~= nil) then
                     button:PriorityShow(1);
                 end
             end
@@ -7310,13 +7309,13 @@ function WeakAuras.CreateFrame()
     loadedButton:SetViewClick(function()
         if(loadedButton.view.func() == 2) then
             for id, child in pairs(displayButtons) do
-                if(loaded[id]) then
+                if(loaded[id] ~= nil) then
                     child:PriorityHide(2);
                 end
             end
         else
             for id, child in pairs(displayButtons) do
-                if(loaded[id]) then
+                if(loaded[id] ~= nil) then
                     child:PriorityShow(2);
                 end
             end
@@ -7325,7 +7324,7 @@ function WeakAuras.CreateFrame()
     loadedButton:SetViewTest(function()
         local none, all = true, true;
         for id, child in pairs(displayButtons) do
-            if(loaded[id]) then
+            if(loaded[id] ~= nil) then
                 if(child:GetVisibility() ~= 2) then
                     all = false;
                 end
@@ -7356,13 +7355,13 @@ function WeakAuras.CreateFrame()
     unloadedButton:SetViewClick(function()
         if(unloadedButton.view.func() == 2) then
             for id, child in pairs(displayButtons) do
-                if not(loaded[id]) then
+                if(loaded[id] == nil) then
                     child:PriorityHide(2);
                 end
             end
         else
             for id, child in pairs(displayButtons) do
-                if not(loaded[id]) then
+                if not(loaded[id] == nil) then
                     child:PriorityShow(2);
                 end
             end
@@ -7371,7 +7370,7 @@ function WeakAuras.CreateFrame()
     unloadedButton:SetViewTest(function()
         local none, all = true, true;
         for id, child in pairs(displayButtons) do
-            if not(loaded[id]) then
+            if(loaded[id] == nil) then
                 if(child:GetVisibility() ~= 2) then
                     all = false;
                 end
@@ -7705,8 +7704,12 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
                     tinsert(children[group], child);
                 end
             else
-                if(loaded[id]) then
-                    child:EnableLoaded();
+                if(loaded[id] ~= nil) then
+                    if(loaded[id]) then
+                        child:EnableLoaded();
+                    else
+                        child:DisableLoaded();
+                    end
                     tinsert(to_sort, child);
                 end
             end
@@ -7761,7 +7764,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
                     tinsert(children[group], child);
                 end
             else
-                if not(loaded[id]) then
+                if(loaded[id] == nil) then
                     child:DisableLoaded();
                     tinsert(to_sort, child);
                 end

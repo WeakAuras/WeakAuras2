@@ -529,19 +529,23 @@ local methods = {
                 end
                 if(trigger) then
                     if(trigger.type == "aura") then
-                        for index, name in pairs(trigger.names) do
-                            local left = " ";
-                            if(index == 1) then
-                                if(#trigger.names > 0) then
-                                    if(#trigger.names > 1) then
-                                        left = L["Auras:"];
-                                    else
-                                        left = L["Aura:"];
+                        if(trigger.fullscan) then
+                            tinsert(namestable, {L["Aura:"], L["Full Scan"]});
+                        else
+                            for index, name in pairs(trigger.names) do
+                                local left = " ";
+                                if(index == 1) then
+                                    if(#trigger.names > 0) then
+                                        if(#trigger.names > 1) then
+                                            left = L["Auras:"];
+                                        else
+                                            left = L["Aura:"];
+                                        end
                                     end
                                 end
+                                local icon = WeakAurasOptionsSaved.iconCache[name] or "Interface\\Icons\\INV_Misc_QuestionMark";
+                                tinsert(namestable, {left, name, icon});
                             end
-                            local icon = WeakAurasOptionsSaved.iconCache[name] or "Interface\\Icons\\INV_Misc_QuestionMark";
-                            tinsert(namestable, {left, name, icon});
                         end
                     elseif(trigger.type == "event" or trigger.type == "status") then
                         if(trigger.type == "event") then
@@ -557,6 +561,9 @@ local methods = {
                     end
                 end
             end
+        end
+        if(WeakAuras.CanHaveClones(data)) then
+            tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
         end
         if(data.desc and data.desc ~= "") then
             tinsert(namestable, " ");

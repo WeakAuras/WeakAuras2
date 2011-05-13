@@ -28,13 +28,13 @@ local steps = {
     },
     {
         title = "Step 3",
-        text = "Now the tutorial is done. This step is a little more complicated because it tries to point to a specific display named \"Armor\", and if such a display exists, it also tries to point to a specific option in that display's configuration.\n\nThe part where it points to a specific option does not work very well, though.",
+        text = "Now the tutorial is done. This step is a little more complicated because it tries to point to a specific display named \"Armor\", and if such a display exists, it also tries to point to a specific option in that display's configuration.\n\nThe part where it points to a specific option now works as expected!.",
         path = {
             "display",
             "Armor",
             "options",
-            "region",
-            "width"
+            "trigger",
+            "Aura Name"
         }
     }
 }

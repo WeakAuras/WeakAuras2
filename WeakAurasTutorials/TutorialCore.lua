@@ -60,7 +60,6 @@ do
         end
     end
     
-    local toSort = {};
     function WeakAuras.PointTutorialToPath(path)
         if(optionsFrame and optionsFrame:IsVisible()) then
             if(path[1] == "new") then
@@ -164,16 +163,10 @@ do
                             if not(tabSelected) then
                                 WeakAuras.PointTutorialToFrame(tabFrame);
                             elseif(WeakAuras.OptionsFrame().container.children[1].children[1].children) then
-                                wipe(toSort);
-                                
-                                for optionName, optionTable in pairs(optionsTable.args[path[4]].args) do
-                                    tinsert(toSort, {name = optionName, table = optionTable});
-                                end
-                                table.sort(toSort, function(a,b) return a.table.order < b.table.order end);
-                                
                                 local optionIndex;
-                                for index, optionData in pairs(toSort) do
-                                    if(optionData.name == path[5]) then
+                                for index, child in ipairs(WeakAuras.OptionsFrame().container.children[1].children[1].children) do
+                                    local name = (child.text and child.text:GetText()) or (child.label and child.label:GetText())
+                                    if(name == (L[path[5]] or path[5])) then
                                         optionIndex = index;
                                         break;
                                     end

@@ -1278,3 +1278,7 @@ L["Home"] = "Home"
 --Added in r143
 L["Player(s) Not Affected"] = "Player(s) Not Affected"
 L["Show players that are |cFFFF0000not affected"] = "Show players that are |cFFFF0000not affected"
+
+--Added in r144
+L["Full Scan"] = "Full Scan"
+L["Auto-cloning enabled"] = "Auto-cloning enabled"

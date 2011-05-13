@@ -1425,16 +1425,21 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
         elseif(event == "PLAYER_FOCUS_CHANGED") then
             WeakAuras.ScanAuras("focus");
         elseif(event == "UNIT_AURA") then
-            --This throttles aura scans to only happen at most once per frame
-            if(loaded_auras[arg1]) then
-                if not(aura_scan_cooldowns[arg1]) then
-                    aura_scan_cooldowns[arg1] = true;
-                    if not(checkingScanCooldowns) then
-                        checkingScanCooldowns = true;
-                        scanCooldownFrame:SetScript("OnUpdate", checkScanCooldownsFunc);
-                    end
-                end
-            elseif(loaded_auras["group"] and (arg1:sub(0, 4) == "raid" or arg1:sub(0, 5) == "party")) then
+            if(
+                loaded_auras[arg1]
+                or (
+                    loaded_auras["group"]
+                    and (
+                        arg1:sub(0, 4) == "raid"
+                        or arg1:sub(0, 5) == "party"
+                    )
+                )
+                or (
+                    loaded_auras["boss"]
+                    and arg1:sub(0,4) == "boss"
+                )
+            ) then
+                --This throttles aura scans to only happen at most once per frame per unit
                 if not(aura_scan_cooldowns[arg1]) then
                     aura_scan_cooldowns[arg1] = true;
                     if not(checkingScanCooldowns) then
@@ -1673,10 +1678,11 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
     end
     local changed = 0;
-    local shouldBeLoaded;
+    local shouldBeLoaded, couldBeLoaded;
     for id, triggers in pairs(auras) do
         local _, data = next(triggers);
-        shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, player, class, spec, playerLevel, zone, size, difficulty);
+        shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, player, class, spec, playerLevel, zone, size, difficulty);
+        couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, player, class, spec, playerLevel, zone, size, difficulty);
         if(shouldBeLoaded and not loaded[id]) then
             WeakAuras.LoadDisplay(id);
             changed = changed + 1;
@@ -1690,11 +1696,19 @@ function WeakAuras.ScanForLoads(self, event, arg1)
                 data.region:Collapse();
                 WeakAuras.HideAllClones(id);
             end
+        end
+        if(shouldBeLoaded) then
+            loaded[id] = true;
+        elseif(couldBeLoaded) then
+            loaded[id] = false;
+        else
+            loaded[id] = nil;
         end
     end
     for id, triggers in pairs(events) do
         local _, data = next(triggers);
         shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, player, class, spec, playerLevel, zone, size, difficulty);
+        couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, player, class, spec, playerLevel, zone, size, difficulty);
         if(shouldBeLoaded and not loaded[id]) then
             WeakAuras.LoadDisplay(id);
             changed = changed + 1;
@@ -1708,6 +1722,13 @@ function WeakAuras.ScanForLoads(self, event, arg1)
                 data.region:Collapse();
                 WeakAuras.HideAllClones(id);
             end
+        end
+        if(shouldBeLoaded) then
+            loaded[id] = true;
+        elseif(couldBeLoaded) then
+            loaded[id] = false;
+        else
+            loaded[id] = nil;
         end
     end
     for id, data in pairs(db.displays) do
@@ -1715,7 +1736,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             if(#data.controlledChildren > 0) then
                 local any_loaded;
                 for index, childId in pairs(data.controlledChildren) do
-                    if(loaded[childId]) then
+                    if(loaded[childId] ~= nil) then
                         any_loaded = true;
                     end
                 end
@@ -1764,7 +1785,7 @@ end
 
 do
     local function LoadAura(id, triggernum, data)
-        local unit = (data.unit == "multi" and data.name) or (data.unit == "member" and "group") or data.unit;
+        local unit = (data.unit == "multi" and data.name) or (data.unit == "member" and (data.specificUnit:sub(1,4) == "boss" and "boss" or "group")) or data.unit;
         loaded_auras[unit] = loaded_auras[unit] or {};
         loaded_auras[unit][id] = loaded_auras[unit][id] or {};
         loaded_auras[unit][id][triggernum] = data;
@@ -1786,8 +1807,6 @@ do
     end
     
     function WeakAuras.LoadDisplay(id)
-        loaded[id] = true;
-        
         if(auras[id]) then
             for triggernum, data in pairs(auras[id]) do
                 if(auras[id] and auras[id][triggernum]) then
@@ -1806,8 +1825,6 @@ do
     end
     
     function WeakAuras.UnloadDisplay(id)
-        loaded[id] = nil;
-        
         for unitname, auras in pairs(loaded_auras) do
             auras[id] = nil;
         end
