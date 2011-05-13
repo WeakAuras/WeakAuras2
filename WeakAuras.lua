@@ -326,10 +326,10 @@ do
     end
     
     function aura_cache.GetUnaffected(self, names)
-        local affected = self:GetAffected(name);
+        local affected = self:GetAffected(names);
         local ret = {};
         for playername, _ in pairs(self.players) do
-            if not(affected(playername)) then
+            if not(affected[playername]) then
                 ret[playername] = true;
             end
         end
@@ -2009,6 +2009,7 @@ function WeakAuras.ScanAuras(unit)
                                 if(data.hideAlone and not inGroup) then
                                     satisfies_count = false;
                                 end
+                                
                                 if(satisfies_count) then
                                     if(data.groupclone) then
                                         for playerName, _ in pairs(groupcloneToUpdate) do
@@ -2029,6 +2030,20 @@ function WeakAuras.ScanAuras(unit)
                                             for affected_name, _ in pairs(affected) do
                                                 local space = affected_name:find(" ");
                                                 name = name..(space and affected_name:sub(0, space - 1).."*" or affected_name)..", ";
+                                                num = num + 1;
+                                            end
+                                            if(num == 0) then
+                                                name = WeakAuras.L["None"];
+                                            else
+                                                name = name:sub(0, -3);
+                                            end
+                                        elseif(data.name_info == "nonplayers") then
+                                            local unaffected = aura_object:GetUnaffected(data.names);
+                                            local num = 0;
+                                            name = "";
+                                            for unaffected_name, _ in pairs(unaffected) do
+                                                local space = unaffected_name:find(" ");
+                                                name = name..(space and unaffected_name:sub(0, space - 1).."*" or unaffected_name)..", ";
                                                 num = num + 1;
                                             end
                                             if(num == 0) then
@@ -2096,6 +2111,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
                 region:SetDurationInfo(duration, expirationTime > 0 and expirationTime or math.huge);
             end
             --TODO: HOW DOES THIS WORK WITH CLONES??
+            --Answer: this provides duration info for progress-relative animations. It does not work correctly with clones (and it should)
             duration_cache:SetDurationInfo(id, duration, expirationTime);
             if(region.SetName) then
                 region:SetName(name);
@@ -2806,7 +2822,7 @@ function WeakAuras.pAdd(data)
                         specificUnit = trigger.unit == "member" and trigger.specificUnit,
                         useCount = trigger.useCount,
                         ownOnly = trigger.ownOnly,
-                        inverse = trigger.inverse,
+                        inverse = trigger.inverse and not (trigger.unit == "group" and not trigger.groupclone),
                         region = region,
                         numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
                         hideAlone = trigger.hideAlone,
@@ -3689,7 +3705,10 @@ function WeakAuras.CanHaveAuto(data)
     if(
         (
             data.trigger.type == "aura"
-            and not data.trigger.inverse
+            and (
+                not data.trigger.inverse
+                or data.trigger.unit == "group"
+            )
         )
         or (
             (

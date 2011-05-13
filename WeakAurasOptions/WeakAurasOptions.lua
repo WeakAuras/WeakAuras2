@@ -4316,7 +4316,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             type = "select",
             name = L["Name Info"],
             order = 47.3,
-            hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
             disabled = function() return not WeakAuras.CanShowNameInfo(data); end,
             get = function()
                 if(WeakAuras.CanShowNameInfo(data)) then
@@ -4331,7 +4331,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             type = "select",
             name = L["Stack Info"],
             order = 47.6,
-            hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+            hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
             disabled = function() return not WeakAuras.CanShowStackInfo(data); end,
             get = function()
                 if(WeakAuras.CanShowStackInfo(data)) then
@@ -4457,9 +4457,15 @@ function WeakAuras.ReloadTriggerOptions(data)
         inverse = {
             type = "toggle",
             name = L["Inverse"],
-            desc = L["Activate when the given aura(s) |cFFFF0000can't|r be found"],
+            desc = function()
+                if(trigger.unit == "group") then
+                    return L["Show players that are |cFFFF0000not affected"];
+                else
+                    return L["Activate when the given aura(s) |cFFFF0000can't|r be found"];
+                end
+            end,
             order = 75,
-            hidden = function() return not (trigger.type == "aura" and (not trigger.autoclone) and trigger.unit ~= "multi"); end
+            hidden = function() return not (trigger.type == "aura" and (not trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
         }
     };
     

@@ -963,7 +963,8 @@ WeakAuras.send_chat_message_types = {
 };
 WeakAuras.group_aura_name_info_types = {
     aura = L["Aura Name"],
-    players = L["Player(s) Affected"]
+    players = L["Player(s) Affected"],
+    nonplayers = L["Player(s) Not Affected"]
 };
 WeakAuras.group_aura_stack_info_types = {
     count = L["Number Affected"],

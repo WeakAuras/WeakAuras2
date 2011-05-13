@@ -1274,3 +1274,7 @@ L["Manage displays defined by Addons"] = "Manage displays defined by Addons"
 L["WeakAuras Tutorials"] = "WeakAuras Tutorials"
 L["Previous"] = "Previous"
 L["Home"] = "Home"
+
+--Added in r143
+L["Player(s) Not Affected"] = "Player(s) Not Affected"
+L["Show players that are |cFFFF0000not affected"] = "Show players that are |cFFFF0000not affected"
