@@ -2200,6 +2200,15 @@ function WeakAuras.Delete(data)
     
     WeakAuras.HideAllClones(id);
     
+    db.registered[id] = nil;
+    if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
+        local button = WeakAuras.importDisplayButtons[id];
+        button.checkbox:SetChecked(false);
+        if(button.updateChecked) then
+            button.updateChecked();
+        end
+    end
+    
     regions[id].region = nil;
     regions[id] = nil;
     auras[id] = nil;
@@ -4363,83 +4372,65 @@ end
 
 WeakAuras.RegisterAddon("test", "New Addon", "this is the description for the new addon");
 WeakAuras.RegisterDisplay("test", {
-    ["outline"] = true,
-    ["fontSize"] = 200,
-    ["color"] = {
-        0.1254901960784314, -- [1]
-        1, -- [2]
-        0, -- [3]
-        1, -- [4]
+    ["grow"] = "DOWN",
+    ["controlledChildren"] = {
+        [1] = "Armor",
+        [2] = "Armor Text",
     },
-    ["displayText"] = "NEW DISPLAY",
-    ["yOffset"] = 0,
-    ["regionType"] = "text",
+    ["animate"] = false,
+    ["xOffset"] = -7.0028533173172e-005,
+    ["border"] = "None",
+    ["untrigger"] = {
+    },
+    ["anchorPoint"] = "CENTER",
+    ["regionType"] = "dynamicgroup",
+    ["sort"] = "none",
+    ["expanded"] = true,
+    ["space"] = 2,
+    ["background"] = "None",
     ["actions"] = {
         ["start"] = {
         },
         ["finish"] = {
         },
     },
-    ["justify"] = "RIGHT",
-    ["selfPoint"] = "BOTTOM",
-    ["trigger"] = {
-        ["type"] = "custom",
-        ["subeventSuffix"] = "_CAST_START",
-        ["duration"] = "2",
-        ["event"] = "Chat Message",
-        ["subeventPrefix"] = "SPELL",
-        ["custom_hide"] = "timed",
-        ["custom"] = "function(event, _, icon)\n  if(icon:find(\"herb\")) then\n    return true\n  end\nend",
-        ["events"] = "ITEM_PUSH",
-        ["custom_type"] = "event",
-        ["unit"] = "player",
-        ["names"] = {
-        },
-        ["use_messageType"] = false,
-        ["debuffType"] = "HELPFUL",
-    },
-    ["xOffset"] = 0.000210085599633203,
-    ["frameStrata"] = 1,
-    ["width"] = 930.4222016163872,
-    ["untrigger"] = {
-    },
-    ["font"] = "Friz Quadrata TT",
-    ["anchorPoint"] = "CENTER",
-    ["id"] = "NEW DISPLAY",
-    ["height"] = 200.0000027354896,
+    ["constantFactor"] = "RADIUS",
+    ["selfPoint"] = "TOP",
+    ["borderOffset"] = 16,
+    ["id"] = "Armor group",
     ["animation"] = {
         ["start"] = {
             ["type"] = "none",
             ["duration_type"] = "seconds",
         },
         ["main"] = {
-            ["colorR"] = 1,
+            ["type"] = "none",
             ["duration_type"] = "seconds",
-            ["alphaType"] = "straight",
-            ["colorB"] = 0.04313725490196078,
-            ["colorG"] = 0,
-            ["alphaFunc"] = "return function(progress, start, delta)\n    return start + (progress * delta)\nend",
-            ["use_translate"] = true,
-            ["use_alpha"] = true,
-            ["type"] = "custom",
-            ["duration"] = "2",
-            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY)\n    return startX + (progress * deltaX), startY + (progress * deltaY)\nend\n",
-            ["scaley"] = 1,
-            ["alpha"] = 0,
-            ["colorA"] = 1,
-            ["y"] = 200,
-            ["x"] = 0,
-            ["use_color"] = true,
-            ["translateType"] = "straightTranslate",
-            ["colorFunc"] = "return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)\n    return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))\nend\n",
-            ["rotate"] = 0,
-            ["colorType"] = "straightColor",
-            ["scalex"] = 1,
         },
         ["finish"] = {
             ["type"] = "none",
             ["duration_type"] = "seconds",
         },
+    },
+    ["align"] = "CENTER",
+    ["trigger"] = {
+        ["type"] = "aura",
+        ["unit"] = "player",
+        ["subeventSuffix"] = "_CAST_START",
+        ["debuffType"] = "HELPFUL",
+        ["names"] = {
+        },
+        ["event"] = "Health",
+        ["subeventPrefix"] = "SPELL",
+    },
+    ["frameStrata"] = 1,
+    ["width"] = 153.59988445292,
+    ["rotation"] = 0,
+    ["backgroundInset"] = 0,
+    ["stagger"] = 0,
+    ["radius"] = 200,
+    ["height"] = 88.755563558382,
+    ["additional_triggers"] = {
     },
     ["load"] = {
         ["class"] = {
@@ -4455,6 +4446,376 @@ WeakAuras.RegisterDisplay("test", {
             },
         },
     },
-    ["desc"] = "This display displays the word 'HERBLER' in the largest and most noticeable manner possible whenever you obtain an herb. Why 'HERBLER'? It's a mystery...",
-}
-);
+    ["yOffset"] = 535,
+});
+WeakAuras.RegisterDisplay("test", {
+    ["fontSize"] = 12,
+    ["displayStacks"] = "%s",
+    ["xOffset"] = 2.3705358776213,
+    ["parent"] = "Armor group",
+    ["load"] = {
+        ["zone"] = {
+            ["multi"] = {
+            },
+        },
+        ["class"] = {
+            ["single"] = "MAGE",
+            ["multi"] = {
+                ["MAGE"] = true,
+            },
+        },
+        ["use_name"] = false,
+        ["name"] = {
+            ["single"] = "Mirrored",
+            ["multi"] = {
+            },
+        },
+        ["spec"] = {
+            ["single"] = 2,
+            ["multi"] = {
+                [2] = true,
+            },
+        },
+        ["difficulty"] = {
+            ["single"] = "heroic",
+            ["multi"] = {
+            },
+        },
+        ["use_difficulty"] = false,
+        ["use_class"] = true,
+        ["size"] = {
+            ["single"] = "ten",
+            ["multi"] = {
+            },
+        },
+    },
+    ["untrigger"] = {
+    },
+    ["yOffset"] = 374.51875810688,
+    ["regionType"] = "icon",
+    ["stacksPoint"] = "BOTTOMRIGHT",
+    ["color"] = {
+        [1] = 1,
+        [2] = 1,
+        [3] = 1,
+        [4] = 1,
+    },
+    ["actions"] = {
+        ["start"] = {
+            ["do_custom"] = true,
+            ["sound"] = "Interface\Addons\PowerAuras\Sounds\wilhelm.mp3",
+            ["custom"] = "",
+            ["do_sound"] = false,
+        },
+        ["finish"] = {
+            ["do_message"] = false,
+            ["custom"] = "if(WeakAuras.CurrentUnit) then\n  print(\"Hide\", WeakAuras.CurrentUnit)\nelse\n  print(\"Hide No unit\")\nend",
+            ["do_custom"] = false,
+        },
+    },
+    ["animation"] = {
+        ["start"] = {
+            ["colorR"] = 1,
+            ["duration"] = "0.5",
+            ["alphaType"] = "straight",
+            ["colorA"] = 1,
+            ["colorG"] = 1,
+            ["alphaFunc"] = "return function(progress, start, delta)\n    return start + (progress * delta)\nend",
+            ["use_translate"] = true,
+            ["use_alpha"] = true,
+            ["scaleType"] = "fauxspin",
+            ["colorB"] = 1,
+            ["translateType"] = "spiral",
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY)\n    local angle = progress * 2 * math.pi\n    return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))\nend\n",
+            ["scaley"] = 1,
+            ["alpha"] = 0,
+            ["scalex"] = 1,
+            ["y"] = 200,
+            ["x"] = -200,
+            ["type"] = "custom",
+            ["scaleFunc"] = "return function(progress, startX, startY, scaleX, scaleY)\n    local angle = progress * 2 * math.pi\n    return math.cos(angle) * scaleX, startY + (progress * (scaleY - startY))\nend\n",
+            ["preset"] = "spiral",
+            ["rotate"] = 0,
+            ["use_scale"] = true,
+            ["duration_type"] = "seconds",
+        },
+        ["main"] = {
+            ["scaleFunc"] = "return function(progress, startX, startY, scaleX, scaleY) local angle = (progress * 2 * math.pi) - (math.pi / 2) return startX + (((math.sin(angle) + 1)/2) * (scaleX - 1)), startY + (((math.sin(angle) + 1)/2) * (scaleY - 1)) end",
+            ["use_scale"] = false,
+            ["alphaType"] = "alphaPulse",
+            ["alphaFunc"] = "return function(progress, start, delta) local angle = (progress * 2 * math.pi) - (math.pi / 2) return start + (((math.sin(angle) + 1)/2) * delta) end",
+            ["use_translate"] = false,
+            ["use_alpha"] = true,
+            ["scaleType"] = "pulse",
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY) local angle = progress * 2 * math.pi return startX + (deltaX * math.cos(angle)), startY + (deltaY * math.sin(angle)) end",
+            ["preset"] = "spiralandpulse",
+            ["alpha"] = 0.5,
+            ["scaley"] = 1.2,
+            ["y"] = 100,
+            ["x"] = 100,
+            ["translateType"] = "circle",
+            ["duration"] = "2",
+            ["scalex"] = 1.2,
+            ["rotate"] = 0,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+        },
+        ["finish"] = {
+            ["colorR"] = 1,
+            ["duration"] = "0.5",
+            ["alphaType"] = "straight",
+            ["colorA"] = 1,
+            ["colorG"] = 1,
+            ["alphaFunc"] = "return function(progress, start, delta)\n    return start + (progress * delta)\nend",
+            ["use_translate"] = true,
+            ["use_alpha"] = true,
+            ["type"] = "custom",
+            ["colorB"] = 1,
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY)\n    local angle = progress * 2 * math.pi\n    return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))\nend\n",
+            ["scaley"] = 1,
+            ["alpha"] = 0,
+            ["scaleFunc"] = "return function(progress, startX, startY, scaleX, scaleY)\n    local angle = progress * 2 * math.pi\n    return math.cos(angle) * scaleX, startY + (progress * (scaleY - startY))\nend\n",
+            ["y"] = -200,
+            ["x"] = 200,
+            ["scalex"] = 1,
+            ["translateType"] = "spiral",
+            ["scaleType"] = "fauxspin",
+            ["rotate"] = 0,
+            ["use_scale"] = true,
+            ["duration_type"] = "seconds",
+        },
+    },
+    ["id"] = "Armor",
+    ["icon"] = true,
+    ["width"] = 63.995084872325,
+    ["stacksContainment"] = "INSIDE",
+    ["zoom"] = 0,
+    ["auto"] = true,
+    ["selfPoint"] = "CENTER",
+    ["additional_triggers"] = {
+        [1] = {
+            ["trigger"] = {
+                ["use_alive"] = true,
+                ["type"] = "status",
+                ["event"] = "Conditions",
+                ["unevent"] = "auto",
+            },
+            ["untrigger"] = {
+            },
+        },
+    },
+    ["alpha"] = 1,
+    ["frameStrata"] = 1,
+    ["stickyDuration"] = false,
+    ["trigger"] = {
+        ["type"] = "aura",
+        ["unevent"] = "auto",
+        ["custom_hide"] = "timed",
+        ["event"] = "Health",
+        ["subeventPrefix"] = "SPELL",
+        ["subeventSuffix"] = "_CAST_SUCCESS",
+        ["inverse"] = true,
+        ["name"] = "New",
+        ["subevent"] = "SPELL_CAST_SUCCESS",
+        ["use_unit"] = true,
+        ["unit"] = "player",
+        ["names"] = {
+            [1] = "Molten Armor",
+            [2] = "Mage Armor",
+            [3] = "Ice Armor",
+            [4] = "Frost Armor",
+        },
+        ["debuffType"] = "HELPFUL",
+    },
+    ["font"] = "Friz Quadrata TT",
+    ["inverse"] = true,
+    ["anchorPoint"] = "CENTER",
+    ["height"] = 64.000021883917,
+    ["displayIcon"] = "Interface\Icons\Spell_MageArmor",
+    ["cooldown"] = false,
+    ["textColor"] = {
+        [1] = 1,
+        [2] = 1,
+        [3] = 1,
+        [4] = 1,
+    },
+});
+WeakAuras.RegisterDisplay("test", {
+    ["outline"] = true,
+    ["fontSize"] = 24,
+    ["color"] = {
+        [1] = 0.63921568627451,
+        [2] = 1,
+        [3] = 0.94117647058824,
+        [4] = 1,
+    },
+    ["displayText"] = "No Armor",
+    ["yOffset"] = -93.160918525426,
+    ["regionType"] = "text",
+    ["actions"] = {
+        ["start"] = {
+            ["custom"] = "",
+            ["do_custom"] = true,
+            ["sound"] = "Interface\Addons\WeakAuras\PowerAurasMedia\Sounds\chant2.ogg",
+            ["do_sound"] = false,
+        },
+        ["finish"] = {
+            ["sound"] = "Interface\Addons\WeakAuras\PowerAurasMedia\Sounds\cookie.ogg",
+            ["do_message"] = false,
+            ["do_custom"] = false,
+            ["do_sound"] = false,
+        },
+    },
+    ["xOffset"] = 1.5808241086356,
+    ["justify"] = "CENTER",
+    ["animation"] = {
+        ["start"] = {
+            ["colorR"] = 1,
+            ["use_scale"] = false,
+            ["alphaType"] = "straight",
+            ["colorA"] = 1,
+            ["colorG"] = 1,
+            ["alphaFunc"] = "return function(progress, start, delta)\n    return start + (progress * delta)\nend",
+            ["use_translate"] = true,
+            ["use_alpha"] = true,
+            ["type"] = "custom",
+            ["colorB"] = 1,
+            ["scaleFunc"] = "return function(progress, startX, startY, scaleX, scaleY) local prog if(progress < 0.5) then prog = progress * 2 else prog = (1 - progress) * 2 end return startX + (prog * (scaleX - 1)), startY + (prog * (scaleY - 1)) end",
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY)\n    local angle = progress * 2 * math.pi\n    return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))\nend\n",
+            ["scaley"] = 3,
+            ["alpha"] = 0,
+            ["scalex"] = 5,
+            ["y"] = 200,
+            ["x"] = 200,
+            ["translateType"] = "spiral",
+            ["scaleType"] = "pulse",
+            ["preset"] = "spiral",
+            ["rotate"] = 0,
+            ["duration"] = "0.5",
+            ["duration_type"] = "seconds",
+        },
+        ["main"] = {
+            ["scaleFunc"] = "return function(progress, startX, startY, scaleX, scaleY) local angle = progress * 2 * math.pi return startX + (progress * (scaleX - startX)), math.abs(math.cos(angle) * scaleY) end",
+            ["use_scale"] = false,
+            ["alphaType"] = "alphaPulse",
+            ["alphaFunc"] = "return function(progress, start, delta) local angle = (progress * 2 * math.pi) - (math.pi / 2) return start + (((math.sin(angle) + 1)/2) * delta) end",
+            ["use_translate"] = false,
+            ["use_alpha"] = true,
+            ["scaleType"] = "fauxflip",
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY) local angle = progress * 2 * math.pi return startX + (deltaX * math.cos(angle)), startY + (deltaY * math.sin(angle)) end",
+            ["preset"] = "spiralandpulse",
+            ["alpha"] = 0.5,
+            ["scaley"] = 1,
+            ["y"] = 0,
+            ["x"] = -15,
+            ["translateType"] = "circle",
+            ["scalex"] = 1,
+            ["duration"] = "2",
+            ["rotate"] = 0,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+        },
+        ["finish"] = {
+            ["colorR"] = 1,
+            ["use_scale"] = true,
+            ["alphaType"] = "straight",
+            ["colorA"] = 1,
+            ["colorG"] = 1,
+            ["alphaFunc"] = "return function(progress, start, delta)\n    return start + (progress * delta)\nend",
+            ["use_translate"] = true,
+            ["use_alpha"] = true,
+            ["scaleType"] = "straightScale",
+            ["colorB"] = 1,
+            ["translateFunc"] = "return function(progress, startX, startY, deltaX, deltaY)\n    local angle = progress * 2 * math.pi\n    return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))\nend\n",
+            ["scaley"] = 1,
+            ["alpha"] = 0,
+            ["scaleFunc"] = "return function(progress, startX, startY, scaleX, scaleY)\n    return startX + (progress * (scaleX - startX)), startY + (progress * (scaleY - startY))\nend\n",
+            ["y"] = -200,
+            ["x"] = -200,
+            ["scalex"] = 1,
+            ["translateType"] = "spiral",
+            ["duration"] = "0.5",
+            ["rotate"] = 0,
+            ["type"] = "custom",
+            ["duration_type"] = "seconds",
+        },
+    },
+    ["id"] = "Armor Text",
+    ["untrigger"] = {
+    },
+    ["frameStrata"] = 1,
+    ["width"] = 153.59993697432,
+    ["trigger"] = {
+        ["type"] = "aura",
+        ["unevent"] = "auto",
+        ["custom_hide"] = "timed",
+        ["event"] = "Health",
+        ["subeventPrefix"] = "SPELL",
+        ["subeventSuffix"] = "_CAST_SUCCESS",
+        ["inverse"] = true,
+        ["name"] = "New",
+        ["use_unit"] = true,
+        ["names"] = {
+            [1] = "Molten Armor",
+            [2] = "Mage Armor",
+            [3] = "Ice Armor",
+            [4] = "Frost Armor",
+        },
+        ["unit"] = "player",
+        ["subevent"] = "SPELL_CAST_SUCCESS",
+        ["debuffType"] = "HELPFUL",
+    },
+    ["font"] = "Anime Ace",
+    ["selfPoint"] = "TOP",
+    ["anchorPoint"] = "TOP",
+    ["height"] = 22.755561780314,
+    ["additional_triggers"] = {
+        [1] = {
+            ["trigger"] = {
+                ["use_alive"] = true,
+                ["type"] = "status",
+                ["event"] = "Conditions",
+                ["unevent"] = "auto",
+            },
+            ["untrigger"] = {
+            },
+        },
+    },
+    ["load"] = {
+        ["zone"] = {
+            ["multi"] = {
+            },
+        },
+        ["class"] = {
+            ["single"] = "MAGE",
+            ["multi"] = {
+                ["MAGE"] = true,
+            },
+        },
+        ["use_name"] = false,
+        ["name"] = {
+            ["single"] = "Mirrored",
+            ["multi"] = {
+            },
+        },
+        ["spec"] = {
+            ["single"] = 2,
+            ["multi"] = {
+                [2] = true,
+            },
+        },
+        ["difficulty"] = {
+            ["single"] = "heroic",
+            ["multi"] = {
+            },
+        },
+        ["use_difficulty"] = false,
+        ["use_class"] = true,
+        ["size"] = {
+            ["single"] = "ten",
+            ["multi"] = {
+            },
+        },
+    },
+    ["parent"] = "Armor group",
+});

@@ -1287,3 +1287,7 @@ L["Auto-cloning enabled"] = "Auto-cloning enabled"
 L["Affected"] = "Affected"
 L["Missing"] = "Missing"
 L["Tooltip on Mouseover"] = "Tooltip on Mouseover"
+
+--Added in r146
+L["Addon"] = "Addon"
+L["Export to Lua table..."] = "Export to Lua table..."

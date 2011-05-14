@@ -1057,6 +1057,8 @@ function WeakAuras.DeleteOption(data)
         end
     end
     
+    WeakAuras.HideAllClones(id);
+    
     WeakAuras.Delete(data);
     frame:ClearPicks();
     frame.buttonsScroll:DeleteChild(displayButtons[id]);
@@ -6406,9 +6408,14 @@ function WeakAuras.CreateFrame()
         frame.buttonsContainer.frame:Hide();
         self.frame:Show();
         frame.window = "importexport";
-        if(mode == "export") then
+        if(mode == "export" or mode == "table") then
             if(id) then
-                local displayStr = WeakAuras.DisplayToString(id, true);
+                local displayStr;
+                if(mode == "export") then
+                    displayStr = WeakAuras.DisplayToString(id, true);
+                elseif(mode == "table") then
+                    displayStr = WeakAuras.DisplayToTableString(id);
+                end
                 importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
                 importexportbox.editBox:SetScript("OnChar", function() importexportbox:SetText(displayStr); importexportbox.editBox:HighlightText(); end);
                 importexportbox.editBox:SetScript("OnMouseUp", function() importexportbox.editBox:HighlightText(); end);
@@ -7636,6 +7643,10 @@ function WeakAuras.ExportToString(id)
     frame.importexport:Open("export", id);
 end
 
+function WeakAuras.ExportToTable(id)
+    frame.importexport:Open("table", id);
+end
+
 function WeakAuras.ImportFromString()
     frame.importexport:Open("import");
 end
@@ -8201,6 +8212,7 @@ end
 do
     local importAddonButtons = {};
     local importDisplayButtons = {};
+    WeakAuras.importDisplayButtons = importDisplayButtons;
     
     local collisions = WeakAuras.collisions;
 
@@ -8227,7 +8239,9 @@ do
                         WeakAuras.DisableAddonDisplay(id);
                     end
                 end
-                WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
+                WeakAuras.ResolveCollisions(function()
+                    WeakAuras.SortDisplayButtons()
+                end);
             end);
             
             local function UpdateAddonChecked()
@@ -8246,7 +8260,7 @@ do
                 if(data.controlledChildren) then
                     numAddonDisplays = numAddonDisplays + 1;
                     local groupButton = AceGUI:Create("WeakAurasImportButton");
-                    importDisplaysButtons[id] = groupButton;
+                    importDisplayButtons[id] = groupButton;
                     
                     groupButton:SetTitle(id);
                     groupButton:SetDescription(data.desc);
@@ -8271,7 +8285,7 @@ do
                         local childButton = AceGUI:Create("WeakAurasImportButton");
                         importDisplayButtons[childId] = childButton;
                         
-                        local data = WeakAuras.addons[addon].displays[childId];
+                        local data = WeakAuras.addons[addonName].displays[childId];
                         
                         childButton:SetTitle(childId);
                         childButton:SetDescription(data.desc);
@@ -8284,9 +8298,12 @@ do
                             else
                                 WeakAuras.DisableAddonDisplay(childId);
                             end
-                            WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
-                            UpdateGroupChecked();
+                            WeakAuras.ResolveCollisions(function()
+                                WeakAuras.SortDisplayButtons()
+                                UpdateGroupChecked();
+                            end);
                         end);
+                        childButton.updateChecked = UpdateGroupChecked;
                         childButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(childId));
                     end
                     
@@ -8304,9 +8321,12 @@ do
                                 WeakAuras.DisableAddonDisplay(childId);
                             end
                         end
-                        WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
-                        UpdateAddonChecked();
+                        WeakAuras.ResolveCollisions(function()
+                            WeakAuras.SortDisplayButtons()
+                            UpdateAddonChecked();
+                        end);
                     end);
+                    groupButton.updateChecked = UpdateAddonChecked;
                     groupButton:SetExpandVisible(true);
                     if(numGroupDisplays > 0) then
                         groupButton:EnableExpand();
@@ -8330,9 +8350,12 @@ do
                         else
                             WeakAuras.DisableAddonDisplay(id);
                         end
-                        WeakAuras.ResolveCollisions(WeakAuras.SortDisplayButtons);
-                        UpdateAddonChecked();
+                        WeakAuras.ResolveCollisions(function()
+                            WeakAuras.SortDisplayButtons()
+                            UpdateAddonChecked();
+                        end);
                     end);
+                    displayButton.updateChecked = UpdateAddonChecked;
                     displayButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(id));
                 end
             end
@@ -8401,6 +8424,7 @@ do
             else
                 db.registered[id] = addon;
                 WeakAuras.Add(data);
+                WeakAuras.SyncParentChildRelationships(true);
                 WeakAuras.AddDisplayButton(data);
             end
         end
@@ -8434,6 +8458,7 @@ do
             end
             
             WeakAuras.Delete(data);
+            WeakAuras.SyncParentChildRelationships(true);
             frame.buttonsScroll:DeleteChild(displayButtons[id]);
             thumbnails[id].region:Hide();
             thumbnails[id] = nil;

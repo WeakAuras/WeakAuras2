@@ -423,6 +423,11 @@ local methods = {
                 func = function() WeakAuras.ExportToString(data.id) end
             },
             {
+                text = L["Export to Lua table..."],
+                notCheckable = 1,
+                func = function() WeakAuras.ExportToTable(data.id) end
+            },
+            {
                 text = " ",
                 notClickable = 1,
                 notCheckable = 1,
@@ -444,7 +449,7 @@ local methods = {
             }
         }
         if(data.controlledChildren) then
-            tinsert(self.menu, 7, {
+            tinsert(self.menu, 8, {
                 text = L["Delete children and group"],
                 notCheckable = 1,
                 func = self.callbacks.OnDeleteAllClick
@@ -453,7 +458,7 @@ local methods = {
             self:SetViewTest(self.callbacks.ViewTest);
             self:DisableGroup();
             self.callbacks.UpdateExpandButton();
-            self:SetOnExpandCollapse(function() WeakAuras.debug("expandcollapse", 3); WeakAuras.SortDisplayButtons(nil, true) end);
+            self:SetOnExpandCollapse(function() WeakAuras.SortDisplayButtons(nil, true) end);
         else
             local convertMenu = {};
             for regionType, regionData in pairs(WeakAuras.regionOptions) do
@@ -564,6 +569,10 @@ local methods = {
         end
         if(WeakAuras.CanHaveClones(data)) then
             tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
+        end
+        if(WeakAuras.IsDefinedByAddon(data.id)) then
+            tinsert(namestable, " ");
+            tinsert(namestable, {" ", "|cFF00FFFF"..L["Addon"]..": "..WeakAuras.IsDefinedByAddon(data.id)});
         end
         if(data.desc and data.desc ~= "") then
             tinsert(namestable, " ");

@@ -379,6 +379,86 @@ function WeakAuras.DisplayToString(id, forChat)
     end
 end
 
+function WeakAuras.DisplayToTableString(id)
+    local ret = "{\n";
+    local function recurse(table, level)
+        for i,v in pairs(table) do
+            ret = ret..strrep("    ", level).."[";
+            if(type(i) == "string") then
+                ret = ret.."\""..i.."\"";
+            else
+                ret = ret..i;
+            end
+            ret = ret.."] = ";
+            
+            if(type(v) == "number") then
+                ret = ret..v..",\n"
+            elseif(type(v) == "string") then
+                ret = ret.."\""..v:gsub("\n", "\\n"):gsub("\"", "\\\"").."\",\n"
+            elseif(type(v) == "boolean") then
+                if(v) then
+                    ret = ret.."true,\n"
+                else
+                    ret = ret.."false,\n"
+                end
+            elseif(type(v) == "table") then
+                ret = ret.."{\n"
+                recurse(v, level + 1);
+                ret = ret..strrep("    ", level).."},\n"
+            else
+                ret = ret.."\""..tostring(v).."\",\n"
+            end
+        end
+    end
+    
+    local data = WeakAuras.GetData(id)
+    if(data) then
+        recurse(data, 1);
+    end
+    ret = ret.."}";
+    return ret;
+end
+
+function WeakAuras.DisplayToTableStringCompact(id)
+    local ret = "{";
+    local function recurse(table, level)
+        for i,v in pairs(table) do
+            ret = ret.."[";
+            if(type(i) == "string") then
+                ret = ret.."\""..i.."\"";
+            else
+                ret = ret..i;
+            end
+            ret = ret.."]=";
+            
+            if(type(v) == "number") then
+                ret = ret..v..","
+            elseif(type(v) == "string") then
+                ret = ret.."\""..v:gsub("\n", "\\n"):gsub("\"", "\\\"").."\","
+            elseif(type(v) == "boolean") then
+                if(v) then
+                    ret = ret.."true,"
+                else
+                    ret = ret.."false,"
+                end
+            elseif(type(v) == "table") then
+                ret = ret.."{"
+                recurse(v, level + 1);
+                ret = ret.."},"
+            else
+                ret = ret.."\""..tostring(v).."\","
+            end
+        end
+    end
+    
+    local data = WeakAuras.GetData(id)
+    if(data) then
+        recurse(data, 1);
+    end
+    ret = ret.."}";
+    return ret;
+end
+
 function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
     if(type(data) == "table") then
         if(compressed) then
