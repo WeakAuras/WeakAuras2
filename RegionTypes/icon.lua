@@ -101,6 +101,17 @@ local function modify(parent, region, data)
     local texWidth = 0.25 * data.zoom;
     icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
     
+    local tooltipType = WeakAuras.CanHaveTooltip(data);
+    if(tooltipType and data.useTooltip) then
+        region:EnableMouse(true);
+        region:SetScript("OnEnter", function()
+            WeakAuras.ShowMouseoverTooltip(data, region, region, tooltipType);
+        end);
+        region:SetScript("OnLeave", WeakAuras.HideTooltip);
+    else
+        region:EnableMouse(false);
+    end
+    
     cooldown:SetReverse(not data.inverse);
     
     function region:Color(r, g, b, a)

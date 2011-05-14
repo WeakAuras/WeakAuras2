@@ -274,7 +274,7 @@ do
     end
     
     function aura_cache.GetDynamicInfo(self, names)
-        local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount = 0, math.huge, "", "", 0;
+        local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, bestSpellId = 0, math.huge, "", "", 0, 0;
         for _, auraname in pairs(names) do
             if(self.watched[auraname]) then
                 for playername, durationInfo in pairs(self.watched[auraname].players) do
@@ -284,16 +284,17 @@ do
                         bestName = durationInfo.name;
                         bestIcon = durationInfo.icon;
                         bestCount = durationInfo.count;
+                        bestSpellId = durationInfo.spellId;
                     end
                 end
             end
         end
         
-        return bestDuration, bestExpirationTime, bestName, bestIcon, bestCount;
+        return bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, bestSpellId;
     end
     
     function aura_cache.GetPlayerDynamicInfo(self, names, playerName)
-        local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount = 0, math.huge, "", "", 0;
+        local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, bestSpellId = 0, math.huge, "", "", 0, 0;
         for _, auraname in pairs(names) do
             if(self.watched[auraname]) then
                 local durationInfo = self.watched[auraname].players[playerName]
@@ -304,6 +305,7 @@ do
                         bestName = durationInfo.name;
                         bestIcon = durationInfo.icon;
                         bestCount = durationInfo.count;
+                        bestSpellId = durationInfo.spellId;
                     end
                 end
             end
@@ -337,7 +339,7 @@ do
         return ret;
     end
     
-    function aura_cache.AssertAura(self, auraname, playername, duration, expirationTime, name, icon, count)
+    function aura_cache.AssertAura(self, auraname, playername, duration, expirationTime, name, icon, count, spellId)
         if not(self.watched[auraname].players[playername]) then
             self.watched[auraname].number = self.watched[auraname].number + 1;
             self.watched[auraname].players[playername] = {
@@ -345,7 +347,8 @@ do
                 expirationTime = expirationTime,
                 name = name,
                 icon = icon,
-                count = count
+                count = count,
+                spellId = spellId
             };
             self.watched[auraname].recentChanges[playername] = true;
             return true;
@@ -357,6 +360,7 @@ do
                 auradata.name = name;
                 auradata.icon = icon;
                 auradata.count = count;
+                auradata.spellId = spellId;
                 self.watched[auraname].recentChanges[playername] = true;
                 return true;
             else
@@ -1928,13 +1932,13 @@ function WeakAuras.ScanAuras(unit)
                                 if(data.autoclone) then
                                     local cloneId = name.."-"..unitCaster;
                                     if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
-                                        WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId, index);
+                                        WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId, index, spellId);
                                         clones[id][cloneId].expirationTime = expirationTime;
                                     end
                                     active = true;
                                     cloneIdList[cloneId] = true;
                                 else
-                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
+                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, nil, index, spellId);
                                     active = true;
                                     break;
                                 end
@@ -2003,12 +2007,12 @@ function WeakAuras.ScanAuras(unit)
                                 active = true;
                                 db.tempIconCache[name] = icon;
                                 if(aura_object and not data.specificUnit) then
-                                    local changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count);
+                                    local changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count, spellId);
                                     if(data.groupclone and changed) then
                                         groupcloneToUpdate[GetUnitName(unit, true)] = true;
                                     end
                                 else
-                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
+                                    WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, nil, nil, spellId);
                                     break;
                                 end
                             elseif(aura_object and not data.specificUnit) then
@@ -2030,15 +2034,15 @@ function WeakAuras.ScanAuras(unit)
                                 if(satisfies_count) then
                                     if(data.groupclone) then
                                         for playerName, _ in pairs(groupcloneToUpdate) do
-                                            local duration, expirationTime, name, icon, count = aura_object:GetPlayerDynamicInfo(data.names, playerName);
+                                            local duration, expirationTime, name, icon, count, spellId = aura_object:GetPlayerDynamicInfo(data.names, playerName);
                                             if(name ~= "") then
-                                                WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, playerName, icon, count, playerName);
+                                                WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, playerName, icon, count, playerName, nil, spellId);
                                             else
-                                                WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, duration, expirationTime, playerName, icon, count, playerName);
+                                                WeakAuras.SetAuraVisibility(id, triggernum, data, nil, unit, duration, expirationTime, playerName, icon, count, playerName, nil, spellId);
                                             end
                                         end
                                     else
-                                        local duration, expirationTime, name, icon, count = aura_object:GetDynamicInfo(data.names);
+                                        local duration, expirationTime, name, icon, count, spellId = aura_object:GetDynamicInfo(data.names);
                                         
                                         if(data.name_info == "players") then
                                             local affected = aura_object:GetAffected(data.names);
@@ -2074,7 +2078,7 @@ function WeakAuras.ScanAuras(unit)
                                             count = aura_count;
                                         end
                                         
-                                        WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count);
+                                        WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, nil, nil, spellId);
                                     end
                                 else
                                     if(data.groupclone) then
@@ -2098,7 +2102,7 @@ function WeakAuras.ScanAuras(unit)
     WeakAuras.CurrentUnit = old_unit;
 end
 
-function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count, cloneId, index)
+function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duration, expirationTime, name, icon, count, cloneId, index, spellId)
     local region;
     local showClones;
     
@@ -2109,10 +2113,13 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
             showClones = true;
         end
         region = WeakAuras.EnsureClone(id, cloneId);
-        region.index = index;
     else
         region = data.region;
     end
+    
+    region.index = index;
+    region.spellId = spellId;
+    
     local show;
     if(active ~= nil) then
         if not(data.inverse and UnitExists(unit)) then
@@ -2129,7 +2136,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
             end
             --TODO: HOW DOES THIS WORK WITH CLONES??
             --Answer: this provides duration info for progress-relative animations. It does not work correctly with clones (and it should)
-            duration_cache:SetDurationInfo(id, duration, expirationTime);
+            duration_cache:SetDurationInfo(id, duration, expirationTime, cloneId);
             if(region.SetName) then
                 region:SetName(name);
             end
@@ -3782,7 +3789,7 @@ function WeakAuras.CanGroupShowWithZero(data)
 end
 
 function WeakAuras.CanShowNameInfo(data)
-    if(data.regionType == "aurabar") then
+    if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
         return true;
     else
         return false;
@@ -3790,7 +3797,7 @@ function WeakAuras.CanShowNameInfo(data)
 end
 
 function WeakAuras.CanShowStackInfo(data)
-    if(data.regionType == "aurabar" or data.regionType == "icon") then
+    if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
         return true;
     else
         return false;
@@ -3807,6 +3814,36 @@ function WeakAuras.CanHaveClones(data)
         )
     ) then
         return true;
+    else
+        return false;
+    end
+end
+
+function WeakAuras.CanHaveTooltip(data)
+    local trigger = data.trigger;
+    if(trigger.type == "aura") then
+        if(trigger.unit == "group" and data.trigger.name_info ~= "aura" and not trigger.groupclone) then
+            return "playerlist";
+        elseif(trigger.fullscan and trigger.unit ~= "group") then
+            return "auraindex";
+        else
+            return "aura";
+        end
+    elseif(
+        (
+            data.trigger.type == "event"
+            or data.trigger.type == "status"
+        )
+        and data.trigger.event
+        and WeakAuras.event_prototypes[data.trigger.event]
+    ) then
+        if(WeakAuras.event_prototypes[data.trigger.event].hasSpellID) then
+            return "spell";
+        elseif(WeakAuras.event_prototypes[data.trigger.event].hasItemID) then
+            return "item";
+        else
+            return false;
+        end
     else
         return false;
     end
@@ -3855,6 +3892,65 @@ function WeakAuras.CorrectItemName(input)
             return nil;
         end
     end
+end
+
+function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
+    tooltipType = tooltipType or WeakAuras.CanHaveTooltip(data);
+    
+    GameTooltip:SetOwner(owner, "ANCHOR_NONE");
+    GameTooltip:SetPoint("LEFT", owner, "RIGHT");
+    GameTooltip:ClearLines();
+    if(tooltipType == "aura" and region.spellId) then
+        GameTooltip:SetSpellByID(region.spellId);
+    elseif(tooltipType == "auraindex" and region.index) then
+        local unit = data.trigger.unit == "member" and data.trigger.specificUnit or data.trigger.unit;
+        if(data.trigger.debuffType == "HELPFUL") then
+            GameTooltip:SetUnitBuff(unit, region.index);
+        elseif(data.trigger.debuffType == "HARMFUL") then
+            GameTooltip:SetUnitDebuff(unit, region.index);
+        end
+    elseif(tooltipType == "playerlist") then
+        local name = "";
+        if(data.trigger.name_info == "players") then
+            local affected = aura_cache:GetAffected(data.trigger.names);
+            local num = 0;
+            for affected_name, _ in pairs(affected) do
+                local space = affected_name:find(" ");
+                name = name..(space and affected_name:sub(0, space - 1).."*" or affected_name)..", ";
+                num = num + 1;
+            end
+            if(num == 0) then
+                name = WeakAuras.L["None"];
+            else
+                name = name:sub(0, -3);
+            end
+            name = L["Affected"]..": "..name;
+        elseif(data.trigger.name_info == "nonplayers") then
+            local unaffected = aura_cache:GetUnaffected(data.trigger.names);
+            local num = 0;
+            for unaffected_name, _ in pairs(unaffected) do
+                local space = unaffected_name:find(" ");
+                name = name..(space and unaffected_name:sub(0, space - 1).."*" or unaffected_name)..", ";
+                num = num + 1;
+            end
+            if(num == 0) then
+                name = WeakAuras.L["None"];
+            else
+                name = name:sub(0, -3);
+            end
+            name = L["Missing"]..": "..name;
+        end
+        GameTooltip:AddLine(name);
+    elseif(tooltipType == "spell") then
+        GameTooltip:SetSpellByID(data.trigger.spellName);
+    elseif(tooltipType == "item") then
+        GameTooltip:SetHyperlink("item:"..data.trigger.itemName..":0:0:0:0:0:0:0")
+    end
+    GameTooltip:Show();
+end
+
+function WeakAuras.HideTooltip()
+    GameTooltip:Hide();
 end
 
 do

@@ -1469,6 +1469,7 @@ local function getAll(data, info, ...)
     for index, childId in ipairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
+            WeakAuras.EnsureOptions(childId);
             local childOptions = displayOptions[childId];
             local childOption = childOptions;
             local childOptionTable = {[0] = childOption};
@@ -1518,6 +1519,7 @@ local function setAll(data, info, ...)
     for index, childId in ipairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
+            WeakAuras.EnsureOptions(childId);
             local childOptions = displayOptions[childId];
             local childOption = childOptions;
             local childOptionTable = {[0] = childOption};
@@ -1542,6 +1544,7 @@ local function hiddenAll(data, info)
     for index, childId in ipairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
+            WeakAuras.EnsureOptions(childId);
             local childOptions = displayOptions[childId];
             local childOption = childOptions;
             local childOptionTable = {[0] = childOption};
@@ -1574,6 +1577,7 @@ local function disabledAll(data, info)
     for index, childId in ipairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
+            WeakAuras.EnsureOptions(childId);
             local childOptions = displayOptions[childId];
             local childOption = childOptions;
             local childOptionTable = {[0] = childOption};
@@ -1611,6 +1615,7 @@ local function replaceNameDescFuncs(intable, data)
         for index, childId in ipairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
+                WeakAuras.EnsureOptions(childId);
                 local childOptions = displayOptions[childId];
                 local childOption = childOptions;
                 local childOptionTable = {[0] = childOption};
@@ -1662,6 +1667,7 @@ local function replaceNameDescFuncs(intable, data)
         for index, childId in ipairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
+                WeakAuras.EnsureOptions(childId);
                 local childOption = displayOptions[childId];
                 if not(childOption) then
                     return "error 1";
@@ -1696,6 +1702,7 @@ local function replaceNameDescFuncs(intable, data)
         for index, childId in ipairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
+                WeakAuras.EnsureOptions(childId);
                 local childOption = displayOptions[childId];
                 if not(childOption) then
                     return "error"
@@ -1747,6 +1754,7 @@ local function replaceNameDescFuncs(intable, data)
                         for index, childId in ipairs(data.controlledChildren) do
                             local childData = WeakAuras.GetData(childId);
                             if(childData) then
+                                WeakAuras.EnsureOptions(childId);
                                 local childOptions = displayOptions[childId];
                                 local childOption = childOptions;
                                 local childOptionTable = {[0] = childOption};
@@ -1812,6 +1820,7 @@ local function replaceImageFuncs(intable, data)
         for index, childId in ipairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
+                WeakAuras.EnsureOptions(childId);
                 local childOption = displayOptions[childId];
                 if not(childOption) then
                     return "error"
@@ -3589,6 +3598,11 @@ function WeakAuras.AddOption(id, data)
     WeakAuras.ReloadTriggerOptions(data);
 end
 
+function WeakAuras.EnsureOptions(id)
+    if not(displayOptions[id]) then
+        WeakAuras.AddOption(id, WeakAuras.GetData(id));
+    end
+end
 
 function WeakAuras.GetSpellTooltipText(id)
     local tooltip = WeakAuras.GetHiddenTooltip();
@@ -3614,6 +3628,8 @@ end
 
 function WeakAuras.ReloadTriggerOptions(data)
     local id = data.id;
+    WeakAuras.EnsureOptions(id);
+    
     local trigger, untrigger;
     if(data.controlledChildren) then
         optionTriggerChoices[id] = nil;
@@ -3638,9 +3654,6 @@ function WeakAuras.ReloadTriggerOptions(data)
                 local childData = WeakAuras.GetData(childId);
                 if(childData) then
                     optionTriggerChoices[childId] = optionTriggerChoices[id];
-                    if not(displayOptions[childId]) then
-                        WeakAuras.AddOption(childId, childData);
-                    end
                     WeakAuras.ReloadTriggerOptions(childData);
                 end
             end
@@ -5273,6 +5286,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
     
     local id = data.id;
+    WeakAuras.EnsureOptions(id);
     local options = displayOptions[id];
     local regionOption;
     if(regionType) then
@@ -7302,8 +7316,19 @@ function WeakAuras.CreateFrame()
     loadedButton:SetText(L["Loaded"]);
     loadedButton:Disable();
     loadedButton:EnableExpand();
-    loadedButton:Expand();
-    loadedButton:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
+    if(odb.loadedCollapse) then
+        loadedButton:Collapse();
+    else
+        loadedButton:Expand();
+    end
+    loadedButton:SetOnExpandCollapse(function()
+        if(loadedButton:GetExpanded()) then
+            odb.loadedCollapse = nil;
+        else
+            odb.loadedCollapse = true;
+        end
+        WeakAuras.SortDisplayButtons()
+    end);
     loadedButton:SetExpandDescription(L["Expand all loaded displays"]);
     loadedButton:SetCollapseDescription(L["Collapse all loaded displays"]);
     loadedButton:SetViewClick(function()
@@ -7348,8 +7373,19 @@ function WeakAuras.CreateFrame()
     unloadedButton:SetText(L["Not Loaded"]);
     unloadedButton:Disable();
     unloadedButton:EnableExpand();
-    unloadedButton:Expand();
-    unloadedButton:SetOnExpandCollapse(WeakAuras.SortDisplayButtons);
+    if(odb.unloadedCollapse) then
+        unloadedButton:Collapse();
+    else
+        unloadedButton:Expand();
+    end
+    unloadedButton:SetOnExpandCollapse(function()
+        if(unloadedButton:GetExpanded()) then
+            odb.unloadedCollapse = nil;
+        else
+            odb.unloadedCollapse = true;
+        end
+        WeakAuras.SortDisplayButtons()
+    end);
     unloadedButton:SetExpandDescription(L["Expand all non-loaded displays"]);
     unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"]);
     unloadedButton:SetViewClick(function()
@@ -7535,9 +7571,7 @@ tXmdmY4fDE5]];
                 end
             end
         end
-        if not(displayOptions[id]) then
-            WeakAuras.AddOption(id, data);
-        end
+        WeakAuras.EnsureOptions(id);
         if(num > 1) then
             WeakAuras.BuildOptions(list, finishPicking);
         else
@@ -7572,9 +7606,7 @@ tXmdmY4fDE5]];
                 self:PickDisplay(id);
             elseif not(WeakAuras.IsDisplayPicked(id)) then
                 self.pickedDisplay = tempGroup;
-                if not(displayOptions[id]) then
-                    WeakAuras.AddOption(id, WeakAuras.GetData(id));
-                end
+                WeakAuras.EnsureOptions(id);
                 displayButtons[id]:Pick();
                 tinsert(tempGroup.controlledChildren, id);
                 WeakAuras.ReloadTriggerOptions(tempGroup);
@@ -7585,8 +7617,10 @@ tXmdmY4fDE5]];
     
     frame.RefreshPick = function(self)
         if(type(self.pickedDisplay) == "string") then
+            WeakAuras.EnsureOptions(self.pickedDisplay);
             self:FillOptions(displayOptions[self.pickedDisplay]);
         else
+            WeakAuras.EnsureOptions(tempGroup.id);
             self:FillOptions(displayOptions[tempGroup.id]);
         end
     end

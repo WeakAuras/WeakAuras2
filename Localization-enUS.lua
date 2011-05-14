@@ -1282,3 +1282,8 @@ L["Show players that are |cFFFF0000not affected"] = "Show players that are |cFFF
 --Added in r144
 L["Full Scan"] = "Full Scan"
 L["Auto-cloning enabled"] = "Auto-cloning enabled"
+
+--Added in r145
+L["Affected"] = "Affected"
+L["Missing"] = "Missing"
+L["Tooltip on Mouseover"] = "Tooltip on Mouseover"

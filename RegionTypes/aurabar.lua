@@ -96,13 +96,14 @@ local function animRotate(object, degrees)
             r:SetOrigin(point or "center", xo or 0, yo or 0);
             r:SetDegrees(degrees);
             r:SetDuration(0);
-            r:SetEndDelay(1);
+            r:SetEndDelay(0.1);
             r:SetScript("OnUpdate", stoprotation);
             r:Play();
             ag:Play();
         end
     end
 end
+WeakAuras.animRotate = animRotate;
 
 local function getRotateOffset(object, degrees, point)
     if(degrees ~= 0) then
@@ -124,6 +125,10 @@ local function getRotateOffset(object, degrees, point)
     else
         return 0, 0;
     end
+end
+
+local function Hide_Tooltip()
+    GameTooltip:Hide();
 end
 
 local function modify(parent, region, data)
@@ -177,6 +182,7 @@ local function modify(parent, region, data)
     
     text:SetFont(fontPath, data.fontSize);
     text:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
+    text:SetWordWrap(false);
     
     timer:SetFont(fontPath, data.fontSize);
     timer:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
@@ -184,6 +190,18 @@ local function modify(parent, region, data)
     local iconsize = math.min(data.height, data.width);
     icon:SetWidth(iconsize);
     icon:SetHeight(iconsize);
+    local tooltipType = WeakAuras.CanHaveTooltip(data);
+    if(tooltipType and data.useTooltip) then
+        region.tooltipFrame = region.tooltipFrame or CreateFrame("frame");
+        region.tooltipFrame:SetAllPoints(icon);
+        region.tooltipFrame:EnableMouse(true);
+        region.tooltipFrame:SetScript("OnEnter", function()
+            WeakAuras.ShowMouseoverTooltip(data, region, region.tooltipFrame, tooltipType);
+        end);
+        region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    elseif(region.tooltipFrame) then
+        region.tooltipFrame:EnableMouse(false);
+    end
     
     stacks:SetFont(fontPath, data.fontSize, "OUTLINE");
     stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
@@ -234,8 +252,13 @@ local function modify(parent, region, data)
         xo, yo = getRotateOffset(text, textDegrees, "RIGHT");
         text:ClearAllPoints();
         text:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
-        --text:SetPoint("LEFT", timer, "RIGHT");
-        --text:SetJustifyH("RIGHT");
+        if(textDegrees == 0) then
+            text:SetWidth(bar:GetWidth() - (timer:GetWidth() + (data.fontSize/2)));
+            text:SetJustifyH("RIGHT");
+        else
+            text:SetWidth(0);
+            text:SetJustifyH("CENTER");
+        end
     end
     local function orientHorizontal()
         icon:ClearAllPoints();
@@ -271,8 +294,13 @@ local function modify(parent, region, data)
         xo, yo = getRotateOffset(text, textDegrees, "LEFT");
         text:ClearAllPoints();
         text:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
-        --text:SetPoint("RIGHT", timer, "LEFT");
-        --text:SetJustifyH("LEFT");
+        if(textDegrees == 0) then
+            text:SetWidth(bar:GetWidth() - (timer:GetWidth() + (data.fontSize/2)));
+            text:SetJustifyH("LEFT");
+        else
+            text:SetWidth(0);
+            text:SetJustifyH("CENTER");
+        end
     end
     local function orientVerticalInverse()
         icon:ClearAllPoints();
@@ -309,8 +337,8 @@ local function modify(parent, region, data)
         xo, yo = getRotateOffset(text, textDegrees, "TOP");
         text:ClearAllPoints();
         text:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
-        --text:SetPoint("BOTTOM", timer, "TOP");
-        --text:SetJustifyV("TOP");
+        text:SetWidth(0);
+        text:SetJustifyH("CENTER");
     end
     local function orientVertical()
         icon:ClearAllPoints();
@@ -346,8 +374,8 @@ local function modify(parent, region, data)
         xo, yo = getRotateOffset(text, textDegrees, "BOTTOM");
         text:ClearAllPoints();
         text:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
-        --text:SetPoint("TOP", timer, "BOTTOM");
-        --text:SetJustifyV("BOTTOM");
+        text:SetWidth(0);
+        text:SetJustifyH("CENTER");
     end
     
     local function orient()

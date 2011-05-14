@@ -1124,6 +1124,7 @@ end
             local _, _, icon = GetSpellInfo(trigger.spellName or 0);
             return icon;
         end,
+        hasSpellID = true,
         automaticrequired = true
     },
     ["Cooldown Ready (Spell)"] = {
@@ -1156,7 +1157,8 @@ end
         iconFunc = function(trigger)
             local _, _, icon = GetSpellInfo(trigger.spellName or 0);
             return icon;
-        end
+        end,
+        hasSpellID = true
     },
     ["Cooldown Progress (Item)"] = {
         type = "status",
@@ -1233,6 +1235,7 @@ end
             local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
             return icon;
         end,
+        hasItemID = true,
         automaticrequired = true
     },
     ["Cooldown Ready (Item)"] = {
@@ -1265,7 +1268,8 @@ end
         iconFunc = function(trigger)
             local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
             return icon;
-        end
+        end,
+        hasItemID = true
     },
     ["Global Cooldown"] = {
         type = "status",
@@ -1316,6 +1320,7 @@ local onGCD = WeakAuras.GetGCDInfo();
             local _, _, _, icon = WeakAuras.GetGCDInfo();
             return icon;
         end,
+        hasSpellID = true,
         automaticrequired = true
     },
     ["Swing Timer"] = {
@@ -1424,6 +1429,7 @@ local onCooldown = duration > 1.51;
             local _, _, icon = GetSpellInfo(trigger.spellName or 0);
             return icon;
         end,
+        hasSpellID = true,
         automaticrequired = true
     },
     ["Totem"] = {
@@ -1543,6 +1549,7 @@ local inverse = %s;
         iconFunc = function(trigger)
             return GetItemIcon(trigger.itemName);
         end,
+        hasItemID = true,
         automaticrequired = true
     },
     ["Stance/Form/Aura"] = {
@@ -1799,6 +1806,7 @@ local inverse = %s
                 test = "true"
             }
         },
+        hasItemID = true,
         automaticrequired = true
     },
     ["Threat Situation"] = {
