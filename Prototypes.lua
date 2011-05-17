@@ -409,7 +409,8 @@ WeakAuras.event_prototypes = {
         type = "status",
         events = {
             "PLAYER_TARGET_CHANGED",
-            "PLAYER_FOCUS_CHANGED"
+            "PLAYER_FOCUS_CHANGED",
+            "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
         },
         force_events = true,
         name = L["Unit Characteristics"],
@@ -464,7 +465,8 @@ WeakAuras.event_prototypes = {
         events = {
             "UNIT_HEALTH",
             "PLAYER_TARGET_CHANGED",
-            "PLAYER_FOCUS_CHANGED"
+            "PLAYER_FOCUS_CHANGED",
+            "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
         },
         force_events = {
             "player",
@@ -505,6 +507,9 @@ WeakAuras.event_prototypes = {
         durationFunc = function(trigger)
             return UnitHealth(trigger.unit), UnitHealthMax(trigger.unit), true;
         end,
+        nameFunc = function(trigger)
+            return UnitName(trigger.unit);
+        end,
         automatic = true
     },
     ["Power"] = {
@@ -512,7 +517,8 @@ WeakAuras.event_prototypes = {
         events = {
             "UNIT_POWER",
             "PLAYER_TARGET_CHANGED",
-            "PLAYER_FOCUS_CHANGED"
+            "PLAYER_FOCUS_CHANGED",
+            "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
         },
         force_events = {
             "player",

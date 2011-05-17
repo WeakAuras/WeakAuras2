@@ -1153,6 +1153,12 @@ function WeakAuras.HideOptions()
     if(frame) then
         frame:Hide();
     end
+    
+    local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame();
+    if(tutFrame and tutFrame:IsVisible()) then
+        tutFrame:Hide();
+    end
+    
     for id, data in pairs(WeakAuras.regions) do
         data.region:Collapse();
     end
@@ -6718,24 +6724,28 @@ function WeakAuras.CreateFrame()
     frame.buttonsScroll = buttonsScroll;
     
     function buttonsScroll:IsChildInView(child)
-        if not(child.GetParent) then
-            child = child.frame;
-        end
-        if(child:GetParent() == buttonsScroll.content) then
-            if(child:IsVisible()) then
-                local _, _, _, _, childTop = child:GetPoint(1);
-                childTop = childTop * -1;
-                local childBottom = childTop + child:GetHeight();
-                local scrollTop, scrollBottom = self:GetScrollPos();
-                if(childTop < scrollTop) then
-                    return "above";
-                elseif(childBottom > scrollBottom) then
-                    return "below";
+        if(child) then
+            if not(child.GetParent) then
+                child = child.frame;
+            end
+            if(child:GetParent() == buttonsScroll.content) then
+                if(child:IsVisible()) then
+                    local _, _, _, _, childTop = child:GetPoint(1);
+                    childTop = childTop * -1;
+                    local childBottom = childTop + child:GetHeight();
+                    local scrollTop, scrollBottom = self:GetScrollPos();
+                    if(childTop < scrollTop) then
+                        return "above";
+                    elseif(childBottom > scrollBottom) then
+                        return "below";
+                    else
+                        return true;
+                    end
                 else
-                    return true;
+                    return "hidden";
                 end
             else
-                return "hidden";
+                return nil;
             end
         else
             return nil;

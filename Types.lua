@@ -120,16 +120,16 @@ WeakAuras.unit_threat_situation_types = {
     ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
 };]]
 WeakAuras.class_types = {
-    ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"],
-    ["DRUID"] = "|cFFFF7D0A"..L["Druid"],
-    ["HUNTER"] = "|cFFABD473"..L["Hunter"],
-    ["MAGE"] = "|cFF69CCF0"..L["Mage"],
-    ["PALADIN"] = "|cFFF58CBA"..L["Paladin"],
-    ["PRIEST"] = "|cFFFFFFFF"..L["Priest"],
-    ["ROGUE"] = "|cFFFFF569"..L["Rogue"],
-    ["SHAMAN"] = "|cFF2459FF"..L["Shaman"],
-    ["WARLOCK"] = "|cFF9482C9"..L["Warlock"],
-    ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
+    ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"].."|r",
+    ["DRUID"] = "|cFFFF7D0A"..L["Druid"].."|r",
+    ["HUNTER"] = "|cFFABD473"..L["Hunter"].."|r",
+    ["MAGE"] = "|cFF69CCF0"..L["Mage"].."|r",
+    ["PALADIN"] = "|cFFF58CBA"..L["Paladin"].."|r",
+    ["PRIEST"] = "|cFFFFFFFF"..L["Priest"].."|r",
+    ["ROGUE"] = "|cFFFFF569"..L["Rogue"].."|r",
+    ["SHAMAN"] = "|cFF2459FF"..L["Shaman"].."|r",
+    ["WARLOCK"] = "|cFF9482C9"..L["Warlock"].."|r",
+    ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"].."|r"
 };
 WeakAuras.form_types = {};
 local function update_forms()

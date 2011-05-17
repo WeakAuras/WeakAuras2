@@ -48,6 +48,11 @@ local events = WeakAuras.events;
 WeakAuras.loaded = {};
 local loaded = WeakAuras.loaded;
 
+WeakAuras.specificBosses = {};
+local specificBosses = WeakAuras.specificBosses;
+WeakAuras.specificUnits = {};
+local specificUnits = WeakAuras.specificUnits;
+
 WeakAuras.clones = {};
 local clones = WeakAuras.clones;
 WeakAuras.clonePool = {};
@@ -1266,6 +1271,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         if(addon == ADDON_NAME) then
             frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
             frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+            frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
             frame:RegisterEvent("UNIT_AURA");
             frame:SetScript("OnEvent", WeakAuras.HandleEvent);
             
@@ -1428,6 +1434,10 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
             WeakAuras.ScanAuras("target");
         elseif(event == "PLAYER_FOCUS_CHANGED") then
             WeakAuras.ScanAuras("focus");
+        elseif(event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+            for unit,_ in pairs(specificBosses) do
+                WeakAuras.ScanAuras(unit);
+            end
         elseif(event == "UNIT_AURA") then
             if(
                 loaded_auras[arg1]
@@ -1789,7 +1799,20 @@ end
 
 do
     local function LoadAura(id, triggernum, data)
-        local unit = (data.unit == "multi" and data.name) or (data.specificUnit and (data.unit:sub(0,4) == "boss" and "boss" or "group")) or data.unit;
+        local unit;
+        if(data.specificUnit) then
+            if(data.unit:sub(0,4) == "boss") then
+                specificBosses[data.unit] = true;
+                unit = "boss";
+            else
+                specificUnits[data.unit] = true;
+                unit = "group";
+            end
+        elseif(data.unit == "multi") then
+            unit = data.name
+        else
+            unit = data.unit;
+        end
         loaded_auras[unit] = loaded_auras[unit] or {};
         loaded_auras[unit][id] = loaded_auras[unit][id] or {};
         loaded_auras[unit][id][triggernum] = data;
@@ -1846,6 +1869,7 @@ do
 end
 
 local aura_scan_cache = {};
+local aura_lists = {};
 function WeakAuras.ScanAuras(unit)
     local time = GetTime();
     aura_scan_cache[unit] = aura_scan_cache[unit] or {};
@@ -1856,25 +1880,30 @@ function WeakAuras.ScanAuras(unit)
     local old_unit = WeakAuras.CurrentUnit;
     WeakAuras.CurrentUnit = unit;
     
-    local aura_list, aura_object;
+    local aura_object;
+    wipe(aura_lists);
     if(unit:sub(0, 4) == "raid") then
         if(aura_cache.players[GetUnitName(unit, true)]) then
-            aura_list = loaded_auras["group"];
+            aura_lists[1] = loaded_auras["group"];
             aura_object = aura_cache;
         end
     elseif(unit:sub(0, 5) == "party") then
-        aura_list = loaded_auras["group"];
+        aura_lists[1] = loaded_auras["group"];
         aura_object = aura_cache;
-    elseif(unit:sub(0, 4) == "boss") then
-        aura_list = loaded_auras["boss"];
+    elseif(specificBosses[unit]) then
+        aura_lists[1] = loaded_auras["boss"];
     else
         if(unit == "player" and loaded_auras["group"]) then
             WeakAuras.ScanAuras("party0");
         end
-        aura_list = loaded_auras[unit] or loaded_auras["group"];
+        aura_lists[1] = loaded_auras[unit];
     end
     
-    if(aura_list) then
+    if(specificUnits[unit] and not aura_object) then
+        tinsert(aura_lists, loaded_auras["group"]);
+    end
+    
+    for _, aura_list in pairs(aura_lists) do
         unit = unit == "party0" and "player" or unit;
         local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = true;
         local tooltip, debuffClass, tooltipSize;
@@ -2709,15 +2738,16 @@ end
 --Dummy add function to protect errors from propagating out of the real add function
 function WeakAuras.Add(data)
     WeakAuras.Modernize(data);
-    local status, err = pcall(WeakAuras.pAdd, data);
-    if not(status) then
-        local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
-        print("|cFFFF0000WeakAuras "..id..": "..err);
-        debug(id..": "..err, 3);
-        debug(debugstack(1, 6));
-        WeakAurasFrame:Hide();
-        error(err);
-    end
+    WeakAuras.pAdd(data);
+    -- local status, err = pcall(WeakAuras.pAdd, data);
+    -- if not(status) then
+        -- local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
+        -- print("|cFFFF0000WeakAuras "..id..": "..err);
+        -- debug(id..": "..err, 3);
+        -- debug(debugstack(1, 6));
+        -- WeakAurasFrame:Hide();
+        -- error(err);
+    -- end
 end
 
 function WeakAuras.pAdd(data)
@@ -2853,7 +2883,7 @@ function WeakAuras.pAdd(data)
                         debuffType = trigger.debuffType,
                         names = trigger.names,
                         name = trigger.name,
-                        unit = trigger.unit,
+                        unit = trigger.use_specific_unit and trigger.specificUnit or trigger.unit,
                         specificUnit = trigger.use_specific_unit,
                         useCount = trigger.useCount,
                         ownOnly = trigger.ownOnly,
@@ -2893,6 +2923,8 @@ function WeakAuras.pAdd(data)
                             nameFunc = event_prototypes[trigger.event].nameFunc;
                             iconFunc = event_prototypes[trigger.event].iconFunc;
                             stacksFunc = event_prototypes[trigger.event].stacksFunc;
+                            
+                            trigger.unevent = trigger.unevent or "auto";
                             
                             if(trigger.unevent == "custom") then
                                 if(trigger.event == "Combat Log") then
@@ -3722,6 +3754,9 @@ function WeakAuras.CanHaveDuration(data)
             and WeakAuras.event_prototypes[data.trigger.event]
             and WeakAuras.event_prototypes[data.trigger.event].durationFunc
         ) then
+            if(type(WeakAuras.event_prototypes[data.trigger.event].init) == "function") then
+                WeakAuras.event_prototypes[data.trigger.event].init(data.trigger);
+            end
             local current, maximum, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
             if(custom) then
                 return {current = current, maximum = maximum};
@@ -4363,11 +4398,13 @@ function WeakAuras.CombatEventWarning(silentIfNone)
     end
 end
 
-function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps)
+function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps, order)
     tutorials[name] = {
+        name = name,
         displayName = displayName,
         description = description,
         icon = icon,
-        steps = steps
+        steps = steps,
+        order = order
     };
 end

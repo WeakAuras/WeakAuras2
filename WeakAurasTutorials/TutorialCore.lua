@@ -65,8 +65,8 @@ do
             if(path[1] == "new") then
                 if(optionsFrame.pickedOption == "New") then
                     if(path[2]) then
-                        for index, child in pairs(optionsFrame.container.children) do
-                            if(child:GetName() == path[2]) then
+                        for index, child in pairs(optionsFrame.container.content.obj.children[1].children) do
+                            if(child:GetTitle() == path[2]) then
                                 WeakAuras.PointTutorialToFrame(child);
                             end
                         end
@@ -131,49 +131,53 @@ do
                 local button = WeakAuras.displayButtons[id];
                 local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(button);
                 
-                if(path[3] == "button") then
-                    if(sidebarVisible == true) then
-                        if(path[4]) then
-                            local buttonPiece = button[path[4]];
-                            WeakAuras.PointTutorialToFrame(buttonPiece);
-                        else
-                            WeakAuras.PointTutorialToFrame(button);
-                        end
-                    elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
-                    elseif(sidebarVisible == "hidden") then
-                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
-                    end
-                elseif(path[3] == "options") then
-                    if(id == picked) then
-                        local optionsTable = WeakAuras.displayOptions[id];
-                        local tabName = optionsTable and optionsTable.args[path[4]] and optionsTable.args[path[4]].name
-                        local tabFrame;
-                        local tabSelected = false;
-                        for i,v in pairs(WeakAuras.OptionsFrame().container.children[1].tabs) do
-                            if(v:GetText() == tabName) then
-                                tabFrame = v;
-                                if(v.selected) then
-                                    tabSelected = true;
-                                end
+                if(button and sidebarVisible) then
+                    if(path[3] == "button") then
+                        if(sidebarVisible == true) then
+                            if(path[4]) then
+                                local buttonPiece = button[path[4]];
+                                WeakAuras.PointTutorialToFrame(buttonPiece);
+                            else
+                                WeakAuras.PointTutorialToFrame(button);
                             end
+                        elseif(sidebarVisible == "above" or sidebarVisible == "below") then
+                            WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                        elseif(sidebarVisible == "hidden") then
+                            WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
                         end
-                        
-                        if(tabFrame and path[5]) then
-                            if not(tabSelected) then
-                                WeakAuras.PointTutorialToFrame(tabFrame);
-                            elseif(WeakAuras.OptionsFrame().container.children[1].children[1].children) then
-                                local optionIndex;
-                                for index, child in ipairs(WeakAuras.OptionsFrame().container.children[1].children[1].children) do
-                                    local name = (child.text and child.text:GetText()) or (child.label and child.label:GetText())
-                                    if(name == (L[path[5]] or path[5])) then
-                                        optionIndex = index;
-                                        break;
+                    elseif(path[3] == "options") then
+                        if(id == picked) then
+                            local optionsTable = WeakAuras.displayOptions[id];
+                            local tabName = optionsTable and optionsTable.args[path[4]] and optionsTable.args[path[4]].name
+                            local tabFrame;
+                            local tabSelected = false;
+                            for i,v in pairs(WeakAuras.OptionsFrame().container.children[1].tabs) do
+                                if(v:GetText() == tabName) then
+                                    tabFrame = v;
+                                    if(v.selected) then
+                                        tabSelected = true;
                                     end
                                 end
-                                
-                                if(optionIndex and WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]) then
-                                    WeakAuras.PointTutorialToFrame(WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]);
+                            end
+                            
+                            if(tabFrame) then
+                                if not(tabSelected) then
+                                    WeakAuras.PointTutorialToFrame(tabFrame);
+                                elseif(WeakAuras.OptionsFrame().container.children[1].children[1].children and path[5]) then
+                                    local optionIndex;
+                                    for index, child in ipairs(WeakAuras.OptionsFrame().container.children[1].children[1].children) do
+                                        local name = (child.label and child.label:GetText()) or (child.text and child.text:GetText());
+                                        if(name == (L[path[5]] or path[5])) then
+                                            optionIndex = index;
+                                            break;
+                                        end
+                                    end
+                                    
+                                    if(optionIndex and WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]) then
+                                        WeakAuras.PointTutorialToFrame(WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]);
+                                    else
+                                        WeakAuras.PointTutorialToFrame(optionsFrame.container);
+                                    end
                                 else
                                     WeakAuras.PointTutorialToFrame(optionsFrame.container);
                                 end
@@ -181,7 +185,13 @@ do
                                 WeakAuras.PointTutorialToFrame(optionsFrame.container);
                             end
                         else
-                            WeakAuras.PointTutorialToFrame(optionsFrame.container);
+                            if(sidebarVisible == true) then
+                                WeakAuras.PointTutorialToFrame(button);
+                            elseif(sidebarVisible == "above" or sidebarVisible == "below") then
+                                WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
+                            elseif(sidebarVisible == "hidden") then
+                                WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
+                            end
                         end
                     else
                         if(sidebarVisible == true) then
@@ -193,14 +203,14 @@ do
                         end
                     end
                 else
-                    if(sidebarVisible == true) then
-                        WeakAuras.PointTutorialToFrame(button);
-                    elseif(sidebarVisible == "above" or sidebarVisible == "below") then
-                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll.scrollbar);
-                    elseif(sidebarVisible == "hidden") then
-                        WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
-                    end
+                    WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
                 end
+            elseif(path[1] == "none") then
+                WeakAuras.PointTutorialToFrame({});
+            elseif(type(path[1]) == "table") then
+                WeakAuras.PointTutorialToFrame(path[1]);
+            elseif(type(path[1]) == "function") then
+                WeakAuras.PointTutorialToFrame(path[1]());
             end
         end
     end
@@ -229,7 +239,7 @@ do
         if not(frame.GetRect) then
             frame = frame.frame;
         end
-        if(frame.GetRect) then
+        if(frame.GetRect and frame:GetRect()) then
             local l, b, w, h = frame:GetRect();
             l = l - 8;
             b = b - 8
@@ -241,6 +251,7 @@ do
                 
                 pointingFrame:SetSize(w, h);
                 pointingFrame:SetPoint("center", frame, "center");
+                pointingFrame:Show();
                 
                 local anim = {
                     duration = 0.25,
@@ -261,7 +272,6 @@ do
             end
         else
             WeakAuras.CancelAnimation(pointingFrame, true, true, true, true, true);
-            print("Invalid frame input");
             pointingFrame:Hide();
         end
     end
@@ -286,6 +296,11 @@ function WeakAuras.PlayTutorial(tutData, step)
         stepFrame.texture:SetSize(stepData.texture.width, stepData.texture.height);
         stepFrame.texture:SetTexture(stepData.texture.path);
         stepFrame.texture:Show();
+        if(stepData.texture.color) then
+            stepFrame.texture:SetVertexColor(stepData.texture.color[1], stepData.texture.color[2], stepData.texture.color[3]);
+        else
+            stepFrame.texture:SetVertexColor(1, 1, 1);
+        end
     else
         stepFrame.texture:SetSize(100, 1);
         stepFrame.texture:Hide();
@@ -364,7 +379,7 @@ function WeakAuras.CreateTutorialsFrame()
     end);
     
     function stepFrameScroll.RecalculateHeight()
-        local height = 50 + stepTexture:GetHeight() + stepText:GetHeight();
+        local height = 80 + stepTexture:GetHeight() + stepText:GetHeight();
         stepFrameScroll.content:SetHeight(height);
         stepFrameScroll:FixScroll();
     end
@@ -411,7 +426,21 @@ function WeakAuras.CreateTutorialsFrame()
     homeFrameContent:AddChild(homeFrameScroll);
     homeFrameScroll:SetLayout("AbsoluteList");
     
+    local toSort = {};
     for tutName, tutData in pairs(tutorials) do
+        tinsert(toSort, tutData);
+    end
+    table.sort(toSort, function(a, b)
+        local aOrder = a.order or 0;
+        local bOrder = b.order or 0;
+        if(aOrder == bOrder) then
+            return a.displayName < b.displayName;
+        else
+            return aOrder < bOrder;
+        end
+    end);
+    
+    for index, tutData in pairs(toSort) do
         local tutButton = AceGUI:Create("WeakAurasNewButton");
         tutButton:SetTitle(tutData.displayName);
         tutButton:SetDescription(tutData.description);
