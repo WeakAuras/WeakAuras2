@@ -394,7 +394,7 @@ function WeakAuras.DisplayToTableString(id)
             if(type(v) == "number") then
                 ret = ret..v..",\n"
             elseif(type(v) == "string") then
-                ret = ret.."\""..v:gsub("\n", "\\n"):gsub("\"", "\\\"").."\",\n"
+                ret = ret.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"").."\",\n"
             elseif(type(v) == "boolean") then
                 if(v) then
                     ret = ret.."true,\n"
@@ -568,6 +568,10 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 if not(optionsFrame) then
                     WeakAuras.ToggleOptions();
                     optionsFrame = WeakAuras.OptionsFrame();
+                end
+                
+                if not(WeakAuras.IsOptionsOpen()) then
+                    WeakAuras.ToggleOptions();
                 end
                 
                 local function importData(data)

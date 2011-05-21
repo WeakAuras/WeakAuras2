@@ -2,6 +2,9 @@
 /ForAllIndentsAndPurposes.lua -text
 /Localization-deDE.lua -text
 /Localization-esES.lua -text
+/Localization-frFR.lua -text
+/Localization-ruRU.lua -text
+/Localization-zhTW.lua -text
 Media/Textures/Circle_Smooth.tga -text
 Media/Textures/Circle_Smooth_Border.tga -text
 Media/Textures/Circle_Squirrel.tga -text

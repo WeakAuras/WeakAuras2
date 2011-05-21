@@ -266,7 +266,6 @@ do
                 WeakAuras.Animate("frame", "tutorial-pointingFrame", "start", anim, pointingFrame, true, function()
                     WeakAuras.Animate("frame", "tutorial-pointingFrame", "main", {type="preset",preset="pulse"}, pointingFrame, false, nil, true);
                 end);
-                --WeakAuras.Animate("frame", "tutorial-pointingFrame", "main", {type="preset",preset="pulse"}, pointingFrame, false, nil, true);
                 pl, pb, pw, ph = l, b, w, h;
                 WeakAuras.UpdateAnimations();
             end
@@ -281,12 +280,17 @@ function WeakAuras.ShowTutorialHome()
     WeakAuras.ContinuouslyPointTutorialToPath(nil);
     tutFrame.stepFrame:Hide();
     tutFrame.homeFrame:Show();
+    tutFrame:SetTitle(L["WeakAuras Tutorials"]);
 end
 
 function WeakAuras.PlayTutorial(tutData, step)
     tutFrame.homeFrame:Hide();
     tutFrame.stepFrame:Show();
     local stepFrame = tutFrame.stepFrame;
+    
+    if(tutData.displayName) then
+        tutFrame:SetTitle(tutData.displayName);
+    end
     
     step = step or 1;
     local stepData = tutData.steps[step];

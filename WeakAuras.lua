@@ -3048,10 +3048,6 @@ function WeakAuras.pAdd(data)
             WeakAuras.UnregisterEveryFrameUpdate(id);
         end
         
-        if not(temporary) then
-            db.displays[id] = data;
-        end
-        
         if(WeakAuras.CanHaveClones(data)) then
             clones[id] = clones[id] or {};
         end
@@ -3060,6 +3056,10 @@ function WeakAuras.pAdd(data)
             region:Collapse();
             WeakAuras.ScanForLoads();
         end
+    end
+    
+    if not(temporary) then
+        db.displays[id] = data;
     end
 end
 

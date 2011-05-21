@@ -7734,42 +7734,46 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
     for id, child in pairs(displayButtons) do
         containsFilter = false;
         local data = WeakAuras.GetData(id);
-        if(filter and data.controlledChildren) then
-            for index, childId in pairs(data.controlledChildren) do
-                if(childId:lower():find(filter)) then
-                    containsFilter = true;
-                    break;
+        if not(data) then
+            print("No data for", id);
+        else
+            if(filter and data.controlledChildren) then
+                for index, childId in pairs(data.controlledChildren) do
+                    if(childId:lower():find(filter)) then
+                        containsFilter = true;
+                        break;
+                    end
                 end
             end
-        end
-        if(
-            frame.loadedButton:GetExpanded()
-            and (not filter or id:lower():find(filter) or containsFilter)
-        ) then
-            child.frame:Show();
-            local group = child:GetGroup();
-            if(group) then
-                if(loaded[group]) then
-                    if(loaded[id]) then
-                        child:EnableLoaded();
-                    else
-                        child:DisableLoaded();
+            if(
+                frame.loadedButton:GetExpanded()
+                and (not filter or id:lower():find(filter) or containsFilter)
+            ) then
+                child.frame:Show();
+                local group = child:GetGroup();
+                if(group) then
+                    if(loaded[group]) then
+                        if(loaded[id]) then
+                            child:EnableLoaded();
+                        else
+                            child:DisableLoaded();
+                        end
+                        children[group] = children[group] or {};
+                        tinsert(children[group], child);
                     end
-                    children[group] = children[group] or {};
-                    tinsert(children[group], child);
+                else
+                    if(loaded[id] ~= nil) then
+                        if(loaded[id]) then
+                            child:EnableLoaded();
+                        else
+                            child:DisableLoaded();
+                        end
+                        tinsert(to_sort, child);
+                    end
                 end
             else
-                if(loaded[id] ~= nil) then
-                    if(loaded[id]) then
-                        child:EnableLoaded();
-                    else
-                        child:DisableLoaded();
-                    end
-                    tinsert(to_sort, child);
-                end
+                child.frame:Hide();
             end
-        else
-            child.frame:Hide();
         end
     end
     table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
@@ -8238,19 +8242,56 @@ do
             addonButton:SetClick(function()
                 if(addonButton.checkbox:GetChecked()) then
                     for id, data in pairs(addonData.displays) do
-                        local childButton = importDisplayButtons[id];
-                        childButton.checkbox:SetChecked(true);
-                        WeakAuras.EnableAddonDisplay(id);
+                        if not(data.parent) then
+                            local childButton = importDisplayButtons[id];
+                            childButton.checkbox:SetChecked(true);
+                            WeakAuras.EnableAddonDisplay(id);
+                        end
+                    end
+                    for id, data in pairs(addonData.displays) do
+                        if(data.parent) then
+                            local childButton = importDisplayButtons[id];
+                            childButton.checkbox:SetChecked(true);
+                            WeakAuras.EnableAddonDisplay(id);
+                        end
                     end
                 else
                     for id, data in pairs(addonData.displays) do
-                        local childButton = importDisplayButtons[id];
-                        childButton.checkbox:SetChecked(false);
-                        WeakAuras.DisableAddonDisplay(id);
+                        if not(data.parent) then
+                            local childButton = importDisplayButtons[id];
+                            childButton.checkbox:SetChecked(false);
+                            WeakAuras.DisableAddonDisplay(id);
+                        end
+                    end
+                    for id, data in pairs(addonData.displays) do
+                        if(data.parent) then
+                            local childButton = importDisplayButtons[id];
+                            childButton.checkbox:SetChecked(false);
+                            WeakAuras.DisableAddonDisplay(id);
+                        end
                     end
                 end
                 WeakAuras.ResolveCollisions(function()
-                    WeakAuras.SortDisplayButtons()
+                    for groupId, dataFromAddon in pairs(addonData.displays) do
+                        if(dataFromAddon.controlledChildren) then
+                            local data = WeakAuras.GetData(groupId);
+                            if(data) then
+                                for index, childId in pairs(data.controlledChildren) do
+                                    local childButton = WeakAuras.GetDisplayButton(childId);
+                                    childButton:SetGroup(groupId, data.regionType == "dynamicgroup");
+                                    childButton:SetGroupOrder(index, #data.controlledChildren);
+                                end
+                                
+                                local button = WeakAuras.GetDisplayButton(groupId);
+                                button.callbacks.UpdateExpandButton();
+                                WeakAuras.UpdateDisplayButton(data);
+                                WeakAuras.ReloadGroupRegionOptions(data);
+                            end
+                        end
+                    end
+                    
+                    WeakAuras.ScanForLoads();
+                    WeakAuras.SortDisplayButtons();
                 end);
             end);
             
@@ -8309,7 +8350,8 @@ do
                                 WeakAuras.DisableAddonDisplay(childId);
                             end
                             WeakAuras.ResolveCollisions(function()
-                                WeakAuras.SortDisplayButtons()
+                                WeakAuras.ScanForLoads();
+                                WeakAuras.SortDisplayButtons();
                                 UpdateGroupChecked();
                             end);
                         end);
@@ -8319,12 +8361,14 @@ do
                     
                     groupButton:SetClick(function()
                         if(groupButton.checkbox:GetChecked()) then
+                            WeakAuras.EnableAddonDisplay(id);
                             for index, childId in pairs(data.controlledChildren) do
                                 local childButton = importDisplayButtons[childId];
                                 childButton.checkbox:SetChecked(true);
                                 WeakAuras.EnableAddonDisplay(childId);
                             end
                         else
+                            WeakAuras.DisableAddonDisplay(id);
                             for index, childId in pairs(data.controlledChildren) do
                                 local childButton = importDisplayButtons[childId];
                                 childButton.checkbox:SetChecked(false);
@@ -8332,7 +8376,22 @@ do
                             end
                         end
                         WeakAuras.ResolveCollisions(function()
-                            WeakAuras.SortDisplayButtons()
+                            local data = WeakAuras.GetData(id);
+                            if(data) then
+                                for index, childId in pairs(data.controlledChildren) do
+                                    local childButton = WeakAuras.GetDisplayButton(childId);
+                                    childButton:SetGroup(id, data.regionType == "dynamicgroup");
+                                    childButton:SetGroupOrder(index, #data.controlledChildren);
+                                end
+                                
+                                local button = WeakAuras.GetDisplayButton(id);
+                                button.callbacks.UpdateExpandButton();
+                                WeakAuras.UpdateDisplayButton(data);
+                                WeakAuras.ReloadGroupRegionOptions(data);
+                            end
+                            
+                            WeakAuras.ScanForLoads();
+                            WeakAuras.SortDisplayButtons();
                             UpdateAddonChecked();
                         end);
                     end);
@@ -8423,7 +8482,8 @@ do
             for addonName, addonData in pairs(WeakAuras.addons) do
                 if(addonData.displays[id]) then
                     addon = addonName;
-                    data = addonData.displays[id];
+                    data = {}
+                    WeakAuras.DeepCopy(addonData.displays[id], data);
                     break;
                 end
             end
@@ -8433,6 +8493,9 @@ do
                 collisions[id] = {addon, data};
             else
                 db.registered[id] = addon;
+                if(data.controlledChildren) then
+                    wipe(data.controlledChildren);
+                end
                 WeakAuras.Add(data);
                 WeakAuras.SyncParentChildRelationships(true);
                 WeakAuras.AddDisplayButton(data);

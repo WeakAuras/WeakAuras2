@@ -1291,3 +1291,9 @@ L["Tooltip on Mouseover"] = "Tooltip on Mouseover"
 --Added in r146
 L["Addon"] = "Addon"
 L["Export to Lua table..."] = "Export to Lua table..."
+
+--Toc strings (added in r150)
+L["WeakAuras .toc Notes"] = "A powerful, comprehensive utilty for displaying graphics and information based on buffs, debuffs, and other triggers."
+L["WeakAurasOptions .toc Notes"] = "Options for WeakAuras"
+L["WeakAurasModelPaths .toc Notes"] = "Tutorials for WeakAuras"
+L["WeakAurasTutorials .toc Notes"] = "Model paths for WeakAuras"
