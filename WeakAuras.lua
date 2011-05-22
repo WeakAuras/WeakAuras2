@@ -852,20 +852,45 @@ do
 end
 
 local duration_cache = {};
-function duration_cache:SetDurationInfo(id, duration, expirationTime, isValue)
-    duration_cache[id] = duration_cache[id] or {};
-    duration_cache[id].duration = duration;
-    duration_cache[id].expirationTime = expirationTime;
-    duration_cache[id].isValue = isValue;
+local clone_duration_cache = {};
+function duration_cache:SetDurationInfo(id, duration, expirationTime, isValue, inverse, cloneId)
+    local cache;
+    if(cloneId) then
+        clone_duration_cache[id] = clone_duration_cache[id] or {};
+        clone_duration_cache[id][cloneId] = clone_duration_cache[id][cloneId] or {};
+        cache = clone_duration_cache[id][cloneId];
+    else
+        duration_cache[id] = duration_cache[id] or {};
+        cache = duration_cache[id];
+    end
+    cache.duration = duration;
+    cache.expirationTime = expirationTime;
+    cache.isValue = isValue;
 end
 
-function duration_cache:GetDurationInfo(id)
-    if(duration_cache[id]) then
-        if(type(duration_cache[id].isValue) == "function") then
-            local value, maxValue = duration_cache[id].isValue();
+function duration_cache:GetDurationInfo(id, cloneId)
+    local cache;
+    if(cloneId) then
+        print("GetDuratonInfo", id, cloneId);
+        print(clone_duration_cache[id] and clone_duration_cache[id][cloneId]);
+        if(clone_duration_cache[id] and clone_duration_cache[id][cloneId]) then
+            cache = clone_duration_cache[id][cloneId];
+            if(type(cache.isValue) == "function") then
+                local value, maxValue = cache.isValue(WeakAuras.GetData(id).trigger);
+                return value, maxValue, true;
+            else
+                return cache.duration, cache.expirationTime, cache.isValue, cache.inverse;
+            end
+        else
+            return 0, math.huge;
+        end
+    elseif(duration_cache[id]) then
+        cache = duration_cache[id]
+        if(type(cache.isValue) == "function") then
+            local value, maxValue = cache.isValue(WeakAuras.GetData(id).trigger);
             return value, maxValue, true;
         else
-            return duration_cache[id].duration, duration_cache[id].expirationTime, duration_cache[id].isValue;
+            return cache.duration, cache.expirationTime, cache.isValue, cache.inverse;
         end
     else
         return 0, math.huge;
@@ -942,9 +967,7 @@ do
                 if(region.SetDurationInfo) then
                     region:SetDurationInfo(auradata.duration, auradata.expirationTime);
                 end
-                --TODO: HOW DOES THIS WORK WITH CLONES??
-                --STILL HAVE NO IDEA
-                duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime);
+                duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime, nil, nil, GUID);
                 if(region.SetName) then
                     region:SetName(auradata.unitName);
                 end
@@ -954,6 +977,10 @@ do
                 if(region.SetStacks) then
                     region:SetStacks(auradata.count);
                 end
+                if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
+                    region.UpdateCustomText();
+                end
+                WeakAuras.UpdateMouseoverTooltip(region);
             end
             
             if(data.numAdditionalTriggers > 0 and showClones == nil) then
@@ -1539,6 +1566,9 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
         else
             if(data.durationFunc) then
                 local duration, expirationTime, static, inverse = data.durationFunc(trigger);
+                if(type(static) == "string") then
+                    static = data.durationFunc;
+                end
                 if(duration > 0.01 and not static) then
                     local hideOnExpire = true;
                     if(data.expiredHideFunc) then
@@ -1552,7 +1582,7 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
                     if(data.region.SetDurationInfo) then
                         data.region:SetDurationInfo(duration, expirationTime, static, inverse);
                     end
-                    duration_cache:SetDurationInfo(id, duration, expirationTime, static or true);
+                    duration_cache:SetDurationInfo(id, duration, expirationTime, static or true, inverse);
                 end
             elseif(triggernum == 0) then
                 if(data.region.SetDurationInfo) then
@@ -1583,6 +1613,10 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
                     data.region:SetStacks();
                 end
             end
+            if(data.region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(data.region)) then
+                data.region.UpdateCustomText();
+            end
+            WeakAuras.UpdateMouseoverTooltip(data.region)
         end
     else
         error("Event with id \""..id.." and trigger number "..triggernum.." tried to activate, but does not exist");
@@ -2167,7 +2201,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
             end
             --TODO: HOW DOES THIS WORK WITH CLONES??
             --Answer: this provides duration info for progress-relative animations. It does not work correctly with clones (and it should)
-            duration_cache:SetDurationInfo(id, duration, expirationTime, cloneId);
+            duration_cache:SetDurationInfo(id, duration, expirationTime, nil, nil, cloneId);
             if(region.SetName) then
                 region:SetName(name);
             end
@@ -2177,6 +2211,10 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
             if(region.SetStacks) then
                 region:SetStacks(count);
             end
+            if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
+                region.UpdateCustomText();
+            end
+            WeakAuras.UpdateMouseoverTooltip(region);
         end
         
         if(data.numAdditionalTriggers > 0 and showClones == nil) then
@@ -2223,6 +2261,7 @@ function WeakAuras.Delete(data)
         end
     end
     
+    WeakAuras.UnregisterCustomTextUpdates(regions[id].region)
     regions[id].region:SetScript("OnUpdate", nil);
     regions[id].region:SetScript("OnShow", nil);
     regions[id].region:SetScript("OnHide", nil);
@@ -3124,7 +3163,7 @@ function WeakAuras.SetRegion(data, cloneId)
                 end
                 
                 local startMainAnimation = function()
-                    WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
+                    WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true, cloneId);
                 end
                 
                 local hideRegion = function()
@@ -3139,7 +3178,7 @@ function WeakAuras.SetRegion(data, cloneId)
                         if(region:IsVisible()) then
                             region.toHide = true;
                             WeakAuras.PerformActions(data, "finish");
-                            WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, true)
+                            WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)
                             parent:ControlChildren();
                         end
                     end
@@ -3148,10 +3187,12 @@ function WeakAuras.SetRegion(data, cloneId)
                             region:EnsureModel();
                         end
                         region.toShow = true;
-                        if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or not region:IsVisible()) then
+                        parent:EnsureTrays();
+                        if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or (not region:IsVisible() or (cloneId and region.justCreated))) then
+                            region.justCreated = nil;
                             WeakAuras.PerformActions(data, "start");
-                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation)) then
-                                WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
+                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+                                startMainAnimation();
                             end
                         end
                         parent:ControlChildren();
@@ -3160,7 +3201,7 @@ function WeakAuras.SetRegion(data, cloneId)
                     function region:Collapse()
                         if(region:IsVisible()) then
                             WeakAuras.PerformActions(data, "finish");
-                            if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, true)) then
+                            if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
                                 region:Hide();
                             end
                         end
@@ -3169,11 +3210,12 @@ function WeakAuras.SetRegion(data, cloneId)
                         if(regionType == "model") then
                             region:EnsureModel()
                         end
-                        if(WeakAuras.IsAnimating(region) == "finish" or not region:IsVisible()) then
+                        if(WeakAuras.IsAnimating(region) == "finish" or (not region:IsVisible() or (cloneId and region.justCreated))) then
+                            region.justCreated = nil;
                             region:Show();
                             WeakAuras.PerformActions(data, "start");
-                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation)) then
-                                WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
+                            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+                                startMainAnimation();
                             end
                         end
                     end
@@ -3228,7 +3270,7 @@ function WeakAuras.SetRegion(data, cloneId)
                 end
                 
                 if(anim_cancelled) then
-                    WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true);
+                    startMainAnimation();
                 end
                 
                 return region;
@@ -3250,7 +3292,7 @@ function WeakAuras.EnsureClone(id, cloneId)
         end
         WeakAuras.SetRegion(data, cloneId);
     end
-    clones[id][cloneId]:Expand();
+    clones[id][cloneId].justCreated = true;
     return clones[id][cloneId];
 end
 
@@ -3344,13 +3386,15 @@ function WeakAuras.PerformActions(data, type)
                     glow_frame = regions[frame_name].region;
                 end
             else
-                glow_frame = _G[frame_name];
+                glow_frame = _G[actions.glow_frame];
             end
             
-            if(actions.glow_action == "show") then
-                ActionButton_ShowOverlayGlow(glow_frame);
-            elseif(actions.glow_action == "hide") then
-                ActionButton_HideOverlayGlow(glow_frame);
+            if(glow_frame) then
+                if(actions.glow_action == "show") then
+                    ActionButton_ShowOverlayGlow(glow_frame);
+                elseif(actions.glow_action == "hide") then
+                    ActionButton_HideOverlayGlow(glow_frame);
+                end
             end
         end
     end
@@ -3377,18 +3421,21 @@ function WeakAuras.UpdateAnimations()
                 finished = true;
             end
         elseif(anim.duration_type == "relative") then
-            local duration, expirationTime, isValue = duration_cache:GetDurationInfo(anim.name);
+            local duration, expirationTime, isValue, inverse = duration_cache:GetDurationInfo(anim.name, anim.cloneId);
             if(duration < 0.01) then
                 anim.progress = 0;
                 if(anim.type == "start" or anim.type == "finish") then
                     finished = true;
                 end
             else
+                local relativeProgress;
                 if(isValue) then
-                    anim.progress = (duration / expirationTime) / anim.duration;
+                    relativeProgress = duration / expirationTime;
                 else
-                    anim.progress = (1 - ((expirationTime - time) / duration)) / anim.duration;
+                    relativeProgress = 1 - ((expirationTime - time) / duration);
                 end
+                relativeProgress = inverse and (1 - relativeProgress) or relativeProgress;
+                anim.progress = relativeProgress / anim.duration
                 local iteration = math.floor(anim.progress);
                 anim.progress = anim.progress - iteration;
                 if not(anim.iteration) then
@@ -3469,7 +3516,7 @@ function WeakAuras.UpdateAnimations()
     end]]
 end
 
-function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinished, loop)
+function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinished, loop, cloneId)
     local key = tostring(region);
     local inAnim = anim;
     local valid;
@@ -3574,17 +3621,17 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
         
         duration = WeakAuras.ParseNumber(anim.duration) or 0;
         progress = 0;
-        if(namespace == "display" and type == "main" and not onFinished) then
+        if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
             local data = WeakAuras.GetData(id);
             if(data and data.parent) then
-                local parentData = WeakAuras.GetData(data.parent);
-                if(parentData and parentData.controlledChildren) then
-                    for index, childId in pairs(parentData.controlledChildren) do
-                        local childRegion = regions[childId].region;
-                        local childKey = childRegion and tostring(childRegion)
+                local parentRegion = regions[data.parent].region;
+                if(parentRegion and parentRegion.controlledRegions) then
+                    for index, regionData in pairs(parentRegion.controlledRegions) do
+                        local childRegion = regionData.region;
+                        local childKey = regionData.key;
                         if(
-                            childId ~= id
-                            and childKey
+                            childKey
+                            and childKey ~= tostring(region)
                             and animations[childKey]
                             and animations[childKey].type == "main"
                             and duration == animations[childKey].duration
@@ -3598,7 +3645,7 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
         end
         
         if(loop) then
-            onFinished = function() WeakAuras.Animate(namespace, id, type, inAnim, region, inverse, onFinished, loop) end
+            onFinished = function() WeakAuras.Animate(namespace, id, type, inAnim, region, inverse, onFinished, loop, cloneId) end
         end
         
         animations[key] = {
@@ -3638,7 +3685,8 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
             type = type,
             loop = loop,
             onFinished = onFinished,
-            name = id
+            name = id,
+            cloneId = cloneId
         };
         if not(updatingAnimations) then
             frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
@@ -3940,7 +3988,22 @@ function WeakAuras.CorrectItemName(input)
     end
 end
 
+
+local currentTooltipData;
+local currentTooltipRegion;
+local currentTooltipOwner;
+local currentTooltipType;
+function WeakAuras.UpdateMouseoverTooltip(region)
+    if(region == currentTooltipRegion) then
+        WeakAuras.ShowMouseoverTooltip(currentTooltipData, currentTooltipRegion, currentTooltipOwner, currentTooltipType);
+    end
+end
+
 function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
+    currentTooltipData = data;
+    currentTooltipRegion = region;
+    currentTooltipOwner = owner;
+    currentTooltipType = tooltipType;
     tooltipType = tooltipType or WeakAuras.CanHaveTooltip(data);
     
     GameTooltip:SetOwner(owner, "ANCHOR_NONE");
@@ -3957,36 +4020,68 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
         end
     elseif(tooltipType == "playerlist") then
         local name = "";
+        local playerList;
         if(data.trigger.name_info == "players") then
-            local affected = aura_cache:GetAffected(data.trigger.names);
-            local num = 0;
-            for affected_name, _ in pairs(affected) do
-                local space = affected_name:find(" ");
-                name = name..(space and affected_name:sub(0, space - 1).."*" or affected_name)..", ";
-                num = num + 1;
-            end
-            if(num == 0) then
-                name = WeakAuras.L["None"];
-            else
-                name = name:sub(0, -3);
-            end
-            name = L["Affected"]..": "..name;
+            playerList = aura_cache:GetAffected(data.trigger.names);
+            name = L["Affected"]..":";
         elseif(data.trigger.name_info == "nonplayers") then
-            local unaffected = aura_cache:GetUnaffected(data.trigger.names);
-            local num = 0;
-            for unaffected_name, _ in pairs(unaffected) do
-                local space = unaffected_name:find(" ");
-                name = name..(space and unaffected_name:sub(0, space - 1).."*" or unaffected_name)..", ";
-                num = num + 1;
-            end
-            if(num == 0) then
-                name = WeakAuras.L["None"];
-            else
-                name = name:sub(0, -3);
-            end
-            name = L["Missing"]..": "..name;
+            playerList = aura_cache:GetUnaffected(data.trigger.names);
+            name = L["Missing"]..":";
         end
-        GameTooltip:AddLine(name);
+        
+        local numPlayers = 0;
+        for playerName, _ in pairs(playerList) do
+            numPlayers = numPlayers + 1;
+        end
+        
+        if(numPlayers > 0) then
+            GameTooltip:AddLine(name);
+            local numRaid = GetNumRaidMembers();
+            local groupMembers = {};
+            
+            local groupCutoff = 8;
+            if(numRaid > 0 and IsInInstance()) then
+                local difficulty = GetRaidDifficulty();
+                if(difficulty == 1 or difficulty == 3) then
+                    groupCutoff = 2;
+                elseif(difficulty == 2 or difficulty == 4) then
+                    groupCutoff = 5;
+                end
+            end
+            
+            if(numRaid > 0) then
+                for i=1,numRaid do
+                    local playerName, _, subgroup = GetRaidRosterInfo(i);
+                    if(playerName and subgroup <= groupCutoff and playerList[playerName]) then
+                        groupMembers[subgroup] = groupMembers[subgroup] or {};
+                        groupMembers[subgroup][playerName] = true
+                    end
+                end
+                for subgroup, players in pairs(groupMembers) do
+                    playersString = L["Group %s"]:format(subgroup)..": ";
+                    for playerName, _ in pairs(players) do
+                        local space = playerName:find(" ");
+                        local _, class = UnitClass(playerName);
+                        local classColor = WeakAuras.class_color_types[class];
+                        playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
+                    end
+                    GameTooltip:AddLine(playersString);
+                end
+            else
+                local num = 0;
+                playersString = "";
+                for playerName, _ in pairs(playerList) do
+                    local space = playerName:find(" ");
+                    local _, class = UnitClass(playerName);
+                    local classColor = WeakAuras.class_color_types[class];
+                    playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
+                    num = num + 1;
+                end
+                GameTooltip:AddLine(playersString);
+            end
+        else
+            GameTooltip:AddLine(name.." "..L["None"]);
+        end
     elseif(tooltipType == "spell") then
         GameTooltip:SetSpellByID(data.trigger.spellName);
     elseif(tooltipType == "item") then
@@ -3996,6 +4091,10 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
 end
 
 function WeakAuras.HideTooltip()
+    currentTooltipData = nil;
+    currentTooltipRegion = nil;
+    currentTooltipOwner = nil;
+    currentTooltipType = nil;
     GameTooltip:Hide();
 end
 
@@ -4407,4 +4506,41 @@ function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps,
         steps = steps,
         order = order
     };
+end
+
+do
+    local customTextUpdateFrame;
+    local updateRegions = {};
+    
+    local function DoCustomTextUpdates()
+        for region, _ in pairs(updateRegions) do
+            if(region.UpdateCustomText) then
+                if(region:IsVisible()) then
+                    region.UpdateCustomText();
+                end
+            else
+                updateRegions[region] = nil;
+            end
+        end
+    end
+    
+    function WeakAuras.InitCustomTextUpdates()
+        if not(customTextUpdateFrame) then
+            customTextUpdateFrame = CreateFrame("frame");
+            customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
+        end
+    end
+    
+    function WeakAuras.RegisterCustomTextUpdates(region)
+        WeakAuras.InitCustomTextUpdates();
+        updateRegions[region] = true;
+    end
+    
+    function WeakAuras.UnregisterCustomTextUpdates(region)
+        updateRegions[region] = false;
+    end
+    
+    function WeakAuras.IsRegisteredForCustomTextUpdates(region)
+        return updateRegions[region];
+    end
 end

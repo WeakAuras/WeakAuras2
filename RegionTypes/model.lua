@@ -84,7 +84,9 @@ local function modify(parent, region, data)
     model:Rotate(data.rotation);
     
     function region:EnsureModel()
-        model:SetModel(data.model_path);
+        if(type(region:GetModel()) ~= "string") then
+            model:SetModel(data.model_path);
+        end
     end
 end
 

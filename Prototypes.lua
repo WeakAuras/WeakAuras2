@@ -84,6 +84,20 @@ return function(progress, startX, startY, deltaX, deltaY)
     return startX + (prog * deltaX), startY + (prog * deltaY)
 end
 ]],
+    bounceDecay = [[
+return function(progress, startX, startY, deltaX, deltaY)
+    local prog = (progress * 3.5) % 1
+    local bounce = math.ceil(progress * 3.5)
+    local bounceDistance = math.sin(prog * math.pi) * (bounce / 4)
+    return startX + (progress * deltaX), startY + (bounceDistance * deltaY)
+end
+]],
+    bounce = [[
+return function(progress, startX, startY, deltaX, deltaY)
+    local bounceDistance = math.sin(progress * math.pi)
+    return startX + (progress * deltaX), startY + (bounceDistance * deltaY)
+end
+]],
     flash = [[
 return function(progress, start, delta)
     local prog
@@ -226,6 +240,16 @@ WeakAuras.anim_presets = {
         use_alpha = true,
         alpha = 0
     },
+    bounceDecay = {
+        type = "custom",
+        duration = 1.5,
+        use_translate = true,
+        x = 50,
+        y = 50,
+        translateType = "bounceDecay",
+        use_alpha = true,
+        alpha = 0
+    },
     
     --Main
     shake = {
@@ -311,6 +335,14 @@ WeakAuras.anim_presets = {
         translateType = "circle",
         use_rotate = true,
         rotate = 360
+    },
+    bounce = {
+        type = "custom",
+        duration = 0.6,
+        use_translate = true,
+        x = 0,
+        y = 25,
+        translateType = "bounce"
     }
 };
 
@@ -566,7 +598,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), function() return UnitPower(trigger.unit), UnitPowerMax(trigger.unit) end;
+            return UnitPower(trigger.unit), UnitPowerMax(trigger.unit), "fastUpdate";
         end,
         automatic = true
     },
@@ -658,7 +690,7 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10), function() return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10) end;
+            return UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10), "fastUpdate";
         end,
         nameFunc = function(trigger)
             local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo(trigger.unit);
@@ -1613,12 +1645,25 @@ local inverse = %s;
         name = L["Weapon Enchant"],
         init = function(trigger)
             WeakAuras.TenchInit();
-            local ret = [[
-local weapon = '%s'
-local exists = (weapon == 'main' and WeakAuras.GetMHTenchInfo()) or (weapon == 'off' and WeakAuras.GetOHTenchInfo()) or (weapon == 'thrown' and WeakAuras.GetThrownTenchInfo())
-local inverse = %s
-]];
-            return ret:format(trigger.weapon or "none", trigger.use_inverse and "true" or "false");
+            local ret = "local exists, _, name\n";
+            if(trigger.weapon == "main") then
+                ret = ret.."exists, _, name = WeakAuras.GetMHTenchInfo()\n";
+            elseif(trigger.weapon == "off") then
+                ret = ret.."exists, _, name = WeakAuras.GetOHTenchInfo()\n";
+            elseif(trigger.weapon == "thrown") then
+                ret = ret.."exists, _, name = WeakAuras.GetThrownTenchInfo()\n";
+            end
+            
+            if(trigger.use_inverse) then
+                ret = ret.."local inverse = true\n";
+            else
+                ret = ret.."local inverse\n";
+            end
+            
+            if(trigger.use_enchant and trigger.enchant and trigger.enchant ~= "") then
+                ret = ret..("exists = name == \"%s\"\n"):format(trigger.enchant);
+            end
+            return ret;
         end,
         args = {
             {
@@ -1627,6 +1672,12 @@ local inverse = %s
                 type = "select",
                 values = "weapon_types",
                 test = "(inverse and not exists) or (not inverse and exists)"
+            },
+            {
+                name = "enchant",
+                display = L["Weapon Enchant"],
+                type = "string",
+                test = "true"
             },
             {
                 name = "inverse",

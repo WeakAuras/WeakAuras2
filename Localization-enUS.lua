@@ -636,6 +636,7 @@ L.textures["Cataclysm Alerts"] = {
   ["Textures\\SpellActivationOverlays\\Grand_Crusader"] = "Grand Crusader",
   ["Textures\\SpellActivationOverlays\\Hot_Streak"] = "Hot Streak",
   ["Textures\\SpellActivationOverlays\\Imp_Empowerment"] = "Imp Empowerment",
+  ["Textures\\SpellActivationOverlays\\Impact"] = "Impact",
   ["Textures\\SpellActivationOverlays\\Lock_and_Load"] = "Lock and Load",
   ["Textures\\SpellActivationOverlays\\Maelstrom_Weapon"] = "Maelstrom Weapon",
   ["Textures\\SpellActivationOverlays\\Master_Marksman"] = "Master Marksman",
@@ -1297,3 +1298,10 @@ L["WeakAuras .toc Notes"] = "A powerful, comprehensive utilty for displaying gra
 L["WeakAurasOptions .toc Notes"] = "Options for WeakAuras"
 L["WeakAurasModelPaths .toc Notes"] = "Tutorials for WeakAuras"
 L["WeakAurasTutorials .toc Notes"] = "Model paths for WeakAuras"
+
+--Added in r151
+L["Update Custom Text On..."] = "Update Custom Text On..."
+L["Trigger Update"] = "Trigger Update"
+L["Group %s"] = "Group %s"
+L["Bounce"] = "Bounce"
+L["Bounce with Decay"] = "Bounce with Decay"

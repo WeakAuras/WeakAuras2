@@ -28,7 +28,8 @@ local default = {
     icon_side = "RIGHT",
     stacks = true,
     rotateText = "NONE",
-    frameStrata = 1
+    frameStrata = 1,
+    customTextUpdate = "update"
 };
 
 local function create(parent)
@@ -428,17 +429,22 @@ local function modify(parent, region, data)
     
     if((data.displayTextLeft:find("%%c") or data.displayTextRight:find("%%c")) and data.customText) then
         local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
-        if not(region.customTextUpdateFrame) then
-            region.customTextUpdateFrame = CreateFrame("frame");
-        end
         local values = region.values;
-        region.customTextUpdateFrame:SetScript("OnUpdate", function()
+        region.UpdateCustomText = function()
             local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
-            values.custom = custom;
-            UpdateText();
-        end);
-    elseif(region.customTextUpdateFrame) then
-        region.customTextUpdateFrame:SetScript("OnUpdate", nil);
+            if(custom ~= values.custom) then
+                values.custom = custom;
+                UpdateText();
+            end
+        end
+        if(data.customTextUpdate == "update") then
+            WeakAuras.RegisterCustomTextUpdates(region);
+        else
+            WeakAuras.UnregisterCustomTextUpdates(region);
+        end
+    else
+        region.UpdateCustomText = nil;
+        WeakAuras.UnregisterCustomTextUpdates(region);
     end
     
     function region:SetStacks(count)
@@ -635,7 +641,7 @@ local function modify(parent, region, data)
     
     local function UpdateCustom()
         debugprofilestart();
-        UpdateValue(region.customValueFunc());
+        UpdateValue(region.customValueFunc(data.trigger));
         --CPUUsage = CPUUsage + debugprofilestop();
     end
     
@@ -647,7 +653,7 @@ local function modify(parent, region, data)
         
         if(customValue) then
             if(type(customValue) == "function") then
-                local value, total = customValue();
+                local value, total = customValue(data.trigger);
                 if(total > 0 and value < total) then
                     region.customValueFunc = customValue;
                     region:SetScript("OnUpdate", UpdateCustom);

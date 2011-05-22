@@ -1098,10 +1098,10 @@ end
 function WeakAuras.UpdateCloneConfig(data)
     if(WeakAuras.CanHaveClones(data)) then
         local cloneRegion = WeakAuras.EnsureClone(data.id, 1);
-        cloneRegion:Show();
+        cloneRegion:Expand();
         
         cloneRegion = WeakAuras.EnsureClone(data.id, 2);
-        cloneRegion:Show();
+        cloneRegion:Expand();
         
         if(data.parent and WeakAuras.regions[data.parent]) then
             WeakAuras.regions[data.parent].region:ControlChildren();
@@ -1186,19 +1186,19 @@ function WeakAuras.DoConfigUpdate()
                     region:SetDurationInfo(12, rem);
                 end
             end
-            WeakAuras.duration_cache:SetDurationInfo(id, 12, rem, cloneNum);
+            WeakAuras.duration_cache:SetDurationInfo(id, 12, rem, nil, nil, cloneNum);
         elseif(type(WeakAuras.CanHaveDuration(data)) == "table") then
             local demoValues = WeakAuras.CanHaveDuration(data);
             local current, maximum = demoValues.current or 10, demoValues.maximum or 100;
             if(region.SetDurationInfo) then
                 region:SetDurationInfo(current, maximum, true);
             end
-            WeakAuras.duration_cache:SetDurationInfo(id, current, maximum, cloneNum);
+            WeakAuras.duration_cache:SetDurationInfo(id, current, maximum, nil, nil, cloneNum);
         else
             if(region.SetDurationInfo) then
                 region:SetDurationInfo(0, math.huge);
             end
-            WeakAuras.duration_cache:SetDurationInfo(id, 0, math.huge, cloneNum);
+            WeakAuras.duration_cache:SetDurationInfo(id, 0, math.huge, nil, nil, cloneNum);
         end
     end
     
@@ -2325,6 +2325,11 @@ function WeakAuras.AddOption(id, data)
                     data.animation[field][value] = v;
                     if(field == "main" and not WeakAuras.IsAnimating("display", id)) then
                         WeakAuras.Animate("display", id, "main", data.animation.main, WeakAuras.regions[id].region, false, nil, true);
+                        if(WeakAuras.clones[id]) then
+                            for cloneId, cloneRegion in pairs(WeakAuras.clones[id]) do
+                                WeakAuras.Animate("display", id, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
+                            end
+                        end
                     end
                     WeakAuras.Add(data);
                 end,
@@ -6045,6 +6050,7 @@ function WeakAuras.CreateFrame()
         local distances = {};
         local names = {};
         
+        subname = tonumber(subname) and GetSpellInfo(tonumber(subname)) or subname;
         subname = subname:lower();
         
         local num = 0;

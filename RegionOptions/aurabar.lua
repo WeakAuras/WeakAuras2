@@ -93,6 +93,46 @@ local function createOptions(id, data)
             desc = L["Dynamic text tooltip"],
             order = 10
         },
+        customTextUpdate = {
+            type = "select",
+            width = "double",
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%c")
+                    or data.displayTextRight:find("%%c")
+                );
+            end,
+            name = L["Update Custom Text On..."],
+            values = WeakAuras.text_check_types,
+            order = 10.1
+        },
+        customText = {
+            type = "input",
+            width = "normal",
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%c")
+                    or data.displayTextRight:find("%%c")
+                );
+            end,
+            multiline = true,
+            name = L["Custom Function"],
+            order = 10.2
+        },
+        customText_expand = {
+            type = "execute",
+            order = 10.3,
+            name = L["Expand Text Editor"],
+            func = function()
+                WeakAuras.TextEditor(data, {"customText"})
+            end,
+            hidden = function()
+                return not (
+                    data.displayTextLeft:find("%%c")
+                    or data.displayTextRight:find("%%c")
+                );
+            end
+        },
         progressPrecision = {
             type = "select",
             order = 11,
@@ -134,33 +174,6 @@ local function createOptions(id, data)
                     or data.displayTextRight:find("%%t")
                 );
             end,
-        },
-        customText = {
-            type = "input",
-            width = "normal",
-            hidden = function()
-                return not (
-                    data.displayTextLeft:find("%%c")
-                    or data.displayTextRight:find("%%c")
-                );
-            end,
-            multiline = true,
-            name = L["Custom Function"],
-            order = 37
-        },
-        customText_expand = {
-            type = "execute",
-            order = 38,
-            name = L["Expand Text Editor"],
-            func = function()
-                WeakAuras.TextEditor(data, {"customText"})
-            end,
-            hidden = function()
-                return not (
-                    data.displayTextLeft:find("%%c")
-                    or data.displayTextRight:find("%%c")
-                );
-            end
         },
         icon_side = {
             type = "select",

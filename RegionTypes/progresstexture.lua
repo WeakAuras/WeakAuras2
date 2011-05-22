@@ -401,7 +401,7 @@ local function modify(parent, region, data)
     end
     
     local function UpdateCustom()
-        UpdateValue(region.customValueFunc());
+        UpdateValue(region.customValueFunc(data.trigger));
     end
     
     function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
@@ -412,7 +412,7 @@ local function modify(parent, region, data)
         
         if(customValue) then
             if(type(customValue) == "function") then
-                local value, total = customValue();
+                local value, total = customValue(data.trigger);
                 if(total > 0 and value < total) then
                     region.customValueFunc = customValue;
                     region:SetScript("OnUpdate", UpdateCustom);

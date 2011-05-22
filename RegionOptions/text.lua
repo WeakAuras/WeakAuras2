@@ -29,6 +29,14 @@ local function createOptions(id, data)
                 WeakAuras.ResetMoverSizer();
             end
         },
+        customTextUpdate = {
+            type = "select",
+            width = "double",
+            hidden = function() return not data.displayText:find("%%c"); end,
+            name = L["Update Custom Text On..."],
+            values = WeakAuras.text_check_types,
+            order = 36
+        },
         customText = {
             type = "input",
             width = "normal",

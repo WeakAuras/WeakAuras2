@@ -11,7 +11,8 @@ local default = {
     yOffset = 0,
     font = "Friz Quadrata TT",
     fontSize = 12,
-    frameStrata = 1
+    frameStrata = 1,
+    customTextUpdate = "update"
 };
 
 local function create(parent)
@@ -83,17 +84,22 @@ local function modify(parent, region, data)
     
     if(data.displayText:find("%%c") and data.customText) then
         local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
-        if not(region.customTextUpdateFrame) then
-            region.customTextUpdateFrame = CreateFrame("frame");
-        end
         local values = region.values;
-        region.customTextUpdateFrame:SetScript("OnUpdate", function()
+        region.UpdateCustomText = function()
             local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
-            values.custom = custom;
-            UpdateText();
-        end);
-    elseif(region.customTextUpdateFrame) then
-        region.customTextUpdateFrame:SetScript("OnUpdate", nil);
+            if(custom ~= values.custom) then
+                values.custom = custom;
+                UpdateText();
+            end
+        end
+        if(data.customTextUpdate == "update") then
+            WeakAuras.RegisterCustomTextUpdates(region);
+        else
+            WeakAuras.UnregisterCustomTextUpdates(region);
+        end
+    else
+        region.UpdateCustomText = nil;
+        WeakAuras.UnregisterCustomTextUpdates(region);
     end
     
     function region:Color(r, g, b, a)
@@ -156,7 +162,7 @@ local function modify(parent, region, data)
     end
     
     local function UpdateCustom()
-        UpdateValue(region.customValueFunc());
+        UpdateValue(region.customValueFunc(data.trigger));
     end
     
     function region:SetDurationInfo(duration, expirationTime, customValue)
@@ -167,7 +173,7 @@ local function modify(parent, region, data)
         
         if(customValue) then
             if(type(customValue) == "function") then
-                local value, total = customValue();
+                local value, total = customValue(data.trigger);
                 if(total > 0 and value < total) then
                     region.customValueFunc = customValue;
                     region:SetScript("OnUpdate", UpdateCustom);

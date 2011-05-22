@@ -19,7 +19,8 @@ local default = {
     fontSize = 12,
     stickyDuration = false,
     zoom = 0,
-    frameStrata = 1
+    frameStrata = 1,
+    customTextUpdate = "update"
 };
 
 local function create(parent, data)
@@ -51,7 +52,9 @@ local function create(parent, data)
     region.cooldown = cooldown;
     cooldown:SetAllPoints(icon);
     
-    local stacks = region:CreateFontString(nil, "OVERLAY");
+    local stacksFrame = CreateFrame("frame", nil, region);
+    stacksFrame:SetFrameLevel(cooldown:GetFrameLevel() + 1);
+    local stacks = stacksFrame:CreateFontString(nil, "OVERLAY");
     region.stacks = stacks;
     
     region.values = {};
@@ -142,6 +145,26 @@ local function modify(parent, region, data)
         end
     end
     
+    if(data.displayStacks:find("%%c") and data.customText) then
+        local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        local values = region.values;
+        region.UpdateCustomText = function()
+            local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
+            if(custom ~= values.custom) then
+                values.custom = custom;
+                UpdateText();
+            end
+        end
+        if(data.customTextUpdate == "update") then
+            WeakAuras.RegisterCustomTextUpdates(region);
+        else
+            WeakAuras.UnregisterCustomTextUpdates(region);
+        end
+    else
+        region.UpdateCustomText = nil;
+        WeakAuras.UnregisterCustomTextUpdates(region);
+    end
+    
     function region:SetStacks(count)
         if(count and count > 0) then
             region.values.stacks = count;
@@ -215,7 +238,7 @@ local function modify(parent, region, data)
     end
     
     local function UpdateCustom()
-        UpdateValue(region.customValueFunc());
+        UpdateValue(region.customValueFunc(data.trigger));
     end
     
     local function UpdateDurationInfo(duration, expirationTime, customValue)
@@ -226,7 +249,7 @@ local function modify(parent, region, data)
         
         if(customValue) then
             if(type(customValue) == "function") then
-                local value, total = customValue();
+                local value, total = customValue(data.trigger);
                 if(total > 0 and value < total) then
                     region.customValueFunc = customValue;
                     region:SetScript("OnUpdate", UpdateCustom);

@@ -70,6 +70,35 @@ local function createOptions(id, data)
             order = 41,
             values = WeakAuras.point_types
         },
+        customTextUpdate = {
+            type = "select",
+            width = "double",
+            hidden = function() return not data.displayStacks:find("%%c"); end,
+            name = L["Update Custom Text On..."],
+            values = WeakAuras.text_check_types,
+            order = 41.1
+        },
+        customText = {
+            type = "input",
+            width = "normal",
+            hidden = function()
+                return not data.displayStacks:find("%%c")
+            end,
+            multiline = true,
+            name = L["Custom Function"],
+            order = 41.2
+        },
+        customText_expand = {
+            type = "execute",
+            order = 41.2,
+            name = L["Expand Text Editor"],
+            func = function()
+                WeakAuras.TextEditor(data, {"customText"})
+            end,
+            hidden = function()
+                return not data.displayStacks:find("%%c")
+            end,
+        },
         stacksContainment = {
             type = "select",
             name = " ",

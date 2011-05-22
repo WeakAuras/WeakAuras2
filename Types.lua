@@ -109,16 +109,6 @@ WeakAuras.unit_threat_situation_types = {
     [2] = "|cFFFF9900"..L["Tanking But Not Highest"],
     [3] = "|cFFFF0000"..L["Tanking And Highest"]
 };
---[[WeakAuras.class_for_stance_types = {
-    ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"],
-    ["DRUID"] = "|cFFFF7D0A"..L["Druid"],
-    ["PALADIN"] = "|cFFF58CBA"..L["Paladin"],
-    ["PRIEST"] = "|cFFFFFFFF"..L["Priest"],
-    ["ROGUE"] = "|cFFFFF569"..L["Rogue"],
-    ["SHAMAN"] = "|cFF2459FF"..L["Shaman"],
-    ["WARLOCK"] = "|cFF9482C9"..L["Warlock"],
-    ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"]
-};]]
 WeakAuras.class_types = {
     ["DEATHKNIGHT"] = "|cFFC41F3B"..L["Death Knight"].."|r",
     ["DRUID"] = "|cFFFF7D0A"..L["Druid"].."|r",
@@ -130,6 +120,18 @@ WeakAuras.class_types = {
     ["SHAMAN"] = "|cFF2459FF"..L["Shaman"].."|r",
     ["WARLOCK"] = "|cFF9482C9"..L["Warlock"].."|r",
     ["WARRIOR"] = "|cFFC79C6E"..L["Warrior"].."|r"
+};
+WeakAuras.class_color_types = {
+    ["DEATHKNIGHT"] = "|cFFC41F3B",
+    ["DRUID"] = "|cFFFF7D0A",
+    ["HUNTER"] = "|cFFABD473",
+    ["MAGE"] = "|cFF69CCF0",
+    ["PALADIN"] = "|cFFF58CBA",
+    ["PRIEST"] = "|cFFFFFFFF",
+    ["ROGUE"] = "|cFFFFF569",
+    ["SHAMAN"] = "|cFF2459FF",
+    ["WARLOCK"] = "|cFF9482C9",
+    ["WARRIOR"] = "|cFFC79C6E"
 };
 WeakAuras.form_types = {};
 local function update_forms()
@@ -208,6 +210,10 @@ WeakAuras.blend_types = {
     ADD = L["Glow"],
     BLEND = L["Opaque"],
 };
+WeakAuras.text_check_types = {
+    update = L["Every Frame"],
+    event = L["Trigger Update"]
+}
 WeakAuras.check_types = {
     update = L["Every Frame"],
     event = L["Event(s)"]
@@ -370,6 +376,7 @@ WeakAuras.texture_types = {
         ["Textures\\SpellActivationOverlays\\Grand_Crusader"] = "Grand Crusader",
         ["Textures\\SpellActivationOverlays\\Hot_Streak"] = "Hot Streak",
         ["Textures\\SpellActivationOverlays\\Imp_Empowerment"] = "Imp Empowerment",
+        ["Textures\\SpellActivationOverlays\\Impact"] = "Impact",
         ["Textures\\SpellActivationOverlays\\Lock_and_Load"] = "Lock and Load",
         ["Textures\\SpellActivationOverlays\\Maelstrom_Weapon"] = "Maelstrom Weapon",
         ["Textures\\SpellActivationOverlays\\Master_Marksman"] = "Master Marksman",
@@ -860,6 +867,8 @@ WeakAuras.anim_translate_types = {
     spiral = L["Spiral"],
     spiralandpulse = L["Spiral In And Out"],
     shake = L["Shake"],
+    bounce = L["Bounce"],
+    bounceDecay = L["Bounce with Decay"],
     custom = L["Custom Function"]
 };
 WeakAuras.anim_scale_types = {
@@ -906,7 +915,8 @@ WeakAuras.anim_start_preset_types = {
     fade = L["Fade In"],
     shrink = L["Grow"],
     grow = L["Shrink"],
-    spiral = L["Spiral"]
+    spiral = L["Spiral"],
+    bounceDecay = L["Bounce"]
 };
 WeakAuras.anim_main_preset_types = {
     shake = L["Shake"],
@@ -918,7 +928,8 @@ WeakAuras.anim_main_preset_types = {
     rotateClockwise = L["Rotate Right"],
     rotateCounterClockwise = L["Rotate Left"],
     spiralandpulse = L["Spiral"],
-    orbit = L["Orbit"]
+    orbit = L["Orbit"],
+    bounce = L["Bounce"]
 };
 WeakAuras.anim_finish_preset_types = {
     slidetop = L["Slide to Top"],
@@ -928,7 +939,8 @@ WeakAuras.anim_finish_preset_types = {
     fade = L["Fade Out"],
     shrink = L["Shrink"],
     grow =L["Grow"],
-    spiral = L["Spiral"]
+    spiral = L["Spiral"],
+    bounceDecay = L["Bounce"]
 };
 WeakAuras.chat_message_types = {
     CHAT_MSG_BATTLEGROUND = L["Battleground"],
