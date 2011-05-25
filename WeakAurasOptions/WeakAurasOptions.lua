@@ -3656,8 +3656,8 @@ function WeakAuras.ReloadTriggerOptions(data)
             trigger = data.trigger;
             untrigger = data.untrigger;
         else
-            trigger = data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
-            untrigger = data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
+            trigger = data.additional_triggers and data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
+            untrigger = data.additional_triggers and data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
         end
     end
     
