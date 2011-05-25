@@ -63,12 +63,32 @@ local steps = {
     {
         title = "Create a Display: 2/5",
         text = "There are several different display types that have different appearances and different capabilities. Some are more abstract than others.\n\nFor the purposes of this tutorial, choose to create a Progress Bar.",
-        path = {"new", WeakAuras.L["Progress Bar"]}
+        path = {"new", WeakAuras.L["Progress Bar"]},
+        autoadvance = {
+            test = function()
+                local id = WeakAuras.OptionsFrame().pickedDisplay;
+                if(type(id) == "string") then
+                    if(WeakAuras.GetData(id).regionType == "aurabar") then
+                        return true
+                    end
+                end
+            end
+        }
     },
     {
         title = "Create a Display: 3/5",
         text = ("Each display has a unique name. A display's name does affect it's behavior; it is only for your organization.\n\nSince you are going to create a dipslay for %s, name your display %s."):format(aura, aura),
-        path = {"display", "", "button", "renamebox"}
+        path = {"display", "", "button", "renamebox"},
+        autoadvance = {
+            test = function()
+                local id = WeakAuras.OptionsFrame().pickedDisplay;
+                if(type(id) == "string") then
+                    if("|cFFFFFFFF"..(id or "none").."|r" == aura) then
+                        return true
+                    end
+                end
+            end
+        }
     },
     {
         title = "Create a Display: 4/5",
@@ -83,12 +103,25 @@ local steps = {
     {
         title = "Activation Settings: 1/5",
         text = "The second section, Trigger, controls when your display will be visible, and what information is passed to it.\n\nThere are many types of triggers, but right now you just need an Aura trigger, which is the default type.",
-        path = {"display", "", "options", "trigger", WeakAuras.L["Type"]}
+        path = {"display", "", "options", "trigger", {WeakAuras.L["Type"], 2}}
     },
     {
         title = "Activation Settings: 2/5",
-        text = "You're going to make your display only appear when you have %s, so type %s into the Aura Name text box.\n\nBy default, |cFF8800FFWeakAuras|r matches auras by name, and it should tell you how many unique spells match the name you've entered.",
-        path = {"display", "", "options", "trigger", WeakAuras.L["Aura Name"]}
+        text = ("You're going to make your display only appear when you have %s, so type %s into the Aura Name text box.\n\nBy default, |cFF8800FFWeakAuras|r matches auras by name, and it should tell you how many unique spells match the name you've entered."):format(aura, aura),
+        path = {"display", "", "options", "trigger", WeakAuras.L["Aura Name"]},
+        autoadvance = {
+            path = {"trigger", "names"},
+            test = function(previousValue, currentValue, previousPicked, currentPicked)
+                local data = type(currentPicked) == "string" and WeakAuras.GetData(currentPicked);
+                if(data and (
+                    data.trigger.type == "aura"
+                    and data.trigger.unit ~= "multi"
+                    and "|cFFFFFFFF"..(data.trigger.names[1] or "none").."|r" == aura
+                )) then
+                    return true;
+                end
+            end
+        }
     },
     {
         title = "Activation Settings: 3/5",
@@ -103,7 +136,16 @@ local steps = {
     {
         title = "Activation Settings: 5/5",
         text = ("Since you are a %s, you can enable the Player Class options and select %s."):format(className, className),
-        path = {"display", "", "options", "load", WeakAuras.L["Player Class"]}
+        path = {"display", "", "options", "load", {WeakAuras.L["Player Class"], 2}},
+        autoadvance = {
+            path = {"load", "class", "single"},
+            test = function(previousValue, currentValue, previousPicked, currentPicked)
+                local data = type(currentPicked) == "string" and WeakAuras.GetData(currentPicked);
+                if(data and data.load.use_class == true and data.load.class.single == class) then
+                    return true;
+                end
+            end
+        }
     },
     {
         title = "Actions and Animations: 1/7",
@@ -113,12 +155,30 @@ local steps = {
     {
         title = "Actions and Animations: 2/7",
         text = "For the purpose of demonstration, you'll make your display play a sound when it appears.\n\nEnable the Play Sound option.",
-        path = {"display", "", "options", "action", WeakAuras.L["Play Sound"]}
+        path = {"display", "", "options", "action", WeakAuras.L["Play Sound"]},
+        autoadvance = {
+            path = {"load", "class", "single"},
+            test = function(previousValue, currentValue, previousPicked, currentPicked)
+                local data = type(currentPicked) == "string" and WeakAuras.GetData(currentPicked);
+                if(data and data.actions.start.do_sound) then
+                    return true;
+                end
+            end
+        }
     },
     {
         title = "Actions and Animations: 3/7",
         text = "Pick a sound file from the list.",
-        path = {"display", "", "options", "action", WeakAuras.L["Sound"]}
+        path = {"display", "", "options", "action", WeakAuras.L["Sound"]},
+        autoadvance = {
+            path = {"load", "class", "single"},
+            test = function(previousValue, currentValue, previousPicked, currentPicked)
+                local data = type(currentPicked) == "string" and WeakAuras.GetData(currentPicked);
+                if(data and data.actions.start.sound) then
+                    return true;
+                end
+            end
+        }
     },
     {
         title = "Actions and Animations: 4/7",
@@ -128,7 +188,16 @@ local steps = {
     {
         title = "Actions and Animations: 5/7",
         text = "There are three times an animation can play: when your display appears (Start), all the time while your display is visible (Main), or as your display is hiding (Finish).\n\nChange the Start Type from \"None\" to \"Preset\" to enable the Start animation.",
-        path = {"display", "", "options", "animation", WeakAuras.L["Type"]}
+        path = {"display", "", "options", "animation", WeakAuras.L["Type"]},
+        autoadvance = {
+            path = {"animation", "start", "type"},
+            test = function(previousValue, currentValue, previousPicked, currentPicked)
+                local data = type(currentPicked) == "string" and WeakAuras.GetData(currentPicked);
+                if(data and currentValue == "preset") then
+                    return true;
+                end
+            end
+        }
     },
     {
         title = "Actions and Animations: 6/7",
@@ -142,7 +211,7 @@ local steps = {
     },
     {
         title = "Finished",
-        text = "That's it for the Beginners Guide. However, you've hardly scratched the surface of |cFF8800FFWeakAuras|r' power.\n\nSee the |cFFFFFF00More|r |cFFFF7F00Advanced|r |cFFFF0000Tutorials|r to dive deeper into |cFF8800FFWeakAuras|r' endless possibilities.",
+        text = "That's it for the Beginners Guide. However, you've hardly scratched the surface of |cFF8800FFWeakAuras|r' power.\n\nIn the future, |cFFFFFF00More|r |cFFFF7F00Advanced|r |cFFFF0000Tutorials|r will be released to guide you deeper into |cFF8800FFWeakAuras|r' endless possibilities.",
         texture = {
             width = 100,
             height = 100,
