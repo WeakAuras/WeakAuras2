@@ -31,3 +31,4 @@ externals:
 move-folders:
  WeakAuras/WeakAurasOptions: WeakAurasOptions
  WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
+ WeakAuras/WeakAurasTutorials: WeakAutasTutorials
