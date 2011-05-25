@@ -14,3 +14,4 @@
 TutorialCore.lua
 
 Tutorials\beginner.lua
+Tutorials\newfeatures.lua

@@ -199,29 +199,8 @@ function WeakAuras.MultipleDisplayTooltipMenu()
     return menu;
 end
 
-local function valueFromPath(data, path)
-    if(#path == 1) then
-        return data[path[1]];
-    else
-        local reducedPath = {};
-        for i=2,#path do
-            reducedPath[i-1] = path[i];
-        end
-        return valueFromPath(data[path[1]], reducedPath);
-    end
-end
-
-local function valueToPath(data, path, value)
-    if(#path == 1) then
-        data[path[1]] = value;
-    else
-        local reducedPath = {};
-        for i=2,#path do
-            reducedPath[i-1] = path[i];
-        end
-        valueToPath(data[path[1]], reducedPath, value);
-    end
-end
+local valueFromPath = WeakAuras.ValueFromPath;
+local valueToPath = WeakAuras.ValueToPath;
 
 --This function computes the Levenshtein distance between two strings
 --It is based on the Wagner-Fisher algorithm
@@ -4490,7 +4469,7 @@ function WeakAuras.ReloadTriggerOptions(data)
                 end
             end,
             order = 75,
-            hidden = function() return not (trigger.type == "aura" and (not trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
+            hidden = function() return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
         }
     };
     
@@ -8106,6 +8085,8 @@ function WeakAuras.ShowCloneDialog(data)
                 WeakAuras.ReloadGroupRegionOptions(parentData);
                 WeakAuras.SortDisplayButtons();
                 parentButton:Expand();
+                
+                pickonupdate = data.id;
             end,
             OnCancel = function()
                 --do nothing

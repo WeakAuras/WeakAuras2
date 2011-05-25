@@ -35,6 +35,7 @@ function WeakAuras.TutorialsFrame()
     return tutFrame;
 end
 
+local autoAdvanceData = {};
 do
     local elapsed = 0;
     local anchorDelay = 0.1;
@@ -47,6 +48,7 @@ do
         if(elapsed > anchorDelay) then
             elapsed = elapsed - anchorDelay;
             
+            WeakAuras.CheckAutoAdvance();
             WeakAuras.PointTutorialToPath(anchorPath);
         end
     end
@@ -57,6 +59,28 @@ do
             tutFrame.stepFrame:SetScript("OnUpdate", ContinuousPointUpdate);
         else
             tutFrame.stepFrame:SetScript("OnUpdate", nil);
+        end
+    end
+    
+    function WeakAuras.CheckAutoAdvance()
+        if(autoAdvanceData.path) then
+            if(type(optionsFrame.pickedDisplay) == "string") then
+                local doAutoAdvance = false;
+                local currentValue = WeakAuras.ValueFromPath(WeakAuras.GetData(optionsFrame.pickedDisplay), autoAdvanceData.path);
+                if(autoAdvanceData.func(autoAdvanceData.previousValue, currentValue, autoAdvanceData.previousPicked, optionsFrame.pickedDisplay)) then
+                    doAutoAdvance = true;
+                end
+                autoAdvanceData.previousValue = currentValue;
+                autoAdvanceData.previousPicked = optionsFrame.pickedDisplay;
+                
+                if(doAutoAdvance) then
+                    tutFrame.stepFrame.next:Click();
+                end
+            end
+        elseif(autoAdvanceData.func) then
+            if(autoAdvanceData.func()) then
+                tutFrame.stepFrame.next:Click();
+            end
         end
     end
     
@@ -117,7 +141,11 @@ do
             elseif(path[1] == "display") then
                 local id;
                 if(path[2] and path[2] ~= "") then
-                    id = path[2];
+                    if(type(path[2]) == "function") then
+                        id = path[2]();
+                    else
+                        id = path[2];
+                    end
                 elseif(optionsFrame.pickedDisplay) then
                     if(type(optionsFrame.pickedDisplay) == "table") then
                         id = optionsFrame.pickedDisplay.controlledChildren[1];
@@ -165,11 +193,29 @@ do
                                     WeakAuras.PointTutorialToFrame(tabFrame);
                                 elseif(WeakAuras.OptionsFrame().container.children[1].children[1].children and path[5]) then
                                     local optionIndex;
+                                    local optionName;
+                                    local optionOccurrence;
+                                    local optionOccurrenceCount = 0;
+                                    if(type(path[5]) == "table") then
+                                        optionName = path[5][1];
+                                        optionOccurrence = path[5][2];
+                                    else
+                                        optionName = path[5];
+                                    end
+                                    
                                     for index, child in ipairs(WeakAuras.OptionsFrame().container.children[1].children[1].children) do
                                         local name = (child.label and child.label:GetText()) or (child.text and child.text:GetText());
-                                        if(name == (L[path[5]] or path[5])) then
-                                            optionIndex = index;
-                                            break;
+                                        if(name == (L[optionName] or optionName)) then
+                                            optionOccurrenceCount = optionOccurrenceCount + 1;
+                                            if(optionOccurrence) then
+                                                if(optionOccurrence == optionOccurrenceCount) then
+                                                    optionIndex = index;
+                                                    break;
+                                                end
+                                            else
+                                                optionIndex = index;
+                                                break;
+                                            end
                                         end
                                     end
                                     
@@ -283,7 +329,7 @@ function WeakAuras.ShowTutorialHome()
     tutFrame:SetTitle(L["WeakAuras Tutorials"]);
 end
 
-function WeakAuras.PlayTutorial(tutData, step)
+function WeakAuras.PlayTutorial(tutData, step, fromPrevious)
     tutFrame.homeFrame:Hide();
     tutFrame.stepFrame:Show();
     local stepFrame = tutFrame.stepFrame;
@@ -294,6 +340,23 @@ function WeakAuras.PlayTutorial(tutData, step)
     
     step = step or 1;
     local stepData = tutData.steps[step];
+    
+    if(stepData.autoadvance and not fromPrevious) then
+        autoAdvanceData.path = stepData.autoadvance.path;
+        autoAdvanceData.func = stepData.autoadvance.test;
+        if(type(optionsFrame.pickedDisplay) == "string") then
+            autoAdvanceData.previousPicked = optionsFrame.pickedDisplay;
+            autoAdvanceData.previousValue = autoAdvanceData.path and WeakAuras.GetData(optionsFrame.pickedDisplay) and WeakAuras.ValueFromPath(WeakAuras.GetData(optionsFrame.pickedDisplay), autoAdvanceData.path);
+        else
+            autoAdvanceData.previousPickedDisplay = nil;
+            autoAdvanceData.previousValue = nil;
+        end
+    else
+        autoAdvanceData.path = nil;
+        autoAdvanceData.func = nil;
+        autoAdvanceData.previousValue = nil;
+        autoAdvanceData.previousPicked = nil;
+    end
     
     stepFrame.title:SetText(stepData.title or "");
     if(stepData.texture) then
@@ -317,7 +380,7 @@ function WeakAuras.PlayTutorial(tutData, step)
     if(tutData.steps[step - 1]) then
         stepFrame.previous:Enable();
         stepFrame.previous:SetScript("OnClick", function()
-            WeakAuras.PlayTutorial(tutData, step - 1);
+            WeakAuras.PlayTutorial(tutData, step - 1, true);
         end);
     else
         stepFrame.previous:Disable();
