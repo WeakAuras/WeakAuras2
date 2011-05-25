@@ -3230,7 +3230,9 @@ function WeakAuras.SetRegion(data, cloneId)
                 if(cloneId) then
                     clonePool[regionType] = clonePool[regionType] or {};
                     region:SetScript("OnHide", function()
-                        clones[id][cloneId] = nil;
+                        if(clones[id]) then
+                            clones[id][cloneId] = nil;
+                        end
                         clonePool[regionType][#clonePool[regionType]] = region;
                         region:SetScript("OnHide", nil);
                     end);
