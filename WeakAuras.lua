@@ -1847,9 +1847,11 @@ do
         else
             unit = data.unit;
         end
-        loaded_auras[unit] = loaded_auras[unit] or {};
-        loaded_auras[unit][id] = loaded_auras[unit][id] or {};
-        loaded_auras[unit][id][triggernum] = data;
+        if(unit) then
+            loaded_auras[unit] = loaded_auras[unit] or {};
+            loaded_auras[unit][id] = loaded_auras[unit][id] or {};
+            loaded_auras[unit][id][triggernum] = data;
+        end
     end
         
     local function LoadEvent(id, triggernum, data)
@@ -4542,5 +4544,29 @@ do
     
     function WeakAuras.IsRegisteredForCustomTextUpdates(region)
         return updateRegions[region];
+    end
+end
+
+function WeakAuras.ValueFromPath(data, path)
+    if(#path == 1) then
+        return data[path[1]];
+    else
+        local reducedPath = {};
+        for i=2,#path do
+            reducedPath[i-1] = path[i];
+        end
+        return WeakAuras.ValueFromPath(data[path[1]], reducedPath);
+    end
+end
+
+function WeakAuras.ValueToPath(data, path, value)
+    if(#path == 1) then
+        data[path[1]] = value;
+    else
+        local reducedPath = {};
+        for i=2,#path do
+            reducedPath[i-1] = path[i];
+        end
+        WeakAuras.ValueToPath(data[path[1]], reducedPath, value);
     end
 end
