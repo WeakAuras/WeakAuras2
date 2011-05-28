@@ -1436,7 +1436,15 @@ local startTime, duration = WeakAuras.GetSpellCooldown(spell);
 startTime = startTime or 0;
 duration = duration or 0;
 local onCooldown = duration > 1.51;
+local active = IsUsableSpell(spell) and not onCooldown
 ]]
+            if(trigger.use_targetRequired) then
+                ret = ret.."active = active and IsSpellInRange(spellName or '')\n";
+            end
+            if(trigger.use_inverse) then
+                ret = ret.."active = not active\n";
+            end
+            
             return ret:format(spellName);
         end,
         args = {
@@ -1444,7 +1452,7 @@ local onCooldown = duration > 1.51;
                 name = "spellName",
                 display = L["Spell"],
                 type = "spell",
-                test = "IsUsableSpell(spell) and not onCooldown"
+                test = "true"
             },
             --This parameter uses the IsSpellInRange API function, but it does not check spell range at all
             --IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
@@ -1452,7 +1460,17 @@ local onCooldown = duration > 1.51;
                 name = "targetRequired",
                 display = L["Require Valid Target"],
                 type = "toggle",
-                test = "IsSpellInRange(spellName or '')"
+                test = "true"
+            },
+            {
+                name = "inverse",
+                display = L["Inverse"],
+                type = "toggle",
+                test = "true"
+            },
+            {
+                hidden = true,
+                test = "active"
             }
         },
         nameFunc = function(trigger)

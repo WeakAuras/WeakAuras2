@@ -4065,7 +4065,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
                     playersString = L["Group %s"]:format(subgroup)..": ";
                     for playerName, _ in pairs(players) do
                         local space = playerName:find(" ");
-                        local _, class = UnitClass(playerName);
+                        local _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
                         local classColor = WeakAuras.class_color_types[class];
                         playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
                     end
@@ -4076,7 +4076,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
                 playersString = "";
                 for playerName, _ in pairs(playerList) do
                     local space = playerName:find(" ");
-                    local _, class = UnitClass(playerName);
+                    local _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
                     local classColor = WeakAuras.class_color_types[class];
                     playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
                     num = num + 1;
