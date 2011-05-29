@@ -1825,9 +1825,9 @@ local inverse = %s;
         durationFunc = function(trigger)
             local startTime, duration, ready = GetRuneCooldown(trigger.rune);
             if(startTime and startTime > 0) then
-                return duration, startTime + duration;
+                return duration, startTime + duration, nil, true;
             else
-                return 0, math.huge;
+                return 0, math.huge, nil, true;
             end
         end,
         nameFunc = function(trigger)
