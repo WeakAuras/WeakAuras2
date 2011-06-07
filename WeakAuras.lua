@@ -1835,7 +1835,7 @@ do
     local function LoadAura(id, triggernum, data)
         local unit;
         if(data.specificUnit) then
-            if(data.unit:sub(0,4) == "boss") then
+            if(data.unit:lower():sub(0,4) == "boss") then
                 specificBosses[data.unit] = true;
                 unit = "boss";
             else
@@ -2201,8 +2201,6 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
             if(region.SetDurationInfo) then
                 region:SetDurationInfo(duration, expirationTime > 0 and expirationTime or math.huge);
             end
-            --TODO: HOW DOES THIS WORK WITH CLONES??
-            --Answer: this provides duration info for progress-relative animations. It does not work correctly with clones (and it should)
             duration_cache:SetDurationInfo(id, duration, expirationTime, nil, nil, cloneId);
             if(region.SetName) then
                 region:SetName(name);
@@ -2924,8 +2922,8 @@ function WeakAuras.pAdd(data)
                         debuffType = trigger.debuffType,
                         names = trigger.names,
                         name = trigger.name,
-                        unit = trigger.use_specific_unit and trigger.specificUnit or trigger.unit,
-                        specificUnit = trigger.use_specific_unit,
+                        unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit,
+                        specificUnit = trigger.unit == "member",
                         useCount = trigger.useCount,
                         ownOnly = trigger.ownOnly,
                         inverse = trigger.inverse and not (trigger.unit == "group" and not trigger.groupclone),
