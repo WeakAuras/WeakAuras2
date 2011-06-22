@@ -1421,7 +1421,9 @@ local duration, expirationTime = WeakAuras.GetSwingTimerInfo(hand);
             "SPELL_COOLDOWN_STARTED",
             "SPELL_UPDATE_USABLE",
             "PLAYER_TARGET_CHANGED",
-            "UNIT_POWER"
+            "UNIT_POWER",
+			"RUNE_POWER_UPDATE",
+			"RUNE_TYPE_UPDATE"
         },
         force_events = true,
         name = L["Action Usable"],
