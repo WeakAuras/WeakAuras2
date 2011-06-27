@@ -620,8 +620,9 @@ do
     function WeakAuras.InitCooldownReady()
         cdReadyFrame = CreateFrame("FRAME");
         cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+        cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
         cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
-            if(event == "SPELL_UPDATE_COOLDOWN") then
+            if(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE") then
                 WeakAuras.CheckCooldownReady();
             elseif(event == "UNIT_SPELLCAST_SENT") then
                 local unit, name = ...;
@@ -738,7 +739,7 @@ do
             else
                 if(spellCdExps[id]) then
                     --Somehow CheckCooldownReady caught the spell cooldown before the timer callback
-                    --This shouldn't happen, but if it doesn, no problem
+                    --This shouldn't happen, but if it does, no problem
                     if(spellCdHandles[id]) then
                         timer:CancelTimer(spellCdHandles[id]);
                     end
@@ -4486,10 +4487,10 @@ function WeakAuras.CombatEventWarning(silentIfNone)
     end
     
     if(next(offendList)) then
-        print("|cFF8800FFWeakAuras|r has detected you have updated from World of Warcraft version 4.0.6 to version 4.1.");
-        print("In 4.1, Blizzard changed the behavior of the COMBAT_LOG_EVENT_UNFILTERED event, giving it another argument.");
+        print("|cFF8800FFWeakAuras|r has detected you have updated from World of Warcraft version 4.1.0 to version 4.2.0");
+        print("In 4.2, Blizzard changed the behavior of the COMBAT_LOG_EVENT_UNFILTERED event, giving two additional arguments.");
         print("|cFF8800FFWeakAuras|r automatically accounts for this in most circumstances, but you have Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events. You will need to update them manually.");
-        print("If you don't know how to do this, please see http://www.wowace.com/addons/weakauras/forum/21024-4-1-change/ for instructions and/or help.")
+        print("If you don't know how to do this, please see http://www.wowace.com/addons/weakauras/forum/21024-4-1-change/#p3 for instructions and/or help.")
         print("The following displays have Custom Triggers that use the COMBAT_LOG_EVENT_UNFILTERED event:");
         for id,_ in pairs(offendList) do
             print("  "..id);
@@ -4568,5 +4569,17 @@ function WeakAuras.ValueToPath(data, path, value)
             reducedPath[i-1] = path[i];
         end
         WeakAuras.ValueToPath(data[path[1]], reducedPath, value);
+    end
+end
+
+local itemCountWatchFrame;
+function WeakAuras.RegisterItemCountWatch()
+    if not(itemCountWatchFrame) then
+        itemCountWatchFrame = CreateFrame("frame");
+        itemCountWatchFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+        itemCountWatchFrame:SetScript("OnEvent", function()
+            timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
+            timer:ScheduleTimer(WeakAuras.ScanEvents, 0.5, "ITEM_COUNT_UPDATE");
+        end);
     end
 end

@@ -874,6 +874,12 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
                 end
             },
             {}, --sourceFlags ignored with _ argument
+            {
+                enable = function()
+                    local _, _, _, tocversion = GetBuildInfo()
+                    return tocversion > 40100
+                end
+            }, --new Combat Log Event argument sourceRaidFlags added in 4.2 - ignore it with _ if the toc version is 4.2 or later
             {}, --destGUID ignored with _ argument
             {
                 name = "destunit",
@@ -897,6 +903,12 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
                 end
             },
             {}, --destFlags ignored with _ argument
+            {
+                enable = function()
+                    local _, _, _, tocversion = GetBuildInfo()
+                    return tocversion > 40100
+                end
+            }, --new Combat Log Event argument destRaidFlags added in 4.2 - ignore it with _ if the toc version is 4.2 or later
             {
                 enable = function(trigger)
                     return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
@@ -1563,11 +1575,15 @@ local inverse = %s;
         type = "status",
         events = {
             "BAG_UPDATE",
-            "UNIT_SPELLCAST_SUCCEEDED"
+            "ITEM_COUNT_UPDATE",
+            "PLAYER_ENTERING_WORLD"
         },
         force_events = true,
         name = L["Item Count"],
         init = function(trigger)
+            if(trigger.use_includeCharges) then
+                WeakAuras.RegisterItemCountWatch();
+            end
             trigger.itemName = trigger.itemName or 1;
             return "local count = GetItemCount('"..trigger.itemName.."', "..(trigger.use_includeBank and "true" or "nil")..", "..(trigger.use_includeCharges and "true" or "nil")..");\n";
         end,
@@ -1796,7 +1812,8 @@ local inverse = %s;
         type = "status",
         events = {
             "RUNE_POWER_UPDATE",
-            "RUNE_TYPE_UPDATE"
+            "RUNE_TYPE_UPDATE",
+            "PLAYER_ENTERING_WORLD"
         },
         force_events = true,
         name = L["Death Knight Rune"],

@@ -991,7 +991,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         local version = WeakAuras.versionString
         
         --Check for 4.0 to 4.1 upgrade to give warning about Combat Log Event Unfiltered change
-        if((tonumber(odb.build) or 0) <= 13623 and (tonumber(build) or 0) > 13623) then
+        if((tonumber(odb.build) or 0) <= 14007 and (tonumber(build) or 0) > 14007) then
             WeakAuras.CombatEventWarning(true);
         end
         
@@ -2061,8 +2061,14 @@ function WeakAuras.AddOption(id, data)
                         type = "execute",
                         name = L["Choose"],
                         order = 10.4,
+                        hidden = function() return not data.actions.start.do_glow end,
                         func = function()
-                            WeakAuras.StartFrameChooser(data, {"actions", "start", "glow_frame"});
+                            if(data.controlledChildren and data.controlledChildren[1]) then
+                                WeakAuras.PickDisplay(data.controlledChildren[1]);
+                                WeakAuras.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "start", "glow_frame"});
+                            else
+                                WeakAuras.StartFrameChooser(data, {"actions", "start", "glow_frame"});
+                            end
                         end
                     },
                     start_do_custom = {
@@ -2222,8 +2228,14 @@ function WeakAuras.AddOption(id, data)
                         type = "execute",
                         name = L["Choose"],
                         order = 30.4,
+                        hidden = function() return not data.actions.finish.do_glow end,
                         func = function()
-                            WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
+                            if(data.controlledChildren and data.controlledChildren[1]) then
+                                WeakAuras.PickDisplay(data.controlledChildren[1]);
+                                WeakAuras.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "finish", "glow_frame"});
+                            else
+                                WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
+                            end
                         end
                     },
                     finish_do_custom = {
@@ -3622,7 +3634,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     local id = data.id;
     WeakAuras.EnsureOptions(id);
     
-    local trigger, untrigger;
+    local trigger, untrigger, appendToTriggerPath, appendToUntriggerPath;
     if(data.controlledChildren) then
         optionTriggerChoices[id] = nil;
         for index, childId in pairs(data.controlledChildren) do
@@ -3655,9 +3667,37 @@ function WeakAuras.ReloadTriggerOptions(data)
         if(optionTriggerChoices[id] == 0) then
             trigger = data.trigger;
             untrigger = data.untrigger;
+            
+            function appendToTriggerPath(...)
+                local ret = {...};
+                tinsert(ret, 1, "trigger");
+                return ret;
+            end
+            
+            function appendToUntriggerPath(...)
+                local ret = {...};
+                tinsert(ret, 1, "untrigger");
+                return ret;
+            end
         else
             trigger = data.additional_triggers and data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
             untrigger = data.additional_triggers and data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
+            
+            function appendToTriggerPath(...)
+                local ret = {...};
+                tinsert(ret, 1, "trigger");
+                tinsert(ret, 1, optionTriggerChoices[id]);
+                tinsert(ret, 1, "additional_triggers");
+                return ret;
+            end
+            
+            function appendToUntriggerPath(...)
+                local ret = {...};
+                tinsert(ret, 1, "untrigger");
+                tinsert(ret, 1, optionTriggerChoices[id]);
+                tinsert(ret, 1, "additional_triggers");
+                return ret;
+            end
         end
     end
     
@@ -4747,7 +4787,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 10.5,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"trigger", "custom"})
+                WeakAuras.TextEditor(data, appendToTriggerPath("custom"))
             end,
             hidden = function() return not (trigger.type == "custom") end,
         },
@@ -4835,7 +4875,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 14.5,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"untrigger", "custom"})
+                WeakAuras.TextEditor(data, appendToUntriggerPath("custom"))
             end,
             hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide == "custom")) end,
         },
@@ -4884,7 +4924,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 16.5,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"trigger", "customDuration"})
+                WeakAuras.TextEditor(data, appendToTriggerPath("customDuration"))
             end,
             hidden = function() return not (trigger.type == "custom" and (trigger.custom_hide ~= "timed")) end,
         },
@@ -4933,7 +4973,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 18.5,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"trigger", "customName"})
+                WeakAuras.TextEditor(data, appendToTriggerPath("customName"))
             end,
             hidden = function() return not (trigger.type == "custom") end,
         },
@@ -4982,7 +5022,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 20.5,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"trigger", "customIcon"})
+                WeakAuras.TextEditor(data, appendToTriggerPath("customIcon"))
             end,
             hidden = function() return not (trigger.type == "custom") end,
         },
@@ -5031,7 +5071,7 @@ function WeakAuras.ReloadTriggerOptions(data)
             order = 22.5,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"trigger", "customStacks"})
+                WeakAuras.TextEditor(data, appendToTriggerPath("customStacks"))
             end,
             hidden = function() return not (trigger.type == "custom") end,
         },
@@ -5599,12 +5639,10 @@ function WeakAuras.CreateFrame()
     titlebg_r:SetPoint("LEFT", titlebg, "RIGHT")
     titlebg_r:SetWidth(30)
     titlebg_r:SetHeight(40)
-
+    
     local title = CreateFrame("Frame", nil, frame)
-    title:EnableMouse(true)
-    title:SetScript("OnMouseDown", function() frame:StartMoving() end)
-    title:SetScript("OnMouseUp", function()
-        frame:StopMovingOrSizing();
+    
+    local function commitWindowChanges()
         local xOffset = frame:GetRight() - GetScreenWidth();
         local yOffset = frame:GetTop() - GetScreenHeight();
         if(title:GetRight() > GetScreenWidth()) then
@@ -5620,8 +5658,17 @@ function WeakAuras.CreateFrame()
         db.frame = db.frame or {};
         db.frame.xOffset = xOffset;
         db.frame.yOffset = yOffset;
+        db.frame.width = frame:GetWidth();
+        db.frame.height = frame:GetHeight();
         frame:ClearAllPoints();
         frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
+    end
+    
+    title:EnableMouse(true)
+    title:SetScript("OnMouseDown", function() frame:StartMoving() end)
+    title:SetScript("OnMouseUp", function()
+        frame:StopMovingOrSizing();
+        commitWindowChanges();
     end);
     title:SetPoint("BOTTOMLEFT", titlebg, "BOTTOMLEFT", -25, 0);
     title:SetPoint("TOPRIGHT", titlebg, "TOPRIGHT", 30, 0);
@@ -5637,10 +5684,8 @@ function WeakAuras.CreateFrame()
     sizer_sw:EnableMouse();
     sizer_sw:SetScript("OnMouseDown", function() frame:StartSizing("bottomleft") end);
     sizer_sw:SetScript("OnMouseUp", function()
-        frame:StopMovingOrSizing()
-        db.frame = db.frame or {};
-        db.frame.width = frame:GetWidth();
-        db.frame.height = frame:GetHeight();
+        frame:StopMovingOrSizing();
+        commitWindowChanges();
     end);
     frame.sizer_sw = sizer_sw;
     
@@ -5703,7 +5748,7 @@ function WeakAuras.CreateFrame()
     minimizebutton:SetScript("OnClick", function()
         if(frame.minimized) then
             frame.minimized = nil;
-            frame:SetHeight(500);
+            frame:SetHeight(db.frame and db.frame.height or 500);
             if(frame.window == "default") then
                 frame.buttonsContainer.frame:Show();
                 frame.container.frame:Show();
@@ -6536,6 +6581,9 @@ function WeakAuras.CreateFrame()
         frame.window = "texteditor";
         local title = (type(data.id) == "string" and data.id or L["Temporary Group"]).." -";
         for index, field in pairs(path) do
+            if(type(field) == "number") then
+                field = "Trigger "..field+1
+            end
             title = title.." "..field:sub(1, 1):upper()..field:sub(2);
         end
         texteditorbox:SetLabel(title);
