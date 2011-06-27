@@ -1,8 +1,12 @@
-## Interface: 40100
+﻿## Interface: 40200
 ## Title: WeakAuras Model Paths
 ## Author: Mirrored
 ## Version: @project-version@
 ## Notes: Model paths for WeakAuras
+## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
+## Notes-deDE: 3D-Model Pfade für WeakAuras
+## Notes-ruRU: Ссылки на файлы моделей WeakAuras
+## Notes-zhTW: WeakAuras的模組路徑
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde
 ## X-Email: mirror@uga.edu

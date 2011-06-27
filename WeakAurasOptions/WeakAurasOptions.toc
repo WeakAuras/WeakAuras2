@@ -1,8 +1,12 @@
-## Interface: 40100
+﻿## Interface: 40200
 ## Title: WeakAuras Options
 ## Author: Mirrored
 ## Version: @project-version@
 ## Notes: Options for WeakAuras
+## Notes-esES: Opciones para WeakAuras
+## Notes-deDE: Optionen für WeakAuras
+## Notes-ruRU: Опции WeakAuras
+## Notes-zhTW: WeakAuras的設定
 ## X-Author-Server: Dragonmaw US
 ## X-Author-Faction: Horde
 ## X-Email: mirror@uga.edu

@@ -4,4 +4,4 @@ end
 
 local L = WeakAuras.L
 
-@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="frFR", format="lua_additive_table")@
