@@ -1019,7 +1019,7 @@ do
         end
     end
     
-    local function combatLog(_, message, _, _, sourceName, _, destGUID, destName, _, _, spellName, _, auraType, amount)
+    local function combatLog(_, message, _, _, sourceName, _, _, destGUID, destName, _, _, _, spellName, _, auraType, amount)
         if(loaded_auras[spellName]) then
             if(message == "SPELL_AURA_APPLIED" or message == "SPELL_AURA_REFRESH" or message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
                 local unit = WeakAuras.GetUID(destGUID);
