@@ -352,7 +352,7 @@ L["Bar Texture"] = "Bar Texture"
 L["Text"] = "Text"
 L["Timer"] = "Timer"
 L["Icon"] = "Icon"
-L["Desaturate" = "Desaturate" 
+L["Desaturate"] = "Desaturate"
 L["Auto"] = "Auto"
 L["Display Text"] = "Display Text"
 L["Display Icon"] = "Display Icon"
@@ -1306,3 +1306,9 @@ L["Trigger Update"] = "Trigger Update"
 L["Group %s"] = "Group %s"
 L["Bounce"] = "Bounce"
 L["Bounce with Decay"] = "Bounce with Decay"
+
+-- Make missing translations available
+setmetatable(WeakAuras.L, {__index = function(self, key)
+	self[key] = (key or "") .."(Missing)"
+	return key
+end})
