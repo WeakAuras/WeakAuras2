@@ -16,6 +16,11 @@ local function createOptions(id, data)
             name = L["Icon"],
             order = 2
         },
+		desaturate = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 8.5,
+        },
         auto = {
             type = "toggle",
             name = L["Auto"],

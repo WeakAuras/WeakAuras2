@@ -2,6 +2,7 @@
 
 local default = {
     icon = true,
+	desaturate = false,
     auto = true,
     inverse = false,
     width = 64,
@@ -184,6 +185,7 @@ local function modify(parent, region, data)
             or "Interface\\Icons\\INV_Misc_QuestionMark"
         );
         icon:SetTexture(iconPath);
+		icon:SetDesaturated(data.desaturate)
         region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
         UpdateText();
     end
