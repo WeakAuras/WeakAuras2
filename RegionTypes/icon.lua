@@ -189,8 +189,8 @@ local function modify(parent, region, data)
         region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
         UpdateText();
     end
-	region:SetIcon()
-    
+    region:SetIcon(path)
+	
     function region:SetName(name)
         region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
         UpdateText();

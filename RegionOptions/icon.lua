@@ -10,11 +10,6 @@ local function createOptions(id, data)
             disabled = function() return not WeakAuras.CanHaveDuration(data); end,
             get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
         },
-        desaturate = {
-            type = "toggle",
-            name = L["Desaturate"],
-            order = 8.5,
-        },
         auto = {
             type = "toggle",
             name = L["Automatic Icon"],
@@ -49,6 +44,12 @@ local function createOptions(id, data)
             disabled = function() return not data.icon end,
             order = 18,
             func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
+        },
+		
+        desaturate = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 18.5,
         },
         inverse = {
             type = "toggle",

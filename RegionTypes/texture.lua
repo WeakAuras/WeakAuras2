@@ -3,6 +3,7 @@ local halfroot2 = root2/2;
     
 local default = {
     texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+	desaturate = false,
     width = 200,
     height = 200,
     color = {1, 1, 1, 0.75},
@@ -37,6 +38,7 @@ local function modify(parent, region, data)
     end
     
     region.texture:SetTexture(data.texture);
+	region.texture:SetDesaturated(data.desaturate)
     region:SetWidth(data.width);
     region:SetHeight(data.height);
     region.texture:SetBlendMode(data.blendMode);

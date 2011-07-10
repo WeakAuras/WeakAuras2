@@ -29,11 +29,21 @@ local function createOptions(id, data)
                 WeakAuras.OpenTexturePick(data, "foregroundTexture");
             end
         },
+		desaturateForeground = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 17.5,
+        },
         sameTexture = {
             type = "toggle",
             name = L["Same"],
             width = "half",
             order = 15
+        },
+		desaturateBackground = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 17.6,
         },
         chooseBackgroundTexture = {
             type = "execute",

@@ -16,11 +16,6 @@ local function createOptions(id, data)
             name = L["Icon"],
             order = 2
         },
-		desaturate = {
-            type = "toggle",
-            name = L["Desaturate"],
-            order = 8.5,
-        },
         auto = {
             type = "toggle",
             name = L["Auto"],
@@ -202,6 +197,11 @@ local function createOptions(id, data)
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);
             end
+        },
+		desaturate = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 19.25,
         },
         rotateText = {
             type = "select",

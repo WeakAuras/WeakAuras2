@@ -57,6 +57,8 @@ end
 local default = {
     foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
     backgroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+	desaturateBackground = false,
+	desaturateForeground = false,
     sameTexture = true,
     compress = false,
     blendMode = "BLEND",
@@ -125,10 +127,12 @@ local function modify(parent, region, data)
     local fontPath = SharedMedia:Fetch("font", data.font);
     
     background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
+	background:SetDesaturated(data.desaturateBackground)
     background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
     background:SetBlendMode(data.blendMode);
     
     foreground:SetTexture(data.foregroundTexture);
+	foreground:SetDesaturated(data.desaturateForeground)
     foreground:SetBlendMode(data.blendMode);
     
     background:ClearAllPoints();

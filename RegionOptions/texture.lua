@@ -8,11 +8,10 @@ local function createOptions(id, data)
             name = L["Texture"],
             order = 0
         },
-        space1 = {
-            type = "execute",
-            name = "",
+		desaturate = {
+            type = "toggle",
+            name = L["Desaturate"],
             order = 2,
-            image = function() return "", 0, 0 end,
         },
         space2 = {
             type = "execute",
