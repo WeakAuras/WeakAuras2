@@ -407,7 +407,14 @@ WeakAuras.load_prototype = {
             type = "select",
             values = "difficulty_types",
             init = "arg"
-        }
+        },
+        {
+            name = "role",
+            display = L["Player Role"],
+            type = "multiselect",
+            values = "role_types",
+            init = "arg"
+        },
     }
 };
 

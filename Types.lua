@@ -916,6 +916,11 @@ WeakAuras.difficulty_types = {
     normal = L["Normal"],
     heroic = L["Heroic"]
 };
+WeakAuras.role_types = {
+    TANK = L["Tank"],
+    DAMAGER = L["Damager"],
+	HEALER = L["Healer"]
+};
 WeakAuras.anim_start_preset_types = {
     slidetop = L["Slide from Top"],
     slideleft = L["Slide from Left"],

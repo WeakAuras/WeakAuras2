@@ -1,6 +1,9 @@
 ﻿local L = WeakAuras.L
 
 --UI Labels
+L["Tank"] = "Tank"
+L["Damager"] = "Damage Dealer"
+L["Healer"] = "Healer"
 L["Aura"] = "Aura"
 L["Other"] = "Other"
 L["Buff"] = "Buff"
