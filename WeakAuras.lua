@@ -3455,6 +3455,16 @@ function WeakAuras.PerformActions(data, type)
                 if(GetChannelName(channel)) then
                     WeakAuras.Announce(actions.message, "CHANNEL", nil, channel, data.id, type);
                 end
+			elseif(actions.message_type == "SMARTRAID") then
+				if UnitInBattleground("player") then
+					SendChatMessage(actions.message, "BATTLEGROUND")
+				elseif UnitInRaid("player") then
+					SendChatMessage(actions.message, "RAID")
+				elseif UnitInParty("player") then
+					SendChatMessage(actions.message, "PARTY")
+				else
+					SendChatMessage(actions.message, "SAY")
+				end					
             else
                 WeakAuras.Announce(actions.message, actions.message_type, nil, nil, data.id, type);
             end

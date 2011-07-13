@@ -982,6 +982,7 @@ WeakAuras.send_chat_message_types = {
     GUILD = L["Guild"],
     OFFICER = L["Officer"],
     RAID = L["Raid"],
+	SMARTRAID = L["BG>Raid>Party>Say"],
     RAID_WARNING = L["Raid Warning"],
     BATTLEGROUND = L["Battleground"],
     COMBAT = L["Blizzard Combat Text"],
