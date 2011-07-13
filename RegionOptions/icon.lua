@@ -1,4 +1,5 @@
 ﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+local LBF = nil --LibStub("LibButtonFacade",true);
 local L = WeakAuras.L
 
 local function createOptions(id, data)
@@ -166,6 +167,18 @@ local function createOptions(id, data)
             max = 1,
             bigStep = 0.01,
             isPercent = true
+        },
+		iconInset = {
+            type = "range",
+            name = L["Icon Inset"],
+            order = 49.25,
+            min = 0,
+            max = 1,
+            bigStep = 0.01,
+            isPercent = true,
+			hidden = function()
+                return not LBF;
+            end
         },
         stickyDuration = {
             type = "toggle",

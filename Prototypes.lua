@@ -1818,16 +1818,34 @@ local inverse = %s;
     ["Death Knight Rune"] = {
         type = "status",
         events = {
-            "RUNE_POWER_UPDATE",
-            "RUNE_TYPE_UPDATE",
-            "PLAYER_ENTERING_WORLD"
+			"RUNE_COOLDOWN_READY",
+            "RUNE_COOLDOWN_CHANGED",
+            "RUNE_COOLDOWN_STARTED",
+            "COOLDOWN_REMAINING_CHECK"
         },
-        force_events = true,
+        force_events = "RUNE_COOLDOWN_FORCE",
         name = L["Death Knight Rune"],
-        init = function(trigger)
-            trigger.rune = trigger.rune or 1;
-            return "local death = (GetRuneType("..trigger.rune..") == 4);\nlocal _, _, ready = GetRuneCooldown("..trigger.rune..");\n";
-        end,
+		init = function(trigger)
+		    trigger.rune = trigger.rune or 0;
+            WeakAuras.WatchRuneCooldown(trigger.rune);
+            local ret = [[
+				local rune = %s
+				local startTime, duration = WeakAuras.GetRuneCooldown(rune);
+				local inverse = %s;
+			]];
+            if(trigger.use_remaining and not trigger.use_inverse) then
+			local ret2 = [[
+					local expirationTime = startTime + duration
+					local remaining = expirationTime - GetTime();
+					local remainingCheck = %s;
+					if(remaining > remainingCheck) then
+						WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+					end
+				]];
+                ret = ret..ret2:format(tonumber(trigger.remaining or 0));
+            end
+            return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"));
+		end,
         args = {
             {
                 name = "rune",
@@ -1843,18 +1861,39 @@ local inverse = %s;
                 type = "tristate"
             },
             {
-                name = "ready",
-                display = L["Ready For Use"],
-                type = "tristate"
+                name = "remaining",
+                display = L["Remaining Time"],
+                type = "number",
+                enable = function(trigger) return not(trigger.use_inverse) end
+            },
+            {
+                name = "inverse",
+                display = L["Inverse"],
+                type = "toggle",
+                test = "true"
+            },
+            {
+                hidden = true,
+                test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
             }
         },
         durationFunc = function(trigger)
-            local startTime, duration, ready = GetRuneCooldown(trigger.rune);
-            if(startTime and startTime > 0) then
-                return duration, startTime + duration, nil, true;
-            else
-                return 0, math.huge, nil, true;
-            end
+            local startTime, duration
+			if not(trigger.use_inverse) then
+				startTime, duration = WeakAuras.GetRuneCooldown(trigger.rune);
+			end
+			if trigger.death == true then
+				if GetRuneType(trigger.rune) ~= 4 then
+					startTime = 0
+				end
+			elseif trigger.death == false then
+				if GetRuneType(trigger.rune) == 4 then
+					startTime = 0
+				end
+			end
+            startTime = startTime or 0;
+            duration = duration or 0;
+            return duration, startTime + duration;
         end,
         nameFunc = function(trigger)
             local runeNames = {
@@ -1864,7 +1903,7 @@ local inverse = %s;
                 [4] = L["Death"]
             };
             return runeNames[GetRuneType(trigger.rune)];
-        end,
+        end,		
         iconFunc = function(trigger)
             local runeIcons = {
                 [1] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Blood",
@@ -1874,14 +1913,7 @@ local inverse = %s;
             };
             return runeIcons[GetRuneType(trigger.rune)];
         end,
-        expiredHideFunc = function(trigger)
-            if(trigger.ready == nil) then
-                return false;
-            else
-                return true;
-            end
-        end,
-        automaticrequired = true
+        automaticrequired = true,
     },
     ["Item Equipped"] = {
         type = "status",

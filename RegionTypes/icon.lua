@@ -1,7 +1,14 @@
 ﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+local LBF = nil --LibStub("LibButtonFacade",true);
+
+local borderOffset = 0.06
 
 local default = {
     icon = true,
+--	iconInset = 0.0,
+--	BFskin = "Blizzard",
+--	BFgloss = 0.0,
+--	BFbackdrop = false,
 	desaturate = false,
     auto = true,
     inverse = false,
@@ -24,6 +31,10 @@ local default = {
     customTextUpdate = "update"
 };
 
+local function SkinChanged(skinID, gloss, backdrop, colors, button)
+
+end
+
 local function create(parent, data)
     local font = "GameFontHighlight";
     
@@ -32,10 +43,26 @@ local function create(parent, data)
     region:SetResizable(true);
     region:SetMinResize(1, 1);
     
-    local icon = region:CreateTexture(nil, "BACKGROUND");
+	local button
+	if LBF then
+		button = CreateFrame("Button", nil, region, "UIPanelButtonTemplate")
+		button.data = data
+		region.button = button;
+		button:EnableMouse(false);
+		button:Disable();
+		button:SetAllPoints();
+		
+		LBF:RegisterSkinCallback("WeakAuras", SkinChanged)
+	end
+	
+	local icon = region:CreateTexture(nil, "BACKGROUND");
+	if LBF then
+		icon:SetAllPoints(button);
+	else
+		icon:SetAllPoints(region);
+	end
     region.icon = icon;
     icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-    icon:SetAllPoints(region);
     
     --This section creates a unique frame id for the cooldown frame so that it can be created with a global reference
     --The reason is so that WeakAuras cooldown frames can interact properly with OmniCC (i.e., put on its blacklist for timer overlays)
@@ -49,6 +76,8 @@ local function create(parent, data)
             num = num + 1;
         end
     end
+	region.frameId = frameId;
+	
     local cooldown = CreateFrame("COOLDOWN", "WeakAurasCooldown"..frameId, region);
     region.cooldown = cooldown;
     cooldown:SetAllPoints(icon);
@@ -61,13 +90,21 @@ local function create(parent, data)
     region.values = {};
     region.duration = 0;
     region.expirationTime = math.huge;
-    
+
     return region;
 end
 
 local function modify(parent, region, data)
-    local icon, cooldown, stacks = region.icon, region.cooldown, region.stacks;
-    
+    local button, icon, cooldown, stacks = region.button, region.icon, region.cooldown, region.stacks;
+	
+	if LBF and not region.LBFGroup then
+		region.LBFGroup = LBF:Group("WeakAuras", region.frameId);
+		region.LBFGroup:Skin(data.BFskin, data.BFgloss, data.BFbackdrop);
+		region.LBFGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
+		
+		button.data = data
+	end
+
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
@@ -76,7 +113,11 @@ local function modify(parent, region, data)
     
     region:SetWidth(data.width);
     region:SetHeight(data.height);
-    
+	if LBF then
+		button:SetAllPoints();
+	end
+	icon:SetAllPoints();
+	
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
     
@@ -101,9 +142,20 @@ local function modify(parent, region, data)
     end
     stacks:SetFont(fontPath, data.fontSize, "OUTLINE");
     stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
-    
+
     local texWidth = 0.25 * data.zoom;
-    icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
+	
+	local bo
+	if region.LBFGroup then
+		region.LBFGroup:ReSkin();
+		bo = borderOffset
+		
+		icon:SetWidth(icon:GetWidth()   - bo * icon:GetWidth()  * UIParent:GetScale() * data.iconInset*10)
+		icon:SetHeight(icon:GetHeight() - bo * icon:GetHeight() * UIParent:GetScale() * data.iconInset*10)
+	else
+		bo = 0.0
+	end
+	icon:SetTexCoord(texWidth + bo, 1 - bo - texWidth, texWidth + bo, 1 - bo - texWidth);
     
     local tooltipType = WeakAuras.CanHaveTooltip(data);
     if(tooltipType and data.useTooltip) then
@@ -123,7 +175,10 @@ local function modify(parent, region, data)
         region.color_g = g;
         region.color_b = b;
         region.color_a = a;
-        region.icon:SetVertexColor(r, g, b, a);
+        icon:SetVertexColor(r, g, b, a);
+		if LBF then
+			button:SetAlpha(a);
+		end
     end
     
     function region:GetColor()
@@ -184,12 +239,12 @@ local function modify(parent, region, data)
             or data.displayIcon
             or "Interface\\Icons\\INV_Misc_QuestionMark"
         );
-        icon:SetTexture(iconPath);
-		icon:SetDesaturated(data.desaturate)
+		icon:SetTexture(iconPath);
+		icon:SetDesaturated(data.desaturate);
         region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
         UpdateText();
     end
-    region:SetIcon(path)
+	region:SetIcon()
 	
     function region:SetName(name)
         region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
@@ -279,7 +334,7 @@ local function modify(parent, region, data)
         local mirror_h, mirror_v;
         if(scalex < 0) then
             mirror_h = true;
-            scalex = scalex * -1;
+			scalex = scalex * -1;
         end
         region:SetWidth(data.width * scalex);
         if(scaley < 0) then
@@ -287,18 +342,34 @@ local function modify(parent, region, data)
             scaley = scaley * -1;
         end
         region:SetHeight(data.height * scaley);
-        
+		if LBF then
+			button:SetAllPoints();
+		end
+		icon:SetAllPoints();
+		
+		local texWidth = 0.25 * data.zoom;
+		local bo
+		if region.LBFGroup then
+			region.LBFGroup:ReSkin();
+			bo = borderOffset;
+			
+			icon:SetWidth(icon:GetWidth()   - bo * icon:GetWidth()  * UIParent:GetScale() * data.iconInset*10)
+			icon:SetHeight(icon:GetHeight() - bo * icon:GetHeight() * UIParent:GetScale() * data.iconInset*10)
+		else
+			bo = 0.0;
+		end
+		
         if(mirror_h) then
             if(mirror_v) then
-                icon:SetTexCoord(1-texWidth,1-texWidth , 1-texWidth,texWidth , texWidth,1-texWidth , texWidth,texWidth);
+                icon:SetTexCoord(1-bo-texWidth, 1-bo-texWidth , 1-bo-texWidth, texWidth+bo,    texWidth+bo, 1-bo-texWidth, texWidth+bo, texWidth+bo);
             else
-                icon:SetTexCoord(1-texWidth,texWidth , 1-texWidth,1-texWidth , texWidth,texWidth , texWidth,1-texWidth);
+                icon:SetTexCoord(1-bo-texWidth, texWidth+bo,    1-bo-texWidth, 1-bo-texWidth , texWidth+bo, texWidth+bo,   texWidth+bo, 1-bo-texWidth);
             end
         else
             if(mirror_v) then
-                icon:SetTexCoord(texWidth,1-texWidth , texWidth,texWidth , 1-texWidth,1-texWidth , 1-texWidth,texWidth);
+                icon:SetTexCoord(texWidth+bo, 1-bo-texWidth, texWidth+bo, texWidth+bo,    1-bo-texWidth, 1-bo-texWidth, 1-bo-texWidth, texWidth+bo);
             else
-                icon:SetTexCoord(texWidth,texWidth , texWidth,1-texWidth , 1-texWidth,texWidth , 1-texWidth,1-texWidth);
+                icon:SetTexCoord(texWidth+bo, bo+texWidth,   texWidth+bo, 1-bo-texWidth , 1-bo-texWidth, texWidth+bo,   1-bo-texWidth, 1-bo-texWidth);
             end
         end
     end

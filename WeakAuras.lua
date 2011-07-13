@@ -609,6 +609,11 @@ do
     local itemCdDurs = {};
     local itemCdExps = {};
     local itemCdHandles = {};
+	
+	local runes = {};
+    local runeCdDurs = {};
+    local runeCdExps = {};
+    local runeCdHandles = {};
     
     local gcdReference;
     local gcdStart;
@@ -652,6 +657,14 @@ do
             return 0, 0;
         end
     end
+	
+	function WeakAuras.GetRuneCooldown(id)
+        if(runes[id] and runeCdExps[id] and runeCdDurs[id]) then
+            return runeCdExps[id] - runeCdDurs[id], runeCdDurs[id];
+        else
+            return 0, 0;
+        end
+    end
     
     function WeakAuras.GetGCDInfo()
         if(gcdStart) then
@@ -673,6 +686,13 @@ do
         itemCdDurs[id] = nil;
         itemCdExps[id] = nil;
         WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+    end
+	
+	local function RuneCooldownFinished(id)
+        runeCdHandles[id] = nil;
+        runeCdDurs[id] = nil;
+        runeCdExps[id] = nil;
+        WeakAuras.ScanEvents("RUNE_COOLDOWN_READY", id);
     end
     
     local function CheckGCD()
@@ -788,6 +808,47 @@ do
                 end
             end
         end
+		
+		for id, _ in pairs(runes) do
+            local startTime, duration = GetRuneCooldown(id);
+            startTime = startTime or 0;
+            duration = duration or 0;
+            local time = GetTime();
+            
+            if(duration > 1.51) then
+                --On non-GCD cooldown
+                local endTime = startTime + duration;
+                
+                if not(runeCdExps[id]) then
+                    --New cooldown
+                    runeCdDurs[id] = duration;
+                    runeCdExps[id] = endTime;
+                    runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("RUNE_COOLDOWN_STARTED", id);
+                elseif(runeCdExps[id] ~= endTime) then
+                    --Cooldown is now different
+                    if(runeCdHandles[id]) then
+                        timer:CancelTimer(runeCdHandles[id]);
+                    end
+                    runeCdDurs[id] = duration;
+                    runeCdExps[id] = endTime;
+                    runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
+                end
+            elseif(duration > 0) then
+                --GCD
+                --Do nothing
+            else
+                if(runeCdExps[id]) then
+                    --Somehow CheckCooldownReady caught the rune cooldown before the timer callback
+                    --This shouldn't happen, but if it doesn, no problem
+                    if(runeCdHandles[id]) then
+                        timer:CancelTimer(runeCdHandles[id]);
+                    end
+                    RuneCooldownFinished(id);
+                end
+            end
+        end
     end
     
     function WeakAuras.WatchGCD(id)
@@ -804,7 +865,8 @@ do
             WeakAuras.InitCooldownReady();
         end
         
-        id = id or 0;
+        if not id or id == 0 then return end
+		
         if not(spells[id]) then
             spells[id] = true;
             local startTime, duration = GetSpellCooldown(id);
@@ -827,11 +889,12 @@ do
             WeakAuras.InitCooldownReady();
         end
         
-        id = id or 0;
+        if not id or id == 0 then return end
+	   
         if not(items[id]) then
             items[id] = true;
             local startTime, duration = GetItemCooldown(id);
-            if(duration > 1.51) then
+            if(startTime and duration and duration > 1.51) then
                 local time = GetTime();
                 local endTime = startTime + duration;
                 itemCdDurs[id] = duration;
@@ -842,12 +905,38 @@ do
             end
         end
     end
+	
+	function WeakAuras.WatchRuneCooldown(id)
+        if not(cdReadyFrame) then
+            WeakAuras.InitCooldownReady();
+        end
+        
+        if not id or id == 0 then return end
+		
+        if not(runes[id]) then
+            runes[id] = true;
+            local startTime, duration = GetRuneCooldown(id);
+            if(startTime and duration and duration > 1.51) then
+                local time = GetTime();
+                local endTime = startTime + duration;
+                runeCdDurs[id] = duration;
+                runeCdExps[id] = endTime;
+                if not(runeCdHandles[id]) then
+                    runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+                end
+            end
+        end
+    end
     
     function WeakAuras.SpellCooldownForce()
         WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
     end
     
     function WeakAuras.ItemCooldownForce()
+        WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+    end
+	
+	function WeakAuras.RuneCooldownForce()
         WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
     end
 end
@@ -1435,6 +1524,8 @@ function WeakAuras.ForceEvents()
             WeakAuras.SpellCooldownForce();
         elseif(event == "ITEM_COOLDOWN_FORCE") then
             WeakAuras.ItemCooldownForce();
+		elseif(event == "RUNE_COOLDOWN_FORCE") then
+            WeakAuras.RuneCooldownForce();
         else
             WeakAuras.ScanEvents(event);
         end

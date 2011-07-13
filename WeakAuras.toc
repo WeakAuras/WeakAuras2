@@ -14,7 +14,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: SharedMedia, SharedMediaAdditionalFonts
+## OptionalDeps: SharedMedia, SharedMediaAdditionalFonts, ButtonFacade
 embeds.xml
 
 Init.lua
