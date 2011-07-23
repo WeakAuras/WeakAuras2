@@ -626,8 +626,9 @@ do
         cdReadyFrame = CreateFrame("FRAME");
         cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
         cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
+        cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
         cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
-            if(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE") then
+            if(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
                 WeakAuras.CheckCooldownReady();
             elseif(event == "UNIT_SPELLCAST_SENT") then
                 local unit, name = ...;
@@ -767,55 +768,19 @@ do
                 end
             end
         end
-        
-        for id, _ in pairs(items) do
-            local startTime, duration = GetItemCooldown(id);
-            startTime = startTime or 0;
-            duration = duration or 0;
-            local time = GetTime();
-            
-            if(duration > 1.51) then
-                --On non-GCD cooldown
-                local endTime = startTime + duration;
-                
-                if not(itemCdExps[id]) then
-                    --New cooldown
-                    itemCdDurs[id] = duration;
-                    itemCdExps[id] = endTime;
-                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-                    WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
-                elseif(itemCdExps[id] ~= endTime) then
-                    --Cooldown is now different
-                    if(itemCdHandles[id]) then
-                        timer:CancelTimer(itemCdHandles[id]);
-                    end
-                    itemCdDurs[id] = duration;
-                    itemCdExps[id] = endTime;
-                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-                    WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
-                end
-            elseif(duration > 0) then
-                --GCD
-                --Do nothing
-            else
-                if(itemCdExps[id]) then
-                    --Somehow CheckCooldownReady caught the item cooldown before the timer callback
-                    --This shouldn't happen, but if it doesn, no problem
-                    if(itemCdHandles[id]) then
-                        timer:CancelTimer(itemCdHandles[id]);
-                    end
-                    ItemCooldownFinished(id);
-                end
-            end
-        end
 		
 		for id, _ in pairs(runes) do
             local startTime, duration = GetRuneCooldown(id);
             startTime = startTime or 0;
             duration = duration or 0;
             local time = GetTime();
-            
-            if(duration > 1.51) then
+			
+			if(not startTime or startTime == 0) then
+				startTime = 0
+				duration = 0
+			end
+
+            if(startTime > 0 and duration > 1.51) then
                 --On non-GCD cooldown
                 local endTime = startTime + duration;
                 
@@ -835,7 +800,7 @@ do
                     runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
                     WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
                 end
-            elseif(duration > 0) then
+            elseif(startTime > 0 and duration > 0) then
                 --GCD
                 --Do nothing
             else
@@ -845,12 +810,12 @@ do
                     if(runeCdHandles[id]) then
                         timer:CancelTimer(runeCdHandles[id]);
                     end
-                    RuneCooldownFinished(id);
+                    RuneCooldownFinished(id, event);
                 end
             end
         end
     end
-    
+
     function WeakAuras.WatchGCD(id)
         if not(cdReadyFrame) then
             WeakAuras.InitCooldownReady();
@@ -916,7 +881,13 @@ do
         if not(runes[id]) then
             runes[id] = true;
             local startTime, duration = GetRuneCooldown(id);
-            if(startTime and duration and duration > 1.51) then
+			
+			if(not startTime or startTime == 0) then
+				startTime = 0
+				duration = 0
+			end
+
+            if(startTime and duration and startTime > 0 and duration > 1.51) then
                 local time = GetTime();
                 local endTime = startTime + duration;
                 runeCdDurs[id] = duration;

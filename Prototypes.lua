@@ -1818,6 +1818,7 @@ local inverse = %s;
     ["Death Knight Rune"] = {
         type = "status",
         events = {
+			"RUNE_TYPE_UPDATE",
 			"RUNE_COOLDOWN_READY",
             "RUNE_COOLDOWN_CHANGED",
             "RUNE_COOLDOWN_STARTED",
@@ -1832,6 +1833,7 @@ local inverse = %s;
 				local rune = %s
 				local startTime, duration = WeakAuras.GetRuneCooldown(rune);
 				local inverse = %s;
+				local death = %s
 			]];
             if(trigger.use_remaining and not trigger.use_inverse) then
 			local ret2 = [[
@@ -1844,7 +1846,7 @@ local inverse = %s;
 				]];
                 ret = ret..ret2:format(tonumber(trigger.remaining or 0));
             end
-            return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"));
+            return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"), trigger.use_deathRune == true and "true" or trigger.use_deathRune == false and "false" or "nil");
 		end,
         args = {
             {
@@ -1856,9 +1858,10 @@ local inverse = %s;
                 test = "true"
             },
             {
-                name = "death",
+                name = "deathRune",
                 display = L["Death Rune"],
-                type = "tristate"
+                type = "tristate",
+				test = "true"
             },
             {
                 name = "remaining",
@@ -1874,7 +1877,21 @@ local inverse = %s;
             },
             {
                 hidden = true,
-                test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+                test = [[
+					(
+						(inverse and startTime == 0) or 
+						(not inverse and startTime > 0)
+					) and
+					(
+						(death == nil) or
+						(death == true and GetRuneType(rune) == 4) or
+						(death == false and GetRuneType(rune) ~= 4)
+					) and
+					(
+						(death == nil) or
+						(event ~= "RUNE_COOLDOWN_STARTED")
+					)
+				]]
             }
         },
         durationFunc = function(trigger)
@@ -1882,17 +1899,10 @@ local inverse = %s;
 			if not(trigger.use_inverse) then
 				startTime, duration = WeakAuras.GetRuneCooldown(trigger.rune);
 			end
-			if trigger.death == true then
-				if GetRuneType(trigger.rune) ~= 4 then
-					startTime = 0
-				end
-			elseif trigger.death == false then
-				if GetRuneType(trigger.rune) == 4 then
-					startTime = 0
-				end
-			end
+			
             startTime = startTime or 0;
             duration = duration or 0;
+			
             return duration, startTime + duration;
         end,
         nameFunc = function(trigger)
