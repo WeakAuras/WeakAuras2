@@ -769,6 +769,47 @@ do
             end
         end
 		
+		for id, _ in pairs(items) do
+            local startTime, duration = GetItemCooldown(id);
+            startTime = startTime or 0;
+            duration = duration or 0;
+            local time = GetTime();
+            
+            if(duration > 1.51) then
+                --On non-GCD cooldown
+                local endTime = startTime + duration;
+                
+                if not(itemCdExps[id]) then
+                    --New cooldown
+                    itemCdDurs[id] = duration;
+                    itemCdExps[id] = endTime;
+                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
+                elseif(itemCdExps[id] ~= endTime) then
+                    --Cooldown is now different
+                    if(itemCdHandles[id]) then
+                        timer:CancelTimer(itemCdHandles[id]);
+                    end
+                    itemCdDurs[id] = duration;
+                    itemCdExps[id] = endTime;
+                    itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+                    WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+                end
+            elseif(duration > 0) then
+                --GCD
+                --Do nothing
+            else
+                if(itemCdExps[id]) then
+                    --Somehow CheckCooldownReady caught the item cooldown before the timer callback
+                    --This shouldn't happen, but if it doesn, no problem
+                    if(itemCdHandles[id]) then
+                        timer:CancelTimer(itemCdHandles[id]);
+                    end
+                    ItemCooldownFinished(id);
+                end
+            end
+        end
+		
 		for id, _ in pairs(runes) do
             local startTime, duration = GetRuneCooldown(id);
             startTime = startTime or 0;
