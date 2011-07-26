@@ -7,6 +7,7 @@
 	<Include file="libs\AceTimer-3.0\AceTimer-3.0.xml"/>
 	<Include file="libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
 	<Include file="libs\AceComm-3.0\AceComm-3.0.xml"/>
+	<Include file="libs\AceEvent-3.0\AceEvent-3.0.xml"/>
 	<Include file="libs\LibSharedMedia-3.0\lib.xml"/>
 	<Include file="libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 	<Include file="libs\LibCompress\lib.xml"/>

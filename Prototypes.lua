@@ -670,10 +670,10 @@ WeakAuras.event_prototypes = {
         name = L["Alternate Power"],
         init = function(trigger)
             local ret = [[
-local unit = unit or '%s'
-local concernedUnit = '%s'
-local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
-]]
+				local unit = unit or '%s'
+				local concernedUnit = '%s'
+				local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
+			]]
             return ret:format(trigger.unit or "", trigger.unit or "", trigger.unit or "");
         end,
         args = {
@@ -1118,24 +1118,34 @@ local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
             local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
             WeakAuras.WatchSpellCooldown(trigger.spellName);
             local ret = [[
-local spellname = %s
-local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
-local inverse = %s;
-]];
-            if(trigger.use_remaining and not trigger.use_inverse) then
-                local ret2 = [[
-local expirationTime = startTime + duration
-local remaining = expirationTime - GetTime();
-local remainingCheck = %s;
-if(remaining > remainingCheck) then
-    WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
-end
-]];
+				local spellname = %s
+				local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
+				local inverse = %s;
+				local testRune = %s;
+			]];
+			if(trigger.use_remaining and not trigger.use_inverse) then
+				local ret2 = [[
+					local expirationTime = startTime + duration
+					local remaining = expirationTime - GetTime();
+					local remainingCheck = %s;
+					if(remaining > remainingCheck) then
+						WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+					end
+				]];
                 ret = ret..ret2:format(tonumber(trigger.remaining or 0));
-            end
-            return ret:format(spellName, (trigger.use_inverse and "true" or "false"));
+            end 
+            return ret:format(spellName, (trigger.use_inverse and "true" or "false"), (trigger.use_matchedRune and "true" or "false"));
         end,
         args = {
+			{
+			}, -- Ignore first argument (id)
+			{
+                name = "matchedRune",
+                display = L["Ignore Rune CD"],
+                type = "toggle",
+                init = "arg",
+				test = "(not testRune or matchedRune ~= true or event  == 'COOLDOWN_REMAINING_CHECK')"
+            },
             {
                 name = "spellName",
                 required = true,
@@ -1232,18 +1242,18 @@ end
             local itemName = (type(trigger.itemName) == "number" and trigger.itemName or 0);
             WeakAuras.WatchItemCooldown(trigger.itemName);
             local ret = [[
-local startTime, duration = WeakAuras.GetItemCooldown(%s);
-local inverse = %s;
-]];
+				local startTime, duration = WeakAuras.GetItemCooldown(%s);
+				local inverse = %s;
+			]];
             if(trigger.use_remaining and not trigger.use_inverse) then
                 local ret2 = [[
-local expirationTime = startTime + duration
-local remaining = expirationTime - GetTime();
-local remainingCheck = %s;
-if(remaining > remainingCheck) then
-    WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
-end
-]];
+					local expirationTime = startTime + duration
+					local remaining = expirationTime - GetTime();
+					local remainingCheck = %s;
+					if(remaining > remainingCheck) then
+						WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+					end
+				]];
                 ret = ret..ret2:format(tonumber(trigger.remaining or 0));
             end
             return ret:format(itemName, (trigger.use_inverse and "true" or "false"));
@@ -1341,9 +1351,9 @@ end
             local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
             WeakAuras.WatchGCD(trigger.spellName);
             local ret = [[
-local inverse = %s;
-local onGCD = WeakAuras.GetGCDInfo();
-]];
+				local inverse = %s;
+				local onGCD = WeakAuras.GetGCDInfo();
+			]];
             return ret:format(trigger.use_inverse and "true" or "false");
         end,
         args = {
@@ -1392,10 +1402,10 @@ local onGCD = WeakAuras.GetGCDInfo();
             trigger.hand = trigger.hand or "main";
             WeakAuras.InitSwingTimer();
             local ret = [[
-local inverse = %s;
-local hand = "%s";
-local duration, expirationTime = WeakAuras.GetSwingTimerInfo(hand);
-]];
+				local inverse = %s;
+				local hand = "%s";
+				local duration, expirationTime = WeakAuras.GetSwingTimerInfo(hand);
+			]];
             return ret:format((trigger.use_inverse and "true" or "false"), trigger.hand);
         end,
         args = {
@@ -1451,14 +1461,14 @@ local duration, expirationTime = WeakAuras.GetSwingTimerInfo(hand);
             local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
             WeakAuras.WatchSpellCooldown(spellName);
             local ret = [[
-local spell = %s;
-local spellName = GetSpellInfo(spell);
-local startTime, duration = WeakAuras.GetSpellCooldown(spell);
-startTime = startTime or 0;
-duration = duration or 0;
-local onCooldown = duration > 1.51;
-local active = IsUsableSpell(spell) and not onCooldown
-]]
+				local spell = %s;
+				local spellName = GetSpellInfo(spell);
+				local startTime, duration = WeakAuras.GetSpellCooldown(spell);
+				startTime = startTime or 0;
+				duration = duration or 0;
+				local onCooldown = duration > 1.51;
+				local active = IsUsableSpell(spell) and not onCooldown
+			]]
             if(trigger.use_targetRequired) then
                 ret = ret.."active = active and IsSpellInRange(spellName or '')\n";
             end
@@ -1519,10 +1529,10 @@ local active = IsUsableSpell(spell) and not onCooldown
         init = function(trigger)
             trigger.totemType = trigger.totemType or 1;
             local ret = [[
-local totemType = %i;
-local _, totemName, startTime, duration = GetTotemInfo(totemType);
-local inverse = %s;
-]]
+				local totemType = %i;
+				local _, totemName, startTime, duration = GetTotemInfo(totemType);
+				local inverse = %s;
+			]]
             return ret:format(trigger.totemType, trigger.use_inverse and "true" or "false");
         end,
         args = {
@@ -2017,20 +2027,20 @@ local inverse = %s;
         init = function(trigger)
             trigger.unit = trigger.unit or "";
             local ret = [[
-local unit = "%s"
-local spell, interruptible, _;
-local castType;
-spell, _, _, _, _, _, _, _, interruptible = UnitCastingInfo(unit)
-if(spell) then
-    castType = "cast"
-else
-    spell, _, _, _, _, _, _, interruptible = UnitChannelInfo(unit)
-    if(spell) then
-        castType = "channel"
-    end
-end
-interruptible = not interruptible;
-]];
+				local unit = "%s"
+				local spell, interruptible, _;
+				local castType;
+				spell, _, _, _, _, _, _, _, interruptible = UnitCastingInfo(unit)
+				if(spell) then
+					castType = "cast"
+				else
+					spell, _, _, _, _, _, _, interruptible = UnitChannelInfo(unit)
+					if(spell) then
+						castType = "channel"
+					end
+				end
+				interruptible = not interruptible;
+			]];
             return ret:format(trigger.unit);
         end,
         args = {
@@ -2113,6 +2123,7 @@ interruptible = not interruptible;
             "PLAYER_DEAD",
             "PLAYER_ALIVE",
             "PLAYER_UNGHOST",
+			"UNIT_PET",
             "UNIT_ENTERED_VEHICLE",
             "UNIT_EXITED_VEHICLE",
             "PLAYER_UPDATE_RESTING",
@@ -2157,6 +2168,12 @@ interruptible = not interruptible;
                 display = L["Mounted"],
                 type = "tristate",
                 init = "IsMounted()"
+            },
+            {
+                name = "HasPet",
+                display = L["HasPet"],
+                type = "tristate",
+                init = "UnitExists('pet')"
             }
         },
         automaticrequired = true
