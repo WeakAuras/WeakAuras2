@@ -1230,6 +1230,7 @@ WeakAuras.event_prototypes = {
     ["Cooldown Progress (Item)"] = {
         type = "status",
         events = {
+--			"BAG_UPDATE",
             "ITEM_COOLDOWN_READY",
             "ITEM_COOLDOWN_CHANGED",
             "ITEM_COOLDOWN_STARTED",
@@ -1896,10 +1897,6 @@ WeakAuras.event_prototypes = {
 						(death == nil) or
 						(death == true and GetRuneType(rune) == 4) or
 						(death == false and GetRuneType(rune) ~= 4)
-					) and
-					(
-						(death == nil) or
-						(event ~= "RUNE_COOLDOWN_STARTED")
 					)
 				]]
             }

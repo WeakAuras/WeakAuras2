@@ -385,7 +385,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 trigger = data.trigger;
                 untrigger = data.untrigger;
             end
-        elseif(triggernum >= 1 and triggernum <= 9) then
+        elseif(triggernum >= 1) then
             data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
             if(triggertype == "untrigger") then
                 trigger = data.additional_triggers[triggernum].untrigger;
@@ -4528,7 +4528,6 @@ function WeakAuras.ReloadTriggerOptions(data)
             type = "execute",
             name = L["Add Trigger"],
             order = 0.5,
-            disabled = function() return data.additional_triggers and #data.additional_triggers >= 9; end,
             func = function()
                 if(data.controlledChildren) then
                     for index, childId in pairs(data.controlledChildren) do
@@ -4536,6 +4535,7 @@ function WeakAuras.ReloadTriggerOptions(data)
                         if(childData) then
                             childData.additional_triggers = childData.additional_triggers or {};
                             tinsert(childData.additional_triggers, {trigger = {}, untrigger = {}});
+							childData.numTriggers = 1 + (childData.additional_triggers and #childData.additional_triggers or 0)
                             optionTriggerChoices[childId] = #childData.additional_triggers;
                             WeakAuras.ReloadTriggerOptions(childData);
                         end
@@ -4543,6 +4543,7 @@ function WeakAuras.ReloadTriggerOptions(data)
                 else
                     data.additional_triggers = data.additional_triggers or {};
                     tinsert(data.additional_triggers, {trigger = {}, untrigger = {}});
+					data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0)
                     optionTriggerChoices[id] = #data.additional_triggers;
                 end
                 WeakAuras.ReloadTriggerOptions(data);
@@ -4553,9 +4554,9 @@ function WeakAuras.ReloadTriggerOptions(data)
             name = L["Choose Trigger"],
             order = 1,
             values = function()
-                local ret = {[0] = L["Main Trigger"]};
+                local ret = {[0] = L["Trigger %d"]:format(1)};
                 if(data.controlledChildren) then
-                    for index=1,9 do
+                    for index=1,(data.numTriggers or 9) do
                         local all, none, any = true, true, false;
                         for _, childId in pairs(data.controlledChildren) do
                             local childData = WeakAuras.GetData(childId);
@@ -4570,15 +4571,15 @@ function WeakAuras.ReloadTriggerOptions(data)
                         end
                         if not(none) then
                             if(all) then
-                                ret[index] = L["Trigger "..(index + 1)];
+                                ret[index] = L["Trigger %d"]:format(index + 1);
                             elseif(any) then
-                                ret[index] = "|cFF777777"..L["Trigger "..(index + 1)];
+                                ret[index] = "|cFF777777"..L["Trigger %d"]:format(index + 1);
                             end
                         end
                     end
                 elseif(data.additional_triggers) then
                     for index, trigger in pairs(data.additional_triggers) do
-                        ret[index] = L["Trigger "..(index + 1)];
+                        ret[index] = L["Trigger %d"]:format(index + 1);
                     end
                 end
                 return ret;
@@ -4598,9 +4599,9 @@ function WeakAuras.ReloadTriggerOptions(data)
                     return L["Multiple Triggers"];
                 else
                     if(optionTriggerChoices[id] == 0) then
-                        return L["Main Trigger"];
+                        return L["Trigger %d"]:format(1);
                     else
-                        return L["Trigger "..(optionTriggerChoices[id] + 1)];
+                        return L["Trigger %d"]:format(optionTriggerChoices[id] + 1);
                     end
                 end
             end,
@@ -4617,12 +4618,14 @@ function WeakAuras.ReloadTriggerOptions(data)
                         local childData = WeakAuras.GetData(childId);
                         if(childData) then
                             tremove(childData.additional_triggers, optionTriggerChoices[childId]);
+							childData.numTriggers = 1 + (childData.additional_triggers and #childData.additional_triggers or 0)
                             optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
                             WeakAuras.ReloadTriggerOptions(childData);
                         end
                     end
                 else
                     tremove(data.additional_triggers, optionTriggerChoices[id]);
+					data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers + 0)
                     optionTriggerChoices[id] = optionTriggerChoices[id] - 1;
                 end
                 WeakAuras.Add(data);

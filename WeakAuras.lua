@@ -2676,6 +2676,11 @@ end
 
 --Takes as input a table of display data and attempts to update it to be compatible with the current version
 function WeakAuras.Modernize(data)
+	-- Add trigger count
+	if not data.numTriggers then
+		data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0)
+	end
+	
     local load = data.load;
     --Convert load options into single/multi format
     for index, prototype in pairs(WeakAuras.load_prototype.args) do
@@ -2695,7 +2700,7 @@ function WeakAuras.Modernize(data)
     end
     
     --Add status/event information to triggers
-    for triggernum=0,9 do
+    for triggernum=0,(data.numTriggers or 9) do
         local trigger, untrigger;
         if(triggernum == 0) then
             trigger = data.trigger;
@@ -2736,7 +2741,7 @@ function WeakAuras.Modernize(data)
     end
     
     --Give Name Info and Stack Info options to group auras
-    for triggernum=0,9 do
+    for triggernum=0,(data.numTriggers or 9) do
         local trigger, untrigger;
         if(triggernum == 0) then
             trigger = data.trigger;
@@ -2752,30 +2757,28 @@ function WeakAuras.Modernize(data)
     --Delete conditions fields and conver them to additional triggers
     if(data.conditions) then
         data.additional_triggers = data.additional_triggers or {};
-        if not(#data.additional_triggers >= 9) then
-            local condition_trigger = {
-                trigger = {
-                    type = "status",
-                    unevent = "auto",
-                    event = "Conditions"
-                },
-                untrigger = {
-                }
-            }
-            local num = 0;
-            for i,v in pairs(data.conditions) do
-                if(i == "combat") then
-                    data.load.use_combat = v;
-                else
-                    condition_trigger.trigger["use_"..i] = v;
-                    num = num + 1;
-                end
-            end
-            if(num > 0) then
-                tinsert(data.additional_triggers, condition_trigger);
-            end
-            data.conditions = nil;
-        end
+		local condition_trigger = {
+			trigger = {
+				type = "status",
+				unevent = "auto",
+				event = "Conditions"
+			},
+			untrigger = {
+			}
+		}
+		local num = 0;
+		for i,v in pairs(data.conditions) do
+			if(i == "combat") then
+				data.load.use_combat = v;
+			else
+				condition_trigger.trigger["use_"..i] = v;
+				num = num + 1;
+			end
+		end
+		if(num > 0) then
+			tinsert(data.additional_triggers, condition_trigger);
+		end
+		data.conditions = nil;
     end
     
     --Add dynamic text info to Progress Bars
@@ -2801,7 +2804,7 @@ function WeakAuras.Modernize(data)
     end
     
     --Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
-    for triggernum=0,9 do
+    for triggernum=0,(data.numTriggers or 9) do
         local trigger, untrigger;
         if(triggernum == 0) then
             trigger = data.trigger;
@@ -2951,7 +2954,7 @@ function WeakAuras.pAdd(data)
         
         local register_for_frame_updates = false;
         
-        for triggernum=0,9 do
+        for triggernum=0,(data.numTriggers or 9) do
             local trigger, untrigger;
             if(triggernum == 0) then
                 trigger = data.trigger;
@@ -4614,7 +4617,7 @@ end
 function WeakAuras.CombatEventWarning(silentIfNone)
     local offendList = {};
     for id, data in pairs(db.displays) do
-        for triggernum=0,9 do
+        for triggernum=0,(data.numTriggers or 9) do
             local trigger, untrigger;
             if(triggernum == 0) then
                 trigger = data.trigger;

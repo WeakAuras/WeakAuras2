@@ -19,6 +19,10 @@
 ## X-Curse-Project-Name: WeakAuras
 ## X-Curse-Project-ID: weakauras
 ## X-Curse-Repository-ID: wow/weakauras/mainline
+## X-Curse-Packaged-Version: r180
+## X-Curse-Project-Name: WeakAuras
+## X-Curse-Project-ID: weakauras
+## X-Curse-Repository-ID: wow/weakauras/mainline
 embeds.xml
 
 Init.lua
