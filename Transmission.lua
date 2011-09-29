@@ -1,3 +1,12 @@
+-- Lua APIs
+local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
+local fmt, tostring, string_char = string.format, tostring, string.char
+local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local loadstring, assert, error = loadstring, assert, error
+local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
+local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+
+local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local version = 1400;
@@ -29,11 +38,6 @@ local B64tobyte = {
       W = 48,  X = 49,  Y = 50,  Z = 51,["0"]=52,["1"]=53,["2"]=54,["3"]=55,
     ["4"]=56,["5"]=57,["6"]=58,["7"]=59,["8"]=60,["9"]=61,["("]=62,[")"]=63
 }
-
-local string_char = string.char
-local bit_band = bit.band
-local bit_lshift = bit.lshift
-local bit_rshift = bit.rshift
 
 --This code is based on the Encode7Bit algorithm from LibCompress
 --Credit goes to Galmok of European Stormrage (Horde), galmok@gmail.com

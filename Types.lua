@@ -1,4 +1,5 @@
-﻿local L = WeakAuras.L;
+﻿local WeakAuras = WeakAuras;
+local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
 
@@ -958,6 +959,9 @@ WeakAuras.anim_finish_preset_types = {
 };
 WeakAuras.chat_message_types = {
     CHAT_MSG_BATTLEGROUND = L["Battleground"],
+	CHAT_MSG_BG_SYSTEM_NEUTRAL = L["BG-System Neutral"],
+	CHAT_MSG_BG_SYSTEM_ALLIANCE = L["BG-System Alliance"],
+	CHAT_MSG_BG_SYSTEM_HORDE = L["BG-System Horde"],
     CHAT_MSG_BN_WHISPER = L["Battle.net Whisper"],
     CHAT_MSG_CHANNEL = L["Channel"],
     CHAT_MSG_EMOTE = L["Emote"],

@@ -1,4 +1,13 @@
-﻿local L = WeakAuras.L;
+﻿-- Lua APIs
+local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
+local fmt, tostring, string_char = string.format, tostring, string.char
+local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local loadstring, assert, error = loadstring, assert, error
+local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
+local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+
+local WeakAuras = WeakAuras;
+local L = WeakAuras.L;
 
 WeakAuras.function_strings = {
     count = [[
@@ -1483,6 +1492,7 @@ WeakAuras.event_prototypes = {
             {
                 name = "spellName",
                 display = L["Spell"],
+                required = true,
                 type = "spell",
                 test = "true"
             },
