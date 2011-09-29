@@ -236,8 +236,8 @@ do
     aura_cache.max = 0;
     aura_cache.watched = {};
     aura_cache.players = {};
-	
-	-- Test if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount, ect.
+    
+   	-- Test if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount, ect.
 	-- Extra check needed, because aura_cache can potentially contain data of two different triggers with different settings!
 	local function TestNonUniformSettings(acEntry, data)
 		if(data.remFunc) then
@@ -251,7 +251,6 @@ do
 			data.ownOnly == true and not UnitIsUnit("player", acEntry.unitCaster) or
 			data.ownOnly == nil  and UnitIsUnit("player", acEntry.unitCaster)
 		) then
-			print("F2")
 			return false;
 		end
 		
@@ -778,16 +777,11 @@ do
             CheckGCD();
         end
 		
-		local startTime, duration
-		local time
-		local endTime, match
-		local runeStart, runeDuration
-		
 		for id, _ in pairs(runes) do
-            startTime, duration = GetRuneCooldown(id);
+            local startTime, duration = GetRuneCooldown(id);
             startTime = startTime or 0;
             duration = duration or 0;
-            time = GetTime();
+            local time = GetTime();
 			
 			if(not startTime or startTime == 0) then
 				startTime = 0
@@ -830,21 +824,21 @@ do
         end
         
         for id, _ in pairs(spells) do
-            startTime, duration = GetSpellCooldown(id);
+            local startTime, duration = GetSpellCooldown(id);
             startTime = startTime or 0;
             duration = duration or 0;
-            time = GetTime();
+            local time = GetTime();
             
             if(duration > 1.51) then
                 --On non-GCD cooldown
-                endTime = startTime + duration;
+                local endTime = startTime + duration;
                 
                 if not(spellCdExps[id]) then
-					match = nil
+					local match = nil
 					if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
 						match = false
 						for runeId = 1,6 do
-							runeStart, runeDuration = GetRuneCooldown(runeId)
+							local runeStart, runeDuration = GetRuneCooldown(runeId)
 							if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
 								match = true;
 								break;
@@ -858,11 +852,11 @@ do
 					spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
 					WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id, match);
                 elseif(spellCdExps[id] ~= endTime) then
-					match = nil
+					local match = nil
 					if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
 						match = false
 						for runeId = 1,6 do
-							runeStart, runeDuration = GetRuneCooldown(runeId)
+							local runeStart, runeDuration = GetRuneCooldown(runeId)
 							if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
 								match = true;
 								break;
@@ -896,10 +890,10 @@ do
         end
 		
 		for id, _ in pairs(items) do
-            startTime, duration = GetItemCooldown(id);
+            local startTime, duration = GetItemCooldown(id);
             startTime = startTime or 0;
             duration = duration or 0;
-            time = GetTime();
+            local time = GetTime();
             
             if(duration > 1.51) then
                 --On non-GCD cooldown
@@ -1180,12 +1174,10 @@ do
     end
     
     local function updateSpell(spellName, unit, destGUID)
-		local filter
-        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId
         for id, triggers in pairs(loaded_auras[spellName]) do
             for triggernum, data in pairs(triggers) do
-                filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-                name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, spellName, nil, filter);
+                local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
+                local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, spellName, nil, filter);
                 if(name) then
                     data.GUIDs = data.GUIDs or {};
                     data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
@@ -1377,14 +1369,13 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
     else
         init = "";
     end
-	local enable, name, number, test
     for index, arg in pairs(prototype.args) do
-        enable = true;
+        local enable = true;
         if(type(arg.enable) == "function") then
             enable = arg.enable(trigger);
         end
         if(enable) then
-            name = arg.name;
+            local name = arg.name;
             if not(arg.name or arg.hidden) then
                 tinsert(input, "_");
             else
@@ -1395,7 +1386,8 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
                     if(arg.init and arg.init ~= "arg") then
                         init = init.."local "..name.." = "..arg.init.."\n";
                     end
-                    number = tonumber(trigger[name]);
+                    local number = tonumber(trigger[name]);
+                    local test;
                     if(arg.type == "tristate") then
                         if(trigger["use_"..name] == false) then
                             test = "(not "..name..")";
@@ -1914,9 +1906,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     end
     local changed = 0;
     local shouldBeLoaded, couldBeLoaded;
-	local _, data
     for id, triggers in pairs(auras) do
-        _, data = next(triggers);
+        local _, data = next(triggers);
         shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, player, class, spec, playerLevel, zone, size, difficulty, role);
         couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, player, class, spec, playerLevel, zone, size, difficulty, role);
         if(shouldBeLoaded and not loaded[id]) then
@@ -1942,7 +1933,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
     end
     for id, triggers in pairs(events) do
-        _, data = next(triggers);
+        local _, data = next(triggers);
         shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, player, class, spec, playerLevel, zone, size, difficulty, role);
         couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, player, class, spec, playerLevel, zone, size, difficulty, role);
         if(shouldBeLoaded and not loaded[id]) then
@@ -2463,9 +2454,8 @@ function WeakAuras.Delete(data)
     end
     
     if(data.controlledChildren) then
-		local childData;
         for index, childId in pairs(data.controlledChildren) do
-            childData = db.displays[childId];
+            local childData = db.displays[childId];
             if(childData) then
                 childData.parent = nil;
             end
@@ -2542,9 +2532,8 @@ function WeakAuras.Rename(data, newid)
     db.displays[newid].id = newid;
     
     if(data.controlledChildren) then
-		local childData
         for index, childId in pairs(data.controlledChildren) do
-            childData = db.displays[childId];
+            local childData = db.displays[childId];
             if(childData) then
                 childData.parent = data.id;
             end
@@ -2882,8 +2871,8 @@ function WeakAuras.Modernize(data)
     end
     
     --Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
-	local trigger, untrigger
     for triggernum=0,(data.numTriggers or 9) do
+        local trigger, untrigger;
         if(triggernum == 0) then
             trigger = data.trigger;
         elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
@@ -3032,15 +3021,8 @@ function WeakAuras.pAdd(data)
         
         local register_for_frame_updates = false;
         
-		local trigger, untrigger, triggerType;
-		local countFunc, countFuncStr;
-		local remFunc, remFuncStr;
-		local group_countFunc, group_countFuncStr;
-		local scanFunc;
-		local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
-        local trigger_events = {};
-        local durationFunc, nameFunc, iconFunc, stacksFunc;
         for triggernum=0,(data.numTriggers or 9) do
+            local trigger, untrigger;
             if(triggernum == 0) then
                 trigger = data.trigger;
                 data.untrigger = data.untrigger or {};
@@ -3050,6 +3032,7 @@ function WeakAuras.pAdd(data)
                 data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
                 untrigger = data.additional_triggers[triggernum].untrigger;
             end
+            local triggerType;
             if(trigger and type(trigger) == "table") then
                 triggerType = trigger.type;
                 if(triggerType == "aura") then
@@ -3057,19 +3040,19 @@ function WeakAuras.pAdd(data)
                     trigger.unit = trigger.unit or "player";
                     trigger.debuffType = trigger.debuffType or "HELPFUL";
                     
-					countFuncStr, countFunc = nil, nil
+                    local countFunc, countFuncStr;
                     if(trigger.useCount) then
                         countFuncStr = function_strings.count:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
                         countFunc = WeakAuras.LoadFunction(countFuncStr);
                     end
                     
-					remFuncStr, remFunc = nil, nil
+                    local remFunc, remFuncStr;
                     if(trigger.useRem) then
                         remFuncStr = function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0);
                         remFunc = WeakAuras.LoadFunction(remFuncStr);
                     end
                     
-					group_countFuncStr, group_countFunc = nil, nil
+                    local group_countFunc, group_countFuncStr;
                     if(trigger.unit == "group") then
                         local count, countType = WeakAuras.ParseNumber(trigger.group_count);
                         if(trigger.group_countOperator and count and countType) then
@@ -3087,7 +3070,7 @@ function WeakAuras.pAdd(data)
                         end
                     end
                     
-					scanFunc = nil
+                    local scanFunc;
                     if(trigger.fullscan) then
                         scanFunc = function(name, tooltip, isStealable, spellId, debuffClass)
                             if (
@@ -3155,10 +3138,9 @@ function WeakAuras.pAdd(data)
                         name_info = trigger.name_info
                     };
                 elseif(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
-					triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc = nil, nil, nil, nil;
-					durationFunc, nameFunc, iconFunc, stacksFunc = nil, nil, nil, nil;
-					
-                    wipe(trigger_events);
+                    local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
+                    local trigger_events = {};
+                    local durationFunc, nameFunc, iconFunc, stacksFunc;
                     if(triggerType == "status" or triggerType == "event") then
                         if not(trigger.event) then
                             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -3649,15 +3631,9 @@ function WeakAuras.UpdateAnimations()
     local elapsed = time - last_update;
     last_update = time;
     local num = 0;
-	local finished;
-	local duration, expirationTime, isValue, inverse;
-	local relativeProgress;
-	local iteration;
-	local progress;
-	local scaleX, scaleY;
     for id, anim in pairs(animations) do
         num = num + 1;
-        finished = false;
+        local finished = false;
         if(anim.duration_type == "seconds") then
             anim.progress = anim.progress + (elapsed / anim.duration);
             if(anim.progress >= 1) then
@@ -3665,14 +3641,14 @@ function WeakAuras.UpdateAnimations()
                 finished = true;
             end
         elseif(anim.duration_type == "relative") then
-			progress = nil
-            duration, expirationTime, isValue, inverse = duration_cache:GetDurationInfo(anim.name, anim.cloneId);
+            local duration, expirationTime, isValue, inverse = duration_cache:GetDurationInfo(anim.name, anim.cloneId);
             if(duration < 0.01) then
                 anim.progress = 0;
                 if(anim.type == "start" or anim.type == "finish") then
                     finished = true;
                 end
             else
+                local relativeProgress;
                 if(isValue) then
                     relativeProgress = duration / expirationTime;
                 else
@@ -3680,7 +3656,7 @@ function WeakAuras.UpdateAnimations()
                 end
                 relativeProgress = inverse and (1 - relativeProgress) or relativeProgress;
                 anim.progress = relativeProgress / anim.duration
-                 iteration = math.floor(anim.progress);
+                local iteration = math.floor(anim.progress);
                 anim.progress = anim.progress - iteration;
                 if not(anim.iteration) then
                     anim.iteration = iteration;
@@ -3692,7 +3668,7 @@ function WeakAuras.UpdateAnimations()
         else
             anim.progress = 1;
         end
-        progress = anim.inverse and (1 - anim.progress) or anim.progress;
+        local progress = anim.inverse and (1 - anim.progress) or anim.progress;
         if(anim.translateFunc) then
             anim.region:ClearAllPoints();
             anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.translateFunc(progress, anim.startX, anim.startY, anim.dX, anim.dY));
@@ -3701,7 +3677,7 @@ function WeakAuras.UpdateAnimations()
             anim.region:SetAlpha(anim.alphaFunc(progress, anim.startAlpha, anim.dAlpha));
         end
         if(anim.scaleFunc) then
-            scaleX, scaleY = anim.scaleFunc(progress, 1, 1, anim.scaleX, anim.scaleY);
+            local scaleX, scaleY = anim.scaleFunc(progress, 1, 1, anim.scaleX, anim.scaleY);
             if(anim.region.Scale) then
                 anim.region:Scale(scaleX, scaleY);
             else
@@ -4700,9 +4676,8 @@ end
 local FrameTimes = {};
 function WeakAuras.ProfileFrames(all)
     UpdateAddOnCPUUsage();
-	local FrameTime;
     for name, frame in pairs(WeakAuras.frames) do
-        FrameTime = GetFrameCPUUsage(frame);
+        local FrameTime = GetFrameCPUUsage(frame);
         FrameTimes[name] = FrameTimes[name] or 0;
         if(all or FrameTime > FrameTimes[name]) then
             print("|cFFFF0000"..name.."|r -", FrameTime, "-", FrameTime - FrameTimes[name]);
@@ -4714,9 +4689,8 @@ end
 local DisplayTimes = {};
 function WeakAuras.ProfileDisplays(all)
     UpdateAddOnCPUUsage();
-	local DisplayTime;
     for id, regionData in pairs(WeakAuras.regions) do
-        DisplayTime = GetFrameCPUUsage(regionData.region, true);
+        local DisplayTime = GetFrameCPUUsage(regionData.region, true);
         DisplayTimes[id] = DisplayTimes[id] or 0;
         if(all or DisplayTime > DisplayTimes[id]) then
             print("|cFFFF0000"..id.."|r -", DisplayTime, "-", DisplayTime - DisplayTimes[id]);
@@ -4727,10 +4701,9 @@ end
 
 function WeakAuras.CombatEventWarning(silentIfNone)
     local offendList = {};
-	local trigger, untrigger;
     for id, data in pairs(db.displays) do
         for triggernum=0,(data.numTriggers or 9) do
-			trigger, untrigger = nil, nil
+            local trigger, untrigger;
             if(triggernum == 0) then
                 trigger = data.trigger;
             elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
