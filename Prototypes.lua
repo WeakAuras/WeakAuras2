@@ -1539,12 +1539,26 @@ WeakAuras.event_prototypes = {
         name = L["Totem"],
         init = function(trigger)
             trigger.totemType = trigger.totemType or 1;
+			
             local ret = [[
 				local totemType = %i;
 				local _, totemName, startTime, duration = GetTotemInfo(totemType);
-				local inverse = %s;
+				
+				local active = (startTime ~= 0);
 			]]
-            return ret:format(trigger.totemType, trigger.use_inverse and "true" or "false");
+			ret = ret:format(trigger.totemType);
+			if trigger.use_totemName then
+				ret = ret .. [[
+					active = active and (']] .. trigger.totemName .. [[' == totemName);
+				]]
+			end
+			if trigger.use_inverse then
+				ret = ret .. [[
+					active = not active;
+				]]
+			end
+			
+			return ret
         end,
         args = {
             {
@@ -1558,7 +1572,7 @@ WeakAuras.event_prototypes = {
                 name = "totemName",
                 display = L["Totem Name"],
                 type = "aura",
-                init = "arg"
+				test = "true"
             },
             {
                 name = "inverse",
@@ -1568,7 +1582,7 @@ WeakAuras.event_prototypes = {
             },
             {
                 hidden = true,
-                test = "(inverse and startTime == 0) or (startTime ~= 0 and not inverse)"
+				test = "active"
             }
         },
         durationFunc = function(trigger)

@@ -1,5 +1,5 @@
 ﻿-- Lua APIs
-local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
+local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local fmt, tostring, string_char = string.format, tostring, string.char
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
@@ -2120,40 +2120,31 @@ function WeakAuras.ScanAuras(unit)
     if(specificUnits[unit] and not aura_object) then
         tinsert(aura_lists, loaded_auras["group"]);
     end
-	
-	local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId;
-	local tooltip, debuffClass, tooltipSize;
-	local remaining, checkPassed;
-	local filter;
-    local active;
-	local aura_count, max;
-	local satisfies_count;
-	local changed;
+
 	local cloneIdList;
-	local index;
-	local cloneId;
-	local current_aura;
 	local groupcloneToUpdate;
     
     for _, aura_list in pairs(aura_lists) do
         unit = unit == "party0" and "player" or unit;
-        name = true
+        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = true;
+        local tooltip, debuffClass, tooltipSize;
+        local remaining, checkPassed;
 
         for id,triggers in pairs(aura_list) do
             for triggernum, data in pairs(triggers) do
                 if(not data.specificUnit or UnitIsUnit(data.unit, unit)) then
-                    filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-                    active = false;
+                    local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
+                    local active = false;
 					
                     if(data.fullscan) then
                         aura_scan_cache[unit][filter] = aura_scan_cache[unit][filter] or {up_to_date = 0};
                         
 						if cloneIdList then wipe(cloneIdList); end
-                        if(data.autoclone) then
+                        if(data.autoclone and not cloneIdList) then
                             cloneIdList = {};
                         end
                         
-                        index = 1;
+                        local index = 1;
                         if(aura_scan_cache[unit][filter].up_to_date < index) then
                             name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, index, filter);
                             unitCaster = unitCaster or "unknown";
@@ -2193,7 +2184,7 @@ function WeakAuras.ScanAuras(unit)
                             if(((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster)) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                                 db.tempIconCache[name] = icon;
                                 if(data.autoclone) then
-                                    cloneId = name.."-"..unitCaster;
+                                    local cloneId = name.."-"..unitCaster;
                                     if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
                                         WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId, index, spellId);
                                         clones[id][cloneId].expirationTime = expirationTime;
@@ -2212,7 +2203,7 @@ function WeakAuras.ScanAuras(unit)
                                 unitCaster = unitCaster or "unknown";
                                 tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
-                                current_aura = aura_scan_cache[unit][filter][index];
+                                local current_aura = aura_scan_cache[unit][filter][index];
                                 current_aura.name = name;
                                 current_aura.icon = icon;
                                 current_aura.count = count;
@@ -2226,7 +2217,7 @@ function WeakAuras.ScanAuras(unit)
                                 current_aura.unitCaster = unitCaster;
                                 aura_scan_cache[unit][filter].up_to_date = index;
                             else
-                                current_aura = aura_scan_cache[unit][filter][index];
+                                local current_aura = aura_scan_cache[unit][filter][index];
                                 name = current_aura.name;
                                 icon = current_aura.icon;
                                 count = current_aura.count;
@@ -2249,7 +2240,7 @@ function WeakAuras.ScanAuras(unit)
 
                     else
                         if groupcloneToUpdate then wipe(groupcloneToUpdate); end
-                        if(aura_object and data.groupclone and not data.specificUnit) then
+                        if(aura_object and data.groupclone and not data.specificUnit and not groupcloneToUpdate) then
                             groupcloneToUpdate = {};
                         end
 
@@ -2274,7 +2265,7 @@ function WeakAuras.ScanAuras(unit)
                                 active = true;
                                 db.tempIconCache[name] = icon;
                                 if(aura_object and not data.specificUnit) then
-                                    changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count, unitCaster, spellId);
+                                    local changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count, unitCaster, spellId);
                                     if(data.groupclone and changed) then
                                         groupcloneToUpdate[GetUnitName(unit, true)] = true;
                                     end
@@ -2283,7 +2274,7 @@ function WeakAuras.ScanAuras(unit)
                                     break;
                                 end
                             elseif(aura_object and not data.specificUnit) then
-                                changed = aura_object:DeassertAura(checkname, GetUnitName(unit, true));
+                                local changed = aura_object:DeassertAura(checkname, GetUnitName(unit, true));
                                 if(data.groupclone and changed) then
                                     groupcloneToUpdate[GetUnitName(unit, true)] = true;
                                 end
@@ -2291,8 +2282,8 @@ function WeakAuras.ScanAuras(unit)
                         end
                         if(aura_object and not data.specificUnit) then
                             if(data.group_count) then
-                                aura_count, max = aura_object:GetNumber(data.names, data), aura_object:GetMaxNumber();
-                                satisfies_count = data.group_count(aura_count, max);
+                                local aura_count, max = aura_object:GetNumber(data.names, data), aura_object:GetMaxNumber();
+                                local satisfies_count = data.group_count(aura_count, max);
 								
                                 if(data.hideAlone and not inGroup) then
                                     satisfies_count = false;
@@ -2301,7 +2292,7 @@ function WeakAuras.ScanAuras(unit)
                                 if(satisfies_count) then
                                     if(data.groupclone) then
                                         for playerName, _ in pairs(groupcloneToUpdate) do
-                                            duration, expirationTime, name, icon, count, spellId = aura_object:GetPlayerDynamicInfo(data.names, playerName, data);
+                                            local duration, expirationTime, name, icon, count, spellId = aura_object:GetPlayerDynamicInfo(data.names, playerName, data);
                                             if(name ~= "") then
                                                 WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, playerName, icon, count, playerName, nil, spellId);
                                             else
@@ -2310,7 +2301,7 @@ function WeakAuras.ScanAuras(unit)
                                         end
 
                                     else
-                                        duration, expirationTime, name, icon, count, spellId = aura_object:GetDynamicInfo(data.names, data);
+                                        local duration, expirationTime, name, icon, count, spellId = aura_object:GetDynamicInfo(data.names, data);
 										
                                         if(data.name_info == "players") then
                                             local affected = aura_object:GetAffected(data.names, data);
