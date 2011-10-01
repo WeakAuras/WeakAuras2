@@ -1,5 +1,5 @@
 ﻿-- Lua APIs
-local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
+local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local fmt, tostring, string_char = string.format, tostring, string.char
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
@@ -463,7 +463,13 @@ WeakAuras.event_prototypes = {
         force_events = true,
         name = L["Unit Characteristics"],
         init = function(trigger)
-            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+			trigger.unit = trigger.unit or "target";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -524,7 +530,13 @@ WeakAuras.event_prototypes = {
         },
         name = L["Health"],
         init = function(trigger)
-            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+			trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -545,7 +557,7 @@ WeakAuras.event_prototypes = {
                 name = "percenthealth",
                 display = L["Health (%)"],
                 type = "number",
-                init = "(UnitHealth(unit) / UnitHealthMax(unit)) * 100"
+                init = "(UnitHealth(unit) / max(1, UnitHealthMax(unit)) * 100"
             },
             {
                 hidden = true,
@@ -577,7 +589,12 @@ WeakAuras.event_prototypes = {
         name = L["Power"],
         init = function(trigger)
             trigger.unit = trigger.unit or "player";
-            return "local unit = unit or '"..trigger.unit.."'\nlocal concernedUnit = '"..trigger.unit.."'\n";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -606,7 +623,7 @@ WeakAuras.event_prototypes = {
                 name = "percentpower",
                 display = L["Power (%)"],
                 type = "number",
-                init = "(UnitPower(unit) / UnitPowerMax(unit)) * 100;"
+                init = "(UnitPower(unit) / max(1, UnitPowerMax(unit))) * 100;"
             },
             {
                 hidden = true,
@@ -633,7 +650,13 @@ WeakAuras.event_prototypes = {
         },
         name = L["Holy Power"],
         init = function(trigger)
-            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -678,12 +701,13 @@ WeakAuras.event_prototypes = {
         },
         name = L["Alternate Power"],
         init = function(trigger)
+			trigger.unit = trigger.unit or "player";		
             local ret = [[
 				local unit = unit or '%s'
 				local concernedUnit = '%s'
 				local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
 			]]
-            return ret:format(trigger.unit or "", trigger.unit or "", trigger.unit or "");
+            return ret:format(trigger.unit, trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -733,7 +757,13 @@ WeakAuras.event_prototypes = {
         },
         name = L["Shards"],
         init = function(trigger)
-            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -778,7 +808,13 @@ WeakAuras.event_prototypes = {
         },
         name = L["Eclipse Power"],
         init = function(trigger)
-            return "local unit = unit or '"..(trigger.unit or "").."'\nlocal concernedUnit = '"..(trigger.unit or "").."'\n";
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
         end,
         args = {
             {
@@ -1112,7 +1148,7 @@ WeakAuras.event_prototypes = {
             } --failedType ignored with _ argument - theoretically this is not necessary because it is the last argument in the event, but it is added here for completeness
         }
     },
-    ["Cooldown (Spell)"] = {
+    ["Cooldown Progress (Spell)"] = {
         type = "status",
         events = {
             "SPELL_COOLDOWN_READY",
@@ -1123,6 +1159,7 @@ WeakAuras.event_prototypes = {
         force_events = "SPELL_COOLDOWN_FORCE",
         name = L["Cooldown Progress (Spell)"],
         init = function(trigger)
+--			trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
             trigger.spellName = trigger.spellName or 0;
             local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
             WeakAuras.WatchSpellCooldown(trigger.spellName);
@@ -1206,12 +1243,13 @@ WeakAuras.event_prototypes = {
     ["Cooldown Ready (Spell)"] = {
         type = "event",
         events = {
-            "SPELL_COOLDOWN_READY"
+            "SPELL_COOLDOWN_READY",
         },
         name = L["Cooldown Ready (Spell)"],
         init = function(trigger)
-            trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
-            WeakAuras.WatchSpellCooldown(trigger.spellName);
+--			trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+			trigger.spellName = trigger.spellName or 0;
+            WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
         end,
         args = {
             {
@@ -1239,7 +1277,6 @@ WeakAuras.event_prototypes = {
     ["Cooldown Progress (Item)"] = {
         type = "status",
         events = {
---			"BAG_UPDATE",
             "ITEM_COOLDOWN_READY",
             "ITEM_COOLDOWN_CHANGED",
             "ITEM_COOLDOWN_STARTED",
@@ -1248,8 +1285,9 @@ WeakAuras.event_prototypes = {
         force_events = "ITEM_COOLDOWN_FORCE",
         name = L["Cooldown Progress (Item)"],
         init = function(trigger)
+--			trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
             trigger.itemName = trigger.itemName or 0;
-            local itemName = (type(trigger.itemName) == "number" and trigger.itemName or 0);
+            local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
             WeakAuras.WatchItemCooldown(trigger.itemName);
             local ret = [[
 				local startTime, duration = WeakAuras.GetItemCooldown(%s);
@@ -1322,6 +1360,7 @@ WeakAuras.event_prototypes = {
         },
         name = L["Cooldown Ready (Item)"],
         init = function(trigger)
+--			trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
             trigger.itemName = trigger.itemName or 0;
             WeakAuras.WatchItemCooldown(trigger.itemName);
         end,
@@ -1357,8 +1396,8 @@ WeakAuras.event_prototypes = {
         },
         name = L["Global Cooldown"],
         init = function(trigger)
+--			trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
             trigger.spellName = trigger.spellName or 0;
-            local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
             WeakAuras.WatchGCD(trigger.spellName);
             local ret = [[
 				local inverse = %s;
@@ -1467,6 +1506,7 @@ WeakAuras.event_prototypes = {
         force_events = true,
         name = L["Action Usable"],
         init = function(trigger)
+--			trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
             trigger.spellName = trigger.spellName or 0;
             local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
             WeakAuras.WatchSpellCooldown(spellName);
@@ -1538,6 +1578,7 @@ WeakAuras.event_prototypes = {
         force_events = true,
         name = L["Totem"],
         init = function(trigger)
+--			trigger.totemName = WeakAuras.CorrectSpellName(trigger.totemName) or 0;
             trigger.totemType = trigger.totemType or 1;
 			
             local ret = [[
@@ -1545,20 +1586,23 @@ WeakAuras.event_prototypes = {
 				local _, totemName, startTime, duration = GetTotemInfo(totemType);
 				
 				local active = (startTime ~= 0);
-			]]
+			]];
 			ret = ret:format(trigger.totemType);
 			if trigger.use_totemName then
+				trigger.totemName = trigger.totemName or 0;
+				local totemName = type(trigger.totemName) == "number" and trigger.totemName or "'"..trigger.totemName.."'";
+			
 				ret = ret .. [[
-					active = active and (']] .. trigger.totemName .. [[' == totemName);
-				]]
+					active = active and (]] .. totemName .. [[ == totemName);
+				]];
 			end
 			if trigger.use_inverse then
 				ret = ret .. [[
 					active = not active;
-				]]
+				]];
 			end
 			
-			return ret
+			return ret;
         end,
         args = {
             {
@@ -1626,8 +1670,13 @@ WeakAuras.event_prototypes = {
             if(trigger.use_includeCharges) then
                 WeakAuras.RegisterItemCountWatch();
             end
-            trigger.itemName = trigger.itemName or 1;
-            return "local count = GetItemCount('"..trigger.itemName.."', "..(trigger.use_includeBank and "true" or "nil")..", "..(trigger.use_includeCharges and "true" or "nil")..");\n";
+--			trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+            trigger.itemName = trigger.itemName or 0;
+            local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
+			local ret = [[
+				local count = GetItemCount(%s, %s, %s);
+			]];
+			return ret:format(itemName, trigger.use_includeBank and "true" or "nil", trigger.use_includeCharges and "true" or "nil");
         end,
         args = {
             {
@@ -1671,12 +1720,15 @@ WeakAuras.event_prototypes = {
     ["Stance/Form/Aura"] = {
         type = "status",
         events = {
-            "UPDATE_SHAPESHIFT_FORM"
+            "UPDATE_SHAPESHIFT_FORM",
         },
         force_events = true,
         name = L["Stance/Form/Aura"],
         init = function()
-        return "local form = GetShapeshiftForm();\n local _, class = UnitClass('player');\n"
+			return [[
+				local form = GetShapeshiftForm();
+				local _, class = UnitClass('player');
+			]];
         end,
         args = {
             {
@@ -1723,23 +1775,34 @@ WeakAuras.event_prototypes = {
         name = L["Weapon Enchant"],
         init = function(trigger)
             WeakAuras.TenchInit();
-            local ret = "local exists, _, name\n";
+            local ret = [[
+				local exists, _, name
+				local inverse
+			]];
             if(trigger.weapon == "main") then
-                ret = ret.."exists, _, name = WeakAuras.GetMHTenchInfo()\n";
+                ret = ret .. [[
+					exists, _, name = WeakAuras.GetMHTenchInfo()
+				]];
             elseif(trigger.weapon == "off") then
-                ret = ret.."exists, _, name = WeakAuras.GetOHTenchInfo()\n";
+                ret = ret .. [[
+					exists, _, name = WeakAuras.GetOHTenchInfo()
+				]];
             elseif(trigger.weapon == "thrown") then
-                ret = ret.."exists, _, name = WeakAuras.GetThrownTenchInfo()\n";
+                ret = ret .. [[
+					exists, _, name = WeakAuras.GetThrownTenchInfo()
+				]];
             end
             
             if(trigger.use_inverse) then
-                ret = ret.."local inverse = true\n";
-            else
-                ret = ret.."local inverse\n";
+                ret = ret..[[
+					inverse = true;
+				]];
             end
             
             if(trigger.use_enchant and trigger.enchant and trigger.enchant ~= "") then
-                ret = ret..("exists = name == \"%s\"\n"):format(trigger.enchant);
+                ret = ret .. [[
+					exists = name == ']] .. trigger.enchant .. [[';
+				]]
             end
             return ret;
         end,
@@ -1826,7 +1889,14 @@ WeakAuras.event_prototypes = {
         },
         name = L["Chat Message"],
         init = function(trigger)
-            return "if(event:find('LEADER')) then event = event:sub(0, -8) end\nif(event == 'CHAT_MSG_TEXT_EMOTE') then event = 'CHAT_MSG_EMOTE' end\n"
+            return [[
+				if (event:find('LEADER')) then 
+					event = event:sub(0, -8);
+				end
+				if (event == 'CHAT_MSG_TEXT_EMOTE') then 
+					event = 'CHAT_MSG_EMOTE';
+				end
+			]];
         end,
         args = {
             {
@@ -1964,13 +2034,23 @@ WeakAuras.event_prototypes = {
         force_events = true,
         name = L["Item Equipped"],
         init = function(trigger)
-            return "local inverse = "..(trigger.use_inverse and "true" or "false")..";\nlocal equipped = IsEquippedItem(\""..(trigger.itemName or "").."\");\n"
+--			trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+			trigger.itemName = trigger.itemName or 0;
+			local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'" .. trigger.itemName .. "'";
+			
+            local ret = [[
+				local inverse = %s;
+				local equipped = IsEquippedItem(%s);
+			]];
+			
+			return ret:format(trigger.use_inverse and "true" or "false", itemName);
         end,
         args = {
             {
                 name = "itemName",
                 display = L["Item"],
                 type = "item",
+				required = true,
                 test = "(inverse and not equipped) or (equipped and not inverse)"
             },
             {
@@ -1992,7 +2072,11 @@ WeakAuras.event_prototypes = {
         force_events = true,
         name = L["Threat Situation"],
         init = function(trigger)
-            return "local status = UnitThreatSituation('player', "..(trigger.threatUnit and trigger.threatUnit ~= "none" and "'"..trigger.threatUnit.."'" or "nil")..") or -1;\n";
+            local ret = [[
+				local status = UnitThreatSituation('player', %s) or -1;
+			]];
+			
+			return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "'"..trigger.threatUnit.."'" or "nil");
         end,
         args = {
             {

@@ -1483,7 +1483,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             
             --Defines the action squelch period after login
             --Stored in SavedVariables so it can be changed by the user if they find it necessary
-            db.login_squelch_time = db.login_squelch_time or 10;
+            db.login_squelch_time = db.login_squelch_time or 5;
             
             --Deprecated fields with *lots* of data, clear them out
             db.iconCache = nil;
@@ -1513,7 +1513,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
             WeakAuras.Resume();
         end
     elseif(event == "PLAYER_ENTERING_WORLD") then
-        timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);
+		-- Shedule events that need to be handled some time after login
+		timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "UPDATE_SHAPESHIFT_FORM"); end, 0.5);	-- Data not available 
+        timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);				-- No sounds while loading
     end
 end);
 
@@ -2237,7 +2239,6 @@ function WeakAuras.ScanAuras(unit)
                         if(data.autoclone) then
                             WeakAuras.HideAllClonesExcept(id, cloneIdList);
                         end
-
                     else
                         if groupcloneToUpdate then wipe(groupcloneToUpdate); end
                         if(aura_object and data.groupclone and not data.specificUnit and not groupcloneToUpdate) then
@@ -2261,11 +2262,12 @@ function WeakAuras.ScanAuras(unit)
                                 end
 
                             end
+
                             if(checkPassed) then
                                 active = true;
                                 db.tempIconCache[name] = icon;
-                                if(aura_object and not data.specificUnit) then
-                                    local changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count, unitCaster, spellId);
+                                if(aura_object and not data.specificUnit) then                                 
+									local changed = aura_object:AssertAura(checkname, GetUnitName(unit, true), duration, expirationTime, name, icon, count, unitCaster, spellId);
                                     if(data.groupclone and changed) then
                                         groupcloneToUpdate[GetUnitName(unit, true)] = true;
                                     end
@@ -2875,6 +2877,21 @@ function WeakAuras.Modernize(data)
         if(untrigger and untrigger.custom) then
             untrigger.custom = untrigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
         end
+    end
+	
+	-- Rename ["event"] = "Cooldown (Spell)" to ["event"] = "Cooldown Progress (Spell)"
+	for triggernum=0,(data.numTriggers or 9) do
+        local trigger, untrigger;
+		
+        if(triggernum == 0) then
+            trigger = data.trigger;
+        elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+            trigger = data.additional_triggers[triggernum].trigger;
+        end
+		
+		if trigger and trigger["event"] and trigger["event"] == "Cooldown (Spell)" then
+			trigger["event"] = "Cooldown Progress (Spell)";
+		end
     end
 end
 
