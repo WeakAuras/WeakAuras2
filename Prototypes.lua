@@ -557,7 +557,7 @@ WeakAuras.event_prototypes = {
                 name = "percenthealth",
                 display = L["Health (%)"],
                 type = "number",
-                init = "(UnitHealth(unit) / max(UnitHealth(unit), UnitHealthMax(unit)) * 100"
+                init = "(UnitHealth(unit) / max(UnitHealth(unit), UnitHealthMax(unit))) * 100"
             },
             {
                 hidden = true,
@@ -1721,6 +1721,7 @@ WeakAuras.event_prototypes = {
         type = "status",
         events = {
             "UPDATE_SHAPESHIFT_FORM",
+			"WA_DELAYED_PLAYER_ENTERING_WORLD"
         },
         force_events = true,
         name = L["Stance/Form/Aura"],

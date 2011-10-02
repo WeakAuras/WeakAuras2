@@ -1514,8 +1514,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         end
     elseif(event == "PLAYER_ENTERING_WORLD") then
 		-- Shedule events that need to be handled some time after login
-		timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "UPDATE_SHAPESHIFT_FORM"); end, 0.5);	-- Data not available 
-        timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);				-- No sounds while loading
+		timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);	-- Data not available 
+        timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);						-- No sounds while loading
     end
 end);
 
