@@ -248,8 +248,8 @@ do
 	
 		-- Test OwnOnly
 		if (
-			data.ownOnly == true and not UnitIsUnit("player", acEntry.unitCaster) or
-			data.ownOnly == nil  and UnitIsUnit("player", acEntry.unitCaster)
+			data.ownOnly == true and not UnitIsUnit("player", acEntry.unitCaster or "player") or
+			data.ownOnly == nil  and     UnitIsUnit("player", acEntry.unitCaster or "player")
 		) then
 			return false;
 		end

@@ -1872,6 +1872,9 @@ WeakAuras.event_prototypes = {
         events = {
             "CHAT_MSG_BATTLEGROUND",
             "CHAT_MSG_BATTLEGROUND_LEADER",
+			"CHAT_MSG_BG_SYSTEM_ALLIANCE",
+			"CHAT_MSG_BG_SYSTEM_HORDE",
+			"CHAT_MSG_BG_SYSTEM_NEUTRAL",
             "CHAT_MSG_BN_WHISPER",
             "CHAT_MSG_CHANNEL",
             "CHAT_MSG_EMOTE",
@@ -2052,18 +2055,38 @@ WeakAuras.event_prototypes = {
                 display = L["Item"],
                 type = "item",
 				required = true,
-                test = "(inverse and not equipped) or (equipped and not inverse)"
+                test = "true"
             },
             {
                 name = "inverse",
                 display = L["Inverse"],
                 type = "toggle",
                 test = "true"
+            },
+            {
+                hidden = true,
+                test = "(inverse and not equipped) or (equipped and not inverse)"
             }
         },
+		nameFunc = function(trigger)
+			if not trigger.use_inverse then
+				local name = GetItemInfo(trigger.itemName);
+				return name;
+			else
+				return nil;
+			end
+        end,
+        iconFunc = function(trigger)
+			if not trigger.use_inverse then
+				local texture = select(10, GetItemInfo(trigger.itemName));
+				return texture;
+			else
+				return nil;
+			end
+        end,
         hasItemID = true,
-        automaticrequired = true
-    },
+--        automaticrequired = true
+    },	
     ["Threat Situation"] = {
         type = "status",
         events = {
