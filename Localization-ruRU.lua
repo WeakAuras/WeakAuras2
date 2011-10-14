@@ -4,4 +4,9 @@ end
 
 local L = WeakAuras.L
 
---@localization(locale="ruRU", format="lua_additive_table")@
+-- Options translation
+--@localization(locale="ruRU", format="lua_additive_table", namespace="WeakAuras")@
+
+
+--@do-not-package@
+--@end-do-not-package@

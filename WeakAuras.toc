@@ -15,22 +15,26 @@
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
 ## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque
+
 embeds.xml
 
 Init.lua
 
 Localization-enUS.lua
-Localization-esES.lua
 Localization-deDE.lua
-Localization-ruRU.lua
+Localization-esES.lua
+Localization-esMX.lua
 Localization-frFR.lua
+Localization-koKR.lua
+Localization-ptBR.lua
+Localization-ruRU.lua
+Localization-zhCN.lua
 Localization-zhTW.lua
 
 Prototypes.lua
 Types.lua
 WeakAuras.lua
 Transmission.lua
-ForAllIndentsAndPurposes.lua
 
 RegionTypes\progresstexture.lua
 RegionTypes\texture.lua
@@ -41,13 +45,3 @@ RegionTypes\timer.lua
 RegionTypes\group.lua
 RegionTypes\dynamicgroup.lua
 RegionTypes\model.lua
-
-RegionOptions\aurabar.lua
-RegionOptions\texture.lua
-RegionOptions\icon.lua
-RegionOptions\text.lua
-RegionOptions\timer.lua
-RegionOptions\group.lua
-RegionOptions\dynamicgroup.lua
-RegionOptions\model.lua
-RegionOptions\progresstexture.lua

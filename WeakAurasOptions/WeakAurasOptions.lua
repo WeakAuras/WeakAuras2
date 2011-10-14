@@ -5678,7 +5678,7 @@ function WeakAuras.CreateFrame()
 
     local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
-    titletext:SetText(L["WeakAuras Options"]);
+    titletext:SetText(L["WeakAurasOptions"]);
     
     local sizer_sw = CreateFrame("button",nil,frame);
     sizer_sw:SetPoint("bottomleft",frame,"bottomleft",0,0);

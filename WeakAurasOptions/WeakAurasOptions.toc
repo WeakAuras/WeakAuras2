@@ -15,6 +15,30 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras
 ## SavedVariables: WeakAurasOptionsSaved
+
+Localization-enUS.lua
+Localization-deDE.lua
+Localization-esES.lua
+Localization-esMX.lua
+Localization-frFR.lua
+Localization-koKR.lua
+Localization-ptBR.lua
+Localization-ruRU.lua
+Localization-zhCN.lua
+Localization-zhTW.lua
+
+ForAllIndentsAndPurposes.lua
+
+RegionOptions\aurabar.lua
+RegionOptions\texture.lua
+RegionOptions\icon.lua
+RegionOptions\text.lua
+RegionOptions\timer.lua
+RegionOptions\group.lua
+RegionOptions\dynamicgroup.lua
+RegionOptions\model.lua
+RegionOptions\progresstexture.lua
+
 WeakAurasOptions.lua
 
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
