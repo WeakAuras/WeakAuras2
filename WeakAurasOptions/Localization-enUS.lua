@@ -3,9 +3,6 @@
 -- Options translation
 --@localization(locale="enUS", format="lua_additive_table", namespace="WeakAuras / Options")@
 
--- Media names translation
---@localization(locale="enUS", format="lua_additive_table", namespace="WeakAuras / Media")@
-
 
 --@do-not-package@
 

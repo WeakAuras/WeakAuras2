@@ -156,7 +156,8 @@ form_frame:SetScript("OnUpdate", function()
     end
 end);
 
---[[WeakAuras.deathknight_form_types = {
+--[=[
+WeakAuras.deathknight_form_types = {
     [0] = L["None"],
     [1] = L["Blood"],
     [2] = L["Frost"],
@@ -206,7 +207,8 @@ WeakAuras.warrior_form_types = {
 };
 WeakAuras.single_form_types = {
     [0] = L["Humanoid"]
-};]]
+};
+]=]
 WeakAuras.blend_types = {
     ADD = L["Glow"],
     BLEND = L["Opaque"],
@@ -773,6 +775,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
         [WeakAuras.PowerAurasPath.."Aura44"] = "Buff"
     };
 end
+--[=[
 for category, textures in pairs(WeakAuras.texture_types) do
     for path, name in pairs(textures) do
         if(L.textures[category] and L.textures[category][path]) then
@@ -786,6 +789,7 @@ for category, textures in pairs(WeakAuras.texture_types) do
         WeakAuras.texture_types[category] = nil;
     end
 end
+]=]
 WeakAuras.operator_types = {
     ["=="] = L["="],
     ["~="] = L["!="],
@@ -1006,6 +1010,30 @@ WeakAuras.cast_types = {
     channel = L["Channel (Spell)"]
 };
 WeakAuras.sound_types = {
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.mp3"] = "Batman Punch",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BikeHorn.mp3"] = "Bike Horn",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BoxingArenaSound.mp3"] = "Boxing Arena Gong",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Bleat.mp3"] = "Bleat",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonHop.mp3"] = "Cartoon Hop",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CatMeow2.mp3"] = "Cat Meow",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\KittenMeow.mp3"] = "Kitten Meow",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RobotBlip.mp3"] = "Robot Blip",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SharpPunch.mp3"] = "Sharp Punch",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WaterDrop.mp3"] = "Water Drop",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AirHorn.mp3"] = "Air Horn",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Applause.mp3"] = "Applause",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BananaPeelSlip.mp3"] = "Banana Peel Slip",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Blast.mp3"] = "Blast",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonVoiceBaritone.mp3"] = "Cartoon Voice Baritone",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonWalking.mp3"] = "Cartoon Walking",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CowMooing.mp3"] = "Cow Mooing",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RingingPhone.mp3"] = "Ringing Phone",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RoaringLion.mp3"] = "Roaring Lion",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Shotgun.mp3"] = "Shotgun",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SquishFart.mp3"] = "Squish Fart",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TempleBellHuge.mp3"] = "Temple Bell",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.mp3"] = "Torch",
+	["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.mp3"] = "Warning Siren",
     [" custom"] = "Custom",
 };
 if(WeakAuras.PowerAurasSoundPath ~= "") then
@@ -1052,11 +1080,13 @@ if(WeakAuras.PowerAurasSoundPath ~= "") then
     WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wolf5.ogg"] = "Wolf Howl";
     WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."yeehaw.ogg"] = "Yeehaw";
 end
+--[=[
 for path, name in pairs(WeakAuras.sound_types) do
     if(L.sounds[path]) then
         WeakAuras.sound_types[path] = L.sounds[path]
     end
 end
+]=]
 local SharedMediaSounds = LSM:HashTable("sound");
 for name, path in pairs(SharedMediaSounds) do
     WeakAuras.sound_types[path] = name;

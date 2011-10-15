@@ -458,6 +458,7 @@ WeakAuras.event_prototypes = {
         events = {
             "PLAYER_TARGET_CHANGED",
             "PLAYER_FOCUS_CHANGED",
+			"UNIT_LEVEL",
             "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
         },
         force_events = true,
@@ -506,6 +507,18 @@ WeakAuras.event_prototypes = {
                 type = "select",
                 init = "UnitIsPlayer(unit) and 'player' or 'npc'",
                 values = "character_types"
+            },
+            {
+                name = "level",
+                display = L["Level"],
+                type = "number",
+                init = "UnitLevel(unit)"
+            },
+			{
+                name = "attackable",
+                display = L["Attackable"],
+                type = "tristate",
+                init = "UnitCanAttack('player', unit) and true or false",
             },
             {
                 hidden = true,
@@ -1725,19 +1738,34 @@ WeakAuras.event_prototypes = {
         },
         force_events = true,
         name = L["Stance/Form/Aura"],
-        init = function()
-			return [[
+        init = function(trigger)
+			local ret = [[
 				local form = GetShapeshiftForm();
 				local _, class = UnitClass('player');
+				local form_ = %s;
+				local inverse = %s;
 			]];
+			
+			return ret:format(trigger.form or 0, trigger.use_inverse and "true" or "false");
         end,
         args = {
             {
                 name = "form",
+                required = true,
                 display = L["Form"],
                 type = "select",
                 values = "form_types",
-                test = "form == %s"
+                test = "true"
+            },
+            {
+                name = "inverse",
+                display = L["Inverse"],
+                type = "toggle",
+                test = "true"
+            },
+            {
+                hidden = true,
+                test = "(inverse and form ~= form_ or not inverse and form == form_)"
             }
         },
         nameFunc = function(trigger)

@@ -6,35 +6,35 @@ local L = WeakAuras.L;
 local _, class = UnitClass("player");
 local aura, spell;
 if(class == "MAGE") then
-    aura = select(1, GetSpellInfo("Arcane Brilliance"));
-    spell = select(1, GetSpellInfo("Frost Nova"));
+    aura = select(1, GetSpellInfo(1459));				-- Arcane Brilliance
+    spell = select(1, GetSpellInfo(122));				-- Frost Nova
 elseif(class == "PRIEST") then
-    aura = select(1, GetSpellInfo("Power Word: Fortitude"));
-    spell = select(1, GetSpellInfo("Mind Blast"));
+    aura = select(1, GetSpellInfo(21562));				-- Power Word: Fortitude
+    spell = select(1, GetSpellInfo(8092));				-- Mind Blast
 elseif(class == "WARLOCK") then
-    aura = select(1, GetSpellInfo("Demon Armor"));
-    spell = select(1, GetSpellInfo("Soul Harvest"));
+    aura = select(1, GetSpellInfo(687));				-- Demon Armor
+    spell = select(1, GetSpellInfo(79268));				-- Soul Harvest
 elseif(class == "ROGUE") then
-    aura = select(1, GetSpellInfo("Sprint"));
-    spell = select(1, GetSpellInfo("Kick"));
+    aura = select(1, GetSpellInfo(2983));				-- Sprint
+    spell = select(1, GetSpellInfo(1766));				-- Kick
 elseif(class == "DRUID") then
-    aura = select(1, GetSpellInfo("Mark of the Wild"));
-    spell = select(1, GetSpellInfo("Thorns"));
+    aura = select(1, GetSpellInfo(1126));				-- Mark of the Wild
+    spell = select(1, GetSpellInfo(467));				-- Thorns
 elseif(class == "SHAMAN") then
-    aura = select(1, GetSpellInfo("Lightning Shield"));
-    spell = select(1, GetSpellInfo("Earth Shock"));
+    aura = select(1, GetSpellInfo(324));				-- Lightning Shield
+    spell = select(1, GetSpellInfo(8042));				-- Earth Shock
 elseif(class == "HUNTER") then
-    aura = select(1, GetSpellInfo("Aspect of the Hawk"));
-    spell = select(1, GetSpellInfo("Disengage"));
+    aura = select(1, GetSpellInfo(13165));				-- Aspect of the Hawk
+    spell = select(1, GetSpellInfo(781));				-- Disengage
 elseif(class == "PALADIN") then
-    aura = select(1, GetSpellInfo("Blessing of Kings"));
-    spell = select(1, GetSpellInfo("Judgement"));
+    aura = select(1, GetSpellInfo(20217));				-- Blessing of Kings
+    spell = select(1, GetSpellInfo(20271));				-- Judgement
 elseif(class == "WARRIOR") then
-    aura = select(1, GetSpellInfo("Battle Shout"));
-    spell = select(1, GetSpellInfo("Charge"));
+    aura = select(1, GetSpellInfo(6673));				-- Battle Shout
+    spell = select(1, GetSpellInfo(100));				-- Charge
 elseif(class == "DEATHKNIGHT") then
-    aura = select(1, GetSpellInfo("Horn of Winter"));
-    spell = select(1, GetSpellInfo("Death and Decay"));
+    aura = select(1, GetSpellInfo(57330));				-- Horn of Winter
+    spell = select(1, GetSpellInfo(43265));				-- Death and Decay
 end
 local className = WeakAuras.class_types[class];
 aura = "|cFFFFFFFF"..aura.."|r";
