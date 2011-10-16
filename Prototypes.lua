@@ -570,7 +570,7 @@ WeakAuras.event_prototypes = {
                 name = "percenthealth",
                 display = L["Health (%)"],
                 type = "number",
-                init = "(UnitHealth(unit) / max(1, UnitHealth(unit), UnitHealthMax(unit))) * 100"
+                init = "(UnitHealth(unit) / math.max(1, UnitHealthMax(unit))) * 100"
             },
             {
                 hidden = true,
@@ -578,7 +578,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitHealth(trigger.unit), max(1, UnitHealth(trigger.unit), UnitHealthMax(trigger.unit)), true;
+            return UnitHealth(trigger.unit), UnitHealthMax(trigger.unit), true;
         end,
         nameFunc = function(trigger)
             return UnitName(trigger.unit);
@@ -636,7 +636,7 @@ WeakAuras.event_prototypes = {
                 name = "percentpower",
                 display = L["Power (%)"],
                 type = "number",
-                init = "(UnitPower(unit) / max(1, UnitPower(unit), UnitPowerMax(unit))) * 100;"
+                init = "(UnitPower(unit) / math.max(1, UnitPowerMax(unit))) * 100;"
             },
             {
                 hidden = true,
@@ -644,7 +644,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit), max(1, UnitPower(trigger.unit), UnitPowerMax(trigger.unit)), "fastUpdate";
+            return UnitPower(trigger.unit), math.max(1, UnitPowerMax(trigger.unit)), "fastUpdate";
         end,
         automatic = true
     },
@@ -692,7 +692,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit, 9), max(1, UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9)), true;
+            return UnitPower(trigger.unit, 9), math.max(1, UnitPowerMax(trigger.unit, 9)), true;
         end,
         stacksFunc = function(trigger)
             return UnitPower(trigger.unit, 9);
@@ -743,7 +743,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit, 10), max(1, UnitPower(trigger.unit, 10), UnitPowerMax(trigger.unit, 10)), "fastUpdate";
+            return UnitPower(trigger.unit, 10), math.max(1, UnitPowerMax(trigger.unit, 10)), "fastUpdate";
         end,
         nameFunc = function(trigger)
             local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo(trigger.unit);
@@ -799,7 +799,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit, 7), max(1, UnitPower(trigger.unit, 7), UnitPowerMax(trigger.unit, 7)), true;
+            return UnitPower(trigger.unit, 7), math.max(1, UnitPowerMax(trigger.unit, 7)), true;
         end,
         stacksFunc = function(trigger)
             return UnitPower(trigger.unit, 7);
@@ -872,10 +872,10 @@ WeakAuras.event_prototypes = {
         durationFunc = function(trigger)
             if(trigger.eclipsetype == "moon") then
                 local lunar_power = math.min(UnitPower(trigger.unit, 8), -0) * -1;
-                return lunar_power, max(1, lunar_power, UnitPowerMax(trigger.unit, 8)), true;
+                return lunar_power, UnitPowerMax(trigger.unit, 8) ~= 0 and UnitPowerMax(trigger.unit, 8) or 1, true;
             elseif(trigger.eclipsetype == "sun") then
                 local solar_power = math.max(UnitPower(trigger.unit, 8), 0);
-                return solar_power, max(1, solar_power, UnitPowerMax(trigger.unit, 0)), true;
+                return solar_power, UnitPowerMax(trigger.unit, 8) ~= 0 and UnitPowerMax(trigger.unit, 8) or 1, true;
             else
                 return 0, 0, true;
             end
