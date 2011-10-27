@@ -1,3 +1,11 @@
+-- Lua APIs
+local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
+local fmt, tostring, string_char = string.format, tostring, string.char
+local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local loadstring, assert, error = loadstring, assert, error
+local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
+local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 local AceGUI = LibStub("AceGUI-3.0");
 local AceConfig = LibStub("AceConfig-3.0");
@@ -11,7 +19,66 @@ local ADDON_NAME = "WeakAurasOptions";
 local GetSpellInfo = GetSpellInfo;
 local GetItemInfo = GetItemInfo;
 
-local dynFrame = CreateFrame("frame");
+-- Handle coroutines
+local dynFrame = {};
+do
+	-- Internal data
+	dynFrame.frame = CreateFrame("frame");
+	dynFrame.update = {};
+	dynFrame.resumes = 2;
+	dynFrame.size = 0;
+	
+	-- Add an action to be resumed via OnUpdate
+	function dynFrame.AddAction(self, name, func)
+		if not name then 
+			name = fmt("NIL", dynFrame.size+1);
+		end
+		
+		if not dynFrame.update[name] then
+			dynFrame.update[name] = func;
+			dynFrame.size = dynFrame.size + 1
+			
+			dynFrame.frame:Show();
+		end
+	end
+	
+	-- Remove an action from OnUpdate
+	function dynFrame.RemoveAction(self, name)
+		if dynFrame.update[name] then
+			dynFrame.update[name] = nil;
+			dynFrame.size = dynFrame.size - 1
+			
+			if dynFrame.size == 0 then
+				dynFrame.frame:Hide();
+			end
+		end
+	end
+	
+	-- Setup frame
+	dynFrame.frame:Hide();
+	dynFrame.frame:SetScript("OnUpdate", function(self, elapsed)
+		-- Increase/decrease update rate
+		if elapsed <= 0.04 then
+			dynFrame.resumes = math.min(64, dynFrame.resumes * 2);
+		else
+			dynFrame.resumes = math.max(2,  math.ceil(dynFrame.resumes / 2));
+		end
+		
+		-- Resume all coroutines
+        for name, func in pairs(dynFrame.update) do
+			-- Repeatatly resume
+			for id = 1, dynFrame.resumes do
+				-- Resume or remove
+				if coroutine.status(func) ~= "dead" then
+					coroutine.resume(func)
+				else
+					dynFrame:RemoveAction(name);
+					break;
+				end
+			end
+		end
+    end);
+end
 WeakAuras.transmitCache = {};
 
 local iconCache = {};
@@ -337,37 +404,35 @@ end);
 --
 --This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function WeakAuras.CreateIconCache(callback)
-    local cacheFrame = CreateFrame("Frame");
-    local id = 1;
-    local misses = 0;
-    cacheFrame:SetAllPoints(UIParent);
-    cacheFrame:SetScript("OnUpdate", function()
-        local start = GetTime();
-        while(GetTime() - start < 0.01) do
-            id = id + 1;
-            if(misses < 200) then
-                local name, _, icon = GetSpellInfo(id);
-                if(name) then
-                    if not(iconCache[name]) then
-                        iconCache[name] = icon;
-                    end
-                    if not(idCache[name]) then
-                        idCache[name] = {}
-                    end
-                    idCache[name][id] = true;
-                    misses = 0;
-                else
-                    misses = misses + 1;
-                end
-            end
-        end
-        if(misses >= 200) then
-            cacheFrame:SetScript("OnUpdate", nil);
-            if(callback) then
-                callback();
-            end
-        end
-    end);
+	local func = function()
+		local id = 0;
+		local misses = 0;
+		
+		while (misses < 200) do
+			id = id + 1;
+			local name, _, icon = GetSpellInfo(id);
+			if(name) then
+				if not(iconCache[name]) then
+					iconCache[name] = icon;
+				end
+				if not(idCache[name]) then
+					idCache[name] = {}
+				end
+				idCache[name][id] = true;
+				misses = 0;
+			else
+				misses = misses + 1;
+			end
+			coroutine.yield();
+		end
+		
+		if(callback) then
+			callback();
+		end
+	end
+
+	local co = coroutine.create(func);
+	dynFrame:AddAction(callback, co);
 end
 
 function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
@@ -1297,19 +1362,18 @@ function WeakAuras.GetSortedOptionsLists()
 end
 
 function WeakAuras.BuildOptions(list, callback)
-    frame.loadProgress:Show();
-    frame.filterInput:Hide();
-    frame.filterInputClear:Hide();
-            
-    local total = 0;
-    for _,_ in pairs(list) do
-        total = total + 1;
-    end
-    local num = 0;
-    local id, data = next(list);
-    dynFrame:SetScript("OnUpdate", function()
-        local start = GetTime();
-        while(GetTime() - start < 0.01 and data) do
+	frame.loadProgress:Show();
+	frame.filterInput:Hide();
+	frame.filterInputClear:Hide();
+
+	local total = 0;
+	for _,_ in pairs(list) do
+		total = total + 1;
+	end
+		
+    local func = function()
+        local num = 0;
+        for id, data in pairs(list) do
             if(data) then
                 if not(data.regionType == "group" or data.regionType == "dynamicgroup") then
                     WeakAuras.AddOption(id, data);
@@ -1317,96 +1381,99 @@ function WeakAuras.BuildOptions(list, callback)
                 end
             end
             frame.loadProgress:SetText(L["Creating options: "]..num.."/"..total);
-            id, data = next(list, id);
+			
+			coroutine.yield();
         end
         
-        if not(data) then
-            callback();
-            dynFrame:SetScript("OnUpdate", nil);
-            
-            frame.loadProgress:Hide();
-            frame.filterInput:Show();
-            frame.filterInputClear:Show();
-        end
-    end);
+		callback();
+		frame.loadProgress:Hide();
+		frame.filterInput:Show();
+		frame.filterInputClear:Show();
+    end
+	
+	local co = coroutine.create(func);
+	dynFrame:AddAction("BuildOptions", co);
 end
 
 function WeakAuras.LayoutDisplayButtons(msg)
-    local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
-    
-    frame.buttonsScroll:AddChild(frame.newButton);
-    if(frame.addonsButton) then
-        frame.buttonsScroll:AddChild(frame.addonsButton);
+	local total = 0;
+	for _,_ in pairs(db.displays) do
+		total = total + 1;
+	end
+	
+	local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
+	
+	frame.loadProgress:Show();
+	frame.buttonsScroll:AddChild(frame.newButton);
+	if(frame.addonsButton) then
+		frame.buttonsScroll:AddChild(frame.addonsButton);
+	end
+	frame.buttonsScroll:AddChild(frame.loadedButton);
+	frame.buttonsScroll:AddChild(frame.unloadedButton);
+
+	local func2 = function()
+		local num = frame.loadProgressNum;
+		for index, id in pairs(unloadedSorted) do
+			local data = WeakAuras.GetData(id);
+			if(data) then
+				WeakAuras.EnsureDisplayButton(data);
+				WeakAuras.UpdateDisplayButton(data);
+				
+				frame.buttonsScroll:AddChild(displayButtons[data.id]);
+				WeakAuras.SetIconNames(data);
+				if(WeakAuras.regions[data.id].region.SetStacks) then
+					WeakAuras.regions[data.id].region:SetStacks(1);
+				end
+				
+				num = num + 1;
+			end
+			
+			frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
+			coroutine.yield();
+		end
+
+		WeakAuras.SortDisplayButtons(msg);
+	
+		for id, button in pairs(displayButtons) do
+			if(loaded[id] ~= nil) then
+				button:PriorityShow(1);
+			end
+		end
+		
+		frame.loadProgress:Hide();
+		frame.filterInput:Show();
+		frame.filterInputClear:Show();
     end
-    frame.buttonsScroll:AddChild(frame.loadedButton);
-    local total = 0;
-    for _,_ in pairs(db.displays) do
-        total = total + 1;
-    end
-    local num = 0;
-    local index, id = next(loadedSorted);
-    local data = WeakAuras.GetData(id);
-    dynFrame:SetScript("OnUpdate", function()
-        local start = GetTime();
-        while(GetTime() - start < 0.01 and data) do
+		
+    local func1 = function()
+		local num = 0;
+        for index, id in pairs(loadedSorted) do
+			local data = WeakAuras.GetData(id);
             if(data) then
                 WeakAuras.EnsureDisplayButton(data);
                 WeakAuras.UpdateDisplayButton(data);
+				
                 local button = displayButtons[data.id]
                 frame.buttonsScroll:AddChild(button);
                 WeakAuras.SetIconNames(data);
                 if(WeakAuras.regions[data.id].region.SetStacks) then
                     WeakAuras.regions[data.id].region:SetStacks(1);
                 end
+				
                 num = num + 1;
             end
+			
             frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
-            index, id = next(loadedSorted, index);
-            data = WeakAuras.GetData(id);
+			frame.loadProgressNum = num;
+			coroutine.yield();
         end
-        
-        WeakAuras.SortDisplayButtons(msg);
-        
-        if not(data) then
-            for id, button in pairs(displayButtons) do
-                if(loaded[id] ~= nil) then
-                    button:PriorityShow(1);
-                end
-            end
-            
-            frame.buttonsScroll:AddChild(frame.unloadedButton);
-            
-            index, id = next(unloadedSorted);
-            data = WeakAuras.GetData(id);
-            dynFrame:SetScript("OnUpdate", function()
-                local start = GetTime();
-                while(GetTime() - start < 0.01 and data) do
-                    if(data) then
-                        WeakAuras.EnsureDisplayButton(data);
-                        WeakAuras.UpdateDisplayButton(data);
-                        frame.buttonsScroll:AddChild(displayButtons[data.id]);
-                        WeakAuras.SetIconNames(data);
-                        if(WeakAuras.regions[data.id].region.SetStacks) then
-                            WeakAuras.regions[data.id].region:SetStacks(1);
-                        end
-                        num = num + 1;
-                    end
-                    frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
-                    index, id = next(unloadedSorted, index);
-                    data = WeakAuras.GetData(id);
-                end
-                
-                if not(data) then
-                    dynFrame:SetScript("OnUpdate", nil);
-                    frame.loadProgress:Hide();
-                    
-                    WeakAuras.SortDisplayButtons(msg);
-                    frame.filterInput:Show();
-                    frame.filterInputClear:Show();
-                end
-            end);
-        end
-    end);
+		
+		local co2 = coroutine.create(func2);
+		dynFrame:AddAction("LayoutDisplayButtons2", co2);
+	end
+
+	local co1 = coroutine.create(func1);
+	dynFrame:AddAction("LayoutDisplayButtons1", co1);
 end
 
 local function filterAnimPresetTypes(intable, id)
@@ -5751,6 +5818,9 @@ function WeakAuras.CreateFrame()
     minimizebutton:SetScript("OnClick", function()
         if(frame.minimized) then
             frame.minimized = nil;
+			if db.frame then
+				db.frame.height = math.min(db.frame.height, 500)
+			end
             frame:SetHeight(db.frame and db.frame.height or 500);
             if(frame.window == "default") then
                 frame.buttonsContainer.frame:Show();

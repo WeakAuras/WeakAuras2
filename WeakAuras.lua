@@ -1275,8 +1275,39 @@ do
     local function handleEvent(frame, event, ...)
         if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
             combatLog(...);
-        else
+        elseif(event == "UNIT_TARGET") then
             uidTrack(...);
+			
+		-- Note: Now using UNIT_AURA in addition to COMBAT_LOG_EVENT_UNFILTERED
+		--  * UNIT_AURA because there is no combat log event when an aura gets refrshed by a spell (bug?).
+		--    For example Shadow Word: Pain by Mindflay, Serpent Sting by Chimera Shot/Cobra Shot
+		--  * COMBAT_LOG_EVENT_UNFILTERED (I guess) because UNIT_AURA does not fire for units not in the players group/raid or he has not targeted anymore.
+        elseif(event == "UNIT_AURA") then
+			local uid = ...;
+			local guid = UnitGUID(uid);
+			
+			for spellName, auras in pairs(loaded_auras) do
+				if not(WeakAuras.unit_types[spellName]) then
+					for id, triggers in pairs(auras) do
+						for triggernum, data in pairs(triggers) do
+							local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
+							local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(uid, spellName, nil, filter);
+							if(name) then
+								data.GUIDs = data.GUIDs or {};
+								data.GUIDs[guid] = data.GUIDs[guid] or {};
+								data.GUIDs[guid].name = spellName;
+								data.GUIDs[guid].unitName = GetUnitName(uid, true);
+								data.GUIDs[guid].duration = duration;
+								data.GUIDs[guid].expirationTime = expirationTime;
+								data.GUIDs[guid].icon = icon;
+								data.GUIDs[guid].count = count;
+								
+								updateRegion(id, data, triggernum, guid);
+							end
+						end
+					end
+				end
+			end
         end
     end
     
@@ -1284,7 +1315,8 @@ do
         if not(combatAuraFrame) then
             combatAuraFrame = CreateFrame("frame");
             combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-            combatAuraFrame:RegisterEvent("UNIT_TARGET");
+			combatAuraFrame:RegisterEvent("UNIT_TARGET");
+			combatAuraFrame:RegisterEvent("UNIT_AURA");
             combatAuraFrame:SetScript("OnEvent", handleEvent);
             timer:ScheduleRepeatingTimer(checkExists, 10)
         end
@@ -2155,7 +2187,7 @@ function WeakAuras.ScanAuras(unit)
                         end
                         
 						-- Iterate over all units auras
-                        local index, name = 0, true;
+                        local index = 0; name = true;
                         while(name) do
 							-- Get nexted!
                             index = index + 1;

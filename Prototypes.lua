@@ -870,15 +870,7 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            if(trigger.eclipsetype == "moon") then
-                local lunar_power = math.min(UnitPower(trigger.unit, 8), -0) * -1;
-                return lunar_power, UnitPowerMax(trigger.unit, 8) ~= 0 and UnitPowerMax(trigger.unit, 8) or 1, true;
-            elseif(trigger.eclipsetype == "sun") then
-                local solar_power = math.max(UnitPower(trigger.unit, 8), 0);
-                return solar_power, UnitPowerMax(trigger.unit, 8) ~= 0 and UnitPowerMax(trigger.unit, 8) or 1, true;
-            else
-                return 0, 0, true;
-            end
+            return math.max(math.abs(UnitPower(trigger.unit, 8)), 0), math.max(math.abs(UnitPowerMax(trigger.unit, 8)), 1), true;
         end,
         automatic = true
     },
