@@ -825,6 +825,8 @@ WeakAuras.event_prototypes = {
             local ret = [[
 				local unit = unit or '%s';
 				local concernedUnit = '%s';
+				
+				local GetRealEclipseDirection = UnitPower(unit, 8) > 0 and "sun" or UnitPower(unit, 8) < 0 and "moon" or GetEclipseDirection();
 			]];
 			
 			return ret:format(trigger.unit, trigger.unit);
@@ -844,7 +846,7 @@ WeakAuras.event_prototypes = {
                 display = L["Eclipse Type"],
                 type = "select",
                 values = "eclipse_types",
-                test = "true"
+                init = "GetRealEclipseDirection"
             },
             {
                 name = "lunar_power",
@@ -870,7 +872,9 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-			if(trigger.eclipsetype == GetEclipseDirection()) then
+			local GetRealEclipseDirection = UnitPower(trigger.unit, 8) > 0 and "sun" or UnitPower(trigger.unit, 8) < 0 and "moon" or GetEclipseDirection();
+			
+			if(not trigger.use_eclipsetype or trigger.eclipsetype == GetRealEclipseDirection) then
 				return math.max(math.abs(UnitPower(trigger.unit, 8)), 0), math.max(math.abs(UnitPowerMax(trigger.unit, 8)), 1), true;
 			else
                 return 0, 0, true;

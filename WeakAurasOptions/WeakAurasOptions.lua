@@ -25,7 +25,6 @@ do
 	-- Internal data
 	dynFrame.frame = CreateFrame("frame");
 	dynFrame.update = {};
-	dynFrame.resumes = 2;
 	dynFrame.size = 0;
 	
 	-- Add an action to be resumed via OnUpdate
@@ -57,23 +56,25 @@ do
 	-- Setup frame
 	dynFrame.frame:Hide();
 	dynFrame.frame:SetScript("OnUpdate", function(self, elapsed)
-		-- Increase/decrease update rate
-		if elapsed <= 0.04 then
-			dynFrame.resumes = math.min(64, dynFrame.resumes * 2);
-		else
-			dynFrame.resumes = math.max(2,  math.ceil(dynFrame.resumes / 2));
-		end
+		-- Start timing
+		debugprofilestart();
+		local hasData = true;
 		
-		-- Resume all coroutines
-        for name, func in pairs(dynFrame.update) do
-			-- Repeatatly resume
-			for id = 1, dynFrame.resumes do
+		-- Resume as often as possible (Limit to 16ms per frame -> 60 FPS)
+		while (debugprofilestop() < 16 and hasData) do
+			-- Stop loop without data
+			hasData = false;
+			
+			-- Resume all coroutines
+			for name, func in pairs(dynFrame.update) do
+				-- Loop has data
+				hasData = true;
+				
 				-- Resume or remove
 				if coroutine.status(func) ~= "dead" then
 					coroutine.resume(func)
 				else
 					dynFrame:RemoveAction(name);
-					break;
 				end
 			end
 		end
