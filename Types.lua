@@ -247,6 +247,12 @@ WeakAuras.containment_types = {
     OUTSIDE = L["Outside"],
     INSIDE = L["Inside"]
 };
+WeakAuras.font_flags = {
+	None = L["None"],
+	MONOCHROME = L["Monochrome"],
+    OUTLINE = L["Outline"],
+    THICKOUTLINE  = L["Thick Outline"]
+};
 WeakAuras.event_types = {};
 for name, prototype in pairs(WeakAuras.event_prototypes) do
     if(prototype.type == "event") then
@@ -339,8 +345,8 @@ WeakAuras.environmental_types = {
     SLIME = L["Slime"]
 };
 WeakAuras.orientation_types = {
-    HORIZONTAL = L["Left to Right"],
-    HORIZONTAL_INVERSE = L["Right to Left"],
+    HORIZONTAL_INVERSE = L["Left to Right"],
+    HORIZONTAL = L["Right to Left"],
     VERTICAL = L["Bottom to Top"],
     VERTICAL_INVERSE = L["Top to Bottom"]
 };

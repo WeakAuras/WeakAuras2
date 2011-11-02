@@ -854,5 +854,19 @@ L.textures["Shapes"] = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White"] = "Square",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
 }
-
+L["Bar Color Settings"] = "Bar Color Settings"
+L["Border Settings"] = "Border Settings"
+L["Border Style"] = "Border Style"
+L["Backdrop Style"] = "Backdrop Style"
+L["Border Size"] = "Border Size"
+L["Border Inset"] = "Border Inset"
+L["Bar in Front"] = "Bar in Front"
+L["Border Color"] = "Border Color"
+L["Backdrop Color"] = "Backdrop Color"
+L["Text Settings"] = "Text Settings"
+L["Timer Settings"] = "Timer Settings"
+L["Stacks Settings"] = "Stacks Settings"
+L["Font Type"] = "Font Type"
+L["Font Size"] = "Font Size"
+L["Font Flags"] = "Font Flags"
 --@end-do-not-package@

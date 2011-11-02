@@ -1,7 +1,7 @@
 ﻿local L = WeakAuras.L
 
 -- Options translation
---@localization(locale="enUS" format="lua_additive_table" namespace="WeakAuras / Tutorials")@
+--@localization(locale="enUS", format="lua_additive_table", namespace="WeakAuras / Tutorials")@
 
 -- Make missing translations available
 setmetatable(WeakAuras.L, {__index = function(self, key)

@@ -2960,6 +2960,60 @@ function WeakAuras.Modernize(data)
 			trigger["event"] = "Cooldown Progress (Spell)";
 		end
     end
+	
+	-- Upgrade some old variables
+	if data.regionType == "aurabar" then
+		-- "border" changed to "borderEdge"
+		if data.border and type(data.border) ~= "boolean" then
+			data.borderEdge = data.border;
+			data.border = data.borderEdge ~= "None";
+		end
+		-- Multiple text settings
+		if data.textColor then
+			if not data.timerColor then
+				data.timerColor = {};
+				data.timerColor[1] = data.textColor[1];
+				data.timerColor[2] = data.textColor[2];
+				data.timerColor[3] = data.textColor[3];
+				data.timerColor[4] = data.textColor[4];
+			end
+			if not data.stacksColor then
+				data.stacksColor = {};
+				data.stacksColor[1] = data.textColor[1];
+				data.stacksColor[2] = data.textColor[2];
+				data.stacksColor[3] = data.textColor[3];
+				data.stacksColor[4] = data.textColor[4];
+			end
+		end
+		-- Multiple text settings
+		if data.font then
+			if not data.textFont then
+				data.textFont = data.font;
+			end
+			if not data.timerFont then
+				data.timerFont = data.font;
+			end
+			if not data.stacksFont then
+				data.stacksFont = data.font;
+			end
+			
+			data.font = nil;
+		end
+		-- Multiple text settings
+		if data.fontSize then
+			if not data.textSize then
+				data.textSize = data.fontSize;
+			end
+			if not data.timerSize then
+				data.timerSize = data.fontSize;
+			end
+			if not data.stacksSize then
+				data.stacksSize = data.fontSize;
+			end
+			
+			data.fontSize = nil;
+		end
+	end
 end
 
 function WeakAuras.SyncParentChildRelationships(silent)

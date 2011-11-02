@@ -41,7 +41,9 @@ RegionTypes\texture.lua
 RegionTypes\aurabar.lua
 RegionTypes\icon.lua
 RegionTypes\text.lua
+#@do-not-package@
 RegionTypes\timer.lua
+#@end-do-not-package@
 RegionTypes\group.lua
 RegionTypes\dynamicgroup.lua
 RegionTypes\model.lua
