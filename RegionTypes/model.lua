@@ -1,4 +1,8 @@
-﻿local default = {
+﻿-- Import SM for statusbar-textures, font-styles and border-types
+local SharedMedia = LibStub("LibSharedMedia-3.0");
+
+-- Default settings
+local default = {
     model_path = "Creature/Arthaslichking/arthaslichking.m2",
     model_x = 0,
     model_y = 0,
@@ -13,38 +17,56 @@
     anchorPoint = "CENTER",
     xOffset = 0,
     yOffset = 0,
-    frameStrata = 1
+    frameStrata = 1,
+	
+	border				= false,
+	borderColor 		= {0.0, 0.0, 0.0, 0.5},
+	backdropColor		= {0.0, 0.0, 0.0, 0.5},
+    borderEdge			= "None",
+    borderOffset 		= 5,
+	borderInset			= 11,
+	borderSize			= 16,
+	borderBackdrop		= "Blizzard Tooltip",
 };
 
+-- Called when first creating a new region/display
 local function create(parent)
-    --local frame = CreateFrame("FRAME", nil, UIParent);
-    --frame:SetMovable(true);
-    --frame:SetResizable(true);
+	--
+    local region = CreateFrame("FRAME", nil, UIParent);
+--	region:SetMovable(true);
+--	region:SetResizable(true);
     
-    local model = CreateFrame("PlayerModel", nil, UIParent);
-    --frame.model = model;
-    --model:SetAllPoints(frame);
-    model:SetMovable(true);
-    model:SetResizable(true);
-    return model;
+	--
+    local model = CreateFrame("PlayerModel", nil, region);
+	region.model = model;
+
+	--
+    return region;
 end
 
+-- Modify a given region/display
 local function modify(parent, region, data)
+	--
+	local model = region.model;
+
+	--
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
     
-    local model = region;
-    region:SetWidth(data.width);
-    region:SetHeight(data.height);
+	--
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetWidth(data.width);
+    region:SetHeight(data.height);
     
+	-- 
     model:SetModel(data.model_path);
     model:SetPosition(data.model_z, data.model_x, data.model_y);
     
+	-- 
     if(data.advance) then
         local elapsed = 0;
         model:SetScript("OnUpdate", function(self, elaps)
@@ -55,6 +77,7 @@ local function modify(parent, region, data)
         model:SetScript("OnUpdate", nil);
     end
     
+	-- 
     function region:Scale(scalex, scaley)
         if(scalex < 0) then
             region.mirror_h = true;
@@ -90,4 +113,5 @@ local function modify(parent, region, data)
     end
 end
 
+-- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("model", create, modify, default);

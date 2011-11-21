@@ -1,28 +1,43 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
-    
+﻿-- Import SM for statusbar-textures, font-styles and border-types
+local SharedMedia = LibStub("LibSharedMedia-3.0");
+
+-- Default settings
 local default = {
-    controlledChildren = {},
-    anchorPoint = "CENTER",
-    xOffset = 0,
-    yOffset = 0,
-    frameStrata = 1
+    controlledChildren 	= {},
+    anchorPoint 		= "CENTER",
+    xOffset 			= 0,
+    yOffset 			= 0,
+    frameStrata 		= 1,
+	border				= false,
+	borderColor 		= {0.0, 0.0, 0.0, 0.5},
+	backdropColor		= {0.0, 0.0, 0.0, 0.5},
+    borderEdge			= "None",
+    borderOffset 		= 5,
+	borderInset			= 11,
+	borderSize			= 16,
+	borderBackdrop		= "Blizzard Tooltip",
 };
 
+-- Called when first creating a new region/display
 local function create(parent)
+	-- Main region
     local region = CreateFrame("FRAME", nil, parent);
-    region:SetMovable(true);
-    region:SetWidth(0.01);
-    region:SetHeight(0.01);
+
+	-- Border region
+    local border = CreateFrame("frame", nil, region);
+    region.border = border;
     
-    local background = CreateFrame("frame", nil, region);
-    region.background = background;
-    
+	-- Return new region
     return region;
 end
 
+-- Calculate bounding box
 local function getRect(data)
+	-- Temp variables
     local blx, bly, trx, try;
     blx, bly = data.xOffset, data.yOffset;
+	
+	-- Calc bounding box
     if(data.selfPoint:find("LEFT")) then
         trx = blx + data.width;
     elseif(data.selfPoint:find("RIGHT")) then
@@ -42,16 +57,27 @@ local function getRect(data)
         try = bly + data.height;
     end
     
+	-- Return data
     return blx, bly, trx, try;
 end
 
+local function updateBorder(region, data)
+	
+end
+
+-- Modify a given region/display
 local function modify(parent, region, data)
+	-- Localize
+	local border = region.border;
+	
+	-- Adjust framestrata
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
     
+	-- Get overall bounding box
     data.selfPoint = "BOTTOMLEFT";
     local leftest, rightest, lowest, highest = 0, 0, 0, 0;
     for index, childId in ipairs(data.controlledChildren) do
@@ -69,11 +95,18 @@ local function modify(parent, region, data)
     region.trx = rightest;
     region.try = highest;
     
+	-- Reset position and size
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+	region:SetWidth(math.abs(rightest - leftest));
+	region:SetHeight(math.abs(lowest - highest));
+	
+	-- Update border
+	updateBorder(region, data);
     
+	-- Adjust frame-level sorting
     local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
-    if(lowestRegion) then    
+    if(lowestRegion) then
         local frameLevel = lowestRegion:GetFrameLevel();
         for i=2,#data.controlledChildren do
             local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
@@ -83,12 +116,56 @@ local function modify(parent, region, data)
             end
         end
     end
-    
-    function region:PositionChildren()
+
+	-- Control children (does not happen with "group")
+    function region:UpdateBorder(childRegion)
+		-- Localize
+		local border = region.border;
+		
+		-- Apply border settings
+		if data.border then
+			-- Initial visibility (of child that originated UpdateBorder(...))
+			local childVisible = childRegion and childRegion:IsVisible() or false;
+			
+			-- Scan children for visibility
+			if not childVisible then
+				for index, childId in ipairs(data.controlledChildren) do
+					local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
+					if childRegion and childRegion:IsVisible() then
+						childVisible = true;
+						break;
+					end
+				end
+			end
+			
+			-- Show border if child is visible
+			if childVisible then
+				border:SetBackdrop({
+					edgeFile = SharedMedia:Fetch("border", data.borderEdge),
+					edgeSize = data.borderSize,
+					bgFile = SharedMedia:Fetch("background", data.borderBackdrop),
+					insets = {
+						left 	= data.borderInset,
+						right 	= data.borderInset,
+						top 	= data.borderInset,
+						bottom 	= data.borderInset,
+					},
+				});
+				border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
+				border:SetPoint("topright",   region, "topright", data.borderOffset, data.borderOffset);
+				border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
+				border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+				
+				border:Show();
+			else
+				border:Hide();
+			end
+		else
+			border:Hide();
+		end
     end
-    
-    function region:ControlChildren()
-    end
+	region:UpdateBorder()
 end
 
+-- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("group", create, modify, default);

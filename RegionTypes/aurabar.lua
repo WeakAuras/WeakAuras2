@@ -7,7 +7,7 @@ local default = {
 	desaturate 			= false,
     auto 				= true,
 	barInFront			= true,
-	border				= true,
+	border				= false,
     timer 				= true,
     text 				= true,
     stacks 				= true,
@@ -718,7 +718,6 @@ local function UpdateValue(region, data, value, total)
 	UpdateText(region, data);
 end
 
-
 -- Modify a given region/display
 local function modify(parent, region, data)
 	-- Localize
@@ -1061,5 +1060,5 @@ local function modify(parent, region, data)
 	region.bar:Update();
 end
 
--- Register new retion type with WeakAuras
+-- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("aurabar", create, modify, default);
