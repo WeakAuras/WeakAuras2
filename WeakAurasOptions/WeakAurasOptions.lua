@@ -5694,7 +5694,7 @@ function WeakAuras.CreateFrame()
     titlebg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
     titlebg:SetTexCoord(0.31, 0.67, 0, 0.63)
     titlebg:SetPoint("TOP", 0, 12)
-    titlebg:SetWidth(100)
+    titlebg:SetWidth(120)
     titlebg:SetHeight(40)
 
     local titlebg_l = frame:CreateTexture(nil, "OVERLAY")
@@ -5742,7 +5742,7 @@ function WeakAuras.CreateFrame()
         commitWindowChanges();
     end);
     title:SetPoint("BOTTOMLEFT", titlebg, "BOTTOMLEFT", -25, 0);
-    title:SetPoint("TOPRIGHT", titlebg, "TOPRIGHT", 30, 0);
+    title:SetPoint("TOPRIGHT", titlebg, "TOPRIGHT", 25, 0);
 
     local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)

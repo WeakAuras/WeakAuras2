@@ -1,9 +1,16 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
+﻿-- Import SM for statusbar-textures, font-styles and border-types
+local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- Import translation
+local L = WeakAuras.L;
+
+-- Calculate bounding box
 local function getRect(data)
+	-- Temp variables
     local blx, bly, trx, try;
     blx, bly = data.xOffset, data.yOffset;
+	
+	-- Calc bounding box
     if(data.selfPoint:find("LEFT")) then
         trx = blx + data.width;
     elseif(data.selfPoint:find("RIGHT")) then
@@ -23,10 +30,13 @@ local function getRect(data)
         try = bly + data.height;
     end
     
+	-- Return data
     return blx, bly, trx, try;
 end
 
+-- Create region options table
 local function createOptions(id, data)
+	-- Region options
     local options = {
         align_h = {
             type = "select",
@@ -486,40 +496,118 @@ local function createOptions(id, data)
                 WeakAuras.ResetMoverSizer();
             end
         },
+		border_header = {
+			type = "header",
+			name = L["Border Settings"],
+			order = 42
+		},
+        borderEdge = {
+            type = "select",
+            dialogControl = "LSM30_Border",
+            name = L["Border Style"],
+            order = 43,
+            values = AceGUIWidgetLSMlists.border,
+			disabled = function() return not data.border end,
+        },
+		borderBackdrop = {
+            type = "select",
+            dialogControl = "LSM30_Background",
+            name = L["Backdrop Style"],
+            order = 44,
+            values = AceGUIWidgetLSMlists.background,
+			disabled = function() return not data.border end,
+        },
+        borderOffset = {
+            type = "range",
+            name = L["Border Offset"],
+            order = 45,
+            softMin = 0,
+            softMax = 32,
+            bigStep = 1,
+			disabled = function() return not data.border end,
+        },
+		borderSize = {
+            type = "range",
+            name = L["Border Size"],
+            order = 45.5,
+            softMin = 1,
+            softMax = 64,
+            bigStep = 1,
+			disabled = function() return not data.border end,
+        },
+		borderInset = {
+            type = "range",
+            name = L["Border Inset"],
+            order = 45.75,
+            softMin = 1,
+            softMax = 32,
+            bigStep = 1,
+			disabled = function() return not data.border end,
+        },
+		borderColor = {
+            type = "color",
+            name = L["Border Color"],
+            hasAlpha = true,
+            order = 46,
+			disabled = function() return not data.border end,
+        },
+		backdropColor = {
+            type = "color",
+            name = L["Backdrop Color"],
+            hasAlpha = true,
+            order = 46.25,
+			disabled = function() return not data.border end,
+        },
+		border = {
+            type = "toggle",
+            name = L["Border"],
+            order = 46.5
+        },
         spacer = {
             type = "header",
             name = "",
             order = 50
         }
     };
-    options = WeakAuras.AddPositionOptions(options, id, data);
     
+	-- Positioning options
+	options = WeakAuras.AddPositionOptions(options, id, data);
+    
+	-- Remove some poition options
     options.width = nil;
     options.height = nil;
     options.selfPoint.disabled = true;
     options.selfPoint.values = {["BOTTOMLEFT"] = "Anchor Point"};
     
+	-- Return options
     return options;
 end
 
+-- Create preview thumbnail
 local function createThumbnail(parent, fullCreate)
+	-- Preview frame
     local borderframe = CreateFrame("FRAME", nil, parent);
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);
     
+	-- Preview border
     local border = borderframe:CreateTexture(nil, "OVERLAY");
     border:SetAllPoints(borderframe);
     border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
     border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
     
+	-- Main region
     local region = CreateFrame("FRAME", nil, borderframe);
     borderframe.region = region;
     
+	-- Preview children
     region.children = {};
     
+	-- Return preview
     return borderframe;
 end
 
+-- Modify preview thumbnail
 local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     local region = borderframe.region;
     size = size or 24;
@@ -586,6 +674,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     end
 end
 
+-- Create "new region" preview
 local function createIcon()
     local thumbnail = createThumbnail(UIParent);
     local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
@@ -607,4 +696,5 @@ local function createIcon()
     return thumbnail;
 end
 
+-- Register new region type options with WeakAuras
 WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail, L["Controls the positioning and configuration of multiple displays at the same time"]);

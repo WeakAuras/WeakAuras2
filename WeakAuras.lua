@@ -3541,6 +3541,10 @@ function WeakAuras.SetRegion(data, cloneId)
                             if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
                                 region:Hide();
                             end
+							
+							if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
+								parent:UpdateBorder(region);
+							end
                         end
                     end
                     function region:Expand()
@@ -3554,6 +3558,10 @@ function WeakAuras.SetRegion(data, cloneId)
                             if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
                                 startMainAnimation();
                             end
+							
+							if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
+								parent:UpdateBorder(region);
+							end
                         end
                     end
                 else

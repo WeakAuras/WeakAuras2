@@ -1,7 +1,12 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
+﻿-- Import SM for statusbar-textures, font-styles and border-types
+local SharedMedia = LibStub("LibSharedMedia-3.0");
+
+-- Import translation
+local L = WeakAuras.L;
     
+-- Create region options table
 local function createOptions(id, data)
+	-- Region options
     local options = {
         texture = {
             type = "select",
@@ -179,8 +184,8 @@ local function createOptions(id, data)
             type = "select",
             name = L["Icon"],
             values = WeakAuras.icon_side_types,
-            hidden = function() return not data.orientation:find("HORIZONTAL") end,
-            order = 19
+            hidden = function() return data.orientation:find("VERTICAL") end,
+            order = 19,
         },
         icon_side2 = {
             type = "select",
@@ -262,125 +267,302 @@ local function createOptions(id, data)
             name = L["Inverse"],
             order = 35
         },
+        stickyDuration = {
+            type = "toggle",
+            name = L["Sticky Duration"],
+            desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
+            order = 36
+        },
+        useTooltip = {
+            type = "toggle",
+            name = L["Tooltip on Mouseover"],
+            hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
+            order = 37
+        },
+		
+		bar_header = {
+			type = "header",
+			name = L["Bar Color Settings"],
+			order = 38
+		},
         barColor = {
             type = "color",
             name = L["Bar Color"],
             hasAlpha = true,
-            order = 20
+            order = 39
         },
         backgroundColor = {
             type = "color",
             name = L["Background Color"],
-            hasAlpha = true,
-            order = 30
-        },
-        textColor = {
-            type = "color",
-            name = L["Text Color"],
             hasAlpha = true,
             order = 40
         },
         alpha = {
             type = "range",
             name = L["Bar Alpha"],
-            order = 42,
+            order = 41,
             min = 0,
             max = 1,
             bigStep = 0.01,
             isPercent = true
         },
-        font = {
-            type = "select",
-            dialogControl = "LSM30_Font",
-            name = L["Font"],
-            order = 45,
-            values = AceGUIWidgetLSMlists.font
-        },
-        fontSize = {
-            type = "range",
-            name = L["Size"],
-            order = 47,
-            min = 6,
-            max = 25,
-            step = 1
-        },
-        border = {
+		border_header = {
+			type = "header",
+			name = L["Border Settings"],
+			order = 42
+		},
+        borderEdge = {
             type = "select",
             dialogControl = "LSM30_Border",
-            name = L["Border"],
-            order = 47.3,
-            values = AceGUIWidgetLSMlists.border
+            name = L["Border Style"],
+            order = 43,
+            values = AceGUIWidgetLSMlists.border,
+			disabled = function() return not data.border end,
+        },
+		borderBackdrop = {
+            type = "select",
+            dialogControl = "LSM30_Background",
+            name = L["Backdrop Style"],
+            order = 44,
+            values = AceGUIWidgetLSMlists.background,
+			disabled = function() return not data.border end,
         },
         borderOffset = {
             type = "range",
             name = L["Border Offset"],
-            order = 47.7,
+            order = 45,
             softMin = 0,
             softMax = 32,
-            bigStep = 1
+            bigStep = 1,
+			disabled = function() return not data.border end,
         },
-        stacks = {
+		borderSize = {
+            type = "range",
+            name = L["Border Size"],
+            order = 45.5,
+            softMin = 1,
+            softMax = 64,
+            bigStep = 1,
+			disabled = function() return not data.border end,
+        },
+		borderInset = {
+            type = "range",
+            name = L["Border Inset"],
+            order = 45.75,
+            softMin = 1,
+            softMax = 32,
+            bigStep = 1,
+			disabled = function() return not data.border end,
+        },
+		barInFront  = {
+            type = "toggle",
+            name = L["Bar in Front"],
+            order = 45.8,
+			disabled = function() return not data.border end,
+        },		
+		borderColor = {
+            type = "color",
+            name = L["Border Color"],
+            hasAlpha = true,
+            order = 46,
+			disabled = function() return not data.border end,
+        },
+		backdropColor = {
+            type = "color",
+            name = L["Backdrop Color"],
+            hasAlpha = true,
+            order = 46.25,
+			disabled = function() return not data.border end,
+        },
+		border = {
+            type = "toggle",
+            name = L["Border"],
+            order = 46.5
+        },
+		text_header = {
+			type = "header",
+			name = L["Text Settings"],
+			order = 47
+		},
+		textColor = {
+            type = "color",
+            name = L["Text Color"],
+            hasAlpha = true,
+            order = 48,
+			disabled = function() return not data.text end,
+        },
+        textFont = {
+            type = "select",
+            dialogControl = "LSM30_Font",
+            name = L["Font Type"],
+            order = 49,
+            values = AceGUIWidgetLSMlists.font,
+			disabled = function() return not data.text end,
+        },
+        textSize = {
+            type = "range",
+            name = L["Font Size"],
+            order = 50,
+            min = 6,
+            max = 25,
+            step = 1,
+			disabled = function() return not data.text end,
+        },
+		textFlags = {
+            type = "select",
+            name = L["Font Flags"],
+            order = 51,
+            values = WeakAuras.font_flags,
+			disabled = function() return not data.text end,
+        },
+		text = {
+            type = "toggle",
+            name = L["Text"],
+            order = 51.5
+        },
+		timer_header = {
+			type = "header",
+			name = L["Timer Settings"],
+			order = 52
+		},
+		timerColor = {
+            type = "color",
+            name = L["Text Color"],
+            hasAlpha = true,
+            order = 53,
+			disabled = function() return not data.timer end,
+        },
+        timerFont = {
+            type = "select",
+            dialogControl = "LSM30_Font",
+            name = L["Font Type"],
+            order = 54,
+            values = AceGUIWidgetLSMlists.font,
+			disabled = function() return not data.timer end,
+        },
+        timerSize = {
+            type = "range",
+            name = L["Font Size"],
+            order = 55,
+            min = 6,
+            max = 25,
+            step = 1,
+			disabled = function() return not data.timer end,
+        },
+		timerFlags = {
+            type = "select",
+            name = L["Font Flags"],
+            order = 56,
+            values = WeakAuras.font_flags,
+			disabled = function() return not data.timer end,
+        },
+		timer = {
+            type = "toggle",
+            name = L["Timer"],
+            order = 56.5
+        },
+		
+		stacks_header = {
+			type = "header",
+			name = L["Stacks Settings"],
+			order = 57.1
+		},
+		stacksColor = {
+            type = "color",
+            name = L["Text Color"],
+            hasAlpha = true,
+            order = 57.3,
+			disabled = function() return not data.stacks end,
+        },
+        stacksFont = {
+            type = "select",
+            dialogControl = "LSM30_Font",
+            name = L["Font Type"],
+            order = 57.4,
+            values = AceGUIWidgetLSMlists.font,
+			disabled = function() return not data.stacks end,
+        },
+        stacksSize = {
+            type = "range",
+            name = L["Font Size"],
+            order = 57.5,
+            min = 6,
+            max = 25,
+            step = 1,
+			disabled = function() return not data.stacks end,
+        },
+		stacksFlags = {
+            type = "select",
+            name = L["Font Flags"],
+            order = 57.6,
+            values = WeakAuras.font_flags,
+			disabled = function() return not data.stacks end,
+        },
+		stacks = {
             type = "toggle",
             name = L["Stacks"],
-            order = 48
-        },
-        stickyDuration = {
-            type = "toggle",
-            name = L["Sticky Duration"],
-            desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
-            order = 49
-        },
-        useTooltip = {
-            type = "toggle",
-            name = L["Tooltip on Mouseover"],
-            hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
-            order = 49.5
+            order = 57.7
         },
         spacer = {
             type = "header",
             name = "",
-            order = 50
-        }
+            order = 58
+        },
     };
-    options = WeakAuras.AddPositionOptions(options, id, data);
     
+	-- Positioning options
+	options = WeakAuras.AddPositionOptions(options, id, data);
+    
+	-- Return options
     return options;
 end
 
+-- Create preview thumbnail
 local function createThumbnail(parent, fullCreate)
+	-- Preview frame
     local borderframe = CreateFrame("FRAME", nil, parent);
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);
     
+	-- Preview border
     local border = borderframe:CreateTexture(nil, "OVERLAY");
     border:SetAllPoints(borderframe);
     border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
     border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
     
+	-- Main region
     local region = CreateFrame("FRAME", nil, borderframe);
     borderframe.region = region;
     region:SetWidth(32);
     region:SetHeight(32);
     
+	-- Status-bar frame
     local bar = CreateFrame("FRAME", nil, region);
     borderframe.bar = bar;
     
+	-- Fake status-bar
     local texture = bar:CreateTexture(nil, "OVERLAY");
     borderframe.texture = texture;
     
+	-- Fake icon
     local icon = region:CreateTexture();
     borderframe.icon = icon;
     icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
     
+	-- Return preview
     return borderframe;
 end
 
+-- Modify preview thumbnail
 local function modifyThumbnail(parent, borderframe, data, fullModify, width, height)
+	-- Localize
     local region, bar, texture, icon = borderframe.region, borderframe.bar, borderframe.texture, borderframe.icon;
     
-    width = width or 26;
+	-- Defaut size
+    width  = width or 26;
     height = height or 15;
     
+	-- Fake orientation (main region)
     if(data.orientation:find("HORIZONTAL")) then
         region:SetWidth(width);
         region:SetHeight(height);
@@ -401,17 +583,19 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
         end
     end
     
+	-- Fake bar alpha
     region:SetAlpha(data.alpha);
     
-    local texturePath = SharedMedia:Fetch("statusbar", data.texture);
-    texture:SetTexture(texturePath);
-    
+	-- Fake status-bar style
+    texture:SetTexture(SharedMedia:Fetch("statusbar", data.texture));
     texture:SetVertexColor(data.barColor[1], data.barColor[2], data.barColor[3], data.barColor[4]);
     
+	-- Fake icon size
     local iconsize = height;
     icon:SetWidth(iconsize);
     icon:SetHeight(iconsize);
     
+	-- Fake layout variables
     local percent, length;
     if(data.icon) then
         length = width - height;
@@ -420,9 +604,13 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
         length = width;
         percent = 1 - (width / 100);
     end
+	
+	-- Reset region members
     icon:ClearAllPoints();
     bar:ClearAllPoints();
     texture:ClearAllPoints();
+	
+	-- Fake orientation (region members)
     if(data.orientation == "HORIZONTAL_INVERSE") then
         icon:SetPoint("LEFT", region, "LEFT");
         bar:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT");
@@ -473,6 +661,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
         texture:SetHeight(length);
     end
     
+	-- Fake icon (code)
     if(data.icon) then
         function borderframe:SetIcon(path)
             local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
@@ -486,7 +675,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
     end
 end
 
+-- Create "new region" preview
 local function createIcon()
+	-- Default data
     local data = {
         icon = true,
         auto = true,
@@ -496,11 +687,14 @@ local function createIcon()
         barColor = {1, 0, 0, 1}
     };
     
+	-- Create and configure thumbnail
     local thumbnail = createThumbnail(UIParent);
     modifyThumbnail(UIParent, thumbnail, data, nil, 32, 18);
     thumbnail:SetIcon("Interface\\Icons\\INV_Sword_122");
     
+	-- Return thumbnail
     return thumbnail;
 end
 
+-- Register new region type options with WeakAuras
 WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"]);
