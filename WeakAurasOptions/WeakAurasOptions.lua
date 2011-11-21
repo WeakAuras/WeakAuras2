@@ -5615,6 +5615,75 @@ function WeakAuras.AddPositionOptions(input, id, data)
     return union(input, positionOptions);
 end
 
+function WeakAuras.AddBorderOptions(input, id, data)
+	local borderOptions = {
+		borderEdge = {
+			type = "select",
+			dialogControl = "LSM30_Border",
+			name = L["Border Style"],
+			order = 46.1,
+			values = AceGUIWidgetLSMlists.border,
+			disabled = function() return not data.border end,
+		},
+		borderBackdrop = {
+			type = "select",
+			dialogControl = "LSM30_Background",
+			name = L["Backdrop Style"],
+			order = 46.2,
+			values = AceGUIWidgetLSMlists.background,
+			disabled = function() return not data.border end,
+		},
+		borderOffset = {
+			type = "range",
+			name = L["Border Offset"],
+			order = 46.3,
+			softMin = 0,
+			softMax = 32,
+			bigStep = 1,
+			disabled = function() return not data.border end,
+		},
+		borderSize = {
+			type = "range",
+			name = L["Border Size"],
+			order = 46.4,
+			softMin = 1,
+			softMax = 64,
+			bigStep = 1,
+			disabled = function() return not data.border end,
+		},
+		borderInset = {
+			type = "range",
+			name = L["Border Inset"],
+			order = 46.5,
+			softMin = 1,
+			softMax = 32,
+			bigStep = 1,
+			disabled = function() return not data.border end,
+		},
+		borderColor = {
+			type = "color",
+			name = L["Border Color"],
+			hasAlpha = true,
+			order = 46.6,
+			disabled = function() return not data.border end,
+		},
+		backdropColor = {
+			type = "color",
+			name = L["Backdrop Color"],
+			hasAlpha = true,
+			order = 46.8,
+			disabled = function() return not data.border end,
+		},
+		border = {
+			type = "toggle",
+			name = L["Border"],
+			order = 46.9
+		},
+	}
+	
+	return union(input, borderOptions);
+end
+
 function WeakAuras.CreateFrame()
     local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate");
     local frame;

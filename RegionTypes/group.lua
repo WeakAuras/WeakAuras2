@@ -9,8 +9,8 @@ local default = {
     yOffset 			= 0,
     frameStrata 		= 1,
 	border				= false,
-	borderColor 		= {0.0, 0.0, 0.0, 0.5},
-	backdropColor		= {0.0, 0.0, 0.0, 0.5},
+	borderColor 		= {1.0, 1.0, 1.0, 0.5},
+	backdropColor		= {1.0, 1.0, 1.0, 0.5},
     borderEdge			= "None",
     borderOffset 		= 5,
 	borderInset			= 11,
@@ -22,6 +22,8 @@ local default = {
 local function create(parent)
 	-- Main region
     local region = CreateFrame("FRAME", nil, parent);
+	region:SetWidth(1.0);
+	region:SetHeight(1.0);
 
 	-- Border region
     local border = CreateFrame("frame", nil, region);
@@ -61,10 +63,6 @@ local function getRect(data)
     return blx, bly, trx, try;
 end
 
-local function updateBorder(region, data)
-	
-end
-
 -- Modify a given region/display
 local function modify(parent, region, data)
 	-- Localize
@@ -98,11 +96,6 @@ local function modify(parent, region, data)
 	-- Reset position and size
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
-	region:SetWidth(math.abs(rightest - leftest));
-	region:SetHeight(math.abs(lowest - highest));
-	
-	-- Update border
-	updateBorder(region, data);
     
 	-- Adjust frame-level sorting
     local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
@@ -151,10 +144,12 @@ local function modify(parent, region, data)
 						bottom 	= data.borderInset,
 					},
 				});
-				border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
-				border:SetPoint("topright",   region, "topright", data.borderOffset, data.borderOffset);
 				border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
 				border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+				
+				border:ClearAllPoints();
+				border:SetPoint("bottomleft", region, "bottomleft", leftest-data.borderOffset, lowest-data.borderOffset);
+				border:SetPoint("topright",   region, "topright",   rightest+data.borderOffset, highest+data.borderOffset);
 				
 				border:Show();
 			else

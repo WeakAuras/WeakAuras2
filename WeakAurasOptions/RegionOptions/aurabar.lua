@@ -309,75 +309,13 @@ local function createOptions(id, data)
 		border_header = {
 			type = "header",
 			name = L["Border Settings"],
-			order = 42
+			order = 46.0
 		},
-        borderEdge = {
-            type = "select",
-            dialogControl = "LSM30_Border",
-            name = L["Border Style"],
-            order = 43,
-            values = AceGUIWidgetLSMlists.border,
-			disabled = function() return not data.border end,
-        },
-		borderBackdrop = {
-            type = "select",
-            dialogControl = "LSM30_Background",
-            name = L["Backdrop Style"],
-            order = 44,
-            values = AceGUIWidgetLSMlists.background,
-			disabled = function() return not data.border end,
-        },
-        borderOffset = {
-            type = "range",
-            name = L["Border Offset"],
-            order = 45,
-            softMin = 0,
-            softMax = 32,
-            bigStep = 1,
-			disabled = function() return not data.border end,
-        },
-		borderSize = {
-            type = "range",
-            name = L["Border Size"],
-            order = 45.5,
-            softMin = 1,
-            softMax = 64,
-            bigStep = 1,
-			disabled = function() return not data.border end,
-        },
-		borderInset = {
-            type = "range",
-            name = L["Border Inset"],
-            order = 45.75,
-            softMin = 1,
-            softMax = 32,
-            bigStep = 1,
-			disabled = function() return not data.border end,
-        },
 		barInFront  = {
             type = "toggle",
             name = L["Bar in Front"],
-            order = 45.8,
+            order = 46.7,
 			disabled = function() return not data.border end,
-        },		
-		borderColor = {
-            type = "color",
-            name = L["Border Color"],
-            hasAlpha = true,
-            order = 46,
-			disabled = function() return not data.border end,
-        },
-		backdropColor = {
-            type = "color",
-            name = L["Backdrop Color"],
-            hasAlpha = true,
-            order = 46.25,
-			disabled = function() return not data.border end,
-        },
-		border = {
-            type = "toggle",
-            name = L["Border"],
-            order = 46.5
         },
 		text_header = {
 			type = "header",
@@ -461,7 +399,6 @@ local function createOptions(id, data)
             name = L["Timer"],
             order = 56.5
         },
-		
 		stacks_header = {
 			type = "header",
 			name = L["Stacks Settings"],
@@ -512,6 +449,9 @@ local function createOptions(id, data)
     
 	-- Positioning options
 	options = WeakAuras.AddPositionOptions(options, id, data);
+	
+	-- Border options
+	options = WeakAuras.AddBorderOptions(options, id, data);
     
 	-- Return options
     return options;

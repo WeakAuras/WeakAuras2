@@ -86,84 +86,25 @@ local function createOptions(id, data)
             bigStep = 3,
             order = 45
         },
-		
-		
 		border_header = {
 			type = "header",
 			name = L["Border Settings"],
 			order = 46
 		},
-        borderEdge = {
-            type = "select",
-            dialogControl = "LSM30_Border",
-            name = L["Border Style"],
-            order = 46.5,
-            values = AceGUIWidgetLSMlists.border,
-			disabled = function() return not data.border end,
-        },
-		borderBackdrop = {
-            type = "select",
-            dialogControl = "LSM30_Background",
-            name = L["Backdrop Style"],
-            order = 47,
-            values = AceGUIWidgetLSMlists.background,
-			disabled = function() return not data.border end,
-        },
-        borderOffset = {
-            type = "range",
-            name = L["Border Offset"],
-            order = 47.5,
-            softMin = 0,
-            softMax = 32,
-            bigStep = 1,
-			disabled = function() return not data.border end,
-        },
-		borderSize = {
-            type = "range",
-            name = L["Border Size"],
-            order = 48,
-            softMin = 1,
-            softMax = 64,
-            bigStep = 1,
-			disabled = function() return not data.border end,
-        },
-		borderInset = {
-            type = "range",
-            name = L["Border Inset"],
-            order = 48.5,
-            softMin = 1,
-            softMax = 32,
-            bigStep = 1,
-			disabled = function() return not data.border end,
-        },	
-		borderColor = {
-            type = "color",
-            name = L["Border Color"],
-            hasAlpha = true,
-            order = 49,
-			disabled = function() return not data.border end,
-        },
-		backdropColor = {
-            type = "color",
-            name = L["Backdrop Color"],
-            hasAlpha = true,
-            order = 49.5,
-			disabled = function() return not data.border end,
-        },
-		border = {
-            type = "toggle",
-            name = L["Border"],
-            order = 49.75
-        },
-		
         spacer = {
             type = "header",
             name = "",
             order = 50
         }
     };
+	
+	--
     options = WeakAuras.AddPositionOptions(options, id, data);
+	
+	--
+	options = WeakAuras.AddBorderOptions(options, id, data);
     
+	-- 
     return options;
 end
 
