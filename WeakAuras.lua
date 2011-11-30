@@ -4403,7 +4403,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
                     playerName, _, subgroup = GetRaidRosterInfo(i);
 					
                     if(playerName) then
-						playerName = playerName:gsub(playerName, "-", " - ")
+						playerName = playerName:gsub("-", " - ")
 						if (playerList[playerName]) then
 							groupMembers[subgroup] = groupMembers[subgroup] or {};
 							groupMembers[subgroup][playerName] = true

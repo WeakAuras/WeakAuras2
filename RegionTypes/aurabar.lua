@@ -150,10 +150,10 @@ local barPrototype = {
 		
 		-- Create statusbar illusion
 		if xProgress then
-			self.fg:SetWidth(xProgress);
+			self.fg:SetWidth(xProgress > 0 and xProgress or 0.1);
 		end
 		if yProgress then
-			self.fg:SetHeight(yProgress);
+			self.fg:SetHeight(yProgress > 0 and yProgress or 0.1);
 		end
 	end,
 	
@@ -704,7 +704,9 @@ local function UpdateValue(region, data, value, total)
 	local progress = 1
 	if total > 0 then
 		progress = value / total;
-	end
+	else
+        progress = 0;
+    end
 	if data.inverse then
 		progress = 1 - progress;
 	end
