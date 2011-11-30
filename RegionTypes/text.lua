@@ -72,7 +72,7 @@ local function modify(parent, region, data)
             data.height = text:GetHeight();
             region:SetWidth(data.width);
             region:SetHeight(data.height);
-            if(data.parent) then
+            if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
                 WeakAuras.regions[data.parent].region:ControlChildren();
             else
                 region:ClearAllPoints();
