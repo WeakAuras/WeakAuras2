@@ -1911,7 +1911,11 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
     end
     if(isDynamic) then
-        if(dynamicDifficulty == 0) then
+        if(difficultyIndex == 1 or difficultyIndex == 2) then
+            difficulty = "normal";
+        elseif(difficultyIndex == 3 or difficultyIndex == 4) then
+            difficulty = "heroic";
+        elseif(dynamicDifficulty == 0) then
             difficulty = "normal";
         elseif(dynamicDifficulty == 1) then
             difficulty = "heroic";
@@ -2020,6 +2024,7 @@ loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
 loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
 
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
