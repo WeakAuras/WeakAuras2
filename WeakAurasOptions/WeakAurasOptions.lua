@@ -8287,7 +8287,8 @@ function WeakAuras.ShowCloneDialog(data)
             end,
             hideOnEscape = true,
             whileDead = true,
-            timeout = 0
+            timeout = 0,
+            preferredIndex = 3
         };
         
         StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
@@ -8316,7 +8317,8 @@ function WeakAuras.ShowSpellIDDialog(trigger, id)
             end,
             hideOnEscape = true,
             whileDead = true,
-            timeout = 0
+            timeout = 0,
+            preferredIndex = 3
         };
         
         StaticPopup_Show("WEAKAURAS_SPELLID_CHECK");
