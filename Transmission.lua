@@ -729,8 +729,17 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             end
         end
         
-        local thumbnail;
-        thumbnail = regionOptions[regionType].createThumbnail(thumbnail_frame, regionTypes[regionType].create);                
+        if (not IsAddOnLoaded('WeakAurasOptions')) then
+            LoadAddOn('WeakAurasOptions')
+        end
+        
+        local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
+            if not ok then
+                error("Error creating thumbnail", 2)
+            else
+                --print("Ok")
+            end      
+            
         WeakAuras.validate(data, regionTypes[regionType].default);
         regionOptions[regionType].modifyThumbnail(thumbnail_frame, thumbnail, data, regionTypes[regionType].modify);
         ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = thumbnail;
