@@ -481,12 +481,11 @@ WeakAuras.aura_cache = aura_cache;
 
 local groupFrame = CreateFrame("FRAME");
 WeakAuras.frames["Group Makeup Handler"] = groupFrame;
-groupFrame:RegisterEvent("RAID_ROSTER_UPDATE");
-groupFrame:RegisterEvent("PARTY_MEMBERS_CHANGED");
+groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function(self, event)
-    local numRaid = GetNumRaidMembers();
-    local numParty = GetNumPartyMembers();
+    local numRaid = GetNumGroupMembers();
+    local numParty = GetNumSubgroupMembers();
     local groupMembers = {};
     
     inGroup = true;
@@ -1576,7 +1575,7 @@ function WeakAuras.Toggle()
 end
 
 function WeakAuras.ScanAurasGroup()
-    local numRaid = GetNumRaidMembers();
+    local numRaid = GetNumGroupMembers();
 	local uid
     if(numRaid > 0) then
         for i=1,numRaid do
@@ -1584,7 +1583,7 @@ function WeakAuras.ScanAurasGroup()
             WeakAuras.ScanAuras(uid);
         end
     else
-        local numParty = GetNumPartyMembers();
+        local numParty = GetNumSubgroupMembers();
         if(numParty > 0) then
             for i=1,numParty do
                 uid = fmt("party%d", i);
@@ -1920,15 +1919,19 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         elseif(dynamicDifficulty == 1) then
             difficulty = "heroic";
         else
-            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. Please report this as a bug.");
+            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
         end
     else
-        if(difficultyIndex == 1 or difficultyIndex == 2) then
+        if(difficultyIndex == 0 or difficultyIndex == 0) then
+            difficulty = "none";
+		elseif(difficultyIndex == 1 or difficultyIndex == 2) then
             difficulty = "normal";
         elseif(difficultyIndex == 3 or difficultyIndex == 4) then
             difficulty = "heroic";
+	    elseif(difficultyIndex == 7 or difficultyIndex == 8) then
+            difficulty = "challengemode";
         else
-            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. Please report this as a bug.");
+            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. ASDF Please report this as a bug.");
         end
     end
     local changed = 0;
@@ -2854,7 +2857,8 @@ function WeakAuras.Modernize(data)
         ["Druid"] = "DRUID",
         ["Hunter"] = "HUNTER",
         ["Mage"] = "MAGE",
-        ["Pladain"] = "PALADIN",
+		["Monk"] = "MONK",
+        ["Paladin"] = "PALADIN",
         ["Priest"] = "PRIEST",
         ["Rogue"] = "ROGUE",
         ["Shaman"] = "SHAMAN",
