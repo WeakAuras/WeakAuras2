@@ -352,9 +352,9 @@ WeakAuras.orientation_types = {
     VERTICAL = L["Bottom to Top"],
     VERTICAL_INVERSE = L["Top to Bottom"]
 };
-local _, firstTabName = GetTalentTabInfo(1);
-local _, secondTabName = GetTalentTabInfo(2);
-local _, thirdTabName = GetTalentTabInfo(3);
+local _, firstTabName = GetSpecializationInfo(1);
+local _, secondTabName = GetSpecializationInfo(2);
+local _, thirdTabName = GetSpecializationInfo(3);
 WeakAuras.spec_types = {
     [1] = L["First Tree"]..(firstTabName and " ("..firstTabName..")" or ""),
     [2] = L["Second Tree"]..(secondTabName and " ("..secondTabName..")" or ""),
