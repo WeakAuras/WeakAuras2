@@ -1892,7 +1892,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         playerLevel = arg1;
     end
     local typefunc = type;
-    local player, zone, spec, role = UnitName("player"), GetRealZoneText(), GetPrimaryTalentTree(), UnitGroupRolesAssigned("player");
+    local player, zone, spec, role = UnitName("player"), GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
     local _, class = UnitClass("player");
     local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
     local size, difficulty;
@@ -4403,7 +4403,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
         
         if(numPlayers > 0) then
             GameTooltip:AddLine(name);
-            local numRaid = GetNumRaidMembers();
+            local numRaid = GetNumGroupMembers();
             local groupMembers = {};
             
             if(numRaid > 0) then

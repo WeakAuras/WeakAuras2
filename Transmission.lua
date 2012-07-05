@@ -554,7 +554,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             end
             
             if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
-                ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate2")
+                ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
             end
             importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
             importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
