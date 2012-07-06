@@ -650,7 +650,12 @@ local function UpdateTime(region, data, inverse)
 	-- Timing variables
 	local remaining	= region.expirationTime - GetTime();
 	local duration 	= region.duration;
-	local progress 	= remaining / region.duration;
+	local progress
+	if (region.duration ~= 0) then
+		progress = remaining / region.duration;
+	else
+		progress = 1;
+	end
 	
 	-- Need to invert?
 	if (

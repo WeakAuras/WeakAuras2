@@ -234,8 +234,10 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     local scale;
     if(maxHeight > maxWidth) then
         scale = size / maxHeight;
-    elseif(maxWidth >= maxHeight) then
+    elseif(maxWidth >= maxHeight and maxWidth ~= 0 and maxHeight ~= 0) then
         scale = size / maxWidth;
+	else
+		scale = 1;
     end
     
     region:SetPoint("CENTER", borderframe, "CENTER");
