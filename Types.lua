@@ -927,7 +927,8 @@ WeakAuras.group_types = {
 };
 WeakAuras.difficulty_types = {
     normal = L["Normal"],
-    heroic = L["Heroic"]
+    heroic = L["Heroic"],
+	challenge = L["Challenge Mode"]
 };
 WeakAuras.role_types = {
     TANK = L["Tank"],

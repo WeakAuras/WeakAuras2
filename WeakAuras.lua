@@ -1909,31 +1909,18 @@ function WeakAuras.ScanForLoads(self, event, arg1)
             print("You have entered an instance whose type is not supported by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
         end
     end
-    if(isDynamic) then
-        if(difficultyIndex == 1 or difficultyIndex == 2) then
-            difficulty = "normal";
-        elseif(difficultyIndex == 3 or difficultyIndex == 4) then
-            difficulty = "heroic";
-        elseif(dynamicDifficulty == 0) then
-            difficulty = "normal";
-        elseif(dynamicDifficulty == 1) then
-            difficulty = "heroic";
-        else
-            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
-        end
-    else
-        if(difficultyIndex == 0 or difficultyIndex == 0) then
-            difficulty = "none";
+		if(difficultyIndex == 0) then
+			difficulty = "none";
 		elseif(difficultyIndex == 1 or difficultyIndex == 2) then
-            difficulty = "normal";
-        elseif(difficultyIndex == 3 or difficultyIndex == 4) then
-            difficulty = "heroic";
-	    elseif(difficultyIndex == 7 or difficultyIndex == 8) then
-            difficulty = "challengemode";
-        else
-            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. ASDF Please report this as a bug.");
-        end
+			difficulty = "normal";
+		elseif(difficultyIndex == 3 or difficultyIndex == 4) then
+			difficulty = "heroic";
+		elseif(difficultyIndex == 8) then
+			difficulty = "challenge";
+		else
+			print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
     end
+    
     local changed = 0;
     local shouldBeLoaded, couldBeLoaded;
     for id, triggers in pairs(auras) do
