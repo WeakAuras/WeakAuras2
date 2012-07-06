@@ -51,8 +51,8 @@ local function modify(parent, region, data)
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
     
-    local bgFile = SharedMedia:Fetch("background", data.background or "");
-    local edgeFile = SharedMedia:Fetch("border", data.border or "");
+    local bgFile = data.background ~= 'None' and SharedMedia:Fetch("background", data.background or "");
+    local edgeFile = data.border ~= 'None' and SharedMedia:Fetch("border", data.border or "");
     background:SetBackdrop({
         bgFile = bgFile,
         edgeFile = edgeFile,
