@@ -1906,7 +1906,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
     elseif(WeakAuras.group_types) then
         if not(WeakAuras.group_types[type]) then
-            print("You have entered an instance whose type is not supported by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
+            print("You have entered an instance whose type is not supported by WeakAuras. Please report this as a bug.");
         end
     end
 		if(difficultyIndex == 0) then
