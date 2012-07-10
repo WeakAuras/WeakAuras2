@@ -750,6 +750,57 @@ WeakAuras.event_prototypes = {
         end,
         automatic = true
     },
+	["Harmony Orbs"] = {
+        type = "status",
+        events = {
+            "UNIT_POWER",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = {
+            "player",
+            "target",
+            "focus",
+            "pet"
+        },
+        name = L["Harmony Orbs"],
+        init = function(trigger)
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
+        end,
+        args = {
+            {
+                name = "unit",
+                required = true,
+                display = L["Unit"],
+                type = "unit",
+                init = "arg",
+                values = "actual_unit_types_with_specific"
+            },
+            {
+                name = "power",
+                display = L["Harmony Orbs"],
+                type = "number",
+                init = "UnitPower(unit, SPELL_POWER_LIGHT_FORCE)"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(concernedUnit)"
+            }
+        },
+        durationFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_LIGHT_FORCE), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_LIGHT_FORCE)), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_LIGHT_FORCE);
+        end,
+        automatic = true
+    },
     ["Alternate Power"] = {
         type = "status",
         events = {
