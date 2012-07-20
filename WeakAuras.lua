@@ -1911,10 +1911,12 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     end
 		if(difficultyIndex == 0) then
 			difficulty = "none";
-		elseif(difficultyIndex == 1 or difficultyIndex == 2) then
+		elseif(difficultyIndex == 1 or difficultyIndex == 3 or difficultyIndex == 4) then
 			difficulty = "normal";
-		elseif(difficultyIndex == 3 or difficultyIndex == 4) then
+		elseif(difficultyIndex == 2 or difficultyIndex == 5 ot difficultyIndex == 6) then
 			difficulty = "heroic";
+		elseif(difficultyIndex == 7) then
+			difficulty = "lfr";
 		elseif(difficultyIndex == 8) then
 			difficulty = "challenge";
 		else

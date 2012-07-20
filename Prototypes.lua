@@ -852,7 +852,7 @@ WeakAuras.event_prototypes = {
         end,
         automatic = true
     },
-	["Harmony Orbs"] = {
+	["Chi Power"] = {
         type = "status",
         events = {
             "UNIT_POWER",
@@ -865,7 +865,7 @@ WeakAuras.event_prototypes = {
             "focus",
             "pet"
         },
-        name = L["Harmony Orbs"],
+        name = L["Chi Power"],
         init = function(trigger)
             trigger.unit = trigger.unit or "player";
             local ret = [[
@@ -886,7 +886,7 @@ WeakAuras.event_prototypes = {
             },
             {
                 name = "power",
-                display = L["Harmony Orbs"],
+                display = L["Chi Power"],
                 type = "number",
                 init = "UnitPower(unit, SPELL_POWER_LIGHT_FORCE)"
             },
