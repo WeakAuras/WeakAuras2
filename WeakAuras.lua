@@ -520,7 +520,6 @@ end);
 do
     local mh = GetInventorySlotInfo("MainHandSlot")
     local oh = GetInventorySlotInfo("SecondaryHandSlot")
-    local ra = GetInventorySlotInfo("RangedSlot")
     
     local swingTimerFrame;
     local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -544,14 +543,7 @@ do
             else
                 return 0, math.huge, name, icon;
             end
-        elseif(hand == "range") then
-            local itemId = GetInventoryItemID("player", ra);
-            local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
-            if(lastSwingRange) then
-                return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
-            else
-                return 0, math,huge, name, icon;
-            end
+        
         end
         
         return 0, math.huge;
@@ -4497,7 +4489,6 @@ end
 do
     local mh = GetInventorySlotInfo("MainHandSlot")
     local oh = GetInventorySlotInfo("SecondaryHandSlot")
-    local th = GetInventorySlotInfo("RangedSlot")
 
     local mh_name;
     local mh_exp;
@@ -4508,11 +4499,6 @@ do
     local oh_exp;
     local oh_dur;
     local oh_icon = GetInventoryItemTexture("player", oh);
-    
-    local th_name;
-    local th_exp;
-    local th_dur;
-    local th_icon = GetInventoryItemTexture("player", th);
     
     local tenchFrame;
     WeakAuras.frames["Temporary Enchant Handler"] = tenchFrame;
@@ -4563,13 +4549,6 @@ do
                     oh_icon = GetInventoryItemTexture("player", oh)
                     WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
                 end
-                if(math.abs((th_exp or 0) - (th_exp_new or 0)) > 1) then
-                    th_exp = th_exp_new;
-                    th_dur = th_rem and th_rem / 1000;
-                    th_name = th_exp and getTenchName(th) or "None";
-                    th_icon = GetInventoryItemTexture("player", th)
-                    WeakAuras.ScanEvents("THROWN_TENCH_UPDATE");
-                end
             end
             
             tenchFrame:SetScript("OnEvent", function(self, event, arg1)
@@ -4588,10 +4567,7 @@ do
     function WeakAuras.GetOHTenchInfo()
         return oh_exp, oh_dur, oh_name, oh_icon;
     end
-    
-    function WeakAuras.GetThrownTenchInfo()
-        return th_exp, th_dur, th_name, th_icon;
-    end
+        
 end
 
 do

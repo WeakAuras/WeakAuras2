@@ -33,6 +33,7 @@ WeakAuras.character_types = {
 WeakAuras.group_sort_types = {
     ascending = L["Ascending"],
     descending = L["Descending"],
+	hybrid = L["Hybrid"],
     none = L["None"]
 };
 WeakAuras.precision_types = {
@@ -814,12 +815,10 @@ WeakAuras.string_operator_types = {
 WeakAuras.weapon_types = {
     ["main"] = L["Main Hand"],
     ["off"] = L["Off Hand"],
-    ["thrown"] = L["Thrown"]
 };
 WeakAuras.swing_types = {
     ["main"] = L["Main Hand"],
     ["off"] = L["Off Hand"],
-    ["range"] = L["Ranged"]
 };
 WeakAuras.rune_specific_types = {
     [1] = L["Blood Rune #1"],

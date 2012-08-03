@@ -120,6 +120,23 @@ local function createOptions(id, data)
             order = 48,
             values = WeakAuras.group_sort_types
         },
+		sortHybrid = {
+            type = "multiselect",
+            name = L["Select the auras you always want to be listed first"],
+            order = 49,
+            hidden = function() return not(data.sort == "hybrid") end,
+            values = function()
+				return data.controlledChildren
+            end,
+            get = function(info, id) 
+				return data.sortHybridTable and data.sortHybridTable [id] or false;
+            end,
+            set = function(info, id) 
+				if not data.sortHybridTable then data.sortHybridTable = {}; end
+					local cur = data.sortHybridTable and data.sortHybridTable[id] or false;
+                    data.sortHybridTable[id] = not(cur);
+            end,
+        },
         spacer = {
             type = "header",
             name = "",

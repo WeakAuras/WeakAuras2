@@ -210,6 +210,27 @@ local function modify(parent, region, data)
                     or math.huge
                 )
             end);
+		elseif(data.sort == "hybrid") then
+            table.sort(region.controlledRegions, function(a, b)  
+                local aTime;
+                local bTime;
+                if (data.sortHybridTable and data.sortHybridTable[a.dataIndex]) then
+                    aTime = a.dataIndex - 1000;
+                else
+                    aTime = a.region and a.region.expirationTime and a.region.expirationTime > 0
+                        and a.region.expirationTime or math.huge
+                end;
+                
+                if (data.sortHybridTable and data.sortHybridTable[b.dataIndex]) then
+                    bTime = b.dataIndex - 1000;
+                else 
+                    bTime = b.region and b.region.expirationTime and b.region.expirationTime > 0
+                        and b.region.expirationTime or math.huge
+                end
+                return (
+                    (aTime) > (bTime)
+                )
+            end);
         elseif(anyIndexInfo) then
             table.sort(region.controlledRegions, function(a, b)
                 if not(a) then
