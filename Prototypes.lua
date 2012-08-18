@@ -794,10 +794,10 @@ WeakAuras.event_prototypes = {
             }
         },
         durationFunc = function(trigger)
-            return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_BURNING_EMBERS)), true;
+            return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS, true), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_BURNING_EMBERS, true)), true;
         end,
         stacksFunc = function(trigger)
-            return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS);
+            return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS, true);
         end,
         automatic = true
     },
