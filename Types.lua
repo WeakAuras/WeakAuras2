@@ -356,10 +356,15 @@ WeakAuras.orientation_types = {
 local _, firstTabName = GetSpecializationInfo(1);
 local _, secondTabName = GetSpecializationInfo(2);
 local _, thirdTabName = GetSpecializationInfo(3);
+local _, fourthTabName = GetSpecializationInfo(4);
+
+local _, englishClass = UnitClass("player")
+
 WeakAuras.spec_types = {
     [1] = L["First Tree"]..(firstTabName and " ("..firstTabName..")" or ""),
     [2] = L["Second Tree"]..(secondTabName and " ("..secondTabName..")" or ""),
     [3] = L["Third Tree"]..(thirdTabName and " ("..thirdTabName..")" or "")
+	[4] = (englishClass == "DRUID") and (L["Fourth Tree"]..(fourthTabName and " ("..fourthTabName..")" or "")) or nil
 };
 WeakAuras.totem_types = {
     [1] = L["Fire"],
