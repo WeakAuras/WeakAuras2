@@ -699,6 +699,210 @@ WeakAuras.event_prototypes = {
         end,
         automatic = true
     },
+	["Demonic Fury"] = {
+        type = "status",
+        events = {
+            "UNIT_POWER",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = {
+            "player",
+            "target",
+            "focus",
+            "pet"
+        },
+        name = L["Demonic Fury"],
+        init = function(trigger)
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
+        end,
+        args = {
+            {
+                name = "unit",
+                required = true,
+                display = L["Unit"],
+                type = "unit",
+                init = "arg",
+                values = "actual_unit_types_with_specific"
+            },
+            {
+                name = "power",
+                display = L["Demonic Fury"],
+                type = "number",
+                init = "UnitPower(unit, SPELL_POWER_DEMONIC_FURY)"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(concernedUnit)"
+            }
+        },
+        durationFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_DEMONIC_FURY), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_DEMONIC_FURY)), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_DEMONIC_FURY);
+        end,
+        automatic = true
+    },
+	["Burning Embers"] = {
+        type = "status",
+        events = {
+            "UNIT_POWER",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = {
+            "player",
+            "target",
+            "focus",
+            "pet"
+        },
+        name = L["Burning Embers"],
+        init = function(trigger)
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
+        end,
+        args = {
+            {
+                name = "unit",
+                required = true,
+                display = L["Unit"],
+                type = "unit",
+                init = "arg",
+                values = "actual_unit_types_with_specific"
+            },
+            {
+                name = "power",
+                display = L["Burning Embers"],
+                type = "number",
+                init = "UnitPower(unit, SPELL_POWER_BURNING_EMBERS)"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(concernedUnit)"
+            }
+        },
+        durationFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS, true), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_BURNING_EMBERS, true)), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS, true);
+        end,
+        automatic = true
+    },
+	["Shadow Orbs"] = {
+        type = "status",
+        events = {
+            "UNIT_POWER",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = {
+            "player",
+            "target",
+            "focus",
+            "pet"
+        },
+        name = L["Shadow Orbs"],
+        init = function(trigger)
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
+        end,
+        args = {
+            {
+                name = "unit",
+                required = true,
+                display = L["Unit"],
+                type = "unit",
+                init = "arg",
+                values = "actual_unit_types_with_specific"
+            },
+            {
+                name = "power",
+                display = L["Shadow Orbs"],
+                type = "number",
+                init = "UnitPower(unit, SPELL_POWER_SHADOW_ORBS)"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(concernedUnit)"
+            }
+        },
+        durationFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_SHADOW_ORBS), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_SHADOW_ORBS)), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_SHADOW_ORBS);
+        end,
+        automatic = true
+    },
+	["Chi Power"] = {
+        type = "status",
+        events = {
+            "UNIT_POWER",
+            "PLAYER_TARGET_CHANGED",
+            "PLAYER_FOCUS_CHANGED"
+        },
+        force_events = {
+            "player",
+            "target",
+            "focus",
+            "pet"
+        },
+        name = L["Chi Power"],
+        init = function(trigger)
+            trigger.unit = trigger.unit or "player";
+            local ret = [[
+				local unit = unit or '%s';
+				local concernedUnit = '%s';
+			]];
+			
+			return ret:format(trigger.unit, trigger.unit);
+        end,
+        args = {
+            {
+                name = "unit",
+                required = true,
+                display = L["Unit"],
+                type = "unit",
+                init = "arg",
+                values = "actual_unit_types_with_specific"
+            },
+            {
+                name = "power",
+                display = L["Chi Power"],
+                type = "number",
+                init = "UnitPower(unit, SPELL_POWER_LIGHT_FORCE)"
+            },
+            {
+                hidden = true,
+                test = "UnitExists(concernedUnit)"
+            }
+        },
+        durationFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_LIGHT_FORCE), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_LIGHT_FORCE)), true;
+        end,
+        stacksFunc = function(trigger)
+            return UnitPower(trigger.unit, SPELL_POWER_LIGHT_FORCE);
+        end,
+        automatic = true
+    },
     ["Alternate Power"] = {
         type = "status",
         events = {

@@ -481,12 +481,11 @@ WeakAuras.aura_cache = aura_cache;
 
 local groupFrame = CreateFrame("FRAME");
 WeakAuras.frames["Group Makeup Handler"] = groupFrame;
-groupFrame:RegisterEvent("RAID_ROSTER_UPDATE");
-groupFrame:RegisterEvent("PARTY_MEMBERS_CHANGED");
+groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function(self, event)
-    local numRaid = GetNumRaidMembers();
-    local numParty = GetNumPartyMembers();
+    local numRaid = GetNumGroupMembers();
+    local numParty = GetNumSubgroupMembers();
     local groupMembers = {};
     
     inGroup = true;
@@ -521,7 +520,6 @@ end);
 do
     local mh = GetInventorySlotInfo("MainHandSlot")
     local oh = GetInventorySlotInfo("SecondaryHandSlot")
-    local ra = GetInventorySlotInfo("RangedSlot")
     
     local swingTimerFrame;
     local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -545,14 +543,7 @@ do
             else
                 return 0, math.huge, name, icon;
             end
-        elseif(hand == "range") then
-            local itemId = GetInventoryItemID("player", ra);
-            local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
-            if(lastSwingRange) then
-                return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
-            else
-                return 0, math,huge, name, icon;
-            end
+        
         end
         
         return 0, math.huge;
@@ -1576,7 +1567,7 @@ function WeakAuras.Toggle()
 end
 
 function WeakAuras.ScanAurasGroup()
-    local numRaid = GetNumRaidMembers();
+    local numRaid = GetNumGroupMembers();
 	local uid
     if(numRaid > 0) then
         for i=1,numRaid do
@@ -1584,7 +1575,7 @@ function WeakAuras.ScanAurasGroup()
             WeakAuras.ScanAuras(uid);
         end
     else
-        local numParty = GetNumPartyMembers();
+        local numParty = GetNumSubgroupMembers();
         if(numParty > 0) then
             for i=1,numParty do
                 uid = fmt("party%d", i);
@@ -1893,7 +1884,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         playerLevel = arg1;
     end
     local typefunc = type;
-    local player, zone, spec, role = UnitName("player"), GetRealZoneText(), GetPrimaryTalentTree(), UnitGroupRolesAssigned("player");
+    local player, zone, spec, role = UnitName("player"), GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
     local _, class = UnitClass("player");
     local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
     local size, difficulty;
@@ -1907,30 +1898,23 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         end
     elseif(WeakAuras.group_types) then
         if not(WeakAuras.group_types[type]) then
-            print("You have entered an instance whose type is not supported by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
+            print("You have entered an instance whose type is not supported by WeakAuras. Please report this as a bug.");
         end
     end
-    if(isDynamic) then
-        if(difficultyIndex == 1 or difficultyIndex == 2) then
-            difficulty = "normal";
-        elseif(difficultyIndex == 3 or difficultyIndex == 4) then
-            difficulty = "heroic";
-        elseif(dynamicDifficulty == 0) then
-            difficulty = "normal";
-        elseif(dynamicDifficulty == 1) then
-            difficulty = "heroic";
-        else
-            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. Please report this as a bug.");
-        end
-    else
-        if(difficultyIndex == 1 or difficultyIndex == 2) then
-            difficulty = "normal";
-        elseif(difficultyIndex == 3 or difficultyIndex == 4) then
-            difficulty = "heroic";
-        else
-            print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. Please report this as a bug.");
-        end
+		if(difficultyIndex == 0) then
+			difficulty = "none";
+		elseif(difficultyIndex == 1 or difficultyIndex == 3 or difficultyIndex == 4) then
+			difficulty = "normal";
+		elseif(difficultyIndex == 2 or difficultyIndex == 5 or difficultyIndex == 6) then
+			difficulty = "heroic";
+		elseif(difficultyIndex == 7) then
+			difficulty = "lfr";
+		elseif(difficultyIndex == 8) then
+			difficulty = "challenge";
+		else
+			print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
     end
+    
     local changed = 0;
     local shouldBeLoaded, couldBeLoaded;
     for id, triggers in pairs(auras) do
@@ -2854,7 +2838,8 @@ function WeakAuras.Modernize(data)
         ["Druid"] = "DRUID",
         ["Hunter"] = "HUNTER",
         ["Mage"] = "MAGE",
-        ["Pladain"] = "PALADIN",
+		["Monk"] = "MONK",
+        ["Paladin"] = "PALADIN",
         ["Priest"] = "PRIEST",
         ["Rogue"] = "ROGUE",
         ["Shaman"] = "SHAMAN",
@@ -4399,7 +4384,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
         
         if(numPlayers > 0) then
             GameTooltip:AddLine(name);
-            local numRaid = GetNumRaidMembers();
+            local numRaid = GetNumGroupMembers();
             local groupMembers = {};
             
             if(numRaid > 0) then
@@ -4504,7 +4489,6 @@ end
 do
     local mh = GetInventorySlotInfo("MainHandSlot")
     local oh = GetInventorySlotInfo("SecondaryHandSlot")
-    local th = GetInventorySlotInfo("RangedSlot")
 
     local mh_name;
     local mh_exp;
@@ -4515,11 +4499,6 @@ do
     local oh_exp;
     local oh_dur;
     local oh_icon = GetInventoryItemTexture("player", oh);
-    
-    local th_name;
-    local th_exp;
-    local th_dur;
-    local th_icon = GetInventoryItemTexture("player", th);
     
     local tenchFrame;
     WeakAuras.frames["Temporary Enchant Handler"] = tenchFrame;
@@ -4570,13 +4549,6 @@ do
                     oh_icon = GetInventoryItemTexture("player", oh)
                     WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
                 end
-                if(math.abs((th_exp or 0) - (th_exp_new or 0)) > 1) then
-                    th_exp = th_exp_new;
-                    th_dur = th_rem and th_rem / 1000;
-                    th_name = th_exp and getTenchName(th) or "None";
-                    th_icon = GetInventoryItemTexture("player", th)
-                    WeakAuras.ScanEvents("THROWN_TENCH_UPDATE");
-                end
             end
             
             tenchFrame:SetScript("OnEvent", function(self, event, arg1)
@@ -4595,10 +4567,7 @@ do
     function WeakAuras.GetOHTenchInfo()
         return oh_exp, oh_dur, oh_name, oh_icon;
     end
-    
-    function WeakAuras.GetThrownTenchInfo()
-        return th_exp, th_dur, th_name, th_icon;
-    end
+        
 end
 
 do

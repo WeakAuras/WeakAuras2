@@ -33,6 +33,7 @@ WeakAuras.character_types = {
 WeakAuras.group_sort_types = {
     ascending = L["Ascending"],
     descending = L["Descending"],
+	hybrid = L["Hybrid"],
     none = L["None"]
 };
 WeakAuras.precision_types = {
@@ -115,6 +116,7 @@ WeakAuras.class_types = {
     ["DRUID"] = "|cFFFF7D0A"..L["Druid"].."|r",
     ["HUNTER"] = "|cFFABD473"..L["Hunter"].."|r",
     ["MAGE"] = "|cFF69CCF0"..L["Mage"].."|r",
+	["MONK"] = "|cFF00FF96"..L["Monk"].."|r",
     ["PALADIN"] = "|cFFF58CBA"..L["Paladin"].."|r",
     ["PRIEST"] = "|cFFFFFFFF"..L["Priest"].."|r",
     ["ROGUE"] = "|cFFFFF569"..L["Rogue"].."|r",
@@ -127,6 +129,7 @@ WeakAuras.class_color_types = {
     ["DRUID"] = "|cFFFF7D0A",
     ["HUNTER"] = "|cFFABD473",
     ["MAGE"] = "|cFF69CCF0",
+	["MONK"] = "|cFF00FF96",
     ["PALADIN"] = "|cFFF58CBA",
     ["PRIEST"] = "|cFFFFFFFF",
     ["ROGUE"] = "|cFFFFF569",
@@ -350,9 +353,9 @@ WeakAuras.orientation_types = {
     VERTICAL = L["Bottom to Top"],
     VERTICAL_INVERSE = L["Top to Bottom"]
 };
-local _, firstTabName = GetTalentTabInfo(1);
-local _, secondTabName = GetTalentTabInfo(2);
-local _, thirdTabName = GetTalentTabInfo(3);
+local _, firstTabName = GetSpecializationInfo(1);
+local _, secondTabName = GetSpecializationInfo(2);
+local _, thirdTabName = GetSpecializationInfo(3);
 WeakAuras.spec_types = {
     [1] = L["First Tree"]..(firstTabName and " ("..firstTabName..")" or ""),
     [2] = L["Second Tree"]..(secondTabName and " ("..secondTabName..")" or ""),
@@ -812,12 +815,10 @@ WeakAuras.string_operator_types = {
 WeakAuras.weapon_types = {
     ["main"] = L["Main Hand"],
     ["off"] = L["Off Hand"],
-    ["thrown"] = L["Thrown"]
 };
 WeakAuras.swing_types = {
     ["main"] = L["Main Hand"],
     ["off"] = L["Off Hand"],
-    ["range"] = L["Ranged"]
 };
 WeakAuras.rune_specific_types = {
     [1] = L["Blood Rune #1"],
@@ -925,7 +926,8 @@ WeakAuras.group_types = {
 };
 WeakAuras.difficulty_types = {
     normal = L["Normal"],
-    heroic = L["Heroic"]
+    heroic = L["Heroic"],
+	challenge = L["Challenge Mode"]
 };
 WeakAuras.role_types = {
     TANK = L["Tank"],
