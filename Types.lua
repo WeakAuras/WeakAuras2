@@ -363,7 +363,7 @@ local _, englishClass = UnitClass("player")
 WeakAuras.spec_types = {
     [1] = L["First Tree"]..(firstTabName and " ("..firstTabName..")" or ""),
     [2] = L["Second Tree"]..(secondTabName and " ("..secondTabName..")" or ""),
-    [3] = L["Third Tree"]..(thirdTabName and " ("..thirdTabName..")" or "")
+    [3] = L["Third Tree"]..(thirdTabName and " ("..thirdTabName..")" or ""),
 	[4] = (englishClass == "DRUID") and (L["Fourth Tree"]..(fourthTabName and " ("..fourthTabName..")" or "")) or nil
 };
 WeakAuras.totem_types = {
