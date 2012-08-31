@@ -1911,6 +1911,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
 			difficulty = "lfr";
 		elseif(difficultyIndex == 8) then
 			difficulty = "challenge";
+		elseif(difficultyIndex == 9) then
+			difficulty = "40classic";
 		else
 			print("Your have entered an instance whose difficulty could not be correctly understood by WeakAuras. That type is '"..type.."'. Please report this as a bug.");
     end
