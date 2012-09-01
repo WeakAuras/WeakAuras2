@@ -49,6 +49,7 @@ function WeakAuras.encodeB64(str)
     local remainder_length = 0;
     local encoded_size = 0;
     local l=#str
+	local code
     for i=1,l do
         code = string.byte(str, i);
         remainder = remainder + bit_lshift(code, remainder_length);

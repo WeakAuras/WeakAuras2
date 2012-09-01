@@ -4635,9 +4635,9 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
     if not(found) then
         debuffType = "none";
     end
-    local tootipSize;
+    local tootipSize, _;
     if(tooltipText) then
-        _, _, tooltipSize = tooltipText:find("(%d+)")
+       _, _, tooltipSize = tooltipText:find("(%d+)")
     end
     return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
