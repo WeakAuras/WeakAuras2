@@ -1112,12 +1112,13 @@ do
     
     local function updateRegion(id, data, triggernum, GUID)
         local auradata = data.GUIDs[GUID];
+	local showClones
         if(data.numAdditionalTriggers > 0) then
             showClones = data.region:IsVisible() and true or false;
         else
             showClones = true;
         end
-        region = WeakAuras.EnsureClone(id, GUID);
+        local region = WeakAuras.EnsureClone(id, GUID);
         if(auradata.unitName) then
             if(triggernum == 0) then
                 if(region.SetDurationInfo) then
@@ -2773,7 +2774,7 @@ function WeakAuras.ResolveCollisions(onFinished)
             preferredIndex = 3
         };
         
-        popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
+        local popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
         popup.editBox:SetScript("OnTextChanged", function(self)
             local newid = self:GetText();
             if(collisions[newid] or db.displays[newid]) then
@@ -4388,7 +4389,8 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
             GameTooltip:AddLine(name);
             local numRaid = GetNumGroupMembers();
             local groupMembers = {};
-            
+            local playersString
+
             if(numRaid > 0) then
 				local playerName, _, subgroup
                 for i = 1,numRaid do
