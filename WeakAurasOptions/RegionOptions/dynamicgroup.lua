@@ -205,7 +205,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         end
     elseif(data.grow == "CIRCLE") then
         selfPoint = "CENTER";
-        actualSelfPoint = "CENTER";
+        --actualSelfPoint = "CENTER"; -- SETGLOBAL on a variable we don't even reference?
     end
     data.selfPoint = selfPoint;
     

@@ -1,4 +1,6 @@
 -- Lua APIs
+local ADDON_NAME, addon = ...
+
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local fmt, tostring, string_char = string.format, tostring, string.char
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
@@ -1644,14 +1646,14 @@ local function disabledAll(data, info)
                 if(childOptionTable[i].disabled ~= nil) then
                     if(type(childOptionTable[i].disabled) == "boolean") then
                         if(childOptionTable[i].disabled) then
-                            DebugFunction = childOptionTable[i].disabled
+                            addon.DebugFunction = childOptionTable[i].disabled
                             return true;
                         else
                             return false;
                         end
                     elseif(type(childOptionTable[i].disabled) == "function") then
                         if(childOptionTable[i].disabled(info)) then
-                            DebugFunction = childOptionTable[i].disabled
+                            addon.DebugFunction = childOptionTable[i].disabled
                             return true;
                         end
                     end
@@ -5260,7 +5262,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         replaceNameDescFuncs(displayOptions[id], data);
         replaceImageFuncs(displayOptions[id], data);
         
-        regionOption = regionOptions[data.regionType].create(id, data);
+        local regionOption = regionOptions[data.regionType].create(id, data);
         displayOptions[id].args.group = {
             type = "group",
             name = L["Group"],
@@ -5829,21 +5831,21 @@ function WeakAuras.CreateFrame()
     end);
     frame.sizer_sw = sizer_sw;
     
-    sizer_sw_texture = sizer_sw:CreateTexture(nil, "OVERLAY");
+    local sizer_sw_texture = sizer_sw:CreateTexture(nil, "OVERLAY");
     sizer_sw_texture:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up");
     sizer_sw_texture:SetTexCoord(1, 0, 0, 1);
     sizer_sw_texture:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
     sizer_sw_texture:SetPoint("topright", sizer_sw, "topright");
     sizer_sw:SetNormalTexture(sizer_sw_texture);
     
-    sizer_sw_texture_pushed = sizer_sw:CreateTexture(nil, "OVERLAY");
+    local sizer_sw_texture_pushed = sizer_sw:CreateTexture(nil, "OVERLAY");
     sizer_sw_texture_pushed:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down");
     sizer_sw_texture_pushed:SetTexCoord(1, 0, 0, 1);
     sizer_sw_texture_pushed:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
     sizer_sw_texture_pushed:SetPoint("topright", sizer_sw, "topright");
     sizer_sw:SetPushedTexture(sizer_sw_texture_pushed);
     
-    sizer_sw_texture_highlight = sizer_sw:CreateTexture(nil, "OVERLAY");
+    local sizer_sw_texture_highlight = sizer_sw:CreateTexture(nil, "OVERLAY");
     sizer_sw_texture_highlight:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight");
     sizer_sw_texture_highlight:SetTexCoord(1, 0, 0, 1);
     sizer_sw_texture_highlight:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
@@ -6427,6 +6429,7 @@ function WeakAuras.CreateFrame()
     end);
     modelPick:SetLayout("fill");
     modelTree:SetTree(WeakAuras.ModelPaths);
+    local path, model_path
     modelTree:SetCallback("OnGroupSelected", function(self, event, value)
         path = string.gsub(value, "\001", "/");
         if(string.lower(string.sub(path, -3, -1)) == ".m2") then

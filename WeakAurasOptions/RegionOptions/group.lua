@@ -49,7 +49,7 @@ local function createOptions(id, data)
                 end
                 local alignedCenter, alignedRight, alignedLeft = "CENTER", "RIGHT", "LEFT";
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         local left, _, right = getRect(childData);
                         local center = (left + right) / 2;
@@ -68,7 +68,7 @@ local function createOptions(id, data)
             end,
             set = function(info, v)
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         if(v == "CENTER") then
                             if(childData.selfPoint:find("LEFT")) then
@@ -114,7 +114,7 @@ local function createOptions(id, data)
                 end
                 local alignedCenter, alignedBottom, alignedTop = "CENTER", "RIGHT", "LEFT";
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         local _, bottom, _, top = getRect(childData);
                         local center = (bottom + top) / 2;
@@ -133,7 +133,7 @@ local function createOptions(id, data)
             end,
             set = function(info, v)
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         if(v == "CENTER") then
                             if(childData.selfPoint:find("BOTTOM")) then
@@ -182,7 +182,7 @@ local function createOptions(id, data)
                 local spaced;
                 local previousData;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         local left, _, right = getRect(childData);
                         if not(previousData) then
@@ -220,7 +220,7 @@ local function createOptions(id, data)
             set = function(info, v)
                 local xOffset = 0;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         if(v > 0) then
                             if(childData.selfPoint:find("LEFT")) then
@@ -264,7 +264,7 @@ local function createOptions(id, data)
                 local spaced;
                 local previousData;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         local _, bottom, _, top = getRect(childData);
                         if not(previousData) then
@@ -302,7 +302,7 @@ local function createOptions(id, data)
             set = function(info, v)
                 local yOffset = 0;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         if(v > 0) then
                             if(childData.selfPoint:find("BOTTOM")) then
@@ -346,7 +346,7 @@ local function createOptions(id, data)
                 local spaced;
                 local previousData;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         local left, _, right = getRect(childData);
                         if not(previousData) then
@@ -384,7 +384,7 @@ local function createOptions(id, data)
             set = function(info, v)
                 local xOffset = 0;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         if(v > 0) then
                             if(childData.selfPoint:find("LEFT")) then
@@ -428,7 +428,7 @@ local function createOptions(id, data)
                 local spaced;
                 local previousData;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         local _, bottom, _, top = getRect(childData);
                         if not(previousData) then
@@ -466,7 +466,7 @@ local function createOptions(id, data)
             set = function(info, v)
                 local yOffset = 0;
                 for index, childId in pairs(data.controlledChildren) do
-                    childData = WeakAuras.GetData(childId);
+                    local childData = WeakAuras.GetData(childId);
                     if(childData) then
                         if(v > 0) then
                             if(childData.selfPoint:find("BOTTOM")) then

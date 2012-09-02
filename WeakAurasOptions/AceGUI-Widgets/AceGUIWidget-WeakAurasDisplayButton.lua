@@ -21,7 +21,7 @@ local function Show_Long_Tooltip(owner, description)
     GameTooltip:SetOwner(owner, "ANCHOR_NONE");
     GameTooltip:SetPoint("LEFT", owner, "RIGHT");
     GameTooltip:ClearLines();
-    line = 1;
+    local line = 1;
     for i,v in pairs(description) do
         if(type(v) == "string") then
             if(line > 1) then
@@ -239,7 +239,7 @@ local methods = {
         function self.callbacks.OnUpGroupClick()
             if(data.parent) then
                 local id = data.id;
-                parentData = WeakAuras.GetData(data.parent);
+                local parentData = WeakAuras.GetData(data.parent);
                 local index;
                 for childIndex, childId in pairs(parentData.controlledChildren) do
                     if(childId == id) then
@@ -255,7 +255,7 @@ local methods = {
                         tinsert(parentData.controlledChildren, index - 1, id);
                         WeakAuras.Add(parentData);
                         self:SetGroupOrder(index - 1, #parentData.controlledChildren);
-                        otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
+                        local otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
                         otherbutton:SetGroupOrder(index, #parentData.controlledChildren);
                         WeakAuras.SortDisplayButtons();
                         local updata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = -32};
@@ -275,7 +275,7 @@ local methods = {
         function self.callbacks.OnDownGroupClick()
             if(data.parent) then
                 local id = data.id;
-                parentData = WeakAuras.GetData(data.parent);
+                local parentData = WeakAuras.GetData(data.parent);
                 local index;
                 for childIndex, childId in pairs(parentData.controlledChildren) do
                     if(childId == id) then
@@ -291,7 +291,7 @@ local methods = {
                         tinsert(parentData.controlledChildren, index + 1, id);
                         WeakAuras.Add(parentData);
                         self:SetGroupOrder(index + 1, #parentData.controlledChildren);
-                        otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
+                        local otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
                         otherbutton:SetGroupOrder(index, #parentData.controlledChildren);
                         WeakAuras.SortDisplayButtons()
                         local updata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = -32};
@@ -496,7 +496,7 @@ local methods = {
         self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
         self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
         if(data.parent) then
-            parentData = WeakAuras.GetData(data.parent);
+            local parentData = WeakAuras.GetData(data.parent);
             local index;
             for childIndex, childId in pairs(parentData.controlledChildren) do
                 if(childId == data.id) then
