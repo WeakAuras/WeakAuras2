@@ -1,4 +1,5 @@
-﻿local WeakAuras = WeakAuras;
+﻿local ADDON_NAME, addon = ...
+local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
@@ -154,7 +155,7 @@ form_frame:SetScript("OnEvent", update_forms);
 form_frame:SetScript("OnUpdate", function()
     if(GetNumShapeshiftForms()) then
         update_forms();
-        Debug = GetTime();
+        addon.Debug = GetTime();
         form_frame:SetScript("OnUpdate", nil);
     end
 end);
