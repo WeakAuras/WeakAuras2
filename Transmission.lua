@@ -271,8 +271,7 @@ end
 
 local tooltipLoading;
 
-local Original = ChatFrame_OnHyperlinkShow;
-ChatFrame_OnHyperlinkShow = function(self, link, text, button)
+hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
     if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
         ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:Hide();
         ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = nil;
@@ -310,10 +309,24 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button)
                 {1, "Malformed WeakAuras link", 1, 0, 0}
             });
         end
-    else
-        Original(self, link, text, button);
     end
+end);
+
+local OriginalSetHyperlink = ItemRefTooltip.SetHyperlink
+function ItemRefTooltip:SetHyperlink(link, ...)
+    if link:sub(0, 9) == "weakauras" then
+        return;
+    end
+    return OriginalSetHyperlink(self, link, ...);
 end
+
+local OriginalHandleModifiedItemClick = HandleModifiedItemClick
+function HandleModifiedItemClick(link, ...)
+    if link:find("|Hweakauras|h") then
+        return;
+    end
+    return OriginalHandleModifiedItemClick(link, ...);
+ end
 
 local Compresser = LibStub:GetLibrary("LibCompress");
 local Encoder = Compresser:GetAddonEncodeTable()
