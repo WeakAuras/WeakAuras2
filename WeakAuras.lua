@@ -1890,6 +1890,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     local _, type, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
     local size, difficulty;
     local incombat = UnitAffectingCombat("player");
+    if not type then type == "none" end
     size = type;
     if(type == "raid") then
         if(maxPlayers == 10) then
