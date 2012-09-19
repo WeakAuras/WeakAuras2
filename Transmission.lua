@@ -314,7 +314,7 @@ end);
 
 local OriginalSetHyperlink = ItemRefTooltip.SetHyperlink
 function ItemRefTooltip:SetHyperlink(link, ...)
-    if link:sub(0, 9) == "weakauras" then
+    if(link and link:sub(0, 9) == "weakauras") then
         return;
     end
     return OriginalSetHyperlink(self, link, ...);
@@ -322,7 +322,7 @@ end
 
 local OriginalHandleModifiedItemClick = HandleModifiedItemClick
 function HandleModifiedItemClick(link, ...)
-    if link:find("|Hweakauras|h") then
+    if(link and link:find("|Hweakauras|h")) then
         return;
     end
     return OriginalHandleModifiedItemClick(link, ...);
