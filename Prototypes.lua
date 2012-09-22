@@ -391,6 +391,13 @@ WeakAuras.load_prototype = {
             values = "spec_types",
             init = "arg"
         },
+		{
+			name = "talent",
+			display = L["Talent chosen"],
+			type = "select",
+			values = "talent_types",
+			test = "select(5, GetTalentInfo(%d)) == true"
+		},
         {
             name = "level",
             display = L["Player Level"],

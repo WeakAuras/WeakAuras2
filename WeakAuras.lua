@@ -484,7 +484,7 @@ WeakAuras.frames["Group Makeup Handler"] = groupFrame;
 groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function(self, event)
-    local numRaid = GetNumGroupMembers();
+    local numRaid = IsInRaid() and GetNumGroupMembers() or 0;
     local numParty = GetNumSubgroupMembers();
     local groupMembers = {};
     
@@ -1568,7 +1568,7 @@ function WeakAuras.Toggle()
 end
 
 function WeakAuras.ScanAurasGroup()
-    local numRaid = GetNumGroupMembers();
+    local numRaid = IsInRaid() and GetNumGroupMembers() or 0;
 	local uid
     if(numRaid > 0) then
         for i=1,numRaid do
@@ -4388,7 +4388,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
         
         if(numPlayers > 0) then
             GameTooltip:AddLine(name);
-            local numRaid = GetNumGroupMembers();
+            local numRaid = IsInRaid() and GetNumGroupMembers() or 0;
             local groupMembers = {};
             local playersString
 

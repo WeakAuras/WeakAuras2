@@ -367,6 +367,26 @@ WeakAuras.spec_types = {
     [3] = L["Third Tree"]..(thirdTabName and " ("..thirdTabName..")" or ""),
 	[4] = (englishClass == "DRUID") and (L["Fourth Tree"]..(fourthTabName and " ("..fourthTabName..")" or "")) or nil
 };
+WeakAuras.talent_types = {
+	[1] = "15 - 1",
+	[2] = "15 - 2",
+	[3] = "15 - 3",
+	[4] = "30 - 1",
+	[5] = "30 - 2",
+	[6] = "30 - 3",
+	[7] = "45 - 1",
+	[8] = "45 - 2",
+	[9] = "45 - 3",
+	[10] = "60 - 1",
+	[11] = "60 - 2",
+	[12] = "60 - 3",
+	[13] = "75 - 1",
+	[14] = "75 - 2",
+	[15] = "75 - 3",
+	[16] = "90 - 1",
+	[17] = "90 - 2",
+	[18] = "90 - 3"
+};
 WeakAuras.totem_types = {
     [1] = L["Fire"],
     [2] = L["Earth"],
