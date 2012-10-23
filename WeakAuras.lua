@@ -103,7 +103,7 @@ do
   end
 end
 WeakAuras.me = GetUnitName("player",true)
-WeakAuras.myGUID = UnitGUID("player")
+WeakAuras.myGUID = nil
 local playerLevel = UnitLevel("player");
 
 local function_strings = WeakAuras.function_strings;
@@ -497,20 +497,26 @@ groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function(self, event)
  
-  local groupMembers,playerName,uid = {};  
+  local groupMembers,playerName,uid,guid = {};  
   if IsInRaid() then
-  for i=1, GetNumGroupMembers() do
-    uid = WeakAuras.raidUnits[i];
-    playerName = GetUnitName(uid,true);
-    playerName = playerName:gsub("-", " - ");
-    groupMembers[UnitGUID(uid)] = playerName;
-  end
+    for i=1, GetNumGroupMembers() do
+      uid = WeakAuras.raidUnits[i];
+      playerName = GetUnitName(uid,true);
+      playerName = playerName:gsub("-", " - ");
+      guid = UnitGUID(uid);
+      if (guid) then
+        groupMembers[guid] = playerName;
+      end
+    end
   elseif IsInGroup() then
-  for i=1, GetNumSubgroupMembers() do
-    uid = WeakAuras.partyUnits[i];
-    groupMembers[UnitGUID(uid)] = GetUnitName(uid,true);
-  end
-  groupMembers[WeakAuras.myGUID] = WeakAuras.me or nil;
+    for i=1, GetNumSubgroupMembers() do
+      uid = WeakAuras.partyUnits[i];
+      guid = UnitGUID(uid);
+      if (guid) then
+        groupMembers[guid] = GetUnitName(uid,true);
+      end
+    end
+    groupMembers[WeakAuras.myGUID] = WeakAuras.me;
   end
   aura_cache:AssertMemberList(groupMembers);
   
@@ -1092,63 +1098,63 @@ do
   end
   
   function WeakAuras.GetUID(GUID)
-  if not(UIDsfromGUID[GUID]) then
-    return nil;
-  end
-  -- iterate through key/value pairs from the table of UIDs that are registered for this GUID, until a *confirmed* match is found
-  -- confirming is necessary in case UIDs are not always released correctly (which may actually be close to impossible)
-  for returnUID,v in pairs(UIDsfromGUID[GUID]) do
-    -- check the validity of this entry 
-    if(UnitGUID(returnUID) == GUID) then
-    return returnUID;
-    else
-    WeakAuras.ReleaseUID(returnUID);
+    if not(UIDsfromGUID[GUID]) then
+      return nil;
     end
-  end
-  return nil;
+    -- iterate through key/value pairs from the table of UIDs that are registered for this GUID, until a *confirmed* match is found
+    -- confirming is necessary in case UIDs are not always released correctly (which may actually be close to impossible)
+    for returnUID,v in pairs(UIDsfromGUID[GUID]) do
+      -- check the validity of this entry 
+      if(UnitGUID(returnUID) == GUID) then
+        return returnUID;
+      else
+        WeakAuras.ReleaseUID(returnUID);
+      end
+    end
+    return nil;
   end
   
   local function updateRegion(id, data, triggernum, GUID)
-  local auradata,showClones = data.GUIDs[GUID];
-  if(data.numAdditionalTriggers > 0) then
-    showClones = data.region:IsVisible() and true or false;
-  else
-    showClones = true;
-  end
-  local region = WeakAuras.EnsureClone(id, GUID);
-  if(auradata.unitName) then
-    if(triggernum == 0) then
-    if(region.SetDurationInfo) then
-      region:SetDurationInfo(auradata.duration, auradata.expirationTime);
+    local auradata,showClones = data.GUIDs[GUID];
+    if(data.numAdditionalTriggers > 0) then
+      showClones = data.region:IsVisible() and true or false;
+    else
+      showClones = true;
     end
-    duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime, nil, nil, GUID);
-    if(region.SetName) then
-      region:SetName(auradata.unitName);
+    local region = WeakAuras.EnsureClone(id, GUID);
+    if(auradata.unitName) then
+      if(triggernum == 0) then
+      if(region.SetDurationInfo) then
+        region:SetDurationInfo(auradata.duration, auradata.expirationTime);
+      end
+      duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime, nil, nil, GUID);
+      if(region.SetName) then
+        region:SetName(auradata.unitName);
+      end
+      if(region.SetIcon) then
+        region:SetIcon(auradata.icon or db.tempIconCache[auradata.name] or "Interface\\Icons\\INV_Misc_QuestionMark");
+      end
+      if(region.SetStacks) then
+        region:SetStacks(auradata.count);
+      end
+      if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
+        region.UpdateCustomText();
+      end
+      WeakAuras.UpdateMouseoverTooltip(region);
+      end
+      
+      if(data.numAdditionalTriggers > 0 and showClones == nil) then
+      region:EnableTrigger(triggernum);
+      elseif(showClones ~= false) then
+      region:Expand();
+      end
+    else
+      if(data.numAdditionalTriggers > 0 and showClones == nil) then
+      region:DisableTrigger(triggernum)
+      elseif(showClones ~= false) then
+      region:Collapse();
+      end
     end
-    if(region.SetIcon) then
-      region:SetIcon(auradata.icon or db.tempIconCache[auradata.name] or "Interface\\Icons\\INV_Misc_QuestionMark");
-    end
-    if(region.SetStacks) then
-      region:SetStacks(auradata.count);
-    end
-    if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
-      region.UpdateCustomText();
-    end
-    WeakAuras.UpdateMouseoverTooltip(region);
-    end
-    
-    if(data.numAdditionalTriggers > 0 and showClones == nil) then
-    region:EnableTrigger(triggernum);
-    elseif(showClones ~= false) then
-    region:Expand();
-    end
-  else
-    if(data.numAdditionalTriggers > 0 and showClones == nil) then
-    region:DisableTrigger(triggernum)
-    elseif(showClones ~= false) then
-    region:Collapse();
-    end
-  end
   end
   
   local function updateSpell(spellName, unit, destGUID)
@@ -1481,51 +1487,52 @@ loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
-  if(addon == ADDON_NAME) then
-    frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
-    frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-    frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
-    frame:RegisterEvent("UNIT_AURA");
-    frame:SetScript("OnEvent", WeakAuras.HandleEvent);
-    
-    WeakAurasSaved = WeakAurasSaved or {};
-    db = WeakAurasSaved;
-    
-    -- Defines the action squelch period after login
-    -- Stored in SavedVariables so it can be changed by the user if they find it necessary
-    db.login_squelch_time = db.login_squelch_time or 5;
-    
-    -- Deprecated fields with *lots* of data, clear them out
-    db.iconCache = nil;
-    db.iconHash = nil;
-    
-    db.tempIconCache = db.tempIconCache or {};
-
-    db.displays = db.displays or {};
-    db.registered = db.registered or {};
-    
-    WeakAuras.SyncParentChildRelationships();
-    
-    local toAdd = {};
-    for id, data in pairs(db.displays) do
-    if(id == data.id) then
-      tinsert(toAdd, data);
-    else
-      error("Corrupt entry in WeakAuras saved displays");
+    if(addon == ADDON_NAME) then
+      frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+      frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+      frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+      frame:RegisterEvent("UNIT_AURA");
+      frame:SetScript("OnEvent", WeakAuras.HandleEvent);
+      
+      WeakAurasSaved = WeakAurasSaved or {};
+      db = WeakAurasSaved;
+      
+      -- Defines the action squelch period after login
+      -- Stored in SavedVariables so it can be changed by the user if they find it necessary
+      db.login_squelch_time = db.login_squelch_time or 5;
+      
+      -- Deprecated fields with *lots* of data, clear them out
+      db.iconCache = nil;
+      db.iconHash = nil;
+      
+      db.tempIconCache = db.tempIconCache or {};
+  
+      db.displays = db.displays or {};
+      db.registered = db.registered or {};
+      
+      WeakAuras.SyncParentChildRelationships();
+      
+      local toAdd = {};
+      for id, data in pairs(db.displays) do
+      if(id == data.id) then
+        tinsert(toAdd, data);
+      else
+        error("Corrupt entry in WeakAuras saved displays");
+      end
+      end
+      WeakAuras.AddMany(toAdd);
+      WeakAuras.AddManyFromAddons(from_files);
+      WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
+      
+      WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+      
+      WeakAuras.Resume();
     end
-    end
-    WeakAuras.AddMany(toAdd);
-    WeakAuras.AddManyFromAddons(from_files);
-    WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
-    
-    WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-    
-    WeakAuras.Resume();
-  end
   elseif(event == "PLAYER_ENTERING_WORLD") then
-  -- Shedule events that need to be handled some time after login
-  timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);  -- Data not available 
-  timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
+    -- Shedule events that need to be handled some time after login
+    WeakAuras.myGUID = UnitGUID("player")
+    timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);  -- Data not available 
+    timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
   end
 end);
 
@@ -1697,7 +1704,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   event_list = event_list and event_list[arg2];
   end
   if(event_list) then
-  -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaorund so that custom triggers that check the event argument will work as expected
+  -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
   if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
     event = "COMBAT_LOG_EVENT_UNFILTERED";
   end
