@@ -510,7 +510,7 @@ groupFrame:SetScript("OnEvent", function(self, event)
     uid = WeakAuras.partyUnits[i];
     groupMembers[UnitGUID(uid)] = GetUnitName(uid,true);
   end
-  groupMembers[WeakAuras.myGUID] = WeakAuras.me;
+  groupMembers[WeakAuras.myGUID] = WeakAuras.me or nil;
   end
   aura_cache:AssertMemberList(groupMembers);
   
