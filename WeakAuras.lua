@@ -96,12 +96,11 @@ WeakAuras.raidUnits = {};
 WeakAuras.partyUnits = {};
 do
   for i=1,40 do
-  WeakAuras.raidUnits["raid"..i] = i
+  WeakAuras.raidUnits[i] = "raid"..i
   end
   for i=1,4 do
-  WeakAuras.partyUnits["party"..i] = i
+  WeakAuras.partyUnits[i] = "party"..i
   end
-  WeakAuras.partyUnits["player"] = true
 end
 WeakAuras.me = GetUnitName("player",true)
 WeakAuras.myGUID = UnitGUID("player")
@@ -261,8 +260,8 @@ do
   
   -- Test OwnOnly
   if (
-    data.ownOnly == true  and UnitGUID("player") ~= acEntry.unitCaster or
-    data.ownOnly == false and UnitGUID("player") == acEntry.unitCaster
+    data.ownOnly == true  and WeakAuras.myGUID ~= acEntry.unitCaster or
+    data.ownOnly == false and WeakAuras.myGUID == acEntry.unitCaster
   ) then
     return false;
   end
@@ -511,7 +510,7 @@ groupFrame:SetScript("OnEvent", function(self, event)
     uid = WeakAuras.partyUnits[i];
     groupMembers[UnitGUID(uid)] = GetUnitName(uid,true);
   end
-  groupMembers[UnitGUID("player")] = WeakAuras.me;
+  groupMembers[WeakAuras.myGUID] = WeakAuras.me;
   end
   aura_cache:AssertMemberList(groupMembers);
   
