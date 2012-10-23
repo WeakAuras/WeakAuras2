@@ -25,6 +25,7 @@ function WeakAuras.OpenOptions(msg)
     local loaded, reason = LoadAddOn("WeakAurasOptions");
     if not(loaded) then
       print("WeakAurasOptions could not be loaded:", reason);
+      return;
     end
   end
   WeakAuras.ToggleOptions(msg);
@@ -516,7 +517,11 @@ groupFrame:SetScript("OnEvent", function(self, event)
         groupMembers[guid] = GetUnitName(uid,true);
       end
     end
-    groupMembers[WeakAuras.myGUID] = WeakAuras.me;
+    if (WeakAuras.myGUID) then
+      groupMembers[WeakAuras.myGUID] = WeakAuras.me;
+    else
+      WeakAuras.myGUID = UnitGUID("player")
+    end
   end
   aura_cache:AssertMemberList(groupMembers);
   
@@ -1530,7 +1535,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Shedule events that need to be handled some time after login
-    WeakAuras.myGUID = UnitGUID("player")
+    WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
     timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);  -- Data not available 
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
   end
