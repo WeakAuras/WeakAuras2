@@ -135,9 +135,9 @@ local function modify(parent, region, data)
 			-- Show border if child is visible
 			if childVisible then
 				border:SetBackdrop({
-					edgeFile = data.borderEdge ~= 'None' and SharedMedia:Fetch("border", data.borderEdge),
+					edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
 					edgeSize = data.borderSize,
-					bgFile = data.borderBackdrop ~= 'None' and SharedMedia:Fetch("background", data.borderBackdrop),
+					bgFile = data.borderBackdrop ~= "None" and SharedMedia:Fetch("background", data.borderBackdrop) or "",
 					insets = {
 						left 	= data.borderInset,
 						right 	= data.borderInset,
