@@ -75,7 +75,7 @@ do
         if coroutine.status(func) ~= "dead" then
           local err,ret1,ret2 = assert(coroutine.resume(func))
           if err then
-          	WeakAuras.debug(debugstack(func))
+            WeakAuras.debug(debugstack(func))
           end
         else
           dynFrame:RemoveAction(name);
@@ -1048,41 +1048,43 @@ local pickonupdate;
 local loadedFrame = CreateFrame("FRAME");
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
-  if(addon == ADDON_NAME) then
-    db = WeakAurasSaved;
-    WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
-    odb = WeakAurasOptionsSaved;
-    
-    odb.iconCache = odb.iconCache or {};
-    iconCache = odb.iconCache;
-    odb.idCache = odb.idCache or {};
-    idCache = odb.idCache;
-    local _, build = GetBuildInfo();
-    local locale = GetLocale();
-    local version = WeakAuras.versionString
-    
-    -- Check for 4.0 to 4.1 upgrade to give warning about Combat Log Event Unfiltered change
-    if((tonumber(odb.build) or 0) <= 14007 and (tonumber(build) or 0) > 14007) then
-      WeakAuras.CombatEventWarning(true);
-    end
-    
-    local num = 0;
-    for i,v in pairs(odb.iconCache) do
-      num = num + 1;
-    end
-    
-    if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
-      WeakAuras.CreateIconCache();
-
-      odb.build = build;
-      odb.locale = locale;
-      odb.version = version;
-    end
-
-    -- Updates the icon cache with whatever icons WeakAuras core has actually used.
-    -- This helps keep name<->icon matches relevant.
-    for name, icon in pairs(db.tempIconCache) do
-      iconCache[name] = icon;
+  if (event == "ADDON_LOADED") then
+    if(addon == ADDON_NAME) then
+      db = WeakAurasSaved;
+      WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
+      odb = WeakAurasOptionsSaved;
+      
+      odb.iconCache = odb.iconCache or {};
+      iconCache = odb.iconCache;
+      odb.idCache = odb.idCache or {};
+      idCache = odb.idCache;
+      local _, build = GetBuildInfo();
+      local locale = GetLocale();
+      local version = WeakAuras.versionString
+      
+      -- Check for 4.0 to 4.1 upgrade to give warning about Combat Log Event Unfiltered change
+      if((tonumber(odb.build) or 0) <= 14007 and (tonumber(build) or 0) > 14007) then
+        WeakAuras.CombatEventWarning(true);
+      end
+      
+      local num = 0;
+      for i,v in pairs(odb.iconCache) do
+        num = num + 1;
+      end
+      
+      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
+        WeakAuras.CreateIconCache();
+  
+        odb.build = build;
+        odb.locale = locale;
+        odb.version = version;
+      end
+  
+      -- Updates the icon cache with whatever icons WeakAuras core has actually used.
+      -- This helps keep name<->icon matches relevant.
+      for name, icon in pairs(db.tempIconCache) do
+        iconCache[name] = icon;
+      end
     end
   end
 end);
@@ -1162,17 +1164,14 @@ function WeakAuras.UpdateCloneConfig(data)
 end
 
 function WeakAuras.ShowOptions(msg)
+  local firstLoad = not(frame);
   WeakAuras.Pause();
   
-  local firstLoad = true;
-  
-  if not(frame) then
+  if (firstLoad) then
     frame = WeakAuras.CreateFrame();
     frame.buttonsScroll.frame:Show();
     WeakAuras.AddOption(tempGroup.id, tempGroup);
     WeakAuras.LayoutDisplayButtons(msg);
-  else
-    firstLoad = false;
   end
   frame.buttonsScroll.frame:Show();
   WeakAuras.LockUpdateInfo();
@@ -5970,6 +5969,7 @@ function WeakAuras.CreateFrame()
         local loaded, reason = LoadAddOn("WeakAurasTutorials");
         if not(loaded) then
           print("WeakAurasTutorials could not be loaded:", reason);
+          return;
         end
       end
       WeakAuras.ToggleTutorials();

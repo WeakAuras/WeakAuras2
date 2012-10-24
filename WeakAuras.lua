@@ -20,12 +20,21 @@ local aceEvents = WeakAurasAceEvents
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
+local queueshowooc;
 function WeakAuras.OpenOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
-    local loaded, reason = LoadAddOn("WeakAurasOptions");
-    if not(loaded) then
-      print("WeakAurasOptions could not be loaded:", reason);
+    if InCombatLockdown() then
+      -- inform the user and queue ooc
+      print("|cff9900FF".."WeakAurasOptions"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
+      queueshowooc = msg or true;
+      WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return;
+    else
+      local loaded, reason = LoadAddOn("WeakAurasOptions");
+      if not(loaded) then
+        print("WeakAurasOptions could not be loaded:", reason);
+        return;
+      end
     end
   end
   WeakAuras.ToggleOptions(msg);
@@ -1538,6 +1547,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
     timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);  -- Data not available 
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
+  elseif(event == "PLAYER_REGEN_ENABLED") then
+    if (queueshowooc) then
+      WeakAuras.OpenOptions(queueshowooc)
+      queueshowooc = nil
+      WeakAuras.frames["Addon Initialization Handler"]:UnregisterEvent("PLAYER_REGEN_ENABLED")
+    end
   end
 end);
 
