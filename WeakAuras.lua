@@ -26,7 +26,7 @@ function WeakAuras.OpenOptions(msg)
     if InCombatLockdown() then
       -- inform the user and queue ooc
       print("|cff9900FF".."WeakAurasOptions"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
-      queueshowooc = msg or true;
+      queueshowooc = msg or "";
       WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return;
     else
