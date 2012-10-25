@@ -1560,19 +1560,19 @@ function WeakAuras.Pause()
   paused = true;
   -- Forcibly hide all displays, and clear all trigger information (it will be restored on Resume due to forced events)
   for id, region in pairs(regions) do
-  region.region:Collapse();
-  region.region.trigger_count = 0;
-  region.region.triggers = region.region.triggers or {};
-  wipe(region.region.triggers);
+    region.region:Collapse(); -- ticket 366
+    region.region.trigger_count = 0;
+    region.region.triggers = region.region.triggers or {};
+    wipe(region.region.triggers);
   end
   
   for id, cloneList in pairs(clones) do
-  for cloneId, clone in pairs(cloneList) do
-    clone:Collapse();
-    clone.trigger_count = 0;
-    clone.triggers = clone.triggers or {};
-    wipe(clone.triggers);
-  end
+    for cloneId, clone in pairs(cloneList) do
+      clone:Collapse();
+      clone.trigger_count = 0;
+      clone.triggers = clone.triggers or {};
+      wipe(clone.triggers);
+    end
   end
 end
 
@@ -3483,187 +3483,190 @@ function WeakAuras.SetRegion(data, cloneId)
   if not(regionType) then
     error("Improper arguments to WeakAuras.SetRegion - regionType not defined");
   else
-  if(regionTypes[regionType]) then
-    local id = data.id;
-    if not(id) then
-      error("Improper arguments to WeakAuras.SetRegion - id not defined");
-    else
-    local region;
-    if(cloneId) then
-      region = clones[id][cloneId];
-    else
-      if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
-        region = regionTypes[regionType].create(frame, data);
-        regions[id] = {
-          regionType = regionType,
-          region = region
-        };
+    if(regionTypes[regionType]) then
+      local id = data.id;
+      if not(id) then
+        error("Improper arguments to WeakAuras.SetRegion - id not defined");
       else
-        region = regions[id].region;
-      end
-    end
-    WeakAuras.validate(data, regionTypes[regionType].default);
-    
-    local parent = frame;
-    if(data.parent) then
-      if(regions[data.parent]) then
-        parent = regions[data.parent].region;
+      local region;
+      if(cloneId) then
+        region = clones[id][cloneId];
       else
-        data.parent = nil;
-      end
-    end
-    
-    local anim_cancelled = WeakAuras.CancelAnimation(region, true, true, true, true, true);
-    
-    local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
-    
-    regionTypes[regionType].modify(parent, region, data);
-    
-    if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" and pSelfPoint and pAnchor and pAnchorPoint and pX and pY) then
-      region:ClearAllPoints();
-      region:SetPoint(pSelfPoint, pAnchor, pAnchorPoint, pX, pY);
-    end
-    
-    data.animation = data.animation or {};
-    data.animation.start = data.animation.start or {type = "none"};
-    data.animation.main = data.animation.main or {type = "none"};
-    data.animation.finish = data.animation.finish or {type = "none"};
-    if(WeakAuras.CanHaveDuration(data)) then
-      data.animation.start.duration_type = data.animation.start.duration_type or "seconds";
-      data.animation.main.duration_type = data.animation.main.duration_type or "seconds";
-      data.animation.finish.duration_type = data.animation.finish.duration_type or "seconds";
-    else
-      data.animation.start.duration_type = "seconds";
-      data.animation.main.duration_type = "seconds";
-      data.animation.finish.duration_type = "seconds";
-    end
-    
-    local startMainAnimation = function()
-      WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true, cloneId);
-    end
-    
-    local hideRegion = function()
-      region:Hide();
-    end
-    
-    if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
-      if not(cloneId) then
-      parent:PositionChildren();
-      end
-      function region:Collapse()
-      if(region:IsVisible()) then
-        region.toHide = true;
-        WeakAuras.PerformActions(data, "finish");
-        WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)
-        parent:ControlChildren();
-      end
-      end
-      function region:Expand()
-      if(regionType == "model") then
-        region:EnsureModel();
-      end
-      region.toShow = true;
-      parent:EnsureTrays();
-      if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or (not region:IsVisible() or (cloneId and region.justCreated))) then
-        region.justCreated = nil;
-        WeakAuras.PerformActions(data, "start");
-        if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
-        startMainAnimation();
+        if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
+          region = regionTypes[regionType].create(frame, data);
+          regions[id] = {
+            regionType = regionType,
+            region = region
+          };
+        else
+          region = regions[id].region;
         end
       end
-      parent:ControlChildren();
+      WeakAuras.validate(data, regionTypes[regionType].default);
+      
+      local parent = frame;
+      if(data.parent) then
+        if(regions[data.parent]) then
+          parent = regions[data.parent].region;
+        else
+          data.parent = nil;
+        end
       end
-    elseif not(data.controlledChildren) then
-      function region:Collapse()
-      if(region:IsVisible()) then
-        WeakAuras.PerformActions(data, "finish");
-        if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
+      
+      local anim_cancelled = WeakAuras.CancelAnimation(region, true, true, true, true, true);
+      
+      local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
+      
+      regionTypes[regionType].modify(parent, region, data);
+      
+      if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" and pSelfPoint and pAnchor and pAnchorPoint and pX and pY) then
+        region:ClearAllPoints();
+        region:SetPoint(pSelfPoint, pAnchor, pAnchorPoint, pX, pY);
+      end
+      
+      data.animation = data.animation or {};
+      data.animation.start = data.animation.start or {type = "none"};
+      data.animation.main = data.animation.main or {type = "none"};
+      data.animation.finish = data.animation.finish or {type = "none"};
+      if(WeakAuras.CanHaveDuration(data)) then
+        data.animation.start.duration_type = data.animation.start.duration_type or "seconds";
+        data.animation.main.duration_type = data.animation.main.duration_type or "seconds";
+        data.animation.finish.duration_type = data.animation.finish.duration_type or "seconds";
+      else
+        data.animation.start.duration_type = "seconds";
+        data.animation.main.duration_type = "seconds";
+        data.animation.finish.duration_type = "seconds";
+      end
+      
+      local startMainAnimation = function()
+        WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true, cloneId);
+      end
+      
+      local hideRegion = function()
         region:Hide();
+      end
+      
+      if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
+        if not(cloneId) then
+          parent:PositionChildren();
         end
-        
-        if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
-        parent:UpdateBorder(region);
+        function region:Collapse()
+          if(region:IsVisible()) then
+            region.toHide = true;
+            WeakAuras.PerformActions(data, "finish");
+            WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)
+            parent:ControlChildren();
+          end
+        end
+        function region:Expand()
+          if(regionType == "model") then
+            region:EnsureModel();
+          end
+          region.toShow = true;
+          parent:EnsureTrays();
+          if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or (not region:IsVisible() or (cloneId and region.justCreated))) then
+            region.justCreated = nil;
+            WeakAuras.PerformActions(data, "start");
+            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+            startMainAnimation();
+            end
+          end
+          parent:ControlChildren();
+        end
+      elseif not(data.controlledChildren) then
+        function region:Collapse()
+          if(region:IsVisible()) then
+            WeakAuras.PerformActions(data, "finish");
+            if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
+            region:Hide();
+            end
+            
+            if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
+            parent:UpdateBorder(region);
+            end
+          end
+        end
+        function region:Expand()
+          if(regionType == "model") then
+            region:EnsureModel()
+          end
+          if(WeakAuras.IsAnimating(region) == "finish" or (not region:IsVisible() or (cloneId and region.justCreated))) then
+            region.justCreated = nil;
+            region:Show();
+            WeakAuras.PerformActions(data, "start");
+            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+            startMainAnimation();
+            end
+            
+            if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
+            parent:UpdateBorder(region);
+            end
+          end
         end
       end
+      -- Stubs that allow for polymorphism
+      if not region.Collapse then
+        function region:Collapse() end
       end
-      function region:Expand()
-      if(regionType == "model") then
-        region:EnsureModel()
+      if not region.Expand then
+        function region:Expand() end
       end
-      if(WeakAuras.IsAnimating(region) == "finish" or (not region:IsVisible() or (cloneId and region.justCreated))) then
-        region.justCreated = nil;
-        region:Show();
-        WeakAuras.PerformActions(data, "start");
-        if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+      
+      if(cloneId) then
+        clonePool[regionType] = clonePool[regionType] or {};
+        region:SetScript("OnHide", function()
+        if(clones[id]) then
+          clones[id][cloneId] = nil;
+        end
+        clonePool[regionType][#clonePool[regionType]] = region;
+        region:SetScript("OnHide", nil);
+        end);
+      end
+  
+      if(data.additional_triggers and #data.additional_triggers > 0) then
+        region.trigger_count = region.trigger_count or 0;
+        region.triggers = region.triggers or {};
+  
+        function region:TestTriggers(trigger_count)
+          if(trigger_count > ((data.disjunctive and 0) or #data.additional_triggers)) then
+            region:Expand();
+            return true;
+          else
+            region:Collapse();
+            return false;
+          end
+        end
+  
+        function region:EnableTrigger(triggernum)
+          if not(region.triggers[triggernum]) then
+            region.triggers[triggernum] = true;
+            region.trigger_count = region.trigger_count + 1;
+            return region:TestTriggers(region.trigger_count);
+          else
+            return nil;
+          end
+        end
+  
+        function region:DisableTrigger(triggernum)
+          if(region.triggers[triggernum]) then
+            region.triggers[triggernum] = nil;
+            region.trigger_count = region.trigger_count - 1;
+            return not region:TestTriggers(region.trigger_count);
+          else
+            return nil;
+          end
+        end
+      end
+      
+      if(anim_cancelled) then
         startMainAnimation();
-        end
-        
-        if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
-        parent:UpdateBorder(region);
-        end
       end
+      
+      return region;
       end
     else
-      -- Stubs that allow for polymorphism
-      function region:Collapse() end
-      function region.Expand() end
+      error("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
     end
-    
-    if(cloneId) then
-      clonePool[regionType] = clonePool[regionType] or {};
-      region:SetScript("OnHide", function()
-      if(clones[id]) then
-        clones[id][cloneId] = nil;
-      end
-      clonePool[regionType][#clonePool[regionType]] = region;
-      region:SetScript("OnHide", nil);
-      end);
-    end
-
-    if(data.additional_triggers and #data.additional_triggers > 0) then
-      region.trigger_count = region.trigger_count or 0;
-      region.triggers = region.triggers or {};
-
-      function region:TestTriggers(trigger_count)
-      if(trigger_count > ((data.disjunctive and 0) or #data.additional_triggers)) then
-        region:Expand();
-        return true;
-      else
-        region:Collapse();
-        return false;
-      end
-      end
-
-      function region:EnableTrigger(triggernum)
-      if not(region.triggers[triggernum]) then
-        region.triggers[triggernum] = true;
-        region.trigger_count = region.trigger_count + 1;
-        return region:TestTriggers(region.trigger_count);
-      else
-        return nil;
-      end
-      end
-
-      function region:DisableTrigger(triggernum)
-      if(region.triggers[triggernum]) then
-        region.triggers[triggernum] = nil;
-        region.trigger_count = region.trigger_count - 1;
-        return not region:TestTriggers(region.trigger_count);
-      else
-        return nil;
-      end
-      end
-    end
-    
-    if(anim_cancelled) then
-      startMainAnimation();
-    end
-    
-    return region;
-    end
-  else
-    error("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
-  end
   end
 end
 
