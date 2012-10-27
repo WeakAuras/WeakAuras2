@@ -1388,33 +1388,33 @@ WeakAuras.event_prototypes = {
       local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
       WeakAuras.WatchSpellCooldown(trigger.spellName);
       local ret = [[
-    local spellname = %s
-    local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
-    local inverse = %s;
-    local testRune = %s;
-    ]];
-    if(trigger.use_remaining and not trigger.use_inverse) then
-    local ret2 = [[
-      local expirationTime = startTime + duration
-      local remaining = expirationTime - GetTime();
-      local remainingCheck = %s;
-      if(remaining > remainingCheck) then
-      WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
-      end
-    ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0));
+        local spellname = %s
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
+        local inverse = %s;
+        local testRune = %s;
+      ]];
+      if(trigger.use_remaining and not trigger.use_inverse) then
+        local ret2 = [[
+          local expirationTime = startTime + duration
+          local remaining = expirationTime - GetTime();
+          local remainingCheck = %s;
+          if(remaining > remainingCheck) then
+            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+          end
+        ]];
+        ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
       end 
       return ret:format(spellName, (trigger.use_inverse and "true" or "false"), (trigger.use_matchedRune and "true" or "false"));
     end,
     args = {
-    {
-    }, -- Ignore first argument (id)
-    {
+      {
+      }, -- Ignore first argument (id)
+      {
         name = "matchedRune",
         display = L["Ignore Rune CD"],
         type = "toggle",
         init = "arg",
-    test = "(not testRune or matchedRune ~= true or event  == 'COOLDOWN_REMAINING_CHECK')"
+        test = "(not testRune or matchedRune ~= true or event  == 'COOLDOWN_REMAINING_CHECK')"
       },
       {
         name = "spellName",
@@ -1514,19 +1514,19 @@ WeakAuras.event_prototypes = {
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
       WeakAuras.WatchItemCooldown(trigger.itemName);
       local ret = [[
-    local startTime, duration = WeakAuras.GetItemCooldown(%s);
-    local inverse = %s;
-    ]];
+        local startTime, duration = WeakAuras.GetItemCooldown(%s);
+        local inverse = %s;
+      ]];
       if(trigger.use_remaining and not trigger.use_inverse) then
         local ret2 = [[
-      local expirationTime = startTime + duration
-      local remaining = expirationTime - GetTime();
-      local remainingCheck = %s;
-      if(remaining > remainingCheck) then
-      WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
-      end
-    ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0));
+          local expirationTime = startTime + duration
+          local remaining = expirationTime - GetTime();
+          local remainingCheck = %s;
+        if(remaining > remainingCheck) then
+          WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+        end
+        ]];
+        ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
       end
       return ret:format(itemName, (trigger.use_inverse and "true" or "false"));
     end,
@@ -2100,9 +2100,9 @@ WeakAuras.event_prototypes = {
     events = {
       "CHAT_MSG_BATTLEGROUND",
       "CHAT_MSG_BATTLEGROUND_LEADER",
-    "CHAT_MSG_BG_SYSTEM_ALLIANCE",
-    "CHAT_MSG_BG_SYSTEM_HORDE",
-    "CHAT_MSG_BG_SYSTEM_NEUTRAL",
+      "CHAT_MSG_BG_SYSTEM_ALLIANCE",
+      "CHAT_MSG_BG_SYSTEM_HORDE",
+      "CHAT_MSG_BG_SYSTEM_NEUTRAL",
       "CHAT_MSG_BN_WHISPER",
       "CHAT_MSG_CHANNEL",
       "CHAT_MSG_EMOTE",
@@ -2166,50 +2166,50 @@ WeakAuras.event_prototypes = {
     name = L["Death Knight Rune"],
   init = function(trigger)
     trigger.rune = trigger.rune or 0;
-      WeakAuras.WatchRuneCooldown(trigger.rune);
-      local ret = [[
-    local rune = %s;
-    local startTime, duration = WeakAuras.GetRuneCooldown(rune);
-    local inverse = %s;
-    local death = %s;
+    WeakAuras.WatchRuneCooldown(trigger.rune);
+    local ret = [[
+      local rune = %s;
+      local startTime, duration = WeakAuras.GetRuneCooldown(rune);
+      local inverse = %s;
+      local death = %s;
     
-    local numBloodRunes  = 0;
-    local numUnholyRunes = 0;
-    local numFrostRunes  = 0;
-    local numDeathRunes  = 0;
-    for index = 1, 6 do
-      local startTime = select(1, GetRuneCooldown(index));
-      if startTime == 0 then
-      if   GetRuneType(index) == 1 then
-        numBloodRunes  = numBloodRunes  + 1;
-      elseif GetRuneType(index) == 2 then
-        numUnholyRunes = numUnholyRunes + 1;
-      elseif GetRuneType(index) == 3 then
-        numFrostRunes  = numFrostRunes  + 1;
-      elseif GetRuneType(index) == 4 then
-        numDeathRunes  = numDeathRunes  + 1;
+      local numBloodRunes  = 0;
+      local numUnholyRunes = 0;
+      local numFrostRunes  = 0;
+      local numDeathRunes  = 0;
+      for index = 1, 6 do
+        local startTime = select(1, GetRuneCooldown(index));
+        if startTime == 0 then
+          if   GetRuneType(index) == 1 then
+            numBloodRunes  = numBloodRunes  + 1;
+          elseif GetRuneType(index) == 2 then
+            numUnholyRunes = numUnholyRunes + 1;
+          elseif GetRuneType(index) == 3 then
+            numFrostRunes  = numFrostRunes  + 1;
+          elseif GetRuneType(index) == 4 then
+            numDeathRunes  = numDeathRunes  + 1;
+          end
+        end
       end
-      end
-    end
 
-    if %s then
-      numBloodRunes  = numBloodRunes  + numDeathRunes;
-      numUnholyRunes = numUnholyRunes + numDeathRunes;
-      numFrostRunes  = numFrostRunes  + numDeathRunes;
+      if %s then
+        numBloodRunes  = numBloodRunes  + numDeathRunes;
+        numUnholyRunes = numUnholyRunes + numDeathRunes;
+        numFrostRunes  = numFrostRunes  + numDeathRunes;
+      end
+    ]];
+    if(trigger.use_remaining and not trigger.use_inverse) then
+      local ret2 = [[
+        local expirationTime = startTime + duration
+        local remaining = expirationTime - GetTime();
+        local remainingCheck = %s;
+        if(remaining > remainingCheck) then
+          WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+        end
+      ]];
+      ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
     end
-    ]];
-      if(trigger.use_remaining and not trigger.use_inverse) then
-    local ret2 = [[
-      local expirationTime = startTime + duration
-      local remaining = expirationTime - GetTime();
-      local remainingCheck = %s;
-      if(remaining > remainingCheck) then
-      WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
-      end
-    ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0));
-      end
-      return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"), (trigger.use_deathRune == true and "true" or trigger.use_deathRune == false and "false" or "nil"), (trigger.use_includeDeath and "true" or "false"));
+    return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"), (trigger.use_deathRune == true and "true" or trigger.use_deathRune == false and "false" or "nil"), (trigger.use_includeDeath and "true" or "false"));
   end,
     args = {
       {
@@ -2248,27 +2248,27 @@ WeakAuras.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-    enable = function(trigger) return trigger.use_rune end
+        enable = function(trigger) return trigger.use_rune end
       },
       {
         name = "bloodRunes",
         display = L["Blood Runes"],
         type = "number",
-    init = "numBloodRunes",
+        init = "numBloodRunes",
         enable = function(trigger) return not trigger.use_rune end
       },
       {
         name = "unholyRunes",
         display = L["Unholy Runes"],
         type = "number",
-    init = "numUnholyRunes",
+        init = "numUnholyRunes",
         enable = function(trigger) return not trigger.use_rune end
       },
       {
         name = "frostRunes",
         display = L["Frost Runes"],
         type = "number",
-    init = "numFrostRunes",
+        init = "numFrostRunes",
         enable = function(trigger) return not trigger.use_rune end
       },
       {
@@ -2276,7 +2276,7 @@ WeakAuras.event_prototypes = {
         display = L["Include Death Runes"],
         type = "toggle",
         test = "true",
-    enable = function(trigger) return trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end
+        enable = function(trigger) return trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end
       },
     },
     durationFunc = function(trigger)
@@ -2536,7 +2536,7 @@ WeakAuras.event_prototypes = {
       "PLAYER_DEAD",
       "PLAYER_ALIVE",
       "PLAYER_UNGHOST",
-    "UNIT_PET",
+      "UNIT_PET",
       "UNIT_ENTERED_VEHICLE",
       "UNIT_EXITED_VEHICLE",
       "PLAYER_UPDATE_RESTING",

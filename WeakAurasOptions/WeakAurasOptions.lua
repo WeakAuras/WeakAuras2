@@ -20,6 +20,14 @@ local ADDON_NAME = "WeakAurasOptions";
 local GetSpellInfo = GetSpellInfo;
 local GetItemInfo = GetItemInfo;
 
+local font_close,yellow_font,red_font = FONT_COLOR_CODE_CLOSE,YELLOW_FONT_COLOR_CODE,RED_FONT_COLOR_CODE
+local ValidateNumeric = function(info,val)
+	if not tonumber(val) then
+  	return print(fmt("|cff9900FF"..ADDON_NAME..font_close..":"..yellow_font.." %s"..red_font.." is not a number!",tostring(val)))
+  end
+  return true 
+end
+
 -- Handle coroutines
 local dynFrame = {};
 do
@@ -618,6 +626,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         order = order + 1;
         options[name] = {
           type = "input",
+          validate = ValidateNumeric,
           name = arg.display,
           width = "half",
           order = order,
@@ -4504,6 +4513,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     rem = {
       type = "input",
       name = L["Remaining Time"],
+      validate = ValidateNumeric,
       order = 58,
       width = "half",
       disabled = function() return not trigger.useRem; end,
@@ -4529,6 +4539,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     count = {
       type = "input",
       name = L["Stack Count"],
+      validate = ValidateNumeric,
       order = 65,
       width = "half",
       disabled = function() return not trigger.useCount; end,
