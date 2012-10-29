@@ -133,14 +133,8 @@ local function update_forms()
 end
 local form_frame = CreateFrame("frame");
 form_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
+form_frame:RegisterEvent("PLAYER_LOGIN")
 form_frame:SetScript("OnEvent", update_forms);
-form_frame:SetScript("OnUpdate", function()
-  if(GetNumShapeshiftForms()) then
-    update_forms();
-    WeakAuras.debug(GetTime())
-    form_frame:SetScript("OnUpdate", nil);
-  end
-end);
 
 --[=[
 WeakAuras.deathknight_form_types = {
@@ -343,16 +337,20 @@ WeakAuras.orientation_types = {
   VERTICAL_INVERSE = L["Top to Bottom"]
 };
 WeakAuras.spec_types = {}
-do
+local function update_specs()
+  wipe(WeakAuras.spec_types);
   local _, eClass, classID = UnitClass("player")
   local numSpecs = GetNumSpecializationsForClassID(classID)
   for i=1, numSpecs do
-  local _, tabName = GetSpecializationInfo(i);
-  if tabName then
-    tinsert(WeakAuras.spec_types, _G.SPECIALIZATION .. " ".. i .. " ("..tabName..")")
-  end
+    local _, tabName = GetSpecializationInfoForClassID(classID, i);
+    if tabName then
+      tinsert(WeakAuras.spec_types, _G.SPECIALIZATION .. " ".. i .. " ("..tabName..")")
+    end
   end
 end
+local spec_frame = CreateFrame("frame");
+spec_frame:RegisterEvent("PLAYER_LOGIN")
+spec_frame:SetScript("OnEvent", update_specs);
 WeakAuras.talent_types = {}
 do
   local numTalents, numTiers, numColumns = _G.MAX_NUM_TALENTS, _G.MAX_NUM_TALENT_TIERS, _G.NUM_TALENT_COLUMNS

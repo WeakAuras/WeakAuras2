@@ -575,12 +575,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             importbutton:SetText("Import");
             importbutton:SetWidth(100);
             importbutton:SetScript("OnClick", function()
-                if not(IsAddOnLoaded("WeakAurasOptions")) then
-                    local loaded, reason = LoadAddOn("WeakAurasOptions");
-                    if not(loaded) then
-                        print("WeakAurasOptions could not be loaded:", reason);
-                    end
-                end
+                WeakAuras.OpenOptions();
                     
                 local optionsFrame = WeakAuras.OptionsFrame();
                 if not(optionsFrame) then

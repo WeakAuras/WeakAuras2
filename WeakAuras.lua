@@ -74,7 +74,7 @@ function WeakAuras.OpenOptions(msg)
     else
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
-        print("WeakAurasOptions could not be loaded:", reason);
+        print("|cff9900FF".."WeakAurasOptions"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
         return;
       end
     end
@@ -1751,11 +1751,11 @@ function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
     -- This is triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
     -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
     if(loaded_events["COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"]) then
-    WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
+      WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
     end
   else
     if(loaded_events[event]) then
-    WeakAuras.ScanEvents(event, arg1, arg2, ...);
+      WeakAuras.ScanEvents(event, arg1, arg2, ...);
     end
   end
   end
@@ -1940,33 +1940,33 @@ end
 
 function WeakAuras.ScanForLoads(self, event, arg1)
   if(event == "PLAYER_LEVEL_UP") then
-  playerLevel = arg1;
+    playerLevel = arg1;
   end
   local player, zone, spec, role = UnitName("player"), GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
   if role == "NONE" then
-  if IsInRaid() then
-    for i=1,GetNumGroupMembers() do
-    if UnitIsUnit(WeakAuras.raidUnits[i],"player") then
-      local _, _, _, _, _, _, _, _, _, raid_role, _, spec_role = GetRaidRosterInfo(i)
-      if raid_role and raid_role == "MAINTANK" then role = "TANK" end
-      if role == "NONE" then
-      if spec and spec > 0 then
-        local tmprole = GetSpecializationRole(spec)
-        if type(tmprole) == "string" then
-        role = tmprole
+    if IsInRaid() then
+      for i=1,GetNumGroupMembers() do
+        if UnitIsUnit(WeakAuras.raidUnits[i],"player") then
+          local _, _, _, _, _, _, _, _, _, raid_role, _, spec_role = GetRaidRosterInfo(i)
+          if raid_role and raid_role == "MAINTANK" then role = "TANK" end
+          if role == "NONE" then
+            if spec and spec > 0 then
+              local tmprole = GetSpecializationRole(spec)
+              if type(tmprole) == "string" then
+                role = tmprole
+              end
+            end
+          end
+          break;
         end
       end
-      end
-      break;
     end
-    end
-  end
   end
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
   local inInstance, Type = IsInInstance()
   local _, size, difficulty, instanceType, difficultyIndex, maxPlayers, dynamicDifficulty, isDynamic;
-  local incombat = UnitAffectingCombat("player") or UnitAffectingCombat("pet");
+  local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet"); 
    if (inInstance) then
    _, instanceType, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
    size = Type
@@ -2002,8 +2002,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     difficulty = "normal"
   end 
   else
-  size = "none"
-  difficulty = "none"
+    size = "none"
+    difficulty = "none"
   end
 
   local changed = 0;

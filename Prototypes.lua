@@ -1391,7 +1391,7 @@ WeakAuras.event_prototypes = {
         local spellname = %s
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
         local inverse = %s;
-        local testRune = %s;
+        local notestRune = %s;
       ]];
       if(trigger.use_remaining and not trigger.use_inverse) then
         local ret2 = [[
@@ -1414,7 +1414,7 @@ WeakAuras.event_prototypes = {
         display = L["Ignore Rune CD"],
         type = "toggle",
         init = "arg",
-        test = "(not testRune or matchedRune ~= true or event  == 'COOLDOWN_REMAINING_CHECK')"
+        test = "(notestRune or matchedRune ~= true or event  == 'COOLDOWN_REMAINING_CHECK')"
       },
       {
         name = "spellName",
