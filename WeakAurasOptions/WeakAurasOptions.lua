@@ -5979,7 +5979,7 @@ function WeakAuras.CreateFrame()
       if not(IsAddOnLoaded("WeakAurasTutorials")) then
         local loaded, reason = LoadAddOn("WeakAurasTutorials");
         if not(loaded) then
-          print("WeakAurasTutorials could not be loaded:", reason);
+          print("|cff9900FF".."WeakAurasTutorials"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
           return;
         end
       end
@@ -6212,7 +6212,7 @@ function WeakAuras.CreateFrame()
   
   local iconPick = AceGUI:Create("InlineGroup");
   iconPick.frame:SetParent(frame);
-  iconPick.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
+  iconPick.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 30); -- 12
   iconPick.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
   iconPick.frame:Hide();
   iconPick:SetLayout("flow");
@@ -6222,7 +6222,7 @@ function WeakAuras.CreateFrame()
   iconPickScroll:SetWidth(540);
   iconPickScroll:SetLayout("flow");
   iconPickScroll.frame:SetParent(iconPick.frame);
-  iconPickScroll.frame:SetPoint("BOTTOMLEFT", iconPick.frame, "BOTTOMLEFT", 10, 30);
+  iconPickScroll.frame:SetPoint("BOTTOMLEFT", iconPick.frame, "BOTTOMLEFT", 10, 22); -- 30
   iconPickScroll.frame:SetPoint("TOPRIGHT", iconPick.frame, "TOPRIGHT", -10, -70);
   
   local function iconPickFill(subname, doSort)
@@ -8186,7 +8186,7 @@ function WeakAuras.OpenModelPick(data, field)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
-      print("WeakAuras Model Paths could not be loaded:", reason);
+      print("|cff9900FF".."WeakAurasModelPaths"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
       WeakAuras.ModelPaths = {};
     end
     frame.modelPick.modelTree:SetTree(WeakAuras.ModelPaths);
