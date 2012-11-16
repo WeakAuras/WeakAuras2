@@ -7832,6 +7832,11 @@ tXmdmY4fDE5]];
     end
   end
   
+  frame:SetClampedToScreen(true);
+  local w,h = frame:GetSize();
+  local left,right,top,bottom = w/2,-w/2,0,h-25
+  frame:SetClampRectInsets(left,right,top,bottom);
+  
   return frame;
 end
 
