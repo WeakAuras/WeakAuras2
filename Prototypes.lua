@@ -895,7 +895,7 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Chi Power"],
         type = "number",
-        init = "UnitPower(unit, SPELL_POWER_LIGHT_FORCE)"
+        init = "UnitPower(unit, SPELL_POWER_CHI)"
       },
       {
         hidden = true,
@@ -903,10 +903,10 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      return UnitPower(trigger.unit, SPELL_POWER_LIGHT_FORCE), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_LIGHT_FORCE)), true;
+      return UnitPower(trigger.unit, SPELL_POWER_CHI), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_CHI)), true;
     end,
     stacksFunc = function(trigger)
-      return UnitPower(trigger.unit, SPELL_POWER_LIGHT_FORCE);
+      return UnitPower(trigger.unit, SPELL_POWER_CHI);
     end,
     automatic = true
   },
