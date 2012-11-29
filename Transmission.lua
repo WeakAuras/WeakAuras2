@@ -205,39 +205,41 @@ function WeakAuras.DecompressDisplay(data)
     WeakAuras.tableAdd(data, WeakAuras.DisplayStub(data.regionType));
 end
 
-local function Hooked_AddMessage(self, msg, ...)
-    if(msg) then
-        local newMsg = "";
-        local remaining = msg;
-        local done;
-        repeat
-            local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- ([^%]]+)%]");
-            if(characterName and displayName) then
-                characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-                displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-                newMsg = newMsg..remaining:sub(1, start-1);
-                newMsg = newMsg.."|Hweakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
-                remaining = remaining:sub(finish + 1);
-            else
-                newMsg = newMsg..remaining;
-                done = true;
-            end
-        until(done)
-        return self:WeakAuras_Original_AddMessage(newMsg, ...);
-    else
-        return self:WeakAuras_Original_AddMessage(msg, ...);
+local function filterFunc(_, _, msg, ...)
+    local newMsg = "";
+    local remaining = msg;
+    local done;
+    repeat
+        local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- ([^%]]+)%]");
+        if(characterName and displayName) then
+            characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
+            displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
+            newMsg = newMsg..remaining:sub(1, start-1);
+            newMsg = newMsg.."|Hweakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
+            remaining = remaining:sub(finish + 1);
+        else
+            done = true;
+        end
+    until(done)
+    if newMsg ~= "" then
+        return false, newMsg, ...;
     end
 end
 
-local frame = CreateFrame("frame");
-frame:RegisterEvent("VARIABLES_LOADED");
-frame:SetScript("OnEvent", function()
-    for i=1,NUM_CHAT_WINDOWS do
-        local cf = _G["ChatFrame"..i];
-        cf.WeakAuras_Original_AddMessage = cf.AddMessage;
-        cf.AddMessage = Hooked_AddMessage;
-    end
-end);
+ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_CONVERSATION", filterFunc)
 
 function WeakAuras.ShowTooltip(content)
     if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
