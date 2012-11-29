@@ -3808,7 +3808,7 @@ function WeakAuras.PerformActions(data, type)
     end
     elseif(actions.message_type == "SMARTRAID") then
     if UnitInBattleground("player") then
-      SendChatMessage(actions.message, "BATTLEGROUND")
+      SendChatMessage(actions.message, "INSTANCE_CHAT")
     elseif UnitInRaid("player") then
       SendChatMessage(actions.message, "RAID")
     elseif UnitInParty("player") then

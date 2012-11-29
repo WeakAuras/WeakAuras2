@@ -240,6 +240,8 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_CONVERSATION", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", filterFunc)
 
 function WeakAuras.ShowTooltip(content)
     if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then

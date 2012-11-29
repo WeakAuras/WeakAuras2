@@ -991,7 +991,7 @@ WeakAuras.anim_finish_preset_types = {
   bounceDecay = L["Bounce"]
 };
 WeakAuras.chat_message_types = {
-  CHAT_MSG_BATTLEGROUND = L["Battleground"],
+  CHAT_MSG_INSTANCE_CHAT = L["Instance"],
   CHAT_MSG_BG_SYSTEM_NEUTRAL = L["BG-System Neutral"],
   CHAT_MSG_BG_SYSTEM_ALLIANCE = L["BG-System Alliance"],
   CHAT_MSG_BG_SYSTEM_HORDE = L["BG-System Horde"],
@@ -1021,7 +1021,7 @@ WeakAuras.send_chat_message_types = {
   RAID = L["Raid"],
   SMARTRAID = L["BG>Raid>Party>Say"],
   RAID_WARNING = L["Raid Warning"],
-  BATTLEGROUND = L["Battleground"],
+  INSTANCE_CHAT = L["Instance"],
   COMBAT = L["Blizzard Combat Text"],
   PRINT = L["Chat Frame"]
 };

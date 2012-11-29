@@ -2098,8 +2098,8 @@ WeakAuras.event_prototypes = {
   ["Chat Message"] = {
     type = "event",
     events = {
-      "CHAT_MSG_BATTLEGROUND",
-      "CHAT_MSG_BATTLEGROUND_LEADER",
+      "CHAT_MSG_INSTANCE_CHAT",
+      "CHAT_MSG_INSTANCE_CHAT_LEADER",
       "CHAT_MSG_BG_SYSTEM_ALLIANCE",
       "CHAT_MSG_BG_SYSTEM_HORDE",
       "CHAT_MSG_BG_SYSTEM_NEUTRAL",
