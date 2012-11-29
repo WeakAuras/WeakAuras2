@@ -214,6 +214,8 @@ function WeakAuras.validate(input, default)
   end
 end
 
+
+
 function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default)
   if not(name) then
   error("Improper arguments to WeakAuras.RegisterRegionType - name is not defined");
@@ -1582,6 +1584,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
       
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+
+      WeakAuras.FixGroupChildrenOrder();
       
       WeakAuras.Resume();
     end
@@ -5014,5 +5018,23 @@ function WeakAuras.RegisterItemCountWatch()
     timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
     timer:ScheduleTimer(WeakAuras.ScanEvents, 0.5, "ITEM_COUNT_UPDATE");
   end);
+  end
+end
+
+function WeakAuras.FixGroupChildrenOrder()
+  for id, data in pairs(db.displays) do
+        if(data.controlledChildren) then
+      local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
+      if(lowestRegion) then
+        local frameLevel = lowestRegion:GetFrameLevel();
+        for i=2,#data.controlledChildren do
+          local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
+          if(childRegion) then
+            frameLevel = frameLevel + 1;
+            childRegion:SetFrameLevel(frameLevel);
+          end
+        end
+      end
+    end
   end
 end
