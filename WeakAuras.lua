@@ -3849,9 +3849,9 @@ function WeakAuras.PerformActions(data, type)
     
     if(glow_frame) then
     if(actions.glow_action == "show") then
-      ActionButton_ShowOverlayGlow(glow_frame);
+      --ActionButton_ShowOverlayGlow(glow_frame);
     elseif(actions.glow_action == "hide") then
-      ActionButton_HideOverlayGlow(glow_frame);
+      --ActionButton_HideOverlayGlow(glow_frame);
     end
     end
   end
