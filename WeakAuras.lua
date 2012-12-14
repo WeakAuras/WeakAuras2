@@ -2863,7 +2863,7 @@ function WeakAuras.ResolveCollisions(onFinished)
     whileDead = true,
     showAlert = true,
     timeout = 0,
-    preferredIndex = 3
+    preferredindex = STATICPOPUP_NUMDIALOGS
   };
   
   local popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
