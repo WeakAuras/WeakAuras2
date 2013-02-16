@@ -165,9 +165,17 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     model:SetWidth(region:GetWidth() - 2);
     model:SetHeight(region:GetHeight() - 2);
     model:SetPoint("center", region, "center");
-    model:SetModel(data.model_path);
+	if tonumber(data.model_path) then
+		model:SetDisplayInfo(tonumber(data.model_path))
+	else
+		model:SetModel(data.model_path);
+	end
     model:SetScript("OnShow", function()
-        model:SetModel(data.model_path);
+		if tonumber(data.model_path) then
+			model:SetDisplayInfo(tonumber(data.model_path))
+		else
+			model:SetModel(data.model_path);
+		end
     end);
     model:SetPosition(data.model_z, data.model_x, data.model_y);
     model:SetFacing(rad(data.rotation));

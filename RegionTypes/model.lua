@@ -67,7 +67,11 @@ local function modify(parent, region, data)
     region:SetHeight(data.height);
     
 	-- Adjust model
-    model:SetModel(data.model_path);
+	if tonumber(data.model_path) then
+		model:SetDisplayInfo(tonumber(data.model_path))
+	else
+		model:SetModel(data.model_path);
+	end
     model:SetPosition(data.model_z, data.model_x, data.model_y);
 	
 	-- Update border
@@ -138,7 +142,11 @@ local function modify(parent, region, data)
 	-- Ensure using correct model
     function region:EnsureModel()
 --		if(type(model:GetModel()) ~= "string") then
-            model:SetModel(data.model_path);
+			if tonumber(data.model_path) then
+				model:SetDisplayInfo(tonumber(data.model_path))
+			else
+				model:SetModel(data.model_path);
+			end
 --		end
     end
 end
