@@ -6461,10 +6461,10 @@ function WeakAuras.CreateFrame()
     model_x = model_x or self.data.model_x;
     model_y = model_y or self.data.model_y;
     
-	if tonumber(data.model_path) then
-		model:SetDisplayInfo(tonumber(data.model_path))
+	if tonumber(model_path) then
+		self.model:SetDisplayInfo(tonumber(model_path))
 	else
-		model:SetModel(data.model_path);
+		self.model:SetModel(model_path);
 	end
     self.model:SetPosition(model_z,model_x, model_y);
     self.model:SetFacing(rad(self.data.rotation));
