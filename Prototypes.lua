@@ -1611,6 +1611,22 @@ WeakAuras.event_prototypes = {
     end,
     hasItemID = true
   },
+	["GTFO"] = {
+		type = "event",
+		events = {
+	  	"GTFO_DISPLAY"
+		},
+		name = L["GTFO Alert"],
+		args = {
+			{
+		  	name = "alertType",
+		  	display = "Alert Type",
+		  	type = "select",
+		  	init = "arg",
+		  	values = "gtfo_types"
+		  },
+	  },
+	},
   ["Global Cooldown"] = {
     type = "status",
     events = {

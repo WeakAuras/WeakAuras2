@@ -1,7 +1,7 @@
 ﻿## Interface: 50100
 ## Title: WeakAuras
 ## Author: Mirrored
-## Version: @project-version@
+## Version: r294
 ## Notes: A powerful, comprehensive utilty for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Eine leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen über Auren, Cooldowns, Timern und vielem mehr.
@@ -14,7 +14,11 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO
+## X-Curse-Packaged-Version: r294
+## X-Curse-Project-Name: WeakAuras
+## X-Curse-Project-ID: weakauras
+## X-Curse-Repository-ID: wow/weakauras/mainline
 
 embeds.xml
 
@@ -41,9 +45,7 @@ RegionTypes\texture.lua
 RegionTypes\aurabar.lua
 RegionTypes\icon.lua
 RegionTypes\text.lua
-#@do-not-package@
-RegionTypes\timer.lua
-#@end-do-not-package@
+
 RegionTypes\group.lua
 RegionTypes\dynamicgroup.lua
 RegionTypes\model.lua

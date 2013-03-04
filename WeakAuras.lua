@@ -1587,6 +1587,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.FixGroupChildrenOrder();
       
+      WeakAuras.RemoveGTFO();
+      
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
@@ -5037,4 +5039,24 @@ function WeakAuras.FixGroupChildrenOrder()
       end
     end
   end
+end
+
+-- Remove GTFO options if GTFO isn't enabled and there are no saved GTFO auras
+function WeakAuras.RemoveGTFO()
+	if not (WeakAuras.loaded_events["GTFO_DISPLAY"] or (GTFO and GTFO.VersionNumber and tonumber(GTFO.VersionNumber) >= 42000)) then
+		for id, data in pairs(db.displays) do
+			if (data.trigger.event == "GTFO") then
+				return;
+			end
+			if (data.numTriggers > 1) then
+				for i, trigger in pairs(data.additional_triggers) do
+					if (trigger.trigger.event == "GTFO") then
+						return;
+					end
+				end
+			end
+		end
+		
+		WeakAuras.event_types["GTFO"] = nil;
+	end
 end

@@ -1127,3 +1127,9 @@ WeakAuras.duration_types = {
 WeakAuras.duration_types_no_choice = {
   seconds = L["Seconds"]
 };
+WeakAuras.gtfo_types = {
+	[1] = L["High Damage"],
+	[2] = L["Low Damage"],
+	[3] = L["Fail Alert"],
+	[4] = L["Friendly Fire"]
+};
