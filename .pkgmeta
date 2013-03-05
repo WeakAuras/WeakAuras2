@@ -29,7 +29,9 @@ externals:
   url: git://github.com/tekkub/libdatabroker-1-1.git
  libs/LibCompress:
   url: svn://svn.wowace.com/wow/libcompress/mainline/trunk
-  
+ libs/LibChatAnims:
+  url: svn://svn.wowace.com/wow/libchatanims/mainline/trunk/LibChatAnims
+
 ignore:
  - RegionTypes\timer.lua
  - WeakAurasOptions\RegionOptions\timer.lua

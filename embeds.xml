@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="libs\LibStub\LibStub.lua"/>
 	<Include file="libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+	<Include file="libs\LibChatAnims\LibChatAnims.xml"/>
 	<Include file="libs\AceGUI-3.0\AceGUI-3.0.xml"/>
 	<Include file="libs\AceConsole-3.0\AceConsole-3.0.xml"/>
 	<Include file="libs\AceConfig-3.0\AceConfig-3.0.xml"/>
