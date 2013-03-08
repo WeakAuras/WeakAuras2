@@ -1878,11 +1878,7 @@ WeakAuras.event_prototypes = {
       return totemName;
     end,
     iconFunc = function(trigger)
-      local icon;
-      local _, totemName = GetTotemInfo(trigger.totemType);
-      if(totemName) then
-        icon = GetSpellTexture(totemName);
-      end
+      local icon = select(5, GetTotemInfo(trigger.totemType))
       if(icon) then
         return icon;
       else
