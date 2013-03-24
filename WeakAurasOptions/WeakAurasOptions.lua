@@ -1164,7 +1164,10 @@ function WeakAuras.UpdateCloneConfig(data)
     cloneRegion = WeakAuras.EnsureClone(data.id, 2);
     cloneRegion:Expand();
     
-    if(data.parent and WeakAuras.regions[data.parent]) then
+    --if(data.parent and WeakAuras.regions[data.parent]) then
+    if(data.parent and WeakAuras.regions[data.parent] and
+       WeakAuras.regions[data.parent].region and 
+       WeakAuras.regions[data.parent].region.ControlChildren) then
       WeakAuras.regions[data.parent].region:ControlChildren();
     end
     
