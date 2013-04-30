@@ -1976,7 +1976,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
    if (inInstance) then
    _, instanceType, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
    size = Type
-   if (not Type or not instanceType) and IsInScenarioGroup() then
+   if instanceType == "scenario" and difficultyIndex == 1 then--5.2 compat code (scenarios are still returning 1, changed to 10 and 11 in 5.3) 5.2 did fix index returning nil though, it now returns "scenario" on live
      size = "scenario"
      difficulty = "normal"
   elseif difficultyIndex == 1 then
@@ -2006,6 +2006,12 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   elseif difficultyIndex == 9 then
     size = "fortyman"
     difficulty = "normal"
+  elseif difficultyIndex == 10 then
+    size = "scenario"
+    difficulty = "normal"
+  elseif difficultyIndex == 11 then
+    size = "scenario"
+    difficulty = "heroic"
   end 
   else
     size = "none"
