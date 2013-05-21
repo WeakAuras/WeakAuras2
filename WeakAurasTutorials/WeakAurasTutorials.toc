@@ -1,4 +1,4 @@
-﻿## Interface: 50200
+﻿## Interface: 50300
 ## Title: WeakAuras Tutorials
 ## Author: Mirrored
 ## Version: @project-version@
