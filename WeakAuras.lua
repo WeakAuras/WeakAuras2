@@ -1971,48 +1971,45 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
   local inInstance, Type = IsInInstance()
-  local _, size, difficulty, instanceType, difficultyIndex, maxPlayers, dynamicDifficulty, isDynamic;
+  local _, size, difficulty, instanceType, difficultyIndex;
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet"); 
-   if (inInstance) then
-   _, instanceType, difficultyIndex, _, maxPlayers, dynamicDifficulty, isDynamic = GetInstanceInfo();
-   size = Type
-   if instanceType == "scenario" and difficultyIndex == 1 then--5.2 compat code (scenarios are still returning 1, changed to 10 and 11 in 5.3) 5.2 did fix index returning nil though, it now returns "scenario" on live
-     size = "scenario"
-     difficulty = "normal"
-  elseif difficultyIndex == 1 then
-    size = "party"
-    difficulty = "normal"
-  elseif difficultyIndex == 2 then
-    size = "party"
-    difficulty = "heroic"
-  elseif difficultyIndex == 3 then
-    size = "ten"
-    difficulty = "normal"
-  elseif difficultyIndex == 4 then
-    size = "twentyfive"
-    difficulty = "normal"
-  elseif difficultyIndex == 5 then
-    size = "ten"
-    difficulty = "heroic"
-  elseif difficultyIndex == 6 then
-    size = "twentyfive"
-    difficulty = "heroic"
-  elseif difficultyIndex == 7 then
-    size = "twentyfive"
-    difficulty = "lfr"
-  elseif difficultyIndex == 8 then
-    size = "party"
-    difficulty = "challenge"
-  elseif difficultyIndex == 9 then
-    size = "fortyman"
-    difficulty = "normal"
-  elseif difficultyIndex == 10 then
-    size = "scenario"
-    difficulty = "normal"
-  elseif difficultyIndex == 11 then
-    size = "scenario"
-    difficulty = "heroic"
-  end 
+  if (inInstance) then
+    _, instanceType, difficultyIndex = GetInstanceInfo();
+    size = Type
+    if difficultyIndex == 1 then
+      size = "party"
+      difficulty = "normal"
+    elseif difficultyIndex == 2 then
+      size = "party"
+      difficulty = "heroic"
+    elseif difficultyIndex == 3 then
+      size = "ten"
+      difficulty = "normal"
+    elseif difficultyIndex == 4 then
+      size = "twentyfive"
+      difficulty = "normal"
+    elseif difficultyIndex == 5 then
+      size = "ten"
+      difficulty = "heroic"
+    elseif difficultyIndex == 6 then
+      size = "twentyfive"
+      difficulty = "heroic"
+    elseif difficultyIndex == 7 then
+      size = "twentyfive"
+      difficulty = "lfr"
+    elseif difficultyIndex == 8 then
+      size = "party"
+      difficulty = "challenge"
+    elseif difficultyIndex == 9 then
+      size = "fortyman"
+      difficulty = "normal"
+    elseif difficultyIndex == 11 then
+      size = "scenario"
+      difficulty = "heroic"
+    elseif difficultyIndex == 12 then
+      size = "scenario"
+      difficulty = "normal"
+    end 
   else
     size = "none"
     difficulty = "none"
