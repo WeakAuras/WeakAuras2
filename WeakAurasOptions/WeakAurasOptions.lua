@@ -66,11 +66,11 @@ do
   dynFrame.frame:Hide();
   dynFrame.frame:SetScript("OnUpdate", function(self, elapsed)
     -- Start timing
-    debugprofilestart();
+    local start = debugprofilestop();
     local hasData = true;
     
     -- Resume as often as possible (Limit to 16ms per frame -> 60 FPS)
-    while (debugprofilestop() < 16 and hasData) do
+    while (debugprofilestop() - start < 16 and hasData) do
       -- Stop loop without data
       hasData = false;
       
