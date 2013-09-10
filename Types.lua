@@ -940,6 +940,7 @@ WeakAuras.group_types = {
   ten = L["10 Man Raid"],
   twentyfive = L["25 Man Raid"],
   fortyman = L["40 Man Raid"],
+  flexible = L["Flex Raid"],
   pvp = L["Battleground"],
   arena = L["Arena"]
 };
