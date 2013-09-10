@@ -1,5 +1,5 @@
-## Interface: 50300
-## Title: WeakAuras
+## Interface: 50400
+## Title: WeakAuras 2
 ## Author: Mirrored
 ## Version: @project-version@
 ## Notes: A powerful, comprehensive utilty for displaying graphics and information based on buffs, debuffs, and other triggers.

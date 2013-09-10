@@ -67,14 +67,14 @@ function WeakAuras.OpenOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if InCombatLockdown() then
       -- inform the user and queue ooc
-      print("|cff9900FF".."WeakAurasOptions"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
+      print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
       queueshowooc = msg or "";
       WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return;
     else
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
-        print("|cff9900FF".."WeakAurasOptions"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
+        print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
         return;
       end
     end
@@ -303,7 +303,7 @@ do
   aura_cache.watched = {};
   aura_cache.players = {};
   
-   -- Test if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount, ect.
+  -- Test if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount, ect.
   -- Extra check needed, because aura_cache can potentially contain data of two different triggers with different settings!
   local function TestNonUniformSettings(acEntry, data)
   if(data.remFunc) then
@@ -1089,8 +1089,8 @@ end
 function duration_cache:GetDurationInfo(id, cloneId)
   local cache;
   if(cloneId) then
-  print("GetDuratonInfo", id, cloneId);
-  print(clone_duration_cache[id] and clone_duration_cache[id][cloneId]);
+  --print("GetDurationInfo", id, cloneId);
+  --print(clone_duration_cache[id] and clone_duration_cache[id][cloneId]);
   if(clone_duration_cache[id] and clone_duration_cache[id][cloneId]) then
     cache = clone_duration_cache[id][cloneId];
     if(type(cache.isValue) == "function") then
@@ -1558,7 +1558,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       
       -- Defines the action squelch period after login
       -- Stored in SavedVariables so it can be changed by the user if they find it necessary
-      db.login_squelch_time = db.login_squelch_time or 5;
+      db.login_squelch_time = db.login_squelch_time or 10;
       
       -- Deprecated fields with *lots* of data, clear them out
       db.iconCache = nil;
@@ -2008,6 +2008,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       difficulty = "heroic"
     elseif difficultyIndex == 12 then
       size = "scenario"
+      difficulty = "normal"
+    elseif difficultyIndex == 14 then
+      size = "flexible"
       difficulty = "normal"
     end 
   else
@@ -3000,14 +3003,14 @@ function WeakAuras.Modernize(data)
   end
   
   -- Add dynamic text info to Progress Bars
-  -- Also onvert custom displayText to new displayText
+  -- Also convert custom displayText to new displayText
   if(data.regionType == "aurabar") then
     data.displayTextLeft = data.displayTextLeft or (not data.auto and data.displayText) or "%n";
     data.displayTextRight = data.displayTextRight or "%p";
   end
   
   -- Add dynamic text info to icons
-  -- Aldo convert alpha to color
+  -- Also convert alpha to color
   if(data.regionType == "icon") then
     data.displayStacks = data.displayStacks or "%s";
     if(not data.color) then
@@ -4903,42 +4906,6 @@ function WeakAuras.ProfileDisplays(all)
     print("|cFFFF0000"..id.."|r -", DisplayTime, "-", DisplayTime - DisplayTimes[id]);
   end
   DisplayTimes[id] = DisplayTime;
-  end
-end
-
-function WeakAuras.CombatEventWarning(silentIfNone)
-  local offendList = {};
-  for id, data in pairs(db.displays) do
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-    trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-    trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if(trigger and trigger.type == "custom") then
-    if not(trigger.custom_type == "status" and trigger.check == "update") then
-      for index, event in pairs(WeakAuras.split(trigger.events)) do
-      if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-        offendList[id] = true;
-      end
-      end
-    end
-    end
-  end
-  end
-  
-  if(next(offendList)) then
-  print("|cFF8800FFWeakAuras|r has detected you have updated from World of Warcraft version 4.1.0 to version 4.2.0");
-  print("In 4.2, Blizzard changed the behavior of the COMBAT_LOG_EVENT_UNFILTERED event, giving two additional arguments.");
-  print("|cFF8800FFWeakAuras|r automatically accounts for this in most circumstances, but you have Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events. You will need to update them manually.");
-  print("If you don't know how to do this, please see http://www.wowace.com/addons/weakauras/forum/21024-4-1-change/#p3 for instructions and/or help.")
-  print("The following displays have Custom Triggers that use the COMBAT_LOG_EVENT_UNFILTERED event:");
-  for id,_ in pairs(offendList) do
-    print("  "..id);
-  end
-  elseif not(silentIfNone) then
-  print("You have no displays with Custom Triggers that use COMBAT_LOG_EVENT_UNFILTERED events.");
   end
 end
 
