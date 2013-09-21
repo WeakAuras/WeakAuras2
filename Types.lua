@@ -336,15 +336,27 @@ WeakAuras.orientation_types = {
   VERTICAL = L["Bottom to Top"],
   VERTICAL_INVERSE = L["Top to Bottom"]
 };
-WeakAuras.spec_types = {}
+WeakAuras.spec_types = {
+  [1] = _G.SPECIALIZATION.." 1",
+  [2] = _G.SPECIALIZATION.." 2",
+  [3] = _G.SPECIALIZATION.." 3",
+  [4] = _G.SPECIALIZATION.." 4"
+}
+WeakAuras.spec_types_reduced = {
+  [1] = _G.SPECIALIZATION.." 1",
+  [2] = _G.SPECIALIZATION.." 2",
+  [3] = _G.SPECIALIZATION.." 3"
+}
+WeakAuras.spec_types_specific = {}
 local function update_specs()
-  wipe(WeakAuras.spec_types);
-  local _, eClass, classID = UnitClass("player")
-  local numSpecs = GetNumSpecializationsForClassID(classID)
-  for i=1, numSpecs do
-    local _, tabName = GetSpecializationInfoForClassID(classID, i);
-    if tabName then
-      tinsert(WeakAuras.spec_types, _G.SPECIALIZATION .. " ".. i .. " ("..tabName..")")
+  for classFileName, classID in pairs(WeakAuras.class_ids) do
+    WeakAuras.spec_types_specific[classFileName] = {}
+    local numSpecs = GetNumSpecializationsForClassID(classID)
+    for i=1, numSpecs do
+      local _, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
+      if tabName then
+        tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
+      end
     end
   end
 end
@@ -358,7 +370,7 @@ do
   while talentId <= numTalents do
     while tier <= numTiers do
       while column <= numColumns do
-        WeakAuras.talent_types[talentId] = L["Tier"]..tier.." - "..column
+        WeakAuras.talent_types[talentId] = L["Tier "]..tier.." - "..column
         column = column + 1
         talentId = talentId + 1
       end
@@ -368,6 +380,7 @@ do
     tier = 1
   end
 end
+
 WeakAuras.totem_types = {
   [1] = L["Fire"],
   [2] = L["Earth"],

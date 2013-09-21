@@ -355,6 +355,15 @@ WeakAuras.anim_presets = {
   }
 };
 
+WeakAuras.class_ids = {}
+local classID = 1;
+local _, classFileName;
+while(GetClassInfo(classID)) do
+  _, classFileName = GetClassInfo(classID)
+  WeakAuras.class_ids[classFileName] = classID;
+  classID = classID + 1;
+end
+
 WeakAuras.load_prototype = {
   args = {
     {
@@ -388,14 +397,74 @@ WeakAuras.load_prototype = {
       name = "spec",
       display = L["Talent Specialization"],
       type = "multiselect",
-      values = "spec_types",
+      values = function(trigger)
+        return function()
+          local single_class;
+          local min_specs = 4;
+          --First check to use if the Class load is on multi-select with only one class selected
+          --Also check the number of specs for each class selected in the multi-select and keep track of the minimum
+          --(i.e., 3 unless Druid is the only thing select, but this method is flexible in case another spec gets added to another class)
+          if(trigger.use_class == false and trigger.class and trigger.class.multi) then
+            local num_classes = 0;
+            for class in pairs(trigger.class.multi) do
+              single_class = class;
+              --If any checked class has only 3 specs, min_specs will become 3
+              min_specs = min(min_specs, GetNumSpecializationsForClassID(WeakAuras.class_ids[class]))
+              num_classes = num_classes + 1;
+            end
+            if(num_classes ~= 1) then
+              single_class = nil;
+            end
+          end
+          --If that is not the case, see if it is on single-select
+          if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
+            single_class = trigger.class.single
+          end
+          --If a single specific class was found, load the specific list for it
+          if(single_class) then
+            return WeakAuras.spec_types_specific[single_class];
+          else
+            --List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
+            if(min_specs < 4) then
+              return WeakAuras.spec_types_reduced;
+            else
+              return WeakAuras.spec_types;
+            end
+          end
+        end
+      end,
       init = "arg"
     },
     {
       name = "talent",
       display = L["Talent selected"],
       type = "select",
-      values = "talent_types",
+      values = function(trigger)
+        return function()
+          local single_class;
+          --First check to use if the Class load is on multi-select with only one class selected
+          if(trigger.use_class == false and trigger.class and trigger.class.multi) then
+            local num_classes = 0;
+            for class in pairs(trigger.class.multi) do
+              single_class = class;
+              num_classes = num_classes + 1;
+            end
+            if(num_classes ~= 1) then
+              single_class = nil;
+            end
+          end
+          --If that is not the case, see if it is on single-select
+          if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
+            single_class = trigger.class.single
+          end
+          --If a single specific class was found, load the specific list for it
+          if(single_class) then
+            return WeakAuras.talent_types_specific[single_class];
+          else
+            return WeakAuras.talent_types;
+          end
+        end
+      end,
       test = "select(5, GetTalentInfo(%d)) == true"
     },
     {

@@ -96,6 +96,7 @@ WeakAuras.transmitCache = {};
 
 local iconCache = {};
 local idCache = {};
+local talentCache = {};
 
 local regionOptions = WeakAuras.regionOptions;
 local displayButtons = {};
@@ -829,12 +830,18 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         end
         order = order + 1;
       elseif(arg.type == "select" or arg.type == "unit") then
+        local values;
+        if(type(arg.values) == "function") then
+          values = arg.values(trigger);
+        else
+          values = WeakAuras[arg.values];
+        end
         options[name] = {
           type = "select",
           name = arg.display,
           order = order,
           hidden = hidden,
-          values = WeakAuras[arg.values],
+          values = values,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function()
             if(arg.type == "unit" and trigger["use_specific_"..realname]) then
@@ -915,11 +922,17 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           order = order + 1;
         end
       elseif(arg.type == "multiselect") then
+        local values;
+        if(type(arg.values) == "function") then
+          values = arg.values(trigger);
+        else
+          values = WeakAuras[arg.values];
+        end
         options[name] = {
           type = "select",
           name = arg.display,
           order = order,
-          values = WeakAuras[arg.values],
+          values = values,
           hidden = function() return hidden or trigger["use_"..realname] == false; end,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
@@ -951,7 +964,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           name = arg.display,
           order = order,
           hidden = function() return hidden or trigger["use_"..realname] ~= false; end,
-          values = WeakAuras[arg.values],
+          values = values,
           -- width = "half",
           get = function(info, v)
             if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
@@ -1067,14 +1080,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       iconCache = odb.iconCache;
       odb.idCache = odb.idCache or {};
       idCache = odb.idCache;
+	  odb.talentCache = odb.talentCache or {};
+	  
       local _, build = GetBuildInfo();
       local locale = GetLocale();
       local version = WeakAuras.versionString
-      
-      -- Check for 4.0 to 4.1 upgrade to give warning about Combat Log Event Unfiltered change
-      if((tonumber(odb.build) or 0) <= 14007 and (tonumber(build) or 0) > 14007) then
-        WeakAuras.CombatEventWarning(true);
-      end
       
       local num = 0;
       for i,v in pairs(odb.iconCache) do
@@ -1094,6 +1104,10 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       for name, icon in pairs(db.tempIconCache) do
         iconCache[name] = icon;
       end
+	  
+	  --Saves the talent names and icons for the current class
+	  --Used for making the Talent Selected load option prettier
+	  
     end
   end
 end);
@@ -4996,7 +5010,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 16,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom" and (trigger.custom_hide ~= "timed")) end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide ~= "timed")) end,
       get = function() return trigger.customDuration end,
       set = function(info, v)
         trigger.customDuration = v;
@@ -5013,12 +5027,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customDuration"))
       end,
-      hidden = function() return not (trigger.type == "custom" and (trigger.custom_hide ~= "timed")) end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide ~= "timed")) end,
     },
     custom_duration_error = {
       type = "description",
       name = function()
-        if not(trigger.customDuration and trigger.customDuration ~= "") then
+        if not(trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide ~= "timed") and trigger.customDuration and trigger.customDuration ~= "") then
           return "";
         end
         local _, errorString = loadstring("return "..(trigger.customDuration or ""));

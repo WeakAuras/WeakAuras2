@@ -1537,6 +1537,49 @@ end
 
 local pending_aura_scans = {};
 
+WeakAuras.talent_types_specific = {}
+function WeakAuras.CreateTalentCache()
+  --Initialize a cache for class-specific talent names and icons
+  --This is in SavedVariables so it can persist between different classes
+  db.talent_cache = db.talent_cache or {}
+  --Initialize types lists for each possible class in both SavedVariable and WeakAuras tables
+  --Some of the impermanent entries will get filled and some won't, depending on what is in the talent cache
+  --The separation is to prevent problems from out-of-date or incorrect info in the talent cache
+  for class in pairs(WeakAuras.class_types) do
+    WeakAuras.talent_types_specific[class] = {};
+    db.talent_cache[class] = db.talent_cache[class] or {};
+  end
+  local _, player_class = UnitClass("player")
+  --Create an entry for the current character's class
+  db.talent_cache[player_class] = db.talent_cache[player_class] or {}
+  local talentId = 1;
+  local numTalents = _G.MAX_NUM_TALENTS;
+  local talentName, talentIcon;
+  while talentId <= numTalents do
+    --Get name and icon info for the current talent of the current class and save it for that class
+    talentName, talentIcon = GetTalentInfo(talentId)
+    db.talent_cache[player_class][talentId] = {
+      name = talentName,
+      icon = talentIcon
+    }
+    --Put an entry in the corresponding index for each specific class
+    --If the talent is in db.talent_cache for that class, it will be "beautified" (show name and icon)
+    --If not, it will be the same as default
+    --Class-specific talent_type lists will only be shown if a Load condition for a certain class is set
+    --Otherwise, the default is used
+    for class in pairs(WeakAuras.class_types) do
+      if(db.talent_cache[class] and db.talent_cache[class][talentId]) then
+        --Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
+        WeakAuras.talent_types_specific[class][talentId] = "|T"..(db.talent_cache[class][talentId].icon or "error")..":0|t "..(db.talent_cache[class][talentId].name or "error");
+      else
+        --If there is no data in the cache, just use the default
+        WeakAuras.talent_types_specific[class][talentId] = WeakAuras.talent_types[talentId]
+      end
+    end
+    talentId = talentId + 1;
+  end
+end
+
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = frame;
 frame:SetAllPoints(UIParent);
@@ -1565,7 +1608,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db.iconHash = nil;
       
       db.tempIconCache = db.tempIconCache or {};
-  
+      
       db.displays = db.displays or {};
       db.registered = db.registered or {};
       
@@ -1596,6 +1639,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
     timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);  -- Data not available 
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
+    WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
   elseif(event == "PLAYER_REGEN_ENABLED") then
     if (queueshowooc) then
       WeakAuras.OpenOptions(queueshowooc)
