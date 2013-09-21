@@ -1842,7 +1842,7 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
       if(data.region.SetDurationInfo) then
       data.region:SetDurationInfo(duration, expirationTime, static, inverse);
       end
-      duration_cache:SetDurationInfo(id, duration, expirationTime, static or true, inverse);
+      duration_cache:SetDurationInfo(id, duration, expirationTime, static, inverse);
     end
     elseif(triggernum == 0) then
     if(data.region.SetDurationInfo) then
