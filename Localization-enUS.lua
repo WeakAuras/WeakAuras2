@@ -920,6 +920,10 @@ L["Tutorials/Welcome Text"] = [=[Welcome to the |cFF8800FFWeakAuras|r Beginners 
 
 This guide will show how to use WeakAuras, and explain the basic configuration options.]=]
 
+L["Pet Behavior"] = "Pet Behavior"
+L["Passive"] = "Passive"
+L["Defensive"] = "Defensive"
+L["Assist"] = "Assist"
 
 -- Make missing translations available
 setmetatable(WeakAuras.L, {__index = function(self, key)

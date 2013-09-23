@@ -2671,6 +2671,57 @@ WeakAuras.event_prototypes = {
       }
     },
     automaticrequired = true
+  },
+  ["Pet Behavior"] = {
+    type = "status",
+    events = {
+      "PET_BAR_UPDATE",
+      "UNIT_PET"
+    },
+    force_events = true,
+    name = L["Pet Behavior"],
+    init = function(trigger)
+      local ret = [[
+      local inverse = %s
+      local check_behavior = "%s"
+      local name,_,_,_,active,_,_,exists
+      local behavior
+      local index = 1
+      repeat
+        name,_,_,_,active,_,_,exists = GetPetActionInfo(index);
+        index = index + 1
+        if(name == "PET_MODE_ASSIST" and active == 1) then
+          behavior = "assist"
+        elseif(name == "PET_MODE_DEFENSIVE" and active == 1) then
+          behavior = "defensive"
+        elseif(name == "PET_MODE_PASSIVE" and active == 1) then
+          behavior = "passive"
+        end
+      until not exists
+      ]]
+      return ret:format(trigger.use_inverse and "true" or "false", trigger.behavior or "");
+    end,
+    args = {
+      {
+        name = "behavior",
+        display = L["Pet Behavior"],
+        required = true,
+        type = "select",
+        values = "pet_behavior_types",
+        test = "true"
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "UnitExists('pet') and ((inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))"
+      }
+    },
+    automaticrequired = true
   }
 };
 

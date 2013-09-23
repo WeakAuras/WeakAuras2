@@ -1147,3 +1147,8 @@ WeakAuras.gtfo_types = {
 	[3] = L["Fail Alert"],
 	[4] = L["Friendly Fire"]
 };
+WeakAuras.pet_behavior_types = {
+  passive = L["Passive"],
+  defensive = L["Defensive"],
+  assist = L["Assist"]
+};
