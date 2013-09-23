@@ -2380,7 +2380,7 @@ function WeakAuras.ScanAuras(unit)
         -- Show display and handle clones
         db.tempIconCache[name] = icon;
         if(data.autoclone) then
-          local cloneId = name.."-"..casGUID;
+          local cloneId = name.."-"..(casGUID or "unknown");
           if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
           WeakAuras.SetAuraVisibility(id, triggernum, data, true, unit, duration, expirationTime, name, icon, count, cloneId, index, spellId);
           clones[id][cloneId].expirationTime = expirationTime;
