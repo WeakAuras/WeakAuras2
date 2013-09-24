@@ -317,6 +317,7 @@ local trigger_types = WeakAuras.trigger_types;
 local debuff_types = WeakAuras.debuff_types;
 local unit_types = WeakAuras.unit_types;
 local actual_unit_types = WeakAuras.actual_unit_types;
+local actual_unit_types_with_specific = WeakAuras.actual_unit_types_with_specific;
 local threat_unit_types = WeakAuras.threat_unit_types;
 local unit_threat_situations = WeakAuras.unit_threat_situations;
 local no_unit_threat_situations = WeakAuras.no_unit_threat_situations;
@@ -4357,7 +4358,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 41,
       values = function()
         if(trigger.fullscan) then
-          return actual_unit_types;
+          return actual_unit_types_with_specific;
         else
           return unit_types;
         end
