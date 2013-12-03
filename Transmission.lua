@@ -795,6 +795,12 @@ function WeakAuras.ImportString(str)
             else
                 local data = received.d;
                 WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
+                --Scam protection
+                if data.trigger.type == "custom" then
+                    if string.find(data.trigger.custom, "SendMail") or string.find(data.trigger.custom, "SetTradeMoney") then
+                        --Decline aura
+                    end
+                end
             end
         end
     elseif(type(received) == "string") then
