@@ -280,6 +280,16 @@ function WeakAuras.IsOptionsOpen()
   return false;
 end
 
+local function forbidden()
+  print("Noooooooo")
+end
+
+local exec_env = setmetatable({}, {__index = _G})
+exec_env._G = exec_env
+exec_env.getfenv = forbidden
+exec_env.SendMail = forbidden
+exec_env.SetTradeMoney = forbidden
+
 local function_cache = {};
 function WeakAuras.LoadFunction(string)
   if(function_cache[string]) then
@@ -291,10 +301,10 @@ function WeakAuras.LoadFunction(string)
     print(errorString);
   else
     func = assert(loadedFunction)();
+    setfenv(func, exec_env)
     function_cache[string] = func;
   end
-  return func;
-  end
+  return func;  end
 end
 
 local aura_cache = {};
