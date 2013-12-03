@@ -289,6 +289,8 @@ exec_env._G = exec_env
 exec_env.getfenv = forbidden
 exec_env.SendMail = forbidden
 exec_env.SetTradeMoney = forbidden
+exec_env.getmetatable = function(t) if t == exec_env then error("nope") else return getmetatable(t) end end
+exec_env.setmetatable = function(t, m) if t == exec_env then error("nope") else return setmetatable(t,m) end end
 
 local function_cache = {};
 function WeakAuras.LoadFunction(string)
@@ -301,7 +303,9 @@ function WeakAuras.LoadFunction(string)
     print(errorString);
   else
     func = assert(loadedFunction)();
-    setfenv(func, exec_env)
+    if func then
+      setfenv(func, exec_env)
+    end
     function_cache[string] = func;
   end
   return func;  end
