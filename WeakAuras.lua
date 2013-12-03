@@ -281,7 +281,7 @@ function WeakAuras.IsOptionsOpen()
 end
 
 local function forbidden()
-  print("Noooooooo")
+  print("|cffffff00A WeakAura that you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
 end
 
 local exec_env = setmetatable({}, {__index = _G})
