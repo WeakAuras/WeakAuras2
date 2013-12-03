@@ -798,7 +798,7 @@ function WeakAuras.ImportString(str)
                 --Scam protection
                 if data.trigger.type == "custom" then
                     if string.find(data.trigger.custom, "SendMail") or string.find(data.trigger.custom, "SetTradeMoney") then
-                        --Decline aura
+                        print("|cffffff00The Aura you are importing contains code to send or trade gold to other players, please watch out!|r")
                     end
                 end
             end
