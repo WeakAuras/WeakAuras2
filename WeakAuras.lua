@@ -284,18 +284,31 @@ local function forbidden()
   print("|cffffff00A WeakAura that you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
 end
 
-local exec_env = setmetatable({}, {__index = _G})
-exec_env._G = exec_env
-exec_env.getfenv = forbidden
-exec_env.SendMail = forbidden
-exec_env.SetTradeMoney = forbidden
-exec_env.getmetatable = function(t) if t == exec_env then error("nope") else return getmetatable(t) end end
-exec_env.setmetatable = function(t, m) if t == exec_env then error("nope") else return setmetatable(t,m) end end
+local blockedFunctions = {
+  -- Lua functions that may allow breaking out of the environment
+  getfenv = true,
+  setfenv = true,
+  loadstring = true,
+  -- blocked WoW API
+  SendMail = true,
+  SetTradeMoney = true,
+}
+
+local exec_env = setmetatable({}, { __index = 
+  function(t, k)
+    if k == "_G" then
+      return t
+    elseif blockedFunctions[k] then
+      return forbidden
+    else
+      return _G[k]
+    end
+  end
+})
 
 local function_cache = {};
 function WeakAuras.LoadFunction(string)
-  if(function_cache[string]) then
-  return function_cache[string];
+  if(function_cache[string]) then  return function_cache[string];
   else
   local func;
   local loadedFunction, errorString = loadstring(string);
