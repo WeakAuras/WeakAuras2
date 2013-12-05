@@ -797,8 +797,9 @@ function WeakAuras.ImportString(str)
                 WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
                 --Scam protection
                 if data.trigger.type == "custom" then
+                    print("|cffff0000WA: The aura you are trying to import contains custom code, please make sure you can trust the person who sent it!|r")
                     if string.find(data.trigger.custom, "SendMail") or string.find(data.trigger.custom, "SetTradeMoney") then
-                        print("|cffffff00The Aura you are importing contains code to send or trade gold to other players, please watch out!|r")
+                        print("|cffff0000WA: The aura you are importing contains code to send or trade gold to other players, please watch out!|r")
                     end
                 end
             end
