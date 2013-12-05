@@ -887,7 +887,7 @@ do
       if(runeCdHandles[id]) then
       timer:CancelTimer(runeCdHandles[id]);
       end
-      RuneCooldownFinished(id, event);
+      RuneCooldownFinished(id);
     end
     end
   end
@@ -2975,8 +2975,8 @@ function WeakAuras.Modernize(data)
   local load = data.load;
   -- Convert load options into single/multi format
   for index, prototype in pairs(WeakAuras.load_prototype.args) do
+    local protoname = prototype.name;
     if(prototype.type == "multiselect") then
-      local protoname = prototype.name;
       if(not load[protoname] or type(load[protoname]) ~= "table") then
         local value = load[protoname];
         load[protoname] = {};
@@ -3611,9 +3611,7 @@ function WeakAuras.pAdd(data)
     end
   end
   
-  if not(temporary) then
   db.displays[id] = data;
-  end
 end
 
 function WeakAuras.SetRegion(data, cloneId)
@@ -4824,18 +4822,6 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
 
-function WeakAuras.GetTimerTable()
-  return LibStub("AceTimer-3.0").selfs[WeakAurasTimers];
-end
-
-function WeakAuras.GetNumTimers()
-  local num = 0;
-  for i,v in pairs(WeakAuras.GetTimerTable()) do
-  num = num + 1;
-  end
-  return num - 1;
-end
-
 
 local L = WeakAuras.L;
 local function tooltip_draw()
@@ -4874,12 +4860,9 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
     if not(WeakAuras.IsOptionsOpen()) then
     WeakAuras.Toggle();
     end
-  elseif(IsControlKeyDown()) then
-    print("|cFF8800FFWeakAuras|r is currently using", WeakAuras.GetNumTimers(), "timers");
   else
     WeakAuras.OpenOptions();
-  end
-  end,
+  end  end,
   OnEnter = function(self)
   colorFrame:SetScript("OnUpdate", function(self, elaps)
     colorElapsed = colorElapsed + elaps;
