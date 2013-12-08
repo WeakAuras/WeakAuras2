@@ -781,6 +781,16 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     end
 end
 
+local function scamCheck(data)
+    if type(data) == "table" then
+        for k,v in pairs(data) do
+            scamCheck(v)
+        end
+    elseif type(data) == "string" and (string.find(data, "SendMail") or string.find(data, "SetTradeMoney")) then
+        print("|cffffff00The Aura you are importing contains code to send or trade gold to other players, please watch out!|r")
+    end
+end
+
 function WeakAuras.ImportString(str)
     local received = WeakAuras.StringToTable(str, true);
     if(received and type(received) == "table" and received.m) then
@@ -796,12 +806,7 @@ function WeakAuras.ImportString(str)
                 local data = received.d;
                 WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
                 --Scam protection
-                if data.trigger.type == "custom" then
-                    print("|cffff0000WA: The aura you are trying to import contains custom code, please make sure you can trust the person who sent it!|r")
-                    if string.find(data.trigger.custom, "SendMail") or string.find(data.trigger.custom, "SetTradeMoney") then
-                        print("|cffff0000WA: The aura you are importing contains code to send or trade gold to other players, please watch out!|r")
-                    end
-                end
+                scamCheck(data)
             end
         end
     elseif(type(received) == "string") then
