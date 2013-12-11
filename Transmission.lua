@@ -205,7 +205,7 @@ function WeakAuras.DecompressDisplay(data)
     WeakAuras.tableAdd(data, WeakAuras.DisplayStub(data.regionType));
 end
 
-local function filterFunc(_, _, msg, ...)
+local function filterFunc(_, event, msg, player, ...)
     local newMsg = "";
     local remaining = msg;
     local done;
@@ -222,7 +222,11 @@ local function filterFunc(_, _, msg, ...)
         end
     until(done)
     if newMsg ~= "" then
-        return false, newMsg, ...;
+        if event == "CHAT_MSG_WHISPER" and not UnitIsInMyGuild(player) and not UnitInRaid(player) and not UnitInParty(player) then
+            return true -- Filter strangers
+        else
+            return false, newMsg, player, ...;
+        end
     end
 end
 
