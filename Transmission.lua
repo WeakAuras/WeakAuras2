@@ -205,7 +205,8 @@ function WeakAuras.DecompressDisplay(data)
     WeakAuras.tableAdd(data, WeakAuras.DisplayStub(data.regionType));
 end
 
-local function filterFunc(_, event, msg, player, ...)
+local function filterFunc(_, event, msg, player, l, cs, t, flag, ...)
+    if flag == "GM" or flag == "DEV" then return end
     local newMsg = "";
     local remaining = msg;
     local done;
@@ -223,9 +224,19 @@ local function filterFunc(_, event, msg, player, ...)
     until(done)
     if newMsg ~= "" then
         if event == "CHAT_MSG_WHISPER" and not UnitIsInMyGuild(player) and not UnitInRaid(player) and not UnitInParty(player) then
+            local _, num = BNGetNumFriends()
+            for i=1, num do
+                local toon = BNGetNumFriendToons(i)
+                for j=1, toon do
+                    local _, rName, rGame = BNGetFriendToonInfo(i, j)
+                    if rName == player and rGame == "WoW" then
+                        return false, newMsg, player, l, cs, t, flag, ...; -- Player is a real id friend, allow it
+                    end
+                end
+            end
             return true -- Filter strangers
         else
-            return false, newMsg, player, ...;
+            return false, newMsg, player, l, cs, t, flag, ...;
         end
     end
 end
