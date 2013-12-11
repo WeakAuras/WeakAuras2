@@ -865,10 +865,9 @@ WeakAuras:RegisterComm("WeakAurasProg", function(prefix, message, ditribution, s
 end);
 
 WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
-    if not safeSenders[sender] then return end
     local received = WeakAuras.StringToTable(message);
     if(received and type(received) == "table" and received.m) then
-        if(received.m == "d") then
+        if(received.m == "d") and safeSenders[sender] then
             tooltipLoading = nil;
             if(version ~= received.v) then
                 local errorMsg = version > received.v and L["Version error recevied lower"] or L["Version error recevied higher"]
