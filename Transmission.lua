@@ -817,7 +817,9 @@ function WeakAuras.ImportString(str)
     end
 end
 
+local safeSenders = {}
 function WeakAuras.RequestDisplay(characterName, displayName)
+    safeSenders[characterName] = true
     local transmit = {
         m = "dR",
         d = displayName
@@ -846,7 +848,7 @@ function WeakAuras.TransmitDisplay(id, characterName)
 end
 
 WeakAuras:RegisterComm("WeakAurasProg", function(prefix, message, ditribution, sender)
-    if(tooltipLoading and ItemRefTooltip:IsVisible()) then
+    if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
         local stats = WeakAuras.split(message);
         local done = tonumber(stats[1]);
         local total = tonumber(stats[2]);
@@ -863,6 +865,7 @@ WeakAuras:RegisterComm("WeakAurasProg", function(prefix, message, ditribution, s
 end);
 
 WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
+    if not safeSenders[sender] then return end
     local received = WeakAuras.StringToTable(message);
     if(received and type(received) == "table" and received.m) then
         if(received.m == "d") then
