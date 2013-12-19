@@ -1646,7 +1646,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       if(id == data.id) then
         tinsert(toAdd, data);
       else
-        error("Corrupt entry in WeakAuras saved displays");
+        error("Corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
       end
       end
       WeakAuras.AddMany(toAdd);
