@@ -205,7 +205,7 @@ function WeakAuras.DecompressDisplay(data)
     WeakAuras.tableAdd(data, WeakAuras.DisplayStub(data.regionType));
 end
 
-local function filterFunc(_, event, msg, dirtyplayer, l, cs, t, flag, channelId, ...)
+local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
     if flag == "GM" or flag == "DEV" or (event == "CHAT_MSG_CHANNEL" and type(channelId) == "number" and channelId > 0) then
         return
     end
@@ -226,14 +226,14 @@ local function filterFunc(_, event, msg, dirtyplayer, l, cs, t, flag, channelId,
         end
     until(done)
     if newMsg ~= "" then
-        player = Ambiguate(dirtyplayer, "none")
-        if event == "CHAT_MSG_WHISPER" and not UnitIsInMyGuild(player) and not UnitInRaid(player) and not UnitInParty(player) then
+        local trimmedPlayer = Ambiguate(player, "none")
+        if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX Need a guild check
             local _, num = BNGetNumFriends()
             for i=1, num do
                 local toon = BNGetNumFriendToons(i)
                 for j=1, toon do
                     local _, rName, rGame = BNGetFriendToonInfo(i, j)
-                    if rName == player and rGame == "WoW" then
+                    if rName == trimmedPlayer and rGame == "WoW" then
                         return false, newMsg, player, l, cs, t, flag, channelId, ...; -- Player is a real id friend, allow it
                     end
                 end

@@ -130,7 +130,7 @@ do
           WeakAuras.PointTutorialToFrame(optionsFrame.buttonsScroll);
         end
       elseif(path[1] == "unloaded") then
-        local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(optionsFrameunloadedButton);
+        local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(optionsFrame.unloadedButton);
         if(sidebarVisible == true) then
           WeakAuras.PointTutorialToFrame(optionsFrame.unloadedButton);
         elseif(sidebarVisible == "above" or sidebarVisible == "below") then

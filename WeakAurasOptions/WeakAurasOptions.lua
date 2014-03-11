@@ -1075,7 +1075,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     if(addon == ADDON_NAME) then
       db = WeakAurasSaved;
       WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
-      save_import = db.save_import or true
 
       odb = WeakAurasOptionsSaved;
       
@@ -5811,13 +5810,9 @@ function WeakAuras.CreateFrame()
   importbutton:SetHitRectInsets(0,0,0,0)
   importbutton:SetScript("PostClick", function(self) 
     if self:GetChecked() then 
-      save_import = true;
       PlaySound("igMainMenuOptionCheckBoxOn")
-      print(save_import)
     else 
-      save_import = false;
       PlaySound("igMainMenuOptionCheckBoxOff") 
-      print(save_import)
     end 
   end)
   importbutton:SetScript("OnEnter", ShowTooltip)

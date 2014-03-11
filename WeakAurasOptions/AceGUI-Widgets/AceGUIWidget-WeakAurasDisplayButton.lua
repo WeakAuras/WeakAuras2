@@ -1099,12 +1099,12 @@ local function Constructor()
         frame = button,
         title = title,
         icon = icon,
-        delete = delete,
-        copy = copy,
+        --delete = delete, -- There is no variable called delete?
+        --copy = copy, -- There is no variable called copy?
         view = view,
-        rename = rename,
+        --rename = rename, -- There is no variable called rename?
         renamebox = renamebox,
-        descbox = descbox,
+        --descbox = descbox, -- There is no variable called descbox?
         group = group,
         ungroup = ungroup,
         upgroup = upgroup,
