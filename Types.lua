@@ -811,7 +811,9 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura41"] = "Disorient",
     [WeakAuras.PowerAurasPath.."Aura42"] = "Dispell",
     [WeakAuras.PowerAurasPath.."Aura43"] = "Danger",
-    [WeakAuras.PowerAurasPath.."Aura44"] = "Buff"
+    [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
+	[WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
+	["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
   };
 end
 --[=[
