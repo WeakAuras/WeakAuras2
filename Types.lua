@@ -40,7 +40,9 @@ WeakAuras.precision_types = {
   [0] = "12",
   [1] = "12.3",
   [2] = "12.34",
-  [3] = "12.345"
+  [3] = "12.345",
+  [4] = "Dynamic 12.3", -- will show 1 digit precision when time is lower than 3 seconds, hardcoded
+  [5] = "Dynamic 12.34", -- will show 2 digits precision when time is lower than 3 seconds, hardcoded
 };
 WeakAuras.sound_channel_types = {
   Master = L["Master"],
