@@ -24,6 +24,7 @@ local default = {
     xOffset = 0,
     yOffset = 0,
     font = "Friz Quadrata TT",
+    fontFlags = "OUTLINE",
     fontSize = 12,
     stickyDuration = false,
     zoom = 0,
@@ -140,7 +141,7 @@ local function modify(parent, region, data)
         local selfPoint = WeakAuras.inverse_point_types[data.stacksPoint];
         stacks:SetPoint(selfPoint, icon, data.stacksPoint, -0.5 * sxo, -0.5 * syo);
     end
-    stacks:SetFont(fontPath, data.fontSize, "OUTLINE");
+    stacks:SetFont(fontPath, data.fontSize, data.fontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or data.fontFlags);
     stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
 
     local texWidth = 0.25 * data.zoom;
@@ -196,8 +197,10 @@ local function modify(parent, region, data)
         end
         
         if(stacks.displayStacks ~= textStr) then
-            stacks:SetText(textStr);
-            stacks.displayStacks = textStr;
+            if stacks:GetFont() then
+                stacks:SetText(textStr);
+                stacks.displayStacks = textStr;
+            else end
         end
     end
     

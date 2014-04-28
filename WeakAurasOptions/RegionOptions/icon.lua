@@ -162,11 +162,17 @@ local function createOptions(id, data)
         zoom = {
             type = "range",
             name = L["Zoom"],
-            order = 48,
+            order = 49,
             min = 0,
             max = 1,
             bigStep = 0.01,
             isPercent = true
+        },
+        fontFlags = {
+            type = "select",
+            name = "Outline",
+            order = 48,
+            values = WeakAuras.font_flags
         },
 		iconInset = {
             type = "range",

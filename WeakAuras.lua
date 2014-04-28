@@ -3190,6 +3190,12 @@ function WeakAuras.Modernize(data)
       
       data.fontSize = nil;
     end
+    
+    -- fontFlags (outline)
+    if not data.fontFlags then
+        data.fontFlags = "OUTLINE";
+    end
+    
   end
 end
 
