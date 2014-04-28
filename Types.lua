@@ -955,6 +955,7 @@ WeakAuras.group_types = {
   scenario = L["Scenario"],
   party = L["5 Man Dungeon"],
   ten = L["10 Man Raid"],
+  twenty = L["20 Man Raid"],
   twentyfive = L["25 Man Raid"],
   fortyman = L["40 Man Raid"],
   flexible = L["Flex Raid"],
@@ -965,6 +966,7 @@ WeakAuras.difficulty_types = {
   none = L["None"],
   normal = L["Normal"],
   heroic = L["Heroic"],
+  mythic = L["Mythic"],
   lfr = L["Looking for Raid"],
   challenge = L["Challenge"]
 };
