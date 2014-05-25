@@ -4791,7 +4791,13 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   end
   local tooltipSize,_;
   if(tooltipText) then
-  _, _, tooltipSize = tooltipText:find("(%d+)")
+    local n2
+    _, _, tooltipSize, n2 = tooltipText:find("(%d+),(%d%d%d)")  -- Blizzard likes american digit grouping, e.g. "9123="9,123"   /mikk
+	if tooltipSize then
+	  tooltipSize = tooltipSize..n2
+	else
+		_, _, tooltipSize = tooltipText:find("(%d+)")
+	end
   end
   return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
