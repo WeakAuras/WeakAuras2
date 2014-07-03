@@ -1975,6 +1975,10 @@ function WeakAuras.EndEvent(id, triggernum, force)
 end
 
 function WeakAuras.ScanForLoads(self, event, arg1)
+  -- PET_BATTLE_CLOSE fires twice at the end of a pet battle. IsInBattle evaluates to TRUE during the
+  -- first firing, and FALSE during the second. I am not sure if this check is necessary, but the
+  -- following IF statement limits the impact of the PET_BATTLE_CLOSE event to the second one.
+  if (event == "PET_BATTLE_CLOSE" and C_PetBattles.IsInBattle()) then return end
   if(event == "PLAYER_LEVEL_UP") then
     playerLevel = arg1;
   end
@@ -2003,6 +2007,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local inInstance, Type = IsInInstance()
   local _, size, difficulty, instanceType, difficultyIndex;
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet"); 
+  local inpetbattle = C_PetBattles.IsInBattle()
   if (inInstance) then
     _, instanceType, difficultyIndex = GetInstanceInfo();
     size = Type
@@ -2061,8 +2066,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local shouldBeLoaded, couldBeLoaded;
   for id, triggers in pairs(auras) do
   local _, data = next(triggers);
-  shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, player, class, spec, playerLevel, zone, size, difficulty, role);
-  couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, player, class, spec, playerLevel, zone, size, difficulty, role);
+  shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, inpetbattle, player, class, spec, playerLevel, zone, size, difficulty, role);
+  couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, true, player, class, spec, playerLevel, zone, size, difficulty, role);
   if(shouldBeLoaded and not loaded[id]) then
     WeakAuras.LoadDisplay(id);
     changed = changed + 1;
@@ -2087,8 +2092,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   for id, triggers in pairs(events) do
   local _, data = next(triggers);
-  shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, player, class, spec, playerLevel, zone, size, difficulty, role);
-  couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, player, class, spec, playerLevel, zone, size, difficulty, role);
+  shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, inpetbattle, player, class, spec, playerLevel, zone, size, difficulty, role);
+  couldBeLoaded = data.load and data.load("ScanForLoads_Events", true, true, player, class, spec, playerLevel, zone, size, difficulty, role);
   if(shouldBeLoaded and not loaded[id]) then
     WeakAuras.LoadDisplay(id);
     changed = changed + 1;

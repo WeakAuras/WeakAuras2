@@ -381,6 +381,12 @@ WeakAuras.load_prototype = {
       init = "false"
     },
     {
+      name = "petbattle",
+      display = "In Pet Battle",
+      type = "tristate",
+      init = "arg"
+    },
+    {
       name = "name",
       display = L["Player Name"],
       type = "string",
@@ -1680,22 +1686,22 @@ WeakAuras.event_prototypes = {
     end,
     hasItemID = true
   },
-	["GTFO"] = {
-		type = "event",
-		events = {
-	  	"GTFO_DISPLAY"
-		},
-		name = L["GTFO Alert"],
-		args = {
-			{
-		  	name = "alertType",
-		  	display = "Alert Type",
-		  	type = "select",
-		  	init = "arg",
-		  	values = "gtfo_types"
-		  },
-	  },
-	},
+  ["GTFO"] = {
+    type = "event",
+    events = {
+      "GTFO_DISPLAY"
+    },
+    name = L["GTFO Alert"],
+    args = {
+      {
+        name = "alertType",
+        display = "Alert Type",
+        type = "select",
+        init = "arg",
+        values = "gtfo_types"
+      },
+    },
+  },
   ["Global Cooldown"] = {
     type = "status",
     events = {
