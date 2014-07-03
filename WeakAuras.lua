@@ -2362,7 +2362,11 @@ function WeakAuras.ScanAuras(unit)
         tooltip = current_aura.tooltip;
         debuffClass = current_aura.debuffClass;
         tooltipSize = current_aura.tooltipSize;
-        unitCaster = current_aura.unitCaster
+        if unitCaster ~= nil then
+          unitCaster = current_aura.unitCaster
+        else 
+          unitCaster = "Unknown"
+        end
         end
         
         local casGUID = unitCaster and UnitGUID(unitCaster);
