@@ -382,7 +382,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "petbattle",
-      display = "In Pet Battle",
+      display = L["In Pet Battle"],
       type = "tristate",
       init = "arg"
     },
