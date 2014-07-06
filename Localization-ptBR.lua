@@ -5,7 +5,7 @@ end
 local L = WeakAuras.L
 
 -- Options translation
---@localization(locale="ptBR", format="lua_additive_table", namespace="WeakAuras")@
+--@localization(locale="ptBR", format="lua_additive_table", namespace="WeakAuras", handle-subnamespaces="none")@
 
 
 --@do-not-package@
