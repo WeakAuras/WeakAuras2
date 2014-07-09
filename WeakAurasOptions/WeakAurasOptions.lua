@@ -5821,11 +5821,10 @@ function WeakAuras.CreateFrame()
       db.import_disabled = false;
     end 
   end)
-  importbutton:SetScript("OnEnter", ShowTooltip)
-  importbutton:SetScript("OnLeave", HideTooltip)
 
+  local GameTooltip = GameTooltip
   local function ShowTooltip(self)
-  GameTooltip:SetOwner(importbutton, "ANCHOR_CURSOR")
+  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
   GameTooltip:SetText("Disable Import")  -- This sets the top line of text, in gold.
   GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras that were linked in chat.", 1, 1, 1)
   GameTooltip:Show()
@@ -5834,6 +5833,9 @@ function WeakAuras.CreateFrame()
   local function HideTooltip(self)
   GameTooltip:Hide()
   end
+
+  importbutton:SetScript("OnEnter", ShowTooltip)
+  importbutton:SetScript("OnLeave", HideTooltip)
   
   local importbg_l = import:CreateTexture(nil, "BACKGROUND")
   importbg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
