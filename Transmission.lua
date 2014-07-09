@@ -1,6 +1,6 @@
 -- Lua APIs
 local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
-local fmt, tostring, string_char = string.format, tostring, string.char
+local fmt, tostring, string_char, strsplit = string.format, tostring, string.char, strsplit
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
@@ -858,7 +858,7 @@ function WeakAuras.RequestDisplay(characterName, displayName)
     WeakAuras:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
 end
 
-function WeakAuras.TransmitError(errorMsg, characterName, displayName)
+function WeakAuras.TransmitError(errorMsg, characterName)
     local transmit = {
         m = "dE",
         eM = errorMsg
@@ -869,30 +869,30 @@ end
 function WeakAuras.TransmitDisplay(id, characterName)
     local encoded = WeakAuras.DisplayToString(id);
     if(encoded ~= "") then
-        WeakAuras:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(_, done, total)
-            WeakAuras:SendCommMessage("WeakAurasProg", done.." "..total, "WHISPER", characterName, "ALERT");
-        end);
+        WeakAuras:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
+            WeakAuras:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
+        end, id);
     else
-        WeakAuras.TransmitError("dne", characterName, displayName);
+        WeakAuras.TransmitError("dne", characterName);
     end
 end
 
-WeakAuras:RegisterComm("WeakAurasProg", function(prefix, message, ditribution, sender)
+WeakAuras:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
     if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
-        local stats = WeakAuras.split(message);
-        local done = tonumber(stats[1]);
-        local total = tonumber(stats[2]);
+        local done, total, displayName = strsplit(" ", message, 3)
+        local done = tonumber(done)
+        local total = tonumber(total)
         if(done and total and total >= done) then
-            local red = min(255, (1 - done / total) * 511);
-            local green = min(255, (done / total) * 511);
+            local red = min(255, (1 - done / total) * 511)
+            local green = min(255, (done / total) * 511)
             WeakAuras.ShowTooltip({
                 {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
                 {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
                 {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
-            });
+            })
         end
     end
-end);
+end)
 
 WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
     local received = WeakAuras.StringToTable(message);
@@ -913,7 +913,7 @@ WeakAuras:RegisterComm("WeakAuras", function(prefix, message, distribution, send
             --if(WeakAuras.linked[received.d]) then
                 WeakAuras.TransmitDisplay(received.d, sender);
             --else
-            --    WeakAuras.TransmitError("not authorized", sender, received.d);
+            --    WeakAuras.TransmitError("not authorized", sender);
             --end
         elseif(received.m == "dE") then
             tooltipLoading = nil;
