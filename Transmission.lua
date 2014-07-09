@@ -16,6 +16,7 @@ local regionOptions = WeakAuras.regionOptions;
 local regionTypes = WeakAuras.regionTypes;
 local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
+local import_disabled = WeakAuras.import_disabled
 
 local bytetoB64 = {
     [0]="a","b","c","d","e","f","g","h",
@@ -595,9 +596,11 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             end
             importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
             importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
-            importbutton:SetText("Import");
             importbutton:SetWidth(100);
-            importbutton:SetScript("OnClick", function()
+            if import_disabled = false then
+
+                importbutton:SetText("Import");
+                importbutton:SetScript("OnClick", function()
                 WeakAuras.OpenOptions();
                     
                 local optionsFrame = WeakAuras.OptionsFrame();
@@ -653,6 +656,11 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 WeakAuras.PickDisplay(data.id);
                 WeakAuras.CloseImportExport();
             end);
+            else
+                importbutton:SetText("Import disabled");
+                importbutton:SetScript("OnClick", function()
+                WeakAuras.CloseImportExport();
+            end
         end
         
         WeakAuras.ShowTooltip(tooltip);
@@ -805,8 +813,11 @@ local function scamCheck(data)
         for k,v in pairs(data) do
             scamCheck(v)
         end
-    elseif type(data) == "string" and (string.find(data, "SendMail") or string.find(data, "SetTradeMoney")) then
+    elseif type(data) == "string" and (string.find(data, "SendMail") or string.find(data, "SetTradeMoney") or string.find(data, "pcall")) then
         print("|cffffff00The Aura you are importing contains code to send or trade gold to other players, please watch out!|r")
+    end
+    elseif data.trigger.type == "custom" then
+        print("|cffff0000: The aura you are trying to import contains custom code, please make sure you can trust the person who sent it!|r")
     end
 end
 

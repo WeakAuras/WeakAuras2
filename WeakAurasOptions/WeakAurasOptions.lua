@@ -1076,6 +1076,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db = WeakAurasSaved;
       WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
 
+      import_disabled = db.import_disabled or false
+
       odb = WeakAurasOptionsSaved;
       
       odb.iconCache = odb.iconCache or {};
@@ -5795,7 +5797,7 @@ function WeakAuras.CreateFrame()
   import:SetWidth(17)
   import:SetHeight(40)
   import:SetPoint("TOPRIGHT", -140, 12)  
-  import:Hide()
+  --import:Hide()
   
   local importbg = import:CreateTexture(nil, "BACKGROUND")
   importbg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
@@ -5806,13 +5808,15 @@ function WeakAuras.CreateFrame()
   importbutton:SetWidth(30);
   importbutton:SetHeight(30);
   importbutton:SetPoint("CENTER", import, "CENTER", 1, -1);
-  importbutton:SetChecked()
+  --importbutton:SetChecked()
   importbutton:SetHitRectInsets(0,0,0,0)
   importbutton:SetScript("PostClick", function(self) 
     if self:GetChecked() then 
       PlaySound("igMainMenuOptionCheckBoxOn")
+      import_disabled = true;
     else 
       PlaySound("igMainMenuOptionCheckBoxOff") 
+      import_disabled = false;
     end 
   end)
   importbutton:SetScript("OnEnter", ShowTooltip)
@@ -5820,8 +5824,8 @@ function WeakAuras.CreateFrame()
 
   local function ShowTooltip(self)
   GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-  GameTooltip:SetText("Save Import")  -- This sets the top line of text, in gold.
-  GameTooltip:AddLine("If this option is enabled, you are only enable to import auras from people in your guild/raid/group.", 1, 1, 1)
+  GameTooltip:SetText("Disable Import")  -- This sets the top line of text, in gold.
+  GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras that were linked in chat.", 1, 1, 1)
   GameTooltip:Show()
   end
 
