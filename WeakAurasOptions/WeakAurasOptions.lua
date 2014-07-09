@@ -5,6 +5,7 @@ local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+local coroutine = coroutine
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 local AceGUI = LibStub("AceGUI-3.0");
@@ -914,7 +915,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             get = function() return trigger[realname] end,
             set = function(info, v)
               trigger[realname] = v;
-              if(arg.required and not triggetype) then
+              if(arg.required and not triggertype) then
                 untrigger[realname] = v;
               end
               WeakAuras.Add(data);
@@ -1076,8 +1077,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db = WeakAurasSaved;
       WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
 
-      import_disabled = db.import_disabled
-
       odb = WeakAurasOptionsSaved;
       
       odb.iconCache = odb.iconCache or {};
@@ -1095,7 +1094,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         num = num + 1;
       end
       
-      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version or forceCacheReset) then
+      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version) then
         WeakAuras.CreateIconCache();
   
         odb.build = build;
@@ -5813,10 +5812,10 @@ function WeakAuras.CreateFrame()
   importbutton:SetScript("PostClick", function(self) 
     if self:GetChecked() then 
       PlaySound("igMainMenuOptionCheckBoxOn")
-      WeakAurasSaved.import_disabled = true;
+      db.import_disabled = true;
     else 
       PlaySound("igMainMenuOptionCheckBoxOff") 
-      WeakAurasSaved.import_disabled = false;
+      db.import_disabled = false;
     end 
   end)
   importbutton:SetScript("OnEnter", ShowTooltip)
@@ -6920,8 +6919,6 @@ function WeakAuras.CreateFrame()
     frame.window = "default";
     
     frame:RefreshPick();
-    if(type(id) == "string") then
-    end
   end
   
   local buttonsContainer = AceGUI:Create("InlineGroup");
