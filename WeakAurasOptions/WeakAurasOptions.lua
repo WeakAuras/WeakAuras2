@@ -1076,7 +1076,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db = WeakAurasSaved;
       WeakAurasOptionsSaved = WeakAurasOptionsSaved or {};
 
-      import_disabled = db.import_disabled or false
+      import_disabled = db.import_disabled
 
       odb = WeakAurasOptionsSaved;
       

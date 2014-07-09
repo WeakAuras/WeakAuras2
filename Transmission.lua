@@ -17,9 +17,6 @@ local regionTypes = WeakAuras.regionTypes;
 local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
 
-local db = WeakAurasSaved;
-local import_disabled = db.import_disabled or false
-
 local bytetoB64 = {
     [0]="a","b","c","d","e","f","g","h",
     "i","j","k","l","m","n","o","p",
@@ -599,7 +596,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
             importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
             importbutton:SetWidth(100);
-            if not import_disabled then
+            if not WeakAurasSaved.import_disabled then
 
                 importbutton:SetText("Import");
                 importbutton:SetScript("OnClick", function()
