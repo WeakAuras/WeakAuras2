@@ -16,7 +16,9 @@ local regionOptions = WeakAuras.regionOptions;
 local regionTypes = WeakAuras.regionTypes;
 local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
-local import_disabled = WeakAuras.import_disabled
+
+local db = WeakAurasSaved;
+local import_disabled = db.import_disabled or false
 
 local bytetoB64 = {
     [0]="a","b","c","d","e","f","g","h",
@@ -597,7 +599,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
             importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
             importbutton:SetWidth(100);
-            if import_disabled = false then
+            if not import_disabled then
 
                 importbutton:SetText("Import");
                 importbutton:SetScript("OnClick", function()
@@ -813,11 +815,11 @@ local function scamCheck(data)
         for k,v in pairs(data) do
             scamCheck(v)
         end
+        if data.trigger.type == "custom" then
+            print("|cffff0000: The aura you are trying to import contains custom code, please make sure you can trust the person who sent it!|r")
+        end
     elseif type(data) == "string" and (string.find(data, "SendMail") or string.find(data, "SetTradeMoney") or string.find(data, "pcall")) then
         print("|cffffff00The Aura you are importing contains code to send or trade gold to other players, please watch out!|r")
-    end
-    elseif data.trigger.type == "custom" then
-        print("|cffff0000: The aura you are trying to import contains custom code, please make sure you can trust the person who sent it!|r")
     end
 end
 
