@@ -5813,17 +5813,17 @@ function WeakAuras.CreateFrame()
   importbutton:SetScript("PostClick", function(self) 
     if self:GetChecked() then 
       PlaySound("igMainMenuOptionCheckBoxOn")
-      import_disabled = true;
+      WeakAurasSaved.import_disabled = true;
     else 
       PlaySound("igMainMenuOptionCheckBoxOff") 
-      import_disabled = false;
+      WeakAurasSaved.import_disabled = false;
     end 
   end)
   importbutton:SetScript("OnEnter", ShowTooltip)
   importbutton:SetScript("OnLeave", HideTooltip)
 
   local function ShowTooltip(self)
-  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+  GameTooltip:SetOwner(importbutton, "ANCHOR_CURSOR")
   GameTooltip:SetText("Disable Import")  -- This sets the top line of text, in gold.
   GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras that were linked in chat.", 1, 1, 1)
   GameTooltip:Show()
