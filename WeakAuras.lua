@@ -276,9 +276,11 @@ function WeakAuras.LoadFunction(string)
       print(errorString)
     else
       setfenv(loadedFunction, exec_env)
-      local func = assert(loadedFunction)()
-      function_cache[string] = func
-      return func
+      local success, func = pcall(assert(loadedFunction))
+      if success then
+        function_cache[string] = func
+        return func
+      end
     end
   end
 end
