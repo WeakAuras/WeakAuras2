@@ -5808,34 +5808,24 @@ function WeakAuras.CreateFrame()
   importbutton:SetHeight(30);
   importbutton:SetPoint("CENTER", import, "CENTER", 1, -1);
   importbutton:SetHitRectInsets(0,0,0,0)
-  if db.import_disabled == true then
-    importbutton:SetChecked()
-  else end
+  importbutton:SetChecked(db.import_disabled)
 
   importbutton:SetScript("PostClick", function(self) 
     if self:GetChecked() then 
       PlaySound("igMainMenuOptionCheckBoxOn")
-      db.import_disabled = true;
+      db.import_disabled = true
     else 
       PlaySound("igMainMenuOptionCheckBoxOff") 
-      db.import_disabled = false;
+      db.import_disabled = nil
     end 
   end)
-
-  local GameTooltip = GameTooltip
-  local function ShowTooltip(self)
-  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-  GameTooltip:SetText("Disable Import")  -- This sets the top line of text, in gold.
-  GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras.", 1, 1, 1)
-  GameTooltip:Show()
-  end
-
-  local function HideTooltip(self)
-  GameTooltip:Hide()
-  end
-
-  importbutton:SetScript("OnEnter", ShowTooltip)
-  importbutton:SetScript("OnLeave", HideTooltip)
+  importbutton:SetScript("OnEnter", function(self)
+      GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+      GameTooltip:SetText("Disable Import")
+      GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras that were linked in chat.", 1, 1, 1)
+      GameTooltip:Show()
+  end)
+  importbutton:SetScript("OnLeave", GameTooltip_Hide)
   
   local importbg_l = import:CreateTexture(nil, "BACKGROUND")
   importbg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
