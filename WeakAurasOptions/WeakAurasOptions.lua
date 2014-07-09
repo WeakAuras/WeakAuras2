@@ -5807,8 +5807,11 @@ function WeakAuras.CreateFrame()
   importbutton:SetWidth(30);
   importbutton:SetHeight(30);
   importbutton:SetPoint("CENTER", import, "CENTER", 1, -1);
-  --importbutton:SetChecked()
   importbutton:SetHitRectInsets(0,0,0,0)
+  if db.import_disabled == true then
+    importbutton:SetChecked()
+  else end
+
   importbutton:SetScript("PostClick", function(self) 
     if self:GetChecked() then 
       PlaySound("igMainMenuOptionCheckBoxOn")
