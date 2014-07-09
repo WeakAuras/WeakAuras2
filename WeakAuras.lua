@@ -267,20 +267,19 @@ local exec_env = setmetatable({}, { __index =
 
 local function_cache = {};
 function WeakAuras.LoadFunction(string)
-  if(function_cache[string]) then  return function_cache[string];
+  if function_cache[string] then
+    return function_cache[string]
   else
-  local func;
-  local loadedFunction, errorString = loadstring(string);
-  if(errorString) then
-    print(errorString);
-  else
-    func = assert(loadedFunction)();
-    if func then
-      setfenv(func, exec_env)
+    local loadedFunction, errorString = loadstring(string)
+    if errorString then
+      print(errorString)
+    else
+      setfenv(loadedFunction, exec_env)
+      local func = assert(loadedFunction)()
+      function_cache[string] = func
+      return func
     end
-    function_cache[string] = func;
   end
-  return func;  end
 end
 
 local aura_cache = {};
@@ -4802,11 +4801,11 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   if(tooltipText) then
     local n2
     _, _, tooltipSize, n2 = tooltipText:find("(%d+),(%d%d%d)")  -- Blizzard likes american digit grouping, e.g. "9123="9,123"   /mikk
-	if tooltipSize then
-	  tooltipSize = tooltipSize..n2
-	else
-		_, _, tooltipSize = tooltipText:find("(%d+)")
-	end
+  if tooltipSize then
+    tooltipSize = tooltipSize..n2
+  else
+    _, _, tooltipSize = tooltipText:find("(%d+)")
+  end
   end
   return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
@@ -5056,20 +5055,20 @@ end
 
 -- Remove GTFO options if GTFO isn't enabled and there are no saved GTFO auras
 function WeakAuras.RemoveGTFO()
-	if not (WeakAuras.loaded_events["GTFO_DISPLAY"] or (GTFO and GTFO.VersionNumber and tonumber(GTFO.VersionNumber) >= 42000)) then
-		for id, data in pairs(db.displays) do
-			if (data.trigger.event == "GTFO") then
-				return;
-			end
-			if (data.numTriggers > 1) then
-				for i, trigger in pairs(data.additional_triggers) do
-					if (trigger.trigger.event == "GTFO") then
-						return;
-					end
-				end
-			end
-		end
-		
-		WeakAuras.event_types["GTFO"] = nil;
-	end
+  if not (WeakAuras.loaded_events["GTFO_DISPLAY"] or (GTFO and GTFO.VersionNumber and tonumber(GTFO.VersionNumber) >= 42000)) then
+    for id, data in pairs(db.displays) do
+      if (data.trigger.event == "GTFO") then
+        return;
+      end
+      if (data.numTriggers > 1) then
+        for i, trigger in pairs(data.additional_triggers) do
+          if (trigger.trigger.event == "GTFO") then
+            return;
+          end
+        end
+      end
+    end
+    
+    WeakAuras.event_types["GTFO"] = nil;
+  end
 end
