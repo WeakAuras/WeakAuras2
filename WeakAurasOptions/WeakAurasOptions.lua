@@ -6940,6 +6940,8 @@ function WeakAuras.CreateFrame()
   filterInput:SetPoint("BOTTOMLEFT", buttonsContainer.frame, "TOPLEFT", 2, -18);
   filterInput:SetPoint("TOPLEFT", buttonsContainer.frame, "TOPLEFT", 2, -2);
   -- Fix from page 181-182 of World of Warcraft Programming: A Guide and Reference for Creating WoW Addon by James Whitehead
+  -- @patch 6.0 compatibility quick fix
+  if MAX_NUM_TALENTS then
   WeakAurasFilterInputMiddle:ClearAllPoints();
   WeakAurasFilterInputMiddle:SetPoint("BOTTOMLEFT", WeakAurasFilterInputLeft, "BOTTOMRIGHT");
   WeakAurasFilterInputMiddle:SetPoint("TOPRIGHT", WeakAurasFilterInputRight, "TOPLEFT");
@@ -6950,6 +6952,7 @@ function WeakAuras.CreateFrame()
   WeakAurasFilterInputRight:ClearAllPoints();
   WeakAurasFilterInputRight:SetPoint("bottomright", filterInput, "bottomright");
   WeakAurasFilterInputRight:SetPoint("topright", filterInput, "topright");
+  end
   filterInput:SetTextInsets(16, 0, 0, 0);
   local searchIcon = filterInput:CreateTexture(nil, "overlay");
   searchIcon:SetTexture("Interface\\Common\\UI-Searchbox-Icon");

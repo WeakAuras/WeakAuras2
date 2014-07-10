@@ -1541,8 +1541,11 @@ function WeakAuras.CreateTalentCache()
   --Create an entry for the current character's class
   db.talent_cache[player_class] = db.talent_cache[player_class] or {}
   local talentId = 1;
-  local numTalents = _G.MAX_NUM_TALENTS;
+  local numTalents = _G.MAX_NUM_TALENTS or 21;
   local talentName, talentIcon;
+  -- @patch 6.0 compatibility quick fix
+  local GetTalentInfo = GetTalentInfo
+  if not MAX_NUM_TALENTS then GetTalentInfo = function(t) return select(2, _G.GetTalentInfo((t-1)%3 +1, (t-1)/3 + 1, 1)) end end
   while talentId <= numTalents do
     --Get name and icon info for the current talent of the current class and save it for that class
     talentName, talentIcon = GetTalentInfo(talentId)
