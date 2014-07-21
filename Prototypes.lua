@@ -10,7 +10,7 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 -- @patch 6.0 compatibility quick fix
-function GetMoPTalentInfo(t) return GetTalentInfo((t-1)%3 +1, (t-1)/3 + 1, 1) end
+function GetMoPTalentInfo(t) return GetTalentInfo(ceil(t/3), (t-1)%3 +1, GetActiveSpecGroup()) end
 
 WeakAuras.function_strings = {
   count = [[

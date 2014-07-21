@@ -1545,7 +1545,7 @@ function WeakAuras.CreateTalentCache()
   local talentName, talentIcon;
   -- @patch 6.0 compatibility quick fix
   local GetTalentInfo = GetTalentInfo
-  if not MAX_NUM_TALENTS then GetTalentInfo = function(t) return select(2, _G.GetTalentInfo((t-1)%3 +1, (t-1)/3 + 1, 1)) end end
+  if not MAX_NUM_TALENTS then GetTalentInfo = function(t) return select(2, _G.GetTalentInfo(ceil(t/3), (t-1)%3 +1, GetActiveSpecGroup())) end end
   while talentId <= numTalents do
     --Get name and icon info for the current talent of the current class and save it for that class
     talentName, talentIcon = GetTalentInfo(talentId)
