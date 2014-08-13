@@ -1203,12 +1203,7 @@ WeakAuras.event_prototypes = {
       {}, -- timestamp ignored with _ argument
       {}, -- messageType ignored with _ argument (it is checked before the dynamic function)
       {}, -- sourceGUID ignored with _ argument
-      {
-        enable = function()
-          local _, _, _, tocversion = GetBuildInfo()
-          return tocversion > 40000
-        end
-      }, -- new Combat Log Event argument hideCaster added in 4.1 - ignore it with _ if the toc version is 4.1 or later
+      {}, -- argument hideCaster
       {
         name = "sourceunit",
         display = L["Source Unit"],
@@ -1229,12 +1224,7 @@ WeakAuras.event_prototypes = {
         end
       },
       {}, -- sourceFlags ignored with _ argument
-      {
-        enable = function()
-          local _, _, _, tocversion = GetBuildInfo()
-          return tocversion > 40100
-        end
-      }, -- new Combat Log Event argument sourceRaidFlags added in 4.2 - ignore it with _ if the toc version is 4.2 or later
+      {}, -- new Combat Log Event argument sourceRaidFlags added in 4.2
       {}, -- destGUID ignored with _ argument
       {
         name = "destunit",
@@ -1261,12 +1251,7 @@ WeakAuras.event_prototypes = {
         end
       },
       {}, -- destFlags ignored with _ argument
-      {
-        enable = function()
-          local _, _, _, tocversion = GetBuildInfo()
-          return tocversion > 40100
-        end
-      }, -- new Combat Log Event argument destRaidFlags added in 4.2 - ignore it with _ if the toc version is 4.2 or later
+      {}, -- new Combat Log Event argument destRaidFlags added in 4.2
       {
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
