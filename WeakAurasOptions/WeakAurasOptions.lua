@@ -6024,7 +6024,7 @@ function WeakAuras.CreateFrame()
     local tutorial = CreateFrame("Frame", nil, frame);
     tutorial:SetWidth(17)
     tutorial:SetHeight(40)
-    tutorial:SetPoint("TOPRIGHT", -100, 12)
+    tutorial:SetPoint("TOPRIGHT", -140, 12)
     
     local tutorialbg = tutorial:CreateTexture(nil, "BACKGROUND")
     tutorialbg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
