@@ -1241,7 +1241,10 @@ WeakAuras.event_prototypes = {
         display = L["Destination Unit"],
         type = "unit",
         test = "dest and UnitIsUnit(dest, '%s')",
-        values = "actual_unit_types_with_specific"
+        values = "actual_unit_types_with_specific",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end
       },
       {
         name = "dest",

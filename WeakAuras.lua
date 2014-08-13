@@ -1425,6 +1425,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
   local input = {"event"};
   local required = {};
   local tests = {};
+  local debug = {};
   local init;
   if(prototype.init) then
     init = prototype.init(trigger);
@@ -1506,12 +1507,18 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
           else
             tinsert(tests, test);
           end
+          if(arg.debug) then
+            tinsert(debug, arg.debug:format(trigger[name]));
+          end
         end
       end
     end
   end
   local ret = "return function("..tconcat(input, ", ")..")\n";
   ret = ret..(init or "");
+  
+  ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
+
   ret = ret.."if(";
   ret = ret..((#required > 0) and tconcat(required, " and ").." and " or "");
   if(inverse) then
@@ -1519,7 +1526,14 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
   else
     ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
   end
-  ret = ret..") then\nreturn true else return false end end";
+  ret = ret..") then\n";
+  if(#debug > 0) then
+    ret = ret.."print('ret: true');\n";
+  end
+  ret = ret.."return true else return false end end";
+  
+  -- print(ret);
+
   return ret;
 end
 
@@ -3938,7 +3952,11 @@ function WeakAuras.UpdateAnimations()
   num = num + 1;
   local finished = false;
   if(anim.duration_type == "seconds") then
-    anim.progress = anim.progress + (elapsed / anim.duration);
+    if anim.duration > 0 then
+      anim.progress = anim.progress + (elapsed / anim.duration);
+    else
+      anim.progress = anim.progress + (elapsed / 1);
+    end
     if(anim.progress >= 1) then
     anim.progress = 1;
     finished = true;
