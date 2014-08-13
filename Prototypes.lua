@@ -1203,7 +1203,7 @@ WeakAuras.event_prototypes = {
       {}, -- timestamp ignored with _ argument
       {}, -- messageType ignored with _ argument (it is checked before the dynamic function)
       {}, -- sourceGUID ignored with _ argument
-      {}, -- argument hideCaster
+      {}, -- hideCaster ignored with _ argument
       {
         name = "sourceunit",
         display = L["Source Unit"],
@@ -1224,7 +1224,7 @@ WeakAuras.event_prototypes = {
         end
       },
       {}, -- sourceFlags ignored with _ argument
-      {}, -- new Combat Log Event argument sourceRaidFlags added in 4.2
+      {}, -- sourceRaidFlags ignored with _ argument
       {}, -- destGUID ignored with _ argument
       {
         name = "destunit",
@@ -1251,7 +1251,7 @@ WeakAuras.event_prototypes = {
         end
       },
       {}, -- destFlags ignored with _ argument
-      {}, -- new Combat Log Event argument destRaidFlags added in 4.2
+      {}, -- destRaidFlags ignored with _ argument
       {
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
@@ -1807,8 +1807,8 @@ WeakAuras.event_prototypes = {
       "SPELL_UPDATE_USABLE",
       "PLAYER_TARGET_CHANGED",
       "UNIT_POWER",
-    "RUNE_POWER_UPDATE",
-    "RUNE_TYPE_UPDATE"
+      "RUNE_POWER_UPDATE",
+      "RUNE_TYPE_UPDATE"
     },
     force_events = true,
     name = L["Action Usable"],
@@ -2234,9 +2234,9 @@ WeakAuras.event_prototypes = {
   ["Death Knight Rune"] = {
     type = "status",
     events = {
-    "RUNE_POWER_UPDATE",
-    "RUNE_TYPE_UPDATE",
-    "RUNE_COOLDOWN_READY",
+      "RUNE_POWER_UPDATE",
+      "RUNE_TYPE_UPDATE",
+      "RUNE_COOLDOWN_READY",
       "RUNE_COOLDOWN_CHANGED",
       "RUNE_COOLDOWN_STARTED",
       "COOLDOWN_REMAINING_CHECK"
