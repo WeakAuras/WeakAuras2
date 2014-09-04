@@ -6028,7 +6028,7 @@ function WeakAuras.CreateFrame()
   minimizebg_r:SetHeight(40)
 
   local index = GetAddOnIndex("WeakAurasTutorials");
-  if not IsAddOnLoaded(index) and load(nil, index) then
+  if not IsAddOnLoaded(index) then
     local tutorial = CreateFrame("Frame", nil, frame);
     tutorial:SetWidth(17)
     tutorial:SetHeight(40)
