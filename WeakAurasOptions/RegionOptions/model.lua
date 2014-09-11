@@ -13,11 +13,10 @@ local function createOptions(id, data)
             name = L["Model"],
             order = 0
         },
-        space1 = {
-            type = "execute",
-            name = "",
-            order = 2,
-            image = function() return "", 0, 0 end,
+        modelIsUnit = {
+            type = "toggle",
+            name = L["Show model of unit "],
+            order = 3
         },
         space2 = {
             type = "execute",
@@ -168,13 +167,21 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
 	if tonumber(data.model_path) then
 		model:SetDisplayInfo(tonumber(data.model_path))
 	else
-		model:SetModel(data.model_path);
+		if (data.modelIsUnit) then
+			model:SetUnit(data.model_path)
+		else
+			model:SetModel(data.model_path);
+		end
 	end
     model:SetScript("OnShow", function()
 		if tonumber(data.model_path) then
 			model:SetDisplayInfo(tonumber(data.model_path))
 		else
-			model:SetModel(data.model_path);
+			if (data.modelIsUnit) then
+				model:SetUnit(data.model_path)
+			else
+				model:SetModel(data.model_path);
+			end
 		end
     end);
     model:SetPosition(data.model_z, data.model_x, data.model_y);
@@ -184,6 +191,7 @@ end
 local function createIcon()
     local data = {
         model_path = "Creature/Arthaslichking/arthaslichking.m2",
+        modelIsUnit = false,
         model_x = 0,
         model_y = 0,
         model_z = 0.35,
