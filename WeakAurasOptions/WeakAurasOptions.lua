@@ -6476,7 +6476,7 @@ function WeakAuras.CreateFrame()
   frame.modelPick = modelPick;
   
   local modelPickZ = AceGUI:Create("Slider");
-  modelPickZ:SetSliderValues(-2, 2, 0.05);
+  modelPickZ:SetSliderValues(-20, 20, 0.05);
   modelPickZ:SetLabel(L["Z Offset"]);
   modelPickZ.frame:SetParent(modelPick.frame);
   modelPickZ:SetCallback("OnValueChanged", function()
@@ -6484,7 +6484,7 @@ function WeakAuras.CreateFrame()
   end);
   
   local modelPickX = AceGUI:Create("Slider");
-  modelPickX:SetSliderValues(-2, 2, 0.05);
+  modelPickX:SetSliderValues(-20, 20, 0.05);
   modelPickX:SetLabel(L["X Offset"]);
   modelPickX.frame:SetParent(modelPick.frame);
   modelPickX:SetCallback("OnValueChanged", function()
@@ -6492,7 +6492,7 @@ function WeakAuras.CreateFrame()
   end);
   
   local modelPickY = AceGUI:Create("Slider");
-  modelPickY:SetSliderValues(-2, 2, 0.05);
+  modelPickY:SetSliderValues(-20, 20, 0.05);
   modelPickY:SetLabel(L["Y Offset"]);
   modelPickY.frame:SetParent(modelPick.frame);
   modelPickY:SetCallback("OnValueChanged", function()

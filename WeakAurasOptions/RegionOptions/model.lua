@@ -37,8 +37,8 @@ local function createOptions(id, data)
         model_z = {
             type = "range",
             name = L["Z Offset"],
-            softMin = -2,
-            softMax = 2,
+            softMin = -20,
+            softMax = 20,
             step = .001,
             bigStep = 0.05,
             order = 20,
@@ -46,8 +46,8 @@ local function createOptions(id, data)
         model_x = {
             type = "range",
             name = L["X Offset"],
-            softMin = -2,
-            softMax = 2,
+            softMin = -20,
+            softMax = 20,
             step = .001,
             bigStep = 0.05,
             order = 30,
@@ -55,8 +55,8 @@ local function createOptions(id, data)
         model_y = {
             type = "range",
             name = L["Y Offset"],
-            softMin = -2,
-            softMax = 2,
+            softMin = -20,
+            softMax = 20,
             step = .001,
             bigStep = 0.05,
             order = 40,
