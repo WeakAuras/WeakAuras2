@@ -101,13 +101,13 @@ return function(progress, startX, startY, deltaX, deltaY)
   local prog = (progress * 3.5) % 1
   local bounce = math.ceil(progress * 3.5)
   local bounceDistance = math.sin(prog * math.pi) * (bounce / 4)
-  return startX + (progress * deltaX), startY + (bounceDistance * deltaY)
+  return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
 end
 ]],
   bounce = [[
 return function(progress, startX, startY, deltaX, deltaY)
   local bounceDistance = math.sin(progress * math.pi)
-  return startX + (progress * deltaX), startY + (bounceDistance * deltaY)
+  return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
 end
 ]],
   flash = [[
