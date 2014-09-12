@@ -148,10 +148,10 @@ local barPrototype = {
     
     -- Create statusbar illusion
     if xProgress then
-      self.fg:SetWidth(xProgress > 0 and xProgress or 0.1);
+      self.fg:SetWidth(xProgress > 0 and xProgress or 0.0001);
     end
     if yProgress then
-      self.fg:SetHeight(yProgress > 0 and yProgress or 0.1);
+      self.fg:SetHeight(yProgress > 0 and yProgress or 0.0001);
     end
   end,
   
