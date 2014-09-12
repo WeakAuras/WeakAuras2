@@ -948,21 +948,21 @@ local function modify(parent, region, data)
             scalex = -scalex;
             if data.orientation == "HORIZONTAL" then
                 if self.orientation ~= "HORIZONTAL_INVERSE" then
-                    orientHorizontalInverse();
+                    orientHorizontalInverse(self, data);
                 end
             elseif data.orientation == "HORIZONTAL_INVERSE" then
                 if self.orientation ~= "HORIZONTAL" then
-                    orientHorizontal();
+                    orientHorizontal(self, data);
                 end
             end
         else
             if data.orientation == "HORIZONTAL" then
                 if self.orientation ~= "HORIZONTAL" then
-                    orientHorizontal();
+                    orientHorizontal(self, data);
                 end
             elseif data.orientation == "HORIZONTAL_INVERSE" then
                 if self.orientation ~= "HORIZONTAL_INVERSE" then
-                    orientHorizontalInverse();
+                    orientHorizontalInverse(self, data);
                 end
             end
         end
