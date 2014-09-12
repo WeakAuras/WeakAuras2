@@ -29,14 +29,6 @@ local ValidateNumeric = function(info,val)
   return true 
 end
 
-local function GetAddOnIndex(name)
- for i=1, GetNumAddOns() do
-   if GetAddOnInfo(i) == name then
-     return i
-   end
- end
-end
-
 -- Handle coroutines
 local dynFrame = {};
 do
@@ -6027,8 +6019,8 @@ function WeakAuras.CreateFrame()
   minimizebg_r:SetWidth(10)
   minimizebg_r:SetHeight(40)
 
-  local index = GetAddOnIndex("WeakAurasTutorials");
-  if not IsAddOnLoaded(index) then
+  local _, _, _, enabled, loadable = GetAddOnInfo("WeakAurasTutorials");
+  if(enabled and loadable) then
     local tutorial = CreateFrame("Frame", nil, frame);
     tutorial:SetWidth(17)
     tutorial:SetHeight(40)
