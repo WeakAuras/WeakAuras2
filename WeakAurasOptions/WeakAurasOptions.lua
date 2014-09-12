@@ -1458,6 +1458,12 @@ function WeakAuras.LayoutDisplayButtons(msg)
         if(WeakAuras.regions[data.id].region.SetStacks) then
           WeakAuras.regions[data.id].region:SetStacks(1);
         end
+
+        if (num % 50 == 0) then
+          frame.buttonsScroll:ResumeLayout()
+          frame.buttonsScroll:PerformLayout()
+          frame.buttonsScroll:PauseLayout()
+        end
     
         num = num + 1;
       end
@@ -1466,6 +1472,8 @@ function WeakAuras.LayoutDisplayButtons(msg)
       coroutine.yield();
     end
 
+    frame.buttonsScroll:ResumeLayout()
+    frame.buttonsScroll:PerformLayout()
     WeakAuras.SortDisplayButtons(msg);
   
     for id, button in pairs(displayButtons) do
@@ -1481,8 +1489,9 @@ function WeakAuras.LayoutDisplayButtons(msg)
   
   local func1 = function()
     local num = frame.loadProgressNum or 0;
+    frame.buttonsScroll:PauseLayout()
     for index, id in pairs(loadedSorted) do
-    local data = WeakAuras.GetData(id);
+      local data = WeakAuras.GetData(id);
       if(data) then
         WeakAuras.EnsureDisplayButton(data);
         WeakAuras.UpdateDisplayButton(data);
@@ -1495,6 +1504,12 @@ function WeakAuras.LayoutDisplayButtons(msg)
         end
     
         num = num + 1;
+      end
+
+      if (num % 50 == 0) then
+        frame.buttonsScroll:ResumeLayout()
+        frame.buttonsScroll:PerformLayout()
+        frame.buttonsScroll:PauseLayout()
       end
     
       frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
