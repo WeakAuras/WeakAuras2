@@ -2060,7 +2060,7 @@ function WeakAuras.AddOption(id, data)
           data.actions[field] = data.actions[field] or {};
           data.actions[field][value] = v;
           if(value == "sound" or value == "sound_path") then
-            PlaySoundFile(v);
+            PlaySoundFile(v, data.actions.start.sound_channel);
           end
           WeakAuras.Add(data);
         end,
