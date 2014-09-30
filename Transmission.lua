@@ -358,7 +358,7 @@ LibStub("AceComm-3.0"):Embed(WeakAuras);
 
 function WeakAuras.TableToString(inTable, forChat)
     local serialized = WeakAuras:Serialize(inTable);
-    local compressed = Compresser:Compress(serialized);
+    local compressed = Compresser:CompressHuffman(serialized);
     if(forChat) then
         return WeakAuras.encodeB64(compressed);
     else
