@@ -834,10 +834,12 @@ function WeakAuras.ImportString(str)
                 WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
                 -- Scam alert
                 local found = nil
-                for _, v in ipairs(data.additional_triggers) do
-                    if v.trigger.type == "custom" then
-                        found = true
-                        break
+                if (data.additional_triggers) then
+                    for _, v in ipairs(data.additional_triggers) do
+                        if v.trigger.type == "custom" then
+                            found = true
+                            break
+                        end
                     end
                 end
                 if found or data.trigger.type == "custom" then
