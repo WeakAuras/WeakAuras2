@@ -32,7 +32,8 @@ local function createOptions(id, data)
             order = 7,
             func = function()
                 WeakAuras.OpenModelPick(data, "model_path");
-            end
+            end,
+            disabled = function() return data.modelIsUnit end
         },
         model_z = {
             type = "range",
