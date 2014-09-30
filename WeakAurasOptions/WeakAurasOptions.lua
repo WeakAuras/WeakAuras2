@@ -6723,6 +6723,7 @@ function WeakAuras.CreateFrame()
         end
       end);
       importexportbox:SetText("");
+      importexportbox:SetLabel("0");
       importexportbox:SetFocus();
     end
   end
