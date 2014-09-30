@@ -320,15 +320,41 @@ local function createOptions(id, data)
         },
 		text_header = {
 			type = "header",
-			name = L["Text Settings"],
+            name = function()
+                if(data.orientation == "HORIZONTAL") then
+                    return L["Left Text"];
+                elseif(data.orientation == "HORIZONTAL_INVERSE") then
+                    return L["Right Text"];
+                elseif(data.orientation == "VERTICAL") then
+                    return L["Bottom Text"];
+                else
+                    return L["Top Text"];
+                end
+            end,
 			order = 47
 		},
-		textColor = {
+        text = {
+            type = "toggle",
+            name = function()
+                if(data.orientation == "HORIZONTAL") then
+                    return L["Left Text"];
+                elseif(data.orientation == "HORIZONTAL_INVERSE") then
+                    return L["Right Text"];
+                elseif(data.orientation == "VERTICAL") then
+                    return L["Bottom Text"];
+                else
+                    return L["Top Text"];
+                end
+            end,
+            order = 47.5
+        },
+        textColor = {
             type = "color",
             name = L["Text Color"],
             hasAlpha = true,
             order = 48,
-			disabled = function() return not data.text end,
+            disabled = function() return not data.text end,
+            hidden = function() return not data.text end,
         },
         textFont = {
             type = "select",
@@ -336,7 +362,8 @@ local function createOptions(id, data)
             name = L["Font Type"],
             order = 49,
             values = AceGUIWidgetLSMlists.font,
-			disabled = function() return not data.text end,
+            disabled = function() return not data.text end,
+            hidden = function() return not data.text end,
         },
         textSize = {
             type = "range",
@@ -345,31 +372,54 @@ local function createOptions(id, data)
             min = 6,
             max = 25,
             step = 1,
-			disabled = function() return not data.text end,
+            disabled = function() return not data.text end,
+            hidden = function() return not data.text end,
         },
-		textFlags = {
+        textFlags = {
             type = "select",
             name = L["Font Flags"],
             order = 51,
             values = WeakAuras.font_flags,
-			disabled = function() return not data.text end,
-        },
-		text = {
-            type = "toggle",
-            name = L["Text"],
-            order = 51.5
+            disabled = function() return not data.text end,
+            hidden = function() return not data.text end,
         },
 		timer_header = {
 			type = "header",
-			name = L["Timer Settings"],
+            name = function()
+                if(data.orientation == "HORIZONTAL") then
+                    return L["Right Text"];
+                elseif(data.orientation == "HORIZONTAL_INVERSE") then
+                    return L["Left Text"];
+                elseif(data.orientation == "VERTICAL") then
+                    return L["Top Text"];
+                else
+                    return L["Bottom Text"];
+                end
+            end,
 			order = 52
 		},
-		timerColor = {
+        timer = {
+            type = "toggle",
+            name = function()
+                if(data.orientation == "HORIZONTAL") then
+                    return L["Right Text"];
+                elseif(data.orientation == "HORIZONTAL_INVERSE") then
+                    return L["Left Text"];
+                elseif(data.orientation == "VERTICAL") then
+                    return L["Top Text"];
+                else
+                    return L["Bottom Text"];
+                end
+            end,
+            order = 52.5
+        },
+        timerColor = {
             type = "color",
             name = L["Text Color"],
             hasAlpha = true,
             order = 53,
-			disabled = function() return not data.timer end,
+            disabled = function() return not data.timer end,
+            hidden = function() return not data.timer end,
         },
         timerFont = {
             type = "select",
@@ -377,7 +427,8 @@ local function createOptions(id, data)
             name = L["Font Type"],
             order = 54,
             values = AceGUIWidgetLSMlists.font,
-			disabled = function() return not data.timer end,
+            disabled = function() return not data.timer end,
+            hidden = function() return not data.timer end,
         },
         timerSize = {
             type = "range",
@@ -386,31 +437,34 @@ local function createOptions(id, data)
             min = 6,
             max = 25,
             step = 1,
-			disabled = function() return not data.timer end,
+            disabled = function() return not data.timer end,
+            hidden = function() return not data.timer end,
         },
-		timerFlags = {
+        timerFlags = {
             type = "select",
             name = L["Font Flags"],
             order = 56,
             values = WeakAuras.font_flags,
-			disabled = function() return not data.timer end,
-        },
-		timer = {
-            type = "toggle",
-            name = L["Timer"],
-            order = 56.5
+            disabled = function() return not data.timer end,
+            hidden = function() return not data.timer end,
         },
 		stacks_header = {
 			type = "header",
 			name = L["Stacks Settings"],
 			order = 57.1
 		},
+        stacks = {
+            type = "toggle",
+            name = L["Stacks"],
+            order = 57.2
+        },
 		stacksColor = {
             type = "color",
             name = L["Text Color"],
             hasAlpha = true,
             order = 57.3,
-			disabled = function() return not data.stacks end,
+            disabled = function() return not data.stacks end,
+            hidden = function() return not data.stacks end,
         },
         stacksFont = {
             type = "select",
@@ -418,7 +472,8 @@ local function createOptions(id, data)
             name = L["Font Type"],
             order = 57.4,
             values = AceGUIWidgetLSMlists.font,
-			disabled = function() return not data.stacks end,
+            disabled = function() return not data.stacks end,
+            hidden = function() return not data.stacks end,
         },
         stacksSize = {
             type = "range",
@@ -427,19 +482,16 @@ local function createOptions(id, data)
             min = 6,
             max = 25,
             step = 1,
-			disabled = function() return not data.stacks end,
+            disabled = function() return not data.stacks end,
+            hidden = function() return not data.stacks end,
         },
 		stacksFlags = {
             type = "select",
             name = L["Font Flags"],
             order = 57.6,
             values = WeakAuras.font_flags,
-			disabled = function() return not data.stacks end,
-        },
-		stacks = {
-            type = "toggle",
-            name = L["Stacks"],
-            order = 57.7
+            disabled = function() return not data.stacks end,
+            hidden = function() return not data.stacks end,
         },
         spacer = {
             type = "header",
