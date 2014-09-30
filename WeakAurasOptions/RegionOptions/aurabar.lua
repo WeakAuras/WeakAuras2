@@ -312,6 +312,87 @@ local function createOptions(id, data)
             bigStep = 0.01,
             isPercent = true
         },
+        spark_header = {
+            type = "header",
+            name = L["Spark Settings"],
+            order = 42
+        },
+        spark = {
+            type = "toggle",
+            name = L["Spark"],
+            order = 43
+        },
+        sparkTexture = {
+            type = "input",
+            name = L["Spark Texture"],
+            order = 44,
+            width = "double",
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkDesaturate = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 44.1,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        spaceSpark = {
+            type = "execute",
+            name = "",
+            width = "half",
+            order = 44.2,
+            image = function() return "", 0, 0 end,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkChooseTexture = {
+            type = "execute",
+            name = L["Choose"],
+            width = "half",
+            order = 44.3,
+            func = function()
+                WeakAuras.OpenTexturePick(data, "sparkTexture");
+            end,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkColor = {
+            type = "color",
+            name = L["Color"],
+            hasAlpha = true,
+            order = 44.4,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkBlendMode = {
+            type = "select",
+            name = L["Blend Mode"],
+            order = 44.5,
+            values = WeakAuras.blend_types,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkWidth = {
+            type = "range",
+            name = L["Width"],
+            order = 44.6,
+            min = 1,
+            softMax = screenWidth,
+            bigStep = 1,
+			disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkHeight = {
+            type = "range",
+            name = L["Height"],
+            order = 44.7,
+            min = 1,
+            softMax = screenHeight,
+            bigStep = 1,
+			disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
 		border_header = {
 			type = "header",
 			name = L["Border Settings"],
