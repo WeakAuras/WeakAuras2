@@ -171,7 +171,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
 		if (data.modelIsUnit) then
 			model:SetUnit(data.model_path)
 		else
-			model:SetModel(data.model_path);
+			pcall(function() model:SetModel(data.model_path) end);
 		end
 	end
     model:SetScript("OnShow", function()
@@ -181,7 +181,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
 			if (data.modelIsUnit) then
 				model:SetUnit(data.model_path)
 			else
-				model:SetModel(data.model_path);
+				pcall(function() model:SetModel(data.model_path) end);
 			end
 		end
     end);
