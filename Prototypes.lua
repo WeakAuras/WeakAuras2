@@ -1488,6 +1488,10 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local spellname = %s
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
+        local charges = WeakAuras.GetSpellCharges(spellname);
+        if (charges == nil) then
+            charges = (duration == 0) and 1 or 0;
+        end
         local inverse = %s;
         local notestRune = %s;
       ]];
@@ -1528,6 +1532,12 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return not(trigger.use_inverse) end
       },
       {
+        name = "charges",
+        display = L["Charges"],
+        type = "number",
+        enable = function(trigger) return not(trigger.use_inverse) end
+      },
+      {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
@@ -1558,6 +1568,9 @@ WeakAuras.event_prototypes = {
     iconFunc = function(trigger)
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
+    end,
+    stacksFunc = function(trigger)
+      return WeakAuras.GetSpellCharges(trigger.spellName);
     end,
     hasSpellID = true,
     automaticrequired = true
@@ -1836,9 +1849,10 @@ WeakAuras.event_prototypes = {
       "SPELL_COOLDOWN_CHANGED",
       "SPELL_COOLDOWN_STARTED",
       "SPELL_UPDATE_USABLE",
+      --"COOLDOWN_REMAINING_CHECK",
       "PLAYER_TARGET_CHANGED",
       "UNIT_POWER",
-      "RUNE_POWER_UPDATE",
+    "RUNE_POWER_UPDATE",
       "RUNE_TYPE_UPDATE"
     },
     force_events = true,
@@ -1852,19 +1866,29 @@ WeakAuras.event_prototypes = {
     local spell = %s;
     local spellName = GetSpellInfo(spell);
     local startTime, duration = WeakAuras.GetSpellCooldown(spell);
+    local charges = WeakAuras.GetSpellCharges(spell);
     startTime = startTime or 0;
     duration = duration or 0;
-    local onCooldown = duration > 1.51;
+    local onCooldown = (duration > 1.51 and charges == nil) or (charges and charges == 0);
     local active = IsUsableSpell(spell) and not onCooldown
+    if (charges == nil) then
+      charges = (duration == 0) and 1 or 0;
+    end
     ]]
       if(trigger.use_targetRequired) then
         ret = ret.."active = active and IsSpellInRange(spellName or '')\n";
-      end
-      if(trigger.use_inverse) then
-        ret = ret.."active = not active\n";
-      end
-      
-      return ret:format(spellName);
+        test = "true"
+      },
+      {
+        name = "charges",
+        display = L["Charges"],
+        type = "number",
+        enable = function(trigger) return not(trigger.use_inverse) end
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
     end,
     args = {
       {
@@ -1904,6 +1928,9 @@ WeakAuras.event_prototypes = {
     iconFunc = function(trigger)
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
+    end,
+    stacksFunc = function(trigger)
+      return WeakAuras.GetSpellCharges(trigger.spellName);
     end,
     hasSpellID = true,
     automaticrequired = true

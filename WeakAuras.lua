@@ -682,6 +682,7 @@ do
   local spells = {};
   local spellCdDurs = {};
   local spellCdExps = {};
+  local spellCharges = {};
   local spellCdHandles = {};
   
   local items = {};
@@ -738,6 +739,10 @@ do
   end
   end
   
+  function WeakAuras.GetSpellCharges(id)
+    return spellCharges[id];
+  end
+
   function WeakAuras.GetItemCooldown(id)
   if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
     return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id];
@@ -765,6 +770,7 @@ do
   spellCdHandles[id] = nil;
   spellCdDurs[id] = nil;
   spellCdExps[id] = nil;
+  spellCharges[id] = select(2, GetSpellCharges(id));
   WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
   
@@ -803,162 +809,171 @@ do
   end
   
   function WeakAuras.CheckCooldownReady()
-  if(gcdReference) then
-    CheckGCD();
-  end
+    if(gcdReference) then
+      CheckGCD();
+    end
   
-  for id, _ in pairs(runes) do
-    local startTime, duration = GetRuneCooldown(id);
-    startTime = startTime or 0;
-    duration = duration or 0;
-    local time = GetTime();
+    for id, _ in pairs(runes) do
+      local startTime, duration = GetRuneCooldown(id);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
     
-    if(not startTime or startTime == 0) then
-    startTime = 0
-    duration = 0
-    end
-
-    if(startTime > 0 and duration > 1.51) then
-    -- On non-GCD cooldown
-    local endTime = startTime + duration;
-    
-    if not(runeCdExps[id]) then
-      -- New cooldown
-      runeCdDurs[id] = duration;
-      runeCdExps[id] = endTime;
-      runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
-      WeakAuras.ScanEvents("RUNE_COOLDOWN_STARTED", id);
-    elseif(runeCdExps[id] ~= endTime) then
-      -- Cooldown is now different
-      if(runeCdHandles[id]) then
-      timer:CancelTimer(runeCdHandles[id]);
-      end
-      runeCdDurs[id] = duration;
-      runeCdExps[id] = endTime;
-      runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
-      WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
-    end
-    elseif(startTime > 0 and duration > 0) then
-    -- GCD
-    -- Do nothing
-    else
-    if(runeCdExps[id]) then
-      -- Somehow CheckCooldownReady caught the rune cooldown before the timer callback
-      -- This shouldn't happen, but if it doesn, no problem
-      if(runeCdHandles[id]) then
-      timer:CancelTimer(runeCdHandles[id]);
-      end
-      RuneCooldownFinished(id);
-    end
-    end
-  end
-  
-  for id, _ in pairs(spells) do
-    local startTime, duration = GetSpellCooldown(id);
-    startTime = startTime or 0;
-    duration = duration or 0;
-    local time = GetTime();
-    
-    if(duration > 1.51) then
-    -- On non-GCD cooldown
-    local endTime = startTime + duration;
-    
-    if not(spellCdExps[id]) then
-      local match = nil
-      if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
-      match = false
-      for runeId = 1,6 do
-        local runeStart, runeDuration = GetRuneCooldown(runeId)
-        if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
-        match = true;
-        break;
-        end
-      end
-      end
-    
-      -- New cooldown
-      spellCdDurs[id] = duration;
-      spellCdExps[id] = endTime;
-      spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-      WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id, match);
-    elseif(spellCdExps[id] ~= endTime) then
-      local match = nil
-      if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
-      match = false
-      for runeId = 1,6 do
-        local runeStart, runeDuration = GetRuneCooldown(runeId)
-        if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
-        match = true;
-        break;
-        end
-      end
+      if(not startTime or startTime == 0) then
+        startTime = 0
+        duration = 0
       end
 
-      -- Cooldown is now different
-      if(spellCdHandles[id]) then
-      timer:CancelTimer(spellCdHandles[id]);
+      if(startTime > 0 and duration > 1.51) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
+    
+        if not(runeCdExps[id]) then
+          -- New cooldown
+          runeCdDurs[id] = duration;
+          runeCdExps[id] = endTime;
+          runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("RUNE_COOLDOWN_STARTED", id);
+        elseif(runeCdExps[id] ~= endTime) then
+          -- Cooldown is now different
+          if(runeCdHandles[id]) then
+            timer:CancelTimer(runeCdHandles[id]);
+          end
+          runeCdDurs[id] = duration;
+          runeCdExps[id] = endTime;
+          runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
+        end
+      elseif(startTime > 0 and duration > 0) then
+        -- GCD
+        -- Do nothing
+      else
+        if(runeCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the rune cooldown before the timer callback
+          -- This shouldn't happen, but if it doesn, no problem
+          if(runeCdHandles[id]) then
+            timer:CancelTimer(runeCdHandles[id]);
+          end
+          RuneCooldownFinished(id);
+        end
       end
+    end
+  
+    for id, _ in pairs(spells) do
+      local charges, maxCharges, startTime, duration = GetSpellCharges(id);
+      if (charges == nil) then -- charges is nil iff the spell has no charges
+        startTime, duration = GetSpellCooldown(id);
+      elseif (charges == maxCharges) then
+        startTime, duration = 0, 0;
+      end
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
+    
+      if(duration > 1.51) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
+    
+        if not(spellCdExps[id]) then
+          local match = nil
+          if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
+            match = false
+            for runeId = 1,6 do
+              local runeStart, runeDuration = GetRuneCooldown(runeId)
+              if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
+                match = true;
+                break;
+              end
+            end
+          end
+    
+          -- New cooldown
+          spellCdDurs[id] = duration;
+          spellCdExps[id] = endTime;
+          spellCharges[id] = charges;
+          spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id, match);
+        elseif(spellCdExps[id] ~= endTime or spellCharges[id] ~= charges) then
+          local match = nil
+          if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
+            match = false
+            for runeId = 1,6 do
+              local runeStart, runeDuration = GetRuneCooldown(runeId)
+              if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
+                match = true;
+                break;
+              end
+            end
+          end
+
+          -- Cooldown is now different
+          if(spellCdHandles[id]) then
+            timer:CancelTimer(spellCdHandles[id]);
+          end
       
-      spellCdDurs[id] = duration;
-      spellCdExps[id] = endTime;
-      spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-      WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id, match);
-    end
-    elseif(duration > 0 and not (spellCdExps[id] and spellCdExps[id] - time > 1.51)) then
-    -- GCD
-    -- Do nothing
-    else
-    if(spellCdExps[id]) then
-      -- Somehow CheckCooldownReady caught the spell cooldown before the timer callback
-      -- This shouldn't happen, but if it does, no problem
-      if(spellCdHandles[id]) then
-      timer:CancelTimer(spellCdHandles[id]);
+          spellCdDurs[id] = duration;
+          spellCdExps[id] = endTime;
+          spellCharges[id] = charges;
+          if (maxCharges == nil or charges + 1 == maxCharges) then
+            spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+          end
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id, match);
+        end
+      elseif(duration > 0 and not (spellCdExps[id] and spellCdExps[id] - time > 1.51)) then
+        -- GCD
+        -- Do nothing
+      else
+        if(spellCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the spell cooldown before the timer callback
+          -- This shouldn't happen, but if it does, no problem
+          if(spellCdHandles[id]) then
+            timer:CancelTimer(spellCdHandles[id]);
+          end
+          SpellCooldownFinished(id);
+        end
       end
-      SpellCooldownFinished(id);
     end
-    end
-  end
   
-  for id, _ in pairs(items) do
-    local startTime, duration = GetItemCooldown(id);
-    startTime = startTime or 0;
-    duration = duration or 0;
-    local time = GetTime();
+    for id, _ in pairs(items) do
+      local startTime, duration = GetItemCooldown(id);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
     
-    if(duration > 1.51) then
-    -- On non-GCD cooldown
-    local endTime = startTime + duration;
+      if(duration > 1.51) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
     
-    if not(itemCdExps[id]) then
-      -- New cooldown
-      itemCdDurs[id] = duration;
-      itemCdExps[id] = endTime;
-      itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-      WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
-    elseif(itemCdExps[id] ~= endTime) then
-      -- Cooldown is now different
-      if(itemCdHandles[id]) then
-      timer:CancelTimer(itemCdHandles[id]);
+        if not(itemCdExps[id]) then
+          -- New cooldown
+          itemCdDurs[id] = duration;
+          itemCdExps[id] = endTime;
+          itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
+        elseif(itemCdExps[id] ~= endTime) then
+          -- Cooldown is now different
+          if(itemCdHandles[id]) then
+            timer:CancelTimer(itemCdHandles[id]);
+          end
+          itemCdDurs[id] = duration;
+          itemCdExps[id] = endTime;
+          itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+        end
+      elseif(duration > 0) then
+        -- GCD
+        -- Do nothing
+      else
+        if(itemCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
+          -- This shouldn't happen, but if it doesn, no problem
+          if(itemCdHandles[id]) then
+            timer:CancelTimer(itemCdHandles[id]);
+          end
+          ItemCooldownFinished(id);
+        end
       end
-      itemCdDurs[id] = duration;
-      itemCdExps[id] = endTime;
-      itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
-      WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
     end
-    elseif(duration > 0) then
-    -- GCD
-    -- Do nothing
-    else
-    if(itemCdExps[id]) then
-      -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
-      -- This shouldn't happen, but if it doesn, no problem
-      if(itemCdHandles[id]) then
-      timer:CancelTimer(itemCdHandles[id]);
-      end
-      ItemCooldownFinished(id);
-    end
-    end
-  end
   end
 
   function WeakAuras.WatchGCD(id)
@@ -1007,14 +1022,21 @@ do
   
   if not(spells[id]) then
     spells[id] = true;
-    local startTime, duration = GetSpellCooldown(id);
+    local charges, maxCharges, startTime, duration = GetSpellCharges(id);
+    if (charges == nil) then
+        startTime, duration = GetSpellCooldown(id);
+    elseif (charges == maxCharges) then
+        startTime, duration = 0, 0;
+    end
     startTime = startTime or 0;
     duration = duration or 0;
+
     if(duration > 1.51) then
     local time = GetTime();
     local endTime = startTime + duration;
     spellCdDurs[id] = duration;
     spellCdExps[id] = endTime;
+    spellCharges[id] = charges;
     if not(spellCdHandles[id]) then
       spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
     end
