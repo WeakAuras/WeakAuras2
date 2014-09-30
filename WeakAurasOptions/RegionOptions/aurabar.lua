@@ -16,56 +16,6 @@ local function createOptions(id, data)
             name = L["Bar Texture"],
             values = AceGUIWidgetLSMlists.statusbar
         },
-        icon = {
-            type = "toggle",
-            name = L["Icon"],
-            order = 2
-        },
-        auto = {
-            type = "toggle",
-            name = L["Auto"],
-            desc = L["Choose whether the displayed icon is automatic or defined manually"],
-            order = 4,
-            disabled = function() return not WeakAuras.CanHaveAuto(data); end,
-            get = function() return WeakAuras.CanHaveAuto(data) and data.auto end
-        },
-        displayIcon = {
-            type = "input",
-            name = L["Display Icon"],
-            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            disabled = function() return not data.icon end,
-            order = 5,
-            get = function()
-                if(data.displayIcon) then
-                    return data.displayIcon:sub(17);
-                else
-                    return nil;
-                end
-            end,
-            set = function(info, v)
-                data.displayIcon = "Interface\\Icons\\"..v;
-                WeakAuras.Add(data);
-                WeakAuras.SetThumbnail(data);
-                WeakAuras.SetIconNames(data);
-            end
-        },
-        displaySpace = {
-            type = "execute",
-            name = "",
-            width = "half",
-            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            image = function() return data.displayIcon or "", 18, 18 end,
-            order = 6
-        },
-        chooseIcon = {
-            type = "execute",
-            name = L["Choose"],
-            width = "half",
-            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            disabled = function() return not data.icon end,
-            order = 7,
-            func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
-        },
         displayTextLeft = {
             type = "input",
             name = function()
@@ -180,34 +130,6 @@ local function createOptions(id, data)
                 );
             end,
         },
-        icon_side = {
-            type = "select",
-            name = L["Icon"],
-            values = WeakAuras.icon_side_types,
-            hidden = function() return data.orientation:find("VERTICAL") end,
-            order = 19,
-        },
-        icon_side2 = {
-            type = "select",
-            name = L["Icon"],
-            values = WeakAuras.rotated_icon_side_types,
-            hidden = function() return data.orientation:find("HORIZONTAL") end,
-            order = 19,
-            get = function()
-                return data.icon_side;
-            end,
-            set = function(info, v)
-                data.icon_side = v;
-                WeakAuras.Add(data);
-                WeakAuras.SetThumbnail(data);
-                WeakAuras.SetIconNames(data);
-            end
-        },
-		desaturate = {
-            type = "toggle",
-            name = L["Desaturate"],
-            order = 19.25,
-        },
         rotateText = {
             type = "select",
             name = L["Rotate Text"],
@@ -279,17 +201,101 @@ local function createOptions(id, data)
             hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
             order = 37
         },
-		
+        symbol_header = {
+            type = "header",
+            name = L["Symbol Settings"],
+            order = 38
+        },
+        icon = {
+            type = "toggle",
+            name = L["Icon"],
+            order = 38.1
+        },
+        auto = {
+            type = "toggle",
+            name = L["Auto"],
+            desc = L["Choose whether the displayed icon is automatic or defined manually"],
+            order = 38.2,
+            disabled = function() return not WeakAuras.CanHaveAuto(data); end,
+            get = function() return WeakAuras.CanHaveAuto(data) and data.auto end,
+            hidden = function() return not data.icon end,
+        },
+        displayIcon = {
+            type = "input",
+            name = L["Display Icon"],
+            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
+            disabled = function() return not data.icon end,
+            order = 38.3,
+            get = function()
+                if(data.displayIcon) then
+                    return data.displayIcon:sub(17);
+                else
+                    return nil;
+                end
+            end,
+            set = function(info, v)
+                data.displayIcon = "Interface\\Icons\\"..v;
+                WeakAuras.Add(data);
+                WeakAuras.SetThumbnail(data);
+                WeakAuras.SetIconNames(data);
+            end
+        },
+        displaySpace = {
+            type = "execute",
+            name = "",
+            width = "half",
+            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
+            image = function() return data.displayIcon or "", 18, 18 end,
+            order = 38.4
+        },
+        chooseIcon = {
+            type = "execute",
+            name = L["Choose"],
+            width = "half",
+            hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
+            disabled = function() return not data.icon end,
+            order = 38.5,
+            func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
+        },
+        icon_side = {
+            type = "select",
+            name = L["Icon"],
+            values = WeakAuras.icon_side_types,
+            hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
+            order = 38.6,
+        },
+        icon_side2 = {
+            type = "select",
+            name = L["Icon"],
+            values = WeakAuras.rotated_icon_side_types,
+            hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
+            order = 38.7,
+            get = function()
+                return data.icon_side;
+            end,
+            set = function(info, v)
+                data.icon_side = v;
+                WeakAuras.Add(data);
+                WeakAuras.SetThumbnail(data);
+                WeakAuras.SetIconNames(data);
+            end
+        },
+        desaturate = {
+            type = "toggle",
+            name = L["Desaturate"],
+            order = 38.8,
+            hidden = function() return not data.icon end,
+        },
 		bar_header = {
 			type = "header",
 			name = L["Bar Color Settings"],
-			order = 38
+			order = 39
 		},
         barColor = {
             type = "color",
             name = L["Bar Color"],
             hasAlpha = true,
-            order = 39
+            order = 39.5
         },
         backgroundColor = {
             type = "color",
