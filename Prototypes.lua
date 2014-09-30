@@ -1911,7 +1911,8 @@ WeakAuras.event_prototypes = {
   ["Totem"] = {
     type = "status",
     events = {
-      "PLAYER_TOTEM_UPDATE"
+      "PLAYER_TOTEM_UPDATE",
+      "COOLDOWN_REMAINING_CHECK"
     },
     force_events = true,
     name = L["Totem"],
@@ -1934,6 +1935,19 @@ WeakAuras.event_prototypes = {
       active = active and (]] .. totemName .. [[ == totemName);
     ]];
     end
+    
+    if(trigger.use_remaining and not trigger.use_inverse) then
+        local ret2 = [[
+          local expirationTime = startTime + duration
+          local remaining = expirationTime - GetTime();
+          local remainingCheck = %s;
+          if(remaining > remainingCheck) then
+            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+          end
+        ]];
+        ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
+    end
+    
     if trigger.use_inverse then
     ret = ret .. [[
       active = not active;
@@ -1954,7 +1968,13 @@ WeakAuras.event_prototypes = {
         name = "totemName",
         display = L["Totem Name"],
         type = "aura",
-    test = "true"
+        test = "true"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        enable = function(trigger) return not(trigger.use_inverse) end
       },
       {
         name = "inverse",
