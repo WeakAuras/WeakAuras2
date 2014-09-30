@@ -5665,6 +5665,11 @@ end
 
 function WeakAuras.AddBorderOptions(input, id, data)
   local borderOptions = {
+  border = {
+    type = "toggle",
+    name = L["Border"],
+    order = 46.05
+  },
   borderEdge = {
     type = "select",
     dialogControl = "LSM30_Border",
@@ -5672,6 +5677,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     order = 46.1,
     values = AceGUIWidgetLSMlists.border,
     disabled = function() return not data.border end,
+    hidden = function() return not data.border end,
   },
   borderBackdrop = {
     type = "select",
@@ -5680,6 +5686,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     order = 46.2,
     values = AceGUIWidgetLSMlists.background,
     disabled = function() return not data.border end,
+    hidden = function() return not data.border end,
   },
   borderOffset = {
     type = "range",
@@ -5689,6 +5696,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     softMax = 32,
     bigStep = 1,
     disabled = function() return not data.border end,
+    hidden = function() return not data.border end,
   },
   borderSize = {
     type = "range",
@@ -5698,6 +5706,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     softMax = 64,
     bigStep = 1,
     disabled = function() return not data.border end,
+    hidden = function() return not data.border end,
   },
   borderInset = {
     type = "range",
@@ -5707,6 +5716,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     softMax = 32,
     bigStep = 1,
     disabled = function() return not data.border end,
+    hidden = function() return not data.border end,
   },
   borderColor = {
     type = "color",
@@ -5714,6 +5724,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     hasAlpha = true,
     order = 46.6,
     disabled = function() return not data.border end,
+    hidden = function() return not data.border end,
   },
   backdropColor = {
     type = "color",
@@ -5721,11 +5732,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
     hasAlpha = true,
     order = 46.8,
     disabled = function() return not data.border end,
-  },
-  border = {
-    type = "toggle",
-    name = L["Border"],
-    order = 46.9
+    hidden = function() return not data.border end,
   },
   }
   

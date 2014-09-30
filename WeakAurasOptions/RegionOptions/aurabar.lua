@@ -315,7 +315,8 @@ local function createOptions(id, data)
             type = "toggle",
             name = L["Bar in Front"],
             order = 46.7,
-			disabled = function() return not data.border end,
+            disabled = function() return not data.border end,
+            hidden = function() return not data.border end,
         },
 		text_header = {
 			type = "header",
