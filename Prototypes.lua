@@ -1481,7 +1481,7 @@ WeakAuras.event_prototypes = {
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
---     trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
       local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
       WeakAuras.WatchSpellCooldown(trigger.spellName);
@@ -1582,7 +1582,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Cooldown Ready (Spell)"],
     init = function(trigger)
---     trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+    --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
     trigger.spellName = trigger.spellName or 0;
       WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
     end,
@@ -1620,7 +1620,7 @@ WeakAuras.event_prototypes = {
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Item)"],
     init = function(trigger)
---     trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+      --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
       WeakAuras.WatchItemCooldown(trigger.itemName);
@@ -1695,7 +1695,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Cooldown Ready (Item)"],
     init = function(trigger)
---     trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+      --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       WeakAuras.WatchItemCooldown(trigger.itemName);
     end,
@@ -1747,7 +1747,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Global Cooldown"],
     init = function(trigger)
---     trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
       WeakAuras.WatchGCD(trigger.spellName);
       local ret = [[
@@ -1849,16 +1849,15 @@ WeakAuras.event_prototypes = {
       "SPELL_COOLDOWN_CHANGED",
       "SPELL_COOLDOWN_STARTED",
       "SPELL_UPDATE_USABLE",
-      --"COOLDOWN_REMAINING_CHECK",
       "PLAYER_TARGET_CHANGED",
       "UNIT_POWER",
-    "RUNE_POWER_UPDATE",
+      "RUNE_POWER_UPDATE",
       "RUNE_TYPE_UPDATE"
     },
     force_events = true,
     name = L["Action Usable"],
     init = function(trigger)
---     trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
       local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
       WeakAuras.WatchSpellCooldown(spellName);
@@ -1944,7 +1943,7 @@ WeakAuras.event_prototypes = {
     force_events = true,
     name = L["Totem"],
     init = function(trigger)
---     trigger.totemName = WeakAuras.CorrectSpellName(trigger.totemName) or 0;
+      --trigger.totemName = WeakAuras.CorrectSpellName(trigger.totemName) or 0;
       trigger.totemType = trigger.totemType or 1;
     
       local ret = [[
@@ -2051,7 +2050,7 @@ WeakAuras.event_prototypes = {
       if(trigger.use_includeCharges) then
         WeakAuras.RegisterItemCountWatch();
       end
---     trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+      --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
     local ret = [[
@@ -2479,7 +2478,7 @@ WeakAuras.event_prototypes = {
     force_events = true,
     name = L["Item Equipped"],
     init = function(trigger)
---     trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
+    --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
     trigger.itemName = trigger.itemName or 0;
     local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'" .. trigger.itemName .. "'";
     
@@ -2495,7 +2494,7 @@ WeakAuras.event_prototypes = {
         name = "itemName",
         display = L["Item"],
         type = "item",
-    required = true,
+        required = true,
         test = "true"
       },
       {
@@ -2509,24 +2508,24 @@ WeakAuras.event_prototypes = {
         test = "(inverse and not equipped) or (equipped and not inverse)"
       }
     },
-  nameFunc = function(trigger)
-    if not trigger.use_inverse then
-    local name = GetItemInfo(trigger.itemName);
-    return name;
-    else
-    return nil;
-    end
+    nameFunc = function(trigger)
+      if not trigger.use_inverse then
+        local name = GetItemInfo(trigger.itemName);
+        return name;
+      else
+        return nil;
+      end
     end,
     iconFunc = function(trigger)
-    if not trigger.use_inverse then
-    local texture = select(10, GetItemInfo(trigger.itemName));
-    return texture;
-    else
-    return nil;
-    end
+      if not trigger.use_inverse then
+        local texture = select(10, GetItemInfo(trigger.itemName));
+        return texture;
+      else
+        return nil;
+      end
     end,
     hasItemID = true,
---    automaticrequired = true
+    --automaticrequired = true
   },  
   ["Threat Situation"] = {
     type = "status",
