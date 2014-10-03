@@ -44,6 +44,9 @@ Media/Textures/Circle_Squirrel.tga -text
 Media/Textures/Circle_Squirrel_Border.tga -text
 Media/Textures/Circle_White.tga -text
 Media/Textures/Circle_White_Border.tga -text
+Media/Textures/Spark_Bar.tga -text
+Media/Textures/Spark_Bar_Full.tga -text
+Media/Textures/Spark_Bar_Half.tga -text
 Media/Textures/Square_Smooth.tga -text
 Media/Textures/Square_Smooth_Border.tga -text
 Media/Textures/Square_Smooth_Border2.tga -text

@@ -33,6 +33,13 @@ local default = {
   alpha         = 1.0,
   barColor       = {1.0, 0.0, 0.0, 1.0},
   backgroundColor   = {0.0, 0.0, 0.0, 0.5},
+  spark           = false,
+  sparkWidth      = 10,
+  sparkHeight     = 30,
+  sparkColor      = {1.0, 1.0, 1.0, 1.0},
+  sparkTexture    = "Interface\\CastingBar\\UI-CastingBar-Spark",
+  sparkBlendMode  = "ADD",
+  sparkDesature   = false,
   borderColor     = {1.0, 1.0, 1.0, 0.5},
   backdropColor    = {1.0, 1.0, 1.0, 0.5},
   borderEdge      = "None",
@@ -61,8 +68,8 @@ local barPrototype = {
     
     -- Alignment variables
     local progress = (self.value - self.min) / (self.max - self.min);
-    local align1, align2;
-    local xProgress, yProgress;
+    local align1, align2, alignSpark;
+    local xProgress, yProgress, sparkOffset;
     local TLx,  TLy,  BLx,  BLy,  TRx,  TRy,  BRx,  BRy;
     local TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_;
     
@@ -112,30 +119,38 @@ local barPrototype = {
     -- HORIZONTAL (Grow: L -> R, Deplete: R -> L)
     if self.orientation == "HORIZONTAL" then
       align1, align2   = "TOPLEFT", "BOTTOMLEFT";
+      alignSpark       = "LEFT";
       xProgress    = self:GetWidth() * progress;
+      sparkOffset   = xProgress;
       
     -- HORIZONTAL_INVERSE (Grow: R -> L, Deplete: L -> R)
     elseif self.orientation == "HORIZONTAL_INVERSE" then
       align1, align2   = "TOPRIGHT", "BOTTOMRIGHT";
+      alignSpark       = "RIGHT";
       xProgress    = self:GetWidth() * progress;
+      sparkOffset   = -xProgress;
       
     -- VERTICAL (Grow: T -> B, Deplete: B -> T)
     elseif self.orientation == "VERTICAL" then
       align1, align2   = "TOPLEFT", "TOPRIGHT";
+      alignSpark       = "TOP";
       yProgress    = self:GetHeight() * progress;
+      sparkOffset   = -yProgress;
 
     -- VERTICAL_INVERSE (Grow: B -> T, Deplete: T -> B)
     elseif self.orientation == "VERTICAL_INVERSE" then
       align1, align2   = "BOTTOMLEFT", "BOTTOMRIGHT";
+      alignSpark       = "BOTTOM";
       yProgress    = self:GetHeight() * progress;
-      
+      sparkOffset   = yProgress;
     end
     -- Only width/height of parent changed
-     if not OnSizeChanged then
+    if not OnSizeChanged then
       -- Stretch bg accross complete frame
       self.bg:ClearAllPoints();
       self.bg:SetAllPoints();
       self.bg:SetTexCoord(TLx , TLy , BLx , BLy , TRx , TRy , BRx , BRy );
+      self.spark:SetTexCoord(TLx , TLy , BLx , BLy , TRx , TRy , BRx , BRy );
       
       -- Set alignment
       self.fg:ClearAllPoints();
@@ -149,9 +164,13 @@ local barPrototype = {
     -- Create statusbar illusion
     if xProgress then
       self.fg:SetWidth(xProgress > 0 and xProgress or 0.0001);
+      self.spark:ClearAllPoints();
+      self.spark:SetPoint("CENTER", self, alignSpark, sparkOffset, 0);
     end
     if yProgress then
       self.fg:SetHeight(yProgress > 0 and yProgress or 0.0001);
+      self.spark:ClearAllPoints();
+      self.spark:SetPoint("CENTER", self, alignSpark, 0, sparkOffset);
     end
   end,
   
@@ -279,10 +298,13 @@ local function create(parent)
   local bar = CreateFrame("FRAME", nil, region);
   local fg = bar:CreateTexture(nil, "ARTWORK");
   local bg = bar:CreateTexture(nil, "ARTWORK");
+  local spark = bar:CreateTexture(nil, "ARTWORK");
   fg:SetDrawLayer("ARTWORK", 2);
   bg:SetDrawLayer("ARTWORK", 1);
+  spark:SetDrawLayer("ARTWORK", 3);
   bar.fg = fg;
   bar.bg = bg;
+  bar.spark = spark;
   for key, value in pairs(barPrototype) do
     bar[key] = value;
   end
@@ -767,6 +789,18 @@ local function modify(parent, region, data)
   local texturePath = SharedMedia:Fetch("statusbar", data.texture) or "";
   bar:SetStatusBarTexture(texturePath);
   bar:SetBackgroundColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+  -- Update spark settings
+  bar.spark:SetTexture(data.sparkTexture);
+  bar.spark:SetVertexColor(data.sparkColor[1], data.sparkColor[2], data.sparkColor[3], data.sparkColor[4]); -- TODO introduce function?
+  bar.spark:SetWidth(data.sparkWidth);
+  bar.spark:SetHeight(data.sparkHeight);
+  if (data.spark) then
+    bar.spark:Show()
+  else
+    bar.spark:Hide()
+  end
+  bar.spark:SetBlendMode(data.sparkBlendMode);
+  bar.spark:SetDesaturated(data.sparkDesaturate);
   
   -- Bar or Border (+Backdrop) in front
   if data.barInFront then

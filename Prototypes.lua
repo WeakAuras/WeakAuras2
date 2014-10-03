@@ -1877,18 +1877,12 @@ WeakAuras.event_prototypes = {
     ]]
       if(trigger.use_targetRequired) then
         ret = ret.."active = active and IsSpellInRange(spellName or '')\n";
-        test = "true"
-      },
-      {
-        name = "charges",
-        display = L["Charges"],
-        type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end
-      },
-      {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
+      end
+      if(trigger.use_inverse) then
+        ret = ret.."active = not active\n";
+      end
+      
+      return ret:format(spellName)
     end,
     args = {
       {
@@ -1905,6 +1899,12 @@ WeakAuras.event_prototypes = {
         display = L["Require Valid Target"],
         type = "toggle",
         test = "true"
+      },
+      {
+        name = "charges",
+        display = L["Charges"],
+        type = "number",
+        enable = function(trigger) return not(trigger.use_inverse) end
       },
       {
         name = "inverse",

@@ -659,7 +659,13 @@ WeakAuras.texture_types = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel_Border"] = "Spiralled Square with Border",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White"] = "Square",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
-  }
+  },
+  ["Sparks"] = {
+    ["Interface\\CastingBar\\UI-CastingBar-Spark"] = "Blizzard Spark",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Spark_Bar"] = "Solid Bar",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Spark_Bar_Full"] = "Bar with Smooth Edge",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Spark_Bar_Half"] = "Bar with a one sided Smooth Edge",
+  },
 };
 if(WeakAuras.PowerAurasPath ~= "") then
   WeakAuras.texture_types["PowerAuras Heads-Up"] = {
