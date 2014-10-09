@@ -9,7 +9,7 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
-local version = 1400;
+local version = 1410;
 local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;
