@@ -777,7 +777,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             if not ok then
                 error("Error creating thumbnail", 2)
             else
-                --print("Ok")
+                --print("OK")
             end      
             
         WeakAuras.validate(data, regionTypes[regionType].default);
