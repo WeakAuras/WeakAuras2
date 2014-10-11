@@ -1,4 +1,4 @@
-﻿local L = WeakAuras.L
+local L = WeakAuras.L
 
 -- Options translation
 L["1 Match"] = "1 Match"

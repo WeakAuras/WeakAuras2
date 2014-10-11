@@ -1,4 +1,4 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L
   
 local function createOptions(id, data)

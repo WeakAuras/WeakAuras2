@@ -1,4 +1,4 @@
-﻿if not(GetLocale() == "esMX") then
+if not(GetLocale() == "esMX") then
     return;
 end
 

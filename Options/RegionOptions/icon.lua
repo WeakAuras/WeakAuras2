@@ -1,4 +1,4 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+local SharedMedia = LibStub("LibSharedMedia-3.0");
 local LBF = nil --LibStub("LibButtonFacade",true);
 local L = WeakAuras.L
 

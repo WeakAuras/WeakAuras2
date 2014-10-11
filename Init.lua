@@ -1,4 +1,4 @@
-﻿WeakAuras = {}
+WeakAuras = {}
 WeakAuras.L = {}
 
 WeakAuras.versionString = GetAddOnMetadata("WeakAuras", "Version");

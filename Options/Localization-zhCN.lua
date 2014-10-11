@@ -1,4 +1,4 @@
-﻿if not(GetLocale() == "zhCN") then
+if not(GetLocale() == "zhCN") then
     return;
 end
 

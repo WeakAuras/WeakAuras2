@@ -1,4 +1,4 @@
-﻿-- Import SM for statusbar-textures, font-styles and border-types
+-- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
 -- Import translation

@@ -1,4 +1,4 @@
-﻿if not(GetLocale() == "ptBR") then
+if not(GetLocale() == "ptBR") then
     return;
 end
 

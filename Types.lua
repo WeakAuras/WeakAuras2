@@ -1,4 +1,4 @@
-﻿local WeakAuras = WeakAuras;
+local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
