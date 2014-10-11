@@ -2709,6 +2709,12 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
+        name = "alwaystrue",
+        display = L["Always active trigger"],
+        type = "tristate",
+        init = "true"
+      },
+      {
         name = "pvpflagged",
         display = L["PvP Flagged"],
         type = "tristate",
