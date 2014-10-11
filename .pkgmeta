@@ -37,6 +37,6 @@ ignore:
  - WeakAurasOptions\RegionOptions\timer.lua
 
 move-folders:
- WeakAuras/WeakAurasOptions: WeakAurasOptions
- WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
- WeakAuras/WeakAurasTutorials: WeakAurasTutorials
+ WeakAuras/Options: WeakAurasOptions
+ WeakAuras/ModelPaths: WeakAurasModelPaths
+ WeakAuras/Tutorials: WeakAurasTutorials

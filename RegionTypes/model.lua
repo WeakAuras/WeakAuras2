@@ -1,9 +1,10 @@
-﻿-- Import SM for statusbar-textures, font-styles and border-types
+-- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
 -- Default settings
 local default = {
     model_path 			= "Creature/Arthaslichking/arthaslichking.m2",
+    modelIsUnit 		= false,
     model_x 			= 0,
     model_y 			= 0,
     model_z 			= 0,
@@ -70,7 +71,11 @@ local function modify(parent, region, data)
 	if tonumber(data.model_path) then
 		model:SetDisplayInfo(tonumber(data.model_path))
 	else
-		model:SetModel(data.model_path);
+		if (data.modelIsUnit) then
+			model:SetUnit(data.model_path)
+		else
+			pcall(function() model:SetModel(data.model_path) end);
+		end
 	end
     model:SetPosition(data.model_z, data.model_x, data.model_y);
 	
@@ -145,7 +150,11 @@ local function modify(parent, region, data)
 			if tonumber(data.model_path) then
 				model:SetDisplayInfo(tonumber(data.model_path))
 			else
-				model:SetModel(data.model_path);
+				if (data.modelIsUnit) then
+					model:SetUnit(data.model_path)
+				else
+					pcall(function() model:SetModel(data.model_path) end);
+				end
 			end
 --		end
     end

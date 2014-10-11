@@ -1,4 +1,4 @@
-﻿local L = WeakAuras.L
+local L = WeakAuras.L
 
 -- Main translation
 L["<"] = "<"

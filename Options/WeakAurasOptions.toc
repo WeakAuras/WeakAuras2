@@ -1,0 +1,52 @@
+## Interface: 60000
+## Title: WeakAuras Options
+## Author: Mirrored
+## Version: @project-version@
+## Notes: Options for WeakAuras
+## Notes-esES: Opciones para WeakAuras
+## Notes-deDE: Optionen für WeakAuras
+## Notes-ruRU: Опции WeakAuras
+## Notes-zhTW: WeakAuras的設定
+## X-Author-Server: Dragonmaw US
+## X-Author-Faction: Horde
+## X-Email: mirror@uga.edu
+## X-Category: Interface Enhancements
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras
+## SavedVariables: WeakAurasOptionsSaved
+
+Localization-enUS.lua
+Localization-deDE.lua
+Localization-esES.lua
+Localization-esMX.lua
+Localization-frFR.lua
+Localization-koKR.lua
+Localization-ptBR.lua
+Localization-ruRU.lua
+Localization-zhCN.lua
+Localization-zhTW.lua
+
+ForAllIndentsAndPurposes.lua
+
+RegionOptions\aurabar.lua
+RegionOptions\texture.lua
+RegionOptions\icon.lua
+RegionOptions\text.lua
+#@do-not-package@
+RegionOptions\timer.lua
+#@end-do-not-package@
+RegionOptions\group.lua
+RegionOptions\dynamicgroup.lua
+RegionOptions\model.lua
+RegionOptions\progresstexture.lua
+
+WeakAurasOptions.lua
+
+AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasTextureButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasIconButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua

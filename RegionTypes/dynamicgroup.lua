@@ -1,4 +1,4 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+local SharedMedia = LibStub("LibSharedMedia-3.0");
     
 local default = {
     controlledChildren = {},

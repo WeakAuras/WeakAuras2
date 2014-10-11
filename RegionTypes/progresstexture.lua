@@ -1,4 +1,4 @@
-﻿local SharedMedia = LibStub("LibSharedMedia-3.0");
+local SharedMedia = LibStub("LibSharedMedia-3.0");
 
 -- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function
 -- to the enhance the abilities of Progress Textures.

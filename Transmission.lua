@@ -9,7 +9,7 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
-local version = 1410;
+local version = 1420;
 local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;
@@ -358,7 +358,7 @@ LibStub("AceComm-3.0"):Embed(WeakAuras);
 
 function WeakAuras.TableToString(inTable, forChat)
     local serialized = WeakAuras:Serialize(inTable);
-    local compressed = Compresser:Compress(serialized);
+    local compressed = Compresser:CompressHuffman(serialized);
     if(forChat) then
         return WeakAuras.encodeB64(compressed);
     else
@@ -834,10 +834,12 @@ function WeakAuras.ImportString(str)
                 WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
                 -- Scam alert
                 local found = nil
-                for _, v in ipairs(data.additional_triggers) do
-                    if v.trigger.type == "custom" then
-                        found = true
-                        break
+                if (data.additional_triggers) then
+                    for _, v in ipairs(data.additional_triggers) do
+                        if v.trigger.type == "custom" then
+                            found = true
+                            break
+                        end
                     end
                 end
                 if found or data.trigger.type == "custom" then

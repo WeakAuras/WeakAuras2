@@ -1,4 +1,4 @@
-﻿local root2 = math.sqrt(2);
+local root2 = math.sqrt(2);
 local halfroot2 = root2/2;
     
 local default = {
