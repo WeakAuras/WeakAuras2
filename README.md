@@ -17,21 +17,21 @@ Features include:
 * CPU optimizations such as conditional loading/unloading of displays, modularity, and prevention of full aura scanning
 * Powerful customization options, such as animation paths, on-show/on-hide code, and custom triggers, for Lua-savvy users
 
-To open the options window, type "*/wa*" or "*/weakauras*"
+To open the options window, type "*/wa*" or "*/weakauras*" into your chat.
 
 *Note:* WeakAuras works better with more media!
-* http://www.wowace.com/addons/sharedmedia/ for more bar textures.
-* http://www.wowace.com/addons/shared-media-additional-fonts/ for more fonts.
+* Get <a href="http://www.wowace.com/addons/sharedmedia/" title="SharedMedia">SharedMedia</a> for more bar textures.
+* Get <a href="http://www.wowace.com/addons/shared-media-additional-fonts/" title="SharedMediaAdditionalFonts">SharedMediaAdditionalFonts</a> for more fonts.
 
 For in-depth documentation, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/usage/">usage</a> page.
 
-For some examples of what WeakAuras can do, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/examples/">examples</a> page or the <a href="http://www.wowace.com/addons/weakauras-2/pages/ui-showcase/">UI Showcase</a> where we feature popular interfaces featuring WeakAuras!
+For some examples of what WeakAuras can do, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/examples/" title="Examples">examples</a> page or the <a href="http://www.wowace.com/addons/weakauras-2/pages/ui-showcase/" title="UI Showcase">UI Showcase</a> where we feature popular interfaces featuring WeakAuras!
 
 <h2>Problem?</h2>
-* Please see the <a href="http://www.wowace.com/addons/weakauras/pages/usage/">Usage</a> page.
-* If you need help with your set-up, post in the <a href="http://www.wowace.com/addons/weakauras-2/forum/">Forum</a>.
-* If you've discovered something that's clearly wrong, or if you get an error, <a href="http://www.wowace.com/addons/weakauras-2/create-ticket/">Post</a> a <a href="http://www.wowace.com/addons/weakauras-2/tickets/">Ticket</a>.
+* Please see the <a href="http://www.wowace.com/addons/weakauras/pages/usage/" title="Usage">usage</a> page.
+* If you need help with your set-up, post in the <a href="http://www.wowace.com/addons/weakauras-2/forum/" title="Forum">forum</a>.
+* If you've discovered something that's clearly wrong, or if you get an error, <a href="http://www.wowace.com/addons/weakauras-2/create-ticket/" title="Create Ticket">post</a> a <a href="http://www.wowace.com/addons/weakauras-2/tickets/" title="Tickets">ticket</a>.
 * If you have a general comment or concern, feel free to comment on the main page!
 
 <h2>Donations</h2>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"/></a>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN" title="PayPal"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal Button"/></a>
