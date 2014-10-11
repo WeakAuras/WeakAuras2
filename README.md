@@ -1,10 +1,8 @@
-weakauras-2
-===========
-==<<color #8800ff>> WeakAuras 2 <</color>>
+WeakAuras 2
 
 **If you are coming from WeakAuras 1, just delete 1, install 2 and you are ready to go. All your auras will be there. You can do this manually or via Curse Client, please don't forget to __//untick//__ the option to delete your settings though!**
 
-{{http://i.imgur.com/mt6dPfO.png|http://i.imgur.com/mt6dPfO.png}}
+http://i.imgur.com/mt6dPfO.png
 
 WeakAuras is a powerful and flexible framework that allows you to display highly customizable graphics on your screen to indicate buffs, debuffs, and a whole host of similar types of information. It was originally meant to be a lightweight replacement for Power Auras, but it now incorporates many features that Power Auras does not, while still remaining more efficient and easy to use.
 
@@ -22,12 +20,12 @@ Features include:
 To open the options window, type "**/wa**" or "**/weakauras**"
 
 **Note:** WeakAuras works better with more media!
-* [[http://www.wowace.com/addons/sharedmedia/|SharedMedia]] for more bar textures.
-* [[http://www.wowace.com/addons/shared-media-additional-fonts/|SharedMediaAdditionalFonts]] for more fonts.
+* http://www.wowace.com/addons/sharedmedia/ for more bar textures.
+* http://www.wowace.com/addons/shared-media-additional-fonts/ for more fonts.
 
-For in-depth documentation, see the [[http://www.wowace.com/addons/weakauras-2/pages/usage/|Usage]] page.
+For in-depth documentation, see the http://www.wowace.com/addons/weakauras-2/pages/usage/ page.
 
-For some examples of what WeakAuras can do, see the [[http://www.wowace.com/addons/weakauras-2/pages/examples/|Examples]] page!
+For some examples of what WeakAuras can do, see the http://www.wowace.com/addons/weakauras-2/pages/examples/ page!
 
 ----
 
@@ -48,12 +46,6 @@ For some examples of what WeakAuras can do, see the [[http://www.wowace.com/addo
 * [[http://www.wowace.com/addons/weakauras/pages/examples/|Examples]]!
 ----
 
-===Upcoming
-* More Tutorials, for more advanced features
-* Documentation updated for 1.4
-
-----
-
 ===Problem?
 * Please see the [[http://www.wowace.com/addons/weakauras/pages/usage/|Usage]] page.
 * If you need help with your set-up, post in the [[http://www.wowace.com/addons/weakauras-2/forum/|Forum]].
@@ -63,4 +55,5 @@ For some examples of what WeakAuras can do, see the [[http://www.wowace.com/addo
 ----
 
 ===Donations (are always welcome)
-[[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN|{{https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif}}]]
+https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN
+!(https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)
