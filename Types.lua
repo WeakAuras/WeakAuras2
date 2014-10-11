@@ -238,7 +238,9 @@ WeakAuras.containment_types = {
 WeakAuras.font_flags = {
   None = L["None"],
   OUTLINE = L["Outline"],
-  THICKOUTLINE  = L["Thick Outline"]
+  THICKOUTLINE  = L["Thick Outline"],
+  ["MONOCHROME|OUTLINE"] = L["Monochrome Outline"],
+  ["MONOCHROME|THICKOUTLINE"] = L["Monochrome Thick Outline"],
 };
 WeakAuras.event_types = {};
 for name, prototype in pairs(WeakAuras.event_prototypes) do
