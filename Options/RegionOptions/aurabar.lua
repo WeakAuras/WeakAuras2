@@ -7,6 +7,7 @@ local L = WeakAuras.L;
 -- Create region options table
 local function createOptions(id, data)
 	-- Region options
+    local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
     local options = {
         texture = {
             type = "select",
@@ -391,6 +392,51 @@ local function createOptions(id, data)
             softMax = screenHeight,
             bigStep = 1,
 			disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkOffsetX = {
+            type = "range",
+            name = L["X Offset"],
+            order = 44.8,
+            min = -screenWidth,
+            max = screenWidth,
+            bigStep = 1,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkOffsetY = {
+            type = "range",
+            name = L["Y Offset"],
+            order = 44.9,
+            min = -screenHeight,
+            max = screenHeight,
+            bigStep = 1,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkRotationMode = {
+            type = "select",
+            values = WeakAuras.spark_rotation_types,
+            name = L["Rotation Mode"],
+            order = 45,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
+        sparkRotation = {
+            type = "range",
+            name = L["Rotation"],
+            min = 0,
+            max = 360,
+            step = 90,
+            order = 45.1,
+            disabled = function() return not data.spark or data.sparkRotationMode == "AUTO" end,
+            hidden = function() return not data.spark or data.sparkRotationMode == "AUTO" end,
+        },
+        sparkMirror = {
+            type = "toggle",
+            name = L["Mirror"],
+            order = 45.2,
+            disabled = function() return not data.spark end,
             hidden = function() return not data.spark end,
         },
 		border_header = {

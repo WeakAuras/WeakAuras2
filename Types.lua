@@ -231,6 +231,11 @@ WeakAuras.inverse_point_types = {
   LEFT = "RIGHT",
   CENTER = "CENTER"
 };
+WeakAuras.spark_rotation_types = {
+    AUTO = L["Automatic Rotation"],
+    MANUAL = L["Manual Rotation"]
+}
+
 WeakAuras.containment_types = {
   OUTSIDE = L["Outside"],
   INSIDE = L["Inside"]
