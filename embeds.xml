@@ -1,4 +1,6 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!--@no-lib-strip@-->
 	<Script file="libs\LibStub\LibStub.lua"/>
 	<Include file="libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
 	<Include file="libs\LibChatAnims\LibChatAnims.xml"/>
@@ -13,4 +15,5 @@
 	<Include file="libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 	<Include file="libs\LibCompress\lib.xml"/>
 	<Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+	<!--@end-no-lib-strip@-->
 </Ui>
