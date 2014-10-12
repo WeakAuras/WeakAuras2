@@ -17,7 +17,7 @@
 ## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibChatAnims
 
 embeds.xml
-locals.xml
+locales.xml
 
 Init.lua
 
