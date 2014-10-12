@@ -35,6 +35,7 @@ externals:
 ignore:
  - RegionTypes\timer.lua
  - WeakAurasOptions\RegionOptions\timer.lua
+ - README.md
 
 move-folders:
  WeakAuras/Options: WeakAurasOptions
