@@ -668,9 +668,6 @@ WeakAuras.texture_types = {
   },
   ["Sparks"] = {
     ["Interface\\CastingBar\\UI-CastingBar-Spark"] = "Blizzard Spark",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Spark_Bar"] = "Solid Bar",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Spark_Bar_Full"] = "Bar with Smooth Edge",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Spark_Bar_Half"] = "Bar with a one sided Smooth Edge",
   },
 };
 if(WeakAuras.PowerAurasPath ~= "") then
