@@ -25,7 +25,7 @@ To open the options window, type "*/wa*" or "*/weakauras*" into your chat.
 
 For in-depth documentation, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/usage/">usage</a> page.
 
-For some examples of what WeakAuras can do, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/examples/" title="Examples">examples</a> page or the <a href="http://www.wowace.com/addons/weakauras-2/pages/ui-showcase/" title="UI Showcase">UI Showcase</a> where we feature popular interfaces featuring WeakAuras!
+For some examples of what WeakAuras can do, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/examples/" title="Examples">examples</a> page or the <a href="http://www.wowace.com/addons/weakauras-2/pages/ui-showcase/" title="UI Showcase">UI Showcase</a> where we feature popular interfaces utilizing WeakAuras!
 
 <h2>Problem?</h2>
 * Please see the <a href="http://www.wowace.com/addons/weakauras/pages/usage/" title="Usage">usage</a> page.
