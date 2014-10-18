@@ -728,7 +728,16 @@ local function UpdateTime(region, data, inverse)
     remaining       = remaining % 60;
     remainingStr     = remainingStr..string.format("%02i", remaining);
   elseif remaining > 0 then
-    remainingStr     = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+    if data.progressPrecision == 4 and remaining <= 3 then
+        remainingStr = remainingStr..string.format("%.1f", remaining);
+    elseif data.progressPrecision == 5 and remaining <= 3 then
+        remainingStr = remainingStr..string.format("%.2f", remaining);
+    elseif (data.progressPrecision == 4 or data.progressPrecision == 5) and remaining > 3 then
+        remainingStr = remainingStr..string.format("%d", remaining);
+    else 
+        remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+    end
   else
     remainingStr     = " ";
   end
@@ -741,7 +750,16 @@ local function UpdateTime(region, data, inverse)
     duration       = duration % 60;
     durationStr     = durationStr..string.format("%02i", duration);
   elseif duration > 0 then
-    durationStr     = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+    -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+    if data.totalPrecision == 4 and duration <= 3 then
+        durationStr = durationStr..string.format("%.1f", duration);
+    elseif data.totalPrecision == 5 and duration <= 3 then
+        durationStr = durationStr..string.format("%.2f", duration);
+    elseif (data.totalPrecision == 4 or data.totalPrecision == 5) and duration > 3 then
+        durationStr = durationStr..string.format("%d", duration);
+    else 
+        durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+    end
   else
     durationStr     = " ";
   end
