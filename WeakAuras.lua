@@ -437,7 +437,7 @@ do
   return ret;
   end
   
-  function aura_cache.AssertAura(self, auraname, guid, duration, expirationTime, name, icon, count, unitCaster, spellId)
+  function aura_cache.AssertAura(self, auraname, guid, duration, expirationTime, name, icon, texture, count, unitCaster, spellId)
   -- Don't watch aura on non watching players
   if not self.players[guid] then return end
   
@@ -447,6 +447,7 @@ do
     expirationTime = expirationTime,
     name = name,
     icon = icon,
+    texture = texture,
     count = count,
     unitCaster = unitCaster,
     spellId = spellId
@@ -460,6 +461,7 @@ do
     auradata.expirationTime = expirationTime;
     auradata.name = name;
     auradata.icon = icon;
+    auradata.texture = texture;
     auradata.count = count;
     auradata.unitCaster = unitCaster;
     auradata.spellId = spellId;
@@ -1202,6 +1204,9 @@ do
       if(region.SetIcon) then
         region:SetIcon(auradata.icon or db.tempIconCache[auradata.name] or "Interface\\Icons\\INV_Misc_QuestionMark");
       end
+      if(region.SetTexture) then
+        region:SetTexture(auradata.texture or "Textures\\SpellActivationOverlays\\Eclipse_Sun");
+      end
       if(region.SetStacks) then
         region:SetStacks(auradata.count);
       end
@@ -1937,6 +1942,13 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
       data.region:SetIcon();
     end
     end
+    if(data.region.SetTexture) then
+    if(data.textureFunc) then
+      data.region:SetTexture(data.textureFunc(trigger));
+    else
+      data.region:SetTexture();
+    end
+    end    
     if(data.region.SetStacks) then
     if(data.stacksFunc) then
       data.region:SetStacks(data.stacksFunc(trigger));
@@ -3470,7 +3482,7 @@ function WeakAuras.pAdd(data)
       elseif(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
         local trigger_events = {};
-        local durationFunc, nameFunc, iconFunc, stacksFunc;
+        local durationFunc, nameFunc, iconFunc, textureFunc, stacksFunc;
         if(triggerType == "status" or triggerType == "event") then
         if not(trigger.event) then
           error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -3495,6 +3507,7 @@ function WeakAuras.pAdd(data)
           durationFunc = event_prototypes[trigger.event].durationFunc;
           nameFunc = event_prototypes[trigger.event].nameFunc;
           iconFunc = event_prototypes[trigger.event].iconFunc;
+          textureFunc = event_prototypes[trigger.event].textureFunc;
           stacksFunc = event_prototypes[trigger.event].stacksFunc;
           
           trigger.unevent = trigger.unevent or "auto";
@@ -3545,6 +3558,9 @@ function WeakAuras.pAdd(data)
         if(trigger.customIcon and trigger.customIcon ~= "") then
           iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon);
         end
+        if(trigger.customTexture and trigger.customTexture ~= "") then
+          textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture);
+        end
         if(trigger.customStacks and trigger.customStacks ~= "") then
           stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks);
         end
@@ -3591,6 +3607,7 @@ function WeakAuras.pAdd(data)
         durationFunc = durationFunc,
         nameFunc = nameFunc,
         iconFunc = iconFunc,
+        textureFunc = textureFunc,
         stacksFunc = stacksFunc,
         expiredHideFunc = triggerType ~= "custom" and event_prototypes[trigger.event].expiredHideFunc,
         region = region,
