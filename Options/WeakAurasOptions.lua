@@ -5169,59 +5169,10 @@ function WeakAuras.ReloadTriggerOptions(data)
         end
       end
     },
-    custom_texture = {
-      type = "input",
-      name = L["Texture Info"],
-      order = 21.5,
-      multiline = true,
-      width = "normal",
-      hidden = function() return not (trigger.type == "custom") end,
-      get = function() return trigger.customTexture end,
-      set = function(info, v)
-        trigger.customTexture = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end
-    },
-    custom_texture_expand = {
-      type = "execute",
-      order = 22,
-      name = L["Expand Text Editor"],
-      func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("customTexture"))
-      end,
-      hidden = function() return not (trigger.type == "custom") end,
-    },
-    custom_texture_error = {
-      type = "description",
-      name = function()
-        if not(trigger.customTexture and trigger.customTexture ~= "") then
-          return "";
-        end
-        local _, errorString = loadstring("return "..(trigger.customTexture or ""));
-        return errorString and "|cFFFF0000"..errorString or "";
-      end,
-      width = "double",
-      order = 22.5,
-      hidden = function()
-        if not(trigger.type == "custom" and trigger.customTexture and trigger.customTexture ~= "") then
-          return true;
-        else
-          local loadedFunction, errorString = loadstring("return "..(trigger.customTexture or ""));
-          if(errorString and not loadedFunction) then
-            return false;
-          else
-            return true;
-          end
-        end
-      end
-    },
     custom_stacks = {
       type = "input",
       name = L["Stack Info"],
-      order = 23,
+      order = 22,
       multiline = true,
       width = "normal",
       hidden = function() return not (trigger.type == "custom") end,
@@ -5236,7 +5187,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     },
     custom_stacks_expand = {
       type = "execute",
-      order = 23.5,
+      order = 22.5,
       name = L["Expand Text Editor"],
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customStacks"))
@@ -5253,7 +5204,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         return errorString and "|cFFFF0000"..errorString or "";
       end,
       width = "double",
-      order = 24,
+      order = 23,
       hidden = function()
         if not(trigger.type == "custom" and trigger.customStacks and trigger.customStacks ~= "") then
           return true;
