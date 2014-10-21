@@ -528,14 +528,14 @@ WeakAuras.event_prototypes = {
         name = "combopoints",
         display = L["Combo Points"],
         type = "number",
-        init = "GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', 'target')"
+        init = "UnitPower(UnitInVehicle('player') and 'vehicle' or 'player', 4)"
       }
     },
     durationFunc = function(trigger)
-      return GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', 'target'), 5, true;
+      return UnitPower(UnitInVehicle('player') and 'vehicle' or 'player', 4), UnitPowerMax('player', 4), true;
     end,
     stacksFunc = function(trigger)
-      return GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', 'target');
+      return UnitPower(UnitInVehicle('player') and 'vehicle' or 'player', 4), UnitPowerMax('player', 4), true;
     end,
     automatic = true
   },
