@@ -1,5 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-    
+
 local default = {
     controlledChildren = {},
     border = "None",
@@ -24,33 +24,33 @@ local default = {
 local function create(parent)
     local region = CreateFrame("FRAME", nil, parent);
     region:SetMovable(true);
-    
+
     local background = CreateFrame("frame", nil, region);
     region.background = background;
-    
+
     region.trays = {};
-    
+
     return region;
 end
 
 function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
     local dX, dY = x - originX, y - originY;
-    
+
     local r = math.sqrt(dX * dX + dY * dY);
     local theta = atan2(dY, dX);
-    
+
     return r, theta;
 end
 
 local function modify(parent, region, data)
     local background = region.background;
-    
+
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
-    
+
     local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
     local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or "";
     background:SetBackdrop({
@@ -68,7 +68,7 @@ local function modify(parent, region, data)
     });
     background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
     background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
-    
+
     local selfPoint;
     local actualSelfPoint;
     if(data.grow == "RIGHT") then
@@ -128,12 +128,12 @@ local function modify(parent, region, data)
         actualSelfPoint = "CENTER";
     end
     data.selfPoint = actualSelfPoint;
-        
+
     region:ClearAllPoints();
     region:SetPoint(actualSelfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
-    
+
     region.controlledRegions = {};
-    
+
     function region:EnsureControlledRegions()
         local anyIndexInfo = false;
         local dataIndex = 1;
@@ -177,7 +177,7 @@ local function modify(parent, region, data)
             region.controlledRegions[regionIndex] = nil;
             regionIndex = regionIndex + 1;
         end
-        
+
         if(data.sort == "ascending") then
             table.sort(region.controlledRegions, function(a, b)
                 return (
@@ -195,7 +195,7 @@ local function modify(parent, region, data)
                 )
             end);
         elseif(data.sort == "descending") then
-            table.sort(region.controlledRegions, function(a, b) 
+            table.sort(region.controlledRegions, function(a, b)
                 return (
                     a.region
                     and a.region.expirationTime
@@ -210,8 +210,8 @@ local function modify(parent, region, data)
                     or math.huge
                 )
             end);
-		elseif(data.sort == "hybrid") then
-            table.sort(region.controlledRegions, function(a, b)  
+        elseif(data.sort == "hybrid") then
+            table.sort(region.controlledRegions, function(a, b)
                 local aTime;
                 local bTime;
                 if (data.sortHybridTable and data.sortHybridTable[a.dataIndex]) then
@@ -220,10 +220,10 @@ local function modify(parent, region, data)
                     aTime = a.region and a.region.expirationTime and a.region.expirationTime > 0
                         and a.region.expirationTime or math.huge
                 end;
-                
+
                 if (data.sortHybridTable and data.sortHybridTable[b.dataIndex]) then
                     bTime = b.dataIndex - 1000;
-                else 
+                else
                     bTime = b.region and b.region.expirationTime and b.region.expirationTime > 0
                         and b.region.expirationTime or math.huge
                 end
@@ -248,7 +248,7 @@ local function modify(parent, region, data)
             end)
         end
     end
-    
+
     function region:EnsureTrays()
         region:EnsureControlledRegions();
         for index, regionData in ipairs(region.controlledRegions) do
@@ -263,9 +263,9 @@ local function modify(parent, region, data)
             end
         end
     end
-    
+
     region:EnsureTrays();
-    
+
     function region:DoResize()
         local numVisible = 0;
         local minX, maxX, minY, maxY;
@@ -319,7 +319,7 @@ local function modify(parent, region, data)
                     scalex = region.previousWidth / newWidth,
                     scaley = region.previousHeight / newHeight
                 };
-                
+
                 WeakAuras.Animate("group", data.id, "start", anim, region, true);
             end
             region.previousWidth = newWidth;
@@ -333,7 +333,7 @@ local function modify(parent, region, data)
                     scalex = 0.1,
                     scaley = 0.1
                 };
-                
+
                 WeakAuras.Animate("group", data.id, "finish", anim, region, nil, function()
                     region:Hide();
                 end)
@@ -343,12 +343,12 @@ local function modify(parent, region, data)
             region.previousWidth = 1;
             region.previousHeight = 1;
         end
-        
+
         if(WeakAuras.IsOptionsOpen()) then
             WeakAuras.OptionsFrame().moversizer:ReAnchor();
         end
     end
-    
+
     function region:PositionChildren()
         region:EnsureTrays();
         local childId, childData, childRegion;
@@ -380,7 +380,7 @@ local function modify(parent, region, data)
                 end
             end
         end
-        
+
         local numVisible = 0;
         if(data.grow == "HORIZONTAL" or data.grow == "VERTICAL") then
             local currentWidth, currentHeight = 0, 0;
@@ -441,7 +441,7 @@ local function modify(parent, region, data)
                 end
             end
         end
-        
+
         local angle = data.rotation or 0;
         local angleInc = 360 / (numVisible ~= 0 and numVisible or 1);
         local radius = 0;
@@ -465,7 +465,7 @@ local function modify(parent, region, data)
                     childRegion.toHide = nil;
                     childRegion.groupHiding = nil;
                 end
-                
+
                 if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
                     if(data.grow == "CIRCLE") then
                         yOffset = cos(angle) * radius * -1;
@@ -507,7 +507,7 @@ local function modify(parent, region, data)
                         hiddenYOffset = cos(angle - angleInc) * radius * -1;
                         hiddenXOffset = sin(angle - angleInc) * radius;
                     end
-                    
+
                     region.trays[regionData.key]:ClearAllPoints();
                     region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, hiddenXOffset, hiddenYOffset);
                     childRegion:ClearAllPoints();
@@ -515,10 +515,10 @@ local function modify(parent, region, data)
                 end
             end
         end
-        
+
         region:DoResize();
     end
-    
+
     function region:ControlChildren()
         if(data.animate) then
             WeakAuras.pending_controls[data.id] = region;
@@ -526,7 +526,7 @@ local function modify(parent, region, data)
             region:DoControlChildren();
         end
     end
-    
+
     function region:DoControlChildren()
         local previous = {};
         for index, regionData in pairs(region.controlledRegions) do
@@ -535,9 +535,9 @@ local function modify(parent, region, data)
             previousY = previousY or 0;
             previous[regionData.key] = {x = previousX, y = previousY};
         end
-        
+
         region:PositionChildren();
-        
+
         local previousPreviousX, previousPreviousY;
         for index, regionData in pairs(region.controlledRegions) do
             local childId = regionData.id;
@@ -548,7 +548,7 @@ local function modify(parent, region, data)
                     childRegion:Show();
                     childRegion.toShow = nil;
                 end
-                
+
                 local xOffset, yOffset = region.trays[regionData.key]:GetCenter();
                 xOffset = xOffset or 0;
                 yOffset = yOffset or 0;
@@ -639,11 +639,11 @@ end
             end
         end
     end
-    
+
     region:PositionChildren();
-    
+
     local lowestRegion = WeakAuras.regions[data.controlledChildren[#data.controlledChildren]] and WeakAuras.regions[data.controlledChildren[#data.controlledChildren]].region;
-    if(lowestRegion) then    
+    if(lowestRegion) then
         local frameLevel = lowestRegion:GetFrameLevel();
         for i=#region.controlledRegions-1,1,-1 do
             local childRegion = region.controlledRegions[i].region;
@@ -653,7 +653,7 @@ end
             end
         end
     end
-    
+
     -- local maxWidth, maxHeight = 0, 0;
     -- local radius = 0;
     -- if(data.grow == "CIRCLE") then
@@ -693,16 +693,16 @@ end
         -- maxWidth = maxWidth + (2 * radius);
         -- maxHeight = maxHeight + (2 * radius);
     -- end
-    
+
     -- maxWidth = (maxWidth and maxWidth > 16 and maxWidth) or 16;
     -- maxHeight = (maxHeight and maxHeight > 16 and maxHeight) or 16;
-    
+
     -- data.width, data.height = maxWidth, maxHeight;
     -- region:SetWidth(data.width);
     -- region:SetHeight(data.height);
     data.width = region.currentWidth;
     data.height = region.currentHeight;
-    
+
     function region:Scale(scalex, scaley)
         region:SetWidth((region.currentWidth or 16) * scalex);
         region:SetHeight((region.currentHeight or 16) * scaley);

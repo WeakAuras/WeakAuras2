@@ -262,7 +262,7 @@ WeakAuras.anim_presets = {
     use_alpha = true,
     alpha = 0
   },
-  
+
   -- Main
   shake = {
     type = "custom",
@@ -555,7 +555,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -634,7 +634,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -692,7 +692,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -754,7 +754,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -805,7 +805,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -856,7 +856,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -907,7 +907,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -958,7 +958,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -1004,7 +1004,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Alternate Power"],
     init = function(trigger)
-    trigger.unit = trigger.unit or "player";  
+    trigger.unit = trigger.unit or "player";
       local ret = [[
     local unit = unit or '%s'
     local concernedUnit = '%s'
@@ -1065,7 +1065,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -1111,14 +1111,14 @@ WeakAuras.event_prototypes = {
     },
     name = L["Eclipse Power"],
     init = function(trigger)
-      trigger.unit = trigger.unit or "player";      
+      trigger.unit = trigger.unit or "player";
       local ret = [[
     local unit = unit or '%s';
     local concernedUnit = '%s';
-    
+
     local GetRealEclipseDirection = UnitPower(unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -1172,7 +1172,7 @@ WeakAuras.event_prototypes = {
     },
     durationFunc = function(trigger)
     local GetRealEclipseDirection = UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
-    
+
     if(trigger.use_absolutValues) then
       return math.max(UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) + UnitPowerMax(trigger.unit, SPELL_POWER_ECLIPSE), 0), math.max(UnitPowerMax(trigger.unit, SPELL_POWER_ECLIPSE) * 2, 1), true;
     elseif(not trigger.use_eclipsetype or trigger.eclipsetype == GetRealEclipseDirection) then
@@ -1181,7 +1181,7 @@ WeakAuras.event_prototypes = {
       return 0, 0, true;
     end
     end,
-    nameFunc = function(trigger)      
+    nameFunc = function(trigger)
       return WeakAuras.eclipse_types[UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
     end,
     iconFunc = function(trigger)
@@ -1190,7 +1190,7 @@ WeakAuras.event_prototypes = {
         ["sun"] = "Interface\\Icons\\ability_druid_eclipseorange"
       };
       return eclipseIcons[UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
-    end,    
+    end,
     automatic = true
   },
   ["Eclipse Direction"] = {
@@ -1210,7 +1210,7 @@ WeakAuras.event_prototypes = {
         init = "GetEclipseDirection()"
       }
     },
-    nameFunc = function(trigger)      
+    nameFunc = function(trigger)
       return WeakAuras.eclipse_types[GetEclipseDirection()];
     end,
     iconFunc = function(trigger)
@@ -1505,7 +1505,7 @@ WeakAuras.event_prototypes = {
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
-      end 
+      end
       return ret:format(spellName, (trigger.use_inverse and "true" or "false"), (trigger.use_matchedRune and "true" or "false"));
     end,
     args = {
@@ -1880,7 +1880,7 @@ WeakAuras.event_prototypes = {
       if(trigger.use_inverse) then
         ret = ret.."active = not active\n";
       end
-      
+
       return ret:format(spellName)
     end,
     args = {
@@ -1945,23 +1945,23 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       --trigger.totemName = WeakAuras.CorrectSpellName(trigger.totemName) or 0;
       trigger.totemType = trigger.totemType or 1;
-    
+
       local ret = [[
     local totemType = %i;
     local _, totemName, startTime, duration = GetTotemInfo(totemType);
-    
+
     local active = (startTime ~= 0);
     ]];
     ret = ret:format(trigger.totemType);
     if trigger.use_totemName then
     trigger.totemName = trigger.totemName or 0;
     local totemName = type(trigger.totemName) == "number" and trigger.totemName or "'"..trigger.totemName.."'";
-    
+
     ret = ret .. [[
       active = active and (]] .. totemName .. [[ == totemName);
     ]];
     end
-    
+
     if(trigger.use_remaining and not trigger.use_inverse) then
         local ret2 = [[
           local expirationTime = startTime + duration
@@ -1973,13 +1973,13 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
     end
-    
+
     if trigger.use_inverse then
     ret = ret .. [[
       active = not active;
     ]];
     end
-    
+
     return ret;
     end,
     args = {
@@ -2112,7 +2112,7 @@ WeakAuras.event_prototypes = {
     local form_ = %s;
     local inverse = %s;
     ]];
-    
+
     return ret:format(trigger.form or 0, trigger.use_inverse and "true" or "false");
     end,
     args = {
@@ -2183,13 +2183,13 @@ WeakAuras.event_prototypes = {
       exists, _, name = WeakAuras.GetOHTenchInfo()
     ]];
       end
-      
+
       if(trigger.use_inverse) then
         ret = ret..[[
       inverse = true;
     ]];
       end
-      
+
       if(trigger.use_enchant and trigger.enchant and trigger.enchant ~= "") then
         ret = ret .. [[
       exists = name == ']] .. trigger.enchant .. [[';
@@ -2278,10 +2278,10 @@ WeakAuras.event_prototypes = {
     name = L["Chat Message"],
     init = function(trigger)
       return [[
-    if (event:find('LEADER')) then 
+    if (event:find('LEADER')) then
       event = event:sub(0, -8);
     end
-    if (event == 'CHAT_MSG_TEXT_EMOTE') then 
+    if (event == 'CHAT_MSG_TEXT_EMOTE') then
       event = 'CHAT_MSG_EMOTE';
     end
     ]];
@@ -2328,7 +2328,7 @@ WeakAuras.event_prototypes = {
       local startTime, duration = WeakAuras.GetRuneCooldown(rune);
       local inverse = %s;
       local death = %s;
-    
+
       local numBloodRunes  = 0;
       local numUnholyRunes = 0;
       local numFrostRunes  = 0;
@@ -2375,7 +2375,7 @@ WeakAuras.event_prototypes = {
         values = "rune_specific_types",
     test = [[
       (
-      (inverse and startTime == 0) or 
+      (inverse and startTime == 0) or
       (not inverse and startTime > 0)
       ) and
       (
@@ -2441,10 +2441,10 @@ WeakAuras.event_prototypes = {
     if not(trigger.use_inverse) then
       startTime, duration = WeakAuras.GetRuneCooldown(trigger.rune);
     end
-    
+
     startTime = startTime or 0;
     duration = duration or 0;
-    
+
     return duration, startTime + duration;
     else
     return 1, 0;
@@ -2458,7 +2458,7 @@ WeakAuras.event_prototypes = {
         [4] = L["Death"]
       };
       return runeNames[GetRuneType(trigger.rune)];
-    end,  
+    end,
     iconFunc = function(trigger)
       local runeIcons = {
         [1] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Blood",
@@ -2481,12 +2481,12 @@ WeakAuras.event_prototypes = {
     --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
     trigger.itemName = trigger.itemName or 0;
     local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'" .. trigger.itemName .. "'";
-    
+
       local ret = [[
     local inverse = %s;
     local equipped = IsEquippedItem(%s);
     ]];
-    
+
     return ret:format(trigger.use_inverse and "true" or "false", itemName);
     end,
     args = {
@@ -2526,7 +2526,7 @@ WeakAuras.event_prototypes = {
     end,
     hasItemID = true,
     --automaticrequired = true
-  },  
+  },
   ["Threat Situation"] = {
     type = "status",
     events = {
@@ -2539,7 +2539,7 @@ WeakAuras.event_prototypes = {
       local ret = [[
     local status = UnitThreatSituation('player', %s) or -1;
     ]];
-    
+
     return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "'"..trigger.threatUnit.."'" or "nil");
     end,
     args = {

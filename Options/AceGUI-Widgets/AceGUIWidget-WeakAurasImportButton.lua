@@ -126,14 +126,14 @@ local function Constructor()
     button:SetHeight(18);
     button:SetWidth(380);
     button.dgroup = nil;
-    
+
     local background = button:CreateTexture(nil, "BACKGROUND");
     button.background = background;
     background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
     background:SetBlendMode("ADD");
     background:SetVertexColor(0.5, 0.5, 0.5, 0.25);
     background:SetAllPoints(button);
-    
+
     local expand = CreateFrame("BUTTON", nil, button);
     button.expand = expand;
     expand.expanded = true;
@@ -149,7 +149,7 @@ local function Constructor()
     expand.title = L["Disabled"];
     expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, nil) end);
     expand:SetScript("OnLeave", Hide_Tooltip);
-    
+
     local checkbox = CreateFrame("CheckButton", nil, button, "ChatConfigCheckButtonTemplate");
     button.checkbox = checkbox;
     checkbox:EnableMouse(false);
@@ -157,19 +157,19 @@ local function Constructor()
     checkbox:SetHeight(18);
     checkbox:SetPoint("BOTTOM", button, "BOTTOM");
     checkbox:SetPoint("LEFT", button, "LEFT", 16);
-    
+
     local title = button:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge");
     button.title = title;
     title:SetHeight(14);
     title:SetJustifyH("LEFT");
     title:SetPoint("LEFT", checkbox, "RIGHT", 2, 0);
     title:SetPoint("RIGHT", button, "RIGHT");
-    
+
     button.description = "";
-    
+
     button:SetScript("OnEnter", function() Show_Tooltip(button, title:GetText(), button.description) end);
     button:SetScript("OnLeave", Hide_Tooltip);
-    
+
     button:SetScript("OnClick", function() checkbox:Click() end);
 
     local widget = {

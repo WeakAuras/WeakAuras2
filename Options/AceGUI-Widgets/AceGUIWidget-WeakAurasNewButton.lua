@@ -68,20 +68,20 @@ local function Constructor()
     button:SetHeight(40);
     button:SetWidth(380);
     button.dgroup = nil;
-    
+
     local background = button:CreateTexture(nil, "BACKGROUND");
     button.background = background;
     background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
     background:SetBlendMode("ADD");
     background:SetVertexColor(0.5, 0.5, 0.5, 0.25);
     background:SetAllPoints(button);
-    
+
     local icon = button:CreateTexture(nil, "OVERLAY");
     button.icon = icon;
     icon:SetWidth(40);
     icon:SetHeight(40);
     icon:SetPoint("LEFT", button, "LEFT");
-    
+
     local title = button:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge");
     button.title = title;
     title:SetHeight(14);
@@ -89,7 +89,7 @@ local function Constructor()
     title:SetPoint("TOP", button, "TOP", 0, -5);
     title:SetPoint("LEFT", icon, "RIGHT", 2, 0);
     title:SetPoint("RIGHT", button, "RIGHT");
-    
+
     local description = button:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
     button.description = description;
     description:SetHeight(14);
@@ -97,13 +97,13 @@ local function Constructor()
     description:SetPoint("BOTTOM", button, "BOTTOM", 0, 2);
     description:SetPoint("LEFT", icon, "RIGHT", 2, 0);
     description:SetPoint("RIGHT", button, "RIGHT");
-    
-    
+
+
     button.description = "";
-    
+
     button:SetScript("OnEnter", function() Show_Tooltip(button, title:GetText(), button.description) end);
     button:SetScript("OnLeave", Hide_Tooltip);
-    
+
 
     local widget = {
         frame = button,

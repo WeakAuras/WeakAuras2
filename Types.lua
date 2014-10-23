@@ -823,8 +823,8 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura42"] = "Dispell",
     [WeakAuras.PowerAurasPath.."Aura43"] = "Danger",
     [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
-	[WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
-	["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
+    [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
   };
 end
 --[=[
@@ -1157,10 +1157,10 @@ WeakAuras.duration_types_no_choice = {
   seconds = L["Seconds"]
 };
 WeakAuras.gtfo_types = {
-	[1] = L["High Damage"],
-	[2] = L["Low Damage"],
-	[3] = L["Fail Alert"],
-	[4] = L["Friendly Fire"]
+    [1] = L["High Damage"],
+    [2] = L["Low Damage"],
+    [3] = L["Fail Alert"],
+    [4] = L["Friendly Fire"]
 };
 WeakAuras.pet_behavior_types = {
   passive = L["Passive"],

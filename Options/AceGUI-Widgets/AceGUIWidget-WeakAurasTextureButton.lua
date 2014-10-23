@@ -38,7 +38,7 @@ local methods = {
       local angle = rad(135 - rotation);
       local vx = math.cos(angle);
       local vy = math.sin(angle);
-      
+
       ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
     else
       if(discrete_rotation == 0 or discrete_rotation == 360) then
@@ -90,21 +90,21 @@ local function Constructor()
   });
 	button:SetBackdropColor(0.1,0.1,0.1);
 	button:SetBackdropBorderColor(0.4,0.4,0.4);
-  
+
   local highlighttexture = button:CreateTexture(nil, "OVERLAY");
   highlighttexture:SetTexture("Interface\\BUTTONS\\ButtonHilight-SquareQuickslot.blp");
   highlighttexture:SetTexCoord(0.175, 0.875, 0.125, 0.825);
   highlighttexture:SetPoint("BOTTOMLEFT", button, 4, 4);
   highlighttexture:SetPoint("TOPRIGHT", button, -4, -4);
   button:SetHighlightTexture(highlighttexture);
-  
+
   local texture = button:CreateTexture(nil, "OVERLAY");
   texture:SetPoint("BOTTOMLEFT", button, 4, 4);
   texture:SetPoint("TOPRIGHT", button, -4, -4);
-  
+
   button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path:gsub("\\", "\n")) end);
 	button:SetScript("OnLeave", Hide_Tooltip);
-  
+
 	local widget = {
 		frame = button,
     texture = texture,

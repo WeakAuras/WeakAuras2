@@ -55,7 +55,7 @@ local methods = {
     ["Initialize"] = function(self)
         local data = self.data;
         self.callbacks = {};
-        
+
         function self.callbacks.OnClickNormal(_, mouseButton)
             if(IsControlKeyDown() and not data.controlledChildren) then
                 WeakAuras.PickDisplayMultiple(data.id);
@@ -151,7 +151,7 @@ local methods = {
                 parentButton.callbacks.UpdateExpandButton();
             end
         end
-        
+
         function self.callbacks.OnDuplicateClick()
             local base_id = data.id .. " ";
             local num = 2;
@@ -195,13 +195,13 @@ local methods = {
                     newData.parent = data.parent;
                     WeakAuras.Add(parentData);
                     WeakAuras.Add(newData);
-                        
+
                     for index, id in pairs(parentData.controlledChildren) do
                         local childButton = WeakAuras.GetDisplayButton(id);
                         childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup");
                         childButton:SetGroupOrder(index, #parentData.controlledChildren);
                     end
-                        
+
                     local button = WeakAuras.GetDisplayButton(parentData.id);
                     button.callbacks.UpdateExpandButton();
                     WeakAuras.UpdateDisplayButton(parentData);
@@ -211,7 +211,7 @@ local methods = {
             WeakAuras.SortDisplayButtons();
             WeakAuras.DoConfigUpdate();
         end
-        
+
         function self.callbacks.OnDeleteAllClick()
             if(data.controlledChildren) then
                 local toDelete = {};
@@ -370,49 +370,49 @@ local methods = {
             local oldid = data.id;
             if not(newid == oldid) then
                 local temp;
-                
+
                 WeakAuras.Rename(data, newid);
-                
+
                 WeakAuras.thumbnails[newid] = WeakAuras.thumbnails[oldid];
                 WeakAuras.thumbnails[oldid] = nil;
                 WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
                 WeakAuras.displayButtons[oldid] = nil;
                 WeakAuras.displayOptions[oldid] = nil;
                 WeakAuras.AddOption(newid, data);
-                
+
                 WeakAuras.displayButtons[newid]:SetTitle(newid);
-                
+
                 if(data.controlledChildren) then
                     for index, childId in pairs(data.controlledChildren) do
                         WeakAuras.displayButtons[childId]:SetGroup(newid);
                     end
                 end
-                
+
                 WeakAuras.SetCopying();
                 WeakAuras.SetGrouping();
                 WeakAuras.SortDisplayButtons();
                 WeakAuras.PickDisplay(newid);
             end
         end
-        
+
         self.frame.terribleCodeOrganizationHackTable = {};
-        
+
         function self.frame.terribleCodeOrganizationHackTable.IsGroupingOrCopying()
             return self.grouping or self.copying;
         end
-        
+
         function self.frame.terribleCodeOrganizationHackTable.SetNormalTooltip()
             self:SetNormalTooltip();
         end
-        
+
         function self.frame.terribleCodeOrganizationHackTable.OnShow()
             WeakAuras.UpdateCloneConfig(data);
         end
-        
+
         function self.frame.terribleCodeOrganizationHackTable.OnHide()
             WeakAuras.HideAllClones(data.id);
         end
-        
+
         self:SetTitle(data.id);
         self.menu = {
             {
@@ -904,7 +904,7 @@ local function Constructor()
     button:SetWidth(1000);
     button.dgroup = nil;
     button.data = {};
-    
+
     local background = button:CreateTexture(nil, "BACKGROUND");
     button.background = background;
     background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
@@ -914,13 +914,13 @@ local function Constructor()
     background:SetPoint("BOTTOM", button, "BOTTOM");
     background:SetPoint("LEFT", button, "LEFT");
     background:SetPoint("RIGHT", button, "RIGHT");
-    
+
     local icon = button:CreateTexture(nil, "OVERLAY");
     button.icon = icon;
     icon:SetWidth(32);
     icon:SetHeight(32);
     icon:SetPoint("LEFT", button, "LEFT");
-    
+
     local title = button:CreateFontString(nil, "OVERLAY", "GameFontNormal");
     button.title = title;
     title:SetHeight(14);
@@ -928,9 +928,9 @@ local function Constructor()
     title:SetPoint("TOP", button, "TOP", 0, -2);
     title:SetPoint("LEFT", icon, "RIGHT", 2, 0);
     title:SetPoint("RIGHT", button, "RIGHT");
-    
+
     button.description = {};
-    
+
     button:SetScript("OnEnter", function()
         if(WeakAuras.IsPickedMultiple() and WeakAuras.IsDisplayPicked(button.id)) then
             Show_Long_Tooltip(button, WeakAuras.MultipleDisplayTooltipDesc());
@@ -942,7 +942,7 @@ local function Constructor()
         end
     end);
     button:SetScript("OnLeave", Hide_Tooltip);
-    
+
     local view = CreateFrame("BUTTON", nil, button);
     button.view = view;
     view:SetWidth(16);
@@ -986,7 +986,7 @@ local function Constructor()
             view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
         end
     end);
-    
+
     local loaded = CreateFrame("BUTTON", nil, button);
     button.loaded = loaded;
     loaded:SetWidth(16);
@@ -1000,7 +1000,7 @@ local function Constructor()
     loaded.desc = L["This display is currently loaded"];
     loaded:SetScript("OnEnter", function() Show_Tooltip(button, loaded.title, loaded.desc) end);
     loaded:SetScript("OnLeave", Hide_Tooltip);
-    
+
     local renamebox = CreateFrame("EDITBOX", nil, button, "InputBoxTemplate");
     renamebox:SetHeight(14);
     renamebox:SetPoint("TOP", button, "TOP");
@@ -1008,7 +1008,7 @@ local function Constructor()
     renamebox:SetPoint("RIGHT", button, "RIGHT", -4, 0);
     renamebox:SetFont("Fonts\\FRIZQT__.TTF", 10);
     renamebox:Hide();
-    
+
     renamebox.func = function() --[[By default, do nothing!]] end;
     renamebox:SetScript("OnEnterPressed", function()
         local oldid = button.title:GetText();
@@ -1022,12 +1022,12 @@ local function Constructor()
             renamebox:Hide();
         end
     end);
-    
+
     renamebox:SetScript("OnEscapePressed", function()
         title:Show();
         renamebox:Hide();
     end);
-    
+
     local group = CreateFrame("BUTTON", nil, button);
     button.group = group;
     group:SetWidth(16);
@@ -1042,7 +1042,7 @@ local function Constructor()
     group:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
     group:SetScript("OnEnter", function() Show_Tooltip(button, L["Group (verb)"], L["Put this display in a group"]) end);
     group:SetScript("OnLeave", Hide_Tooltip);
-    
+
     local ungroup = CreateFrame("BUTTON", nil, button);
     button.ungroup = ungroup;
     ungroup:SetWidth(11);
@@ -1057,7 +1057,7 @@ local function Constructor()
     ungroup:SetScript("OnEnter", function() Show_Tooltip(button, L["Ungroup"], L["Remove this display from its group"]) end);
     ungroup:SetScript("OnLeave", Hide_Tooltip);
     ungroup:Hide();
-    
+
     local upgroup = CreateFrame("BUTTON", nil, button);
     button.upgroup = upgroup;
     upgroup:SetWidth(11);
@@ -1074,7 +1074,7 @@ local function Constructor()
     upgroup:SetScript("OnEnter", function() Show_Tooltip(button, L["Move Up"], L["Move this display up in its group's order"]) end);
     upgroup:SetScript("OnLeave", Hide_Tooltip);
     upgroup:Hide();
-    
+
     local downgroup = CreateFrame("BUTTON", nil, button);
     button.downgroup = downgroup;
     downgroup:SetWidth(11);
@@ -1090,7 +1090,7 @@ local function Constructor()
     downgroup:SetScript("OnEnter", function() Show_Tooltip(button, L["Move Down"], L["Move this display down in its group's order"]) end);
     downgroup:SetScript("OnLeave", Hide_Tooltip);
     downgroup:Hide();
-    
+
     local expand = CreateFrame("BUTTON", nil, button);
     button.expand = expand;
     expand.expanded = true;
@@ -1130,7 +1130,7 @@ local function Constructor()
     for method, func in pairs(methods) do
         widget[method] = func
     end
-    
+
     return AceGUI:RegisterAsWidget(widget);
 end
 

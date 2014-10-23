@@ -119,14 +119,14 @@ local function Constructor()
   button:SetHeight(20);
   button:SetWidth(1000);
   button:SetDisabledFontObject("GameFontNormal");
-  
+
   local background = button:CreateTexture(nil, "BACKGROUND");
   button.background = background;
   background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
   background:SetBlendMode("ADD");
   background:SetVertexColor(0.5, 0.5, 0.5, 0.25);
   background:SetAllPoints(button);
-  
+
   local expand = CreateFrame("BUTTON", nil, button);
   button.expand = expand;
   expand.expanded = true;
@@ -144,7 +144,7 @@ local function Constructor()
   expand.collapsedesc = "";
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
 	expand:SetScript("OnLeave", Hide_Tooltip);
-  
+
   local view = CreateFrame("BUTTON", nil, button);
   button.view = view;
   view:SetWidth(16);
@@ -171,7 +171,7 @@ local function Constructor()
       view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
     end
   end);
-  
+
 	local widget = {
 		frame = button,
     expand = expand,

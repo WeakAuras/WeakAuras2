@@ -111,7 +111,7 @@ function WeakAuras.tableAdd(augend, addend)
     end
     recurse(augend, addend);
 end
-    
+
 function WeakAuras.tableSubtract(minuend, subtrahend)
     local function recurse(minuend, subtrahend)
         for i,v in pairs(subtrahend) do
@@ -186,9 +186,9 @@ function WeakAuras.DisplayStub(regionType)
             }
         }
     }
-    
+
     WeakAuras.validate(stub, regionTypes[regionType].default);
-    
+
     return stub;
 end
 
@@ -431,7 +431,7 @@ function WeakAuras.DisplayToTableString(id)
                 ret = ret..i;
             end
             ret = ret.."] = ";
-            
+
             if(type(v) == "number") then
                 ret = ret..v..",\n"
             elseif(type(v) == "string") then
@@ -451,7 +451,7 @@ function WeakAuras.DisplayToTableString(id)
             end
         end
     end
-    
+
     local data = WeakAuras.GetData(id)
     if(data) then
         recurse(data, 1);
@@ -471,7 +471,7 @@ function WeakAuras.DisplayToTableStringCompact(id)
                 ret = ret..i;
             end
             ret = ret.."]=";
-            
+
             if(type(v) == "number") then
                 ret = ret..v..","
             elseif(type(v) == "string") then
@@ -491,7 +491,7 @@ function WeakAuras.DisplayToTableStringCompact(id)
             end
         end
     end
-    
+
     local data = WeakAuras.GetData(id)
     if(data) then
         recurse(data, 1);
@@ -506,17 +506,17 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             WeakAuras.DecompressDisplay(data);
             data.controlledChildren = nil;
         end
-                    
+
         local regionType = data.regionType;
         local regionData = regionOptions[regionType or ""]
         local displayName = regionData and regionData.displayName or "";
-        
+
         local tooltip = {
             {2, data.id, "          ", 0.5333, 0, 1},
             {2, displayName, "          ", 1, 0.82, 0},
             {1, " ", 1, 1, 1}
         };
-        
+
         if(children) then
             for index, childData in pairs(children) do
                 tinsert(tooltip, {2, " ", childData.id, 1, 1, 1, 1, 1, 1});
@@ -556,7 +556,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                                     end
                                 end
                             end
-                            
+
                             local i = icons or (WeakAurasOptionsSaved and WeakAurasOptionsSaved.iconCache);
                             tinsert(tooltip, {2, left, name..(i and i[name] and (" |T"..i[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
                         end
@@ -575,12 +575,12 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end
             end
         end
-        
+
         if(data.desc and data.desc ~= "") then
             tinsert(tooltip, {1, " "});
             tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
         end
-        
+
         local importbutton;
         if(import) then
             tinsert(tooltip, {1, " "});
@@ -589,7 +589,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             else
                 tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
             end
-            
+
             if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
                 ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
             end
@@ -601,17 +601,17 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 importbutton:SetText("Import");
                 importbutton:SetScript("OnClick", function()
                 WeakAuras.OpenOptions();
-                    
+
                 local optionsFrame = WeakAuras.OptionsFrame();
                 if not(optionsFrame) then
                     WeakAuras.ToggleOptions();
                     optionsFrame = WeakAuras.OptionsFrame();
                 end
-                
+
                 if not(WeakAuras.IsOptionsOpen()) then
                     WeakAuras.ToggleOptions();
                 end
-                
+
                 local function importData(data)
                     local id = data.id
                     local num = 2;
@@ -621,13 +621,13 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                     end
                     data.id = id;
                     data.parent = nil;
-                    
+
                     WeakAuras.Add(data);
                     WeakAuras.NewDisplayButton(data);
                 end
-                
+
                 importData(data);
-                
+
                 if(children) then
                     for index, childData in pairs(children) do
                         importData(childData);
@@ -636,20 +636,20 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                         WeakAuras.Add(data);
                         WeakAuras.Add(childData);
                     end
-                    
+
                     for index, id in pairs(data.controlledChildren) do
                         local childButton = WeakAuras.GetDisplayButton(id);
                         childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
                         childButton:SetGroupOrder(index, #data.controlledChildren);
                     end
-                    
+
                     local button = WeakAuras.GetDisplayButton(data.id);
                     button.callbacks.UpdateExpandButton();
                     WeakAuras.UpdateDisplayButton(data);
                     WeakAuras.ReloadGroupRegionOptions(data);
                     WeakAuras.SortDisplayButtons();
                 end
-                
+
                 WeakAuras.Add(data);
                 ItemRefTooltip:Hide();
                 WeakAuras.PickDisplay(data.id);
@@ -662,13 +662,13 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end);
             end
         end
-        
+
         WeakAuras.ShowTooltip(tooltip);
-        
+
         if(import) then
             importbutton:Show();
         end
-        
+
         if not(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
             ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame = CreateFrame("frame", nil, ItemRefTooltip);
         end
@@ -676,7 +676,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         thumbnail_frame:SetWidth(40);
         thumbnail_frame:SetHeight(40);
         thumbnail_frame:SetPoint("TOPRIGHT", ItemRefTooltip, "TOPRIGHT", -27, -7);
-        
+
         if(alterdesc) then
             if not(ItemRefTooltip.WeakAuras_Desc_Box) then
                 ItemRefTooltip.WeakAuras_Desc_Box = CreateFrame("frame", nil, ItemRefTooltip);
@@ -699,7 +699,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             descboxframe:SetWidth(260);
             descboxframe:SetPoint("TOP", ItemRefTooltip, "BOTTOM");
             descboxframe:Show();
-            
+
             local descbox = descboxframe.descbox;
             if not(descbox) then
                 descbox = CreateFrame("editbox", nil, descboxframe);
@@ -743,7 +743,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             descbox:SetFocus();
             descbox:Show();
         end
-        
+
         local RegularGetData;
         if(children) then
             data.controlledChildren = {};
@@ -753,7 +753,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end
                 data.controlledChildren[index] = childData.id;
             end
-            
+
             --WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
             --the tooltip, it will look to the incoming transmission data for child data. This allows thumbnails of incoming
             --groups to be constructed properly.
@@ -768,22 +768,22 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end
             end
         end
-        
+
         if (not IsAddOnLoaded('WeakAurasOptions')) then
             LoadAddOn('WeakAurasOptions')
         end
-        
+
         local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
             if not ok then
                 error("Error creating thumbnail", 2)
             else
                 --print("OK")
-            end      
-            
+            end
+
         WeakAuras.validate(data, regionTypes[regionType].default);
         regionOptions[regionType].modifyThumbnail(thumbnail_frame, thumbnail, data, regionTypes[regionType].modify);
         ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = thumbnail;
-        
+
         thumbnail:SetAllPoints(thumbnail_frame);
         if(thumbnail.SetIcon) then
             local i;
@@ -795,7 +795,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             thumbnail:SetIcon(i);
         end
         thumbnail_frame:Show();
-        
+
         if(children and RegularGetData) then
             WeakAuras.GetData = RegularGetData;
             data.controlledChildren = nil;
@@ -812,7 +812,7 @@ local function scamCheck(data)
     if type(data) == "table" then
         for k,v in pairs(data) do
             scamCheck(v)
-        end        
+        end
     elseif type(data) == "string" and (string.find(data, "SendMail") or string.find(data, "SetTradeMoney")) then
         print("|cffffff00The Aura you are importing contains code to send mail and/or trade gold to other players!|r")
     end

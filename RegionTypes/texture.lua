@@ -1,9 +1,9 @@
 local root2 = math.sqrt(2);
 local halfroot2 = root2/2;
-    
+
 local default = {
     texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
-	desaturate = false,
+    desaturate = false,
     width = 200,
     height = 200,
     color = {1, 1, 1, 0.75},
@@ -23,7 +23,7 @@ local function create(parent)
     local frame = CreateFrame("FRAME", nil, UIParent);
     frame:SetMovable(true);
     frame:SetResizable(true);
-    
+
     local texture = frame:CreateTexture();
     frame.texture = texture;
     texture:SetAllPoints(frame);
@@ -36,24 +36,24 @@ local function modify(parent, region, data)
     else
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
-    
+
     region.texture:SetTexture(data.texture);
-	region.texture:SetDesaturated(data.desaturate)
+    region.texture:SetDesaturated(data.desaturate)
     region:SetWidth(data.width);
     region:SetHeight(data.height);
     region.texture:SetBlendMode(data.blendMode);
     --region.texture:SetRotation((data.rotation / 180) * math.pi);
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
-    
+
     local function GetRotatedPoints(degrees)
         local angle = rad(135 - degrees);
         local vx = math.cos(angle);
         local vy = math.sin(angle);
-        
+
         return 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy
     end
-    
+
     local function DoTexCoord()
         local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
         if(data.mirror) then
@@ -87,10 +87,10 @@ local function modify(parent, region, data)
             end
         end
     end
-    
+
     region.rotation = data.rotation;
     DoTexCoord();
-    
+
     function region:Scale(scalex, scaley)
         if(scalex < 0) then
             region.mirror_h = true;
@@ -106,10 +106,10 @@ local function modify(parent, region, data)
             region.mirror_v = nil;
         end
         region:SetHeight(data.height * scaley);
-        
+
         DoTexCoord();
     end
-    
+
     function region:Color(r, g, b, a)
         region.color_r = r;
         region.color_g = g;
@@ -117,20 +117,20 @@ local function modify(parent, region, data)
         region.color_a = a;
         region.texture:SetVertexColor(r, g, b, a);
     end
-    
+
     function region:GetColor()
         return region.color_r or data.color[1], region.color_g or data.color[2],
                region.color_b or data.color[3], region.color_a or data.color[4];
     end
-    
+
     region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
-    
+
     if(data.rotate) then
         function region:Rotate(degrees)
             region.rotation = degrees;
             DoTexCoord();
         end
-        
+
         function region:GetRotation()
             return region.rotation;
         end
