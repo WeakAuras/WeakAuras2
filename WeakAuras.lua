@@ -4000,7 +4000,7 @@ function WeakAuras.UpdateAnimations()
     relativeProgress = inverse and (1 - relativeProgress) or relativeProgress;
     anim.progress = relativeProgress / anim.duration
     local iteration = math.floor(anim.progress);
-    anim.progress = anim.progress - iteration;
+    --anim.progress = anim.progress - iteration;
     if not(anim.iteration) then
       anim.iteration = iteration;
     elseif(anim.iteration ~= iteration) then
