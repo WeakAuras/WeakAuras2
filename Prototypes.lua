@@ -737,7 +737,7 @@ WeakAuras.event_prototypes = {
   ["Holy Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",      
+      "UNIT_POWER"
     },
     force_events = true,
     name = L["Holy Power"],
@@ -747,7 +747,7 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-    
+
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
@@ -756,29 +756,22 @@ WeakAuras.event_prototypes = {
         display = L["Holy Power"],
         type = "number",
         init = "UnitPower(unit, 9)"
-      },      
+      },
     },
     durationFunc = function(trigger)
       return UnitPower("player", 9), UnitPowerMax("player", 9), true;
     end,
     stacksFunc = function(trigger)
-      return UnitPower("player", 9), UnitPowerMax("player", 9), true;
+      return UnitPower("player", 9);
     end,
     automatic = true
   },
   ["Demonic Fury"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "UNIT_POWER"
     },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = true,
     name = L["Demonic Fury"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -791,23 +784,11 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
-      {
-        name = "power",
+        name = "demonicfury",
         display = L["Demonic Fury"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_DEMONIC_FURY)"
       },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
-      }
     },
     durationFunc = function(trigger)
       return UnitPower(trigger.unit, SPELL_POWER_DEMONIC_FURY), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_DEMONIC_FURY)), true;
@@ -820,16 +801,9 @@ WeakAuras.event_prototypes = {
   ["Burning Embers"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "UNIT_POWER"
     },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = true,
     name = L["Burning Embers"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -842,23 +816,11 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
-      {
-        name = "power",
+        name = "burningembers",
         display = L["Burning Embers"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_BURNING_EMBERS)"
       },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
-      }
     },
     durationFunc = function(trigger)
       return UnitPower(trigger.unit, SPELL_POWER_BURNING_EMBERS, true), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_BURNING_EMBERS, true)), true;
@@ -871,16 +833,9 @@ WeakAuras.event_prototypes = {
   ["Shadow Orbs"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "UNIT_POWER"
     },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = true,
     name = L["Shadow Orbs"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -893,23 +848,11 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
-      {
-        name = "power",
+        name = "shadoworbs",
         display = L["Shadow Orbs"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_SHADOW_ORBS)"
       },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
-      }
     },
     durationFunc = function(trigger)
       return UnitPower(trigger.unit, SPELL_POWER_SHADOW_ORBS), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_SHADOW_ORBS)), true;
@@ -922,16 +865,9 @@ WeakAuras.event_prototypes = {
   ["Chi Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "UNIT_POWER"
     },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = true,
     name = L["Chi Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -944,23 +880,11 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
-      {
-        name = "power",
+        name = "chipower",
         display = L["Chi Power"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_CHI)"
       },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
-      }
     },
     durationFunc = function(trigger)
       return UnitPower(trigger.unit, SPELL_POWER_CHI), math.max(1, UnitPowerMax(trigger.unit, SPELL_POWER_CHI)), true;
@@ -1026,19 +950,12 @@ WeakAuras.event_prototypes = {
     end,
     automatic = true
   },
-  ["Shards"] = {
+  ["Soul Shards"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "UNIT_POWER"
     },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = true,
     name = L["Shards"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -1051,23 +968,11 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
-      {
         name = "power",
         display = L["Shards"],
         type = "number",
         init = "UnitPower(unit, 7)"
       },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
-      }
     },
     durationFunc = function(trigger)
       return UnitPower(trigger.unit, 7), math.max(1, UnitPowerMax(trigger.unit, 7)), true;
