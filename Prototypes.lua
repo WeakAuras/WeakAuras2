@@ -517,7 +517,7 @@ WeakAuras.event_prototypes = {
   ["Combo Points"] = {
     type = "status",
     events = {
-      "UNIT_COMBO_POINTS",
+      "UNIT_POWER",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED"
     },
@@ -737,16 +737,9 @@ WeakAuras.event_prototypes = {
   ["Holy Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "UNIT_POWER",      
     },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = true,
     name = L["Holy Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -754,34 +747,22 @@ WeakAuras.event_prototypes = {
     local unit = unit or '%s';
     local concernedUnit = '%s';
     ]];
-
+    
     return ret:format(trigger.unit, trigger.unit);
     end,
     args = {
       {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
-      {
-        name = "power",
+        name = "holypower",
         display = L["Holy Power"],
         type = "number",
         init = "UnitPower(unit, 9)"
-      },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
-      }
+      },      
     },
     durationFunc = function(trigger)
-      return UnitPower(trigger.unit, 9), math.max(1, UnitPowerMax(trigger.unit, 9)), true;
+      return UnitPower("player", 9), UnitPowerMax("player", 9), true;
     end,
     stacksFunc = function(trigger)
-      return UnitPower(trigger.unit, 9);
+      return UnitPower("player", 9), UnitPowerMax("player", 9), true;
     end,
     automatic = true
   },
