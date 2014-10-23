@@ -14,171 +14,172 @@ function GetMoPTalentInfo(t) return GetTalentInfo(ceil(t/3), (t-1)%3 +1, GetActi
 
 WeakAuras.function_strings = {
   count = [[
-return function(count)
-  if(count %s %s) then
-    return true
-  else
-    return false
-  end
-end
-]],
+    return function(count)
+      if(count %s %s) then
+        return true
+      else
+        return false
+      end
+    end
+  ]],
   count_fraction = [[
-return function(count, max)
-  local fraction = count/max
-  if(fraction %s %s) then
-    return true
-  else
-    return false
-  end
-end
-]],
+    return function(count, max)
+      local fraction = count/max
+      if(fraction %s %s) then
+        return true
+      else
+        return false
+      end
+    end
+  ]],
   always = [[
-return function()
-  return true
-end
-]]
+    return function()
+      return true
+    end
+  ]]
 };
 
 WeakAuras.anim_function_strings = {
   straight = [[
-return function(progress, start, delta)
-  return start + (progress * delta)
-end]],
+    return function(progress, start, delta)
+      return start + (progress * delta)
+    end
+  ]],
   straightTranslate = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  return startX + (progress * deltaX), startY + (progress * deltaY)
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      return startX + (progress * deltaX), startY + (progress * deltaY)
+    end
+  ]],
   straightScale = [[
-return function(progress, startX, startY, scaleX, scaleY)
-  return startX + (progress * (scaleX - startX)), startY + (progress * (scaleY - startY))
-end
-]],
+    return function(progress, startX, startY, scaleX, scaleY)
+      return startX + (progress * (scaleX - startX)), startY + (progress * (scaleY - startY))
+    end
+  ]],
   straightColor = [[
-return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-  return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
-end
-]],
+    return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+      return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
+    end
+  ]],
   circle = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local angle = progress * 2 * math.pi
-  return startX + (deltaX * math.cos(angle)), startY + (deltaY * math.sin(angle))
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local angle = progress * 2 * math.pi
+      return startX + (deltaX * math.cos(angle)), startY + (deltaY * math.sin(angle))
+    end
+  ]],
   circle2 = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local angle = progress * 2 * math.pi
-  return startX + (deltaX * math.sin(angle)), startY + (deltaY * math.cos(angle))
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local angle = progress * 2 * math.pi
+      return startX + (deltaX * math.sin(angle)), startY + (deltaY * math.cos(angle))
+    end
+  ]],
   spiral = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local angle = progress * 2 * math.pi
-  return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local angle = progress * 2 * math.pi
+      return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))
+    end
+  ]],
   spiralandpulse = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local angle = (progress + 0.25) * 2 * math.pi
-  return startX + (math.cos(angle) * deltaX * math.cos(angle*2)), startY + (math.abs(math.cos(angle)) * deltaY * math.sin(angle*2))
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local angle = (progress + 0.25) * 2 * math.pi
+      return startX + (math.cos(angle) * deltaX * math.cos(angle*2)), startY + (math.abs(math.cos(angle)) * deltaY * math.sin(angle*2))
+    end
+  ]],
   shake = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local prog
-  if(progress < 0.25) then
-    prog = progress * 4
-  elseif(progress < .75) then
-    prog = 2 - (progress * 4)
-  else
-    prog = (progress - 1) * 4
-  end
-  return startX + (prog * deltaX), startY + (prog * deltaY)
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local prog
+      if(progress < 0.25) then
+        prog = progress * 4
+      elseif(progress < .75) then
+        prog = 2 - (progress * 4)
+      else
+        prog = (progress - 1) * 4
+      end
+      return startX + (prog * deltaX), startY + (prog * deltaY)
+    end
+  ]],
   bounceDecay = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local prog = (progress * 3.5) % 1
-  local bounce = math.ceil(progress * 3.5)
-  local bounceDistance = math.sin(prog * math.pi) * (bounce / 4)
-  return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local prog = (progress * 3.5) % 1
+      local bounce = math.ceil(progress * 3.5)
+      local bounceDistance = math.sin(prog * math.pi) * (bounce / 4)
+    return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
+  end
+  ]],
   bounce = [[
-return function(progress, startX, startY, deltaX, deltaY)
-  local bounceDistance = math.sin(progress * math.pi)
-  return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
-end
-]],
+    return function(progress, startX, startY, deltaX, deltaY)
+      local bounceDistance = math.sin(progress * math.pi)
+      return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
+    end
+  ]],
   flash = [[
-return function(progress, start, delta)
-  local prog
-  if(progress < 0.5) then
-    prog = progress * 2
-  else
-    prog = (progress - 1) * 2
-  end
-  return start + (prog * delta)
-end
-]],
+    return function(progress, start, delta)
+      local prog
+      if(progress < 0.5) then
+        prog = progress * 2
+      else
+        prog = (progress - 1) * 2
+      end
+      return start + (prog * delta)
+    end
+  ]],
   pulse = [[
-return function(progress, startX, startY, scaleX, scaleY)
-  local angle = (progress * 2 * math.pi) - (math.pi / 2)
-  return startX + (((math.sin(angle) + 1)/2) * (scaleX - 1)), startY + (((math.sin(angle) + 1)/2) * (scaleY - 1))
-end
-]],
+    return function(progress, startX, startY, scaleX, scaleY)
+      local angle = (progress * 2 * math.pi) - (math.pi / 2)
+      return startX + (((math.sin(angle) + 1)/2) * (scaleX - 1)), startY + (((math.sin(angle) + 1)/2) * (scaleY - 1))
+    end
+  ]],
   alphaPulse = [[
-return function(progress, start, delta)
-  local angle = (progress * 2 * math.pi) - (math.pi / 2)
-  return start + (((math.sin(angle) + 1)/2) * delta)
-end
-]],
+    return function(progress, start, delta)
+      local angle = (progress * 2 * math.pi) - (math.pi / 2)
+      return start + (((math.sin(angle) + 1)/2) * delta)
+    end
+  ]],
   pulseColor = [[
-return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-  local angle = (progress * 2 * math.pi) - (math.pi / 2)
-  local newProgress = ((math.sin(angle) + 1)/2);
-  return r1 + (newProgress * (r2 - r1)),
-       g1 + (newProgress * (g2 - g1)),
-       b1 + (newProgress * (b2 - b1)),
-       a1 + (newProgress * (a2 - a1))
-end
-]],
+    return function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+      local angle = (progress * 2 * math.pi) - (math.pi / 2)
+      local newProgress = ((math.sin(angle) + 1)/2);
+      return r1 + (newProgress * (r2 - r1)),
+           g1 + (newProgress * (g2 - g1)),
+           b1 + (newProgress * (b2 - b1)),
+           a1 + (newProgress * (a2 - a1))
+    end
+  ]],
   fauxspin = [[
-return function(progress, startX, startY, scaleX, scaleY)
-  local angle = progress * 2 * math.pi
-  return math.cos(angle) * scaleX, startY + (progress * (scaleY - startY))
-end
-]],
+    return function(progress, startX, startY, scaleX, scaleY)
+      local angle = progress * 2 * math.pi
+      return math.cos(angle) * scaleX, startY + (progress * (scaleY - startY))
+    end
+  ]],
   fauxflip = [[
-return function(progress, startX, startY, scaleX, scaleY)
-  local angle = progress * 2 * math.pi
-  return startX + (progress * (scaleX - startX)), math.cos(angle) * scaleY
-end
-]],
+    return function(progress, startX, startY, scaleX, scaleY)
+      local angle = progress * 2 * math.pi
+      return startX + (progress * (scaleX - startX)), math.cos(angle) * scaleY
+    end
+  ]],
   backandforth = [[
-return function(progress, start, delta)
-  local prog
-  if(progress < 0.25) then
-    prog = progress * 4
-  elseif(progress < .75) then
-    prog = 2 - (progress * 4)
-  else
-    prog = (progress - 1) * 4
-  end
-  return start + (prog * delta)
-end
-]],
+    return function(progress, start, delta)
+    local prog
+    if(progress < 0.25) then
+      prog = progress * 4
+      elseif(progress < .75) then
+      prog = 2 - (progress * 4)
+    else
+      prog = (progress - 1) * 4
+    end
+    return start + (prog * delta)
+    end
+  ]],
   wobble = [[
-return function(progress, start, delta)
-  local angle = progress * 2 * math.pi
-  return start + math.sin(angle) * delta
-end
-]],
+    return function(progress, start, delta)
+    local angle = progress * 2 * math.pi
+    return start + math.sin(angle) * delta
+    end
+  ]],
   hide = [[
-return function()
-  return 0
-end
-]]
+    return function()
+    return 0
+    end
+  ]]
 };
 
 WeakAuras.anim_presets = {
@@ -1839,12 +1840,12 @@ WeakAuras.event_prototypes = {
       ]];
     ret = ret:format(trigger.totemType);
     if trigger.use_totemName then
-    trigger.totemName = trigger.totemName or 0;
-    local totemName = type(trigger.totemName) == "number" and trigger.totemName or "'"..trigger.totemName.."'";
+      trigger.totemName = trigger.totemName or 0;
+      local totemName = type(trigger.totemName) == "number" and trigger.totemName or "'"..trigger.totemName.."'";
 
-    ret = ret .. [[
-      active = active and (]] .. totemName .. [[ == totemName);
-    ]];
+      ret = ret .. [[
+        active = active and (]] .. totemName .. [[ == totemName);
+      ]];
     end
 
     if(trigger.use_remaining and not trigger.use_inverse) then
@@ -1860,9 +1861,9 @@ WeakAuras.event_prototypes = {
     end
 
     if trigger.use_inverse then
-    ret = ret .. [[
-      active = not active;
-    ]];
+      ret = ret .. [[
+        active = not active;
+      ]];
     end
 
     return ret;
@@ -1895,7 +1896,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-    test = "active"
+        test = "active"
       }
     },
     durationFunc = function(trigger)
@@ -1938,10 +1939,10 @@ WeakAuras.event_prototypes = {
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
-    local ret = [[
-    local count = GetItemCount(%s, %s, %s);
-    ]];
-    return ret:format(itemName, trigger.use_includeBank and "true" or "nil", trigger.use_includeCharges and "true" or "nil");
+      local ret = [[
+        local count = GetItemCount(%s, %s, %s);
+      ]];
+      return ret:format(itemName, trigger.use_includeBank and "true" or "nil", trigger.use_includeCharges and "true" or "nil");
     end,
     args = {
       {
@@ -1986,7 +1987,7 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "UPDATE_SHAPESHIFT_FORM",
-    "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Stance/Form/Aura"],
@@ -2205,7 +2206,7 @@ WeakAuras.event_prototypes = {
     },
     force_events = "RUNE_COOLDOWN_FORCE",
     name = L["Death Knight Rune"],
-  init = function(trigger)
+    init = function(trigger)
     trigger.rune = trigger.rune or 0;
     WeakAuras.WatchRuneCooldown(trigger.rune);
     local ret = [[
@@ -2214,21 +2215,21 @@ WeakAuras.event_prototypes = {
       local inverse = %s;
       local death = %s;
 
-      local numBloodRunes  = 0;
+      local numBloodRunes = 0;
       local numUnholyRunes = 0;
-      local numFrostRunes  = 0;
-      local numDeathRunes  = 0;
+      local numFrostRunes = 0;
+      local numDeathRunes = 0;
       for index = 1, 6 do
         local startTime = select(1, GetRuneCooldown(index));
         if startTime == 0 then
-          if   GetRuneType(index) == 1 then
-            numBloodRunes  = numBloodRunes  + 1;
+          if GetRuneType(index) == 1 then
+            numBloodRunes = numBloodRunes  + 1;
           elseif GetRuneType(index) == 2 then
             numUnholyRunes = numUnholyRunes + 1;
           elseif GetRuneType(index) == 3 then
-            numFrostRunes  = numFrostRunes  + 1;
+            numFrostRunes = numFrostRunes  + 1;
           elseif GetRuneType(index) == 4 then
-            numDeathRunes  = numDeathRunes  + 1;
+            numDeathRunes = numDeathRunes  + 1;
           end
         end
       end
@@ -2259,15 +2260,9 @@ WeakAuras.event_prototypes = {
         type = "select",
         values = "rune_specific_types",
         test = [[
-          (
-          (inverse and startTime == 0) or
-          (not inverse and startTime > 0)
-          ) and
-          (
-          (death == nil) or
-          (death == true and GetRuneType(rune) == 4) or
-          (death == false and GetRuneType(rune) ~= 4)
-          )
+          ((inverse and startTime == 0) or (not inverse and startTime > 0)) 
+          and 
+          ((death == nil) or (death == true and GetRuneType(rune) == 4) or (death == false and GetRuneType(rune) ~= 4))
         ]],
         enable = function(trigger) return not trigger.use_bloodRunes and not trigger.use_unholyRunes and not trigger.use_frostRunes end
       },
