@@ -753,17 +753,17 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "holypower",
+        name = "power",
         display = L["Holy Power"],
         type = "number",
         init = "UnitPower(unit, 9)"
       },
     },
     durationFunc = function(trigger)
-      return UnitPower("player", 9), UnitPowerMax("player", 9), true;
+      return UnitPower(trigger.unit, 9), UnitPowerMax(trigger.unit, 9), true;
     end,
     stacksFunc = function(trigger)
-      return UnitPower("player", 9);
+      return UnitPower(trigger.unit, 9);
     end,
     automatic = true
   },
@@ -785,7 +785,7 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "demonicfury",
+        name = "power",
         display = L["Demonic Fury"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_DEMONIC_FURY)"
@@ -817,7 +817,7 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "burningembers",
+        name = "power",
         display = L["Burning Embers"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_BURNING_EMBERS)"
@@ -849,7 +849,7 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "shadoworbs",
+        name = "power",
         display = L["Shadow Orbs"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_SHADOW_ORBS)"
@@ -881,7 +881,7 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "chipower",
+        name = "power",
         display = L["Chi Power"],
         type = "number",
         init = "UnitPower(unit, SPELL_POWER_CHI)"
@@ -951,7 +951,7 @@ WeakAuras.event_prototypes = {
     end,
     automatic = true
   },
-  ["Soul Shards"] = {
+  ["Shards"] = {
     type = "status",
     events = {
       "UNIT_POWER"
