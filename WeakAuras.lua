@@ -3706,6 +3706,7 @@ function WeakAuras.SetRegion(data, cloneId)
           parent:PositionChildren();
         end
         function region:Collapse()
+          region.toShow = false;
           if(region:IsVisible()) then
             region.toHide = true;
             WeakAuras.PerformActions(data, "finish");
@@ -3718,6 +3719,7 @@ function WeakAuras.SetRegion(data, cloneId)
             region:EnsureModel();
           end
           region.toShow = true;
+          region.toHide = false;
           parent:EnsureTrays();
           if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or (not region:IsVisible() or (cloneId and region.justCreated))) then
             region.justCreated = nil;
