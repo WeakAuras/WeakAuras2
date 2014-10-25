@@ -1927,6 +1927,11 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
           data.region:SetIcon();
         end
       end
+      if(data.region.SetTexture) then
+        if(data.textureFunc) then
+          data.region:SetTexture(data.textureFunc(trigger));
+        end
+      end
       if(data.region.SetStacks) then
         if(data.stacksFunc) then
           data.region:SetStacks(data.stacksFunc(trigger));
@@ -3466,7 +3471,7 @@ function WeakAuras.pAdd(data)
       elseif(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
         local trigger_events = {};
-        local durationFunc, nameFunc, iconFunc, stacksFunc;
+        local durationFunc, nameFunc, iconFunc, textureFunc, stacksFunc;
         if(triggerType == "status" or triggerType == "event") then
         if not(trigger.event) then
           error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -3491,6 +3496,7 @@ function WeakAuras.pAdd(data)
           durationFunc = event_prototypes[trigger.event].durationFunc;
           nameFunc = event_prototypes[trigger.event].nameFunc;
           iconFunc = event_prototypes[trigger.event].iconFunc;
+          textureFunc = event_prototypes[trigger.event].textureFunc;
           stacksFunc = event_prototypes[trigger.event].stacksFunc;
 
           trigger.unevent = trigger.unevent or "auto";
@@ -3541,6 +3547,9 @@ function WeakAuras.pAdd(data)
         if(trigger.customIcon and trigger.customIcon ~= "") then
           iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon);
         end
+        if(trigger.customTexture and trigger.customTexture ~= "") then
+          textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture);
+        end
         if(trigger.customStacks and trigger.customStacks ~= "") then
           stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks);
         end
@@ -3587,6 +3596,7 @@ function WeakAuras.pAdd(data)
         durationFunc = durationFunc,
         nameFunc = nameFunc,
         iconFunc = iconFunc,
+        textureFunc = textureFunc,
         stacksFunc = stacksFunc,
         expiredHideFunc = triggerType ~= "custom" and event_prototypes[trigger.event].expiredHideFunc,
         region = region,

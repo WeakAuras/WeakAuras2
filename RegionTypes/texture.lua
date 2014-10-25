@@ -110,6 +110,11 @@ local function modify(parent, region, data)
         DoTexCoord();
     end
 
+    function region:SetTexture(path)
+        local texturePath = path;
+        region.texture:SetTexture(texturePath);
+    end
+
     function region:Color(r, g, b, a)
         region.color_r = r;
         region.color_g = g;
