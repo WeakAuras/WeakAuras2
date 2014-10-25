@@ -160,6 +160,7 @@ function WeakAuras.DisplayStub(regionType)
             ["subeventSuffix"] = "_CAST_START",
             ["debuffType"] = "HELPFUL",
             ["names"] = {},
+            ["spellIds"] = {},
             ["event"] = "Health",
             ["unit"] = "player"
         },
@@ -192,6 +193,26 @@ function WeakAuras.DisplayStub(regionType)
     return stub;
 end
 
+function WeakAuras.removeSpellNames(data)
+    for triggernum=0,(data.numTriggers or 9) do
+        if(triggernum == 0) then
+            trigger = data.trigger;
+        elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+            trigger = data.additional_triggers[triggernum].trigger;
+        end
+        if (trigger.spellId) then
+            trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
+        end
+        if (trigger.spellIds) then
+            for i = 1, 10 do
+                if (trigger.spellIds[i]) then
+                    trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
+                end
+            end
+        end
+    end
+end
+
 function WeakAuras.CompressDisplay(data)
     local copiedData = {};
     WeakAuras.DeepCopy(data, copiedData);
@@ -203,6 +224,7 @@ end
 
 function WeakAuras.DecompressDisplay(data)
     WeakAuras.tableAdd(data, WeakAuras.DisplayStub(data.regionType));
+    WeakAuras.removeSpellNames(data);
 end
 
 local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)

@@ -1221,11 +1221,10 @@ do
   end
 
   local function updateSpell(spellName, unit, destGUID)
-    for id, triggers in pairs(loaded_auras[spellName]) do
-      for triggernum, data in pairs(triggers) do
+    for triggernum, data in pairs(triggers) do
       local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
       local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, spellName, nil, filter);
-      if(name) then
+      if(name and (data.spellId == nil or data.spellId == spellId)) then
         data.GUIDs = data.GUIDs or {};
         data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
         data.GUIDs[destGUID].name = spellName;
@@ -2458,6 +2457,9 @@ function WeakAuras.ScanAuras(unit)
       for index, checkname in pairs(data.names) do
         -- Fetch aura data
         name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
+          if (data.spellIds[index] and data.spellIds[index] ~= spellId) then
+            name = nil
+          end
         checkPassed = false;
 
         -- Aura conforms to trigger options?
@@ -3363,6 +3365,7 @@ function WeakAuras.pAdd(data)
       triggerType = trigger.type;
       if(triggerType == "aura") then
         trigger.names = trigger.names or {};
+          trigger.spellIds = trigger.spellIds or {}
         trigger.unit = trigger.unit or "player";
         trigger.debuffType = trigger.debuffType or "HELPFUL";
 
@@ -3426,7 +3429,7 @@ function WeakAuras.pAdd(data)
           else
           return false;
           end
-        end
+        end -- end scanFunc
         end
 
         if(trigger.unit == "multi") then
@@ -3451,6 +3454,7 @@ function WeakAuras.pAdd(data)
         icon = data.icon,
         debuffType = trigger.debuffType,
         names = trigger.names,
+        spellIds = trigger.spellIds,
         name = trigger.name,
         unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit,
         specificUnit = trigger.unit == "member",

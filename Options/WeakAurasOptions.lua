@@ -3833,6 +3833,13 @@ function WeakAuras.ReloadTriggerOptions(data)
     end
   end
   
+  -- the spell id table is sparse, so tremove doesn't work
+  local function spellId_tremove(tbl, pos)
+    for i = pos, 9, 1 do
+        tbl[i] = tbl[i + 1]
+    end
+  end
+
   local function getAuraMatchesList(name)
     local ids = idCache[name]
     if(ids) then
@@ -4010,12 +4017,13 @@ function WeakAuras.ReloadTriggerOptions(data)
       desc = L["Enter an aura name, partial aura name, or spell id"],
       order = 12,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end,
-      get = function(info) return trigger.name end,
+      get = function(info) return trigger.spellId and tostring(trigger.spellId) or trigger.name end,
       set = function(info, v)
         if(v == "") then
           trigger.name = nil;
+          trigger.spellId = nil;
         else
-          trigger.name = WeakAuras.CorrectAuraName(v);
+          trigger.name, trigger.spellId = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4039,17 +4047,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       desc = L["Enter an aura name, partial aura name, or spell id"],
       order = 12,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[1] end,
+      get = function(info) return trigger.spellIds[1] and tostring(trigger.spellIds[1]) or trigger.names[1] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[1]) then
             tremove(trigger.names, 1);
+            spellId_tremove(trigger.spellIds, 1);
           end
         else
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[1] = WeakAuras.CorrectAuraName(v);
+          trigger.names[1], trigger.spellIds[1] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4080,14 +4089,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 15,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[2] end,
+      get = function(info) return trigger.spellIds[2] and tostring(trigger.spellIds[2]) or trigger.names[2] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[2]) then
             tremove(trigger.names, 2);
+            spellId_tremove(trigger.spellIds, 2);
           end
         else
-          trigger.names[2] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[2], trigger.spellIds[2] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4118,14 +4131,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 18,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[3] end,
+      get = function(info) return trigger.spellIds[3] and tostring(trigger.spellIds[3]) or trigger.names[3] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[3]) then
             tremove(trigger.names, 3);
+            spellId_tremove(trigger.spellIds, 3);
           end
         else
-          trigger.names[3] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[3], trigger.spellIds[3] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4156,14 +4173,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 21,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[4] end,
+      get = function(info) return trigger.spellIds[4] and tostring(trigger.spellIds[4]) or trigger.names[4] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[4]) then
             tremove(trigger.names, 4);
+            spellId_tremove(trigger.spellIds, 4);
           end
         else
-          trigger.names[4] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[4], trigger.spellIds[4] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4194,14 +4215,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 24,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[5] end,
+      get = function(info) return trigger.spellIds[5] and tostring(trigger.spellIds[5]) or trigger.names[5] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[5]) then
             tremove(trigger.names, 5);
+            spellId_tremove(trigger.spellIds, 5);
           end
         else
-          trigger.names[5] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[5], trigger.spellIds[5] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4232,14 +4257,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 27,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[6] end,
+      get = function(info) return trigger.spellIds[6] and tostring(trigger.spellIds[6]) or trigger.names[6] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[6]) then
             tremove(trigger.names, 6);
+            spellId_tremove(trigger.spellIds, 6);
           end
         else
-          trigger.names[6] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[6], trigger.spellIds[6] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4270,14 +4299,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 30,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[7] end,
+      get = function(info) return trigger.spellIds[7] and tostring(trigger.spellIds[7]) or trigger.names[7] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[7]) then
             tremove(trigger.names, 7);
+            spellId_tremove(trigger.spellIds, 7);
           end
         else
-          trigger.names[7] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[7], trigger.spellIds[7] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4308,14 +4341,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 33,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[8] end,
+      get = function(info) return trigger.spellIds[8] and tostring(trigger.spellIds[8]) or trigger.names[8] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[8]) then
             tremove(trigger.names, 8);
+            spellId_tremove(trigger.spellIds, 8);
           end
         else
-          trigger.names[8] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[8], trigger.spellIds[8] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4346,14 +4383,18 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 36,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
-      get = function(info) return trigger.names[9] end,
+      get = function(info) return trigger.spellIds[9] and tostring(trigger.spellIds[9]) or trigger.names[9] end,
       set = function(info, v)
         if(v == "") then
           if(trigger.names[9]) then
             tremove(trigger.names, 9);
+            spellId_tremove(trigger.spellIds, 9);
           end
         else
-          trigger.names[9] = WeakAuras.CorrectAuraName(v);
+          if(tonumber(v)) then
+            WeakAuras.ShowSpellIDDialog(trigger, v);
+          end
+          trigger.names[9], trigger.spellIds[9] = WeakAuras.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -8312,16 +8353,16 @@ function WeakAuras.CorrectAuraName(input)
     local name, _, icon = GetSpellInfo(spellId);
     if(name) then
       iconCache[name] = icon;
-      return name;
+      return name, spellId;
     else
       return "Invalid Spell ID";
     end
   else
     local ret = WeakAuras.BestKeyMatch(input, iconCache);
     if(ret == "") then
-      return "No Match Found";
+      return "No Match Found", nil;
     else
-      return ret;
+      return ret, nil;
     end
   end
 end
