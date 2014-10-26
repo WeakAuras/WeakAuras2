@@ -620,7 +620,8 @@ WeakAuras.event_prototypes = {
       "UNIT_HEALTH",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
-      "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
+      "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = {
       "player",
@@ -678,7 +679,8 @@ WeakAuras.event_prototypes = {
       "UNIT_POWER",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
-      "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
+      "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = {
       "player",
@@ -738,7 +740,8 @@ WeakAuras.event_prototypes = {
   ["Holy Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER"
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Holy Power"],
@@ -770,7 +773,8 @@ WeakAuras.event_prototypes = {
   ["Demonic Fury"] = {
     type = "status",
     events = {
-      "UNIT_POWER"
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Demonic Fury"],
@@ -802,7 +806,8 @@ WeakAuras.event_prototypes = {
   ["Burning Embers"] = {
     type = "status",
     events = {
-      "UNIT_POWER"
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Burning Embers"],
@@ -834,7 +839,8 @@ WeakAuras.event_prototypes = {
   ["Shadow Orbs"] = {
     type = "status",
     events = {
-      "UNIT_POWER"
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Shadow Orbs"],
@@ -866,7 +872,8 @@ WeakAuras.event_prototypes = {
   ["Chi Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER"
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Chi Power"],
@@ -954,7 +961,8 @@ WeakAuras.event_prototypes = {
   ["Shards"] = {
     type = "status",
     events = {
-      "UNIT_POWER"
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Shards"],
@@ -988,7 +996,8 @@ WeakAuras.event_prototypes = {
     events = {
       "UNIT_POWER_FREQUENT",
       "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "PLAYER_FOCUS_CHANGED",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = {
       "player",
@@ -1083,6 +1092,7 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Eclipse Direction"],
