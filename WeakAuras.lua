@@ -1645,11 +1645,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
 
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-
       WeakAuras.FixGroupChildrenOrder();
-
       WeakAuras.RemoveGTFO();
-
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
