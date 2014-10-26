@@ -1221,6 +1221,7 @@ do
   end
 
   local function updateSpell(spellName, unit, destGUID)
+   for id, triggers in pairs(loaded_auras[spellName]) do
     for triggernum, data in pairs(triggers) do
       local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
       local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, spellName, nil, filter);
@@ -1236,6 +1237,7 @@ do
         updateRegion(id, data, triggernum, destGUID);
       end
     end
+   end
   end
 
   local function combatLog(_, message, _, _, sourceName, _, _, destGUID, destName, _, _, _, spellName, _, auraType, amount)
