@@ -1233,9 +1233,7 @@ do
         data.GUIDs[destGUID].expirationTime = expirationTime;
         data.GUIDs[destGUID].icon = icon;
         data.GUIDs[destGUID].count = count;
-
         updateRegion(id, data, triggernum, destGUID);
-      end
       end
     end
   end
@@ -1312,19 +1310,18 @@ do
   local function checkExists()
     for unit, auras in pairs(loaded_auras) do
       if not(WeakAuras.unit_types[unit]) then
-      for id, triggers in pairs(auras) do
-        for triggernum, data in pairs(triggers) do
-        if(data.GUIDs) then
-          for GUID, GUIDData in pairs(data.GUIDs) do
-          if(GUIDData.expirationTime and GUIDData.expirationTime + 2 < GetTime()) then
-            data.GUIDs[GUID] = nil;
-
-            clones[id][GUID]:Collapse();
-          end
+        for id, triggers in pairs(auras) do
+          for triggernum, data in pairs(triggers) do
+            if(data.GUIDs) then
+              for GUID, GUIDData in pairs(data.GUIDs) do
+                if(GUIDData.expirationTime and GUIDData.expirationTime + 2 < GetTime()) then
+                  data.GUIDs[GUID] = nil;
+                  clones[id][GUID]:Collapse();
+                end
+              end
+            end
           end
         end
-        end
-      end
       end
     end
   end
@@ -1344,26 +1341,26 @@ do
       local guid = UnitGUID(uid);
 
       for spellName, auras in pairs(loaded_auras) do
-      if not(WeakAuras.unit_types[spellName]) then
-        for id, triggers in pairs(auras) do
-        for triggernum, data in pairs(triggers) do
-          local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-          local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(uid, spellName, nil, filter);
-          if(name) then
-          data.GUIDs = data.GUIDs or {};
-          data.GUIDs[guid] = data.GUIDs[guid] or {};
-          data.GUIDs[guid].name = spellName;
-          data.GUIDs[guid].unitName = GetUnitName(uid, true);
-          data.GUIDs[guid].duration = duration;
-          data.GUIDs[guid].expirationTime = expirationTime;
-          data.GUIDs[guid].icon = icon;
-          data.GUIDs[guid].count = count;
+        if not(WeakAuras.unit_types[spellName]) then
+          for id, triggers in pairs(auras) do
+            for triggernum, data in pairs(triggers) do
+              local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
+              local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(uid, spellName, nil, filter);
+              if(name) then
+                data.GUIDs = data.GUIDs or {};
+                data.GUIDs[guid] = data.GUIDs[guid] or {};
+                data.GUIDs[guid].name = spellName;
+                data.GUIDs[guid].unitName = GetUnitName(uid, true);
+                data.GUIDs[guid].duration = duration;
+                data.GUIDs[guid].expirationTime = expirationTime;
+                data.GUIDs[guid].icon = icon;
+                data.GUIDs[guid].count = count;
 
-          updateRegion(id, data, triggernum, guid);
+                updateRegion(id, data, triggernum, guid);
+              end
+            end
           end
         end
-        end
-      end
       end
     end
   end
