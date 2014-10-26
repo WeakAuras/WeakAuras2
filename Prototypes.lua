@@ -397,6 +397,12 @@ WeakAuras.load_prototype = {
       init = "arg"
     },
     {
+      name = "realm",
+      display = L["Realm"],
+      type = "string",
+      init = "arg"
+    },
+    {
       name = "class",
       display = L["Player Class"],
       type = "multiselect",
