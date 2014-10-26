@@ -1693,9 +1693,9 @@ end
 
 function WeakAuras.Toggle()
   if(paused) then
-  WeakAuras.Resume();
+    WeakAuras.Resume();
   else
-  WeakAuras.Pause();
+    WeakAuras.Pause();
   end
 end
 
@@ -1714,10 +1714,10 @@ end
 
 function WeakAuras.ScanAll()
   for id, region in pairs(regions) do
-  region.region:Collapse();
-  region.region.trigger_count = 0;
-  region.region.triggers = region.region.triggers or {};
-  wipe(region.region.triggers);
+    region.region:Collapse();
+    region.region.trigger_count = 0;
+    region.region.triggers = region.region.triggers or {};
+    wipe(region.region.triggers);
   end
 
   for id, cloneList in pairs(clones) do
@@ -1743,19 +1743,19 @@ end
 
 function WeakAuras.ForceEvents()
   for event, v in pairs(WeakAuras.forceable_events) do
-  if(type(v) == "table") then
-    for index, arg1 in pairs(v) do
-    WeakAuras.ScanEvents(event, arg1);
+    if(type(v) == "table") then
+      for index, arg1 in pairs(v) do
+      WeakAuras.ScanEvents(event, arg1);
+      end
+    elseif(event == "SPELL_COOLDOWN_FORCE") then
+      WeakAuras.SpellCooldownForce();
+    elseif(event == "ITEM_COOLDOWN_FORCE") then
+      WeakAuras.ItemCooldownForce();
+    elseif(event == "RUNE_COOLDOWN_FORCE") then
+      WeakAuras.RuneCooldownForce();
+    else
+      WeakAuras.ScanEvents(event);
     end
-  elseif(event == "SPELL_COOLDOWN_FORCE") then
-    WeakAuras.SpellCooldownForce();
-  elseif(event == "ITEM_COOLDOWN_FORCE") then
-    WeakAuras.ItemCooldownForce();
-  elseif(event == "RUNE_COOLDOWN_FORCE") then
-    WeakAuras.RuneCooldownForce();
-  else
-    WeakAuras.ScanEvents(event);
-  end
   end
 end
 
