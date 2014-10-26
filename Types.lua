@@ -2,6 +2,7 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
+local LBR = LibStub("LibBabble-Race-3.0"):GetLookupTable()
 
 WeakAuras.glow_action_types = {
   show = L["Show"],
@@ -124,19 +125,19 @@ do
 end
 
 WeakAuras.race_types = {
-  Pandaren = L["Pandaren"],
-  Worgen = L["Worgen"],
-  Draenei = L["Draenei"],
-  Dwarf = L["Dwarf"],
-  Gnome = L["Gnome"],
-  Human = L["Human"],
-  NightElf = L["Night Elf"],
-  Goblin = L["Goblin"],
-  BloodElf = L["Blood Elf"],
-  Orc = L["Orc"],
-  Tauren = L["Tauren"],
-  Troll = L["Troll"],
-  Undead = L["Undead"]
+  Pandaren = LBR["Pandaren"],
+  Worgen = LBR["Worgen"],
+  Draenei = LBR["Draenei"],
+  Dwarf = LBR["Dwarf"],
+  Gnome = LBR["Gnome"],
+  Human = LBR["Human"],
+  NightElf = LBR["Night Elf"],
+  Goblin = LBR["Goblin"],
+  BloodElf = LBR["Blood Elf"],
+  Orc = LBR["Orc"],
+  Tauren = LBR["Tauren"],
+  Troll = LBR["Troll"],
+  Undead = LBR["Undead"]
 }
 
 WeakAuras.form_types = {};

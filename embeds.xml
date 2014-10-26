@@ -14,6 +14,7 @@
 	<Include file="libs\LibSharedMedia-3.0\lib.xml"/>
 	<Include file="libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 	<Include file="libs\LibCompress\lib.xml"/>
+	<Include file="libs\LibBabble-Race-3.0\lib.xml"/>
 	<Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
 	<!--@end-no-lib-strip@-->
 </Ui>

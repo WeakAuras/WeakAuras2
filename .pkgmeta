@@ -31,6 +31,8 @@ externals:
   url: svn://svn.wowace.com/wow/libcompress/mainline/trunk
  libs/LibChatAnims:
   url: svn://svn.wowace.com/wow/libchatanims/mainline/trunk/LibChatAnims
+ libs/LibBabble-Race-3.0:
+  url: svn://svn.wowace.com/wow/libbabble-race-3-0/mainline/trunk
 
 ignore:
  - RegionTypes\timer.lua
