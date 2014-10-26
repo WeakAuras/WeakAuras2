@@ -5992,9 +5992,9 @@ function WeakAuras.CreateFrame()
   minimizebutton:SetScript("OnClick", function()
     if(frame.minimized) then
       frame.minimized = nil;
-    if db.frame then
-    db.frame.height = math.min(db.frame.height, 500)
-    end
+      if db.frame.height <= 40 then
+        db.frame.height = 500
+      end
       frame:SetHeight(db.frame and db.frame.height or 500);
       if(frame.window == "default") then
         frame.buttonsContainer.frame:Show();
@@ -6013,7 +6013,7 @@ function WeakAuras.CreateFrame()
       minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp");
       minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp");
     else
-      frame.minimized = true;
+      frame.minimized = true;      
       frame:SetHeight(40);
       frame.buttonsContainer.frame:Hide();
       frame.texturePick.frame:Hide();
