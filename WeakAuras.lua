@@ -1288,10 +1288,10 @@ do
     if(GUID) then
       WeakAuras.SetUID(GUID, unit);
       if(pendingTracks[GUID]) then
-      for spellName,_ in pairs(pendingTracks[GUID]) do
-        updateSpell(spellName, unit, GUID);
-        pendingTracks[GUID][spellName] = nil;
-      end
+        for spellName,_ in pairs(pendingTracks[GUID]) do
+          updateSpell(spellName, unit, GUID);
+          pendingTracks[GUID][spellName] = nil;
+        end
       end
     end
     unit = unit.."target";
@@ -1299,10 +1299,10 @@ do
     if(GUID) then
       WeakAuras.SetUID(GUID, unit);
       if(pendingTracks[GUID]) then
-      for spellName,_ in pairs(pendingTracks[GUID]) do
-        updateSpell(spellName, unit, GUID);
-        pendingTracks[GUID][spellName] = nil;
-      end
+        for spellName,_ in pairs(pendingTracks[GUID]) do
+          updateSpell(spellName, unit, GUID);
+          pendingTracks[GUID][spellName] = nil;
+        end
       end
     end
   end
