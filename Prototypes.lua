@@ -479,6 +479,13 @@ WeakAuras.load_prototype = {
       test = MAX_NUM_TALENTS and "select(5, GetTalentInfo(%d)) == true" or "select(4, GetMoPTalentInfo(%d)) == true"
     },
     {
+      name = "race",
+      display = L["Player Race"],
+      type = "multiselect",
+      values = "race_types",
+      init = "arg"
+    },
+    {
       name = "level",
       display = L["Player Level"],
       type = "number",

@@ -122,6 +122,23 @@ do
   WeakAuras.class_types[eClass] = WeakAuras.class_color_types[eClass]..L_C_N_M[eClass]..F_C_C_C
   end
 end
+
+WeakAuras.race_types = {
+  Pandaren = L["Pandaren"],
+  Worgen = L["Worgen"],
+  Draenei = L["Draenei"],
+  Dwarf = L["Dwarf"],
+  Gnome = L["Gnome"],
+  Human = L["Human"],
+  NightElf = L["Night Elf"],
+  Goblin = L["Goblin"],
+  BloodElf = L["Blood Elf"],
+  Orc = L["Orc"],
+  Tauren = L["Tauren"],
+  Troll = L["Troll"],
+  Undead = L["Undead"]
+}
+
 WeakAuras.form_types = {};
 local function update_forms()
   wipe(WeakAuras.form_types);
