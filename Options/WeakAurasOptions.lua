@@ -6082,8 +6082,10 @@ function WeakAuras.CreateFrame()
   minimizebutton:SetScript("OnClick", function()
     if(frame.minimized) then
       frame.minimized = nil;
-      if db.frame.height <= 40 then
-        db.frame.height = 500
+      if db.frame then
+        if db.frame.height <= 40 then
+          db.frame.height = 500
+        end
       end
       frame:SetHeight(db.frame and db.frame.height or 500);
       if(frame.window == "default") then
