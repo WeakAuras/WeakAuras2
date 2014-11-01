@@ -543,7 +543,7 @@ WeakAuras.event_prototypes = {
         name = "combopoints",
         display = L["Combo Points"],
         type = "number",
-        init = "UnitPower(UnitInVehicle('player') and 'vehicle' or 'player', 4)"
+        init = "UnitInVehicle('player') and GetComboPoints('vehicle', 'target') or UnitPower('player', 4)"
       }
     },
     durationFunc = function(trigger)
