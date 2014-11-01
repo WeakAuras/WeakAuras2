@@ -547,17 +547,17 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      return if UnitInVehicle('player') then
-        GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', "target"), 5, true;
+      if UnitInVehicle('player') then
+        return GetComboPoints('vehicle', "target"), 5, true;
       else
-        UnitPower('player', 4);
+        return UnitPower('player', 4);
       end
     end,
     stacksFunc = function(trigger)
-      return if UnitInVehicle('player') then 
-        GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', "target");
+      if UnitInVehicle('player') then 
+        return GetComboPoints('vehicle', "target");
       else
-        UnitPower('player', 4);
+        return UnitPower('player', 4);
       end
     end,
     automatic = true
