@@ -533,7 +533,8 @@ WeakAuras.event_prototypes = {
     events = {
       "UNIT_POWER",
       "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
+      "PLAYER_FOCUS_CHANGED",
+      "UNIT_COMBO_POINTS"
     },
     force_events = true,
     name = L["Combo Points"],
@@ -546,10 +547,18 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      return UnitPower(UnitInVehicle('player') and 'vehicle' or 'player', 4), UnitPowerMax('player', 4), true;
+      return if UnitInVehicle('player') then
+        GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', "target"), 5, true;
+      else
+        UnitPower('player', 4);
+      end
     end,
     stacksFunc = function(trigger)
-      return UnitPower(UnitInVehicle('player') and 'vehicle' or 'player', 4), UnitPowerMax('player', 4), true;
+      return if UnitInVehicle('player') then 
+        GetComboPoints(UnitInVehicle('player') and 'vehicle' or 'player', "target");
+      else
+        UnitPower('player', 4);
+      end
     end,
     automatic = true
   },
