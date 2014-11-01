@@ -548,14 +548,14 @@ WeakAuras.event_prototypes = {
     },
     durationFunc = function(trigger)
       if UnitInVehicle('player') then
-        return GetComboPoints('vehicle', "target"), 5, true;
+        return GetComboPoints('vehicle', 'target'), 5, true;
       else
-        return UnitPower('player', 4);
+        return UnitPower('player', 4), 5, true;
       end
     end,
     stacksFunc = function(trigger)
       if UnitInVehicle('player') then 
-        return GetComboPoints('vehicle', "target");
+        return GetComboPoints('vehicle', 'target');
       else
         return UnitPower('player', 4);
       end
