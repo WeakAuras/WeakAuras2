@@ -7106,35 +7106,6 @@ function WeakAuras.CreateFrame()
   end
   frame.buttonsScroll = buttonsScroll;
   
-  function buttonsScroll:IsChildInView(child)
-    if(child) then
-      if not(child.GetParent) then
-        child = child.frame;
-      end
-      if(child:GetParent() == buttonsScroll.content) then
-        if(child:IsVisible()) then
-          local _, _, _, _, childTop = child:GetPoint(1);
-          childTop = childTop * -1;
-          local childBottom = childTop + child:GetHeight();
-          local scrollTop, scrollBottom = self:GetScrollPos();
-          if(childTop < scrollTop) then
-            return "above";
-          elseif(childBottom > scrollBottom) then
-            return "below";
-          else
-            return true;
-          end
-        else
-          return "hidden";
-        end
-      else
-        return nil;
-      end
-    else
-      return nil;
-    end
-  end
-  
   function buttonsScroll:GetScrollPos()
     local status = self.status or self.localstatus;
     return status.offset, status.offset + self.scrollframe:GetHeight();
