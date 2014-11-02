@@ -414,6 +414,38 @@ AceGUI:RegisterLayout("AbsoluteList", function(content, children)
   end
 end);
 
+AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
+  local yOffset = 0;
+
+  local scrollTop, scrollBottom = content.obj:GetScrollPos();
+  for i = 1, #children do
+    local child = children[i]
+
+    local frame = child.frame;
+    local frameHeight = (frame.height or frame:GetHeight() or 0);
+
+    frame:ClearAllPoints();
+    if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
+        frame:Show();
+
+        frame:SetPoint("LEFT", content);
+        frame:SetPoint("RIGHT", content);
+        frame:SetPoint("TOP", content, "TOP", 0, yOffset)
+    else
+        frame:Hide();
+    end
+
+    if child.DoLayout then
+        child:DoLayout()
+    end
+
+    yOffset = yOffset - (frameHeight + 2);
+  end
+  if(content.obj.LayoutFinished) then
+    content.obj:LayoutFinished(nil, yOffset * -1);
+  end
+end);
+
 -- Builds a cache of name/icon pairs from existing spell data
 -- Why? Because if you call GetSpellInfo with a spell name, it only works if the spell is an actual castable ability,
 -- but if you call it with a spell id, you can get buffs, talents, etc. This is useful for displaying faux aura information
@@ -7090,7 +7122,7 @@ function WeakAuras.CreateFrame()
   filterInputClear:Hide();
   
   local buttonsScroll = AceGUI:Create("ScrollFrame");
-  buttonsScroll:SetLayout("AbsoluteList");
+  buttonsScroll:SetLayout("ButtonsScrollLayout");
   buttonsScroll.width = "fill";
   buttonsScroll.height = "fill";
   buttonsContainer:SetLayout("fill");
@@ -7110,7 +7142,16 @@ function WeakAuras.CreateFrame()
     local status = self.status or self.localstatus;
     return status.offset, status.offset + self.scrollframe:GetHeight();
   end
-  
+
+  -- override SetScroll to make childrens visible as needed
+  local oldSetScroll = buttonsScroll.SetScroll;
+  buttonsScroll.SetScroll = function(self, value)
+    if (self:GetScrollPos() ~= value) then
+      oldSetScroll(self, value);
+      self:DoLayout();
+    end
+  end
+
   function buttonsScroll:SetScrollPos(top, bottom)
     local status = self.status or self.localstatus;
     local viewheight = self.scrollframe:GetHeight();
