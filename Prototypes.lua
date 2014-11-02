@@ -1394,7 +1394,8 @@ WeakAuras.event_prototypes = {
       "SPELL_COOLDOWN_READY",
       "SPELL_COOLDOWN_CHANGED",
       "SPELL_COOLDOWN_STARTED",
-      "COOLDOWN_REMAINING_CHECK"
+      "COOLDOWN_REMAINING_CHECK",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Spell)"],
@@ -2234,7 +2235,8 @@ WeakAuras.event_prototypes = {
       "RUNE_COOLDOWN_READY",
       "RUNE_COOLDOWN_CHANGED",
       "RUNE_COOLDOWN_STARTED",
-      "COOLDOWN_REMAINING_CHECK"
+      "COOLDOWN_REMAINING_CHECK",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = "RUNE_COOLDOWN_FORCE",
     name = L["Death Knight Rune"],
@@ -2385,7 +2387,8 @@ WeakAuras.event_prototypes = {
   ["Item Equipped"] = {
     type = "status",
     events = {
-      "UNIT_INVENTORY_CHANGED"
+      "UNIT_INVENTORY_CHANGED",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Item Equipped"],
@@ -2669,7 +2672,8 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "PET_BAR_UPDATE",
-      "UNIT_PET"
+      "UNIT_PET",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Pet Behavior"],
