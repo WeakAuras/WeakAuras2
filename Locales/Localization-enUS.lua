@@ -413,3 +413,12 @@ L["Yell"] = "Yell"
 L["Zone"] = "Zone"
 
 --@end-do-not-package@
+
+-- Make missing translations available
+setmetatable(WeakAuras.L, {__index = function(self, key)
+	self[key] = (key or "")
+	
+	
+	
+	return key
+end})
