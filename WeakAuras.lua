@@ -578,6 +578,8 @@ do
     local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
     if(lastSwingMain) then
       return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
+    elseif (lastSwingRange) then
+      return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
     else
       return 0, math.huge, name, icon;
     end
