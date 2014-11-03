@@ -7704,12 +7704,6 @@ function WeakAuras.CreateFrame()
   local newButton = AceGUI:Create("WeakAurasNewHeaderButton");
   newButton:SetText(L["New"]);
   newButton:SetClick(function() frame:PickOption("New") end);
-  newButton.frame:SetScript("OnUpdate", function()
-    if(pickonupdate) then
-      frame:PickDisplay(pickonupdate);
-      pickonupdate = nil;
-    end
-  end);
   frame.newButton = newButton;
   
   local numAddons = 0;
@@ -8094,7 +8088,15 @@ function WeakAuras.NewDisplayButton(data)
   WeakAuras.AddOption(id, data);
   WeakAuras.SetIconNames(data);
   WeakAuras.SortDisplayButtons();
-  pickonupdate = id;
+
+  frame.newButton.frame:SetScript("OnUpdate", function()
+    if (frame.loadProgress:IsVisible()) then
+      return;
+    end
+    frame:PickDisplay(id);
+    frame.newButton.frame:SetScript("OnUpdate", nil);
+  end);
+
   displayButtons[id].callbacks.OnRenameClick();
 end
 
