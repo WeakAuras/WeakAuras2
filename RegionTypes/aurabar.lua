@@ -990,9 +990,12 @@ local function modify(parent, region, data)
     end
 
   -- Look for need to use custom text update
+    local customTextFunc = nil
     if (data.displayTextLeft:find("%%c") or data.displayTextRight:find("%%c")) and data.customText then
     -- Load custom code function
-        local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+    end
+    if (customTextFunc) then
         local values = region.values;
 
     -- Save custom text function

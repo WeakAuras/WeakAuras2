@@ -84,8 +84,11 @@ local function modify(parent, region, data)
         text.displayText = textStr;
     end
 
+    local customTextFunc = nil
     if(data.displayText:find("%%c") and data.customText) then
-        local customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+    end
+    if (customTextFunc) then
         local values = region.values;
         region.UpdateCustomText = function()
             local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
