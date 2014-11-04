@@ -433,6 +433,7 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
         frame:SetPoint("TOP", content, "TOP", 0, yOffset)
     else
         frame:Hide();
+        frame.yOffset = yOffset
     end
 
     if child.DoLayout then
@@ -7959,6 +7960,9 @@ tXmdmY4fDE5]];
       WeakAuras.regions[id].region:Expand();
       self.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id]);
       local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1);
+      if (not yOffset) then
+        yOffset = displayButtons[id].frame.yOffset;
+      end
       self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
       if(data.controlledChildren) then
         for index, childId in pairs(data.controlledChildren) do
