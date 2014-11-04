@@ -8093,13 +8093,7 @@ function WeakAuras.NewDisplayButton(data)
   WeakAuras.SetIconNames(data);
   WeakAuras.SortDisplayButtons();
 
-  frame.newButton.frame:SetScript("OnUpdate", function()
-    if (frame.loadProgress:IsVisible()) then
-      return;
-    end
-    frame:PickDisplay(id);
-    frame.newButton.frame:SetScript("OnUpdate", nil);
-  end);
+  frame:PickDisplay(id);
 
   displayButtons[id].callbacks.OnRenameClick();
 end
