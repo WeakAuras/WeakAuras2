@@ -844,10 +844,10 @@ WeakAuras.event_prototypes = {
     end,
     args = {
       {
-        name = "power",
+        name = "ember",
         display = L["Burning Embers"],
         type = "number",
-        init = "UnitPower(unit, SPELL_POWER_BURNING_EMBERS)"
+        init = "UnitPower(unit, SPELL_POWER_BURNING_EMBERS, true)"
       },
     },
     durationFunc = function(trigger)

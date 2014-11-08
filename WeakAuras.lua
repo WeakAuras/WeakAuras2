@@ -3047,6 +3047,18 @@ function WeakAuras.Modernize(data)
       load[protoname] = nil;
     end
   end
+  
+  local fixEmberTrigger = function(trigger)
+    if (trigger.power and not trigger.ember) then
+      trigger.ember = tostring(tonumber(trigger.power) * 10);
+      trigger.use_ember = trigger.use_power
+      trigger.ember_operator = trigger.power_operator;
+      trigger.power = nil;
+      trigger.use_power = nil;
+      trigger.power_operator = nil;
+      print ("MODERNIZED", trigger.power, trigger.ember);
+    end
+  end
 
   -- upgrade from singleselecting talents to multi select, see ticket 52
   if (type(load.talent) == "number") then
@@ -3061,14 +3073,22 @@ function WeakAuras.Modernize(data)
     local trigger, untrigger;
     if(triggernum == 0) then
       trigger = data.trigger;
+      untrigger = data.untrigger;
     elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
       trigger = data.additional_triggers[triggernum].trigger;
+      untrigger = data.additional_triggers[triggernum].untrigger;
     end
+    -- Add status/event information to triggers
     if(trigger and trigger.event and (trigger.type == "status" or trigger.type == "event")) then
       local prototype = event_prototypes[trigger.event];
       if(prototype) then
         trigger.type = prototype.type;
       end
+    end
+    -- Convert ember trigger
+    if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Burning Embers") then
+      fixEmberTrigger(trigger);
+      fixEmberTrigger(untrigger);
     end
   end
 
