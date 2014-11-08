@@ -1483,7 +1483,11 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
               test = "(";
               local any = false;
               for value, _ in pairs(trigger[name].multi) do
-                test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
+                if not arg.test then
+                  test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
+                else
+                  test = test..arg.test:format(tonumber(value) or "\""..value.."\"").." or ";
+                end
                 any = true;
               end
               if(any) then
@@ -1494,7 +1498,11 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
               test = test..")";
             elseif(trigger["use_"..name]) then
               local value = trigger[name].single;
-              test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
+              if not arg.test then
+                test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
+              else
+                test = trigger[name].single and "("..arg.test:format(tonumber(value) or "\""..value.."\"")..")";
+              end
             end
           elseif(arg.type == "toggle") then
             if(trigger["use_"..name]) then

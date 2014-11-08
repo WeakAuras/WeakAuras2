@@ -454,7 +454,7 @@ WeakAuras.load_prototype = {
     {
       name = "talent",
       display = L["Talent selected"],
-      type = "select",
+      type = "multiselect",
       values = function(trigger)
         return function()
           local single_class;
