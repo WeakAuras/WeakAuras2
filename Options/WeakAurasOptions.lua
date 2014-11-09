@@ -5465,6 +5465,11 @@ function WeakAuras.ReloadTriggerOptions(data)
       args = regionOption
     };
     
+    data.load.use_class = getAll(data, {"load", "use_class"});
+    local single_class = getAll(data, {"load", "class"});
+    data.load.class = {}
+    data.load.class.single = single_class;
+
     displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
     removeFuncs(displayOptions[id].args.load);
     replaceNameDescFuncs(displayOptions[id].args.load, data);
