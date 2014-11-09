@@ -3018,6 +3018,16 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  -- upgrade from singleselecting talents to multi select, see ticket 52
+  if (type(load.talent) == number) then
+    local talent = load.talent;
+    load.talent = {};
+    load.talent.single = talent;
+    load.talent.multi = {}
+  end
+
+  load.use_talent = load.use_talent and true or nil
+
   -- Add status/event information to triggers
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
