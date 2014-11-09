@@ -1028,12 +1028,13 @@ do
       startTime = startTime or 0;
       duration = duration or 0;
 
+      spellCharges[id] = charges;
+
       if(duration > 1.51) then
         local time = GetTime();
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
         spellCdExps[id] = endTime;
-        spellCharges[id] = charges;
         if not(spellCdHandles[id]) then
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
         end
