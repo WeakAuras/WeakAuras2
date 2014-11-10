@@ -2207,6 +2207,8 @@ loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
 loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
+loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
+loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
 
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
