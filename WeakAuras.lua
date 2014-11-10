@@ -866,6 +866,7 @@ do
       startTime = startTime or 0;
       duration = duration or 0;
       local time = GetTime();
+      local remaining = startTime + duration - time;
 
       if(duration > 1.51) then
         -- On non-GCD cooldown
@@ -877,7 +878,8 @@ do
             match = false
             for runeId = 1,6 do
               local runeStart, runeDuration = GetRuneCooldown(runeId)
-              if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
+              local runeRemaining = runeStart + runeDuration - time;
+              if math.abs(remaining - runeRemaining) < 0.03 then
                 match = true;
                 break;
               end
@@ -896,7 +898,8 @@ do
             match = false
             for runeId = 1,6 do
               local runeStart, runeDuration = GetRuneCooldown(runeId)
-              if runeDuration == duration and math.abs(runeStart - startTime) < 0.01 then
+              local runeRemaining = runeStart + runeDuration - time;
+              if math.abs(remaining - runeRemaining) < 0.03 then
                 match = true;
                 break;
               end

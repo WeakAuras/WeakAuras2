@@ -1435,7 +1435,7 @@ WeakAuras.event_prototypes = {
         display = L["Ignore Rune CD"],
         type = "toggle",
         init = "arg",
-        test = "(notestRune or matchedRune ~= true or event  == 'COOLDOWN_REMAINING_CHECK')"
+        test = "(notestRune ~= matchedRune)"
       },
       {
         name = "spellName",
