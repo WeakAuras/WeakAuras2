@@ -129,18 +129,17 @@ local barPrototype = {
 
     -- VERTICAL (Grow: T -> B, Deplete: B -> T)
     elseif orientation == "VERTICAL" then
-      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(90, false)
+      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(270, false)
 
-      TLx_, TLy_ = TLx      , TLy      ; TRx_, TRy_ = TRx      , TRy      ;
-      BLx_, BLy_ = BLx*progress  , BLy      ; BRx_, BRy_ = BRx*progress  , BRy      ;
+      TLx_, TLy_ = TLx           , TLy ; TRx_, TRy_ = TRx           , TRy;
+      BLx_, BLy_ = BLx * progress, BLy ; BRx_, BRy_ = BRx * progress, BRy;
 
     -- VERTICAL_INVERSE (Grow: B -> T, Deplete: T -> B)
     elseif orientation == "VERTICAL_INVERSE" then
-      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(270, false)
+      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(90, false)
 
-      TLx_, TLy_ = TLx*progress  , TLy      ; TRx_, TRy_ = TRx*progress  , TRy      ;
-      BLx_, BLy_ = BLx      , BLy      ; BRx_, BRy_ = BRx      , BRy      ;
-
+      TLx_, TLy_ = TLx * progress, TLy ; TRx_, TRy_ = TRx * progress, TRy;
+      BLx_, BLy_ = BLx           , BLy ; BRx_, BRy_ = BRx           , BRy;
     end
 
     -- HORIZONTAL (Grow: L -> R, Deplete: R -> L)
