@@ -2769,20 +2769,28 @@ function WeakAuras.Rename(data, newid)
 
   regions[newid] = regions[oldid];
   regions[oldid] = nil;
+
   auras[newid] = auras[oldid];
   auras[oldid] = nil;
+
+  loaded_auras[newid] = loaded_auras[oldid];
   loaded_auras[oldid] = nil;
+
   events[newid] = events[oldid];
   events[oldid] = nil;
-  loaded_events[oldid] = nil;
+
   loaded[newid] = loaded[oldid];
   loaded[oldid] = nil;
+
+  loaded_events[newid] = oldid;
+  loaded_events[oldid] = nil;
+
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
 
   if(clones[oldid]) then
-  clones[newid] = clones[oldid];
-  clones[oldid] = nil;
+    clones[newid] = clones[oldid];
+    clones[oldid] = nil;
   end
 
   db.displays[newid].id = newid;
