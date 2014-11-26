@@ -2440,7 +2440,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     hasItemID = true,
-    --automaticrequired = true
+    automaticrequired = true
   },
   ["Threat Situation"] = {
     type = "status",
