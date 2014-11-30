@@ -254,12 +254,17 @@ local blockedFunctions = {
   SetTradeMoney = true,
 }
 
+local overrideFunctions = {
+}
+
 local exec_env = setmetatable({}, { __index =
   function(t, k)
     if k == "_G" then
       return t
     elseif blockedFunctions[k] then
       return forbidden
+    elseif overrideFunctions[k] then
+      return overrideFunctions[k]
     else
       return _G[k]
     end
