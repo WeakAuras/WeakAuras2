@@ -239,6 +239,67 @@ function WeakAuras.IsOptionsOpen()
   return false;
 end
 
+WeakAuras.unusedOverlayGlows = {}
+WeakAuras.numOverlayGlows = 0
+
+local function OverlayGlowAnimOutFinished(animGroup)
+  local overlay = animGroup:GetParent()
+  local frame = overlay:GetParent()
+  overlay:Hide()
+  tinsert(WeakAuras.unusedOverlayGlows, overlay)
+  frame.overlay = nil
+end
+
+local function OverlayGlow_OnHide(self)
+  if self.animOut:IsPlaying() then
+    self.animOut:Stop()
+    OverlayGlowAnimOutFinished(self.animOut)
+  end
+end
+
+local function GetOverlayGlow()
+  local overlay = tremove(WeakAuras.unusedOverlayGlows)
+  if not overlay then
+    WeakAuras.numOverlayGlows = WeakAuras.numOverlayGlows + 1
+    overlay = CreateFrame("Frame", "WeakAurasGlowOverlay"..WeakAuras.numOverlayGlows, UIParent, "ActionBarButtonSpellActivationAlert")
+    overlay.animOut:SetScript("OnFinished", OverlayGlowAnimOutFinished)
+    overlay:SetScript("OnHide", OverlayGlow_OnHide)
+  end
+  return overlay
+end
+
+local function WeakAuras_ShowOverlayGlow(frame)
+  if frame.overlay then
+    if frame.overlay.animOut:IsPlaying() then
+      frame.overlay.animOut:Stop()
+      frame.overlay.animIn:Play()
+    end
+  else
+    frame.overlay = GetOverlayGlow()
+    local frameWidth, frameHeight = frame:GetSize()
+    frame.overlay:SetParent(frame)
+    frame.overlay:ClearAllPoints()
+    --Make the height/width available before the next frame:
+    frame.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4)
+    frame.overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * 0.2, frameHeight * 0.2)
+    frame.overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * 0.2, -frameHeight * 0.2)
+    frame.overlay.animIn:Play()
+  end
+end
+
+local function WeakAuras_HideOverlayGlow(frame)
+  if frame.overlay then
+    if frame.overlay.animIn:IsPlaying() then
+      frame.overlay.animIn:Stop()
+    end
+    if frame:IsVisible() then
+      frame.overlay.animOut:Play()
+    else
+      OverlayGlowAnimOutFinished(frame.overlay.animOut)
+    end
+  end
+end
+
 local function forbidden()
   print("|cffffff00A WeakAura that you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
 end
@@ -255,6 +316,8 @@ local blockedFunctions = {
 }
 
 local overrideFunctions = {
+  ActionButton_ShowOverlayGlow = WeakAuras_ShowOverlayGlow,
+  ActionButton_HideOverlayGlow = WeakAuras_HideOverlayGlow,
 }
 
 local exec_env = setmetatable({}, { __index =
@@ -3997,9 +4060,9 @@ function WeakAuras.PerformActions(data, type)
 
     if(glow_frame) then
       if(actions.glow_action == "show") then
-        ActionButton_ShowOverlayGlow(glow_frame);
+        WeakAuras_ShowOverlayGlow(glow_frame);
       elseif(actions.glow_action == "hide") then
-        ActionButton_HideOverlayGlow(glow_frame);
+        WeakAuras_HideOverlayGlow(glow_frame);
       end
     end
   end
