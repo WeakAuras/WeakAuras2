@@ -784,10 +784,6 @@ local function UpdateTime(region, data, inverse)
   -- Update text
   UpdateText(region, data);
 end
-local function UpdateTimeInverse(region, data)
-  -- Relay
-  UpdateTime(region, data, true);
-end
 
 -- Update current state (progress)
 local function UpdateValue(region, data, value, total)
@@ -1158,11 +1154,7 @@ local function modify(parent, region, data)
         else
       -- Enable OnUpdate script
             if duration > 0 then
-                if inverse then
-                    self:SetScript("OnUpdate", function() UpdateTimeInverse(self, data) end);
-                else
-                    self:SetScript("OnUpdate", function() UpdateTime(self, data, inverse) end);
-                end
+                self:SetScript("OnUpdate", function() UpdateTime(self, data, inverse) end);
       -- Reset to full
             else
                 bar:SetValue(1);
