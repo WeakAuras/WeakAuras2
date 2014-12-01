@@ -626,10 +626,24 @@ local function createOptions(id, data)
             disabled = function() return not data.stacks end,
             hidden = function() return not data.stacks end,
         },
+		additional_options = {
+			type = "header",
+			name = L["Additional Settings"],
+			order = 58.1
+		},
+        delay = {
+            type = "range",
+            name = L["Delay"],
+            order = 58.2,
+            min = 0,
+            max = .99,
+            step = .01,
+            order = 58.2
+        },
         spacer = {
             type = "header",
             name = "",
-            order = 58
+            order = 59
         },
     };
     

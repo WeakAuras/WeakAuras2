@@ -59,7 +59,9 @@ local default = {
   icon_side = "RIGHT",
   rotateText = "NONE",
   frameStrata = 1,
-  customTextUpdate = "update"
+  customTextUpdate = "update",
+  delay = 0,
+  inverse = false
 };
 
 -- Returns tex Coord for 90° rotations + x or y flip
@@ -91,12 +93,27 @@ end
 local barPrototype = {
   -- Apply settings to bar (re-align textures)
   ["Update"] = function(self, OnSizeChanged)
+    
+    -- Do we need to be this safe here?
+    if self.delay == nil then self.delay = 0 end
+    if self.inverse == nil then self.inverse = false end
+    
+    -- Apply delay
+    local lMin = self.min
+    local lMax = self.max
+    
+    if self.inverse then
+      lMin = lMin + self.delay
+    else
+      lMax = lMax - self.delay
+    end
+    
     -- Limit values
-    self.value   = math.max(self.min, self.value);
-    self.value   = math.min(self.max, self.value);
-
+    self.value = math.max(lMin, self.value);
+    self.value = math.min(lMax, self.value);
+    
     -- Alignment variables
-    local progress = (self.value - self.min) / (self.max - self.min);
+    local progress = (self.value - lMin) / (lMax - lMin);
     local align1, align2, alignSpark;
     local xProgress, yProgress, sparkOffset;
     local TLx,  TLy,  BLx,  BLy,  TRx,  TRy,  BRx,  BRy;
@@ -799,6 +816,10 @@ local function modify(parent, region, data)
   -- Localize
   local bar, border, timer, text, iconFrame, icon, stacks = region.bar, region.border, region.timer, region.text, region.iconFrame, region.icon, region.stacks;
 
+  bar.delay = data.delay
+  bar.inverse = data.inverse
+  
+  
   -- Adjust framestrata
     if data.frameStrata == 1 then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
