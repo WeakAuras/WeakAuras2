@@ -1435,7 +1435,7 @@ WeakAuras.event_prototypes = {
         display = L["Ignore Rune CD"],
         type = "toggle",
         init = "arg",
-        test = "(notestRune ~= matchedRune)"
+        test = "true"
       },
       {
         name = "spellName",
@@ -1464,7 +1464,14 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+        -- The logic here is:
+        -- If _inverse_ is checked, we want it to show if it's not on cooldown, which is either
+        --   startTime == 0 (truely not on cooldown)
+        --   or if we should ignore rune cds and it matches a runecd, so: notestRune and matchedRune
+        -- If _inverse_ is not checked, we want to show if we are on cooldown, so
+        --   startTime must be > 0, and that's enough if notest rune isn't checked
+        --   if notest rune is checked, we want to only show if we didn't match a rune
+        test = "(inverse and (startTime == 0 or (notestRune and matchedRune))) or (not inverse and startTime > 0 and (not notestRune or not matchedRune))"
       }
     },
     durationFunc = function(trigger)
