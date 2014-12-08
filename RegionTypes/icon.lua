@@ -30,6 +30,34 @@ local function SkinChanged(skinID, gloss, backdrop, colors, button)
 
 end
 
+local function GetTexCoord(region, texWidth)
+    local texCoord
+
+    if region.MSQGroup then
+        region.MSQGroup:ReSkin();
+
+        local db = region.MSQGroup.db
+        if db and not db.Disabled then
+            local currentCoord = {region.icon:GetTexCoord()}
+
+            texCoord = {}
+            for i, coord in pairs(currentCoord) do
+                if coord > 0.5 then
+                    texCoord[i] = coord - coord * texWidth
+                else
+                    texCoord[i] = coord + (1 - coord) * texWidth
+                end
+            end
+        end
+    end
+
+    if not texCoord then
+        texCoord = {texWidth, texWidth, texWidth, 1 - texWidth, 1 - texWidth, texWidth, 1 - texWidth, 1 - texWidth}
+    end
+
+    return unpack(texCoord)
+end
+
 local function create(parent, data)
     local font = "GameFontHighlight";
 
@@ -140,10 +168,7 @@ local function modify(parent, region, data)
 
     local texWidth = 0.25 * data.zoom;
 
-    if region.MSQGroup then
-        region.MSQGroup:ReSkin();
-    end
-    icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
+    icon:SetTexCoord(GetTexCoord(region, texWidth))
 
     local tooltipType = WeakAuras.CanHaveTooltip(data);
     if(tooltipType and data.useTooltip) then
@@ -363,21 +388,20 @@ local function modify(parent, region, data)
         icon:SetAllPoints();
 
         local texWidth = 0.25 * data.zoom;
-        if region.MSQGroup then
-            region.MSQGroup:ReSkin();
-        end
+
+        local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth)
 
         if(mirror_h) then
             if(mirror_v) then
-                icon:SetTexCoord(1-texWidth, 1-texWidth, 1-texWidth, texWidth,   texWidth, 1-texWidth, texWidth, texWidth);
+                icon:SetTexCoord(lrx, lry, urx, ury, llx, lly, ulx, uly)
             else
-                icon:SetTexCoord(1-texWidth, texWidth,   1-texWidth, 1-texWidth, texWidth, texWidth,   texWidth, 1-texWidth);
+                icon:SetTexCoord(urx, ury, lrx, lry, ulx, uly, llx, lly)
             end
         else
             if(mirror_v) then
-                icon:SetTexCoord(texWidth, 1-texWidth, texWidth, texWidth,   1-texWidth, 1-texWidth, 1-texWidth, texWidth);
+                icon:SetTexCoord(llx, lly, ulx, uly, lrx, lry, urx, ury)
             else
-                icon:SetTexCoord(texWidth, texWidth,   texWidth, 1-texWidth, 1-texWidth, texWidth,   1-texWidth, 1-texWidth);
+                icon:SetTexCoord(ulx, uly, llx, lly, urx, ury, lrx, lry)
             end
         end
     end
