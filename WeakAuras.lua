@@ -3100,7 +3100,7 @@ function WeakAuras.Modernize(data)
   end
 
   -- upgrade from singleselecting talents to multi select, see ticket 52
-  if (type(load.talent) == number) then
+  if (type(load.talent) == "number") then
     local talent = load.talent;
     load.talent = {};
     load.talent.single = talent;
