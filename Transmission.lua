@@ -194,6 +194,7 @@ function WeakAuras.DisplayStub(regionType)
 end
 
 function WeakAuras.removeSpellNames(data)
+    local trigger
     for triggernum=0,(data.numTriggers or 9) do
         if(triggernum == 0) then
             trigger = data.trigger;
