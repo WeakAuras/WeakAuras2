@@ -891,30 +891,28 @@ local function modify(parent, region, data)
   -- Rotate text
     local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
 
-  -- Update timer visibility
-    if data.timer then
+  -- Update text visibility
+  if data.text then
     -- Update text font
     text:SetFont(SharedMedia:Fetch("font", data.textFont), data.textSize, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     text:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
     text:SetWordWrap(false);
     animRotate(text, textDegrees);
+    text:Show();
+  else
+    text:Hide();
+  end
 
-        timer:Show();
-    else
-        timer:Hide();
-    end
-
-  -- Update text visibility
-    if data.text then
+  -- Update timer visibility
+  if data.timer then
     -- Update timer font
     timer:SetFont(SharedMedia:Fetch("font", data.timerFont), data.timerSize, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
     timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
     animRotate(timer, textDegrees);
-
-        text:Show();
-    else
-        text:Hide();
-    end
+    timer:Show();
+  else
+    timer:Hide();
+  end
 
   -- Update icon visibility
     if data.icon then
