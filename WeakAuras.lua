@@ -2785,6 +2785,8 @@ function WeakAuras.Delete(data)
     end
   end
   end
+  
+  animations[tostring(regions[id].region)] = nil
 
   WeakAuras.UnregisterCustomTextUpdates(regions[id].region)
   regions[id].region:SetScript("OnUpdate", nil);
