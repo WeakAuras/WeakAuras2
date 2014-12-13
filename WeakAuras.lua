@@ -5075,6 +5075,20 @@ do
   end
 end
 
+do
+  local petFrame;
+  WeakAuras.frames["Pet Use Handler"] = petFrame;
+  function WeakAuras.WatchForPetDeath()
+  if not(petFrame) then
+    petFrame = CreateFrame("frame");
+    petFrame:RegisterUnitEvent("UNIT_HEALTH", "pet");
+    petFrame:SetScript("OnEvent", function()
+      WeakAuras.ScanEvents("PET_UPDATE");
+    end)
+  end
+  end
+end
+
 local FrameTimes = {};
 function WeakAuras.ProfileFrames(all)
   UpdateAddOnCPUUsage();

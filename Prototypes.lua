@@ -2615,6 +2615,7 @@ WeakAuras.event_prototypes = {
       "PLAYER_ALIVE",
       "PLAYER_UNGHOST",
       "UNIT_PET",
+      "PET_UPDATE",
       "UNIT_ENTERED_VEHICLE",
       "UNIT_EXITED_VEHICLE",
       "PLAYER_UPDATE_RESTING",
@@ -2626,6 +2627,9 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       if(trigger.use_mounted ~= nil) then
         WeakAuras.WatchForMounts();
+      end
+      if (trigger.use_HasPet ~= nil) then
+        WeakAuras.WatchForPetDeath();
       end
       return "";
     end,
@@ -2670,7 +2674,7 @@ WeakAuras.event_prototypes = {
         name = "HasPet",
         display = L["HasPet"],
         type = "tristate",
-        init = "UnitExists('pet')"
+        init = "UnitExists('pet') and not UnitIsDead('pet')"
       }
     },
     automaticrequired = true
