@@ -8000,7 +8000,12 @@ tXmdmY4fDE5]];
       
       if(displayButtons[centerId]) then
         local _, _, _, _, yOffset = displayButtons[centerId].frame:GetPoint(1);
-        self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+        if not yOffset then
+          yOffset = displayButtons[centerId].frame.yOffset
+        end
+        if yOffset then
+          self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+        end
       end
     end
   end
