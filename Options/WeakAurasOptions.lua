@@ -6852,6 +6852,7 @@ function WeakAuras.CreateFrame()
       importexportbox.editBox:SetScript("OnMouseUp", nil);
       importexportbox.editBox:SetScript("OnTextChanged", function()
         local str = importexportbox:GetText();
+        str = str:match( "^%s*(.-)%s*$" )
         importexportbox:SetLabel(""..#str);
         if(#str > 20) then
           WeakAuras.ImportString(str);
