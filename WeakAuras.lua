@@ -3107,8 +3107,6 @@ function WeakAuras.Modernize(data)
     load.talent.multi = {}
   end
 
-  load.use_talent = load.use_talent and true or nil
-
   -- Add status/event information to triggers
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
