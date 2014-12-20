@@ -1916,6 +1916,8 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
     else
       if(data.durationFunc) then
         local duration, expirationTime, static, inverse = data.durationFunc(trigger);
+        duration = type(duration) == "number" and duration or 0;
+        expirationTime = type(expirationTime) == "number" and expirationTime or 0;
         if(type(static) == "string") then
           static = data.durationFunc;
         end
@@ -4439,6 +4441,8 @@ function WeakAuras.CanHaveDuration(data)
     WeakAuras.event_prototypes[data.trigger.event].init(data.trigger);
     end
     local current, maximum, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
+    current = type(current) ~= "number" and current or 0
+    maximum = type(maximum) ~= "number" and maximum or 0
     if(custom) then
     return {current = current, maximum = maximum};
     else

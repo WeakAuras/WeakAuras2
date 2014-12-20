@@ -1116,11 +1116,15 @@ local function modify(parent, region, data)
       -- Update via custom OnUpdate handler
             if type(customValue) == "function" then
                 local value, total = customValue(data.trigger);
+                value = type(value) == "number" and value or 0
+                total = type(value) == "number" and total or 0
                 if total > 0 and value < total then
                     self.customValueFunc = customValue;
                     self:SetScript("OnUpdate", function()
             -- Relay
             local value, total = self.customValueFunc(data.trigger);
+            value = type(value) == "number" and value or 0
+            total = type(value) == "number" and total or 0
             UpdateValue(self, data, value, total);
           end);
                 else
