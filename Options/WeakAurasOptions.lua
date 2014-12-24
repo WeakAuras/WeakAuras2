@@ -455,32 +455,28 @@ end);
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function WeakAuras.CreateIconCache(callback)
   local func = function()
-  local id = 0;
-  local misses = 0;
-  
-  while (misses < 200) do
-    id = id + 1;
-    local name, _, icon = GetSpellInfo(id);
-    if(name) then
-    if not(iconCache[name]) then
-      iconCache[name] = icon;
+    local id = 0;
+    local misses = 0;
+    
+    while (misses < 200) do
+      id = id + 1;
+      local name, _, icon = GetSpellInfo(id);
+      if(name) then
+        iconCache[name] = icon;
+        if not(idCache[name]) then
+          idCache[name] = {}
+        end
+        idCache[name][id] = true;
+        misses = 0;
+      else
+        misses = misses + 1;
+      end
+      coroutine.yield();
+    end  
+    if(callback) then
+      callback();
     end
-    if not(idCache[name]) then
-      idCache[name] = {}
-    end
-    idCache[name][id] = true;
-    misses = 0;
-    else
-    misses = misses + 1;
-    end
-    coroutine.yield();
   end
-  
-  if(callback) then
-    callback();
-  end
-  end
-
   local co = coroutine.create(func);
   dynFrame:AddAction(callback, co);
 end
