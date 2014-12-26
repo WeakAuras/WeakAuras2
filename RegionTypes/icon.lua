@@ -419,10 +419,18 @@ local function modify(parent, region, data)
             end
             UpdateDurationInfo(duration, expirationTime, customValue)
         end
+        function region:PreShow()
+            if (region.duration > 0.01) then
+                cooldown:Show();
+                cooldown:SetCooldown(region.expirationTime - region.duration, region.duration);
+            end
+        end
     else
         cooldown:Hide();
         function region:SetDurationInfo(duration, expirationTime, customValue)
             UpdateDurationInfo(duration, expirationTime, customValue)
+        end
+        function region:PreShow()
         end
     end
 end

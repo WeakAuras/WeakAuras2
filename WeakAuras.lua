@@ -3826,8 +3826,8 @@ function WeakAuras.SetRegion(data, cloneId)
           end
         end
         function region:Expand()
-          if(regionType == "model") then
-            region:EnsureModel();
+          if(region.preShow) then
+            region:PreShow();
           end
           region.toShow = true;
           region.toHide = false;
@@ -3855,8 +3855,8 @@ function WeakAuras.SetRegion(data, cloneId)
           end
         end
         function region:Expand()
-          if(regionType == "model") then
-            region:EnsureModel()
+          if(region.PreShow) then
+            region:PreShow();
           end
           if(WeakAuras.IsAnimating(region) == "finish" or (not region:IsVisible() or (cloneId and region.justCreated))) then
             region.justCreated = nil;
