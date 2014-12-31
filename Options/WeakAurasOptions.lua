@@ -6026,8 +6026,10 @@ function WeakAuras.CreateFrame()
     db.frame = db.frame or {};
     db.frame.xOffset = xOffset;
     db.frame.yOffset = yOffset;
-    db.frame.width = frame:GetWidth();
-    db.frame.height = frame:GetHeight();
+	if(not frame.minimized) then
+		db.frame.width = frame:GetWidth();
+		db.frame.height = frame:GetHeight();
+	end
     frame:ClearAllPoints();
     frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
   end
@@ -6117,7 +6119,7 @@ function WeakAuras.CreateFrame()
     if(frame.minimized) then
       frame.minimized = nil;
       if db.frame then
-        if db.frame.height <= 40 then
+        if db.frame.height < 240 then
           db.frame.height = 500
         end
       end
