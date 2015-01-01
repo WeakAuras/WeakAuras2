@@ -145,7 +145,7 @@ local function modify(parent, region, data)
     end
 
     -- Ensure using correct model
-    function region:EnsureModel()
+    function region:PreShow()
 --        if(type(model:GetModel()) ~= "string") then
             if tonumber(data.model_path) then
                 model:SetDisplayInfo(tonumber(data.model_path))
