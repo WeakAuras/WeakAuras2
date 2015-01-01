@@ -2850,7 +2850,7 @@ function WeakAuras.Rename(data, newid)
   loaded[newid] = loaded[oldid];
   loaded[oldid] = nil;
 
-  loaded_events[newid] = oldid;
+  loaded_events[newid] = loaded_events[oldid];
   loaded_events[oldid] = nil;
 
   db.displays[newid] = db.displays[oldid];
