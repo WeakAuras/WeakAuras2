@@ -1202,10 +1202,14 @@ WeakAuras.event_prototypes = {
       {}, -- destFlags ignored with _ argument
       {}, -- destRaidFlags ignored with _ argument
       {
+        name = "spellId",
+        display = L["Spell Id"],
+        type = "string",
+        init = "arg",
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end
-      }, -- spellId ignored with _ argument
+      },
       {
         name = "spellName",
         display = L["Spell Name"],
