@@ -92,6 +92,7 @@ local function modify(parent, region, data)
         local values = region.values;
         region.UpdateCustomText = function()
             local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
+            custom = WeakAuras.EnsureString(custom);
             if(custom ~= values.custom) then
                 values.custom = custom;
                 UpdateText();

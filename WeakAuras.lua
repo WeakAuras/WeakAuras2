@@ -5182,3 +5182,10 @@ function WeakAuras.RemoveGTFO()
     WeakAuras.event_types["GTFO"] = nil;
   end
 end
+
+function WeakAuras.EnsureString(input)
+   if (input == nil) then
+     return "";
+   end
+   return tostring(input);
+end
