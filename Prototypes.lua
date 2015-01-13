@@ -1415,10 +1415,10 @@ WeakAuras.event_prototypes = {
         if (charges == nil) then
             charges = (duration == 0) and 1 or 0;
         end
-        local inverse = %s;
         local notestRune = %s;
+        local showOn = %s
       ]];
-      if(trigger.use_remaining and not trigger.use_inverse) then
+      if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
         local ret2 = [[
           local expirationTime = startTime + duration
           local remaining = expirationTime - GetTime();
@@ -1429,7 +1429,8 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
       end
-      return ret:format(spellName, (trigger.use_inverse and "true" or "false"), (trigger.use_matchedRune and "true" or "false"));
+      return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"), 
+                                   "\"" .. (trigger.showOn or "") .. "\"");
     end,
     args = {
       {
@@ -1452,19 +1453,20 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end
+        enable = function(trigger) return (trigger.showOn == "showOnCooldown") end
       },
       {
         name = "charges",
         display = L["Charges"],
-        type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end
+        type = "number"
       },
       {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
-        test = "true"
+        name = "showOn",
+        display =  L["Show"],
+        type = "select",
+        values = "cooldown_progress_behavior_types",
+        test = "true",
+        required = true,
       },
       {
         hidden = true,
@@ -1475,7 +1477,9 @@ WeakAuras.event_prototypes = {
         -- If _inverse_ is not checked, we want to show if we are on cooldown, so
         --   startTime must be > 0, and that's enough if notest rune isn't checked
         --   if notest rune is checked, we want to only show if we didn't match a rune
-        test = "(inverse and (startTime == 0 or (notestRune and matchedRune))) or (not inverse and startTime > 0 and (not notestRune or not matchedRune))"
+        test = "(showOn == \"showOnReady\" and (startTime == 0 or (notestRune and matchedRune))) " ..
+               "or (showOn == \"showOnCooldown\" and startTime > 0 and (not notestRune or not matchedRune)) " ..
+               "or (showOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)

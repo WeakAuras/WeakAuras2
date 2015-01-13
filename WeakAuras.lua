@@ -3091,6 +3091,17 @@ function WeakAuras.Modernize(data)
       fixEmberTrigger(trigger);
       fixEmberTrigger(untrigger);
     end
+
+    if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Cooldown Progress (Spell)") then
+        if (not trigger.showOn) then
+            if (trigger.use_inverse) then
+                trigger.showOn = "showOnReady"
+            else
+                trigger.showOn = "showOnCooldown"
+            end
+            trigger.use_inverse = nil
+        end
+    end
   end
 
   -- Change English-language class tokens to locale-agnostic versions

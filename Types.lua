@@ -1208,3 +1208,9 @@ WeakAuras.pet_behavior_types = {
   defensive = L["Defensive"],
   assist = L["Assist"]
 };
+
+WeakAuras.cooldown_progress_behavior_types = {
+  showOnCooldown = L["On cooldown"],
+  showOnReady    = L["Not on cooldown"],
+  showAlways     = L["Always"]
+};
