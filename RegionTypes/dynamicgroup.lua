@@ -240,10 +240,10 @@ local function modify(parent, region, data)
                 end
                 return (
                     (
-                        a.region.dataIndex == b.region.dataIndex
+                        a.dataIndex == b.dataIndex
                         and (a.region.index or 0) < (b.region.index or 0)
                     )
-                    or (a.region.dataIndex or 0) < (b.region.dataIndex or 0)
+                    or (a.dataIndex or 0) < (b.dataIndex or 0)
                 )
             end)
         end
