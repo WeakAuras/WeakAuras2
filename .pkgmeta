@@ -33,6 +33,8 @@ externals:
   url: svn://svn.wowace.com/wow/libchatanims/mainline/trunk/LibChatAnims
  libs/LibBabble-Race-3.0:
   url: svn://svn.wowace.com/wow/libbabble-race-3-0/mainline/trunk
+ libs/LibButtonGlow-1.0:
+  url: git://git.wowace.com/wow/libbuttonglow-1-0/mainline.git
 
 ignore:
  - RegionTypes\timer.lua

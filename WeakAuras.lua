@@ -239,65 +239,13 @@ function WeakAuras.IsOptionsOpen()
   return false;
 end
 
-WeakAuras.unusedOverlayGlows = {}
-WeakAuras.numOverlayGlows = 0
-
-local function OverlayGlowAnimOutFinished(animGroup)
-  local overlay = animGroup:GetParent()
-  local frame = overlay:GetParent()
-  overlay:Hide()
-  tinsert(WeakAuras.unusedOverlayGlows, overlay)
-  frame.overlay = nil
-end
-
-local function OverlayGlow_OnHide(self)
-  if self.animOut:IsPlaying() then
-    self.animOut:Stop()
-    OverlayGlowAnimOutFinished(self.animOut)
-  end
-end
-
-local function GetOverlayGlow()
-  local overlay = tremove(WeakAuras.unusedOverlayGlows)
-  if not overlay then
-    WeakAuras.numOverlayGlows = WeakAuras.numOverlayGlows + 1
-    overlay = CreateFrame("Frame", "WeakAurasGlowOverlay"..WeakAuras.numOverlayGlows, UIParent, "ActionBarButtonSpellActivationAlert")
-    overlay.animOut:SetScript("OnFinished", OverlayGlowAnimOutFinished)
-    overlay:SetScript("OnHide", OverlayGlow_OnHide)
-  end
-  return overlay
-end
-
+local LBG = LibStub("LibButtonGlow-1.0")
 local function WeakAuras_ShowOverlayGlow(frame)
-  if frame.overlay then
-    if frame.overlay.animOut:IsPlaying() then
-      frame.overlay.animOut:Stop()
-      frame.overlay.animIn:Play()
-    end
-  else
-    frame.overlay = GetOverlayGlow()
-    local frameWidth, frameHeight = frame:GetSize()
-    frame.overlay:SetParent(frame)
-    frame.overlay:ClearAllPoints()
-    --Make the height/width available before the next frame:
-    frame.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4)
-    frame.overlay:SetPoint("TOPLEFT", frame, "TOPLEFT", -frameWidth * 0.2, frameHeight * 0.2)
-    frame.overlay:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", frameWidth * 0.2, -frameHeight * 0.2)
-    frame.overlay.animIn:Play()
-  end
+  LBG.ShowOverlayGlow(frame)
 end
 
 local function WeakAuras_HideOverlayGlow(frame)
-  if frame.overlay then
-    if frame.overlay.animIn:IsPlaying() then
-      frame.overlay.animIn:Stop()
-    end
-    if frame:IsVisible() then
-      frame.overlay.animOut:Play()
-    else
-      OverlayGlowAnimOutFinished(frame.overlay.animOut)
-    end
-  end
+  LBG.HideOverlayGlow(frame)
 end
 
 local function forbidden()
