@@ -858,8 +858,7 @@ do
           WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
         end
       elseif(startTime > 0 and duration > 0) then
-        -- GCD
-        -- Do nothing
+        -- GCD, do nothing
       else
         if(runeCdExps[id]) then
           -- Somehow CheckCooldownReady caught the rune cooldown before the timer callback
