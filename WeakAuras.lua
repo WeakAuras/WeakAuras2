@@ -3807,20 +3807,21 @@ function WeakAuras.SetRegion(data, cloneId)
           end
         end
         function region:Expand()
-          if(region.preShow) then
-            region:PreShow();
-          end
-          region.toShow = true;
           region.toHide = false;
-          parent:EnsureTrays();
+
           if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or (not region:IsVisible() or (cloneId and region.justCreated))) then
+            if(region.preShow) then
+              region:PreShow();
+            end
+            region.toShow = true;
+            parent:EnsureTrays();
             region.justCreated = nil;
             WeakAuras.PerformActions(data, "start");
             if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
-            startMainAnimation();
+              startMainAnimation();
             end
+            parent:ControlChildren();
           end
-          parent:ControlChildren();
         end
       elseif not(data.controlledChildren) then
         function region:Collapse()
