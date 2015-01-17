@@ -3056,7 +3056,6 @@ function WeakAuras.Modernize(data)
       trigger.power = nil;
       trigger.use_power = nil;
       trigger.power_operator = nil;
-      print ("MODERNIZED", trigger.power, trigger.ember);
     end
   end
 
