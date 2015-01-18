@@ -1884,13 +1884,13 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
 end
 
 function WeakAuras.ActivateEvent(id, triggernum, data)
+  WeakAuras.SetEventDynamics(id, triggernum, data);
   if(data.numAdditionalTriggers > 0) then
     if(data.region:EnableTrigger(triggernum)) then
     end
   else
     data.region:Expand();
   end
-  WeakAuras.SetEventDynamics(id, triggernum, data);
 end
 
 function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
