@@ -2468,6 +2468,7 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       local ret = [[
         local status = UnitThreatSituation('player', %s) or -1;
+        local aggro = status == 2 or status == 3;
       ]];
 
     return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "'"..trigger.threatUnit.."'" or "nil");
@@ -2486,7 +2487,16 @@ WeakAuras.event_prototypes = {
         display = L["Status"],
         type = "select",
         values = "unit_threat_situation_types"
-      }
+      },
+      {
+        name = "aggro",
+        display = L["Aggro"],
+        type = "tristate"
+      },
+      {
+        hidden = true,
+        test = "status ~= -1"
+      },
     },
     automatic = true
   },
