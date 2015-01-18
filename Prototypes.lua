@@ -1407,15 +1407,15 @@ WeakAuras.event_prototypes = {
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
       local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
-      WeakAuras.WatchSpellCooldown(trigger.spellName);
+      WeakAuras.WatchSpellCooldown(trigger.spellName, trigger.use_matchedRune);
       local ret = [[
         local spellname = %s
-        local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
+        local ignoreRuneCD = %s
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD);
         local charges = WeakAuras.GetSpellCharges(spellname);
         if (charges == nil) then
             charges = (duration == 0) and 1 or 0;
         end
-        local notestRune = %s;
         local showOn = %s
       ]];
       if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
@@ -1439,7 +1439,6 @@ WeakAuras.event_prototypes = {
         name = "matchedRune",
         display = L["Ignore Rune CD"],
         type = "toggle",
-        init = "arg",
         test = "true"
       },
       {
@@ -1470,22 +1469,15 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        -- The logic here is:
-        -- If _inverse_ is checked, we want it to show if it's not on cooldown, which is either
-        --   startTime == 0 (truely not on cooldown)
-        --   or if we should ignore rune cds and it matches a runecd, so: notestRune and matchedRune
-        -- If _inverse_ is not checked, we want to show if we are on cooldown, so
-        --   startTime must be > 0, and that's enough if notest rune isn't checked
-        --   if notest rune is checked, we want to only show if we didn't match a rune
-        test = "(showOn == \"showOnReady\" and (startTime == 0 or (notestRune and matchedRune))) " ..
-               "or (showOn == \"showOnCooldown\" and startTime > 0 and (not notestRune or not matchedRune)) " ..
+        test = "(showOn == \"showOnReady\" and startTime == 0) " ..
+               "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
                "or (showOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)
       local startTime, duration;
       if not(trigger.use_inverse) then
-        startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0);
+        startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0, trigger.use_matchedRune);
       end
       startTime = startTime or 0;
       duration = duration or 0;

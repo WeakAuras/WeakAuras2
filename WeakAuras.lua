@@ -693,8 +693,11 @@ do
   WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
 
   local spells = {};
+  local spellsRune = {}
   local spellCdDurs = {};
   local spellCdExps = {};
+  local spellCdDursRune = {};
+  local spellCdExpsRune = {};
   local spellCharges = {};
   local spellCdHandles = {};
 
@@ -744,7 +747,15 @@ do
     end
   end
 
-  function WeakAuras.GetSpellCooldown(id)
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD)
+    if (ignoreRuneCD) then
+      if (spellsRune[id] and spellCdExpsRune[id] and spellCdDursRune[id]) then
+        return spellCdExpsRune[id] - spellCdDursRune[id], spellCdDursRune[id];
+      else
+        return 0, 0
+      end
+    end
+
     if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
       return spellCdExps[id] - spellCdDurs[id], spellCdDurs[id];
     else
@@ -783,6 +794,8 @@ do
     spellCdHandles[id] = nil;
     spellCdDurs[id] = nil;
     spellCdExps[id] = nil;
+    spellCdDursRune[id] = nil;
+    spellCdExpsRune[id] = nil;
     spellCharges[id] = select(2, GetSpellCharges(id));
     WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
@@ -888,39 +901,17 @@ do
         local endTime = startTime + duration;
 
         if not(spellCdExps[id]) then
-          local match = nil
-          if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
-            match = false
-            for runeId = 1,6 do
-              local runeStart, runeDuration = GetRuneCooldown(runeId)
-              local runeRemaining = runeStart + runeDuration - time;
-              if math.abs(remaining - runeRemaining) < 0.03 then
-                match = true;
-                break;
-              end
-            end
-          end
-
           -- New cooldown
           spellCdDurs[id] = duration;
           spellCdExps[id] = endTime;
           spellCharges[id] = charges;
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id, match);
-        elseif(spellCdExps[id] ~= endTime or spellCharges[id] ~= charges) then
-          local match = nil
-          if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
-            match = false
-            for runeId = 1,6 do
-              local runeStart, runeDuration = GetRuneCooldown(runeId)
-              local runeRemaining = runeStart + runeDuration - time;
-              if math.abs(remaining - runeRemaining) < 0.03 then
-                match = true;
-                break;
-              end
-            end
+          if (spellsRune[id] and duration ~= 10) then
+            spellCdDursRune[id] = duration;
+            spellCdExpsRune[id] = endTime;
           end
-
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
+        elseif(spellCdExps[id] ~= endTime or spellCharges[id] ~= charges) then
           -- Cooldown is now different
           if(spellCdHandles[id]) then
             timer:CancelTimer(spellCdHandles[id]);
@@ -932,7 +923,11 @@ do
           if (maxCharges == nil or charges + 1 == maxCharges) then
             spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
           end
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id, match);
+          if (spellsRune[id] and duration ~= 10) then
+            spellCdDursRune[id] = duration;
+            spellCdExpsRune[id] = endTime;
+          end
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0 and not (spellCdExps[id] and spellCdExps[id] - time > 1.51)) then
         -- GCD
@@ -1028,12 +1023,16 @@ do
     end
   end
 
-  function WeakAuras.WatchSpellCooldown(id)
+  function WeakAuras.WatchSpellCooldown(id, ignoreRunes)
     if not(cdReadyFrame) then
       WeakAuras.InitCooldownReady();
     end
 
     if not id or id == 0 then return end
+
+    if (ignoreRunes) then
+      spellsRune[id] = true;
+    end
 
     if not(spells[id]) then
       spells[id] = true;
@@ -1053,6 +1052,10 @@ do
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
         spellCdExps[id] = endTime;
+        if (duration ~= 10 and ignoreRunes) then
+          spellCdDursRune[id] = duration;
+          spellCdExpsRune[id] = endTime;
+        end
         if not(spellCdHandles[id]) then
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
         end
