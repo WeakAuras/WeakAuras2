@@ -513,7 +513,7 @@ WeakAuras.load_prototype = {
     {
       name = "difficulty",
       display = L["Dungeon Difficulty"],
-      type = "select",
+      type = "multiselect",
       values = "difficulty_types",
       init = "arg"
     },
