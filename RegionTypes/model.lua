@@ -163,3 +163,22 @@ end
 
 -- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("model", create, modify, default);
+
+-- Work around for movies and world map hiding all models
+do
+  local movieWatchFrame;
+  movieWatchFrame = CreateFrame("frame");
+  movieWatchFrame:RegisterEvent("PLAY_MOVIE");
+  movieWatchFrame:RegisterEvent("WORLD_MAP_UPDATE");
+  movieWatchFrame:SetScript("OnEvent", function()
+    for id, isLoaded in pairs(WeakAuras.loaded) do
+       if (isLoaded) then
+         local data = WeakAuras.regions[id];
+         if (data.regionType == "model") then
+           data.region:PreShow();
+         end
+       end
+    end
+  end);
+  WeakAuras.frames["Movie Watch Frame"] = movieWatchFrame;
+end

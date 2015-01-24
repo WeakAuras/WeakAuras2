@@ -3912,11 +3912,11 @@ function WeakAuras.SetRegion(data, cloneId)
           end
         end
         function region:Expand()
-          if(region.PreShow) then
-            region:PreShow();
-          end
           if(WeakAuras.IsAnimating(region) == "finish" or (not region:IsVisible() or (cloneId and region.justCreated))) then
             region.justCreated = nil;
+            if(region.PreShow) then
+              region:PreShow();
+            end
             region:Show();
             WeakAuras.PerformActions(data, "start");
             if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
