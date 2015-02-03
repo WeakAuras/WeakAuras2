@@ -311,7 +311,7 @@ do
   -- Extra check needed, because aura_cache can potentially contain data of two different triggers with different settings!
   local function TestNonUniformSettings(acEntry, data)
   if(data.remFunc) then
-    if not(data.remFunc(acEntry.expirationTime - acEntry.duration)) then
+    if not(data.remFunc(acEntry.expirationTime - GetTime())) then
       return false
     end
   end
