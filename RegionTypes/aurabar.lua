@@ -57,6 +57,7 @@ local default = {
   yOffset = 0,
   stickyDuration = false,
   icon_side = "RIGHT",
+  icon_color = {1.0, 1.0, 1.0, 1.0},
   rotateText = "NONE",
   frameStrata = 1,
   customTextUpdate = "update"
@@ -933,7 +934,8 @@ local function modify(parent, region, data)
                 or "Interface\\Icons\\INV_Misc_QuestionMark"
             );
             self.icon:SetTexture(iconPath);
-            self.icon:SetDesaturated(data.desaturate)
+            self.icon:SetDesaturated(data.desaturate);
+            self.icon:SetVertexColor(data.icon_color[1], data.icon_color[2], data.icon_color[3], data.icon_color[4]);
             region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
 
       -- Update text

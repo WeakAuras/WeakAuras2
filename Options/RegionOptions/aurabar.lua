@@ -287,6 +287,12 @@ local function createOptions(id, data)
             order = 38.8,
             hidden = function() return not data.icon end,
         },
+        icon_color = {
+            type = "color",
+            name = L["Icon Color"],
+            hasAlpha = true,
+            order = 38.9
+        },
 		bar_header = {
 			type = "header",
 			name = L["Bar Color Settings"],
