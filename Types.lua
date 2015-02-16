@@ -557,7 +557,8 @@ WeakAuras.texture_types = {
     ["Spells\\AuraRune5Green"] = "Tri-Circle Aura Rune",
     ["Spells\\AURARUNE_C"] = "Oblong Aura Rune",
     ["Spells\\AURARUNE_B"] = "Sliced Aura Rune",
-    ["Spells\\AURARUNE_A"] = "Small Tri-Circle Aura Rune"
+    ["Spells\\AURARUNE_A"] = "Small Tri-Circle Aura Rune",
+    ["SPELLS\\AuraRune1"] = "Ringed Aura Rune (transparent)",
   },
   ["PvP Emblems"] = {
     ["Interface\\PVPFrame\\PVP-Banner-Emblem-1"] = "Wheelchair",
@@ -875,6 +876,38 @@ if(WeakAuras.PowerAurasPath ~= "") then
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
   };
 end
+
+WeakAuras.texture_types_stop_motion = {};
+WeakAuras.texture_types_stop_motion.Basic = {
+    ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct1"] = "Thin Arc 1",
+    ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct2"] = "Thin Arc 2",
+    ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct3"] = "Thin Arc 3",
+    ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct4"] = "Thin Arc 4",
+    ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct5"] = "Thin Arc 5",
+    ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\circle"] = "Circle",
+}
+
+WeakAuras.texture_types_stop_motion_data = {
+  ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct1"] = {
+     ["count"] = 101
+  },
+  ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct2"] = {
+     ["count"] = 101
+  },
+  ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct3"] = {
+     ["count"] = 101
+  },
+  ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct4"] = {
+     ["count"] = 101
+  },
+  ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\arct5"] = {
+     ["count"] = 101
+  },
+  ["Interface\\AddOns\\WeakAuras\\Media\\StopMotion\\circle"] = {
+     ["count"] = 301
+  },
+}
+
 --[=[
 for category, textures in pairs(WeakAuras.texture_types) do
   for path, name in pairs(textures) do
@@ -1225,4 +1258,11 @@ WeakAuras.cooldown_progress_behavior_types = {
   showOnCooldown = L["On cooldown"],
   showOnReady    = L["Not on cooldown"],
   showAlways     = L["Always"]
+};
+
+WeakAuras.stopmotion_animation_types = {
+  loop = L["Loop"],
+  bounce = L["Forward, Reverse Loop"],
+  once = L["Forward"],
+  progress = L["Progress"]
 };

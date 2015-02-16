@@ -40,6 +40,7 @@ RegionOptions\group.lua
 RegionOptions\dynamicgroup.lua
 RegionOptions\model.lua
 RegionOptions\progresstexture.lua
+RegionOptions\stopmotion.lua
 
 WeakAurasOptions.lua
 
