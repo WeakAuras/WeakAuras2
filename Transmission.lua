@@ -9,7 +9,7 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
-local version = 1420;
+local version = 1421;
 local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;
@@ -165,6 +165,8 @@ function WeakAuras.DisplayStub(regionType)
             ["unit"] = "player"
         },
         ["actions"] = {
+            ["init"] = {
+            },
             ["start"] = {
             },
             ["finish"] = {

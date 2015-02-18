@@ -2094,6 +2094,58 @@ function WeakAuras.AddOption(id, data)
           WeakAuras.Add(data);
         end,
         args = {
+          init_header = {
+            type = "header",
+            name = L["On Init"],
+            order = 0.005
+          },
+          init_do_custom = {
+            type = "toggle",
+            name = L["Custom"],
+            order = 0.011,
+            width = "double"
+          },
+          init_custom = {
+            type = "input",
+            width = "normal",
+            name = L["Custom Code"],
+            order = 0.013,
+            multiline = true,
+            hidden = function() return not data.actions.init.do_custom end
+          },
+          init_expand = {
+            type = "execute",
+            order = 0.014,
+            name = L["Expand Text Editor"],
+            func = function()
+              WeakAuras.TextEditor(data, {"actions", "init", "custom"}, true)
+            end,
+            hidden = function() return not data.actions.init.do_custom end
+          },
+          init_customError = {
+            type = "description",
+            name = function()
+              if not(data.actions.init.custom) then
+                return "";
+              end
+              local _, errorString = loadstring("return function() "..data.actions.init.custom.." end");
+              return errorString and "|cFFFF0000"..errorString or "";
+            end,
+            width = "double",
+            order = 0.015,
+            hidden = function()
+              if not(data.actions.init.do_custom and data.actions.init.custom) then
+                return true;
+              else
+                local loadedFunction, errorString = loadstring("return function() "..data.actions.init.custom.." end");
+                if(errorString and not loadedFunction) then
+                  return false;
+                else
+                  return true;
+                end
+              end
+            end
+          },
           start_header = {
             type = "header",
             name = L["On Show"],
