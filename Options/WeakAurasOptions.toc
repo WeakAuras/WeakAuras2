@@ -1,4 +1,4 @@
-## Interface: 60000
+## Interface: 60100
 ## Title: WeakAuras Options
 ## Author: Mirrored
 ## Version: @project-version@

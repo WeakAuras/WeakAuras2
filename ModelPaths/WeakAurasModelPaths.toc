@@ -1,4 +1,4 @@
-## Interface: 60000
+## Interface: 60100
 ## Title: WeakAuras Model Paths
 ## Author: Mirrored
 ## Version: @project-version@
