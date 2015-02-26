@@ -287,9 +287,9 @@ function WeakAuras.ActivateAuraEnvironment(id)
       -- Run the init function if supplied
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+        local func = WeakAuras.LoadFunction("return function(id) "..(actions.custom).." end");
         if func then
-          func();
+          func(id);
         end
       end
       data.init_completed = 1;
