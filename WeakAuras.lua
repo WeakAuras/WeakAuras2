@@ -2488,7 +2488,7 @@ function WeakAuras.ScanAuras(unit)
         if(data.subcount) then
         count = tooltipSize;
         end
-        if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster)) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
+        if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
         -- Show display and handle clones
         db.tempIconCache[name] = icon;
         if(data.autoclone) then
@@ -2535,7 +2535,7 @@ function WeakAuras.ScanAuras(unit)
         checkPassed = false;
 
         -- Aura conforms to trigger options?
-        if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster))) then
+        if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or ""))) then
         remaining = expirationTime - time;
         checkPassed = true;
         if(data.remFunc) then
