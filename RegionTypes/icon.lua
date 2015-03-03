@@ -364,7 +364,7 @@ local function modify(parent, region, data)
                 region:SetScript("OnUpdate", UpdateTime);
             else
                 region:SetScript("OnUpdate", nil);
-                UpdateText();
+                UpdateTime();
             end
         end
     end
