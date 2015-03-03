@@ -8019,7 +8019,9 @@ tXmdmY4fDE5]];
       if (not yOffset) then
         yOffset = displayButtons[id].frame.yOffset;
       end
-      self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+      if (yOffset) then
+        self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32);
+      end
       if(data.controlledChildren) then
         for index, childId in pairs(data.controlledChildren) do
           displayButtons[childId]:PriorityShow(1);
