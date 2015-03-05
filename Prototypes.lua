@@ -2708,11 +2708,11 @@ WeakAuras.event_prototypes = {
           repeat
             name,_,_,_,active,_,_,exists = GetPetActionInfo(index);
             index = index + 1
-            if(name == "PET_MODE_ASSIST" and active == 1) then
+            if(name == "PET_MODE_ASSIST" and active == true) then
               behavior = "assist"
-            elseif(name == "PET_MODE_DEFENSIVE" and active == 1) then
+            elseif(name == "PET_MODE_DEFENSIVE" and active == true) then
               behavior = "defensive"
-            elseif(name == "PET_MODE_PASSIVE" and active == 1) then
+            elseif(name == "PET_MODE_PASSIVE" and active == true) then
               behavior = "passive"
             end
           until not exists
