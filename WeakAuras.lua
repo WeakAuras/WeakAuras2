@@ -1245,6 +1245,12 @@ do
       if(region.SetDurationInfo) then
         region:SetDurationInfo(auradata.duration, auradata.expirationTime);
       end
+
+      local parent = db.displays[id].parent;
+      if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+        regions[parent].region.ControlChildren();
+      end
+
       duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime, nil, nil, GUID);
       if(region.SetName) then
         region:SetName(auradata.unitName);
@@ -1948,7 +1954,13 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
         if(data.region.SetDurationInfo) then
           data.region:SetDurationInfo(data.duration, GetTime() + data.duration);
         end
-      duration_cache:SetDurationInfo(id, data.duration, GetTime() + data.duration);
+
+        local parent = db.displays[id].parent;
+        if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+          regions[parent].region.ControlChildren();
+        end
+
+        duration_cache:SetDurationInfo(id, data.duration, GetTime() + data.duration);
       end
     else
       if(data.durationFunc) then
@@ -1971,12 +1983,24 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
           if(data.region.SetDurationInfo) then
             data.region:SetDurationInfo(duration, expirationTime, static, inverse);
           end
+
+          local parent = db.displays[id].parent;
+          if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+            regions[parent].region.ControlChildren();
+          end
+
           duration_cache:SetDurationInfo(id, duration, expirationTime, static, inverse);
         end
       elseif(triggernum == 0) then
         if(data.region.SetDurationInfo) then
           data.region:SetDurationInfo(0, math.huge);
         end
+
+        local parent = db.displays[id].parent;
+        if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+          regions[parent].region.ControlChildren();
+        end
+
         duration_cache:SetDurationInfo(id, 0, math.huge);
       end
     end
@@ -2711,8 +2735,14 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
   if(show) then
   if(triggernum == 0) then
     if(region.SetDurationInfo) then
-    region:SetDurationInfo(duration, expirationTime > 0 and expirationTime or math.huge);
+      region:SetDurationInfo(duration, expirationTime > 0 and expirationTime or math.huge);
     end
+
+    local parent = db.displays[id].parent;
+    if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+      regions[parent].region.ControlChildren();
+    end
+
     duration_cache:SetDurationInfo(id, duration, expirationTime, nil, nil, cloneId);
     if(region.SetName) then
     region:SetName(name);
