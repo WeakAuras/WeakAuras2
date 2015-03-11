@@ -16,7 +16,8 @@ local default = {
     anchorPoint = "CENTER",
     xOffset = 0,
     yOffset = 0,
-    frameStrata = 1
+    frameStrata = 1,
+	anchorFrame = "UIParent"
 };
 
 local function create(parent)
@@ -44,7 +45,7 @@ local function modify(parent, region, data)
     region.texture:SetBlendMode(data.blendMode);
     --region.texture:SetRotation((data.rotation / 180) * math.pi);
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     local function GetRotatedPoints(degrees)
         local angle = rad(135 - degrees);

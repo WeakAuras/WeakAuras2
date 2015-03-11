@@ -19,6 +19,7 @@ local default = {
     xOffset             = 0,
     yOffset             = 0,
     frameStrata         = 1,
+	anchorFrame 		= "UIParent",
     border                = false,
     borderColor         = {1.0, 1.0, 1.0, 0.5},
     backdropColor        = {1.0, 1.0, 1.0, 0.5},
@@ -63,7 +64,7 @@ local function modify(parent, region, data)
 
     -- Reset position and size
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
     region:SetWidth(data.width);
     region:SetHeight(data.height);
 

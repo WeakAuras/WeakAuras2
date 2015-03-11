@@ -58,7 +58,7 @@ local function modify(parent, region, data)
     text:SetPoint(data.justify, region, data.justify);
 
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     local function UpdateText()
         local textStr = data.displayText;
@@ -78,7 +78,7 @@ local function modify(parent, region, data)
                 WeakAuras.regions[data.parent].region:ControlChildren();
             else
                 region:ClearAllPoints();
-                region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+                region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
             end
         end
         text.displayText = textStr;
