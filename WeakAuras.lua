@@ -289,11 +289,13 @@ function WeakAuras.ActivateAuraEnvironment(id)
       if(actions and actions.do_custom and actions.custom) then
         local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
         if func then
+          current_aura_env.id = id;
           func();
         end
       end
       data.init_completed = 1;
     end
+    current_aura_env.id = id;
   end
 end
 
