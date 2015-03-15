@@ -1724,7 +1724,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
     WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
-    timer:ScheduleTimer(function() WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD"); end, 0.5);  -- Data not available
+    timer:ScheduleTimer(function()
+         WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
+         WeakAuras.CheckCooldownReady();
+       end,
+       0.5);  -- Data not available
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
   elseif(event == "PLAYER_REGEN_ENABLED") then
