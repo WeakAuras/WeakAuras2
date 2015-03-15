@@ -35,6 +35,7 @@ local function create(parent)
     local region = CreateFrame("FRAME", nil, UIParent);
     region:SetMovable(true);
     region:SetResizable(true);
+    region:SetMinResize(1, 1);
 
     -- Border region
     local border = CreateFrame("frame", nil, region);

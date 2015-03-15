@@ -23,6 +23,7 @@ local function create(parent)
     local frame = CreateFrame("FRAME", nil, UIParent);
     frame:SetMovable(true);
     frame:SetResizable(true);
+    frame:SetMinResize(1, 1);
 
     local texture = frame:CreateTexture();
     frame.texture = texture;
