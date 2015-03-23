@@ -1673,9 +1673,7 @@ WeakAuras.event_prototypes = {
     },
     name = L["Global Cooldown"],
     init = function(trigger)
-      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
-      trigger.spellName = trigger.spellName or 0;
-      WeakAuras.WatchGCD(trigger.spellName);
+      WeakAuras.WatchGCD();
       local ret = [[
         local inverse = %s;
         local onGCD = WeakAuras.GetGCDInfo();
@@ -1683,13 +1681,6 @@ WeakAuras.event_prototypes = {
       return ret:format(trigger.use_inverse and "true" or "false");
     end,
     args = {
-      {
-        name = "spellName",
-        required = true,
-        display = L["Reference Spell"],
-        type = "spell",
-        test = "true"
-      },
       {
         name = "inverse",
         display = L["Inverse"],

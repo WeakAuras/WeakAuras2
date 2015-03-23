@@ -840,7 +840,7 @@ do
 
   local function CheckGCD()
     local event;
-    local startTime, duration = GetSpellCooldown(gcdReference);
+    local startTime, duration = GetSpellCooldown(61304);
     if(duration and duration > 0) then
       if not(gcdStart) then
         event = "GCD_START";
@@ -1017,13 +1017,13 @@ do
     end
   end
 
-  function WeakAuras.WatchGCD(id)
+  function WeakAuras.WatchGCD()
     if not(cdReadyFrame) then
       WeakAuras.InitCooldownReady();
     end
     cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-    gcdReference = id;
+    gcdReference = true;
   end
 
   function WeakAuras.WatchRuneCooldown(id)
