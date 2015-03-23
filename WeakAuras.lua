@@ -1243,12 +1243,13 @@ do
     if(auradata.unitName) then
       if(triggernum == 0) then
       if(region.SetDurationInfo) then
+        local resort = region.expirationTime ~= auradata.expirationTime;
         region:SetDurationInfo(auradata.duration, auradata.expirationTime);
-      end
 
-      local parent = db.displays[id].parent;
-      if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-        regions[parent].region.ControlChildren();
+        local parent = db.displays[id].parent;
+        if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+          regions[parent].region.ControlChildren();
+        end
       end
 
       duration_cache:SetDurationInfo(id, auradata.duration, auradata.expirationTime, nil, nil, GUID);
@@ -1952,12 +1953,14 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
       end
       if(triggernum == 0) then
         if(data.region.SetDurationInfo) then
-          data.region:SetDurationInfo(data.duration, GetTime() + data.duration);
-        end
+          local expirationTime = GetTime() + data.duration;
+          local resort = data.region.expirationTime ~= expirationTime;
+          data.region:SetDurationInfo(data.duration, expirationTime);
 
-        local parent = db.displays[id].parent;
-        if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-          regions[parent].region.ControlChildren();
+          local parent = db.displays[id].parent;
+          if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+            regions[parent].region.ControlChildren();
+          end
         end
 
         duration_cache:SetDurationInfo(id, data.duration, GetTime() + data.duration);
@@ -1981,24 +1984,25 @@ function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
         end
         if(triggernum == 0) then
           if(data.region.SetDurationInfo) then
+            local resort = data.region.expirationTime ~= expirationTime;
             data.region:SetDurationInfo(duration, expirationTime, static, inverse);
-          end
-
-          local parent = db.displays[id].parent;
-          if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-            regions[parent].region.ControlChildren();
+            local parent = db.displays[id].parent;
+            if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+              regions[parent].region.ControlChildren();
+            end
           end
 
           duration_cache:SetDurationInfo(id, duration, expirationTime, static, inverse);
         end
       elseif(triggernum == 0) then
         if(data.region.SetDurationInfo) then
+          local resort = data.region.expirationTime ~= math.huge;
           data.region:SetDurationInfo(0, math.huge);
-        end
 
-        local parent = db.displays[id].parent;
-        if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-          regions[parent].region.ControlChildren();
+          local parent = db.displays[id].parent;
+          if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
+            regions[parent].region.ControlChildren();
+          end
         end
 
         duration_cache:SetDurationInfo(id, 0, math.huge);
