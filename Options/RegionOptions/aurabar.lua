@@ -291,7 +291,8 @@ local function createOptions(id, data)
             type = "color",
             name = L["Icon Color"],
             hasAlpha = true,
-            order = 38.9
+            order = 38.9,
+            hidden = function() return not data.icon end,
         },
 		bar_header = {
 			type = "header",
