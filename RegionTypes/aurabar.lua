@@ -60,7 +60,8 @@ local default = {
   icon_color = {1.0, 1.0, 1.0, 1.0},
   rotateText = "NONE",
   frameStrata = 1,
-  customTextUpdate = "update"
+  customTextUpdate = "update",
+  zoom = 0,
 };
 
 -- Returns tex Coord for 90° rotations + x or y flip
@@ -795,6 +796,11 @@ local function UpdateValue(region, data, value, total)
   UpdateText(region, data);
 end
 
+local function GetTexCoordZoom(texWidth)
+     local texCoord = {texWidth, texWidth, texWidth, 1 - texWidth, 1 - texWidth, texWidth, 1 - texWidth, 1 - texWidth}
+    return unpack(texCoord)
+end
+
 -- Modify a given region/display
 local function modify(parent, region, data)
   -- Localize
@@ -921,6 +927,8 @@ local function modify(parent, region, data)
     local iconsize = math.min(data.height, data.width);
     icon:SetWidth(iconsize);
     icon:SetHeight(iconsize);
+    local texWidth = 0.25 * data.zoom;
+    icon:SetTexCoord(GetTexCoordZoom(texWidth))
 
     -- Icon update function
         function region:SetIcon(path)

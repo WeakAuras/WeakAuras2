@@ -294,6 +294,16 @@ local function createOptions(id, data)
             order = 38.9,
             hidden = function() return not data.icon end,
         },
+        zoom = {
+            type = "range",
+            name = L["Zoom"],
+            order = 38.91,
+            min = 0,
+            max = 1,
+            bigStep = 0.01,
+            isPercent = true,
+            hidden = function() return not data.icon end,
+        },
 		bar_header = {
 			type = "header",
 			name = L["Bar Color Settings"],
