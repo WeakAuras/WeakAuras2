@@ -42,9 +42,12 @@ local function modify(parent, region, data)
     local fontPath = SharedMedia:Fetch("font", data.font);
     text:SetFont(fontPath, data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
     text:SetTextHeight(data.fontSize);
+    if not text:GetFont() then -- Font invalid, set the font but keep the setting
+        text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
+    end
     if text:GetFont() then
         text:SetText(data.displayText);
-    else end
+    end
     text.displayText = data.displayText;
     text:SetJustifyH(data.justify);
 
