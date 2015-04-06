@@ -2715,7 +2715,7 @@ WeakAuras.event_prototypes = {
             elseif(name == "PET_MODE_PASSIVE" and active == true) then
               behavior = "passive"
             end
-          until not exists
+          until index == 12
       ]]
       return ret:format(trigger.use_inverse and "true" or "false", trigger.behavior or "");
     end,
