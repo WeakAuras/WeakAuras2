@@ -504,6 +504,15 @@ WeakAuras.load_prototype = {
       init = "arg"
     },
     {
+      name = "encounterid",
+      display = "Encounter ID",
+      type = "string",
+      init = "arg",
+      --need localization
+      desc = "IDs for the current Tier:\n\nHighmaul:\n Kargath: 1721 | The Butcher: 1706\n Tectus: 1722 | Brakenspore: 1720\n Twin Ogron: 1719 | Koragh: 1723\n Imperor Margok: 1705\n\nBlackrock Foundry:\n Gruul: 1691 | Oregorger: 1696\n Darmac:1694 | Flamebender: 1689\n Hansgar Franzok: 1693 | Thogar: 1692\n Furnace: 1690 | Kromog: 1713\n Maidens: 1695 | Blackhand: 1704",
+    },
+    
+    {
       name = "size",
       display = L["Instance Type"],
       type = "multiselect",

@@ -604,6 +604,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           name = arg.display,
           order = order,
           hidden = hidden,
+	  desc = arg.desc,
           get = function() return trigger["use_"..realname]; end,
           set = function(info, v)
             trigger["use_"..realname] = v;
@@ -8317,8 +8318,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
   end
 end
 
-WeakAuras.loadFrame:SetScript("OnEvent", function()
-  WeakAuras.ScanForLoads();
+WeakAuras.loadFrame:SetScript("OnEvent", function (self, event, arg1)
+  WeakAuras.ScanForLoads (self, event, arg1);
   if(frame and frame:IsVisible()) then
     WeakAuras.SortDisplayButtons();
   end
