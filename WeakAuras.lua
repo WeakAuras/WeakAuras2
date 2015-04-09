@@ -1724,9 +1724,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       
       --> check in case of a disconnect during an encounter.
       if (db.CurrentEncounter) then
-	WeakAuras.CheckForPreviousEncounter()
-      end
-      
+        WeakAuras.CheckForPreviousEncounter()
+      end      
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
@@ -2121,60 +2120,60 @@ end
 
 -- encounter stuff ~encounter
 function WeakAuras.StoreBossGUIDs()
-	if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
-		for i = 1, 5 do 
-			if (UnitExists ("boss" .. i)) then
-				local guid = UnitGUID ("boss" .. i)
-				if (guid) then
-					WeakAuras.CurrentEncounter.boss_guids [guid] = true
-					--print ("|cFFFFFFAAWeakAuras|r: guid stored for npc", UnitName ("boss" .. i))
-				end
-			end
-		end
-		db.CurrentEncounter = WeakAuras.CurrentEncounter
-	end
+  if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
+    for i = 1, 5 do 
+      if (UnitExists ("boss" .. i)) then
+        local guid = UnitGUID ("boss" .. i)
+        if (guid) then
+          WeakAuras.CurrentEncounter.boss_guids [guid] = true
+          --print ("|cFFFFFFAAWeakAuras|r: guid stored for npc", UnitName ("boss" .. i))
+        end
+      end
+    end
+    db.CurrentEncounter = WeakAuras.CurrentEncounter
+  end
 end
 
 function WeakAuras.CheckForPreviousEncounter()
-	if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-		for i = 1, 5 do
-			if (UnitExists ("boss" .. i)) then
-				local guid = UnitGUID ("boss" .. i)
-				if (guid and db.CurrentEncounter.boss_guids [guid]) then
-					--> we are in the same encounter
-					WeakAuras.CurrentEncounter = db.CurrentEncounter
-					--print ("|cFFFFFFAAWeakAuras|r: found a previous encounter.")
-					return true
-				end
-			end
-		end
-		db.CurrentEncounter = nil
-	else
-		db.CurrentEncounter = nil
-	end
+  if (UnitAffectingCombat ("player") or InCombatLockdown()) then
+    for i = 1, 5 do
+      if (UnitExists ("boss" .. i)) then
+        local guid = UnitGUID ("boss" .. i)
+        if (guid and db.CurrentEncounter.boss_guids [guid]) then
+          --> we are in the same encounter
+          WeakAuras.CurrentEncounter = db.CurrentEncounter
+          --print ("|cFFFFFFAAWeakAuras|r: found a previous encounter.")
+          return true
+        end
+      end
+    end
+    db.CurrentEncounter = nil
+  else
+    db.CurrentEncounter = nil
+  end
 end
 
 function WeakAuras.DestroyEncounterTable()
-	if (WeakAuras.CurrentEncounter) then
-		wipe (WeakAuras.CurrentEncounter)
-	end
-	WeakAuras.CurrentEncounter = nil
-	db.CurrentEncounter = nil
-	
-	--print ("|cFFFFFFAAWeakAuras|r: Encounter Table destroyed.")
+  if (WeakAuras.CurrentEncounter) then
+    wipe (WeakAuras.CurrentEncounter)
+  end
+  WeakAuras.CurrentEncounter = nil
+  db.CurrentEncounter = nil
+  
+  --print ("|cFFFFFFAAWeakAuras|r: Encounter Table destroyed.")
 end
 
 function WeakAuras.CreateEncounterTable (encounter_id)
-	local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
-	WeakAuras.CurrentEncounter = {
-		id = encounter_id,
-		zone_id = ZoneMapID,
-		boss_guids = {},
-	}
-	timer:ScheduleTimer(WeakAuras.StoreBossGUIDs, 2)
-	--print ("|cFFFFFFAAWeakAuras|r: Encounter Table created.", encounter_id, ZoneMapID)
-	
-	return WeakAuras.CurrentEncounter
+  local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
+  WeakAuras.CurrentEncounter = {
+    id = encounter_id,
+    zone_id = ZoneMapID,
+    boss_guids = {},
+  }
+  timer:ScheduleTimer(WeakAuras.StoreBossGUIDs, 2)
+  --print ("|cFFFFFFAAWeakAuras|r: Encounter Table created.", encounter_id, ZoneMapID)
+  
+  return WeakAuras.CurrentEncounter
 end
 
 function WeakAuras.ScanForLoads(self, event, arg1)
@@ -2186,29 +2185,29 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       playerLevel = arg1;
     end
     
-	--> ~encounter id stuff, we are holding the current combat id to further load checks.
-	--> there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
-	--> regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
-	local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
-	
-	if (event == "ENCOUNTER_START") then
-		encounter_id = tonumber (arg1)
-		WeakAuras.CreateEncounterTable (encounter_id)
-		
-	elseif (event == "ENCOUNTER_END") then
-		encounter_id = 0
-		WeakAuras.DestroyEncounterTable()
-		
-	elseif (event == "ZONE_CHANGED_NEW_AREA" and WeakAuras.CurrentEncounter) then
-		--> player used hearthstone while in a encounter or just left the raid group on raid finder.
-		local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
-		--print ("|cFFFFFFAAWeakAuras|r: Zone changed:", ZoneMapID, WeakAuras.CurrentEncounter.zone_id)
+  --> ~encounter id stuff, we are holding the current combat id to further load checks.
+  --> there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
+  --> regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
+  local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
+  
+  if (event == "ENCOUNTER_START") then
+    encounter_id = tonumber (arg1)
+    WeakAuras.CreateEncounterTable (encounter_id)
+    
+  elseif (event == "ENCOUNTER_END") then
+    encounter_id = 0
+    WeakAuras.DestroyEncounterTable()
+    
+  elseif (event == "ZONE_CHANGED_NEW_AREA" and WeakAuras.CurrentEncounter) then
+    --> player used hearthstone while in a encounter or just left the raid group on raid finder.
+    local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
+    --print ("|cFFFFFFAAWeakAuras|r: Zone changed:", ZoneMapID, WeakAuras.CurrentEncounter.zone_id)
 
-		if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
-			encounter_id = 0
-			WeakAuras.DestroyEncounterTable()
-		end
-	end
+    if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
+      encounter_id = 0
+      WeakAuras.DestroyEncounterTable()
+    end
+  end
     
   local player, realm, zone, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
   local _, race = UnitRace("player")
