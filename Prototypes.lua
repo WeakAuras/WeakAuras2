@@ -508,7 +508,6 @@ WeakAuras.load_prototype = {
       display = "Encounter ID",
       type = "string",
       init = "arg",
-      --need localization
       desc = L["currentEncounterIDs"],
     },
     
