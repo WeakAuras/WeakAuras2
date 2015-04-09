@@ -1603,7 +1603,7 @@ function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, sub
   end
   local ret = "return function("..tconcat(input, ", ")..")\n";
   ret = ret..(init or "");
-
+  
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
 
   ret = ret.."if(";
@@ -1721,6 +1721,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
       WeakAuras.FixGroupChildrenOrder();
       WeakAuras.RemoveGTFO();
+      
+      --> check in case of a disconnect during an encounter.
+      if (db.CurrentEncounter) then
+	WeakAuras.CheckForPreviousEncounter()
+      end
+      
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
@@ -2113,6 +2119,64 @@ function WeakAuras.EndEvent(id, triggernum, force)
   end
 end
 
+-- encounter stuff ~encounter
+function WeakAuras.StoreBossGUIDs()
+	if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
+		for i = 1, 5 do 
+			if (UnitExists ("boss" .. i)) then
+				local guid = UnitGUID ("boss" .. i)
+				if (guid) then
+					WeakAuras.CurrentEncounter.boss_guids [guid] = true
+					--print ("|cFFFFFFAAWeakAuras|r: guid stored for npc", UnitName ("boss" .. i))
+				end
+			end
+		end
+		db.CurrentEncounter = WeakAuras.CurrentEncounter
+	end
+end
+
+function WeakAuras.CheckForPreviousEncounter()
+	if (UnitAffectingCombat ("player") or InCombatLockdown()) then
+		for i = 1, 5 do
+			if (UnitExists ("boss" .. i)) then
+				local guid = UnitGUID ("boss" .. i)
+				if (guid and db.CurrentEncounter.boss_guids [guid]) then
+					--> we are in the same encounter
+					WeakAuras.CurrentEncounter = db.CurrentEncounter
+					--print ("|cFFFFFFAAWeakAuras|r: found a previous encounter.")
+					return true
+				end
+			end
+		end
+		db.CurrentEncounter = nil
+	else
+		db.CurrentEncounter = nil
+	end
+end
+
+function WeakAuras.DestroyEncounterTable()
+	if (WeakAuras.CurrentEncounter) then
+		wipe (WeakAuras.CurrentEncounter)
+	end
+	WeakAuras.CurrentEncounter = nil
+	db.CurrentEncounter = nil
+	
+	--print ("|cFFFFFFAAWeakAuras|r: Encounter Table destroyed.")
+end
+
+function WeakAuras.CreateEncounterTable (encounter_id)
+	local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
+	WeakAuras.CurrentEncounter = {
+		id = encounter_id,
+		zone_id = ZoneMapID,
+		boss_guids = {},
+	}
+	timer:ScheduleTimer(WeakAuras.StoreBossGUIDs, 2)
+	--print ("|cFFFFFFAAWeakAuras|r: Encounter Table created.", encounter_id, ZoneMapID)
+	
+	return WeakAuras.CurrentEncounter
+end
+
 function WeakAuras.ScanForLoads(self, event, arg1)
   -- PET_BATTLE_CLOSE fires twice at the end of a pet battle. IsInBattle evaluates to TRUE during the
   -- first firing, and FALSE during the second. I am not sure if this check is necessary, but the
@@ -2121,6 +2185,31 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     if(event == "PLAYER_LEVEL_UP") then
       playerLevel = arg1;
     end
+    
+	--> ~encounter id stuff, we are holding the current combat id to further load checks.
+	--> there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
+	--> regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
+	local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
+	
+	if (event == "ENCOUNTER_START") then
+		encounter_id = tonumber (arg1)
+		WeakAuras.CreateEncounterTable (encounter_id)
+		
+	elseif (event == "ENCOUNTER_END") then
+		encounter_id = 0
+		WeakAuras.DestroyEncounterTable()
+		
+	elseif (event == "ZONE_CHANGED_NEW_AREA" and WeakAuras.CurrentEncounter) then
+		--> player used hearthstone while in a encounter or just left the raid group on raid finder.
+		local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
+		--print ("|cFFFFFFAAWeakAuras|r: Zone changed:", ZoneMapID, WeakAuras.CurrentEncounter.zone_id)
+
+		if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
+			encounter_id = 0
+			WeakAuras.DestroyEncounterTable()
+		end
+	end
+    
   local player, realm, zone, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
   local _, race = UnitRace("player")
   if role == "NONE" then
@@ -2206,8 +2295,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local shouldBeLoaded, couldBeLoaded;
   for id, triggers in pairs(auras) do
   local _, data = next(triggers);
-  shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, size, difficulty, role);
-  couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, size, difficulty, role);
+  shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
+  couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
   if(shouldBeLoaded and not loaded[id]) then
     WeakAuras.LoadDisplay(id);
     changed = changed + 1;
@@ -2232,8 +2321,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   for id, triggers in pairs(events) do
   local _, data = next(triggers);
-  shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, size, difficulty, role);
-  couldBeLoaded = data.load and data.load("ScanForLoads_Events", true, true, player, realm, class, spec, race, playerLevel, zone, size, difficulty, role);
+  shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
+  couldBeLoaded = data.load and data.load("ScanForLoads_Events", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
   if(shouldBeLoaded and not loaded[id]) then
     WeakAuras.LoadDisplay(id);
     changed = changed + 1;
@@ -2281,11 +2370,15 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   WeakAuras.ForceEvents();
   end
-end
+end  
 
 local loadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = loadFrame;
 WeakAuras.frames["Display Load Handling"] = loadFrame;
+
+loadFrame:RegisterEvent("ENCOUNTER_START");
+loadFrame:RegisterEvent("ENCOUNTER_END");
+
 loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
 loadFrame:RegisterEvent("ZONE_CHANGED");
 loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
