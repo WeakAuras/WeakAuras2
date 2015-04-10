@@ -9,6 +9,9 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
+-- @patch 6.0 compatibility quick fix
+function GetMoPTalentInfo(t) return GetTalentInfo(ceil(t/3), (t-1)%3 +1, GetActiveSpecGroup()) end
+
 WeakAuras.function_strings = {
   count = [[
     return function(count)
@@ -478,7 +481,8 @@ WeakAuras.load_prototype = {
           end
         end
       end,
-      test = MAX_NUM_TALENTS and "select(5, GetTalentInfo(%d)) == true"
+      -- @patch 6.0 compatibility quick fix
+      test = MAX_NUM_TALENTS and "select(5, GetTalentInfo(%d)) == true" or "select(4, GetMoPTalentInfo(%d)) == true"
     },
     {
       name = "race",
