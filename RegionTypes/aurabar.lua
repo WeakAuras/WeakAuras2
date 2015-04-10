@@ -60,6 +60,7 @@ local default = {
   icon_color = {1.0, 1.0, 1.0, 1.0},
   rotateText = "NONE",
   frameStrata = 1,
+  anchorFrame = "UIParent",
   customTextUpdate = "update"
 };
 
@@ -813,7 +814,7 @@ local function modify(parent, region, data)
 
   -- Reset anchors
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
   -- Set overall alpha
     region:SetAlpha(data.alpha);

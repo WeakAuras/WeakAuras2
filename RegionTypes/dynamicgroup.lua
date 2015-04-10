@@ -18,7 +18,8 @@ local default = {
     radius = 200,
     rotation = 0,
     constantFactor = "RADIUS",
-    frameStrata = 1
+    frameStrata = 1,
+	anchorFrame = "UIParent"
 };
 
 local function create(parent)
@@ -130,7 +131,7 @@ local function modify(parent, region, data)
     data.selfPoint = actualSelfPoint;
 
     region:ClearAllPoints();
-    region:SetPoint(actualSelfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(actualSelfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     region.controlledRegions = {};
 

@@ -23,6 +23,7 @@ local default = {
     stickyDuration = false,
     zoom = 0,
     frameStrata = 1,
+	anchorFrame = "UIParent",
     customTextUpdate = "update"
 };
 
@@ -142,7 +143,7 @@ local function modify(parent, region, data)
     icon:SetAllPoints();
 
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     local fontPath = SharedMedia:Fetch("font", data.font);
     local sxo, syo = 0, 0;

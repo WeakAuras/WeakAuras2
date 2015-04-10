@@ -96,7 +96,7 @@ local function modify(parent, region, data)
 
     -- Reset position and size
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     -- Adjust frame-level sorting
     local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;

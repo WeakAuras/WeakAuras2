@@ -83,7 +83,8 @@ local default = {
     fontSize = 12,
     stickyDuration = false,
     mirror = false,
-    frameStrata = 1
+    frameStrata = 1,
+	anchorFrame = "UIParent"
 };
 
 local function create(parent)
@@ -121,7 +122,7 @@ local function modify(parent, region, data)
     foreground:SetHeight(data.height);
 
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    region:SetPoint(data.selfPoint, data.anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
     region:SetAlpha(data.alpha);
 
     local fontPath = SharedMedia:Fetch("font", data.font);

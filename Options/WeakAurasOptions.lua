@@ -5633,6 +5633,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
       regionOption.yOffset1 = nil;
       regionOption.yOffset2 = nil;
       regionOption.yOffset3 = nil;
+	  regionOption.anchorFrame = nil;
     end
     replaceNameDescFuncs(regionOption, data);
     replaceImageFuncs(regionOption, data);
@@ -5834,7 +5835,12 @@ function WeakAuras.AddPositionOptions(input, id, data)
       name = L["Frame Strata"],
       order = 90,
       values = WeakAuras.frame_strata_types
-    }
+    },
+	anchorFrame = {
+	   type = "input",
+	   name = L["Anchor Frame"],
+	   order = 95
+	}
   };
   
   return union(input, positionOptions);
