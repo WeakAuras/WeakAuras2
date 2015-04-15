@@ -43,9 +43,8 @@ local function modify(parent, region, data)
     text:SetFont(fontPath, data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
     text:SetTextHeight(data.fontSize);
     if text:GetFont() then
-        text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
         text:SetText(data.displayText);
-    end
+    else end
     text.displayText = data.displayText;
     text:SetJustifyH(data.justify);
 
