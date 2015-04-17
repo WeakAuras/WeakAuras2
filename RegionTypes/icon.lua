@@ -274,13 +274,15 @@ local function modify(parent, region, data)
 
     local function UpdateTime()
         local remaining = region.expirationTime - GetTime();
-        local progress = remaining / region.duration;
-
-        if(data.inverse) then
-            progress = 1 - progress;
+        local progress
+        if region.duration > 0 then
+            progress = remaining / region.duration;
+            if(data.inverse) then
+                progress = 1 - progress;
+            end
+            progress = progress > 0.0001 and progress or 0.0001;
         end
-        progress = progress > 0.0001 and progress or 0.0001;
-
+        
         local remainingStr = "";
         if(remaining == math.huge) then
             remainingStr = " ";
