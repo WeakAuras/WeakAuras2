@@ -1470,24 +1470,7 @@ function WeakAuras.ParseNumber(numString)
   end
 end
 
-function WeakAuras.ConstructFunction(prototype, data, triggernum, subPrefix, subSuffix, field, inverse)
-  local trigger;
-  if(field == "load") then
-    trigger = data.load;
-  elseif(field == "untrigger") then
-    if(triggernum == 0) then
-      data.untrigger = data.untrigger or {};
-      trigger = data.untrigger;
-    else
-      trigger = data.additional_triggers[triggernum].untrigger;
-    end
-  else
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    else
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-  end
+function WeakAuras.ConstructFunction(prototype, trigger, inverse)
   local input = {"event"};
   local required = {};
   local tests = {};
@@ -3582,7 +3565,7 @@ function WeakAuras.pAdd(data)
     data.actions.init = data.actions.init or {};
     data.actions.start = data.actions.start or {};
     data.actions.finish = data.actions.finish or {};
-    local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data, nil, nil, nil, "load")
+    local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
     WeakAuras.debug(id.." - Load", 1);
     WeakAuras.debug(loadFuncStr);
@@ -3724,11 +3707,7 @@ function WeakAuras.pAdd(data)
         elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
           error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
         else
-          if(trigger.event == "Combat Log") then
-            triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix);
-          else
-            triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum);
-          end
+          triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], trigger);
           WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
           WeakAuras.debug(triggerFuncStr);
           triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
@@ -3742,13 +3721,9 @@ function WeakAuras.pAdd(data)
           trigger.unevent = trigger.unevent or "auto";
 
           if(trigger.unevent == "custom") then
-          if(trigger.event == "Combat Log") then
-            untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, trigger.subeventPrefix, trigger.subeventSuffix, "untrigger");
-          else
-            untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, "untrigger");
-          end
+            untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], untrigger);
           elseif(trigger.unevent == "auto") then
-            untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], data, triggernum, nil, nil, nil, true);
+            untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], trigger, true);
           end
           if(untriggerFuncStr) then
             WeakAuras.debug(id.." - "..triggernum.." - Untrigger", 1)
