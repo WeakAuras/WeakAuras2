@@ -692,9 +692,9 @@ local function UpdateText(region, data)
   if not timer.displayTextRight or #timer.displayTextRight ~= #textStr then
     shouldOrient = true;
   end
-  if timer.displayTextLeft ~= textStr then
+  if timer.displayTextRight ~= textStr then
     timer:SetText(textStr);
-    timer.displayTextLeft = textStr;
+    timer.displayTextRight = textStr;
   end
 
   -- Re-orientate
