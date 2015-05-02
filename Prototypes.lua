@@ -1182,12 +1182,17 @@ WeakAuras.event_prototypes = {
       },
       {}, -- sourceFlags ignored with _ argument
       {}, -- sourceRaidFlags ignored with _ argument
-      {}, -- destGUID ignored with _ argument
+      {
+        name = "destGUID",
+        init = "arg",
+        hidden = "true",
+        test = "true"
+      },
       {
         name = "destunit",
         display = L["Destination Unit"],
         type = "unit",
-        test = "dest and UnitIsUnit(dest, '%s')",
+        test = "(destGUID or '') == (UnitGUID('%s') or '') and destGUID",
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
