@@ -1235,6 +1235,11 @@ function WeakAuras.ShowOptions(msg)
   frame.buttonsScroll.frame:Show();
   WeakAuras.LockUpdateInfo();
   
+  if (frame.needsSort) then
+    WeakAuras.SortDisplayButtons();
+    frame.needsSort = nil;
+  end
+
   frame:Show();
   frame:PickOption("New");
   if not(firstLoad) then
@@ -8320,8 +8325,12 @@ end
 
 WeakAuras.loadFrame:SetScript("OnEvent", function (self, event, arg1)
   WeakAuras.ScanForLoads(self, event, arg1);
-  if(frame and frame:IsVisible()) then
-    WeakAuras.SortDisplayButtons();
+  if(frame) then
+    if (frame:IsVisible()) then
+      WeakAuras.SortDisplayButtons();
+    else
+      frame.needsSort = true;
+    end
   end
 end);
 
