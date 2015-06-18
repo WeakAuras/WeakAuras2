@@ -4534,19 +4534,15 @@ function WeakAuras.CanShowStackInfo(data)
   end
 end
 
-function WeakAuras.CanHaveClones(data)
+ function WeakAuras.CanHaveClones(data)
   local trigger = data.trigger;
-  if(
-  trigger.type == "aura" and (
-    (trigger.fullscan and trigger.autoclone)
-    or (trigger.unit == "group" and trigger.groupclone)
-    or (trigger.unit == "multi")
-  )
-  ) then
-  return true;
-  else
-  return false;
+  local triggerSystem = triggerTypes[trigger.type];
+
+  if (not triggerSystem) then
+    return false;
   end
+
+  return triggerSystem.CanHaveClones(data);
 end
 
 function WeakAuras.CanHaveTooltip(data)

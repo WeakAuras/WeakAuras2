@@ -21,6 +21,9 @@ CanHaveDuration(data)
 
 CanHaveAuto(data)
   Returns whether the icon can be automatically selected
+
+CanHaveClones(data)
+  Returns whether the trigger can have clones
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -216,6 +219,10 @@ function GenericTrigger.CanHaveAuto(data)
   else
     return false;
   end
+end
+
+function GenericTrigger.CanHaveClones(data)
+  return false;
 end
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

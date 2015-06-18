@@ -21,6 +21,9 @@ CanHaveDuration(data)
 
 CanHaveAuto(data)
   Returns whether the icon can be automatically selected
+
+CanHaveClones(data)
+  Returns whether the trigger can have clones
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -107,6 +110,13 @@ function BuffTrigger.CanHaveAuto(data)
   else
     return false;
   end
+end
+
+function BuffTrigger.CanHaveClones(data)
+  local trigger = data.trigger;
+  return (trigger.fullscan and trigger.autoclone)
+          or (trigger.unit == "group" and trigger.groupclone)
+          or (trigger.unit == "multi");
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);
