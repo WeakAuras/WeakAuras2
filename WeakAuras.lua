@@ -2875,13 +2875,6 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
   end
 end
 
-function WeakAuras.RegisterMany(...)
-  local table = {...};
-  for _, data in ipairs(table) do
-  WeakAuras.Register(data);
-  end
-end
-
 function WeakAuras.Delete(data)
   local id = data.id;
 
