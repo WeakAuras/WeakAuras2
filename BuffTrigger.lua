@@ -18,6 +18,9 @@ CanGroupShowWithZero(data)
 
 CanHaveDuration(data)
   Returns whether the trigger can have a duration
+
+CanHaveAuto(data)
+  Returns whether the icon can be automatically selected
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -87,6 +90,20 @@ function BuffTrigger.CanHaveDuration(data)
     and not data.trigger.inverse
   ) then
     return "timed";
+  else
+    return false;
+  end
+end
+
+function BuffTrigger.CanHaveAuto(data)
+  if(
+    data.trigger.type == "aura"
+    and (
+    not data.trigger.inverse
+    or data.trigger.unit == "group"
+    )
+  ) then
+    return true;
   else
     return false;
   end

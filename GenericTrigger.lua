@@ -18,6 +18,9 @@ CanGroupShowWithZero(data)
 
 CanHaveDuration(data)
   Returns whether the trigger can have a duration
+
+CanHaveAuto(data)
+  Returns whether the icon can be automatically selected
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -176,6 +179,40 @@ function GenericTrigger.CanHaveDuration(data)
     else
       return "timed";
     end
+  else
+    return false;
+  end
+end
+
+function GenericTrigger.CanHaveAuto(data)
+  if(
+  (
+    (
+    data.trigger.type == "event"
+    or data.trigger.type == "status"
+    )
+    and data.trigger.event
+    and WeakAuras.event_prototypes[data.trigger.event]
+    and (
+    WeakAuras.event_prototypes[data.trigger.event].iconFunc
+    or WeakAuras.event_prototypes[data.trigger.event].nameFunc
+    )
+  )
+  or (
+    data.trigger.type == "custom"
+    and (
+    (
+      data.trigger.customName
+      and data.trigger.customName ~= ""
+    )
+    or (
+      data.trigger.customIcon
+      and data.trigger.customIcon ~= ""
+    )
+    )
+  )
+  ) then
+    return true;
   else
     return false;
   end

@@ -4497,44 +4497,14 @@ function WeakAuras.CanHaveDuration(data)
 end
 
 function WeakAuras.CanHaveAuto(data)
-  if(
-  (
-    data.trigger.type == "aura"
-    and (
-    not data.trigger.inverse
-    or data.trigger.unit == "group"
-    )
-  )
-  or (
-    (
-    data.trigger.type == "event"
-    or data.trigger.type == "status"
-    )
-    and data.trigger.event
-    and WeakAuras.event_prototypes[data.trigger.event]
-    and (
-    WeakAuras.event_prototypes[data.trigger.event].iconFunc
-    or WeakAuras.event_prototypes[data.trigger.event].nameFunc
-    )
-  )
-  or (
-    data.trigger.type == "custom"
-    and (
-    (
-      data.trigger.customName
-      and data.trigger.customName ~= ""
-    )
-    or (
-      data.trigger.customIcon
-      and data.trigger.customIcon ~= ""
-    )
-    )
-  )
-  ) then
-  return true;
-  else
-  return false;
+  local trigger = data.trigger;
+  local triggerSystem = triggerTypes[trigger.type];
+
+  if (not triggerSystem) then
+    return false;
   end
+
+  return triggerSystem.CanHaveAuto(data)
 end
 
 function WeakAuras.CanGroupShowWithZero(data)
