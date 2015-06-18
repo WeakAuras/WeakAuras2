@@ -6,6 +6,15 @@ The GenericTrigger has the following API:
 
 Modernize(data)
   Modernizes all generic triggers in data
+
+#####################################################
+# Helper functions mainly for the WeakAuras Options #
+#####################################################
+
+CanGroupShowWithZero(data)
+  Returns whether the first trigger could be shown without any affected group members.
+  If that is the case no automatic icon can be determined. Only used by the Options dialog.
+  (If I understood the code correctly)
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -100,6 +109,10 @@ function GenericTrigger.Modernize(data)
         end
     end
   end
+end
+
+function GenericTrigger.CanGroupShowWithZero(data)
+  return false;
 end
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

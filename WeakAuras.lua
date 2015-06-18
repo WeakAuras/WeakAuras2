@@ -4596,24 +4596,13 @@ end
 
 function WeakAuras.CanGroupShowWithZero(data)
   local trigger = data.trigger;
-  local group_countFunc, group_countFuncStr;
-  if(trigger.unit == "group") then
-  local count, countType = WeakAuras.ParseNumber(trigger.group_count);
-  if(trigger.group_countOperator and count and countType) then
-    if(countType == "whole") then
-    group_countFuncStr = function_strings.count:format(trigger.group_countOperator, count);
-    else
-    group_countFuncStr = function_strings.count_fraction:format(trigger.group_countOperator, count);
-    end
-  else
-    group_countFuncStr = function_strings.count:format(">", 0);
-  end
-  group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
+  local triggerSystem = triggerTypes[trigger.type];
 
-  return group_countFunc(0, 1);
-  else
-  return false;
+  if (not triggerSystem) then
+    return false;
   end
+
+  return triggerSystem.CanGroupShowWithZero(data);
 end
 
 function WeakAuras.CanShowNameInfo(data)

@@ -6,6 +6,15 @@ It has the following API:
 
 Modernize(data)
   Updates all buff triggers in data
+
+#####################################################
+# Helper functions mainly for the WeakAuras Options #
+#####################################################
+
+CanGroupShowWithZero(data)
+  Returns whether the first trigger could be shown without any affected group members.
+  If that is the case no automatic icon can be determined. Only used by the Options dialog.
+  (If I understood the code correctly)
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -18,7 +27,7 @@ local L = WeakAuras.L;
 local BuffTrigger = {};
 
 local timer = WeakAuras.timer;
-
+local function_strings = WeakAuras.function_strings;
 
 function BuffTrigger.Modernize(data)
   -- Give Name Info and Stack Info options to group auras
@@ -45,6 +54,27 @@ function BuffTrigger.Modernize(data)
     end
     if(trigger and (trigger.count) and not tonumber(trigger.count)) then trigger.count = 0 end
     if(trigger and (trigger.remaining) and not tonumber(trigger.remaining)) then trigger.remaining = 0 end
+  end
+end
+
+function BuffTrigger.CanGroupShowWithZero(data)
+  local trigger = data.trigger;
+  local group_countFunc, group_countFuncStr;
+  if(trigger.unit == "group") then
+    local count, countType = WeakAuras.ParseNumber(trigger.group_count);
+    if(trigger.group_countOperator and count and countType) then
+      if(countType == "whole") then
+        group_countFuncStr = function_strings.count:format(trigger.group_countOperator, count);
+      else
+        group_countFuncStr = function_strings.count_fraction:format(trigger.group_countOperator, count);
+      end
+    else
+      group_countFuncStr = function_strings.count:format(">", 0);
+    end
+    group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
+    return group_countFunc(0, 1);
+  else
+    return false;
   end
 end
 
