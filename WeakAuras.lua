@@ -52,22 +52,31 @@ function SlashCmdList.WEAKAURAS(msg)
   WeakAuras.OpenOptions(msg);
 end
 
+-- A alias for WeakAurasSaved, the SavedVariables
+-- Noteable properties:
+--  debug: If set to true, WeakAura.debug() outputs messages to the chat frame
+--  displays: All aura settings, keyed on their id
 local db;
 
 local registeredFromAddons;
+-- List of addons that registered displays, not sure if anyone addon uses this
 WeakAuras.addons = {};
 local addons = WeakAuras.addons;
 
+-- A list of tutorials, filled in by the WeakAuraTutorial addon by callling RegisterTutorial
 WeakAuras.tutorials = {};
 local tutorials = WeakAuras.tutorials;
 
+-- used if a addons tries to register a display under a id, that the user already has a display with that id
 WeakAuras.collisions = {};
 local collisions = WeakAuras.collisions;
 
+-- While true no events are handled. E.g. WeakAuras is paused while the Options dialog is open
 local paused = true;
 local importing = false;
 local squelch_actions = true;
 
+-- All regions keyed on id, has properties: region, regionType, also see clones
 WeakAuras.regions = {};
 local regions = WeakAuras.regions;
 WeakAuras.auras = {};
@@ -82,13 +91,18 @@ local specificBosses = WeakAuras.specificBosses;
 WeakAuras.specificUnits = {};
 local specificUnits = WeakAuras.specificUnits;
 
+-- contains regions for clones
 WeakAuras.clones = {};
 local clones = WeakAuras.clones;
+-- Unused regions that are kept around for clones
 WeakAuras.clonePool = {};
 local clonePool = WeakAuras.clonePool;
 
+-- One table per regiontype, see RegisterRegionType, notable properties: create, modify and default
 WeakAuras.regionTypes = {};
 local regionTypes = WeakAuras.regionTypes;
+
+-- One table per regiontype, see RegisterRegionOptions
 WeakAuras.regionOptions = {};
 local regionOptions = WeakAuras.regionOptions;
 
@@ -103,6 +117,7 @@ WeakAuras.loaded_events = loaded_events;
 local loaded_auras = {};
 WeakAuras.loaded_auras = loaded_auras;
 
+-- Animations
 WeakAuras.animations = {};
 local animations = WeakAuras.animations;
 WeakAuras.pending_controls = {};
