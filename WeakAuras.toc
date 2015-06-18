@@ -25,6 +25,8 @@ Prototypes.lua
 Types.lua
 WeakAuras.lua
 Transmission.lua
+BuffTrigger.lua
+GenericTrigger.lua
 
 RegionTypes\progresstexture.lua
 RegionTypes\texture.lua

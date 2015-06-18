@@ -106,6 +106,14 @@ local regionTypes = WeakAuras.regionTypes;
 WeakAuras.regionOptions = {};
 local regionOptions = WeakAuras.regionOptions;
 
+-- Maps from trigger type to trigger system
+WeakAuras.triggerTypes = {};
+local triggerTypes = WeakAuras.triggerTypes;
+
+-- List of all trigger systems, contains each system onec
+WeakAuras.triggerSystems = {}
+local triggerSystems = WeakAuras.triggerSystems;
+
 WeakAuras.forceable_events = {};
 
 local from_files = {};
@@ -3228,17 +3236,6 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  local fixEmberTrigger = function(trigger)
-    if (trigger.power and not trigger.ember) then
-      trigger.ember = tostring(tonumber(trigger.power) * 10);
-      trigger.use_ember = trigger.use_power
-      trigger.ember_operator = trigger.power_operator;
-      trigger.power = nil;
-      trigger.use_power = nil;
-      trigger.power_operator = nil;
-    end
-  end
-
   -- upgrade from singleselecting talents to multi select, see ticket 52
   if (type(load.talent) == "number") then
     local talent = load.talent;
@@ -3246,40 +3243,9 @@ function WeakAuras.Modernize(data)
     load.talent.single = talent;
     load.talent.multi = {}
   end
-
-  -- Add status/event information to triggers
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-      untrigger = data.untrigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-      untrigger = data.additional_triggers[triggernum].untrigger;
-    end
-    -- Add status/event information to triggers
-    if(trigger and trigger.event and (trigger.type == "status" or trigger.type == "event")) then
-      local prototype = event_prototypes[trigger.event];
-      if(prototype) then
-        trigger.type = prototype.type;
-      end
-    end
-    -- Convert ember trigger
-    if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Burning Embers") then
-      fixEmberTrigger(trigger);
-      fixEmberTrigger(untrigger);
-    end
-
-    if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Cooldown Progress (Spell)") then
-        if (not trigger.showOn) then
-            if (trigger.use_inverse) then
-                trigger.showOn = "showOnReady"
-            else
-                trigger.showOn = "showOnCooldown"
-            end
-            trigger.use_inverse = nil
-        end
-    end
+  
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.Modernize(data);
   end
 
   -- Change English-language class tokens to locale-agnostic versions
@@ -3305,20 +3271,6 @@ function WeakAuras.Modernize(data)
         load.class.multi[class_agnosticize[i]] = true;
         load.class.multi[i] = nil;
       end
-    end
-  end
-
-  -- Give Name Info and Stack Info options to group auras
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if(trigger and trigger.type == "aura" and trigger.unit and trigger.unit == "group") then
-      trigger.name_info = trigger.name_info or "aura";
-      trigger.stack_info = trigger.stack_info or "count";
     end
   end
 
@@ -3369,49 +3321,6 @@ function WeakAuras.Modernize(data)
   if(data.regionType == "timer") then
     data.regionType = "text";
     data.displayText = "%p";
-  end
-
-  -- Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if(trigger and trigger.custom) then
-      trigger.custom = trigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
-    end
-    if(untrigger and untrigger.custom) then
-      untrigger.custom = untrigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
-    end
-  end
-
-  -- Rename ["event"] = "Cooldown (Spell)" to ["event"] = "Cooldown Progress (Spell)"
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-
-    if trigger and trigger["event"] and trigger["event"] == "Cooldown (Spell)" then
-      trigger["event"] = "Cooldown Progress (Spell)";
-    end
-  end
-
-  -- Fix corrupted data to time remaining and stacks (ticket #366, mod allowed users to input non numeric values)
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if(trigger and (trigger.count) and not tonumber(trigger.count)) then trigger.count = 0 end
-    if(trigger and (trigger.remaining) and not tonumber(trigger.remaining)) then trigger.remaining = 0 end
   end
 
   -- Upgrade some old variables
@@ -5472,3 +5381,10 @@ do
 end
 
 WeakAuras.dynFrame = dynFrame;
+
+function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
+  for _, v in ipairs(types) do
+    triggerTypes[v] = triggerSystem;
+  end
+  tinsert(triggerSystems, triggerSystem);
+end
