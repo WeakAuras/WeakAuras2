@@ -4487,70 +4487,13 @@ function WeakAuras.GetData(id)
 end
 
 function WeakAuras.CanHaveDuration(data)
-  if(
-  (
-    data.trigger.type == "aura"
-    and not data.trigger.inverse
-  )
-  or (
-    (
-    data.trigger.type == "event"
-    or data.trigger.type == "status"
-    )
-    and (
-    (
-      data.trigger.event
-      and WeakAuras.event_prototypes[data.trigger.event]
-      and WeakAuras.event_prototypes[data.trigger.event].durationFunc
-    )
-    or (
-      data.trigger.unevent == "timed"
-      and data.trigger.duration
-    )
-    )
-    and not data.trigger.use_inverse
-  )
-  or (
-    data.trigger.type == "custom"
-    and (
-    (
-      data.trigger.custom_type == "event"
-      and data.trigger.custom_hide == "timed"
-      and data.trigger.duration
-    )
-    or (
-      data.trigger.customDuration
-      and data.trigger.customDuration ~= ""
-    )
-    )
-  )
-  ) then
-  if(
-    (
-    data.trigger.type == "event"
-    or data.trigger.type == "status"
-    )
-    and data.trigger.event
-    and WeakAuras.event_prototypes[data.trigger.event]
-    and WeakAuras.event_prototypes[data.trigger.event].durationFunc
-  ) then
-    if(type(WeakAuras.event_prototypes[data.trigger.event].init) == "function") then
-    WeakAuras.event_prototypes[data.trigger.event].init(data.trigger);
-    end
-    local current, maximum, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
-    current = type(current) ~= "number" and current or 0
-    maximum = type(maximum) ~= "number" and maximum or 0
-    if(custom) then
-    return {current = current, maximum = maximum};
-    else
-    return "timed";
-    end
-  else
-    return "timed";
+  local trigger = data.trigger;
+  local triggerSystem = triggerTypes[trigger.type];
+
+  if (not triggerSystem) then
+    return false;
   end
-  else
-  return false;
-  end
+  return triggerSystem.CanHaveDuration(data);
 end
 
 function WeakAuras.CanHaveAuto(data)

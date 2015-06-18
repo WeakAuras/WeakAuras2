@@ -15,6 +15,9 @@ CanGroupShowWithZero(data)
   Returns whether the first trigger could be shown without any affected group members.
   If that is the case no automatic icon can be determined. Only used by the Options dialog.
   (If I understood the code correctly)
+
+CanHaveDuration(data)
+  Returns whether the trigger can have a duration
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -78,5 +81,15 @@ function BuffTrigger.CanGroupShowWithZero(data)
   end
 end
 
+function BuffTrigger.CanHaveDuration(data)
+  if(
+    data.trigger.type == "aura"
+    and not data.trigger.inverse
+  ) then
+    return "timed";
+  else
+    return false;
+  end
+end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);

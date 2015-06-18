@@ -15,6 +15,9 @@ CanGroupShowWithZero(data)
   Returns whether the first trigger could be shown without any affected group members.
   If that is the case no automatic icon can be determined. Only used by the Options dialog.
   (If I understood the code correctly)
+
+CanHaveDuration(data)
+  Returns whether the trigger can have a duration
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -113,6 +116,69 @@ end
 
 function GenericTrigger.CanGroupShowWithZero(data)
   return false;
+end
+
+function GenericTrigger.CanHaveDuration(data)
+  if(
+  (
+    (
+    data.trigger.type == "event"
+    or data.trigger.type == "status"
+    )
+    and (
+    (
+      data.trigger.event
+      and WeakAuras.event_prototypes[data.trigger.event]
+      and WeakAuras.event_prototypes[data.trigger.event].durationFunc
+    )
+    or (
+      data.trigger.unevent == "timed"
+      and data.trigger.duration
+    )
+    )
+    and not data.trigger.use_inverse
+  )
+  or (
+    data.trigger.type == "custom"
+    and (
+    (
+      data.trigger.custom_type == "event"
+      and data.trigger.custom_hide == "timed"
+      and data.trigger.duration
+    )
+    or (
+      data.trigger.customDuration
+      and data.trigger.customDuration ~= ""
+    )
+    )
+  )
+  ) then
+    if(
+      (
+      data.trigger.type == "event"
+      or data.trigger.type == "status"
+      )
+      and data.trigger.event
+      and WeakAuras.event_prototypes[data.trigger.event]
+      and WeakAuras.event_prototypes[data.trigger.event].durationFunc
+    ) then
+      if(type(WeakAuras.event_prototypes[data.trigger.event].init) == "function") then
+        WeakAuras.event_prototypes[data.trigger.event].init(data.trigger);
+      end
+      local current, maximum, custom = WeakAuras.event_prototypes[data.trigger.event].durationFunc(data.trigger);
+      current = type(current) ~= "number" and current or 0
+      maximum = type(maximum) ~= "number" and maximum or 0
+      if(custom) then
+        return {current = current, maximum = maximum};
+      else
+        return "timed";
+      end
+    else
+      return "timed";
+    end
+  else
+    return false;
+  end
 end
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);
