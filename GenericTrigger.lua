@@ -4,6 +4,9 @@ This file contains the generic trigger system. That is every trigger except the 
 It registers the GenericTrigger table for the trigger types "status", "event" and "custom".
 The GenericTrigger has the following API:
 
+Add(data)
+  Adds a display, creating all internal data structures for all triggers
+
 Delete(id)
   Deletes all triggers for display id
 
@@ -37,11 +40,16 @@ local tostring, select, pairs, next, type, unpack = tostring, select, pairs, nex
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable = setmetatable, getmetatable
 
+WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" end});
+LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);
+local aceEvents = WeakAurasAceEvents
+
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GenericTrigger = {};
 
 local event_prototypes = WeakAuras.event_prototypes;
+local load_prototype = WeakAuras.load_prototype;
 
 local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
@@ -130,6 +138,10 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   end
 end
 
+local frame = CreateFrame("FRAME");
+WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
+frame:SetScript("OnEvent", WeakAuras.HandleEvent);
+
 function GenericTrigger.Delete(id)
   WeakAuras.EndEvent(id, 0, true);
   for i,v in pairs(loaded_events) do
@@ -160,6 +172,182 @@ function GenericTrigger.LoadDisplay(id)
         LoadEvent(id, triggernum, data);
       end
     end
+  end
+end
+
+function GenericTrigger.Add(data, region)
+  local id = data.id;
+  events[id] = nil;
+
+  local register_for_frame_updates = false;
+
+  local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
+  local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
+  for triggernum=0,(data.numTriggers or 9) do
+    local trigger, untrigger;
+    if(triggernum == 0) then
+      trigger = data.trigger;
+      data.untrigger = data.untrigger or {};
+      untrigger = data.untrigger;
+    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+      trigger = data.additional_triggers[triggernum].trigger;
+      data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
+      untrigger = data.additional_triggers[triggernum].untrigger;
+    end
+    local triggerType;
+    if(trigger and type(trigger) == "table") then
+      triggerType = trigger.type;
+      if(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
+        local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
+        local trigger_events = {};
+        local durationFunc, nameFunc, iconFunc, textureFunc, stacksFunc;
+        if(triggerType == "status" or triggerType == "event") then
+          if not(trigger.event) then
+            error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
+          elseif not(event_prototypes[trigger.event]) then
+            if(event_prototypes["Health"]) then
+              trigger.event = "Health";
+            else
+              error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
+            end
+          elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
+            error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
+          else
+            triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], trigger);
+            WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
+            WeakAuras.debug(triggerFuncStr);
+            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
+
+            durationFunc = event_prototypes[trigger.event].durationFunc;
+            nameFunc = event_prototypes[trigger.event].nameFunc;
+            iconFunc = event_prototypes[trigger.event].iconFunc;
+            textureFunc = event_prototypes[trigger.event].textureFunc;
+            stacksFunc = event_prototypes[trigger.event].stacksFunc;
+
+            trigger.unevent = trigger.unevent or "auto";
+
+            if(trigger.unevent == "custom") then
+              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], untrigger);
+            elseif(trigger.unevent == "auto") then
+              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], trigger, true);
+            end
+            if(untriggerFuncStr) then
+              WeakAuras.debug(id.." - "..triggernum.." - Untrigger", 1)
+              WeakAuras.debug(untriggerFuncStr);
+              untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr);
+            end
+
+            local prototype = event_prototypes[trigger.event];
+            if(prototype) then
+              trigger_events = prototype.events;
+              for index, event in ipairs(trigger_events) do
+                frame:RegisterEvent(event);
+                -- WeakAuras.cbh.RegisterCallback(WeakAuras.cbh.events, event)
+                aceEvents:RegisterMessage(event, WeakAuras.HandleEvent, frame)
+                if(type(prototype.force_events) == "boolean" or type(prototype.force_events) == "table") then
+                  WeakAuras.forceable_events[event] = prototype.force_events;
+                end
+              end
+              if(type(prototype.force_events) == "string") then
+                WeakAuras.forceable_events[prototype.force_events] = true;
+              end
+            end
+          end
+        else
+          triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""));
+          if(trigger.custom_type == "status" or trigger.custom_hide == "custom") then
+            untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
+          end
+
+          if(trigger.customDuration and trigger.customDuration ~= "") then
+            durationFunc = WeakAuras.LoadFunction("return "..trigger.customDuration);
+          end
+          if(trigger.customName and trigger.customName ~= "") then
+            nameFunc = WeakAuras.LoadFunction("return "..trigger.customName);
+          end
+          if(trigger.customIcon and trigger.customIcon ~= "") then
+            iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon);
+          end
+          if(trigger.customTexture and trigger.customTexture ~= "") then
+            textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture);
+          end
+          if(trigger.customStacks and trigger.customStacks ~= "") then
+            stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks);
+          end
+
+          if(trigger.custom_type == "status" and trigger.check == "update") then
+            register_for_frame_updates = true;
+            trigger_events = {"FRAME_UPDATE"};
+          else
+            trigger_events = WeakAuras.split(trigger.events);
+            for index, event in pairs(trigger_events) do
+              if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+                -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
+                -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
+                -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
+                -- that are already in place. Replacing all those checks would be a pain in the ass.
+                trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
+                frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+              else
+                frame:RegisterEvent(event);
+                -- WeakAuras.cbh.RegisterCallback(WeakAuras.cbh.events, event)
+                aceEvents:RegisterMessage(event, WeakAuras.HandleEvent, frame)
+              end
+              if(trigger.custom_type == "status") then
+                WeakAuras.forceable_events[event] = true;
+              end
+            end
+          end
+        end
+
+        events[id] = events[id] or {};
+        events[id][triggernum] = {
+          trigger = triggerFunc,
+          untrigger = untriggerFunc,
+          load = loadFunc,
+          bar = data.bar,
+          timer = data.timer,
+          cooldown = data.cooldown,
+          icon = data.icon,
+          event = trigger.event,
+          events = trigger_events,
+          inverse = trigger.use_inverse,
+          subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
+          unevent = trigger.unevent,
+          durationFunc = durationFunc,
+          nameFunc = nameFunc,
+          iconFunc = iconFunc,
+          textureFunc = textureFunc,
+          stacksFunc = stacksFunc,
+          expiredHideFunc = triggerType ~= "custom" and event_prototypes[trigger.event].expiredHideFunc,
+          region = region,
+          numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
+        };
+
+        if(
+        (
+          (
+          triggerType == "status"
+          or triggerType == "event"
+          )
+          and trigger.unevent == "timed"
+        )
+        or (
+          triggerType == "custom"
+          and trigger.custom_type == "event"
+          and trigger.custom_hide == "timed"
+        )
+        ) then
+          events[id][triggernum].duration = tonumber(trigger.duration);
+        end
+      end
+    end
+  end
+
+  if(register_for_frame_updates) then
+    WeakAuras.RegisterEveryFrameUpdate(id);
+  else
+    WeakAuras.UnregisterEveryFrameUpdate(id);
   end
 end
 
@@ -317,7 +505,7 @@ do
         return 0, math.huge, name, icon;
       end
     end
-    
+
     return 0, math.huge;
   end
 
@@ -367,7 +555,7 @@ do
             offTimer = timer:ScheduleTimer(swingEnd, offSpeed, "off");
           end
         end
-    
+
         WeakAuras.ScanEvents(event);
       elseif(message == "RANGE_DAMAGE" or message == "RANGE_MISSED") then
         local event;
@@ -382,7 +570,7 @@ do
         lastSwingRange = currentTime;
         swingDurationRange = speed;
         rangeTimer = timer:ScheduleTimer(swingEnd, speed, "range");
-        
+
         WeakAuras.ScanEvents(event);
       end
     end

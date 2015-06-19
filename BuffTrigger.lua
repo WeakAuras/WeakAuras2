@@ -4,6 +4,9 @@ This file contains the "aura" trigger for buffs and debuffs.
 It registters the BuffTrigger table for the trigger type "aura".
 It has the following API:
 
+Add(data)
+  Adds a aura, setting up internal data structures for all buff triggers
+
 LoadDisplay(id)
   Loads the aura id, enabling all buff triggers in the aura
 
@@ -48,6 +51,7 @@ local specificBosses = WeakAuras.specificBosses;
 local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
 local duration_cache = WeakAuras.duration_cache;
+local load_prototype = WeakAuras.load_prototype;
 
 local aura_cache = {};
 do
@@ -1034,6 +1038,133 @@ function BuffTrigger.Delete(id)
   auras[id] = nil;
   for i,v in pairs(loaded_auras) do
     v[id] = nil;
+  end
+end
+
+function BuffTrigger.Add(data, region)
+  local id = data.id;
+  auras[id] = nil;
+
+  local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
+  local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
+  for triggernum=0,(data.numTriggers or 9) do
+    local trigger, untrigger;
+    if(triggernum == 0) then
+      trigger = data.trigger;
+      data.untrigger = data.untrigger or {};
+      untrigger = data.untrigger;
+    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+      trigger = data.additional_triggers[triggernum].trigger;
+      data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
+      untrigger = data.additional_triggers[triggernum].untrigger;
+    end
+    local triggerType;
+    if(trigger and type(trigger) == "table") then
+      triggerType = trigger.type;
+      if(triggerType == "aura") then
+        trigger.names = trigger.names or {};
+        trigger.spellIds = trigger.spellIds or {}
+        trigger.unit = trigger.unit or "player";
+        trigger.debuffType = trigger.debuffType or "HELPFUL";
+
+        local countFunc, countFuncStr;
+        if(trigger.useCount) then
+          countFuncStr = function_strings.count:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
+          countFunc = WeakAuras.LoadFunction(countFuncStr);
+        end
+
+        local remFunc, remFuncStr;
+        if(trigger.useRem) then
+          remFuncStr = function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0);
+          remFunc = WeakAuras.LoadFunction(remFuncStr);
+        end
+
+        local group_countFunc, group_countFuncStr;
+        if(trigger.unit == "group") then
+          local count, countType = WeakAuras.ParseNumber(trigger.group_count);
+          if(trigger.group_countOperator and count and countType) then
+            if(countType == "whole") then
+              group_countFuncStr = function_strings.count:format(trigger.group_countOperator, count);
+            else
+              group_countFuncStr = function_strings.count_fraction:format(trigger.group_countOperator, count);
+            end
+          else
+            group_countFuncStr = function_strings.count:format(">", 0);
+          end
+          group_countFunc = WeakAuras.LoadFunction(group_countFuncStr);
+          WeakAuras.aura_cache:Watch(id);
+        end
+
+        local scanFunc;
+        if(trigger.fullscan) then
+          scanFunc = function(name, tooltip, isStealable, spellId, debuffClass)
+            if (
+              (
+                (not trigger.use_name) or (
+                trigger.name and trigger.name ~= "" and (
+                  trigger.name_operator == "==" and name == trigger.name
+                  or trigger.name_operator == "find('%s')" and name:find(trigger.name)
+                  or trigger.name_operator == "match('%s')" and name:match(trigger.name)
+                )
+                )
+              )
+              and (
+                (not trigger.use_tooltip) or (
+                trigger.tooltip and trigger.tooltip ~= "" and (
+                  trigger.tooltip_operator == "==" and tooltip == trigger.tooltip
+                  or trigger.tooltip_operator == "find('%s')" and tooltip:find(trigger.tooltip)
+                  or trigger.tooltip_operator == "match('%s')" and tooltip:match(trigger.tooltip)
+                )
+                )
+              )
+              and ((not trigger.use_stealable) or isStealable)
+              and ((not trigger.use_spellId) or spellId == tonumber(trigger.spellId))
+              and ((not trigger.use_debuffClass) or debuffClass == trigger.debuffClass)
+            ) then
+              return true;
+            else
+              return false;
+            end
+          end -- end scanFunc
+        end
+
+        if(trigger.unit == "multi") then
+          WeakAuras.InitMultiAura();
+        end
+
+        auras[id] = auras[id] or {};
+        auras[id][triggernum] = {
+          count = countFunc,
+          remFunc = remFunc,
+          rem = tonumber(trigger.rem) or 0,
+          group_count = group_countFunc,
+          fullscan = trigger.fullscan,
+          autoclone = trigger.autoclone,
+          groupclone = trigger.groupclone,
+          subcount = trigger.subcount,
+          scanFunc = scanFunc,
+          load = loadFunc,
+          bar = data.bar,
+          timer = data.timer,
+          cooldown = data.cooldown,
+          icon = data.icon,
+          debuffType = trigger.debuffType,
+          names = trigger.names,
+          spellIds = trigger.spellIds,
+          name = trigger.name,
+          unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit,
+          specificUnit = trigger.unit == "member",
+          useCount = trigger.useCount,
+          ownOnly = trigger.ownOnly,
+          inverse = trigger.inverse and not (trigger.unit == "group" and not trigger.groupclone),
+          region = region,
+          numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
+          hideAlone = trigger.hideAlone,
+          stack_info = trigger.stack_info,
+          name_info = trigger.name_info
+        };
+      end
+    end
   end
 end
 
