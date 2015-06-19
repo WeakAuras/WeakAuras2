@@ -13,6 +13,9 @@ Delete(id)
 LoadDisplay(id)
   Loads all triggers of display id
 
+UnloadDisplay(id)
+  Unloads all triggers of the display id
+
 Modernize(data)
   Modernizes all generic triggers in data
 
@@ -164,6 +167,18 @@ local function HandleEvent(frame, event, arg1, arg2, ...)
          WeakAuras.CheckCooldownReady();
        end,
        0.5);  -- Data not available
+  end
+end
+
+function GenericTrigger.UnloadDisplay(id)
+  for eventname, events in pairs(loaded_events) do
+    if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
+      for subeventname, subevents in pairs(events) do
+        subevents[id] = nil;
+      end
+    else
+      events[id] = nil;
+    end
   end
 end
 

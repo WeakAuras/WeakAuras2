@@ -1211,18 +1211,8 @@ do
   end
 
   function WeakAuras.UnloadDisplay(id)
-    for unitname, auras in pairs(loaded_auras) do
-      auras[id] = nil;
-    end
-
-    for eventname, events in pairs(loaded_events) do
-      if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
-        for subeventname, subevents in pairs(events) do
-          subevents[id] = nil;
-        end
-      else
-        events[id] = nil;
-      end
+    for _, triggerSystem in pairs(triggerSystems) do
+      triggerSystem.UnloadDisplay(id);
     end
   end
 end

@@ -10,6 +10,9 @@ Add(data)
 LoadDisplay(id)
   Loads the aura id, enabling all buff triggers in the aura
 
+UnloadDisplay(id)
+  Unloads the aura id, disabling all buff triggers in the aura
+
 Delete(id)
   Removes all data for aura id
 
@@ -1088,6 +1091,12 @@ function BuffTrigger.LoadDisplay(id)
         LoadAura(id, triggernum, data);
       end
     end
+  end
+end
+
+function BuffTrigger.UnloadDisplay(id)
+  for unitname, auras in pairs(loaded_auras) do
+    auras[id] = nil;
   end
 end
 
