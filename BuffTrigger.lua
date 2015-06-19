@@ -4,6 +4,9 @@ This file contains the "aura" trigger for buffs and debuffs.
 It registters the BuffTrigger table for the trigger type "aura".
 It has the following API:
 
+LoadDisplay(id)
+  Loads the aura id, enabling all buff triggers in the aura
+
 Modernize(data)
   Updates all buff triggers in data
 
@@ -37,6 +40,10 @@ local BuffTrigger = {};
 
 local timer = WeakAuras.timer;
 local function_strings = WeakAuras.function_strings;
+local auras = WeakAuras.auras;
+local specificBosses = WeakAuras.specificBosses;
+local specificUnits = WeakAuras.specificUnits;
+local loaded_auras = WeakAuras.loaded_auras;
 
 do
   local scheduled_scans = {};
@@ -54,6 +61,39 @@ do
     end
   end
  end
+
+local function LoadAura(id, triggernum, data)
+  local unit;
+  if(data.specificUnit) then
+    if(data.unit:lower():sub(0,4) == "boss") then
+    specificBosses[data.unit] = true;
+    unit = "boss";
+    else
+    specificUnits[data.unit] = true;
+    unit = "group";
+    end
+  elseif(data.unit == "multi") then
+    unit = data.name
+  else
+    unit = data.unit;
+  end
+  if(unit) then
+    loaded_auras[unit] = loaded_auras[unit] or {};
+    loaded_auras[unit][id] = loaded_auras[unit][id] or {};
+    loaded_auras[unit][id][triggernum] = data;
+  end
+end
+
+
+function BuffTrigger.LoadDisplay(id)
+  if(auras[id]) then
+    for triggernum, data in pairs(auras[id]) do
+      if(auras[id] and auras[id][triggernum]) then
+        LoadAura(id, triggernum, data);
+      end
+    end
+  end
+end
 
 function BuffTrigger.Modernize(data)
   -- Give Name Info and Stack Info options to group auras

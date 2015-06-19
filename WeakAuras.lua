@@ -1827,58 +1827,9 @@ function WeakAuras.UnloadAll()
 end
 
 do
-  local function LoadAura(id, triggernum, data)
-    local unit;
-    if(data.specificUnit) then
-      if(data.unit:lower():sub(0,4) == "boss") then
-      specificBosses[data.unit] = true;
-      unit = "boss";
-      else
-      specificUnits[data.unit] = true;
-      unit = "group";
-      end
-    elseif(data.unit == "multi") then
-      unit = data.name
-    else
-      unit = data.unit;
-    end
-    if(unit) then
-      loaded_auras[unit] = loaded_auras[unit] or {};
-      loaded_auras[unit][id] = loaded_auras[unit][id] or {};
-      loaded_auras[unit][id][triggernum] = data;
-    end
-  end
-
-  local function LoadEvent(id, triggernum, data)
-    local events = data.events or {};
-    for index, event in pairs(events) do
-      loaded_events[event] = loaded_events[event] or {};
-      if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
-      loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
-      loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
-      loaded_events[event][data.subevent][id][triggernum] = data;
-      else
-      loaded_events[event][id] = loaded_events[event][id] or {};
-      loaded_events[event][id][triggernum] = data;
-      end
-    end
-  end
-
   function WeakAuras.LoadDisplay(id)
-    if(auras[id]) then
-      for triggernum, data in pairs(auras[id]) do
-        if(auras[id] and auras[id][triggernum]) then
-          LoadAura(id, triggernum, data);
-        end
-      end
-  end
-
-    if(events[id]) then
-      for triggernum, data in pairs(events[id]) do
-        if(events[id] and events[id][triggernum]) then
-          LoadEvent(id, triggernum, data);
-        end
-      end
+    for _, triggerSystem in pairs(triggerSystems) do
+      triggerSystem.LoadDisplay(id);
     end
   end
 

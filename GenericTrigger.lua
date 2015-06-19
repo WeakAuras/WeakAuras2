@@ -4,6 +4,9 @@ This file contains the generic trigger system. That is every trigger except the 
 It registers the GenericTrigger table for the trigger types "status", "event" and "custom".
 The GenericTrigger has the following API:
 
+LoadDisplay(id)
+  Loads all triggers of display id
+
 Modernize(data)
   Modernizes all generic triggers in data
 
@@ -120,6 +123,31 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
         end
       end
       WeakAuras.ActivateAuraEnvironment(nil);
+    end
+  end
+end
+
+local function LoadEvent(id, triggernum, data)
+  local events = data.events or {};
+  for index, event in pairs(events) do
+    loaded_events[event] = loaded_events[event] or {};
+    if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
+      loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
+      loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
+      loaded_events[event][data.subevent][id][triggernum] = data;
+    else
+      loaded_events[event][id] = loaded_events[event][id] or {};
+      loaded_events[event][id][triggernum] = data;
+    end
+  end
+end
+
+function GenericTrigger.LoadDisplay(id)
+  if(events[id]) then
+    for triggernum, data in pairs(events[id]) do
+      if(events[id] and events[id][triggernum]) then
+        LoadEvent(id, triggernum, data);
+      end
     end
   end
 end
