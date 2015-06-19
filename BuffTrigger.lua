@@ -119,6 +119,11 @@ do
     self:ForceUpdate()
   end
 
+  function aura_cache.Rename(self, oldid, newid)
+    self.watched[newid] = self.watched[oldid];
+    self.watched[oldid] = nil;
+  end
+
   function aura_cache.Unwatch(self, id)
     self.watched[id] = nil;
   end
@@ -1134,8 +1139,12 @@ function BuffTrigger.Rename(oldid, newid)
   auras[newid] = auras[oldid];
   auras[oldid] = nil;
 
-  loaded_auras[newid] = loaded_auras[oldid];
-  loaded_auras[oldid] = nil;
+  aura_cache:Rename(oldid, newid);
+
+  for i,v in pairs(loaded_auras) do
+    v[newid] = v[oldid];
+    v[newid] = nil;
+  end
 end
 
 function BuffTrigger.Add(data, region)
