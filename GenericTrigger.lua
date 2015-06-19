@@ -833,7 +833,7 @@ do
             if(text) then
               local _, _, name = text:find("^(.+) %(%d+ [^%)]+%)$");
               if(name) then
-              return name;
+                return name;
               end
             end
           end
