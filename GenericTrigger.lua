@@ -911,6 +911,22 @@ function WeakAuras.RegisterItemCountWatch()
   end
 end
 
+do
+  local scheduled_scans = {};
+
+  local function doCooldownScan(fireTime)
+    WeakAuras.debug("Performing cooldown scan at "..fireTime.." ("..GetTime()..")");
+    scheduled_scans[fireTime] = nil;
+    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+  end
+  function WeakAuras.ScheduleCooldownScan(fireTime)
+    if not(scheduled_scans[fireTime]) then
+      WeakAuras.debug("Scheduled cooldown scan at "..fireTime);
+      scheduled_scans[fireTime] = timer:ScheduleTimer(doCooldownScan, fireTime - GetTime() + 0.1, fireTime);
+    end
+  end
+ end
+
 function GenericTrigger.CanGroupShowWithZero(data)
   return false;
 end

@@ -38,6 +38,23 @@ local BuffTrigger = {};
 local timer = WeakAuras.timer;
 local function_strings = WeakAuras.function_strings;
 
+do
+  local scheduled_scans = {};
+
+  function WeakAuras.ScheduleAuraScan(unit, fireTime)
+    scheduled_scans[unit] = scheduled_scans[unit] or {};
+    if not(scheduled_scans[unit][fireTime]) then
+      WeakAuras.debug("Scheduled aura scan for "..unit.." at "..fireTime);
+      local doScan = function()
+        WeakAuras.debug("Performing aura scan for "..unit.." at "..fireTime.." ("..GetTime()..")");
+        scheduled_scans[unit][fireTime] = nil;
+        WeakAuras.ScanAuras(unit);
+      end
+      scheduled_scans[unit][fireTime] = timer:ScheduleTimer(doScan, fireTime - GetTime() + 0.1);
+    end
+  end
+ end
+
 function BuffTrigger.Modernize(data)
   -- Give Name Info and Stack Info options to group auras
   for triggernum=0,(data.numTriggers or 9) do

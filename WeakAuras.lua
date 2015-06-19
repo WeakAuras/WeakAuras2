@@ -4153,37 +4153,6 @@ do
   end
 end
 
-do
-  local scheduled_scans = {
-  cooldowns = {}
-  };
-
-  function WeakAuras.ScheduleAuraScan(unit, fireTime)
-  scheduled_scans[unit] = scheduled_scans[unit] or {};
-  if not(scheduled_scans[unit][fireTime]) then
-    WeakAuras.debug("Scheduled aura scan for "..unit.." at "..fireTime);
-    local doScan = function()
-    WeakAuras.debug("Performing aura scan for "..unit.." at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[unit][fireTime] = nil;
-    WeakAuras.ScanAuras(unit);
-    end
-    scheduled_scans[unit][fireTime] = timer:ScheduleTimer(doScan, fireTime - GetTime() + 0.1);
-  end
-  end
-
-  local function doCooldownScan(fireTime)
-  WeakAuras.debug("Performing cooldown scan at "..fireTime.." ("..GetTime()..")");
-  scheduled_scans.cooldowns[fireTime] = nil;
-  WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
-  end
-  function WeakAuras.ScheduleCooldownScan(fireTime)
-  if not(scheduled_scans.cooldowns[fireTime]) then
-    WeakAuras.debug("Scheduled cooldown scan at "..fireTime);
-    scheduled_scans.cooldowns[fireTime] = timer:ScheduleTimer(doCooldownScan, fireTime - GetTime() + 0.1, fireTime);
-  end
-  end
- end
-
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltip = WeakAuras.GetHiddenTooltip();
   tooltip:SetUnitAura(unit, index, filter);
