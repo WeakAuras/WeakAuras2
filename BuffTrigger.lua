@@ -12,6 +12,9 @@ LoadDisplay(id)
 
 UnloadDisplay(id)
   Unloads the aura id, disabling all buff triggers in the aura
+  
+ScanAll()
+  Updates all triggers by checking all triggers
 
 Delete(id)
   Removes all data for aura id
@@ -1024,6 +1027,16 @@ local function LoadAura(id, triggernum, data)
     loaded_auras[unit] = loaded_auras[unit] or {};
     loaded_auras[unit][id] = loaded_auras[unit][id] or {};
     loaded_auras[unit][id][triggernum] = data;
+  end
+end
+
+function BuffTrigger.ScanAll()
+  for unit, auras in pairs(loaded_auras) do
+    if(unit == "group") then
+      WeakAuras.ScanAurasGroup();
+    elseif(WeakAuras.unit_types[unit]) then
+      WeakAuras.ScanAuras(unit);
+    end
   end
 end
 

@@ -15,6 +15,9 @@ LoadDisplay(id)
 
 UnloadDisplay(id)
   Unloads all triggers of the display id
+  
+ScanAll
+  Resets the trigger state for all triggers
 
 Modernize(data)
   Modernizes all generic triggers in data
@@ -144,7 +147,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   end
 end
 
-function WeakAuras.ForceEvents()
+function GenericTrigger.ScanAll()
   for event, v in pairs(WeakAuras.forceable_events) do
     if(type(v) == "table") then
       for index, arg1 in pairs(v) do

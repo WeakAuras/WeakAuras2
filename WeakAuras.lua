@@ -726,24 +726,19 @@ function WeakAuras.ScanAll()
   end
 
   for id, cloneList in pairs(clones) do
-  for cloneId, clone in pairs(cloneList) do
-    clone:Collapse();
-    clone.trigger_count = 0;
-    clone.triggers = clone.triggers or {};
-    wipe(clone.triggers);
-  end
+    for cloneId, clone in pairs(cloneList) do
+      clone:Collapse();
+      clone.trigger_count = 0;
+      clone.triggers = clone.triggers or {};
+      wipe(clone.triggers);
+    end
   end
 
   WeakAuras.ReloadAll();
 
-  for unit, auras in pairs(loaded_auras) do
-  if(unit == "group") then
-    WeakAuras.ScanAurasGroup();
-  elseif(WeakAuras.unit_types[unit]) then
-    WeakAuras.ScanAuras(unit);
-  end
-  end
-  WeakAuras.ForceEvents();
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.ScanAll();
+   end
 end
 
 function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
@@ -1138,14 +1133,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     end
   end
   if(changed > 0 and not paused) then
-    for unit, auras in pairs(loaded_auras) do
-      if(unit == "group") then
-        WeakAuras.ScanAurasGroup();
-      elseif(WeakAuras.unit_types[unit]) then
-        WeakAuras.ScanAuras(unit);
-      end
+    for _, triggerSystem in pairs(triggerSystems) do
+      triggerSystem.ScanAll();
     end
-    WeakAuras.ForceEvents();
   end
 end
 
