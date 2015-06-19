@@ -12,7 +12,10 @@ LoadDisplay(id)
 
 UnloadDisplay(id)
   Unloads the aura id, disabling all buff triggers in the aura
-  
+
+UnloadAll()
+  Unloads all auras, disabling all buff triggers
+
 ScanAll()
   Updates all triggers by checking all triggers
 
@@ -1096,6 +1099,10 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     end
   end
 end);
+
+function BuffTrigger.UnloadAll()
+  wipe(loaded_auras);
+end
 
 function BuffTrigger.LoadDisplay(id)
   if(auras[id]) then

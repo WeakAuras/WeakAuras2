@@ -13,9 +13,12 @@ Delete(id)
 LoadDisplay(id)
   Loads all triggers of display id
 
+UnloadAll
+  Unloads all triggers
+
 UnloadDisplay(id)
   Unloads all triggers of the display id
-  
+
 ScanAll
   Resets the trigger state for all triggers
 
@@ -189,6 +192,10 @@ local function HandleEvent(frame, event, arg1, arg2, ...)
        end,
        0.5);  -- Data not available
   end
+end
+
+function GenericTrigger.UnloadAll()
+  wipe(loaded_events);
 end
 
 function GenericTrigger.UnloadDisplay(id)

@@ -1169,8 +1169,9 @@ function WeakAuras.ReloadAll()
 end
 
 function WeakAuras.UnloadAll()
-  wipe(loaded_events);
-  wipe(loaded_auras);
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.UnloadAll();
+  end
   wipe(loaded);
 end
 
