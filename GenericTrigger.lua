@@ -144,6 +144,24 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   end
 end
 
+function WeakAuras.ForceEvents()
+  for event, v in pairs(WeakAuras.forceable_events) do
+    if(type(v) == "table") then
+      for index, arg1 in pairs(v) do
+      WeakAuras.ScanEvents(event, arg1);
+      end
+    elseif(event == "SPELL_COOLDOWN_FORCE") then
+      WeakAuras.SpellCooldownForce();
+    elseif(event == "ITEM_COOLDOWN_FORCE") then
+      WeakAuras.ItemCooldownForce();
+    elseif(event == "RUNE_COOLDOWN_FORCE") then
+      WeakAuras.RuneCooldownForce();
+    else
+      WeakAuras.ScanEvents(event);
+    end
+  end
+end
+
 local function HandleEvent(frame, event, arg1, arg2, ...)
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -189,10 +207,7 @@ frame:SetScript("OnEvent", HandleEvent);
 
 function GenericTrigger.Delete(id)
   WeakAuras.EndEvent(id, 0, true);
-  for i,v in pairs(loaded_events) do
-    v[id] = nil;
-  end
-  events[id] = nil;
+  GenericTrigger.UnloadDisplay(id);
 end
 
 local function LoadEvent(id, triggernum, data)
