@@ -4,6 +4,9 @@ This file contains the generic trigger system. That is every trigger except the 
 It registers the GenericTrigger table for the trigger types "status", "event" and "custom".
 The GenericTrigger has the following API:
 
+Delete(id)
+  Deletes all triggers for display id
+
 LoadDisplay(id)
   Loads all triggers of display id
 
@@ -125,6 +128,14 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
       WeakAuras.ActivateAuraEnvironment(nil);
     end
   end
+end
+
+function GenericTrigger.Delete(id)
+  WeakAuras.EndEvent(id, 0, true);
+  for i,v in pairs(loaded_events) do
+    v[id] = nil;
+  end
+  events[id] = nil;
 end
 
 local function LoadEvent(id, triggernum, data)

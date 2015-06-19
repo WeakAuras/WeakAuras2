@@ -1336,7 +1336,6 @@ function WeakAuras.Delete(data)
   regions[id].region:SetScript("OnShow", nil);
   regions[id].region:SetScript("OnHide", nil);
   regions[id].region:Hide();
-  WeakAuras.EndEvent(id, 0, true);
 
   WeakAuras.HideAllClones(id);
 
@@ -1349,18 +1348,13 @@ function WeakAuras.Delete(data)
   end
   end
 
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.Delete(id);
+  end
+
   regions[id].region = nil;
   regions[id] = nil;
-  auras[id] = nil;
-  events[id] = nil;
   loaded[id] = nil;
-
-  for i,v in pairs(loaded_events) do
-  v[id] = nil;
-  end
-  for i,v in pairs(loaded_auras) do
-  v[id] = nil;
-  end
 
   db.displays[id] = nil;
 

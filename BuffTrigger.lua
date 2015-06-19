@@ -7,6 +7,9 @@ It has the following API:
 LoadDisplay(id)
   Loads the aura id, enabling all buff triggers in the aura
 
+Delete(id)
+  Removes all data for aura id
+
 Modernize(data)
   Updates all buff triggers in data
 
@@ -1024,6 +1027,13 @@ function BuffTrigger.LoadDisplay(id)
         LoadAura(id, triggernum, data);
       end
     end
+  end
+end
+
+function BuffTrigger.Delete(id)
+  auras[id] = nil;
+  for i,v in pairs(loaded_auras) do
+    v[id] = nil;
   end
 end
 
