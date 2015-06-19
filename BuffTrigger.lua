@@ -22,6 +22,9 @@ ScanAll()
 Delete(id)
   Removes all data for aura id
 
+Rename(oldid, newid)
+  Updates all data for aura oldid to use newid
+
 Modernize(data)
   Updates all buff triggers in data
 
@@ -1125,6 +1128,14 @@ function BuffTrigger.Delete(id)
   for i,v in pairs(loaded_auras) do
     v[id] = nil;
   end
+end
+
+function BuffTrigger.Rename(oldid, newid)
+  auras[newid] = auras[oldid];
+  auras[oldid] = nil;
+
+  loaded_auras[newid] = loaded_auras[oldid];
+  loaded_auras[oldid] = nil;
 end
 
 function BuffTrigger.Add(data, region)

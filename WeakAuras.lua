@@ -1246,7 +1246,6 @@ end
 
 function WeakAuras.Rename(data, newid)
   local oldid = data.id;
-  WeakAuras.EveryFrameUpdateRename(oldid, newid)
   if(data.parent) then
   local parentData = db.displays[data.parent];
   if(parentData.controlledChildren) then
@@ -1263,29 +1262,12 @@ function WeakAuras.Rename(data, newid)
   regions[newid] = regions[oldid];
   regions[oldid] = nil;
 
-  auras[newid] = auras[oldid];
-  auras[oldid] = nil;
-
-  loaded_auras[newid] = loaded_auras[oldid];
-  loaded_auras[oldid] = nil;
-
-  events[newid] = events[oldid];
-  events[oldid] = nil;
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.Rename(oldid, newid);
+  end
 
   loaded[newid] = loaded[oldid];
   loaded[oldid] = nil;
-
-  for eventname, events in pairs(loaded_events) do
-    if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
-      for subeventname, subevents in pairs(events) do
-        subevents[oldid] = subevents[newid];
-        subevents[oldid] = nil;
-      end
-    else
-      events[newid] = events[oldid];
-      events[oldid] = nil;
-    end
-  end
 
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;

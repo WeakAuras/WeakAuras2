@@ -10,6 +10,9 @@ Add(data)
 Delete(id)
   Deletes all triggers for display id
 
+Rename(oldid, newid)
+  Updates all trigger information from oldid to newid
+
 LoadDisplay(id)
   Loads all triggers of display id
 
@@ -218,6 +221,25 @@ frame:SetScript("OnEvent", HandleEvent);
 function GenericTrigger.Delete(id)
   WeakAuras.EndEvent(id, 0, true);
   GenericTrigger.UnloadDisplay(id);
+end
+
+function GenericTrigger.Rename(oldid, newid)
+  events[newid] = events[oldid];
+  events[oldid] = nil;
+
+  for eventname, events in pairs(loaded_events) do
+    if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
+      for subeventname, subevents in pairs(events) do
+        subevents[oldid] = subevents[newid];
+        subevents[oldid] = nil;
+      end
+    else
+      events[newid] = events[oldid];
+      events[oldid] = nil;
+    end
+  end
+  
+  WeakAuras.EveryFrameUpdateRename(oldid, newid)
 end
 
 local function LoadEvent(id, triggernum, data)
