@@ -396,10 +396,6 @@ function GenericTrigger.Add(data, region)
         events[id][triggernum] = {
           trigger = triggerFunc,
           untrigger = untriggerFunc,
-          bar = data.bar,
-          timer = data.timer,
-          cooldown = data.cooldown,
-          icon = data.icon,
           event = trigger.event,
           events = trigger_events,
           inverse = trigger.use_inverse,
@@ -410,7 +406,6 @@ function GenericTrigger.Add(data, region)
           iconFunc = iconFunc,
           textureFunc = textureFunc,
           stacksFunc = stacksFunc,
-          expiredHideFunc = triggerType ~= "custom" and event_prototypes[trigger.event].expiredHideFunc,
           region = region,
           numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0
         };
