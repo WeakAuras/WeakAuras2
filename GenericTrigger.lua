@@ -64,7 +64,6 @@ local L = WeakAuras.L;
 local GenericTrigger = {};
 
 local event_prototypes = WeakAuras.event_prototypes;
-local load_prototype = WeakAuras.load_prototype;
 
 local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
@@ -276,8 +275,6 @@ function GenericTrigger.Add(data, region)
 
   local register_for_frame_updates = false;
 
-  local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
-  local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
     if(triggernum == 0) then
@@ -399,7 +396,6 @@ function GenericTrigger.Add(data, region)
         events[id][triggernum] = {
           trigger = triggerFunc,
           untrigger = untriggerFunc,
-          load = loadFunc,
           bar = data.bar,
           timer = data.timer,
           cooldown = data.cooldown,

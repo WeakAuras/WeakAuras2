@@ -75,6 +75,9 @@ local paused = true;
 local importing = false;
 local squelch_actions = true;
 
+-- Load functions, keyed on id
+local loadFuncs = {}
+
 -- All regions keyed on id, has properties: region, regionType, also see clones
 WeakAuras.regions = {};
 local regions = WeakAuras.regions;
@@ -1067,8 +1070,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local shouldBeLoaded, couldBeLoaded;
   for id, triggers in pairs(auras) do
   local _, data = next(triggers);
-  shouldBeLoaded = data.load and data.load("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
-  couldBeLoaded = data.load and data.load("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
+  local loadFunc = loadFuncs[id];
+  shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
+  couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
   if(shouldBeLoaded and not loaded[id]) then
     WeakAuras.LoadDisplay(id);
     changed = changed + 1;
@@ -1093,8 +1097,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   for id, triggers in pairs(events) do
     local _, data = next(triggers);
-    shouldBeLoaded = data.load and data.load("ScanForLoads_Events", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
-    couldBeLoaded = data.load and data.load("ScanForLoads_Events", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
+    local loadFunc = loadFuncs[id];
+    shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Events", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
+    couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Events", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
     if(shouldBeLoaded and not loaded[id]) then
       WeakAuras.LoadDisplay(id);
       changed = changed + 1;
@@ -1238,6 +1243,7 @@ function WeakAuras.Delete(data)
   regions[id].region = nil;
   regions[id] = nil;
   loaded[id] = nil;
+  loadFuncs[id] = nil;
 
   db.displays[id] = nil;
 
@@ -1268,6 +1274,8 @@ function WeakAuras.Rename(data, newid)
 
   loaded[newid] = loaded[oldid];
   loaded[oldid] = nil;
+  loadFuncs[newid] = loadFuncs[oldid];
+  loadFuncs[oldid] = nil;
 
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
@@ -1796,8 +1804,12 @@ function WeakAuras.pAdd(data)
     data.actions.init = data.actions.init or {};
     data.actions.start = data.actions.start or {};
     data.actions.finish = data.actions.finish or {};
+    local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
+    local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
     WeakAuras.debug(id.." - Load", 1);
     WeakAuras.debug(loadFuncStr);
+
+    loadFuncs[id] = loadFunc;
 
     if(WeakAuras.CanHaveClones(data)) then
       clones[id] = clones[id] or {};

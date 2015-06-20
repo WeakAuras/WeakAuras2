@@ -66,7 +66,6 @@ local specificBosses = WeakAuras.specificBosses;
 local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
 local duration_cache = WeakAuras.duration_cache;
-local load_prototype = WeakAuras.load_prototype;
 local clones = WeakAuras.clones;
 
 local aura_cache = {};
@@ -1154,8 +1153,6 @@ function BuffTrigger.Add(data, region)
   local id = data.id;
   auras[id] = nil;
 
-  local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
-  local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
     if(triggernum == 0) then
@@ -1252,7 +1249,6 @@ function BuffTrigger.Add(data, region)
           groupclone = trigger.groupclone,
           subcount = trigger.subcount,
           scanFunc = scanFunc,
-          load = loadFunc,
           bar = data.bar,
           timer = data.timer,
           cooldown = data.cooldown,
