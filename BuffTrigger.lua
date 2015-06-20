@@ -1327,10 +1327,8 @@ function BuffTrigger.CanGroupShowWithZero(data)
 end
 
 function BuffTrigger.CanHaveDuration(data)
-  if(
-    data.trigger.type == "aura"
-    and not data.trigger.inverse
-  ) then
+  local trigger = data.trigger;
+  if (not trigger.inverse) then
     return "timed";
   else
     return false;
@@ -1338,17 +1336,8 @@ function BuffTrigger.CanHaveDuration(data)
 end
 
 function BuffTrigger.CanHaveAuto(data)
-  if(
-    data.trigger.type == "aura"
-    and (
-    not data.trigger.inverse
-    or data.trigger.unit == "group"
-    )
-  ) then
-    return true;
-  else
-    return false;
-  end
+  local trigger = data.trigger;
+  return not trigger.inverse or trigger.unit == "group";
 end
 
 function BuffTrigger.CanHaveClones(data)
