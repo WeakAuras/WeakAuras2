@@ -2555,32 +2555,13 @@ end
 
 function WeakAuras.CanHaveTooltip(data)
   local trigger = data.trigger;
-  if(trigger.type == "aura") then
-  if(trigger.unit == "group" and data.trigger.name_info ~= "aura" and not trigger.groupclone) then
-    return "playerlist";
-  elseif(trigger.fullscan and trigger.unit ~= "group") then
-    return "auraindex";
-  else
-    return "aura";
-  end
-  elseif(
-  (
-    data.trigger.type == "event"
-    or data.trigger.type == "status"
-  )
-  and data.trigger.event
-  and WeakAuras.event_prototypes[data.trigger.event]
-  ) then
-  if(WeakAuras.event_prototypes[data.trigger.event].hasSpellID) then
-    return "spell";
-  elseif(WeakAuras.event_prototypes[data.trigger.event].hasItemID) then
-    return "item";
-  else
+  local triggerSystem = triggerTypes[trigger.type];
+
+  if (not triggerSystem) then
     return false;
   end
-  else
-  return false;
-  end
+
+  return triggerSystem.CanHaveTooltip(data);
 end
 
 function WeakAuras.CorrectSpellName(input)

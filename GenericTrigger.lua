@@ -45,6 +45,9 @@ CanHaveAuto(data)
 
 CanHaveClones(data)
   Returns whether the trigger can have clones
+
+CanHaveTooltip(data)
+  Returns the type of tooltip to show for the trigger
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -1348,6 +1351,20 @@ function GenericTrigger.CanHaveAuto(data)
 end
 
 function GenericTrigger.CanHaveClones(data)
+  return false;
+end
+
+function GenericTrigger.CanHaveTooltip(data)
+  local trigger = data.trigger;
+  if (trigger.type == "event" or trigger.type == "status") then
+    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+      if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
+        return "spell";
+      elseif(WeakAuras.event_prototypes[trigger.event].hasItemID) then
+        return "item";
+      end
+    end
+  end
   return false;
 end
 

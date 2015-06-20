@@ -45,6 +45,9 @@ CanHaveAuto(data)
 
 CanHaveClones(data)
   Returns whether the trigger can have clones
+
+CanHaveTooltip(data)
+  Returns the type of tooltip to show for the trigger
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -1361,6 +1364,17 @@ function BuffTrigger.CanHaveClones(data)
   return (trigger.fullscan and trigger.autoclone)
           or (trigger.unit == "group" and trigger.groupclone)
           or (trigger.unit == "multi");
+end
+
+function BuffTrigger.CanHaveTooltip(data)
+  local trigger = data.trigger;
+  if(trigger.unit == "group" and trigger.name_info ~= "aura" and not trigger.groupclone) then
+    return "playerlist";
+  elseif(trigger.fullscan and trigger.unit ~= "group") then
+    return "auraindex";
+  else
+    return "aura";
+  end
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);
