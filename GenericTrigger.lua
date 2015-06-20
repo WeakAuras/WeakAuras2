@@ -1359,4 +1359,17 @@ function GenericTrigger.CanHaveTooltip(data)
   return false;
 end
 
+function GenericTrigger.SetToolTip(data, region)  
+  local trigger = data.trigger;
+  if (trigger.type == "event" or trigger.type == "status") then
+    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+      if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
+        GameTooltip:SetSpellByID(trigger.spellName);
+      elseif(WeakAuras.event_prototypes[trigger.event].hasItemID) then
+        GameTooltip:SetHyperlink("item:"..trigger.itemName..":0:0:0:0:0:0:0")
+      end
+    end
+  end
+end
+
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

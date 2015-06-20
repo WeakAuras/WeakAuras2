@@ -2625,100 +2625,26 @@ end
 local currentTooltipData;
 local currentTooltipRegion;
 local currentTooltipOwner;
-local currentTooltipType;
 function WeakAuras.UpdateMouseoverTooltip(region)
   if(region == currentTooltipRegion) then
-  WeakAuras.ShowMouseoverTooltip(currentTooltipData, currentTooltipRegion, currentTooltipOwner, currentTooltipType);
+  WeakAuras.ShowMouseoverTooltip(currentTooltipData, currentTooltipRegion, currentTooltipOwner);
   end
 end
 
-function WeakAuras.ShowMouseoverTooltip(data, region, owner, tooltipType)
+function WeakAuras.ShowMouseoverTooltip(data, region, owner)
   currentTooltipData = data;
   currentTooltipRegion = region;
   currentTooltipOwner = owner;
-  currentTooltipType = tooltipType;
-  tooltipType = tooltipType or WeakAuras.CanHaveTooltip(data);
 
   GameTooltip:SetOwner(owner, "ANCHOR_NONE");
   GameTooltip:SetPoint("LEFT", owner, "RIGHT");
   GameTooltip:ClearLines();
-  if(tooltipType == "aura" and region.spellId) then
-  GameTooltip:SetSpellByID(region.spellId);
-  elseif(tooltipType == "auraindex" and region.index) then
-  local unit = data.trigger.unit == "member" and data.trigger.specificUnit or data.trigger.unit;
-  if(data.trigger.debuffType == "HELPFUL") then
-    GameTooltip:SetUnitBuff(unit, region.index);
-  elseif(data.trigger.debuffType == "HARMFUL") then
-    GameTooltip:SetUnitDebuff(unit, region.index);
-  end
-  elseif(tooltipType == "playerlist") then
-  local name = "";
-  local playerList;
-  if(data.trigger.name_info == "players") then
-    playerList = WeakAuras.aura_cache:GetAffected(data.trigger.names, data);
-    name = L["Affected"]..":";
-  elseif(data.trigger.name_info == "nonplayers") then
-    playerList = WeakAuras.aura_cache:GetUnaffected(data.trigger.names, data);
-    name = L["Missing"]..":";
-  end
 
-  local numPlayers = 0;
-  for playerName, _ in pairs(playerList) do
-    numPlayers = numPlayers + 1;
-  end
+  local triggerSystem = triggerTypes[trigger.type];
+  if (not triggerSystem) then return; end
 
-  if(numPlayers > 0) then
-    GameTooltip:AddLine(name);
-    local numRaid = IsInRaid() and GetNumGroupMembers() or 0;
-    local groupMembers,playersString = {};
+  triggerSystem.SetToolTip(data, region);
 
-    if(numRaid > 0) then
-    local playerName, _, subgroup
-    for i = 1,numRaid do
-      -- Battleground-name, given by GetRaidRosterInfo (name-server) to GetUnitName(...) (name - server) transition
-      playerName, _, subgroup = GetRaidRosterInfo(i);
-
-      if(playerName) then
-      playerName = playerName:gsub("-", " - ")
-      if (playerList[playerName]) then
-        groupMembers[subgroup] = groupMembers[subgroup] or {};
-        groupMembers[subgroup][playerName] = true
-      end
-      end
-    end
-    for subgroup, players in pairs(groupMembers) do
-      playersString = L["Group %s"]:format(subgroup)..": ";
-      local _,space,class,classColor;
-      for playerName, _ in pairs(players) do
-      space = playerName:find(" ");
-      _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
-      classColor = WeakAuras.class_color_types[class];
-      playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
-      end
-      GameTooltip:AddLine(playersString);
-    end
-
-    else
-    local num = 0;
-    playersString = "";
-    local _,space,class,classColor;
-    for playerName, _ in pairs(playerList) do
-      space = playerName:find(" ");
-      _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
-      classColor = WeakAuras.class_color_types[class];
-      playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
-      num = num + 1;
-    end
-    GameTooltip:AddLine(playersString);
-    end
-  else
-    GameTooltip:AddLine(name.." "..L["None"]);
-  end
-  elseif(tooltipType == "spell") then
-  GameTooltip:SetSpellByID(data.trigger.spellName);
-  elseif(tooltipType == "item") then
-  GameTooltip:SetHyperlink("item:"..data.trigger.itemName..":0:0:0:0:0:0:0")
-  end
   GameTooltip:Show();
 end
 

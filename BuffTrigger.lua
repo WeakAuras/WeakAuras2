@@ -1358,4 +1358,82 @@ function BuffTrigger.CanHaveTooltip(data)
   end
 end
 
+function BuffTrigger.SetToolTip(data, region)
+  local trigger = data.trigger;
+  if(trigger.unit == "group" and trigger.name_info ~= "aura" and not trigger.groupclone) then
+    local name = "";
+    local playerList;
+    if(trigger.name_info == "players") then
+      playerList = WeakAuras.aura_cache:GetAffected(trigger.names, data);
+      name = L["Affected"]..":";
+    elseif(trigger.name_info == "nonplayers") then
+      playerList = WeakAuras.aura_cache:GetUnaffected(trigger.names, data);
+      name = L["Missing"]..":";
+    end
+
+    local numPlayers = 0;
+    for playerName, _ in pairs(playerList) do
+      numPlayers = numPlayers + 1;
+    end
+
+    if(numPlayers > 0) then
+      GameTooltip:AddLine(name);
+      local numRaid = IsInRaid() and GetNumGroupMembers() or 0;
+      local groupMembers,playersString = {};
+
+      if(numRaid > 0) then
+        local playerName, _, subgroup
+        for i = 1,numRaid do
+          -- Battleground-name, given by GetRaidRosterInfo (name-server) to GetUnitName(...) (name - server) transition
+          playerName, _, subgroup = GetRaidRosterInfo(i);
+
+          if(playerName) then
+            playerName = playerName:gsub("-", " - ")
+            if (playerList[playerName]) then
+              groupMembers[subgroup] = groupMembers[subgroup] or {};
+              groupMembers[subgroup][playerName] = true
+            end
+          end
+        end
+        for subgroup, players in pairs(groupMembers) do
+          playersString = L["Group %s"]:format(subgroup)..": ";
+          local _,space,class,classColor;
+          for playerName, _ in pairs(players) do
+            space = playerName:find(" ");
+            _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
+            classColor = WeakAuras.class_color_types[class];
+            playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
+          end
+          GameTooltip:AddLine(playersString);
+        end
+      else
+        local num = 0;
+        playersString = "";
+        local _,space,class,classColor;
+        for playerName, _ in pairs(playerList) do
+          space = playerName:find(" ");
+          _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
+          classColor = WeakAuras.class_color_types[class];
+          playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
+          num = num + 1;
+        end
+        GameTooltip:AddLine(playersString);
+      end
+    else
+      GameTooltip:AddLine(name.." "..L["None"]);
+    end
+  elseif(trigger.fullscan and trigger.unit ~= "group" and region.index) then
+    local unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit;
+    if(trigger.debuffType == "HELPFUL") then
+      GameTooltip:SetUnitBuff(unit, region.index);
+    elseif(trigger.debuffType == "HARMFUL") then
+      GameTooltip:SetUnitDebuff(unit, region.index);
+    end
+  else
+    if (region.spellId) then
+      GameTooltip:SetSpellByID(region.spellId);
+    end
+  end
+end
+
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);
