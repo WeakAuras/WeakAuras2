@@ -2580,6 +2580,17 @@ function WeakAuras.CanHaveTooltip(data)
   return triggerSystem.CanHaveTooltip(data);
 end
 
+function WeakAuras.GetNameAndIcon(data)
+  local trigger = data.trigger;
+  local triggerSystem = triggerTypes[trigger.type];
+
+  if (not triggerSystem) then
+    return nil, nil;
+  end
+
+  return triggerSystem.GetNameAndIcon(data);
+end
+
 function WeakAuras.CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then

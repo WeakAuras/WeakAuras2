@@ -48,6 +48,9 @@ CanHaveClones(data)
 
 CanHaveTooltip(data)
   Returns the type of tooltip to show for the trigger
+
+GetNameAndIcon(data)
+  Returns the name and icon to show in the options
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -1434,6 +1437,10 @@ function BuffTrigger.SetToolTip(data, region)
       GameTooltip:SetSpellByID(region.spellId);
     end
   end
+end
+
+function BuffTrigger.GetNameAndIcon(data)
+  return nil, nil;
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);

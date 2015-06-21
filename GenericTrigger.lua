@@ -48,6 +48,9 @@ CanHaveClones(data)
 
 CanHaveTooltip(data)
   Returns the type of tooltip to show for the trigger
+
+GetNameAndIcon(data)
+    Returns the name and icon to show in the options
 ]]
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
@@ -1357,6 +1360,18 @@ end
 
 function GenericTrigger.CanHaveClones(data)
   return false;
+end
+
+function GenericTrigger.GetNameAndIcon(data)
+  local trigger = data.trigger;
+  if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+    if(WeakAuras.event_prototypes[trigger.event].iconFunc) then
+      icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger);
+    end
+    if(WeakAuras.event_prototypes[trigger.event].nameFunc) then
+      name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
+    end
+  end
 end
 
 function GenericTrigger.CanHaveTooltip(data)

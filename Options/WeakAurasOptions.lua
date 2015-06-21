@@ -1310,7 +1310,7 @@ function WeakAuras.SetIconNames(data)
 end
 
 function WeakAuras.SetIconName(data, region)
-  local name, icon;
+  local name, icon = WeakAuras.GetNameAndIcon(data);
   if(data.trigger.type == "aura" and not (data.trigger.inverse or WeakAuras.CanGroupShowWithZero(data))) then
     -- Try to get an icon from the icon cache
     for index, checkname in pairs(data.trigger.names) do
@@ -1319,17 +1319,10 @@ function WeakAuras.SetIconName(data, region)
         break;
       end
     end
-  elseif((data.trigger.type == "event" or data.trigger.type == "status") and data.trigger.event and WeakAuras.event_prototypes[data.trigger.event]) then
-    if(WeakAuras.event_prototypes[data.trigger.event].iconFunc) then
-      icon = WeakAuras.event_prototypes[data.trigger.event].iconFunc(data.trigger);
-    end
-    if(WeakAuras.event_prototypes[data.trigger.event].nameFunc) then
-      name = WeakAuras.event_prototypes[data.trigger.event].nameFunc(data.trigger);
-    end
   end
   
   WeakAuras.transmitCache[data.id] = icon;
-  
+
   if(region.SetIcon) then
     region:SetIcon(icon);
   end
