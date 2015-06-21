@@ -802,6 +802,8 @@ local function modify(parent, region, data)
   -- Localize
   local bar, border, timer, text, iconFrame, icon, stacks = region.bar, region.border, region.timer, region.text, region.iconFrame, region.icon, region.stacks;
 
+  region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
+
   -- Adjust framestrata
     if data.frameStrata == 1 then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
@@ -936,8 +938,7 @@ local function modify(parent, region, data)
         function region:SetIcon(path)
       -- Set icon options
             local iconPath = (
-                WeakAuras.CanHaveAuto(data)
-                and data.auto
+                region.useAuto
                 and path ~= ""
                 and path
                 or data.displayIcon
@@ -1115,7 +1116,7 @@ local function modify(parent, region, data)
 
   -- Name update function
     function region:SetName(name)
-        region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
+        region.values.name = name or data.id;
         UpdateText(self, data);
     end
 --  region:SetName("");

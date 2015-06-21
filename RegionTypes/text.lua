@@ -33,6 +33,8 @@ end
 local function modify(parent, region, data)
     local text = region.text;
 
+    region.useAuto = WeakAuras.CanHaveAuto(data);
+
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
@@ -218,7 +220,8 @@ local function modify(parent, region, data)
 
     function region:SetIcon(path)
         local icon = (
-            WeakAuras.CanHaveAuto(data)
+            region.useAuto
+            and path
             and path ~= ""
             and path
             or data.displayIcon
@@ -229,7 +232,7 @@ local function modify(parent, region, data)
     end
 
     function region:SetName(name)
-        region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
+        region.values.name = name or data.id;
         UpdateText();
     end
 

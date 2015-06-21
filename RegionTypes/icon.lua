@@ -119,6 +119,8 @@ end
 local function modify(parent, region, data)
     local button, icon, cooldown, stacks = region.button, region.icon, region.cooldown, region.stacks;
 
+    region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
+
     if MSQ and not region.MSQGroup then
         region.MSQGroup = MSQ:Group("WeakAuras", region.frameId);
         region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
@@ -254,8 +256,7 @@ local function modify(parent, region, data)
 
     function region:SetIcon(path)
         local iconPath = (
-            WeakAuras.CanHaveAuto(data)
-            and data.auto
+            region.useAuto
             and path ~= ""
             and path
             or data.displayIcon
@@ -269,7 +270,7 @@ local function modify(parent, region, data)
     region:SetIcon()
 
     function region:SetName(name)
-        region.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
+        region.values.name = name or data.id;
         UpdateText();
     end
 
@@ -283,7 +284,7 @@ local function modify(parent, region, data)
             end
             progress = progress > 0.0001 and progress or 0.0001;
         end
-        
+
         local remainingStr = "";
         if(remaining == math.huge) then
             remainingStr = " ";

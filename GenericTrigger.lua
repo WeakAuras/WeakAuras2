@@ -1335,20 +1335,13 @@ function GenericTrigger.CanHaveAuto(data)
     and WeakAuras.event_prototypes[data.trigger.event]
     and (
     WeakAuras.event_prototypes[data.trigger.event].iconFunc
-    or WeakAuras.event_prototypes[data.trigger.event].nameFunc
     )
   )
   or (
     data.trigger.type == "custom"
     and (
-    (
-      data.trigger.customName
-      and data.trigger.customName ~= ""
-    )
-    or (
       data.trigger.customIcon
       and data.trigger.customIcon ~= ""
-    )
     )
   )
   ) then
@@ -1388,7 +1381,7 @@ function GenericTrigger.CanHaveTooltip(data)
   return false;
 end
 
-function GenericTrigger.SetToolTip(data, region)  
+function GenericTrigger.SetToolTip(data, region)
   local trigger = data.trigger;
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
