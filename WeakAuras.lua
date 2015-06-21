@@ -3013,3 +3013,10 @@ function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
   end
   tinsert(triggerSystems, triggerSystem);
 end
+
+function WeakAuras.ReplacePlaceHolders(textStr, regionValues)
+  for symbol, v in pairs(WeakAuras.dynamic_texts) do
+    textStr = textStr:gsub(symbol, regionValues[v.value] or "");
+  end
+  return textStr;
+end

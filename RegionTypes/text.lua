@@ -65,9 +65,7 @@ local function modify(parent, region, data)
 
     local function UpdateText()
         local textStr = data.displayText;
-        for symbol, v in pairs(WeakAuras.dynamic_texts) do
-            textStr = textStr:gsub(symbol, region.values[v.value] or "?");
-        end
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
 
         if(textStr ~= text.displayText) then
             if text:GetFont() then text:SetText(textStr); end

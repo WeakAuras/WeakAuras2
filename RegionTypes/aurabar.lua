@@ -669,9 +669,7 @@ local function UpdateText(region, data)
 
   -- Replace %-marks
   textStr = data.displayTextLeft or "";
-  for symbol, v in pairs(WeakAuras.dynamic_texts) do
-    textStr = textStr:gsub(symbol, region.values[v.value] or "");
-  end
+  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
 
   -- Update left text
   if not text.displayTextLeft or #text.displayTextLeft ~= #textStr then
@@ -684,9 +682,7 @@ local function UpdateText(region, data)
 
   -- Replace %-marks
   textStr = data.displayTextRight or "";
-  for symbol, v in pairs(WeakAuras.dynamic_texts) do
-    textStr = textStr:gsub(symbol, region.values[v.value] or "");
-  end
+  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
 
   -- Update right text
   if not timer.displayTextRight or #timer.displayTextRight ~= #textStr then
