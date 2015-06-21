@@ -651,8 +651,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
       WeakAuras.FixGroupChildrenOrder();
-      WeakAuras.RemoveGTFO();
-
+      
+      for _, triggerSystem in pairs(triggerSystems) do
+        if (triggerSystem.AllAdded) then
+          triggerSystem.AllAdded();
+        end
+      end
       --> check in case of a disconnect during an encounter.
       if (db.CurrentEncounter) then
         WeakAuras.CheckForPreviousEncounter()
@@ -2900,25 +2904,6 @@ function WeakAuras.FixGroupChildrenOrder()
         end
       end
     end
-  end
-end
-
--- Remove GTFO options if GTFO isn't enabled and there are no saved GTFO auras
-function WeakAuras.RemoveGTFO()
-  if not (WeakAuras.loaded_events["GTFO_DISPLAY"] or (GTFO and GTFO.VersionNumber and tonumber(GTFO.VersionNumber) >= 42000)) then
-    for id, data in pairs(db.displays) do
-      if (data.trigger.event == "GTFO") then
-        return;
-      end
-      if (data.numTriggers > 1) then
-        for i, trigger in pairs(data.additional_triggers) do
-          if (trigger.trigger.event == "GTFO") then
-            return;
-          end
-        end
-      end
-    end
-    WeakAuras.event_types["GTFO"] = nil;
   end
 end
 

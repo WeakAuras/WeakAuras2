@@ -140,11 +140,11 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
     for id, triggers in pairs(event_list) do
       WeakAuras.ActivateAuraEnvironment(id);
       for triggernum, data in pairs(triggers) do
-        if(data.trigger) then
-          if(data.trigger(event, arg1, arg2, ...)) then
+        if(data.triggerFunc) then
+          if(data.triggerFunc(event, arg1, arg2, ...)) then
             WeakAuras.ActivateEvent(id, triggernum, data);
           else
-            if(data.untrigger and data.untrigger(event, arg1, arg2, ...)) then
+            if(data.untriggerFunc and data.untriggerFunc(event, arg1, arg2, ...)) then
               WeakAuras.EndEvent(id, triggernum);
             end
           end
@@ -394,8 +394,9 @@ function GenericTrigger.Add(data, region)
 
         events[id] = events[id] or {};
         events[id][triggernum] = {
-          trigger = triggerFunc,
-          untrigger = untriggerFunc,
+          trigger = trigger,
+          triggerFunc = triggerFunc,
+          untriggerFunc = untriggerFunc,
           event = trigger.event,
           events = trigger_events,
           inverse = trigger.use_inverse,
@@ -557,6 +558,19 @@ function GenericTrigger.Modernize(data)
     end
   end
 end
+
+function GenericTrigger.AllAdded()
+  -- Remove GTFO options if GTFO isn't enabled and there are no saved GTFO auras
+  for id, event in pairs(events) do
+    for triggernum, data in pairs(event) do
+      if (data.trigger.event == "GTFO") then
+        return;
+      end
+    end
+  end
+  WeakAuras.event_types["GTFO"] = nil;
+end
+
 
 --#############################
 --# Support code for triggers #
