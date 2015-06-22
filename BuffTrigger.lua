@@ -107,14 +107,6 @@ do
     return true;
   end
 
-  function aura_cache.Reloading()
-    aura_cache.reloading = true;
-  end
-
-  function aura_cache:DoneReloading()
-    aura_cache.reloading = nil;
-  end
-
   function aura_cache.ForceUpdate()
     if not(WeakAuras.IsPaused()) then
       WeakAuras.ScanAurasGroup()
@@ -246,7 +238,7 @@ do
         self.watched[id].recentChanges[guid] = true;
         return true;
       else
-        return self.reloading or self.watched[id].recentChanges[guid];
+        return self.watched[id].recentChanges[guid];
       end
     end
   end
@@ -257,7 +249,7 @@ do
       self.watched[id].recentChanges[guid] = true;
       return true;
     else
-      return self.reloading and self.watched[id].recentChanges[guid];
+      return self.watched[id].recentChanges[guid];
     end
   end
 
@@ -1276,14 +1268,6 @@ function BuffTrigger.Add(data, region)
       end
     end
   end
-end
-
-function BuffTrigger.Reloading()
-  aura_cache:Reloading();
-end
-
-function BuffTrigger.DoneReloading()
-  aura_cache:DoneReloading();
 end
 
 function BuffTrigger.Modernize(data)

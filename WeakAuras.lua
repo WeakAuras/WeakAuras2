@@ -1166,10 +1166,8 @@ loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
 function WeakAuras.ReloadAll()
-  triggerTypes["aura"].Reloading();
   WeakAuras.UnloadAll();
   WeakAuras.ScanForLoads();
-  triggerTypes["aura"].DoneReloading();
 end
 
 function WeakAuras.UnloadAll()
