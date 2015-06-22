@@ -561,8 +561,6 @@ function WeakAuras.ConstructFunction(prototype, trigger, inverse)
   return ret;
 end
 
-local pending_aura_scans = {};
-
 WeakAuras.talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
   --Initialize a cache for class-specific talent names and icons
