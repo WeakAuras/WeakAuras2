@@ -1267,8 +1267,6 @@ function WeakAuras.Rename(data, newid)
   end
   end
 
-  local temp;
-
   regions[newid] = regions[oldid];
   regions[oldid] = nil;
 
