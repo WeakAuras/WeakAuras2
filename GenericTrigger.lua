@@ -102,14 +102,7 @@ end
 function WeakAuras.EndEvent(id, triggernum, force)
   local data = events[id] and events[id][triggernum];
   if(data) then
-    if(data.numAdditionalTriggers > 0) then
-      if(data.region:DisableTrigger(triggernum)) then
-      -- data.region.active = nil;
-      end
-    else
-      -- data.region.active = nil;
-      data.region:Collapse();
-    end
+    data.region:DisableTrigger(triggernum);
     if(timers[id] and timers[id][triggernum]) then
       timer:CancelTimer(timers[id][triggernum].handle, true);
       timers[id][triggernum] = nil;
@@ -122,12 +115,7 @@ end
 
 function WeakAuras.ActivateEvent(id, triggernum, data)
   WeakAuras.SetEventDynamics(id, triggernum, data);
-  if(data.numAdditionalTriggers > 0) then
-    if(data.region:EnableTrigger(triggernum)) then
-    end
-  else
-    data.region:Expand();
-  end
+  data.region:EnableTrigger(triggernum);
 end
 
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)

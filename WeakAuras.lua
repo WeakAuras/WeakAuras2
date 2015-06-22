@@ -2002,6 +2002,15 @@ function WeakAuras.SetRegion(data, cloneId)
             return nil;
           end
         end
+      else
+        function region:EnableTrigger()
+          region:Expand();
+          return true;
+        end
+        function region:DisableTrigger()
+          region:Collapse();
+          return true;
+        end
       end
 
       if(anim_cancelled) then
