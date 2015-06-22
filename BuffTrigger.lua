@@ -71,6 +71,10 @@ local loaded_auras = WeakAuras.loaded_auras;
 local duration_cache = WeakAuras.duration_cache;
 local clones = WeakAuras.clones;
 
+WeakAuras.me = GetUnitName("player",true)
+WeakAuras.myGUID = nil
+
+
 local aura_cache = {};
 do
   aura_cache.max = 0;
@@ -717,7 +721,9 @@ WeakAuras.frames["Group Makeup Handler"] = groupFrame;
 groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function(self, event)
-
+  if (event == "PLAYER_ENTERING_WORLD") then
+    WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
+  end
   local groupMembers,playerName,uid,guid = {};
   if IsInRaid() then
     for i=1, GetNumGroupMembers() do
