@@ -716,9 +716,6 @@ groupFrame:SetScript("OnEvent", function(self, event)
 end);
 
 do
-  local combatAuraFrame;
-  WeakAuras.frames["Multi-target Aura Trigger Handler"] = combatAuraFrame;
-
   local pendingTracks = {};
 
   local UIDsfromGUID = {};
@@ -966,6 +963,7 @@ do
     end
   end
 
+  local combatAuraFrame;
   function WeakAuras.InitMultiAura()
     if not(combatAuraFrame) then
       combatAuraFrame = CreateFrame("frame");
@@ -973,6 +971,7 @@ do
       combatAuraFrame:RegisterEvent("UNIT_TARGET");
       combatAuraFrame:RegisterEvent("UNIT_AURA");
       combatAuraFrame:SetScript("OnEvent", handleEvent);
+      WeakAuras.frames["Multi-target Aura Trigger Handler"] = combatAuraFrame;
       timer:ScheduleRepeatingTimer(checkExists, 10)
     end
   end
