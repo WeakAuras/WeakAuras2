@@ -616,12 +616,6 @@ loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
     if(addon == ADDON_NAME) then
-      frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
-      frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-      frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
-      frame:RegisterEvent("UNIT_AURA");
-      frame:SetScript("OnEvent", WeakAuras.HandleEvent);
-
       WeakAurasSaved = WeakAurasSaved or {};
       db = WeakAurasSaved;
 
@@ -665,11 +659,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
     WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
-    timer:ScheduleTimer(function()
-         WeakAuras.HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
-         WeakAuras.CheckCooldownReady();
-       end,
-       0.5);  -- Data not available
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
   elseif(event == "PLAYER_REGEN_ENABLED") then
@@ -775,72 +764,6 @@ function WeakAuras.ForceEvents()
   end
 end
 
-local aura_scan_cooldowns = {};
-WeakAuras.aura_scan_cooldowns = aura_scan_cooldowns;
-local checkingScanCooldowns;
-local scanCooldownFrame = CreateFrame("frame");
-WeakAuras.frames["Aura Scan Cooldown"] = scanCooldownFrame;
-
-local checkScanCooldownsFunc = function()
-  for unit,_ in pairs(aura_scan_cooldowns) do
-  aura_scan_cooldowns[unit] = nil;
-  WeakAuras.ScanAuras(unit);
-  end
-  checkingScanCooldowns = nil;
-  scanCooldownFrame:SetScript("OnUpdate", nil);
-end
-
-function WeakAuras.HandleEvent(frame, event, arg1, arg2, ...)
-  if not(paused) then
-  if(event == "PLAYER_TARGET_CHANGED") then
-    WeakAuras.ScanAuras("target");
-  elseif(event == "PLAYER_FOCUS_CHANGED") then
-    WeakAuras.ScanAuras("focus");
-  elseif(event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-    for unit,_ in pairs(specificBosses) do
-    WeakAuras.ScanAuras(unit);
-    end
-  elseif(event == "UNIT_AURA") then
-    if(
-    loaded_auras[arg1]
-    or (
-      loaded_auras["group"]
-      and (
-      arg1:sub(0, 4) == "raid"
-      or arg1:sub(0, 5) == "party"
-      )
-    )
-    or (
-      loaded_auras["boss"]
-      and arg1:sub(0,4) == "boss"
-    )
-    ) then
-    -- This throttles aura scans to only happen at most once per frame per unit
-    if not(aura_scan_cooldowns[arg1]) then
-      aura_scan_cooldowns[arg1] = true;
-      if not(checkingScanCooldowns) then
-      checkingScanCooldowns = true;
-      scanCooldownFrame:SetScript("OnUpdate", checkScanCooldownsFunc);
-      end
-    end
-    end
-  end
-  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-    if(loaded_events[event] and loaded_events[event][arg2]) then
-    WeakAuras.ScanEvents(event, arg1, arg2, ...);
-    end
-    -- This is triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
-    -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
-    if(loaded_events["COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"]) then
-      WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
-    end
-  else
-    if(loaded_events[event]) then
-      WeakAuras.ScanEvents(event, arg1, arg2, ...);
-    end
-  end
-  end
-end
 
 function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
   local trigger;

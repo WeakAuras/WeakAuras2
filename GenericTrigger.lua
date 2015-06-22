@@ -61,6 +61,9 @@ local regions = WeakAuras.regions;
 local clones = WeakAuras.clones;
 local specificBosses = WeakAuras.specificBosses;
 
+-- local function
+local HandleEvent
+
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};
@@ -138,9 +141,36 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   end
 end
 
+local function HandleEvent(frame, event, arg1, arg2, ...)
+  if not(WeakAuras.IsPaused()) then
+    if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+      if(loaded_events[event] and loaded_events[event][arg2]) then
+        WeakAuras.ScanEvents(event, arg1, arg2, ...);
+      end
+      -- This is triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
+      -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
+      if(loaded_events["COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"]) then
+        WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
+      end
+    else
+      if(loaded_events[event]) then
+        WeakAuras.ScanEvents(event, arg1, arg2, ...);
+      end
+    end
+  end
+  if (event == "PLAYER_ENTERING_WORLD") then
+    timer:ScheduleTimer(function()
+         HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
+         WeakAuras.CheckCooldownReady();
+       end,
+       0.5);  -- Data not available
+  end
+end
+
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
-frame:SetScript("OnEvent", WeakAuras.HandleEvent);
+frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+frame:SetScript("OnEvent", HandleEvent);
 
 function GenericTrigger.Delete(id)
   WeakAuras.EndEvent(id, 0, true);
@@ -243,7 +273,7 @@ function GenericTrigger.Add(data, region)
               for index, event in ipairs(trigger_events) do
                 frame:RegisterEvent(event);
                 -- WeakAuras.cbh.RegisterCallback(WeakAuras.cbh.events, event)
-                aceEvents:RegisterMessage(event, WeakAuras.HandleEvent, frame)
+                aceEvents:RegisterMessage(event, HandleEvent, frame)
                 if(type(prototype.force_events) == "boolean" or type(prototype.force_events) == "table") then
                   WeakAuras.forceable_events[event] = prototype.force_events;
                 end
@@ -291,7 +321,7 @@ function GenericTrigger.Add(data, region)
               else
                 frame:RegisterEvent(event);
                 -- WeakAuras.cbh.RegisterCallback(WeakAuras.cbh.events, event)
-                aceEvents:RegisterMessage(event, WeakAuras.HandleEvent, frame)
+                aceEvents:RegisterMessage(event, HandleEvent, frame)
               end
               if(trigger.custom_type == "status") then
                 WeakAuras.forceable_events[event] = true;

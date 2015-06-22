@@ -1024,6 +1024,62 @@ local function LoadAura(id, triggernum, data)
   end
 end
 
+local aura_scan_cooldowns = {};
+local checkingScanCooldowns;
+local scanCooldownFrame = CreateFrame("frame");
+WeakAuras.frames["Aura Scan Cooldown"] = scanCooldownFrame;
+
+local checkScanCooldownsFunc = function()
+  for unit,_ in pairs(aura_scan_cooldowns) do
+    aura_scan_cooldowns[unit] = nil;
+    WeakAuras.ScanAuras(unit);
+  end
+  checkingScanCooldowns = nil;
+  scanCooldownFrame:SetScript("OnUpdate", nil);
+end
+
+local frame = CreateFrame("FRAME");
+WeakAuras.frames["WeakAuras Buff Frame"] = frame;
+frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+frame:RegisterEvent("UNIT_AURA");
+frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
+  if (WeakAuras.IsPaused()) then return end;
+  if(event == "PLAYER_TARGET_CHANGED") then
+    WeakAuras.ScanAuras("target");
+  elseif(event == "PLAYER_FOCUS_CHANGED") then
+    WeakAuras.ScanAuras("focus");
+  elseif(event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+    for unit,_ in pairs(specificBosses) do
+      WeakAuras.ScanAuras(unit);
+    end
+  elseif(event == "UNIT_AURA") then
+    if(
+      loaded_auras[arg1]
+    or (
+      loaded_auras["group"]
+      and (
+      arg1:sub(0, 4) == "raid"
+      or arg1:sub(0, 5) == "party"
+      )
+    )
+    or (
+      loaded_auras["boss"]
+      and arg1:sub(0,4) == "boss"
+    )
+    ) then
+      -- This throttles aura scans to only happen at most once per frame per unit
+      if not(aura_scan_cooldowns[arg1]) then
+        aura_scan_cooldowns[arg1] = true;
+        if not(checkingScanCooldowns) then
+          checkingScanCooldowns = true;
+          scanCooldownFrame:SetScript("OnUpdate", checkScanCooldownsFunc);
+        end
+      end
+    end
+  end
+end);
 
 function BuffTrigger.LoadDisplay(id)
   if(auras[id]) then
