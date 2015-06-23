@@ -1067,8 +1067,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
-  for id, triggers in pairs(auras) do
-  local _, data = next(triggers);
+  for id, data in pairs(db.displays) do
+  if (data and data.trigger) then
   local loadFunc = loadFuncs[id];
   shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
   couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
@@ -1078,11 +1078,12 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   if(loaded[id] and not shouldBeLoaded) then
     WeakAuras.UnloadDisplay(id);
-    data.region.trigger_count = 0;
-    data.region.triggers = data.region.triggers or {};
-    wipe(data.region.triggers);
+    local region = WeakAuras.regions[id].region;
+    region.trigger_count = 0;
+    region.triggers = region.triggers or {};
+    wipe(region.triggers);
     if not(paused) then
-    data.region:Collapse();
+    region:Collapse();
     WeakAuras.HideAllClones(id);
     end
   end
@@ -1094,32 +1095,6 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     loaded[id] = nil;
   end
   end
-  for id, triggers in pairs(events) do
-    local _, data = next(triggers);
-    local loadFunc = loadFuncs[id];
-    shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Events", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
-    couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Events", true, true, player, realm, class, spec, race, playerLevel, zone, encounter_id, size, difficulty, role);
-    if(shouldBeLoaded and not loaded[id]) then
-      WeakAuras.LoadDisplay(id);
-      changed = changed + 1;
-    end
-    if(loaded[id] and not shouldBeLoaded) then
-      WeakAuras.UnloadDisplay(id);
-      data.region.trigger_count = 0;
-      data.region.triggers = data.region.triggers or {};
-      wipe(data.region.triggers);
-      if not(paused) then
-        data.region:Collapse();
-        WeakAuras.HideAllClones(id);
-      end
-    end
-    if(shouldBeLoaded) then
-      loaded[id] = true;
-    elseif(couldBeLoaded) then
-      loaded[id] = false;
-    else
-      loaded[id] = nil;
-    end
   end
   for id, data in pairs(db.displays) do
     if(data.controlledChildren) then
