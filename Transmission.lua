@@ -191,7 +191,6 @@ function WeakAuras.DisplayStub(regionType)
     }
 
     WeakAuras.validate(stub, regionTypes[regionType].default);
-
     return stub;
 end
 
