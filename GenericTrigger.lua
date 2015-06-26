@@ -79,7 +79,7 @@ local clones = WeakAuras.clones;
 local specificBosses = WeakAuras.specificBosses;
 
 -- local function
-local HandleEvent
+local HandleEvent, ConstructFunction
 
 function WeakAuras.split(input)
   input = input or "";
@@ -96,6 +96,130 @@ function WeakAuras.split(input)
   if(input ~= "") then
     tinsert(ret, input);
   end
+  return ret;
+end
+
+local function ConstructFunction(prototype, trigger, inverse)
+  local input = {"event"};
+  local required = {};
+  local tests = {};
+  local debug = {};
+  local init;
+  if(prototype.init) then
+    init = prototype.init(trigger);
+  else
+    init = "";
+  end
+  for index, arg in pairs(prototype.args) do
+    local enable = true;
+    if(type(arg.enable) == "function") then
+      enable = arg.enable(trigger);
+    end
+    if(enable) then
+      local name = arg.name;
+      if not(arg.name or arg.hidden) then
+        tinsert(input, "_");
+      else
+        if(arg.init == "arg") then
+          tinsert(input, name);
+        end
+        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
+          if(arg.init and arg.init ~= "arg") then
+            init = init.."local "..name.." = "..arg.init.."\n";
+          end
+          local number = tonumber(trigger[name]);
+          local test;
+          if(arg.type == "tristate") then
+            if(trigger["use_"..name] == false) then
+              test = "(not "..name..")";
+            elseif(trigger["use_"..name]) then
+              if(arg.test) then
+                test = "("..arg.test:format(trigger[name])..")";
+              else
+                test = name;
+              end
+            end
+          elseif(arg.type == "multiselect") then
+            if(trigger["use_"..name] == false) then
+              test = "(";
+              local any = false;
+              for value, _ in pairs(trigger[name].multi) do
+                if not arg.test then
+                  test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
+                else
+                  test = test..arg.test:format(tonumber(value) or "\""..value.."\"").." or ";
+                end
+                any = true;
+              end
+              if(any) then
+                test = test:sub(0, -5);
+              else
+                test = "(false";
+              end
+              test = test..")";
+            elseif(trigger["use_"..name]) then
+              local value = trigger[name].single;
+              if not arg.test then
+                test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
+              else
+                test = trigger[name].single and "("..arg.test:format(tonumber(value) or "\""..value.."\"")..")";
+              end
+            end
+          elseif(arg.type == "toggle") then
+            if(trigger["use_"..name]) then
+              if(arg.test) then
+                test = "("..arg.test:format(trigger[name])..")";
+              else
+                test = name;
+              end
+            end
+          elseif(arg.test) then
+            test = "("..arg.test:format(trigger[name])..")";
+          elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
+            if(trigger[name.."_operator"] == "==") then
+              test = "("..name.."==\""..trigger[name].."\")";
+            else
+              test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
+            end
+          else
+            if(type(trigger[name]) == "table") then
+              trigger[name] = "error";
+            end
+            -- if arg.type == "number" and (trigger[name]) and not number then trigger[name] = 0 number = 0 end -- fix corrupt data, ticket #366
+            test = "("..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
+          end
+          if(arg.required) then
+            tinsert(required, test);
+          else
+            tinsert(tests, test);
+          end
+          if(arg.debug) then
+            tinsert(debug, arg.debug:format(trigger[name]));
+          end
+        end
+      end
+    end
+  end
+  local ret = "return function("..tconcat(input, ", ")..")\n";
+  ret = ret..(init or "");
+
+  ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
+
+  ret = ret.."if(";
+  ret = ret..((#required > 0) and tconcat(required, " and ").." and " or "");
+  if(inverse) then
+    ret = ret.."not ("..(#tests > 0 and tconcat(tests, " and ") or "true")..")";
+  else
+    ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
+  end
+  ret = ret..") then\n";
+  if(#debug > 0) then
+    ret = ret.."print('ret: true');\n";
+  end
+  ret = ret.."return true else return false end end";
+
+  -- print(ret);
+
   return ret;
 end
 
@@ -296,7 +420,7 @@ function GenericTrigger.Add(data, region)
           elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
             error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
           else
-            triggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], trigger);
+            triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
             WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
             WeakAuras.debug(triggerFuncStr);
             triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
@@ -310,9 +434,9 @@ function GenericTrigger.Add(data, region)
             trigger.unevent = trigger.unevent or "auto";
 
             if(trigger.unevent == "custom") then
-              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], untrigger);
+              untriggerFuncStr = ConstructFunction(event_prototypes[trigger.event], untrigger);
             elseif(trigger.unevent == "auto") then
-              untriggerFuncStr = WeakAuras.ConstructFunction(event_prototypes[trigger.event], trigger, true);
+              untriggerFuncStr = Internal.ConstructFunction(event_prototypes[trigger.event], trigger, true);
             end
             if(untriggerFuncStr) then
               WeakAuras.debug(id.." - "..triggernum.." - Untrigger", 1)
