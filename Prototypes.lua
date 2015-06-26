@@ -2121,7 +2121,7 @@ WeakAuras.event_prototypes = {
       "OFFHAND_TENCH_UPDATE"
     },
     force_events = true,
-    name = L["Weapon Enchant"],
+    name = L["Fishing Lure / Weapon Enchant (Old)"],
     init = function(trigger)
       WeakAuras.TenchInit();
       local ret = [[
