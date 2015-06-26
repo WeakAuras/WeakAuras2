@@ -79,7 +79,8 @@ local clones = WeakAuras.clones;
 local specificBosses = WeakAuras.specificBosses;
 
 -- local function
-local HandleEvent, ConstructFunction
+local HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
+local ConstructTest, ConstructFunction
 
 function WeakAuras.split(input)
   input = input or "";
@@ -97,6 +98,102 @@ function WeakAuras.split(input)
     tinsert(ret, input);
   end
   return ret;
+end
+
+local function TestForTriState(trigger, arg)
+  local name = arg.name;
+  local test;
+  if(trigger["use_"..name] == false) then
+    test = "(not "..name..")";
+  elseif(trigger["use_"..name]) then
+    if(arg.test) then
+      test = "("..arg.test:format(trigger[name])..")";
+    else
+      test = name;
+    end
+  end
+  return test;
+end
+
+local function TestForToggle(trigger, arg)
+  local name = arg.name;
+  local test;
+  if(trigger["use_"..name]) then
+    if(arg.test) then
+      test = "("..arg.test:format(trigger[name])..")";
+    else
+      test = name;
+    end
+  end
+  return test;
+end
+
+local function TestForLongString(trigger, arg)
+  local name = arg.name;
+  local test;
+  if(trigger[name.."_operator"] == "==") then
+    test = "("..name.."==\""..trigger[name].."\")";
+  else
+    test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
+  end
+  return test;
+end
+
+local function TestForMultiSelect(trigger, arg)
+  local name = arg.name;
+  local test;
+  if(trigger["use_"..name] == false) then -- Multiselection
+    test = "(";
+    local any = false;
+    for value, _ in pairs(trigger[name].multi) do
+      if not arg.test then
+        test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
+      else
+        test = test..arg.test:format(tonumber(value) or "\""..value.."\"").." or ";
+      end
+      any = true;
+    end
+    if(any) then
+      test = test:sub(0, -5);
+    else
+      test = "(false";
+    end
+    test = test..")";
+  elseif(trigger["use_"..name]) then -- Singleselection
+    local value = trigger[name].single;
+    if not arg.test then
+      test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
+    else
+      test = trigger[name].single and "("..arg.test:format(tonumber(value) or "\""..value.."\"")..")";
+    end
+  end
+  return test;
+end
+
+local function ConstructTest(trigger, arg)
+  local test;
+  local name = arg.name;
+  if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
+    local number = tonumber(trigger[name]);
+    if(arg.type == "tristate") then
+      test = TestForTriState(trigger, arg);
+    elseif(arg.type == "multiselect") then
+      test = TestForMultiSelect(trigger, arg);
+    elseif(arg.type == "toggle") then
+      test = TestForToggle(trigger, arg);
+    elseif(arg.test) then
+      test = "("..arg.test:format(trigger[name])..")";
+    elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
+      test = TestForLongString(trigger, arg);
+    else
+      if(type(trigger[name]) == "table") then
+        trigger[name] = "error";
+      end
+      -- if arg.type == "number" and (trigger[name]) and not number then trigger[name] = 0 number = 0 end -- fix corrupt data, ticket #366
+      test = "("..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
+    end
+  end
+  return test;
 end
 
 local function ConstructFunction(prototype, trigger, inverse)
@@ -122,72 +219,11 @@ local function ConstructFunction(prototype, trigger, inverse)
       else
         if(arg.init == "arg") then
           tinsert(input, name);
+        elseif(arg.init) then
+          init = init.."local "..name.." = "..arg.init.."\n";
         end
-        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
-          if(arg.init and arg.init ~= "arg") then
-            init = init.."local "..name.." = "..arg.init.."\n";
-          end
-          local number = tonumber(trigger[name]);
-          local test;
-          if(arg.type == "tristate") then
-            if(trigger["use_"..name] == false) then
-              test = "(not "..name..")";
-            elseif(trigger["use_"..name]) then
-              if(arg.test) then
-                test = "("..arg.test:format(trigger[name])..")";
-              else
-                test = name;
-              end
-            end
-          elseif(arg.type == "multiselect") then
-            if(trigger["use_"..name] == false) then
-              test = "(";
-              local any = false;
-              for value, _ in pairs(trigger[name].multi) do
-                if not arg.test then
-                  test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
-                else
-                  test = test..arg.test:format(tonumber(value) or "\""..value.."\"").." or ";
-                end
-                any = true;
-              end
-              if(any) then
-                test = test:sub(0, -5);
-              else
-                test = "(false";
-              end
-              test = test..")";
-            elseif(trigger["use_"..name]) then
-              local value = trigger[name].single;
-              if not arg.test then
-                test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
-              else
-                test = trigger[name].single and "("..arg.test:format(tonumber(value) or "\""..value.."\"")..")";
-              end
-            end
-          elseif(arg.type == "toggle") then
-            if(trigger["use_"..name]) then
-              if(arg.test) then
-                test = "("..arg.test:format(trigger[name])..")";
-              else
-                test = name;
-              end
-            end
-          elseif(arg.test) then
-            test = "("..arg.test:format(trigger[name])..")";
-          elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
-            if(trigger[name.."_operator"] == "==") then
-              test = "("..name.."==\""..trigger[name].."\")";
-            else
-              test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
-            end
-          else
-            if(type(trigger[name]) == "table") then
-              trigger[name] = "error";
-            end
-            -- if arg.type == "number" and (trigger[name]) and not number then trigger[name] = 0 number = 0 end -- fix corrupt data, ticket #366
-            test = "("..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
-          end
+        local test = ConstructTest(trigger, arg);
+        if (test) then
           if(arg.required) then
             tinsert(required, test);
           else
@@ -436,7 +472,7 @@ function GenericTrigger.Add(data, region)
             if(trigger.unevent == "custom") then
               untriggerFuncStr = ConstructFunction(event_prototypes[trigger.event], untrigger);
             elseif(trigger.unevent == "auto") then
-              untriggerFuncStr = Internal.ConstructFunction(event_prototypes[trigger.event], trigger, true);
+              untriggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger, true);
             end
             if(untriggerFuncStr) then
               WeakAuras.debug(id.." - "..triggernum.." - Untrigger", 1)

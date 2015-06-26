@@ -435,7 +435,7 @@ function WeakAuras.ParseNumber(numString)
   end
 end
 
-function WeakAuras.ConstructFunction(prototype, trigger, inverse)
+function WeakAuras.ConstructFunction(prototype, trigger)
   local input = {"event"};
   local required = {};
   local tests = {};
@@ -543,11 +543,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, inverse)
 
   ret = ret.."if(";
   ret = ret..((#required > 0) and tconcat(required, " and ").." and " or "");
-  if(inverse) then
-    ret = ret.."not ("..(#tests > 0 and tconcat(tests, " and ") or "true")..")";
-  else
-    ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
-  end
+  ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
   ret = ret..") then\n";
   if(#debug > 0) then
     ret = ret.."print('ret: true');\n";
