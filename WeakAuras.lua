@@ -73,6 +73,9 @@ local collisions = WeakAuras.collisions;
 -- While true no events are handled. E.g. WeakAuras is paused while the Options dialog is open
 local paused = true;
 local importing = false;
+
+-- squelches actions and sounds from auras is used e.g. to prevent lots of actions/sounds from triggering
+-- on login or after closing the options dialog
 local squelch_actions = true;
 
 -- Load functions, keyed on id
@@ -85,6 +88,8 @@ WeakAuras.auras = {};
 local auras = WeakAuras.auras;
 WeakAuras.events = {};
 local events = WeakAuras.events;
+
+-- keyed on id, contains bool indicating whether the aura is loaded
 WeakAuras.loaded = {};
 local loaded = WeakAuras.loaded;
 
@@ -435,6 +440,8 @@ function WeakAuras.ParseNumber(numString)
   end
 end
 
+-- Used for the load function, could be simplified a bit
+-- It used to be also used for the generic trigger system
 function WeakAuras.ConstructFunction(prototype, trigger)
   local input = {"event"};
   local required = {};
@@ -476,7 +483,7 @@ function WeakAuras.ConstructFunction(prototype, trigger)
               end
             end
           elseif(arg.type == "multiselect") then
-            if(trigger["use_"..name] == false) then
+            if(trigger["use_"..name] == false) then -- Multiselection
               test = "(";
               local any = false;
               for value, _ in pairs(trigger[name].multi) do
@@ -493,7 +500,7 @@ function WeakAuras.ConstructFunction(prototype, trigger)
                 test = "(false";
               end
               test = test..")";
-            elseif(trigger["use_"..name]) then
+            elseif(trigger["use_"..name]) then -- Singleselection
               local value = trigger[name].single;
               if not arg.test then
                 test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
