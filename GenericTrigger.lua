@@ -134,7 +134,7 @@ local function TestForLongString(trigger, arg)
   if(trigger[name.."_operator"] == "==") then
     test = "("..name.."==\""..trigger[name].."\")";
   else
-    test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
+    test = "("..name.." and "..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
   end
   return test;
 end
