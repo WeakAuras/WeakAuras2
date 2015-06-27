@@ -17,5 +17,6 @@
 	<Include file="libs\LibBabble-Race-3.0\lib.xml"/>
 	<Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
 	<Script file="libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua"/>
+	<Include file="Libs\LibStrataFix\lib.xml"/>
 	<!--@end-no-lib-strip@-->
 </Ui>
