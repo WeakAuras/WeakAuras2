@@ -155,7 +155,7 @@ local function createOptions(id, data)
             name = L["Size"],
             order = 47,
             min = 6,
-            max = 24,
+            softMax = 72,
             step = 1
         },
         zoom = {
