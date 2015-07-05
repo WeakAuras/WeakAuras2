@@ -650,11 +650,12 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             if (InCombatLockdown()) then
               importbutton:Disable();
             end
-            if not WeakAurasSaved.import_disabled then
-                importbutton:SetText(L["Import"]);
+            if not WeakAurasSaved.import_disabled or WeakAuras.IsImporting() then
+                importbutton:SetText("Import");
                 importbutton:SetScript("OnClick", function()
-                ItemRefTooltip:Hide();
-                WeakAuras.CloseImportExport();
+
+                local func = function()
+                WeakAuras.SetImporting(true);
                 WeakAuras.OpenOptions();
 
                 local optionsFrame = WeakAuras.OptionsFrame();
@@ -682,6 +683,9 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end
 
                 importData(data);
+                WeakAuras.Add(data);
+                WeakAuras.NewDisplayButton(data);
+                coroutine.yield();
 
                 if(children) then
                     for index, childData in pairs(children) do
@@ -690,12 +694,17 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                         childData.parent = data.id;
                         WeakAuras.Add(data);
                         WeakAuras.Add(childData);
+                        coroutine.yield();
                     end
+                end
 
-                    for index, id in pairs(data.controlledChildren) do
-                        local childButton = WeakAuras.GetDisplayButton(id);
+                if (children) then
+                  for index, childData in pairs(children) do
+                        WeakAuras.NewDisplayButton(childData);
+                        local childButton = WeakAuras.GetDisplayButton(childData.id);
                         childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
                         childButton:SetGroupOrder(index, #data.controlledChildren);
+                        coroutine.yield();
                     end
 
                     local button = WeakAuras.GetDisplayButton(data.id);
@@ -706,9 +715,17 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end
 
                 WeakAuras.Add(data);
+                ItemRefTooltip:Hide();
                 WeakAuras.PickDisplay(data.id);
+                WeakAuras.CloseImportExport();
+                WeakAuras.SetImporting(false);
+                end
+
+                local co = coroutine.create(func);
+                WeakAuras.dynFrame:AddAction("import", co);
             end);
             else
+                -- TODO enable button after importing finished
                 importbutton:SetText("Import disabled");
                 importbutton:SetScript("OnClick", function()
                     WeakAuras.CloseImportExport();

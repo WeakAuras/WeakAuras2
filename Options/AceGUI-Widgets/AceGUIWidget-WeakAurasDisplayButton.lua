@@ -84,6 +84,7 @@ local methods = {
         end
 
         function self.callbacks.OnClickCopying()
+            if (WeakAuras.IsImporting()) then return end;
             WeakAuras.Copy(data.id, self.copying.id);
             WeakAuras.ScanForLoads();
             WeakAuras.SetIconNames(self.copying);
@@ -109,6 +110,7 @@ local methods = {
         end
 
         function self.callbacks.OnClickGrouping()
+            if (WeakAuras.IsImporting()) then return end;
             tinsert(data.controlledChildren, self.grouping.id);
             local childButton = WeakAuras.GetDisplayButton(self.grouping.id);
             childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
@@ -141,6 +143,7 @@ local methods = {
         end
 
         function self.callbacks.OnDeleteClick()
+            if (WeakAuras.IsImporting()) then return end;
             local parentData = data.parent and WeakAuras.GetData(data.parent);
             local parentButton = data.parent and WeakAuras.GetDisplayButton(data.parent);
             WeakAuras.DeleteOption(data);
@@ -153,6 +156,7 @@ local methods = {
         end
 
         function self.callbacks.OnDuplicateClick()
+            if (WeakAuras.IsImporting()) then return end;
             local base_id = data.id .. " ";
             local num = 2;
 
@@ -213,6 +217,7 @@ local methods = {
         end
 
         function self.callbacks.OnDeleteAllClick()
+            if (WeakAuras.IsImporting()) then return end;
             if(data.controlledChildren) then
                 local toDelete = {};
                 for index, id in pairs(data.controlledChildren) do
@@ -226,6 +231,7 @@ local methods = {
         end
 
         function self.callbacks.OnUngroupClick()
+            if (WeakAuras.IsImporting()) then return end;
             local parentData = WeakAuras.GetData(data.parent);
             local index;
             for childIndex, childId in pairs(parentData.controlledChildren) do
@@ -250,6 +256,7 @@ local methods = {
         end
 
         function self.callbacks.OnUpGroupClick()
+            if (WeakAuras.IsImporting()) then return end;
             if(data.parent) then
                 local id = data.id;
                 local parentData = WeakAuras.GetData(data.parent);
@@ -286,6 +293,7 @@ local methods = {
         end
 
         function self.callbacks.OnDownGroupClick()
+            if (WeakAuras.IsImporting()) then return end;
             if(data.parent) then
                 local id = data.id;
                 local parentData = WeakAuras.GetData(data.parent);
@@ -356,6 +364,7 @@ local methods = {
         end
 
         function self.callbacks.OnRenameClick()
+            if (WeakAuras.IsImporting()) then return end;
             if(self.title:IsVisible()) then
                 self.title:Hide();
                 self.renamebox:SetText(self.title:GetText());
@@ -367,6 +376,7 @@ local methods = {
         end
 
         function self.callbacks.OnRenameAction(newid)
+            if (WeakAuras.IsImporting()) then return end;
             local oldid = data.id;
             if not(newid == oldid) then
                 local temp;
