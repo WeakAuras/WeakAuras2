@@ -1678,11 +1678,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       local toAdd = {};
       for id, data in pairs(db.displays) do
-      if(id == data.id) then
-        tinsert(toAdd, data);
-      else
-        error("Corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+      if(id ~= data.id) then
+        print("|cFF8800FFWeakAuras|r detected corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+        data.id = id;
       end
+      tinsert(toAdd, data);
       end
       WeakAuras.AddMany(toAdd);
       WeakAuras.AddManyFromAddons(from_files);
