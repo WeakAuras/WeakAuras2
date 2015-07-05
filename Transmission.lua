@@ -653,6 +653,8 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             if not WeakAurasSaved.import_disabled then
                 importbutton:SetText(L["Import"]);
                 importbutton:SetScript("OnClick", function()
+                ItemRefTooltip:Hide();
+                WeakAuras.CloseImportExport();
                 WeakAuras.OpenOptions();
 
                 local optionsFrame = WeakAuras.OptionsFrame();
@@ -704,9 +706,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end
 
                 WeakAuras.Add(data);
-                ItemRefTooltip:Hide();
                 WeakAuras.PickDisplay(data.id);
-                WeakAuras.CloseImportExport();
             end);
             else
                 importbutton:SetText("Import disabled");
