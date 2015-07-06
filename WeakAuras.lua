@@ -925,7 +925,6 @@ do
           -- New cooldown
           spellCdDurs[id] = duration;
           spellCdExps[id] = endTime;
-          spellCharges[id] = charges;
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
           if (spellsRune[id] and duration ~= 10) then
             spellCdDursRune[id] = duration;
@@ -940,7 +939,6 @@ do
 
           spellCdDurs[id] = duration;
           spellCdExps[id] = endTime;
-          spellCharges[id] = charges;
           if (maxCharges == nil or charges + 1 == maxCharges) then
             spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
           end
@@ -963,6 +961,7 @@ do
           SpellCooldownFinished(id);
         end
       end
+      spellCharges[id] = charges;
     end
 
     for id, _ in pairs(items) do
