@@ -40,6 +40,131 @@ local event_prototypes = WeakAuras.event_prototypes;
 local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
 
+local events = WeakAuras.events;
+local loaded_events = WeakAuras.loaded_events;
+local timers = WeakAuras.timers;
+local regions = WeakAuras.regions;
+local clones = WeakAuras.clones;
+local specificBosses = WeakAuras.specificBosses;
+
+function WeakAuras.split(input)
+  input = input or "";
+  local ret = {};
+  local split, element = true;
+  split = input:find("[,%s]");
+  while(split) do
+    element, input = input:sub(1, split-1), input:sub(split+1);
+    if(element ~= "") then
+      tinsert(ret, element);
+    end
+    split = input:find("[,%s]");
+  end
+  if(input ~= "") then
+    tinsert(ret, input);
+  end
+  return ret;
+end
+
+function WeakAuras.EndEvent(id, triggernum, force)
+  local data = events[id] and events[id][triggernum];
+  if(data) then
+    if(data.numAdditionalTriggers > 0) then
+      if(data.region:DisableTrigger(triggernum)) then
+      -- data.region.active = nil;
+      end
+    else
+      -- data.region.active = nil;
+      data.region:Collapse();
+    end
+    if(timers[id] and timers[id][triggernum]) then
+      timer:CancelTimer(timers[id][triggernum].handle, true);
+      timers[id][triggernum] = nil;
+    end
+  end
+  if not(force) then
+    WeakAuras.SetEventDynamics(id, triggernum, data, true);
+  end
+end
+
+function WeakAuras.ActivateEvent(id, triggernum, data)
+  WeakAuras.SetEventDynamics(id, triggernum, data);
+  if(data.numAdditionalTriggers > 0) then
+    if(data.region:EnableTrigger(triggernum)) then
+    end
+  else
+    data.region:Expand();
+  end
+end
+
+function WeakAuras.ScanEvents(event, arg1, arg2, ...)
+  local event_list = loaded_events[event];
+  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+    event_list = event_list and event_list[arg2];
+  end
+  if(event_list) then
+  -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
+    if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+      event = "COMBAT_LOG_EVENT_UNFILTERED";
+    end
+    for id, triggers in pairs(event_list) do
+      WeakAuras.ActivateAuraEnvironment(id);
+      for triggernum, data in pairs(triggers) do
+        if(data.trigger) then
+          if(data.trigger(event, arg1, arg2, ...)) then
+            WeakAuras.ActivateEvent(id, triggernum, data);
+          else
+            if(data.untrigger and data.untrigger(event, arg1, arg2, ...)) then
+              WeakAuras.EndEvent(id, triggernum);
+            end
+          end
+        end
+      end
+      WeakAuras.ActivateAuraEnvironment(nil);
+    end
+  end
+end
+
+do
+  local update_clients = {};
+  local update_clients_num = 0;
+  local update_frame;
+  WeakAuras.frames["Custom Trigger Every Frame Updater"] = update_frame;
+  local updating = false;
+
+  function WeakAuras.RegisterEveryFrameUpdate(id)
+  if not(update_clients[id]) then
+    update_clients[id] = true;
+    update_clients_num = update_clients_num + 1;
+  end
+  if not(update_frame) then
+    update_frame = CreateFrame("FRAME");
+  end
+  if not(updating) then
+    update_frame:SetScript("OnUpdate", function()
+    if not(WeakAuras.IsPaused()) then
+      WeakAuras.ScanEvents("FRAME_UPDATE");
+    end
+    end);
+    updating = true;
+  end
+  end
+  
+  function WeakAuras.EveryFrameUpdateRename(oldid, newid)
+    update_clients[newid] = update_clients[oldid];
+    update_clients[oldid] = nil;
+  end
+
+  function WeakAuras.UnregisterEveryFrameUpdate(id)
+  if(update_clients[id]) then
+    update_clients[id] = nil;
+    update_clients_num = update_clients_num - 1;
+  end
+  if(update_clients_num == 0 and update_frame and updating) then
+    update_frame:SetScript("OnUpdate", nil);
+    updating = false;
+  end
+  end
+end
 
 function GenericTrigger.Modernize(data)
   -- Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
@@ -117,6 +242,672 @@ function GenericTrigger.Modernize(data)
             trigger.use_inverse = nil
         end
     end
+  end
+end
+
+--#############################
+--# Support code for triggers #
+--#############################
+-- Swing Timer Support code
+do
+  local mh = GetInventorySlotInfo("MainHandSlot")
+  local oh = GetInventorySlotInfo("SecondaryHandSlot")
+
+  local swingTimerFrame;
+  local lastSwingMain, lastSwingOff, lastSwingRange;
+  local swingDurationMain, swingDurationOff, swingDurationRange;
+  local mainTimer, offTimer, rangeTimer;
+
+  function WeakAuras.GetSwingTimerInfo(hand)
+    if(hand == "main") then
+      local itemId = GetInventoryItemID("player", mh);
+      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      if(lastSwingMain) then
+        return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
+      elseif (lastSwingRange) then
+        return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
+      else
+        return 0, math.huge, name, icon;
+      end
+    elseif(hand == "off") then
+      local itemId = GetInventoryItemID("player", oh);
+      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      if(lastSwingOff) then
+        return swingDurationOff, lastSwingOff + swingDurationOff, name, icon;
+      else
+        return 0, math.huge, name, icon;
+      end
+    end
+    
+    return 0, math.huge;
+  end
+
+  local function swingEnd(hand)
+    if(hand == "main") then
+      lastSwingMain, swingDurationMain = nil, nil;
+    elseif(hand == "off") then
+      lastSwingOff, swingDurationOff = nil, nil;
+    elseif(hand == "range") then
+      lastSwingRange, swingDurationRange = nil, nil;
+    end
+    WeakAuras.ScanEvents("SWING_TIMER_END");
+  end
+
+  local function swingTimerCheck(frame, event, _, message, _, _, source)
+    if(UnitIsUnit(source or "", "player")) then
+      if(message == "SWING_DAMAGE" or message == "SWING_MISSED") then
+        local event;
+        local currentTime = GetTime();
+        local mainSpeed, offSpeed = UnitAttackSpeed("player");
+        offSpeed = offSpeed or 0;
+        if not(lastSwingMain) then
+          lastSwingMain = currentTime;
+          swingDurationMain = mainSpeed;
+          event = "SWING_TIMER_START";
+          mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
+        elseif(OffhandHasWeapon() and not lastSwingOff) then
+          lastSwingOff = currentTime;
+          swingDurationOff = offSpeed;
+          event = "SWING_TIMER_START";
+          offTimer = timer:ScheduleTimer(swingEnd, offSpeed, "off");
+        else
+          -- A swing occurred while both weapons are supposed to be on cooldown
+          -- Simply refresh the timer of the weapon swing which would have ended sooner
+          local mainRem, offRem = (lastSwingMain or math.huge) + mainSpeed - currentTime, (lastSwingOff or math.huge) + offSpeed - currentTime;
+          if(mainRem < offRem or not OffhandHasWeapon()) then
+            timer:CancelTimer(mainTimer, true);
+            lastSwingMain = currentTime;
+            swingDurationMain = mainSpeed;
+            event = "SWING_TIMER_CHANGE";
+            mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
+          else
+            timer:CancelTimer(mainTimer, true);
+            lastSwingOff = currentTime;
+            swingDurationOff = offSpeed;
+            event = "SWING_TIMER_CHANGE";
+            offTimer = timer:ScheduleTimer(swingEnd, offSpeed, "off");
+          end
+        end
+    
+        WeakAuras.ScanEvents(event);
+      elseif(message == "RANGE_DAMAGE" or message == "RANGE_MISSED") then
+        local event;
+        local currentTime = GetTime();
+        local speed = UnitRangedDamage("player");
+        if(lastSwingRange) then
+          timer:CancelTimer(rangeTimer, true);
+          event = "SWING_TIMER_CHANGE";
+        else
+          event = "SWING_TIMER_START";
+        end
+        lastSwingRange = currentTime;
+        swingDurationRange = speed;
+        rangeTimer = timer:ScheduleTimer(swingEnd, speed, "range");
+        
+        WeakAuras.ScanEvents(event);
+      end
+    end
+  end
+
+  function WeakAuras.InitSwingTimer()
+    if not(swingTimerFrame) then
+      swingTimerFrame = CreateFrame("frame");
+      swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+      swingTimerFrame:SetScript("OnEvent", swingTimerCheck);
+    end
+  end
+end
+
+-- CD/Rune/GCD Support Code
+do
+  local cdReadyFrame;
+  WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
+
+  local spells = {};
+  local spellsRune = {}
+  local spellCdDurs = {};
+  local spellCdExps = {};
+  local spellCdDursRune = {};
+  local spellCdExpsRune = {};
+  local spellCharges = {};
+  local spellCdHandles = {};
+
+  local items = {};
+  local itemCdDurs = {};
+  local itemCdExps = {};
+  local itemCdHandles = {};
+
+  local runes = {};
+  local runeCdDurs = {};
+  local runeCdExps = {};
+  local runeCdHandles = {};
+
+  local gcdReference;
+  local gcdStart;
+  local gcdDuration;
+  local gcdSpellName;
+  local gcdSpellIcon;
+  local gcdEndCheck;
+
+  function WeakAuras.InitCooldownReady()
+  cdReadyFrame = CreateFrame("FRAME");
+  cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+  cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
+  cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
+  cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
+    if(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
+    WeakAuras.CheckCooldownReady();
+    elseif(event == "UNIT_SPELLCAST_SENT") then
+      local unit, name = ...;
+      if(unit == "player") then
+        if(gcdSpellName ~= name) then
+          local icon = GetSpellTexture(name);
+          gcdSpellName = name;
+          gcdSpellIcon = icon;
+        end
+      end
+    end
+  end);
+  end
+
+  function WeakAuras.GetRuneCooldown(id)
+    if(runes[id] and runeCdExps[id] and runeCdDurs[id]) then
+      return runeCdExps[id] - runeCdDurs[id], runeCdDurs[id];
+    else
+      return 0, 0;
+    end
+  end
+
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD)
+    if (ignoreRuneCD) then
+      if (spellsRune[id] and spellCdExpsRune[id] and spellCdDursRune[id]) then
+        return spellCdExpsRune[id] - spellCdDursRune[id], spellCdDursRune[id];
+      else
+        return 0, 0
+      end
+    end
+
+    if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
+      return spellCdExps[id] - spellCdDurs[id], spellCdDurs[id];
+    else
+      return 0, 0;
+    end
+  end
+
+  function WeakAuras.GetSpellCharges(id)
+    return spellCharges[id];
+  end
+
+  function WeakAuras.GetItemCooldown(id)
+    if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
+      return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id];
+    else
+      return 0, 0;
+    end
+  end
+
+  function WeakAuras.GetGCDInfo()
+    if(gcdStart) then
+      return gcdDuration, gcdStart + gcdDuration, gcdSpellName or "Invalid", gcdSpellIcon or "Interface\\Icons\\INV_Misc_QuestionMark";
+    else
+      return 0, math.huge, gcdSpellName or "Invalid", gcdSpellIcon or "Interface\\Icons\\INV_Misc_QuestionMark";
+    end
+  end
+
+  local function RuneCooldownFinished(id)
+    runeCdHandles[id] = nil;
+    runeCdDurs[id] = nil;
+    runeCdExps[id] = nil;
+    WeakAuras.ScanEvents("RUNE_COOLDOWN_READY", id);
+  end
+
+  local function SpellCooldownFinished(id)
+    spellCdHandles[id] = nil;
+    spellCdDurs[id] = nil;
+    spellCdExps[id] = nil;
+    spellCdDursRune[id] = nil;
+    spellCdExpsRune[id] = nil;
+    spellCharges[id] = select(2, GetSpellCharges(id));
+    WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
+  end
+
+  local function ItemCooldownFinished(id)
+    itemCdHandles[id] = nil;
+    itemCdDurs[id] = nil;
+    itemCdExps[id] = nil;
+    WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+  end
+
+  local function CheckGCD()
+    local event;
+    local startTime, duration = GetSpellCooldown(61304);
+    if(duration and duration > 0) then
+      if not(gcdStart) then
+        event = "GCD_START";
+      elseif(gcdStart ~= startTime) then
+        event = "GCD_CHANGE";
+      end
+      gcdStart, gcdDuration = startTime, duration;
+      local endCheck = startTime + duration + 0.1;
+      if(gcdEndCheck ~= endCheck) then
+        gcdEndCheck = endCheck;
+        timer:ScheduleTimer(CheckGCD, duration + 0.1);
+      end
+    else
+      if(gcdStart) then
+        event = "GCD_END"
+      end
+      gcdStart, gcdDuration = nil, nil;
+      gcdEndCheck = 0;
+    end
+    if(event) then
+      WeakAuras.ScanEvents(event);
+    end
+  end
+
+  function WeakAuras.CheckCooldownReady()
+    if(gcdReference) then
+      CheckGCD();
+    end
+
+    for id, _ in pairs(runes) do
+      local startTime, duration = GetRuneCooldown(id);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
+
+      if(not startTime or startTime == 0) then
+        startTime = 0
+        duration = 0
+      end
+
+      if(startTime > 0 and duration > 1.51) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
+
+        if not(runeCdExps[id]) then
+          -- New cooldown
+          runeCdDurs[id] = duration;
+          runeCdExps[id] = endTime;
+          runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("RUNE_COOLDOWN_STARTED", id);
+        elseif(runeCdExps[id] ~= endTime) then
+          -- Cooldown is now different
+          if(runeCdHandles[id]) then
+            timer:CancelTimer(runeCdHandles[id]);
+          end
+          runeCdDurs[id] = duration;
+          runeCdExps[id] = endTime;
+          runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
+        end
+      elseif(startTime > 0 and duration > 0) then
+        -- GCD, do nothing
+      else
+        if(runeCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the rune cooldown before the timer callback
+          -- This shouldn't happen, but if it doesn, no problem
+          if(runeCdHandles[id]) then
+            timer:CancelTimer(runeCdHandles[id]);
+          end
+          RuneCooldownFinished(id);
+        end
+      end
+    end
+
+    for id, _ in pairs(spells) do
+      local charges, maxCharges, startTime, duration = GetSpellCharges(id);
+      if (charges == nil) then -- charges is nil iff the spell has no charges
+        startTime, duration = GetSpellCooldown(id);
+      elseif (charges == maxCharges) then
+        startTime, duration = 0, 0;
+      end
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
+      local remaining = startTime + duration - time;
+
+      local chargesChanged = spellCharges[id] ~= charges;
+      spellCharges[id] = charges;
+
+      if(duration > 1.51) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
+
+        if not(spellCdExps[id]) then
+          -- New cooldown
+          spellCdDurs[id] = duration;
+          spellCdExps[id] = endTime;
+          spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+          if (spellsRune[id] and duration ~= 10) then
+            spellCdDursRune[id] = duration;
+            spellCdExpsRune[id] = endTime;
+          end
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
+        elseif(spellCdExps[id] ~= endTime or chargesChanged) then
+          -- Cooldown is now different
+          if(spellCdHandles[id]) then
+            timer:CancelTimer(spellCdHandles[id]);
+          end
+
+          spellCdDurs[id] = duration;
+          spellCdExps[id] = endTime;
+          if (maxCharges == nil or charges + 1 == maxCharges) then
+            spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+          end
+          if (spellsRune[id] and duration ~= 10) then
+            spellCdDursRune[id] = duration;
+            spellCdExpsRune[id] = endTime;
+          end
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+        end
+      elseif(duration > 0 and not (spellCdExps[id] and spellCdExps[id] - time > 1.51)) then
+        -- GCD
+        -- Do nothing
+      else
+        if(spellCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the spell cooldown before the timer callback
+          -- This shouldn't happen, but if it does, no problem
+          if(spellCdHandles[id]) then
+            timer:CancelTimer(spellCdHandles[id]);
+          end
+          SpellCooldownFinished(id);
+        end
+      end
+    end
+
+    for id, _ in pairs(items) do
+      local startTime, duration = GetItemCooldown(id);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
+
+      if(duration > 1.51) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
+
+        if not(itemCdExps[id]) then
+          -- New cooldown
+          itemCdDurs[id] = duration;
+          itemCdExps[id] = endTime;
+          itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
+        elseif(itemCdExps[id] ~= endTime) then
+          -- Cooldown is now different
+          if(itemCdHandles[id]) then
+            timer:CancelTimer(itemCdHandles[id]);
+          end
+          itemCdDurs[id] = duration;
+          itemCdExps[id] = endTime;
+          itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+        end
+      elseif(duration > 0) then
+        -- GCD
+        -- Do nothing
+      else
+        if(itemCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
+          -- This shouldn't happen, but if it doesn, no problem
+          if(itemCdHandles[id]) then
+            timer:CancelTimer(itemCdHandles[id]);
+          end
+          ItemCooldownFinished(id);
+        end
+      end
+    end
+  end
+
+  function WeakAuras.WatchGCD()
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+    cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+    gcdReference = true;
+  end
+
+  function WeakAuras.WatchRuneCooldown(id)
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+
+    if not id or id == 0 then return end
+
+    if not(runes[id]) then
+      runes[id] = true;
+      local startTime, duration = GetRuneCooldown(id);
+
+      if(not startTime or startTime == 0) then
+        startTime = 0
+        duration = 0
+      end
+
+      if(startTime and duration and startTime > 0 and duration > 1.51) then
+        local time = GetTime();
+        local endTime = startTime + duration;
+        runeCdDurs[id] = duration;
+        runeCdExps[id] = endTime;
+        if not(runeCdHandles[id]) then
+          runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
+        end
+      end
+    end
+  end
+
+  function WeakAuras.WatchSpellCooldown(id, ignoreRunes)
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+
+    if not id or id == 0 then return end
+
+    if (ignoreRunes) then
+      spellsRune[id] = true;
+    end
+
+    if not(spells[id]) then
+      spells[id] = true;
+      local charges, maxCharges, startTime, duration = GetSpellCharges(id);
+      if (charges == nil) then
+          startTime, duration = GetSpellCooldown(id);
+      elseif (charges == maxCharges) then
+          startTime, duration = 0, 0;
+      end
+      startTime = startTime or 0;
+      duration = duration or 0;
+
+      spellCharges[id] = charges;
+
+      if(duration > 1.51) then
+        local time = GetTime();
+        local endTime = startTime + duration;
+        spellCdDurs[id] = duration;
+        spellCdExps[id] = endTime;
+        if (duration ~= 10 and ignoreRunes) then
+          spellCdDursRune[id] = duration;
+          spellCdExpsRune[id] = endTime;
+        end
+        if not(spellCdHandles[id]) then
+          spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
+        end
+      end
+    end
+  end
+
+  function WeakAuras.WatchItemCooldown(id)
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+
+    if not id or id == 0 then return end
+
+    if not(items[id]) then
+      items[id] = true;
+      local startTime, duration = GetItemCooldown(id);
+      if(startTime and duration and duration > 1.51) then
+        local time = GetTime();
+        local endTime = startTime + duration;
+        itemCdDurs[id] = duration;
+        itemCdExps[id] = endTime;
+        if not(itemCdHandles[id]) then
+          itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+        end
+      end
+    end
+  end
+
+  function WeakAuras.RuneCooldownForce()
+    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+  end
+
+  function WeakAuras.SpellCooldownForce()
+    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+  end
+
+  function WeakAuras.ItemCooldownForce()
+    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+  end
+end
+
+-- Weapon Enchants
+do
+  local mh = GetInventorySlotInfo("MainHandSlot")
+  local oh = GetInventorySlotInfo("SecondaryHandSlot")
+
+  local mh_name;
+  local mh_exp;
+  local mh_dur;
+  local mh_icon = GetInventoryItemTexture("player", mh);
+
+  local oh_name;
+  local oh_exp;
+  local oh_dur;
+  local oh_icon = GetInventoryItemTexture("player", oh);
+
+  local tenchFrame;
+  WeakAuras.frames["Temporary Enchant Handler"] = tenchFrame;
+  local tenchTip;
+
+  function WeakAuras.TenchInit()
+    if not(tenchFrame) then
+      tenchFrame = CreateFrame("Frame");
+      tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
+
+      tenchTip = WeakAuras.GetHiddenTooltip();
+
+      local function getTenchName(id)
+        tenchTip:SetInventoryItem("player", id);
+        local lines = { tenchTip:GetRegions() };
+        for i,v in ipairs(lines) do
+          if(v:GetObjectType() == "FontString") then
+            local text = v:GetText();
+            if(text) then
+              local _, _, name = text:find("^(.+) %(%d+ [^%)]+%)$");
+              if(name) then
+              return name;
+              end
+            end
+          end
+        end
+
+        return "Unknown";
+      end
+
+      local function tenchUpdate()
+        local _, mh_rem, _, _, oh_rem = GetWeaponEnchantInfo();
+        local time = GetTime();
+        local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
+        local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
+        if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
+          mh_exp = mh_exp_new;
+          mh_dur = mh_rem and mh_rem / 1000;
+          mh_name = mh_exp and getTenchName(mh) or "None";
+          mh_icon = GetInventoryItemTexture("player", mh)
+          WeakAuras.ScanEvents("MAINHAND_TENCH_UPDATE");
+        end
+        if(math.abs((oh_exp or 0) - (oh_exp_new or 0)) > 1) then
+          oh_exp = oh_exp_new;
+          oh_dur = oh_rem and oh_rem / 1000;
+          oh_name = oh_exp and getTenchName(oh) or "None";
+          oh_icon = GetInventoryItemTexture("player", oh)
+          WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
+        end
+      end
+
+      tenchFrame:SetScript("OnEvent", function(self, event, arg1)
+        if(arg1 == "player") then
+          timer:ScheduleTimer(tenchUpdate, 0.1);
+        end
+      end);
+      tenchUpdate();
+    end
+  end
+
+  function WeakAuras.GetMHTenchInfo()
+    return mh_exp, mh_dur, mh_name, mh_icon;
+  end
+
+  function WeakAuras.GetOHTenchInfo()
+    return oh_exp, oh_dur, oh_name, oh_icon;
+  end
+end
+
+-- Mount
+do
+  local mountedFrame;
+  WeakAuras.frames["Mount Use Handler"] = mountedFrame;
+  function WeakAuras.WatchForMounts()
+    if not(mountedFrame) then
+      mountedFrame = CreateFrame("frame");
+      mountedFrame:RegisterEvent("COMPANION_UPDATE");
+      local elapsed = 0;
+      local delay = 0.5;
+      local isMounted = IsMounted();
+      local function checkForMounted(self, elaps)
+        elapsed = elapsed + elaps
+        if(isMounted ~= IsMounted()) then
+          isMounted = IsMounted();
+          WeakAuras.ScanEvents("MOUNTED_UPDATE");
+          mountedFrame:SetScript("OnUpdate", nil);
+        end
+        if(elapsed > delay) then
+          mountedFrame:SetScript("OnUpdate", nil);
+        end
+      end
+      mountedFrame:SetScript("OnEvent", function()
+      elapsed = 0;
+      mountedFrame:SetScript("OnUpdate", checkForMounted);
+      end)
+    end
+  end
+end
+
+-- PET
+do
+  local petFrame;
+  WeakAuras.frames["Pet Use Handler"] = petFrame;
+  function WeakAuras.WatchForPetDeath()
+    if not(petFrame) then
+      petFrame = CreateFrame("frame");
+      petFrame:RegisterUnitEvent("UNIT_HEALTH", "pet");
+      petFrame:SetScript("OnEvent", function()
+        WeakAuras.ScanEvents("PET_UPDATE");
+      end)
+    end
+  end
+end
+
+-- Item Count
+local itemCountWatchFrame;
+function WeakAuras.RegisterItemCountWatch()
+  if not(itemCountWatchFrame) then
+    itemCountWatchFrame = CreateFrame("frame");
+    itemCountWatchFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+    itemCountWatchFrame:SetScript("OnEvent", function()
+      timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
+      timer:ScheduleTimer(WeakAuras.ScanEvents, 0.5, "ITEM_COUNT_UPDATE");
+    end);
   end
 end
 
