@@ -916,6 +916,9 @@ do
       duration = duration or 0;
       local time = GetTime();
       local remaining = startTime + duration - time;
+      
+      local chargesChanged = spellCharges[id] ~= charges;
+      spellCharges[id] = charges;
 
       if(duration > 1.51) then
         -- On non-GCD cooldown
@@ -931,7 +934,7 @@ do
             spellCdExpsRune[id] = endTime;
           end
           WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
-        elseif(spellCdExps[id] ~= endTime or spellCharges[id] ~= charges) then
+        elseif(spellCdExps[id] ~= endTime or chargesChanged) then
           -- Cooldown is now different
           if(spellCdHandles[id]) then
             timer:CancelTimer(spellCdHandles[id]);
@@ -961,7 +964,6 @@ do
           SpellCooldownFinished(id);
         end
       end
-      spellCharges[id] = charges;
     end
 
     for id, _ in pairs(items) do
