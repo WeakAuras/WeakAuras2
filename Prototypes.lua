@@ -951,7 +951,7 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local unit = unit or '%s'
         local concernedUnit = '%s'
-        local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
+        local _, _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
       ]]
       return ret:format(trigger.unit, trigger.unit, trigger.unit);
     end,
@@ -979,7 +979,7 @@ WeakAuras.event_prototypes = {
       return UnitPower(trigger.unit, 10), math.max(1, UnitPowerMax(trigger.unit, 10)), "fastUpdate";
     end,
     nameFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo(trigger.unit);
+      local _, _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo(trigger.unit);
       return name;
     end,
     iconFunc = function(trigger)
