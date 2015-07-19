@@ -916,7 +916,7 @@ do
       duration = duration or 0;
       local time = GetTime();
       local remaining = startTime + duration - time;
-      
+
       local chargesChanged = spellCharges[id] ~= charges;
       spellCharges[id] = charges;
 
@@ -1575,7 +1575,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, inverse)
   end
   local ret = "return function("..tconcat(input, ", ")..")\n";
   ret = ret..(init or "");
-  
+
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
 
   ret = ret.."if(";
@@ -1693,11 +1693,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
       WeakAuras.FixGroupChildrenOrder();
       WeakAuras.RemoveGTFO();
-      
+
       --> check in case of a disconnect during an encounter.
       if (db.CurrentEncounter) then
         WeakAuras.CheckForPreviousEncounter()
-      end      
+      end
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
@@ -2101,7 +2101,7 @@ end
 -- encounter stuff ~encounter
 function WeakAuras.StoreBossGUIDs()
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
-    for i = 1, 5 do 
+    for i = 1, 5 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid) then
@@ -2139,7 +2139,7 @@ function WeakAuras.DestroyEncounterTable()
   end
   WeakAuras.CurrentEncounter = nil
   db.CurrentEncounter = nil
-  
+
   --print ("|cFFFFFFAAWeakAuras|r: Encounter Table destroyed.")
 end
 
@@ -2152,7 +2152,7 @@ function WeakAuras.CreateEncounterTable (encounter_id)
   }
   timer:ScheduleTimer(WeakAuras.StoreBossGUIDs, 2)
   --print ("|cFFFFFFAAWeakAuras|r: Encounter Table created.", encounter_id, ZoneMapID)
-  
+
   return WeakAuras.CurrentEncounter
 end
 
@@ -2164,20 +2164,20 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     if(event == "PLAYER_LEVEL_UP") then
       playerLevel = arg1;
     end
-    
+
   --> ~encounter id stuff, we are holding the current combat id to further load checks.
   --> there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
   --> regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
   local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
-  
+
   if (event == "ENCOUNTER_START") then
     encounter_id = tonumber (arg1)
     WeakAuras.CreateEncounterTable (encounter_id)
-    
+
   elseif (event == "ENCOUNTER_END") then
     encounter_id = 0
     WeakAuras.DestroyEncounterTable()
-    
+
   elseif (event == "ZONE_CHANGED_NEW_AREA" and WeakAuras.CurrentEncounter) then
     --> player used hearthstone while in a encounter or just left the raid group on raid finder.
     local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
@@ -2188,7 +2188,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       WeakAuras.DestroyEncounterTable()
     end
   end
-    
+
   local player, realm, zone, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
   local _, race = UnitRace("player")
   if role == "NONE" then
@@ -2349,7 +2349,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   WeakAuras.ForceEvents();
   end
-end  
+end
 
 local loadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = loadFrame;
@@ -2881,7 +2881,7 @@ function WeakAuras.Delete(data)
     end
   end
   end
-  
+
   animations[tostring(regions[id].region)] = nil
 
   WeakAuras.UnregisterCustomTextUpdates(regions[id].region)
@@ -3201,7 +3201,7 @@ function WeakAuras.Modernize(data)
       load[protoname] = nil;
     end
   end
-  
+
   local fixEmberTrigger = function(trigger)
     if (trigger.power and not trigger.ember) then
       trigger.ember = tostring(tonumber(trigger.power) * 10);
@@ -4648,7 +4648,7 @@ function WeakAuras.CanHaveAuto(data)
     )
     or (
       data.trigger.customIcon
-      and data.trigger.customName ~= ""
+      and data.trigger.customIcon ~= ""
     )
     )
   )
