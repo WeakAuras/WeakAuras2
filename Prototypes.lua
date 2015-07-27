@@ -510,7 +510,6 @@ WeakAuras.load_prototype = {
       init = "arg",
       desc = L["EncounterID List"],
     },
-    
     {
       name = "size",
       display = L["Instance Type"],
@@ -562,7 +561,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     stacksFunc = function(trigger)
-      if UnitInVehicle('player') then 
+      if UnitInVehicle('player') then
         return GetComboPoints('vehicle', 'target');
       else
         return UnitPower('player', 4);
@@ -631,7 +630,7 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "UnitLevel(unit)"
       },
-    {
+      {
         name = "attackable",
         display = L["Attackable"],
         type = "tristate",
@@ -1442,7 +1441,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
       end
-      return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"), 
+      return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"),
                                    "\"" .. (trigger.showOn or "") .. "\"");
     end,
     args = {
@@ -2306,8 +2305,8 @@ WeakAuras.event_prototypes = {
         type = "select",
         values = "rune_specific_types",
         test = [[
-          ((inverse and startTime == 0) or (not inverse and startTime > 0)) 
-          and 
+          ((inverse and startTime == 0) or (not inverse and startTime > 0))
+          and
           ((death == nil) or (death == true and GetRuneType(rune) == 4) or (death == false and GetRuneType(rune) ~= 4))
         ]],
         enable = function(trigger) return not trigger.use_bloodRunes and not trigger.use_unholyRunes and not trigger.use_frostRunes end
