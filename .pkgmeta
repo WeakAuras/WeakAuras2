@@ -35,8 +35,6 @@ externals:
   url: svn://svn.wowace.com/wow/libbabble-race-3-0/mainline/trunk
  libs/LibButtonGlow-1.0:
   url: git://git.wowace.com/wow/libbuttonglow-1-0/mainline.git
- libs/LibStrataFix:
-  url: svn://svn.wowace.com/wow/libstratafix/mainline/trunk
 
 ignore:
  - RegionTypes\timer.lua
