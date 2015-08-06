@@ -5065,9 +5065,9 @@ do
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltip = WeakAuras.GetHiddenTooltip();
   tooltip:SetUnitAura(unit, index, filter);
-  local lines = { tooltip:GetRegions() };
-  local tooltipText = lines[12] and lines[12]:GetObjectType() == "FontString" and lines[12]:GetText() or "";
-  local debuffType = lines[11] and lines[11]:GetObjectType() == "FontString" and lines[11]:GetText() or "";
+  local debuffTypeLine, tooltipTextLine = select(11, tooltip:GetRegions())
+  local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
+  local debuffType = debuffTypeLine and debuffTypeLine:GetObjectType() == "FontString" and debuffTypeLine:GetText() or "";
   local found = false;
   for i,v in pairs(WeakAuras.debuff_class_types) do
   if(v == debuffType) then
