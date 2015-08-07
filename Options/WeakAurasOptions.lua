@@ -1464,9 +1464,11 @@ function WeakAuras.LayoutDisplayButtons(msg)
     frame.buttonsScroll:PerformLayout()
     WeakAuras.SortDisplayButtons(msg);
   
-    for id, button in pairs(displayButtons) do
-      if(loaded[id] ~= nil) then
-       button:PriorityShow(1);
+    if (WeakAuras.IsOptionsOpen()) then
+      for id, button in pairs(displayButtons) do
+        if(loaded[id] ~= nil) then
+         button:PriorityShow(1);
+        end
       end
     end
   
