@@ -451,6 +451,9 @@ do
     for guid, acEntry in pairs(self.watched[id].players) do
       -- Need to check if cached  data conforms to trigger
       if (TestNonUniformSettings(acEntry, data)) then
+        if (self.players[guid] == UNKNOWNOBJECT) then
+          self.players[guid] = GetUnitName(guid, true);
+        end
         affected[self.players[guid]] = true;
       end
     end
