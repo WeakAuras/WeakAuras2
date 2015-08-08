@@ -1371,6 +1371,24 @@ WeakAuras.event_prototypes = {
         end
       },
       {
+        name = "isOffHand",
+        display = L["Is Off Hand"],
+        type = "tristate",
+        init = "arg",
+        enable = function(trigger)
+          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+        end
+      },
+      {
+        name = "multistrike",
+        display = L["Multistrike"],
+        type = "tristate",
+        init = "arg",
+        enable = function(trigger)
+          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
+        end
+      },
+      {
         name = "number",
         display = L["Number"],
         type = "number",
