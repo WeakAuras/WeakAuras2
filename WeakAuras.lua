@@ -7,6 +7,7 @@ local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local coroutine =  coroutine
+local _G = _G
 
 local ADDON_NAME = "WeakAuras";
 local versionString = WeakAuras.versionString;
@@ -25,8 +26,8 @@ local L = WeakAuras.L;
 -- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
 -- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
+-- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_NUM_TALENTS
 -- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT
-
 
 local queueshowooc;
 function WeakAuras.OpenOptions(msg)
