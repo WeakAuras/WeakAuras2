@@ -6,6 +6,7 @@ local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+local coroutine =  coroutine
 
 local ADDON_NAME = "WeakAuras";
 local versionString = WeakAuras.versionString;
@@ -20,6 +21,12 @@ local aceEvents = WeakAurasAceEvents
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
+
+-- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
+-- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
+-- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
+-- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT
+
 
 local queueshowooc;
 function WeakAuras.OpenOptions(msg)
@@ -135,7 +142,7 @@ function WeakAuras.debug(msg, level)
   if(db.debug) then
   level = (level and levelColors[level] and level) or 2;
   msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
-  ChatFrame3:AddMessage(levelColors[level]..msg);
+  DEFAULT_CHAT_FRAME:AddMessage(levelColors[level]..msg);
   end
 end
 local debug = WeakAuras.debug;
