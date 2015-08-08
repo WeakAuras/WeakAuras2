@@ -2551,6 +2551,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "";
       local ret = [[
         local unit = "%s"
+        local inverse = %s
         local spell, interruptible, _;
         local castType;
         spell, _, _, _, _, _, _, _, interruptible = UnitCastingInfo(unit)
@@ -2564,7 +2565,7 @@ WeakAuras.event_prototypes = {
         end
         interruptible = not interruptible;
       ]];
-      return ret:format(trigger.unit);
+      return ret:format(trigger.unit, trigger.use_inverse and "true" or "false");
     end,
     args = {
       {
@@ -2578,22 +2579,31 @@ WeakAuras.event_prototypes = {
       {
         name = "spell",
         display = L["Spell Name"],
-        type = "string"
+        type = "string" ,
+        enable = function(trigger) return not(trigger.use_inverse) end,
       },
       {
         name = "castType",
         display = L["Cast Type"],
         type = "select",
-        values = "cast_types"
+        values = "cast_types",
+        enable = function(trigger) return not(trigger.use_inverse) end,
       },
       {
         name = "interruptible",
         display = L["Interruptible"],
-        type = "tristate"
+        type = "tristate",
+        enable = function(trigger) return not(trigger.use_inverse) end,
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
       },
       {
         hidden = true,
-        test = "UnitExists(unit) and spell"
+        test = "UnitExists(unit) and ((not inverse and spell) or (inverse and not spell))"
       }
     },
     durationFunc = function(trigger)
