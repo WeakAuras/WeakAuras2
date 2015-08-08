@@ -2924,6 +2924,7 @@ end
 
 function WeakAuras.Rename(data, newid)
   local oldid = data.id;
+  WeakAuras.EveryFrameUpdateRename(oldid, newid)
   if(data.parent) then
   local parentData = db.displays[data.parent];
   if(parentData.controlledChildren) then
@@ -2952,8 +2953,17 @@ function WeakAuras.Rename(data, newid)
   loaded[newid] = loaded[oldid];
   loaded[oldid] = nil;
 
-  loaded_events[newid] = loaded_events[oldid];
-  loaded_events[oldid] = nil;
+  for eventname, events in pairs(loaded_events) do
+    if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
+      for subeventname, subevents in pairs(events) do
+        subevents[oldid] = subevents[newid];
+        subevents[oldid] = nil;
+      end
+    else
+      events[newid] = events[oldid];
+      events[oldid] = nil;
+    end
+  end
 
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
@@ -4921,6 +4931,11 @@ do
     end);
     updating = true;
   end
+  end
+
+  function WeakAuras.EveryFrameUpdateRename(oldid, newid)
+    update_clients[newid] = update_clients[oldid];
+    update_clients[oldid] = nil;
   end
 
   function WeakAuras.UnregisterEveryFrameUpdate(id)
