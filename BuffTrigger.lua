@@ -52,6 +52,7 @@ local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
 local duration_cache = WeakAuras.duration_cache;
 local load_prototype = WeakAuras.load_prototype;
+local clones = WeakAuras.clones;
 
 local aura_cache = {};
 do
@@ -747,7 +748,7 @@ do
     end
     GUIDfromUID[UID] = nil;
   end
-  
+
   function WeakAuras.SetUID(GUID, UID)
     WeakAuras.ReleaseUID(UID);
     if not(UIDsfromGUID[GUID]) then
