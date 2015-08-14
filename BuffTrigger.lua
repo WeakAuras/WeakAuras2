@@ -51,7 +51,10 @@ CanHaveTooltip(data)
 
 GetNameAndIcon(data)
   Returns the name and icon to show in the options
-]]
+
+]]--
+
+
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local tostring, select, pairs, next, type, unpack = tostring, select, pairs, next, type, unpack
@@ -70,6 +73,8 @@ local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
 local duration_cache = WeakAuras.duration_cache;
 local clones = WeakAuras.clones;
+
+-- GLOBALS: GameTooltip UNKNOWNOBJECT
 
 WeakAuras.me = GetUnitName("player",true)
 WeakAuras.myGUID = nil

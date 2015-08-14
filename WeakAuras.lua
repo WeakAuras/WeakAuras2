@@ -650,7 +650,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
       WeakAuras.FixGroupChildrenOrder();
-      
+
       for _, triggerSystem in pairs(triggerSystems) do
         if (triggerSystem.AllAdded) then
           triggerSystem.AllAdded();
@@ -1506,7 +1506,7 @@ function WeakAuras.Modernize(data)
     load.talent.single = talent;
     load.talent.multi = {}
   end
-  
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -2645,7 +2645,7 @@ function WeakAuras.HideTooltip()
   currentTooltipData = nil;
   currentTooltipRegion = nil;
   currentTooltipOwner = nil;
-  currentTooltipType = nil;
+  --currentTooltipType = nil; -- XXX GLOBAL
   GameTooltip:Hide();
 end
 

@@ -51,7 +51,10 @@ CanHaveTooltip(data)
 
 GetNameAndIcon(data)
     Returns the name and icon to show in the options
-]]
+
+]]--
+
+
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local tostring, select, pairs, next, type, unpack = tostring, select, pairs, next, type, unpack
@@ -81,6 +84,8 @@ local specificBosses = WeakAuras.specificBosses;
 -- local function
 local HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
+
+-- GLOBALS: WeakAurasAceEvents GameTooltip
 
 function WeakAuras.split(input)
   input = input or "";
@@ -391,7 +396,7 @@ function GenericTrigger.Rename(oldid, newid)
       events[oldid] = nil;
     end
   end
-  
+
   WeakAuras.EveryFrameUpdateRename(oldid, newid)
 end
 
@@ -613,7 +618,7 @@ do
     updating = true;
   end
   end
-  
+
   function WeakAuras.EveryFrameUpdateRename(oldid, newid)
     update_clients[newid] = update_clients[oldid];
     update_clients[oldid] = nil;
@@ -1507,10 +1512,10 @@ function GenericTrigger.GetNameAndIcon(data)
   local trigger = data.trigger;
   if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
     if(WeakAuras.event_prototypes[trigger.event].iconFunc) then
-      icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger);
+      icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger); -- XXX GLOBAL
     end
     if(WeakAuras.event_prototypes[trigger.event].nameFunc) then
-      name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
+      name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger); --- XXX GLOBAL
     end
   end
 end

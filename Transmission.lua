@@ -24,6 +24,7 @@ local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+local coroutine
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -40,6 +41,8 @@ local status_types = WeakAuras.status_types;
 local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub, removeSpellNames
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
+
+-- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent
 
 local bytetoB64 = {
     [0]="a","b","c","d","e","f","g","h",
