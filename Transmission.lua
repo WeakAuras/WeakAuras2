@@ -24,7 +24,7 @@ local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-local coroutine
+local coroutine = coroutine
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
