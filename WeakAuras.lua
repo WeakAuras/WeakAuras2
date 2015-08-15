@@ -2633,6 +2633,7 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner)
   GameTooltip:SetPoint("LEFT", owner, "RIGHT");
   GameTooltip:ClearLines();
 
+  local trigger = data.trigger;
   local triggerSystem = triggerTypes[trigger.type];
   if (not triggerSystem) then return; end
 
