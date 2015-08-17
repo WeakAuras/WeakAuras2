@@ -4,18 +4,19 @@ For that it hooks into the chat frame and addon message channels.
 
 This file adds the following API to the WeakAuras object:
 
-DiplayToString(id, forChat)
+DisplayToString(id, forChat)
    Converts the display id to a plain text string
 
 DisplayToTableString(id)
    Converts the display id to a formatted table
 
 ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
-   Shows a tooltip frame for a aura, which allows for importing if import is true
+   Shows a tooltip frame for an aura, which allows for importing if import is true
 
 ImportString(str)
-   Imports a aura from a string
-]]
+   Imports an aura from a string
+
+]]--
 
 -- Lua APIs
 local tinsert, tconcat, tremove = table.insert, table.concat, table.remove

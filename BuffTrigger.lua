@@ -1,11 +1,11 @@
 --[[ BuffTrigger.lua
 This file contains the "aura" trigger for buffs and debuffs.
 
-It registters the BuffTrigger table for the trigger type "aura".
+It registers the BuffTrigger table for the trigger type "aura".
 It has the following API:
 
 Add(data)
-  Adds a aura, setting up internal data structures for all buff triggers
+  Adds an aura, setting up internal data structures for all buff triggers
 
 LoadDisplay(id)
   Loads the aura id, enabling all buff triggers in the aura
@@ -34,7 +34,7 @@ Modernize(data)
 
 CanGroupShowWithZero(data)
   Returns whether the first trigger could be shown without any affected group members.
-  If that is the case no automatic icon can be determined. Only used by the Options dialog.
+  If that is the case no automatic icon can be determined. Only used by the options dialog.
   (If I understood the code correctly)
 
 CanHaveDuration(data)

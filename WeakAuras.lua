@@ -51,14 +51,14 @@ function SlashCmdList.WEAKAURAS(msg)
   WeakAuras.OpenOptions(msg);
 end
 
--- A alias for WeakAurasSaved, the SavedVariables
+-- An alias for WeakAurasSaved, the SavedVariables
 -- Noteable properties:
 --  debug: If set to true, WeakAura.debug() outputs messages to the chat frame
 --  displays: All aura settings, keyed on their id
 local db;
 
 local registeredFromAddons;
--- List of addons that registered displays, not sure if anyone addon uses this
+-- List of addons that registered displays
 WeakAuras.addons = {};
 local addons = WeakAuras.addons;
 
@@ -66,7 +66,7 @@ local addons = WeakAuras.addons;
 WeakAuras.tutorials = {};
 local tutorials = WeakAuras.tutorials;
 
--- used if a addons tries to register a display under a id, that the user already has a display with that id
+-- used if an addon tries to register a display under an id, that the user already has a display with that id
 WeakAuras.collisions = {};
 local collisions = WeakAuras.collisions;
 
@@ -74,7 +74,7 @@ local collisions = WeakAuras.collisions;
 local paused = true;
 local importing = false;
 
--- squelches actions and sounds from auras is used e.g. to prevent lots of actions/sounds from triggering
+-- squelches actions and sounds from auras. is used e.g. to prevent lots of actions/sounds from triggering
 -- on login or after closing the options dialog
 local squelch_actions = true;
 
@@ -105,11 +105,11 @@ local clones = WeakAuras.clones;
 WeakAuras.clonePool = {};
 local clonePool = WeakAuras.clonePool;
 
--- One table per regiontype, see RegisterRegionType, notable properties: create, modify and default
+-- One table per regionType, see RegisterRegionType, notable properties: create, modify and default
 WeakAuras.regionTypes = {};
 local regionTypes = WeakAuras.regionTypes;
 
--- One table per regiontype, see RegisterRegionOptions
+-- One table per regionType, see RegisterRegionOptions
 WeakAuras.regionOptions = {};
 local regionOptions = WeakAuras.regionOptions;
 
@@ -2646,7 +2646,6 @@ function WeakAuras.HideTooltip()
   currentTooltipData = nil;
   currentTooltipRegion = nil;
   currentTooltipOwner = nil;
-  --currentTooltipType = nil; -- XXX GLOBAL
   GameTooltip:Hide();
 end
 
