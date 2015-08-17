@@ -71,7 +71,7 @@ local B64tobyte = {
 --Credit goes to Galmok of European Stormrage (Horde), galmok@gmail.com
 local encodeB64Table = {};
 
-local function encodeB64(str)
+function encodeB64(str)
     local B64 = encodeB64Table;
     local remainder = 0;
     local remainder_length = 0;
@@ -98,7 +98,7 @@ end
 
 local decodeB64Table = {}
 
-local function decodeB64(str)
+function decodeB64(str)
     local bit8 = decodeB64Table;
     local decoded_size = 0;
     local ch;
@@ -124,7 +124,7 @@ local function decodeB64(str)
     return table.concat(bit8, "", 1, decoded_size)
 end
 
-local function tableAdd(augend, addend)
+function tableAdd(augend, addend)
     local function recurse(augend, addend)
         for i,v in pairs(addend) do
             if(type(v) == "table") then
@@ -140,7 +140,7 @@ local function tableAdd(augend, addend)
     recurse(augend, addend);
 end
 
-local function tableSubtract(minuend, subtrahend)
+function tableSubtract(minuend, subtrahend)
     local function recurse(minuend, subtrahend)
         for i,v in pairs(subtrahend) do
             if(minuend[i] ~= nil) then
@@ -164,7 +164,7 @@ local function tableSubtract(minuend, subtrahend)
     recurse(minuend, subtrahend);
 end
 
-local function DisplayStub(regionType)
+function DisplayStub(regionType)
     local stub = {
         ["untrigger"] = {
         },
@@ -222,7 +222,7 @@ local function DisplayStub(regionType)
     return stub;
 end
 
-local function removeSpellNames(data)
+function removeSpellNames(data)
     local trigger
     for triggernum=0,(data.numTriggers or 9) do
         if(triggernum == 0) then
@@ -243,7 +243,7 @@ local function removeSpellNames(data)
     end
 end
 
-local function CompressDisplay(data)
+function CompressDisplay(data)
     local copiedData = {};
     WeakAuras.DeepCopy(data, copiedData);
     copiedData.controlledChildren = nil;
@@ -252,7 +252,7 @@ local function CompressDisplay(data)
     return copiedData;
 end
 
-local function DecompressDisplay(data)
+function DecompressDisplay(data)
     tableAdd(data, DisplayStub(data.regionType));
     removeSpellNames(data);
 end
@@ -314,7 +314,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_CONVERSATION", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", filterFunc)
 
-local function ShowTooltip(content)
+function ShowTooltip(content)
     if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
         ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:Hide();
         ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = nil;
@@ -408,7 +408,7 @@ function HandleModifiedItemClick(link, ...)
     return OriginalHandleModifiedItemClick(link, ...);
  end
 
-local function TableToString(inTable, forChat)
+function TableToString(inTable, forChat)
     local serialized = Serializer:Serialize(inTable);
     local compressed = Compresser:CompressHuffman(serialized);
     if(forChat) then
@@ -418,7 +418,7 @@ local function TableToString(inTable, forChat)
     end
 end
 
-local function StringToTable(inString, fromChat)
+function StringToTable(inString, fromChat)
     local decoded;
     if(fromChat) then
         decoded = decodeB64(inString);
@@ -915,7 +915,7 @@ function WeakAuras.ImportString(str)
 end
 
 local safeSenders = {}
-local function RequestDisplay(characterName, displayName)
+function RequestDisplay(characterName, displayName)
     safeSenders[characterName] = true
     safeSenders[Ambiguate(characterName, "none")] = true
     local transmit = {
@@ -926,7 +926,7 @@ local function RequestDisplay(characterName, displayName)
     Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
 end
 
-local function TransmitError(errorMsg, characterName)
+function TransmitError(errorMsg, characterName)
     local transmit = {
         m = "dE",
         eM = errorMsg
@@ -934,7 +934,7 @@ local function TransmitError(errorMsg, characterName)
     Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
 end
 
-local function TransmitDisplay(id, characterName)
+function TransmitDisplay(id, characterName)
     local encoded = WeakAuras.DisplayToString(id);
     if(encoded ~= "") then
         Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
