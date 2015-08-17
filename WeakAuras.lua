@@ -152,6 +152,8 @@ do
 end
 local playerLevel = UnitLevel("player");
 
+WeakAuras.currentInstanceType = "none"
+
 local function_strings = WeakAuras.function_strings;
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
@@ -631,6 +633,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db.displays = db.displays or {};
       db.registered = db.registered or {};
 
+      WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
 
       local toAdd = {};
@@ -657,12 +660,14 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       if (db.CurrentEncounter) then
         WeakAuras.CheckForPreviousEncounter()
       end
+      
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
+    WeakAuras.UpdateCurrentInstanceType();
   elseif(event == "PLAYER_REGEN_ENABLED") then
     if (queueshowooc) then
       WeakAuras.OpenOptions(queueshowooc)
@@ -901,7 +906,6 @@ function WeakAuras.StoreBossGUIDs()
         local guid = UnitGUID ("boss" .. i)
         if (guid) then
           WeakAuras.CurrentEncounter.boss_guids [guid] = true
-          --print ("|cFFFFFFAAWeakAuras|r: guid stored for npc", UnitName ("boss" .. i))
         end
       end
     end
@@ -917,7 +921,6 @@ function WeakAuras.CheckForPreviousEncounter()
         if (guid and db.CurrentEncounter.boss_guids [guid]) then
           --> we are in the same encounter
           WeakAuras.CurrentEncounter = db.CurrentEncounter
-          --print ("|cFFFFFFAAWeakAuras|r: found a previous encounter.")
           return true
         end
       end
@@ -934,8 +937,6 @@ function WeakAuras.DestroyEncounterTable()
   end
   WeakAuras.CurrentEncounter = nil
   db.CurrentEncounter = nil
-
-  --print ("|cFFFFFFAAWeakAuras|r: Encounter Table destroyed.")
 end
 
 function WeakAuras.CreateEncounterTable (encounter_id)
@@ -946,9 +947,36 @@ function WeakAuras.CreateEncounterTable (encounter_id)
     boss_guids = {},
   }
   timer:ScheduleTimer(WeakAuras.StoreBossGUIDs, 2)
-  --print ("|cFFFFFFAAWeakAuras|r: Encounter Table created.", encounter_id, ZoneMapID)
 
   return WeakAuras.CurrentEncounter
+end
+
+function WeakAuras.LoadEncounterInitScripts (id)
+  if (WeakAuras.currentInstanceType ~= "raid") then
+    return
+  end
+  if (id) then
+    local data = db.displays[id]
+    if (data and data.load.use_encounterid and not data.init_completed and data.actions.init and data.actions.init.do_custom) then
+      WeakAuras.ActivateAuraEnvironment(id)
+      WeakAuras.ActivateAuraEnvironment(nil)
+    end
+  else
+    for id, data in pairs(db.displays) do
+      if (data.load.use_encounterid and not data.init_completed and data.actions.init and data.actions.init.do_custom) then
+        WeakAuras.ActivateAuraEnvironment(id)
+        WeakAuras.ActivateAuraEnvironment(nil)
+      end
+    end
+  end
+end
+
+function WeakAuras.UpdateCurrentInstanceType(instanceType)
+  if (not IsInInstance()) then
+    WeakAuras.currentInstanceType = "none"
+  else
+    WeakAuras.currentInstanceType = instanceType or select (2, GetInstanceInfo())
+  end
 end
 
 function WeakAuras.ScanForLoads(self, event, arg1)
@@ -973,15 +1001,20 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     encounter_id = 0
     WeakAuras.DestroyEncounterTable()
 
-  elseif (event == "ZONE_CHANGED_NEW_AREA" and WeakAuras.CurrentEncounter) then
+  elseif (event == "ZONE_CHANGED_NEW_AREA") then
+    local _, instanceType, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
+    WeakAuras.UpdateCurrentInstanceType(instanceType)
+    
     --> player used hearthstone while in a encounter or just left the raid group on raid finder.
-    local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
-    --print ("|cFFFFFFAAWeakAuras|r: Zone changed:", ZoneMapID, WeakAuras.CurrentEncounter.zone_id)
-
-    if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
-      encounter_id = 0
-      WeakAuras.DestroyEncounterTable()
+    if (WeakAuras.CurrentEncounter) then
+      if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
+        encounter_id = 0
+        WeakAuras.DestroyEncounterTable()
+      end
     end
+    
+    --> check if we are now inside a raid instance and check for auras with encounter_start triggers and also with init scripts
+    WeakAuras.LoadEncounterInitScripts()
   end
 
   local player, realm, zone, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetSpecialization(), UnitGroupRolesAssigned("player");
@@ -1785,10 +1818,13 @@ function WeakAuras.pAdd(data)
       clones[id] = clones[id] or {};
     end
 
+    WeakAuras.LoadEncounterInitScripts(id)
+    
     if not(paused) then
       region:Collapse();
       WeakAuras.ScanForLoads();
     end
+    
   end
 
   db.displays[id] = data;
