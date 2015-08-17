@@ -16,7 +16,6 @@ local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 local timer = WeakAurasTimers;
 WeakAuras.timer = timer;
 
-
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
@@ -190,8 +189,6 @@ function WeakAuras.validate(input, default)
   end
   end
 end
-
-
 
 function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default)
   if not(name) then

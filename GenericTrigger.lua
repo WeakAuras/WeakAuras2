@@ -82,7 +82,7 @@ local clones = WeakAuras.clones;
 local specificBosses = WeakAuras.specificBosses;
 
 -- local function
-local HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
+local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
 -- GLOBALS: WeakAurasAceEvents GameTooltip
@@ -105,7 +105,7 @@ function WeakAuras.split(input)
   return ret;
 end
 
-local function TestForTriState(trigger, arg)
+function TestForTriState(trigger, arg)
   local name = arg.name;
   local test;
   if(trigger["use_"..name] == false) then
@@ -120,7 +120,7 @@ local function TestForTriState(trigger, arg)
   return test;
 end
 
-local function TestForToggle(trigger, arg)
+function TestForToggle(trigger, arg)
   local name = arg.name;
   local test;
   if(trigger["use_"..name]) then
@@ -133,7 +133,7 @@ local function TestForToggle(trigger, arg)
   return test;
 end
 
-local function TestForLongString(trigger, arg)
+function TestForLongString(trigger, arg)
   local name = arg.name;
   local test;
   if(trigger[name.."_operator"] == "==") then
@@ -144,7 +144,7 @@ local function TestForLongString(trigger, arg)
   return test;
 end
 
-local function TestForMultiSelect(trigger, arg)
+function TestForMultiSelect(trigger, arg)
   local name = arg.name;
   local test;
   if(trigger["use_"..name] == false) then -- Multiselection
@@ -175,7 +175,7 @@ local function TestForMultiSelect(trigger, arg)
   return test;
 end
 
-local function ConstructTest(trigger, arg)
+function ConstructTest(trigger, arg)
   local test;
   local name = arg.name;
   if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
@@ -201,7 +201,7 @@ local function ConstructTest(trigger, arg)
   return test;
 end
 
-local function ConstructFunction(prototype, trigger, inverse)
+function ConstructFunction(prototype, trigger, inverse)
   local input = {"event"};
   local required = {};
   local tests = {};
@@ -329,7 +329,7 @@ function GenericTrigger.ScanAll()
   end
 end
 
-local function HandleEvent(frame, event, arg1, arg2, ...)
+function HandleEvent(frame, event, arg1, arg2, ...)
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
       if(loaded_events[event] and loaded_events[event][arg2]) then
@@ -400,7 +400,7 @@ function GenericTrigger.Rename(oldid, newid)
   WeakAuras.EveryFrameUpdateRename(oldid, newid)
 end
 
-local function LoadEvent(id, triggernum, data)
+function LoadEvent(id, triggernum, data)
   local events = data.events or {};
   for index, event in pairs(events) do
     loaded_events[event] = loaded_events[event] or {};
@@ -602,21 +602,21 @@ do
   local updating = false;
 
   function WeakAuras.RegisterEveryFrameUpdate(id)
-  if not(update_clients[id]) then
-    update_clients[id] = true;
-    update_clients_num = update_clients_num + 1;
-  end
-  if not(update_frame) then
-    update_frame = CreateFrame("FRAME");
-  end
-  if not(updating) then
-    update_frame:SetScript("OnUpdate", function()
-    if not(WeakAuras.IsPaused()) then
-      WeakAuras.ScanEvents("FRAME_UPDATE");
-    end
-    end);
-    updating = true;
-  end
+      if not(update_clients[id]) then
+        update_clients[id] = true;
+        update_clients_num = update_clients_num + 1;
+      end
+      if not(update_frame) then
+        update_frame = CreateFrame("FRAME");
+      end
+      if not(updating) then
+        update_frame:SetScript("OnUpdate", function()
+        if not(WeakAuras.IsPaused()) then
+          WeakAuras.ScanEvents("FRAME_UPDATE");
+        end
+        end);
+        updating = true;
+      end
   end
 
   function WeakAuras.EveryFrameUpdateRename(oldid, newid)
@@ -727,10 +727,10 @@ function GenericTrigger.AllAdded()
   WeakAuras.event_types["GTFO"] = nil;
 end
 
-
 --#############################
 --# Support code for triggers #
 --#############################
+
 -- Swing Timer Support code
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
@@ -1029,7 +1029,7 @@ do
       else
         if(runeCdExps[id]) then
           -- Somehow CheckCooldownReady caught the rune cooldown before the timer callback
-          -- This shouldn't happen, but if it doesn, no problem
+          -- This shouldn't happen, but if it does, no problem
           if(runeCdHandles[id]) then
             timer:CancelTimer(runeCdHandles[id]);
           end
@@ -1040,7 +1040,7 @@ do
 
     for id, _ in pairs(spells) do
       local charges, maxCharges, startTime, duration = GetSpellCharges(id);
-      if (charges == nil) then -- charges is nil iff the spell has no charges
+      if (charges == nil) then -- charges is nil if the spell has no charges
         startTime, duration = GetSpellCooldown(id);
       elseif (charges == maxCharges) then
         startTime, duration = 0, 0;
@@ -1085,8 +1085,7 @@ do
           WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0 and not (spellCdExps[id] and spellCdExps[id] - time > 1.51)) then
-        -- GCD
-        -- Do nothing
+        -- GCD, do nothing
       else
         if(spellCdExps[id]) then
           -- Somehow CheckCooldownReady caught the spell cooldown before the timer callback
@@ -1126,12 +1125,11 @@ do
           WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0) then
-        -- GCD
-        -- Do nothing
+        -- GCD, do nothing
       else
         if(itemCdExps[id]) then
           -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
-          -- This shouldn't happen, but if it doesn, no problem
+          -- This shouldn't happen, but if it does, no problem
           if(itemCdHandles[id]) then
             timer:CancelTimer(itemCdHandles[id]);
           end
@@ -1366,7 +1364,7 @@ do
   end
 end
 
--- PET
+-- Pet
 do
   local petFrame;
   WeakAuras.frames["Pet Use Handler"] = petFrame;
@@ -1510,12 +1508,13 @@ end
 
 function GenericTrigger.GetNameAndIcon(data)
   local trigger = data.trigger;
+  local icon, name
   if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
     if(WeakAuras.event_prototypes[trigger.event].iconFunc) then
-      icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger); -- XXX GLOBAL
+      icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger);
     end
     if(WeakAuras.event_prototypes[trigger.event].nameFunc) then
-      name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger); --- XXX GLOBAL
+      name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
     end
   end
 end
