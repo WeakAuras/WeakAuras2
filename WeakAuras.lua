@@ -1,4 +1,3 @@
-
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local fmt, tostring, select, pairs, next, type, unpack = string.format, tostring, select, pairs, next, type, unpack
@@ -542,11 +541,10 @@ function WeakAuras.ConstructFunction(prototype, trigger)
       end
     end
   end
+
   local ret = "return function("..tconcat(input, ", ")..")\n";
   ret = ret..(init or "");
-
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
-
   ret = ret.."if(";
   ret = ret..((#required > 0) and tconcat(required, " and ").." and " or "");
   ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
@@ -555,8 +553,6 @@ function WeakAuras.ConstructFunction(prototype, trigger)
     ret = ret.."print('ret: true');\n";
   end
   ret = ret.."return true else return false end end";
-
-  -- print(ret);
 
   return ret;
 end
@@ -656,11 +652,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
           triggerSystem.AllAdded();
         end
       end
-      --> check in case of a disconnect during an encounter.
+      -- check in case of a disconnect during an encounter.
       if (db.CurrentEncounter) then
         WeakAuras.CheckForPreviousEncounter()
       end
-      
+
       WeakAuras.Resume();
     end
   elseif(event == "PLAYER_ENTERING_WORLD") then
@@ -898,7 +894,7 @@ function WeakAuras.ActivateEventTimer(id, triggernum, duration)
   end
 end
 
--- encounter stuff ~encounter
+-- encounter stuff
 function WeakAuras.StoreBossGUIDs()
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
     for i = 1, 5 do
@@ -919,7 +915,7 @@ function WeakAuras.CheckForPreviousEncounter()
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid and db.CurrentEncounter.boss_guids [guid]) then
-          --> we are in the same encounter
+          -- we are in the same encounter
           WeakAuras.CurrentEncounter = db.CurrentEncounter
           return true
         end
@@ -988,9 +984,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       playerLevel = arg1;
     end
 
-  --> ~encounter id stuff, we are holding the current combat id to further load checks.
-  --> there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
-  --> regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
+  -- ~encounter id stuff, we are holding the current combat id to further load checks.
+  -- there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
+  -- regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
   local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
 
   if (event == "ENCOUNTER_START") then
@@ -1004,16 +1000,16 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   elseif (event == "ZONE_CHANGED_NEW_AREA") then
     local _, instanceType, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
     WeakAuras.UpdateCurrentInstanceType(instanceType)
-    
-    --> player used hearthstone while in a encounter or just left the raid group on raid finder.
+
+    -- player used hearthstone while in a encounter or just left the raid group on raid finder.
     if (WeakAuras.CurrentEncounter) then
       if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
         encounter_id = 0
         WeakAuras.DestroyEncounterTable()
       end
     end
-    
-    --> check if we are now inside a raid instance and check for auras with encounter_start triggers and also with init scripts
+
+    -- check if we are now inside a raid instance and check for auras with encounter_start triggers and also with init scripts
     WeakAuras.LoadEncounterInitScripts()
   end
 
@@ -1819,12 +1815,12 @@ function WeakAuras.pAdd(data)
     end
 
     WeakAuras.LoadEncounterInitScripts(id)
-    
+
     if not(paused) then
       region:Collapse();
       WeakAuras.ScanForLoads();
     end
-    
+
   end
 
   db.displays[id] = data;
@@ -2278,15 +2274,17 @@ function WeakAuras.UpdateAnimations()
       end
     end
   end
-  -- I tried to have animations only update if there are actually animation data to animate upon.
+  -- XXX I tried to have animations only update if there are actually animation data to animate upon.
   -- This caused all start animations to break, and I couldn't figure out why.
   -- May revisit at a later time.
-  --[[if(num == 0) then
-  WeakAuras.debug("Animation stopped", 3);
-  frame:SetScript("OnUpdate", nil);
-  updatingAnimations = nil;
-  updatingAnimations = nil;
-  end]]
+  --[[
+  if(num == 0) then
+      WeakAuras.debug("Animation stopped", 3);
+      frame:SetScript("OnUpdate", nil);
+      updatingAnimations = nil;
+      updatingAnimations = nil;
+  end
+  ]]--
 end
 
 function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinished, loop, cloneId)
@@ -2920,7 +2918,16 @@ function WeakAuras.FixGroupChildrenOrder()
         for i=2,#data.controlledChildren do
           local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
           if(childRegion) then
-            frameLevel = frameLevel + 1;
+              -- Try to fix #358 with info from
+              -- http://wow.curseforge.com/addons/droodfocus/tickets/14-frame-level-manipulation-breaks-automatic-frame-level/
+              -- by setting SetFrameLevel() twice.
+              -- Also, for testing, keep frameLevel at 100 if it ever gets that high. 100 might still be too high?!
+            if frameLevel >= 100 then
+                frameLevel = 100
+            else
+                frameLevel = frameLevel + 1
+            end;
+            childRegion:SetFrameLevel(frameLevel);
             childRegion:SetFrameLevel(frameLevel);
           end
         end
