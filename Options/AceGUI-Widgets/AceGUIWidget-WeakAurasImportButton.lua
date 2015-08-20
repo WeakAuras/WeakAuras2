@@ -4,6 +4,8 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 local L = WeakAuras.L;
 
+-- GLOBALS: GameTooltip UIParent WeakAuras WeakAurasOptionsSaved
+
 local function Hide_Tooltip()
     GameTooltip:Hide();
 end

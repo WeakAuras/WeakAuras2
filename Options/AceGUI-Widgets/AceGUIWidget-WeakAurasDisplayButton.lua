@@ -6,6 +6,7 @@ local L = WeakAuras.L;
 local name, realm = UnitFullName("player")
 local fullName = name.."-"..realm
 
+-- GLOBALS: GameTooltip UIParent WeakAuras WeakAurasOptionsSaved
 
 local function Hide_Tooltip()
     GameTooltip:Hide();
