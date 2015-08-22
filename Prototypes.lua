@@ -2676,7 +2676,8 @@ WeakAuras.event_prototypes = {
       "UNIT_EXITED_VEHICLE",
       "PLAYER_UPDATE_RESTING",
       "MOUNTED_UPDATE",
-      "CONDITIONS_CHECK"
+      "CONDITIONS_CHECK",
+      "PLAYER_MOVING_UPDATE"
     },
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
@@ -2686,6 +2687,9 @@ WeakAuras.event_prototypes = {
       end
       if (trigger.use_HasPet ~= nil) then
         WeakAuras.WatchForPetDeath();
+      end
+      if (trigger.use_ismoving ~= nil) then
+        WeakAuras.WatchForPlayerMoving();
       end
       return "";
     end,
@@ -2731,6 +2735,12 @@ WeakAuras.event_prototypes = {
         display = L["HasPet"],
         type = "tristate",
         init = "UnitExists('pet') and not UnitIsDead('pet')"
+      },
+      {
+        name = "ismoving",
+        display = L["Is Moving"],
+        type = "tristate",
+        init = "IsPlayerMoving()"
       }
     },
     automaticrequired = true

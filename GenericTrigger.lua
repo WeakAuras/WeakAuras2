@@ -1380,6 +1380,22 @@ do
   end
 end
 
+-- Player Moving
+do
+  local playerMovingFrame;
+  WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
+  function WeakAuras.WatchForPlayerMoving()
+    if not(playerMovingFrame) then
+      playerMovingFrame = CreateFrame("frame");
+      playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
+      playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
+      playerMovingFrame:SetScript("OnEvent", function()
+        WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE");
+      end)
+    end
+  end
+end
+
 -- Item Count
 local itemCountWatchFrame;
 function WeakAuras.RegisterItemCountWatch()
