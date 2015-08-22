@@ -701,7 +701,9 @@ function GenericTrigger.Modernize(data)
       fixEmberTrigger(untrigger);
     end
 
-    if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Cooldown Progress (Spell)") then
+    if (trigger and trigger.type and trigger.event and trigger.type == "status"
+        and (trigger.event == "Cooldown Progress (Spell)"
+              or trigger.event == "Cooldown Progress (Item)")) then
         if (not trigger.showOn) then
             if (trigger.use_inverse) then
                 trigger.showOn = "showOnReady"
