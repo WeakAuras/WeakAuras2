@@ -511,6 +511,12 @@ WeakAuras.load_prototype = {
       init = "arg"
     },
     {
+      name = "zoneId",
+      display = L["Zone ID"],
+      type = "string",
+      init = "arg"
+    },
+    {
       name = "encounterid",
       display = L["Encounter ID"],
       type = "string",
