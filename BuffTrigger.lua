@@ -947,7 +947,9 @@ do
               for GUID, GUIDData in pairs(data.GUIDs) do
                 if(GUIDData.expirationTime and GUIDData.expirationTime + 2 < GetTime()) then
                   data.GUIDs[GUID] = nil;
-                  clones[id][GUID]:Collapse();
+                  if clones[id] and clones[id][GUID] ~= nil then
+                      clones[id][GUID]:Collapse();
+                  end
                 end
               end
             end
