@@ -1708,6 +1708,227 @@ WeakAuras.event_prototypes = {
       },
     },
   },
+  -- DBM events
+  ["DBM Announce"] = {
+    type = "event",
+    events = {
+      "DBM_Announce"
+    },
+    name = L["DBM Announce"],
+    init = function(trigger)
+      WeakAuras.RegisterDBMCallback("DBM_Announce");
+      return "";
+    end,
+    args = {
+      {
+        name = "message",
+        init = "arg",
+        display = L["Message"],
+        type = "longstring"
+      }
+    }
+  },
+  ["DBM Timer"] = {
+    type = "status",
+    events = {
+      "DBM_TimerUpdate"
+    },
+    force_events = "DBM_TimerUpdate",
+    name = L["DBM Timer"],
+    init = function(trigger)
+      WeakAuras.RegisterDBMCallback("DBM_TimerStart");
+      WeakAuras.RegisterDBMCallback("DBM_TimerStop");
+      WeakAuras.RegisterDBMCallback("wipe");
+      WeakAuras.RegisterDBMCallback("kill");
+
+      local ret = "";
+
+      if (trigger.use_id) then
+        ret = "local triggerId = \"" .. trigger.id .. "\"\n";
+      else
+        ret = "local triggerId = nil\n";
+      end
+
+      local test;
+      if (trigger.use_message) then
+        local ret2 = [[
+          local triggerMessage = "%s"
+          local triggerOperator = "%s"
+        ]]
+        ret = ret .. ret2:format(trigger.message or "", trigger.message_operator  or "")
+      else
+        ret = ret .. [[
+          local triggerMessage = nil;
+          local triggerOperator = nil;
+        ]]
+        test = "true";
+      end
+
+      ret = ret .. [[
+        local duration, expirationTime = WeakAuras.GetDbmTimer(triggerId, triggerMessage, triggerOperator);
+      ]]
+
+      if (trigger.use_remaining) then
+        local ret2 = [[
+          local remainingCheck = %s;
+          local remaining = expirationTime - GetTime();
+          if (remaining > remainingCheck) then
+            WeakAuras.ScheduleDbmCheck(expirationTime - remainingCheck);
+          end
+        ]]
+        ret = ret .. ret2:format(tonumber(trigger.remaining) or 0);
+      end
+      --print (ret);
+      return ret;
+    end,
+    durationFunc = function(trigger)
+      local duration, expirationTime = WeakAuras.GetDbmTimer(trigger.id, trigger.message, trigger.message_operator);
+      return duration, expirationTime;
+    end,
+    args = {
+      {
+        name = "id", -- TODO Is there ever anything useful in ID?
+        display = L["Id"],
+        type = "string",
+        test = "true"
+      },
+      {
+        name = "message",
+        display = L["Message"],
+        type = "longstring",
+        test = "true"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        init = "remaining"
+      },
+      {
+        hidden = true,
+        test = "duration > 0"
+      }
+    },
+    automaticrequired = true
+  },
+  -- BigWigs
+  ["BigWigs Message"] = {
+    type = "event",
+    events = {
+      "BigWigs_Message"
+    },
+    name = L["BigWigs Message"],
+    init = function(trigger)
+      WeakAuras.RegisterBigWigsCallback("BigWigs_Message");
+      return "";
+    end,
+    args = {
+      {
+        name = "addon",
+        init = "arg",
+        display = L["BigWigs Addon"],
+        type = "string"
+      },
+      {
+        name = "spellId",
+        init = "arg",
+        display = L["Spell Id"]
+      },
+      {
+        name = "message",
+        init = "arg",
+        display = L["Message"],
+        type = "longstring",
+      },
+      {}, -- Importance, might be useful
+      {}, -- Icon
+    }
+  },
+  ["BigWigs Timer"] = {
+    type = "status",
+    events = {
+      "BigWigs_Timer_Update"
+    },
+    force_events = "BigWigs_Timer_Update",
+    name = L["BigWigs Timer"],
+    init = function(trigger)
+      WeakAuras.RegisterBigWigsTimer();
+      local ret = [[
+        local triggerAddon = %s;
+        local triggerSpellId = %s;
+        local triggerText = %s;
+        local triggerTextOperator = "%s";
+      ]]
+
+      ret = ret:format(trigger.use_addon and ('"' .. trigger.addon .. '"') or "nil",
+                       trigger.use_spellId and tostring(trigger.spellId) or "nil",
+                       trigger.use_text and ('"' .. (trigger.text or '') .. '"') or "nil",
+                       trigger.use_text and trigger.text_operator or ""
+                       );
+
+      ret = ret .. [[
+        local duration, expirationTime = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerText, triggerTextOperator);
+      ]];
+
+      if (trigger.use_remaining) then
+        local ret2 = [[
+          local remainingCheck = %s;
+          local remaining = expirationTime - GetTime();
+          if (remaining > remainingCheck) then
+            WeakAuras.ScheduleBigWigsCheck(expirationTime - remainingCheck);
+          end
+        ]]
+        ret = ret .. ret2:format(tonumber(trigger.remaining) or 0);
+      end
+
+      return ret;
+    end,
+    args = {
+      {
+        name = "addon",
+        display = L["BigWigs Addon"],
+        type = "string",
+        test = "true"
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"], -- Correct?
+        type = "number",
+        test = "true"
+      },
+      {
+        name = "text",
+        display = L["Message"],
+        type = "longstring",
+        test = "true"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        init = "remaining"
+      },
+      {
+        hidden = true,
+        test = "duration > 0"
+      },
+    },
+    automaticrequired = true,
+    durationFunc = function(trigger)
+      local duration, expirationTime = WeakAuras.GetBigWigsTimer(trigger.use_addon and trigger.addon,
+                                                                 trigger.use_spellId and trigger.spellId,
+                                                                 trigger.use_text and trigger.text,
+                                                                 trigger.use_text and trigger.text_operator);
+      return duration, expirationTime;
+    end,
+    iconFunc = function(trigger)
+      local _, _, icon = WeakAuras.GetBigWigsTimer(trigger.use_addon and trigger.addon,
+                                                   trigger.use_spellId and trigger.spellId,
+                                                   trigger.use_text and trigger.text,
+                                                   trigger.use_text and trigger.text_operator);
+      return icon;
+    end,
+  },
   ["Global Cooldown"] = {
     type = "status",
     events = {
