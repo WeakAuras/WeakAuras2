@@ -390,8 +390,8 @@ local spec_frame = CreateFrame("frame");
 spec_frame:RegisterEvent("PLAYER_LOGIN")
 spec_frame:SetScript("OnEvent", update_specs);
 WeakAuras.talent_types = {}
-do  -- @patch 6.0 compatibility quick fix
-  local numTalents, numTiers, numColumns = _G.MAX_NUM_TALENTS or 21, _G.MAX_NUM_TALENT_TIERS or 7, _G.NUM_TALENT_COLUMNS or 3
+do
+  local numTalents, numTiers, numColumns = MAX_TALENT_TIERS * NUM_TALENT_COLUMNS, MAX_TALENT_TIERS, NUM_TALENT_COLUMNS
   local talentId,tier,column = 1,1,1
   while talentId <= numTalents do
     while tier <= numTiers do
