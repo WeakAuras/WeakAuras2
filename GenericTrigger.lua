@@ -718,6 +718,9 @@ end
 
 function GenericTrigger.AllAdded()
   -- Remove GTFO options if GTFO isn't enabled and there are no saved GTFO auras
+  if (GTFO) then
+    return
+  end
   for id, event in pairs(events) do
     for triggernum, data in pairs(event) do
       if (data.trigger.event == "GTFO") then
