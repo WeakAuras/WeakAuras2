@@ -56,10 +56,8 @@ GetNameAndIcon(data)
 
 
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local tostring, select, pairs, next, type, unpack = tostring, select, pairs, next, type, unpack
-local loadstring, assert, error = loadstring, assert, error
-local setmetatable, getmetatable = setmetatable, getmetatable
+local tinsert, wipe = table.insert, wipe
+local pairs, next, type = pairs, next, type
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;

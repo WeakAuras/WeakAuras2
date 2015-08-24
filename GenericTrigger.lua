@@ -56,10 +56,9 @@ GetNameAndIcon(data)
 
 
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local tostring, select, pairs, next, type, unpack = tostring, select, pairs, next, type, unpack
-local loadstring, assert, error = loadstring, assert, error
-local setmetatable, getmetatable = setmetatable, getmetatable
+local tinsert, tconcat, wipe = table.insert, table.concat, wipe
+local tostring, select, pairs, type = tostring, select, pairs, type
+local error, setmetatable = error, setmetatable
 
 WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" end});
 LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);
