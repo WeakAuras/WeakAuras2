@@ -6,6 +6,9 @@ local setmetatable, getmetatable = setmetatable, getmetatable
 local coroutine =  coroutine
 local _G = _G
 
+-- WoW APIs
+local GetTalentInfo = GetTalentInfo
+
 local ADDON_NAME = "WeakAuras";
 local versionString = WeakAuras.versionString;
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end});
@@ -21,7 +24,7 @@ local L = WeakAuras.L;
 -- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
 -- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
--- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_NUM_TALENTS
+-- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS NUM_TALENT_COLUMNS
 -- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT
 
 local queueshowooc;
@@ -559,47 +562,19 @@ end
 
 WeakAuras.talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
-  --Initialize a cache for class-specific talent names and icons
-  --This is in SavedVariables so it can persist between different classes
-  db.talent_cache = db.talent_cache or {}
-  --Initialize types lists for each possible class in both SavedVariable and WeakAuras tables
-  --Some of the impermanent entries will get filled and some won't, depending on what is in the talent cache
-  --The separation is to prevent problems from out-of-date or incorrect info in the talent cache
-  for class in pairs(WeakAuras.class_types) do
-    WeakAuras.talent_types_specific[class] = {};
-    db.talent_cache[class] = db.talent_cache[class] or {};
-  end
   local _, player_class = UnitClass("player")
-  --Create an entry for the current character's class
-  db.talent_cache[player_class] = db.talent_cache[player_class] or {}
-  local talentId = 1;
-  local numTalents = _G.MAX_NUM_TALENTS or 21;
-  local talentName, talentIcon;
-  -- @patch 6.0 compatibility quick fix
-  local GetTalentInfo = GetTalentInfo
-  if not MAX_NUM_TALENTS then GetTalentInfo = function(t) return select(2, _G.GetTalentInfo(ceil(t/3), (t-1)%3 +1, GetActiveSpecGroup())) end end
-  while talentId <= numTalents do
-    --Get name and icon info for the current talent of the current class and save it for that class
-    talentName, talentIcon = GetTalentInfo(talentId)
-    db.talent_cache[player_class][talentId] = {
-      name = talentName,
-      icon = talentIcon
-    }
-    --Put an entry in the corresponding index for each specific class
-    --If the talent is in db.talent_cache for that class, it will be "beautified" (show name and icon)
-    --If not, it will be the same as default
-    --Class-specific talent_type lists will only be shown if a Load condition for a certain class is set
-    --Otherwise, the default is used
-    for class in pairs(WeakAuras.class_types) do
-      if(db.talent_cache[class] and db.talent_cache[class][talentId]) then
-        --Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
-        WeakAuras.talent_types_specific[class][talentId] = "|T"..(db.talent_cache[class][talentId].icon or "error")..":0|t "..(db.talent_cache[class][talentId].name or "error");
-      else
-        --If there is no data in the cache, just use the default
-        WeakAuras.talent_types_specific[class][talentId] = WeakAuras.talent_types[talentId]
-      end
+  if not WeakAuras.talent_types_specific[player_class] then
+    WeakAuras.talent_types_specific[player_class] = {}
+  end
+  local spec = GetActiveSpecGroup()
+  for tier = 1, MAX_TALENT_TIERS do
+    for column = 1, NUM_TALENT_COLUMNS do
+      --Get name and icon info for the current talent of the current class and save it
+      local _, talentName, talentIcon = GetTalentInfo(tier, column, spec)
+      local talentId = (tier-1)*3+column
+      -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
+      WeakAuras.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
     end
-    talentId = talentId + 1;
   end
 end
 
