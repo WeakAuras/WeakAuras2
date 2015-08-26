@@ -1516,6 +1516,7 @@ function GenericTrigger.GetNameAndIcon(data)
       name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
     end
   end
+  return name, icon
 end
 
 function GenericTrigger.CanHaveTooltip(data)
