@@ -569,7 +569,7 @@ function WeakAuras.CreateTalentCache()
   local spec = GetActiveSpecGroup()
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
-      --Get name and icon info for the current talent of the current class and save it
+      -- Get name and icon info for the current talent of the current class and save it
       local _, talentName, talentIcon = GetTalentInfo(tier, column, spec)
       local talentId = (tier-1)*3+column
       -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
