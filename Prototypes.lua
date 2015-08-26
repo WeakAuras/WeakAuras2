@@ -511,6 +511,12 @@ WeakAuras.load_prototype = {
       init = "arg"
     },
     {
+      name = "zoneId",
+      display = L["Zone ID"],
+      type = "string",
+      init = "arg"
+    },
+    {
       name = "encounterid",
       display = L["Encounter ID"],
       type = "string",
@@ -1512,10 +1518,7 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration;
-      if not(trigger.use_inverse) then
-        startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0, trigger.use_matchedRune);
-      end
+      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0, trigger.use_matchedRune);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
@@ -1589,9 +1592,9 @@ WeakAuras.event_prototypes = {
       WeakAuras.WatchItemCooldown(trigger.itemName);
       local ret = [[
         local startTime, duration = WeakAuras.GetItemCooldown(%s);
-        local inverse = %s;
+        local showOn = %s
       ]];
-      if(trigger.use_remaining and not trigger.use_inverse) then
+      if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
         local ret2 = [[
           local expirationTime = startTime + duration
           local remaining = expirationTime - GetTime();
@@ -1602,7 +1605,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
       end
-      return ret:format(itemName, (trigger.use_inverse and "true" or "false"));
+      return ret:format(itemName,  "\"" .. (trigger.showOn or "") .. "\"");
     end,
     args = {
       {
@@ -1616,18 +1619,22 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end,
+        enable = function(trigger) return (trigger.showOn == "showOnCooldown") end,
         init = "remaining"
       },
       {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
-        test = "true"
+        name = "showOn",
+        display =  L["Show"],
+        type = "select",
+        values = "cooldown_progress_behavior_types",
+        test = "true",
+        required = true,
       },
       {
         hidden = true,
-        test = "(inverse and startTime == 0) or (not inverse and startTime > 0)"
+        test = "(showOn == \"showOnReady\" and startTime == 0) " ..
+               "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
+               "or (showOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)
@@ -1700,6 +1707,227 @@ WeakAuras.event_prototypes = {
         values = "gtfo_types"
       },
     },
+  },
+  -- DBM events
+  ["DBM Announce"] = {
+    type = "event",
+    events = {
+      "DBM_Announce"
+    },
+    name = L["DBM Announce"],
+    init = function(trigger)
+      WeakAuras.RegisterDBMCallback("DBM_Announce");
+      return "";
+    end,
+    args = {
+      {
+        name = "message",
+        init = "arg",
+        display = L["Message"],
+        type = "longstring"
+      }
+    }
+  },
+  ["DBM Timer"] = {
+    type = "status",
+    events = {
+      "DBM_TimerUpdate"
+    },
+    force_events = "DBM_TimerUpdate",
+    name = L["DBM Timer"],
+    init = function(trigger)
+      WeakAuras.RegisterDBMCallback("DBM_TimerStart");
+      WeakAuras.RegisterDBMCallback("DBM_TimerStop");
+      WeakAuras.RegisterDBMCallback("wipe");
+      WeakAuras.RegisterDBMCallback("kill");
+
+      local ret = "";
+
+      if (trigger.use_id) then
+        ret = "local triggerId = \"" .. trigger.id .. "\"\n";
+      else
+        ret = "local triggerId = nil\n";
+      end
+
+      local test;
+      if (trigger.use_message) then
+        local ret2 = [[
+          local triggerMessage = "%s"
+          local triggerOperator = "%s"
+        ]]
+        ret = ret .. ret2:format(trigger.message or "", trigger.message_operator  or "")
+      else
+        ret = ret .. [[
+          local triggerMessage = nil;
+          local triggerOperator = nil;
+        ]]
+        test = "true";
+      end
+
+      ret = ret .. [[
+        local duration, expirationTime = WeakAuras.GetDbmTimer(triggerId, triggerMessage, triggerOperator);
+      ]]
+
+      if (trigger.use_remaining) then
+        local ret2 = [[
+          local remainingCheck = %s;
+          local remaining = expirationTime - GetTime();
+          if (remaining > remainingCheck) then
+            WeakAuras.ScheduleDbmCheck(expirationTime - remainingCheck);
+          end
+        ]]
+        ret = ret .. ret2:format(tonumber(trigger.remaining) or 0);
+      end
+      --print (ret);
+      return ret;
+    end,
+    durationFunc = function(trigger)
+      local duration, expirationTime = WeakAuras.GetDbmTimer(trigger.id, trigger.message, trigger.message_operator);
+      return duration, expirationTime;
+    end,
+    args = {
+      {
+        name = "id", -- TODO Is there ever anything useful in ID?
+        display = L["Id"],
+        type = "string",
+        test = "true"
+      },
+      {
+        name = "message",
+        display = L["Message"],
+        type = "longstring",
+        test = "true"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        init = "remaining"
+      },
+      {
+        hidden = true,
+        test = "duration > 0"
+      }
+    },
+    automaticrequired = true
+  },
+  -- BigWigs
+  ["BigWigs Message"] = {
+    type = "event",
+    events = {
+      "BigWigs_Message"
+    },
+    name = L["BigWigs Message"],
+    init = function(trigger)
+      WeakAuras.RegisterBigWigsCallback("BigWigs_Message");
+      return "";
+    end,
+    args = {
+      {
+        name = "addon",
+        init = "arg",
+        display = L["BigWigs Addon"],
+        type = "string"
+      },
+      {
+        name = "spellId",
+        init = "arg",
+        display = L["Spell Id"]
+      },
+      {
+        name = "message",
+        init = "arg",
+        display = L["Message"],
+        type = "longstring",
+      },
+      {}, -- Importance, might be useful
+      {}, -- Icon
+    }
+  },
+  ["BigWigs Timer"] = {
+    type = "status",
+    events = {
+      "BigWigs_Timer_Update"
+    },
+    force_events = "BigWigs_Timer_Update",
+    name = L["BigWigs Timer"],
+    init = function(trigger)
+      WeakAuras.RegisterBigWigsTimer();
+      local ret = [[
+        local triggerAddon = %s;
+        local triggerSpellId = %s;
+        local triggerText = %s;
+        local triggerTextOperator = "%s";
+      ]]
+
+      ret = ret:format(trigger.use_addon and ('"' .. trigger.addon .. '"') or "nil",
+                       trigger.use_spellId and tostring(trigger.spellId) or "nil",
+                       trigger.use_text and ('"' .. (trigger.text or '') .. '"') or "nil",
+                       trigger.use_text and trigger.text_operator or ""
+                       );
+
+      ret = ret .. [[
+        local duration, expirationTime = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerText, triggerTextOperator);
+      ]];
+
+      if (trigger.use_remaining) then
+        local ret2 = [[
+          local remainingCheck = %s;
+          local remaining = expirationTime - GetTime();
+          if (remaining > remainingCheck) then
+            WeakAuras.ScheduleBigWigsCheck(expirationTime - remainingCheck);
+          end
+        ]]
+        ret = ret .. ret2:format(tonumber(trigger.remaining) or 0);
+      end
+
+      return ret;
+    end,
+    args = {
+      {
+        name = "addon",
+        display = L["BigWigs Addon"],
+        type = "string",
+        test = "true"
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"], -- Correct?
+        type = "number",
+        test = "true"
+      },
+      {
+        name = "text",
+        display = L["Message"],
+        type = "longstring",
+        test = "true"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        init = "remaining"
+      },
+      {
+        hidden = true,
+        test = "duration > 0"
+      },
+    },
+    automaticrequired = true,
+    durationFunc = function(trigger)
+      local duration, expirationTime = WeakAuras.GetBigWigsTimer(trigger.use_addon and trigger.addon,
+                                                                 trigger.use_spellId and trigger.spellId,
+                                                                 trigger.use_text and trigger.text,
+                                                                 trigger.use_text and trigger.text_operator);
+      return duration, expirationTime;
+    end,
+    iconFunc = function(trigger)
+      local _, _, icon = WeakAuras.GetBigWigsTimer(trigger.use_addon and trigger.addon,
+                                                   trigger.use_spellId and trigger.spellId,
+                                                   trigger.use_text and trigger.text,
+                                                   trigger.use_text and trigger.text_operator);
+      return icon;
+    end,
   },
   ["Global Cooldown"] = {
     type = "status",
@@ -2121,7 +2349,7 @@ WeakAuras.event_prototypes = {
       "OFFHAND_TENCH_UPDATE"
     },
     force_events = true,
-    name = L["Weapon Enchant"],
+    name = L["Fishing Lure / Weapon Enchant (Old)"],
     init = function(trigger)
       WeakAuras.TenchInit();
       local ret = [[
@@ -2669,7 +2897,8 @@ WeakAuras.event_prototypes = {
       "UNIT_EXITED_VEHICLE",
       "PLAYER_UPDATE_RESTING",
       "MOUNTED_UPDATE",
-      "CONDITIONS_CHECK"
+      "CONDITIONS_CHECK",
+      "PLAYER_MOVING_UPDATE"
     },
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
@@ -2679,6 +2908,9 @@ WeakAuras.event_prototypes = {
       end
       if (trigger.use_HasPet ~= nil) then
         WeakAuras.WatchForPetDeath();
+      end
+      if (trigger.use_ismoving ~= nil) then
+        WeakAuras.WatchForPlayerMoving();
       end
       return "";
     end,
@@ -2724,6 +2956,12 @@ WeakAuras.event_prototypes = {
         display = L["HasPet"],
         type = "tristate",
         init = "UnitExists('pet') and not UnitIsDead('pet')"
+      },
+      {
+        name = "ismoving",
+        display = L["Is Moving"],
+        type = "tristate",
+        init = "IsPlayerMoving()"
       }
     },
     automaticrequired = true
