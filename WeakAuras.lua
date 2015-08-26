@@ -300,7 +300,7 @@ function WeakAuras.ActivateAuraEnvironment(id)
       aura_environments[id] = aura_environments[id] or {};
       current_aura_env = aura_environments[id];
     else
-      -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a weakaura
+      -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
       aura_environments[id] = {};
       current_aura_env = aura_environments[id];
       -- Run the init function if supplied
