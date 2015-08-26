@@ -1765,7 +1765,7 @@ WeakAuras.event_prototypes = {
       end
 
       ret = ret .. [[
-        local duration, expirationTime = WeakAuras.GetDbmTimer(triggerId, triggerMessage, triggerOperator);
+        local duration, expirationTime = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator);
       ]]
 
       if (trigger.use_remaining) then
@@ -1782,7 +1782,7 @@ WeakAuras.event_prototypes = {
       return ret;
     end,
     durationFunc = function(trigger)
-      local duration, expirationTime = WeakAuras.GetDbmTimer(trigger.id, trigger.message, trigger.message_operator);
+      local duration, expirationTime = WeakAuras.GetDBMTimer(trigger.id, trigger.message, trigger.message_operator);
       return duration, expirationTime;
     end,
     args = {

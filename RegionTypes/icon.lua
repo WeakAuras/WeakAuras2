@@ -1,3 +1,8 @@
+-- WoW API
+local _G = _G
+
+-- GLOBALS: WeakAuras
+
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local MSQ = LibStub("Masque", true);
 

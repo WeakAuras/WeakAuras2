@@ -18,7 +18,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L;
 
 -- GLOBALS: GameTooltip UIParent WeakAuras WeakAurasSaved WeakAurasOptionsSaved FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
--- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show
+-- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GameTooltip_Hide
 
 local ADDON_NAME = "WeakAurasOptions";
 

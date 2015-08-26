@@ -140,7 +140,7 @@ do
     local num = 0;
     local active;
     for guid, _ in pairs(self.players) do
-      -- Need to check if cached  data conforms to trigger
+      -- Need to check if cached data conforms to trigger
       if(self.watched[id].players[guid] and TestNonUniformSettings(self.watched[id].players[guid], data)) then
         num = num + 1;
       end
@@ -152,7 +152,7 @@ do
     local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, bestSpellId = 0, math.huge, "", "", 0, 0;
     if(self.watched[id]) then
       for guid, durationInfo in pairs(self.watched[id].players) do
-        -- Need to check if cached  data conforms to trigger
+        -- Need to check if cached data conforms to trigger
         if(durationInfo.expirationTime < bestExpirationTime and TestNonUniformSettings(durationInfo, data)) then
           bestDuration = durationInfo.duration;
           bestExpirationTime = durationInfo.expirationTime;
@@ -171,7 +171,7 @@ do
     if(self.watched[id]) then
       local durationInfo = self.watched[id].players[guid]
       if(durationInfo) then
-        -- Need to check if cached  data conforms to trigger
+        -- Need to check if cached data conforms to trigger
         if(durationInfo.expirationTime < bestExpirationTime and TestNonUniformSettings(durationInfo, data)) then
           bestDuration = durationInfo.duration;
           bestExpirationTime = durationInfo.expirationTime;
@@ -189,7 +189,7 @@ do
     local affected = {};
     if(self.watched[id]) then
       for guid, acEntry in pairs(self.watched[id].players) do
-        -- Need to check if cached  data conforms to trigger
+        -- Need to check if cached data conforms to trigger
         if (TestNonUniformSettings(acEntry, data)) then
           if (self.players[guid] == UNKNOWNOBJECT) then
             self.players[guid] = GetUnitName(guid, true);
@@ -213,7 +213,7 @@ do
   end
 
   function aura_cache.AssertAura(self, id, guid, duration, expirationTime, name, icon, count, unitCaster, spellId)
-    -- Don't watch aura on non watching players
+    -- Don't watch aura on non watched players
     if not self.players[guid] then return end
 
     if not(self.watched[id].players[guid]) then
@@ -460,7 +460,7 @@ function WeakAuras.ScanAuras(unit)
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
                 name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, index, filter);
---              unitCaster = unitCaster or "unknown";
+                -- unitCaster = unitCaster or "unknown";
                 tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
 
@@ -1435,7 +1435,7 @@ function BuffTrigger.SetToolTip(data, region)
 end
 
 function BuffTrigger.GetNameAndIcon(data)
-  return nil, nil;
+  return nil, nil; --TODO this does not look right?
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);

@@ -84,7 +84,7 @@ local specificBosses = WeakAuras.specificBosses;
 local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
--- GLOBALS: WeakAurasAceEvents GameTooltip
+-- GLOBALS: WeakAurasAceEvents GameTooltip GTFO DBM BigWigsLoader
 
 function WeakAuras.split(input)
   input = input or "";
@@ -1351,7 +1351,7 @@ do
     end
   end
 
-  function WeakAuras.GetDbmTimer(id, message, operator)
+  function WeakAuras.GetDBMTimer(id, message, operator)
     --print ("WeakAuras.GetDBMTimers", id, message, operator)
     local duration, expirationTime;
     for k, v in pairs(bars) do
@@ -1543,7 +1543,7 @@ do
     end
     return duration or 0, expirationTime or 0, icon;
   end
-  
+
   local scheduled_scans = {};
 
   local function doBigWigsScan(fireTime)
@@ -1557,7 +1557,7 @@ do
       WeakAuras.debug("Scheduled BigWigs scan at "..fireTime);
     end
   end
-  
+
 end
 
 -- Weapon Enchants
