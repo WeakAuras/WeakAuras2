@@ -1697,13 +1697,22 @@ end
 do
   local playerMovingFrame;
   WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
+  local moving;
   function WeakAuras.WatchForPlayerMoving()
     if not(playerMovingFrame) then
       playerMovingFrame = CreateFrame("frame");
       playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
       playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
-      playerMovingFrame:SetScript("OnEvent", function()
-        WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE");
+      playerMovingFrame:SetScript("OnEvent", function(self, event)
+        -- channeling e.g. Mind Flay results in lots of PLAYER_STARTED_MOVING, PLAYER_STOPPED_MOVING
+        -- for each frame
+        -- So check after 0.01 s if IsPlayerMoving() actually returns something different.
+        timer:ScheduleTimer(function()
+          if (moving ~= IsPlayerMoving() or moving == nil) then
+            moving = IsPlayerMoving();
+            WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE");
+          end
+        end, 0.01);
       end)
     end
   end
