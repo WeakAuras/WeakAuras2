@@ -404,6 +404,8 @@ function WeakAuras.ScanAuras(unit)
     aura_object = aura_cache;
   elseif(specificBosses[unit]) then
     aura_lists[1] = loaded_auras["boss"];
+  elseif(unit:sub(0,5) == "arena") then
+    aura_lists[1] = loaded_auras["arena"];
   else
     if(unit == "player" and loaded_auras["group"]) then
       WeakAuras.ScanAuras("party0");
@@ -1033,6 +1035,8 @@ local function LoadAura(id, triggernum, data)
     if(data.unit:lower():sub(0,4) == "boss") then
     specificBosses[data.unit] = true;
     unit = "boss";
+    elseif(data.unit:lower():sub(0,5) == "arena") then
+    unit = "arena";
     else
     specificUnits[data.unit] = true;
     unit = "group";
@@ -1102,6 +1106,10 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     or (
       loaded_auras["boss"]
       and arg1:sub(0,4) == "boss"
+    )
+    or (
+      loaded_auras["arena"]
+      and arg1:sub(0,5) == "arena"
     )
     ) then
       -- This throttles aura scans to only happen at most once per frame per unit
