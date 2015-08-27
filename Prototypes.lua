@@ -482,8 +482,8 @@ WeakAuras.load_prototype = {
             single_class = trigger.class.single
           end
           -- If a single specific class was found, load the specific list for it
-          if(single_class) then
-            return WeakAuras.talent_types_specific[single_class];
+          if(single_class and WeakAuras.talent_types_specific[single_class]) then
+              return WeakAuras.talent_types_specific[single_class];
           else
             return WeakAuras.talent_types;
           end
