@@ -143,9 +143,6 @@ function TestForLongString(trigger, arg)
   return test;
 end
 
--- Uh oh...
-WeakAuras.TestForLongString = TestForLongString;
-
 function TestForMultiSelect(trigger, arg)
   local name = arg.name;
   local test;
@@ -728,7 +725,8 @@ function GenericTrigger.AllAdded()
     hideGTFO = false;
   end
 
-  if (DBM) then
+  if (DBM and DBM.Revision >= 14433) then
+    -- Revisions before 14433 had a different callback api
     hideDBM = false;
   end
 
@@ -1316,15 +1314,19 @@ do
   local function dbmEventCallback(event, ...)
     -- print ("dbmEventCallback", event, ...);
     if (event == "DBM_TimerStart") then
-      local id, msg, timerStr = ...;
+      local id, msg, duration, icon, timerType, spellId, colorId = ...;
       local now = GetTime();
-      local duration = tonumber(string.match(timerStr, "%d+"));
       local expiring = now + duration;
       -- print ("  Adding timer, ID:", id, "MSG:", msg, "TimerStr", timerStr, duration)
       bars[id] = timers[id] or {}
+      -- Store everything, event though we are only using some of those
       bars[id]["message"] = msg;
       bars[id]["expirationTime"] = expiring;
       bars[id]["duration"] = duration;
+      bars[id]["icon"] = icon;
+      bars[id]["timerType"] = timerType;
+      bars[id]["spellId"] = spellId;
+      bars[id]["colorId"] = colorId;
 
       if (nextExpire == nil) then
         nextExpire = expiring;
@@ -1351,13 +1353,16 @@ do
     end
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator)
+  function WeakAuras.GetDBMTimer(id, message, operator, spellId)
     --print ("WeakAuras.GetDBMTimers", id, message, operator)
-    local duration, expirationTime;
+    local duration, expirationTime, icon;
     for k, v in pairs(bars) do
       local found = true;
       if (id and id ~= k) then
        found = false;
+      end
+      if (found and spellId and spellId ~= v.spellId) then
+        found = false;
       end
       if (found and message and operator) then
         if(operator == "==") then
@@ -1376,10 +1381,10 @@ do
       end
       if (found and (expirationTime == nil or v.expirationTime < expirationTime)) then
         -- print ("  using", v.message);
-        expirationTime, duration = v.expirationTime, v.duration;
+        expirationTime, duration, icon = v.expirationTime, v.duration, v.icon;
       end
     end
-    return duration or 0, expirationTime or 0;
+    return duration or 0, expirationTime or 0, icon;
   end
 
   function WeakAuras.RegisterDBMCallback(event)
