@@ -8,22 +8,25 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local coroutine = coroutine
 local _G = _G
 
-local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
-local AceGUI = LibStub("AceGUI-3.0");
-local AceConfig = LibStub("AceConfig-3.0");
-local AceConfigRegistry = LibStub("AceConfigRegistry-3.0");
-local AceConfigDialog = LibStub("AceConfigDialog-3.0");
+-- WoW APIs
+local GetSpellInfo = GetSpellInfo
+local GetItemInfo = GetItemInfo
+
+local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
+local AceGUI = LibStub("AceGUI-3.0")
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local SharedMedia = LibStub("LibSharedMedia-3.0")
+local IndentationLib = IndentationLib
 
 local WeakAuras = WeakAuras
-local L = WeakAuras.L;
-
--- GLOBALS: GameTooltip UIParent WeakAuras WeakAurasSaved WeakAurasOptionsSaved FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
--- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GameTooltip_Hide
-
+local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
-local GetSpellInfo = GetSpellInfo;
-local GetItemInfo = GetItemInfo;
+-- GLOBALS:  WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu AceGUIWidgetLSMlists
+-- GLOBALS: GameTooltip UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
+-- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GameTooltip_Hide
 
 local font_close,yellow_font,red_font = FONT_COLOR_CODE_CLOSE,YELLOW_FONT_COLOR_CODE,RED_FONT_COLOR_CODE
 local ValidateNumeric = function(info,val)
@@ -357,18 +360,15 @@ end);
 
 AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
   local yOffset = 0;
-
   local scrollTop, scrollBottom = content.obj:GetScrollPos();
   for i = 1, #children do
     local child = children[i]
-
     local frame = child.frame;
     local frameHeight = (frame.height or frame:GetHeight() or 0);
 
     frame:ClearAllPoints();
     if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
         frame:Show();
-
         frame:SetPoint("LEFT", content);
         frame:SetPoint("RIGHT", content);
         frame:SetPoint("TOP", content, "TOP", 0, yOffset)
@@ -1094,7 +1094,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif (event == "PLAYER_REGEN_ENABLED") then
     if (reopenAfterCombat) then
       reopenAfterCombat = nil;
-      WeakAuras.ShowOptions(msg);
+      WeakAuras.ShowOptions(msg); -- XXX TODO where does msg come from? want to avoid the global.
     end
   end
 end);
@@ -6894,8 +6894,6 @@ function WeakAuras.CreateFrame()
   texteditor.frame:Hide();
   texteditor:SetLayout("fill");
   frame.texteditor = texteditor;
-
-  local SharedMedia = LibStub("LibSharedMedia-3.0");
 
   local texteditorbox = AceGUI:Create("MultiLineEditBox");
   texteditorbox:SetWidth(400);

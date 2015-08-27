@@ -9,17 +9,17 @@ local _G = _G
 -- WoW APIs
 local GetTalentInfo = GetTalentInfo
 
-local ADDON_NAME = "WeakAuras";
-local versionString = WeakAuras.versionString;
-WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end});
-LibStub("AceTimer-3.0"):Embed(WeakAurasTimers);
-local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
+local ADDON_NAME = "WeakAuras"
+local versionString = WeakAuras.versionString
+WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
+LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
+local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 
-local timer = WeakAurasTimers;
-WeakAuras.timer = timer;
+local timer = WeakAurasTimers
+WeakAuras.timer = timer
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
 -- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
 -- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
@@ -662,7 +662,7 @@ end
 
 function WeakAuras.Pause()
   paused = true;
-  -- Forcibly hide all displays, and clear all trigger information (it will be restored on Resume due to forced events)
+  -- Forcibly hide all displays, and clear all trigger information (it will be restored on .Resume() due to forced events)
   for id, region in pairs(regions) do
     region.region:Collapse(); -- ticket 366
     region.region.trigger_count = 0;
@@ -910,7 +910,7 @@ function WeakAuras.DestroyEncounterTable()
   db.CurrentEncounter = nil
 end
 
-function WeakAuras.CreateEncounterTable (encounter_id)
+function WeakAuras.CreateEncounterTable(encounter_id)
   local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
   WeakAuras.CurrentEncounter = {
     id = encounter_id,
@@ -922,7 +922,7 @@ function WeakAuras.CreateEncounterTable (encounter_id)
   return WeakAuras.CurrentEncounter
 end
 
-function WeakAuras.LoadEncounterInitScripts (id)
+function WeakAuras.LoadEncounterInitScripts(id)
   if (WeakAuras.currentInstanceType ~= "raid") then
     return
   end
@@ -976,7 +976,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     local _, instanceType, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
     WeakAuras.UpdateCurrentInstanceType(instanceType)
 
-    -- player used hearthstone while in a encounter or just left the raid group on raid finder.
+    -- player used Hearthstone during an encounter or just left the raid group in LFR.
     if (WeakAuras.CurrentEncounter) then
       if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
         encounter_id = 0
@@ -1072,33 +1072,35 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   for id, data in pairs(db.displays) do
-  if (data and data.trigger) then
-  local loadFunc = loadFuncs[id];
-  shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-  couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-  if(shouldBeLoaded and not loaded[id]) then
-    WeakAuras.LoadDisplay(id);
-    changed = changed + 1;
-  end
-  if(loaded[id] and not shouldBeLoaded) then
-    WeakAuras.UnloadDisplay(id);
-    local region = WeakAuras.regions[id].region;
-    region.trigger_count = 0;
-    region.triggers = region.triggers or {};
-    wipe(region.triggers);
-    if not(paused) then
-    region:Collapse();
-    WeakAuras.HideAllClones(id);
+    if (data and data.trigger) then
+      local loadFunc = loadFuncs[id];
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, player, realm, class, spec, race, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+
+      if(shouldBeLoaded and not loaded[id]) then
+        WeakAuras.LoadDisplay(id);
+        changed = changed + 1;
+      end
+
+      if(loaded[id] and not shouldBeLoaded) then
+        WeakAuras.UnloadDisplay(id);
+        local region = WeakAuras.regions[id].region;
+        region.trigger_count = 0;
+        region.triggers = region.triggers or {};
+        wipe(region.triggers);
+        if not(paused) then
+          region:Collapse();
+          WeakAuras.HideAllClones(id);
+        end
+      end
+      if(shouldBeLoaded) then
+        loaded[id] = true;
+      elseif(couldBeLoaded) then
+        loaded[id] = false;
+      else
+        loaded[id] = nil;
+      end
     end
-  end
-  if(shouldBeLoaded) then
-    loaded[id] = true;
-  elseif(couldBeLoaded) then
-    loaded[id] = false;
-  else
-    loaded[id] = nil;
-  end
-  end
   end
   for id, data in pairs(db.displays) do
     if(data.controlledChildren) then
@@ -1106,7 +1108,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         local any_loaded;
         for index, childId in pairs(data.controlledChildren) do
           if(loaded[childId] ~= nil) then
-          any_loaded = true;
+            any_loaded = true;
           end
         end
         loaded[id] = any_loaded;
@@ -1174,23 +1176,23 @@ function WeakAuras.Delete(data)
   local id = data.id;
 
   if(data.parent) then
-  local parentData = db.displays[data.parent];
-  if(parentData and parentData.controlledChildren) then
-    for index, childId in pairs(parentData.controlledChildren) do
-    if(childId == id) then
-      tremove(parentData.controlledChildren, index);
-    end
-    end
-  end
+      local parentData = db.displays[data.parent];
+      if(parentData and parentData.controlledChildren) then
+        for index, childId in pairs(parentData.controlledChildren) do
+          if(childId == id) then
+            tremove(parentData.controlledChildren, index);
+          end
+        end
+      end
   end
 
   if(data.controlledChildren) then
-  for index, childId in pairs(data.controlledChildren) do
-    local childData = db.displays[childId];
-    if(childData) then
-    childData.parent = nil;
-    end
-  end
+      for index, childId in pairs(data.controlledChildren) do
+        local childData = db.displays[childId];
+        if(childData) then
+          childData.parent = nil;
+        end
+      end
   end
 
   animations[tostring(regions[id].region)] = nil
@@ -1205,11 +1207,11 @@ function WeakAuras.Delete(data)
 
   db.registered[id] = nil;
   if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
-  local button = WeakAuras.importDisplayButtons[id];
-  button.checkbox:SetChecked(false);
-  if(button.updateChecked) then
-    button.updateChecked();
-  end
+    local button = WeakAuras.importDisplayButtons[id];
+    button.checkbox:SetChecked(false);
+    if(button.updateChecked) then
+      button.updateChecked();
+    end
   end
 
   for _, triggerSystem in pairs(triggerSystems) do
@@ -1229,14 +1231,14 @@ end
 function WeakAuras.Rename(data, newid)
   local oldid = data.id;
   if(data.parent) then
-  local parentData = db.displays[data.parent];
-  if(parentData.controlledChildren) then
-    for index, childId in pairs(parentData.controlledChildren) do
-    if(childId == data.id) then
-      parentData.controlledChildren[index] = newid;
+    local parentData = db.displays[data.parent];
+    if(parentData.controlledChildren) then
+      for index, childId in pairs(parentData.controlledChildren) do
+        if(childId == data.id) then
+          parentData.controlledChildren[index] = newid;
+        end
+      end
     end
-    end
-  end
   end
 
   regions[newid] = regions[oldid];
@@ -1262,12 +1264,12 @@ function WeakAuras.Rename(data, newid)
   db.displays[newid].id = newid;
 
   if(data.controlledChildren) then
-  for index, childId in pairs(data.controlledChildren) do
-    local childData = db.displays[childId];
-    if(childData) then
-    childData.parent = data.id;
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = db.displays[childId];
+      if(childData) then
+        childData.parent = data.id;
+      end
     end
-  end
   end
 
   aura_environments[newid] = aura_environments[oldid];
@@ -1289,14 +1291,14 @@ end
 
 function WeakAuras.DeepCopy(source, dest)
   local function recurse(source, dest)
-  for i,v in pairs(source) do
-    if(type(v) == "table") then
-    dest[i] = type(dest[i]) == "table" and dest[i] or {};
-    recurse(v, dest[i]);
-    else
-    dest[i] = v;
+    for i,v in pairs(source) do
+      if(type(v) == "table") then
+        dest[i] = type(dest[i]) == "table" and dest[i] or {};
+        recurse(v, dest[i]);
+      else
+        dest[i] = v;
+      end
     end
-  end
   end
   recurse(source, dest);
 end
@@ -1305,30 +1307,30 @@ function WeakAuras.Copy(sourceid, destid)
   local sourcedata = db.displays[sourceid];
   local destdata = db.displays[destid];
   if(sourcedata and destdata) then
-  local oldParent = destdata.parent;
-  local oldChildren = destdata.controlledChildren;
-  wipe(destdata);
-  WeakAuras.DeepCopy(sourcedata, destdata);
-  destdata.id = destid;
-  destdata.parent = oldParent;
-  destdata.controlledChildren = oldChildren;
-  WeakAuras.Add(destdata);
+    local oldParent = destdata.parent;
+    local oldChildren = destdata.controlledChildren;
+    wipe(destdata);
+    WeakAuras.DeepCopy(sourcedata, destdata);
+    destdata.id = destid;
+    destdata.parent = oldParent;
+    destdata.controlledChildren = oldChildren;
+    WeakAuras.Add(destdata);
   end
 end
 
 function WeakAuras.RegisterAddon(addon, displayName, description, icon)
   if(addons[addon]) then
-  addons[addon].displayName = displayName;
-  addons[addon].description = description;
-  addons[addon].icon = icon;
-  addons[addon].displays = addons[addon].displays or {};
+    addons[addon].displayName = displayName;
+    addons[addon].description = description;
+    addons[addon].icon = icon;
+    addons[addon].displays = addons[addon].displays or {};
   else
-  addons[addon] = {
-    displayName = displayName,
-    description = description,
-    icon = icon,
-    displays = {}
-  };
+    addons[addon] = {
+      displayName = displayName,
+      description = description,
+      icon = icon,
+      displays = {}
+    };
   end
 end
 
@@ -1345,19 +1347,19 @@ end
 function WeakAuras.AddFromAddon(addon, data, force)
   local id = data.id;
   if(id and addons[addon]) then
-  addons[addon].displays[id] = data;
-  if(db.registered[id]) then
-    -- This display was already registered
-    -- It is unnecessary to add it again
-  elseif(force and not db.registered[id] == false) then
-    if(db.displays[id]) then
-    -- ID collision
-    collisions[id] = {addon, data};
-    else
-    db.registered[id] = addon;
-    WeakAuras.Add(data);
+    addons[addon].displays[id] = data;
+    if(db.registered[id]) then
+      -- This display was already registered
+      -- It is unnecessary to add it again
+    elseif(force and not db.registered[id] == false) then
+      if(db.displays[id]) then
+        -- ID collision
+        collisions[id] = {addon, data};
+      else
+        db.registered[id] = addon;
+        WeakAuras.Add(data);
+      end
     end
-  end
   end
 end
 
@@ -1415,9 +1417,9 @@ function WeakAuras.ResolveCollisions(onFinished)
     else
       local data = WeakAuras.GetData(currentId);
       if(data) then
-      WeakAuras.Rename(data, newId);
+        WeakAuras.Rename(data, newId);
       else
-      print("Data not found");
+        print("Data not found");
       end
     end
 
@@ -1430,21 +1432,21 @@ function WeakAuras.ResolveCollisions(onFinished)
     if(currentId) then
       -- There is another conflict to resolve - hook OnHide to reshow the dialog as soon as it hides
       self:SetScript("OnHide", function(self)
-      self:Show();
-      UpdateText(self);
-      self.editBox:SetText(currentId);
-      self:SetScript("OnHide", nil);
-      if not(next(collisions, currentId)) then
-        self.button1:SetText(L["Done"]);
-      end
+        self:Show();
+        UpdateText(self);
+        self.editBox:SetText(currentId);
+        self:SetScript("OnHide", nil);
+        if not(next(collisions, currentId)) then
+          self.button1:SetText(L["Done"]);
+        end
       end);
     else
       self.editBox:SetScript("OnTextChanged", nil);
-      wipe(collisions);
-      if(onFinished) then
-      onFinished();
+        wipe(collisions);
+        if(onFinished) then
+          onFinished();
+        end
       end
-    end
     end,
     hasEditBox = true,
     hasWideEditBox = true,
@@ -1459,9 +1461,9 @@ function WeakAuras.ResolveCollisions(onFinished)
   popup.editBox:SetScript("OnTextChanged", function(self)
     local newid = self:GetText();
     if(collisions[newid] or db.displays[newid]) then
-    popup.button1:Disable();
+      popup.button1:Disable();
     else
-    popup.button1:Enable();
+      popup.button1:Enable();
     end
   end);
   popup.editBox:SetText(currentId);
@@ -1652,90 +1654,90 @@ function WeakAuras.SyncParentChildRelationships(silent)
   local childToParent = {};
   local parentToChild = {};
   for id, data in pairs(db.displays) do
-  if(data.parent) then
-    if(data.controlledChildren) then
-    if not(silent) then
-      print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
+    if(data.parent) then
+      if(data.controlledChildren) then
+        if not(silent) then
+          print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
+        end
+      -- A display cannot have both children and a parent
+      data.parent = nil;
+      elseif(db.displays[data.parent] and db.displays[data.parent].controlledChildren) then
+        childToParent[id] = data.parent;
+        parentToChild[data.parent] = parentToChild[data.parent] or {};
+        parentToChild[data.parent][id] = true;
+      else
+      if not(silent) then
+        print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
+      end
+      data.parent = nil;
+      end
     end
-    -- A display cannot have both children and a parent
-    data.parent = nil;
-    elseif(db.displays[data.parent] and db.displays[data.parent].controlledChildren) then
-    childToParent[id] = data.parent;
-    parentToChild[data.parent] = parentToChild[data.parent] or {};
-    parentToChild[data.parent][id] = true;
-    else
-    if not(silent) then
-      print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
-    end
-    data.parent = nil;
-    end
-  end
   end
 
   for id, data in pairs(db.displays) do
-  if(data.controlledChildren) then
-    for index, childId in pairs(data.controlledChildren) do
-    if not(childToParent[childId] and childToParent[childId] == id) then
-      if not(silent) then
-      print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "thinks it controls", childId, "but does not");
+    if(data.controlledChildren) then
+      for index, childId in pairs(data.controlledChildren) do
+        if not(childToParent[childId] and childToParent[childId] == id) then
+          if not(silent) then
+            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "thinks it controls", childId, "but does not");
+          end
+          tremove(data.controlledChildren, index);
+        end
       end
-      tremove(data.controlledChildren, index);
-    end
-    end
 
-    if(parentToChild[id]) then
-    for childId, _ in pairs(parentToChild[id]) do
-      if not(tContains(data.controlledChildren, childId)) then
-      if not(silent) then
-        print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
-      end
-      tinsert(data.controlledChildren, childId);
+      if(parentToChild[id]) then
+        for childId, _ in pairs(parentToChild[id]) do
+          if not(tContains(data.controlledChildren, childId)) then
+          if not(silent) then
+            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
+          end
+          tinsert(data.controlledChildren, childId);
+          end
+        end
       end
     end
-    end
-  end
   end
 end
 
 function WeakAuras.AddMany(table)
   local idtable = {};
   for _, data in ipairs(table) do
-  idtable[data.id] = data;
+    idtable[data.id] = data;
   end
   local loaded = {};
   local function load(id, depends)
   local data = idtable[id];
   if(data.parent) then
     if(idtable[data.parent]) then
-    if(tContains(depends, data.parent)) then
-      error("Circular dependency in WeakAuras.AddMany between "..tconcat(depends, ", "));
-    else
-      if not(loaded[data.parent]) then
-      local dependsOut = {};
-      for i,v in pairs(depends) do
-        dependsOut[i] = v;
+      if(tContains(depends, data.parent)) then
+        error("Circular dependency in WeakAuras.AddMany between "..tconcat(depends, ", "));
+      else
+        if not(loaded[data.parent]) then
+          local dependsOut = {};
+          for i,v in pairs(depends) do
+            dependsOut[i] = v;
+          end
+          tinsert(dependsOut, data.parent);
+          load(data.parent, dependsOut);
+        end
       end
-      tinsert(dependsOut, data.parent);
-      load(data.parent, dependsOut);
+      else
+        data.parent = nil;
       end
     end
-    else
-    data.parent = nil;
+    if not(loaded[id]) then
+      WeakAuras.Add(data);
+      loaded[id] = true;
     end
   end
-  if not(loaded[id]) then
-    WeakAuras.Add(data);
-    loaded[id] = true;
-  end
+  for id, data in pairs(idtable) do
+    load(id, {});
   end
   for id, data in pairs(idtable) do
-  load(id, {});
-  end
-  for id, data in pairs(idtable) do
-  if(data.regionType == "dynamicgroup") then
-    WeakAuras.Add(data);
-    regions[id].region:ControlChildren();
-  end
+    if(data.regionType == "dynamicgroup") then
+      WeakAuras.Add(data);
+      regions[id].region:ControlChildren();
+    end
   end
 end
 
@@ -1795,7 +1797,6 @@ function WeakAuras.pAdd(data)
       region:Collapse();
       WeakAuras.ScanForLoads();
     end
-
   end
 
   db.displays[id] = data;
@@ -1811,10 +1812,10 @@ function WeakAuras.SetRegion(data, cloneId)
       if not(id) then
         error("Improper arguments to WeakAuras.SetRegion - id not defined");
       else
-      local region;
-      if(cloneId) then
-        region = clones[id][cloneId];
-      else
+        local region;
+        if(cloneId) then
+          region = clones[id][cloneId];
+        else
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
           region = regionTypes[regionType].create(frame, data);
           regions[id] = {
@@ -1837,7 +1838,6 @@ function WeakAuras.SetRegion(data, cloneId)
       end
 
       local anim_cancelled = WeakAuras.CancelAnimation(region, true, true, true, true, true);
-
       local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
 
       regionTypes[regionType].modify(parent, region, data);
@@ -1904,11 +1904,11 @@ function WeakAuras.SetRegion(data, cloneId)
           if(region:IsVisible()) then
             WeakAuras.PerformActions(data, "finish");
             if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
-            region:Hide();
+              region:Hide();
             end
 
             if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
-            parent:UpdateBorder(region);
+              parent:UpdateBorder(region);
             end
           end
         end
@@ -1921,11 +1921,11 @@ function WeakAuras.SetRegion(data, cloneId)
             region:Show();
             WeakAuras.PerformActions(data, "start");
             if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
-            startMainAnimation();
+              startMainAnimation();
             end
 
             if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
-            parent:UpdateBorder(region);
+              parent:UpdateBorder(region);
             end
           end
         end
@@ -2008,13 +2008,13 @@ end
 function WeakAuras.EnsureClone(id, cloneId)
   clones[id] = clones[id] or {};
   if not(clones[id][cloneId]) then
-  local data = WeakAuras.GetData(id);
-  if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
-    clones[id][cloneId] = tremove(clonePool[data.regionType]);
-  else
-    clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
-  end
-  WeakAuras.SetRegion(data, cloneId);
+    local data = WeakAuras.GetData(id);
+    if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
+      clones[id][cloneId] = tremove(clonePool[data.regionType]);
+    else
+      clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
+    end
+    WeakAuras.SetRegion(data, cloneId);
   end
   clones[id][cloneId].justCreated = true;
   return clones[id][cloneId];
@@ -2022,19 +2022,19 @@ end
 
 function WeakAuras.HideAllClones(id)
   if(clones[id]) then
-  for i,v in pairs(clones[id]) do
-    v:Collapse();
-  end
+    for i,v in pairs(clones[id]) do
+      v:Collapse();
+    end
   end
 end
 
 function WeakAuras.HideAllClonesExcept(id, list)
   if(clones[id]) then
-  for i,v in pairs(clones[id]) do
-    if not(list[i]) then
-    v:Collapse();
+    for i,v in pairs(clones[id]) do
+      if not(list[i]) then
+      v:Collapse();
+      end
     end
-  end
   end
 end
 
@@ -2447,9 +2447,9 @@ function WeakAuras.IsAnimating(region)
   local key = tostring(region);
   local anim = animations[key];
   if(anim) then
-  return anim.type;
+    return anim.type;
   else
-  return nil;
+    return nil;
   end
 end
 
@@ -2528,17 +2528,17 @@ end
 
 function WeakAuras.CanShowNameInfo(data)
   if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
-  return true;
+    return true;
   else
-  return false;
+    return false;
   end
 end
 
 function WeakAuras.CanShowStackInfo(data)
   if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
-  return true;
+    return true;
   else
-  return false;
+    return false;
   end
 end
 
@@ -2578,45 +2578,45 @@ end
 function WeakAuras.CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then
-  local name = GetSpellInfo(inputId);
-  if(name) then
-    return inputId;
-  else
-    return nil;
-  end
+    local name = GetSpellInfo(inputId);
+    if(name) then
+      return inputId;
+    else
+      return nil;
+    end
   elseif(input) then
-  local link;
-  if(input:sub(1,1) == "\124") then
-    link = input;
-  else
-    link = GetSpellLink(input);
-  end
-  if(link) then
-    local itemId = link:match("spell:(%d+)");
-    return tonumber(itemId);
-  else
-    return nil;
-  end
+    local link;
+    if(input:sub(1,1) == "\124") then
+      link = input;
+    else
+      link = GetSpellLink(input);
+    end
+    if(link) then
+      local itemId = link:match("spell:(%d+)");
+      return tonumber(itemId);
+    else
+      return nil;
+    end
   end
 end
 
 function WeakAuras.CorrectItemName(input)
   local inputId = tonumber(input);
   if(inputId) then
-  local name = GetItemInfo(inputId);
-  if(name) then
-    return inputId;
-  else
-    return nil;
-  end
+    local name = GetItemInfo(inputId);
+    if(name) then
+      return inputId;
+    else
+      return nil;
+    end
   elseif(input) then
-  local _, link = GetItemInfo(input);
-  if(link) then
-    local itemId = link:match("item:(%d+)");
-    return tonumber(itemId);
-  else
-    return nil;
-  end
+    local _, link = GetItemInfo(input);
+    if(link) then
+      local itemId = link:match("item:(%d+)");
+      return tonumber(itemId);
+    else
+      return nil;
+    end
   end
 end
 
@@ -2626,7 +2626,7 @@ local currentTooltipRegion;
 local currentTooltipOwner;
 function WeakAuras.UpdateMouseoverTooltip(region)
   if(region == currentTooltipRegion) then
-  WeakAuras.ShowMouseoverTooltip(currentTooltipData, currentTooltipRegion, currentTooltipOwner);
+    WeakAuras.ShowMouseoverTooltip(currentTooltipData, currentTooltipRegion, currentTooltipOwner);
   end
 end
 
@@ -2641,10 +2641,11 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner)
 
   local trigger = data.trigger;
   local triggerSystem = triggerTypes[trigger.type];
-  if (not triggerSystem) then return; end
+  if (not triggerSystem) then
+    return;
+  end
 
   triggerSystem.SetToolTip(data, region);
-
   GameTooltip:Show();
 end
 
@@ -2658,15 +2659,15 @@ end
 do
   local hiddenTooltip;
   function WeakAuras.GetHiddenTooltip()
-  if not(hiddenTooltip) then
-    hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
-    hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
-    hiddenTooltip:AddFontStrings(
-    hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
-    hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
-    );
-  end
-  return hiddenTooltip;
+    if not(hiddenTooltip) then
+      hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
+      hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+      hiddenTooltip:AddFontStrings(
+      hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+      hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+      );
+    end
+    return hiddenTooltip;
   end
 end
 
@@ -2678,44 +2679,42 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local debuffType = debuffTypeLine and debuffTypeLine:GetObjectType() == "FontString" and debuffTypeLine:GetText() or "";
   local found = false;
   for i,v in pairs(WeakAuras.debuff_class_types) do
-  if(v == debuffType) then
-    found = true;
-    debuffType = i;
-    break;
-  end
+    if(v == debuffType) then
+      found = true;
+      debuffType = i;
+      break;
+    end
   end
   if not(found) then
-  debuffType = "none";
+    debuffType = "none";
   end
   local tooltipSize,_;
   if(tooltipText) then
     local n2
     _, _, tooltipSize, n2 = tooltipText:find("(%d+),(%d%d%d)")  -- Blizzard likes american digit grouping, e.g. "9123="9,123"   /mikk
-  if tooltipSize then
-    tooltipSize = tooltipSize..n2
-  else
-    _, _, tooltipSize = tooltipText:find("(%d+)")
-  end
+    if tooltipSize then
+      tooltipSize = tooltipSize..n2
+    else
+      _, _, tooltipSize = tooltipText:find("(%d+)")
+    end
   end
   return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
 
 
-local L = WeakAuras.L;
 local function tooltip_draw()
   GameTooltip:ClearLines();
   GameTooltip:AddDoubleLine("WeakAuras", versionString, 0.5333, 0, 1, 1, 1, 1);
-  GameTooltip:AddDoubleLine(L["By |cFF69CCF0Mirrored|r of Dragonmaw(US) Horde"], "");
   GameTooltip:AddLine(" ");
   if(WeakAuras.IsOptionsOpen()) then
-  GameTooltip:AddLine(L["Click to close configuration"], 0, 1, 1);
+    GameTooltip:AddLine(L["Click to close configuration"], 0, 1, 1);
   else
-  GameTooltip:AddLine(L["Click to open configuration"], 0, 1, 1);
-  if(paused) then
-    GameTooltip:AddLine("|cFFFF0000"..L["Paused"].." - |cFF00FFFF"..L["Shift-Click to resume"], 0, 1, 1);
-  else
-    GameTooltip:AddLine(L["Shift-Click to pause"], 0, 1, 1);
-  end
+    GameTooltip:AddLine(L["Click to open configuration"], 0, 1, 1);
+    if(paused) then
+      GameTooltip:AddLine("|cFFFF0000"..L["Paused"].." - |cFF00FFFF"..L["Shift-Click to resume"], 0, 1, 1);
+    else
+      GameTooltip:AddLine(L["Shift-Click to pause"], 0, 1, 1);
+    end
   end
   GameTooltip:Show();
 end
@@ -2734,52 +2733,50 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   text = "WeakAuras",
   icon = "Interface\\AddOns\\WeakAuras\\icon.tga",
   OnClick = function(self, button)
-  if(IsShiftKeyDown()) then
-    if not(WeakAuras.IsOptionsOpen()) then
-    WeakAuras.Toggle();
+    if(IsShiftKeyDown()) then
+      if not(WeakAuras.IsOptionsOpen()) then
+        WeakAuras.Toggle();
+      end
+    else
+      WeakAuras.OpenOptions();
     end
-  else
-    WeakAuras.OpenOptions();
-  end  end,
+  end,
   OnEnter = function(self)
-  colorFrame:SetScript("OnUpdate", function(self, elaps)
-    colorElapsed = colorElapsed + elaps;
-    if(colorElapsed > colorDelay) then
-    colorElapsed = colorElapsed - colorDelay;
-    r, g, b = r2, g2, b2;
-    r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
-    end
-    Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
-    Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
-    Broker_WeakAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
-  end);
-
-  local elapsed = 0;
-  local delay = 1;
-  tooltip_update_frame:SetScript("OnUpdate", function(self, elap)
-    elapsed = elapsed + elap;
-    if(elapsed > delay) then
-    elapsed = 0;
+    colorFrame:SetScript("OnUpdate", function(self, elaps)
+      colorElapsed = colorElapsed + elaps;
+      if(colorElapsed > colorDelay) then
+        colorElapsed = colorElapsed - colorDelay;
+        r, g, b = r2, g2, b2;
+        r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+      end
+      Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
+      Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
+      Broker_WeakAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
+    end);
+    local elapsed = 0;
+    local delay = 1;
+    tooltip_update_frame:SetScript("OnUpdate", function(self, elap)
+      elapsed = elapsed + elap;
+      if(elapsed > delay) then
+        elapsed = 0;
+        tooltip_draw();
+      end
+    end);
+    -- Section the screen into 6 sextants and define the tooltip anchor position based on which sextant the cursor is in
+    local max_x = GetScreenWidth();
+    local max_y = GetScreenHeight();
+    local x, y = GetCursorPosition();
+    local horizontal = (x < (max_x/3) and "LEFT") or ((x >= (max_x/3) and x < ((max_x/3)*2)) and "") or "RIGHT";
+    local tooltip_vertical = (y < (max_y/2) and "BOTTOM") or "TOP";
+    local anchor_vertical = (y < (max_y/2) and "TOP") or "BOTTOM";
+    GameTooltip:SetOwner(self, "ANCHOR_NONE");
+    GameTooltip:SetPoint(tooltip_vertical..horizontal, self, anchor_vertical..horizontal);
     tooltip_draw();
-    end
-  end);
-
-  -- Section the screen into 6 quadrants (sextrants?) and define the tooltip anchor position based on which quadrant the cursor is in
-  local max_x = GetScreenWidth();
-  local max_y = GetScreenHeight();
-  local x, y = GetCursorPosition();
-  local horizontal = (x < (max_x/3) and "LEFT") or ((x >= (max_x/3) and x < ((max_x/3)*2)) and "") or "RIGHT";
-  local tooltip_vertical = (y < (max_y/2) and "BOTTOM") or "TOP";
-  local anchor_vertical = (y < (max_y/2) and "TOP") or "BOTTOM";
-
-  GameTooltip:SetOwner(self, "ANCHOR_NONE");
-  GameTooltip:SetPoint(tooltip_vertical..horizontal, self, anchor_vertical..horizontal);
-  tooltip_draw();
   end,
   OnLeave = function(self)
-  colorFrame:SetScript("OnUpdate", nil);
-  tooltip_update_frame:SetScript("OnUpdate", nil);
-  GameTooltip:Hide();
+    colorFrame:SetScript("OnUpdate", nil);
+    tooltip_update_frame:SetScript("OnUpdate", nil);
+    GameTooltip:Hide();
   end,
   iconR = 0.6,
   iconG = 0,
@@ -2790,12 +2787,12 @@ local FrameTimes = {};
 function WeakAuras.ProfileFrames(all)
   UpdateAddOnCPUUsage();
   for name, frame in pairs(WeakAuras.frames) do
-  local FrameTime = GetFrameCPUUsage(frame);
-  FrameTimes[name] = FrameTimes[name] or 0;
-  if(all or FrameTime > FrameTimes[name]) then
-    print("|cFFFF0000"..name.."|r -", FrameTime, "-", FrameTime - FrameTimes[name]);
-  end
-  FrameTimes[name] = FrameTime;
+    local FrameTime = GetFrameCPUUsage(frame);
+    FrameTimes[name] = FrameTimes[name] or 0;
+    if(all or FrameTime > FrameTimes[name]) then
+      print("|cFFFF0000"..name.."|r -", FrameTime, "-", FrameTime - FrameTimes[name]);
+    end
+    FrameTimes[name] = FrameTime;
   end
 end
 
@@ -2828,80 +2825,74 @@ do
   local updateRegions = {};
 
   local function DoCustomTextUpdates()
-  for region, _ in pairs(updateRegions) do
-    if(region.UpdateCustomText) then
-    if(region:IsVisible()) then
-      region.UpdateCustomText();
+    for region, _ in pairs(updateRegions) do
+      if(region.UpdateCustomText) then
+        if(region:IsVisible()) then
+          region.UpdateCustomText();
+        end
+      else
+        updateRegions[region] = nil;
+      end
     end
-    else
-    updateRegions[region] = nil;
-    end
-  end
   end
 
   function WeakAuras.InitCustomTextUpdates()
-  if not(customTextUpdateFrame) then
-    customTextUpdateFrame = CreateFrame("frame");
-    customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
-  end
+    if not(customTextUpdateFrame) then
+      customTextUpdateFrame = CreateFrame("frame");
+      customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
+    end
   end
 
   function WeakAuras.RegisterCustomTextUpdates(region)
-  WeakAuras.InitCustomTextUpdates();
-  updateRegions[region] = true;
+    WeakAuras.InitCustomTextUpdates();
+    updateRegions[region] = true;
   end
 
   function WeakAuras.UnregisterCustomTextUpdates(region)
-  updateRegions[region] = nil;
+    updateRegions[region] = nil;
   end
 
   function WeakAuras.IsRegisteredForCustomTextUpdates(region)
-  return updateRegions[region];
+    return updateRegions[region];
   end
 end
 
 function WeakAuras.ValueFromPath(data, path)
   if(#path == 1) then
-  return data[path[1]];
+    return data[path[1]];
   else
-  local reducedPath = {};
-  for i=2,#path do
-    reducedPath[i-1] = path[i];
-  end
-  return WeakAuras.ValueFromPath(data[path[1]], reducedPath);
+    local reducedPath = {};
+    for i=2,#path do
+      reducedPath[i-1] = path[i];
+    end
+    return WeakAuras.ValueFromPath(data[path[1]], reducedPath);
   end
 end
 
 function WeakAuras.ValueToPath(data, path, value)
   if(#path == 1) then
-  data[path[1]] = value;
+    data[path[1]] = value;
   else
-  local reducedPath = {};
-  for i=2,#path do
-    reducedPath[i-1] = path[i];
-  end
-  WeakAuras.ValueToPath(data[path[1]], reducedPath, value);
+    local reducedPath = {};
+    for i=2,#path do
+      reducedPath[i-1] = path[i];
+    end
+    WeakAuras.ValueToPath(data[path[1]], reducedPath, value);
   end
 end
 
 function WeakAuras.FixGroupChildrenOrder()
   for id, data in pairs(db.displays) do
-        if(data.controlledChildren) then
+    if(data.controlledChildren) then
       local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
       if(lowestRegion) then
         local frameLevel = lowestRegion:GetFrameLevel();
         for i=2,#data.controlledChildren do
           local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
           if(childRegion) then
-              -- Try to fix #358 with info from
-              -- http://wow.curseforge.com/addons/droodfocus/tickets/14-frame-level-manipulation-breaks-automatic-frame-level/
-              -- by setting SetFrameLevel() twice.
-              -- Also, for testing, keep frameLevel at 100 if it ever gets that high. 100 might still be too high?!
-            if frameLevel >= 100 then
-                frameLevel = 100
-            else
-                frameLevel = frameLevel + 1
-            end;
+            frameLevel = frameLevel + 1
+            -- Try to fix #358 with info from http://wow.curseforge.com/addons/droodfocus/tickets/14
+            -- by setting SetFrameLevel() twice.
             childRegion:SetFrameLevel(frameLevel);
             childRegion:SetFrameLevel(frameLevel);
           end
@@ -2935,7 +2926,6 @@ do
     if not dynFrame.update[name] then
       dynFrame.update[name] = func;
       dynFrame.size = dynFrame.size + 1
-
       dynFrame.frame:Show();
     end
   end
@@ -2945,7 +2935,6 @@ do
     if dynFrame.update[name] then
       dynFrame.update[name] = nil;
       dynFrame.size = dynFrame.size - 1
-
       if dynFrame.size == 0 then
         dynFrame.frame:Hide();
       end
