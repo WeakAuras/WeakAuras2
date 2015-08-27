@@ -1435,7 +1435,9 @@ function BuffTrigger.SetToolTip(data, region)
 end
 
 function BuffTrigger.GetNameAndIcon(data)
-  return nil, nil; --TODO this does not look right?
+  -- Stub for now, the code from WeakAuras.SetIconName in WeakAurasOptions.lua
+  -- should be moved to here, but that code depends on the iconCache
+  return nil, nil;
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);
