@@ -1764,8 +1764,19 @@ WeakAuras.event_prototypes = {
         test = "true";
       end
 
+      if (trigger.use_spellId and trigger.spellId) then
+        local ret2 = [[
+          local triggerSpellId = %s;
+        ]];
+        ret = ret .. ret2:format(tostring(trigger.spellId));
+      else
+        ret = ret .. [[
+          local triggerSpellId = nil;
+        ]];
+      end
+
       ret = ret .. [[
-        local duration, expirationTime = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator);
+        local duration, expirationTime = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator, triggerSpellId);
       ]]
 
       if (trigger.use_remaining) then
@@ -1782,8 +1793,13 @@ WeakAuras.event_prototypes = {
       return ret;
     end,
     durationFunc = function(trigger)
-      local duration, expirationTime = WeakAuras.GetDBMTimer(trigger.id, trigger.message, trigger.message_operator);
+      local duration, expirationTime = WeakAuras.GetDBMTimer(trigger.id, trigger.message, trigger.message_operator, trigger.spellId);
       return duration, expirationTime;
+    end,
+
+    iconFunc = function(trigger)
+      local _, _, icon = WeakAuras.GetDBMTimer(trigger.id, trigger.message, trigger.message_operator, trigger.spellId);
+      return icon;
     end,
     args = {
       {
@@ -1796,6 +1812,12 @@ WeakAuras.event_prototypes = {
         name = "message",
         display = L["Message"],
         type = "longstring",
+        test = "true"
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        type = "number",
         test = "true"
       },
       {
