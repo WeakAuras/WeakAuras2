@@ -1854,10 +1854,11 @@ WeakAuras.event_prototypes = {
       {
         name = "spellId",
         init = "arg",
-        display = L["Spell Id"]
+        display = L["Spell Id"],
+        type = "number"
       },
       {
-        name = "message",
+        name = "text",
         init = "arg",
         display = L["Message"],
         type = "longstring",
