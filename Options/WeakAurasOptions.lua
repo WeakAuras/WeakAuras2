@@ -1094,7 +1094,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif (event == "PLAYER_REGEN_ENABLED") then
     if (reopenAfterCombat) then
       reopenAfterCombat = nil;
-      WeakAuras.ShowOptions(msg); -- XXX TODO where does msg come from? want to avoid the global.
+      WeakAuras.ShowOptions()
     end
   end
 end);

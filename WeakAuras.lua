@@ -118,7 +118,7 @@ local regionOptions = WeakAuras.regionOptions;
 WeakAuras.triggerTypes = {};
 local triggerTypes = WeakAuras.triggerTypes;
 
--- List of all trigger systems, contains each system onec
+-- List of all trigger systems, contains each system once
 WeakAuras.triggerSystems = {}
 local triggerSystems = WeakAuras.triggerSystems;
 
@@ -146,10 +146,10 @@ WeakAuras.raidUnits = {};
 WeakAuras.partyUnits = {};
 do
   for i=1,40 do
-  WeakAuras.raidUnits[i] = "raid"..i
+    WeakAuras.raidUnits[i] = "raid"..i
   end
   for i=1,4 do
-  WeakAuras.partyUnits[i] = "party"..i
+    WeakAuras.partyUnits[i] = "party"..i
   end
 end
 local playerLevel = UnitLevel("player");
@@ -171,26 +171,25 @@ local levelColors = {
 
 function WeakAuras.debug(msg, level)
   if(db.debug) then
-  level = (level and levelColors[level] and level) or 2;
-  msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
-  DEFAULT_CHAT_FRAME:AddMessage(levelColors[level]..msg);
+    level = (level and levelColors[level] and level) or 2;
+    msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
+    DEFAULT_CHAT_FRAME:AddMessage(levelColors[level]..msg);
   end
 end
 local debug = WeakAuras.debug;
 
 function WeakAuras.validate(input, default)
   for field, defaultValue in pairs(default) do
-  if(type(defaultValue) == "table" and type(input[field]) ~= "table") then
-    input[field] = {};
-  elseif(input[field] == nil) then
-    input[field] = defaultValue;
-  elseif(type(input[field]) ~= type(defaultValue)) then
-    input[field] = defaultValue;
-  end
-
-  if(type(input[field]) == "table") then
-    WeakAuras.validate(input[field], defaultValue);
-  end
+    if(type(defaultValue) == "table" and type(input[field]) ~= "table") then
+      input[field] = {};
+    elseif(input[field] == nil) then
+      input[field] = defaultValue;
+    elseif(type(input[field]) ~= type(defaultValue)) then
+      input[field] = defaultValue;
+    end
+    if(type(input[field]) == "table") then
+      WeakAuras.validate(input[field], defaultValue);
+    end
   end
 end
 
@@ -403,41 +402,41 @@ WeakAuras.duration_cache = duration_cache;
 
 function WeakAuras.ParseNumber(numString)
   if not(numString and type(numString) == "string") then
-  if(type(numString) == "number") then
-    return numString, "notastring";
-  else
-    return nil;
-  end
+    if(type(numString) == "number") then
+      return numString, "notastring";
+    else
+      return nil;
+    end
   elseif(numString:sub(-1) == "%") then
-  local percent = tonumber(numString:sub(0, -2));
-  if(percent) then
-    return percent / 100, "percent";
-  else
-    return nil;
-  end
-  else
-  -- Matches any string with two integers separated by a forward slash
-  -- Captures the two integers
-  local _, _, numerator, denominator = numString:find("(%d+)%s*/%s*(%d+)");
-  numerator, denominator = tonumber(numerator), tonumber(denominator);
-  if(numerator and denominator) then
-    if(denominator == 0) then
-    return nil;
+    local percent = tonumber(numString:sub(0, -2));
+    if(percent) then
+      return percent / 100, "percent";
     else
-    return numerator / denominator, "fraction";
+      return nil;
     end
   else
-    local num = tonumber(numString)
-    if(num) then
-    if(math.floor(num) ~= num) then
-      return num, "decimal";
+    -- Matches any string with two integers separated by a forward slash
+    -- Captures the two integers
+    local _, _, numerator, denominator = numString:find("(%d+)%s*/%s*(%d+)");
+    numerator, denominator = tonumber(numerator), tonumber(denominator);
+    if(numerator and denominator) then
+      if(denominator == 0) then
+        return nil;
+      else
+        return numerator / denominator, "fraction";
+      end
     else
-      return num, "whole";
+      local num = tonumber(numString)
+      if(num) then
+        if(math.floor(num) ~= num) then
+          return num, "decimal";
+        else
+          return num, "whole";
+        end
+      else
+        return nil;
+      end
     end
-    else
-    return nil;
-    end
-  end
   end
 end
 
@@ -484,7 +483,7 @@ function WeakAuras.ConstructFunction(prototype, trigger)
               end
             end
           elseif(arg.type == "multiselect") then
-            if(trigger["use_"..name] == false) then -- Multiselection
+            if(trigger["use_"..name] == false) then -- multi selection
               test = "(";
               local any = false;
               for value, _ in pairs(trigger[name].multi) do
@@ -501,7 +500,7 @@ function WeakAuras.ConstructFunction(prototype, trigger)
                 test = "(false";
               end
               test = test..")";
-            elseif(trigger["use_"..name]) then -- Singleselection
+            elseif(trigger["use_"..name]) then -- single selection
               local value = trigger[name].single;
               if not arg.test then
                 test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
@@ -610,7 +609,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       local toAdd = {};
       for id, data in pairs(db.displays) do
       if(id ~= data.id) then
-        print("|cFF8800FFWeakAuras|r detected corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+        print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
         data.id = id;
       end
       tinsert(toAdd, data);
@@ -959,7 +958,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       playerLevel = arg1;
     end
 
-  -- ~encounter id stuff, we are holding the current combat id to further load checks.
+  -- encounter id stuff, we are holding the current combat id to further load checks.
   -- there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
   -- regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
   local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
@@ -1009,6 +1008,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       end
     end
   end
+
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
   local inInstance, Type = IsInInstance()
