@@ -1766,9 +1766,9 @@ WeakAuras.event_prototypes = {
 
       if (trigger.use_spellId and trigger.spellId) then
         local ret2 = [[
-          local triggerSpellId = %s;
+          local triggerSpellId = "%s";
         ]];
-        ret = ret .. ret2:format(tostring(trigger.spellId));
+        ret = ret .. ret2:format(trigger.spellId or "");
       else
         ret = ret .. [[
           local triggerSpellId = nil;
@@ -1816,8 +1816,8 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "spellId",
-        display = L["Spell Id"],
-        type = "number",
+        display = L["Spell/Encounter Id"],
+        type = "string",
         test = "true"
       },
       {

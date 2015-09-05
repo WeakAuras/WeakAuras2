@@ -666,6 +666,12 @@ function GenericTrigger.Modernize(data)
     if trigger and trigger["event"] and trigger["event"] == "Cooldown (Spell)" then
       trigger["event"] = "Cooldown Progress (Spell)";
     end
+
+    if trigger and trigger["event"] and trigger["event"] == "DBM Timer" then
+      if (type(trigger.spellId) == "number") then
+        trigger.spellId = tostring(trigger.spellId);
+      end
+    end
   end
 
   -- Add status/event information to triggers
