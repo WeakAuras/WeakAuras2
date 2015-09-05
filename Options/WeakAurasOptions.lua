@@ -1315,7 +1315,8 @@ end
 
 function WeakAuras.SetIconName(data, region)
   local name, icon = WeakAuras.GetNameAndIcon(data);
-  if(data.trigger.type == "aura" and not (data.trigger.inverse or WeakAuras.CanGroupShowWithZero(data))) then
+  if(data.trigger.type == "aura" and not (data.trigger.inverse or WeakAuras.CanGroupShowWithZero(data))
+     and data.trigger.names) then
     -- Try to get an icon from the icon cache
     for index, checkname in pairs(data.trigger.names) do
       if(iconCache[checkname]) then
