@@ -1744,7 +1744,7 @@ WeakAuras.event_prototypes = {
       local ret = "";
 
       if (trigger.use_id) then
-        ret = "local triggerId = \"" .. trigger.id .. "\"\n";
+        ret = "local triggerId = \"" .. (trigger.id or "") .. "\"\n";
       else
         ret = "local triggerId = nil\n";
       end
