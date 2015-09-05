@@ -158,6 +158,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
         WeakAuras.ReloadGroupRegionOptions(data);
         WeakAuras.SortDisplayButtons();
         button:Expand();
+        WeakAuras.PickDisplay(new_id);
       end
     },
     {
@@ -7902,6 +7903,7 @@ function WeakAuras.CreateFrame()
           };
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
+          WeakAuras.PickAndEditDisplay(new_id);
         end);
         containerScroll:AddChild(button);
       end
@@ -8104,10 +8106,6 @@ function WeakAuras.NewDisplayButton(data)
   WeakAuras.AddOption(id, data);
   WeakAuras.SetIconNames(data);
   WeakAuras.SortDisplayButtons();
-
-  frame:PickDisplay(id);
-
-  displayButtons[id].callbacks.OnRenameClick();
 end
 
 function WeakAuras.UpdateGroupOrders(data)
@@ -8300,6 +8298,11 @@ end
 
 function WeakAuras.PickDisplay(id)
   frame:PickDisplay(id);
+end
+
+function WeakAuras.PickAndEditDisplay(id)
+  frame:PickDisplay(id);
+  displayButtons[id].callbacks.OnRenameClick();
 end
 
 function WeakAuras.PickDisplayMultiple(id)
