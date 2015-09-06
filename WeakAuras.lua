@@ -619,7 +619,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
 
       WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-      --WeakAuras.FixGroupChildrenOrder();
+      WeakAuras.FixGroupChildrenOrder();
 
       for _, triggerSystem in pairs(triggerSystems) do
         if (triggerSystem.AllAdded) then
