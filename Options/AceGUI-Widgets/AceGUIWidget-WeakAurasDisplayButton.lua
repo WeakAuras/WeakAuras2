@@ -215,6 +215,7 @@ local methods = {
             end
             WeakAuras.SortDisplayButtons();
             WeakAuras.DoConfigUpdate();
+            WeakAuras.PickAndEditDisplay(new_id);
         end
 
         function self.callbacks.OnDeleteAllClick()

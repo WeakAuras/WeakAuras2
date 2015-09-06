@@ -1744,7 +1744,7 @@ WeakAuras.event_prototypes = {
       local ret = "";
 
       if (trigger.use_id) then
-        ret = "local triggerId = \"" .. trigger.id .. "\"\n";
+        ret = "local triggerId = \"" .. (trigger.id or "") .. "\"\n";
       else
         ret = "local triggerId = nil\n";
       end
@@ -1766,9 +1766,9 @@ WeakAuras.event_prototypes = {
 
       if (trigger.use_spellId and trigger.spellId) then
         local ret2 = [[
-          local triggerSpellId = %s;
+          local triggerSpellId = "%s";
         ]];
-        ret = ret .. ret2:format(tostring(trigger.spellId));
+        ret = ret .. ret2:format(trigger.spellId or "");
       else
         ret = ret .. [[
           local triggerSpellId = nil;
@@ -1816,8 +1816,8 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "spellId",
-        display = L["Spell Id"],
-        type = "number",
+        display = L["Spell/Encounter Id"],
+        type = "string",
         test = "true"
       },
       {
@@ -1883,7 +1883,7 @@ WeakAuras.event_prototypes = {
         local triggerTextOperator = "%s";
       ]]
 
-      ret = ret:format(trigger.use_addon and ('"' .. trigger.addon .. '"') or "nil",
+      ret = ret:format(trigger.use_addon and ('"' .. trigger.addon or ''.. '"') or "nil",
                        trigger.use_spellId and tostring(trigger.spellId) or "nil",
                        trigger.use_text and ('"' .. (trigger.text or '') .. '"') or "nil",
                        trigger.use_text and trigger.text_operator or ""

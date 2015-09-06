@@ -158,6 +158,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
         WeakAuras.ReloadGroupRegionOptions(data);
         WeakAuras.SortDisplayButtons();
         button:Expand();
+        WeakAuras.PickDisplay(new_id);
       end
     },
     {
@@ -1315,7 +1316,8 @@ end
 
 function WeakAuras.SetIconName(data, region)
   local name, icon = WeakAuras.GetNameAndIcon(data);
-  if(data.trigger.type == "aura" and not (data.trigger.inverse or WeakAuras.CanGroupShowWithZero(data))) then
+  if(data.trigger.type == "aura" and not (data.trigger.inverse or WeakAuras.CanGroupShowWithZero(data))
+     and data.trigger.names) then
     -- Try to get an icon from the icon cache
     for index, checkname in pairs(data.trigger.names) do
       if(iconCache[checkname]) then
@@ -7901,6 +7903,7 @@ function WeakAuras.CreateFrame()
           };
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
+          WeakAuras.PickAndEditDisplay(new_id);
         end);
         containerScroll:AddChild(button);
       end
@@ -8103,10 +8106,6 @@ function WeakAuras.NewDisplayButton(data)
   WeakAuras.AddOption(id, data);
   WeakAuras.SetIconNames(data);
   WeakAuras.SortDisplayButtons();
-
-  frame:PickDisplay(id);
-
-  displayButtons[id].callbacks.OnRenameClick();
 end
 
 function WeakAuras.UpdateGroupOrders(data)
@@ -8299,6 +8298,11 @@ end
 
 function WeakAuras.PickDisplay(id)
   frame:PickDisplay(id);
+end
+
+function WeakAuras.PickAndEditDisplay(id)
+  frame:PickDisplay(id);
+  displayButtons[id].callbacks.OnRenameClick();
 end
 
 function WeakAuras.PickDisplayMultiple(id)

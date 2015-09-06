@@ -192,7 +192,7 @@ do
         -- Need to check if cached data conforms to trigger
         if (TestNonUniformSettings(acEntry, data)) then
           if (self.players[guid] == UNKNOWNOBJECT) then
-            self.players[guid] = GetUnitName(guid, true);
+            self.players[guid] = GetUnitName(guid, true) or UNKNOWNOBJECT;
           end
           affected[self.players[guid]] = true;
         end
