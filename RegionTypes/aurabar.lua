@@ -869,9 +869,11 @@ local function modify(parent, region, data)
   -- Bar or Border (+Backdrop) in front
   if data.barInFront then
     iconFrame:SetFrameLevel(5);
+    iconFrame:SetFrameLevel(5);
     bar:SetFrameLevel(5);
     border:SetFrameLevel(2);
   else
+    iconFrame:SetFrameLevel(2);
     iconFrame:SetFrameLevel(2);
     bar:SetFrameLevel(2);
     border:SetFrameLevel(5);

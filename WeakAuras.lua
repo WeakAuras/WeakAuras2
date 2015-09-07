@@ -2427,7 +2427,7 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
   animations[key].onFinished = onFinished
   animations[key].name = id
   animations[key].cloneId = cloneId
-  
+
   if not(updatingAnimations) then
     frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
     updatingAnimations = true;
@@ -2886,7 +2886,7 @@ function WeakAuras.FixGroupChildrenOrder()
     if(data.controlledChildren) then
       local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
       if(lowestRegion) then
-        local frameLevel = lowestRegion:GetFrameLevel();
+        local frameLevel = 0;
         for i=2,#data.controlledChildren do
           local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
           if(childRegion) then

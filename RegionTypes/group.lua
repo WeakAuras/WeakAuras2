@@ -106,7 +106,8 @@ local function modify(parent, region, data)
             local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
             if(childRegion) then
                 frameLevel = frameLevel + 1;
-                childRegion:SetFrameLevel(frameLevel);
+                childRegion:SetFrameLevel(frameLevel)
+                childRegion:SetFrameLevel(frameLevel)
             end
         end
     end

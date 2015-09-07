@@ -110,10 +110,11 @@ local function create(parent, data)
     cooldown:SetDrawEdge(false);
 
     local stacksFrame = CreateFrame("frame", nil, region);
-    stacksFrame:SetFrameLevel(cooldown:GetFrameLevel() + 1);
     local stacks = stacksFrame:CreateFontString(nil, "OVERLAY");
+    local cooldownFrameLevel = cooldown:GetFrameLevel() + 1
+    stacksFrame:SetFrameLevel(cooldownFrameLevel)
+    stacksFrame:SetFrameLevel(cooldownFrameLevel)
     region.stacks = stacks;
-
     region.values = {};
     region.duration = 0;
     region.expirationTime = math.huge;

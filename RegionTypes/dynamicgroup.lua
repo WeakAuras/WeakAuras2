@@ -649,7 +649,8 @@ end
             local childRegion = region.controlledRegions[i].region;
             if(childRegion) then
                 frameLevel = frameLevel + 1;
-                childRegion:SetFrameLevel(frameLevel);
+                childRegion:SetFrameLevel(frameLevel)
+                childRegion:SetFrameLevel(frameLevel)
             end
         end
     end
