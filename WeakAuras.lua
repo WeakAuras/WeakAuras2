@@ -2886,11 +2886,15 @@ function WeakAuras.FixGroupChildrenOrder()
     if(data.controlledChildren) then
       local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
       if(lowestRegion) then
-        local frameLevel = 0;
-        for i=2,#data.controlledChildren do
+        local frameLevel = lowestRegion:GetFrameLevel()
+        for i=2, #data.controlledChildren do
           local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
           if(childRegion) then
-            frameLevel = frameLevel + 1
+            if frameLevel >= 100 then
+              frameLevel = 100
+            else
+              frameLevel = frameLevel + 1
+            end
             -- Try to fix #358 with info from http://wow.curseforge.com/addons/droodfocus/tickets/14
             -- by setting SetFrameLevel() twice.
             childRegion:SetFrameLevel(frameLevel);
