@@ -528,7 +528,6 @@ function WeakAuras.ConstructFunction(prototype, trigger)
             if(type(trigger[name]) == "table") then
               trigger[name] = "error";
             end
-            -- if arg.type == "number" and (trigger[name]) and not number then trigger[name] = 0 number = 0 end -- fix corrupt data, ticket #366
             test = "("..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
           end
           if(arg.required) then
@@ -2887,7 +2886,7 @@ function WeakAuras.FixGroupChildrenOrder()
       local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
       if(lowestRegion) then
         local frameLevel = lowestRegion:GetFrameLevel()
-        for i=2, #data.controlledChildren do
+        for i=1, #data.controlledChildren do
           local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
           if(childRegion) then
             if frameLevel >= 100 then

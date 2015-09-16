@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- GLOBALS: WeakAuras
+
 local default = {
     controlledChildren = {},
     border = "None",
@@ -569,13 +571,13 @@ local function modify(parent, region, data)
                         );
                         if(math.abs(radius1 - radius2) > 0.1) then
                             local translateFunc = [[
-return function(progress, _, _, previousAngle, dAngle)
-    local previousRadius, dRadius = %f, %f;
-    local radius = previousRadius + (1 - progress) * dRadius;
-    local angle = previousAngle + (1 - progress) * dAngle;
-    return cos(angle) * radius, sin(angle) * radius;
-end
-]]
+                                return function(progress, _, _, previousAngle, dAngle)
+                                    local previousRadius, dRadius = %f, %f;
+                                    local radius = previousRadius + (1 - progress) * dRadius;
+                                    local angle = previousAngle + (1 - progress) * dAngle;
+                                    return cos(angle) * radius, sin(angle) * radius;
+                                end
+                            ]]
                             anim = {
                                 type = "custom",
                                 duration = 0.2,
@@ -587,12 +589,12 @@ end
                             };
                         else
                             local translateFunc = [[
-return function(progress, _, _, previousAngle, dAngle)
-    local radius = %f;
-    local angle = previousAngle + (1 - progress) * dAngle;
-    return cos(angle) * radius, sin(angle) * radius;
-end
-]]
+                                return function(progress, _, _, previousAngle, dAngle)
+                                    local radius = %f;
+                                    local angle = previousAngle + (1 - progress) * dAngle;
+                                    return cos(angle) * radius, sin(angle) * radius;
+                                end
+                            ]]
                             anim = {
                                 type = "custom",
                                 duration = 0.2,
@@ -616,7 +618,7 @@ end
                     if(childRegion.toHide) then
                         childRegion.toHide = nil;
                         if(WeakAuras.IsAnimating(childRegion) == "finish") then
-                            --childRegion will be hidden by its own animation, so the tray animation does not need to hide it
+                            -- childRegion will be hidden by its own animation, so the tray animation does not need to hide it
                         else
                             childRegion.groupHiding = true;
                         end
@@ -631,7 +633,7 @@ end
                 elseif(childRegion.toHide) then
                     childRegion.toHide = nil;
                     if(WeakAuras.IsAnimating(childRegion) == "finish") then
-                        --childRegion will be hidden by its own animation, so it does not need to be hidden immediately
+                        -- childRegion will be hidden by its own animation, so it does not need to be hidden immediately
                     else
                         childRegion:Hide();
                     end
@@ -642,65 +644,19 @@ end
 
     region:PositionChildren();
 
-    local lowestRegion = WeakAuras.regions[data.controlledChildren[#data.controlledChildren]] and WeakAuras.regions[data.controlledChildren[#data.controlledChildren]].region;
-    if(lowestRegion) then
-        local frameLevel = lowestRegion:GetFrameLevel();
-        for i=#region.controlledRegions-1,1,-1 do
-            local childRegion = region.controlledRegions[i].region;
-            if(childRegion) then
-                frameLevel = frameLevel + 1;
-                childRegion:SetFrameLevel(frameLevel)
-                childRegion:SetFrameLevel(frameLevel)
-            end
-        end
-    end
-
-    -- local maxWidth, maxHeight = 0, 0;
-    -- local radius = 0;
-    -- if(data.grow == "CIRCLE") then
-        -- if(data.constantFactor == "RADIUS") then
-            -- radius = data.radius;
-        -- else
-            -- if(#region.controlledRegions == 1) then
-                -- radius = 0;
-            -- else
-                -- radius = (#region.controlledRegions * data.space) / (2 * math.pi)
-            -- end
-        -- end
-    -- end
-    -- for index, regionData in pairs(region.controlledRegions) do
-        -- childId = regionData.id;
-        -- childData = regionData.data;
-        -- if(childData) then
-            -- if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-                -- maxWidth = maxWidth + childData.width;
-                -- maxWidth = maxWidth + (index > 1 and data.space or 0);
-                -- maxHeight = math.max(maxHeight, childData.height);
-            -- elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
-                -- maxHeight = maxHeight + childData.height;
-                -- maxHeight = maxHeight + (index > 1 and data.space or 0);
-                -- maxWidth = math.max(maxWidth, childData.width);
-            -- elseif(data.grow == "CIRCLE") then
-                -- maxWidth = math.max(maxWidth, childData.width);
-                -- maxHeight = math.max(maxHeight, childData.height);
-            -- end
-        -- end
-    -- end
-    -- if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-        -- maxHeight = maxHeight + (math.abs(data.stagger) * (#region.controlledRegions - 1));
-    -- elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
-        -- maxWidth = maxWidth + (math.abs(data.stagger) * (#region.controlledRegions - 1));
-    -- elseif(data.grow == "CIRCLE") then
-        -- maxWidth = maxWidth + (2 * radius);
-        -- maxHeight = maxHeight + (2 * radius);
+    -- local lowestRegion = WeakAuras.regions[data.controlledChildren[#data.controlledChildren]] and WeakAuras.regions[data.controlledChildren[#data.controlledChildren]].region;
+    -- if(lowestRegion) then
+    --     local frameLevel = lowestRegion:GetFrameLevel();
+    --     for i=1,#region.controlledRegions do
+    --         local childRegion = region.controlledRegions[i].region;
+    --         if(childRegion) then
+    --             frameLevel = frameLevel + 1;
+    --             childRegion:SetFrameLevel(frameLevel)
+    --             childRegion:SetFrameLevel(frameLevel)
+    --         end
+    --     end
     -- end
 
-    -- maxWidth = (maxWidth and maxWidth > 16 and maxWidth) or 16;
-    -- maxHeight = (maxHeight and maxHeight > 16 and maxHeight) or 16;
-
-    -- data.width, data.height = maxWidth, maxHeight;
-    -- region:SetWidth(data.width);
-    -- region:SetHeight(data.height);
     data.width = region.currentWidth;
     data.height = region.currentHeight;
 

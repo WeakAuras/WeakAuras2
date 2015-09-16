@@ -1,6 +1,8 @@
 -- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- GLOBALS: WeakAuras
+
 -- Default settings
 local default = {
     controlledChildren     = {},
@@ -99,18 +101,18 @@ local function modify(parent, region, data)
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
 
     -- Adjust frame-level sorting
-    local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
-    if(lowestRegion) then
-        local frameLevel = lowestRegion:GetFrameLevel();
-        for i=2,#data.controlledChildren do
-            local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
-            if(childRegion) then
-                frameLevel = frameLevel + 1;
-                childRegion:SetFrameLevel(frameLevel)
-                childRegion:SetFrameLevel(frameLevel)
-            end
-        end
-    end
+    -- local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region;
+    -- if(lowestRegion) then
+    --     local frameLevel = lowestRegion:GetFrameLevel();
+    --     for i=1,#data.controlledChildren do
+    --         local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
+    --         if(childRegion) then
+    --             frameLevel = frameLevel + 1;
+    --             childRegion:SetFrameLevel(frameLevel)
+    --             childRegion:SetFrameLevel(frameLevel)
+    --         end
+    --     end
+    -- end
 
     -- Control children (does not happen with "group")
     function region:UpdateBorder(childRegion)
