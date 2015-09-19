@@ -644,18 +644,25 @@ local function modify(parent, region, data)
 
     region:PositionChildren();
 
-    -- local lowestRegion = WeakAuras.regions[data.controlledChildren[#data.controlledChildren]] and WeakAuras.regions[data.controlledChildren[#data.controlledChildren]].region;
-    -- if(lowestRegion) then
-    --     local frameLevel = lowestRegion:GetFrameLevel();
-    --     for i=1,#region.controlledRegions do
-    --         local childRegion = region.controlledRegions[i].region;
-    --         if(childRegion) then
-    --             frameLevel = frameLevel + 1;
-    --             childRegion:SetFrameLevel(frameLevel)
-    --             childRegion:SetFrameLevel(frameLevel)
-    --         end
-    --     end
-    -- end
+    -- Adjust frame-level sorting
+    local lowestRegion = WeakAuras.regions[data.controlledChildren[#data.controlledChildren]] and WeakAuras.regions[data.controlledChildren[#data.controlledChildren]].region
+    if(lowestRegion) then
+        local frameLevel = lowestRegion:GetFrameLevel()
+        for i=1,#region.controlledRegions do
+            local childRegion = region.controlledRegions[i].region
+            if(childRegion) then
+                if frameLevel >= 100 then
+                    frameLevel = 100
+                else
+                    frameLevel = frameLevel + 1
+                end
+                -- Try to fix #358 with info from http://wow.curseforge.com/addons/droodfocus/tickets/14
+                -- by setting SetFrameLevel() twice.
+                childRegion:SetFrameLevel(frameLevel)
+                childRegion:SetFrameLevel(frameLevel)
+            end
+        end
+    end
 
     data.width = region.currentWidth;
     data.height = region.currentHeight;
