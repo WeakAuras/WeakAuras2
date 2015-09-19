@@ -63,11 +63,11 @@ local registeredFromAddons;
 WeakAuras.addons = {};
 local addons = WeakAuras.addons;
 
--- A list of tutorials, filled in by the WeakAuraTutorial addon by callling RegisterTutorial
+-- A list of tutorials, filled in by the WeakAuras_Tutorials addon by calling RegisterTutorial
 WeakAuras.tutorials = {};
 local tutorials = WeakAuras.tutorials;
 
--- used if an addon tries to register a display under an id, that the user already has a display with that id
+-- used if an addon tries to register a display under an id that the user already has a display with that id
 WeakAuras.collisions = {};
 local collisions = WeakAuras.collisions;
 
