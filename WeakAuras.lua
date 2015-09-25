@@ -288,20 +288,26 @@ local overrideFunctions = {
 
 local aura_environments = {};
 local current_aura_env = nil;
+local aura_env_stack = {}; -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
 function WeakAuras.ActivateAuraEnvironment(id)
   if(not id or not db.displays[id]) then
-    -- Don't point to the previous aura's environment if an invalid id/display was supplied
-    current_aura_env = nil;
+    -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
+    tremove(aura_env_stack);
+    current_aura_env = aura_env_stack[#aura_env_stack] or nil;
   else
     local data = db.displays[id];
     if data.init_completed then
       -- Point the current environment to the correct table
       aura_environments[id] = aura_environments[id] or {};
       current_aura_env = aura_environments[id];
+      -- Push the new environment onto the stack
+      tinsert(aura_env_stack, current_aura_env);
     else
       -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
       aura_environments[id] = {};
       current_aura_env = aura_environments[id];
+      -- Push the new environment onto the stack
+      tinsert(aura_env_stack, current_aura_env);
       -- Run the init function if supplied
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
