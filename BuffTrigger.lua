@@ -191,6 +191,9 @@ do
       for guid, acEntry in pairs(self.watched[id].players) do
         -- Need to check if cached data conforms to trigger
         if (TestNonUniformSettings(acEntry, data)) then
+          if (self.players[guid] == UNKNOWNOBJECT) then
+            self.players[guid] = GetUnitName(guid, true) or UNKNOWNOBJECT;
+          end
           affected[self.players[guid]] = true;
         end
       end
@@ -259,11 +262,15 @@ do
     end
   end
 
-  function aura_cache.AssertMember(self, guid, name)
+  function aura_cache.AssertMember(self, guid, name, forceupdate)
     if not(self.players[guid]) then
+      self.players[guid] = name;
       self.max = self.max + 1;
     end
-    self.players[guid] = name;
+
+    if(forceupdate) then
+      self:ForceUpdate();
+    end
   end
 
   function aura_cache.DeassertMember(self, guid)
@@ -277,8 +284,13 @@ do
   end
 
   function aura_cache.AssertMemberList(self, guids)
+    local toAdd = {};
     local toDelete = {};
-
+    for guid, name in pairs(guids) do
+      if not(self.players[guid]) then
+        toAdd[guid] = name;
+      end
+    end
     for guid, _ in pairs(self.players) do
       if not(guids[guid]) then
         toDelete[guid] = true;
@@ -288,7 +300,7 @@ do
     for guid, _ in pairs(toDelete) do
       self:DeassertMember(guid);
     end
-    for guid, name in pairs(guids) do
+    for guid, name in pairs(toAdd) do
       self:AssertMember(guid, name);
     end
     self:ForceUpdate();
@@ -701,20 +713,20 @@ function WeakAuras.ScanAurasGroup()
   end
 end
 
-function Internal.GroupRosterUpdate(event)
+local groupFrame = CreateFrame("FRAME");
+WeakAuras.frames["Group Makeup Handler"] = groupFrame;
+groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
+groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+groupFrame:SetScript("OnEvent", function(self, event)
   if (event == "PLAYER_ENTERING_WORLD") then
     WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
   end
-  local recheck = false;
   local groupMembers,playerName,uid,guid = {};
   if IsInRaid() then
     for i=1, GetNumGroupMembers() do
       uid = WeakAuras.raidUnits[i];
       playerName = GetUnitName(uid,true);
       playerName = playerName:gsub("-", " - ");
-      if (playerName == UNKNOWNOBJECT) then
-        recheck = true;
-      end
       guid = UnitGUID(uid);
       if (guid) then
         groupMembers[guid] = playerName;
@@ -724,12 +736,8 @@ function Internal.GroupRosterUpdate(event)
     for i=1, GetNumSubgroupMembers() do
       uid = WeakAuras.partyUnits[i];
       guid = UnitGUID(uid);
-      local playerName = GetUnitName(uid,true);
-      if (playerName == UNKNOWNOBJECT) then
-        recheck = true;
-      end
       if (guid) then
-        groupMembers[guid] = playerName;
+        groupMembers[guid] = GetUnitName(uid,true);
       end
     end
     if (not WeakAuras.myGUID) then
@@ -738,17 +746,6 @@ function Internal.GroupRosterUpdate(event)
     groupMembers[WeakAuras.myGUID] = WeakAuras.me;
   end
   aura_cache:AssertMemberList(groupMembers);
-  if (recheck) then
-    timer:ScheduleTimer(Internal.GroupRosterUpdate, 0.5);
-  end
-end
-
-local groupFrame = CreateFrame("FRAME");
-WeakAuras.frames["Group Makeup Handler"] = groupFrame;
-groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
-groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-groupFrame:SetScript("OnEvent", function(self, event)
-  Internal.GroupRosterUpdate();
 end);
 
 do
