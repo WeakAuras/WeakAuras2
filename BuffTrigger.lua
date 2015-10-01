@@ -701,7 +701,7 @@ function WeakAuras.ScanAurasGroup()
   end
 end
 
-function WeakAuras.GroupRosterUpdate(event)
+function Internal.GroupRosterUpdate(event)
   if (event == "PLAYER_ENTERING_WORLD") then
     WeakAuras.myGUID = WeakAuras.myGUID or UnitGUID("player")
   end
@@ -739,7 +739,7 @@ function WeakAuras.GroupRosterUpdate(event)
   end
   aura_cache:AssertMemberList(groupMembers);
   if (recheck) then
-    timer:ScheduleTimer(WeakAuras.GroupRosterUpdate, 0.5);
+    timer:ScheduleTimer(Internal.GroupRosterUpdate, 0.5);
   end
 end
 
@@ -748,7 +748,7 @@ WeakAuras.frames["Group Makeup Handler"] = groupFrame;
 groupFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 groupFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 groupFrame:SetScript("OnEvent", function(self, event)
-  WeakAuras.GroupRosterUpdate();
+  Internal.GroupRosterUpdate();
 end);
 
 do
