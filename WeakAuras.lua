@@ -1277,7 +1277,14 @@ function WeakAuras.Rename(data, newid)
     end
   end
 
+  for key, animation in pairs(animations) do
+    if animation.name == oldid then
+      animation.name = newid;
+    end
+  end
+
   aura_environments[newid] = aura_environments[oldid];
+  aura_environments[newid].id = newid;
   aura_environments[oldid] = nil;
 end
 
@@ -1867,7 +1874,7 @@ function WeakAuras.SetRegion(data, cloneId)
       end
 
       local startMainAnimation = function()
-        WeakAuras.Animate("display", id, "main", data.animation.main, region, false, nil, true, cloneId);
+        WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
       end
 
       local hideRegion = function()
@@ -1883,7 +1890,7 @@ function WeakAuras.SetRegion(data, cloneId)
           if(region:IsVisible()) then
             region.toHide = true;
             WeakAuras.PerformActions(data, "finish");
-            WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)
+            WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)
             parent:ControlChildren();
           end
         end
@@ -1898,7 +1905,7 @@ function WeakAuras.SetRegion(data, cloneId)
             parent:EnsureTrays();
             region.justCreated = nil;
             WeakAuras.PerformActions(data, "start");
-            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+            if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
               startMainAnimation();
             end
             parent:ControlChildren();
@@ -1908,7 +1915,7 @@ function WeakAuras.SetRegion(data, cloneId)
         function region:Collapse()
           if(region:IsVisible()) then
             WeakAuras.PerformActions(data, "finish");
-            if not(WeakAuras.Animate("display", id, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
+            if not(WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
               region:Hide();
             end
 
@@ -1925,7 +1932,7 @@ function WeakAuras.SetRegion(data, cloneId)
             end
             region:Show();
             WeakAuras.PerformActions(data, "start");
-            if not(WeakAuras.Animate("display", id, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
+            if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
               startMainAnimation();
             end
 
@@ -2267,7 +2274,8 @@ function WeakAuras.UpdateAnimations()
   ]]--
 end
 
-function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinished, loop, cloneId)
+function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinished, loop, cloneId)
+  local id = data.id;
   local key = tostring(region);
   local inAnim = anim;
   local valid;
@@ -2390,7 +2398,7 @@ function WeakAuras.Animate(namespace, id, type, anim, region, inverse, onFinishe
   end
 
   if(loop) then
-    onFinished = function() WeakAuras.Animate(namespace, id, type, inAnim, region, inverse, onFinished, loop, cloneId) end
+    onFinished = function() WeakAuras.Animate(namespace, data, type, inAnim, region, inverse, onFinished, loop, cloneId) end
   end
 
   animations[key] = animations[key] or {};
