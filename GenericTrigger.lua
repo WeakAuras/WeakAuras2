@@ -60,6 +60,9 @@ local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, select, pairs, type = tostring, select, pairs, type
 local error, setmetatable = error, setmetatable
 
+-- WoW APIs
+local IsPlayerMoving = IsPlayerMoving
+
 WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" end});
 LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);
 local aceEvents = WeakAurasAceEvents
