@@ -2027,8 +2027,8 @@ function WeakAuras.EnsureClone(id, cloneId)
       clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
     end
     WeakAuras.SetRegion(data, cloneId);
+    clones[id][cloneId].justCreated = true;
   end
-  clones[id][cloneId].justCreated = true;
   return clones[id][cloneId];
 end
 
