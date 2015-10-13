@@ -267,7 +267,7 @@ local function WeakAuras_HideOverlayGlow(frame)
 end
 
 local function forbidden()
-  print("|cffffff00A WeakAura that you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
+  print("|cffffff00A WeakAura you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
 end
 
 local blockedFunctions = {
