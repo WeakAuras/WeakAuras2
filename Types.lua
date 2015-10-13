@@ -1187,6 +1187,10 @@ for path, name in pairs(WeakAuras.sound_types) do
   end
 end
 ]=]
+
+-- register options font
+LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf")
+
 local SharedMediaSounds = LSM:HashTable("sound");
 for name, path in pairs(SharedMediaSounds) do
   WeakAuras.sound_types[path] = name;
