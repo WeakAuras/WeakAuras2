@@ -1283,7 +1283,7 @@ function WeakAuras.Rename(data, newid)
     end
   end
 
-  aura_environments[newid] = aura_environments[oldid];
+  aura_environments[newid] = aura_environments[oldid] or {};
   aura_environments[newid].id = newid;
   aura_environments[oldid] = nil;
 end
