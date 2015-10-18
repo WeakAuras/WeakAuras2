@@ -995,24 +995,14 @@ WeakAuras.event_prototypes = {
     },
     name = L["Eclipse Power"],
     init = function(trigger)
-      trigger.unit = trigger.unit or "player";
       local ret = [[
-        local unit = unit or '%s';
-        local concernedUnit = '%s';
+        local unit = 'player';
         local GetRealEclipseDirection = UnitPower(unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
       ]];
 
-    return ret:format(trigger.unit, trigger.unit);
+    return ret;
     end,
     args = {
-      {
-        name = "unit",
-        required = true,
-        display = L["Unit"],
-        type = "unit",
-        init = "arg",
-        values = "actual_unit_types_with_specific"
-      },
       {
         name = "eclipsetype",
         -- required = true,
@@ -1025,7 +1015,7 @@ WeakAuras.event_prototypes = {
         name = "lunar_power",
         display = L["Lunar Power"],
         type = "number",
-        init = "math.min(UnitPower(unit, SPELL_POWER_ECLIPSE), -0) * -1",
+        init = "math.min(UnitPower('player', SPELL_POWER_ECLIPSE), -0) * -1",
         enable = function(trigger)
           return trigger.eclipsetype == "moon"
         end
@@ -1034,7 +1024,7 @@ WeakAuras.event_prototypes = {
         name = "solar_power",
         display = L["Solar Power"],
         type = "number",
-        init = "math.max(UnitPower(unit, SPELL_POWER_ECLIPSE), 0)",
+        init = "math.max(UnitPower('player', SPELL_POWER_ECLIPSE), 0)",
         enable = function(trigger)
           return trigger.eclipsetype == "sun"
         end
@@ -1047,32 +1037,28 @@ WeakAuras.event_prototypes = {
         enable = function(trigger)
           return not trigger.eclipsetype
         end
-      },
-      {
-        hidden = true,
-        test = "UnitExists(concernedUnit)"
       }
     },
     durationFunc = function(trigger)
-    local GetRealEclipseDirection = UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
+    local GetRealEclipseDirection = UnitPower('player', SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower('player', SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
 
     if(trigger.use_absolutValues) then
-      return math.max(UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) + UnitPowerMax(trigger.unit, SPELL_POWER_ECLIPSE), 0), math.max(UnitPowerMax(trigger.unit, SPELL_POWER_ECLIPSE) * 2, 1), true;
+      return math.max(UnitPower('player', SPELL_POWER_ECLIPSE) + UnitPowerMax('player', SPELL_POWER_ECLIPSE), 0), math.max(UnitPowerMax('player', SPELL_POWER_ECLIPSE) * 2, 1), true;
     elseif(not trigger.use_eclipsetype or trigger.eclipsetype == GetRealEclipseDirection) then
-      return math.max(math.abs(UnitPower(trigger.unit, SPELL_POWER_ECLIPSE)), 0), math.max(math.abs(UnitPowerMax(trigger.unit, SPELL_POWER_ECLIPSE)), 1), true;
+      return math.max(math.abs(UnitPower('player', SPELL_POWER_ECLIPSE)), 0), math.max(math.abs(UnitPowerMax('player', SPELL_POWER_ECLIPSE)), 1), true;
     else
       return 0, 0, true;
     end
     end,
     nameFunc = function(trigger)
-      return WeakAuras.eclipse_types[UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
+      return WeakAuras.eclipse_types[UnitPower('player', SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower('player', SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
     end,
     iconFunc = function(trigger)
       local eclipseIcons = {
         ["moon"] = "Interface\\Icons\\ability_druid_eclipse",
         ["sun"] = "Interface\\Icons\\ability_druid_eclipseorange"
       };
-      return eclipseIcons[UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(trigger.unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
+      return eclipseIcons[UnitPower('player', SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower('player', SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
     end,
     automatic = true
   },
