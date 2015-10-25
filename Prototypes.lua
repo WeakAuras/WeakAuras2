@@ -492,6 +492,13 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckTalentByIndex(%d)"
     },
     {
+      name = "faction",
+      display = L["Player Faction"],
+      type = "multiselect",
+      values = "faction_group",
+      init = "arg"
+    },
+    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",

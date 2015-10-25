@@ -140,6 +140,12 @@ WeakAuras.race_types = {
   Undead = LBR["Undead"]
 }
 
+WeakAuras.faction_group = {
+  Alliance = L["Alliance"],
+  Horde = L["Horde"],
+  Neutral = L["Neutral"],
+}
+
 WeakAuras.form_types = {};
 local function update_forms()
   wipe(WeakAuras.form_types);
