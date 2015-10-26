@@ -995,6 +995,10 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local player, realm, zone, zoneId, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetCurrentMapAreaID(), GetSpecialization(), UnitGroupRolesAssigned("player");
   local _, race = UnitRace("player")
   local faction, localized_faction = UnitFactionGroup("player")
+  -- Hack because there is no second arg for Neutral
+  if faction == "Neutral" then
+    localized_faction = "Neutral"
+  end
   if role == "NONE" then
     if IsInRaid() then
       for i=1,GetNumGroupMembers() do
