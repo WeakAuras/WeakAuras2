@@ -602,7 +602,7 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       trigger.unit = trigger.unit or "target";
       local ret = [[
-        local unit = 'player';
+        local unit = '%s';
         local concernedUnit = '%s';
       ]];
 
@@ -621,7 +621,7 @@ WeakAuras.event_prototypes = {
         name = "name",
         display = L["Name"],
         type = "string",
-        init = "UnitName(unit)"
+        init = "UnitName(concernedUnit)"
       },
       {
         name = "class",
@@ -634,27 +634,27 @@ WeakAuras.event_prototypes = {
         name = "hostility",
         display = L["Hostility"],
         type = "select",
-        init = "UnitIsEnemy('player', unit) and 'hostile' or 'friendly'",
+        init = "UnitIsEnemy('player', concernedUnit) and 'hostile' or 'friendly'",
         values = "hostility_types"
       },
       {
         name = "character",
         display = L["Character Type"],
         type = "select",
-        init = "UnitIsPlayer(unit) and 'player' or 'npc'",
+        init = "UnitIsPlayer(concernedUnit) and 'player' or 'npc'",
         values = "character_types"
       },
       {
         name = "level",
         display = L["Level"],
         type = "number",
-        init = "UnitLevel(unit)"
+        init = "UnitLevel(concernedUnit)"
       },
       {
         name = "attackable",
         display = L["Attackable"],
         type = "tristate",
-        init = "UnitCanAttack('player', unit) and true or false",
+        init = "UnitCanAttack('player', concernedUnit)",
       },
       {
         hidden = true,
