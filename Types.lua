@@ -49,7 +49,8 @@ WeakAuras.sound_channel_types = {
   Master = L["Master"],
   SFX = L["Sound Effects"],
   Ambience = L["Ambience"],
-  Music = L["Music"]
+  Music = L["Music"],
+  Dialog = L["Dialog"]
 };
 WeakAuras.trigger_require_types = {
   any = L["Any Triggers"],
