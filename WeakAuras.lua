@@ -1903,7 +1903,7 @@ function WeakAuras.SetRegion(data, cloneId)
           region.toHide = false;
 
           if(WeakAuras.IsAnimating(region) == "finish" or region.groupHiding or (not region:IsVisible() or (cloneId and region.justCreated))) then
-            if(region.preShow) then
+            if(region.PreShow) then
               region:PreShow();
             end
             region.toShow = true;
