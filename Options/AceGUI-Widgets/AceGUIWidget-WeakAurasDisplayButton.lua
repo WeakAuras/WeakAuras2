@@ -3,8 +3,7 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 local L = WeakAuras.L;
-local name, realm = UnitFullName("player")
-local fullName = name.."-"..realm
+local fullName;
 
 -- GLOBALS: GameTooltip UIParent WeakAuras WeakAurasOptionsSaved
 
@@ -64,6 +63,10 @@ local methods = {
             elseif(IsShiftKeyDown()) then
                 local editbox = GetCurrentKeyBoardFocus();
                 if(editbox) then
+				    if (not fullName) then
+				      local name, realm = UnitFullName("player")
+					  fullName = name.."-"..realm
+					end
                     editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
                 end
             else
