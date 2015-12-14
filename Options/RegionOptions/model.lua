@@ -18,12 +18,19 @@ local function createOptions(id, data)
             name = L["Show model of unit "],
             order = 3
         },
+        potraitZoom = {
+            type = "toggle",
+            name = L["Potrait Zoom"],
+            order = 4,
+            hidden = function() return not data.modelIsUnit end
+        },
         space2 = {
             type = "execute",
             name = "",
             width = "half",
             order = 5,
             image = function() return "", 0, 0 end,
+            hidden = function() return data.modelIsUnit end
         },
         chooseModel = {
             type = "execute",
@@ -33,7 +40,7 @@ local function createOptions(id, data)
             func = function()
                 WeakAuras.OpenModelPick(data, "model_path");
             end,
-            disabled = function() return data.modelIsUnit end
+            hidden = function() return data.modelIsUnit end
         },
         model_z = {
             type = "range",
