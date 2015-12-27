@@ -76,7 +76,7 @@ local function modify(parent, region, data)
         if (data.modelIsUnit) then
             model:SetUnit(data.model_path)
             register = true;
-            model:SetPortraitZoom(data.potraitZoom and 1 or 0);
+            model:SetPortraitZoom(data.portraitZoom and 1 or 0);
         else
             pcall(function() model:SetModel(data.model_path) end);
         end

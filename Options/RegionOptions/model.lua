@@ -18,9 +18,9 @@ local function createOptions(id, data)
             name = L["Show model of unit "],
             order = 3
         },
-        potraitZoom = {
+        portraitZoom = {
             type = "toggle",
-            name = L["Potrait Zoom"],
+            name = L["Portrait Zoom"],
             order = 4,
             hidden = function() return not data.modelIsUnit end
         },
