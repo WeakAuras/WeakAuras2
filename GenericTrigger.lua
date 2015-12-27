@@ -1471,14 +1471,28 @@ do
       local addon, spellId, text, duration, icon = ...
       local now = GetTime();
       local expirationTime = now + duration;
-      tinsert(bars, {
-                     addon = addon,
-                     spellId = spellId,
-                     text = text,
-                     duration = duration,
-                     expirationTime = expirationTime,
-                     icon = icon
-                    });
+
+    local found = false;
+    for k, bar in pairs(bars) do
+        if (bar.addon == addon and bar.spellId == spellId and bar.text == text) then
+        bar.duration = duration;
+        bar.expirationTime = expirationTime;
+        bar.icon = icon;
+        found = true;
+        break;
+        end
+    end
+
+    if (not found) then
+        tinsert(bars, {
+                       addon = addon,
+                       spellId = spellId,
+                       text = text,
+                       duration = duration,
+                       expirationTime = expirationTime,
+                       icon = icon
+                      });
+    end
       WeakAuras.ScanEvents("BigWigs_Timer_Update");
       if (nextExpire == nil) then
         recheckTimer = timer:ScheduleTimer(recheckTimers, expirationTime - now);
