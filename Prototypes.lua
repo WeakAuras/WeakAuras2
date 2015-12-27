@@ -375,6 +375,23 @@ function WeakAuras.CheckTalentByIndex(index)
   return selected
 end
 
+function WeakAuras.CheckEncounterId(loadids, currentEncounterId)
+  local searchFrom = 0;
+
+  local startI, endI = string.find(loadids, currentEncounterId, searchFrom);
+  while (startI) do
+    searchFrom = endI; -- start next search from end
+    if (startI == 1 or tonumber(string.sub(loadids, startI - 1, startI - 1)) == nil) then
+      -- Either right at start, or character before is not a number
+      if (endI == string.len(loadids) or tonumber(string.sub(loadids, endI + 1, endI + 1)) == nil) then
+        return true;
+      end
+    end
+    startI, endI = string.find(loadids, currentEncounterId, searchFrom);
+  end
+  return false;
+end
+
 WeakAuras.load_prototype = {
   args = {
     {
@@ -529,6 +546,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = L["EncounterID List"],
+      test = "WeakAuras.CheckEncounterId('%s', encounterid)"
     },
     {
       name = "size",
@@ -1822,7 +1840,7 @@ WeakAuras.event_prototypes = {
         local triggerTextOperator = "%s";
       ]]
 
-      ret = ret:format(trigger.use_addon and ('"' .. trigger.addon or ''.. '"') or "nil",
+      ret = ret:format(trigger.use_addon and ('"' .. (trigger.addon or '') .. '"') or "nil",
                        trigger.use_spellId and tostring(trigger.spellId) or "nil",
                        trigger.use_text and ('"' .. (trigger.text or '') .. '"') or "nil",
                        trigger.use_text and trigger.text_operator or ""

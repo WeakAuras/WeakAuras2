@@ -1884,6 +1884,9 @@ function WeakAuras.SetRegion(data, cloneId)
 
       local hideRegion = function()
         region:Hide();
+        if (cloneId) then
+            WeakAuras.ReleaseClone(id, cloneId, regionType);
+        end
       end
 
       if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
@@ -1918,7 +1921,9 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       elseif not(data.controlledChildren) then
         function region:Collapse()
+          region.toShow = false;
           if(region:IsVisible()) then
+            region.toHide = true;
             WeakAuras.PerformActions(data, "finish");
             if not(WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
               region:Hide();
@@ -1930,7 +1935,9 @@ function WeakAuras.SetRegion(data, cloneId)
           end
         end
         function region:Expand()
+          region.toHide = false;
           if(WeakAuras.IsAnimating(region) == "finish" or (not region:IsVisible() or (cloneId and region.justCreated))) then
+            region.toShow = true;
             region.justCreated = nil;
             if(region.PreShow) then
               region:PreShow();
@@ -1957,12 +1964,12 @@ function WeakAuras.SetRegion(data, cloneId)
 
       if(cloneId) then
         clonePool[regionType] = clonePool[regionType] or {};
-        region:SetScript("OnHide", function()
-        if(clones[id]) then
-          clones[id][cloneId] = nil;
-        end
-        clonePool[regionType][#clonePool[regionType]] = region;
-        region:SetScript("OnHide", nil);
+        region:SetScript("OnShow", function()
+          if (not region.toShow) then
+            if (not WeakAuras.IsOptionsOpen()) then
+              region:Hide();
+            end
+          end
         end);
       end
 
@@ -2053,6 +2060,12 @@ function WeakAuras.HideAllClonesExcept(id, list)
       end
     end
   end
+end
+
+function WeakAuras.ReleaseClone(id, cloneId, regionType)
+   local region = clones[id][cloneId];
+   clones[id][cloneId] = nil;
+   clonePool[regionType][#clonePool[regionType]] = region;
 end
 
 -- This function is currently never called if WeakAuras is paused, but it is set up so that it can take a different action
