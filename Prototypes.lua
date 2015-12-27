@@ -1840,7 +1840,7 @@ WeakAuras.event_prototypes = {
         local triggerTextOperator = "%s";
       ]]
 
-      ret = ret:format(trigger.use_addon and ('"' .. trigger.addon or ''.. '"') or "nil",
+      ret = ret:format(trigger.use_addon and ('"' .. (trigger.addon or '') .. '"') or "nil",
                        trigger.use_spellId and tostring(trigger.spellId) or "nil",
                        trigger.use_text and ('"' .. (trigger.text or '') .. '"') or "nil",
                        trigger.use_text and trigger.text_operator or ""
