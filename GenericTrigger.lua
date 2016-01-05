@@ -1334,7 +1334,7 @@ do
       bars[id]["duration"] = duration;
       bars[id]["icon"] = icon;
       bars[id]["timerType"] = timerType;
-      bars[id]["spellId"] = spellId;
+      bars[id]["spellId"] = tostring(spellId);
       bars[id]["colorId"] = colorId;
 
       if (nextExpire == nil) then
