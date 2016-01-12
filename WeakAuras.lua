@@ -1859,6 +1859,7 @@ function WeakAuras.SetRegion(data, cloneId)
 
       regionTypes[regionType].modify(parent, region, data);
 
+
       if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" and pSelfPoint and pAnchor and pAnchorPoint and pX and pY) then
         region:ClearAllPoints();
         region:SetPoint(pSelfPoint, pAnchor, pAnchorPoint, pX, pY);
