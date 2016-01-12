@@ -302,7 +302,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, data, active, unit, duratio
 
   if(cloneId) then
     if(data.numAdditionalTriggers > 0) then
-      showClones = data.region:IsVisible() and true or false;
+      showClones = data.region.toShow and true or false;
     else
       showClones = true;
     end
@@ -804,7 +804,7 @@ do
   local function updateRegion(id, data, triggernum, GUID)
     local auradata,showClones = data.GUIDs[GUID];
     if(data.numAdditionalTriggers > 0) then
-      showClones = data.region:IsVisible() and true or false;
+      showClones = data.region.toShow and true or false;
     else
       showClones = true;
     end

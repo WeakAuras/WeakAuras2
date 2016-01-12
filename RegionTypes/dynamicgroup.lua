@@ -276,7 +276,7 @@ local function modify(parent, region, data)
             local childData = regionData.data;
             local childRegion = regionData.region;
             if(childData and childRegion) then
-                if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
+                if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
                     numVisible = numVisible + 1;
                     local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom();
                     if(regionLeft and regionRight and regionTop and regionBottom) then
@@ -305,7 +305,6 @@ local function modify(parent, region, data)
                     minY = originY - (maxY - originY);
                 end
             end
-            region:Show();
             local newWidth, newHeight = maxX - minX, maxY - minY;
             newWidth = newWidth > 0 and newWidth or 16;
             newHeight = newHeight > 0 and newHeight or 16;
@@ -391,18 +390,7 @@ local function modify(parent, region, data)
                 childData = regionData.data;
                 childRegion = regionData.region;
                 if(childData and childRegion) then
-                    if(
-                        (
-                            (
-                                childRegion:IsVisible()
-                                and not(
-                                    childRegion.toHide or childRegion.groupHiding
-                                )
-                            )
-                            or childRegion.toShow
-                        )
-                        and not (WeakAuras.IsAnimating(childRegion) == "finish")
-                    ) then
+                    if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
                         if(data.grow == "HORIZONTAL") then
                             currentWidth = currentWidth + childData.width;
                             numVisible = numVisible + 1;
@@ -426,18 +414,7 @@ local function modify(parent, region, data)
                 childData = regionData.data;
                 childRegion = regionData.region;
                 if(childData and childRegion) then
-                    if(
-                        (
-                            (
-                                childRegion:IsVisible()
-                                and not(
-                                    childRegion.toHide or childRegion.groupHiding
-                                )
-                            )
-                            or childRegion.toShow
-                        )
-                        and not (WeakAuras.IsAnimating(childRegion) == "finish")
-                    ) then
+                    if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
                         numVisible = numVisible + 1;
                     end
                 end
@@ -463,12 +440,7 @@ local function modify(parent, region, data)
             childData = regionData.data;
             childRegion = regionData.region;
             if(childData and childRegion) then
-                if(childRegion.toShow) then
-                    childRegion.toHide = nil;
-                    childRegion.groupHiding = nil;
-                end
-
-                if((childRegion:IsVisible() or childRegion.toShow) and not (childRegion.toHide or childRegion.groupHiding or WeakAuras.IsAnimating(childRegion) == "finish")) then
+                if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
                     if(data.grow == "CIRCLE") then
                         yOffset = cos(angle) * radius * -1;
                         xOffset = sin(angle) * radius;
@@ -546,18 +518,16 @@ local function modify(parent, region, data)
             local childData = regionData.data;
             local childRegion = regionData.region;
             if(childData and childRegion) then
-                if(childRegion.toShow) then
-                    childRegion:Show();
-                    childRegion.toShow = nil;
+                if (childRegion.toShow or WeakAuras.IsAnimating(childRegion) == "finish") then
+                  childRegion:Show();
                 end
-
                 local xOffset, yOffset = region.trays[regionData.key]:GetCenter();
                 xOffset = xOffset or 0;
                 yOffset = yOffset or 0;
                 local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or previousPreviousX or 0, previous[regionData.key] and previous[regionData.key].y or previousPreviousY or 0;
                 local xDelta, yDelta = previousX - xOffset, previousY - yOffset;
                 previousPreviousX, previousPreviousY = previousX, previousY;
-                if(childRegion:IsVisible() and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
+                if((childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
                     local anim;
                     if(data.grow == "CIRCLE") then
                         local originX, originY = region:GetCenter();
@@ -615,23 +585,10 @@ local function modify(parent, region, data)
                             y = yDelta
                         };
                     end
-                    if(childRegion.toHide) then
-                        childRegion.toHide = nil;
-                        if(WeakAuras.IsAnimating(childRegion) == "finish") then
-                            -- childRegion will be hidden by its own animation, so the tray animation does not need to hide it
-                        else
-                            childRegion.groupHiding = true;
-                        end
-                    end
+
                     WeakAuras.CancelAnimation(region.trays[regionData.key], nil, nil, nil, nil, nil, true);
-                    WeakAuras.Animate("tray"..regionData.key, data.id, "tray", anim, region.trays[regionData.key], true, function()
-                        if(childRegion.groupHiding) then
-                            childRegion.groupHiding = nil;
-                            childRegion:Hide();
-                        end
-                    end);
-                elseif(childRegion.toHide) then
-                    childRegion.toHide = nil;
+                    WeakAuras.Animate("tray"..regionData.key, data.id, "tray", anim, region.trays[regionData.key], true, function() end);
+                elseif (not childRegion.toShow) then
                     if(WeakAuras.IsAnimating(childRegion) == "finish") then
                         -- childRegion will be hidden by its own animation, so it does not need to be hidden immediately
                     else

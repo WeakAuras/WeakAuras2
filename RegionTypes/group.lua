@@ -126,13 +126,13 @@ local function modify(parent, region, data)
         -- Apply border settings
         if data.border then
             -- Initial visibility (of child that originated UpdateBorder(...))
-            local childVisible = childRegion and childRegion:IsVisible() or false;
+            local childVisible = childRegion and childRegion.toShow or false;
 
             -- Scan children for visibility
             if not childVisible then
                 for index, childId in ipairs(data.controlledChildren) do
                     local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
-                    if childRegion and childRegion:IsVisible() then
+                    if childRegion and childRegion.toShow then
                         childVisible = true;
                         break;
                     end
