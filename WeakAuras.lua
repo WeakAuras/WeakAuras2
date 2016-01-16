@@ -279,6 +279,9 @@ local blockedFunctions = {
   -- blocked WoW API
   SendMail = true,
   SetTradeMoney = true,
+  AddTradeMoney = true,
+  PickupTradeMoney = true,
+  PickupPlayerMoney = true
 }
 
 local overrideFunctions = {
