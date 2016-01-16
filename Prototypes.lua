@@ -1750,12 +1750,20 @@ WeakAuras.event_prototypes = {
       return ret;
     end,
     durationFunc = function(trigger)
-      local duration, expirationTime = WeakAuras.GetDBMTimer(trigger.id, trigger.message, trigger.message_operator, trigger.spellId);
+      local duration, expirationTime = WeakAuras.GetDBMTimer(
+          trigger.use_id and trigger.id,
+          trigger.use_message and trigger.message,
+          trigger.use_message and trigger.message_operator,
+          trigger.use_spellId and trigger.spellId);
       return duration, expirationTime;
     end,
 
     iconFunc = function(trigger)
-      local _, _, icon = WeakAuras.GetDBMTimer(trigger.id, trigger.message, trigger.message_operator, trigger.spellId);
+      local _, _, icon = WeakAuras.GetDBMTimer(
+          trigger.use_id and trigger.id,
+          trigger.use_message and trigger.message,
+          trigger.use_message and trigger.message_operator,
+          trigger.use_spellId and trigger.spellId);
       return icon;
     end,
     args = {
