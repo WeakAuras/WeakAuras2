@@ -1845,6 +1845,7 @@ function WeakAuras.SetRegion(data, cloneId)
         else
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
           region = regionTypes[regionType].create(frame, data);
+          region:Hide();
           regions[id] = {
             regionType = regionType,
             region = region
@@ -2063,6 +2064,7 @@ function WeakAuras.EnsureClone(id, cloneId)
       clones[id][cloneId] = tremove(clonePool[data.regionType]);
     else
       clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
+      clones[id][cloneId]:Hide();
     end
     WeakAuras.SetRegion(data, cloneId);
     clones[id][cloneId].justCreated = true;
