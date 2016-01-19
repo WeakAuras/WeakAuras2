@@ -281,7 +281,14 @@ local blockedFunctions = {
   SetTradeMoney = true,
   AddTradeMoney = true,
   PickupTradeMoney = true,
-  PickupPlayerMoney = true
+  PickupPlayerMoney = true,
+  TradeFrame = true,
+  MailFrame = true,
+  EnumerateFrames = true,
+  RunScript = true,
+  AcceptTrade = true,
+  SetSendMailMoney = true,
+  EditMacro = true
 }
 
 local overrideFunctions = {
