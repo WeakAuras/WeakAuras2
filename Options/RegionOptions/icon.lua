@@ -169,7 +169,7 @@ local function createOptions(id, data)
         },
         fontFlags = {
             type = "select",
-            name = "Outline",
+            name = L["Outline"],
             order = 48,
             values = WeakAuras.font_flags
         },
