@@ -333,10 +333,13 @@ function WeakAuras.ActivateAuraEnvironment(id)
   end
 end
 
+local env_getglobal
 local exec_env = setmetatable({}, { __index =
   function(t, k)
     if k == "_G" then
       return t
+    elseif k == "getglobal" then
+      return env_getglobal
     elseif k == "aura_env" then
       return current_aura_env;
     elseif blockedFunctions[k] then
@@ -348,6 +351,10 @@ local exec_env = setmetatable({}, { __index =
     end
   end
 })
+
+function env_getglobal(k)
+  return exec_env[k]
+end
 
 local function_cache = {};
 function WeakAuras.LoadFunction(string)
