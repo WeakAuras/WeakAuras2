@@ -512,6 +512,87 @@ function WeakAuras.DisplayToTableString(id)
     return ret;
 end
 
+local function checkTrigger(codes, id, trigger)
+  if trigger.type == "custom" then
+    local t = {};
+    t.id = id;
+    t.code = trigger.custom;
+    tinsert(codes, t);
+  end
+end
+
+local function checkCustom(codes, id, base)
+  if (base.do_custom) then
+    local t = {};
+    t.id = id;
+    t.code = base.custom;
+    tinsert(codes, t);
+  end
+end
+
+local function checkAnimation(codes, id, a)
+  if (a.type == "custom") then
+    if (a.alphaType == "custom" and a.use_alpha) then
+      local t = {};
+      t.id = id;
+      t.code = a.alphaFunc;
+      tinsert(codes, t);
+    end
+
+    if (a.translateType == "custom" and a.use_translate) then
+      local t = {};
+      t.id = id;
+      t.code = a.translateFunc;
+      tinsert(codes, t);
+    end
+
+    if (a.scaleType == "custom" and a.use_scale) then
+      local t = {};
+      t.id = id;
+      t.code = a.scaleFunc;
+      tinsert(codes, t);
+    end
+
+    if (a.rotateType == "custom" and a.use_rotate) then
+      local t = {};
+      t.id = id;
+      t.code = a.rotateFunc;
+      tinsert(codes, t);
+    end
+
+    if (a.colorType == "custom" and a.use_color) then
+      local t = {};
+      t.id = id;
+      t.code = a.colorFunc;
+      tinsert(codes, t);
+    end
+
+    if (a.colorType == "custom" and a.use_color) then
+      local t = {};
+      t.id = id;
+      t.code = a.colorFunc;
+      tinsert(codes, t);
+    end
+  end
+end
+
+local function scamCheck(codes, data)
+    checkTrigger(codes, data.id, data.trigger);
+    if (data.additional_triggers) then
+        for i, v in ipairs(codes, data.additional_triggers) do
+          checkTrigger(codes, data.id, v);
+        end
+    end
+
+    r = checkCustom(codes, data.id, data.actions.init);
+    r = checkCustom(codes, data.id, data.actions.start);
+    r = checkCustom(codes, data.id, data.actions.finish);
+
+    r = checkAnimation(codes, data.id, data.animation.start);
+    r = checkAnimation(codes, data.id, data.animation.main);
+    r = checkAnimation(codes, data.id, data.animation.finish);
+end
+
 function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
     if(type(data) == "table") then
         if(compressed) then
@@ -533,9 +614,12 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             {1, " ", 1, 1, 1}
         };
 
+        local codes = {};
+        scamCheck(codes, data);
         if(children) then
             for index, childData in pairs(children) do
                 tinsert(tooltip, {2, " ", childData.id, 1, 1, 1, 1, 1, 1});
+                scamCheck(codes, childData);
             end
             if(#tooltip > 3) then
                 tooltip[4][2] = L["Children:"];
@@ -613,9 +697,15 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             tinsert(tooltip, {1, " "});
             if(type(import) == "string" and import ~= "unknown") then
                 tinsert(tooltip, {2, L["From"]..": "..import, "                         ", 0, 1, 0});
-            else
-                tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
             end
+
+            if #codes > 0 then
+              tinsert(tooltip, {1, "The Aura you are importing contains custom code.", 1, 0, 0});
+              tinsert(tooltip, {1, "Make sure you can trust the person who sent it!", 1, 0, 0});
+            end
+
+            tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
+            tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
 
             if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
                 ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
@@ -866,16 +956,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     end
 end
 
-local function scamCheck(data)
-    if type(data) == "table" then
-        for k,v in pairs(data) do
-            scamCheck(v)
-        end
-    elseif type(data) == "string" and (string.find(data, "SendMail") or string.find(data, "SetTradeMoney")) then
-        print("|cffffff00The Aura you are importing contains code to send mail and/or trade gold to other players!|r")
-    end
-end
-
 function WeakAuras.ImportString(str)
     local received = StringToTable(str, true);
     if(received and type(received) == "table" and received.m) then
@@ -890,20 +970,6 @@ function WeakAuras.ImportString(str)
             else
                 local data = received.d;
                 WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
-                -- Scam alert
-                local found = nil
-                if (data.additional_triggers) then
-                    for _, v in ipairs(data.additional_triggers) do
-                        if v.trigger.type == "custom" then
-                            found = true
-                            break
-                        end
-                    end
-                end
-                if found or data.trigger.type == "custom" then
-                    print("|cffff0000The Aura you are importing contains custom code, make sure you can trust the person who sent it!|r")
-                end
-                scamCheck(data)
             end
         end
     elseif(type(received) == "string") then
