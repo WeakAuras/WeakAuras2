@@ -325,6 +325,9 @@ function ShowTooltip(content)
     if(ItemRefTooltip.WeakAuras_Tooltip_Button) then
         ItemRefTooltip.WeakAuras_Tooltip_Button:Hide();
     end
+    if(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
+        ItemRefTooltip.WeakAuras_Tooltip_Button2:Hide();
+    end
     if(ItemRefTooltip.WeakAuras_Desc_Box) then
         ItemRefTooltip.WeakAuras_Desc_Box:Hide();
     end
@@ -512,13 +515,64 @@ function WeakAuras.DisplayToTableString(id)
     return ret;
 end
 
-local function checkTrigger(codes, id, trigger)
+local function checkTrigger(codes, id, trigger, untrigger)
   if (not trigger) then return end;
   if trigger.type == "custom" then
     local t = {};
-    t.id = id;
-    t.code = trigger.custom;
-    tinsert(codes, t);
+    if (trigger.custom) then
+      t.text = L["%s Trigger Function"]:format(id);
+      t.value = t.text;
+      t.code = trigger.custom;
+      tinsert(codes, t);
+    end
+
+    if (untrigger and untrigger.custom) then
+      t = {} 
+      t.text = L["%s Untrigger Function"]:format(id);
+      t.value = t.text;
+      t.code = untrigger.custom;
+      tinsert(codes, t);
+    end
+
+    if (trigger.customDuration) then
+      t = {}
+      t.text = L["%s Duration Function"]:format(id);
+      t.value = t.text;
+      t.code = trigger.customDuration
+      tinsert(codes, t);
+    end
+
+    if (trigger.customName) then
+      t = {}
+      t.text = L["%s Name Function"]:format(id);
+      t.value = t.text;
+      t.code = trigger.customName
+      tinsert(codes, t);
+    end
+
+    if (trigger.customIcon) then
+      t = {}
+      t.text = L["%s Icon Function"]:format(id);
+      t.value = t.text;
+      t.code = trigger.customIcon
+      tinsert(codes, t);
+    end
+
+    if (trigger.customTexture) then
+      t = {}
+      t.text = L["%s Texture Function"]:format(id);
+      t.value = t.text;
+      t.code = trigger.customTexture
+      tinsert(codes, t);
+    end
+
+    if (trigger.customStacks) then
+      t = {}
+      t.text = L["%s Stacks Function"]:format(id);
+      t.value = t.text;
+      t.code = trigger.customStacks
+      tinsert(codes, t);
+    end
   end
 end
 
@@ -526,8 +580,9 @@ local function checkCustom(codes, id, base)
   if (not base) then return end
   if (base.do_custom) then
     local t = {};
-    t.id = id;
-    t.code = base.custom;
+    t.text = id;
+    t.value = id;
+    t.code = base.custom
     tinsert(codes, t);
   end
 end
@@ -535,68 +590,66 @@ end
 local function checkAnimation(codes, id, a)
   if (not a) then return end
   if (a.type == "custom") then
-    if (a.alphaType == "custom" and a.use_alpha) then
+    if (a.alphaType == "custom" and a.use_alpha and a.alphaFunc) then
       local t = {};
-      t.id = id;
+      t.text = L["%s - Alpha Animation"]:format(id);
+      t.value = t.text;
       t.code = a.alphaFunc;
       tinsert(codes, t);
     end
 
-    if (a.translateType == "custom" and a.use_translate) then
+    if (a.translateType == "custom" and a.use_translate and a.translateFunc) then
       local t = {};
-      t.id = id;
+      t.text = L["%s - Translate Animation"]:format(id);
+      t.value = t.text;
       t.code = a.translateFunc;
       tinsert(codes, t);
     end
 
-    if (a.scaleType == "custom" and a.use_scale) then
+    if (a.scaleType == "custom" and a.use_scale and a.scaleFunc) then
       local t = {};
-      t.id = id;
+      t.text = L["%s - Scale Animation"]:format(id);
+      t.value = t.text;
       t.code = a.scaleFunc;
       tinsert(codes, t);
     end
 
-    if (a.rotateType == "custom" and a.use_rotate) then
+    if (a.rotateType == "custom" and a.use_rotate and a.rotateFunc) then
       local t = {};
-      t.id = id;
+      t.text = L["%s - Rotate Animation"]:format(id);
+      t.value = t.text;
       t.code = a.rotateFunc;
       tinsert(codes, t);
     end
 
-    if (a.colorType == "custom" and a.use_color) then
+    if (a.colorType == "custom" and a.use_color and a.colorFunc) then
       local t = {};
-      t.id = id;
-      t.code = a.colorFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.colorType == "custom" and a.use_color) then
-      local t = {};
-      t.id = id;
-      t.code = a.colorFunc;
+      t.text = L["%s - Color Animation"]:format(id);
+      t.value = t.text;
+      t.code = a.colorFunc
       tinsert(codes, t);
     end
   end
 end
 
 local function scamCheck(codes, data)
-    checkTrigger(codes, data.id, data.trigger);
+    checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
     if (data.additional_triggers) then
-        for i, v in ipairs(codes, data.additional_triggers) do
-          checkTrigger(codes, data.id, v);
+        for i, v in ipairs(data.additional_triggers) do
+          checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i+1), v.trigger, v.untrigger);
         end
     end
 
     if (data.actions) then
-      r = checkCustom(codes, data.id, data.actions.init);
-      r = checkCustom(codes, data.id, data.actions.start);
-      r = checkCustom(codes, data.id, data.actions.finish);
+      r = checkCustom(codes, L["%s - Init Action"]:format(data.id), data.actions.init);
+      r = checkCustom(codes, L["%s - Start Action"]:format(data.id), data.actions.start);
+      r = checkCustom(codes, L["%s - Finish Action"]:format(data.id), data.actions.finish);
     end
 
     if (data.animation) then
-      r = checkAnimation(codes, data.id, data.animation.start);
-      r = checkAnimation(codes, data.id, data.animation.main);
-      r = checkAnimation(codes, data.id, data.animation.finish);
+      r = checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start);
+      r = checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
+      r = checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
     end
 end
 
@@ -700,6 +753,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         end
 
         local importbutton;
+        local showcodebutton;
         if(import) then
             tinsert(tooltip, {1, " "});
             if(type(import) == "string" and import ~= "unknown") then
@@ -718,10 +772,17 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
             end
             importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
-            importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -20, 8);
-            importbutton:SetWidth(100);
+            importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -8, 8);
+            importbutton:SetWidth(90);
             importbutton:RegisterEvent("PLAYER_REGEN_ENABLED");
             importbutton:RegisterEvent("PLAYER_REGEN_DISABLED");
+
+            if not(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
+                ItemRefTooltip.WeakAuras_Tooltip_Button2 = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
+            end
+            showcodebutton = ItemRefTooltip.WeakAuras_Tooltip_Button2;
+            showcodebutton:SetPoint("BOTTOMLEFT", ItemRefTooltip, "BOTTOMLEFT", 8, 8);
+            showcodebutton:SetWidth(90);
 
             local function onCombat(self, event)
               if (event == "PLAYER_REGEN_ENABLED") then
@@ -735,6 +796,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             if (InCombatLockdown()) then
               importbutton:Disable();
             end
+            showcodebutton:SetText("Show Code");
             if not WeakAurasSaved.import_disabled or WeakAuras.IsImporting() then
                 importbutton:SetText("Import");
                 importbutton:SetScript("OnClick", function()
@@ -816,12 +878,19 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                     WeakAuras.CloseImportExport();
                 end);
             end
+
+            showcodebutton:SetScript("OnClick", function() WeakAuras.OpenCodeReview(codes); end);
         end
 
         ShowTooltip(tooltip);
 
         if(import) then
             importbutton:Show();
+            if (#codes > 0) then
+              showcodebutton:Show();
+            else
+              showcodebutton:Hide();
+            end
         end
 
         if not(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
