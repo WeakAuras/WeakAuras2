@@ -513,6 +513,7 @@ function WeakAuras.DisplayToTableString(id)
 end
 
 local function checkTrigger(codes, id, trigger)
+  if (not trigger) then return end;
   if trigger.type == "custom" then
     local t = {};
     t.id = id;
@@ -522,6 +523,7 @@ local function checkTrigger(codes, id, trigger)
 end
 
 local function checkCustom(codes, id, base)
+  if (not base) then return end
   if (base.do_custom) then
     local t = {};
     t.id = id;
@@ -531,6 +533,7 @@ local function checkCustom(codes, id, base)
 end
 
 local function checkAnimation(codes, id, a)
+  if (not a) then return end
   if (a.type == "custom") then
     if (a.alphaType == "custom" and a.use_alpha) then
       local t = {};
@@ -584,13 +587,17 @@ local function scamCheck(codes, data)
         end
     end
 
-    r = checkCustom(codes, data.id, data.actions.init);
-    r = checkCustom(codes, data.id, data.actions.start);
-    r = checkCustom(codes, data.id, data.actions.finish);
+    if (data.actions) then
+      r = checkCustom(codes, data.id, data.actions.init);
+      r = checkCustom(codes, data.id, data.actions.start);
+      r = checkCustom(codes, data.id, data.actions.finish);
+    end
 
-    r = checkAnimation(codes, data.id, data.animation.start);
-    r = checkAnimation(codes, data.id, data.animation.main);
-    r = checkAnimation(codes, data.id, data.animation.finish);
+    if (data.animation) then
+      r = checkAnimation(codes, data.id, data.animation.start);
+      r = checkAnimation(codes, data.id, data.animation.main);
+      r = checkAnimation(codes, data.id, data.animation.finish);
+    end
 end
 
 function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
