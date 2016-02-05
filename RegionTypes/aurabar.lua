@@ -494,7 +494,8 @@ local function orientHorizontalInverse(region, data)
 
   -- Text internal alignment
   if textDegrees == 0 then
-    text:SetWidth(bar:GetWidth() - (timer:GetWidth() + (data.textSize/2)));
+    local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
+    text:SetWidth(bar:GetWidth() - usedSpace);
     text:SetJustifyH("RIGHT");
   else
     text:SetWidth(0);
@@ -545,7 +546,8 @@ local function orientHorizontal(region, data)
 
   -- Text internal alignment
   if textDegrees == 0 then
-    text:SetWidth(bar:GetWidth() - (timer:GetWidth() + (data.textSize/2)));
+    local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
+    text:SetWidth(bar:GetWidth() - usedSpace);
     text:SetJustifyH("LEFT");
   else
     text:SetWidth(0);
@@ -909,8 +911,10 @@ local function modify(parent, region, data)
     text:SetWordWrap(false);
     animRotate(text, textDegrees);
     text:Show();
+    text.visible = true;
   else
     text:Hide();
+    text.visible = false;
   end
 
   -- Update timer visibility
@@ -923,8 +927,10 @@ local function modify(parent, region, data)
     timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
     animRotate(timer, textDegrees);
     timer:Show();
+    timer.visible = true;
   else
     timer:Hide();
+    timer.visible = false;
   end
 
   -- Update icon visibility
