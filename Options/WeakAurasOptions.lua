@@ -7110,6 +7110,7 @@ function WeakAuras.CreateFrame()
   codereview:AddChild(codebox);
 
   codebox.button:Hide();
+  IndentationLib.enable(codebox.editBox, colorTable, 4);
   local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium");
   if(fontPath) then
     codebox.editBox:SetFont(fontPath, 12);
@@ -7132,6 +7133,9 @@ function WeakAuras.CreateFrame()
   codereviewCancel:SetText(L["Okay"]);
 
   function codereview.Close(self)
+    if (frame.window ~= "codereview") then
+      return
+    end
     self.frame:Hide();
     frame.window = "importexport";
     frame.importexport.frame:Show();
@@ -7147,7 +7151,8 @@ function WeakAuras.CreateFrame()
     frame.container.frame:Hide();
     frame.buttonsContainer.frame:Hide();
     self.frame:Show();
-    frame.window = "model";
+    frame.window = "codereview";
+    WeakAuras.ShowOptions();
   end
 
   function codereview.Close()
@@ -8502,6 +8507,10 @@ end
 
 function WeakAuras.OpenCodeReview(data)
   frame.codereview:Open(data);
+end
+
+function WeakAuras.CloseCodeReview(data)
+  frame.codereview:Close();
 end
 
 function WeakAuras.ResetMoverSizer()
