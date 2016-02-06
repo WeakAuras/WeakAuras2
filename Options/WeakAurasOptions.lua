@@ -1207,6 +1207,10 @@ function WeakAuras.ShowOptions(msg)
       end
     end
   end
+
+  if (frame.window == "codereview") then
+    frame.codereview:Close();
+  end
 end
 
 function WeakAuras.HideOptions()
@@ -7147,12 +7151,13 @@ function WeakAuras.CreateFrame()
     self.codeTree:SetTree(data);
     self.codebox.frame:Show();
 
+    WeakAuras.ShowOptions();
+
     frame.importexport.frame:Hide();
     frame.container.frame:Hide();
     frame.buttonsContainer.frame:Hide();
     self.frame:Show();
     frame.window = "codereview";
-    WeakAuras.ShowOptions();
   end
 
   function codereview.Close()
