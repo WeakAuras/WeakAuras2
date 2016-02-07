@@ -7142,6 +7142,10 @@ function WeakAuras.CreateFrame()
   end
 
   function codereview.Open(self, data)
+    if frame.window == "codereview" then
+      return
+    end
+    
     self.data = data;
 
     self.codeTree:SetTree(data);
