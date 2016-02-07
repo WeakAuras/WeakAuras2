@@ -796,7 +796,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
             if (InCombatLockdown()) then
               importbutton:Disable();
             end
-            showcodebutton:SetText("Show Code");
+            showcodebutton:SetText(L["Show Code"]);
             if not WeakAurasSaved.import_disabled or WeakAuras.IsImporting() then
                 importbutton:SetText("Import");
                 importbutton:SetScript("OnClick", function()
