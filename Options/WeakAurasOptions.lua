@@ -7100,10 +7100,6 @@ function WeakAuras.CreateFrame()
 
   local codeTree = AceGUI:Create("TreeGroup");
   codereview.codeTree = codeTree;
-  codereview.frame:SetScript("OnUpdate", function()
-    local frameWidth = frame:GetWidth();
-    codeTree:SetTreeWidth(frameWidth - 370);
-  end);
   codereview:SetLayout("fill");
   codereview:AddChild(codeTree);
 
