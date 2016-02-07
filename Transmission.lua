@@ -1041,7 +1041,7 @@ function WeakAuras.ImportString(str)
         if(received.m == "d") then
             tooltipLoading = nil;
             if(version < received.v) then
-                local errorMsg = L["Version error recevied higher"]
+                local errorMsg = L["Version error received higher"]
                 ShowTooltip({
                     {1, "WeakAuras", 0.5333, 0, 1},
                     {1, errorMsg:format(received.s, versionString), 1, 0, 0}
@@ -1113,7 +1113,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
         if(received.m == "d") and safeSenders[sender] then
             tooltipLoading = nil;
             if(version ~= received.v) then
-                local errorMsg = version > received.v and L["Version error recevied lower"] or L["Version error recevied higher"]
+                local errorMsg = version > received.v and L["Version error received lower"] or L["Version error received higher"]
                 ShowTooltip({
                     {1, "WeakAuras", 0.5333, 0, 1},
                     {1, errorMsg:format(received.s, versionString), 1, 0, 0}
