@@ -1,9 +1,5 @@
 <h1>WeakAuras 2</h1>
 
-**If you are coming from WeakAuras 1, just delete 1, install 2 and you are ready to go. All your auras will be there. You can do this manually or via Curse Client, please don't forget to *untick* the option to delete your settings though!**
-
-<img src="http://i.imgur.com/mt6dPfO.png" />
-
 WeakAuras is a powerful and flexible framework that allows you to display highly customizable graphics on your screen to indicate buffs, debuffs, and a whole host of similar types of information. It was originally meant to be a lightweight replacement for Power Auras, but it now incorporates many features that Power Auras does not, while still remaining more efficient and easy to use.
 
 Features include:
