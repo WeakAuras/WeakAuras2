@@ -879,7 +879,10 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end);
             end
 
-            showcodebutton:SetScript("OnClick", function() WeakAuras.OpenCodeReview(codes); end);
+            showcodebutton:SetScript("OnClick", function() 
+                WeakAuras.OpenOptions();
+                WeakAuras.OpenCodeReview(codes); 
+            end);
         end
 
         ShowTooltip(tooltip);
