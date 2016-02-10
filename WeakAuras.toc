@@ -29,6 +29,7 @@ GenericTrigger.lua
 
 RegionTypes\progresstexture.lua
 RegionTypes\texture.lua
+RegionTypes\stopmotion.lua
 RegionTypes\aurabar.lua
 RegionTypes\icon.lua
 RegionTypes\text.lua

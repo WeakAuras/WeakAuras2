@@ -292,7 +292,6 @@ local aura_types = WeakAuras.aura_types;
 local orientation_types = WeakAuras.orientation_types;
 local spec_types = WeakAuras.spec_types;
 local totem_types = WeakAuras.totem_types;
-local texture_types = WeakAuras.texture_types;
 local operator_types = WeakAuras.operator_types;
 local string_operator_types = WeakAuras.string_operator_types;
 local weapon_types = WeakAuras.weapon_types;
@@ -6278,9 +6277,18 @@ function WeakAuras.CreateFrame()
 
   local function texturePickGroupSelected(widget, event, uniquevalue)
     texturePickScroll:ReleaseChildren();
-    for texturePath, textureName in pairs(texture_types[uniquevalue]) do
+    for texturePath, textureName in pairs(texturePick.textures[uniquevalue]) do
       local textureWidget = AceGUI:Create("WeakAurasTextureButton");
-      textureWidget:SetTexture(texturePath, textureName);
+    if (texturePick.stopMotion) then
+        local count = 1;
+        if (WeakAuras.texture_types_stop_motion_data and WeakAuras.texture_types_stop_motion_data[texturePath]) then
+            count = WeakAuras.texture_types_stop_motion_data[texturePath].count;
+        end
+        local texture = texturePath .. format("%03d", count)
+        textureWidget:SetTexture(texture, textureName);
+    else
+        textureWidget:SetTexture(texturePath, textureName);
+    end
       textureWidget:SetClick(function()
         texturePick:Pick(texturePath);
       end);
@@ -6305,7 +6313,7 @@ function WeakAuras.CreateFrame()
 
   function texturePick.UpdateList(self)
     wipe(texturePickDropdown.list);
-    for categoryName, category in pairs(texture_types) do
+    for categoryName, category in pairs(self.textures) do
       local match = false;
       for texturePath, textureName in pairs(category) do
         if(texturePath == self.data[self.field]) then
@@ -6329,10 +6337,24 @@ function WeakAuras.CreateFrame()
     if(pickedwidget) then
       pickedwidget:Pick();
     end
+    
+    local stopMotionEndFrame = nil;
+    if (texturePick.stopMotion and WeakAuras.texture_types_stop_motion_data and WeakAuras.texture_types_stop_motion_data[texturePath]) then
+      stopMotionEndFrame = WeakAuras.texture_types_stop_motion_data[texturePath].count;
+    end
+    
     if(self.data.controlledChildren) then
       setAll(self.data, {"region", self.field}, texturePath);
+      if (stopMotionEndFrame) then
+        setAll(self.data, {"region", "endFrame"}, stopMotionEndFrame);
+        setAll(self.data, {"region", "backgroundFrame"}, stopMotionEndFrame);
+      end
     else
       self.data[self.field] = texturePath;
+      if (stopMotionEndFrame) then
+        self.data.endFrame = stopMotionEndFrame;
+        self.data.backgroundFrame = stopMotionEndFrame;
+      end
     end
     if(type(self.data.id) == "string") then
       WeakAuras.Add(self.data);
@@ -6344,9 +6366,11 @@ function WeakAuras.CreateFrame()
     texturePickDropdown.dropdown:SetText(texturePickDropdown.list[status.selected]);
   end
 
-  function texturePick.Open(self, data, field)
+  function texturePick.Open(self, data, field, textures, stopMotion)
     self.data = data;
     self.field = field;
+	self.textures = textures;
+	self.stopMotion = stopMotion;
     if(data.controlledChildren) then
       self.givenPath = {};
       for index, childId in pairs(data.controlledChildren) do
@@ -6394,7 +6418,7 @@ function WeakAuras.CreateFrame()
       _, givenPath = next(self.givenPath);
     end
     WeakAuras.debug(givenPath, 3);
-    for categoryName, category in pairs(texture_types) do
+    for categoryName, category in pairs(self.textures) do
       if not(picked) then
         for texturePath, textureName in pairs(category) do
           if(texturePath == givenPath) then
@@ -6407,7 +6431,7 @@ function WeakAuras.CreateFrame()
       end
     end
     if not(picked) then
-      for categoryName, category in pairs(texture_types) do
+      for categoryName, category in pairs(self.textures) do
         texturePickDropdown:SetGroup(categoryName);
         break;
       end
@@ -8490,8 +8514,8 @@ function WeakAuras.SetThumbnail(data)
   end
 end
 
-function WeakAuras.OpenTexturePick(data, field)
-  frame.texturePick:Open(data, field);
+function WeakAuras.OpenTexturePick(data, field, textures, stopMotion)
+  frame.texturePick:Open(data, field, textures, stopMotion);
 end
 
 function WeakAuras.OpenIconPick(data, field)
