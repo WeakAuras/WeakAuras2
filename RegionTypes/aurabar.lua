@@ -495,7 +495,7 @@ local function orientHorizontalInverse(region, data)
   -- Text internal alignment
   if textDegrees == 0 then
     local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
-    text:SetWidth(bar:GetWidth() - usedSpace);
+    text:SetWidth(data.width - usedSpace);
     text:SetJustifyH("RIGHT");
   else
     text:SetWidth(0);
@@ -547,7 +547,7 @@ local function orientHorizontal(region, data)
   -- Text internal alignment
   if textDegrees == 0 then
     local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
-    text:SetWidth(bar:GetWidth() - usedSpace);
+    text:SetWidth(data.width - usedSpace);
     text:SetJustifyH("LEFT");
   else
     text:SetWidth(0);

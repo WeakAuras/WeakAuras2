@@ -375,10 +375,10 @@ function WeakAuras.CheckTalentByIndex(index)
   return selected
 end
 
-function WeakAuras.CheckEncounterId(loadids, currentEncounterId)
+function WeakAuras.CheckNumericIds(loadids, currentId)
   local searchFrom = 0;
 
-  local startI, endI = string.find(loadids, currentEncounterId, searchFrom);
+  local startI, endI = string.find(loadids, currentId, searchFrom);
   while (startI) do
     searchFrom = endI + 1; -- start next search from end
     if (startI == 1 or tonumber(string.sub(loadids, startI - 1, startI - 1)) == nil) then
@@ -387,7 +387,7 @@ function WeakAuras.CheckEncounterId(loadids, currentEncounterId)
         return true;
       end
     end
-    startI, endI = string.find(loadids, currentEncounterId, searchFrom);
+    startI, endI = string.find(loadids, currentId, searchFrom);
   end
   return false;
 end
@@ -538,7 +538,9 @@ WeakAuras.load_prototype = {
       name = "zoneId",
       display = L["Zone ID"],
       type = "string",
-      init = "arg"
+      init = "arg",
+      desc = L["ZoneID List"],
+      test = "WeakAuras.CheckNumericIds('%s', zoneId)"
     },
     {
       name = "encounterid",
@@ -546,7 +548,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = L["EncounterID List"],
-      test = "WeakAuras.CheckEncounterId('%s', encounterid)"
+      test = "WeakAuras.CheckNumericIds('%s', encounterid)"
     },
     {
       name = "size",
