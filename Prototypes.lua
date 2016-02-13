@@ -539,7 +539,7 @@ WeakAuras.load_prototype = {
       display = L["Zone ID"],
       type = "string",
       init = "arg",
-      desc = L["ZoneID List"],
+      desc = L["Zone ID List"],
       test = "WeakAuras.CheckNumericIds('%s', zoneId)"
     },
     {
