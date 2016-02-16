@@ -436,10 +436,10 @@ local function modify(parent, region, data)
                         angle = angle + angleInc;
                     end
                     if(data.grow == "HORIZONTAL") then
-                        xOffset = xOffset + (childData.width + data.space)/2;
+                        xOffset = xOffset + childData.width/2;
                     end
                     if(data.grow == "VERTICAL") then
-                        yOffset = yOffset - (childData.height + data.space)/2;
+                        yOffset = yOffset - childData.height / 2;
                     end
                     region.trays[regionData.key]:ClearAllPoints();
                     region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
@@ -449,7 +449,7 @@ local function modify(parent, region, data)
                         xOffset = xOffset + (childData.width + data.space);
                         yOffset = yOffset + data.stagger;
                     elseif(data.grow == "HORIZONTAL") then
-                        xOffset = xOffset + (childData.width + data.space)/2;
+                        xOffset = xOffset + (childData.width) / 2 + data.space;
                         yOffset = yOffset + data.stagger;
                     elseif(data.grow == "LEFT") then
                         xOffset = xOffset - (childData.width + data.space);
@@ -461,7 +461,7 @@ local function modify(parent, region, data)
                         yOffset = yOffset - (childData.height + data.space);
                         xOffset = xOffset + data.stagger;
                     elseif(data.grow == "VERTICAL") then
-                        yOffset = yOffset - (childData.height + data.space)/2;
+                        yOffset = yOffset - childData.height / 2 - data.space;
                         xOffset = xOffset + data.stagger;
                     end
                 else
