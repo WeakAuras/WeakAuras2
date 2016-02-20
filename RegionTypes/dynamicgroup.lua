@@ -293,6 +293,7 @@ local function modify(parent, region, data)
                     minY = originY - (maxY - originY);
                 end
             end
+            region:Show();
             local newWidth, newHeight = maxX - minX, maxY - minY;
             newWidth = newWidth > 0 and newWidth or 16;
             newHeight = newHeight > 0 and newHeight or 16;
