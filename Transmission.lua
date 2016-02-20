@@ -365,6 +365,9 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
     if(ItemRefTooltip.WeakAuras_Tooltip_Button) then
         ItemRefTooltip.WeakAuras_Tooltip_Button:Hide();
     end
+    if(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
+        ItemRefTooltip.WeakAuras_Tooltip_Button2:Hide();
+    end
     if(ItemRefTooltip.WeakAuras_Desc_Box) then
         ItemRefTooltip.WeakAuras_Desc_Box:Hide();
     end
