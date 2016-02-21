@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasDisplayButton", 22
+local Type, Version = "WeakAurasDisplayButton", 23
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -613,7 +613,7 @@ local methods = {
         end
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Shift-click to create chat link"]});
         local regionData = WeakAuras.regionOptions[data.regionType or ""]
-        local displayName = regionData and regionData.displayName or "";
+        local displayName = regionData and regionData.displayName or regionType or "";
         self:SetDescription({data.id, displayName}, unpack(namestable));
     end,
     ["ReloadTooltip"] = function(self)if(

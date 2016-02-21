@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasTextureButton", 20
+local Type, Version = "WeakAurasTextureButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -60,6 +60,12 @@ local methods = {
     end
     self.texture:SetVertexColor(r, g, b, a);
     self.texture:SetBlendMode(blendMode);
+  end,
+  ["SetTexCoord"] = function(self, left, right, top, bottom)
+    self.texture:SetTexCoord(left, right, top, bottom);
+  end,
+  ["SetOnUpdate"] = function(self, func)
+    self.frame:SetScript("OnUpdate", func);
   end,
   ["GetTexturePath"] = function(self)
     return self.texture.path;
