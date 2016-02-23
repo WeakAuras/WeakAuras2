@@ -392,7 +392,10 @@ local function create(parent)
 end
 
 -- Rotate object around its origin
-local function animRotate(object, degrees)
+local function animRotate(object, degrees, anchor)
+    if (not anchor) then
+        anchor = "CENTER";
+    end
   -- Something to rotate
     if object.animationGroup or degrees ~= 0 then
     -- Create AnimatioGroup and rotation animation
@@ -407,7 +410,7 @@ local function animRotate(object, degrees)
 
     -- Rotate around origin
         if degrees ~= 0 then
-            rotate:SetOrigin("CENTER", 0, 0);
+            rotate:SetOrigin(anchor, 0, 0);
             rotate:SetDegrees(degrees);
             rotate:SetDuration(0);
             rotate:SetEndDelay(0.1);

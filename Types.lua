@@ -369,6 +369,16 @@ WeakAuras.orientation_types = {
   VERTICAL = L["Bottom to Top"],
   VERTICAL_INVERSE = L["Top to Bottom"]
 };
+
+WeakAuras.orientation_with_circle_types = {
+  HORIZONTAL_INVERSE = L["Left to Right"],
+  HORIZONTAL = L["Right to Left"],
+  VERTICAL = L["Bottom to Top"],
+  VERTICAL_INVERSE = L["Top to Bottom"],
+  CLOCKWISE = L["Clockwise"],
+  ANTICLOCKWISE = L["Anticlockwise"]
+};
+
 WeakAuras.spec_types = {
   [1] = _G.SPECIALIZATION.." 1",
   [2] = _G.SPECIALIZATION.." 2",
