@@ -82,6 +82,9 @@ local squelch_actions = true;
 -- Load functions, keyed on id
 local loadFuncs = {}
 
+--custom trigger logic functions, keyed on id
+local triggerLogicFuncs = {}
+
 -- All regions keyed on id, has properties: region, regionType, also see clones
 WeakAuras.regions = {};
 local regions = WeakAuras.regions;
@@ -1249,6 +1252,7 @@ function WeakAuras.Delete(data)
   regions[id] = nil;
   loaded[id] = nil;
   loadFuncs[id] = nil;
+  triggerLogicFuncs[id] = nil;
 
   db.displays[id] = nil;
 
@@ -1279,6 +1283,8 @@ function WeakAuras.Rename(data, newid)
   loaded[oldid] = nil;
   loadFuncs[newid] = loadFuncs[oldid];
   loadFuncs[oldid] = nil;
+  triggerLogicFuncs[newid] = triggerLogicFuncs[oldid];
+  triggerLogicFuncs[oldid] = nil;
 
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
@@ -1542,6 +1548,14 @@ function WeakAuras.Modernize(data)
     load.talent = {};
     load.talent.single = talent;
     load.talent.multi = {}
+  end
+  
+  --upgrade to support custom trigger combination logic
+  if (data.disjunctive == true) then
+    data.disjunctive = "any";
+  end
+  if(data.disjunctive == false) then
+    data.disjunctive = "all";
   end
 
   for _, triggerSystem in pairs(triggerSystems) do
@@ -1816,10 +1830,12 @@ function WeakAuras.pAdd(data)
     data.actions.finish = data.actions.finish or {};
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
+    local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""));
     WeakAuras.debug(id.." - Load", 1);
     WeakAuras.debug(loadFuncStr);
 
     loadFuncs[id] = loadFunc;
+    triggerLogicFuncs[id] = triggerLogicFunc;
 
     if(WeakAuras.CanHaveClones(data)) then
       clones[id] = clones[id] or {};
@@ -2011,8 +2027,19 @@ function WeakAuras.SetRegion(data, cloneId)
         region.trigger_count = region.trigger_count or 0;
         region.triggers = region.triggers or {};
 
-        function region:TestTriggers(trigger_count)
-          if(trigger_count > ((data.disjunctive and 0) or #data.additional_triggers)) then
+        function region:TestTriggers(triggers, trigger_count)
+          if(data.disjunctive == "custom") then
+            local customFunc = triggerLogicFuncs[data.id];
+            if customFunc then
+              if(customFunc(triggers)) then
+                region:Expand();
+                return true;
+              else
+                region:Collapse();
+                return false;
+              end
+            end
+          elseif(trigger_count > (((data.disjunctive == "any") and 0) or #data.additional_triggers)) then
             region:Expand();
             return true;
           else
@@ -2022,20 +2049,20 @@ function WeakAuras.SetRegion(data, cloneId)
         end
 
         function region:EnableTrigger(triggernum)
-          if not(region.triggers[triggernum]) then
-            region.triggers[triggernum] = true;
+          if not(region.triggers[triggernum+1]) then
+            region.triggers[triggernum+1] = true;
             region.trigger_count = region.trigger_count + 1;
-            return region:TestTriggers(region.trigger_count);
+            return region:TestTriggers(region.triggers, region.trigger_count);
           else
             return nil;
           end
         end
 
         function region:DisableTrigger(triggernum)
-          if(region.triggers[triggernum]) then
-            region.triggers[triggernum] = nil;
+          if(region.triggers[triggernum+1]) then
+            region.triggers[triggernum+1] = nil;
             region.trigger_count = region.trigger_count - 1;
-            return not region:TestTriggers(region.trigger_count);
+            return not region:TestTriggers(region.triggers, region.trigger_count);
           else
             return nil;
           end

@@ -520,68 +520,66 @@ end
 
 local function checkTrigger(codes, id, trigger, untrigger)
   if (not trigger) then return end;
-  if trigger.type == "custom" then
-    local t = {};
-    if (trigger.custom) then
-      t.text = L["%s Trigger Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.custom;
-      tinsert(codes, t);
-    end
-
-    if (untrigger and untrigger.custom) then
-      t = {} 
-      t.text = L["%s Untrigger Function"]:format(id);
-      t.value = t.text;
-      t.code = untrigger.custom;
-      tinsert(codes, t);
-    end
-
-    if (trigger.customDuration) then
-      t = {}
-      t.text = L["%s Duration Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customDuration
-      tinsert(codes, t);
-    end
-
-    if (trigger.customName) then
-      t = {}
-      t.text = L["%s Name Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customName
-      tinsert(codes, t);
-    end
-
-    if (trigger.customIcon) then
-      t = {}
-      t.text = L["%s Icon Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customIcon
-      tinsert(codes, t);
-    end
-
-    if (trigger.customTexture) then
-      t = {}
-      t.text = L["%s Texture Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customTexture
-      tinsert(codes, t);
-    end
-
-    if (trigger.customStacks) then
-      t = {}
-      t.text = L["%s Stacks Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customStacks
-      tinsert(codes, t);
-    end
+  local t = {};
+  if (trigger.custom) then
+    t.text = L["%s Trigger Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.custom;
+    tinsert(codes, t);
+  end
+  
+  if (untrigger and untrigger.custom) then
+    t = {} 
+    t.text = L["%s Untrigger Function"]:format(id);
+    t.value = t.text;
+    t.code = untrigger.custom;
+    tinsert(codes, t);
+  end
+  
+  if (trigger.customDuration) then
+    t = {}
+    t.text = L["%s Duration Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customDuration
+    tinsert(codes, t);
+  end
+  
+  if (trigger.customName) then
+    t = {}
+    t.text = L["%s Name Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customName
+    tinsert(codes, t);
+  end
+  
+  if (trigger.customIcon) then
+    t = {}
+    t.text = L["%s Icon Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customIcon
+    tinsert(codes, t);
+  end
+  
+  if (trigger.customTexture) then
+    t = {}
+    t.text = L["%s Texture Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customTexture
+    tinsert(codes, t);
+  end
+  
+  if (trigger.customStacks) then
+    t = {}
+    t.text = L["%s Stacks Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customStacks
+    tinsert(codes, t);
   end
 end
 
 local function checkCustom(codes, id, base)
   if (not base) then return end
-  if (base.do_custom) then
+  if (base.custom) then
     local t = {};
     t.text = id;
     t.value = id;
@@ -592,47 +590,63 @@ end
 
 local function checkAnimation(codes, id, a)
   if (not a) then return end
-  if (a.type == "custom") then
-    if (a.alphaType == "custom" and a.use_alpha and a.alphaFunc) then
-      local t = {};
-      t.text = L["%s - Alpha Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.alphaFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.translateType == "custom" and a.use_translate and a.translateFunc) then
-      local t = {};
-      t.text = L["%s - Translate Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.translateFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.scaleType == "custom" and a.use_scale and a.scaleFunc) then
-      local t = {};
-      t.text = L["%s - Scale Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.scaleFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.rotateType == "custom" and a.use_rotate and a.rotateFunc) then
-      local t = {};
-      t.text = L["%s - Rotate Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.rotateFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.colorType == "custom" and a.use_color and a.colorFunc) then
-      local t = {};
-      t.text = L["%s - Color Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.colorFunc
-      tinsert(codes, t);
-    end
+  if (a.alphaFunc) then
+    local t = {};
+    t.text = L["%s - Alpha Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.alphaFunc;
+    tinsert(codes, t);
   end
+  
+  if (a.translateFunc) then
+    local t = {};
+    t.text = L["%s - Translate Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.translateFunc;
+    tinsert(codes, t);
+  end
+  
+  if (a.scaleFunc) then
+    local t = {};
+    t.text = L["%s - Scale Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.scaleFunc;
+    tinsert(codes, t);
+  end
+  
+  if (a.rotateFunc) then
+    local t = {};
+    t.text = L["%s - Rotate Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.rotateFunc;
+    tinsert(codes, t);
+  end
+  
+  if (a.colorFunc) then
+    local t = {};
+    t.text = L["%s - Color Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.colorFunc
+    tinsert(codes, t);
+  end
+end
+
+local function checkTriggerLogic(codes, id, logic)
+  if (not logic) then return end
+  local t = {};
+  t.text = id;
+  t.value = id;
+  t.code = logic;
+  tinsert(codes, t);
+end
+
+local function checkText(codes, id, customText)
+  if (not customText) then return end
+  local t = {};
+  t.text = id;
+  t.value = id;
+  t.code = customText;
+  tinsert(codes, t);
 end
 
 local function scamCheck(codes, data)
@@ -654,6 +668,14 @@ local function scamCheck(codes, data)
       r = checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
       r = checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
     end
+	
+	if(data.customTriggerLogic) then
+	  r = checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
+	end
+	
+	if(data.customText) then
+	  r = checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
+	end
 end
 
 function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
