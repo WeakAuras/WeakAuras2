@@ -1009,7 +1009,7 @@ local function Constructor()
     loaded:SetPoint("BOTTOM", button, "BOTTOM");
     loaded:SetPoint("LEFT", icon, "RIGHT", 0, 0);
     loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
-    loaded:SetDisabledTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Down.blp");
+    loaded:SetDisabledTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
     --loaded:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
     loaded.title = L["Loaded"];
     loaded.desc = L["This display is currently loaded"];
