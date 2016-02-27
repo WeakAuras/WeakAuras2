@@ -407,6 +407,9 @@ local function modify(parent, region, data)
       region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
 
       local function betweenAngles(low, high, needle1, needle2)
+        if (low == high) then
+          return true;
+        end
         if (low <= needle1 and needle1 <= high
                 and low <= needle2 and needle2 <= high) then
             return true;
