@@ -65,7 +65,6 @@ local function ApplyTransform(x, y, region)
   return x, y
 end
 
---Transform(self.wedge, -0.5, -0.5, degree + data.rotation, self.aspect)
 local function Transform(tx, x, y, angle, aspect) -- Translates texture to x, y and rotates about its center
     local c, s = cos(angle), sin(angle)
     local y, oy = y / aspect, 0.5 / aspect
@@ -113,6 +112,194 @@ local default = {
     frameStrata = 1
 };
 
+local spinnerFunctions = {};
+
+function spinnerFunctions.SetWidth(self, width)
+  self.wedge:SetWidth(width);
+end
+
+function spinnerFunctions.SetHeight(self, height)
+  self.wedge:SetHeight(height);
+end
+
+function spinnerFunctions.SetTexture(self, texture)
+  for i = 1, 4 do
+    self.circularTextures[i]:SetTexture(texture);
+  end
+  self.wedge:SetTexture(texture);
+end
+
+function spinnerFunctions.SetDesaturated(self, desaturate)
+  for i = 1, 4 do
+    self.circularTextures[i]:SetDesaturated(desaturate);
+  end
+  self.wedge:SetDesaturated(desaturate);
+end
+
+function spinnerFunctions.SetBlendMode(self, blendMode)
+  for i = 1, 4 do
+    self.circularTextures[i]:SetBlendMode(blendMode);
+  end
+  self.wedge:SetBlendMode(blendMode);
+end
+
+function spinnerFunctions.Show(self)
+  self.wedge:Show();
+end
+
+function spinnerFunctions.Hide(self)
+  for i = 1, 4 do
+    self.circularTextures[i]:Hide();
+  end
+  self.wedge:Hide();
+end
+
+function spinnerFunctions.Color(self, r, g, b, a)
+  for i = 1, 4 do
+    self.circularTextures[i]:SetVertexColor(r, g, b, a);
+  end
+  self.wedge:SetVertexColor(r, g, b, a);
+end
+
+local function betweenAngles(low, high, needle1, needle2)
+  if (low == high) then
+    return true;
+  end
+  if (low <= needle1 and needle1 <= high
+          and low <= needle2 and needle2 <= high) then
+      return true;
+  end
+
+  needle1 = needle1 + 360;
+  needle2 = needle2 + 360;
+  if (low <= needle1 and needle1 <= high
+          and low <= needle2 and needle2 <= high) then
+      return true;
+  end
+  return false;
+end
+
+function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progress, clockwise)
+  local pAngle = (1 - progress) * (endAngle - startAngle) + startAngle;
+
+  -- Show/hide necessary textures if we need to
+  local showing = {};
+  for i = 1, 4 do
+     local quadrantAngle1;
+     local quadrantAngle2;
+
+     if (clockwise) then
+        quadrantAngle2 = i * 90;
+        quadrantAngle1 = quadrantAngle2 - 90;
+     else
+        quadrantAngle2 = (5 - i) * 90;
+        quadrantAngle1 = quadrantAngle2 - 90;
+     end
+
+     if clockwise then
+       self.circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
+       showing[i] = betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2);
+     else
+       self.circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
+       showing[i] = betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2);
+     end
+  end
+
+  -- Move scrollframe/wedge to the proper quadrant
+  local quadrant = floor(pAngle % 360 / 90) + 1;
+  if (not clockwise) then
+    quadrant = 5 - quadrant;
+  end
+  self.scrollframe:SetAllPoints(self.circularTextures[quadrant])
+
+  local ULx, ULy = ApplyTransform(0, 0, region)
+  local LLx, LLy = ApplyTransform(0, 1, region)
+  local URx, URy = ApplyTransform(1, 0, region)
+  local LRx, LRy = ApplyTransform(1, 1, region)
+
+  local Lx, Ly = ApplyTransform(0, 0.5, region)
+  local Tx, Ty = ApplyTransform(0.5, 0, region)
+  local Bx, By = ApplyTransform(0.5, 1, region)
+  local Rx, Ry = ApplyTransform(1, 0.5, region)
+  local Cx, Cy = ApplyTransform(0.5, 0.5, region)
+
+  self.circularTextures[1]:SetTexCoord(Tx, Ty, Cx, Cy, URx, URy, Rx, Ry);
+  self.circularTextures[2]:SetTexCoord(Cx, Cy, Bx, By, Rx, Ry, LRx, LRy);
+  self.circularTextures[3]:SetTexCoord(Lx, Ly, LLx, LLy, Cx, Cy, Bx, By);
+  self.circularTextures[4]:SetTexCoord(ULx, ULy, Lx, Ly, Tx, Ty, Cx, Cy);
+
+  local degree = pAngle;
+  if not clockwise then degree = -degree + 90 end
+  Transform(self.wedge, -0.5, -0.5, degree + region.rotation, region.aspect)
+  WeakAuras.animRotate(self.wedge, -degree, "BOTTOMRIGHT");
+end
+
+function spinnerFunctions.SetBackgroundOffset(self, region, offset)
+    self.circularTextures[1]:SetPoint('TOPRIGHT', region, offset, offset)
+    self.circularTextures[2]:SetPoint('BOTTOMRIGHT', region, offset, -offset)
+    self.circularTextures[3]:SetPoint('BOTTOMLEFT', region, -offset, -offset)
+    self.circularTextures[4]:SetPoint('TOPLEFT', region, -offset, -offset)
+end
+
+local function createSpinner(parent, layer, frameLevel)
+    -- For circular progress
+    local scrollframe = CreateFrame('ScrollFrame', nil, parent)
+    scrollframe:SetPoint('BOTTOMLEFT', parent, 'CENTER')
+    scrollframe:SetPoint('TOPRIGHT')
+    scrollframe:SetFrameLevel(frameLevel);
+
+    local scrollchild = CreateFrame('frame', nil, scrollframe)
+    scrollframe:SetScrollChild(scrollchild)
+    scrollchild:SetAllPoints(scrollframe)
+    scrollchild:SetFrameLevel(frameLevel);
+
+    -- Wedge thing
+    local wedge = scrollchild:CreateTexture(nil, layer)
+    wedge:SetPoint('BOTTOMRIGHT', parent, 'CENTER')
+
+    -- Top Right
+    local trTexture = parent:CreateTexture(nil, layer)
+    trTexture:SetPoint('BOTTOMLEFT', parent, 'CENTER')
+    trTexture:SetPoint('TOPRIGHT')
+    trTexture:SetTexCoord(0.5, 1, 0, 0.5)
+
+    -- Bottom Right
+    local brTexture = parent:CreateTexture(nil, layer)
+    brTexture:SetPoint('TOPLEFT', parent, 'CENTER')
+    brTexture:SetPoint('BOTTOMRIGHT')
+    brTexture:SetTexCoord(0.5, 1, 0.5, 1)
+
+    -- Bottom Left
+    local blTexture = parent:CreateTexture(nil, layer)
+    blTexture:SetPoint('TOPRIGHT', parent, 'CENTER')
+    blTexture:SetPoint('BOTTOMLEFT')
+    blTexture:SetTexCoord(0, 0.5, 0.5, 1)
+
+    -- Top Left
+    local tlTexture = parent:CreateTexture(nil, layer)
+    tlTexture:SetPoint('BOTTOMRIGHT', parent, 'CENTER')
+    tlTexture:SetPoint('TOPLEFT')
+    tlTexture:SetTexCoord(0, 0.5, 0, 0.5)
+
+    -- /4|1\ -- Clockwise texture arrangement
+    -- \3|2/ --
+
+    local spinner = {};
+
+    spinner.scrollframe = scrollframe
+    spinner.wedge = wedge
+    spinner.circularTextures = {trTexture, brTexture, blTexture, tlTexture}
+
+    for k, v in pairs(spinnerFunctions) do
+      spinner[k] = v;
+    end
+
+    return spinner;
+end
+
+-- Make available for the Thumbmail display
+WeakAuras.createSpinner = createSpinner;
+
 local function create(parent)
     local font = "GameFontHighlight";
 
@@ -128,60 +315,8 @@ local function create(parent)
     local foreground = region:CreateTexture(nil, "ARTWORK");
     region.foreground = foreground;
 
-    -- For circular progress
-    local scrollframe = CreateFrame('ScrollFrame', nil, region)
-    scrollframe:SetPoint('BOTTOMLEFT', region, 'CENTER')
-    scrollframe:SetPoint('TOPRIGHT')
-    region.scrollframe = scrollframe
-    scrollframe:SetFrameLevel(parent:GetFrameLevel() + 1);
-
-    local scrollchild = CreateFrame('frame', nil, scrollframe)
-    scrollframe:SetScrollChild(scrollchild)
-    scrollchild:SetAllPoints(scrollframe)
-    scrollchild:SetFrameLevel(parent:GetFrameLevel() + 1);
-
-    -- Wedge thing
-    local wedge = scrollchild:CreateTexture(nil, "ARTWORK")
-    wedge:SetPoint('BOTTOMRIGHT', region, 'CENTER')
-    region.wedge = wedge
-
-    -- Top Right
-    local trTexture = region:CreateTexture(nil, "ARTWORK")
-    trTexture:SetPoint('BOTTOMLEFT', region, 'CENTER')
-    trTexture:SetPoint('TOPRIGHT')
-    trTexture:SetTexCoord(0.5, 1, 0, 0.5)
-
-    -- Bottom Right
-    local brTexture = region:CreateTexture(nil, "ARTWORK")
-    brTexture:SetPoint('TOPLEFT', region, 'CENTER')
-    brTexture:SetPoint('BOTTOMRIGHT')
-    brTexture:SetTexCoord(0.5, 1, 0.5, 1)
-
-    -- Bottom Left
-    local blTexture = region:CreateTexture(nil, "ARTWORK")
-    blTexture:SetPoint('TOPRIGHT', region, 'CENTER')
-    blTexture:SetPoint('BOTTOMLEFT')
-    blTexture:SetTexCoord(0, 0.5, 0.5, 1)
-
-    -- Top Left
-    local tlTexture = region:CreateTexture(nil, "ARTWORK")
-    tlTexture:SetPoint('BOTTOMRIGHT', region, 'CENTER')
-    tlTexture:SetPoint('TOPLEFT')
-    tlTexture:SetTexCoord(0, 0.5, 0, 0.5)
-
-    -- /4|1\ -- Clockwise texture arrangement
-    -- \3|2/ --
-
-    region.circularTextures = {trTexture, brTexture, blTexture, tlTexture}
-
-    local group = wedge:CreateAnimationGroup()
-    local rotationGroup = group:CreateAnimation('Rotation')
-    region.rotationGroup = rotationGroup
-    rotationGroup:SetDuration(0)
-    rotationGroup:SetEndDelay(1)
-    rotationGroup:SetOrigin('BOTTOMRIGHT', 0, 0)
-    group:SetScript('OnPlay', OnPlay)
-    group:Play()
+    region.foregroundSpinner = createSpinner(region, "ARTWORK", parent:GetFrameLevel() + 2);
+    region.backgroundSpinner = createSpinner(region, "BACKGROUND", parent:GetFrameLevel() + 1);
 
     region.duration = 0;
     region.expirationTime = math.huge;
@@ -191,7 +326,7 @@ end
 
 local function modify(parent, region, data)
     local background, foreground = region.background, region.foreground;
-    local scrollframe, wedge, circularTextures = region.scrollframe, region.wedge, region.circularTextures;
+    local foregroundSpinner, backgroundSpinner = region.foregroundSpinner, region.backgroundSpinner;
 
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
@@ -205,38 +340,38 @@ local function modify(parent, region, data)
     foreground:SetWidth(data.width);
     foreground:SetHeight(data.height);
     local scaleWedge =  1 / 1.4142 * (1 + (data.crop or 0.41));
-    wedge:SetWidth(data.width * scaleWedge);
-    wedge:SetHeight(data.height * scaleWedge);
-
+    foregroundSpinner:SetWidth(data.width * scaleWedge);
+    foregroundSpinner:SetHeight(data.height * scaleWedge);
+    backgroundSpinner:SetWidth((data.width + data.backgroundOffset * 2) * scaleWedge);
+    backgroundSpinner:SetHeight((data.height + data.backgroundOffset * 2) * scaleWedge);
 
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
     region:SetAlpha(data.alpha);
-
-    local fontPath = SharedMedia:Fetch("font", data.font);
 
     background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
     background:SetDesaturated(data.desaturateBackground)
     background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
     background:SetBlendMode(data.blendMode);
 
+    backgroundSpinner:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
+    backgroundSpinner:SetDesaturated(data.desaturateBackground)
+    backgroundSpinner:Color(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+    backgroundSpinner:SetBlendMode(data.blendMode);
+
     foreground:SetTexture(data.foregroundTexture);
     foreground:SetDesaturated(data.desaturateForeground)
     foreground:SetBlendMode(data.blendMode);
 
-    for i = 1, 4 do
-      circularTextures[i]:SetTexture(data.foregroundTexture);
-      circularTextures[i]:SetDesaturated(data.desaturateForeground);
-      circularTextures[i]:SetBlendMode(data.blendMode);
-    end
-    wedge:SetTexture(data.foregroundTexture);
-    wedge:SetDesaturated(data.desaturateForeground);
-    wedge:SetBlendMode(data.blendMode);
+    foregroundSpinner:SetTexture(data.foregroundTexture);
+    foregroundSpinner:SetDesaturated(data.desaturateForeground);
+    foregroundSpinner:SetBlendMode(data.blendMode);
 
     background:ClearAllPoints();
     foreground:ClearAllPoints();
     background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * data.backgroundOffset, -1 * data.backgroundOffset);
     background:SetPoint("TOPRIGHT", region, "TOPRIGHT", data.backgroundOffset, data.backgroundOffset);
+    backgroundSpinner:SetBackgroundOffset(region, data.backgroundOffset);
 
     region.mirror_h = data.mirror;
     region.scale_x = 1 + (data.crop_x or 0.41);
@@ -406,92 +541,28 @@ local function modify(parent, region, data)
 
       region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
 
-      local function betweenAngles(low, high, needle1, needle2)
-        if (low == high) then
-          return true;
-        end
-        if (low <= needle1 and needle1 <= high
-                and low <= needle2 and needle2 <= high) then
-            return true;
-        end
-        
-        needle1 = needle1 + 360;
-        needle2 = needle2 + 360;
-        if (low <= needle1 and needle1 <= high
-                and low <= needle2 and needle2 <= high) then
-            return true;
-        end
-        return false;
-      end
+      backgroundSpinner:SetProgress(region, startAngle, endAngle, 0, clockwise);
 
       function region:SetValue(progress)
         progress = progress or 0;
         region.progress = progress;
 
-        local pAngle = (1 - progress) * (endAngle - startAngle) + startAngle;
-
-        -- Show/hide necessary textures if we need to
-        for i = 1, 4 do
-           local quadrantAngle1;
-           local quadrantAngle2;
-
-           if (clockwise) then
-              quadrantAngle2 = i * 90;
-              quadrantAngle1 = quadrantAngle2 - 90;
-           else
-              quadrantAngle2 = (5 - i) * 90;
-              quadrantAngle1 = quadrantAngle2 - 90;
-           end
-
-           if clockwise then
-             self.circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
-           else
-             self.circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
-           end
-        end
-        self.circularTextures[4]:SetTexCoord(ULx, ULy, Lx, Ly, Tx, Ty, Lx, Ly);
-        -- Move scrollframe/wedge to the proper quadrant
-        local quadrant = floor(pAngle % 360 / 90) + 1;
-        if (not clockwise) then
-          quadrant = 5 - quadrant;
-        end
-        self.scrollframe:SetAllPoints(self.circularTextures[quadrant])
-
-        local ULx, ULy = ApplyTransform(0, 0, region)
-        local LLx, LLy = ApplyTransform(0, 1, region)
-        local URx, URy = ApplyTransform(1, 0, region)
-        local LRx, LRy = ApplyTransform(1, 1, region)
-
-        local Lx, Ly = ApplyTransform(0, 0.5, region)
-        local Tx, Ty = ApplyTransform(0.5, 0, region)
-        local Bx, By = ApplyTransform(0.5, 1, region)
-        local Rx, Ry = ApplyTransform(1, 0.5, region)
-        local Cx, Cy = ApplyTransform(0.5, 0.5, region)
-
-        self.circularTextures[1]:SetTexCoord(Tx, Ty, Cx, Cy, URx, URy, Rx, Ry);
-        self.circularTextures[2]:SetTexCoord(Cx, Cy, Bx, By, Rx, Ry, LRx, LRy);
-        self.circularTextures[3]:SetTexCoord(Lx, Ly, LLx, LLy, Cx, Cy, Bx, By);
-        self.circularTextures[4]:SetTexCoord(ULx, ULy, Lx, Ly, Tx, Ty, Cx, Cy);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-
-        local degree = pAngle;
-        if not clockwise then degree = -degree + 90 end
-        Transform(self.wedge, -0.5, -0.5, degree + region.rotation, self.aspect)
-        WeakAuras.animRotate(self.wedge, -degree, "BOTTOMRIGHT");
+        foregroundSpinner:SetProgress(region, startAngle, endAngle, progress, clockwise);
       end
     end
 
     local function showCircularProgress()
       foreground:Hide();
-      wedge:Show();
+      background:Hide();
+      foregroundSpinner:Show();
+      backgroundSpinner:Show();
     end
 
     local function hideCircularProgress()
       foreground:Show();
-      for i = 1, 4 do
-        circularTextures[i]:Hide();
-      end
-      wedge:Hide();
+      background:Show();
+      foregroundSpinner:Hide();
+      backgroundSpinner:Hide();
     end
 
     if(data.orientation == "HORIZONTAL_INVERSE") then
@@ -584,10 +655,7 @@ local function modify(parent, region, data)
         region.color_b = b;
         region.color_a = a;
         foreground:SetVertexColor(r, g, b, a);
-        for i = 1, 4 do
-          circularTextures[i]:SetVertexColor(r, g, b, a);
-        end
-        wedge:SetVertexColor(r, g, b, a);
+        foregroundSpinner:Color(r, g, b, a);
     end
 
     function region:GetColor()

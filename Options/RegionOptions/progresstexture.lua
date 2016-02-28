@@ -1,5 +1,5 @@
 local L = WeakAuras.L
-    
+
 local function createOptions(id, data)
     local options = {
         foregroundTexture = {
@@ -243,7 +243,7 @@ local function createOptions(id, data)
         }
     };
     options = WeakAuras.AddPositionOptions(options, id, data);
-    
+
     return options;
 end
 
@@ -268,15 +268,15 @@ local function ApplyTransform(x, y, region)
   -- 1) Translate texture-coords to user-defined center
   x = x - 0.5
   y = y - 0.5
-  
+
   -- 2) Shrink texture by 1/sqrt(2)
   x = x * 1.4142
   y = y * 1.4142
-  
+
   -- 3) Scale texture by user-defined amount
   x = x / region.scale_x
   y = y / region.scale_y
-  
+
   -- 4) Apply mirroring if defined
   if region.mirror_h then
 	x = -x
@@ -284,14 +284,14 @@ local function ApplyTransform(x, y, region)
   if region.mirror_v then
 	y = -y
   end
-  
+
   -- 5) Rotate texture by user-defined value
   --[[local x_tmp = region.cos_rotation * x - region.sin_rotation * y
   local y_tmp = region.sin_rotation * x + region.cos_rotation * y
   x = x_tmp
   y = y_tmp]]
   x, y = region.cos_rotation * x - region.sin_rotation * y, region.sin_rotation * x + region.cos_rotation * y
-  
+
   -- 6) Translate texture-coords back to (0,0)
   x = x + 0.5 + region.user_x
   y = y + 0.5 + region.user_y
@@ -331,57 +331,15 @@ local function createThumbnail(parent, fullCreate)
     local foreground = region:CreateTexture(nil, "ART");
     borderframe.foreground = foreground;
 
-    -- For circular progress
-    local scrollframe = CreateFrame('ScrollFrame', nil, borderframe)
-    scrollframe:SetPoint('BOTTOMLEFT', borderframe, 'CENTER')
-    scrollframe:SetPoint('TOPRIGHT')
-    borderframe.scrollframe = scrollframe
-
-    local scrollchild = CreateFrame('frame', nil, scrollframe)
-    scrollframe:SetScrollChild(scrollchild)
-    scrollchild:SetAllPoints(scrollframe)
-
-    -- Wedge thing
-    local wedge = scrollchild:CreateTexture()
-    wedge:SetPoint('BOTTOMRIGHT', borderframe, 'CENTER')
-    borderframe.wedge = wedge
-
-    -- Top Right
-    local trTexture = borderframe:CreateTexture()
-    trTexture:SetPoint('BOTTOMLEFT', borderframe, 'CENTER')
-    trTexture:SetPoint('TOPRIGHT')
-    trTexture:SetTexCoord(0.5, 1, 0, 0.5)
-
-    -- Bottom Right
-    local brTexture = borderframe:CreateTexture()
-    brTexture:SetPoint('TOPLEFT', borderframe, 'CENTER')
-    brTexture:SetPoint('BOTTOMRIGHT')
-    brTexture:SetTexCoord(0.5, 1, 0.5, 1)
-
-    -- Bottom Left
-    local blTexture = borderframe:CreateTexture()
-    blTexture:SetPoint('TOPRIGHT', borderframe, 'CENTER')
-    blTexture:SetPoint('BOTTOMLEFT')
-    blTexture:SetTexCoord(0, 0.5, 0.5, 1)
-
-    -- Top Left
-    local tlTexture = borderframe:CreateTexture()
-    tlTexture:SetPoint('BOTTOMRIGHT', borderframe, 'CENTER')
-    tlTexture:SetPoint('TOPLEFT')
-    tlTexture:SetTexCoord(0, 0.5, 0, 0.5)
-
-    -- /4|1\ -- Clockwise texture arrangement
-    -- \3|2/ --
-
-    borderframe.circularTextures = {trTexture, brTexture, blTexture, tlTexture}
-    borderframe.quadrant = nil
+    borderframe.foregroundSpinner = WeakAuras.createSpinner(borderframe, "ARTWORK", parent:GetFrameLevel() + 2);
+    borderframe.backgroundSpinner = WeakAuras.createSpinner(borderframe, "BACKGROUND", parent:GetFrameLevel() + 1);
 
     return borderframe;
 end
 
 local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     local region, background, foreground = borderframe.region, borderframe.background, borderframe.foreground;
-    local scrollframe, wedge, circularTextures = borderframe.scrollframe, borderframe.wedge, borderframe.circularTextures;
+    local foregroundSpinner, backgroundSpinner = borderframe.foregroundSpinner, borderframe.backgroundSpinner;
 
     size = size or 30;
     local scale;
@@ -391,46 +349,51 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         region:SetHeight(size);
         foreground:SetWidth(scale * data.width);
         foreground:SetHeight(size);
-        wedge:SetWidth(scale * data.width);
-        wedge:SetHeight(size);
+        foregroundSpinner:SetWidth(scale * data.width);
+        foregroundSpinner:SetHeight(size);
+        backgroundSpinner:SetWidth(scale * data.width)
+        backgroundSpinner:SetHeight(size);
     else
         scale = size/data.width;
         region:SetWidth(size);
         region:SetHeight(scale * data.height);
         foreground:SetWidth(size);
         foreground:SetHeight(scale * data.height);
-        wedge:SetWidth(size);
-        wedge:SetHeight(scale * data.height);
+        foregroundSpinner:SetWidth(size);
+        foregroundSpinner:SetHeight(scale * data.height);
+        backgroundSpinner:SetWidth(size)
+        backgroundSpinner:SetHeight(scale * data.height);
     end
-    
+
     region:ClearAllPoints();
     region:SetPoint("CENTER", borderframe, "CENTER");
     region:SetAlpha(data.alpha);
-    
+
     background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
+    background:SetDesaturated(data.desaturateBackground)
     background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
     background:SetBlendMode(data.blendMode);
-    
+
+    backgroundSpinner:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
+    backgroundSpinner:SetDesaturated(data.desaturateBackground)
+    backgroundSpinner:Color(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+    backgroundSpinner:SetBlendMode(data.blendMode);
+
     foreground:SetTexture(data.foregroundTexture);
     foreground:SetVertexColor(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
     foreground:SetBlendMode(data.blendMode);
 
-    for i = 1, 4 do
-      circularTextures[i]:SetTexture(data.foregroundTexture);
-      circularTextures[i]:SetDesaturated(data.desaturateForeground);
-      circularTextures[i]:SetBlendMode(data.blendMode);
-      circularTextures[i]:SetVertexColor(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
-    end
-    wedge:SetTexture(data.foregroundTexture);
-    wedge:SetDesaturated(data.desaturateForeground);
-    wedge:SetVertexColor(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
-    wedge:SetBlendMode(data.blendMode);
+    foregroundSpinner:SetTexture(data.foregroundTexture);
+    foregroundSpinner:SetDesaturated(data.desaturateForeground);
+    foregroundSpinner:SetBlendMode(data.blendMode);
+    foregroundSpinner:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4])
 
     background:ClearAllPoints();
     foreground:ClearAllPoints();
     background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * scale * data.backgroundOffset, -1 * scale * data.backgroundOffset);
     background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scale * data.backgroundOffset, scale * data.backgroundOffset);
-    
+    backgroundSpinner:SetBackgroundOffset(region, data.backgroundOffset);
+
     region.mirror_h = data.mirror;
     region.scale_x = 1 + (data.crop_x or 0.41);
     region.scale_y = 1 + (data.crop_y or 0.41);
@@ -439,7 +402,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     region.sin_rotation = sin(region.rotation);
     region.user_x = -1 * (data.user_x or 0);
     region.user_y = data.user_y or 0;
-    
+    region.aspect = 1;
+
     local function orientHorizontal()
         foreground:ClearAllPoints();
         foreground:SetPoint("LEFT", region, "LEFT");
@@ -447,12 +411,12 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-				
+
 				local ULx, ULy = ApplyTransform(0, 0, region)
 				local LLx, LLy = ApplyTransform(0, 1, region)
 				local URx, URy = ApplyTransform(1, 0, region)
 				local LRx, LRy = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
 				foreground:SetWidth(region:GetWidth() * progress);
 				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
@@ -460,14 +424,14 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         else
             function region:SetValue(progress)
                 region.progress = progress;
-				
+
 				local ULx , ULy  = ApplyTransform(0, 0, region)
 				local LLx , LLy  = ApplyTransform(0, 1, region)
 				local URx , URy  = ApplyTransform(progress, 0, region)
 				local URx_, URy_ = ApplyTransform(1, 0, region)
 				local LRx , LRy  = ApplyTransform(progress, 1, region)
 				local LRx_, LRy_ = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx , URy , LRx , LRy );
 				foreground:SetWidth(region:GetWidth() * progress);
 				background:SetTexCoord(ULx, ULy, LLx, LLy, URx_, URy_, LRx_, LRy_);
@@ -481,12 +445,12 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-				
+
 				local ULx, ULy = ApplyTransform(0, 0, region)
 				local LLx, LLy = ApplyTransform(0, 1, region)
 				local URx, URy = ApplyTransform(1, 0, region)
 				local LRx, LRy = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
 				foreground:SetWidth(region:GetWidth() * progress);
 				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
@@ -494,14 +458,14 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         else
             function region:SetValue(progress)
                 region.progress = progress;
-				
+
 				local ULx , ULy  = ApplyTransform(1-progress, 0, region)
 				local ULx_, ULy_ = ApplyTransform(0, 0, region)
 				local LLx , LLy  = ApplyTransform(1-progress, 1, region)
 				local LLx_, LLy_ = ApplyTransform(0, 1, region)
 				local URx , URy  = ApplyTransform(1, 0, region)
 				local LRx , LRy  = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx , ULy , LLx , LLy , URx, URy, LRx, LRy);
 				foreground:SetWidth(region:GetWidth() * progress);
 				background:SetTexCoord(ULx_, ULy_, LLx_, LLy_, URx, URy, LRx, LRy);
@@ -515,13 +479,13 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-				
-				
+
+
 				local ULx, ULy = ApplyTransform(0, 0, region)
 				local LLx, LLy = ApplyTransform(0, 1, region)
 				local URx, URy = ApplyTransform(1, 0, region)
 				local LRx, LRy = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
 				foreground:SetHeight(region:GetHeight() * progress);
 				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
@@ -529,14 +493,14 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         else
             function region:SetValue(progress)
                 region.progress = progress;
-				
+
 				local ULx , ULy  = ApplyTransform(0, 1-progress, region)
 				local ULx_, ULy_ = ApplyTransform(0, 0, region)
 				local LLx , LLy  = ApplyTransform(0, 1, region)
 				local URx , URy  = ApplyTransform(1, 1-progress, region)
 				local URx_, URy_ = ApplyTransform(1, 0, region)
 				local LRx , LRy  = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
 				foreground:SetHeight(region:GetHeight() * progress);
 				background:SetTexCoord(ULx_, ULy_, LLx, LLy, URx_, URy_, LRx, LRy);
@@ -550,13 +514,13 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-				
-				
+
+
 				local ULx, ULy = ApplyTransform(0, 0, region)
 				local LLx, LLy = ApplyTransform(0, 1, region)
 				local URx, URy = ApplyTransform(1, 0, region)
 				local LRx, LRy = ApplyTransform(1, 1, region)
-				
+
 				foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
 				foreground:SetHeight(region:GetHeight() * progress);
 				background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
@@ -593,89 +557,28 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         endAngle = endAngle + 360;
       end
 
-      local function betweenAngles(low, high, needle1, needle2)
-        if (low <= needle1 and needle1 <= high
-                and low <= needle2 and needle2 <= high) then
-            return true;
-        end
-        
-        needle1 = needle1 + 360;
-        needle2 = needle2 + 360;
-        if (low <= needle1 and needle1 <= high
-                and low <= needle2 and needle2 <= high) then
-            return true;
-        end
-        return false;
-      end
+      backgroundSpinner:SetProgress(region, startAngle, endAngle, 0, clockwise);
 
       function region:SetValue(progress)
-        region.progress = progress;
         progress = progress or 0;
+        region.progress = progress;
 
-        local pAngle = (1 - progress) * (endAngle - startAngle) + startAngle;
-
-        -- Show/hide necessary textures if we need to
-        for i = 1, 4 do
-           local quadrantAngle1;
-           local quadrantAngle2;
-
-           if (clockwise) then
-              quadrantAngle2 = i * 90;
-              quadrantAngle1 = quadrantAngle2 - 90;
-           else
-              quadrantAngle2 = (5 - i) * 90;
-              quadrantAngle1 = quadrantAngle2 - 90;
-           end
-
-           if clockwise then
-             circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
-           else
-             circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
-           end
-        end
-        circularTextures[4]:SetTexCoord(ULx, ULy, Lx, Ly, Tx, Ty, Lx, Ly);
-        -- Move scrollframe/wedge to the proper quadrant
-        local quadrant = floor(pAngle % 360 / 90) + 1;
-        if (not clockwise) then
-          quadrant = 5 - quadrant;
-        end
-        scrollframe:SetAllPoints(circularTextures[quadrant])
-
-        local ULx, ULy = ApplyTransform(0, 0, region)
-        local LLx, LLy = ApplyTransform(0, 1, region)
-        local URx, URy = ApplyTransform(1, 0, region)
-        local LRx, LRy = ApplyTransform(1, 1, region)
-
-        local Lx, Ly = ApplyTransform(0, 0.5, region)
-        local Tx, Ty = ApplyTransform(0.5, 0, region)
-        local Bx, By = ApplyTransform(0.5, 1, region)
-        local Rx, Ry = ApplyTransform(1, 0.5, region)
-        local Cx, Cy = ApplyTransform(0.5, 0.5, region)
-
-        circularTextures[1]:SetTexCoord(Tx, Ty, Cx, Cy, URx, URy, Rx, Ry);
-        circularTextures[2]:SetTexCoord(Cx, Cy, Bx, By, Rx, Ry, LRx, LRy);
-        circularTextures[3]:SetTexCoord(Lx, Ly, LLx, LLy, Cx, Cy, Bx, By);
-        circularTextures[4]:SetTexCoord(ULx, ULy, Lx, Ly, Tx, Ty, Cx, Cy);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-
-        local degree = pAngle;
-        if not clockwise then degree = -degree + 90 end
-        Transform(wedge, -0.5, -0.5, degree + region.rotation, 1)
-        WeakAuras.animRotate(wedge, -degree, "BOTTOMRIGHT");
+        foregroundSpinner:SetProgress(region, startAngle, endAngle, progress, clockwise);
       end
     end
 
     local function showCircularProgress()
       foreground:Hide();
-      wedge:Show();
+      background:Hide();
+      foregroundSpinner:Show();
+      backgroundSpinner:Show();
     end
 
     local function hideCircularProgress()
       foreground:Show();
-      for i = 1, 4 do
-        circularTextures[i]:Hide();
-      end
-      wedge:Hide();
+      background:Show();
+      foregroundSpinner:Hide();
+      backgroundSpinner:Hide();
     end
 
     if(data.orientation == "HORIZONTAL_INVERSE") then
