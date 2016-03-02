@@ -530,7 +530,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
     end
 
     if (untrigger and untrigger.custom) then
-      t = {} 
+      t = {}
       t.text = L["%s Untrigger Function"]:format(id);
       t.value = t.text;
       t.code = untrigger.custom;
@@ -636,6 +636,7 @@ local function checkAnimation(codes, id, a)
 end
 
 local function scamCheck(codes, data)
+    local r
     checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
     if (data.additional_triggers) then
         for i, v in ipairs(data.additional_triggers) do
@@ -882,9 +883,9 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 end);
             end
 
-            showcodebutton:SetScript("OnClick", function() 
+            showcodebutton:SetScript("OnClick", function()
                 WeakAuras.OpenOptions();
-                WeakAuras.OpenCodeReview(codes); 
+                WeakAuras.OpenCodeReview(codes);
             end);
         end
 
