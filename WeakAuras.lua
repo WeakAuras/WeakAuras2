@@ -288,7 +288,8 @@ local blockedFunctions = {
   RunScript = true,
   AcceptTrade = true,
   SetSendMailMoney = true,
-  EditMacro = true
+  EditMacro = true,
+  SlashCmdList = true,
 }
 
 local overrideFunctions = {
