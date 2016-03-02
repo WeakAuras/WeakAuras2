@@ -290,6 +290,7 @@ local blockedFunctions = {
   SetSendMailMoney = true,
   EditMacro = true,
   SlashCmdList = true,
+  DevTools_DumpCommand = true,
 }
 
 local overrideFunctions = {
