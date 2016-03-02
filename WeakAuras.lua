@@ -291,6 +291,7 @@ local blockedFunctions = {
   EditMacro = true,
   SlashCmdList = true,
   DevTools_DumpCommand = true,
+  hash_SlashCmdList = true,
 }
 
 local overrideFunctions = {
