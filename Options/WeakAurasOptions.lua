@@ -7550,7 +7550,7 @@ function WeakAuras.CreateFrame()
     moversizer:ScaleCorners(region:GetWidth(), region:GetHeight());
 
     mover.startMoving = function()
-      WeakAuras.CancelAnimation("display", data.id, true, true, true, true, true);
+      WeakAuras.CancelAnimation(region, true, true, true, true, true);
       mover:ClearAllPoints();
       if(data.regionType == "group") then
         mover:SetPoint(mover.selfPoint, region, mover.anchorPoint, region.blx, region.bly);
@@ -7611,7 +7611,7 @@ function WeakAuras.CreateFrame()
     if(region:IsResizable()) then
       moversizer.startSizing = function(point)
         mover.isMoving = true;
-        WeakAuras.CancelAnimation("display", data.id, true, true, true, true, true);
+        WeakAuras.CancelAnimation(region, true, true, true, true, true);
         local rSelfPoint, rAnchor, rAnchorPoint, rXOffset, rYOffset = region:GetPoint(1);
         region:StartSizing(point);
         local textpoint, anchorpoint;
