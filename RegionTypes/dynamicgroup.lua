@@ -398,17 +398,6 @@ local function modify(parent, region, data)
             currentHeight = currentHeight + (data.space * max(numVisible - 1, 0));
             region:SetHeight(currentHeight > 0 and currentHeight or 1);
             yOffset = currentHeight/2;
-        elseif(data.grow == "CIRCLE") then
-            for index, regionData in pairs(region.controlledRegions) do
-                childId = regionData.id;
-                childData = regionData.data;
-                childRegion = regionData.region;
-                if(childData and childRegion) then
-                    if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-                        numVisible = numVisible + 1;
-                    end
-                end
-            end
         end
 
         local angle = data.rotation or 0;
