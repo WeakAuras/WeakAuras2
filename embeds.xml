@@ -17,5 +17,6 @@
 	<Script file="libs\LibCompress\LibCompress.lua"/>
 	<Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
 	<Script file="libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua"/>
+	<Script file="libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
 	<!--@end-no-lib-strip@-->
 </Ui>

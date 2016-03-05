@@ -9,6 +9,11 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
+local SpellRange = LibStub("SpellRange-1.0")
+function WeakAuras.IsSpellInRange(spellId, unit)
+  return SpellRange.IsSpellInRange(spellId, unit);
+end
+
 -- GLOBALS: SPELL_POWER_CHI SPELL_POWER_ECLIPSE SPELL_POWER_SHADOW_ORBS SPELL_POWER_DEMONIC_FURY SPELL_POWER_BURNING_EMBERS
 
 WeakAuras.function_strings = {
@@ -2047,7 +2052,7 @@ WeakAuras.event_prototypes = {
         end
       ]]
       if(trigger.use_targetRequired) then
-        ret = ret.."active = active and IsSpellInRange(spellName or '')\n";
+        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellName or '', 'target')\n";
       end
       if(trigger.use_inverse) then
         ret = ret.."active = not active\n";
