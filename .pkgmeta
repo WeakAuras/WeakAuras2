@@ -36,7 +36,7 @@ externals:
  libs/LibButtonGlow-1.0:
   url: git://git.wowace.com/wow/libbuttonglow-1-0/mainline.git
  libs/LibSpellRange-1.0:
-  url: svn://svn.curseforge.com/wow/libspellrange-1-0/mainline/trunk/LibSpellRange-1.0/
+  url: svn://svn.curseforge.com/wow/libspellrange-1-0/mainline/trunk
 
 ignore:
  - RegionTypes\timer.lua
