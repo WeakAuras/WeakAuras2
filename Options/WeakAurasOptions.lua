@@ -4731,7 +4731,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       get = function() return data.disjunctive end,
       set = function(info, v) data.disjunctive = v end
     },
-	custom_trigger_combination = {
+    custom_trigger_combination = {
       type = "input",
       name = L["Custom"],
       order = 0.1,
@@ -4739,10 +4739,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "normal",
       hidden = function() return not (data.disjunctive == "custom") end,
       get = function() return data.customTriggerLogic end,
-      set = function(info, v) 
-	    data.customTriggerLogic = v;
-	    WeakAuras.Add(data); 
-	  end
+      set = function(info, v)
+      data.customTriggerLogic = v;
+        WeakAuras.Add(data);
+      end
     },
     custom_trigger_combination_expand = {
       type = "execute",
@@ -7191,7 +7191,7 @@ function WeakAuras.CreateFrame()
     if frame.window == "codereview" then
       return
     end
-    
+
     self.data = data;
 
     self.codeTree:SetTree(data);

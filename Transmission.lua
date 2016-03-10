@@ -527,7 +527,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         t.code = trigger.custom;
         tinsert(codes, t);
     end
-    
+
     if (untrigger and untrigger.custom) then
         t = {}
         t.text = L["%s Untrigger Function"]:format(id);
@@ -535,7 +535,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         t.code = untrigger.custom;
         tinsert(codes, t);
     end
-    
+
     if (trigger.customDuration) then
         t = {}
         t.text = L["%s Duration Function"]:format(id);
@@ -543,7 +543,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         t.code = trigger.customDuration
         tinsert(codes, t);
     end
-    
+
     if (trigger.customName) then
         t = {}
         t.text = L["%s Name Function"]:format(id);
@@ -551,7 +551,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         t.code = trigger.customName
         tinsert(codes, t);
     end
-    
+
     if (trigger.customIcon) then
         t = {}
         t.text = L["%s Icon Function"]:format(id);
@@ -559,7 +559,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         t.code = trigger.customIcon
         tinsert(codes, t);
     end
-    
+
     if (trigger.customTexture) then
         t = {}
         t.text = L["%s Texture Function"]:format(id);
@@ -567,7 +567,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         t.code = trigger.customTexture
         tinsert(codes, t);
     end
-    
+
     if (trigger.customStacks) then
         t = {}
         t.text = L["%s Stacks Function"]:format(id);
@@ -597,7 +597,7 @@ local function checkAnimation(codes, id, a)
         t.code = a.alphaFunc;
         tinsert(codes, t);
     end
-    
+
     if (a.translateType == "custom" and a.use_translate and a.translateFunc) then
         local t = {};
         t.text = L["%s - Translate Animation"]:format(id);
@@ -605,7 +605,7 @@ local function checkAnimation(codes, id, a)
         t.code = a.translateFunc;
         tinsert(codes, t);
     end
-    
+
     if (a.scaleType == "custom" and a.use_scale and a.scaleFunc) then
         local t = {};
         t.text = L["%s - Scale Animation"]:format(id);
@@ -613,7 +613,7 @@ local function checkAnimation(codes, id, a)
         t.code = a.scaleFunc;
         tinsert(codes, t);
     end
-    
+
     if (a.rotateType == "custom" and a.use_rotate and a.rotateFunc) then
         local t = {};
         t.text = L["%s - Rotate Animation"]:format(id);
@@ -621,7 +621,7 @@ local function checkAnimation(codes, id, a)
         t.code = a.rotateFunc;
         tinsert(codes, t);
     end
-    
+
     if (a.colorType == "custom" and a.use_color and a.colorFunc) then
         local t = {};
         t.text = L["%s - Color Animation"]:format(id);
@@ -669,11 +669,11 @@ local function scamCheck(codes, data)
         r = checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
         r = checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
     end
-	
+
     if(data.customTriggerLogic) then
         r = checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
     end
-    
+
     if(data.customText) then
         r = checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
     end

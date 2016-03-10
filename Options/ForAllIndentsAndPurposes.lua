@@ -1,5 +1,5 @@
 -- For All Indents And Purposes
-local revision = 18
+local revision = 19
 -- Maintainer: kristofer.karlsson@gmail.com
 
 -- For All Indents And Purposes -
@@ -21,6 +21,8 @@ local revision = 18
 -- if you don't select a color table, it will use the default.
 -- Read through this code for further usage help.
 -- (The documentation IS the code)
+
+-- GLOBALS: IndentationLib
 
 if not IndentationLib then
     IndentationLib = {}
@@ -291,7 +293,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
             return false
         end
     end
-
 
     -- Already parsed the [==[ part when get here
     local function nextBracketString(text, pos, equalsCount)
@@ -600,7 +601,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
 
             if tokenType == tokens.TOKEN_COLORCODE_START or tokenType == tokens.TOKEN_COLORCODE_STOP or tokenType == tokens.TOKEN_UNKNOWN then
                 -- ignore color codes
-
             elseif tokenType == tokens.TOKEN_LINEBREAK or tokenType == tokens.TOKEN_WHITESPACE then
                 if tokenType == tokens.TOKEN_LINEBREAK then
                     numLines = numLines + 1
@@ -678,7 +678,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         local tsize2 = 0
         local totalLen2 = 0
 
-
         local stopColor = colorTable and colorTable[0]
         local stopColorLen = not stopColor or stringlen(stopColor)
 
@@ -731,7 +730,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
                     newCaretPositionFinalized = true
                 end
 
-
                 for k, v in next,workingTable2 do
                     tsize = tsize + 1
                     workingTable[tsize] = v
@@ -760,7 +758,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
             elseif tokenType == tokens.TOKEN_WHITESPACE then
                 if hitNonWhitespace then
                     prevTokenWidth = nextPos - pos
-
                     tsize2 = tsize2 + 1
                     local s = stringsub(code, pos, nextPos - 1)
                     workingTable2[tsize2] = s
@@ -770,9 +767,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
                 -- skip these, though they shouldn't be encountered here anyway
             else
                 hitNonWhitespace = true
-
                 local str = stringsub(code, pos, nextPos - 1)
-
                 prevTokenWidth = nextPos - pos
 
                 -- See if this is an indent-modifier
@@ -842,7 +837,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         end
         return table.concat(workingTable), newCaretPosition
     end
-
 
     -- WoW specific code:
     local GetTime = GetTime

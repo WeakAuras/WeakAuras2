@@ -4,12 +4,14 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 -- Import translation
 local L = WeakAuras.L;
 
+-- GLOBALS: WeakAuras UIParent
+
 -- Calculate bounding box
 local function getRect(data)
   -- Temp variables
   local blx, bly, trx, try;
   blx, bly = data.xOffset, data.yOffset;
-  
+
   -- Calc bounding box
   if(data.selfPoint:find("LEFT")) then
     trx = blx + data.width;
@@ -29,7 +31,7 @@ local function getRect(data)
     bly = bly - (data.height/2);
     try = bly + data.height;
   end
-  
+
   -- Return data
   return blx, bly, trx, try;
 end
@@ -244,7 +246,7 @@ local function createOptions(id, data)
             WeakAuras.Add(childData);
           end
         end
-        
+
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -326,7 +328,7 @@ local function createOptions(id, data)
             WeakAuras.Add(childData);
           end
         end
-        
+
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -408,7 +410,7 @@ local function createOptions(id, data)
             WeakAuras.Add(childData);
           end
         end
-        
+
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -490,7 +492,7 @@ local function createOptions(id, data)
             WeakAuras.Add(childData);
           end
         end
-        
+
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -507,19 +509,19 @@ local function createOptions(id, data)
       order = 50
     }
   };
-  
+
   -- Positioning options
   options = WeakAuras.AddPositionOptions(options, id, data);
-  
+
   -- Border options
   options = WeakAuras.AddBorderOptions(options, id, data);
-  
+
   -- Remove some poition options
   options.width = nil;
   options.height = nil;
   options.selfPoint.disabled = true;
   options.selfPoint.values = {["BOTTOMLEFT"] = "Anchor Point"};
-  
+
   -- Return options
   return options;
 end
@@ -530,20 +532,20 @@ local function createThumbnail(parent, fullCreate)
   local borderframe = CreateFrame("FRAME", nil, parent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
-  
+
   -- Preview border
   local border = borderframe:CreateTexture(nil, "OVERLAY");
   border:SetAllPoints(borderframe);
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
-  
+
   -- Main region
   local region = CreateFrame("FRAME", nil, borderframe);
   borderframe.region = region;
-  
+
   -- Preview children
   region.children = {};
-  
+
   -- Return preview
   return borderframe;
 end
@@ -552,7 +554,7 @@ end
 local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   local region = borderframe.region;
   size = size or 24;
-  
+
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
@@ -564,20 +566,20 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       highest = math.max(highest, try);
     end
   end
-  
+
   local maxWidth, maxHeight = rightest - leftest, highest - lowest;
-  
+
   local scale=1;
   if maxHeight > 0 and (maxHeight > maxWidth) then
     scale = size / maxHeight;
   elseif maxWidth > 0 and (maxWidth >= maxHeight) then
     scale = size / maxWidth;
   end
-  
+
   region:SetPoint("CENTER", borderframe, "CENTER");
   region:SetWidth(maxWidth * scale);
   region:SetHeight(maxHeight * scale);
-  
+
   for index, childId in pairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
@@ -601,9 +603,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         r, g, b = 0.2, 0.8, 0.2;
       end
       region.children[index].texture:SetTexture(r, g, b, 0.5);
-      
+
       local blx, bly, trx, try = getRect(childData);
-      
+
       region.children[index]:ClearAllPoints();
       region.children[index]:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", (blx - leftest) * scale, (bly - lowest) * scale);
       region.children[index]:SetWidth(childData.width * scale);
@@ -633,7 +635,7 @@ local function createIcon()
   t3:SetHeight(12);
   t3:SetTexture(0.1, 0.25, 1, 0.5);
   t3:SetPoint("TOP", t2, "BOTTOM", -5, 8);
-  
+
   return thumbnail;
 end
 
