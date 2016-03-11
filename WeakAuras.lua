@@ -295,6 +295,8 @@ local blockedFunctions = {
   SlashCmdList = true,
   DevTools_DumpCommand = true,
   hash_SlashCmdList = true,
+  CreateMacro = true,
+  SetBindingMacro = true,
 }
 
 local overrideFunctions = {
