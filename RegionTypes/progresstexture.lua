@@ -162,9 +162,6 @@ function spinnerFunctions.Color(self, r, g, b, a)
 end
 
 local function betweenAngles(low, high, needle1, needle2)
-  if (low == high) then
-    return true;
-  end
   if (low <= needle1 and needle1 <= high
           and low <= needle2 and needle2 <= high) then
       return true;
@@ -238,7 +235,7 @@ function spinnerFunctions.SetBackgroundOffset(self, region, offset)
     self.circularTextures[1]:SetPoint('TOPRIGHT', region, offset, offset)
     self.circularTextures[2]:SetPoint('BOTTOMRIGHT', region, offset, -offset)
     self.circularTextures[3]:SetPoint('BOTTOMLEFT', region, -offset, -offset)
-    self.circularTextures[4]:SetPoint('TOPLEFT', region, -offset, -offset)
+    self.circularTextures[4]:SetPoint('TOPLEFT', region, -offset, offset)
 end
 
 local function createSpinner(parent, layer, frameLevel)
@@ -526,18 +523,19 @@ local function modify(parent, region, data)
     end
 
     local function orientCircular(clockwise)
-      local startAngle = region.startAngle % 360;
+      local startAngle = region.startAngle % 360; -- Convert 360 to 0
       local endAngle = region.endAngle % 360;
 
       if (data.inverse) then
-        startAngle, endAngle = endAngle, startAngle
+        clockwise = not clockwise;
         startAngle = 360 - startAngle;
         endAngle = 360 - endAngle;
-        clockwise = not clockwise;
       end
       if (endAngle <= startAngle) then
         endAngle = endAngle + 360;
       end
+
+      -- start is now 0-359, end 1-719, but atmost 360 difference
 
       region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
 

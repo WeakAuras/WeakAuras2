@@ -122,7 +122,7 @@ local function createOptions(id, data)
         startAngle = {
             type = "range",
             order = 42,
-            name = L["Start Angle"],
+            name = function() if (data.inverse) then return L["End Angle"] else return L["Start Angle"] end end,
             min = 0,
             max = 360,
             step = 90,
@@ -131,7 +131,7 @@ local function createOptions(id, data)
         endAngle = {
             type = "range",
             order = 44,
-            name = L["End Angle"],
+            name = function() if (data.inverse) then return L["Start Angle"] else return L["End Angle"] end end,
             min = 0,
             max = 360,
             bigStep = 1,
@@ -390,9 +390,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
 
     background:ClearAllPoints();
     foreground:ClearAllPoints();
-    background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * scale * data.backgroundOffset, -1 * scale * data.backgroundOffset);
-    background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scale * data.backgroundOffset, scale * data.backgroundOffset);
-    backgroundSpinner:SetBackgroundOffset(region, data.backgroundOffset);
+    background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
+    background:SetPoint("TOPRIGHT", region, "TOPRIGHT");
+    backgroundSpinner:SetBackgroundOffset(region, 0);
 
     region.mirror_h = data.mirror;
     region.scale_x = 1 + (data.crop_x or 0.41);
