@@ -2199,9 +2199,13 @@ function WeakAuras.PerformActions(data, type)
       if(actions.sound_path) then
         PlaySoundFile(actions.sound_path, actions.sound_channel);
       end
-      else
-        PlaySoundFile(actions.sound, actions.sound_channel);
+    elseif(actions.sound == " KitID") then
+      if(actions.sound_kit_id) then
+        PlaySoundKitID(actions.sound_kit_id, actions.sound_channel);
       end
+    else
+      PlaySoundFile(actions.sound, actions.sound_channel);
+    end
   end
 
   if(actions.do_custom and actions.custom) then

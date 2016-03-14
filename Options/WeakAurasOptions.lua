@@ -2054,6 +2054,8 @@ function WeakAuras.AddOption(id, data)
           data.actions[field][value] = v;
           if(value == "sound" or value == "sound_path") then
             PlaySoundFile(v, data.actions.start.sound_channel);
+          elseif(value == "sound_kit_id") then
+            PlaySoundKitID(v, data.actions.start.sound_channel);
           end
           WeakAuras.Add(data);
         end,
@@ -2196,6 +2198,14 @@ function WeakAuras.AddOption(id, data)
             order = 9,
             width = "double",
             hidden = function() return data.actions.start.sound ~= " custom" end,
+            disabled = function() return not data.actions.start.do_sound end
+          },
+          start_sound_kit_id = {
+            type = "input",
+            name = L["Sound Kit ID"],
+            order = 9,
+            width = "double",
+            hidden = function() return data.actions.start.sound ~= " KitID" end,
             disabled = function() return not data.actions.start.do_sound end
           },
           start_do_glow = {
@@ -2363,6 +2373,14 @@ function WeakAuras.AddOption(id, data)
             order = 29,
             width = "double",
             hidden = function() return data.actions.finish.sound ~= " custom" end,
+            disabled = function() return not data.actions.finish.do_sound end
+          },
+          finish_sound_kit_id = {
+            type = "input",
+            name = L["Sound Kit ID"],
+            order = 29,
+            width = "double",
+            hidden = function() return data.actions.finish.sound ~= " KitID" end,
             disabled = function() return not data.actions.finish.do_sound end
           },
           finish_do_glow = {

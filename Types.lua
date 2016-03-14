@@ -1153,6 +1153,7 @@ WeakAuras.sound_types = {
   ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.ogg"] = "Torch",
   ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.ogg"] = "Warning Siren",
   [" custom"] = "Custom",
+  [" KitID"] = "Sound by Kit ID",
 };
 if(WeakAuras.PowerAurasSoundPath ~= "") then
   WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."aggro.ogg"] = "Aggro";
