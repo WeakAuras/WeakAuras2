@@ -43,7 +43,7 @@ local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub, removeSpellNam
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
--- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent
+-- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent BNGetNumFriendGameAccounts BNGetFriendGameAccountInfo
 
 local bytetoB64 = {
     [0]="a","b","c","d","e","f","g","h",
@@ -282,9 +282,9 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
         if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX Need a guild check
             local _, num = BNGetNumFriends()
             for i=1, num do
-                local toon = BNGetNumFriendToons(i)
+                local toon = BNGetNumFriendGameAccounts(i)
                 for j=1, toon do
-                    local _, rName, rGame = BNGetFriendToonInfo(i, j)
+                    local _, rName, rGame = BNGetFriendGameAccountInfo(i, j)
                     if rName == trimmedPlayer and rGame == "WoW" then
                         return false, newMsg, player, l, cs, t, flag, channelId, ...; -- Player is a real id friend, allow it
                     end
@@ -310,7 +310,6 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", filterFunc)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_CONVERSATION", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", filterFunc)
 
