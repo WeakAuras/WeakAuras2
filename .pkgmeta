@@ -38,6 +38,8 @@ externals:
  libs/LibSpellRange-1.0:
   url: svn://svn.curseforge.com/wow/libspellrange-1-0/mainline/trunk
 
+enable-nolib-creation: no
+
 ignore:
  - RegionTypes\timer.lua
  - WeakAurasOptions\RegionOptions\timer.lua
