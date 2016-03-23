@@ -613,6 +613,7 @@ frame:SetAllPoints(UIParent);
 local loadedFrame = CreateFrame("FRAME");
 WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
+loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
@@ -635,34 +636,34 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
-
-      local toAdd = {};
-      for id, data in pairs(db.displays) do
-      if(id ~= data.id) then
-        print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
-        data.id = id;
-      end
-      tinsert(toAdd, data);
-      end
-      WeakAuras.AddMany(toAdd);
-      WeakAuras.AddManyFromAddons(from_files);
-      WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
-
-      WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-      WeakAuras.FixGroupChildrenOrder();
-
-      for _, triggerSystem in pairs(triggerSystems) do
-        if (triggerSystem.AllAdded) then
-          triggerSystem.AllAdded();
-        end
-      end
-      -- check in case of a disconnect during an encounter.
-      if (db.CurrentEncounter) then
-        WeakAuras.CheckForPreviousEncounter()
-      end
-
-      WeakAuras.Resume();
     end
+  elseif(event == "PLAYER_LOGIN") then
+    local toAdd = {};
+    for id, data in pairs(db.displays) do
+    if(id ~= data.id) then
+      print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+      data.id = id;
+    end
+    tinsert(toAdd, data);
+    end
+    WeakAuras.AddMany(toAdd);
+    WeakAuras.AddManyFromAddons(from_files);
+    WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
+
+    WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+    WeakAuras.FixGroupChildrenOrder();
+
+    for _, triggerSystem in pairs(triggerSystems) do
+      if (triggerSystem.AllAdded) then
+        triggerSystem.AllAdded();
+      end
+    end
+    -- check in case of a disconnect during an encounter.
+    if (db.CurrentEncounter) then
+      WeakAuras.CheckForPreviousEncounter()
+    end
+
+    WeakAuras.Resume();
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
@@ -1554,7 +1555,7 @@ function WeakAuras.Modernize(data)
     load.talent.single = talent;
     load.talent.multi = {}
   end
-  
+
   --upgrade to support custom trigger combination logic
   if (data.disjunctive == true) then
     data.disjunctive = "any";
@@ -1862,15 +1863,19 @@ function WeakAuras.SetRegion(data, cloneId)
   if not(regionType) then
     error("Improper arguments to WeakAuras.SetRegion - regionType not defined");
   else
-    if(regionTypes[regionType]) then
-      local id = data.id;
-      if not(id) then
-        error("Improper arguments to WeakAuras.SetRegion - id not defined");
+    if(not regionTypes[regionType]) then
+      regionType = "fallback";
+      print("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
+    end
+
+    local id = data.id;
+    if not(id) then
+      error("Improper arguments to WeakAuras.SetRegion - id not defined");
+    else
+      local region;
+      if(cloneId) then
+        region = clones[id][cloneId];
       else
-        local region;
-        if(cloneId) then
-          region = clones[id][cloneId];
-        else
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
           region = regionTypes[regionType].create(frame, data);
           region.toShow = true;
@@ -2086,11 +2091,7 @@ function WeakAuras.SetRegion(data, cloneId)
       if(anim_cancelled) then
         startMainAnimation();
       end
-
       return region;
-      end
-    else
-      error("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
     end
   end
 end

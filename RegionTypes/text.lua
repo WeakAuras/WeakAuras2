@@ -243,3 +243,31 @@ local function modify(parent, region, data)
 end
 
 WeakAuras.RegisterRegionType("text", create, modify, default);
+
+-- Fallback region type
+
+local function fallbackmodify(parent, region, data)
+    local text = region.text;
+
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
+
+    text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
+    if text:GetFont() then
+        text:SetText(WeakAuras.L["Region type %s not supported"]:format(data.regionType));
+    end
+
+    text:ClearAllPoints();
+    text:SetPoint("CENTER", region, "CENTER");
+
+    region:SetWidth(text:GetWidth());
+    region:SetHeight(text:GetHeight());
+
+    region:ClearAllPoints();
+    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+end
+
+WeakAuras.RegisterRegionType("fallback", create, fallbackmodify, default);

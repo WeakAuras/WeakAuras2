@@ -687,7 +687,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
 
         local regionType = data.regionType;
         local regionData = regionOptions[regionType or ""]
-        local displayName = regionData and regionData.displayName or "";
+        local displayName = regionData and regionData.displayName or regionType or "";
 
         local tooltip = {
             -- 1. parameter: 1 => AddLine, 2=> AddDoubleLine,
