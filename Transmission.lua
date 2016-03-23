@@ -43,15 +43,6 @@ local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub, removeSpellNam
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
--- TODO: Remove after Asia got 6.2.4
-if BNGetNumFriendGameAccounts then
-    local BNGetNumFriendGameAccounts = BNGetNumFriendGameAccounts
-    local BNGetFriendGameAccountInfo = BNGetFriendGameAccountInfo
-else
-    local BNGetNumFriendGameAccounts = BNGetNumFriendToons
-    local BNGetFriendGameAccountInfo = BNGetFriendToonInfo
-end
-
 -- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent BNGetNumFriendGameAccounts BNGetFriendGameAccountInfo
 
 local bytetoB64 = {
