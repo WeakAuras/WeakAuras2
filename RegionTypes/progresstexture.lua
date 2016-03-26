@@ -625,6 +625,13 @@ local function modify(parent, region, data)
 
         region:SetWidth(data.width * scalex);
         region:SetHeight(data.height * scaley);
+
+        local scaleWedge =  1 / 1.4142 * (1 + (data.crop or 0.41));
+        foregroundSpinner:SetWidth(data.width * scaleWedge * scalex);
+        foregroundSpinner:SetHeight(data.height * scaleWedge * scaley);
+        backgroundSpinner:SetWidth((data.width + data.backgroundOffset * 2) * scaleWedge * scalex);
+        backgroundSpinner:SetHeight((data.height + data.backgroundOffset * 2) * scaleWedge * scaley);
+
         if(data.orientation == "HORIZONTAL_INVERSE" or data.orientation == "HORIZONTAL") then
             foreground:SetWidth(data.width * scalex * (region.progress or 1));
             foreground:SetHeight(data.height * scaley);
