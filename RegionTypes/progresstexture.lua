@@ -177,7 +177,7 @@ local function betweenAngles(low, high, needle1, needle2)
 end
 
 function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progress, clockwise)
-  local pAngle = (1 - progress) * (endAngle - startAngle) + startAngle;
+  local pAngle = progress * (endAngle - startAngle) + startAngle;
 
   -- Show/hide necessary textures if we need to
   local showing = {};
@@ -539,7 +539,7 @@ local function modify(parent, region, data)
 
       region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
 
-      backgroundSpinner:SetProgress(region, startAngle, endAngle, 0, clockwise);
+      backgroundSpinner:SetProgress(region, startAngle, endAngle, 1, clockwise);
 
       function region:SetValue(progress)
         progress = progress or 0;
