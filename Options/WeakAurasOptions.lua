@@ -4947,9 +4947,15 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 7,
       width = "double",
       values = function()
-        if(trigger.type == "event") then
+        local type;
+        if (data.controlledChildren) then
+          type = getAll(data, {"trigger", "type"});
+        else
+          type = trigger.type;
+        end
+        if(type == "event") then
           return event_types;
-        elseif(trigger.type == "status") then
+        elseif(type == "status") then
           return status_types;
         end
       end,
