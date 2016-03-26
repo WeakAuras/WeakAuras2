@@ -7126,13 +7126,15 @@ function WeakAuras.CreateFrame()
         if not(combinedText == "") then
           combinedText = combinedText.."\n\n";
         end
-        combinedText = combinedText.."--"..childId.."\n";
+        combinedText = combinedText.."-- Do not remove this line:"..childId.."\n";
         combinedText = combinedText..(text or "");
       end
       if(sameTexts) then
         texteditorbox:SetText(singleText or "");
+        texteditorbox.combinedText = false;
       else
         texteditorbox:SetText(combinedText);
+        texteditorbox.combinedText = true;
       end
     else
       if(addReturn) then
@@ -7154,14 +7156,48 @@ function WeakAuras.CreateFrame()
     frame.window = "default";
   end
 
+  local function extractTexts(input, ids)
+    local texts = {};
+
+    local currentPos, id, startIdLine, startId, endId;
+    while (true) do
+      startIdLine, startId = string.find(input, "-- Do not remove this line:", currentPos);
+      if (not startId) then break end
+
+      endId = string.find(input, "\n", startId);
+      if (not endId) then break end;
+
+      if (currentPos) then
+        local trimmedPosition = startIdLine - 1;
+        while (string.sub(input, trimmedPosition, trimmedPosition) == "\n") do
+          trimmedPosition = trimmedPosition - 1;
+        end
+
+        texts[id] = string.sub(input, currentPos, trimmedPosition);
+      end
+
+      id = string.sub(input, startId + 1, endId - 1);
+
+      currentPos = endId + 1;
+    end
+
+    if (id) then
+      texts[id] = string.sub(input, currentPos, string.len(input));
+    end
+
+    return texts;
+  end
+
   function texteditor.Close(self)
     if(self.data.controlledChildren) then
+      local textById = texteditorbox.combinedText and extractTexts(texteditorbox:GetText(), self.data.controlledChildren);
       for index, childId in pairs(self.data.controlledChildren) do
+        local text = texteditorbox.combinedText and (textById[childId] or "") or texteditorbox:GetText();
         local childData = WeakAuras.GetData(childId);
         if(self.addReturn) then
-          valueToPath(childData, self.path, "return "..texteditorbox:GetText());
+          valueToPath(childData, self.path, "return "..text);
         else
-          valueToPath(childData, self.path, texteditorbox:GetText());
+          valueToPath(childData, self.path, text);
         end
         WeakAuras.Add(childData);
       end
