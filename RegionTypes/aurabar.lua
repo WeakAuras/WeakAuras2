@@ -44,6 +44,7 @@ local default = {
   sparkOffsetY = 0,
   sparkRotationMode = "AUTO",
   sparkRotation = 0,
+  sparkHidden = "NEVER",
   borderColor = {1.0, 1.0, 1.0, 0.5},
   backdropColor = {1.0, 1.0, 1.0, 0.5},
   borderEdge = "None",
@@ -209,6 +210,16 @@ local barPrototype = {
       self.fg:SetHeight(yProgress > 0 and yProgress or 0.0001);
       self.spark:ClearAllPoints();
       self.spark:SetPoint("CENTER", self, alignSpark, (self.spark.sparkOffsetX or 0), sparkOffset + (self.spark.sparkOffsetY or 0));
+    end
+
+    local sparkHidden = self.spark.sparkHidden;
+    local sparkVisible = sparkHidden == "NEVER"
+                         or (sparkHidden == "FULL" and progress < 1)
+                         or (sparkHidden == "EMPTY" and progress > 0);
+    if (sparkVisible) then
+      self.spark:Show();
+    else
+      self.spark:Hide();
     end
   end,
 
@@ -858,6 +869,7 @@ local function modify(parent, region, data)
   bar.spark:SetVertexColor(data.sparkColor[1], data.sparkColor[2], data.sparkColor[3], data.sparkColor[4]); -- TODO introduce function?
   bar.spark:SetWidth(data.sparkWidth);
   bar.spark:SetHeight(data.sparkHeight);
+  bar.spark.sparkHidden = data.sparkHidden;
   if (data.spark) then
     bar.spark:Show()
   else
