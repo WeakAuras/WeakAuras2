@@ -1810,6 +1810,27 @@ function WeakAuras.Add(data)
   -- end
 end
 
+function removeSpellNames(data)
+  local trigger
+  for triggernum=0,(data.numTriggers or 9) do
+    if(triggernum == 0) then
+      trigger = data.trigger;
+    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+      trigger = data.additional_triggers[triggernum].trigger;
+    end
+    if (trigger.spellId) then
+      trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
+    end
+    if (trigger.spellIds) then
+      for i = 1, 10 do
+        if (trigger.spellIds[i]) then
+          trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
+        end
+      end
+    end
+  end
+end
+
 function WeakAuras.pAdd(data)
   local id = data.id;
   if not(id) then
@@ -1855,6 +1876,7 @@ function WeakAuras.pAdd(data)
     end
   end
 
+  removeSpellNames(data);
   db.displays[id] = data;
 end
 
