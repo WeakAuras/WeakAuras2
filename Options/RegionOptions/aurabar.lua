@@ -456,6 +456,14 @@ local function createOptions(id, data)
             disabled = function() return not data.spark end,
             hidden = function() return not data.spark end,
         },
+        sparkHidden = {
+            type = "select",
+            values = WeakAuras.spark_hide_types,
+            name = L["Hide on"],
+            order = 45.3,
+            disabled = function() return not data.spark end,
+            hidden = function() return not data.spark end,
+        },
 		border_header = {
 			type = "header",
 			name = L["Border Settings"],

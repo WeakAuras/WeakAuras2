@@ -177,7 +177,7 @@ local function betweenAngles(low, high, needle1, needle2)
 end
 
 function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progress, clockwise)
-  local pAngle = (1 - progress) * (endAngle - startAngle) + startAngle;
+  local pAngle = progress * (endAngle - startAngle) + startAngle;
 
   -- Show/hide necessary textures if we need to
   local showing = {};
@@ -539,7 +539,7 @@ local function modify(parent, region, data)
 
       region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
 
-      backgroundSpinner:SetProgress(region, startAngle, endAngle, 0, clockwise);
+      backgroundSpinner:SetProgress(region, startAngle, endAngle, 1, clockwise);
 
       function region:SetValue(progress)
         progress = progress or 0;
@@ -625,6 +625,13 @@ local function modify(parent, region, data)
 
         region:SetWidth(data.width * scalex);
         region:SetHeight(data.height * scaley);
+
+        local scaleWedge =  1 / 1.4142 * (1 + (data.crop or 0.41));
+        foregroundSpinner:SetWidth(data.width * scaleWedge * scalex);
+        foregroundSpinner:SetHeight(data.height * scaleWedge * scaley);
+        backgroundSpinner:SetWidth((data.width + data.backgroundOffset * 2) * scaleWedge * scalex);
+        backgroundSpinner:SetHeight((data.height + data.backgroundOffset * 2) * scaleWedge * scaley);
+
         if(data.orientation == "HORIZONTAL_INVERSE" or data.orientation == "HORIZONTAL") then
             foreground:SetWidth(data.width * scalex * (region.progress or 1));
             foreground:SetHeight(data.height * scaley);
