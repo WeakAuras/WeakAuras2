@@ -1099,6 +1099,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     elseif difficultyIndex == 17 then
       size = "flexible"
       difficulty = "lfr"
+    elseif difficultyIndex == 23 then
+      size = "party"
+      difficulty = "mythic"
     end
   else
     size = "none"
