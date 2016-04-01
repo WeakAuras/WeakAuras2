@@ -869,12 +869,7 @@ local function modify(parent, region, data)
   bar.spark:SetVertexColor(data.sparkColor[1], data.sparkColor[2], data.sparkColor[3], data.sparkColor[4]); -- TODO introduce function?
   bar.spark:SetWidth(data.sparkWidth);
   bar.spark:SetHeight(data.sparkHeight);
-  bar.spark.sparkHidden = data.sparkHidden;
-  if (data.spark) then
-    bar.spark:Show()
-  else
-    bar.spark:Hide()
-  end
+  bar.spark.sparkHidden = data.spark and data.sparkHidden or "ALWAYS";
   bar.spark:SetBlendMode(data.sparkBlendMode);
   bar.spark:SetDesaturated(data.sparkDesaturate);
   bar.spark.sparkOffsetX = data.sparkOffsetX;
