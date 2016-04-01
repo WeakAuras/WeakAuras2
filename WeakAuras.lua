@@ -1051,6 +1051,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local _, size, difficulty, instanceType, difficultyIndex;
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
+  local vehicle = UnitInVehicle('player');
+  local vehicleUi = UnitHasVehicleUI('player');
+
   if (inInstance) then
     _, instanceType, difficultyIndex = GetInstanceInfo();
     size = Type
@@ -1113,8 +1116,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and data.trigger) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1182,6 +1185,8 @@ loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
 loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
 loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
+loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
+loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
 
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 

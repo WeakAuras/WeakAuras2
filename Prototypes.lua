@@ -420,6 +420,20 @@ WeakAuras.load_prototype = {
       init = "arg"
     },
     {
+      name = "vehicle",
+      display = L["In Vehicle"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
+    },
+    {
+      name = "vehicleUi",
+      display = L["Has Vehicle UI"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
+    },
+    {
       name = "name",
       display = L["Player Name"],
       type = "string",
