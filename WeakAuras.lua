@@ -663,6 +663,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.CheckForPreviousEncounter()
     end
 
+    WeakAuras.RegisterLoadEvents();
     WeakAuras.Resume();
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
@@ -1170,24 +1171,26 @@ local loadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = loadFrame;
 WeakAuras.frames["Display Load Handling"] = loadFrame;
 
-loadFrame:RegisterEvent("ENCOUNTER_START");
-loadFrame:RegisterEvent("ENCOUNTER_END");
+function WeakAuras.RegisterLoadEvents()
+  loadFrame:RegisterEvent("ENCOUNTER_START");
+  loadFrame:RegisterEvent("ENCOUNTER_END");
 
-loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-loadFrame:RegisterEvent("ZONE_CHANGED");
-loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
-loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
-loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
-loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
+  loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+  loadFrame:RegisterEvent("ZONE_CHANGED");
+  loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
+  loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+  loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
+  loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
+  loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
-loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
-loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
-loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
-loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
-loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
-loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
-loadFrame:RegisterEvent("GLYPH_UPDATED");
+  loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+  loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
+  loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
+  loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
+  loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
+  loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
+  loadFrame:RegisterEvent("GLYPH_UPDATED");
+end
 
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
