@@ -380,6 +380,20 @@ function WeakAuras.CheckTalentByIndex(index)
   return selected
 end
 
+function WeakAuras.CheckGlyph(glyph)
+  if (glyph) then
+    glyph = tonumber(glyph);
+    if (glyph) then
+      for i = 1, GetNumGlyphSockets() do
+        if (select(4, GetGlyphSocketInfo(i)) == glyph) then
+          return true;
+        end
+      end
+    end
+  end
+  return false;
+end
+
 function WeakAuras.CheckNumericIds(loadids, currentId)
   local searchFrom = 0;
 
@@ -418,6 +432,20 @@ WeakAuras.load_prototype = {
       display = L["In Pet Battle"],
       type = "tristate",
       init = "arg"
+    },
+    {
+      name = "vehicle",
+      display = L["In Vehicle"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
+    },
+    {
+      name = "vehicleUi",
+      display = L["Has Vehicle UI"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
     },
     {
       name = "name",
@@ -512,6 +540,12 @@ WeakAuras.load_prototype = {
         end
       end,
       test = "WeakAuras.CheckTalentByIndex(%d)"
+    },
+    {
+        name = "glyph",
+        display = L["Glyph"],
+        type = "string",
+        test = "WeakAuras.CheckGlyph(%d)"
     },
     {
       name = "race",

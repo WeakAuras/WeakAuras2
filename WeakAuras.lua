@@ -663,6 +663,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.CheckForPreviousEncounter()
     end
 
+    WeakAuras.RegisterLoadEvents();
     WeakAuras.Resume();
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
@@ -1051,6 +1052,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local _, size, difficulty, instanceType, difficultyIndex;
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
+  local vehicle = UnitInVehicle('player');
+  local vehicleUi = UnitHasVehicleUI('player');
+
   if (inInstance) then
     _, instanceType, difficultyIndex = GetInstanceInfo();
     size = Type
@@ -1099,6 +1103,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     elseif difficultyIndex == 17 then
       size = "flexible"
       difficulty = "lfr"
+    elseif difficultyIndex == 23 then
+      size = "party"
+      difficulty = "mythic"
     end
   else
     size = "none"
@@ -1110,8 +1117,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and data.trigger) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1164,21 +1171,26 @@ local loadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = loadFrame;
 WeakAuras.frames["Display Load Handling"] = loadFrame;
 
-loadFrame:RegisterEvent("ENCOUNTER_START");
-loadFrame:RegisterEvent("ENCOUNTER_END");
+function WeakAuras.RegisterLoadEvents()
+  loadFrame:RegisterEvent("ENCOUNTER_START");
+  loadFrame:RegisterEvent("ENCOUNTER_END");
 
-loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-loadFrame:RegisterEvent("ZONE_CHANGED");
-loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
-loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
-loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
-loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
+  loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+  loadFrame:RegisterEvent("ZONE_CHANGED");
+  loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
+  loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+  loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
+  loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
+  loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
-loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
-loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
-loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
-loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
+  loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
+  loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
+  loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
+  loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
+  loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
+  loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
+  loadFrame:RegisterEvent("GLYPH_UPDATED");
+end
 
 loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
 
