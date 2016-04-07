@@ -266,7 +266,8 @@ WeakAuras.spark_rotation_types = {
 WeakAuras.spark_hide_types = {
   NEVER = L["Never"],
   FULL  = L["Full"],
-  EMPTY = L["Empty"]
+  EMPTY = L["Empty"],
+  BOTH  = L["Full/Empty"]
 }
 
 WeakAuras.containment_types = {

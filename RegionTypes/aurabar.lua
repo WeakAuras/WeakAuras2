@@ -215,7 +215,8 @@ local barPrototype = {
     local sparkHidden = self.spark.sparkHidden;
     local sparkVisible = sparkHidden == "NEVER"
                          or (sparkHidden == "FULL" and progress < 1)
-                         or (sparkHidden == "EMPTY" and progress > 0);
+                         or (sparkHidden == "EMPTY" and progress > 0)
+                         or (sparkHidden == "BOTH" and progress < 1 and progress > 0);
     if (sparkVisible) then
       self.spark:Show();
     else
