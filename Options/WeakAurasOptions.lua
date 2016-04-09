@@ -3980,7 +3980,20 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 12,
       disabled = function() return not trigger.use_name end,
-      hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
+      hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
+      set = function(info, v)
+        if (tonumber(v)) then
+          trigger.spellId = tonumber(v);
+          trigger.name = nil;
+        else
+          trigger.spellId = nil;
+          trigger.name = v;
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
     },
     use_tooltip = {
       type = "toggle",
