@@ -545,7 +545,18 @@ WeakAuras.load_prototype = {
         name = "glyph",
         display = L["Glyph"],
         type = "string",
-        test = "WeakAuras.CheckGlyph(%d)"
+        test = "WeakAuras.CheckGlyph(%d)",
+        desc = function()
+          local desc = L["Enter a glpyh ID\n"];
+          for i = 1,  NUM_GLYPH_SLOTS do
+            local _, _, _, glyphSpell = GetGlyphSocketInfo(i);
+            if (glyphSpell) then
+              local name = GetSpellInfo(glyphSpell);
+              desc = desc .. L["%s: %s\n"]:format(name, glyphSpell);
+            end
+          end
+          return desc;
+        end
     },
     {
       name = "race",
