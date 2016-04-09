@@ -1165,6 +1165,10 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       triggerSystem.ScanAll();
     end
   end
+
+  if (WeakAuras.afterScanForLoads) then -- Hook for Options
+    WeakAuras.afterScanForLoads();
+  end
 end
 
 local loadFrame = CreateFrame("FRAME");

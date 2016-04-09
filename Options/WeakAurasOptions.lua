@@ -3980,7 +3980,20 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 12,
       disabled = function() return not trigger.use_name end,
-      hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
+      hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
+      set = function(info, v)
+        if (tonumber(v)) then
+          trigger.spellId = tonumber(v);
+          trigger.name = nil;
+        else
+          trigger.spellId = nil;
+          trigger.name = v;
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
     },
     use_tooltip = {
       type = "toggle",
@@ -8482,8 +8495,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
   end
 end
 
-WeakAuras.loadFrame:SetScript("OnEvent", function (self, event, arg1)
-  WeakAuras.ScanForLoads(self, event, arg1);
+WeakAuras.afterScanForLoads = function()
   if(frame) then
     if (frame:IsVisible()) then
       WeakAuras.SortDisplayButtons();
@@ -8491,7 +8503,7 @@ WeakAuras.loadFrame:SetScript("OnEvent", function (self, event, arg1)
       frame.needsSort = true;
     end
   end
-end);
+end
 
 function WeakAuras.IsPickedMultiple()
   if(frame.pickedDisplay == tempGroup) then
