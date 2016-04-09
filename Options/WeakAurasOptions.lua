@@ -8495,8 +8495,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
   end
 end
 
-WeakAuras.loadFrame:SetScript("OnEvent", function (self, event, arg1)
-  WeakAuras.ScanForLoads(self, event, arg1);
+WeakAuras.afterScanForLoads = function()
   if(frame) then
     if (frame:IsVisible()) then
       WeakAuras.SortDisplayButtons();
@@ -8504,7 +8503,7 @@ WeakAuras.loadFrame:SetScript("OnEvent", function (self, event, arg1)
       frame.needsSort = true;
     end
   end
-end);
+end
 
 function WeakAuras.IsPickedMultiple()
   if(frame.pickedDisplay == tempGroup) then
