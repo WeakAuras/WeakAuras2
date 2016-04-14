@@ -1826,7 +1826,7 @@ function WeakAuras.Add(data)
   -- end
 end
 
-function removeSpellNames(data)
+local function removeSpellNames(data)
   local trigger
   for triggernum=0,(data.numTriggers or 9) do
     if(triggernum == 0) then
