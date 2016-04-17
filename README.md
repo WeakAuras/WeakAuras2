@@ -24,7 +24,7 @@ For in-depth documentation, see the <a href="http://www.wowace.com/addons/weakau
 For some examples of what WeakAuras can do, see the <a href="http://www.wowace.com/addons/weakauras-2/pages/examples/" title="Examples">examples</a> page or the <a href="http://www.wowace.com/addons/weakauras-2/pages/ui-showcase/" title="UI Showcase">UI Showcase</a> where we feature popular interfaces utilizing WeakAuras!
 
 <h2>Problem?</h2>
-* Please see the <a href="http://www.wowace.com/addons/weakauras/pages/usage/" title="Usage">usage</a> page.
+* Please see the <a href="http://www.wowace.com/addons/weakauras-2/pages/usage/" title="Usage">usage</a> page.
 * If you need help with your set-up, post in the <a href="http://www.wowace.com/addons/weakauras-2/forum/" title="Forum">forum</a>.
 * If you've discovered something that's clearly wrong, or if you get an error, <a href="http://www.wowace.com/addons/weakauras-2/create-ticket/" title="Create Ticket">post</a> a <a href="http://www.wowace.com/addons/weakauras-2/tickets/" title="Tickets">ticket</a>.
 * If you have a general comment or concern, feel free to comment on the main page!
