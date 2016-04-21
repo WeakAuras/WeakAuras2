@@ -848,55 +848,7 @@ WeakAuras.event_prototypes = {
       return UnitPower('player', 9);
     end,
     automatic = true
-  },
-  ["Demonic Fury"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Demonic Fury"],
-    args = {
-      {
-        name = "power",
-        display = L["Demonic Fury"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_DEMONIC_FURY)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_DEMONIC_FURY), math.max(1, UnitPowerMax('player', SPELL_POWER_DEMONIC_FURY)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_DEMONIC_FURY);
-    end,
-    automatic = true
-  },
-  ["Burning Embers"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Burning Embers"],
-    args = {
-      {
-        name = "ember",
-        display = L["Burning Embers"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_BURNING_EMBERS, true)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_BURNING_EMBERS, true), math.max(1, UnitPowerMax('player', SPELL_POWER_BURNING_EMBERS, true)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_BURNING_EMBERS, true);
-    end,
-    automatic = true
-  },
+  },  
   ["Insanity"] = {
     type = "status",
     events = {
