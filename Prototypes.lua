@@ -14,7 +14,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
 
--- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER SPELL_POWER_MAELSTROM
+-- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER SPELL_POWER_MAELSTROM SPELL_POWER_ARCANE_CHARGES
 
 WeakAuras.function_strings = {
   count = [[
@@ -942,6 +942,30 @@ WeakAuras.event_prototypes = {
     end,
     stacksFunc = function(trigger)
       return UnitPower('player', SPELL_POWER_MAELSTROM);
+    end,
+    automatic = true
+  },
+  ["Arcane Charges"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+    },
+    force_events = true,
+    name = L["Arcane Charges"],
+    args = {
+      {
+        name = "power",
+        display = L["Arcane Charges"],
+        type = "number",
+        init = "UnitPower('player', SPELL_POWER_ARCANE_CHARGES)"
+      },
+    },
+    durationFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_ARCANE_CHARGES), math.max(1, UnitPowerMax('player', SPELL_POWER_ARCANE_CHARGES)), true;
+    end,
+    stacksFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_ARCANE_CHARGES);
     end,
     automatic = true
   },
