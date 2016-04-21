@@ -14,7 +14,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
 
--- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER SPELL_POWER_MAELSTROM SPELL_POWER_ARCANE_CHARGES
+-- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER SPELL_POWER_MAELSTROM SPELL_POWER_ARCANE_CHARGES SPELL_POWER_FURY SPELL_POWER_PAIN
 
 WeakAuras.function_strings = {
   count = [[
@@ -966,6 +966,54 @@ WeakAuras.event_prototypes = {
     end,
     stacksFunc = function(trigger)
       return UnitPower('player', SPELL_POWER_ARCANE_CHARGES);
+    end,
+    automatic = true
+  },
+  ["Fury"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+    },
+    force_events = true,
+    name = L["Fury"],
+    args = {
+      {
+        name = "power",
+        display = L["Fury"],
+        type = "number",
+        init = "UnitPower('player', SPELL_POWER_FURY)"
+      },
+    },
+    durationFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_FURY), math.max(1, UnitPowerMax('player', SPELL_POWER_FURY)), true;
+    end,
+    stacksFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_FURY);
+    end,
+    automatic = true
+  },
+  ["Pain"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+    },
+    force_events = true,
+    name = L["Pain"],
+    args = {
+      {
+        name = "power",
+        display = L["Pain"],
+        type = "number",
+        init = "UnitPower('player', SPELL_POWER_PAIN)"
+      },
+    },
+    durationFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_PAIN), math.max(1, UnitPowerMax('player', SPELL_POWER_PAIN)), true;
+    end,
+    stacksFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_PAIN);
     end,
     automatic = true
   },
