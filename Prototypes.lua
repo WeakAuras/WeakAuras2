@@ -14,7 +14,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
 
--- GLOBALS: SPELL_POWER_CHI SPELL_POWER_SHADOW_ORBS SPELL_POWER_DEMONIC_FURY SPELL_POWER_BURNING_EMBERS
+-- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_DEMONIC_FURY SPELL_POWER_BURNING_EMBERS
 
 WeakAuras.function_strings = {
   count = [[
@@ -897,27 +897,27 @@ WeakAuras.event_prototypes = {
     end,
     automatic = true
   },
-  ["Shadow Orbs"] = {
+  ["Insanity"] = {
     type = "status",
     events = {
       "UNIT_POWER",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
-    name = L["Shadow Orbs"],
+    name = L["Insanity"],
     args = {
       {
         name = "power",
-        display = L["Shadow Orbs"],
+        display = L["Insanity"],
         type = "number",
-        init = "UnitPower('player', SPELL_POWER_SHADOW_ORBS)"
+        init = "UnitPower('player', SPELL_POWER_INSANITY)"
       },
     },
     durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_SHADOW_ORBS), math.max(1, UnitPowerMax('player', SPELL_POWER_SHADOW_ORBS)), true;
+      return UnitPower('player', SPELL_POWER_INSANITY), math.max(1, UnitPowerMax('player', SPELL_POWER_INSANITY)), true;
     end,
     stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_SHADOW_ORBS);
+      return UnitPower('player', SPELL_POWER_INSANITY);
     end,
     automatic = true
   },
