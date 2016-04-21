@@ -14,7 +14,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
 
--- GLOBALS: SPELL_POWER_CHI SPELL_POWER_ECLIPSE SPELL_POWER_SHADOW_ORBS SPELL_POWER_DEMONIC_FURY SPELL_POWER_BURNING_EMBERS
+-- GLOBALS: SPELL_POWER_CHI SPELL_POWER_SHADOW_ORBS SPELL_POWER_DEMONIC_FURY SPELL_POWER_BURNING_EMBERS
 
 WeakAuras.function_strings = {
   count = [[
@@ -1022,119 +1022,6 @@ WeakAuras.event_prototypes = {
     end,
     stacksFunc = function(trigger)
       return UnitPower('player', 7);
-    end,
-    automatic = true
-  },
-  ["Eclipse Power"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
-    name = L["Eclipse Power"],
-    init = function(trigger)
-      local ret = [[
-        local unit = 'player';
-        local GetRealEclipseDirection = UnitPower(unit, SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower(unit, SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
-      ]];
-
-    return ret;
-    end,
-    args = {
-      {
-        name = "eclipsetype",
-        -- required = true,
-        display = L["Eclipse Type"],
-        type = "select",
-        values = "eclipse_types",
-        init = "GetRealEclipseDirection"
-      },
-      {
-        name = "lunar_power",
-        display = L["Lunar Power"],
-        type = "number",
-        init = "math.min(UnitPower('player', SPELL_POWER_ECLIPSE), -0) * -1",
-        enable = function(trigger)
-          return trigger.eclipsetype == "moon"
-        end
-      },
-      {
-        name = "solar_power",
-        display = L["Solar Power"],
-        type = "number",
-        init = "math.max(UnitPower('player', SPELL_POWER_ECLIPSE), 0)",
-        enable = function(trigger)
-          return trigger.eclipsetype == "sun"
-        end
-      },
-      {
-        name = "absolutValues",
-        display = L["Absolute values"],
-        type = "toggle",
-        init = "arg",
-        enable = function(trigger)
-          return not trigger.eclipsetype
-        end
-      }
-    },
-    durationFunc = function(trigger)
-    local GetRealEclipseDirection = UnitPower('player', SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower('player', SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection();
-
-    if(trigger.use_absolutValues) then
-      return math.max(UnitPower('player', SPELL_POWER_ECLIPSE) + UnitPowerMax('player', SPELL_POWER_ECLIPSE), 0), math.max(UnitPowerMax('player', SPELL_POWER_ECLIPSE) * 2, 1), true;
-    elseif(not trigger.use_eclipsetype or trigger.eclipsetype == GetRealEclipseDirection) then
-      return math.max(math.abs(UnitPower('player', SPELL_POWER_ECLIPSE)), 0), math.max(math.abs(UnitPowerMax('player', SPELL_POWER_ECLIPSE)), 1), true;
-    else
-      return 0, 0, true;
-    end
-    end,
-    nameFunc = function(trigger)
-      return WeakAuras.eclipse_types[UnitPower('player', SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower('player', SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
-    end,
-    iconFunc = function(trigger)
-      local eclipseIcons = {
-        ["moon"] = "Interface\\Icons\\ability_druid_eclipse",
-        ["sun"] = "Interface\\Icons\\ability_druid_eclipseorange"
-      };
-      return eclipseIcons[UnitPower('player', SPELL_POWER_ECLIPSE) > 0 and "sun" or UnitPower('player', SPELL_POWER_ECLIPSE) < 0 and "moon" or GetEclipseDirection()];
-    end,
-    automatic = true
-  },
-  ["Eclipse Direction"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Eclipse Direction"],
-    args = {
-      {
-        name = "eclipse_direction",
-        -- required = true,
-        display = L["Eclipse Direction"],
-        type = "select",
-        values = "eclipse_types",
-        init = "GetEclipseDirection()"
-      }
-    },
-    nameFunc = function(trigger)
-      return WeakAuras.eclipse_types[GetEclipseDirection()];
-    end,
-    iconFunc = function(trigger)
-      local eclipseIcons = {
-        ["moon"] = "Interface\\Icons\\ability_druid_eclipse",
-        ["sun"] = "Interface\\Icons\\ability_druid_eclipseorange"
-      };
-      return eclipseIcons[GetEclipseDirection()];
     end,
     automatic = true
   },

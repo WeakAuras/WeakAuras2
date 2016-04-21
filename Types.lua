@@ -101,10 +101,6 @@ WeakAuras.actual_unit_types = {
   focus = L["Focus"],
   pet = L["Pet"]
 };
-WeakAuras.eclipse_types = {
-  moon = L["Lunar"],
-  sun = L["Solar"]
-};
 WeakAuras.threat_unit_types = {
   target = L["Target"],
   none = L["At Least One Enemy"]
