@@ -14,7 +14,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
 
--- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER
+-- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER SPELL_POWER_MAELSTROM
 
 WeakAuras.function_strings = {
   count = [[
@@ -918,6 +918,30 @@ WeakAuras.event_prototypes = {
     end,
     stacksFunc = function(trigger)
       return UnitPower('player', SPELL_POWER_LUNAR_POWER);
+    end,
+    automatic = true
+  },
+  ["Maelstrom"] = {
+    type = "status",
+    events = {
+      "UNIT_POWER",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+    },
+    force_events = true,
+    name = L["Maelstrom"],
+    args = {
+      {
+        name = "power",
+        display = L["Maelstrom"],
+        type = "number",
+        init = "UnitPower('player', SPELL_POWER_MAELSTROM)"
+      },
+    },
+    durationFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_MAELSTROM), math.max(1, UnitPowerMax('player', SPELL_POWER_MAELSTROM)), true;
+    end,
+    stacksFunc = function(trigger)
+      return UnitPower('player', SPELL_POWER_MAELSTROM);
     end,
     automatic = true
   },
