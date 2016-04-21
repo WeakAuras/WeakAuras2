@@ -380,20 +380,6 @@ function WeakAuras.CheckTalentByIndex(index)
   return selected
 end
 
-function WeakAuras.CheckGlyph(glyph)
-  if (glyph) then
-    glyph = tonumber(glyph);
-    if (glyph) then
-      for i = 1, GetNumGlyphSockets() do
-        if (select(4, GetGlyphSocketInfo(i)) == glyph) then
-          return true;
-        end
-      end
-    end
-  end
-  return false;
-end
-
 function WeakAuras.CheckNumericIds(loadids, currentId)
   local searchFrom = 0;
 
@@ -540,23 +526,6 @@ WeakAuras.load_prototype = {
         end
       end,
       test = "WeakAuras.CheckTalentByIndex(%d)"
-    },
-    {
-        name = "glyph",
-        display = L["Glyph"],
-        type = "string",
-        test = "WeakAuras.CheckGlyph(%d)",
-        desc = function()
-          local desc = L["Enter a glpyh ID\n"];
-          for i = 1,  NUM_GLYPH_SLOTS do
-            local _, _, _, glyphSpell = GetGlyphSocketInfo(i);
-            if (glyphSpell) then
-              local name = GetSpellInfo(glyphSpell);
-              desc = desc .. L["%s: %s\n"]:format(name, glyphSpell);
-            end
-          end
-          return desc;
-        end
     },
     {
       name = "race",
