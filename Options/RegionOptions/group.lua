@@ -1,10 +1,7 @@
--- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-
--- Import translation
 local L = WeakAuras.L;
 
--- GLOBALS: WeakAuras UIParent
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 -- Calculate bounding box
 local function getRect(data)

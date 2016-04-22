@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
+local L = WeakAuras.L;
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 local function createOptions(id, data)
     local options = {
@@ -45,7 +47,7 @@ local function createOptions(id, data)
             order = 18,
             func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
         },
-		
+
         desaturate = {
             type = "toggle",
             name = L["Desaturate"],
@@ -204,21 +206,21 @@ local function createOptions(id, data)
         }
     };
     options = WeakAuras.AddPositionOptions(options, id, data);
-    
+
     return options;
 end
 
 local function createThumbnail(parent, fullCreate)
     local icon = parent:CreateTexture();
     icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-    
+
     return icon;
 end
 
 local function modifyThumbnail(parent, icon, data, fullModify)
     local texWidth = 0.25 * data.zoom;
     icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
-    
+
     function icon:SetIcon(path)
         local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
         if not(success) then

@@ -1,6 +1,8 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
-  
+local L = WeakAuras.L;
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
+
 local function createOptions(id, data)
   local options = {
     grow = {
@@ -94,7 +96,7 @@ local function createOptions(id, data)
           list[i] = v;
         end
         list["None"] = L["None"];
-        
+
         return list;
       end
     },
@@ -128,10 +130,10 @@ local function createOptions(id, data)
             values = function()
 				return data.controlledChildren
             end,
-            get = function(info, id) 
+            get = function(info, id)
 				return data.sortHybridTable and data.sortHybridTable [id] or false;
             end,
-            set = function(info, id) 
+            set = function(info, id)
 				if not data.sortHybridTable then data.sortHybridTable = {}; end
 					local cur = data.sortHybridTable and data.sortHybridTable[id] or false;
                     data.sortHybridTable[id] = not(cur);
@@ -144,11 +146,11 @@ local function createOptions(id, data)
     }
   };
   options = WeakAuras.AddPositionOptions(options, id, data);
-  
+
   options.width = nil;
   options.height = nil;
   options.selfPoint.disabled = true;
-  
+
   return options;
 end
 
@@ -156,24 +158,24 @@ local function createThumbnail(parent, fullCreate)
   local borderframe = CreateFrame("FRAME", nil, parent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
-  
+
   local border = borderframe:CreateTexture(nil, "OVERLAY");
   border:SetAllPoints(borderframe);
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
-  
+
   local region = CreateFrame("FRAME", nil, borderframe);
   borderframe.region = region;
-  
+
   region.children = {};
-  
+
   return borderframe;
 end
 
 local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   local region = borderframe.region;
   size = size or 24;
-  
+
   local selfPoint,actualSelfPoint;
   if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
     selfPoint = "LEFT";
@@ -208,7 +210,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     actualSelfPoint = "CENTER";
   end
   data.selfPoint = selfPoint;
-  
+
   local maxWidth, maxHeight = 0, 0;
   local radius = 0;
   if(data.grow == "CIRCLE") then
@@ -247,18 +249,18 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     maxWidth = maxWidth + (2 * radius);
     maxHeight = maxHeight + (2 * radius);
   end
-  
+
   local scale=1;
   if maxHeight > 0 and (maxHeight > maxWidth) then
     scale = size / maxHeight;
   elseif maxWidth > 0 and (maxWidth >= maxHeight) then
     scale = size / maxWidth;
   end
-  
+
   region:SetPoint("CENTER", borderframe, "CENTER");
   region:SetWidth(maxWidth * scale);
   region:SetHeight(maxHeight * scale);
-  
+
   local xOffset, yOffset = 0, 0;
   if(math.abs(data.stagger) > 0.1 and not data.grow == "CIRCLE") then
     if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
@@ -287,7 +289,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       end
     end
   end
-  
+
   local angle = data.rotation or 0;
   local angleInc = 360 / (#data.controlledChildren ~= 0 and #data.controlledChildren or 1);
   local radius = 0;
@@ -326,7 +328,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         r, g, b = 0.2, 0.8, 0.2;
       end
       region.children[index].texture:SetTexture(r, g, b);
-      
+
       region.children[index]:ClearAllPoints();
       region.children[index]:SetPoint(selfPoint, region, selfPoint, xOffset * scale, yOffset * scale);
       region.children[index]:SetWidth(childData.width * scale);
@@ -346,7 +348,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       end
     end
   end
-  
+
   local index = #data.controlledChildren + 1;
   if not(region.children[index]) then
     region.children[index] = CreateFrame("FRAME", nil, region);
@@ -404,7 +406,7 @@ local function createIcon()
   t4:SetHeight(36);
   t4:SetTexture(1, 1, 1);
   t4:SetPoint("CENTER", thumbnail, "CENTER");
-  
+
   thumbnail.elapsed = 0;
   thumbnail:SetScript("OnUpdate", function(self, elapsed)
     self.elapsed = self.elapsed + elapsed;

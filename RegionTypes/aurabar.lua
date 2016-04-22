@@ -1,5 +1,6 @@
--- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
+
+-- GLOBALS: WeakAuras
 
 -- Default settings
 local default = {
@@ -914,9 +915,7 @@ local function modify(parent, region, data)
   -- Update text visibility
   if data.text then
     -- Update text font
-    text:SetFont(SharedMedia:Fetch("font", data.textFont),
-                 data.textSize <= 35 and data.textSize or 35,
-                 data.textFlags and data.textFlags ~= "None" and data.textFlags);
+    text:SetFont(SharedMedia:Fetch("font", data.textFont), data.textSize, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     text:SetTextHeight(data.textSize);
     text:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
     text:SetWordWrap(false);
@@ -931,9 +930,7 @@ local function modify(parent, region, data)
   -- Update timer visibility
   if data.timer then
     -- Update timer font
-    timer:SetFont(SharedMedia:Fetch("font", data.timerFont),
-                  data.timerSize <= 35 and data.timerSize or 35,
-                  data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
+    timer:SetFont(SharedMedia:Fetch("font", data.timerFont), data.timerSize, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
     timer:SetTextHeight(data.timerSize);
     timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
     animRotate(timer, textDegrees);
@@ -979,9 +976,7 @@ local function modify(parent, region, data)
     -- Update stack text visibility
     if data.icon and data.stacks then
       -- Update stack font
-      stacks:SetFont(SharedMedia:Fetch("font", data.stacksFont),
-                     data.stacksSize <= 35 and data.stacksSize or 35,
-                     data.stacksFlags and data.stacksFlags ~= "None" and data.stacksFlags);
+      stacks:SetFont(SharedMedia:Fetch("font", data.stacksFont), data.stacksSize, data.stacksFlags and data.stacksFlags ~= "None" and data.stacksFlags);
       stacks:SetTextHeight(data.stacksSize);
       stacks:SetTextColor(data.stacksColor[1], data.stacksColor[2], data.stacksColor[3], data.stacksColor[4]);
       animRotate(stacks, textDegrees);

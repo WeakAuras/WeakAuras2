@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- GLOBALS: WeakAuras
+
 -- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown

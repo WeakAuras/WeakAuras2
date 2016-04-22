@@ -1,10 +1,10 @@
+local SharedMedia = LibStub("LibSharedMedia-3.0");
+local MSQ = LibStub("Masque", true);
+
 -- WoW API
 local _G = _G
 
 -- GLOBALS: WeakAuras
-
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-local MSQ = LibStub("Masque", true);
 
 local default = {
     icon = true,
@@ -171,9 +171,7 @@ local function modify(parent, region, data)
         local selfPoint = WeakAuras.inverse_point_types[data.stacksPoint];
         stacks:SetPoint(selfPoint, icon, data.stacksPoint, -0.5 * sxo, -0.5 * syo);
     end
-    stacks:SetFont(fontPath,
-                   data.fontSize <= 35 and data.fontSize or 35,
-                   data.fontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or data.fontFlags);
+    stacks:SetFont(fontPath, data.fontSize, data.fontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or data.fontFlags);
     stacks:SetTextHeight(data.fontSize);
     stacks:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
 

@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
+
 local default = {
   outline = true,
   color = {1, 1, 1, 1},

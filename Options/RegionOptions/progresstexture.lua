@@ -1,4 +1,6 @@
-local L = WeakAuras.L
+local L = WeakAuras.L;
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 local function createOptions(id, data)
     local options = {
