@@ -33,9 +33,6 @@ RegionOptions\aurabar.lua
 RegionOptions\texture.lua
 RegionOptions\icon.lua
 RegionOptions\text.lua
-#@do-not-package@
-RegionOptions\timer.lua
-#@end-do-not-package@
 RegionOptions\group.lua
 RegionOptions\dynamicgroup.lua
 RegionOptions\model.lua

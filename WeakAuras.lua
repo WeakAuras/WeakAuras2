@@ -1652,12 +1652,6 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Convert Timers to Texts
-  if(data.regionType == "timer") then
-    data.regionType = "text";
-    data.displayText = "%p";
-  end
-
   -- Upgrade some old variables
   if data.regionType == "aurabar" then
     -- "border" changed to "borderEdge"
