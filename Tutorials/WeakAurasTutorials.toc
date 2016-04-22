@@ -1,4 +1,4 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: WeakAuras Tutorials
 ## Author: Mirrored
 ## Version: @project-version@
