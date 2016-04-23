@@ -597,9 +597,9 @@ WeakAuras.event_prototypes = {
   ["Combo Points"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED",      
+      "PLAYER_FOCUS_CHANGED",
     },
     force_events = true,
     name = L["Combo Points"],
@@ -763,7 +763,7 @@ WeakAuras.event_prototypes = {
   ["Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
       "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
@@ -827,7 +827,7 @@ WeakAuras.event_prototypes = {
   ["Holy Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -847,11 +847,11 @@ WeakAuras.event_prototypes = {
       return UnitPower('player', 9);
     end,
     automatic = true
-  },  
+  },
   ["Insanity"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -875,7 +875,7 @@ WeakAuras.event_prototypes = {
   ["Chi Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -899,7 +899,7 @@ WeakAuras.event_prototypes = {
   ["Astral Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -923,7 +923,7 @@ WeakAuras.event_prototypes = {
   ["Maelstrom"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -947,7 +947,7 @@ WeakAuras.event_prototypes = {
   ["Arcane Charges"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -971,7 +971,7 @@ WeakAuras.event_prototypes = {
   ["Fury"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -995,7 +995,7 @@ WeakAuras.event_prototypes = {
   ["Pain"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -1019,7 +1019,7 @@ WeakAuras.event_prototypes = {
   ["Alternate Power"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED"
     },
@@ -1075,7 +1075,7 @@ WeakAuras.event_prototypes = {
   ["Shards"] = {
     type = "status",
     events = {
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
@@ -1999,7 +1999,7 @@ WeakAuras.event_prototypes = {
       "SPELL_COOLDOWN_STARTED",
       "SPELL_UPDATE_USABLE",
       "PLAYER_TARGET_CHANGED",
-      "UNIT_POWER",
+      "UNIT_POWER_FREQUENT",
       "RUNE_POWER_UPDATE",
       "RUNE_TYPE_UPDATE"
     },
