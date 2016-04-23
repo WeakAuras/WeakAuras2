@@ -41,9 +41,9 @@ externals:
 enable-nolib-creation: no
 
 ignore:
- - RegionTypes\timer.lua
- - WeakAurasOptions\RegionOptions\timer.lua
  - README.md
+ - Locales\babelfish.lua
+ - .gitignore
 
 move-folders:
  WeakAuras/Options: WeakAurasOptions
