@@ -736,7 +736,7 @@ WeakAuras.event_prototypes = {
   ["Health"] = {
     type = "status",
     events = {
-      "UNIT_HEALTH",
+      "UNIT_HEALTH_FREQUENT",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
       "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
