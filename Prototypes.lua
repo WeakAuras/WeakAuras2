@@ -739,6 +739,7 @@ WeakAuras.event_prototypes = {
       "UNIT_HEALTH_FREQUENT",
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
+      "WA_UNIT_PET",
       "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
@@ -754,6 +755,9 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local unit = unit or '%s';
         local concernedUnit = '%s';
+        if (unit == "pet") then
+          WeakAuras.WatchForUnitPet();
+        end
       ]];
 
     return ret:format(trigger.unit, trigger.unit);
