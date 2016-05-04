@@ -2531,6 +2531,14 @@ WeakAuras.event_prototypes = {
       }
     }
   },
+  ["Ready Check"] = {
+    type = "event",
+    events = {
+      "READY_CHECK",
+    },
+    name = L["Ready Check"],
+    args = {}
+  },
   ["Death Knight Rune"] = {
     type = "status",
     events = {
