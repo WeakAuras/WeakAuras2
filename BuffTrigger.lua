@@ -887,9 +887,16 @@ do
           data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
           data.GUIDs[destGUID].name = spellName;
           data.GUIDs[destGUID].unitName = destName;
-          data.GUIDs[destGUID].duration = 0;
-          data.GUIDs[destGUID].expirationTime = math.huge;
-          data.GUIDs[destGUID].icon = nil;
+          if (message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
+            -- Shouldn't affect duration/expirationTime nor icon
+            data.GUIDs[destGUID].duration = data.GUIDs[destGUID].duration or 0;
+            data.GUIDs[destGUID].expirationTime = data.GUIDs[destGUID].expirationTime or math.huge;
+            data.GUIDs[destGUID].icon = data.GUIDs[destGUID].icon or nil;
+          else
+            data.GUIDs[destGUID].duration = 0;
+            data.GUIDs[destGUID].expirationTime = math.huge;
+            data.GUIDs[destGUID].icon = nil;
+          end
           data.GUIDs[destGUID].count = amount or 0;
 
           updateRegion(id, data, triggernum, destGUID);
