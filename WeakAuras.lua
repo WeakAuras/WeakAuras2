@@ -998,25 +998,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   if (event == "ENCOUNTER_START") then
     encounter_id = tonumber (arg1)
     WeakAuras.CreateEncounterTable (encounter_id)
-
   elseif (event == "ENCOUNTER_END") then
     encounter_id = 0
     WeakAuras.DestroyEncounterTable()
-
-  elseif (event == "ZONE_CHANGED_NEW_AREA") then
-    local _, instanceType, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
-    WeakAuras.UpdateCurrentInstanceType(instanceType)
-
-    -- player used Hearthstone during an encounter or just left the raid group in LFR.
-    if (WeakAuras.CurrentEncounter) then
-      if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id) then
-        encounter_id = 0
-        WeakAuras.DestroyEncounterTable()
-      end
-    end
-
-    -- check if we are now inside a raid instance and check for auras with encounter_start triggers and also with init scripts
-    WeakAuras.LoadEncounterInitScripts()
   end
 
   local player, realm, zone, zoneId, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetCurrentMapAreaID(), GetSpecialization(), UnitGroupRolesAssigned("player");
@@ -1055,8 +1039,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local vehicle = UnitInVehicle('player');
   local vehicleUi = UnitHasVehicleUI('player');
 
+  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
   if (inInstance) then
-    _, instanceType, difficultyIndex = GetInstanceInfo();
+    WeakAuras.UpdateCurrentInstanceType(instanceType)
     size = Type
     if difficultyIndex == 1 then
       size = "party"
@@ -1108,9 +1093,21 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       difficulty = "mythic"
     end
   else
+    WeakAuras.UpdateCurrentInstanceType();
     size = "none"
     difficulty = "none"
   end
+
+  if (WeakAuras.CurrentEncounter) then
+    if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not incombat) then
+      encounter_id = 0
+      WeakAuras.DestroyEncounterTable()
+    end
+  end
+
+  if (event == "ZONE_CHANGED_NEW_AREA") then
+    WeakAuras.LoadEncounterInitScripts();
+ end
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;

@@ -1282,6 +1282,28 @@ do
   end
 end
 
+function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
+  local bestMatchNumItems = 0;
+  local bestMatchNumEquipped = 0;
+  local bestMatchName = nil;
+  local bestMatchIcon = nil;
+
+  for i = 1, GetNumEquipmentSets() do
+    local name, icon, _, _, numItems, numEquipped = GetEquipmentSetInfo(i);
+    if (itemSetName == nil or (name and itemSetName == name)) then
+      local match = (not partial and numItems == numEquipped)
+                    or (partial and numEquipped > bestMatchNumEquipped);
+      if (match) then
+         bestMatchNumEquipped = numEquipped;
+         bestMatchNumItems = numItems;
+         bestMatchName = name;
+         bestMatchIcon = icon;
+      end
+    end
+  end
+  return bestMatchName, bestMatchIcon, bestMatchNumEquipped, bestMatchNumItems;
+end
+
 -- DBM
 do
   local registeredDBMEvents = {}
@@ -1712,6 +1734,18 @@ do
       petFrame:SetScript("OnEvent", function()
         WeakAuras.ScanEvents("PET_UPDATE");
       end)
+    end
+  end
+
+  local unitPetFrame;
+  WeakAuras.frames["Unit Pet Handler"] = unitPetFrame;
+  function WeakAuras.WatchForUnitPet()
+    if (not unitPetFrame) then
+      unitPetFrame = CreateFrame("frame");
+      unitPetFrame:RegisterEvent("UNIT_PET");
+      unitPetFrame:SetScript("OnEvent", function()
+        WeakAuras.ScanEvents("WA_UNIT_PET", "pet");
+      end);
     end
   end
 end
