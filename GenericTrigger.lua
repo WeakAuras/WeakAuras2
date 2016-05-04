@@ -1282,6 +1282,28 @@ do
   end
 end
 
+function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
+  local bestMatchNumItems = 0;
+  local bestMatchNumEquipped = 0;
+  local bestMatchName = nil;
+  local bestMatchIcon = nil;
+
+  for i = 1, GetNumEquipmentSets() do
+    local name, icon, _, _, numItems, numEquipped = GetEquipmentSetInfo(i);
+    if (itemSetName == nil or (name and itemSetName == name)) then
+      local match = (not partial and numItems == numEquipped)
+                    or (partial and numEquipped > bestMatchNumEquipped);
+      if (match) then
+         bestMatchNumEquipped = numEquipped;
+         bestMatchNumItems = numItems;
+         bestMatchName = name;
+         bestMatchIcon = icon;
+      end
+    end
+  end
+  return bestMatchName, bestMatchIcon, bestMatchNumEquipped, bestMatchNumItems;
+end
+
 -- DBM
 do
   local registeredDBMEvents = {}

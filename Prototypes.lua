@@ -2754,6 +2754,73 @@ WeakAuras.event_prototypes = {
     hasItemID = true,
     automaticrequired = true
   },
+  ["Item Set Equipped"] = {
+    type = "status",
+    events = {
+      "PLAYER_EQUIPMENT_CHANGED",
+      "WEAR_EQUIPMENT_SET",
+      "EQUIPMENT_SETS_CHANGED",
+      "EQUIPMENT_SWAP_FINISHED",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+    },
+    force_events = "PLAYER_EQUIPMENT_CHANGED",
+    name = L["Item Set Equipped"],
+    init = function(trigger)
+      trigger.itemSetName = trigger.itemSetName or 0;
+      local itemSetName = type(trigger.itemSetName) == "number" and trigger.itemSetName or "'" .. trigger.itemSetName .. "'";
+
+      local ret = [[
+        local useItemSetName = %s;
+        local itemSetName = %s;
+        local inverse = %s;
+        local partial = %s;
+
+        local equipped = WeakAuras.GetEquipmentSetInfo(useItemSetName and itemSetName or nil, partial);
+      ]];
+
+      return ret:format(trigger.use_itemSetName and "true" or "false",
+                        itemSetName,
+                        trigger.use_inverse and "true" or "false",
+                        trigger.use_partial and "true" or "false");
+    end,
+    args = {
+      {
+        name = "itemSetName",
+        display = L["Item Set"],
+        type = "string",
+        test = "true"
+      },
+      {
+        name = "partial",
+        display = L["Allow partial matches"],
+        type = toggle,
+        test = "true"
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "(inverse and not equipped) or (equipped and not inverse)"
+      }
+    },
+    nameFunc = function(trigger)
+      return WeakAuras.GetEquipmentSetInfo(trigger.use_itemSetName and trigger.itemSetName or nil, trigger.use_partial);
+    end,
+    iconFunc = function(trigger)
+      local _, icon = WeakAuras.GetEquipmentSetInfo(trigger.use_itemSetName and trigger.itemSetName or nil, trigger.use_partial);
+      return icon;
+    end,
+    durationFunc = function(trigger)
+      local _, _, numEquipped, numItems = WeakAuras.GetEquipmentSetInfo(trigger.use_itemSetName and trigger.itemSetName or nil, trigger.use_partial);
+      return numEquipped, numItems, true;
+    end,
+    hasItemID = true,
+    automaticrequired = true
+  },
   ["Threat Situation"] = {
     type = "status",
     events = {
