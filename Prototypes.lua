@@ -1406,7 +1406,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
-          if(remaining > remainingCheck) then
+          if(remaining >= remainingCheck) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -1539,7 +1539,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
-          if(remaining > remainingCheck) then
+          if(remaining >= remainingCheck) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -1723,7 +1723,7 @@ WeakAuras.event_prototypes = {
         local ret2 = [[
           local remainingCheck = %s;
           local remaining = expirationTime - GetTime();
-          if (remaining > remainingCheck) then
+          if (remaining >= remainingCheck) then
             WeakAuras.ScheduleDbmCheck(expirationTime - remainingCheck);
           end
         ]]
@@ -1845,7 +1845,7 @@ WeakAuras.event_prototypes = {
         local ret2 = [[
           local remainingCheck = %s;
           local remaining = expirationTime - GetTime();
-          if (remaining > remainingCheck) then
+          if (remaining >= remainingCheck) then
             WeakAuras.ScheduleBigWigsCheck(expirationTime - remainingCheck);
           end
         ]]
@@ -2120,7 +2120,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
-          if(remaining > remainingCheck) then
+          if(remaining >= remainingCheck) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -2522,7 +2522,7 @@ WeakAuras.event_prototypes = {
         local expirationTime = startTime + duration
         local remaining = expirationTime - GetTime();
         local remainingCheck = %s;
-        if(remaining > remainingCheck) then
+        if(remaining >= remainingCheck) then
           WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
         end
       ]];

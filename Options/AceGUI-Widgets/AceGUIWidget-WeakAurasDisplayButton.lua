@@ -553,7 +553,7 @@ local methods = {
                 namestable[1] = L["No Children"];
             end
         else
-            for triggernum = 0, 9 do
+            for triggernum = 0, data.numTriggers or 9 do
                 local trigger;
                 if(triggernum == 0) then
                     trigger = data.trigger;
