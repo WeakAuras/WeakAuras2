@@ -215,7 +215,7 @@ local function modify(parent, region, data)
     local textStr;
     local function UpdateText()
         textStr = data.displayStacks or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
         if(stacks.displayStacks ~= textStr) then
             if stacks:GetFont() then

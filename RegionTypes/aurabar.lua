@@ -686,7 +686,7 @@ local function UpdateText(region, data)
 
   -- Replace %-marks
   textStr = data.displayTextLeft or "";
-  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
   -- Update left text
   if not text.displayTextLeft or #text.displayTextLeft ~= #textStr then
@@ -699,7 +699,7 @@ local function UpdateText(region, data)
 
   -- Replace %-marks
   textStr = data.displayTextRight or "";
-  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
   -- Update right text
   if not timer.displayTextRight or #timer.displayTextRight ~= #textStr then

@@ -2506,7 +2506,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
         for i = 0, data.numTriggers - 1 do
           result = result and func(data, i);
         end
-      elseif (mode == "duration") then
+      elseif (mode == "firstValue") then
         result = false;
         for i = 0, data.numTriggers - 1 do
           local tmp = func(data, i);
@@ -2536,12 +2536,13 @@ local function wrapTriggerSystemFunction(functionName, mode)
   return func;
 end
 
-WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "duration");
+WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
 WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
 WeakAuras.CanGroupShowWithZero = wrapTriggerSystemFunction("CanGroupShowWithZero", "or");
 WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
+WeakAuras.GetAdditionalProperties = wrapTriggerSystemFunction("GetAdditionalProperties", "firstValue");
 
 function WeakAuras.CreateFallbackState(id, triggernum, state)
   local data = db.displays[id];
@@ -3269,9 +3270,29 @@ function WeakAuras.UpdatedTriggerState(id)
   end
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, regionValues)
+local toReplace = {};
+function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
   for symbol, v in pairs(WeakAuras.dynamic_texts) do
     textStr = textStr:gsub(symbol, regionValues[v.value] or "");
+  end
+  if (regionState) then
+    wipe(toReplace);
+    -- Find all patterns that are used, don't modify the string while we search
+
+    local startI = textStr:find("#");
+    while (startI) do
+      local endI = textStr:find("#", startI + 1);
+      if (not endI) then break; end
+
+      tinsert(toReplace, textStr:sub(startI + 1, endI - 1));
+      startI = textStr:find("#", endI + 1);
+    end
+
+    for _, pattern in ipairs(toReplace) do
+      if (regionState[pattern]) then
+        textStr = textStr:gsub("#" .. pattern .. "#", regionState[pattern]);
+      end
+    end
   end
   return textStr;
 end

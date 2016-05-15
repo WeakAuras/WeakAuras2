@@ -52,6 +52,8 @@ CanHaveTooltip(data)
 GetNameAndIcon(data)
     Returns the name and icon to show in the options
 
+GetAdditionalProperties(data)
+  Returns the a tooltip for the additional properties
 ]]--
 
 
@@ -2122,6 +2124,10 @@ function GenericTrigger.SetToolTip(trigger, state)
       end
     end
   end
+end
+
+function GenericTrigger.GetAdditionalProperties(data, triggernum)
+  return "";
 end
 
 function GenericTrigger.CreateFallbackState(data, triggernum, state)

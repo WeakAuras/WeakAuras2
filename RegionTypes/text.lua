@@ -70,7 +70,7 @@ local function modify(parent, region, data)
 
     local function UpdateText()
         local textStr = data.displayText;
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
         if(textStr ~= text.displayText) then
             if text:GetFont() then text:SetText(textStr); end
