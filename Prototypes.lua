@@ -2552,15 +2552,18 @@ WeakAuras.event_prototypes = {
     },
     name = L["Chat Message"],
     init = function(trigger)
-      return [[
+      local ret = [[
         if (event:find('LEADER')) then
           event = event:sub(0, -8);
         end
         if (event == 'CHAT_MSG_TEXT_EMOTE') then
           event = 'CHAT_MSG_EMOTE';
         end
+         local use_cloneId = %s;
       ]];
+      return ret:format(trigger.use_cloneId and "true" or "false");
     end,
+    statesParameter = "all",
     args = {
       {
         name = "messageType",
@@ -2573,14 +2576,23 @@ WeakAuras.event_prototypes = {
         name = "message",
         display = L["Message"],
         init = "arg",
-        type = "longstring"
+        type = "longstring",
+        store = true
       },
       {
         name = "sourceName",
         display = L["Source Name"],
         init = "arg",
-        type = "string"
-      }
+        type = "string",
+        store = true
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      },
     }
   },
   ["Ready Check"] = {
