@@ -204,10 +204,17 @@ function ConstructTest(trigger, arg)
 end
 
 function ConstructFunction(prototype, trigger, inverse)
-  local input = {"event"};
+  local input;
+  if (not inverse and prototype.statesParameter) then
+    input = {"state", "event"};
+  else
+    input = {"event"};
+  end
+
   local required = {};
   local tests = {};
   local debug = {};
+  local store = {};
   local init;
   if(prototype.init) then
     init = prototype.init(trigger);
@@ -228,6 +235,9 @@ function ConstructFunction(prototype, trigger, inverse)
           tinsert(input, name);
         elseif(arg.init) then
           init = init.."local "..name.." = "..arg.init.."\n";
+        end
+        if (arg.store) then
+          tinsert(store, name);
         end
         local test = ConstructTest(trigger, arg);
         if (test) then
@@ -259,10 +269,22 @@ function ConstructFunction(prototype, trigger, inverse)
   if(#debug > 0) then
     ret = ret.."print('ret: true');\n";
   end
+  if (not inverse) then
+    if (prototype.statesParameter == "all") then
+      ret = ret .. "  state[cloneId] = state[cloneId] or {}\n"
+      ret = ret .. "  state = state[cloneId]\n"
+    end
+
+    for _, v in ipairs(store) do
+      ret = ret .. "    if (state." .. v .. " ~= " .. v .. ") then\n"
+      ret = ret .. "      state." .. v .. " = " .. v .. "\n"
+      ret = ret .. "      state.changed = true\n"
+      ret = ret .. "    end\n"
+    end
+  end
   ret = ret.."return true else return false end end";
 
   -- print(ret);
-
   return ret;
 end
 
@@ -278,16 +300,12 @@ function WeakAuras.EndEvent(id, triggernum, force)
   return state.changed;
 end
 
-function WeakAuras.ActivateEvent(id, triggernum, data)
+function WeakAuras.ActivateEvent(id, triggernum, data, state)
   local changed = false;
-  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  allStates[""] = allStates[""] or {};
-  local state = allStates[""];
   if (state.show ~= true) then
     state.show = true;
     changed = true;
   end
-
   if (data.duration) then
     local expirationTime = GetTime() + data.duration;
     if (state.expirationTime ~= expirationTime) then
@@ -387,7 +405,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data)
       end
     end
   else
-
     if (state.progressType ~= "timed") then
       state.progressType = "timed";
       changed = true;
@@ -402,10 +419,10 @@ function WeakAuras.ActivateEvent(id, triggernum, data)
       changed = true;
     end
   end
-  local name = data.nameFunc and data.nameFunc(data.trigger) or nil;
-  local icon = data.iconFunc and data.iconFunc(data.trigger) or nil;
-  local texture = data.textureFunc and data.textureFunc(data.trigger) or nil;
-  local stacks = data.stacksFunc and data.stacksFunc(data.trigger) or nil;
+  local name = data.nameFunc and data.nameFunc(data.trigger) or state.name;
+  local icon = data.iconFunc and data.iconFunc(data.trigger) or state.icon;
+  local texture = data.textureFunc and data.textureFunc(data.trigger) or state.texture;
+  local stacks = data.stacksFunc and data.stacksFunc(data.trigger) or state.stacks;
   if (state.name ~= name) then
     state.name = name;
     changed = true;
@@ -442,11 +459,42 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         if(data.triggerFunc) then
-          if(data.triggerFunc(event, arg1, arg2, ...)) then
-            if(WeakAuras.ActivateEvent(id, triggernum, data)) then
-              updateTriggerState = true;
+          local untriggerCheck = false;
+          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+          if (data.statesParameter == "all") then
+            if(data.triggerFunc(allStates, event, arg1, arg2, ...)) then
+              for id, state in pairs(allStates) do
+                if (state.changed) then
+                  if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+                    updateTriggerState = true;
+                  end
+                end
+              end
+            else
+              untriggerCheck = true;
+            end
+          elseif (data.statesParameter == "one") then
+            allStates[""] = allStates[""] or {};
+            local state = allStates[""];
+            if(data.triggerFunc(state, event, arg1, arg2, ...)) then
+              if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+                updateTriggerState = true;
+              end
+            else
+              untriggerCheck = true;
             end
           else
+            if(data.triggerFunc(event, arg1, arg2, ...)) then
+              allStates[""] = allStates[""] or {};
+              local state = allStates[""];
+              if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+                updateTriggerState = true;
+              end
+            else
+              untriggerCheck = true;
+            end
+          end
+          if (untriggerCheck) then
             if(data.untriggerFunc and data.untriggerFunc(event, arg1, arg2, ...)) then
               if (WeakAuras.EndEvent(id, triggernum)) then
                 updateTriggerState = true;
@@ -597,7 +645,7 @@ function GenericTrigger.Add(data, region)
     if(trigger and type(trigger) == "table") then
       triggerType = trigger.type;
       if(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
-        local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc;
+        local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
         local durationFunc, nameFunc, iconFunc, textureFunc, stacksFunc;
         if(triggerType == "status" or triggerType == "event") then
@@ -613,6 +661,7 @@ function GenericTrigger.Add(data, region)
             error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
           else
             triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
+            statesParameter = event_prototypes[trigger.event].statesParameter;
             WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
             WeakAuras.debug(triggerFuncStr);
             triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
@@ -712,6 +761,7 @@ function GenericTrigger.Add(data, region)
           trigger = trigger,
           triggerFunc = triggerFunc,
           untriggerFunc = untriggerFunc,
+          statesParameter = statesParameter,
           event = trigger.event,
           events = trigger_events,
           inverse = trigger.use_inverse,
@@ -1962,6 +2012,12 @@ function GenericTrigger.CanGroupShowWithZero(data)
   return false;
 end
 
+local uniqueId = 0;
+function WeakAuras.GetUniqueCloneId()
+   uniqueId = (uniqueId + 1) % 1000000;
+   return uniqueId;
+end
+
 function GenericTrigger.CanHaveDuration(data, triggernum)
   local trigger;
   if (triggernum == 0) then
@@ -2054,6 +2110,7 @@ function GenericTrigger.CanHaveAuto(data, triggernum)
     and WeakAuras.event_prototypes[trigger.event]
     and (
     WeakAuras.event_prototypes[trigger.event].iconFunc
+    or WeakAuras.event_prototypes[trigger.event].canHaveAuto
     )
   )
   or (
@@ -2127,7 +2184,30 @@ function GenericTrigger.SetToolTip(trigger, state)
 end
 
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
-  return "";
+  local trigger;
+  if (triggernum == 0) then
+    trigger = data.trigger;
+  else
+    trigger = data.additional_triggers[triggernum].trigger;
+  end
+  local ret = "";
+  if (trigger.type == "event" or trigger.type == "status") then
+    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+      local found = false;
+      local additional = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
+      for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
+        if (v.store and v.name and v.display) then
+          found = true;
+          additional = additional .. "|cFFFF0000#" .. v.name .. "#|r - " .. v.display .. "\n";
+        end
+      end
+
+      if (found) then
+        ret = ret .. additional;
+      end
+    end
+  end
+  return ret;
 end
 
 function GenericTrigger.CreateFallbackState(data, triggernum, state)

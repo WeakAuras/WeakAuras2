@@ -678,6 +678,7 @@ WeakAuras.event_prototypes = {
 
     return ret:format(trigger.unit, trigger.unit);
     end,
+    statesParameter = "one",
     args = {
       {
         name = "unit",
@@ -691,14 +692,16 @@ WeakAuras.event_prototypes = {
         name = "name",
         display = L["Name"],
         type = "string",
-        init = "UnitName(concernedUnit)"
+        init = "UnitName(concernedUnit)",
+        store = true
       },
       {
         name = "class",
         display = L["Class"],
         type = "select",
         init = "select(2, UnitClass(unit))",
-        values = "class_types"
+        values = "class_types",
+        store = true
       },
       {
         name = "hostility",
@@ -718,7 +721,8 @@ WeakAuras.event_prototypes = {
         name = "level",
         display = L["Level"],
         type = "number",
-        init = "UnitLevel(concernedUnit)"
+        init = "UnitLevel(concernedUnit)",
+        store = true
       },
       {
         name = "attackable",
@@ -1181,7 +1185,15 @@ WeakAuras.event_prototypes = {
     events = {
       "COMBAT_LOG_EVENT_UNFILTERED"
     },
+    init = function(trigger)
+      local ret = [[
+        local use_cloneId = %s;
+      ]];
+      return ret:format(trigger.use_cloneId and "true" or "false");
+    end,
     name = L["Combat Log"],
+    canHaveAuto = true,
+    statesParameter = "all",
     args = {
       {}, -- timestamp ignored with _ argument
       {}, -- messageType ignored with _ argument (it is checked before the dynamic function)
@@ -1195,7 +1207,8 @@ WeakAuras.event_prototypes = {
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
-        end
+        end,
+        store = true
       },
       {
         name = "source",
@@ -1204,7 +1217,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
-        end
+        end,
+        store = true
       },
       {}, -- sourceFlags ignored with _ argument
       {}, -- sourceRaidFlags ignored with _ argument
@@ -1222,7 +1236,8 @@ WeakAuras.event_prototypes = {
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
-        end
+        end,
+        store = true
       },
       {
         name = "dest",
@@ -1231,7 +1246,9 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
-        end
+        end,
+        store = true
+
       },
       {
         enable = function(trigger)
@@ -1247,7 +1264,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
-        end
+        end,
+        store = true
       },
       {
         name = "spellName",
@@ -1256,7 +1274,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
-        end
+        end,
+        store = true
       },
       {
         enable = function(trigger)
@@ -1294,7 +1313,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
-        end
+        end,
+        store = true
       },
       {
         enable = function(trigger)
@@ -1318,7 +1338,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventSuffix == "_MISSED" or trigger.subeventSuffix == "_HEAL" or trigger.subeventSuffix == "_ENERGIZE" or trigger.subeventSuffix == "_DRAIN" or trigger.subeventSuffix == "_LEECH" or trigger.subeventPrefix:find("DAMAGE"))
-        end
+        end,
+        store = true
       },
       {
         name = "overkill",
@@ -1327,7 +1348,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
-        end
+        end,
+        store = true
       },
       {
         name = "overhealing",
@@ -1336,7 +1358,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventSuffix == "_HEAL"
-        end
+        end,
+        store = true
       },
       {
         enable = function(trigger)
@@ -1350,7 +1373,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
-        end
+        end,
+        store = true
       },
       {
         name = "blocked",
@@ -1359,7 +1383,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
-        end
+        end,
+        store = true
       },
       {
         name = "absorbed",
@@ -1368,7 +1393,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
-        end
+        end,
+        store = true
       },
       {
         name = "critical",
@@ -1377,7 +1403,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
-        end
+        end,
+        store = true
       },
       {
         name = "glancing",
@@ -1386,7 +1413,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
-        end
+        end,
+        store = true
       },
       {
         name = "crushing",
@@ -1395,7 +1423,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
-        end
+        end,
+        store = true
       },
       {
         name = "isOffHand",
@@ -1404,7 +1433,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
-        end
+        end,
+        store = true
       },
       {
         name = "multistrike",
@@ -1413,7 +1443,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
-        end
+        end,
+        store = true
       },
       {
         name = "number",
@@ -1422,7 +1453,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_EXTRA_ATTACKS" or trigger.subeventSuffix:find("DOSE"))
-        end
+        end,
+        store = true
       },
       {
         name = "powerType",
@@ -1440,13 +1472,28 @@ WeakAuras.event_prototypes = {
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_ENERGIZE" or trigger.subeventSuffix == "_DRAIN" or trigger.subeventSuffix == "_LEECH")
-        end
+        end,
+        store = true
       },
       {
         enable = function(trigger)
           return trigger.subeventSuffix == "_CAST_FAILED"
         end
-      } -- failedType ignored with _ argument - theoretically this is not necessary because it is the last argument in the event, but it is added here for completeness
+      }, -- failedType ignored with _ argument - theoretically this is not necessary because it is the last argument in the event, but it is added here for completeness
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "spellId and select(3, GetSpellInfo(spellId)) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
+        store = true,
+        test = "true"
+      }
     }
   },
   ["Cooldown Progress (Spell)"] = {
