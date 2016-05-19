@@ -1987,8 +1987,11 @@ WeakAuras.event_prototypes = {
     name = L["BigWigs Message"],
     init = function(trigger)
       WeakAuras.RegisterBigWigsCallback("BigWigs_Message");
-      return "";
+      local ret = "local use_cloneId = %s;"
+      return ret:format(trigger.use_cloneId and "true" or "false");
     end,
+    statesParameter = "all",
+    canHaveAuto = true,
     args = {
       {
         name = "addon",
@@ -2000,28 +2003,53 @@ WeakAuras.event_prototypes = {
         name = "spellId",
         init = "arg",
         display = L["Spell Id"],
-        type = "number"
+        type = "number",
+        store = true
       },
       {
         name = "text",
         init = "arg",
         display = L["Message"],
         type = "longstring",
+        store = true
+      },
+      {
+        name = "name",
+        init = "text",
+        hidden = true,
+        test = "true",
+        store = true
       },
       {}, -- Importance, might be useful
-      {}, -- Icon
+      {
+        name = "icon",
+        init = "arg",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      },
     }
   },
   ["BigWigs Timer"] = {
     type = "status",
     events = {
-      "BigWigs_Timer_Update"
+      "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update",
     },
-    force_events = "BigWigs_Timer_Update",
+    force_events = "BigWigs_Timer_Force",
     name = L["BigWigs Timer"],
-    init = function(trigger)
+    canHaveAuto = true,
+    canHaveDuration = true,
+    triggerFunction = function(trigger)
       WeakAuras.RegisterBigWigsTimer();
       local ret = [[
+        return function(states, event, id)
         local triggerAddon = %s;
         local triggerSpellId = %s;
         local triggerText = %s;
@@ -2034,68 +2062,119 @@ WeakAuras.event_prototypes = {
                        trigger.use_text and trigger.text_operator or ""
                        );
 
-      ret = ret .. [[
-        local duration, expirationTime = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerText, triggerTextOperator);
-      ]];
-
+      local copyOrSchedule;
       if (trigger.use_remaining) then
         local ret2 = [[
           local remainingCheck = %s;
-          local remaining = expirationTime - GetTime();
-          if (remaining >= remainingCheck) then
-            WeakAuras.ScheduleBigWigsCheck(expirationTime - remainingCheck);
+        ]];
+        ret = ret .. ret2:format(trigger.remaining or 0);
+        copyOrSchedule = [[
+          local remainingTime = bar.expirationTime - GetTime()
+          if (remainingTime %s %s) then
+            WeakAuras.CopyBigWigsTimerToState(bar, states, id);
+          elseif (states[id] and states[id].show) then
+              states[id].show = false;
+              states[id].changed = true;
           end
-        ]]
-        ret = ret .. ret2:format(tonumber(trigger.remaining) or 0);
+          if (remainingTime >= remainingCheck) then
+            WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - remainingCheck);
+          end
+          ]]
+        copyOrSchedule = copyOrSchedule:format(trigger.remaining_operator or "", trigger.remaining or 0);
+      else
+        copyOrSchedule = [[
+          WeakAuras.CopyBigWigsTimerToState(bar, states, id);
+          ]];
       end
 
-      return ret;
+      if (trigger.use_cloneId) then
+        ret = ret .. [[
+          if (event == "BigWigs_StartBar") then
+            if (WeakAuras.BigWigsTimerMatches(id, triggerAddon, triggerSpellId, triggerTextOperator, triggerText)) then
+              local bar = WeakAuras.GetBigWigsTimerById(id);
+          ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+            end
+          elseif (event == "BigWigs_StopBar") then
+            if (states[id]) then
+              states[id].show = false;
+              states[id].changed = true;
+            end
+          elseif (event == "BigWigs_Timer_Update") then
+            for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
+              if (WeakAuras.BigWigsTimerMatches(id, triggerAddon, triggerSpellId, triggerTextOperator, triggerText)) then
+                ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+              end
+            end
+          elseif (event == "BigWigs_Timer_Force") then
+            wipe(states);
+            for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
+              if (WeakAuras.BigWigsTimerMatches(id, triggerAddon, triggerSpellId, triggerTextOperator, triggerText)) then
+                ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+              end
+            end
+          end
+          return true;
+        end
+        ]]
+        return ret;
+      else
+        ret = ret .. [[
+          local bar = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerTextOperator, triggerText);
+          local id = "";
+          if (bar) then
+        ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+          else
+            if (states[""] and states[""].show) then
+              states[""].show = false;
+              states[""].changed = true;
+            end
+          end
+          return true;
+        end]]
+        --print(ret);
+        return ret;
+      end
     end,
+    statesParameter = "full",
+    canHaveAuto = true,
     args = {
       {
         name = "addon",
         display = L["BigWigs Addon"],
         type = "string",
-        test = "true"
       },
       {
         name = "spellId",
         display = L["Spell Id"], -- Correct?
         type = "number",
-        test = "true"
       },
       {
         name = "text",
         display = L["Message"],
         type = "longstring",
-        test = "true"
       },
       {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        init = "remaining"
       },
       {
-        hidden = true,
-        test = "duration > 0"
-      },
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      }
     },
     automaticrequired = true,
-    durationFunc = function(trigger)
-      local duration, expirationTime = WeakAuras.GetBigWigsTimer(trigger.use_addon and trigger.addon,
-                                                                 trigger.use_spellId and trigger.spellId,
-                                                                 trigger.use_text and trigger.text,
-                                                                 trigger.use_text and trigger.text_operator);
-      return duration, expirationTime;
-    end,
-    iconFunc = function(trigger)
-      local _, _, icon = WeakAuras.GetBigWigsTimer(trigger.use_addon and trigger.addon,
-                                                   trigger.use_spellId and trigger.spellId,
-                                                   trigger.use_text and trigger.text,
-                                                   trigger.use_text and trigger.text_operator);
-      return icon;
-    end,
   },
   ["Global Cooldown"] = {
     type = "status",
