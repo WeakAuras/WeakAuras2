@@ -1778,39 +1778,65 @@ WeakAuras.event_prototypes = {
     name = L["DBM Announce"],
     init = function(trigger)
       WeakAuras.RegisterDBMCallback("DBM_Announce");
-      return "";
+      local ret = "local use_cloneId = %s;"
+      return ret:format(trigger.use_cloneId and "true" or "false");
     end,
+    statesParameter = "all",
+    canHaveAuto = true,
     args = {
       {
         name = "message",
         init = "arg",
         display = L["Message"],
-        type = "longstring"
-      }
+        type = "longstring",
+        store = true
+      },
+      {
+        name = "name",
+        init = "message",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "icon",
+        init = "arg",
+        store = true,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      },
     }
   },
   ["DBM Timer"] = {
     type = "status",
     events = {
-      "DBM_TimerUpdate"
+      "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce"
     },
-    force_events = "DBM_TimerUpdate",
+    force_events = "DBM_TimerForce",
     name = L["DBM Timer"],
-    init = function(trigger)
+    canHaveAuto = true,
+    canHaveDuration = true,
+    triggerFunction = function(trigger)
       WeakAuras.RegisterDBMCallback("DBM_TimerStart");
       WeakAuras.RegisterDBMCallback("DBM_TimerStop");
       WeakAuras.RegisterDBMCallback("wipe");
       WeakAuras.RegisterDBMCallback("kill");
 
-      local ret = "";
-
+      local ret = "return function (states, event, id)\n"
+      -- ret = ret .. "          print(event, id)\n";
       if (trigger.use_id) then
-        ret = "local triggerId = \"" .. (trigger.id or "") .. "\"\n";
+        ret = ret .. "          local triggerId = \"" .. (trigger.id or "") .. "\"\n";
       else
-        ret = "local triggerId = nil\n";
+        ret = ret .. "          local triggerId = nil\n";
       end
 
-      local test;
       if (trigger.use_message) then
         local ret2 = [[
           local triggerMessage = "%s"
@@ -1822,7 +1848,6 @@ WeakAuras.event_prototypes = {
           local triggerMessage = nil;
           local triggerOperator = nil;
         ]]
-        test = "true";
       end
 
       if (trigger.use_spellId and trigger.spellId) then
@@ -1835,69 +1860,120 @@ WeakAuras.event_prototypes = {
           local triggerSpellId = nil;
         ]];
       end
-
-      ret = ret .. [[
-        local duration, expirationTime = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator, triggerSpellId);
-      ]]
-
+      local copyOrSchedule;
       if (trigger.use_remaining) then
         local ret2 = [[
           local remainingCheck = %s;
-          local remaining = expirationTime - GetTime();
-          if (remaining >= remainingCheck) then
-            WeakAuras.ScheduleDbmCheck(expirationTime - remainingCheck);
+        ]];
+        ret = ret .. ret2:format(trigger.remaining or 0);
+        copyOrSchedule = [[
+          local remainingTime = bar.expirationTime - GetTime()
+          if (remainingTime %s %s) then
+            WeakAuras.CopyBarToState(bar, states, id);
+          elseif (states[id] and states[id].show) then
+              states[id].show = false;
+              states[id].changed = true;
+          end
+          if (remainingTime >= remainingCheck) then
+            WeakAuras.ScheduleDbmCheck(bar.expirationTime - remainingCheck);
           end
         ]]
-        ret = ret .. ret2:format(tonumber(trigger.remaining) or 0);
+        copyOrSchedule = copyOrSchedule:format(trigger.remaining_operator or "", trigger.remaining or 0);
+      else
+        copyOrSchedule = [[
+          WeakAuras.CopyBarToState(bar, states, id);
+          ]];
       end
-      --print (ret);
-      return ret;
-    end,
-    durationFunc = function(trigger)
-      local duration, expirationTime = WeakAuras.GetDBMTimer(
-          trigger.use_id and trigger.id,
-          trigger.use_message and trigger.message,
-          trigger.use_message and trigger.message_operator,
-          trigger.use_spellId and trigger.spellId);
-      return duration, expirationTime;
-    end,
+      if (trigger.use_cloneId) then
+        ret = ret .. [[
+          if (event == "DBM_TimerStart") then
+            if (WeakAuras.DBMTimerMatches(id, triggerId, triggerMessage, triggerOperator, triggerSpellId)) then
+              local bar = WeakAuras.GetDBMTimerById(id);
+          ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+            end
+          elseif (event == "DBM_TimerUpdate") then
+            for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
+              if (WeakAuras.DBMTimerMatches(id, triggerId, triggerMessage, triggerOperator, triggerSpellId)) then
+                ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+              end
+            end
 
-    iconFunc = function(trigger)
-      local _, _, icon = WeakAuras.GetDBMTimer(
-          trigger.use_id and trigger.id,
-          trigger.use_message and trigger.message,
-          trigger.use_message and trigger.message_operator,
-          trigger.use_spellId and trigger.spellId);
-      return icon;
+          elseif (event == "DBM_TimerStop") then
+            if (states[id]) then
+              states[id].show = false;
+              states[id].changed = true;
+            end
+          elseif (event == "DBM_TimerStopAll") then
+            for _, state in pairs(states) do
+              state.show = false;
+              state.changed = false;
+            end
+          elseif (event == "DBM_TimerForce") then
+            wipe(states);
+            for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
+              if (WeakAuras.DBMTimerMatches(id, triggerId, triggerMessage, triggerOperator, triggerSpellId)) then
+                ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+              end
+            end
+          end
+          return true;
+        end
+        ]]
+        --print(ret);
+        return ret
+      else -- no clones
+        ret = ret .. [[
+          local bar = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator, triggerSpellId);
+          local id = "";
+          if (bar) then
+        ]]
+        ret = ret .. copyOrSchedule;
+        ret = ret .. [[
+          else
+            if (states[""] and states[""].show) then
+              states[""].show = false;
+              states[""].changed = true;
+            end
+          end
+          return true;
+        end]]
+        --print(ret);
+        return ret;
+      end
     end,
+    statesParameter = "full",
+    canHaveAuto = true,
     args = {
       {
         name = "id", -- TODO Is there ever anything useful in ID?
         display = L["Id"],
-        type = "string",
-        test = "true"
+        type = "string"
       },
       {
         name = "message",
         display = L["Message"],
-        type = "longstring",
-        test = "true"
+        type = "longstring"
       },
       {
         name = "spellId",
         display = L["Spell/Encounter Id"],
-        type = "string",
-        test = "true"
+        type = "string"
       },
       {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        init = "remaining"
       },
       {
-        hidden = true,
-        test = "duration > 0"
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle"
       }
     },
     automaticrequired = true

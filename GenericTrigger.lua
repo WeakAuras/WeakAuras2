@@ -204,6 +204,10 @@ function ConstructTest(trigger, arg)
 end
 
 function ConstructFunction(prototype, trigger, inverse)
+  if (prototype.triggerFunction) then
+    return prototype.triggerFunction(trigger);
+  end
+
   local input;
   if (not inverse and prototype.statesParameter) then
     input = {"state", "event"};
@@ -461,7 +465,11 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
         if(data.triggerFunc) then
           local untriggerCheck = false;
           local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-          if (data.statesParameter == "all") then
+          if (data.statesParameter == "full") then
+            if (data.triggerFunc(allStates, event, arg1, arg2, ...)) then
+              updateTriggerState = true;
+            end
+          elseif (data.statesParameter == "all") then
             if(data.triggerFunc(allStates, event, arg1, arg2, ...)) then
               for id, state in pairs(allStates) do
                 if (state.changed) then
@@ -1519,14 +1527,13 @@ do
   local function dbmRecheckTimers()
     --print ("dbmRecheckTimers");
     local now = GetTime();
-    local sendUpdate = false; -- Do we have a expired timer?
     nextExpire = nil;
     local nextMsg = nil;
     for k, v in pairs(bars) do
       if (v.expirationTime < now) then
-        sendUpdate = true;
         --print ("  Removing:", k, v.message);
         bars[k] = nil;
+        WeakAuras.ScanEvents("DBM_TimerStop", k);
       elseif (nextExpire == nil) then
         nextExpire = v.expirationTime;
         nextMsg = v.message;
@@ -1540,9 +1547,6 @@ do
 
     if (nextExpire) then
       recheckTimer = timer:ScheduleTimer(dbmRecheckTimers, nextExpire - now);
-    end
-    if (sendUpdate) then
-      WeakAuras.ScanEvents("DBM_TimerUpdate");
     end
   end
 
@@ -1573,53 +1577,87 @@ do
         recheckTimer = timer:ScheduleTimer(dbmRecheckTimers, expiring - now, msg);
         -- print ("  Scheduling timer for", expiring - now);
       end
-      WeakAuras.ScanEvents("DBM_TimerUpdate");
+      WeakAuras.ScanEvents("DBM_TimerStart", id);
     elseif (event == "DBM_TimerStop") then
       local id = ...;
       -- print ("  Removing timer with ID:", id);
       bars[id] = nil;
-      WeakAuras.ScanEvents("DBM_TimerUpdate");
+      WeakAuras.ScanEvents("DBM_TimerStop", id);
     elseif (event == "kill" or event == "wipe") then
       -- print("  Wipe or kill, removing all timers")
       bars = {};
-      WeakAuras.ScanEvents("DBM_TimerUpdate");
+      WeakAuras.ScanEvents("DBM_TimerStopAll", id);
     else -- DBM_Announce
       WeakAuras.ScanEvents(event, ...);
     end
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator, spellId)
-    --print ("WeakAuras.GetDBMTimers", id, message, operator)
-    local duration, expirationTime, icon;
-    for k, v in pairs(bars) do
-      local found = true;
-      if (id and id ~= k) then
-       found = false;
-      end
-      if (found and spellId and spellId ~= v.spellId) then
-        found = false;
-      end
-      if (found and message and operator) then
-        if(operator == "==") then
-          if (v.message ~= message) then
-            found = false;
-          end
-        elseif (operator == "find('%s')") then
-          if (v.message == nil or not v.message:find(message)) then
-            found = false;
-         end
-        elseif (operator == "match('%s')") then
-          if (v.message == nil or not v.message:match(message)) then
-            found = false;
-          end
+  function WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId)
+    if (not bars[timerId]) then
+      return false;
+    end
+
+    local v = bars[timerId];
+
+    if (id and id ~= timerId) then
+     return false;
+    end
+    if (spellId and spellId ~= v.spellId) then
+      return false;
+    end
+    if (message and operator) then
+      if(operator == "==") then
+        if (v.message ~= message) then
+          return false;
+        end
+      elseif (operator == "find('%s')") then
+        if (v.message == nil or not v.message:find(message)) then
+          return false;
+       end
+      elseif (operator == "match('%s')") then
+        if (v.message == nil or not v.message:match(message)) then
+          return false;
         end
       end
-      if (found and (expirationTime == nil or v.expirationTime < expirationTime)) then
+    end
+    return true;
+  end
+
+  function WeakAuras.GetDBMTimerById(id)
+    return bars[id];
+  end
+
+  function WeakAuras.GetAllDBMTimers()
+    return bars;
+  end
+
+  function WeakAuras.GetDBMTimer(id, message, operator, spellId)
+    local bar;
+    for k, v in pairs(bars) do
+      if (WeakAuras.DBMTimerMatches(k, id, message, operator, spellId)
+          and (bar == nil or bars[k].expirationTime < bar.expirationTime)) then
         -- print ("  using", v.message);
-        expirationTime, duration, icon = v.expirationTime, v.duration, v.icon;
+        bar = bars[k];
       end
     end
-    return duration or 0, expirationTime or 0, icon;
+    return bar;
+  end
+
+  function WeakAuras.CopyBarToState(bar, states, id)
+    states[id] = states[id] or {};
+    local state = states[id];
+    state.show = true;
+    state.changed = true;
+    state.icon = bar.icon;
+    state.message = bar.message;
+    state.name = bar.message;
+    state.expirationTime = bar.expirationTime;
+    state.progressType = 'timed';
+    state.resort = true;
+    state.duration = bar.duration;
+    state.timerType = bar.timerType;
+    state.spellId = bar.spellId;
+    state.colorId = bar.colorId;
   end
 
   function WeakAuras.RegisterDBMCallback(event)
@@ -2036,7 +2074,8 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
     (
       trigger.event
       and WeakAuras.event_prototypes[trigger.event]
-      and WeakAuras.event_prototypes[trigger.event].durationFunc
+      and (WeakAuras.event_prototypes[trigger.event].durationFunc
+        or WeakAuras.event_prototypes[trigger.event].canHaveDuration)
     )
     or (
       trigger.unevent == "timed"
@@ -2057,6 +2096,7 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
       trigger.customDuration
       and trigger.customDuration ~= ""
     )
+    or trigger.custom_type == "stateupdate"
     )
   )
   ) then
