@@ -57,6 +57,9 @@ WeakAuras.trigger_require_types = {
   all = L["All Triggers"],
   custom = L["Custom Function"]
 };
+WeakAuras.trigger_modes = {
+  ["first_active"] = -10,
+};
 WeakAuras.trigger_types = {
   aura = L["Aura"],
   status = L["Status"],

@@ -1484,7 +1484,7 @@ WeakAuras.event_prototypes = {
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
+        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
       return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"),
                                    "\"" .. (trigger.showOn or "") .. "\"");
@@ -1617,7 +1617,7 @@ WeakAuras.event_prototypes = {
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
+        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
       return ret:format(itemName,  "\"" .. (trigger.showOn or "") .. "\"");
     end,
@@ -2198,7 +2198,7 @@ WeakAuras.event_prototypes = {
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
+        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
     end
 
     if trigger.use_inverse then
@@ -2600,7 +2600,7 @@ WeakAuras.event_prototypes = {
           WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
         end
       ]];
-      ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
+      ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
     end
     return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"), (trigger.use_deathRune == true and "true" or trigger.use_deathRune == false and "false" or "nil"), (trigger.use_includeDeath and "true" or "false"));
   end,
