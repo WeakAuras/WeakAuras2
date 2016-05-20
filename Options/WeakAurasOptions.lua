@@ -5007,7 +5007,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Check On..."],
       order = 8,
       values = check_types,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "status" and trigger.check ~= "update") end,
+      hidden = function() return not (trigger.type == "custom"
+          and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+          and trigger.check ~= "update")
+      end,
       get = function() return trigger.check end,
       set = function(info, v)
         trigger.check = v;
@@ -5023,7 +5026,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 8,
       width = "double",
       values = check_types,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "status" and trigger.check == "update") end,
+      hidden = function() return not (trigger.type == "custom"
+          and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+          and trigger.check == "update")
+      end,
       get = function() return trigger.check end,
       set = function(info, v)
         trigger.check = v;
@@ -5038,7 +5044,9 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Event(s)"],
       desc = L["Custom trigger status tooltip"],
       order = 9,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "status" and trigger.check ~= "update") end,
+      hidden = function() return not (trigger.type == "custom"
+        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+        and trigger.check ~= "update") end,
       get = function() return trigger.events end,
       set = function(info, v)
         trigger.events = v;
@@ -5156,7 +5164,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 14,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide == "custom")) end,
+      hidden = function() return not (trigger.type == "custom"
+        and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom"))) end,
       get = function() return untrigger and untrigger.custom end,
       set = function(info, v)
         if(untrigger) then
@@ -5175,7 +5184,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToUntriggerPath("custom"))
       end,
-      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide == "custom")) end,
+      hidden = function() return not (trigger.type == "custom"
+        and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom"))) end,
     },
     custom_untrigger_error = {
       type = "description",
@@ -5189,7 +5199,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 15,
       hidden = function()
-        if not(trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide == "custom") and untrigger and untrigger.custom) then
+        if not(trigger.type == "custom" and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom")) and untrigger and untrigger.custom) then
           return true;
         else
           local loadedFunction, errorString = loadstring("return "..(untrigger and untrigger.custom or ""));
@@ -5207,7 +5217,9 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 16,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide ~= "timed")) end,
+      hidden = function() return not (trigger.type == "custom"
+        and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
+      end,
       get = function() return trigger.customDuration end,
       set = function(info, v)
         trigger.customDuration = v;
@@ -5224,12 +5236,16 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customDuration"))
       end,
-      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide ~= "timed")) end,
+      hidden = function() return not (trigger.type == "custom"
+          and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
+      end,
     },
     custom_duration_error = {
       type = "description",
       name = function()
-        if not(trigger.type == "custom" and (trigger.custom_type == "status" or trigger.custom_hide ~= "timed") and trigger.customDuration and trigger.customDuration ~= "") then
+        if not(trigger.type == "custom"
+            and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed"))
+            and trigger.customDuration and trigger.customDuration ~= "") then
           return "";
         end
         local _, errorString = loadstring("return "..(trigger.customDuration or ""));
@@ -5238,7 +5254,9 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 17,
       hidden = function()
-        if not(trigger.type == "custom" and (trigger.custom_hide ~= "timed") and trigger.customDuration and trigger.customDuration ~= "") then
+        if not(trigger.type == "custom"
+            and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed"))
+            and trigger.customDuration and trigger.customDuration ~= "") then
           return true;
         else
           local loadedFunction, errorString = loadstring("return "..(trigger.customDuration or ""));
@@ -5256,7 +5274,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 18,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
       get = function() return trigger.customName end,
       set = function(info, v)
         trigger.customName = v;
@@ -5273,7 +5291,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customName"))
       end,
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
     custom_name_error = {
       type = "description",
@@ -5287,7 +5305,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 19,
       hidden = function()
-        if not(trigger.type == "custom" and trigger.customName and trigger.customName ~= "") then
+        if not(trigger.type == "custom" and trigger.custom_type ~= "stateupdate" and trigger.customName and trigger.customName ~= "") then
           return true;
         else
           local loadedFunction, errorString = loadstring("return "..(trigger.customName or ""));
@@ -5305,7 +5323,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 20,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
       get = function() return trigger.customIcon end,
       set = function(info, v)
         trigger.customIcon = v;
@@ -5322,7 +5340,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customIcon"))
       end,
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
     custom_icon_error = {
       type = "description",
@@ -5336,7 +5354,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 21,
       hidden = function()
-        if not(trigger.type == "custom" and trigger.customIcon and trigger.customIcon ~= "") then
+        if not(trigger.type == "custom" and trigger.custom_type ~= "stateupdate" and trigger.customIcon and trigger.customIcon ~= "") then
           return true;
         else
           local loadedFunction, errorString = loadstring("return "..(trigger.customIcon or ""));
@@ -5354,7 +5372,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 21.5,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
       get = function() return trigger.customTexture end,
       set = function(info, v)
         trigger.customTexture = v;
@@ -5371,12 +5389,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customTexture"))
       end,
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
     custom_texture_error = {
       type = "description",
       name = function()
-        if not(trigger.customTexture and trigger.customTexture ~= "") then
+        if not(trigger.customTexture and trigger.custom_type ~= "stateupdate" and trigger.customTexture ~= "") then
           return "";
         end
         local _, errorString = loadstring("return "..(trigger.customTexture or ""));
@@ -5385,7 +5403,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 22.5,
       hidden = function()
-        if not(trigger.type == "custom" and trigger.customTexture and trigger.customTexture ~= "") then
+        if not(trigger.type == "custom" and trigger.custom_type ~= "stateupdate" and trigger.customTexture and trigger.customTexture ~= "") then
           return true;
         else
           local loadedFunction, errorString = loadstring("return "..(trigger.customTexture or ""));
@@ -5403,7 +5421,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 23,
       multiline = true,
       width = "normal",
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
       get = function() return trigger.customStacks end,
       set = function(info, v)
         trigger.customStacks = v;
@@ -5420,12 +5438,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       func = function()
         WeakAuras.TextEditor(data, appendToTriggerPath("customStacks"))
       end,
-      hidden = function() return not (trigger.type == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
     custom_stacks_error = {
       type = "description",
       name = function()
-        if not(trigger.customStacks and trigger.customStacks ~= "") then
+        if not(trigger.customStacks and trigger.custom_type ~= "stateupdate" and trigger.customStacks ~= "") then
           return "";
         end
         local _, errorString = loadstring("return "..(trigger.customStacks or ""));
