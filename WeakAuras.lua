@@ -2059,13 +2059,6 @@ function WeakAuras.SetRegion(data, cloneId)
 
       if(cloneId) then
         clonePool[regionType] = clonePool[regionType] or {};
-        region:SetScript("OnShow", function()
-          if (not region.toShow) then
-            if (not WeakAuras.IsOptionsOpen()) then
-              region:Hide();
-            end
-          end
-        end);
       end
 
       if(data.additional_triggers and #data.additional_triggers > 0) then

@@ -1216,14 +1216,6 @@ function WeakAuras.HideOptions()
   -- dynFrame:SetScript("OnUpdate", nil);
   WeakAuras.UnlockUpdateInfo();
 
-  for id, data in pairs(db.displays) do
-    local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
-    if(region) then
-      region:SetScript("OnShow", nil);
-      region:SetScript("OnHide", nil);
-    end
-  end
-
   if(frame) then
     frame:Hide();
   end
