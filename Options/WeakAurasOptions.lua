@@ -1216,14 +1216,6 @@ function WeakAuras.HideOptions()
   -- dynFrame:SetScript("OnUpdate", nil);
   WeakAuras.UnlockUpdateInfo();
 
-  for id, data in pairs(db.displays) do
-    local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
-    if(region) then
-      region:SetScript("OnShow", nil);
-      region:SetScript("OnHide", nil);
-    end
-  end
-
   if(frame) then
     frame:Hide();
   end
@@ -6589,7 +6581,7 @@ function WeakAuras.CreateFrame()
       for name, path in pairs(iconCache) do
         local bestDistance = math.huge;
         local bestName;
-        if(name:lower():find(subname) or path:lower():find(subname)) then
+        if(name:lower():find(subname, 1, true) or path:lower():find(subname, 1, true)) then
           if(doSort) then
             local distance = Lev(name, path:sub(17));
             if(distances[path]) then
@@ -7175,10 +7167,10 @@ function WeakAuras.CreateFrame()
 
     local currentPos, id, startIdLine, startId, endId, endIdLine;
     while (true) do
-      startIdLine, startId = string.find(input, L["-- Do not remove this comment, it is part of this trigger: "], currentPos);
+      startIdLine, startId = string.find(input, L["-- Do not remove this comment, it is part of this trigger: "], currentPos, true);
       if (not startId) then break end
 
-      endId, endIdLine = string.find(input, "\n", startId);
+      endId, endIdLine = string.find(input, "\n", startId, true);
       if (not endId) then break end;
 
       if (currentPos) then
@@ -8380,7 +8372,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
     else
       if(filter and data.controlledChildren) then
         for index, childId in pairs(data.controlledChildren) do
-          if(childId:lower():find(filter)) then
+          if(childId:lower():find(filter, 1, true)) then
             containsFilter = true;
             break;
           end
@@ -8388,7 +8380,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
       end
       if(
         frame.loadedButton:GetExpanded()
-        and (not filter or id:lower():find(filter) or containsFilter)
+        and (not filter or id:lower():find(filter, 1, true) or containsFilter)
       ) then
         child.frame:Show();
         local group = child:GetGroup();
@@ -8442,7 +8434,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
     local data = WeakAuras.GetData(id);
     if(filter and data.controlledChildren) then
       for index, childId in pairs(data.controlledChildren) do
-        if(childId:lower():find(filter)) then
+        if(childId:lower():find(filter, 1, true)) then
           containsFilter = true;
           break;
         end
@@ -8450,7 +8442,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset)
     end
     if(
       frame.unloadedButton:GetExpanded()
-      and (not filter or id:lower():find(filter) or containsFilter)
+      and (not filter or id:lower():find(filter, 1, true) or containsFilter)
     ) then
       local group = child:GetGroup();
       if(group) then
@@ -8687,7 +8679,7 @@ function WeakAuras.BestKeyMatch(nearkey, table)
   local bestDistance = math.huge;
   local partialMatches = {};
   for key, value in pairs(table) do
-    if(key:lower():find(nearkey:lower())) then
+    if(key:lower():find(nearkey:lower(), 1, true)) then
       partialMatches[key] = value;
     end
   end
