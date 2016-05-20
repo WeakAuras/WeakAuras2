@@ -771,7 +771,8 @@ WeakAuras.event_prototypes = {
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
       "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      "WA_DELAYED_PLAYER_ENTERING_WORLD",
+      "UNIT_DISPLAYPOWER"
     },
     force_events = {
       "player",
