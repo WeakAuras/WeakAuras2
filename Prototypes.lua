@@ -2491,32 +2491,15 @@ WeakAuras.event_prototypes = {
       local rune = %s;
       local startTime, duration = WeakAuras.GetRuneCooldown(rune);
       local inverse = %s;
-      local death = %s;
 
-      local numBloodRunes = 0;
-      local numUnholyRunes = 0;
-      local numFrostRunes = 0;
-      local numDeathRunes = 0;
+      local numRunes = 0;
       for index = 1, 6 do
         local startTime = select(1, GetRuneCooldown(index));
         if startTime == 0 then
-          if GetRuneType(index) == 1 then
-            numBloodRunes = numBloodRunes  + 1;
-          elseif GetRuneType(index) == 2 then
-            numUnholyRunes = numUnholyRunes + 1;
-          elseif GetRuneType(index) == 3 then
-            numFrostRunes = numFrostRunes  + 1;
-          elseif GetRuneType(index) == 4 then
-            numDeathRunes = numDeathRunes  + 1;
-          end
+          numRunes = numRunes  + 1;
         end
       end
 
-      if %s then
-        numBloodRunes  = numBloodRunes  + numDeathRunes;
-        numUnholyRunes = numUnholyRunes + numDeathRunes;
-        numFrostRunes  = numFrostRunes  + numDeathRunes;
-      end
     ]];
     if(trigger.use_remaining and not trigger.use_inverse) then
       local ret2 = [[
@@ -2529,7 +2512,7 @@ WeakAuras.event_prototypes = {
       ]];
       ret = ret..ret2:format(tonumber(trigger.remaining) or 0);
     end
-    return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"), (trigger.use_deathRune == true and "true" or trigger.use_deathRune == false and "false" or "nil"), (trigger.use_includeDeath and "true" or "false"));
+    return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"));
   end,
     args = {
       {
@@ -2537,19 +2520,8 @@ WeakAuras.event_prototypes = {
         display = L["Rune"],
         type = "select",
         values = "rune_specific_types",
-        test = [[
-          ((inverse and startTime == 0) or (not inverse and startTime > 0))
-          and
-          ((death == nil) or (death == true and GetRuneType(rune) == 4) or (death == false and GetRuneType(rune) ~= 4))
-        ]],
-        enable = function(trigger) return not trigger.use_bloodRunes and not trigger.use_unholyRunes and not trigger.use_frostRunes end
-      },
-      {
-        name = "deathRune",
-        display = L["Death Rune"],
-        type = "tristate",
-        test = "true",
-        enable = function(trigger) return trigger.use_rune end
+        test = "(inverse and startTime == 0) or (not inverse and startTime > 0)",
+        enable = function(trigger) return not trigger.use_runesCount end
       },
       {
         name = "remaining",
@@ -2565,66 +2537,30 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return trigger.use_rune end
       },
       {
-        name = "bloodRunes",
-        display = L["Blood Runes"],
+        name = "runesCount",
+        display = L["Runes Count"],
         type = "number",
-        init = "numBloodRunes",
+        init = "numRunes",
         enable = function(trigger) return not trigger.use_rune end
-      },
-      {
-        name = "unholyRunes",
-        display = L["Unholy Runes"],
-        type = "number",
-        init = "numUnholyRunes",
-        enable = function(trigger) return not trigger.use_rune end
-      },
-      {
-        name = "frostRunes",
-        display = L["Frost Runes"],
-        type = "number",
-        init = "numFrostRunes",
-        enable = function(trigger) return not trigger.use_rune end
-      },
-      {
-        name = "includeDeath",
-        display = L["Include Death Runes"],
-        type = "toggle",
-        test = "true",
-        enable = function(trigger) return trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end
       },
     },
     durationFunc = function(trigger)
-    if trigger.use_rune then
-    local startTime, duration
-    if not(trigger.use_inverse) then
-      startTime, duration = WeakAuras.GetRuneCooldown(trigger.rune);
-    end
+      if trigger.use_rune then
+        local startTime, duration
+        if not(trigger.use_inverse) then
+          startTime, duration = WeakAuras.GetRuneCooldown(trigger.rune);
+        end
 
-    startTime = startTime or 0;
-    duration = duration or 0;
+        startTime = startTime or 0;
+        duration = duration or 0;
 
-    return duration, startTime + duration;
-    else
-    return 1, 0;
-    end
-    end,
-    nameFunc = function(trigger)
-      local runeNames = {
-        [1] = L["Blood"],
-        [2] = L["Unholy"],
-        [3] = L["Frost"],
-        [4] = L["Death"]
-      };
-      return runeNames[GetRuneType(trigger.rune)];
+        return duration, startTime + duration;
+      else
+        return 1, 0;
+      end
     end,
     iconFunc = function(trigger)
-      local runeIcons = {
-        [1] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Blood",
-        [2] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Unholy",
-        [3] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Frost",
-        [4] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Death"
-      };
-      return runeIcons[GetRuneType(trigger.rune)];
+      return "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune";
     end,
     automaticrequired = true,
   },
