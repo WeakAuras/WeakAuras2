@@ -390,11 +390,17 @@ WeakAuras.spec_types = {
   [3] = _G.SPECIALIZATION.." 3",
   [4] = _G.SPECIALIZATION.." 4"
 }
-WeakAuras.spec_types_reduced = {
+WeakAuras.spec_types_3 = {
   [1] = _G.SPECIALIZATION.." 1",
   [2] = _G.SPECIALIZATION.." 2",
   [3] = _G.SPECIALIZATION.." 3"
 }
+
+WeakAuras.spec_types_2 = {
+  [1] = _G.SPECIALIZATION.." 1",
+  [2] = _G.SPECIALIZATION.." 2",
+}
+
 WeakAuras.spec_types_specific = {}
 local function update_specs()
   for classFileName, classID in pairs(WeakAuras.class_ids) do
@@ -419,6 +425,24 @@ do
     while tier <= numTiers do
       while column <= numColumns do
         WeakAuras.talent_types[talentId] = L["Tier "]..tier.." - "..column
+        column = column + 1
+        talentId = talentId + 1
+      end
+      column = 1
+      tier = tier + 1
+    end
+    tier = 1
+  end
+end
+
+WeakAuras.pvp_talent_types = {};
+do
+  local numTalents, numTiers, numColumns =  MAX_PVP_TALENT_TIERS * MAX_PVP_TALENT_COLUMNS, MAX_PVP_TALENT_TIERS, MAX_PVP_TALENT_COLUMNS
+  local talentId,tier,column = 1,1,1
+  while talentId <= numTalents do
+    while tier <= numTiers do
+      while column <= numColumns do
+        WeakAuras.pvp_talent_types[talentId] = L["Tier "]..tier.." - "..column
         column = column + 1
         talentId = talentId + 1
       end

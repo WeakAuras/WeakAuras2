@@ -380,6 +380,15 @@ function WeakAuras.CheckTalentByIndex(index)
   return selected
 end
 
+function WeakAuras.CheckPvpTalentByIndex(index)
+  local tier = ceil(index / 3)
+  local column = (index - 1) % 3 + 1
+  local spec = GetActiveSpecGroup()
+  local _, _, _, selected = GetPvpTalentInfo(tier, column, spec)
+  return selected
+end
+
+
 function WeakAuras.CheckNumericIds(loadids, currentId)
   local searchFrom = 0;
 
@@ -480,13 +489,16 @@ WeakAuras.load_prototype = {
           if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
             single_class = trigger.class.single
           end
+
           -- If a single specific class was found, load the specific list for it
           if(single_class == class) then
             return WeakAuras.spec_types_specific[single_class];
           else
             -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
-            if(min_specs < 4) then
-              return WeakAuras.spec_types_reduced;
+            if (min_specs < 3) then
+              return WeakAuras.spec_types_2;
+            elseif(min_specs < 4) then
+              return WeakAuras.spec_types_3;
             else
               return WeakAuras.spec_types;
             end
@@ -517,15 +529,103 @@ WeakAuras.load_prototype = {
           if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
             single_class = trigger.class.single
           end
+
+          if (not trigger.use_class) then -- no class selected, fallback to current class
+            single_class = select(2, UnitClass("player"));
+          end
+
+          local single_spec;
+          if (single_class) then
+            if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
+              local num_specs = 0;
+              for spec in pairs(trigger.spec.multi) do
+                single_spec = spec;
+                num_specs = num_specs + 1;
+              end
+              if (num_specs ~= 1) then
+                single_spec = nil;
+              end
+            end
+          end
+          if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
+            single_spec = trigger.spec.single;
+          end
+
+          if (not trigger.use_spec) then
+            single_spec = GetSpecialization();
+          end
+
+          -- print ("Using talent cache", single_class, single_spec);
           -- If a single specific class was found, load the specific list for it
-          if(single_class and WeakAuras.talent_types_specific[single_class]) then
-              return WeakAuras.talent_types_specific[single_class];
+          if(single_class and WeakAuras.talent_types_specific[single_class]
+            and single_spec and WeakAuras.talent_types_specific[single_class][single_spec]) then
+              return WeakAuras.talent_types_specific[single_class][single_spec];
           else
             return WeakAuras.talent_types;
           end
         end
       end,
       test = "WeakAuras.CheckTalentByIndex(%d)"
+    },
+    {
+      name = "pvptalent",
+      display = L["PvP Talent selected"],
+      type = "multiselect",
+      values = function(trigger)
+        return function()
+          local single_class;
+          -- First check to use if the class load is on multi-select with only one class selected
+          if(trigger.use_class == false and trigger.class and trigger.class.multi) then
+            local num_classes = 0;
+            for class in pairs(trigger.class.multi) do
+              single_class = class;
+              num_classes = num_classes + 1;
+            end
+            if(num_classes ~= 1) then
+              single_class = nil;
+            end
+          end
+          -- If that is not the case, see if it is on single-select
+          if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
+            single_class = trigger.class.single
+          end
+
+          if (not trigger.use_class) then -- no class selected, fallback to current class
+            single_class = select(2, UnitClass("player"));
+          end
+
+          local single_spec;
+          if (single_class) then
+            if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
+              local num_specs = 0;
+              for spec in pairs(trigger.spec.multi) do
+                single_spec = spec;
+                num_specs = num_specs + 1;
+              end
+              if (num_specs ~= 1) then
+                single_spec = nil;
+              end
+            end
+          end
+          if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
+            single_spec = trigger.spec.single;
+          end
+
+          if (not trigger.use_spec) then
+            single_spec = GetSpecialization();
+          end
+
+          -- print ("Using talent cache", single_class, single_spec);
+          -- If a single specific class was found, load the specific list for it
+          if(single_class and WeakAuras.pvp_talent_types_specific[single_class]
+            and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
+              return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
+          else
+            return WeakAuras.pvp_talent_types;
+          end
+        end
+      end,
+      test = "WeakAuras.CheckPvpTalentByIndex(%d)"
     },
     {
       name = "race",
