@@ -390,11 +390,17 @@ WeakAuras.spec_types = {
   [3] = _G.SPECIALIZATION.." 3",
   [4] = _G.SPECIALIZATION.." 4"
 }
-WeakAuras.spec_types_reduced = {
+WeakAuras.spec_types_3 = {
   [1] = _G.SPECIALIZATION.." 1",
   [2] = _G.SPECIALIZATION.." 2",
   [3] = _G.SPECIALIZATION.." 3"
 }
+
+WeakAuras.spec_types_2 = {
+  [1] = _G.SPECIALIZATION.." 1",
+  [2] = _G.SPECIALIZATION.." 2",
+}
+
 WeakAuras.spec_types_specific = {}
 local function update_specs()
   for classFileName, classID in pairs(WeakAuras.class_ids) do
@@ -419,6 +425,24 @@ do
     while tier <= numTiers do
       while column <= numColumns do
         WeakAuras.talent_types[talentId] = L["Tier "]..tier.." - "..column
+        column = column + 1
+        talentId = talentId + 1
+      end
+      column = 1
+      tier = tier + 1
+    end
+    tier = 1
+  end
+end
+
+WeakAuras.pvp_talent_types = {};
+do
+  local numTalents, numTiers, numColumns =  MAX_PVP_TALENT_TIERS * MAX_PVP_TALENT_COLUMNS, MAX_PVP_TALENT_TIERS, MAX_PVP_TALENT_COLUMNS
+  local talentId,tier,column = 1,1,1
+  while talentId <= numTalents do
+    while tier <= numTiers do
+      while column <= numColumns do
+        WeakAuras.pvp_talent_types[talentId] = L["Tier "]..tier.." - "..column
         column = column + 1
         talentId = talentId + 1
       end
@@ -927,12 +951,12 @@ WeakAuras.swing_types = {
   ["off"] = L["Off Hand"]
 };
 WeakAuras.rune_specific_types = {
-  [1] = L["Blood Rune #1"],
-  [2] = L["Blood Rune #2"],
-  [3] = L["Unholy Rune #1"],
-  [4] = L["Unholy Rune #2"],
-  [5] = L["Frost Rune #1"],
-  [6] = L["Frost Rune #2"]
+  [1] = L["Rune #1"],
+  [2] = L["Rune #2"],
+  [3] = L["Rune #3"],
+  [4] = L["Rune #4"],
+  [5] = L["Rune #5"],
+  [6] = L["Rune #6"]
 };
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
