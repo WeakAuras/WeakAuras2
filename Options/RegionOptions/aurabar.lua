@@ -241,7 +241,7 @@ local function createOptions(id, data)
             name = "",
             width = "half",
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
-            image = function() return data.displayIcon or "", 18, 18 end,
+            image = function() return data.displayIcon and tostring(data.displayIcon) or "", 18, 18 end,
             order = 38.4
         },
         chooseIcon = {
