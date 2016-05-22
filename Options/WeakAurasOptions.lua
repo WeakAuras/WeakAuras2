@@ -4114,7 +4114,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       type = "execute",
       name = "",
       width = "half",
-      image = function() return trigger.name and WeakAuras.GetIconFromSpellCache(trigger.name) or "", 18, 18 end,
+      image = function()
+        if (not trigger.name) then return "" end;
+        local icon =  WeakAuras.GetIconFromSpellCache(trigger.name);
+        return icon and tostring(icon) or "", 18, 18 end,
       order = 11,
       disabled = function() return not trigger.name and WeakAuras.GetIconFromSpellCache(trigger.name) end,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end
