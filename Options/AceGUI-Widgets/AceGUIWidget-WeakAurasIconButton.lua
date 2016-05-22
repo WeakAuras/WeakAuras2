@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasIconButton", 20
+local Type, Version = "WeakAurasIconButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -79,7 +79,7 @@ local function Constructor()
   texture:SetAllPoints(button);
   texture.name = "Undefined";
 
-  button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path:sub(17)) end);
+  button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path) end);
 	button:SetScript("OnLeave", Hide_Tooltip);
 
 	local widget = {

@@ -227,14 +227,10 @@ local function createOptions(id, data)
             disabled = function() return not data.icon end,
             order = 38.3,
             get = function()
-                if(data.displayIcon) then
-                    return data.displayIcon:sub(17);
-                else
-                    return nil;
-                end
+                return tostring(data.displayIcon);
             end,
             set = function(info, v)
-                data.displayIcon = "Interface\\Icons\\"..v;
+                data.displayIcon = v;
                 WeakAuras.Add(data);
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);
