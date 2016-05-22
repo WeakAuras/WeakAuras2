@@ -327,7 +327,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       else
         r, g, b = 0.2, 0.8, 0.2;
       end
-      region.children[index].texture:SetTexture(r, g, b);
+      region.children[index].texture:SetColorTexture(r, g, b);
 
       region.children[index]:ClearAllPoints();
       region.children[index]:SetPoint(selfPoint, region, selfPoint, xOffset * scale, yOffset * scale);
@@ -355,7 +355,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     region.children[index].texture = region.children[index]:CreateTexture(nil, "OVERLAY");
     region.children[index].texture:SetAllPoints(region.children[index]);
   end
-  region.children[index].texture:SetTexture(1, 1, 1);
+  region.children[index].texture:SetColorTexture(1, 1, 1);
   region.children[index]:ClearAllPoints();
   if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
     region.children[index]:SetWidth(size);
@@ -389,22 +389,22 @@ local function createIcon()
   local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
   t1:SetWidth(24);
   t1:SetHeight(6);
-  t1:SetTexture(0.8, 0, 0);
+  t1:SetColorTexture(0.8, 0, 0);
   t1:SetPoint("TOP", thumbnail, "TOP", 0, -6);
   local t2 = thumbnail:CreateTexture(nil, "ARTWORK");
   t2:SetWidth(12);
   t2:SetHeight(12);
-  t2:SetTexture(0.2, 0.8, 0.2);
+  t2:SetColorTexture(0.2, 0.8, 0.2);
   t2:SetPoint("TOP", t1, "BOTTOM", 0, -2);
   local t3 = thumbnail:CreateTexture(nil, "ARTWORK");
   t3:SetWidth(30);
   t3:SetHeight(4);
-  t3:SetTexture(0.1, 0.25, 1);
+  t3:SetColorTexture(0.1, 0.25, 1);
   t3:SetPoint("TOP", t2, "BOTTOM", 0, -2);
   local t4 = thumbnail:CreateTexture(nil, "OVERLAY");
   t4:SetWidth(1);
   t4:SetHeight(36);
-  t4:SetTexture(1, 1, 1);
+  t4:SetColorTexture(1, 1, 1);
   t4:SetPoint("CENTER", thumbnail, "CENTER");
 
   thumbnail.elapsed = 0;

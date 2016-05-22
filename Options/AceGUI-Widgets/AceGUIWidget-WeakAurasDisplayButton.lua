@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasDisplayButton", 23
+local Type, Version = "WeakAurasDisplayButton", 24
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -576,7 +576,7 @@ local methods = {
                                         end
                                     end
                                 end
-                                local icon = WeakAurasOptionsSaved.iconCache[name] or "Interface\\Icons\\INV_Misc_QuestionMark";
+                                local icon = WeakAuras.GetIconFromSpellCache(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
                                 tinsert(namestable, {left, name, icon});
                             end
                         end

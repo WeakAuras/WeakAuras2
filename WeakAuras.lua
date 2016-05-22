@@ -648,8 +648,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       -- Deprecated fields with *lots* of data, clear them out
       db.iconCache = nil;
       db.iconHash = nil;
-
-      db.tempIconCache = db.tempIconCache or {};
+      db.tempIconCache = nil;
+      db.dynamicIconCache = db.dynamicIconCache or {};
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
@@ -3132,12 +3132,25 @@ function WeakAuras.ControlChildren(childid)
   end
 end
 
-function WeakAuras.SetTempIconCache(name, icon)
-  db.tempIconCache[name] = icon;
+function WeakAuras.SetDynamicIconCache(name, spellId, icon)
+  db.dynamicIconCache[name] = db.dynamicIconCache[name] or {};
+  db.dynamicIconCache[name][spellId] = icon;
 end
 
-function WeakAuras.GetTempIconCache(name)
-  return db.tempIconCache[name];
+function WeakAuras.GetDynamicIconCache(name)
+  if (not db.dynamicIconCache[name]) then
+    return nil;
+  end
+  for spellId, icon in pairs(db.dynamicIconCache[name]) do
+    if (IsSpellKnown(spellId)) then -- TODO save this information?
+      return db.dynamicIconCache[name][spellId];
+    end
+  end
+
+  if (WeakAuras.GetIconFromSpellCache) then
+    return WeakAuras.GetIconFromSpellCache(name);
+  end
+  return nil;
 end
 
 function WeakAuras.RegisterTriggerSystem(types, triggerSystem)

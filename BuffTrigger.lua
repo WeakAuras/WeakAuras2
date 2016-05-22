@@ -500,7 +500,7 @@ function WeakAuras.ScanAuras(unit)
               end
               if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                 -- Show display and handle clones
-                WeakAuras.SetTempIconCache(name, icon);
+                WeakAuras.SetTempIconCache(name, spellId, icon);
                 if(data.autoclone) then
                   local cloneId = name.."-"..(casGUID or "unknown");
                   if(not clones[id][cloneId] or clones[id][cloneId].expirationTime ~= expirationTime) then
@@ -564,7 +564,7 @@ function WeakAuras.ScanAuras(unit)
               -- Aura conforms to trigger
               if(checkPassed) then
                 active = true;
-                WeakAuras.SetTempIconCache(name, icon);
+                WeakAuras.SetTempIconCache(name, spellId, icon);
 
                 -- Update aura cache (and clones)
                 if(aura_object and not data.specificUnit) then
@@ -825,7 +825,7 @@ do
         region:SetName(auradata.unitName);
       end
       if(region.SetIcon) then
-        region:SetIcon(auradata.icon or WeakAuras.GetTempIconCache(auradata.name) or "Interface\\Icons\\INV_Misc_QuestionMark");
+        region:SetIcon(auradata.icon or WeakAuras.GetIconFromSpellCache(auradata.name) or "Interface\\Icons\\INV_Misc_QuestionMark");
       end
       if(region.SetStacks) then
         region:SetStacks(auradata.count);
