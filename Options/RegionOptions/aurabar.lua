@@ -227,7 +227,7 @@ local function createOptions(id, data)
             disabled = function() return not data.icon end,
             order = 38.3,
             get = function()
-                return tostring(data.displayIcon);
+                return data.displayIcon and tostring(data.displayIcon) or "";
             end,
             set = function(info, v)
                 data.displayIcon = v;
