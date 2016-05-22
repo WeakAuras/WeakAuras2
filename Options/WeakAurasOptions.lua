@@ -730,13 +730,15 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           image = function()
             if(trigger["use_"..realname] and trigger[realname]) then
               if(arg.type == "aura") then
-                return WeakAuras.GetIconFromSpellCache(trigger[realname]) or "", 18, 18;
+                local icon = WeakAuras.GetIconFromSpellCache(trigger[realname]);
+                return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "spell") then
                 local _, _, icon = GetSpellInfo(trigger[realname]);
-                return icon or "", 18, 18;
+                return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "item") then
                 local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
-                return icon or "", 18, 18;
+                print ("returning 3", icon);
+                return icon and tostring(icon) or "", 18, 18;
               end
             else
               return "", 18, 18;
@@ -4142,7 +4144,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[1]) end,
       desc = function() return getAuraMatchesList(trigger.names[1]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[1]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[1]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 11,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[1]) end,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end
@@ -4185,7 +4190,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[2]) end,
       desc = function() return getAuraMatchesList(trigger.names[2]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[2]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[2]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 14,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[2]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -4227,7 +4235,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[3]) end,
       desc = function() return getAuraMatchesList(trigger.names[3]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[3]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[3]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 17,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[3]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -4269,7 +4280,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[4]) end,
       desc = function() return getAuraMatchesList(trigger.names[4]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[4]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[4]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 20,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[4]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -4312,7 +4326,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[5]) end,
       desc = function() return getAuraMatchesList(trigger.names[5]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[5]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[5]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 23,
       hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
@@ -4353,7 +4370,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[6]) end,
       desc = function() return getAuraMatchesList(trigger.names[6]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[6]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[6]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 26,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[6]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -4395,7 +4415,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[7]) end,
       desc = function() return getAuraMatchesList(trigger.names[7]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[7]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[7]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 29,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[7]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -4437,7 +4460,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[8]) end,
       desc = function() return getAuraMatchesList(trigger.names[8]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[8]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[8]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 32,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[8]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -4479,7 +4505,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[9]) end,
       desc = function() return getAuraMatchesList(trigger.names[9]) end,
       width = "half",
-      image = function() return WeakAuras.GetIconFromSpellCache(trigger.names[9]) or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[9]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 35,
       disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[9]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
