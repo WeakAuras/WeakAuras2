@@ -6,6 +6,9 @@ local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 
+-- WoW APIs
+local GetPvpTalentInfo = GetPvpTalentInfo
+
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
