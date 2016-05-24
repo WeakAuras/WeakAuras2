@@ -397,13 +397,14 @@ function WeakAuras.CreateIconCache(callback)
   local func = function()
     local id = 0;
     local misses = 0;
-    local maxMiss = 0;
 
-    while (misses < 200) do
+    while (misses < 400) do
       id = id + 1;
       local name, _, icon = GetSpellInfo(id);
 
-      if(name and name ~= "" and icon ~= 136243) then -- 136243 is the a gear icon, we can ignore those spells
+      if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
+        misses = 0;
+      elseif(name and name ~= "") then
         if (not spellCache[name]) then
           spellCache[name] = {};
         end
@@ -1095,7 +1096,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         num = num + 1;
       end
 
-      if(true or num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version) then
+      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version) then
         WeakAuras.CreateIconCache();
 
         odb.build = build;
