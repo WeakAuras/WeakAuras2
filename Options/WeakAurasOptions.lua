@@ -1300,6 +1300,7 @@ function WeakAuras.UnlockUpdateInfo()
 end
 
 function WeakAuras.SetIconNames(data)
+  if (not thumbnails[data.id]) then return end;
   WeakAuras.SetIconName(data, WeakAuras.regions[data.id].region);
   WeakAuras.SetIconName(data, thumbnails[data.id].region);
   if(WeakAuras.clones[data.id]) then
@@ -4831,7 +4832,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       values = function()
         local ret = {[0] = L["Trigger %d"]:format(1)};
         if(data.controlledChildren) then
-          for index=1,(data.numTriggers or 9) do
+          for index=1,(data.numTriggers and data.numTriggers + 1 or 9) do
             local all, none, any = true, true, false;
             for _, childId in pairs(data.controlledChildren) do
               local childData = WeakAuras.GetData(childId);
@@ -4893,14 +4894,14 @@ function WeakAuras.ReloadTriggerOptions(data)
             local childData = WeakAuras.GetData(childId);
             if(childData) then
               tremove(childData.additional_triggers, optionTriggerChoices[childId]);
-        childData.numTriggers = 1 + (childData.additional_triggers and #childData.additional_triggers or 0)
+              childData.numTriggers = 1 + (childData.additional_triggers and #childData.additional_triggers or 0)
               optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
               WeakAuras.ReloadTriggerOptions(childData);
             end
           end
         else
           tremove(data.additional_triggers, optionTriggerChoices[id]);
-      data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers + 0)
+          data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers + 0)
           optionTriggerChoices[id] = optionTriggerChoices[id] - 1;
         end
         WeakAuras.Add(data);
@@ -8576,9 +8577,7 @@ end
 function WeakAuras.UpdateDisplayButton(data)
   local id = data.id;
   local button = displayButtons[id];
-  if not(button) then
-    error("Button for "..id.." was not found!");
-  else
+  if (button) then
     button:SetIcon(WeakAuras.SetThumbnail(data));
   end
 end
@@ -8591,6 +8590,7 @@ function WeakAuras.SetThumbnail(data)
   else
     local id = data.id;
     local button = displayButtons[id];
+    if (not button) then return end;
     local thumbnail;
     if((not thumbnails[id]) or (not thumbnails[id].region) or thumbnails[id].regionType ~= regionType) then
       if(regionOptions[regionType] and regionOptions[regionType].createThumbnail and regionOptions[regionType].modifyThumbnail) then
