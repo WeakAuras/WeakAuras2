@@ -679,7 +679,7 @@ local methods = {
         self.frame.description = {...};
     end,
     ["SetIcon"] = function(self, icon)
-        if(type(icon) == "string") then
+        if(type(icon) == "string" or type(icon) == "number") then
             self.icon:SetTexture(icon);
             self.icon:Show();
             if(self.iconRegion and self.iconRegion.Hide) then
