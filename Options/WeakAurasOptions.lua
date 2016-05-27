@@ -6960,10 +6960,10 @@ function WeakAuras.CreateFrame()
         elseif(mode == "table") then
           displayStr = WeakAuras.DisplayToTableString(id);
         end
+        importexportbox.editBox:SetMaxBytes(nil);
         importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
         importexportbox.editBox:SetScript("OnChar", function() importexportbox:SetText(displayStr); importexportbox.editBox:HighlightText(); end);
         importexportbox.editBox:SetScript("OnMouseUp", function() importexportbox.editBox:HighlightText(); end);
-        importexportbox.editBox:SetScript("OnTextChanged", nil);
         importexportbox:SetLabel(id.." - "..#displayStr);
         importexportbox.button:Hide();
         importexportbox:SetText(displayStr);
@@ -6971,19 +6971,34 @@ function WeakAuras.CreateFrame()
         importexportbox:SetFocus();
       end
     elseif(mode == "import") then
-      importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
-      importexportbox.editBox:SetScript("OnChar", nil);
-      importexportbox.editBox:SetScript("OnMouseUp", nil);
-      importexportbox.editBox:SetScript("OnTextChanged", function()
-        local str = importexportbox:GetText();
-        str = str:match( "^%s*(.-)%s*$" )
-        importexportbox:SetLabel(""..#str);
-        if(#str > 20) then
-          WeakAuras.ImportString(str);
+      local textBuffer, i, lastPaste = {}, 0, 0
+      local function clearBuffer(self)
+        self:SetScript('OnUpdate', nil)
+          local pasted = strtrim(table.concat(textBuffer))
+          importexportbox.editBox:ClearFocus();
+          pasted = pasted:match( "^%s*(.-)%s*$" );
+          if (#pasted > 20) then
+            WeakAuras.ImportString(pasted);
+            importexportbox:SetLabel(L["Processed %i chars"]:format(i));
+            importexportbox.editBox:SetMaxBytes(2500);
+            importexportbox.editBox:SetText(strsub(pasted, 1, 2500));
+          end
+      end
+
+      importexportbox.editBox:SetScript('OnChar', function(self, c)
+        if lastPaste ~= GetTime() then
+          textBuffer, i, lastPaste = {}, 0, GetTime()
+          self:SetScript('OnUpdate', clearBuffer)
         end
-      end);
-      importexportbox:SetText("");
-      importexportbox:SetLabel("0");
+        i = i + 1
+        textBuffer[i] = c
+      end)
+
+      importexportbox.editBox:SetText("");
+      importexportbox.editBox:SetMaxBytes(2500);
+      importexportbox.editBox:SetScript("OnEscapePressed", function() importexport:Close(); end);
+      importexportbox.editBox:SetScript("OnMouseUp", nil);
+      importexportbox:SetLabel(L["Paste text below"]);
       importexportbox:SetFocus();
     end
   end
