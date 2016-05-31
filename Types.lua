@@ -346,7 +346,8 @@ WeakAuras.power_types = {
   [2] = L["Focus"],
   [3] = L["Energy"],
   [4] = L["Happiness"],
-  [6] = L["Runic Power"]
+  [6] = L["Runic Power"],
+  [13] = L["Insanity"]
 };
 WeakAuras.miss_types = {
   ABSORB = L["Absorb"],
