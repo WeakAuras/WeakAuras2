@@ -345,7 +345,7 @@ WeakAuras.power_types = {
   [1] = L["Rage"],
   [2] = L["Focus"],
   [3] = L["Energy"],
-  [4] = L["Happiness"],
+  [4] = L["Combo Points"],
   [6] = L["Runic Power"],
   [13] = L["Insanity"]
 };
