@@ -471,7 +471,6 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = function(trigger)
         return function()
-          local _, class = UnitClass("player")
           local single_class;
           local min_specs = 4;
           -- First check to use if the class load is on multi-select with only one class selected
@@ -495,7 +494,7 @@ WeakAuras.load_prototype = {
           end
 
           -- If a single specific class was found, load the specific list for it
-          if(single_class == class) then
+          if(single_class) then
             return WeakAuras.spec_types_specific[single_class];
           else
             -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
@@ -2440,7 +2439,6 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local totemType = %i;
         local _, totemName, startTime, duration = GetTotemInfo(totemType);
-
         local active = (startTime ~= 0);
       ]];
     ret = ret:format(trigger.totemType);

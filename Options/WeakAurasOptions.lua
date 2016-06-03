@@ -445,10 +445,10 @@ end
 
 function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
   local trigger, untrigger;
-  if(triggertype == "load") then
-    trigger = data.load;
-  elseif(data.controlledChildren) then
+  if(data.controlledChildren) then
     trigger, untrigger = {}, {};
+  elseif(triggertype == "load") then
+    trigger = data.load;
   else
     if(triggernum == 0) then
       data.untrigger = data.untrigger or {};
@@ -738,7 +738,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "item") then
                 local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
-                print ("returning 3", icon);
                 return icon and tostring(icon) or "", 18, 18;
               end
             else
@@ -1622,7 +1621,6 @@ local function getAll(data, info, ...)
       end
     end
   end
-
   return unpack(combinedValues);
 end
 
