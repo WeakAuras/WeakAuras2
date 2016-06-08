@@ -1043,6 +1043,7 @@ WeakAuras.difficulty_types = {
   normal = L["Normal"],
   heroic = L["Heroic"],
   mythic = L["Mythic"],
+  timewalking = L["Timewalking"],
   lfr = L["Looking for Raid"],
   challenge = L["Challenge"]
 };
