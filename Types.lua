@@ -139,7 +139,7 @@ WeakAuras.race_types = {
   Orc = LBR["Orc"],
   Tauren = LBR["Tauren"],
   Troll = LBR["Troll"],
-  Undead = LBR["Undead"]
+  Scourge = LBR["Undead"]
 }
 
 WeakAuras.faction_group = {
@@ -1043,6 +1043,7 @@ WeakAuras.difficulty_types = {
   normal = L["Normal"],
   heroic = L["Heroic"],
   mythic = L["Mythic"],
+  timewalking = L["Timewalking"],
   lfr = L["Looking for Raid"],
   challenge = L["Challenge"]
 };
