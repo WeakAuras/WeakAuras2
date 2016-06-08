@@ -139,7 +139,7 @@ WeakAuras.race_types = {
   Orc = LBR["Orc"],
   Tauren = LBR["Tauren"],
   Troll = LBR["Troll"],
-  Undead = LBR["Undead"]
+  Scourge = LBR["Undead"]
 }
 
 WeakAuras.faction_group = {
