@@ -8,7 +8,7 @@ local steps = {
         texture = {
             width = 100,
             height = 100,
-            path = "Interface\\AddOns\\WeakAuras\\icon.tga",
+            path = "Interface\\AddOns\\WeakAuras\\Media\\Textures\icon.blp",
             color = {0.8333, 0, 1}
         },
         path = {function() return WeakAuras.OptionsFrame() end}
@@ -265,7 +265,7 @@ local steps = {
         texture = {
             width = 100,
             height = 100,
-            path = "Interface\\AddOns\\WeakAuras\\icon.tga",
+            path = "Interface\\AddOns\\WeakAuras\\Media\\Textures\icon.blp",
             color = {0.8333, 0, 1}
         },
         path = {function() return WeakAuras.OptionsFrame() end}
@@ -275,7 +275,7 @@ local steps = {
 local function icon()
     local region = CreateFrame("frame");
     local texture = region:CreateTexture(nil, "overlay");
-    texture:SetTexture("Interface\\AddOns\\WeakAuras\\icon.tga");
+    texture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\icon.blp");
     texture:SetVertexColor(1, 1, 0);
     texture:SetAllPoints(region);
     
