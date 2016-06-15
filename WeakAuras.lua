@@ -1549,7 +1549,7 @@ function WeakAuras.ResolveCollisions(onFinished)
   end);
   popup.editBox:SetText(currentId);
   popup.text:SetJustifyH("left");
-  popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\icon.tga");
+  popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\icon.blp");
   popup.icon:SetVertexColor(0.833, 0, 1);
 
   UpdateText(popup);
@@ -2878,7 +2878,7 @@ local Broker_WeakAuras;
 Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   type = "data source",
   text = "WeakAuras",
-  icon = "Interface\\AddOns\\WeakAuras\\icon.tga",
+  icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\icon.blp",
   OnClick = function(self, button)
     if(IsShiftKeyDown()) then
       if not(WeakAuras.IsOptionsOpen()) then
