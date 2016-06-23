@@ -1200,7 +1200,7 @@ WeakAuras.event_prototypes = {
       {}, -- sourceGUID ignored with _ argument
       {}, -- hideCaster ignored with _ argument
       {
-        name = "sourceunit",
+        name = "sourceUnit",
         display = L["Source Unit"],
         type = "unit",
         test = "source and UnitIsUnit(source, '%s')",
@@ -1211,7 +1211,7 @@ WeakAuras.event_prototypes = {
         store = true
       },
       {
-        name = "source",
+        name = "sourceName",
         display = L["Source Name"],
         type = "string",
         init = "arg",
@@ -1226,10 +1226,11 @@ WeakAuras.event_prototypes = {
         name = "destGUID",
         init = "arg",
         hidden = "true",
-        test = "true"
+        test = "true",
+        store = true
       },
       {
-        name = "destunit",
+        name = "destUnit",
         display = L["Destination Unit"],
         type = "unit",
         test = "(destGUID or '') == (UnitGUID('%s') or '') and destGUID",
@@ -1240,7 +1241,7 @@ WeakAuras.event_prototypes = {
         store = true
       },
       {
-        name = "dest",
+        name = "destName",
         display = L["Destination Name"],
         type = "string",
         init = "arg",

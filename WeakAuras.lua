@@ -3270,29 +3270,20 @@ function WeakAuras.UpdatedTriggerState(id)
   end
 end
 
-local toReplace = {};
+local replaceStringCache = {};
 function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
-  for symbol, v in pairs(WeakAuras.dynamic_texts) do
-    textStr = textStr:gsub(symbol, regionValues[v.value] or "");
-  end
   if (regionState) then
-    wipe(toReplace);
-    -- Find all patterns that are used, don't modify the string while we search
-
-    local startI = textStr:find("#");
-    while (startI) do
-      local endI = textStr:find("#", startI + 1);
-      if (not endI) then break; end
-
-      tinsert(toReplace, textStr:sub(startI + 1, endI - 1));
-      startI = textStr:find("#", endI + 1);
-    end
-
-    for _, pattern in ipairs(toReplace) do
-      if (regionState[pattern]) then
-        textStr = textStr:gsub("#" .. pattern .. "#", regionState[pattern]);
+    for key, value in pairs(regionState) do
+      if (type(value) == "string" or type(value) == "number") then
+        if (not replaceStringCache[key]) then
+          replaceStringCache[key] = "%%" .. key;
+        end
+        textStr = textStr:gsub(replaceStringCache[key], tostring(value) or "");
       end
     end
+  end
+  for symbol, v in pairs(WeakAuras.dynamic_texts) do
+    textStr = textStr:gsub(symbol, regionValues[v.value] or "");
   end
   return textStr;
 end

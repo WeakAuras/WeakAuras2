@@ -855,6 +855,13 @@ do
   end
 end
 
+local combatLogUpgrade = {
+  ["sourceunit"] = "sourceUnit",
+  ["source"] = "sourceName",
+  ["destunit"] = "destUnit",
+  ["dest"] = "destName"
+}
+
 function GenericTrigger.Modernize(data)
   -- Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
   for triggernum=0,(data.numTriggers or 9) do
@@ -938,6 +945,18 @@ function GenericTrigger.Modernize(data)
             end
             trigger.use_inverse = nil
         end
+    end
+
+    for old, new in pairs(combatLogUpgrade) do
+      if (trigger[old]) then
+        local useOld = "use_" .. old;
+        local useNew = "use_" .. new;
+        trigger[useNew] = trigger[useOld];
+        trigger[new] = trigger[old];
+
+        trigger[old] = nil;
+        trigger[useOld] = nil;
+      end
     end
   end
 end
