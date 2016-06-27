@@ -948,7 +948,7 @@ function GenericTrigger.Modernize(data)
     end
 
     for old, new in pairs(combatLogUpgrade) do
-      if (trigger[old]) then
+      if (trigger and trigger[old]) then
         local useOld = "use_" .. old;
         local useNew = "use_" .. new;
         trigger[useNew] = trigger[useOld];
