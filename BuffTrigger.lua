@@ -932,6 +932,7 @@ do
         data.GUIDs[destGUID].icon = icon;
         data.GUIDs[destGUID].count = count;
         data.GUIDs[destGUID].unitCaster = unitCaster and UnitName(unitCaster);
+        data.GUIDs[destGUID].spellId = spellId;
         updateTriggerState = updateRegion(id, data, triggernum, destGUID) or updateTriggerState;
       end
     end
@@ -941,7 +942,7 @@ do
    end
   end
 
-  local function combatLog(_, message, _, _, sourceName, _, _, destGUID, destName, _, _, _, spellName, _, auraType, amount)
+  local function combatLog(_, message, _, _, sourceName, _, _, destGUID, destName, _, _, spellId, spellName, _, auraType, amount)
     if(loaded_auras[spellName]) then
       if(message == "SPELL_AURA_APPLIED" or message == "SPELL_AURA_REFRESH" or message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
       local unit = WeakAuras.GetUID(destGUID);
@@ -959,17 +960,19 @@ do
             data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
             data.GUIDs[destGUID].name = spellName;
             data.GUIDs[destGUID].unitName = destName;
+            local icon = spellId and select(3, GetSpellInfo(spellId));
             if (message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
               -- Shouldn't affect duration/expirationTime nor icon
               data.GUIDs[destGUID].duration = data.GUIDs[destGUID].duration or 0;
               data.GUIDs[destGUID].expirationTime = data.GUIDs[destGUID].expirationTime or math.huge;
-              data.GUIDs[destGUID].icon = data.GUIDs[destGUID].icon or nil;
+              data.GUIDs[destGUID].icon = data.GUIDs[destGUID].icon or icon;
             else
               data.GUIDs[destGUID].duration = 0;
               data.GUIDs[destGUID].expirationTime = math.huge;
-              data.GUIDs[destGUID].icon = nil;
+              data.GUIDs[destGUID].icon = icon;
             end
             data.GUIDs[destGUID].count = amount or 0;
+            data.GUIDs[destGUID].spellId = spellId;
             data.GUIDs[destGUID].unitCaster = sourceName and UnitName(sourceName);
 
             updateTriggerState = updateRegion(id, data, triggernum, destGUID) or updateTriggerState;
@@ -1010,6 +1013,8 @@ do
           pendingTracks[GUID][spellName] = nil;
         end
       end
+    else
+      WeakAuras.ReleaseUID(unit);
     end
     unit = unit.."target";
     GUID = UnitGUID(unit);
@@ -1021,6 +1026,8 @@ do
           pendingTracks[GUID][spellName] = nil;
         end
       end
+    else
+      WeakAuras.ReleaseUID(unit);
     end
   end
 
@@ -1052,12 +1059,18 @@ do
       combatLog(...);
     elseif(event == "UNIT_TARGET") then
       uidTrack(...);
-
-    -- Note: Now using UNIT_AURA in addition to COMBAT_LOG_EVENT_UNFILTERED
-    --  * UNIT_AURA because there is no combat log event when an aura gets refrshed by a spell (bug?).
-    --  For example Shadow Word: Pain by Mindflay, Serpent Sting by Chimera Shot/Cobra Shot
-    --  * COMBAT_LOG_EVENT_UNFILTERED (I guess) because UNIT_AURA does not fire for units not in the players group/raid or he has not targeted anymore.
+    elseif(event == "PLAYER_FOCUS_CHANGED") then
+      uidTrack("focus");
+    elseif(event == "NAME_PLATE_UNIT_ADDED") then
+      uidTrack(...);
+    elseif(event == "NAME_PLATE_UNIT_REMOVED") then
+      local unit = ...
+      WeakAuras.ReleaseUID(unit);
+      unit = unit.."target";
+      WeakAuras.ReleaseUID(unit);
     elseif(event == "UNIT_AURA") then
+      -- Note: Using UNIT_AURA in addition to COMBAT_LOG_EVENT_UNFILTERED,
+      -- because the combat log event does not contain duration information
       local uid = ...;
       local guid = UnitGUID(uid);
 
@@ -1097,6 +1110,10 @@ do
       combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       combatAuraFrame:RegisterEvent("UNIT_TARGET");
       combatAuraFrame:RegisterEvent("UNIT_AURA");
+      combatAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+      combatAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
+      combatAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+      combatAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD");
       combatAuraFrame:SetScript("OnEvent", handleEvent);
       WeakAuras.frames["Multi-target Aura Trigger Handler"] = combatAuraFrame;
       timer:ScheduleRepeatingTimer(checkExists, 10)
