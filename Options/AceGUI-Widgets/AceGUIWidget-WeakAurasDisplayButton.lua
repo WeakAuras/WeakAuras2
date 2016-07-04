@@ -425,7 +425,7 @@ local methods = {
         end
 
         function self.frame.terribleCodeOrganizationHackTable.OnHide()
-            WeakAuras.HideAllClones(data.id);
+            WeakAuras.CollapseAllClones(data.id);
         end
 
         self:SetTitle(data.id);

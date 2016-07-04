@@ -82,9 +82,6 @@ local squelch_actions = true;
 -- Load functions, keyed on id
 local loadFuncs = {}
 
---custom trigger logic functions, keyed on id
-local triggerLogicFuncs = {}
-
 -- All regions keyed on id, has properties: region, regionType, also see clones
 WeakAuras.regions = {};
 local regions = WeakAuras.regions;
@@ -121,6 +118,37 @@ local regionOptions = WeakAuras.regionOptions;
 WeakAuras.triggerTypes = {};
 local triggerTypes = WeakAuras.triggerTypes;
 
+-- Trigger State, updated by trigger systems, then applied to regions by UpdatedTriggerState
+-- keyed on id, triggernum, cloneid
+-- cloneid can be a empty string
+
+-- Noteable properties:
+--  changed: Whether this trigger state was recently changed and its properties
+--           need to be applied to a region. The glue code resets this
+--           after syncing the region to the trigger state
+--  show: Whether the region for this trigger state should be shown
+--  progressType: Either "timed", "static"
+--    duration: The duration if the progressType is timed
+--    expirationTime: The expirationTime if the progressType is timed
+--    resort: Should be set to true by the trigger system the parent needs
+--            to be resorted. The glue code resets this.
+--    autoHide: If the aura should be hidden on expiring
+--    value: The value if the progressType is static
+--    total: The total if the progressType is static
+--    inverse: The static values should be interpreted inversely
+--  name: The name information
+--  icon: The icon information
+--  texture: The texture information
+--  stacks: The stacks information
+--  index: The index of the buff/debuff for the buff trigger system, used to set the tooltip
+--  spellId: spellId of the buff/debuff, used to set the tooltip
+
+WeakAuras.triggerState = {}
+local triggerState = WeakAuras.triggerState;
+
+-- Fallback states
+local fallbacksStates = {};
+
 -- List of all trigger systems, contains each system once
 WeakAuras.triggerSystems = {}
 local triggerSystems = WeakAuras.triggerSystems;
@@ -129,7 +157,7 @@ WeakAuras.forceable_events = {};
 
 local from_files = {};
 
-local timers = {};
+local timers = {}; -- Timers for autohiding, keyed on id, triggernum, cloneid
 WeakAuras.timers = timers;
 
 local loaded_events = {};
@@ -307,7 +335,7 @@ local overrideFunctions = {
 local aura_environments = {};
 local current_aura_env = nil;
 local aura_env_stack = {}; -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
-function WeakAuras.ActivateAuraEnvironment(id)
+function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
   if(not id or not db.displays[id]) then
     -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
     tremove(aura_env_stack);
@@ -318,6 +346,8 @@ function WeakAuras.ActivateAuraEnvironment(id)
       -- Point the current environment to the correct table
       aura_environments[id] = aura_environments[id] or {};
       current_aura_env = aura_environments[id];
+      current_aura_env.cloneId = cloneId;
+      current_aura_env.state = state;
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env);
     else
@@ -382,54 +412,6 @@ function WeakAuras.LoadFunction(string)
     end
   end
 end
-
-local duration_cache = {};
-WeakAuras.duration_cache = duration_cache;
-local clone_duration_cache = {};
-function duration_cache:SetDurationInfo(id, duration, expirationTime, isValue, inverse, cloneId)
-  local cache;
-  if(cloneId) then
-    clone_duration_cache[id] = clone_duration_cache[id] or {};
-    clone_duration_cache[id][cloneId] = clone_duration_cache[id][cloneId] or {};
-    cache = clone_duration_cache[id][cloneId];
-  else
-    duration_cache[id] = duration_cache[id] or {};
-    cache = duration_cache[id];
-  end
-  cache.duration = duration;
-  cache.expirationTime = expirationTime;
-  cache.isValue = isValue;
-end
-
-function duration_cache:GetDurationInfo(id, cloneId)
-  local cache;
-  if(cloneId) then
-    --print("GetDurationInfo", id, cloneId);
-    --print(clone_duration_cache[id] and clone_duration_cache[id][cloneId]);
-    if(clone_duration_cache[id] and clone_duration_cache[id][cloneId]) then
-      cache = clone_duration_cache[id][cloneId];
-      if(type(cache.isValue) == "function") then
-        local value, maxValue = cache.isValue(WeakAuras.GetData(id).trigger);
-        return value, maxValue, true;
-      else
-        return cache.duration, cache.expirationTime, cache.isValue, cache.inverse;
-      end
-    else
-      return 0, math.huge;
-    end
-    elseif(duration_cache[id]) then
-      cache = duration_cache[id]
-      if(type(cache.isValue) == "function") then
-        local value, maxValue = cache.isValue(WeakAuras.GetData(id).trigger);
-        return value, maxValue, true;
-      else
-        return cache.duration, cache.expirationTime, cache.isValue, cache.inverse;
-      end
-    else
-      return 0, math.huge;
-  end
-end
-WeakAuras.duration_cache = duration_cache;
 
 function WeakAuras.ParseNumber(numString)
   if not(numString and type(numString) == "string") then
@@ -696,17 +678,11 @@ function WeakAuras.Pause()
   -- Forcibly hide all displays, and clear all trigger information (it will be restored on .Resume() due to forced events)
   for id, region in pairs(regions) do
     region.region:Collapse(); -- ticket 366
-    region.region.trigger_count = 0;
-    region.region.triggers = region.region.triggers or {};
-    wipe(region.region.triggers);
   end
 
   for id, cloneList in pairs(clones) do
     for cloneId, clone in pairs(cloneList) do
       clone:Collapse();
-      clone.trigger_count = 0;
-      clone.triggers = clone.triggers or {};
-      wipe(clone.triggers);
     end
   end
 end
@@ -729,17 +705,11 @@ end
 function WeakAuras.ScanAll()
   for id, region in pairs(regions) do
     region.region:Collapse();
-    region.region.trigger_count = 0;
-    region.region.triggers = region.region.triggers or {};
-    wipe(region.region.triggers);
   end
 
   for id, cloneList in pairs(clones) do
     for cloneId, clone in pairs(cloneList) do
       clone:Collapse();
-      clone.trigger_count = 0;
-      clone.triggers = clone.triggers or {};
-      wipe(clone.triggers);
     end
   end
 
@@ -748,156 +718,6 @@ function WeakAuras.ScanAll()
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.ScanAll();
    end
-end
-
-function WeakAuras.SetEventDynamics(id, triggernum, data, ending)
-  local trigger;
-  if(triggernum == 0) then
-    trigger = db.displays[id] and db.displays[id].trigger;
-  else
-  trigger = db.displays[id] and db.displays[id].additional_triggers
-    and db.displays[id].additional_triggers[triggernum]
-    and db.displays[id].additional_triggers[triggernum].trigger;
-  end
-  if(trigger) then
-    WeakAuras.ActivateAuraEnvironment(id);
-    if(data.duration) then
-      if not(ending) then
-        WeakAuras.ActivateEventTimer(id, triggernum, data.duration);
-      end
-      if(triggernum == 0) then
-        if(data.region.SetDurationInfo) then
-          local expirationTime = GetTime() + data.duration;
-          local resort = data.region.expirationTime ~= expirationTime;
-          data.region:SetDurationInfo(data.duration, expirationTime);
-
-          local parent = db.displays[id].parent;
-          if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-            regions[parent].region.ControlChildren();
-          end
-        end
-
-        duration_cache:SetDurationInfo(id, data.duration, GetTime() + data.duration);
-      end
-    else
-      if(data.durationFunc) then
-        local duration, expirationTime, static, inverse = data.durationFunc(trigger);
-        duration = type(duration) == "number" and duration or 0;
-        expirationTime = type(expirationTime) == "number" and expirationTime or 0;
-        if(type(static) == "string") then
-          static = data.durationFunc;
-        end
-        if(duration > 0.01 and not static) then
-          local hideOnExpire = true;
-          if(data.expiredHideFunc) then
-            hideOnExpire = data.expiredHideFunc(trigger);
-          end
-          if(hideOnExpire and not ending) then
-            WeakAuras.ActivateEventTimer(id, triggernum, expirationTime - GetTime());
-          end
-        end
-        if(triggernum == 0) then
-          if(data.region.SetDurationInfo) then
-            local resort = data.region.expirationTime ~= expirationTime;
-            data.region:SetDurationInfo(duration, expirationTime, static, inverse);
-            local parent = db.displays[id].parent;
-            if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-              regions[parent].region.ControlChildren();
-            end
-          end
-
-          duration_cache:SetDurationInfo(id, duration, expirationTime, static, inverse);
-        end
-      elseif(triggernum == 0) then
-        if(data.region.SetDurationInfo) then
-          local resort = data.region.expirationTime ~= math.huge;
-          data.region:SetDurationInfo(0, math.huge);
-
-          local parent = db.displays[id].parent;
-          if (resort and parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-            regions[parent].region.ControlChildren();
-          end
-        end
-
-        duration_cache:SetDurationInfo(id, 0, math.huge);
-      end
-    end
-    if(triggernum == 0) then
-      if(data.region.SetName) then
-        if(data.nameFunc) then
-          data.region:SetName(data.nameFunc(trigger));
-        else
-          data.region:SetName();
-        end
-      end
-      if(data.region.SetIcon) then
-        if(data.iconFunc) then
-          data.region:SetIcon(data.iconFunc(trigger));
-        else
-          data.region:SetIcon();
-        end
-      end
-      if(data.region.SetTexture) then
-        if(data.textureFunc) then
-          data.region:SetTexture(data.textureFunc(trigger));
-        end
-      end
-      if(data.region.SetStacks) then
-        if(data.stacksFunc) then
-          data.region:SetStacks(data.stacksFunc(trigger));
-        else
-          data.region:SetStacks();
-        end
-      end
-      if(data.region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(data.region)) then
-        data.region.UpdateCustomText();
-      end
-      WeakAuras.UpdateMouseoverTooltip(data.region)
-    end
-    WeakAuras.ActivateAuraEnvironment(nil);
-  else
-  error("Event with id \""..id.." and trigger number "..triggernum.." tried to activate, but does not exist");
-  end
-end
-
-function WeakAuras.ActivateEventTimer(id, triggernum, duration)
-  if not(paused) then
-    local trigger;
-    if(triggernum == 0) then
-      trigger = db.displays[id] and db.displays[id].trigger;
-    else
-      trigger = db.displays[id] and db.displays[id].additional_triggers
-      and db.displays[id].additional_triggers[triggernum]
-      and db.displays[id].additional_triggers[triggernum].trigger;
-    end
-    if(trigger and trigger.type == "event" or trigger.type == "custom") then
-      local expirationTime = GetTime() + duration;
-      local doTimer;
-      if(timers[id] and timers[id][triggernum]) then
-        if(timers[id][triggernum].expirationTime ~= expirationTime) then
-          timer:CancelTimer(timers[id][triggernum].handle);
-          doTimer = "change";
-        else
-          debug("Timer for "..id.." ("..triggernum..") did not change");
-        end
-      else
-        doTimer = "new";
-      end
-
-      if(doTimer) then
-        timers[id] = timers[id] or {};
-        timers[id][triggernum] = timers[id][triggernum] or {};
-        local record = timers[id][triggernum];
-        if(doTimer == "change") then
-          debug("Timer for "..id.." ("..triggernum..") changed from "..(record.expirationTime or "none").." to "..expirationTime);
-        elseif(doTimer == "new") then
-          debug("Timer for "..id.." ("..triggernum..") will end at "..expirationTime.." ("..duration..")");
-        end
-        record.handle = timer:ScheduleTimer(function() WeakAuras.EndEvent(id, triggernum, true) end, duration);
-        record.expirationTime = expirationTime;
-      end
-    end
-  end
 end
 
 -- encounter stuff
@@ -1115,7 +935,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   for id, data in pairs(db.displays) do
-    if (data and data.trigger) then
+    if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
       couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
@@ -1128,12 +948,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       if(loaded[id] and not shouldBeLoaded) then
         WeakAuras.UnloadDisplay(id);
         local region = WeakAuras.regions[id].region;
-        region.trigger_count = 0;
-        region.triggers = region.triggers or {};
-        wipe(region.triggers);
         if not(paused) then
           region:Collapse();
-          WeakAuras.HideAllClones(id);
+          WeakAuras.CollapseAllClones(id);
         end
       end
       if(shouldBeLoaded) then
@@ -1204,6 +1021,25 @@ function WeakAuras.ReloadAll()
 end
 
 function WeakAuras.UnloadAll()
+  for _, v in pairs(triggerState) do
+    for i = 0, v.numTriggers - 1 do
+      if (v[i]) then
+        wipe(v[i]);
+      end
+    end
+  end
+
+  for _, aura in pairs(timers) do
+    for _, trigger in pairs(aura) do
+      for _, record in pairs(trigger) do
+        if (record.handle) then
+          timer:CancelTimer(record.handle);
+        end
+      end
+    end
+  end
+  wipe(timers);
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.UnloadAll();
   end
@@ -1212,16 +1048,39 @@ end
 
 do
   function WeakAuras.LoadDisplay(id)
+    triggerState[id].triggers = {};
+    triggerState[id].triggerCount = 0;
+    triggerState[id].show = false;
+    triggerState[id].activeTrigger = nil;
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.LoadDisplay(id);
     end
   end
 
   function WeakAuras.UnloadDisplay(id)
+    for i = 0, triggerState[id].numTriggers - 1 do
+      if (triggerState[id][i]) then
+        wipe(triggerState[id][i]);
+      end
+    end
+    triggerState[id].show = nil;
+    triggerState[id].activeTrigger = nil;
+
+    if (timers[id]) then
+      for _, trigger in pairs(timers[id]) do
+        for _, record in pairs(trigger) do
+          if (record.handle) then
+            timer:CancelTimer(record.handle);
+          end
+        end
+      end
+      timers[id] = nil;
+    end
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.UnloadDisplay(id);
     end
   end
+
 end
 
 function WeakAuras.Delete(data)
@@ -1255,7 +1114,7 @@ function WeakAuras.Delete(data)
   regions[id].region:SetScript("OnHide", nil);
   regions[id].region:Hide();
 
-  WeakAuras.HideAllClones(id);
+  WeakAuras.CollapseAllClones(id);
 
   db.registered[id] = nil;
   if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
@@ -1274,11 +1133,11 @@ function WeakAuras.Delete(data)
   regions[id] = nil;
   loaded[id] = nil;
   loadFuncs[id] = nil;
-  triggerLogicFuncs[id] = nil;
 
   db.displays[id] = nil;
 
   aura_environments[id] = nil;
+  triggerState[id] = nil;
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1296,6 +1155,7 @@ function WeakAuras.Rename(data, newid)
 
   regions[newid] = regions[oldid];
   regions[oldid] = nil;
+  regions[newid].region.id = newid;
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Rename(oldid, newid);
@@ -1305,8 +1165,13 @@ function WeakAuras.Rename(data, newid)
   loaded[oldid] = nil;
   loadFuncs[newid] = loadFuncs[oldid];
   loadFuncs[oldid] = nil;
-  triggerLogicFuncs[newid] = triggerLogicFuncs[oldid];
-  triggerLogicFuncs[oldid] = nil;
+
+  timers[newid] = timers[oldid];
+  timers[oldid] = nil;
+
+  triggerState[newid] = triggerState[oldid];
+  triggerState[oldid] = nil;
+
 
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
@@ -1314,6 +1179,9 @@ function WeakAuras.Rename(data, newid)
   if(clones[oldid]) then
     clones[newid] = clones[oldid];
     clones[oldid] = nil;
+    for cloneid, clone in pairs(clones[newid]) do
+      clone.id = newid;
+    end
   end
 
   db.displays[newid].id = newid;
@@ -1718,6 +1586,10 @@ function WeakAuras.Modernize(data)
     end
 
   end
+
+  if (not data.activeTriggerMode) then
+    data.activeTriggerMode = 0;
+  end
 end
 
 function WeakAuras.SyncParentChildRelationships(silent)
@@ -1854,15 +1726,14 @@ function WeakAuras.pAdd(data)
   elseif (data.controlledChildren) then
     WeakAuras.SetRegion(data);
   else
+    for _, triggerSystem in pairs(triggerSystems) do
+      triggerSystem.Add(data);
+    end
     local region = WeakAuras.SetRegion(data);
     if (WeakAuras.clones[id]) then
       for cloneId, _ in pairs(WeakAuras.clones[id]) do
         WeakAuras.SetRegion(data, cloneId);
       end
-    end
-
-    for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.Add(data, region);
     end
 
     data.init_completed = nil;
@@ -1878,11 +1749,25 @@ function WeakAuras.pAdd(data)
     WeakAuras.debug(loadFuncStr);
 
     loadFuncs[id] = loadFunc;
-    triggerLogicFuncs[id] = triggerLogicFunc;
+    clones[id] = clones[id] or {};
 
-    if(WeakAuras.CanHaveClones(data)) then
-      clones[id] = clones[id] or {};
+    if (timers[id]) then
+      for _, trigger in pairs(timers[id]) do
+        for _, record in pairs(trigger) do
+          if (record.handle) then
+            timer:CancelTimer(record.handle);
+          end
+        end
+      end
+      timers[id] = nil;
     end
+
+    triggerState[id] = {};
+    triggerState[id].disjunctive = data.numTriggers > 1 and data.disjunctive or "all";
+    triggerState[id].numTriggers = data.numTriggers;
+    triggerState[id].activeTriggerMode = data.activeTriggerMode or 0;
+    triggerState[id].triggerLogicFunc = triggerLogicFunc;
+    triggerState[id].triggers = {};
 
     WeakAuras.LoadEncounterInitScripts(id)
 
@@ -1924,6 +1809,8 @@ function WeakAuras.SetRegion(data, cloneId)
         else
           region = regions[id].region;
         end
+        region.id = id;
+        region.cloneId = "";
       end
       WeakAuras.validate(data, regionTypes[regionType].default);
 
@@ -1993,7 +1880,7 @@ function WeakAuras.SetRegion(data, cloneId)
           end
           region.toShow = false;
 
-          WeakAuras.PerformActions(data, "finish");
+          WeakAuras.PerformActions(data, "finish", region);
           WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId);
           parent:ControlChildren();
         end
@@ -2009,7 +1896,7 @@ function WeakAuras.SetRegion(data, cloneId)
 
           parent:EnsureTrays();
           region.justCreated = nil;
-          WeakAuras.PerformActions(data, "start");
+          WeakAuras.PerformActions(data, "start", region);
           if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
             startMainAnimation();
           end
@@ -2022,7 +1909,7 @@ function WeakAuras.SetRegion(data, cloneId)
           end
           region.toShow = false;
 
-          WeakAuras.PerformActions(data, "finish");
+          WeakAuras.PerformActions(data, "finish", region);
           if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
             region:Hide();
           end
@@ -2042,7 +1929,7 @@ function WeakAuras.SetRegion(data, cloneId)
             region:PreShow();
           end
           region:Show();
-          WeakAuras.PerformActions(data, "start");
+          WeakAuras.PerformActions(data, "start", region);
           if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
             startMainAnimation();
           end
@@ -2064,61 +1951,6 @@ function WeakAuras.SetRegion(data, cloneId)
         clonePool[regionType] = clonePool[regionType] or {};
       end
 
-      if(data.additional_triggers and #data.additional_triggers > 0) then
-        region.trigger_count = region.trigger_count or 0;
-        region.triggers = region.triggers or {};
-
-        function region:TestTriggers(triggers, trigger_count)
-          if(data.disjunctive == "custom") then
-            local customFunc = triggerLogicFuncs[data.id];
-            if customFunc then
-              if(customFunc(triggers)) then
-                region:Expand();
-                return true;
-              else
-                region:Collapse();
-                return false;
-              end
-            end
-          elseif(trigger_count > (((data.disjunctive == "any") and 0) or #data.additional_triggers)) then
-            region:Expand();
-            return true;
-          else
-            region:Collapse();
-            return false;
-          end
-        end
-
-        function region:EnableTrigger(triggernum)
-          if not(region.triggers[triggernum+1]) then
-            region.triggers[triggernum+1] = true;
-            region.trigger_count = region.trigger_count + 1;
-            return region:TestTriggers(region.triggers, region.trigger_count);
-          else
-            return nil;
-          end
-        end
-
-        function region:DisableTrigger(triggernum)
-          if(region.triggers[triggernum+1]) then
-            region.triggers[triggernum+1] = nil;
-            region.trigger_count = region.trigger_count - 1;
-            return not region:TestTriggers(region.triggers, region.trigger_count);
-          else
-            return nil;
-          end
-        end
-      else
-        function region:EnableTrigger()
-          region:Expand();
-          return true;
-        end
-        function region:DisableTrigger()
-          region:Collapse();
-          return true;
-        end
-      end
-
       if(anim_cancelled) then
         startMainAnimation();
       end
@@ -2134,16 +1966,26 @@ function WeakAuras.EnsureClone(id, cloneId)
     if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
       clones[id][cloneId] = tremove(clonePool[data.regionType]);
     else
-      clones[id][cloneId] = regionTypes[data.regionType].create(frame, data);
-      clones[id][cloneId]:Hide();
+      local clone = regionTypes[data.regionType].create(frame, data);
+      clone:Hide();
+      clones[id][cloneId] = clone;
     end
     WeakAuras.SetRegion(data, cloneId);
     clones[id][cloneId].justCreated = true;
+    clones[id][cloneId].id = id;
+    clones[id][cloneId].cloneId = cloneId;
   end
   return clones[id][cloneId];
 end
 
-function WeakAuras.HideAllClones(id)
+function WeakAuras.GetRegion(id, cloneId)
+  if(cloneId and cloneId ~= "") then
+    return WeakAuras.EnsureClone(id, cloneId);
+   end
+  return WeakAuras.regions[id].region;
+end
+
+function WeakAuras.CollapseAllClones(id, triggernum)
   if(clones[id]) then
     for i,v in pairs(clones[id]) do
       v:Collapse();
@@ -2151,12 +1993,20 @@ function WeakAuras.HideAllClones(id)
   end
 end
 
-function WeakAuras.HideAllClonesExcept(id, list)
-  if(clones[id]) then
-    for i,v in pairs(clones[id]) do
-      if not(list[i]) then
-      v:Collapse();
-      end
+function WeakAuras.SetAllStatesHidden(id, triggernum)
+  local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  for id, state in pairs(triggerState) do
+    state.show = false;
+    state.change = true;
+  end
+end
+
+function WeakAuras.SetAllStatesHiddenExcept(id, triggernum, list)
+  local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  for cloneId, state in  pairs(triggerState) do
+    if (not (list[cloneId])) then
+      state.show = false;
+      state.changed = true;
     end
   end
 end
@@ -2180,7 +2030,7 @@ function WeakAuras.Announce(message, output, _, extra, id, type)
   end
 end
 
-function WeakAuras.PerformActions(data, type)
+function WeakAuras.PerformActions(data, type, region)
   if not(paused or squelch_actions) then
   local actions;
   if(type == "start") then
@@ -2243,7 +2093,7 @@ function WeakAuras.PerformActions(data, type)
   if(actions.do_custom and actions.custom) then
     local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
     if func then
-      WeakAuras.ActivateAuraEnvironment(data.id);
+      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       func();
       WeakAuras.ActivateAuraEnvironment(nil);
     end
@@ -2296,35 +2146,37 @@ function WeakAuras.UpdateAnimations()
     finished = true;
     end
   elseif(anim.duration_type == "relative") then
-    local duration, expirationTime, isValue, inverse = duration_cache:GetDurationInfo(anim.name, anim.cloneId);
-    if(duration < 0.01) then
-    anim.progress = 0;
-    if(anim.type == "start" or anim.type == "finish") then
-      finished = true;
-    end
+    local state = anim.region.state;
+
+    if ((state.progressType == "timed" and state.duration < 0.01)
+        or (state.progressType == "static" and state.value < 0.01)) then
+      anim.progress = 0;
+      if(anim.type == "start" or anim.type == "finish") then
+        finished = true;
+      end
     else
-    local relativeProgress;
-    if(isValue) then
-      relativeProgress = duration / expirationTime;
-    else
-      relativeProgress = 1 - ((expirationTime - time) / duration);
-    end
-    relativeProgress = inverse and (1 - relativeProgress) or relativeProgress;
-    anim.progress = relativeProgress / anim.duration
-    local iteration = math.floor(anim.progress);
-    --anim.progress = anim.progress - iteration;
-    if not(anim.iteration) then
-      anim.iteration = iteration;
-    elseif(anim.iteration ~= iteration) then
-      anim.iteration = nil;
-      finished = true;
-    end
+      local relativeProgress;
+      if(state.progressType == "static") then
+        relativeProgress = state.value / state.total;
+      else
+        relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
+      end
+      relativeProgress = state.inverseDirection and (1 - relativeProgress) or relativeProgress;
+      anim.progress = relativeProgress / anim.duration
+      local iteration = math.floor(anim.progress);
+      --anim.progress = anim.progress - iteration;
+      if not(anim.iteration) then
+        anim.iteration = iteration;
+      elseif(anim.iteration ~= iteration) then
+        anim.iteration = nil;
+        finished = true;
+      end
     end
   else
     anim.progress = 1;
   end
   local progress = anim.inverse and (1 - anim.progress) or anim.progress;
-  WeakAuras.ActivateAuraEnvironment(anim.name);
+  WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
   if(anim.translateFunc) then
     anim.region:ClearAllPoints();
     anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.translateFunc(progress, anim.startX, anim.startY, anim.dX, anim.dY));
@@ -2560,7 +2412,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
   animations[key].loop = loop
   animations[key].onFinished = onFinished
   animations[key].name = id
-  animations[key].cloneId = cloneId
+  animations[key].cloneId = cloneId or ""
 
   if not(updatingAnimations) then
     frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
@@ -2628,37 +2480,89 @@ function WeakAuras.GetData(id)
   return id and db.displays[id];
 end
 
-function WeakAuras.CanHaveDuration(data)
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
+function WeakAuras.GetTriggerSystem(data, triggernum)
+  if (triggernum == 0) then
+    return triggerTypes[data.trigger.type];
+  elseif (data.additional_triggers and data.additional_triggers[triggernum]) then
+    return triggerTypes[data.additional_triggers[triggernum].trigger.type];
+  end
+  return nil;
+end
 
+local function wrapTriggerSystemFunction(functionName, mode)
+  local func;
+  func = function(data, triggernum)
+    if (not triggernum) then
+      return func(data, data.activeTriggerMode);
+    elseif (triggernum < 0) then
+      local result;
+      if (mode == "or") then
+        result = false;
+        for i = 0, data.numTriggers - 1 do
+          result = result or func(data, i);
+        end
+      elseif (mode == "and") then
+        result = true;
+        for i = 0, data.numTriggers - 1 do
+          result = result and func(data, i);
+        end
+      elseif (mode == "firstValue") then
+        result = false;
+        for i = 0, data.numTriggers - 1 do
+          local tmp = func(data, i);
+          if (tmp) then
+            result = tmp;
+            break;
+          end
+        end
+      elseif (mode == "nameAndIcon") then
+        for i = 0, data.numTriggers - 1 do
+          local tmp1, tmp2 = func(data, i);
+          if (tmp1) then
+            return tmp1, tmp2;
+          end
+        end
+      end
+      return result;
+    else -- triggernum >= 0
+      local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
+      if (not triggerSystem) then
+        return false;
+      end
+      return triggerSystem[functionName](data, triggernum);
+    end
+    return false;
+  end
+  return func;
+end
+
+WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
+WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
+WeakAuras.CanGroupShowWithZero = wrapTriggerSystemFunction("CanGroupShowWithZero", "or");
+WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
+WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
+WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
+WeakAuras.GetAdditionalProperties = wrapTriggerSystemFunction("GetAdditionalProperties", "firstValue");
+
+function WeakAuras.CreateFallbackState(id, triggernum, state)
+  local data = db.displays[id];
+  local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
   if (not triggerSystem) then
     return false;
   end
-  return triggerSystem.CanHaveDuration(data);
-end
 
-function WeakAuras.CanHaveAuto(data)
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
-
-  if (not triggerSystem) then
-    return false;
+  triggerSystem.CreateFallbackState(data, triggernum, state);
+  if (triggernum == 0) then
+    state.trigger = data.trigger;
+    state.triggernum = 0;
+    state.id = id;
+  else
+    state.trigger = data.additional_triggers[triggernum];
+    state.triggernum = triggernum;
+    state.id = id;
   end
-
-  return triggerSystem.CanHaveAuto(data)
 end
 
-function WeakAuras.CanGroupShowWithZero(data)
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
-
-  if (not triggerSystem) then
-    return false;
-  end
-
-  return triggerSystem.CanGroupShowWithZero(data);
-end
 
 function WeakAuras.CanShowNameInfo(data)
   if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
@@ -2674,39 +2578,6 @@ function WeakAuras.CanShowStackInfo(data)
   else
     return false;
   end
-end
-
- function WeakAuras.CanHaveClones(data)
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
-
-  if (not triggerSystem) then
-    return false;
-  end
-
-  return triggerSystem.CanHaveClones(data);
-end
-
-function WeakAuras.CanHaveTooltip(data)
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
-
-  if (not triggerSystem) then
-    return false;
-  end
-
-  return triggerSystem.CanHaveTooltip(data);
-end
-
-function WeakAuras.GetNameAndIcon(data)
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
-
-  if (not triggerSystem) then
-    return nil, nil;
-  end
-
-  return triggerSystem.GetNameAndIcon(data);
 end
 
 function WeakAuras.CorrectSpellName(input)
@@ -2755,17 +2626,15 @@ function WeakAuras.CorrectItemName(input)
 end
 
 
-local currentTooltipData;
 local currentTooltipRegion;
 local currentTooltipOwner;
 function WeakAuras.UpdateMouseoverTooltip(region)
   if(region == currentTooltipRegion) then
-    WeakAuras.ShowMouseoverTooltip(currentTooltipData, currentTooltipRegion, currentTooltipOwner);
+    WeakAuras.ShowMouseoverTooltip(currentTooltipRegion, currentTooltipOwner);
   end
 end
 
-function WeakAuras.ShowMouseoverTooltip(data, region, owner)
-  currentTooltipData = data;
+function WeakAuras.ShowMouseoverTooltip(region, owner)
   currentTooltipRegion = region;
   currentTooltipOwner = owner;
 
@@ -2773,18 +2642,21 @@ function WeakAuras.ShowMouseoverTooltip(data, region, owner)
   GameTooltip:SetPoint("LEFT", owner, "RIGHT");
   GameTooltip:ClearLines();
 
-  local trigger = data.trigger;
-  local triggerSystem = triggerTypes[trigger.type];
+  local triggerType;
+  if (region.state) then
+   triggerType = region.state.trigger.type;
+  end
+
+  local triggerSystem = triggerType and triggerTypes[triggerType];
   if (not triggerSystem) then
     return;
   end
 
-  triggerSystem.SetToolTip(data, region);
+  triggerSystem.SetToolTip(region.state.trigger, region.state);
   GameTooltip:Show();
 end
 
 function WeakAuras.HideTooltip()
-  currentTooltipData = nil;
   currentTooltipRegion = nil;
   currentTooltipOwner = nil;
   GameTooltip:Hide();
@@ -3134,9 +3006,289 @@ function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
   tinsert(triggerSystems, triggerSystem);
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, regionValues)
+function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+  triggerState[id][triggernum] = triggerState[id][triggernum] or {}
+  return triggerState[id][triggernum];
+end
+
+local function startStopTimers(id, cloneId, triggernum, state)
+  if (state.show) then
+    if (state.autoHide and state.duration) then -- autohide, update timer
+      timers[id] = timers[id] or {};
+      timers[id][triggernum] = timers[id][triggernum] or {};
+      timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
+      local record = timers[id][triggernum][cloneId];
+      local createTimer = false;
+      if (state.expirationTime == nil) then
+        state.expirationTime = GetTime() + state.duration;
+        state.resort = true;
+      end
+      if (record.expirationTime ~= state.expirationTime) then
+        if (record.handle ~= nil) then
+          timer:CancelTimer(record.handle);
+        end
+
+        record.handle = timer:ScheduleTimer(
+          function()
+            if (state.show ~= false and state.show ~= nil) then
+              state.show = false;
+              state.changed = true;
+              WeakAuras.UpdatedTriggerState(id);
+            end
+          end,
+          state.expirationTime - GetTime() + 0.01);
+        record.expirationTime = state.expirationTime;
+      end
+    else -- no auto hide, delete timer
+      if (timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
+        local record = timers[id][triggernum][cloneId];
+        if (record.handle) then
+          timer:CancelTimer(record.handle);
+        end
+        record.handle = nil;
+        record.expirationTime = nil;
+      end
+    end
+  else -- not shown
+    if(timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
+      local record = timers[id][triggernum][cloneId];
+      if (record.handle) then
+        timer:CancelTimer(record.handle);
+      end
+      record.handle = nil;
+      record.expirationTime = nil;
+    end
+  end
+end
+
+local function ApplyStateToRegion(id, region, state)
+  region.state = state;
+  if(region.SetDurationInfo) then
+    if (state.progressType == "timed") then
+      local now = GetTime();
+      local value = math.huge - now;
+      if (state.expirationTime and state.expirationTime > 0) then
+        value = state.expirationTime - now;
+      end
+      local total = state.duration or 0
+      local func = nil;
+
+      region:SetDurationInfo(total,
+                             now + value,
+                             func,
+                             state.inverseDirection);
+    elseif (state.progressType == "static") then
+      local value = state.value or 0;
+      local total = state.total or 0;
+      local durationFunc = state.durationFunc or true;
+
+      region:SetDurationInfo(value, total, durationFunc or true, state.inverseDirection);
+    else
+      -- Do nothing, should ideally clear duration info on region
+    end
+  end
+  if (state.resort) then
+    WeakAuras.ControlChildren(region.id);
+    state.resort = false;
+  end
+  if(region.SetName) then
+    region:SetName(state.name);
+  end
+  if(region.SetIcon) then
+    region:SetIcon(state.icon or "Interface\\Icons\\INV_Misc_QuestionMark");
+  end
+  if(region.SetStacks) then
+    region:SetStacks(state.stacks);
+  end
+  if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
+    region.UpdateCustomText();
+  end
+  WeakAuras.UpdateMouseoverTooltip(region);
+  region:Expand();
+end
+
+-- Fallbacks if the states are empty
+local emptyState = {};
+emptyState[""] = {};
+
+local function applyToTriggerStateTriggers(stateShown, id, triggernum)
+  if (stateShown and not triggerState[id].triggers[triggernum + 1]) then
+    triggerState[id].triggers[triggernum + 1] = true;
+    triggerState[id].triggerCount = triggerState[id].triggerCount + 1;
+    return true;
+  elseif (not stateShown and triggerState[id].triggers[triggernum + 1]) then
+    -- Check if any other clone is shown
+    local anyCloneShown = false;
+    for _, state in pairs(triggerState[id][triggernum]) do
+      if (state.show) then
+        anyCloneShown = true;
+        break;
+      end
+    end
+    if (not anyCloneShown) then
+      triggerState[id].triggers[triggernum + 1] = false;
+      triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
+      return true;
+    end
+  end
+  return false;
+end
+
+local function evaluateTriggerStateTriggers(id)
+  if(triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0
+      or (triggerState[id].disjunctive == "all" and triggerState[id].triggerCount == triggerState[id].numTriggers)
+      or (triggerState[id].disjunctive == "custom"
+          and triggerState[id].triggerLogicFunc
+          and triggerState[id].triggerLogicFunc(triggerState[id].triggers))
+    ) then
+    return true;
+  end
+  return false;
+end
+
+local function ApplyStatesToRegions(id, triggernum, states)
+  -- Show new clones
+  local visibleRegion = false;
+  for cloneId, state in pairs(states) do
+    if (state.show) then
+      visibleRegion = true;
+      local region = WeakAuras.GetRegion(id, cloneId);
+      if (not region.toShow or state.changed or region.state ~= state) then
+        ApplyStateToRegion(id, region, state);
+      end
+    end
+  end
+
+  if (visibleRegion) then
+    if (not states[""] or not states[""].show) then
+      WeakAuras.regions[id].region:Collapse();
+    end
+  else
+    -- no visible region, fallback to a fallback state
+    fallbacksStates[id] = fallbacksStates[id] or {};
+    fallbacksStates[id][triggernum] =  fallbacksStates[id][triggernum] or {};
+    WeakAuras.CreateFallbackState(id, triggernum, fallbacksStates[id][triggernum])
+    ApplyStateToRegion(id, WeakAuras.regions[id].region, fallbacksStates[id][triggernum]);
+  end
+end
+
+local toRemove = {};
+function WeakAuras.UpdatedTriggerState(id)
+  if (not triggerState[id]) then
+    return;
+  end
+
+  local changed = false;
+  for triggernum = 0, triggerState[id].numTriggers - 1 do
+    triggerState[id][triggernum] = triggerState[id][triggernum] or {};
+    for cloneId, state in pairs(triggerState[id][triggernum]) do
+      if (triggernum == 0) then
+        state.trigger = db.displays[id].trigger;
+        state.triggernum = 0;
+        state.id = id;
+      else
+        state.trigger = db.displays[id].additional_triggers[triggernum];
+        state.triggernum = triggernum;
+        state.id = id;
+      end
+
+      if (state.changed) then
+        startStopTimers(id, cloneId, triggernum, state);
+        local stateShown = triggerState[id][triggernum][cloneId] and triggerState[id][triggernum][cloneId].show;
+        -- Update triggerState.triggers
+        changed = applyToTriggerStateTriggers(stateShown, id, triggernum) or changed;
+      end
+    end
+  end
+
+-- Figure out whether we should be shown or not
+  local show = triggerState[id].show;
+  if (changed or show == nil) then
+    show = evaluateTriggerStateTriggers(id);
+  end
+
+  -- Figure out which subtrigger is active, and if it changed
+  local newActiveTrigger = triggerState[id].activeTriggerMode;
+  if (newActiveTrigger == WeakAuras.trigger_modes.first_active) then
+    -- Mode is first active trigger, so find a active trigger
+    for i = 0, triggerState[id].numTriggers - 1 do
+      if (triggerState[id].triggers[i + 1]) then
+        newActiveTrigger = i;
+        break;
+      end
+    end
+  end
+
+  local oldShow = triggerState[id].show;
+  triggerState[id].activeTrigger = newActiveTrigger;
+  triggerState[id].show = show;
+
+  local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, newActiveTrigger);
+  if (not next(activeTriggerState)) then
+    activeTriggerState = emptyState;
+  end
+
+  local region;
+  -- Now apply
+  if (show and not oldShow) then -- Hide => Show
+    ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
+  elseif (not show and oldShow) then -- Show => Hide
+    WeakAuras.CollapseAllClones(id);
+    WeakAuras.regions[id].region:Collapse();
+  elseif (show and oldShow) then -- Already shown, update regions
+    -- Hide old clones
+    for cloneId, clone in pairs(clones[id]) do
+      if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
+        clone:Collapse();
+      end
+    end
+    -- Show new states
+    ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
+  end
+
+
+  for triggernum = 0, triggerState[id].numTriggers - 1 do
+    triggerState[id][triggernum] = triggerState[id][triggernum] or {};
+    for cloneId, state in pairs(triggerState[id][triggernum]) do
+      if (not state.show) then
+        if (cloneId ~= "") then -- Keep "" state around, it's likely to be reused
+          tinsert(toRemove, cloneId)
+        else
+          for k, v in pairs(state) do
+            if (k ~= "trigger" and k ~= "triggernum" and k ~= "id") then
+              state[k] = nil;
+            end
+          end
+        end
+      end
+      state.changed = false;
+    end
+    for _, cloneId in ipairs(toRemove) do
+      triggerState[id][triggernum][cloneId] = nil;
+    end
+    wipe(toRemove);
+  end
+end
+
+local replaceStringCache = {};
+function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
+  if (regionState) then
+    for key, value in pairs(regionState) do
+      if (type(value) == "string" or type(value) == "number") then
+        if (not replaceStringCache[key]) then
+          replaceStringCache[key] = "%%" .. key;
+        end
+        textStr = textStr:gsub(replaceStringCache[key], tostring(value) or "");
+      end
+    end
+  end
   for symbol, v in pairs(WeakAuras.dynamic_texts) do
     textStr = textStr:gsub(symbol, regionValues[v.value] or "");
   end
   return textStr;
+end
+
+function WeakAuras.IsTriggerActive(id)
+  local active = triggerState[id];
+  return active and active.show;
 end

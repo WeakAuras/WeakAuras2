@@ -686,7 +686,7 @@ local function UpdateText(region, data)
 
   -- Replace %-marks
   textStr = data.displayTextLeft or "";
-  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
   -- Update left text
   if not text.displayTextLeft or #text.displayTextLeft ~= #textStr then
@@ -699,7 +699,7 @@ local function UpdateText(region, data)
 
   -- Replace %-marks
   textStr = data.displayTextRight or "";
-  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+  textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
   -- Update right text
   if not timer.displayTextRight or #timer.displayTextRight ~= #textStr then
@@ -1012,7 +1012,7 @@ local function modify(parent, region, data)
         region.tooltipFrame:SetAllPoints(icon);
         region.tooltipFrame:EnableMouse(true);
         region.tooltipFrame:SetScript("OnEnter", function()
-            WeakAuras.ShowMouseoverTooltip(data, region, region.tooltipFrame, tooltipType);
+            WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
         end);
         region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
 
@@ -1033,8 +1033,9 @@ local function modify(parent, region, data)
     -- Save custom text function
         region.UpdateCustomText = function()
       -- Evaluate and update text
-            WeakAuras.ActivateAuraEnvironment(data.id);
-            local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
+            WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+            local custom = customTextFunc(region.expirationTime, region.duration,
+              values.progress, values.duration, values.name, values.icon, values.stacks);
             WeakAuras.ActivateAuraEnvironment(nil);
             custom = WeakAuras.EnsureString(custom);
             if custom ~= values.custom then
@@ -1140,6 +1141,13 @@ local function modify(parent, region, data)
     end
 --  region:SetName("");
 
+    function region:OnUpdateHandler()
+        local value, total = self.customValueFunc(self.state.trigger);
+        value = type(value) == "number" and value or 0
+        total = type(value) == "number" and total or 0
+        UpdateValue(self, data, value, total);
+    end
+
   -- Duration update function
     function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
     -- Update duration/expiration values
@@ -1152,21 +1160,15 @@ local function modify(parent, region, data)
         if customValue then
       -- Update via custom OnUpdate handler
             if type(customValue) == "function" then
-                local value, total = customValue(data.trigger);
+                local value, total = customValue(region.state.trigger);
                 value = type(value) == "number" and value or 0
                 total = type(value) == "number" and total or 0
                 if total > 0 and value < total then
-                    self.customValueFunc = customValue;
-                    self:SetScript("OnUpdate", function()
-            -- Relay
-            local value, total = self.customValueFunc(data.trigger);
-            value = type(value) == "number" and value or 0
-            total = type(value) == "number" and total or 0
-            UpdateValue(self, data, value, total);
-          end);
+                  self.customValueFunc = customValue;
+                  self:SetScript("OnUpdate", region.OnUpdateHandler);
                 else
-                    UpdateValue(self, data, duration, expirationTime);
-                    self:SetScript("OnUpdate", nil);
+                  UpdateValue(self, data, duration, expirationTime);
+                  self:SetScript("OnUpdate", nil);
                 end
       -- Remove OnUpdate handler, call update once
             else

@@ -10,7 +10,11 @@ local function createOptions(id, data)
         displayText = {
             type = "input",
             width = "double",
-            desc = L["Dynamic text tooltip"],
+            desc = function()
+                 local ret = L["Dynamic text tooltip"];
+                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
+                 return ret
+            end,
             multiline = true,
             name = L["Display Text"],
             order = 10,

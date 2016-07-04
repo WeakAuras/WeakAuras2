@@ -57,6 +57,9 @@ WeakAuras.trigger_require_types = {
   all = L["All Triggers"],
   custom = L["Custom Function"]
 };
+WeakAuras.trigger_modes = {
+  ["first_active"] = -10,
+};
 WeakAuras.trigger_types = {
   aura = L["Aura"],
   status = L["Status"],
@@ -940,7 +943,8 @@ WeakAuras.rune_specific_types = {
 };
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
-  ["status"] = L["Status"]
+  ["status"] = L["Status"],
+  ["stateupdate"] = L["Trigger State Updater"]
 };
 WeakAuras.eventend_types = {
   ["timed"] = L["Timed"],

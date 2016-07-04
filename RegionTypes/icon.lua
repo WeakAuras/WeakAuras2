@@ -185,7 +185,7 @@ local function modify(parent, region, data)
     if(tooltipType and data.useTooltip) then
         region:EnableMouse(true);
         region:SetScript("OnEnter", function()
-            WeakAuras.ShowMouseoverTooltip(data, region, region, tooltipType);
+            WeakAuras.ShowMouseoverTooltip(region, region);
         end);
         region:SetScript("OnLeave", WeakAuras.HideTooltip);
     else
@@ -215,7 +215,7 @@ local function modify(parent, region, data)
     local textStr;
     local function UpdateText()
         textStr = data.displayStacks or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
         if(stacks.displayStacks ~= textStr) then
             if stacks:GetFont() then
@@ -232,8 +232,9 @@ local function modify(parent, region, data)
     if (customTextFunc) then
         local values = region.values;
         region.UpdateCustomText = function()
-            WeakAuras.ActivateAuraEnvironment(data.id);
-            local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
+            WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+            local custom = customTextFunc(region.expirationTime, region.duration,
+              values.progress, values.duration, values.name, values.icon, values.stacks);
             WeakAuras.ActivateAuraEnvironment(nil);
             custom = WeakAuras.EnsureString(custom);
             if(custom ~= values.custom) then
@@ -273,7 +274,6 @@ local function modify(parent, region, data)
         region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
         UpdateText();
     end
-    region:SetIcon()
 
     function region:SetName(name)
         region.values.name = name or data.id;
@@ -345,7 +345,7 @@ local function modify(parent, region, data)
     end
 
     local function UpdateCustom()
-        UpdateValue(region.customValueFunc(data.trigger));
+        UpdateValue(region.customValueFunc(region.state.trigger));
     end
 
     local function UpdateDurationInfo(duration, expirationTime, customValue)
@@ -356,7 +356,7 @@ local function modify(parent, region, data)
 
         if(customValue) then
             if(type(customValue) == "function") then
-                local value, total = customValue(data.trigger);
+                local value, total = customValue(region.state.trigger);
                 if(total > 0 and value < total) then
                     region.customValueFunc = customValue;
                     region:SetScript("OnUpdate", UpdateCustom);
