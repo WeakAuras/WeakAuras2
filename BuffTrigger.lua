@@ -570,9 +570,6 @@ function WeakAuras.ScanAuras(unit)
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
               name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
-              if (data.spellIds[index] and data.spellIds[index] ~= spellId) then
-                name = nil
-              end
               checkPassed = false;
 
               -- Aura conforms to trigger options?
