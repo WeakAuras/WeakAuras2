@@ -343,15 +343,44 @@ WeakAuras.subevent_suffix_types = {
   _SUMMON = L["Summon"],
   _RESURRECT = L["Resurrect"]
 };
+
 WeakAuras.power_types = {
-  [0] = L["Mana"],
-  [1] = L["Rage"],
-  [2] = L["Focus"],
-  [3] = L["Energy"],
-  [4] = L["Combo Points"],
-  [6] = L["Runic Power"],
-  [13] = L["Insanity"]
+  [0] = MANA,
+  [1] = RAGE,
+  [2] = FOCUS,
+  [3] = ENERGY,
+  [4] = COMBO_POINTS,
+  [6] = RUNIC_POWER,
+  [7] = SOUL_SHARDS,
+  [8] = LUNAR_POWER,
+  [9] = HOLY_POWER,
+  [11] = MAELSTROM,
+  [12] = CHI,
+  [13] = INSANITY,
+  [16] = ARCANE_CHARGES,
+  [17] = FURY,
+  [18] = PAIN,
 };
+
+WeakAuras.power_types_with_stagger = {
+  [0] = MANA,
+  [1] = RAGE,
+  [2] = FOCUS,
+  [3] = ENERGY,
+  [4] = COMBO_POINTS,
+  [6] = RUNIC_POWER,
+  [7] = SOUL_SHARDS,
+  [8] = LUNAR_POWER,
+  [9] = HOLY_POWER,
+  [11] = MAELSTROM,
+  [12] = CHI,
+  [13] = INSANITY,
+  [16] = ARCANE_CHARGES,
+  [17] = FURY,
+  [18] = PAIN,
+  [99] = L["Stagger"]
+};
+
 WeakAuras.miss_types = {
   ABSORB = L["Absorb"],
   BLOCK = L["Block"],
