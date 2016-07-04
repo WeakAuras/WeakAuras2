@@ -2273,7 +2273,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
       for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
         if (v.store and v.name and v.display) then
           found = true;
-          additional = additional .. "|cFFFF0000#" .. v.name .. "#|r - " .. v.display .. "\n";
+          additional = additional .. "|cFFFF0000%" .. v.name .. "|r - " .. v.display .. "\n";
         end
       end
 

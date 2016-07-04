@@ -1582,8 +1582,8 @@ end
 
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
-  ret = ret .. "|cFFFF0000#spellId#|r -" .. L["Spell ID"] .. "\n";
-  ret = ret .. "|cFFFF0000#unitCaster#|r -" .. L["Caster"] .. "\n";
+  ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
+  ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
   return ret;
 end
 
