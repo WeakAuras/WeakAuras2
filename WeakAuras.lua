@@ -1997,7 +1997,7 @@ function WeakAuras.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   for id, state in pairs(triggerState) do
     state.show = false;
-    state.change = true;
+    state.changed = true;
   end
 end
 
