@@ -169,34 +169,38 @@ local function modify(parent, region, data)
         end
 
         if(data.sort == "ascending") then
-            table.sort(region.controlledRegions, function(a, b)
-                return (
-                    a.region
-                    and a.region.expirationTime
-                    and a.region.expirationTime > 0
-                    and a.region.expirationTime
-                    or math.huge
-                ) < (
-                    b.region
-                    and b.region.expirationTime
-                    and b.region.expirationTime > 0
-                    and b.region.expirationTime
-                    or math.huge
-                )
+          table.sort(region.controlledRegions, function(a, b)
+            return (
+                a.region
+                    and a.region.state
+                    and a.region.state.expirationTime
+                    and a.region.state.expirationTime > 0
+                    and a.region.state.expirationTime
+                or math.huge
+            ) < (
+                b.region
+                    and b.region.state
+                    and b.region.state.expirationTime
+                    and b.region.state.expirationTime > 0
+                    and b.region.state.expirationTime
+                or math.huge
+              )
             end);
         elseif(data.sort == "descending") then
             table.sort(region.controlledRegions, function(a, b)
                 return (
                     a.region
-                    and a.region.expirationTime
-                    and a.region.expirationTime > 0
-                    and a.region.expirationTime
+                    and a.region.state
+                    and a.region.state.expirationTime
+                    and a.region.state.expirationTime > 0
+                    and a.region.state.expirationTime
                     or math.huge
                 ) > (
                     b.region
-                    and b.region.expirationTime
-                    and b.region.expirationTime > 0
-                    and b.region.expirationTime
+                    and b.region.state
+                    and b.region.state.expirationTime
+                    and b.region.state.expirationTime > 0
+                    and b.region.state.expirationTime
                     or math.huge
                 )
             end);
@@ -207,15 +211,17 @@ local function modify(parent, region, data)
                 if (data.sortHybridTable and data.sortHybridTable[a.dataIndex]) then
                     aTime = a.dataIndex - 1000;
                 else
-                    aTime = a.region and a.region.expirationTime and a.region.expirationTime > 0
-                        and a.region.expirationTime or math.huge
+                    aTime = a.region and a.region.state
+                        and a.region.state.expirationTime and a.region.state.expirationTime > 0
+                        and a.region.state.expirationTime or math.huge
                 end;
 
                 if (data.sortHybridTable and data.sortHybridTable[b.dataIndex]) then
                     bTime = b.dataIndex - 1000;
                 else
-                    bTime = b.region and b.region.expirationTime and b.region.expirationTime > 0
-                        and b.region.expirationTime or math.huge
+                    bTime = b.region and b.region.state
+                        and b.region.state.expirationTime and b.region.state.expirationTime > 0
+                        and b.region.state.expirationTime or math.huge
                 end
                 return (
                     (aTime) > (bTime)
@@ -231,7 +237,7 @@ local function modify(parent, region, data)
                 return (
                     (
                         a.dataIndex == b.dataIndex
-                        and (a.region.index or 0) < (b.region.index or 0)
+                        and (a.region.state.index or 0) < (b.region.state.index or 0)
                     )
                     or (a.dataIndex or 0) < (b.dataIndex or 0)
                 )

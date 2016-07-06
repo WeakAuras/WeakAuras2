@@ -72,7 +72,7 @@ local function modify(parent, region, data)
 
     local function UpdateText()
         local textStr = data.displayText;
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
         if(textStr ~= text.displayText) then
             if text:GetFont() then text:SetText(textStr); end
@@ -99,8 +99,9 @@ local function modify(parent, region, data)
     if (customTextFunc) then
         local values = region.values;
         region.UpdateCustomText = function()
-            WeakAuras.ActivateAuraEnvironment(data.id);
-            local custom = customTextFunc(region.expirationTime, region.duration, values.progress, values.duration, values.name, values.icon, values.stacks);
+            WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+            local custom = customTextFunc(region.expirationTime, region.duration,
+              values.progress, values.duration, values.name, values.icon, values.stacks);
             WeakAuras.ActivateAuraEnvironment(nil);
             custom = WeakAuras.EnsureString(custom);
             if(custom ~= values.custom) then
@@ -180,7 +181,7 @@ local function modify(parent, region, data)
     end
 
     local function UpdateCustom()
-        UpdateValue(region.customValueFunc(data.trigger));
+        UpdateValue(region.customValueFunc(region.state.trigger));
     end
 
     function region:SetDurationInfo(duration, expirationTime, customValue)
@@ -191,7 +192,7 @@ local function modify(parent, region, data)
 
         if(customValue) then
             if(type(customValue) == "function") then
-                local value, total = customValue(data.trigger);
+                local value, total = customValue(region.state.trigger);
                 if(total > 0 and value < total) then
                     region.customValueFunc = customValue;
                     region:SetScript("OnUpdate", UpdateCustom);
