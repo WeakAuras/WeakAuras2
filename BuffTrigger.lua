@@ -1571,8 +1571,8 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
      and trigger.names) then
     -- Try to get an icon from the icon cache
     for index, checkname in pairs(trigger.names) do
-      if(WeakAuras.iconCache[checkname]) then
-        name, icon = checkname, WeakAuras.iconCache[checkname];
+      if(WeakAuras.GetIconFromSpellCache(checkname)) then
+        name, icon = checkname, WeakAuras.GetIconFromSpellCache(checkname);
         break;
       end
     end
