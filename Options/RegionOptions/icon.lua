@@ -59,7 +59,11 @@ local function createOptions(id, data)
         displayStacks = {
             type = "input",
             name = L["Text"],
-            desc = L["Dynamic text tooltip"],
+            desc = function()
+                 local ret = L["Dynamic text tooltip"];
+                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
+                 return ret
+            end,
             order = 40
         },
         textColor = {

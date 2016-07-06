@@ -29,7 +29,11 @@ local function createOptions(id, data)
                     return L["Top Text"];
                 end
             end,
-            desc = L["Dynamic text tooltip"],
+            desc = function()
+                 local ret = L["Dynamic text tooltip"];
+                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
+                 return ret
+            end,
             order = 9
         },
         displayTextRight = {
@@ -45,7 +49,11 @@ local function createOptions(id, data)
                     return L["Bottom Text"];
                 end
             end,
-            desc = L["Dynamic text tooltip"],
+            desc = function()
+                 local ret = L["Dynamic text tooltip"];
+                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
+                 return ret
+            end,
             order = 10
         },
         customTextUpdate = {

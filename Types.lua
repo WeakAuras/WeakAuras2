@@ -57,6 +57,9 @@ WeakAuras.trigger_require_types = {
   all = L["All Triggers"],
   custom = L["Custom Function"]
 };
+WeakAuras.trigger_modes = {
+  ["first_active"] = -10,
+};
 WeakAuras.trigger_types = {
   aura = L["Aura"],
   status = L["Status"],
@@ -135,7 +138,7 @@ WeakAuras.race_types = {
   Orc = LBR["Orc"],
   Tauren = LBR["Tauren"],
   Troll = LBR["Troll"],
-  Undead = LBR["Undead"]
+  Scourge = LBR["Undead"]
 }
 
 WeakAuras.faction_group = {
@@ -961,7 +964,8 @@ WeakAuras.rune_specific_types = {
 };
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
-  ["status"] = L["Status"]
+  ["status"] = L["Status"],
+  ["stateupdate"] = L["Trigger State Updater"]
 };
 WeakAuras.eventend_types = {
   ["timed"] = L["Timed"],
@@ -1064,6 +1068,7 @@ WeakAuras.difficulty_types = {
   normal = L["Normal"],
   heroic = L["Heroic"],
   mythic = L["Mythic"],
+  timewalking = L["Timewalking"],
   lfr = L["Looking for Raid"],
   challenge = L["Challenge"]
 };

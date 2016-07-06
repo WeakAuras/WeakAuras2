@@ -1025,7 +1025,9 @@ local function checkTrigger(codes, id, trigger, untrigger)
         elseif(WeakAuras.transmitCache and WeakAuras.transmitCache[data.id]) then
           i = WeakAuras.transmitCache[data.id];
         end
-        thumbnail:SetIcon(i);
+        if (i) then
+          thumbnail:SetIcon(i);
+        end
       end
       thumbnail_frame:Show();
 
