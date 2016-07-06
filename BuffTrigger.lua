@@ -961,9 +961,9 @@ do
             data.GUIDs[destGUID].unitName = destName;
             if (message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
               -- Shouldn't affect duration/expirationTime nor icon
-              data.GUIDs[destGUID].duration = 0;
-              data.GUIDs[destGUID].expirationTime = math.huge;
-              data.GUIDs[destGUID].icon = nil;
+              data.GUIDs[destGUID].duration = data.GUIDs[destGUID].duration or 0;
+              data.GUIDs[destGUID].expirationTime = data.GUIDs[destGUID].expirationTime or math.huge;
+              data.GUIDs[destGUID].icon = data.GUIDs[destGUID].icon or nil;
             else
               data.GUIDs[destGUID].duration = 0;
               data.GUIDs[destGUID].expirationTime = math.huge;

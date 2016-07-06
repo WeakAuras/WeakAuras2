@@ -1197,8 +1197,14 @@ WeakAuras.event_prototypes = {
     args = {
       {}, -- timestamp ignored with _ argument
       {}, -- messageType ignored with _ argument (it is checked before the dynamic function)
-      {}, -- sourceGUID ignored with _ argument
       {}, -- hideCaster ignored with _ argument
+      {
+        name = "sourceGUID",
+        init = "arg",
+        hidden = "true",
+        test = "true",
+        store = true
+      },
       {
         name = "sourceUnit",
         display = L["Source Unit"],
