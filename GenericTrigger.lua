@@ -370,7 +370,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       end
 
       if (state.autoHide or state.inverse) then
-        changed = trueM
+        changed = true;
       end
       state.autoHide = nil;
       state.inverse = nil;
