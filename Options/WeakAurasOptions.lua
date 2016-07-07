@@ -4548,6 +4548,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       hidden = function() return not (trigger.type == "aura"); end,
       set = function(info, v)
         trigger.unit = v;
+        trigger.use_specific_unit = (v == "member");
         if(v == "multi") then
           WeakAuras.ShowCloneDialog(data);
           WeakAuras.UpdateCloneConfig(data);
