@@ -914,6 +914,7 @@ do
 
 
   local function updateSpell(spellName, unit, destGUID)
+   if (not loaded_auras[spellName]) then return end;
    for id, triggers in pairs(loaded_auras[spellName]) do
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
