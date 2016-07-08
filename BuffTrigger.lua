@@ -876,7 +876,7 @@ do
          state.changed = true;
        end
 
-       if (state.name ~= auradata.unitname) then
+       if (state.name ~= auradata.unitName) then
          state.name = auradata.unitName;
          state.changed = true;
        end
