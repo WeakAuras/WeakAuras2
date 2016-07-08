@@ -1264,7 +1264,7 @@ WeakAuras.event_prototypes = {
         name = "sourceUnit",
         display = L["Source Unit"],
         type = "unit",
-        test = "sourceName and UnitIsUnit(sourceName, '%s')",
+        test = "(sourceGUID or '') == (UnitGUID('%s') or '') and sourceGUID",
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
