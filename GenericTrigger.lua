@@ -975,14 +975,15 @@ function GenericTrigger.Modernize(data)
 
     if (trigger and trigger.type and trigger.event and trigger.type == "status" and oldPowerTriggers[trigger.event]) then
       trigger.powertype = oldPowerTriggers[trigger.event]
-      trigger.event = "Power";
-      trigger.unit = "player";
       trigger.use_powertype = true;
       trigger.use_percentpower = false;
       if (trigger.event == "Combo Points") then
         trigger.power = trigger.combopoints;
+        trigger.power_operator = trigger.combopoints_operator
         trigger.use_power = trigger.use_combopoints;
       end
+      trigger.event = "Power";
+      trigger.unit = "player";
     end
   end
 end
