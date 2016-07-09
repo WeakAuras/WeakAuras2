@@ -2641,6 +2641,16 @@ WeakAuras.event_prototypes = {
         return 0, 0;
       end
     end,
+    stacksFunc = function(trigger)
+      local numRunes = 0;
+      for index = 1, 6 do
+        local startTime = select(1, GetRuneCooldown(index));
+        if startTime == 0 then
+          numRunes = numRunes  + 1;
+        end
+      end
+      return numRunes;
+    end,
     iconFunc = function(trigger)
       return "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune";
     end,
