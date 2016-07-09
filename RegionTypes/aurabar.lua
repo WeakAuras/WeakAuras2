@@ -417,20 +417,11 @@ local function animRotate(object, degrees, anchor)
         group.rotate = group.rotate or group:CreateAnimation("rotation");
         local rotate = group.rotate;
 
-    -- Reset animation
-        group:Stop();
-        rotate:Stop();
-
-    -- Rotate around origin
-        if degrees ~= 0 then
-            rotate:SetOrigin(anchor, 0, 0);
-            rotate:SetDegrees(degrees);
-            rotate:SetDuration(0);
-            rotate:SetEndDelay(0.1);
-            rotate:SetScript("OnUpdate", rotate.Pause);
-            rotate:Play();
-            group:Play();
-        end
+        rotate:SetOrigin(anchor, 0, 0);
+        rotate:SetDegrees(degrees);
+        rotate:SetDuration(0.000001);
+        rotate:SetEndDelay(2147483647);
+        group:Play();
     end
 end
 WeakAuras.animRotate = animRotate;

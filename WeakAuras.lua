@@ -1,5 +1,5 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
+local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
 local fmt, tostring, select, pairs, next, type, unpack = string.format, tostring, select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable = setmetatable, getmetatable
@@ -7,7 +7,19 @@ local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
-local GetTalentInfo = GetTalentInfo
+local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+    = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+    = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+    = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+    = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+    = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+local debugstack, IsSpellKnown = debugstack, IsSpellKnown
 
 local ADDON_NAME = "WeakAuras"
 local versionString = WeakAuras.versionString
@@ -24,8 +36,8 @@ local L = WeakAuras.L
 -- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
 -- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
--- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS NUM_TALENT_COLUMNS
--- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT
+-- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS MAX_PVP_TALENT_TIERS NUM_TALENT_COLUMNS MAX_PVP_TALENT_COLUMNS
+-- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles
 
 local queueshowooc;
 function WeakAuras.OpenOptions(msg)
@@ -359,7 +371,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       -- Run the init function if supplied
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
         if func then
           current_aura_env.id = id;
           func();
@@ -2107,7 +2119,7 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_custom and actions.custom) then
-    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       func();

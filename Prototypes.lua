@@ -5,9 +5,16 @@ local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+local ceil, min = ceil, min
 
 -- WoW APIs
-local GetPvpTalentInfo = GetPvpTalentInfo
+local GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo = GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo
+local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
+local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
+local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
+local GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon
+local GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm = GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm
+local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -16,9 +23,6 @@ local SpellRange = LibStub("SpellRange-1.0")
 function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
-
--- GLOBALS: SPELL_POWER_CHI SPELL_POWER_INSANITY SPELL_POWER_LUNAR_POWER SPELL_POWER_MAELSTROM SPELL_POWER_ARCANE_CHARGES
--- GLOBALS: SPELL_POWER_FURY SPELL_POWER_PAIN SPELL_POWER_MANA
 
 WeakAuras.function_strings = {
   count = [[
@@ -471,7 +475,6 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = function(trigger)
         return function()
-          local _, class = UnitClass("player")
           local single_class;
           local min_specs = 4;
           -- First check to use if the class load is on multi-select with only one class selected
@@ -495,7 +498,7 @@ WeakAuras.load_prototype = {
           end
 
           -- If a single specific class was found, load the specific list for it
-          if(single_class == class) then
+          if(single_class) then
             return WeakAuras.spec_types_specific[single_class];
           else
             -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
@@ -698,39 +701,6 @@ WeakAuras.load_prototype = {
 };
 
 WeakAuras.event_prototypes = {
-  ["Combo Points"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED",
-    },
-    force_events = true,
-    name = L["Combo Points"],
-    args = {
-      {
-        name = "combopoints",
-        display = L["Combo Points"],
-        type = "number",
-        init = "UnitInVehicle('player') and UnitHasVehicleUI('player') and GetComboPoints('vehicle', 'target') or UnitPower('player', 4)"
-      }
-    },
-    durationFunc = function(trigger)
-      if UnitInVehicle('player') then
-        return GetComboPoints('vehicle', 'target'), 5, true;
-      else
-        return UnitPower('player', 4), 5, true;
-      end
-    end,
-    stacksFunc = function(trigger)
-      if UnitInVehicle('player') then
-        return GetComboPoints('vehicle', 'target');
-      else
-        return UnitPower('player', 4);
-      end
-    end,
-    automatic = true
-  },
   ["Unit Characteristics"] = {
     type = "status",
     events = {
@@ -894,9 +864,16 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local unit = unit or '%s';
         local concernedUnit = '%s';
+        local powerType = %s;
       ]];
-
-    return ret:format(trigger.unit, trigger.unit);
+    ret = ret:format(trigger.unit, trigger.unit, trigger.use_powertype and trigger.powertype or "nil");
+    if (trigger.use_powertype and trigger.powertype == 99) then
+      ret = ret .. [[
+        local UnitPower = UnitStagger;
+        local UnitPowerMax = UnitHealthMax;
+      ]]
+    end
+    return ret
     end,
     args = {
       {
@@ -912,20 +889,20 @@ WeakAuras.event_prototypes = {
         -- required = true,
         display = L["Power Type"],
         type = "select",
-        values = "power_types",
-        init = "UnitPowerType(unit)"
+        values = "power_types_with_stagger",
+        test = "true",
       },
       {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = "UnitPower(unit)"
+        init = "UnitPower(unit, powerType)"
       },
       {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "(UnitPower(unit) / math.max(1, UnitPowerMax(unit))) * 100;"
+        init = "((UnitPower(unit, powerType) or 0) / math.max(1, UnitPowerMax(unit, powerType))) * 100;"
       },
       {
         hidden = true,
@@ -933,223 +910,11 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      return UnitPower(trigger.unit), math.max(1, UnitPowerMax(trigger.unit)), "fastUpdate";
-    end,
-    automatic = true
-  },
-  ["Holy Power"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Holy Power"],
-    args = {
-      {
-        name = "power",
-        display = L["Holy Power"],
-        type = "number",
-        init = "UnitPower('player', 9)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', 9), UnitPowerMax('player', 9), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', 9);
-    end,
-    automatic = true
-  },
-  ["Alternate Mana"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Alternate Mana"],
-    args = {
-      {
-        name = "power",
-        display = L["Alternate Mana"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_MANA)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_MANA), UnitPowerMax('player', SPELL_POWER_MANA), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_MANA);
-    end,
-    automatic = true
-  },
-  ["Insanity"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Insanity"],
-    args = {
-      {
-        name = "power",
-        display = L["Insanity"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_INSANITY)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_INSANITY), math.max(1, UnitPowerMax('player', SPELL_POWER_INSANITY)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_INSANITY);
-    end,
-    automatic = true
-  },
-  ["Chi Power"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Chi Power"],
-    args = {
-      {
-        name = "power",
-        display = L["Chi Power"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_CHI)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_CHI), math.max(1, UnitPowerMax('player', SPELL_POWER_CHI)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_CHI);
-    end,
-    automatic = true
-  },
-  ["Astral Power"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Astral Power"],
-    args = {
-      {
-        name = "power",
-        display = L["Astral Power"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_LUNAR_POWER)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_LUNAR_POWER), math.max(1, UnitPowerMax('player', SPELL_POWER_LUNAR_POWER)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_LUNAR_POWER);
-    end,
-    automatic = true
-  },
-  ["Maelstrom"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Maelstrom"],
-    args = {
-      {
-        name = "power",
-        display = L["Maelstrom"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_MAELSTROM)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_MAELSTROM), math.max(1, UnitPowerMax('player', SPELL_POWER_MAELSTROM)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_MAELSTROM);
-    end,
-    automatic = true
-  },
-  ["Arcane Charges"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Arcane Charges"],
-    args = {
-      {
-        name = "power",
-        display = L["Arcane Charges"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_ARCANE_CHARGES)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_ARCANE_CHARGES), math.max(1, UnitPowerMax('player', SPELL_POWER_ARCANE_CHARGES)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_ARCANE_CHARGES);
-    end,
-    automatic = true
-  },
-  ["Fury"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Fury"],
-    args = {
-      {
-        name = "power",
-        display = L["Fury"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_FURY)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_FURY), math.max(1, UnitPowerMax('player', SPELL_POWER_FURY)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_FURY);
-    end,
-    automatic = true
-  },
-  ["Pain"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Pain"],
-    args = {
-      {
-        name = "power",
-        display = L["Pain"],
-        type = "number",
-        init = "UnitPower('player', SPELL_POWER_PAIN)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_PAIN), math.max(1, UnitPowerMax('player', SPELL_POWER_PAIN)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', SPELL_POWER_PAIN);
+      local powerType = trigger.use_powertype and trigger.powertype;
+      if (powerType == 99) then
+        return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
+      end
+      return UnitPower(trigger.unit, powerType), math.max(1, UnitPowerMax(trigger.unit, powerType)), "fastUpdate";
     end,
     automatic = true
   },
@@ -1206,30 +971,6 @@ WeakAuras.event_prototypes = {
     iconFunc = function(trigger)
       local icon = UnitAlternatePowerTextureInfo(trigger.unit, 0);
       return icon;
-    end,
-    automatic = true
-  },
-  ["Shards"] = {
-    type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
-    force_events = true,
-    name = L["Shards"],
-    args = {
-      {
-        name = "power",
-        display = L["Shards"],
-        type = "number",
-        init = "UnitPower('player', 7)"
-      },
-    },
-    durationFunc = function(trigger)
-      return UnitPower('player', 7), math.max(1, UnitPowerMax('player', 7)), true;
-    end,
-    stacksFunc = function(trigger)
-      return UnitPower('player', 7);
     end,
     automatic = true
   },
@@ -2440,7 +2181,6 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local totemType = %i;
         local _, totemName, startTime, duration = GetTotemInfo(totemType);
-
         local active = (startTime ~= 0);
       ]];
     ret = ret:format(trigger.totemType);
@@ -2905,8 +2645,18 @@ WeakAuras.event_prototypes = {
 
         return duration, startTime + duration;
       else
-        return 1, 0;
+        return 0, 0;
       end
+    end,
+    stacksFunc = function(trigger)
+      local numRunes = 0;
+      for index = 1, 6 do
+        local startTime = select(1, GetRuneCooldown(index));
+        if startTime == 0 then
+          numRunes = numRunes  + 1;
+        end
+      end
+      return numRunes;
     end,
     iconFunc = function(trigger)
       return "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune";

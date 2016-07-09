@@ -4,6 +4,12 @@ local L = WeakAuras.L;
 local LSM = LibStub("LibSharedMedia-3.0");
 local LBR = LibStub("LibBabble-Race-3.0"):GetLookupTable()
 
+-- GLOBALS: MANA RAGE FOCUS ENERGY COMBO_POINTS RUNIC_POWER SOUL_SHARDS LUNAR_POWER HOLY_POWER MAELSTROM CHI INSANITY ARCANE_CHARGES FURY PAIN
+
+local wipe, tinsert = wipe, tinsert
+local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
+local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
+
 WeakAuras.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
@@ -343,15 +349,44 @@ WeakAuras.subevent_suffix_types = {
   _SUMMON = L["Summon"],
   _RESURRECT = L["Resurrect"]
 };
+
 WeakAuras.power_types = {
-  [0] = L["Mana"],
-  [1] = L["Rage"],
-  [2] = L["Focus"],
-  [3] = L["Energy"],
-  [4] = L["Combo Points"],
-  [6] = L["Runic Power"],
-  [13] = L["Insanity"]
+  [0] = MANA,
+  [1] = RAGE,
+  [2] = FOCUS,
+  [3] = ENERGY,
+  [4] = COMBO_POINTS,
+  [6] = RUNIC_POWER,
+  [7] = SOUL_SHARDS,
+  [8] = LUNAR_POWER,
+  [9] = HOLY_POWER,
+  [11] = MAELSTROM,
+  [12] = CHI,
+  [13] = INSANITY,
+  [16] = ARCANE_CHARGES,
+  [17] = FURY,
+  [18] = PAIN,
 };
+
+WeakAuras.power_types_with_stagger = {
+  [0] = MANA,
+  [1] = RAGE,
+  [2] = FOCUS,
+  [3] = ENERGY,
+  [4] = COMBO_POINTS,
+  [6] = RUNIC_POWER,
+  [7] = SOUL_SHARDS,
+  [8] = LUNAR_POWER,
+  [9] = HOLY_POWER,
+  [11] = MAELSTROM,
+  [12] = CHI,
+  [13] = INSANITY,
+  [16] = ARCANE_CHARGES,
+  [17] = FURY,
+  [18] = PAIN,
+  [99] = L["Stagger"]
+};
+
 WeakAuras.miss_types = {
   ABSORB = L["Absorb"],
   BLOCK = L["Block"],

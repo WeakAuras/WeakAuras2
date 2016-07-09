@@ -119,6 +119,17 @@ local function create(parent, data)
     region.duration = 0;
     region.expirationTime = math.huge;
 
+    local SetFrameLevel = region.SetFrameLevel;
+
+    function region.SetFrameLevel(self, level)
+      SetFrameLevel(region, level);
+      cooldown:SetFrameLevel(level);
+      stacksFrame:SetFrameLevel(level + 1);
+      if button then
+        button:SetFrameLevel(level);
+      end
+    end
+
     return region;
 end
 

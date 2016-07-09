@@ -1,16 +1,20 @@
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local fmt, tostring, string_char = string.format, tostring, string.char
+local fmt, tostring, string_char, strtrim, strsub = string.format, tostring, string.char, strtrim, strsub
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-local coroutine = coroutine
+local coroutine, rad, sqrt, atan2, floor, cos, sin = coroutine, rad, sqrt, atan2, floor, cos, sin
 local _G = _G
 
 -- WoW APIs
-local GetSpellInfo = GetSpellInfo
-local GetItemInfo = GetItemInfo
+local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+    = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+    = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+    = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -445,10 +449,10 @@ end
 
 function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
   local trigger, untrigger;
-  if(triggertype == "load") then
-    trigger = data.load;
-  elseif(data.controlledChildren) then
+  if(data.controlledChildren) then
     trigger, untrigger = {}, {};
+  elseif(triggertype == "load") then
+    trigger = data.load;
   else
     if(triggernum == 0) then
       data.untrigger = data.untrigger or {};
@@ -738,7 +742,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "item") then
                 local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
-                print ("returning 3", icon);
                 return icon and tostring(icon) or "", 18, 18;
               end
             else
@@ -1622,7 +1625,6 @@ local function getAll(data, info, ...)
       end
     end
   end
-
   return unpack(combinedValues);
 end
 
@@ -4550,6 +4552,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       hidden = function() return not (trigger.type == "aura"); end,
       set = function(info, v)
         trigger.unit = v;
+        trigger.use_specific_unit = (v == "member");
         if(v == "multi") then
           WeakAuras.ShowCloneDialog(data);
           WeakAuras.UpdateCloneConfig(data);

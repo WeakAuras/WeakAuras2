@@ -370,7 +370,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       end
 
       if (state.autoHide or state.inverse) then
-        changed = trueM
+        changed = true;
       end
       state.autoHide = nil;
       state.inverse = nil;
@@ -855,11 +855,25 @@ do
   end
 end
 
+
 local combatLogUpgrade = {
   ["sourceunit"] = "sourceUnit",
   ["source"] = "sourceName",
   ["destunit"] = "destUnit",
   ["dest"] = "destName"
+}
+
+local oldPowerTriggers = {
+  ["Combo Points"] = 4,
+  ["Holy Power"] = 9,
+  ["Insanity"] = 13,
+  ["Chi Power"] = 12,
+  ["Astral Power"] = 8,
+  ["Maelstrom"] =  11,
+  ["Arcane Charges"] = 16,
+  ["Fury"] = 17,
+  ["Pain"] = 18,
+  ["Shards"] = 7,
 }
 
 function GenericTrigger.Modernize(data)
@@ -956,6 +970,18 @@ function GenericTrigger.Modernize(data)
 
         trigger[old] = nil;
         trigger[useOld] = nil;
+      end
+    end
+
+    if (trigger and trigger.type and trigger.event and trigger.type == "status" and oldPowerTriggers[trigger.event]) then
+      trigger.powertype = oldPowerTriggers[trigger.event]
+      trigger.event = "Power";
+      trigger.unit = "player";
+      trigger.use_powertype = true;
+      trigger.use_percentpower = false;
+      if (trigger.event == "Combo Points") then
+        trigger.power = trigger.combopoints;
+        trigger.use_power = trigger.use_combopoints;
       end
     end
   end
