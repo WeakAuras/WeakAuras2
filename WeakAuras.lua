@@ -359,7 +359,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       -- Run the init function if supplied
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
         if func then
           current_aura_env.id = id;
           func();
@@ -2107,7 +2107,7 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_custom and actions.custom) then
-    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       func();
