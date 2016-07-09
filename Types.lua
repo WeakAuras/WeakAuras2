@@ -169,65 +169,6 @@ form_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
 form_frame:RegisterEvent("PLAYER_LOGIN")
 form_frame:SetScript("OnEvent", update_forms);
 
---[=[
-WeakAuras.deathknight_form_types = {
-  [0] = L["None"],
-  [1] = L["Blood"],
-  [2] = L["Frost"],
-  [3] = L["Unholy"]
-};
-WeakAuras.druid_form_types = {
-  [0] = L["Humanoid"],
-  [1] = L["Bear"],
-  [2] = L["Aquatic"],
-  [3] = L["Cat"],
-  [4] = L["Travel"],
-  [5] = L["Moonkin/Tree/Flight(Feral)"],
-  [6] = L["Flight(Non-Feral)"]
-};
-WeakAuras.paladin_form_types = {
-  [0] = L["None"],
-  [1] = L["Devotion"],
-  [2] = L["Retribution"],
-  [3] = L["Concentration"],
-  [4] = L["Shadow Resistance"],
-  [5] = L["Frost Resistance"],
-  [6] = L["Fire Resistance"],
-  [7] = L["Crusader"]
-};
-WeakAuras.priest_form_types = {
-  [0] = L["Normal"],
-  [1] = L["Shadowform"]
-};
-WeakAuras.rogue_form_types = {
-  [0] = L["Unstealthed"],
-  [1] = L["Stealthed"],
-  [3] = L["Shadow Dance"]
-};
-WeakAuras.shaman_form_types = {
-  [0] = L["Humanoid"],
-  [1] = L["Ghost Wolf"]
-};
-WeakAuras.warlock_form_types = {
-  [0] = L["Normal"],
-  [2] = L["Metamorphosis"]
-};
-WeakAuras.warrior_form_types = {
-  [0] = L["None"],
-  [1] = L["Battle"],
-  [2] = L["Defensive"],
-  [3] = L["Berserker"]
-};
-WeakAuras.monk_form_types = {
-  [0] = L["None"],
-  [1] = L["Stance of the Fierce Tiger"],
-  [2] = L["Stance of the Sturdy Ox"],
-  [3] = L["Stance of the Wise Serpent"]
-};
-WeakAuras.single_form_types = {
-  [0] = L["Humanoid"]
-};
-]=]
 WeakAuras.blend_types = {
   ADD = L["Glow"],
   BLEND = L["Opaque"],
@@ -953,21 +894,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
   };
 end
---[=[
-for category, textures in pairs(WeakAuras.texture_types) do
-  for path, name in pairs(textures) do
-    if(L.textures[category] and L.textures[category][path]) then
-      textures[path] = L.textures[category][path];
-    end
-  end
-end
-for category, textures in pairs(WeakAuras.texture_types) do
-  if(L[category] and category ~= L[category] and not WeakAuras.texture_types[L[category]]) then
-    WeakAuras.texture_types[L[category]] = textures;
-    WeakAuras.texture_types[category] = nil;
-  end
-end
-]=]
+
 WeakAuras.operator_types = {
   ["=="] = L["="],
   ["~="] = L["!="],
@@ -1268,13 +1195,6 @@ if(WeakAuras.PowerAurasSoundPath ~= "") then
   WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wolf5.ogg"] = "Wolf Howl";
   WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."yeehaw.ogg"] = "Yeehaw";
 end
---[=[
-for path, name in pairs(WeakAuras.sound_types) do
-  if(L.sounds[path]) then
-    WeakAuras.sound_types[path] = L.sounds[path]
-  end
-end
-]=]
 
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf")
