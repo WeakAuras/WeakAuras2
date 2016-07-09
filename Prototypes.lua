@@ -1311,12 +1311,12 @@ WeakAuras.event_prototypes = {
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
-      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      local spellName = (type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'");
-      WeakAuras.WatchSpellCooldown(trigger.spellName, trigger.use_matchedRune);
-      local ret = [[
-        local spellname = %s
+      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      trigger.realSpellName = spellName; -- Cache
+      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
+      local ret = [=[
+        local spellname = [[%s]]
         local ignoreRuneCD = %s
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD);
         local charges = WeakAuras.GetSpellCharges(spellname);
@@ -1324,7 +1324,7 @@ WeakAuras.event_prototypes = {
             charges = (duration == 0) and 1 or 0;
         end
         local showOn = %s
-      ]];
+      ]=];
       if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
         local ret2 = [[
           local expirationTime = startTime + duration
@@ -1382,13 +1382,13 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.spellName or 0, trigger.use_matchedRune);
+      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.realSpellName or 0, trigger.use_matchedRune);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.spellName or 0);
+      local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
       else
@@ -1396,11 +1396,11 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
       return icon;
     end,
     stacksFunc = function(trigger)
-      return WeakAuras.GetSpellCharges(trigger.spellName);
+      return WeakAuras.GetSpellCharges(trigger.realSpellName);
     end,
     hasSpellID = true,
     automaticrequired = true
