@@ -4,6 +4,12 @@ local L = WeakAuras.L;
 local LSM = LibStub("LibSharedMedia-3.0");
 local LBR = LibStub("LibBabble-Race-3.0"):GetLookupTable()
 
+-- GLOBALS: MANA RAGE FOCUS ENERGY COMBO_POINTS RUNIC_POWER SOUL_SHARDS LUNAR_POWER HOLY_POWER MAELSTROM CHI INSANITY ARCANE_CHARGES FURY PAIN
+
+local wipe, tinsert = wipe, tinsert
+local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
+local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
+
 WeakAuras.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]

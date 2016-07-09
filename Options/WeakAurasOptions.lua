@@ -1,16 +1,20 @@
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local fmt, tostring, string_char = string.format, tostring, string.char
+local fmt, tostring, string_char, strtrim, strsub = string.format, tostring, string.char, strtrim, strsub
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-local coroutine = coroutine
+local coroutine, rad, sqrt, atan2, floor, cos, sin = coroutine, rad, sqrt, atan2, floor, cos, sin
 local _G = _G
 
 -- WoW APIs
-local GetSpellInfo = GetSpellInfo
-local GetItemInfo = GetItemInfo
+local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+    = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+    = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+    = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local AceGUI = LibStub("AceGUI-3.0")
