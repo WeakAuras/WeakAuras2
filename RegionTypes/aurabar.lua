@@ -713,7 +713,7 @@ local function UpdateTime(region, data, inverse)
   -- Timing variables
   local remaining  = region.expirationTime - GetTime();
   local duration  = region.duration;
-  local progress  = duration ~= 0 and remaining / duration or 1;
+  local progress  = duration ~= 0 and remaining / duration or 0;
 
   -- Need to invert?
   if (
