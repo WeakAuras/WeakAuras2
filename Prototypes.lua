@@ -24,6 +24,33 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit);
 end
 
+WeakAuras.encounter_table = {
+  [1703] = true, -- Nythendra
+  [1744] = true, -- Elerethe Renferal
+  [1738] = true, -- Il'gynoth, Heart of Corruption
+  [1667] = true, -- Ursoc
+  [1704] = true, -- Dragons of Nightmare
+  [1750] = true, -- Cenarius
+  [1726] = true, -- Xavius
+
+  [1706] = true, -- Skorpyron,
+  [1725] = true, -- Chronomatic Anomaly
+  [1731] = true, -- Trilliax,
+  [1751] = true, -- Spellblade Aluriel
+  [1762] = true, -- Tichondrius
+  [1713] = true, -- Krosus
+  [1761] = true, -- High Botanist Tel'arn
+  [1732] = true, -- Star Augur Etraeus
+  [1743] = true, -- Grand Magistrix Elisande
+  [1737] = true, -- Gul'dan
+}
+
+local encounter_list = ""
+for k, v in pairs(WeakAuras.encounter_table) do
+    local v = EJ_GetEncounterInfo(k)
+    encounter_list = encounter_list .. k .. ": " .. v .. "\n"
+end
+
 WeakAuras.function_strings = {
   count = [[
     return function(count)
@@ -673,7 +700,7 @@ WeakAuras.load_prototype = {
       display = L["Encounter ID"],
       type = "string",
       init = "arg",
-      desc = L["EncounterID List"],
+      desc = encounter_list,
       test = "WeakAuras.CheckNumericIds('%s', encounterid)"
     },
     {
