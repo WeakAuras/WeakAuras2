@@ -216,7 +216,7 @@ function WeakAuras.CreateTemplateView(frame)
       button.frame:LockHighlight(true);
     end
     button:SetClick(function()
-      createButtons(regionType);
+      createButtons((selectedItem ~= regionType) and regionType);
     end);
     return button;
   end
@@ -257,6 +257,13 @@ function WeakAuras.CreateTemplateView(frame)
       createButtons();
     end);
     return selector;
+  end
+
+  local function createSpacer()
+    local spacer = AceGUI:Create("Label");
+    spacer:SetFullWidth(true);
+    spacer:SetText(" ");
+    return spacer;
   end
 
   local function relativeWidth(totalWidth)
@@ -311,7 +318,7 @@ function WeakAuras.CreateTemplateView(frame)
     end
     button:SetFullWidth(true);
     button:SetClick(function()
-      createButtons(section);
+      createButtons((selectedItem ~= section) and section);
     end);
     newViewScroll:AddChild(button);
     if (section == selectedItem) then
@@ -409,6 +416,7 @@ function WeakAuras.CreateTemplateView(frame)
           end
         end
       end
+      newView.backButton:Hide();
     elseif (newView.data and not newView.choosenItem) then
       -- Second step: Trigger selection screen
       -- Class
@@ -417,6 +425,7 @@ function WeakAuras.CreateTemplateView(frame)
 
       local specSelector = createDropdown("spec", WeakAuras.spec_types_specific[newView.class]);
       newViewScroll:AddChild(specSelector);
+      newViewScroll:AddChild(createSpacer());
 
       if (WeakAuras.triggerTemplates.class[newView.class] and WeakAuras.triggerTemplates.class[newView.class][newView.spec]) then
         createTriggerButtons(WeakAuras.triggerTemplates.class[newView.class][newView.spec], selectedItem);
@@ -433,6 +442,7 @@ function WeakAuras.CreateTemplateView(frame)
       newViewScroll:AddChild(raceHeader);
       local raceSelector = createDropdown("race", WeakAuras.race_types);
       newViewScroll:AddChild(raceSelector);
+      newViewScroll:AddChild(createSpacer());
       if (WeakAuras.triggerTemplates.race[newView.race]) then
         local group = createTriggerFlyout(WeakAuras.triggerTemplates.race[newView.race], true);
         newViewScroll:AddChild(group);
@@ -448,15 +458,37 @@ function WeakAuras.CreateTemplateView(frame)
       newView.item = newView.item or 1;
       local itemSelector = createDropdown("item", itemTypes);
       newViewScroll:AddChild(itemSelector);
+      newViewScroll:AddChild(createSpacer());
       if (WeakAuras.triggerTemplates.items[newView.item]) then
         local group = createTriggerFlyout(WeakAuras.triggerTemplates.items[newView.item].args, true);
         newViewScroll:AddChild(group);
       end
+      if (newView.existingAura) then
+        newView.backButton:Hide();
+      else
+        newView.backButton:Show();
+      end
     else
       --Third Step: (only for existing auras): replace or add triggers?
       createLastPage();
+      newView.backButton:Show();
     end
   end
+
+  local newViewBack = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
+  newViewBack:SetScript("OnClick", function()
+    if (newView.existingAura) then
+      newView.choosenItem = nil;
+    else
+      newView.data = nil;
+    end
+    createButtons();
+  end);
+  newViewBack:SetPoint("BOTTOMRIGHT", -147, -23);
+  newViewBack:SetHeight(20);
+  newViewBack:SetWidth(100);
+  newViewBack:SetText(L["Back"]);
+  newView.backButton = newViewBack;
 
   local newViewCancel = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
   newViewCancel:SetScript("OnClick", function() newView:CancelClose() end);

@@ -94,7 +94,7 @@ templates.class.WARRIOR = {
       icon = 464973
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 355, type = "ability"}, -- Taunt
         { spell = 845, type = "ability"}, -- Cleave
@@ -128,10 +128,10 @@ templates.class.WARRIOR = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
   [2] = {
@@ -180,7 +180,7 @@ templates.class.WARRIOR = {
       icon = 132154
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 100, type = "ability"}, -- Charge
         { spell = 355, type = "ability"}, -- Taunt
@@ -214,10 +214,10 @@ templates.class.WARRIOR = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
   [3] = {
@@ -263,7 +263,7 @@ templates.class.WARRIOR = {
       icon = 132090
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 355, type = "ability"}, -- Taunt
         { spell = 871, type = "ability"}, -- Shield Wall
@@ -300,10 +300,10 @@ templates.class.WARRIOR = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
 }
@@ -356,7 +356,7 @@ templates.class.PALADIN = {
       icon = 135952
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 498, type = "ability"}, -- Divine Protection
         { spell = 633, type = "ability"}, -- Lay on Hands
@@ -404,10 +404,10 @@ templates.class.PALADIN = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
   [2] = {
@@ -451,7 +451,7 @@ templates.class.PALADIN = {
       icon = 135952
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
         { spell = 642, type = "ability"}, -- Divine Shield
@@ -497,10 +497,10 @@ templates.class.PALADIN = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
   [3] = {
@@ -542,7 +542,7 @@ templates.class.PALADIN = {
       icon = 135952
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
         { spell = 642, type = "ability"}, -- Divine Shield
@@ -586,10 +586,10 @@ templates.class.PALADIN = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\achievement_bg_winsoa",
     },
   },
 }
@@ -635,7 +635,7 @@ templates.class.HUNTER = {
       icon = 135860
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
@@ -676,10 +676,10 @@ templates.class.HUNTER = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\ability_hunter_focusfire",
     },
   },
   [2] = {
@@ -731,7 +731,7 @@ templates.class.HUNTER = {
       icon = 236188
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
@@ -774,10 +774,10 @@ templates.class.HUNTER = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\ability_hunter_focusfire",
     },
   },
   [3] = {
@@ -831,7 +831,7 @@ templates.class.HUNTER = {
       icon = 132309
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 1543, type = "ability"}, -- Flare
         { spell = 5384, type = "ability"}, -- Feign Death
@@ -878,10 +878,10 @@ templates.class.HUNTER = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\ability_hunter_focusfire",
     },
   },
 }
@@ -943,7 +943,7 @@ templates.class.ROGUE = {
       icon = 132302
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 408, type = "ability"}, -- Kidney Shot
         { spell = 703, type = "ability"}, -- Garrote
@@ -996,10 +996,10 @@ templates.class.ROGUE = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
   [2] = {
@@ -1052,7 +1052,7 @@ templates.class.ROGUE = {
       icon = 1373908
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 1725, type = "ability"}, -- Distract
         { spell = 1766, type = "ability"}, -- Kick
@@ -1097,10 +1097,10 @@ templates.class.ROGUE = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
   [3] = {
@@ -1149,7 +1149,7 @@ templates.class.ROGUE = {
       icon = 136175
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 408, type = "ability"}, -- Kidney Shot
         { spell = 1725, type = "ability"}, -- Distract
@@ -1197,10 +1197,10 @@ templates.class.ROGUE = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
 }
@@ -1249,7 +1249,7 @@ templates.class.PRIEST = {
       icon = 136207
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 17, type = "ability"}, -- Power Word: Shield
         { spell = 527, type = "ability"}, -- Purify
@@ -1291,10 +1291,10 @@ templates.class.PRIEST = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
   [2] = {
@@ -1336,7 +1336,7 @@ templates.class.PRIEST = {
       icon = 135972
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
         { spell = 586, type = "ability"}, -- Fade
@@ -1382,10 +1382,10 @@ templates.class.PRIEST = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
   [3] = {
@@ -1435,7 +1435,7 @@ templates.class.PRIEST = {
       icon = 136207
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 17, type = "ability"}, -- Power Word: Shield
         { spell = 586, type = "ability"}, -- Fade
@@ -1471,10 +1471,10 @@ templates.class.PRIEST = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\spell_priest_shadoworbs",
     },
   },
 }
@@ -1528,7 +1528,7 @@ templates.class.SHAMAN = {
       icon = 135813
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 2825, type = "ability"}, -- Bloodlust
         { spell = 16166, type = "ability", talent = 16}, -- Elemental Mastery
@@ -1566,10 +1566,10 @@ templates.class.SHAMAN = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = 135990,
     },
   },
   [2] = {
@@ -1620,7 +1620,7 @@ templates.class.SHAMAN = {
       icon = 462327
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 2825, type = "ability", talent = 3}, -- Bloodlust
         { spell = 17364, type = "ability"}, -- Stormstrike
@@ -1659,10 +1659,10 @@ templates.class.SHAMAN = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = 135990,
     },
   },
   [3] = {
@@ -1710,7 +1710,7 @@ templates.class.SHAMAN = {
       icon = 135813
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 2825, type = "ability"}, -- Bloodlust
         { spell = 5394, type = "ability"}, -- Healing Stream Totem
@@ -1753,10 +1753,10 @@ templates.class.SHAMAN = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
 }
@@ -1799,7 +1799,7 @@ templates.class.MAGE = {
       icon = 135848
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 122, type = "ability"}, -- Frost Nova
         { spell = 1953, type = "ability"}, -- Blink
@@ -1834,10 +1834,10 @@ templates.class.MAGE = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\spell_arcane_arcane01",
     },
   },
   [2] = {
@@ -1883,7 +1883,7 @@ templates.class.MAGE = {
       icon = 135818
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 66, type = "ability"}, -- Invisibility
         { spell = 122, type = "ability"}, -- Frost Nova
@@ -1918,10 +1918,10 @@ templates.class.MAGE = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
   [3] = {
@@ -1965,7 +1965,7 @@ templates.class.MAGE = {
       icon = 236208
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 66, type = "ability"}, -- Invisibility
         { spell = 120, type = "ability"}, -- Cone of Cold
@@ -2002,10 +2002,10 @@ templates.class.MAGE = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
 }
@@ -2063,7 +2063,7 @@ templates.class.WARLOCK = {
       icon = 136139
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
         { spell = 1122, type = "ability"}, -- Summon Infernal
@@ -2102,10 +2102,10 @@ templates.class.WARLOCK = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_misc_gem_amethyst_02",
     },
   },
   [2] = {
@@ -2151,7 +2151,7 @@ templates.class.WARLOCK = {
       icon = 136122
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
         { spell = 1122, type = "ability"}, -- Summon Infernal
@@ -2193,10 +2193,10 @@ templates.class.WARLOCK = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_misc_gem_amethyst_02",
     },
   },
   [3] = {
@@ -2243,7 +2243,7 @@ templates.class.WARLOCK = {
       icon = 135817
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
         { spell = 1122, type = "ability"}, -- Summon Infernal
@@ -2280,10 +2280,10 @@ templates.class.WARLOCK = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_misc_gem_amethyst_02",
     },
   },
 }
@@ -2336,7 +2336,7 @@ templates.class.MONK = {
       icon = 611419
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 101643, type = "ability"}, -- Transcendence
         { spell = 109132, type = "ability"}, -- Roll
@@ -2394,10 +2394,10 @@ templates.class.MONK = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\monk_stance_drunkenox",
     },
   },
   [2] = {
@@ -2445,7 +2445,7 @@ templates.class.MONK = {
       icon = 629534
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 100784, type = "ability"}, -- Blackout Kick
         { spell = 101643, type = "ability"}, -- Transcendence
@@ -2491,10 +2491,10 @@ templates.class.MONK = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
   [3] = {
@@ -2541,7 +2541,7 @@ templates.class.MONK = {
       icon = 629534
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 101545, type = "ability"}, -- Flying Serpent Kick
         { spell = 101643, type = "ability"}, -- Transcendence
@@ -2589,10 +2589,10 @@ templates.class.MONK = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\ability_monk_healthsphere",
     },
   },
 }
@@ -2647,7 +2647,7 @@ templates.class.DRUID = {
       icon = 236216
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 1850, type = "ability"}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
@@ -2690,10 +2690,10 @@ templates.class.DRUID = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources and Shapeshift Form"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\ability_druid_eclipseorange",
     },
   },
   [2] = {
@@ -2754,7 +2754,7 @@ templates.class.DRUID = {
       icon = 132152
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 1850, type = "ability"}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
@@ -2798,10 +2798,10 @@ templates.class.DRUID = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources and Shapeshift Form"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
   [3] = {
@@ -2857,7 +2857,7 @@ templates.class.DRUID = {
       icon = 451161
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 99, type = "ability"}, -- Incapacitating Roar
         { spell = 1850, type = "ability"}, -- Dash
@@ -2902,10 +2902,10 @@ templates.class.DRUID = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources and Shapeshift Form"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
   [4] = {
@@ -2962,7 +2962,7 @@ templates.class.DRUID = {
       icon = 236216
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 740, type = "ability"}, -- Tranquility
         { spell = 1850, type = "ability"}, -- Dash
@@ -3010,10 +3010,10 @@ templates.class.DRUID = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources and Shapeshift Form"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
 }
@@ -3055,7 +3055,7 @@ templates.class.DEMONHUNTER = {
       icon = 1392554
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 179057, type = "ability"}, -- Chaos Nova
         { spell = 183752, type = "ability"}, -- Consume Magic
@@ -3090,10 +3090,10 @@ templates.class.DEMONHUNTER = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = 1344651,
     },
   },
   [2] = {
@@ -3136,7 +3136,7 @@ templates.class.DEMONHUNTER = {
       icon = 1344647
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 178740, type = "ability"}, -- Immolation Aura
         { spell = 183752, type = "ability"}, -- Consume Magic
@@ -3175,10 +3175,10 @@ templates.class.DEMONHUNTER = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = 1247265,
     },
   },
 }
@@ -3228,7 +3228,7 @@ templates.class.DEATHKNIGHT = {
       icon = 237514
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 3714, type = "ability"}, -- Path of Frost
         { spell = 43265, type = "ability"}, -- Death and Decay
@@ -3271,10 +3271,10 @@ templates.class.DEATHKNIGHT = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune",
     },
   },
   [2] = {
@@ -3321,7 +3321,7 @@ templates.class.DEATHKNIGHT = {
       icon = 237522
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 3714, type = "ability"}, -- Path of Frost
         { spell = 45524, type = "ability"}, -- Chains of Ice
@@ -3359,10 +3359,10 @@ templates.class.DEATHKNIGHT = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune",
     },
   },
   [3] = {
@@ -3410,7 +3410,7 @@ templates.class.DEATHKNIGHT = {
       icon = 1129420
     },
     [3] = {
-      title = L["Abilities"],
+      title = L["Cooldowns"],
       args = {
         { spell = 3714, type = "ability"}, -- Path of Frost
         { spell = 42650, type = "ability"}, -- Army of the Dead
@@ -3455,10 +3455,10 @@ templates.class.DEATHKNIGHT = {
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
     [5] = {
-      title = L["Other"],
+      title = L["Resources"],
       args = {
       },
-      icon = "Interface\\Icons\\inv_misc_gear_08",
+      icon = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune",
     },
   },
 }
@@ -3493,7 +3493,7 @@ tinsert(templates.general.args, {
 });
 
 tinsert(templates.general.args, { spell = 2825, type = "buff", unit = "player",
-  overideTitle = L["BloodLust/Heroism/Time Warp"],
+  overideTitle = L["BloodLust/Heroism"],
   spellIds = {2825, 32182, 80353, 90355, 160452} }
 );
 
