@@ -25,30 +25,34 @@ function WeakAuras.IsSpellInRange(spellId, unit)
 end
 
 WeakAuras.encounter_table = {
-  [1703] = true, -- Nythendra
-  [1744] = true, -- Elerethe Renferal
-  [1738] = true, -- Il'gynoth, Heart of Corruption
-  [1667] = true, -- Ursoc
-  [1704] = true, -- Dragons of Nightmare
-  [1750] = true, -- Cenarius
-  [1726] = true, -- Xavius
-
-  [1706] = true, -- Skorpyron,
-  [1725] = true, -- Chronomatic Anomaly
-  [1731] = true, -- Trilliax,
-  [1751] = true, -- Spellblade Aluriel
-  [1762] = true, -- Tichondrius
-  [1713] = true, -- Krosus
-  [1761] = true, -- High Botanist Tel'arn
-  [1732] = true, -- Star Augur Etraeus
-  [1743] = true, -- Grand Magistrix Elisande
-  [1737] = true, -- Gul'dan
+  1703, -- Nythendra
+  1744, -- Elerethe Renferal
+  1738, -- Il'gynoth, Heart of Corruption
+  1667, -- Ursoc
+  1704, -- Dragons of Nightmare
+  1750, -- Cenarius
+  1726, -- Xavius
+  0,
+  1706, -- Skorpyron,
+  1725, -- Chronomatic Anomaly
+  1731, -- Trilliax,
+  1751, -- Spellblade Aluriel
+  1762, -- Tichondrius
+  1713, -- Krosus
+  1761, -- High Botanist Tel'arn
+  1732, -- Star Augur Etraeus
+  1743, -- Grand Magistrix Elisande
+  1737, -- Gul'dan
 }
 
 local encounter_list = ""
-for k, v in pairs(WeakAuras.encounter_table) do
-    local v = EJ_GetEncounterInfo(k)
-    encounter_list = encounter_list .. k .. ": " .. v .. "\n"
+for _, k in ipairs(WeakAuras.encounter_table) do
+    if (k == 0) then
+      encounter_list = encounter_list .. "\n";
+    else
+      local v = EJ_GetEncounterInfo(k);
+      encounter_list = encounter_list .. k .. ": " .. v .. "\n"
+    end
 end
 
 WeakAuras.function_strings = {
