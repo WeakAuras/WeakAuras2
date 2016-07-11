@@ -45,10 +45,34 @@ WeakAuras.encounter_table = {
   [1737] = 1866, -- Gul'dan
 }
 
-local encounter_list = ""
-for k, v in pairs(WeakAuras.encounter_table) do
-  local name = EJ_GetEncounterInfo(k)
-  encounter_list = encounter_list .. name .. ": " .. v .. "\n"
+local function get_encounters_list()
+   local encounter_list = ""
+
+   EJ_SelectTier(EJ_GetNumTiers())
+   local instance_index = 1
+   local instance_id = EJ_GetInstanceByIndex(instance_index, true)
+   while instance_id do
+      EJ_SelectInstance(instance_id)
+      local name = EJ_GetInstanceInfo()
+      local ej_index = 1
+      local boss, _, ej_id = EJ_GetEncounterInfoByIndex(ej_index)
+      while boss do
+         local encounter_id = WeakAuras.encounter_table[ej_id]
+         if encounter_id then
+            if ej_index == 1 then
+               encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, name)
+            end
+            encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, WeakAuras.encounter_table[ej_id])
+         end
+         ej_index = ej_index + 1
+         boss, _, ej_id = EJ_GetEncounterInfoByIndex(ej_index)
+      end
+      instance_index = instance_index + 1
+      instance_id = EJ_GetInstanceByIndex(instance_index, true)
+      encounter_list = encounter_list .. "\n"
+   end
+
+   return encounter_list:sub(1, -2)
 end
 
 WeakAuras.function_strings = {
@@ -700,7 +724,7 @@ WeakAuras.load_prototype = {
       display = L["Encounter ID"],
       type = "string",
       init = "arg",
-      desc = encounter_list,
+      desc = get_encounters_list,
       test = "WeakAuras.CheckNumericIds('%s', encounterid)"
     },
     {
