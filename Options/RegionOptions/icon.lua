@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
+local L = WeakAuras.L;
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 local function createOptions(id, data)
     local options = {
@@ -24,14 +26,10 @@ local function createOptions(id, data)
             disabled = function() return not data.icon end,
             order = 12,
             get = function()
-                if(data.displayIcon) then
-                    return data.displayIcon:sub(17);
-                else
-                    return nil;
-                end
+                return data.displayIcon and tostring(data.displayIcon) or "";
             end,
             set = function(info, v)
-                data.displayIcon = "Interface\\Icons\\"..v;
+                data.displayIcon = v;
                 WeakAuras.Add(data);
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);

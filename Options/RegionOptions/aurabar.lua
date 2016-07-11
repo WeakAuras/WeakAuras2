@@ -1,9 +1,8 @@
--- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-
--- Import translation
 local L = WeakAuras.L;
-    
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
+
 -- Create region options table
 local function createOptions(id, data)
 	-- Region options
@@ -236,14 +235,10 @@ local function createOptions(id, data)
             disabled = function() return not data.icon end,
             order = 38.3,
             get = function()
-                if(data.displayIcon) then
-                    return data.displayIcon:sub(17);
-                else
-                    return nil;
-                end
+                return data.displayIcon and tostring(data.displayIcon) or "";
             end,
             set = function(info, v)
-                data.displayIcon = "Interface\\Icons\\"..v;
+                data.displayIcon = v;
                 WeakAuras.Add(data);
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);
@@ -254,7 +249,7 @@ local function createOptions(id, data)
             name = "",
             width = "half",
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
-            image = function() return data.displayIcon or "", 18, 18 end,
+            image = function() return data.displayIcon and tostring(data.displayIcon) or "", 18, 18 end,
             order = 38.4
         },
         chooseIcon = {

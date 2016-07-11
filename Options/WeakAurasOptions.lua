@@ -1,16 +1,20 @@
 -- Lua APIs
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local fmt, tostring, string_char = string.format, tostring, string.char
+local fmt, tostring, string_char, strtrim, strsub = string.format, tostring, string.char, strtrim, strsub
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-local coroutine = coroutine
+local coroutine, rad, sqrt, atan2, floor, cos, sin = coroutine, rad, sqrt, atan2, floor, cos, sin
 local _G = _G
 
 -- WoW APIs
-local GetSpellInfo = GetSpellInfo
-local GetItemInfo = GetItemInfo
+local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+    = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+    = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+    = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -39,8 +43,7 @@ end
 local dynFrame = WeakAuras.dynFrame;
 WeakAuras.transmitCache = {};
 
-local iconCache = {};
-local idCache = {};
+local spellCache = {};
 local talentCache = {};
 
 local regionOptions = WeakAuras.regionOptions;
@@ -399,15 +402,17 @@ function WeakAuras.CreateIconCache(callback)
     local id = 0;
     local misses = 0;
 
-    while (misses < 200) do
+    while (misses < 400) do
       id = id + 1;
       local name, _, icon = GetSpellInfo(id);
-      if(name) then
-        iconCache[name] = icon;
-        if not(idCache[name]) then
-          idCache[name] = {}
+
+      if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
+        misses = 0;
+      elseif(name and name ~= "") then
+        if (not spellCache[name]) then
+          spellCache[name] = {};
         end
-        idCache[name][id] = true;
+        spellCache[name][id] = icon;
         misses = 0;
       else
         misses = misses + 1;
@@ -422,12 +427,32 @@ function WeakAuras.CreateIconCache(callback)
   dynFrame:AddAction(callback, co);
 end
 
+local bestIcon = {};
+function WeakAuras.GetIconFromSpellCache(name)
+  if (bestIcon[name]) then
+    return bestIcon[name];
+  end
+
+  local icons = spellCache[name];
+  local bestMatch = nil;
+  if (icons) then
+    for spellId, icon in pairs(icons) do
+      if (not bestMatch) then
+        bestMatch = spellId;
+      elseif(IsSpellKnown(spellId)) then
+        bestMatch = spellId;
+      end
+    end
+  end
+  return bestMatch and icons[bestMatch];
+end
+
 function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subSuffix, triggernum, triggertype, unevent)
   local trigger, untrigger;
-  if(triggertype == "load") then
-    trigger = data.load;
-  elseif(data.controlledChildren) then
+  if(data.controlledChildren) then
     trigger, untrigger = {}, {};
+  elseif(triggertype == "load") then
+    trigger = data.load;
   else
     if(triggernum == 0) then
       data.untrigger = data.untrigger or {};
@@ -710,19 +735,20 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           image = function()
             if(trigger["use_"..realname] and trigger[realname]) then
               if(arg.type == "aura") then
-                return iconCache[trigger[realname]] or "", 18, 18;
+                local icon = WeakAuras.GetIconFromSpellCache(trigger[realname]);
+                return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "spell") then
                 local _, _, icon = GetSpellInfo(trigger[realname]);
-                return icon or "", 18, 18;
+                return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "item") then
                 local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
-                return icon or "", 18, 18;
+                return icon and tostring(icon) or "", 18, 18;
               end
             else
               return "", 18, 18;
             end
           end,
-          disabled = function() return not ((arg.type == "aura" and trigger[realname] and iconCache[trigger[realname]]) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
+          disabled = function() return not ((arg.type == "aura" and trigger[realname] and WeakAuras.GetIconFromSpellCache(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
         };
         order = order + 1;
         options[name] = {
@@ -1053,19 +1079,23 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       odb = WeakAurasOptionsSaved;
 
-      odb.iconCache = odb.iconCache or {};
-      iconCache = odb.iconCache;
-      WeakAuras.iconCache = odb.iconCache;
-      odb.idCache = odb.idCache or {};
-      idCache = odb.idCache;
-      odb.talentCache = odb.talentCache or {};
+      -- Remove icon and id cache (replaced with spellCache)
+      if (odb.iconCache) then
+        odb.iconCache = nil;
+      end
+      if (odb.idCache) then
+        odb.idCache = nil;
+      end
+      odb.spellCache = odb.spellCache or {};
+      spellCache = odb.spellCache;
 
       local _, build = GetBuildInfo();
       local locale = GetLocale();
       local version = WeakAuras.versionString
 
       local num = 0;
-      for i,v in pairs(odb.iconCache) do
+
+      for i,v in pairs(odb.spellCache) do
         num = num + 1;
       end
 
@@ -1079,8 +1109,17 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       -- Updates the icon cache with whatever icons WeakAuras core has actually used.
       -- This helps keep name<->icon matches relevant.
-      for name, icon in pairs(db.tempIconCache) do
-        iconCache[name] = icon;
+      for name, icons in pairs(db.dynamicIconCache) do
+        if (db.dynamicIconCache[name]) then
+          for spellId, icon in pairs(db.dynamicIconCache[name]) do
+            if (not spellCache[name]) then
+              spellCache[name] = {};
+            end
+            if (not spellCache[name][spellId]) then
+              spellCache[name][spellId] = icon;
+            end
+          end
+        end
       end
 
     --Saves the talent names and icons for the current class
@@ -1586,7 +1625,6 @@ local function getAll(data, info, ...)
       end
     end
   end
-
   return unpack(combinedValues);
 end
 
@@ -3863,7 +3901,7 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 
   local function getAuraMatchesLabel(name)
-    local ids = idCache[name]
+    local ids = spellCache[name]
     if(ids) then
       local descText = "";
       local numMatches = 0;
@@ -3888,7 +3926,7 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 
   local function getAuraMatchesList(name)
-    local ids = idCache[name]
+    local ids = spellCache[name]
     if(ids) then
       local descText = "";
       for id, _ in pairs(ids) do
@@ -4066,9 +4104,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       type = "execute",
       name = "",
       width = "half",
-      image = function() return trigger.name and iconCache[trigger.name] or "", 18, 18 end,
+      image = function()
+        if (not trigger.name) then return "" end;
+        local icon =  WeakAuras.GetIconFromSpellCache(trigger.name);
+        return icon and tostring(icon) or "", 18, 18 end,
       order = 11,
-      disabled = function() return not trigger.name and iconCache[trigger.name] end,
+      disabled = function() return not trigger.name and WeakAuras.GetIconFromSpellCache(trigger.name) end,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end
     },
     multiname = {
@@ -4096,9 +4137,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[1]) end,
       desc = function() return getAuraMatchesList(trigger.names[1]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[1]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[1]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 11,
-      disabled = function() return not iconCache[trigger.names[1]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[1]) end,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end
     },
     name1 = {
@@ -4139,9 +4183,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[2]) end,
       desc = function() return getAuraMatchesList(trigger.names[2]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[2]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[2]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 14,
-      disabled = function() return not iconCache[trigger.names[2]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[2]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name2 = {
@@ -4181,9 +4228,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[3]) end,
       desc = function() return getAuraMatchesList(trigger.names[3]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[3]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[3]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 17,
-      disabled = function() return not iconCache[trigger.names[3]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[3]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name3 = {
@@ -4223,9 +4273,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[4]) end,
       desc = function() return getAuraMatchesList(trigger.names[4]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[4]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[4]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 20,
-      disabled = function() return not iconCache[trigger.names[4]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[4]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name4 = {
@@ -4258,7 +4311,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "half",
       image = function() return "", 0, 0 end,
       order = 22,
-      disabled = function() return not iconCache[trigger.names[5]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[5]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name5icon = {
@@ -4266,7 +4319,10 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[5]) end,
       desc = function() return getAuraMatchesList(trigger.names[5]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[5]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[5]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 23,
       hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
@@ -4307,9 +4363,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[6]) end,
       desc = function() return getAuraMatchesList(trigger.names[6]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[6]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[6]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 26,
-      disabled = function() return not iconCache[trigger.names[6]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[6]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name6 = {
@@ -4349,9 +4408,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[7]) end,
       desc = function() return getAuraMatchesList(trigger.names[7]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[7]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[7]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 29,
-      disabled = function() return not iconCache[trigger.names[7]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[7]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name7 = {
@@ -4391,9 +4453,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[8]) end,
       desc = function() return getAuraMatchesList(trigger.names[8]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[8]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[8]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 32,
-      disabled = function() return not iconCache[trigger.names[8]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[8]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name8 = {
@@ -4433,9 +4498,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = function() return getAuraMatchesLabel(trigger.names[9]) end,
       desc = function() return getAuraMatchesList(trigger.names[9]) end,
       width = "half",
-      image = function() return iconCache[trigger.names[9]] or "", 18, 18 end,
+      image = function()
+        local icon = WeakAuras.GetIconFromSpellCache(trigger.names[9]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
       order = 35,
-      disabled = function() return not iconCache[trigger.names[9]] end,
+      disabled = function() return not WeakAuras.GetIconFromSpellCache(trigger.names[9]) end,
       hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name9 = {
@@ -4484,6 +4552,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       hidden = function() return not (trigger.type == "aura"); end,
       set = function(info, v)
         trigger.unit = v;
+        trigger.use_specific_unit = (v == "member");
         if(v == "multi") then
           WeakAuras.ShowCloneDialog(data);
           WeakAuras.UpdateCloneConfig(data);
@@ -6608,28 +6677,29 @@ function WeakAuras.CreateFrame()
     subname = tonumber(subname) and GetSpellInfo(tonumber(subname)) or subname;
     subname = subname:lower();
 
+    local usedIcons = {};
     local num = 0;
     if(subname ~= "") then
-      for name, path in pairs(iconCache) do
+      for name, icons in pairs(spellCache) do
         local bestDistance = math.huge;
         local bestName;
-        if(name:lower():find(subname, 1, true) or path:lower():find(subname, 1, true)) then
-          if(doSort) then
-            local distance = Lev(name, path:sub(17));
-            if(distances[path]) then
-              if(distance < distances[path]) then
-                names[path] = name;
-                distances[path] = distance;
+        if(name:lower():find(subname, 1, true)) then
+
+          for spellId, icon in pairs(icons) do
+            if (not usedIcons[icon]) then
+              local button = AceGUI:Create("WeakAurasIconButton");
+              button:SetName(name);
+              button:SetTexture(icon);
+              button:SetClick(function()
+                iconPick:Pick(icon);
+              end);
+              iconPickScroll:AddChild(button);
+
+              usedIcons[icon] = true;
+              num = num + 1;
+              if(num >= 60) then
+                break;
               end
-            else
-              names[path] = name;
-              distances[path] = distance;
-              num = num + 1;
-            end
-          else
-            if(not names[path]) then
-              names[path] = name;
-              num = num + 1;
             end
           end
         end
@@ -6637,16 +6707,6 @@ function WeakAuras.CreateFrame()
         if(num >= 60) then
           break;
         end
-      end
-
-      for path, name in pairs(names) do
-        local button = AceGUI:Create("WeakAurasIconButton");
-        button:SetName(name);
-        button:SetTexture(path);
-        button:SetClick(function()
-          iconPick:Pick(path);
-        end);
-        iconPickScroll:AddChild(button);
       end
     end
   end
@@ -6695,7 +6755,7 @@ function WeakAuras.CreateFrame()
     end
     local success = iconPickIcon:SetTexture(texturePath) and texturePath;
     if(success) then
-      iconPickIconLabel:SetText(texturePath:sub(17));
+      iconPickIconLabel:SetText(texturePath);
     else
       iconPickIconLabel:SetText();
     end
@@ -8702,13 +8762,16 @@ function WeakAuras.CorrectAuraName(input)
   if(spellId) then
     local name, _, icon = GetSpellInfo(spellId);
     if(name) then
-      iconCache[name] = icon;
+      spellCache[name] = spellCache[name] or {};
+      if (not spellCache[name][spellId]) then
+        spellCache[name][spellId] = icon;
+      end
       return name, spellId;
     else
       return "Invalid Spell ID";
     end
   else
-    local ret = WeakAuras.BestKeyMatch(input, iconCache);
+    local ret = WeakAuras.BestKeyMatch(input, spellCache);
     if(ret == "") then
       return "No Match Found", nil;
     else

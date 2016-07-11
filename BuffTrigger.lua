@@ -528,7 +528,7 @@ function WeakAuras.ScanAuras(unit)
               end
               if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                 -- Show display and handle clones
-                WeakAuras.SetTempIconCache(name, icon);
+                WeakAuras.SetDynamicIconCache(name, spellId, icon);
                 if(data.autoclone) then
                   local cloneId = name.."-"..(casGUID or "unknown");
                   if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.inverse, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
@@ -570,9 +570,6 @@ function WeakAuras.ScanAuras(unit)
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
               name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
-              if (data.spellIds[index] and data.spellIds[index] ~= spellId) then
-                name = nil
-              end
               checkPassed = false;
 
               -- Aura conforms to trigger options?
@@ -596,7 +593,7 @@ function WeakAuras.ScanAuras(unit)
               -- Aura conforms to trigger
               if(checkPassed) then
                 active = true;
-                WeakAuras.SetTempIconCache(name, icon);
+                WeakAuras.SetDynamicIconCache(name, spellId, icon);
 
                 -- Update aura cache (and clones)
                 if(aura_object and not data.specificUnit) then
@@ -879,11 +876,11 @@ do
          state.changed = true;
        end
 
-       if (state.name ~= auradata.unitname) then
+       if (state.name ~= auradata.unitName) then
          state.name = auradata.unitName;
          state.changed = true;
        end
-       local icon = auradata.icon or WeakAuras.GetTempIconCache(auradata.name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+       local icon = auradata.icon or WeakAuras.GetDynamicIconCache(auradata.name) or "Interface\\Icons\\INV_Misc_QuestionMark";
        if (state.icon ~= icon) then
          state.icon = icon;
          state.changed = true;
@@ -917,6 +914,7 @@ do
 
 
   local function updateSpell(spellName, unit, destGUID)
+   if (not loaded_auras[spellName]) then return end;
    for id, triggers in pairs(loaded_auras[spellName]) do
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
@@ -932,6 +930,7 @@ do
         data.GUIDs[destGUID].icon = icon;
         data.GUIDs[destGUID].count = count;
         data.GUIDs[destGUID].unitCaster = unitCaster and UnitName(unitCaster);
+        data.GUIDs[destGUID].spellId = spellId;
         updateTriggerState = updateRegion(id, data, triggernum, destGUID) or updateTriggerState;
       end
     end
@@ -941,7 +940,7 @@ do
    end
   end
 
-  local function combatLog(_, message, _, _, sourceName, _, _, destGUID, destName, _, _, _, spellName, _, auraType, amount)
+  local function combatLog(_, message, _, _, sourceName, _, _, destGUID, destName, _, _, spellId, spellName, _, auraType, amount)
     if(loaded_auras[spellName]) then
       if(message == "SPELL_AURA_APPLIED" or message == "SPELL_AURA_REFRESH" or message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
       local unit = WeakAuras.GetUID(destGUID);
@@ -959,17 +958,19 @@ do
             data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
             data.GUIDs[destGUID].name = spellName;
             data.GUIDs[destGUID].unitName = destName;
+            local icon = spellId and select(3, GetSpellInfo(spellId));
             if (message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
               -- Shouldn't affect duration/expirationTime nor icon
               data.GUIDs[destGUID].duration = data.GUIDs[destGUID].duration or 0;
               data.GUIDs[destGUID].expirationTime = data.GUIDs[destGUID].expirationTime or math.huge;
-              data.GUIDs[destGUID].icon = data.GUIDs[destGUID].icon or nil;
+              data.GUIDs[destGUID].icon = data.GUIDs[destGUID].icon or icon;
             else
               data.GUIDs[destGUID].duration = 0;
               data.GUIDs[destGUID].expirationTime = math.huge;
-              data.GUIDs[destGUID].icon = nil;
+              data.GUIDs[destGUID].icon = icon;
             end
             data.GUIDs[destGUID].count = amount or 0;
+            data.GUIDs[destGUID].spellId = spellId;
             data.GUIDs[destGUID].unitCaster = sourceName and UnitName(sourceName);
 
             updateTriggerState = updateRegion(id, data, triggernum, destGUID) or updateTriggerState;
@@ -1010,6 +1011,8 @@ do
           pendingTracks[GUID][spellName] = nil;
         end
       end
+    else
+      WeakAuras.ReleaseUID(unit);
     end
     unit = unit.."target";
     GUID = UnitGUID(unit);
@@ -1021,6 +1024,8 @@ do
           pendingTracks[GUID][spellName] = nil;
         end
       end
+    else
+      WeakAuras.ReleaseUID(unit);
     end
   end
 
@@ -1052,12 +1057,18 @@ do
       combatLog(...);
     elseif(event == "UNIT_TARGET") then
       uidTrack(...);
-
-    -- Note: Now using UNIT_AURA in addition to COMBAT_LOG_EVENT_UNFILTERED
-    --  * UNIT_AURA because there is no combat log event when an aura gets refrshed by a spell (bug?).
-    --  For example Shadow Word: Pain by Mindflay, Serpent Sting by Chimera Shot/Cobra Shot
-    --  * COMBAT_LOG_EVENT_UNFILTERED (I guess) because UNIT_AURA does not fire for units not in the players group/raid or he has not targeted anymore.
+    elseif(event == "PLAYER_FOCUS_CHANGED") then
+      uidTrack("focus");
+    elseif(event == "NAME_PLATE_UNIT_ADDED") then
+      uidTrack(...);
+    elseif(event == "NAME_PLATE_UNIT_REMOVED") then
+      local unit = ...
+      WeakAuras.ReleaseUID(unit);
+      unit = unit.."target";
+      WeakAuras.ReleaseUID(unit);
     elseif(event == "UNIT_AURA") then
+      -- Note: Using UNIT_AURA in addition to COMBAT_LOG_EVENT_UNFILTERED,
+      -- because the combat log event does not contain duration information
       local uid = ...;
       local guid = UnitGUID(uid);
 
@@ -1097,6 +1108,10 @@ do
       combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       combatAuraFrame:RegisterEvent("UNIT_TARGET");
       combatAuraFrame:RegisterEvent("UNIT_AURA");
+      combatAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+      combatAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
+      combatAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+      combatAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD");
       combatAuraFrame:SetScript("OnEvent", handleEvent);
       WeakAuras.frames["Multi-target Aura Trigger Handler"] = combatAuraFrame;
       timer:ScheduleRepeatingTimer(checkExists, 10)
@@ -1571,8 +1586,8 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
      and trigger.names) then
     -- Try to get an icon from the icon cache
     for index, checkname in pairs(trigger.names) do
-      if(WeakAuras.iconCache[checkname]) then
-        name, icon = checkname, WeakAuras.iconCache[checkname];
+      if(WeakAuras.GetIconFromSpellCache(checkname)) then
+        name, icon = checkname, WeakAuras.GetIconFromSpellCache(checkname);
         break;
       end
     end

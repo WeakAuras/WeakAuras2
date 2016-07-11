@@ -4,6 +4,12 @@ local L = WeakAuras.L;
 local LSM = LibStub("LibSharedMedia-3.0");
 local LBR = LibStub("LibBabble-Race-3.0"):GetLookupTable()
 
+-- GLOBALS: MANA RAGE FOCUS ENERGY COMBO_POINTS RUNIC_POWER SOUL_SHARDS LUNAR_POWER HOLY_POWER MAELSTROM CHI INSANITY ARCANE_CHARGES FURY PAIN
+
+local wipe, tinsert = wipe, tinsert
+local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
+local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
+
 WeakAuras.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
@@ -104,10 +110,6 @@ WeakAuras.actual_unit_types = {
   focus = L["Focus"],
   pet = L["Pet"]
 };
-WeakAuras.eclipse_types = {
-  moon = L["Lunar"],
-  sun = L["Solar"]
-};
 WeakAuras.threat_unit_types = {
   target = L["Target"],
   none = L["At Least One Enemy"]
@@ -167,65 +169,6 @@ form_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
 form_frame:RegisterEvent("PLAYER_LOGIN")
 form_frame:SetScript("OnEvent", update_forms);
 
---[=[
-WeakAuras.deathknight_form_types = {
-  [0] = L["None"],
-  [1] = L["Blood"],
-  [2] = L["Frost"],
-  [3] = L["Unholy"]
-};
-WeakAuras.druid_form_types = {
-  [0] = L["Humanoid"],
-  [1] = L["Bear"],
-  [2] = L["Aquatic"],
-  [3] = L["Cat"],
-  [4] = L["Travel"],
-  [5] = L["Moonkin/Tree/Flight(Feral)"],
-  [6] = L["Flight(Non-Feral)"]
-};
-WeakAuras.paladin_form_types = {
-  [0] = L["None"],
-  [1] = L["Devotion"],
-  [2] = L["Retribution"],
-  [3] = L["Concentration"],
-  [4] = L["Shadow Resistance"],
-  [5] = L["Frost Resistance"],
-  [6] = L["Fire Resistance"],
-  [7] = L["Crusader"]
-};
-WeakAuras.priest_form_types = {
-  [0] = L["Normal"],
-  [1] = L["Shadowform"]
-};
-WeakAuras.rogue_form_types = {
-  [0] = L["Unstealthed"],
-  [1] = L["Stealthed"],
-  [3] = L["Shadow Dance"]
-};
-WeakAuras.shaman_form_types = {
-  [0] = L["Humanoid"],
-  [1] = L["Ghost Wolf"]
-};
-WeakAuras.warlock_form_types = {
-  [0] = L["Normal"],
-  [2] = L["Metamorphosis"]
-};
-WeakAuras.warrior_form_types = {
-  [0] = L["None"],
-  [1] = L["Battle"],
-  [2] = L["Defensive"],
-  [3] = L["Berserker"]
-};
-WeakAuras.monk_form_types = {
-  [0] = L["None"],
-  [1] = L["Stance of the Fierce Tiger"],
-  [2] = L["Stance of the Sturdy Ox"],
-  [3] = L["Stance of the Wise Serpent"]
-};
-WeakAuras.single_form_types = {
-  [0] = L["Humanoid"]
-};
-]=]
 WeakAuras.blend_types = {
   ADD = L["Glow"],
   BLEND = L["Opaque"],
@@ -347,14 +290,44 @@ WeakAuras.subevent_suffix_types = {
   _SUMMON = L["Summon"],
   _RESURRECT = L["Resurrect"]
 };
+
 WeakAuras.power_types = {
-  [0] = L["Mana"],
-  [1] = L["Rage"],
-  [2] = L["Focus"],
-  [3] = L["Energy"],
-  [4] = L["Happiness"],
-  [6] = L["Runic Power"]
+  [0] = MANA,
+  [1] = RAGE,
+  [2] = FOCUS,
+  [3] = ENERGY,
+  [4] = COMBO_POINTS,
+  [6] = RUNIC_POWER,
+  [7] = SOUL_SHARDS,
+  [8] = LUNAR_POWER,
+  [9] = HOLY_POWER,
+  [11] = MAELSTROM,
+  [12] = CHI,
+  [13] = INSANITY,
+  [16] = ARCANE_CHARGES,
+  [17] = FURY,
+  [18] = PAIN,
 };
+
+WeakAuras.power_types_with_stagger = {
+  [0] = MANA,
+  [1] = RAGE,
+  [2] = FOCUS,
+  [3] = ENERGY,
+  [4] = COMBO_POINTS,
+  [6] = RUNIC_POWER,
+  [7] = SOUL_SHARDS,
+  [8] = LUNAR_POWER,
+  [9] = HOLY_POWER,
+  [11] = MAELSTROM,
+  [12] = CHI,
+  [13] = INSANITY,
+  [16] = ARCANE_CHARGES,
+  [17] = FURY,
+  [18] = PAIN,
+  [99] = L["Stagger"]
+};
+
 WeakAuras.miss_types = {
   ABSORB = L["Absorb"],
   BLOCK = L["Block"],
@@ -397,11 +370,17 @@ WeakAuras.spec_types = {
   [3] = _G.SPECIALIZATION.." 3",
   [4] = _G.SPECIALIZATION.." 4"
 }
-WeakAuras.spec_types_reduced = {
+WeakAuras.spec_types_3 = {
   [1] = _G.SPECIALIZATION.." 1",
   [2] = _G.SPECIALIZATION.." 2",
   [3] = _G.SPECIALIZATION.." 3"
 }
+
+WeakAuras.spec_types_2 = {
+  [1] = _G.SPECIALIZATION.." 1",
+  [2] = _G.SPECIALIZATION.." 2",
+}
+
 WeakAuras.spec_types_specific = {}
 local function update_specs()
   for classFileName, classID in pairs(WeakAuras.class_ids) do
@@ -426,6 +405,24 @@ do
     while tier <= numTiers do
       while column <= numColumns do
         WeakAuras.talent_types[talentId] = L["Tier "]..tier.." - "..column
+        column = column + 1
+        talentId = talentId + 1
+      end
+      column = 1
+      tier = tier + 1
+    end
+    tier = 1
+  end
+end
+
+WeakAuras.pvp_talent_types = {};
+do
+  local numTalents, numTiers, numColumns =  MAX_PVP_TALENT_TIERS * MAX_PVP_TALENT_COLUMNS, MAX_PVP_TALENT_TIERS, MAX_PVP_TALENT_COLUMNS
+  local talentId,tier,column = 1,1,1
+  while talentId <= numTalents do
+    while tier <= numTiers do
+      while column <= numColumns do
+        WeakAuras.pvp_talent_types[talentId] = L["Tier "]..tier.." - "..column
         column = column + 1
         talentId = talentId + 1
       end
@@ -897,21 +894,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
   };
 end
---[=[
-for category, textures in pairs(WeakAuras.texture_types) do
-  for path, name in pairs(textures) do
-    if(L.textures[category] and L.textures[category][path]) then
-      textures[path] = L.textures[category][path];
-    end
-  end
-end
-for category, textures in pairs(WeakAuras.texture_types) do
-  if(L[category] and category ~= L[category] and not WeakAuras.texture_types[L[category]]) then
-    WeakAuras.texture_types[L[category]] = textures;
-    WeakAuras.texture_types[category] = nil;
-  end
-end
-]=]
+
 WeakAuras.operator_types = {
   ["=="] = L["="],
   ["~="] = L["!="],
@@ -934,12 +917,12 @@ WeakAuras.swing_types = {
   ["off"] = L["Off Hand"]
 };
 WeakAuras.rune_specific_types = {
-  [1] = L["Blood Rune #1"],
-  [2] = L["Blood Rune #2"],
-  [3] = L["Unholy Rune #1"],
-  [4] = L["Unholy Rune #2"],
-  [5] = L["Frost Rune #1"],
-  [6] = L["Frost Rune #2"]
+  [1] = L["Rune #1"],
+  [2] = L["Rune #2"],
+  [3] = L["Rune #3"],
+  [4] = L["Rune #4"],
+  [5] = L["Rune #5"],
+  [6] = L["Rune #6"]
 };
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
@@ -1212,13 +1195,6 @@ if(WeakAuras.PowerAurasSoundPath ~= "") then
   WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wolf5.ogg"] = "Wolf Howl";
   WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."yeehaw.ogg"] = "Yeehaw";
 end
---[=[
-for path, name in pairs(WeakAuras.sound_types) do
-  if(L.sounds[path]) then
-    WeakAuras.sound_types[path] = L.sounds[path]
-  end
-end
-]=]
 
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf")

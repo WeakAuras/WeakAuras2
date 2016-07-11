@@ -1,4 +1,4 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: WeakAuras 2
 ## Author: Mirrored and the WeakAuras Team
 ## Version: @project-version@
@@ -32,9 +32,6 @@ RegionTypes\texture.lua
 RegionTypes\aurabar.lua
 RegionTypes\icon.lua
 RegionTypes\text.lua
-#@do-not-package@
-RegionTypes\timer.lua
-#@end-do-not-package@
 RegionTypes\group.lua
 RegionTypes\dynamicgroup.lua
 RegionTypes\model.lua

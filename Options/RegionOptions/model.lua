@@ -1,8 +1,7 @@
--- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-
--- Import translation
 local L = WeakAuras.L;
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 -- Create region options table
 local function createOptions(id, data)
@@ -104,14 +103,14 @@ local function createOptions(id, data)
             order = 50
         }
     };
-	
+
 	--
     options = WeakAuras.AddPositionOptions(options, id, data);
-	
+
 	--
 	options = WeakAuras.AddBorderOptions(options, id, data);
-    
-	-- 
+
+	--
     return options;
 end
 
@@ -119,22 +118,22 @@ local function createThumbnail(parent, fullCreate)
     local borderframe = CreateFrame("FRAME", nil, parent);
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);
-    
+
     local border = borderframe:CreateTexture(nil, "Overlay");
     border:SetAllPoints(borderframe);
     border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
     border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
-    
+
     local model = CreateFrame("PlayerModel", nil, WeakAuras.OptionsFrame() or UIParent);
     borderframe.model = model;
     model:SetFrameStrata("FULLSCREEN");
-    
+
     return borderframe;
 end
 
 local function modifyThumbnail(parent, region, data, fullModify, size)
     local model = region.model
-    
+
     if(region:GetFrameStrata() == "TOOLTIP") then
         model:SetParent(region);
         model:SetAllPoints(region);
@@ -168,7 +167,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
         region:SetScript("OnShow", function() model:Show() end);
         region:SetScript("OnHide", function() model:Hide() end);
     end
-    
+
     model:SetWidth(region:GetWidth() - 2);
     model:SetHeight(region:GetHeight() - 2);
     model:SetPoint("center", region, "center");
@@ -210,10 +209,10 @@ local function createIcon()
         height = 40,
         width = 40
     };
-    
+
     local thumbnail = createThumbnail(UIParent);
     modifyThumbnail(UIParent, thumbnail, data, nil, 50);
-    
+
     return thumbnail;
 end
 

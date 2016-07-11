@@ -1,10 +1,7 @@
--- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-
--- Import translation
 local L = WeakAuras.L;
 
--- GLOBALS: WeakAuras UIParent
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 -- Calculate bounding box
 local function getRect(data)
@@ -602,7 +599,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       if not(r and g and b) then
         r, g, b = 0.2, 0.8, 0.2;
       end
-      region.children[index].texture:SetTexture(r, g, b, 0.5);
+      region.children[index].texture:SetColorTexture(r, g, b, 0.5);
 
       local blx, bly, trx, try = getRect(childData);
 
@@ -623,17 +620,17 @@ local function createIcon()
   local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
   t1:SetWidth(24);
   t1:SetHeight(8);
-  t1:SetTexture(0.8, 0, 0, 0.5);
+  t1:SetColorTexture(0.8, 0, 0, 0.5);
   t1:SetPoint("TOP", thumbnail, "TOP", 0, -6);
   local t2 = thumbnail:CreateTexture(nil, "ARTWORK");
   t2:SetWidth(20);
   t2:SetHeight(20);
-  t2:SetTexture(0.2, 0.8, 0.2, 0.5);
+  t2:SetColorTexture(0.2, 0.8, 0.2, 0.5);
   t2:SetPoint("TOP", t1, "BOTTOM", 0, 5);
   local t3 = thumbnail:CreateTexture(nil, "ARTWORK");
   t3:SetWidth(20);
   t3:SetHeight(12);
-  t3:SetTexture(0.1, 0.25, 1, 0.5);
+  t3:SetColorTexture(0.1, 0.25, 1, 0.5);
   t3:SetPoint("TOP", t2, "BOTTOM", -5, 8);
 
   return thumbnail;
