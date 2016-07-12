@@ -276,6 +276,7 @@ function ConstructFunction(prototype, trigger, inverse)
     if (prototype.statesParameter == "all") then
       ret = ret .. "  state[cloneId] = state[cloneId] or {}\n"
       ret = ret .. "  state = state[cloneId]\n"
+      ret = ret .. "  state.changed = true\n"
     end
 
     for _, v in ipairs(store) do
