@@ -433,12 +433,13 @@ do
   end
 end
 
-WeakAuras.totem_types = {
-  [1] = L["Fire"],
-  [2] = L["Earth"],
-  [3] = L["Water"],
-  [4] = L["Air"]
-};
+-- GetTotemInfo() only works for the first 5 totems
+WeakAuras.totem_types = {};
+local totemString = L["Totem #%i"];
+for i = 1, 5 do
+  WeakAuras.totem_types[i] = totemString:format(i);
+end
+
 WeakAuras.texture_types = {
   ["Blizzard Alerts"] = {
     ["Textures\\SpellActivationOverlays\\Arcane_Missiles"] = "Arcane Missiles",

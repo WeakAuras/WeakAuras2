@@ -2225,58 +2225,118 @@ WeakAuras.event_prototypes = {
     },
     force_events = true,
     name = L["Totem"],
-    init = function(trigger)
-      --trigger.totemName = WeakAuras.CorrectSpellName(trigger.totemName) or 0;
-      trigger.totemType = trigger.totemType or 1;
+    statesParameter = "full",
+    canHaveAuto = true,
+    canHaveDuration = true,
+    triggerFunction = function(trigger)
+      local ret = [[return
+      function (states)
+        local totemType = %s;
+        local triggerTotemName = %s
+        local clone = %s
+        local inverse = %s
+        local remainingCheck = %s
 
-      local ret = [[
-        local totemType = %i;
-        local _, totemName, startTime, duration = GetTotemInfo(totemType);
-        local active = (startTime ~= 0);
-      ]];
-    ret = ret:format(trigger.totemType);
-    if trigger.use_totemName then
-      trigger.totemName = trigger.totemName or 0;
-      local totemName = type(trigger.totemName) == "number" and trigger.totemName or "'"..trigger.totemName.."'";
+        local function checkActive(remaining)
+          return remaining %s remainingCheck;
+        end
 
-      ret = ret .. [[
-        active = active and (]] .. totemName .. [[ == totemName);
-      ]];
-    end
-
-    if(trigger.use_remaining and not trigger.use_inverse) then
-        local ret2 = [[
-          local expirationTime = startTime + duration
-          local remaining = expirationTime - GetTime();
-          local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
-            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+        if (totemType) then -- Check a specific totem slot
+          local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
+          active = (startTime and startTime ~= 0);
+          if (triggerTotemName) then
+            if (triggerTotemName ~= totemName) then
+              active = false;
+            end
           end
-        ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
-    end
+          if (inverse) then
+            active = not active;
+          elseif (remainingCheck) then
+            local expirationTime = startTime and (startTime + duration) or 0;
+            local remainingTime = expirationTime - GetTime()
+            if (remainingTime >= remainingCheck) then
+              WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+            end
+            active = checkActive(remainingTime);
+          end
+          states[""] = states[""] or {}
+          local state = states[""];
+          state.show = active;
+          state.changed = true;
+          if (active) then
+            state.name = totemName;
+            state.progressType = "timed";
+            state.duration = duration;
+            state.expirationTime = startTime and (startTime + duration);
+            state.icon = icon;
+          end
+        else -- Check all slots
+          for i = 1, 5 do
+            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            active = (startTime and startTime ~= 0);
+            if (triggerTotemName) then
+              if (triggerTotemName ~= totemName) then
+                active = false;
+              end
+            end
+            if (inverse) then
+              active = not active;
+            elseif (remainingCheck) then
+              local expirationTime = startTime and (startTime + duration) or 0;
+              local remainingTime = expirationTime - GetTime()
+              if (remainingTime >= remainingCheck) then
+                WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+              end
+              active = checkActive(remainingTime);
+            end
 
-    if trigger.use_inverse then
-      ret = ret .. [[
-        active = not active;
+            local cloneId = clone and tostring(i) or "";
+            states[cloneId] = states[cloneId] or {};
+            local state = states[cloneId];
+            state.show = active;
+            state.changed = true;
+            if (active) then
+              state.name = totemName;
+              state.progressType = "timed";
+              state.duration = duration;
+              state.expirationTime = startTime and (startTime + duration);
+              state.icon = icon;
+            end
+            if (active and not clone) then
+              break;
+            end
+          end
+        end
+        return true;
+      end
       ]];
-    end
-
+    local totemName = tonumber(trigger.totemName) and GetSpellInfo(tonumber(trigger.totemName)) or trigger.totemName;
+    ret = ret:format(trigger.use_totemType and tonumber(trigger.totemType) or "nil",
+                     trigger.use_totemName and "[[" .. (totemName or "")  .. "]]" or "nil",
+                     trigger.use_clones and "true" or "false",
+                     trigger.use_inverse and "true" or "false",
+                     trigger.use_remaining and trigger.remaining or "nil",
+                     trigger.use_remaining and trigger.remaining_operator or "<");
     return ret;
     end,
     args = {
       {
         name = "totemType",
-        display = L["Totem Type"],
-        required = true,
+        display = L["Totem Number"],
         type = "select",
         values = "totem_types"
       },
       {
         name = "totemName",
         display = L["Totem Name"],
-        type = "aura",
-        test = "true"
+        type = "spell",
+      },
+      {
+        name = "clones",
+        display = L["Clone per Match"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger) return not trigger.use_totemType end,
       },
       {
         name = "remaining",
@@ -2288,35 +2348,10 @@ WeakAuras.event_prototypes = {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
-        test = "true"
-      },
-      {
-        hidden = true,
-        test = "active"
+        test = "true",
+        enable = function(trigger) return trigger.use_totemName and not trigger.use_clones end
       }
     },
-    durationFunc = function(trigger)
-      local _, _, startTime, duration = GetTotemInfo(trigger.totemType);
-      return duration, startTime + duration;
-    end,
-    nameFunc = function(trigger)
-      local _, totemName = GetTotemInfo(trigger.totemType);
-      return totemName;
-    end,
-    iconFunc = function(trigger)
-      local icon = select(5, GetTotemInfo(trigger.totemType))
-      if(icon) then
-        return icon;
-      else
-        local totemIcons = {
-          [1] = "Interface\\Icons\\spell_fire_sealoffire",
-          [2] = "Interface\\Icons\\inv_elemental_primal_earth",
-          [3] = "Interface\\Icons\\spell_frost_summonwaterelemental",
-          [4] = "Interface\\Icons\\spell_nature_earthbind"
-        };
-        return totemIcons[trigger.totemType];
-      end
-    end,
     automaticrequired = true
   },
   ["Item Count"] = {
