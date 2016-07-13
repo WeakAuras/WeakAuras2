@@ -2215,12 +2215,14 @@ function GenericTrigger.GetNameAndIcon(data, triggernum)
     trigger = data.additional_triggers[triggernum].trigger;
   end
   local icon, name
-  if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
-    if(WeakAuras.event_prototypes[trigger.event].iconFunc) then
-      icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger);
-    end
-    if(WeakAuras.event_prototypes[trigger.event].nameFunc) then
-      name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
+  if (trigger.type == "event" or trigger.type == "status") then
+    if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+      if(WeakAuras.event_prototypes[trigger.event].iconFunc) then
+        icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger);
+      end
+      if(WeakAuras.event_prototypes[trigger.event].nameFunc) then
+        name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
+      end
     end
   end
   return name, icon
