@@ -2070,9 +2070,9 @@ function WeakAuras.AddOption(id, data)
           data.actions[field] = data.actions[field] or {};
           data.actions[field][value] = v;
           if(value == "sound" or value == "sound_path") then
-            PlaySoundFile(v, data.actions.start.sound_channel);
+            PlaySoundFile(v, data.actions.start.sound_channel or "Master");
           elseif(value == "sound_kit_id") then
-            PlaySoundKitID(v, data.actions.start.sound_channel);
+            PlaySoundKitID(v, data.actions.start.sound_channel or "Master");
           end
           WeakAuras.Add(data);
         end,
@@ -2207,7 +2207,7 @@ function WeakAuras.AddOption(id, data)
             order = 8.5,
             values = WeakAuras.sound_channel_types,
             disabled = function() return not data.actions.start.do_sound end,
-            get = function() return data.actions.start.sound_channel or "SFX" end
+            get = function() return data.actions.start.sound_channel or "Master" end
           },
           start_sound_path = {
             type = "input",
