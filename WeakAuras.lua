@@ -2175,8 +2175,8 @@ function WeakAuras.UpdateAnimations()
     end
   elseif(anim.duration_type == "relative") then
     local state = anim.region.state;
-
-    if ((state.progressType == "timed" and state.duration < 0.01)
+    if (not state
+        or (state.progressType == "timed" and state.duration < 0.01)
         or (state.progressType == "static" and state.value < 0.01)) then
       anim.progress = 0;
       if(anim.type == "start" or anim.type == "finish") then
