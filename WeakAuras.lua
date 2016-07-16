@@ -366,6 +366,8 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
       aura_environments[id] = {};
       current_aura_env = aura_environments[id];
+      current_aura_env.cloneId = cloneId;
+      current_aura_env.state = state;
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env);
       -- Run the init function if supplied
@@ -2175,8 +2177,8 @@ function WeakAuras.UpdateAnimations()
     end
   elseif(anim.duration_type == "relative") then
     local state = anim.region.state;
-
-    if ((state.progressType == "timed" and state.duration < 0.01)
+    if (not state
+        or (state.progressType == "timed" and state.duration < 0.01)
         or (state.progressType == "static" and state.value < 0.01)) then
       anim.progress = 0;
       if(anim.type == "start" or anim.type == "finish") then
