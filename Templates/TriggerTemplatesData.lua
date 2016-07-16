@@ -3673,7 +3673,6 @@ local function createSimplePowerTemplate(powertype)
   }
   return power;
 end
-
 ------------------------------
 -- PVP Talents
 -------------------------------
@@ -3751,6 +3750,9 @@ for i = 1, 3 do
   tinsert(templates.class.SHAMAN[i][4].args, { spell = 204332, type = "ability", pvptalent = 9, titleSuffix = L["cooldown"]}); -- Windfury Totem
   tinsert(templates.class.SHAMAN[i][4].args, { spell = 78158, type = "buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]}); -- Windfury Totem
   tinsert(templates.class.SHAMAN[i][4].args, { spell = 204262, type = "buff", unit = "player", pvptalent = 11}); -- Spectral Recovery
+  tinsert(templates.class.SHAMAN[i][4].args, {spell = 204330, type = "totem", pvptalent = 7, titleSuffix = L["Totem"]}); -- Skyfury Totem
+  tinsert(templates.class.SHAMAN[i][4].args, {spell = 204331, type = "totem", pvptalent = 8, titleSuffix = L["Totem"]}); -- Counterstrike Totem
+  tinsert(templates.class.SHAMAN[i][4].args, {spell = 204332, type = "totem", pvptalent = 9, titleSuffix = L["Totem"]}); -- Windfury Totem
 end
 
 -- Warlock
@@ -3808,7 +3810,22 @@ tinsert(templates.class.PRIEST[3][5].args, createSimplePowerTemplate(13));
 -- Shaman
 for i = 1, 3 do
   tinsert(templates.class.SHAMAN[i][5].args, createSimplePowerTemplate(0));
+
+  templates.class.SHAMAN[i][6] = {
+    title = L["Totems"],
+    args = {
+      {spell = 226772, type = "totem", talent = 3}, -- Totem Mastery
+      {spell = 192078, type = "totem", talent = 6}, -- Wind Rush Totem
+      {spell = 192058, type = "totem", talent = 7}, -- Lightning Surge
+      {spell = 51485, type = "totem", talent = 8}, -- Earthgrab Totem
+      {spell = 196935, type = "totem", talent = 9}, -- Voodoo Totem
+      {spell = 192223, type = "totem", talent = 21}, -- Liquid Magma Totem
+    },
+    icon = 538575,
+  };
 end
+
+
 
 for i = 1, 2 do
   tinsert(templates.class.SHAMAN[i][5].args, createSimplePowerTemplate(11));
@@ -3828,16 +3845,11 @@ local runeOfPower =
   triggers = {
     [0] = {
       trigger = {
-        type = "event",
-        event = "Combat Log",
-        subeventPrefix = "SPELL",
-        subeventSuffix = "_CAST_SUCCESS",
-        use_sourceunit = true,
-        sourceunit = "player",
-        duration = "10",
-        use_spellId = true,
-        spellId = "116011",
-        unevent = "timed"
+        type = "status",
+        event = "Totem",
+        use_totemType = true,
+        totemType = 1,
+        unevent = "auto"
       }
     },
     [1] = {

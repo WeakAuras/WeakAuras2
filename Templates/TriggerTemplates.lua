@@ -109,12 +109,16 @@ function WeakAuras.CreateTemplateView(frame)
           trigger = {
             type = "status",
             event = "Totem",
-            use_totemType = true,
-            totemType = item.totemNumber,
+            use_totemName = true,
+            totemName = item.spell,
             unevent = "auto"
           }
         }
       };
+      if (item.totemNumber) then
+        triggers[0].trigger.use_totemType = true;
+        triggers[0].trigger.totemType = item.totemNumber;
+      end
       return triggers;
     end
   end
