@@ -1167,9 +1167,10 @@ do
   cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
   cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
   cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
+  cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
     if(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
-    WeakAuras.CheckCooldownReady();
+      WeakAuras.CheckCooldownReady();
     elseif(event == "UNIT_SPELLCAST_SENT") then
       local unit, name = ...;
       if(unit == "player") then
@@ -1227,6 +1228,10 @@ do
     end
   end
 
+  function WeakAuras.gcdDuration()
+    return gcdDuration or 0;
+  end
+
   local function RuneCooldownFinished(id)
     runeCdHandles[id] = nil;
     runeCdDurs[id] = nil;
@@ -1279,9 +1284,7 @@ do
   end
 
   function WeakAuras.CheckCooldownReady()
-    if(gcdReference) then
-      CheckGCD();
-    end
+    CheckGCD();
 
     for id, _ in pairs(runes) do
       local startTime, duration = GetRuneCooldown(id);
@@ -1294,7 +1297,7 @@ do
         duration = 0
       end
 
-      if(startTime > 0 and duration > 1.51) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1314,7 +1317,7 @@ do
           runeCdHandles[id] = timer:ScheduleTimer(RuneCooldownFinished, endTime - time, id);
           WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
         end
-      elseif(startTime > 0 and duration > 0) then
+      elseif(duration > 0) then
         -- GCD, do nothing
       else
         if(runeCdExps[id]) then
@@ -1343,7 +1346,7 @@ do
       local chargesChanged = spellCharges[id] ~= charges;
       spellCharges[id] = charges;
 
-      if(duration > 1.51) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1374,7 +1377,7 @@ do
           end
           WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
-      elseif(duration > 0 and not (spellCdExps[id] and spellCdExps[id] - time > 1.51)) then
+      elseif(duration > 0) then
         -- GCD, do nothing
       else
         if(spellCdExps[id]) then
@@ -1394,7 +1397,7 @@ do
       duration = duration or 0;
       local time = GetTime();
 
-      if(duration > 1.51) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1433,9 +1436,6 @@ do
     if not(cdReadyFrame) then
       WeakAuras.InitCooldownReady();
     end
-    cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-    cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-    gcdReference = true;
   end
 
   function WeakAuras.WatchRuneCooldown(id)
@@ -1454,7 +1454,7 @@ do
         duration = 0
       end
 
-      if(startTime and duration and startTime > 0 and duration > 1.51) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         runeCdDurs[id] = duration;
@@ -1490,7 +1490,8 @@ do
 
       spellCharges[id] = charges;
 
-      if(duration > 1.51) then
+
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
@@ -1516,7 +1517,7 @@ do
     if not(items[id]) then
       items[id] = true;
       local startTime, duration = GetItemCooldown(id);
-      if(startTime and duration and duration > 1.51) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         itemCdDurs[id] = duration;

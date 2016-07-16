@@ -2157,7 +2157,7 @@ WeakAuras.event_prototypes = {
         if (duration == 0 and charges == 0) then
           charges = 1;
         end
-        local onCooldown = (duration > 1.51 and charges == nil) or (charges and charges == 0);
+        local onCooldown = (duration ~= WeakAuras.gcdDuration() and charges == nil) or (charges and charges == 0);
         local active = IsUsableSpell(spell) and not onCooldown
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
