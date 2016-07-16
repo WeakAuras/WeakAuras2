@@ -38,11 +38,17 @@ local fileList = {
 		"Tutorials/Tutorials/beginner.lua",
 		"Tutorials/Tutorials/newfeatures.lua",
 	},
+	WeakAuras_Templates = {
+		"Templates/TriggerTemplates.lua",
+		"Templates/TriggerTemplatesData.lua",
+	},
 }
+
 local ordered = {
 	"WeakAuras",
 	"WeakAuras_Options",
 	"WeakAuras_Tutorials",
+	"WeakAuras_Templates",
 }
 
 local function parseFile(filename)
