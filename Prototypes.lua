@@ -1374,6 +1374,9 @@ WeakAuras.event_prototypes = {
         if (charges == nil) then
             charges = (duration == 0) and 1 or 0;
         end
+        if (duration == 0 and charges == 0) then
+          charges = 1;
+        end
         local showOn = %s
       ]=];
       if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
@@ -2151,6 +2154,9 @@ WeakAuras.event_prototypes = {
         local charges = WeakAuras.GetSpellCharges(spell);
         startTime = startTime or 0;
         duration = duration or 0;
+        if (duration == 0 and charges == 0) then
+          charges = 1;
+        end
         local onCooldown = (duration > 1.51 and charges == nil) or (charges and charges == 0);
         local active = IsUsableSpell(spell) and not onCooldown
         if (charges == nil) then
