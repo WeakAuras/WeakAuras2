@@ -229,4 +229,63 @@ local function modifyThumbnail(parent, icon, data, fullModify)
     end
 end
 
-WeakAuras.RegisterRegionOptions("icon", createOptions, "Interface\\ICONS\\Temp.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional a cooldown overlay"]);
+local templates = {
+  {
+    title = L["Default"],
+    icon = "Interface\\ICONS\\Temp.blp",
+    data = {
+    };
+  },
+  {
+    title = L["Tiny Icon"],
+    description = L["A 20x20 pixels icon"],
+    icon = "Interface\\ICONS\\Temp.blp",
+    data = {
+      width = 20,
+      height = 20,
+      cooldown = true
+    };
+  },
+  {
+    title = L["Small Icon"],
+    description = L["A 32x32 pixels icon"],
+    icon = "Interface\\ICONS\\Temp.blp",
+    data = {
+      width = 32,
+      height = 32,
+      cooldown = true
+    };
+  },
+  {
+    title = L["Medium Icon"],
+    description = L["A 40x40 pixels icon"],
+    icon = "Interface\\ICONS\\Temp.blp",
+    data = {
+      width = 40,
+      height = 40,
+      cooldown = true
+    };
+  },
+  {
+    title = L["Big Icon"],
+    description = L["A 48x48 pixels icon"],
+    icon = "Interface\\ICONS\\Temp.blp",
+    data = {
+      width = 48,
+      height = 48,
+      cooldown = true
+    };
+  },
+  {
+    title = L["Huge Icon"],
+    description = L["A 64x64 pixels icon"],
+    icon = "Interface\\ICONS\\Temp.blp",
+    data = {
+      width = 64,
+      height = 64,
+      cooldown = true
+    };
+  }
+}
+
+WeakAuras.RegisterRegionOptions("icon", createOptions, "Interface\\ICONS\\Temp.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional a cooldown overlay"], templates);

@@ -252,4 +252,13 @@ local function createIcon()
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("text", createOptions, createIcon, L["Text"], createThumbnail, modifyThumbnail, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"]);
+local templates = {
+  {
+    title = L["Default"],
+    description = L["Displays a text, works best in combination with other displays"],
+    data = {
+    };
+  }
+}
+
+WeakAuras.RegisterRegionOptions("text", createOptions, createIcon, L["Text"], createThumbnail, modifyThumbnail, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"], templates);

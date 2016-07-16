@@ -133,41 +133,9 @@ end
 
 local function modifyThumbnail(parent, region, data, fullModify, size)
     local model = region.model
-
-    if(region:GetFrameStrata() == "TOOLTIP") then
-        model:SetParent(region);
-        model:SetAllPoints(region);
-        model:SetFrameStrata(region:GetParent():GetFrameStrata());
-    else
-        model:SetParent(WeakAuras.OptionsFrame() or UIParent);
-        model:ClearAllPoints();
-        region:SetScript("OnUpdate", function()
-            local x, y = region:GetCenter();
-            local optionsFrame = WeakAuras.OptionsFrame();
-            if(optionsFrame) then
-                model:ClearAllPoints();
-                model:SetPoint("center", UIParent, "bottomleft", x, y);
-                local scrollBottom = optionsFrame.buttonsContainer.frame:GetBottom();
-                local scrollTop = optionsFrame.buttonsContainer.frame:GetTop() and (optionsFrame.buttonsContainer.frame:GetTop() - 16);
-                if(
-                    optionsFrame.buttonsContainer:IsVisible()
-                    and region:GetTop() and scrollTop
-                    and region:GetTop() < scrollTop
-                    and region:GetBottom() and scrollBottom
-                    and region:GetBottom() > scrollBottom
-                ) then
-                    model:Show();
-                else
-                    model:Hide();
-                end
-            else
-                model:Hide();
-            end
-        end);
-        region:SetScript("OnShow", function() model:Show() end);
-        region:SetScript("OnHide", function() model:Hide() end);
-    end
-
+    model:SetParent(region);
+    model:SetAllPoints(region);
+    model:SetFrameStrata(region:GetParent():GetFrameStrata());
     model:SetWidth(region:GetWidth() - 2);
     model:SetHeight(region:GetHeight() - 2);
     model:SetPoint("center", region, "center");
@@ -216,4 +184,107 @@ local function createIcon()
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"]);
+local templates = {
+  {
+    title = L["Default"],
+    data = {
+    };
+  },
+  {
+    title = L["Fire Orb"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      model_path = "spells/6fx_smallfire.m2",
+      model_x = 0,
+      model_y = -0.5,
+      model_z = -1.5
+    },
+  },
+  {
+    title = L["Blue Sparkle Orb"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/7fx_druid_halfmoon_missile.m2",
+      model_x = 0,
+      model_y = 0.7,
+      model_z = 1.5
+    },
+  },
+  {
+    title = L["Arcane Orb"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/proc_arcane_impact_low.m2",
+      model_x = 0,
+      model_y = 0.8,
+      model_z = 2
+    },
+  },
+  {
+    title = L["Orange Rune"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/7fx_godking_orangerune_state.m2",
+    },
+  },
+  {
+    title = L["Blue Rune"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/7fx_godking_bluerune_state.m2",
+    }
+  },
+  {
+    title = L["Yellow Rune"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/7fx_godking_yellowrune_state.m2",
+    }
+  },
+  {
+    title = L["Purple Rune"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/7fx_godking_purplerune_state.m2",
+    }
+  },
+  {
+    title = L["Green Rune"],
+    description = L[""],
+    data = {
+      width = 100,
+      height = 100,
+      advance = true,
+      sequence = 1,
+      model_path = "spells/7fx_godking_greenrune_state.m2",
+    }
+  },
+}
+
+WeakAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"], templates);

@@ -264,7 +264,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   end
 end
 
-function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description)
+function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined");
   elseif(type(name) ~= "string") then
@@ -290,7 +290,8 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
     displayName = displayName,
     createThumbnail = createThumbnail,
     modifyThumbnail = modifyThumbnail,
-    description = description
+    description = description,
+    templates = templates
   };
   end
 end

@@ -165,4 +165,52 @@ local function createIcon()
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"]);
+local templates = {
+  {
+    title = L["Default"],
+    data = {
+    };
+  },
+  {
+    title = L["Star"],
+    data = {
+      texture = "Spells\\T_Star3",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+  {
+    title = L["Leaf"],
+    data = {
+      texture = "Spells\\Nature_Rune_128",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+  {
+    title = L["Hawk"],
+    data = {
+      texture = "Spells\\Aspect_Hawk",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+  {
+    title = L["Low Mana"],
+    data = {
+      texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura70",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+}
+
+WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates);

@@ -1,0 +1,25 @@
+## Interface: 70000
+## Title: WeakAuras Templates
+## Author: Infus
+## Version: @project-version@
+## Notes: Templates for WeakAuras
+## X-Category: Interface Enhancements
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+
+Localization-enUS.lua
+Localization-deDE.lua
+Localization-esES.lua
+Localization-esMX.lua
+Localization-frFR.lua
+Localization-koKR.lua
+Localization-ptBR.lua
+Localization-ruRU.lua
+Localization-zhCN.lua
+Localization-zhTW.lua
+
+TriggerTemplates.lua
+TriggerTemplatesData.lua
+
+AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua

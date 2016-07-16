@@ -850,5 +850,41 @@ local function createIcon()
     return thumbnail;
 end
 
+local templates = {
+  {
+    title = L["Default"],
+    data = {
+    };
+  },
+  {
+    title = L["Horizontal Blizzard Raid Bar"],
+    data = {
+      texture = "Blizzard Raid Bar",
+      width = 200,
+      height = 15,
+    };
+  },
+  {
+    title = L["Horizontal Bar"],
+    data = {
+      width = 200,
+      height = 30,
+      barColor = { 1, 1, 0, 1}
+    }
+  },
+  {
+    title = L["Vertical Bar"],
+    data = {
+      width = 30,
+      height = 200,
+      barColor = { 0, 1, 0, 1},
+      rotateText = "LEFT",
+      orientation = "VERTICAL_INVERSE",
+      texture = "Blizzard Raid Bar",
+      icon = false
+    }
+  },
+}
+
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"]);
+WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates);
