@@ -744,7 +744,7 @@ templates.class.HUNTER = {
         { spell = 55709, type = "ability"}, -- Heart of the Phoenix
         { spell = 109248, type = "ability", talent = 13}, -- Binding Shot
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
-        { spell = 131894, type = "ability", talent = 16}, -- A Murder of Crows
+        { spell = 131894, type = "ability", talent = 4}, -- A Murder of Crows
         { spell = 147362, type = "ability"}, -- Counter Shot
         { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
         { spell = 186265, type = "ability"}, -- Aspect of the Turtle
@@ -813,19 +813,19 @@ templates.class.HUNTER = {
         { spell = 13812, type = "debuff", unit = "target" }, -- Explosive Trap
         { spell = 118253, type = "debuff", unit = "target", talent = 18 }, -- Serpent Sting
         { spell = 135299, type = "debuff", unit = "target" }, -- Tar Trap
-        { spell = 162487, type = "debuff", unit = "target", talent = 6 }, -- Steel Trap
+        { spell = 162487, type = "debuff", unit = "target", talent = 12 }, -- Steel Trap
         { spell = 185855, type = "debuff", unit = "target" }, -- Lacerate
         { spell = 190927, type = "debuff", unit = "target" }, -- Harpoon
         { spell = 191241, type = "debuff", unit = "target", talent = 13 }, -- Sticky Bomb
         { spell = 191397, type = "debuff", unit = "target", talent = 21 }, -- Bestial Cunning
         { spell = 191413, type = "debuff", unit = "target", talent = 21 }, -- Bestial Ferocity
-        { spell = 194279, type = "debuff", unit = "target", talent = 4 }, -- Caltrops
+        { spell = 194279, type = "debuff", unit = "target", talent = 10 }, -- Caltrops
         { spell = 194858, type = "debuff", unit = "target", talent = 17 }, -- Dragonsfire Grenade
         { spell = 195645, type = "debuff", unit = "target" }, -- Wing Clip
         { spell = 200108, type = "debuff", unit = "target", talent = 14, fullscan = true, titleSuffix = L["Rooted"] }, -- Ranger's Net
         { spell = 201142, type = "debuff", unit = "target", talent = 20 }, -- Frozen Wake
         { spell = 204081, type = "debuff", unit = "target" }, -- On the Trail
-        { spell = 206505, type = "debuff", unit = "target", talent = 10 }, -- A Murder of Crows
+        { spell = 206505, type = "debuff", unit = "target", talent = 4 }, -- A Murder of Crows
         { spell = 206755, type = "debuff", unit = "target", talent = 14, fullscan = true, titleSuffix = L["Slowed"] }, -- Ranger's Net
       },
       icon = 132309
@@ -839,7 +839,7 @@ templates.class.HUNTER = {
         { spell = 53480, type = "ability"}, -- Roar of Sacrifice
         { spell = 55709, type = "ability"}, -- Heart of the Phoenix
         { spell = 109304, type = "ability"}, -- Exhilaration
-        { spell = 162488, type = "ability", talent = 6}, -- Steel Trap
+        { spell = 162488, type = "ability", talent = 12}, -- Steel Trap
         { spell = 185855, type = "ability"}, -- Lacerate
         { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
         { spell = 186265, type = "ability"}, -- Aspect of the Turtle
@@ -851,12 +851,12 @@ templates.class.HUNTER = {
         { spell = 190928, type = "ability"}, -- Mongoose Bite
         { spell = 191241, type = "ability", talent = 13}, -- Sticky Bomb
         { spell = 191433, type = "ability"}, -- Explosive Trap
-        { spell = 194277, type = "ability", talent = 4}, -- Caltrops
+        { spell = 194277, type = "ability", talent = 10}, -- Caltrops
         { spell = 194407, type = "ability", talent = 19}, -- Spitting Cobra
         { spell = 194855, type = "ability", talent = 17}, -- Dragonsfire Grenade
         { spell = 199483, type = "ability", talent = 15}, -- Camouflage
         { spell = 200163, type = "ability", talent = 2}, -- Throwing Axes
-        { spell = 201078, type = "ability", talent = 12}, -- Snake Hunter
+        { spell = 201078, type = "ability", talent = 6}, -- Snake Hunter
         { spell = 202800, type = "ability"}, -- Flanking Strike
         { spell = 203415, type = "ability"}, -- Fury of the Eagle
         { spell = 206505, type = "ability", talent = 10}, -- A Murder of Crows
@@ -1542,7 +1542,7 @@ templates.class.SHAMAN = {
         { spell = 108281, type = "ability", talent = 5}, -- Ancestral Guidance
         { spell = 114050, type = "ability", talent = 19}, -- Ascendance
         { spell = 117014, type = "ability", talent = 10}, -- Elemental Blast
-        { spell = 192058, type = "ability", talent = 7}, -- Lightning Surge Totem
+        { spell = 192058, type = "ability", talent = 7}, -- w Totem
         { spell = 192063, type = "ability", talent = 4}, -- Gust of Wind
         { spell = 192077, type = "ability", talent = 6}, -- Wind Rush Totem
         { spell = 192222, type = "ability", talent = 21}, -- Liquid Magma Totem
