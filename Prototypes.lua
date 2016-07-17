@@ -2858,7 +2858,7 @@ WeakAuras.event_prototypes = {
       {
         name = "partial",
         display = L["Allow partial matches"],
-        type = toggle,
+        type = "toggle",
         test = "true"
       },
       {
