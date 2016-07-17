@@ -1445,12 +1445,18 @@ WeakAuras.event_prototypes = {
       local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
-      else
-        return "Invalid";
       end
+      name = GetSpellInfo(trigger.spellName or 0);
+      if (name) then
+        return name;
+      end
+      return "Invalid";
     end,
     iconFunc = function(trigger)
       local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      if (not icon) then
+        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+      end
       return icon;
     end,
     stacksFunc = function(trigger)
