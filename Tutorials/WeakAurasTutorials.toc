@@ -1,15 +1,12 @@
 ## Interface: 70000
 ## Title: WeakAuras Tutorials
-## Author: Mirrored
+## Author: Mirrored and the WeakAuras Team
 ## Version: @project-version@
 ## Notes: Tutorials for WeakAuras
 ## Notes-esES: Tutoriales para WeakAuras
 ## Notes-deDE: Anleitungen für WeakAuras
 ## Notes-ruRU: Обучение WeakAuras
 ## Notes-zhTW: WeakAuras的教程
-## X-Author-Server: Dragonmaw US
-## X-Author-Faction: Horde
-## X-Email: mirror@uga.edu
 ## X-Category: Interface Enhancements
 ## DefaultState: Enabled
 ## LoadOnDemand: 1

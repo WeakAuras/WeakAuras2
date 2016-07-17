@@ -423,6 +423,7 @@ function WeakAuras.CreateTemplateView(frame)
       newView.backButton:Hide();
     elseif (newView.data and not newView.choosenItem) then
       -- Second step: Trigger selection screen
+
       -- Class
       local classSelector = createDropdown("class", WeakAuras.class_types);
       newViewScroll:AddChild(classSelector);

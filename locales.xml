@@ -11,4 +11,5 @@
 	<Script file="Locales\Localization-ruRU.lua"/>
 	<Script file="Locales\Localization-ptBR.lua"/>
 	<Script file="Locales\Localization-itIT.lua"/>
+
 </Ui>

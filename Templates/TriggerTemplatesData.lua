@@ -3673,6 +3673,7 @@ local function createSimplePowerTemplate(powertype)
   }
   return power;
 end
+
 ------------------------------
 -- PVP Talents
 -------------------------------
@@ -3684,7 +3685,7 @@ for _, class in pairs(templates.class) do
   end
 end
 
--- DEATHKNIGHT
+-- Death Knight
 for i = 1, 3 do
   tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 213726, type = "debuff", unit = "player", pvptalent = 7}); -- Cadaverous Pallor
   tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 77606, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Dark Simulacrum
@@ -3695,19 +3696,17 @@ for i = 1, 3 do
   tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 199642, type = "debuff", unit = "target", pvptalent = 12}); -- Necrotic Aura
 end
 
--- DEMOMHUNTER
+-- Demon Hunter
 for i = 1, 2 do
   tinsert(templates.class.DEMONHUNTER[i][4].args, { spell = 206649, type = "debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]}); -- Eye of Leotheras
   tinsert(templates.class.DEMONHUNTER[i][4].args, { spell = 206649, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Eye of Leotheras
   tinsert(templates.class.DEMONHUNTER[i][4].args, { spell = 205604, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Reverse Magic
 end
 
-
--- DRUID
+-- Druid
 for i = 1, 4 do
   tinsert(templates.class.DRUID[i][4].args, { spell = 209731, type = "buff", unit = "player", pvptalent = 7}); -- Protector of the Grove
 end
-
 
 -- Hunter
 for i = 1, 3 do
@@ -3718,7 +3717,6 @@ for i = 1, 3 do
   tinsert(templates.class.HUNTER[i][4].args, { spell = 202797, type = "debuff", unit = "target", pvptalent = 10}); -- Viper Sting
   tinsert(templates.class.HUNTER[i][4].args, { spell = 195638, type = "buff", unit = "player", pvptalent = 4}); -- Focused Fire
 end
-
 
 -- Mage
 for i = 1, 3 do
@@ -3770,7 +3768,6 @@ for i = 1, 3 do
   tinsert(templates.class.WARLOCK[i][4].args, { spell = 195640, type = "buff", unit = "player", pvptalent = 4}); -- Train of Thought
 end
 
-
 -- Warrior
 for i = 1, 3 do
   tinsert(templates.class.WARRIOR[i][4].args, { spell = 198498, type = "buff", unit = "player", pvptalent = 8}); -- Blood Hunt
@@ -3792,21 +3789,24 @@ tinsert(templates.class.PALADIN[3][5].args, createSimplePowerTemplate(9));
 for i = 1, 3 do
   tinsert(templates.class.PALADIN[i][5].args, createSimplePowerTemplate(0));
 end
+
 -- Hunter
 for i = 1, 3 do
   tinsert(templates.class.HUNTER[i][5].args, createSimplePowerTemplate(2));
 end
+
 -- Rogue
 for i = 1, 3 do
   tinsert(templates.class.ROGUE[i][5].args, createSimplePowerTemplate(3));
   tinsert(templates.class.ROGUE[i][5].args, createSimplePowerTemplate(4));
 end
+
 -- Priest
 for i = 1, 3 do
   tinsert(templates.class.PRIEST[i][5].args, createSimplePowerTemplate(0));
 end
-
 tinsert(templates.class.PRIEST[3][5].args, createSimplePowerTemplate(13));
+
 -- Shaman
 for i = 1, 3 do
   tinsert(templates.class.SHAMAN[i][5].args, createSimplePowerTemplate(0));
@@ -3824,8 +3824,6 @@ for i = 1, 3 do
     icon = 538575,
   };
 end
-
-
 
 for i = 1, 2 do
   tinsert(templates.class.SHAMAN[i][5].args, createSimplePowerTemplate(11));
@@ -3876,11 +3874,13 @@ for i = 1, 3 do
   tinsert(templates.class.WARLOCK[i][5].args, createSimplePowerTemplate(0));
   tinsert(templates.class.WARLOCK[i][5].args, createSimplePowerTemplate(7));
 end
+
 -- Monk
 tinsert(templates.class.MONK[1][5].args, createSimplePowerTemplate(3));
 tinsert(templates.class.MONK[2][5].args, createSimplePowerTemplate(0));
 tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(3));
 tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(12));
+
 -- Druid
 for i = 1, 4 do
   -- Shapeshift Form
@@ -3900,12 +3900,12 @@ for i = 1, 4 do
   tinsert(templates.class.DRUID[i][5].args, createSimplePowerTemplate(3)); -- Energy
   tinsert(templates.class.DRUID[i][5].args, createSimplePowerTemplate(4)); -- Combo Points
 end
+
 -- Efflorescence aka Mushroom
 tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem", totemNumber = 1 });
 
 -- Demon Hunter
 tinsert(templates.class.DEMONHUNTER[1][5].args, createSimplePowerTemplate(17));
-
 tinsert(templates.class.DEMONHUNTER[2][5].args, createSimplePowerTemplate(18));
 
 -- Death Knight
@@ -3922,6 +3922,7 @@ end
 ------------------------------
 -- Hardcoded race templates
 -------------------------------
+
 -- Every Man for Himself
 tinsert(templates.race.Human, { spell = 59752, type = "ability" });
 -- Stoneform
@@ -3960,7 +3961,10 @@ tinsert(templates.race.BloodElf, { spell = 69179, type = "buff", titleSuffix = L
 tinsert(templates.race.Goblin, { spell = 69046, type = "ability" });
 -- Rocket Barrage
 tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
--- Helper Code for options
+
+------------------------------
+-- Helper code for options
+-------------------------------
 
 -- Enrich items from spell, set title
 local function handleItem(item)
@@ -3975,7 +3979,7 @@ local function handleItem(item)
       name, tmp, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
-        print ("Error: unknown spell", item.spell);
+        print ("Error: Unknown spell", item.spell);
       end
     end
     if (icon and not item.icon) then
