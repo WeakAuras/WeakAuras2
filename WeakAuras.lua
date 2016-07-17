@@ -2186,10 +2186,10 @@ function WeakAuras.UpdateAnimations()
         finished = true;
       end
     else
-      local relativeProgress;
+      local relativeProgress = 0;
       if(state.progressType == "static") then
         relativeProgress = state.value / state.total;
-      else
+      elseif (state.progressType == "timed") then
         relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
       end
       relativeProgress = state.inverseDirection and (1 - relativeProgress) or relativeProgress;
