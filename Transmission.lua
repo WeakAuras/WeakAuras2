@@ -421,9 +421,9 @@ end
 
 function WeakAuras.DisplayToString(id, forChat)
   local data = WeakAuras.GetData(id);
-  local transmitData = CompressDisplay(data);
-  transmitData.controlledChildren = nil;
   if(data) then
+    local transmitData = CompressDisplay(data);
+    transmitData.controlledChildren = nil;
     local children = data.controlledChildren;
     local transmit = {
       m = "d",
