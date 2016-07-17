@@ -224,6 +224,12 @@ local methods = {
         function self.callbacks.OnDeleteAllClick()
             if (WeakAuras.IsImporting()) then return end;
             if(data.controlledChildren) then
+
+                local region = WeakAuras.regions[data.id];
+                if (region.ControlChildren) then
+                  region:Pause();
+                end
+
                 local toDelete = {};
                 for index, id in pairs(data.controlledChildren) do
                     toDelete[index] = WeakAuras.GetData(id);
@@ -335,6 +341,8 @@ local methods = {
         end
 
         function self.callbacks.OnViewClick()
+            WeakAuras.PauseAllDynamicGroups();
+
             if(self.view.func() == 2) then
                 for index, childId in ipairs(data.controlledChildren) do
                     WeakAuras.GetDisplayButton(childId):PriorityHide(2);
@@ -344,6 +352,8 @@ local methods = {
                     WeakAuras.GetDisplayButton(childId):PriorityShow(2);
                 end
             end
+
+            WeakAuras.ResumeAllDynamicGroups();
         end
 
         function self.callbacks.ViewTest()
@@ -613,7 +623,7 @@ local methods = {
         end
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Shift-click to create chat link"]});
         local regionData = WeakAuras.regionOptions[data.regionType or ""]
-        local displayName = regionData and regionData.displayName or regionType or "";
+        local displayName = regionData and regionData.displayName or "";
         self:SetDescription({data.id, displayName}, unpack(namestable));
     end,
     ["ReloadTooltip"] = function(self)if(

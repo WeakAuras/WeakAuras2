@@ -1266,9 +1266,14 @@ function WeakAuras.HideOptions()
     tutFrame:Hide();
   end
 
+  WeakAuras.PauseAllDynamicGroups();
+
   for id, data in pairs(WeakAuras.regions) do
     data.region:Collapse();
   end
+
+  WeakAuras.ResumeAllDynamicGroups();
+
   WeakAuras.ReloadAll();
   WeakAuras.Resume();
 end
@@ -8218,6 +8223,8 @@ function WeakAuras.CreateFrame()
   end
 
   frame.ClearPicks = function(self, except)
+    WeakAuras.PauseAllDynamicGroups();
+
     frame.pickedDisplay = nil;
     frame.pickedOption = nil;
     wipe(tempGroup.controlledChildren);
@@ -8232,6 +8239,8 @@ function WeakAuras.CreateFrame()
     unloadedButton:ClearPick();
     container:ReleaseChildren();
     self.moversizer:Hide();
+
+    WeakAuras.ResumeAllDynamicGroups();
   end
 
   frame.PickOption = function(self, option)
@@ -8363,6 +8372,7 @@ tXmdmY4fDE5]];
           displayButtons[childId]:PriorityShow(1);
         end
       end
+      WeakAuras.ResumeAllDynamicGroups();
     end
 
     local list = {};
@@ -8377,8 +8387,10 @@ tXmdmY4fDE5]];
     end
     WeakAuras.EnsureOptions(id);
     if(num > 1) then
+      WeakAuras.PauseAllDynamicGroups();
       WeakAuras.BuildOptions(list, finishPicking);
     else
+      WeakAuras.PauseAllDynamicGroups();
       finishPicking();
     end
   end
