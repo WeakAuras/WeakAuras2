@@ -3537,7 +3537,7 @@ templates.items[2] = {
     { spell = 215210, type = "buff", unit = "player", item = 132409},
     { spell = 211440, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Serenity"], item = 132445},
     { spell = 211440, type = "buff", unit = "player", titleSuffix = L["- Any"], item = 132445},
-    { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chatise"], item = 132445},
+    { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chastise"], item = 132445},
     { spell = 214265, type = "debuff", unit = "target", item = 137103},
     { spell = 214637, type = "buff", unit = "player", item = 132861},
     { spell = 215157, type = "buff", unit = "player", item = 137018},
