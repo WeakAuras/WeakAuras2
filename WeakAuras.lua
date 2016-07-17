@@ -739,7 +739,26 @@ function WeakAuras.Toggle()
   end
 end
 
+function WeakAuras.PauseAllDynamicGroups()
+  for id, region in pairs(regions) do
+    if (region.region.ControlChildren) then
+      region.region:Suspend();
+    end
+  end
+end
+
+function WeakAuras.ResumeAllDynamicGroups()
+  for id, region in pairs(regions) do
+    if (region.region.ControlChildren) then
+      region.region:Resume();
+    end
+  end
+end
+
 function WeakAuras.ScanAll()
+
+  WeakAuras.PauseAllDynamicGroups();
+
   for id, region in pairs(regions) do
     region.region:Collapse();
   end
@@ -749,6 +768,8 @@ function WeakAuras.ScanAll()
       clone:Collapse();
     end
   end
+
+  WeakAuras.ResumeAllDynamicGroups();
 
   WeakAuras.ReloadAll();
 
@@ -3018,7 +3039,7 @@ WeakAuras.dynFrame = dynFrame;
 function WeakAuras.ControlChildren(childid)
   local parent = db.displays[childid].parent;
   if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-    regions[parent].region.ControlChildren();
+    regions[parent].region:ControlChildren();
   end
 end
 
