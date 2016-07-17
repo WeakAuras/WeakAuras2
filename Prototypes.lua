@@ -2163,7 +2163,7 @@ WeakAuras.event_prototypes = {
         if (duration == 0 and charges == 0) then
           charges = 1;
         end
-        local onCooldown = (duration ~= WeakAuras.gcdDuration() and charges == nil) or (charges and charges == 0);
+        local onCooldown = (duration > 0 and duration ~= WeakAuras.gcdDuration() and charges == nil) or (charges and charges == 0);
         local active = IsUsableSpell(spell) and not onCooldown
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
@@ -2858,7 +2858,7 @@ WeakAuras.event_prototypes = {
       {
         name = "partial",
         display = L["Allow partial matches"],
-        type = toggle,
+        type = "toggle",
         test = "true"
       },
       {
