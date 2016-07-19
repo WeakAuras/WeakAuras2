@@ -324,9 +324,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         r, g, b = childData.barColor[1], childData.barColor[2], childData.barColor[3];
       elseif(childData.foregroundColor) then
         r, g, b = childData.foregroundColor[1], childData.foregroundColor[2], childData.foregroundColor[3];
-      else
-        r, g, b = 0.2, 0.8, 0.2;
       end
+      r, g, b = r or 0.2, g or 0.8, b or 0.2;
+
       region.children[index].texture:SetColorTexture(r, g, b);
 
       region.children[index]:ClearAllPoints();
