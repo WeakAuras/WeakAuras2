@@ -1,3 +1,5 @@
+-- GLOBALS: WeakAuras
+
 WeakAuras = {}
 WeakAuras.L = {}
 

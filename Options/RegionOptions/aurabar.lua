@@ -1,9 +1,8 @@
--- Import SM for statusbar-textures, font-styles and border-types
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-
--- Import translation
 local L = WeakAuras.L;
-    
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
+
 -- Create region options table
 local function createOptions(id, data)
 	-- Region options
@@ -236,14 +235,10 @@ local function createOptions(id, data)
             disabled = function() return not data.icon end,
             order = 38.3,
             get = function()
-                if(data.displayIcon) then
-                    return data.displayIcon:sub(17);
-                else
-                    return nil;
-                end
+                return data.displayIcon and tostring(data.displayIcon) or "";
             end,
             set = function(info, v)
-                data.displayIcon = "Interface\\Icons\\"..v;
+                data.displayIcon = v;
                 WeakAuras.Add(data);
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);
@@ -254,7 +249,7 @@ local function createOptions(id, data)
             name = "",
             width = "half",
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
-            image = function() return data.displayIcon or "", 18, 18 end,
+            image = function() return data.displayIcon and tostring(data.displayIcon) or "", 18, 18 end,
             order = 38.4
         },
         chooseIcon = {
@@ -855,5 +850,41 @@ local function createIcon()
     return thumbnail;
 end
 
+local templates = {
+  {
+    title = L["Default"],
+    data = {
+    };
+  },
+  {
+    title = L["Horizontal Blizzard Raid Bar"],
+    data = {
+      texture = "Blizzard Raid Bar",
+      width = 200,
+      height = 15,
+    };
+  },
+  {
+    title = L["Horizontal Bar"],
+    data = {
+      width = 200,
+      height = 30,
+      barColor = { 1, 1, 0, 1}
+    }
+  },
+  {
+    title = L["Vertical Bar"],
+    data = {
+      width = 30,
+      height = 200,
+      barColor = { 0, 1, 0, 1},
+      rotateText = "LEFT",
+      orientation = "VERTICAL_INVERSE",
+      texture = "Blizzard Raid Bar",
+      icon = false
+    }
+  },
+}
+
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"]);
+WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates);

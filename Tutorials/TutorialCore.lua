@@ -1,3 +1,5 @@
+-- GLOBALS: WeakAuras
+
 local AceGUI = LibStub("AceGUI-3.0");
 local L = WeakAuras.L;
 
@@ -40,14 +42,14 @@ do
   local elapsed = 0;
   local anchorDelay = 0.1;
   local anchorPath;
-  
+
   local pointingFrame;
-  
+
   local function ContinuousPointUpdate(frame, elaps)
     elapsed = elapsed + elaps;
     if(elapsed > anchorDelay) then
       elapsed = elapsed - anchorDelay;
-      
+
       WeakAuras.CheckAutoAdvance();
       WeakAuras.PointTutorialToPath(anchorPath);
     end
@@ -61,7 +63,7 @@ do
       tutFrame.stepFrame:SetScript("OnUpdate", nil);
     end
   end
-  
+
   function WeakAuras.CheckAutoAdvance()
     if(autoAdvanceData.path) then
       if(type(optionsFrame.pickedDisplay) == "string") then
@@ -72,7 +74,7 @@ do
         end
         autoAdvanceData.previousValue = currentValue;
         autoAdvanceData.previousPicked = optionsFrame.pickedDisplay;
-        
+
         if(doAutoAdvance) then
           tutFrame.stepFrame.next:Click();
         end
@@ -83,7 +85,7 @@ do
       end
     end
   end
-  
+
   function WeakAuras.PointTutorialToPath(path)
     if(optionsFrame and optionsFrame:IsVisible()) then
       if(path[1] == "new") then
@@ -153,12 +155,12 @@ do
             id = optionsFrame.pickedDisplay;
           end
         end
-        
+
         local picked = type(optionsFrame.pickedDisplay) == "string" and optionsFrame.pickedDisplay;
-        
+
         local button = WeakAuras.displayButtons[id];
         local sidebarVisible = optionsFrame.buttonsScroll:IsChildInView(button);
-        
+
         if(button and sidebarVisible) then
           if(path[3] == "button") then
             if(sidebarVisible == true) then
@@ -189,7 +191,7 @@ do
 	                end
 	              end
               end
-              
+
               if(tabFrame) then
                 if not(tabSelected) then
                   WeakAuras.PointTutorialToFrame(tabFrame);
@@ -204,7 +206,7 @@ do
                   else
                     optionName = path[5];
                   end
-                  
+
                   for index, child in ipairs(WeakAuras.OptionsFrame().container.children[1].children[1].children) do
                     local name = (child.label and child.label:GetText()) or (child.text and child.text:GetText());
                     if(name == (L[optionName] or optionName)) then
@@ -220,7 +222,7 @@ do
                       end
                     end
                   end
-                  
+
                   if(optionIndex and WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]) then
                     WeakAuras.PointTutorialToFrame(WeakAuras.OptionsFrame().container.children[1].children[1].children[optionIndex]);
                   else
@@ -262,7 +264,7 @@ do
       end
     end
   end
-  
+
   local pl, pb, pw, ph;
   function WeakAuras.PointTutorialToFrame(frame)
     if not(pl and pb and pw and ph) then
@@ -282,7 +284,7 @@ do
         pointingFrame:SetHeight(ph * scaley);
       end
     end
-    
+
     local width, height;
     if not(frame.GetRect) then
       frame = frame.frame;
@@ -293,14 +295,14 @@ do
       b = b - 8
       w = w + 16;
       h = h + 16;
-    
+
       if(l~=pl or b~=pb or w~=pw or h~=ph) then
         WeakAuras.CancelAnimation(pointingFrame, true, true, true, true, true);
-        
+
         pointingFrame:SetSize(w, h);
         pointingFrame:SetPoint("center", frame, "center");
         pointingFrame:Show();
-        
+
         local anim = {
           duration = 0.25,
           type = "custom",
@@ -335,14 +337,14 @@ function WeakAuras.PlayTutorial(tutData, step, fromPrevious)
   tutFrame.homeFrame:Hide();
   tutFrame.stepFrame:Show();
   local stepFrame = tutFrame.stepFrame;
-  
+
   if(tutData.displayName) then
     tutFrame:SetTitle(tutData.displayName);
   end
-  
+
   step = step or 1;
   local stepData = tutData.steps[step];
-  
+
   if(stepData.autoadvance and not fromPrevious) then
     autoAdvanceData.path = stepData.autoadvance.path;
     autoAdvanceData.func = stepData.autoadvance.test;
@@ -359,7 +361,7 @@ function WeakAuras.PlayTutorial(tutData, step, fromPrevious)
     autoAdvanceData.previousValue = nil;
     autoAdvanceData.previousPicked = nil;
   end
-  
+
   stepFrame.title:SetText(stepData.title or "");
   if(stepData.texture) then
     stepFrame.texture:SetSize(stepData.texture.width, stepData.texture.height);
@@ -376,9 +378,9 @@ function WeakAuras.PlayTutorial(tutData, step, fromPrevious)
   end
   stepFrame.text:SetText(stepData.text or "");
   stepFrame.scroll:RecalculateHeight()
-  
+
   WeakAuras.ContinuouslyPointTutorialToPath(stepData.path);
-  
+
   if(tutData.steps[step - 1]) then
     stepFrame.previous:Enable();
     stepFrame.previous:SetScript("OnClick", function()
@@ -387,7 +389,7 @@ function WeakAuras.PlayTutorial(tutData, step, fromPrevious)
   else
     stepFrame.previous:Disable();
   end
-  
+
   if(tutData.steps[step + 1]) then
     stepFrame.next:Enable();
     stepFrame.next:SetScript("OnClick", function()
@@ -403,11 +405,11 @@ function WeakAuras.CreateTutorialsFrame()
   tutFrame:SetTitle(L["WeakAuras Tutorials"]);
   tutFrame:SetWidth(400);
   tutFrame:SetHeight(400);
-  
+
   local stepFrame = CreateFrame("frame", nil, tutFrame.frame);
   tutFrame.stepFrame = stepFrame;
   stepFrame:SetAllPoints(tutFrame.frame);
-  
+
   local stepFrameContent = AceGUI:Create("InlineGroup");
   stepFrame.content = stepFrameContent;
   stepFrameContent.frame:SetParent(stepFrame);
@@ -416,24 +418,24 @@ function WeakAuras.CreateTutorialsFrame()
   stepFrameContent.frame:SetPoint("right", stepFrame, "right", -17, 0);
   stepFrameContent.frame:SetPoint("bottom", stepFrame, "bottom", 0, 67);
   stepFrameContent:SetLayout("fill");
-  
+
   local stepFrameScroll = AceGUI:Create("ScrollFrame");
   stepFrame.scroll = stepFrameScroll;
   stepFrameContent:AddChild(stepFrameScroll);
   stepFrameScroll:SetLayout("fill");
-  
+
   local stepTitle = stepFrameScroll.content:CreateFontString(nil, "OVERLAY", "GameFontHighlightHuge");
   stepFrame.title = stepTitle;
   stepTitle:SetJustifyH("LEFT");
   stepTitle:SetPoint("TOPLEFT", stepFrameScroll.content, "TOPLEFT", 40, -5);
-  
+
   local stepTexture = stepFrameScroll.content:CreateTexture(nil, "OVERLAY");
   stepFrame.texture = stepTexture;
   stepTexture:SetWidth(100);
   stepTexture:SetHeight(1);
   stepTexture:SetPoint("TOP", stepFrameScroll.content, "TOP", 0, -35);
   stepTexture:Hide();
-  
+
   local stepText = stepFrameScroll.content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
   stepFrame.text = stepText;
   stepText:SetJustifyH("LEFT");
@@ -446,20 +448,20 @@ function WeakAuras.CreateTutorialsFrame()
   stepFrameScroll.content:SetScript("OnUpdate", function()
     stepText:SetWidth(stepFrameScroll.content:GetWidth() - 40);
   end);
-  
+
   function stepFrameScroll.RecalculateHeight()
     local height = 80 + stepTexture:GetHeight() + stepText:GetHeight();
     stepFrameScroll.content:SetHeight(height);
     stepFrameScroll:FixScroll();
   end
-  
+
   local stepFrameNext = CreateFrame("Button", nil, stepFrame, "UIPanelButtonTemplate");
   stepFrame.next = stepFrameNext;
   stepFrameNext:SetPoint("BOTTOMRIGHT", -27, 44);
   stepFrameNext:SetHeight(20);
   stepFrameNext:SetWidth(100);
   stepFrameNext:SetText(L["Next"]);
-    
+
   local stepFrameHome = CreateFrame("Button", nil, stepFrame, "UIPanelButtonTemplate");
   stepFrame.home = stepFrameHome;
   stepFrameHome:SetPoint("BOTTOM", 0, 44);
@@ -467,20 +469,20 @@ function WeakAuras.CreateTutorialsFrame()
   stepFrameHome:SetWidth(100);
   stepFrameHome:SetText(L["Home"]);
   stepFrameHome:SetScript("OnClick", WeakAuras.ShowTutorialHome);
-  
+
   local stepFramePrevious = CreateFrame("Button", nil, stepFrame, "UIPanelButtonTemplate");
   stepFrame.previous = stepFramePrevious;
   stepFramePrevious:SetPoint("BOTTOMLEFT", 27, 44);
   stepFramePrevious:SetHeight(20);
   stepFramePrevious:SetWidth(100);
   stepFramePrevious:SetText(L["Previous"]);
-  
+
   stepFrame:Hide();
-  
+
   local homeFrame = CreateFrame("frame", nil, tutFrame.frame);
   tutFrame.homeFrame = homeFrame;
   homeFrame:SetAllPoints(tutFrame.frame);
-  
+
   local homeFrameContent = AceGUI:Create("InlineGroup");
   homeFrame.content = homeFrameContent;
   homeFrameContent.frame:SetParent(homeFrame);
@@ -489,12 +491,12 @@ function WeakAuras.CreateTutorialsFrame()
   homeFrameContent.frame:SetPoint("right", homeFrame, "right", -17, 0);
   homeFrameContent.frame:SetPoint("bottom", homeFrame, "bottom", 0, 37);
   homeFrameContent:SetLayout("fill");
-  
+
   local homeFrameScroll = AceGUI:Create("ScrollFrame");
   homeFrame.scroll = homeFrameScroll;
   homeFrameContent:AddChild(homeFrameScroll);
   homeFrameScroll:SetLayout("AbsoluteList");
-  
+
   local toSort = {};
   for tutName, tutData in pairs(tutorials) do
     tinsert(toSort, tutData);
@@ -508,7 +510,7 @@ function WeakAuras.CreateTutorialsFrame()
       return aOrder < bOrder;
     end
   end);
-  
+
   for index, tutData in pairs(toSort) do
     local tutButton = AceGUI:Create("WeakAurasNewButton");
     tutButton:SetTitle(tutData.displayName);
@@ -518,13 +520,13 @@ function WeakAuras.CreateTutorialsFrame()
     elseif(type(tutData.icon) == "function") then
       tutButton:SetIcon(tutData.icon());
     end
-    
+
     tutButton:SetClick(function()
       WeakAuras.PlayTutorial(tutData);
     end);
-    
+
     homeFrameScroll:AddChild(tutButton);
   end
-  
+
   homeFrameScroll:DoLayout();
 end

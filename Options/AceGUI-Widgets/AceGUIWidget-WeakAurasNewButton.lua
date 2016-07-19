@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasNewButton", 20
+local Type, Version = "WeakAurasNewButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -39,7 +39,7 @@ local methods = {
         self.frame:SetScript("OnClick", func);
     end,
     ["SetIcon"] = function(self, icon)
-        if(type(icon) == "string") then
+        if(type(icon) == "string" or type(icon) == "number") then
             self.icon:SetTexture(icon);
             self.icon:Show();
             if(self.iconRegion and self.iconRegion.Hide) then
@@ -57,6 +57,7 @@ local methods = {
             self.iconRegion:Hide();
         end
         self.icon:Hide();
+        self.frame:UnlockHighlight();
     end
 }
 

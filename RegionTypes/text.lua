@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- GLOBALS: WeakAuras UIParent
+
 local default = {
     displayText = "New",
     outline = true,
@@ -42,9 +44,9 @@ local function modify(parent, region, data)
     end
 
     local fontPath = SharedMedia:Fetch("font", data.font);
-    text:SetFont(fontPath, data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
+    text:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or nil);
     if not text:GetFont() then -- Font invalid, set the font but keep the setting
-        text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
+        text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize, data.outline and "OUTLINE" or nil);
     end
     if text:GetFont() then
         text:SetText(data.displayText);
@@ -71,6 +73,9 @@ local function modify(parent, region, data)
     local function UpdateText()
         local textStr = data.displayText;
         textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+        if (textStr == nil or textStr == "") then
+          textStr = " ";
+        end
 
         if(textStr ~= text.displayText) then
             if text:GetFont() then text:SetText(textStr); end
@@ -256,7 +261,7 @@ local function fallbackmodify(parent, region, data)
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
 
-    text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize <= 35 and data.fontSize or 35, data.outline and "OUTLINE" or nil);
+    text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize, data.outline and "OUTLINE" or nil);
     if text:GetFont() then
         text:SetText(WeakAuras.L["Region type %s not supported"]:format(data.regionType));
     end

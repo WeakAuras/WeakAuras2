@@ -1,5 +1,7 @@
 local L = WeakAuras.L
 
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
+
 local function createOptions(id, data)
     local options = {
         texture = {
@@ -83,7 +85,7 @@ local function createOptions(id, data)
         }
     };
     options = WeakAuras.AddPositionOptions(options, id, data);
-    
+
     return options;
 end
 
@@ -91,16 +93,16 @@ local function createThumbnail(parent, fullCreate)
     local borderframe = CreateFrame("FRAME", nil, parent);
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);
-    
+
     local border = borderframe:CreateTexture(nil, "OVERLAY");
     border:SetAllPoints(borderframe);
     border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
     border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
-    
+
     local texture = borderframe:CreateTexture();
     borderframe.texture = texture;
     texture:SetPoint("CENTER", borderframe, "CENTER");
-    
+
     return borderframe;
 end
 
@@ -116,17 +118,17 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
         region.texture:SetWidth(size);
         region.texture:SetHeight(scale * data.height);
     end
-    
+
     region.texture:SetTexture(data.texture);
     region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
     region.texture:SetBlendMode(data.blendMode);
-    
+
     local ulx,uly , llx,lly , urx,ury , lrx,lry;
     if(data.rotate) then
         local angle = rad(135 - data.rotation);
         local vx = math.cos(angle);
         local vy = math.sin(angle);
-        
+
         ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
     else
         if(data.discrete_rotation == 0 or data.discrete_rotation == 360) then
@@ -156,11 +158,59 @@ local function createIcon()
         rotate = true;
         rotation = 0;
     };
-    
+
     local thumbnail = createThumbnail(UIParent);
     modifyThumbnail(UIParent, thumbnail, data, nil, 50);
-    
+
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"]);
+local templates = {
+  {
+    title = L["Default"],
+    data = {
+    };
+  },
+  {
+    title = L["Star"],
+    data = {
+      texture = "Spells\\T_Star3",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+  {
+    title = L["Leaf"],
+    data = {
+      texture = "Spells\\Nature_Rune_128",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+  {
+    title = L["Hawk"],
+    data = {
+      texture = "Spells\\Aspect_Hawk",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+  {
+    title = L["Low Mana"],
+    data = {
+      texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura70",
+      blendMode = "ADD",
+      width = 200,
+      height = 200,
+      discrete_rotation = 0,
+    }
+  },
+}
+
+WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates);

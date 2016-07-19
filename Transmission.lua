@@ -421,9 +421,9 @@ end
 
 function WeakAuras.DisplayToString(id, forChat)
   local data = WeakAuras.GetData(id);
-  local transmitData = CompressDisplay(data);
-  transmitData.controlledChildren = nil;
   if(data) then
+    local transmitData = CompressDisplay(data);
+    transmitData.controlledChildren = nil;
     local children = data.controlledChildren;
     local transmit = {
       m = "d",
@@ -434,10 +434,10 @@ function WeakAuras.DisplayToString(id, forChat)
     if(WeakAuras.transmitCache and WeakAuras.transmitCache[id]) then
       transmit.i = WeakAuras.transmitCache[id];
     end
-    if(data.trigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.iconCache) then
+    if(data.trigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.spellCache) then
       transmit.a = {};
       for i,v in pairs(data.trigger.names) do
-        transmit.a[v] = WeakAurasOptionsSaved.iconCache[v];
+        transmit.a[v] = WeakAuras.GetIconFromSpellCache(v);
       end
     end
     if(children) then
@@ -720,8 +720,12 @@ local function checkTrigger(codes, id, trigger, untrigger)
                   end
                 end
 
-                local i = icons or (WeakAurasOptionsSaved and WeakAurasOptionsSaved.iconCache);
-                tinsert(tooltip, {2, left, name..(i and i[name] and (" |T"..i[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
+                if (icons) then
+                  tinsert(tooltip, {2, left, name..(icons[name] and (" |T"..icons[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
+                else
+                  local icon = WeakAuras.GetIconFromSpellCache(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+                  tinsert(tooltip, {2, left, name.." |T"..icon..":12:12:0:0:64:64:4:60:4:60|t", 1, 1, 1, 1, 1, 1});
+                end
               end
             elseif(trigger.type == "event" or trigger.type == "status") then
               if(trigger.type == "event") then

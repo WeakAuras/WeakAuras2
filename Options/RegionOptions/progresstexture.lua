@@ -1,4 +1,6 @@
-local L = WeakAuras.L
+local L = WeakAuras.L;
+
+-- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 local function createOptions(id, data)
     local options = {
@@ -601,7 +603,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         orientCircular(false);
     end
 
-    region:SetValue(3/5);
+    if (region.SetValue) then
+      region:SetValue(3/5);
+    end
 end
 
 local function createIcon()
@@ -633,4 +637,67 @@ local function createIcon()
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"]);
+local templates = {
+  {
+    title = L["Default"],
+    data = {
+    };
+  },
+  {
+    title = L["Top HUD position"],
+    description = L["At the same position as Blizzard's spell alert"],
+    data = {
+      width = 200,
+      height = 100,
+      xOffset = 0,
+      yOffset = 150,
+      mirror = true,
+      foregroundTexture = "Textures\\SpellActivationOverlays\\Backlash",
+      orientation = "HORIZONTAL",
+    },
+  },
+  {
+    title = L["Left HUD position"],
+    description = L["At the same position as Blizzard's spell alert"],
+    data = {
+      width = 100,
+      height = 200,
+      xOffset = -150,
+      yOffset = 0,
+    },
+  },
+  {
+    title = L["Left 2 HUD position"],
+    description = L["At a position a bit left of Left HUD position."],
+    data = {
+      width = 100,
+      height = 200,
+      xOffset = -200,
+      yOffset = 0,
+    },
+  },
+  {
+    title = L["Right HUD position"],
+    description = L["At the same position as Blizzard's spell alert"],
+    data = {
+      width = 100,
+      height = 200,
+      xOffset = 150,
+      yOffset = 0,
+      mirror = true,
+    },
+  },
+  {
+    title = L["Right 2 HUD position"],
+    description = L["At a position a bit left of Right HUD position"],
+    data = {
+      width = 100,
+      height = 200,
+      xOffset = 200,
+      yOffset = 0,
+      mirror = true,
+    },
+  },
+}
+
+WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);

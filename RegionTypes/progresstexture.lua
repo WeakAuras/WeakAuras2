@@ -1,5 +1,7 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
+-- GLOBALS: WeakAuras
+
 -- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown
@@ -207,7 +209,9 @@ function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progre
   if (not clockwise) then
     quadrant = 5 - quadrant;
   end
+  self.scrollframe:Hide();
   self.scrollframe:SetAllPoints(self.circularTextures[quadrant])
+  self.scrollframe:Show();
 
   local ULx, ULy = ApplyTransform(0, 0, region)
   local LLx, LLy = ApplyTransform(0, 1, region)
@@ -228,6 +232,7 @@ function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progre
   local degree = pAngle;
   if not clockwise then degree = -degree + 90 end
   Transform(self.wedge, -0.5, -0.5, degree + region.rotation, region.aspect)
+
   WeakAuras.animRotate(self.wedge, -degree, "BOTTOMRIGHT");
 end
 

@@ -1,5 +1,5 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
+local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
 local fmt, tostring, select, pairs, next, type, unpack = string.format, tostring, select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable = setmetatable, getmetatable
@@ -7,7 +7,19 @@ local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
-local GetTalentInfo = GetTalentInfo
+local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+    = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+    = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+    = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+    = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+    = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+local debugstack, IsSpellKnown = debugstack, IsSpellKnown
 
 local ADDON_NAME = "WeakAuras"
 local versionString = WeakAuras.versionString
@@ -24,8 +36,8 @@ local L = WeakAuras.L
 -- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
 -- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
--- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS NUM_TALENT_COLUMNS
--- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT
+-- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS MAX_PVP_TALENT_TIERS NUM_TALENT_COLUMNS MAX_PVP_TALENT_COLUMNS
+-- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles
 
 local queueshowooc;
 function WeakAuras.OpenOptions(msg)
@@ -252,7 +264,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   end
 end
 
-function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description)
+function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined");
   elseif(type(name) ~= "string") then
@@ -278,7 +290,8 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
     displayName = displayName,
     createThumbnail = createThumbnail,
     modifyThumbnail = modifyThumbnail,
-    description = description
+    description = description,
+    templates = templates
   };
   end
 end
@@ -354,12 +367,14 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
       aura_environments[id] = {};
       current_aura_env = aura_environments[id];
+      current_aura_env.cloneId = cloneId;
+      current_aura_env.state = state;
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env);
       -- Run the init function if supplied
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
         if func then
           current_aura_env.id = id;
           func();
@@ -572,19 +587,38 @@ function WeakAuras.ConstructFunction(prototype, trigger)
 end
 
 WeakAuras.talent_types_specific = {}
+WeakAuras.pvp_talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
-  if not WeakAuras.talent_types_specific[player_class] then
-    WeakAuras.talent_types_specific[player_class] = {}
-  end
-  local spec = GetActiveSpecGroup()
+  WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
+  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
+  local spec = GetSpecialization()
+  WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
+  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
+
+
+  -- print ("Creating talent cache for", player_class, spec);
+
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
       -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, spec)
+      local _, talentName, talentIcon = GetTalentInfo(tier, column, GetActiveSpecGroup())
       local talentId = (tier-1)*3+column
       -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
-      WeakAuras.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
+      if (talentName and talentIcon) then
+        WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+      end
+    end
+  end
+
+
+  for tier = 1, MAX_PVP_TALENT_TIERS do
+    for column = 1, MAX_PVP_TALENT_COLUMNS do
+      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, GetActiveSpecGroup());
+      local talentId = (tier-1)*3+column
+      if (talentName and talentIcon) then
+        WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+      end
     end
   end
 end
@@ -597,6 +631,7 @@ WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
     if(addon == ADDON_NAME) then
@@ -610,8 +645,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       -- Deprecated fields with *lots* of data, clear them out
       db.iconCache = nil;
       db.iconHash = nil;
-
-      db.tempIconCache = db.tempIconCache or {};
+      db.tempIconCache = nil;
+      db.dynamicIconCache = db.dynamicIconCache or {};
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
@@ -652,6 +687,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
     WeakAuras.UpdateCurrentInstanceType();
+  elseif(event == "ACTIVE_TALENT_GROUP_CHANGED") then
+    WeakAuras.CreateTalentCache();
   elseif(event == "PLAYER_REGEN_ENABLED") then
     if (queueshowooc) then
       WeakAuras.OpenOptions(queueshowooc)
@@ -702,7 +739,26 @@ function WeakAuras.Toggle()
   end
 end
 
+function WeakAuras.PauseAllDynamicGroups()
+  for id, region in pairs(regions) do
+    if (region.region.ControlChildren) then
+      region.region:Suspend();
+    end
+  end
+end
+
+function WeakAuras.ResumeAllDynamicGroups()
+  for id, region in pairs(regions) do
+    if (region.region.ControlChildren) then
+      region.region:Resume();
+    end
+  end
+end
+
 function WeakAuras.ScanAll()
+
+  WeakAuras.PauseAllDynamicGroups();
+
   for id, region in pairs(regions) do
     region.region:Collapse();
   end
@@ -712,6 +768,8 @@ function WeakAuras.ScanAll()
       clone:Collapse();
     end
   end
+
+  WeakAuras.ResumeAllDynamicGroups();
 
   WeakAuras.ReloadAll();
 
@@ -996,6 +1054,7 @@ loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
 
 loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 loadFrame:RegisterEvent("ZONE_CHANGED");
 loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
 loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
@@ -1009,7 +1068,6 @@ loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
 loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
 loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
 loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
-loadFrame:RegisterEvent("GLYPH_UPDATED");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
@@ -1519,12 +1577,6 @@ function WeakAuras.Modernize(data)
     if(not data.color) then
       data.color = {1, 1, 1, data.alpha};
     end
-  end
-
-  -- Convert Timers to Texts
-  if(data.regionType == "timer") then
-    data.regionType = "text";
-    data.displayText = "%p";
   end
 
   -- Upgrade some old variables
@@ -2079,19 +2131,19 @@ function WeakAuras.PerformActions(data, type, region)
   if(actions.do_sound and actions.sound) then
     if(actions.sound == " custom") then
       if(actions.sound_path) then
-        PlaySoundFile(actions.sound_path, actions.sound_channel);
+        PlaySoundFile(actions.sound_path, actions.sound_channel or "Master");
       end
     elseif(actions.sound == " KitID") then
       if(actions.sound_kit_id) then
-        PlaySoundKitID(actions.sound_kit_id, actions.sound_channel);
+        PlaySoundKitID(actions.sound_kit_id, actions.sound_channel or "Master");
       end
     else
-      PlaySoundFile(actions.sound, actions.sound_channel);
+      PlaySoundFile(actions.sound, actions.sound_channel or "Master");
     end
   end
 
   if(actions.do_custom and actions.custom) then
-    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).." end");
+    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       func();
@@ -2147,18 +2199,18 @@ function WeakAuras.UpdateAnimations()
     end
   elseif(anim.duration_type == "relative") then
     local state = anim.region.state;
-
-    if ((state.progressType == "timed" and state.duration < 0.01)
+    if (not state
+        or (state.progressType == "timed" and state.duration < 0.01)
         or (state.progressType == "static" and state.value < 0.01)) then
       anim.progress = 0;
       if(anim.type == "start" or anim.type == "finish") then
         finished = true;
       end
     else
-      local relativeProgress;
+      local relativeProgress = 0;
       if(state.progressType == "static") then
         relativeProgress = state.value / state.total;
-      else
+      elseif (state.progressType == "timed") then
         relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
       end
       relativeProgress = state.inverseDirection and (1 - relativeProgress) or relativeProgress;
@@ -2987,16 +3039,29 @@ WeakAuras.dynFrame = dynFrame;
 function WeakAuras.ControlChildren(childid)
   local parent = db.displays[childid].parent;
   if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-    regions[parent].region.ControlChildren();
+    regions[parent].region:ControlChildren();
   end
 end
 
-function WeakAuras.SetTempIconCache(name, icon)
-  db.tempIconCache[name] = icon;
+function WeakAuras.SetDynamicIconCache(name, spellId, icon)
+  db.dynamicIconCache[name] = db.dynamicIconCache[name] or {};
+  db.dynamicIconCache[name][spellId] = icon;
 end
 
-function WeakAuras.GetTempIconCache(name)
-  return db.tempIconCache[name];
+function WeakAuras.GetDynamicIconCache(name)
+  if (not db.dynamicIconCache[name]) then
+    return nil;
+  end
+  for spellId, icon in pairs(db.dynamicIconCache[name]) do
+    if (IsSpellKnown(spellId)) then -- TODO save this information?
+      return db.dynamicIconCache[name][spellId];
+    end
+  end
+
+  if (WeakAuras.GetIconFromSpellCache) then
+    return WeakAuras.GetIconFromSpellCache(name);
+  end
+  return nil;
 end
 
 function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
