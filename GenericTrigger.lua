@@ -1337,6 +1337,7 @@ do
       local charges, maxCharges, startTime, duration = GetSpellCharges(id);
       if (charges == nil) then -- charges is nil if the spell has no charges
         startTime, duration = GetSpellCooldown(id);
+        charges = GetSpellCount(id);
       elseif (charges == maxCharges) then
         startTime, duration = 0, 0;
       end
@@ -1392,6 +1393,9 @@ do
             timer:CancelTimer(spellCdHandles[id]);
           end
           SpellCooldownFinished(id);
+        end
+        if (chargesChanged) then
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
       end
     end

@@ -944,6 +944,15 @@ WeakAuras.event_prototypes = {
         test = "true",
       },
       {
+        name = "requirePowerType",
+        display = L["Only if Primary"],
+        type = "toggle",
+        test = "UnitPowerType(unit) == powerType",
+        enable = function(trigger)
+          return trigger.use_powertype
+        end,
+      },
+      {
         name = "power",
         display = L["Power"],
         type = "number",
