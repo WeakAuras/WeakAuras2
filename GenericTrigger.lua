@@ -1165,11 +1165,14 @@ do
   function WeakAuras.InitCooldownReady()
   cdReadyFrame = CreateFrame("FRAME");
   cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+  cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
   cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
   cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
   cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
-    if(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
+
+    if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
+      print("EVENT:", event);
       WeakAuras.CheckCooldownReady();
     elseif(event == "UNIT_SPELLCAST_SENT") then
       local unit, name = ...;
@@ -1346,7 +1349,12 @@ do
       local chargesChanged = spellCharges[id] ~= charges;
       spellCharges[id] = charges;
 
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      -- GCD
+      if (duration == WeakAuras.gcdDuration()) then
+        duration = 0;
+      end
+
+      if(duration > 0) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1377,12 +1385,10 @@ do
           end
           WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
-      elseif(duration > 0) then
-        -- GCD, do nothing
       else
         if(spellCdExps[id]) then
-          -- Somehow CheckCooldownReady caught the spell cooldown before the timer callback
-          -- This shouldn't happen, but if it does, no problem
+          -- CheckCooldownReady caught the spell cooldown before the timer callback
+          -- This happens if a proc resets the cooldown
           if(spellCdHandles[id]) then
             timer:CancelTimer(spellCdHandles[id]);
           end
