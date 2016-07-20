@@ -967,6 +967,13 @@ WeakAuras.event_prototypes = {
       end
       return UnitPower(trigger.unit, powerType), math.max(1, UnitPowerMax(trigger.unit, powerType)), "fastUpdate";
     end,
+    stacksFunc = function(trigger)
+      local powerType = trigger.use_powertype and trigger.powertype;
+      if (powerType == 99) then
+        return UnitStagger(trigger.unit);
+      end
+      return UnitPower(trigger.unit, powerType);
+    end,
     automatic = true
   },
   ["Alternate Power"] = {
