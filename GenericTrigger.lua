@@ -1172,7 +1172,6 @@ do
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
 
     if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
-      print("EVENT:", event);
       WeakAuras.CheckCooldownReady();
     elseif(event == "UNIT_SPELLCAST_SENT") then
       local unit, name = ...;
