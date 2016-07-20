@@ -16,7 +16,7 @@ externals:
  libs/AceEvent-3.0:
   url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceEvent-3.0
  libs/AceGUI-3.0-SharedMediaWidgets:
-  url: svn://svn.wowace.com/wow/ace-gui-3-0-shared-media-widgets/mainline/trunk
+  url: svn://svn.wowace.com/wow/ace-gui-3-0-shared-media-widgets/mainline/trunk/AceGUI-3.0-SharedMediaWidgets
  libs/AceTimer-3.0:
   url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceTimer-3.0
  libs/AceSerializer-3.0:
