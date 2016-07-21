@@ -2689,7 +2689,13 @@ WeakAuras.event_prototypes = {
     name = L["Death Knight Rune"],
     init = function(trigger)
     trigger.rune = trigger.rune or 0;
-    WeakAuras.WatchRuneCooldown(trigger.rune);
+    if (trigger.use_rune) then
+      WeakAuras.WatchRuneCooldown(trigger.rune);
+    else
+      for i = 1, 6 do
+        WeakAuras.WatchRuneCooldown(trigger.rune);
+      end
+    end
     local ret = [[
       local rune = %s;
       local startTime, duration = WeakAuras.GetRuneCooldown(rune);
@@ -2697,7 +2703,7 @@ WeakAuras.event_prototypes = {
 
       local numRunes = 0;
       for index = 1, 6 do
-        local startTime = select(1, GetRuneCooldown(index));
+        local startTime = select(1, WeakAuras.GetRuneCooldown(index));
         if startTime == 0 then
           numRunes = numRunes  + 1;
         end
