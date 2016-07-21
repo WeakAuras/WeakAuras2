@@ -809,7 +809,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
           importbutton:SetScript("OnClick", function()
               local func = function()
                 WeakAuras.SetImporting(true);
-                WeakAuras.OpenOptions();
+                WeakAuras.LoadOptions();
 
                 local optionsFrame = WeakAuras.OptionsFrame();
                 if not(optionsFrame) then
