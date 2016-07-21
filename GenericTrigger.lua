@@ -1288,10 +1288,12 @@ do
   function WeakAuras.CheckCooldownReady()
     CheckGCD();
 
+    local runeDuration = -100;
     for id, _ in pairs(runes) do
       local startTime, duration = GetRuneCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
+      runeDuration = duration > 0 and duration;
       local time = GetTime();
 
       if(not startTime or startTime == 0) then
@@ -1363,7 +1365,7 @@ do
           spellCdDurs[id] = duration;
           spellCdExps[id] = endTime;
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-          if (spellsRune[id] and duration ~= 10) then
+          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
           end
@@ -1379,7 +1381,7 @@ do
           if (maxCharges == nil or charges + 1 == maxCharges) then
             spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
           end
-          if (spellsRune[id] and duration ~= 10) then
+          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
           end
@@ -1484,6 +1486,9 @@ do
 
     if (ignoreRunes) then
       spellsRune[id] = true;
+      for i = 1, 6 do
+        WeakAuras.WatchRuneCooldown(i);
+      end
     end
 
     if not(spells[id]) then
