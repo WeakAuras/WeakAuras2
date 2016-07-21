@@ -1293,7 +1293,7 @@ do
       local startTime, duration = GetRuneCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
-      runeDuration = duration > 0 and duration;
+      runeDuration = duration > 0 and duration or 0
       local time = GetTime();
 
       if(not startTime or startTime == 0) then
