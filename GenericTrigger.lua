@@ -208,7 +208,7 @@ function ConstructFunction(prototype, trigger, inverse)
   end
 
   local input;
-  if (not inverse and prototype.statesParameter) then
+  if (prototype.statesParameter) then
     input = {"state", "event"};
   else
     input = {"event"};
@@ -291,11 +291,7 @@ function ConstructFunction(prototype, trigger, inverse)
   return ret;
 end
 
-function WeakAuras.EndEvent(id, triggernum, force)
-  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  allStates[""] = allStates[""] or {};
-  local state = allStates[""];
-
+function WeakAuras.EndEvent(id, triggernum, force, state)
   if (state.show ~= false and state.show ~= nil) then
     state.show = false;
     state.changed = true;
@@ -502,9 +498,31 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
             end
           end
           if (untriggerCheck) then
-            if(data.untriggerFunc and data.untriggerFunc(event, arg1, arg2, ...)) then
-              if (WeakAuras.EndEvent(id, triggernum)) then
-                updateTriggerState = true;
+            if (data.statesParameter == "all") then
+              if(data.untriggerFunc and data.untriggerFunc(allStates, event, arg1, arg2, ...)) then
+                for id, state in pairs(allStates) do
+                  if (state.changed) then
+                    if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                      updateTriggerState = true;
+                    end
+                  end
+                end
+              end
+            elseif (data.statesParameter == "one") then
+              allStates[""] = allStates[""] or {};
+              local state = allStates[""];
+              if(data.untriggerFunc and data.untriggerFunc(state, event, arg1, arg2, ...)) then
+                if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                  updateTriggerState = true;
+                end
+              end
+            else
+              if(data.untriggerFunc and data.untriggerFunc(event, arg1, arg2, ...)) then
+                allStates[""] = allStates[""] or {};
+                local state = allStates[""];
+                if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                  updateTriggerState = true;
+                end
               end
             end
           end
