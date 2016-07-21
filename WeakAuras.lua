@@ -1827,6 +1827,7 @@ function WeakAuras.pAdd(data)
     triggerState[id].activeTriggerMode = data.activeTriggerMode or 0;
     triggerState[id].triggerLogicFunc = triggerLogicFunc;
     triggerState[id].triggers = {};
+    triggerState[id].triggerCount = 0;
 
     WeakAuras.LoadEncounterInitScripts(id)
 
