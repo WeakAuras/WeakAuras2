@@ -1775,8 +1775,8 @@ do
       local expirationTime = now + duration;
 
       local newBar;
-      bars[spellId] = bars[spellId] or {};
-      local bar = bars[spellId];
+      bars[text] = bars[text] or {};
+      local bar = bars[text];
       bar.addon = addon;
       bar.spellId = spellId;
       bar.text = text;
@@ -1794,11 +1794,9 @@ do
       end
     elseif (event == "BigWigs_StopBar") then
       local addon, text = ...
-      for key, bar in pairs(bars) do
-        if (key == text) then
-          bars[key] = nil;
-          WeakAuras.ScanEvents("BigWigs_StopBar", key);
-        end
+      if(bars[text]) then
+        WeakAuras.ScanEvents("BigWigs_StopBar", text);
+        bars[text] = nil;
       end
     elseif (event == "BigWigs_StopBars"
             or event == "BigWigs_OnBossDisable"
