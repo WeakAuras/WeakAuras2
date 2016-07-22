@@ -2279,7 +2279,7 @@ WeakAuras.event_prototypes = {
           end
           if (inverse) then
             active = not active;
-          elseif (remainingCheck) then
+          elseif (active and remainingCheck) then
             local expirationTime = startTime and (startTime + duration) or 0;
             local remainingTime = expirationTime - GetTime()
             if (remainingTime >= remainingCheck) then
@@ -2309,7 +2309,7 @@ WeakAuras.event_prototypes = {
             end
             if (inverse) then
               active = not active;
-            elseif (remainingCheck) then
+            elseif (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
               local remainingTime = expirationTime - GetTime()
               if (remainingTime >= remainingCheck) then
