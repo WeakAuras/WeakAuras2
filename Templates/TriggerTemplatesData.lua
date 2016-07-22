@@ -2613,6 +2613,7 @@ templates.class.DRUID = {
         { spell = 29166, type = "buff", unit = "group" }, -- Innervate
         { spell = 102560, type = "buff", unit = "player", talent = 14 }, -- Incarnation: Chosen of Elune
         { spell = 137452, type = "buff", unit = "player", talent = 5 }, -- Displacer Beast
+        { spell = 157228, type = "buff", unit = "player"}, -- Owlkin Frenzy
         { spell = 164545, type = "buff", unit = "player" }, -- Solar Empowerment
         { spell = 164547, type = "buff", unit = "player" }, -- Lunar Empowerment
         { spell = 191034, type = "buff", unit = "player" }, -- Starfall
