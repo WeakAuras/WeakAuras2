@@ -8860,6 +8860,11 @@ end
 
 function WeakAuras.BestKeyMatch(nearkey, table)
   for key, value in pairs(table) do
+    if(nearkey == key) then
+      return key;
+    end
+  end
+  for key, value in pairs(table) do
     if(nearkey:lower() == key:lower()) then
       return key;
     end

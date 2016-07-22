@@ -84,7 +84,7 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             unevent = "auto",
             use_showOn = true,
-            showOn = "showOnCooldown",
+            showOn = item.showOn or "showOnCooldown",
           }
         }
       }
@@ -344,6 +344,7 @@ function WeakAuras.CreateTemplateView(frame)
       WeakAuras.optionTriggerChoices[data.id] = 0;
       newView.CancelClose();
       WeakAuras.Add(data);
+      WeakAuras.NewDisplayButton(data);
       WeakAuras.SetThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
@@ -367,6 +368,7 @@ function WeakAuras.CreateTemplateView(frame)
       WeakAuras.optionTriggerChoices[data.id] = data.numTriggers - 1;
       newView.CancelClose();
       WeakAuras.Add(data);
+      WeakAuras.NewDisplayButton(data);
       WeakAuras.SetThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
@@ -508,8 +510,7 @@ function WeakAuras.CreateTemplateView(frame)
     self.frame:Show();
     frame.window = "newView";
     if (data) then
-      self.data = {};
-      WeakAuras.DeepCopy(data, self.data);
+      self.data = data;
       newView.existingAura = true;
       newView.choosenItem = nil;
     else

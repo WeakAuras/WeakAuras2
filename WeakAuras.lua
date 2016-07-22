@@ -2617,7 +2617,7 @@ function WeakAuras.CreateFallbackState(id, triggernum, state)
     state.triggernum = 0;
     state.id = id;
   else
-    state.trigger = data.additional_triggers[triggernum];
+    state.trigger = data.additional_triggers[triggernum].trigger;
     state.triggernum = triggernum;
     state.id = id;
   end
@@ -2704,11 +2704,12 @@ function WeakAuras.ShowMouseoverTooltip(region, owner)
 
   local triggerType;
   if (region.state) then
-   triggerType = region.state.trigger.type;
+    triggerType = region.state.trigger.type;
   end
 
   local triggerSystem = triggerType and triggerTypes[triggerType];
   if (not triggerSystem) then
+    GameTooltip:Hide();
     return;
   end
 
@@ -3079,7 +3080,7 @@ end
 
 local function startStopTimers(id, cloneId, triggernum, state)
   if (state.show) then
-    if (state.autoHide and state.duration) then -- autohide, update timer
+    if (state.autoHide and state.duration and state.duration > 0) then -- autohide, update timer
       timers[id] = timers[id] or {};
       timers[id][triggernum] = timers[id][triggernum] or {};
       timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
@@ -3169,6 +3170,11 @@ local function ApplyStateToRegion(id, region, state)
   if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
     region.UpdateCustomText();
   end
+
+  if(state.texture and region.SetTexture) then
+    region:SetTexture(state.texture);
+  end
+
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
 end
@@ -3253,7 +3259,7 @@ function WeakAuras.UpdatedTriggerState(id)
         state.triggernum = 0;
         state.id = id;
       else
-        state.trigger = db.displays[id].additional_triggers[triggernum];
+        state.trigger = db.displays[id].additional_triggers[triggernum].trigger;
         state.triggernum = triggernum;
         state.id = id;
       end

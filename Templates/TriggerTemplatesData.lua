@@ -471,6 +471,7 @@ templates.class.PALADIN = {
         { spell = 96231, type = "ability"}, -- Rebuke
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
         { spell = 152262, type = "ability", talent = 20}, -- Seraphim
+        { spell = 184092, type = "ability"}, -- Light of the Protector
         { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 204013, type = "ability", talent = 11}, -- Blessing of Salvation
         { spell = 204018, type = "ability", talent = 10}, -- Blessing of Spellwarding
@@ -642,8 +643,8 @@ templates.class.HUNTER = {
         { spell = 5116, type = "ability"}, -- Concussive Shot
         { spell = 5384, type = "ability"}, -- Feign Death
         { spell = 19386, type = "ability", talent = 14}, -- Wyvern Sting
-        { spell = 19574, type = "ability", talent = 15}, -- Bestial Wrath
-        { spell = 19577, type = "ability"}, -- Intimidation
+        { spell = 19574, type = "ability"}, -- Bestial Wrath
+        { spell = 19577, type = "ability", talent = 15}, -- Intimidation
         { spell = 34026, type = "ability"}, -- Kill Command
         { spell = 34477, type = "ability"}, -- Misdirection
         { spell = 53209, type = "ability", talent = 6}, -- Chimaera Shot
@@ -3880,6 +3881,30 @@ tinsert(templates.class.MONK[1][5].args, createSimplePowerTemplate(3));
 tinsert(templates.class.MONK[2][5].args, createSimplePowerTemplate(0));
 tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(3));
 tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(12));
+
+templates.class.MONK[1][6] = {
+  title = L["Ability Charges"],
+  args = {
+    { spell = 115072, type = "ability", showOn = "always"}, -- Expel Harm
+  },
+  icon = 627486,
+};
+
+templates.class.MONK[2][6] = {
+  title = L["Ability Charges"],
+  args = {
+    { spell = 205406, type = "spellcount"}, -- Sheilun's Gift
+  },
+  icon = 1242282,
+};
+
+templates.class.MONK[3][6] = {
+  title = L["Ability Charges"],
+  args = {
+    { spell = 101546, type = "spellcount"}, -- Spinning Crane Kick
+  },
+  icon = 606543,
+};
 
 -- Druid
 for i = 1, 4 do
