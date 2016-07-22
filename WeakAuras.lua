@@ -2617,7 +2617,7 @@ function WeakAuras.CreateFallbackState(id, triggernum, state)
     state.triggernum = 0;
     state.id = id;
   else
-    state.trigger = data.additional_triggers[triggernum];
+    state.trigger = data.additional_triggers[triggernum].trigger;
     state.triggernum = triggernum;
     state.id = id;
   end
@@ -2704,11 +2704,12 @@ function WeakAuras.ShowMouseoverTooltip(region, owner)
 
   local triggerType;
   if (region.state) then
-   triggerType = region.state.trigger.type;
+    triggerType = region.state.trigger.type;
   end
 
   local triggerSystem = triggerType and triggerTypes[triggerType];
   if (not triggerSystem) then
+    GameTooltip:Hide();
     return;
   end
 
@@ -3258,7 +3259,7 @@ function WeakAuras.UpdatedTriggerState(id)
         state.triggernum = 0;
         state.id = id;
       else
-        state.trigger = db.displays[id].additional_triggers[triggernum];
+        state.trigger = db.displays[id].additional_triggers[triggernum].trigger;
         state.triggernum = triggernum;
         state.id = id;
       end
