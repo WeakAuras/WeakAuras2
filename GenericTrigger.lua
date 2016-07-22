@@ -1384,7 +1384,8 @@ do
         end
       else
         if(spellCdExps[id]) then
-          if (duration == WeakAuras.gcdDuration() and spellCdDurs[id] > duration or duration == 0) then
+          local endTime = startTime + duration;
+          if (duration == WeakAuras.gcdDuration() and spellCdExps[id] > endTime or duration == 0) then
            -- CheckCooldownReady caught the spell cooldown before the timer callback
            -- This happens if a proc resets the cooldown
             if(spellCdHandles[id]) then
