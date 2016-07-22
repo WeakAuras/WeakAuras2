@@ -84,7 +84,7 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             unevent = "auto",
             use_showOn = true,
-            showOn = "showOnCooldown",
+            showOn = item.showOn or "showOnCooldown",
           }
         }
       }
