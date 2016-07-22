@@ -3169,6 +3169,11 @@ local function ApplyStateToRegion(id, region, state)
   if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
     region.UpdateCustomText();
   end
+
+  if(state.texture and region.SetTexture) then
+    region:SetTexture(state.texture);
+  end
+
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
 end
