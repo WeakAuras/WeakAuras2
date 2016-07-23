@@ -2298,7 +2298,21 @@ WeakAuras.event_prototypes = {
             state.expirationTime = startTime and (startTime + duration);
             state.icon = icon;
           end
-        else -- Check all slots
+        elseif inverse then -- inverse without a specific slot
+          local found = false;
+          for i = 1, 5 do
+            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            if ((startTime and startTime ~= 0) and triggerTotemName == totemName) then
+              found = true;
+            end
+          end
+          local cloneId = "";
+          states[cloneId] = states[cloneId] or {};
+          local state = states[cloneId];
+          state.show = not found;
+          state.changed = true;
+          sate.name = triggerTotemName;
+        else -- check all slots
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
@@ -2307,9 +2321,7 @@ WeakAuras.event_prototypes = {
                 active = false;
               end
             end
-            if (inverse) then
-              active = not active;
-            elseif (active and remainingCheck) then
+            if (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
               local remainingTime = expirationTime - GetTime()
               if (remainingTime >= remainingCheck) then
