@@ -2711,7 +2711,7 @@ WeakAuras.event_prototypes = {
       WeakAuras.WatchRuneCooldown(trigger.rune);
     else
       for i = 1, 6 do
-        WeakAuras.WatchRuneCooldown(trigger.rune);
+        WeakAuras.WatchRuneCooldown(i);
       end
     end
     local ret = [[
@@ -2721,7 +2721,7 @@ WeakAuras.event_prototypes = {
 
       local numRunes = 0;
       for index = 1, 6 do
-        local startTime = select(1, WeakAuras.GetRuneCooldown(index));
+        local startTime = WeakAuras.GetRuneCooldown(index);
         if startTime == 0 then
           numRunes = numRunes  + 1;
         end
@@ -2783,7 +2783,14 @@ WeakAuras.event_prototypes = {
 
         return duration, startTime + duration;
       else
-        return 0, 0;
+        local numRunes = 0;
+        for index = 1, 6 do
+          local startTime = GetRuneCooldown(index);
+          if startTime == 0 then
+            numRunes = numRunes  + 1;
+          end
+        end
+        return numRunes, 6, true;
       end
     end,
     stacksFunc = function(trigger)
