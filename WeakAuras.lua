@@ -1821,6 +1821,9 @@ function WeakAuras.pAdd(data)
       timers[id] = nil;
     end
 
+    if (data.activeTriggerMode >= data.numTriggers) then
+      data.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+    end
     triggerState[id] = {};
     triggerState[id].disjunctive = data.numTriggers > 1 and data.disjunctive or "all";
     triggerState[id].numTriggers = data.numTriggers;
