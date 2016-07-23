@@ -2167,26 +2167,26 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
+      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
-      local ret = [[
-        local spell = %s;
-        local spellName = GetSpellInfo(spell);
-        local startTime, duration = WeakAuras.GetSpellCooldown(spell);
-        local charges = WeakAuras.GetSpellCharges(spell);
+      local ret = [=[
+        local spellname = [[%s]]
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
+        local charges = WeakAuras.GetSpellCharges(spellname);
         startTime = startTime or 0;
         duration = duration or 0;
         if (duration == 0 and charges == 0) then
           charges = 1;
         end
         local onCooldown = (duration > 0 and duration ~= WeakAuras.gcdDuration() and charges == nil) or (charges and charges == 0);
-        local active = IsUsableSpell(spell) and not onCooldown
+        local active = IsUsableSpell(spellname) and not onCooldown
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
-      ]]
+      ]=]
       if(trigger.use_targetRequired) then
-        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellName or '', 'target')\n";
+        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
       end
       if(trigger.use_inverse) then
         ret = ret.."active = not active\n";
@@ -2228,15 +2228,21 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.spellName or 0);
+      local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
-      else
-        return "Invalid";
       end
+      name = GetSpellInfo(trigger.spellName or 0);
+      if (name) then
+        return name;
+      end
+      return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      if (not icon) then
+        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+      end
       return icon;
     end,
     stacksFunc = function(trigger)
