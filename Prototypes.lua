@@ -2167,26 +2167,26 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and trigger.spellName or "'"..trigger.spellName.."'";
+      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
-      local ret = [[
-        local spell = %s;
-        local spellName = GetSpellInfo(spell);
-        local startTime, duration = WeakAuras.GetSpellCooldown(spell);
-        local charges = WeakAuras.GetSpellCharges(spell);
+      local ret = [=[
+        local spellname = [[%s]]
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
+        local charges = WeakAuras.GetSpellCharges(spellname);
         startTime = startTime or 0;
         duration = duration or 0;
         if (duration == 0 and charges == 0) then
           charges = 1;
         end
         local onCooldown = (duration > 0 and duration ~= WeakAuras.gcdDuration() and charges == nil) or (charges and charges == 0);
-        local active = IsUsableSpell(spell) and not onCooldown
+        local active = IsUsableSpell(spellname) and not onCooldown
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
-      ]]
+      ]=]
       if(trigger.use_targetRequired) then
-        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellName or '', 'target')\n";
+        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
       end
       if(trigger.use_inverse) then
         ret = ret.."active = not active\n";
@@ -2228,15 +2228,21 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.spellName or 0);
+      local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
-      else
-        return "Invalid";
       end
+      name = GetSpellInfo(trigger.spellName or 0);
+      if (name) then
+        return name;
+      end
+      return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      if (not icon) then
+        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+      end
       return icon;
     end,
     stacksFunc = function(trigger)
@@ -2298,7 +2304,21 @@ WeakAuras.event_prototypes = {
             state.expirationTime = startTime and (startTime + duration);
             state.icon = icon;
           end
-        else -- Check all slots
+        elseif inverse then -- inverse without a specific slot
+          local found = false;
+          for i = 1, 5 do
+            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            if ((startTime and startTime ~= 0) and triggerTotemName == totemName) then
+              found = true;
+            end
+          end
+          local cloneId = "";
+          states[cloneId] = states[cloneId] or {};
+          local state = states[cloneId];
+          state.show = not found;
+          state.changed = true;
+          sate.name = triggerTotemName;
+        else -- check all slots
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
@@ -2307,9 +2327,7 @@ WeakAuras.event_prototypes = {
                 active = false;
               end
             end
-            if (inverse) then
-              active = not active;
-            elseif (active and remainingCheck) then
+            if (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
               local remainingTime = expirationTime - GetTime()
               if (remainingTime >= remainingCheck) then
@@ -2693,7 +2711,7 @@ WeakAuras.event_prototypes = {
       WeakAuras.WatchRuneCooldown(trigger.rune);
     else
       for i = 1, 6 do
-        WeakAuras.WatchRuneCooldown(trigger.rune);
+        WeakAuras.WatchRuneCooldown(i);
       end
     end
     local ret = [[
@@ -2703,7 +2721,7 @@ WeakAuras.event_prototypes = {
 
       local numRunes = 0;
       for index = 1, 6 do
-        local startTime = select(1, WeakAuras.GetRuneCooldown(index));
+        local startTime = WeakAuras.GetRuneCooldown(index);
         if startTime == 0 then
           numRunes = numRunes  + 1;
         end
@@ -2765,7 +2783,14 @@ WeakAuras.event_prototypes = {
 
         return duration, startTime + duration;
       else
-        return 0, 0;
+        local numRunes = 0;
+        for index = 1, 6 do
+          local startTime = GetRuneCooldown(index);
+          if startTime == 0 then
+            numRunes = numRunes  + 1;
+          end
+        end
+        return numRunes, 6, true;
       end
     end,
     stacksFunc = function(trigger)

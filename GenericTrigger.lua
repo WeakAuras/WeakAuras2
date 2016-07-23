@@ -2317,6 +2317,45 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   state.icon = event.iconFunc and event.iconFunc(data.trigger) or nil;
   state.texture = event.textureFunc and event.textureFunc(data.trigger) or nil;
   state.stacks = event.stacksFunc and event.stacksFunc(data.trigger) or nil;
+
+  if (event.durationFunc) then
+    local arg1, arg2, arg3, inverse = event.durationFunc(data.trigger);
+    arg1 = type(arg1) == "number" and arg1 or 0;
+    arg2 = type(arg2) == "number" and arg2 or 0;
+
+    if(type(arg3) == "string") then
+      state.durationFunc = event.durationFunc;
+    elseif (type(arg3) == "function") then
+      state.durationFunc = arg3;
+    else
+      state.durationFunc = nil;
+    end
+
+    if (arg3) then
+      state.progressType = "static";
+      state.duration = nil;
+      state.resort = state.expirationTime ~= nil;
+      state.expirationTime = nil;
+      state.value = arg1;
+      state.total = arg2;
+    else
+      state.progressType = "timed";
+      state.duration = arg1;
+      state.resort = state.expirationTime ~= arg2;
+      state.expirationTime = arg2;
+      state.autoHide = arg1 > 0.01;
+      state.value = nil;
+      state.total = nil;
+      state.inverse = inverse;
+    end
+  else
+    state.progressType = "static";
+    state.duration = nil;
+    state.resort = nil;
+    state.expirationTime = nil;
+    state.value = nil;
+    state.total = nil;
+  end
 end
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);
