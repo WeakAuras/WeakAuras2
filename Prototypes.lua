@@ -2317,7 +2317,7 @@ WeakAuras.event_prototypes = {
           local state = states[cloneId];
           state.show = not found;
           state.changed = true;
-          sate.name = triggerTotemName;
+          state.name = triggerTotemName;
         else -- check all slots
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
