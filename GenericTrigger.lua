@@ -2313,6 +2313,8 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   state.show = true;
   state.changed = true;
   local event = events[data.id][triggernum];
+
+  WeakAuras.ActivateAuraEnvironment(data.id, "", state);
   state.name = event.nameFunc and event.nameFunc(data.trigger) or nil;
   state.icon = event.iconFunc and event.iconFunc(data.trigger) or nil;
   state.texture = event.textureFunc and event.textureFunc(data.trigger) or nil;
@@ -2356,6 +2358,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     state.value = nil;
     state.total = nil;
   end
+  WeakAuras.ActivateAuraEnvironment(nil);
 end
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);
