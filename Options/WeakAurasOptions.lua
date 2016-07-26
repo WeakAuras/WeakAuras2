@@ -1635,6 +1635,7 @@ local function getAll(data, info, ...)
 end
 
 local function setAll(data, info, ...)
+  WeakAuras.pauseOptionsProcessing(true);
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
@@ -1654,6 +1655,9 @@ local function setAll(data, info, ...)
       end
     end
   end
+  WeakAuras.pauseOptionsProcessing(false);
+  WeakAuras.ScanForLoads();
+  WeakAuras.SortDisplayButtons();
 end
 
 local function hiddenAll(data, info)
@@ -8517,7 +8521,10 @@ function WeakAuras.UpdateGroupOrders(data)
 end
 
 local previousFilter;
-function WeakAuras.SortDisplayButtons(filter, overrideReset)
+function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
+  if (WeakAuras.IsOptionsProcessingPaused()) then
+    return;
+  end
   local recenter = false;
   filter = filter or (overrideReset and previousFilter or "");
   if(frame.filterInput:GetText() ~= filter) then

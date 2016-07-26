@@ -866,7 +866,19 @@ function WeakAuras.UpdateCurrentInstanceType(instanceType)
   end
 end
 
+local pausedOptionsProcessing = false;
+function WeakAuras.pauseOptionsProcessing(enable)
+  pausedOptionsProcessing = enable;
+end
+
+function WeakAuras.IsOptionsProcessingPaused()
+  return pausedOptionsProcessing;
+end
+
 function WeakAuras.ScanForLoads(self, event, arg1)
+  if (WeakAuras.IsOptionsProcessingPaused()) then
+    return;
+  end
   -- PET_BATTLE_CLOSE fires twice at the end of a pet battle. IsInBattle evaluates to TRUE during the
   -- first firing, and FALSE during the second. I am not sure if this check is necessary, but the
   -- following IF statement limits the impact of the PET_BATTLE_CLOSE event to the second one.
