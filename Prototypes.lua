@@ -2285,6 +2285,9 @@ WeakAuras.event_prototypes = {
           end
           if (inverse) then
             active = not active;
+            if (triggerTotemName) then
+              icon = select(3, GetSpellInfo(triggerTotemName));
+            end
           elseif (active and remainingCheck) then
             local expirationTime = startTime and (startTime + duration) or 0;
             local remainingTime = expirationTime - GetTime()
@@ -2318,6 +2321,9 @@ WeakAuras.event_prototypes = {
           state.show = not found;
           state.changed = true;
           state.name = triggerTotemName;
+          if (triggerTotemName) then
+            state.icon = select(3, GetSpellInfo(triggerTotemName));
+          end
         else -- check all slots
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
