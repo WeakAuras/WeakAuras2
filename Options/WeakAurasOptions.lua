@@ -489,6 +489,15 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
       if(triggertype == "untrigger") then
         name = "untrigger_"..name;
       end
+      if (arg.type ~= "toggle" and arg.type ~= "tristate") then
+        -- Ensure new line for non-toggle options
+        options["spacer_"..name] = {
+          type = "description",
+          name = "",
+          order = order,
+        }
+        order = order + 1;
+      end
       if(arg.type == "tristate") then
         options["use_"..name] = {
           type = "toggle",
