@@ -548,6 +548,10 @@ WeakAuras.load_prototype = {
             single_class = trigger.class.single
           end
 
+          if (trigger.use_class == nil) then -- no class selected, fallback to current class
+            single_class = select(2, UnitClass("player"));
+          end
+
           -- If a single specific class was found, load the specific list for it
           if(single_class) then
             return WeakAuras.spec_types_specific[single_class];
@@ -588,7 +592,7 @@ WeakAuras.load_prototype = {
             single_class = trigger.class.single
           end
 
-          if (not trigger.use_class) then -- no class selected, fallback to current class
+          if (trigger.use_class == nil) then -- no class selected, fallback to current class
             single_class = select(2, UnitClass("player"));
           end
 
@@ -609,7 +613,7 @@ WeakAuras.load_prototype = {
             single_spec = trigger.spec.single;
           end
 
-          if (not trigger.use_spec) then
+          if (trigger.use_spec == nil) then
             single_spec = GetSpecialization();
           end
 
@@ -648,7 +652,7 @@ WeakAuras.load_prototype = {
             single_class = trigger.class.single
           end
 
-          if (not trigger.use_class) then -- no class selected, fallback to current class
+          if (trigger.use_class == nil) then -- no class selected, fallback to current class
             single_class = select(2, UnitClass("player"));
           end
 
@@ -669,7 +673,7 @@ WeakAuras.load_prototype = {
             single_spec = trigger.spec.single;
           end
 
-          if (not trigger.use_spec) then
+          if (trigger.use_spec == nil) then
             single_spec = GetSpecialization();
           end
 
