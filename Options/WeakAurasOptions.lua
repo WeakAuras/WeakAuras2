@@ -1780,7 +1780,7 @@ local function replaceNameDescFuncs(intable, data)
           if(childOptionTable[i].values) then
             local values;
             if (type(childOptionTable[i].values) == "function") then
-              values = childOptionTable[i].values(info); -- TODO need to pass in info?
+              values = childOptionTable[i].values(info);
             elseif (type(childOptionTable[i].values) == "table") then
               values = childOptionTable[i].values;
             end
@@ -1976,7 +1976,7 @@ local function replaceNameDescFuncs(intable, data)
                       r, g, b = r or 1, g or 1, b or 1;
                       tinsert(values, ("|cFF%2x%2x%2x%s"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, childId));
                     elseif(intable.type == "select") then
-                      local selectValues = type(intable.values) == "table" and intable.values or intable.values();
+                      local selectValues = type(intable.values) == "table" and intable.values or intable.values(info);
                       local key = childOptionTable[i].get(info);
                       local display = key and selectValues[key] or L["None"];
                       tinsert(values, "|cFFE0E000"..childId..": |r"..display);
@@ -2064,6 +2064,72 @@ local function replaceImageFuncs(intable, data)
   end
   recurse(intable);
 end
+
+local function replaceValuesFuncs(intable, data)
+  local function valuesAll(info)
+    local combinedValues = {};
+    local handledValues = {};
+    local first = true;
+    for index, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId);
+      if(childData) then
+        WeakAuras.EnsureOptions(childId);
+        local childOption = displayOptions[childId];
+        if not(childOption) then
+          return "error"
+        end
+        for i=1,#info do
+          childOption = childOption.args[info[i]];
+          if not(childOption) then
+            return "error"
+          end
+        end
+        local values;
+        if not(childOption.values) then
+          return {};
+        else
+          values = childOption.values(info);
+        end
+        if(first) then
+          for k, v in pairs(values) do
+            handledValues[k] = handledValues[k] or {};
+            handledValues[k][v] = true;
+            combinedValues[k] = v;
+          end
+          first = false;
+        else
+          for k, v in pairs(values) do
+            if (handledValues[k] and handledValues[k][v]) then
+              -- Already known key/value pair
+            else
+              if (combinedValues[k]) then
+                combinedValues[k] = combinedValues[k] .. "/" .. v;
+              else
+                combinedValues[k] = v;
+              end
+              handledValues[k] = handledValues[k] or {};
+              handledValues[k][v] = true;
+            end
+          end
+        end
+      end
+    end
+
+    return combinedValues;
+  end
+
+  local function recurse(intable)
+    for i,v in pairs(intable) do
+      if(i == "values" and type(v) == "function") then
+        intable[i] = valuesAll;
+      elseif(type(v) == "table" and i ~= "values") then
+        recurse(v);
+      end
+    end
+  end
+  recurse(intable);
+end
+
 
 function WeakAuras.AddOption(id, data)
   local regionOption;
@@ -5712,6 +5778,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       removeFuncs(displayOptions[id].args.trigger);
       replaceNameDescFuncs(displayOptions[id].args.trigger, data);
       replaceImageFuncs(displayOptions[id].args.trigger, data);
+      replaceValuesFuncs(displayOptions[id].args.trigger, data);
 
       if(displayOptions[id].args.trigger.args.unevent) then
         displayOptions[id].args.trigger.args.unevent.set = options_set;
@@ -5757,6 +5824,7 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     replaceNameDescFuncs(displayOptions[id], data);
     replaceImageFuncs(displayOptions[id], data);
+    replaceValuesFuncs(displayOptions[id], data);
 
     local regionOption;
     if (regionOptions[data.regionType]) then
@@ -5811,6 +5879,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     removeFuncs(displayOptions[id].args.load);
     replaceNameDescFuncs(displayOptions[id].args.load, data);
     replaceImageFuncs(displayOptions[id].args.load, data);
+    replaceValuesFuncs(displayOptions[id].args.load, data);
 
     WeakAuras.ReloadGroupRegionOptions(data);
   else -- One aura selected
@@ -5934,6 +6003,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
     replaceNameDescFuncs(regionOption, data);
     replaceImageFuncs(regionOption, data);
+    replaceValuesFuncs(regionOption, data);
   else
     regionOption = {
       invalid = {
