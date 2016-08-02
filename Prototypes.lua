@@ -3159,6 +3159,12 @@ WeakAuras.event_prototypes = {
         init = "true"
       },
       {
+        name = "incombat",
+        display = L["In Combat"],
+        type = "tristate",
+        init = "UnitAffectingCombat('player')"
+      },
+      {
         name = "pvpflagged",
         display = L["PvP Flagged"],
         type = "tristate",
