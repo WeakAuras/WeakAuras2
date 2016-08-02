@@ -23,7 +23,6 @@ local function createOptions(id, data)
             type = "input",
             name = L["Display Icon"],
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            disabled = function() return not data.icon end,
             order = 12,
             get = function()
                 return data.displayIcon and tostring(data.displayIcon) or "";
@@ -39,7 +38,6 @@ local function createOptions(id, data)
             type = "execute",
             name = L["Choose"],
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-            disabled = function() return not data.icon end,
             order = 18,
             func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
         },

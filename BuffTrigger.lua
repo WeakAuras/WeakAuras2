@@ -121,7 +121,6 @@ do
   function aura_cache.Watch(self, id)
     self.watched[id] = self.watched[id] or {};
     self.watched[id].players = self.watched[id].players or {};
-    self.watched[id].recentChanges = self.watched[id].recentChanges or {};
     self:ForceUpdate()
   end
 
@@ -228,8 +227,6 @@ do
         spellId = spellId,
         casterGUID = casterGUID
       };
-      self.watched[id].recentChanges[guid] = true;
-      return true;
     else
       local auradata = self.watched[id].players[guid];
       if(expirationTime ~= auradata.expirationTime) then
@@ -241,10 +238,6 @@ do
         auradata.unitCaster = unitCaster;
         auradata.spellId = spellId;
         auradata.casterGUID = casterGUID;
-        self.watched[id].recentChanges[guid] = true;
-        return true;
-      else
-        return self.watched[id].recentChanges[guid];
       end
     end
   end
@@ -252,16 +245,6 @@ do
   function aura_cache.DeassertAura(self, id, guid)
     if(self.watched[id] and self.watched[id].players[guid]) then
       self.watched[id].players[guid] = nil;
-      self.watched[id].recentChanges[guid] = true;
-      return true;
-    else
-      return self.watched[id].recentChanges[guid];
-    end
-  end
-
-  function aura_cache.ClearRecentChanges(self)
-    for id, t in pairs(self.watched) do
-      wipe(t.recentChanges);
     end
   end
 
@@ -597,8 +580,8 @@ function WeakAuras.ScanAuras(unit)
 
                 -- Update aura cache (and clones)
                 if(aura_object and not data.specificUnit) then
-                  local changed = aura_object:AssertAura(id, uGUID, duration, expirationTime, name, icon, count, casGUID, spellId, unitCaster);
-                  if(data.groupclone and changed) then
+                  aura_object:AssertAura(id, uGUID, duration, expirationTime, name, icon, count, casGUID, spellId, unitCaster);
+                  if(data.groupclone) then
                     groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
                   end
                 -- Simply update visibility (show)
@@ -612,8 +595,8 @@ function WeakAuras.ScanAuras(unit)
               -- Aura does not conforms to trigger
               elseif(aura_object and not data.specificUnit) then
                 -- Update aura cache (and clones)
-                local changed = aura_object:DeassertAura(id, uGUID);
-                if(data.groupclone and changed) then
+                 aura_object:DeassertAura(id, uGUID);
+                if(data.groupclone) then
                   groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
                 end
               end
@@ -726,9 +709,6 @@ function WeakAuras.ScanAuras(unit)
     end
   end
 
-  -- Reset aura cache notes
-  aura_cache:ClearRecentChanges();
-
   -- Update current unit once again
   WeakAuras.CurrentUnit = old_unit;
 end
@@ -742,6 +722,8 @@ function WeakAuras.ScanAurasGroup()
     for i=1, GetNumSubgroupMembers() do
       WeakAuras.ScanAuras(WeakAuras.partyUnits[i])
     end
+    WeakAuras.ScanAuras("player")
+  else
     WeakAuras.ScanAuras("player")
   end
 end
