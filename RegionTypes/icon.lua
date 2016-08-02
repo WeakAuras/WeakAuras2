@@ -222,16 +222,23 @@ local function modify(parent, region, data)
     region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
 
     local textStr;
-    local function UpdateText()
-        textStr = data.displayStacks or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+    local UpdateText;
+    if (data.displayStacks:find('%%')) then
+        UpdateText = function()
+            textStr = data.displayStacks or "";
+            textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
 
-        if(stacks.displayStacks ~= textStr) then
-            if stacks:GetFont() then
-                stacks:SetText(textStr);
-                stacks.displayStacks = textStr;
-            else end
+            if(stacks.displayStacks ~= textStr) then
+                if stacks:GetFont() then
+                    stacks:SetText(textStr);
+                    stacks.displayStacks = textStr;
+                else end
+            end
         end
+    else
+      stacks:SetText(textStr);
+      stacks.displayStacks = textStr;
+      UpdateText = function() end
     end
 
     local customTextFunc = nil

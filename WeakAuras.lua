@@ -3359,7 +3359,7 @@ end
 
 local replaceStringCache = {};
 function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
-  if (regionState) then
+  if (regionState and textStr:len() > 2) then
     for key, value in pairs(regionState) do
       if (type(value) == "string" or type(value) == "number") then
         if (not replaceStringCache[key]) then

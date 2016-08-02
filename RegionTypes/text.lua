@@ -70,29 +70,40 @@ local function modify(parent, region, data)
     region:ClearAllPoints();
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
 
-    local function UpdateText()
-        local textStr = data.displayText;
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
-        if (textStr == nil or textStr == "") then
-          textStr = " ";
-        end
+    local function SetText(textStr)
+      if(textStr ~= text.displayText) then
+          if text:GetFont() then
+            text:SetText(textStr);
+          end
+      end
+      if(#textStr ~= #text.displayText) then
+          data.width = text:GetWidth();
+          data.height = text:GetHeight();
+          region:SetWidth(data.width);
+          region:SetHeight(data.height);
+          if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
+              WeakAuras.regions[data.parent].region:ControlChildren();
+          else
+              region:ClearAllPoints();
+              region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+          end
+      end
+      text.displayText = textStr;
+    end
 
-        if(textStr ~= text.displayText) then
-            if text:GetFont() then text:SetText(textStr); end
-        end
-        if(#textStr ~= #text.displayText) then
-            data.width = text:GetWidth();
-            data.height = text:GetHeight();
-            region:SetWidth(data.width);
-            region:SetHeight(data.height);
-            if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
-                WeakAuras.regions[data.parent].region:ControlChildren();
-            else
-                region:ClearAllPoints();
-                region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    local UpdateText;
+    if (data.displayText:find('%%')) then
+        UpdateText = function()
+            local textStr = data.displayText;
+            textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+            if (textStr == nil or textStr == "") then
+              textStr = " ";
             end
+
+            SetText(textStr)
         end
-        text.displayText = textStr;
+    else
+      UpdateText = function() end
     end
 
     local customTextFunc = nil
@@ -244,8 +255,11 @@ local function modify(parent, region, data)
         region.values.name = name or data.id;
         UpdateText();
     end
-
-    UpdateText();
+    if (data.displayText:find('%%')) then
+      UpdateText();
+    else
+      SetText(data.displayText);
+    end
 end
 
 WeakAuras.RegisterRegionType("text", create, modify, default);
