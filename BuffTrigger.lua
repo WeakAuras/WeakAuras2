@@ -723,6 +723,8 @@ function WeakAuras.ScanAurasGroup()
       WeakAuras.ScanAuras(WeakAuras.partyUnits[i])
     end
     WeakAuras.ScanAuras("player")
+  else
+    WeakAuras.ScanAuras("player")
   end
 end
 
