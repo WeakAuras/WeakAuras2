@@ -32,12 +32,7 @@ local fileList = {
 		"Options/RegionOptions/text.lua",
 		"Options/RegionOptions/texture.lua",
 		"Options/WeakAurasOptions.lua",
-	},
-	WeakAuras_Tutorials = {
-		"Tutorials/TutorialCore.lua",
-		"Tutorials/Tutorials/beginner.lua",
-		"Tutorials/Tutorials/newfeatures.lua",
-	},
+	},	
 	WeakAuras_Templates = {
 		"Templates/TriggerTemplates.lua",
 		"Templates/TriggerTemplatesData.lua",
@@ -47,7 +42,6 @@ local fileList = {
 local ordered = {
 	"WeakAuras",
 	"WeakAuras_Options",
-	"WeakAuras_Tutorials",
 	"WeakAuras_Templates",
 }
 
