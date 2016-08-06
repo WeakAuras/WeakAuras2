@@ -3,7 +3,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 -- GLOBALS: WeakAuras UIParent
 
 local default = {
-    displayText = "New",
+    displayText = "%p",
     outline = true,
     color = {1, 1, 1, 1},
     justify = "LEFT",
