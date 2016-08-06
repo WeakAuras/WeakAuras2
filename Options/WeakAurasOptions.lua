@@ -1662,7 +1662,11 @@ local function setAll(data, info, ...)
       end
       for i=#childOptionTable,0,-1 do
         if(childOptionTable[i].set) then
-          childOptionTable[i].set(info, ..., not before);
+          if (childOptionTable[i].type == "multiselect") then
+            childOptionTable[i].set(info, ..., not before);
+          else
+            childOptionTable[i].set(info, ...);
+          end
           break;
         end
       end
@@ -1981,7 +1985,7 @@ local function replaceNameDescFuncs(intable, data)
                       local display = key and selectValues[key] or L["None"];
                       tinsert(values, "|cFFE0E000"..childId..": |r"..display);
                     elseif(intable.type == "multiselect") then
-                      local selectedValues = nil;
+                      local selectedValues = "";
                       for k, v in pairs(combinedKeys) do
                         if (childOptionTable[i].get(info, k)) then
                           if (not selectedValues) then
