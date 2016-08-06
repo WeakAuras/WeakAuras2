@@ -2106,7 +2106,9 @@ function WeakAuras.Announce(message, output, _, extra, id, type)
 end
 
 function WeakAuras.PerformActions(data, type, region)
-  if not(paused or squelch_actions) then
+  if (paused) then
+    return;
+  end;
   local actions;
   if(type == "start") then
     actions = data.actions.start;
@@ -2116,7 +2118,7 @@ function WeakAuras.PerformActions(data, type, region)
     return;
   end
 
-  if(actions.do_message and actions.message_type and actions.message) then
+  if(actions.do_message and actions.message_type and actions.message and not squelch_actions) then
     if(actions.message_type == "PRINT") then
       DEFAULT_CHAT_FRAME:AddMessage(actions.message, actions.r or 1, actions.g or 1, actions.b or 1);
     elseif(actions.message_type == "COMBAT") then
@@ -2151,7 +2153,7 @@ function WeakAuras.PerformActions(data, type, region)
     end
   end
 
-  if(actions.do_sound and actions.sound) then
+  if(actions.do_sound and actions.sound and not squelch_actions) then
     if(actions.sound == " custom") then
       if(actions.sound_path) then
         PlaySoundFile(actions.sound_path, actions.sound_channel or "Master");
@@ -2165,7 +2167,7 @@ function WeakAuras.PerformActions(data, type, region)
     end
   end
 
-  if(actions.do_custom and actions.custom) then
+  if(actions.do_custom and actions.custom and not squelch_actions) then
     local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
@@ -2174,6 +2176,7 @@ function WeakAuras.PerformActions(data, type, region)
     end
   end
 
+  -- Apply glow actions even if squelch_actions is true
   if(actions.do_glow and actions.glow_action and actions.glow_frame) then
     local glow_frame;
     if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
@@ -2192,7 +2195,6 @@ function WeakAuras.PerformActions(data, type, region)
         WeakAuras_HideOverlayGlow(glow_frame);
       end
     end
-  end
   end
 end
 

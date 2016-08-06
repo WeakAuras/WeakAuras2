@@ -335,7 +335,7 @@ templates.class.PALADIN = {
         { spell = 211422, type = "buff", unit = "player" }, -- Knight of the Silver Hand
         { spell = 214202, type = "buff", unit = "player", talent = 6 }, -- Rule of Law
         { spell = 216413, type = "buff", unit = "player", talent = 13 }, -- Divine Purpose
-        { spell = 221886, type = "buff", unit = "player", talent = 4 }, -- Divine Steed
+        { spell = 221886, type = "buff", unit = "player"}, -- Divine Steed
         { spell = 223306, type = "buff", unit = "player", talent = 1 }, -- Bestow Faith
         { spell = 223316, type = "buff", unit = "player", talent = 16 }, -- Fervent Martyr
       },
@@ -383,7 +383,7 @@ templates.class.PALADIN = {
         { spell = 156910, type = "ability", talent = 19}, -- Beacon of Faith
         { spell = 200025, type = "ability", talent = 21}, -- Beacon of Virtue
         { spell = 200652, type = "ability"}, -- Tyr's Deliverance
-        { spell = 205656, type = "ability", talent = 4}, -- Divine Steed
+        { spell = 205656, type = "ability"}, -- Divine Steed
         { spell = 214202, type = "ability", talent = 6}, -- Rule of Law
         { spell = 223306, type = "ability", talent = 1}, -- Bestow Faith
       },
@@ -520,7 +520,7 @@ templates.class.PALADIN = {
         { spell = 205191, type = "buff", unit = "player", talent = 14 }, -- Eye for an Eye
         { spell = 209785, type = "buff", unit = "player", talent = 4 }, -- The Fires of Justice
         { spell = 217020, type = "buff", unit = "player", talent = 5 }, -- Zeal
-        { spell = 221886, type = "buff", unit = "player", talent = 17 }, -- Divine Steed
+        { spell = 221886, type = "buff", unit = "player"}, -- Divine Steed
         { spell = 223819, type = "buff", unit = "player" }, -- Divine Purpose
         { spell = 224668, type = "buff", unit = "player", talent = 20 }, -- Crusade
       },
@@ -565,7 +565,7 @@ templates.class.PALADIN = {
         { spell = 205191, type = "ability", talent = 14}, -- Eye for an Eye
         { spell = 205228, type = "ability", talent = 3}, -- Consecration
         { spell = 205273, type = "ability"}, -- Wake of Ashes
-        { spell = 205656, type = "ability", talent = 17}, -- Divine Steed
+        { spell = 205656, type = "ability"}, -- Divine Steed
         { spell = 210191, type = "ability", talent = 15}, -- Word of Glory
         { spell = 210220, type = "ability", talent = 21}, -- Holy Wrath
         { spell = 213644, type = "ability"}, -- Cleanse Toxins
