@@ -1087,6 +1087,7 @@ loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
 loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
 loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
 loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
+loadFrame:RegisterEvent("SPELLS_CHANGED");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);

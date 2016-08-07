@@ -680,6 +680,9 @@ function GenericTrigger.Add(data, region)
             stacksFunc = event_prototypes[trigger.event].stacksFunc;
 
             trigger.unevent = trigger.unevent or "auto";
+            if (event_prototypes[trigger.event].automaticrequired) then
+              trigger.unevent = "auto";
+            end
 
             if(trigger.unevent == "custom") then
               untriggerFuncStr = ConstructFunction(event_prototypes[trigger.event], untrigger);

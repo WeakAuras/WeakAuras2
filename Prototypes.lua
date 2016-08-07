@@ -690,6 +690,12 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckPvpTalentByIndex(%d)"
     },
     {
+      name = "spellknown",
+      display = L["Spell Known"],
+      type = "spell",
+      test = "IsSpellKnown(%s)"
+    },
+    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",
