@@ -4,7 +4,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 
 local default = {
     displayText = "%p",
-    outline = true,
+    outline = "OUTLINE",
     color = {1, 1, 1, 1},
     justify = "LEFT",
     selfPoint = "BOTTOM",

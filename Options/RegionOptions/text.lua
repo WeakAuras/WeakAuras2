@@ -95,15 +95,8 @@ local function createOptions(id, data)
             hasAlpha = true,
             order = 40
         },
-        outline = {
-            type = "toggle",
-            width = "half",
-            name = L["Outline"],
-            order = 42
-        },
         justify = {
             type = "select",
-            width = "half",
             name = L["Justify"],
             order = 43,
             values = WeakAuras.justify_types
@@ -122,6 +115,12 @@ local function createOptions(id, data)
             min = 6,
             softMax = 72,
             step = 1
+        },
+        outline = {
+            type = "select",
+            name = L["Outline"],
+            order = 48,
+            values = WeakAuras.font_flags
         },
         spacer = {
             type = "header",
