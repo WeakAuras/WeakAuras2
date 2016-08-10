@@ -245,6 +245,7 @@ WeakAuras.containment_types = {
 
 WeakAuras.font_flags = {
   None = L["None"],
+  MONOCHROME = L["Monochrome"],
   OUTLINE = L["Outline"],
   THICKOUTLINE  = L["Thick Outline"],
   ["MONOCHROME|OUTLINE"] = L["Monochrome Outline"],

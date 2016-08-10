@@ -1656,7 +1656,12 @@ function WeakAuras.Modernize(data)
     if not data.fontFlags then
         data.fontFlags = "OUTLINE";
     end
+  end
 
+  if data.regionType == "text" then
+    if (type(data.outline) == "boolean") then
+      data.outline = data.outline and "OUTLINE" or "None";
+    end
   end
 
   if (not data.activeTriggerMode) then

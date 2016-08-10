@@ -502,6 +502,9 @@ local function orientHorizontalInverse(region, data)
   -- Text internal alignment
   if textDegrees == 0 then
     local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
+    if (data.icon) then
+      usedSpace = usedSpace + math.min(data.height, data.width);
+    end
     text:SetWidth(data.width - usedSpace);
     text:SetJustifyH("RIGHT");
   else
@@ -554,6 +557,9 @@ local function orientHorizontal(region, data)
   -- Text internal alignment
   if textDegrees == 0 then
     local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
+    if (data.icon) then
+      usedSpace = usedSpace + math.min(data.height, data.width);
+    end
     text:SetWidth(data.width - usedSpace);
     text:SetJustifyH("LEFT");
   else
