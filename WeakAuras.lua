@@ -1992,7 +1992,7 @@ function WeakAuras.SetRegion(data, cloneId)
 
           WeakAuras.PerformActions(data, "finish", region);
           if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
-            region:Hide();
+            hideRegion();
           end
 
           if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
@@ -3177,8 +3177,8 @@ local function ApplyStateToRegion(id, region, state)
       -- Do nothing, should ideally clear duration info on region
     end
   end
+  local controlChidren = state.resort;
   if (state.resort) then
-    WeakAuras.ControlChildren(region.id);
     state.resort = false;
   end
   if(region.SetName) then
@@ -3200,6 +3200,9 @@ local function ApplyStateToRegion(id, region, state)
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
+  if (controlChidren) then
+    WeakAuras.ControlChildren(region.id);
+  end
 end
 
 -- Fallbacks if the states are empty

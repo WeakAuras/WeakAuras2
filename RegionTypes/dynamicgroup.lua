@@ -612,6 +612,9 @@ local function modify(parent, region, data)
                         -- childRegion will be hidden by its own animation, so it does not need to be hidden immediately
                     else
                         childRegion:Hide();
+                        if (regionData.cloneId) then
+                          WeakAuras.ReleaseClone(regionData.id, regionData.cloneId, WeakAuras.regions[regionData.id].regionType);
+                        end
                     end
                 end
             end
