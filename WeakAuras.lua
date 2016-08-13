@@ -2192,6 +2192,11 @@ function WeakAuras.PerformActions(data, type, region)
       end
     else
       glow_frame = _G[actions.glow_frame];
+      if (not glow_frame.__WAGlowFrame) then
+        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
+        glow_frame.__WAGlowFrame:SetAllPoints();
+      end
+      glow_frame = glow_frame.__WAGlowFrame;
     end
 
     if(glow_frame) then
