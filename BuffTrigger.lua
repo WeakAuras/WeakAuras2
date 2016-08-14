@@ -371,6 +371,20 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
   return false;
  end
 
+local function GetNameAndIconFromTrigger(trigger)
+  if (trigger.fullscan) then
+    if (trigger.spellId) then
+      local name, _, icon = GetSpellInfo(trigger.spellId);
+      return name, icon;
+    end
+  else
+    if (trigger.spellIds and trigger.spellIds[1]) then
+      local name, _, icon = GetSpellInfo(trigger.spellIds[1]);
+      return name, icon;
+    end
+  end
+end
+
 local aura_scan_cache = {};
 local aura_lists = {};
 function WeakAuras.ScanAuras(unit)
@@ -532,7 +546,11 @@ function WeakAuras.ScanAuras(unit)
 
             -- Update display visibility and clones visibility (hide)
             if not(active) then
-              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge)) then
+              local nameFromTrigger, iconFromTrigger;
+              if (data.inverse) then
+                nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+              end
+              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                 updateTriggerState = true;
               end
             end
@@ -687,7 +705,11 @@ function WeakAuras.ScanAuras(unit)
                     updateTriggerState = true;
                     -- Update display visibility (hide)
                   else
-                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge)) then
+                    local nameFromTrigger, iconFromTrigger;
+                    if (data.inverse) then
+                      nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+                    end
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                       updateTriggerState = true;
                     end
                   end
@@ -696,7 +718,11 @@ function WeakAuras.ScanAuras(unit)
 
             -- Update display visibility (hide)
             elseif not(active) then
-              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge)) then
+              local nameFromTrigger, iconFromTrigger;
+              if (data.inverse) then
+                nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+              end
+              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                 updateTriggerState = true;
               end
             end
@@ -1357,6 +1383,7 @@ function BuffTrigger.Add(data)
           names = trigger.names,
           spellIds = trigger.spellIds,
           name = trigger.name,
+          spellId = trigger.spellId,
           unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit,
           specificUnit = trigger.unit == "member",
           useCount = trigger.useCount,
@@ -1447,7 +1474,22 @@ function BuffTrigger.CanHaveAuto(data, triggernum)
   else
     trigger = data.additional_triggers[triggernum].trigger;
   end
-  return not trigger.inverse or trigger.unit == "group";
+  if (trigger.unit == "group" or trigger.unit == "multi") then
+    return true;
+  end
+  if (not trigger.inverse) then
+    return true;
+  end
+
+  if (trigger.fullscan and trigger.spellId) then
+    return true;
+  end
+
+  if (not trigger.fullscan and trigger.spellIds and trigger.spellIds[1]) then
+    return true;
+  end
+
+  return false;
 end
 
 function BuffTrigger.CanHaveClones(data, triggernum)
@@ -1561,16 +1603,31 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
   local trigger;
   if (triggernum == 0) then
     trigger = data.trigger;
- else
+  else
     trigger = data.additional_triggers[triggernum].trigger;
   end
-  if(not (trigger.inverse or BuffTrigger.CanGroupShowWithZero(data, triggernum))
-     and trigger.names) then
-    -- Try to get an icon from the icon cache
-    for index, checkname in pairs(trigger.names) do
-      if(WeakAuras.GetIconFromSpellCache(checkname)) then
-        name, icon = checkname, WeakAuras.GetIconFromSpellCache(checkname);
-        break;
+  if (trigger.fullscan) then
+    if (trigger.spellId) then
+      local _;
+
+      name, _, icon = GetSpellInfo(trigger.spellId);
+    else
+      name = trigger.name;
+      icon = WeakAuras.GetIconFromSpellCache(trigger.name);
+    end
+  else
+    if (trigger.spellIds and trigger.spellIds[1]) then
+      local _;
+      name, _, icon = GetSpellInfo(trigger.spellIds[1])
+    elseif(not (trigger.inverse or BuffTrigger.CanGroupShowWithZero(data, triggernum))
+       and trigger.names) then
+      -- Try to get an icon from the icon cache
+      for index, checkname in pairs(trigger.names) do
+        local iconFromSpellCache = WeakAuras.GetIconFromSpellCache(checkname);
+        if(iconFromSpellCache) then
+          name, icon = checkname, iconFromSpellCache;
+          break;
+        end
       end
     end
   end
