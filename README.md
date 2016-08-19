@@ -20,12 +20,12 @@ To open the options window, type `/wa` or `/weakauras` into your chat and hit en
 * [SharedMedia](https://www.wowace.com/addons/sharedmedia) for more bar textures.
 * [SharedMediaAdditionalFonts](https://www.wowace.com/addons/shared-media-additional-fonts) for more fonts.
 
-For in-depth documentation, see the [wiki](https://github.com/WeakAuras/WeakAuras2) page.
+For in-depth documentation, see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 
 For some examples of what WeakAuras can do, see the [examples](https://github.com/WeakAuras/WeakAuras2/wiki/Examples) page or the [UI Showcase](https://www.wowace.com/addons/weakauras-2/pages/ui-showcase/) where we feature popular interfaces utilizing WeakAuras!
 
 ## Problem?
-* Please see the [wiki](https://github.com/WeakAuras/WeakAuras2) page.
+* Please see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 * If you need help with your set-up, post in the [forum](https://www.wowace.com/addons/weakauras-2/forum/).
 * If you've discovered something that's clearly wrong, or if you get an error, [post](https://www.wowace.com/addons/weakauras-2/create-ticket/) a [ticket](https://www.wowace.com/addons/weakauras-2/tickets/).
 * If you have a general comment or concern, feel free to comment on the main page!
