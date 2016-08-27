@@ -1962,7 +1962,9 @@ function WeakAuras.SetRegion(data, cloneId)
           region.toShow = false;
 
           WeakAuras.PerformActions(data, "finish", region);
-          WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId);
+          if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
+            hideRegion();
+          end
           parent:ControlChildren();
         end
         function region:Expand()
