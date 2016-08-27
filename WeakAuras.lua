@@ -1992,7 +1992,7 @@ function WeakAuras.SetRegion(data, cloneId)
 
           WeakAuras.PerformActions(data, "finish", region);
           if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
-            region:Hide();
+            hideRegion();
           end
 
           if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
@@ -2192,6 +2192,11 @@ function WeakAuras.PerformActions(data, type, region)
       end
     else
       glow_frame = _G[actions.glow_frame];
+      if (not glow_frame.__WAGlowFrame) then
+        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
+        glow_frame.__WAGlowFrame:SetAllPoints();
+      end
+      glow_frame = glow_frame.__WAGlowFrame;
     end
 
     if(glow_frame) then
@@ -3074,12 +3079,11 @@ function WeakAuras.SetDynamicIconCache(name, spellId, icon)
 end
 
 function WeakAuras.GetDynamicIconCache(name)
-  if (not db.dynamicIconCache[name]) then
-    return nil;
-  end
-  for spellId, icon in pairs(db.dynamicIconCache[name]) do
-    if (IsSpellKnown(spellId)) then -- TODO save this information?
-      return db.dynamicIconCache[name][spellId];
+  if (db.dynamicIconCache[name]) then
+    for spellId, icon in pairs(db.dynamicIconCache[name]) do
+      if (IsSpellKnown(spellId)) then -- TODO save this information?
+        return db.dynamicIconCache[name][spellId];
+      end
     end
   end
 
@@ -3177,8 +3181,8 @@ local function ApplyStateToRegion(id, region, state)
       -- Do nothing, should ideally clear duration info on region
     end
   end
+  local controlChidren = state.resort;
   if (state.resort) then
-    WeakAuras.ControlChildren(region.id);
     state.resort = false;
   end
   if(region.SetName) then
@@ -3200,6 +3204,9 @@ local function ApplyStateToRegion(id, region, state)
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
+  if (controlChidren) then
+    WeakAuras.ControlChildren(region.id);
+  end
 end
 
 -- Fallbacks if the states are empty
