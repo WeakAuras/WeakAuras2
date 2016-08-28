@@ -768,7 +768,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         end
 
         if #codes > 0 then
-          tinsert(tooltip, {1, "The Aura you are importing contains custom code.", 1, 0, 0});
+          tinsert(tooltip, {1, "This aura contains custom Lua code.", 1, 0, 0});
           tinsert(tooltip, {1, "Make sure you can trust the person who sent it!", 1, 0, 0});
         end
 
@@ -1009,8 +1009,6 @@ local function checkTrigger(codes, id, trigger, untrigger)
       local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
       if not ok then
         error("Error creating thumbnail", 2)
-      else
-        --print("OK")
       end
 
       WeakAuras.validate(data, regionTypes[regionType].default);
