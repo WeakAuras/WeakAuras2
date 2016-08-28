@@ -1962,7 +1962,9 @@ function WeakAuras.SetRegion(data, cloneId)
           region.toShow = false;
 
           WeakAuras.PerformActions(data, "finish", region);
-          WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId);
+          if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
+            hideRegion();
+          end
           parent:ControlChildren();
         end
         function region:Expand()
@@ -2192,11 +2194,13 @@ function WeakAuras.PerformActions(data, type, region)
       end
     else
       glow_frame = _G[actions.glow_frame];
-      if (not glow_frame.__WAGlowFrame) then
-        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
-        glow_frame.__WAGlowFrame:SetAllPoints();
+      if (glow_frame) then
+        if (not glow_frame.__WAGlowFrame) then
+          glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
+          glow_frame.__WAGlowFrame:SetAllPoints();
+        end
+        glow_frame = glow_frame.__WAGlowFrame;
       end
-      glow_frame = glow_frame.__WAGlowFrame;
     end
 
     if(glow_frame) then
