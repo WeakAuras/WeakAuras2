@@ -292,6 +292,8 @@ function ConstructFunction(prototype, trigger, inverse)
 end
 
 function WeakAuras.EndEvent(id, triggernum, force, state)
+  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local state = allStates[""] or {};
   if (state.show ~= false and state.show ~= nil) then
     state.show = false;
     state.changed = true;
