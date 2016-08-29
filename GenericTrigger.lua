@@ -292,13 +292,15 @@ function ConstructFunction(prototype, trigger, inverse)
 end
 
 function WeakAuras.EndEvent(id, triggernum, force, state)
-  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  local state = allStates[""] or {};
-  if (state.show ~= false and state.show ~= nil) then
-    state.show = false;
-    state.changed = true;
+  if state then
+    if (state.show ~= false and state.show ~= nil) then
+      state.show = false;
+      state.changed = true;
+    end
+    return state.changed;
+  else
+    return false
   end
-  return state.changed;
 end
 
 function WeakAuras.ActivateEvent(id, triggernum, data, state)
