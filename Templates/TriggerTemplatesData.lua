@@ -3895,7 +3895,7 @@ templates.class.MONK[1][6] = {
 templates.class.MONK[2][6] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 205406, type = "spellcount"}, -- Sheilun's Gift
+    { spell = 205406, type = "ability", showOn = "always"}, -- Sheilun's Gift
   },
   icon = 1242282,
 };
@@ -3903,7 +3903,7 @@ templates.class.MONK[2][6] = {
 templates.class.MONK[3][6] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 101546, type = "spellcount"}, -- Spinning Crane Kick
+    { spell = 101546, type = "ability", showOn = "always"}, -- Spinning Crane Kick
   },
   icon = 606543,
 };
