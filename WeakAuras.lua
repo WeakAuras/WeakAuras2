@@ -2184,8 +2184,9 @@ function WeakAuras.PerformActions(data, type, region)
     end
   end
 
-  -- Apply glow actions even if squelch_actions is true
-  if(actions.do_glow and actions.glow_action and actions.glow_frame) then
+  -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
+  local squelch_glow = squelch_actions and (type == "finish");
+  if(actions.do_glow and actions.glow_action and actions.glow_frame and not squelch_glow) then
     local glow_frame;
     if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
       local frame_name = actions.glow_frame:sub(11);

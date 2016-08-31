@@ -1194,9 +1194,13 @@ do
   cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
   cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
   cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+  cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+  cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
 
-    if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES" or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE") then
+    if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
+       or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE"
+       or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
       WeakAuras.CheckCooldownReady();
     elseif(event == "UNIT_SPELLCAST_SENT") then
       local unit, name = ...;
