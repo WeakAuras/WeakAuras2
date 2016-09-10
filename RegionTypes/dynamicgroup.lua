@@ -445,6 +445,10 @@ local function modify(parent, region, data)
                     end
                     region.trays[regionData.key]:ClearAllPoints();
                     region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
+                    -- Fix for ticket 686: Somehow calling any function that requires the position here
+                    -- actually ensures that we get the right position in DoResize
+                    local tmp = region.trays[regionData.key]:GetBottom();
+
                     if(data.grow == "RIGHT") then
                         xOffset = xOffset + (childData.width + data.space);
                         yOffset = yOffset + data.stagger;
