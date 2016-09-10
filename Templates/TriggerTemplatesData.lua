@@ -1681,7 +1681,7 @@ templates.class.SHAMAN = {
         { spell = 79206, type = "buff", unit = "player" }, -- Spiritwalker's Grace
         { spell = 98007, type = "buff", unit = "player" }, -- Spirit Link Totem
         { spell = 108271, type = "buff", unit = "player" }, -- Astral Shift
-        { spell = 108281, type = "buff", unit = "player", talent = 8 }, -- Ancestral Guidance
+        { spell = 108281, type = "buff", unit = "player", talent = 11 }, -- Ancestral Guidance
         { spell = 114052, type = "buff", unit = "player", talent = 19 }, -- Ascendance
         { spell = 157504, type = "buff", unit = "player" }, -- Cloudburst Totem
         { spell = 192082, type = "buff", unit = "player", talent = 6 }, -- Wind Rush
