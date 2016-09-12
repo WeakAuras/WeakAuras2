@@ -96,6 +96,7 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
+        { spell = 100, type = "ability"}, -- Charge
         { spell = 355, type = "ability"}, -- Taunt
         { spell = 845, type = "ability"}, -- Cleave
         { spell = 1719, type = "ability"}, -- Battle Cry
@@ -269,6 +270,7 @@ templates.class.WARRIOR = {
         { spell = 871, type = "ability"}, -- Shield Wall
         { spell = 1160, type = "ability"}, -- Demoralizing Shout
         { spell = 1719, type = "ability"}, -- Battle Cry
+        { spell = 2565, type = "ability"}, -- Shield Block
         { spell = 6343, type = "ability"}, -- Thunder Clap
         { spell = 6544, type = "ability"}, -- Heroic Leap
         { spell = 6552, type = "ability"}, -- Pummel
