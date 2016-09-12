@@ -96,6 +96,7 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
+        { spell = 100, type = "ability"}, -- Charge
         { spell = 355, type = "ability"}, -- Taunt
         { spell = 845, type = "ability"}, -- Cleave
         { spell = 1719, type = "ability"}, -- Battle Cry
@@ -269,6 +270,7 @@ templates.class.WARRIOR = {
         { spell = 871, type = "ability"}, -- Shield Wall
         { spell = 1160, type = "ability"}, -- Demoralizing Shout
         { spell = 1719, type = "ability"}, -- Battle Cry
+        { spell = 2565, type = "ability"}, -- Shield Block
         { spell = 6343, type = "ability"}, -- Thunder Clap
         { spell = 6544, type = "ability"}, -- Heroic Leap
         { spell = 6552, type = "ability"}, -- Pummel
@@ -1681,7 +1683,7 @@ templates.class.SHAMAN = {
         { spell = 79206, type = "buff", unit = "player" }, -- Spiritwalker's Grace
         { spell = 98007, type = "buff", unit = "player" }, -- Spirit Link Totem
         { spell = 108271, type = "buff", unit = "player" }, -- Astral Shift
-        { spell = 108281, type = "buff", unit = "player", talent = 8 }, -- Ancestral Guidance
+        { spell = 108281, type = "buff", unit = "player", talent = 11 }, -- Ancestral Guidance
         { spell = 114052, type = "buff", unit = "player", talent = 19 }, -- Ascendance
         { spell = 157504, type = "buff", unit = "player" }, -- Cloudburst Totem
         { spell = 192082, type = "buff", unit = "player", talent = 6 }, -- Wind Rush
@@ -3206,7 +3208,7 @@ templates.class.DEATHKNIGHT = {
         { spell = 205725, type = "buff", unit = "player" }, -- Anti-Magic Barrier
         { spell = 206977, type = "buff", unit = "player" }, -- Blood Mirror
         { spell = 212552, type = "buff", unit = "player" }, -- Wraith Walk
-        { spell = 219788, type = "buff", unit = "player" }, -- Ossuary
+        { spell = 219788, type = "buff", unit = "player", talent = 7 }, -- Ossuary
         { spell = 219809, type = "buff", unit = "player" }, -- Tombstone
       },
       icon = 237517
@@ -3219,13 +3221,13 @@ templates.class.DEATHKNIGHT = {
         { spell = 55078, type = "debuff", unit = "target" }, -- Blood Plague
         { spell = 56222, type = "debuff", unit = "target" }, -- Dark Command
         { spell = 111673, type = "debuff", unit = "multi"}, -- Control Undead
-        { spell = 114556, type = "debuff", unit = "player" }, -- Purgatory
+        { spell = 114556, type = "debuff", unit = "player", talent = 21 }, -- Purgatory
         { spell = 193261, type = "debuff", unit = "target" }, -- Bleeding Profusely
         { spell = 206930, type = "debuff", unit = "target" }, -- Heart Strike
-        { spell = 206931, type = "debuff", unit = "target" }, -- Blooddrinker
-        { spell = 206940, type = "debuff", unit = "target" }, -- Mark of Blood
-        { spell = 206961, type = "debuff", unit = "target" }, -- Tremble Before Me
-        { spell = 206977, type = "debuff", unit = "target" }, -- Blood Mirror
+        { spell = 206931, type = "debuff", unit = "target", talent = 3 }, -- Blooddrinker
+        { spell = 206940, type = "debuff", unit = "target", talent = 10 }, -- Mark of Blood
+        { spell = 206961, type = "debuff", unit = "target", talent = 14 }, -- Tremble Before Me
+        { spell = 206977, type = "debuff", unit = "target", talent = 20 }, -- Blood Mirror
         { spell = 221562, type = "debuff", unit = "target" }, -- Asphyxiate
       },
       icon = 237514
@@ -3245,16 +3247,16 @@ templates.class.DEATHKNIGHT = {
         { spell = 61999, type = "ability"}, -- Raise Ally
         { spell = 108199, type = "ability"}, -- Gorefiend's Grasp
         { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 194679, type = "ability"}, -- Rune Tap
-        { spell = 194844, type = "ability"}, -- Bonestorm
+        { spell = 194679, type = "ability", talent = 17}, -- Rune Tap
+        { spell = 194844, type = "ability", talent = 19}, -- Bonestorm
         { spell = 195182, type = "ability"}, -- Marrowrend
         { spell = 195292, type = "ability"}, -- Death's Caress
         { spell = 205223, type = "ability"}, -- Consumption
         { spell = 206930, type = "ability"}, -- Heart Strike
-        { spell = 206931, type = "ability"}, -- Blooddrinker
-        { spell = 206977, type = "ability"}, -- Blood Mirror
+        { spell = 206931, type = "ability", talent = 3}, -- Blooddrinker
+        { spell = 206977, type = "ability", talent = 20}, -- Blood Mirror
         { spell = 212552, type = "ability"}, -- Wraith Walk
-        { spell = 219809, type = "ability"}, -- Tombstone
+        { spell = 219809, type = "ability", talent = 12}, -- Tombstone
         { spell = 221562, type = "ability"}, -- Asphyxiate
         { spell = 221699, type = "ability"}, -- Blood Tap
       },
@@ -3291,15 +3293,15 @@ templates.class.DEATHKNIGHT = {
         { spell = 51271, type = "buff", unit = "player" }, -- Pillar of Frost
         { spell = 53365, type = "buff", unit = "player" }, -- Unholy Strength
         { spell = 59052, type = "buff", unit = "player" }, -- Rime
-        { spell = 152279, type = "buff", unit = "player" }, -- Breath of Sindragosa
-        { spell = 194879, type = "buff", unit = "player" }, -- Icy Talons
+        { spell = 152279, type = "buff", unit = "player", talent = 20 }, -- Breath of Sindragosa
+        { spell = 194879, type = "buff", unit = "player", talent = 2 }, -- Icy Talons
         { spell = 178819, type = "buff", unit = "player" }, -- Dark Succor
         { spell = 196770, type = "buff", unit = "player" }, -- Remorseless Winter
         { spell = 204957, type = "buff", unit = "player" }, -- Frozen Soul
-        { spell = 207127, type = "buff", unit = "player" }, -- Hungering Rune Weapon
-        { spell = 207203, type = "buff", unit = "player" }, -- Frost Shield
-        { spell = 207256, type = "buff", unit = "player" }, -- Obliteration
-        { spell = 211805, type = "buff", unit = "player" }, -- Gathering Storm
+        { spell = 207127, type = "buff", unit = "player", talent = 8 }, -- Hungering Rune Weapon
+        { spell = 207203, type = "buff", unit = "player", talent = 14 }, -- Frost Shield
+        { spell = 207256, type = "buff", unit = "player", talent = 19 }, -- Obliteration
+        { spell = 211805, type = "buff", unit = "player", talent = 18 }, -- Gathering Storm
         { spell = 212552, type = "buff", unit = "player" }, -- Wraith Walk
       },
       icon = 135305
@@ -3314,12 +3316,12 @@ templates.class.DEATHKNIGHT = {
         { spell = 56222, type = "debuff", unit = "target" }, -- Dark Command
         { spell = 111673, type = "debuff", unit = "multi"}, -- Control Undead
         { spell = 190780, type = "debuff", unit = "target" }, -- Frost Breath
-        { spell = 207165, type = "debuff", unit = "target" }, -- Abomination's Might
-        { spell = 207167, type = "debuff", unit = "target" }, -- Blinding Sleet
+        { spell = 207165, type = "debuff", unit = "target", talent = 10 }, -- Abomination's Might
+        { spell = 207167, type = "debuff", unit = "target", talent = 11 }, -- Blinding Sleet
         { spell = 207171, type = "debuff", unit = "target" }, -- Winter is Coming
         { spell = 211793, type = "debuff", unit = "target" }, -- Remorseless Winter
-        { spell = 211794, type = "debuff", unit = "target" }, -- Winter is Coming
-        { spell = 212764, type = "debuff", unit = "target" }, -- White Walker
+        { spell = 211794, type = "debuff", unit = "target", talent = 12 }, -- Winter is Coming
+        { spell = 212764, type = "debuff", unit = "target", talent = 15 }, -- White Walker
       },
       icon = 237522
     },
@@ -3332,22 +3334,22 @@ templates.class.DEATHKNIGHT = {
         { spell = 47568, type = "ability"}, -- Empower Rune Weapon
         { spell = 48707, type = "ability"}, -- Anti-Magic Shell
         { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49020, type = "ability"}, -- Obliterate
+        { spell = 49020, type = "ability", talent = 1}, -- Obliterate
         { spell = 49184, type = "ability"}, -- Howling Blast
         { spell = 49576, type = "ability"}, -- Death Grip
         { spell = 51271, type = "ability"}, -- Pillar of Frost
         { spell = 56222, type = "ability"}, -- Dark Command
-        { spell = 57330, type = "ability"}, -- Horn of Winter
+        { spell = 57330, type = "ability", talent = 6}, -- Horn of Winter
         { spell = 61999, type = "ability"}, -- Raise Ally
         { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 152279, type = "ability"}, -- Breath of Sindragosa
+        { spell = 152279, type = "ability", talent = 20}, -- Breath of Sindragosa
         { spell = 190778, type = "ability"}, -- Sindragosa's Fury
-        { spell = 194913, type = "ability"}, -- Glacial Advance
+        { spell = 194913, type = "ability", talent = 21}, -- Glacial Advance
         { spell = 196770, type = "ability"}, -- Remorseless Winter
-        { spell = 207127, type = "ability"}, -- Hungering Rune Weapon
-        { spell = 207167, type = "ability"}, -- Blinding Sleet
-        { spell = 207230, type = "ability"}, -- Frostscythe
-        { spell = 207256, type = "ability"}, -- Obliteration
+        { spell = 207127, type = "ability", talent = 8}, -- Hungering Rune Weapon
+        { spell = 207167, type = "ability", talent = 11}, -- Blinding Sleet
+        { spell = 207230, type = "ability", talent = 16}, -- Frostscythe
+        { spell = 207256, type = "ability", talent = 19}, -- Obliteration
         { spell = 212552, type = "ability"}, -- Wraith Walk
       },
       icon = 135372
@@ -3382,12 +3384,12 @@ templates.class.DEATHKNIGHT = {
         { spell = 178819, type = "buff", unit = "player" }, -- Dark Succor
         { spell = 188290, type = "buff", unit = "player" }, -- Death and Decay
         { spell = 194918, type = "buff", unit = "player" }, -- Blighted Rune Weapon
-        { spell = 207290, type = "buff", unit = "player" }, -- Unholy Frenzy
-        { spell = 207319, type = "buff", unit = "player" }, -- Corpse Shield
+        { spell = 207290, type = "buff", unit = "player", talent = 7 }, -- Unholy Frenzy
+        { spell = 207319, type = "buff", unit = "player", talent = 14 }, -- Corpse Shield
         { spell = 212552, type = "buff", unit = "player" }, -- Wraith Walk
-        { spell = 215711, type = "buff", unit = "player" }, -- Soul Reaper
+        { spell = 215711, type = "buff", unit = "player", talent = 21 }, -- Soul Reaper
         { spell = 216974, type = "buff", unit = "player" }, -- Necrosis
-        { spell = 218100, type = "buff", unit = "player" }, -- Defile
+        { spell = 218100, type = "buff", unit = "player", talent = 20 }, -- Defile
       },
       icon = 136181
     },
@@ -3400,15 +3402,15 @@ templates.class.DEATHKNIGHT = {
         { spell = 56222, type = "debuff", unit = "target" }, -- Dark Command
         { spell = 91800, type = "debuff", unit = "target" }, -- Gnaw
         { spell = 111673, type = "debuff", unit = "multi"}, -- Control Undead
-        { spell = 130736, type = "debuff", unit = "target" }, -- Soul Reaper
-        { spell = 156004, type = "debuff", unit = "target" }, -- Defile
+        { spell = 130736, type = "debuff", unit = "target", talent = 21 }, -- Soul Reaper
+        { spell = 156004, type = "debuff", unit = "target", talent = 20 }, -- Defile
         { spell = 191587, type = "debuff", unit = "target" }, -- Virulent Plague
         { spell = 191748, type = "debuff", unit = "target" }, -- Scourge of Worlds
         { spell = 194310, type = "debuff", unit = "target" }, -- Festering Wound
         { spell = 196782, type = "debuff", unit = "target" }, -- Outbreak
-        { spell = 208278, type = "debuff", unit = "target" }, -- Debilitating Infestation
+        { spell = 208278, type = "debuff", unit = "target", talent = 12 }, -- Debilitating Infestation
         { spell = 212332, type = "debuff", unit = "target" }, -- Smash
-        { spell = 221562, type = "debuff", unit = "target" }, -- Asphyxiate
+        { spell = 221562, type = "debuff", unit = "target", talent = 11 }, -- Asphyxiate
       },
       icon = 1129420
     },
@@ -3432,16 +3434,16 @@ templates.class.DEATHKNIGHT = {
         { spell = 77575, type = "ability"}, -- Outbreak
         { spell = 85948, type = "ability"}, -- Festering Strike
         { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 130736, type = "ability"}, -- Soul Reaper
-        { spell = 152280, type = "ability"}, -- Defile
+        { spell = 130736, type = "ability", talent = 21}, -- Soul Reaper
+        { spell = 152280, type = "ability", talent = 20}, -- Defile
         { spell = 194918, type = "ability"}, -- Blighted Rune Weapon
         { spell = 207311, type = "ability"}, -- Clawing Shadows
-        { spell = 207317, type = "ability"}, -- Epidemic
+        { spell = 207317, type = "ability", talent = 4}, -- Epidemic
         { spell = 207319, type = "ability"}, -- Corpse Shield
-        { spell = 207349, type = "ability"}, -- Dark Arbiter
+        { spell = 207349, type = "ability", talent = 19}, -- Dark Arbiter
         { spell = 212552, type = "ability"}, -- Wraith Walk
         { spell = 220143, type = "ability"}, -- Apocalypse
-        { spell = 221562, type = "ability"}, -- Asphyxiate
+        { spell = 221562, type = "ability", talent = 11}, -- Asphyxiate
         { spell = 47482, type = "ability", titleSuffix = L["(Pet)"]}, -- Leap
         { spell = 47484, type = "ability", titleSuffix = L["(Pet)"]}, -- Huddle
       },
@@ -3533,6 +3535,7 @@ templates.items[2] = {
     { spell = 208822, type = "buff", unit = "player", item = 132381},
     { spell = 208871, type = "buff", unit = "player", item = 132379},
     { spell = 209423, type = "buff", unit = "player", item = 137099},
+    { spell = 209455, type = "buff", unit = "player", item = 132406},
     { spell = 210607, type = "buff", unit = "player", item = 137051},
     { spell = 211319, type = "debuff", unit = "player", item = 137109},
     { spell = 211442, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Sanctify"], item = 132445},

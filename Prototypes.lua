@@ -768,7 +768,8 @@ WeakAuras.event_prototypes = {
       "PLAYER_TARGET_CHANGED",
       "PLAYER_FOCUS_CHANGED",
       "UNIT_LEVEL",
-      "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
+      "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
+      "UNIT_FACTION"
     },
     force_events = true,
     name = L["Unit Characteristics"],
