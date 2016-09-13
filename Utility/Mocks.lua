@@ -23,6 +23,8 @@ function MockMethodFull(mockInstance, propertyName, getMethodName, setMethodName
         -- we were given.
         if type(returnValue) == 'function' then
             return returnValue(realParameters)
+        elseif type(returnValue) == 'table' then
+            return table.unpack(returnValue)
         end
 
         -- Otherwise it must be a constant, just send it back as-is.

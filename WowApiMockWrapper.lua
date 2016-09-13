@@ -20,7 +20,7 @@ function WowApiMock:CreateMockedMethods(wrapper)
     -- Commented lines here indicate that there's something different about these
     -- that needs more attention.
     MockMethodPartial(wrapper, "IsAddOnLoaded", true)
-    MockMethodPartial(wrapper, "InCombatLockdown", "TODO: Mock InCombatLockdown")
+    MockMethodPartial(wrapper, "InCombatLockdown", nil)
     MockMethodPartial(wrapper, "LoadAddOn", "TODO: Mock LoadAddOn")
     MockMethodPartial(wrapper, "setfenv", "TODO: Mock setfenv")
     MockMethodPartial(wrapper, "UnitName", "Weaki")
@@ -102,3 +102,9 @@ mock1:MockGetTalentInfo(func)
 print(mock2:GetTalentInfo())
 mock1:GetTalentInfo("win")
 mock1:GetTalentInfo("lose")
+
+print("------")
+
+print(mock1:LoadAddOn("blah"))
+mock1:MockLoadAddOn({nil,"Bad load"})
+print(mock1:LoadAddOn("blah"))
