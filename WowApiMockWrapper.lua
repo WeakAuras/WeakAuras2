@@ -70,41 +70,42 @@ function WowApiMock:CreateMockedMethods(wrapper)
     MockMethodPartial(wrapper, "IsSpellKnown", "TODO: Mock IsSpellKnown")
 end
 
+-- TESTING When we change the mock on one instance it doesn't affect others.
 local mock1 = WowApiMock.create()
 local mock2 = WowApiMock.create()
-print(mock1:GetTalentInfo())
-print(mock2:GetTalentInfo())
-mock1:MockGetTalentInfo("New talent info")
-print(mock1:GetTalentInfo())
-print(mock2:GetTalentInfo())
+local talentInfoTemp = "TODO: Mock TalentInfo"
+assert(mock1:GetTalentInfo() == talentInfoTemp, "FAIL")
+assert(mock2:GetTalentInfo() == talentInfoTemp, "FAIL")
 
-print("------")
+local talentInfoMocked = "New Talent Info"
+mock1:MockGetTalentInfo(talentInfoMocked)
+assert(mock1:GetTalentInfo() == talentInfoMocked, "FAIL")
+assert(mock2:GetTalentInfo() == talentInfoTemp, "FAIL")
 
-print(mock1:GetRealmName())
-print(mock2:GetRealmName())
-mock1:MockGetRealmName("Proudmoore", "blah", "blah")
-print(mock1:GetRealmName())
-print(mock2:GetRealmName())
-
-
-print("------")
-
+--TESTING When the mocked value is a function, its called appropriately.
 local func = function(input) 
-    if input == "win" then 
-        print("winner") 
+    if input == "IsMatch" then 
+        return "Success"
     else 
-        print("loser")
+        return "Failure"
     end
 end
 
-mock1:MockGetTalentInfo(func)
+local mock3 = WowApiMock.create()
+assert(mock3:GetTalentInfo("IsMatch") == talentInfoTemp, "FAIL")
+assert(mock3:GetTalentInfo("IsNotMatch") == talentInfoTemp, "FAIL")
 
-print(mock2:GetTalentInfo())
-mock1:GetTalentInfo("win")
-mock1:GetTalentInfo("lose")
+mock3:MockGetTalentInfo(func)
 
-print("------")
+assert(mock3:GetTalentInfo("IsMatch") == "Success", "FAIL")
+assert(mock3:GetTalentInfo("IsNotMatch") == "Failure", "FAIL")
 
-print(mock1:LoadAddOn("blah"))
-mock1:MockLoadAddOn({nil,"Bad load"})
-print(mock1:LoadAddOn("blah"))
+--TESTING When the mock has multiple return values, we get them all.
+local loadAddOnMocked = "TODO: Mock LoadAddOn"
+local loadAddOnResult = mock1:LoadAddOn("WeakAuras2")
+assert(loadAddOnResult == loadAddOnMocked)
+
+mock1:MockLoadAddOn({1,"Successful Load"})
+local success, reason = mock1:LoadAddOn("WeakAuras2")
+assert(success == 1, "FAIL")
+assert(reason == "Successful Load")
