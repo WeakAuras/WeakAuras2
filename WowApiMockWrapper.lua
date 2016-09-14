@@ -68,6 +68,9 @@ function WowApiMock:CreateMockedMethods(wrapper)
     MockMethodPartial(wrapper, "debugprofilestop", 100)
     MockMethodPartial(wrapper, "debugstack", "FAKE_DEBUG_STACK")
     MockMethodPartial(wrapper, "IsSpellKnown", true)
+    MockMethodPartial(wrapper, "GetAddOnEnableState", 2)
+    --MockMethodPartial(wrapper, "IsPlayerMoving", "TODO: Mock IsPlayerMoving")
+    MockMethodPartial(wrapper, "UnitIsDead", nil)
 end
 
 -- TESTING When we change the mock on one instance it doesn't affect others.

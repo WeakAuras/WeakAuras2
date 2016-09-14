@@ -11,7 +11,6 @@ local pairs = pairs
 
 -- WoW APIs
 local apiWrapper = WowApiWrapper:create()
-local CreateFrame, UIParent = apiWrapper.CreateFrame, apiWrapper.UIParent
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -59,11 +58,11 @@ local PaneBackdrop  = {
 }
 
 local function Constructor()
-	local frame = CreateFrame("Frame", nil, UIParent)
+	local frame = apiWrapper.CreateFrame("Frame", nil, UIParent)
 	frame:SetFrameStrata("FULLSCREEN_DIALOG")
 
 	--Container Support
-	local content = CreateFrame("Frame", nil, frame)
+	local content = apiWrapper.CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", 20, 0)
 	content:SetPoint("BOTTOMRIGHT", 0, 15)
 

@@ -9,13 +9,6 @@ local ceil, min = ceil, min
 
 -- WoW APIs
 local apiWrapper = WowApiWrapper:create()
-local GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo = apiWrapper.GetPvpTalentInfo, apiWrapper.GetActiveSpecGroup, apiWrapper.GetTalentInfo
-local GetNumSpecializationsForClassID, GetSpecialization = apiWrapper.GetNumSpecializationsForClassID, apiWrapper.GetSpecialization
-local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = apiWrapper.UnitClass, apiWrapper.UnitHealth, apiWrapper.UnitHealthMax, apiWrapper.UnitName, apiWrapper.UnitStagger, apiWrapper.UnitPower, apiWrapper.UnitPowerMax
-local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = apiWrapper.UnitAlternatePowerInfo, apiWrapper.UnitAlternatePowerTextureInfo
-local GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon = apiWrapper.GetSpellInfo, apiWrapper.GetItemInfo, apiWrapper.GetTotemInfo, apiWrapper.GetItemCount, apiWrapper.GetItemIcon
-local GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm = apiWrapper.GetShapeshiftFormInfo, apiWrapper.GetNumShapeshiftForms, apiWrapper.GetShapeshiftForm
-local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = apiWrapper.GetRuneCooldown, apiWrapper.UnitCastingInfo, apiWrapper.UnitChannelInfo
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -435,15 +428,15 @@ end
 function WeakAuras.CheckTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local spec = GetActiveSpecGroup()
-  local _, _, _, selected = GetTalentInfo(tier, column, spec)
+  local spec = apiWrapper.GetActiveSpecGroup()
+  local _, _, _, selected = apiWrapper.GetTalentInfo(tier, column, spec)
   return selected
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local spec = GetActiveSpecGroup()
+  local spec = apiWrapper.GetActiveSpecGroup()
   local _, _, _, selected = GetPvpTalentInfo(tier, column, spec)
   return selected
 end
@@ -550,7 +543,7 @@ WeakAuras.load_prototype = {
           end
 
           if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
+            single_class = select(2, apiWrapper.UnitClass("player"));
           end
 
           -- If a single specific class was found, load the specific list for it
@@ -594,7 +587,7 @@ WeakAuras.load_prototype = {
           end
 
           if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
+            single_class = select(2, apiWrapper.UnitClass("player"));
           end
 
           local single_spec;
@@ -615,7 +608,7 @@ WeakAuras.load_prototype = {
           end
 
           if (trigger.use_spec == nil) then
-            single_spec = GetSpecialization();
+            single_spec = apiWrapper.GetSpecialization();
           end
 
           -- print ("Using talent cache", single_class, single_spec);
@@ -654,7 +647,7 @@ WeakAuras.load_prototype = {
           end
 
           if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
+            single_class = select(2, apiWrapper.UnitClass("player"));
           end
 
           local single_spec;
@@ -675,7 +668,7 @@ WeakAuras.load_prototype = {
           end
 
           if (trigger.use_spec == nil) then
-            single_spec = GetSpecialization();
+            single_spec = apiWrapper.GetSpecialization();
           end
 
           -- print ("Using talent cache", single_class, single_spec);
@@ -694,7 +687,7 @@ WeakAuras.load_prototype = {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
-      test = "IsSpellKnown(%s)"
+      test = "apiWrapper.IsSpellKnown(%s)"
     },
     {
       name = "race",
@@ -797,14 +790,14 @@ WeakAuras.event_prototypes = {
         name = "name",
         display = L["Name"],
         type = "string",
-        init = "UnitName(concernedUnit)",
+        init = "apiWrapper.UnitName(concernedUnit)",
         store = true
       },
       {
         name = "class",
         display = L["Class"],
         type = "select",
-        init = "select(2, UnitClass(unit))",
+        init = "select(2, apiWrapper.UnitClass(unit))",
         values = "class_types",
         store = true
       },
@@ -837,7 +830,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists(concernedUnit)"
+        test = "apiWrapper.UnitExists(concernedUnit)"
       }
     },
     automatic = true
@@ -894,14 +887,14 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists(concernedUnit)"
+        test = "apiWrapper.UnitExists(concernedUnit)"
       }
     },
     durationFunc = function(trigger)
       return UnitHealth(trigger.unit), UnitHealthMax(trigger.unit), true;
     end,
     nameFunc = function(trigger)
-      return UnitName(trigger.unit);
+      return apiWrapper.UnitName(trigger.unit);
     end,
     automatic = true
   },
@@ -978,7 +971,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists(concernedUnit)"
+        test = "apiWrapper.UnitExists(concernedUnit)"
       }
     },
     durationFunc = function(trigger)
@@ -1037,7 +1030,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists(concernedUnit) and name"
+        test = "apiWrapper.UnitExists(concernedUnit) and name"
       }
     },
     durationFunc = function(trigger)
@@ -1084,7 +1077,7 @@ WeakAuras.event_prototypes = {
         name = "sourceUnit",
         display = L["Source Unit"],
         type = "unit",
-        test = "(sourceGUID or '') == (UnitGUID('%s') or '') and sourceGUID",
+        test = "(sourceGUID or '') == (apiWrapper.UnitGUID('%s') or '') and sourceGUID",
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
@@ -1114,7 +1107,7 @@ WeakAuras.event_prototypes = {
         name = "destUnit",
         display = L["Destination Unit"],
         type = "unit",
-        test = "(destGUID or '') == (UnitGUID('%s') or '') and destGUID",
+        test = "(destGUID or '') == (apiWrapper.UnitGUID('%s') or '') and destGUID",
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -1372,7 +1365,7 @@ WeakAuras.event_prototypes = {
       {
         hidden = true,
         name = "icon",
-        init = "spellId and select(3, GetSpellInfo(spellId)) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
+        init = "spellId and select(3, apiWrapper.GetSpellInfo(spellId)) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
         store = true,
         test = "true"
       }
@@ -1391,7 +1384,7 @@ WeakAuras.event_prototypes = {
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) == "number" and apiWrapper.GetSpellInfo(trigger.spellName) or trigger.spellName;
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
       local ret = [=[
@@ -1410,7 +1403,7 @@ WeakAuras.event_prototypes = {
       if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
         local ret2 = [[
           local expirationTime = startTime + duration
-          local remaining = expirationTime - GetTime();
+          local remaining = expirationTime - apiWrapper.GetTime();
           local remainingCheck = %s;
           if(remaining >= remainingCheck) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
@@ -1470,20 +1463,20 @@ WeakAuras.event_prototypes = {
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.realSpellName or 0);
+      local name = apiWrapper.GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
       end
-      name = GetSpellInfo(trigger.spellName or 0);
+      name = apiWrapper.GetSpellInfo(trigger.spellName or 0);
       if (name) then
         return name;
       end
       return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      local _, _, icon = apiWrapper.GetSpellInfo(trigger.realSpellName or 0);
       if (not icon) then
-        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+        icon = select(3, apiWrapper.GetSpellInfo(trigger.spellName or 0));
       end
       return icon;
     end,
@@ -1514,7 +1507,7 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.spellName or 0);
+      local name = apiWrapper.GetSpellInfo(trigger.spellName or 0);
       if(name) then
         return name;
       else
@@ -1522,7 +1515,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      local _, _, icon = apiWrapper.GetSpellInfo(trigger.spellName or 0);
       return icon;
     end,
     hasSpellID = true
@@ -1549,7 +1542,7 @@ WeakAuras.event_prototypes = {
       if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
         local ret2 = [[
           local expirationTime = startTime + duration
-          local remaining = expirationTime - GetTime();
+          local remaining = expirationTime - apiWrapper.GetTime();
           local remainingCheck = %s;
           if(remaining >= remainingCheck) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
@@ -1596,7 +1589,7 @@ WeakAuras.event_prototypes = {
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName or 0);
+      local name = apiWrapper.GetItemInfo(trigger.itemName or 0);
       if(name) then
         return name;
       else
@@ -1604,7 +1597,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
+      local _, _, _, _, _, _, _, _, _, icon = apiWrapper.GetItemInfo(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true,
@@ -1631,7 +1624,7 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName or 0);
+      local name = apiWrapper.GetItemInfo(trigger.itemName or 0);
       if(name) then
         return name;
       else
@@ -1639,7 +1632,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
+      local _, _, _, _, _, _, _, _, _, icon = apiWrapper.GetItemInfo(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true
@@ -1758,7 +1751,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret .. ret2:format(trigger.remaining or 0);
         copyOrSchedule = [[
-          local remainingTime = bar.expirationTime - GetTime()
+          local remainingTime = bar.expirationTime - apiWrapper.GetTime()
           if (remainingTime %s %s) then
             WeakAuras.CopyBarToState(bar, states, id);
           elseif (states[id] and states[id].show) then
@@ -1960,7 +1953,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret .. ret2:format(trigger.remaining or 0);
         copyOrSchedule = [[
-          local remainingTime = bar.expirationTime - GetTime()
+          local remainingTime = bar.expirationTime - apiWrapper.GetTime()
           if (remainingTime %s %s) then
             WeakAuras.CopyBigWigsTimerToState(bar, states, id);
           elseif (states[id] and states[id].show) then
@@ -2179,7 +2172,7 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) == "number" and apiWrapper.GetSpellInfo(trigger.spellName) or trigger.spellName;
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
       local ret = [=[
@@ -2240,20 +2233,20 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.realSpellName or 0);
+      local name = apiWrapper.GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
       end
-      name = GetSpellInfo(trigger.spellName or 0);
+      name = apiWrapper.GetSpellInfo(trigger.spellName or 0);
       if (name) then
         return name;
       end
       return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      local _, _, icon = apiWrapper.GetSpellInfo(trigger.realSpellName or 0);
       if (not icon) then
-        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+        icon = select(3, apiWrapper.GetSpellInfo(trigger.spellName or 0));
       end
       return icon;
     end,
@@ -2298,11 +2291,11 @@ WeakAuras.event_prototypes = {
           if (inverse) then
             active = not active;
             if (triggerTotemName) then
-              icon = select(3, GetSpellInfo(triggerTotemName));
+              icon = select(3, apiWrapper.GetSpellInfo(triggerTotemName));
             end
           elseif (active and remainingCheck) then
             local expirationTime = startTime and (startTime + duration) or 0;
-            local remainingTime = expirationTime - GetTime()
+            local remainingTime = expirationTime - apiWrapper.GetTime()
             if (remainingTime >= remainingCheck) then
               WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
             end
@@ -2334,7 +2327,7 @@ WeakAuras.event_prototypes = {
           state.changed = true;
           state.name = triggerTotemName;
           if (triggerTotemName) then
-            state.icon = select(3, GetSpellInfo(triggerTotemName));
+            state.icon = select(3, apiWrapper.GetSpellInfo(triggerTotemName));
           end
         else -- check all slots
           for i = 1, 5 do
@@ -2347,7 +2340,7 @@ WeakAuras.event_prototypes = {
             end
             if (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
-              local remainingTime = expirationTime - GetTime()
+              local remainingTime = expirationTime - apiWrapper.GetTime()
               if (remainingTime >= remainingCheck) then
                 WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
               end
@@ -2374,7 +2367,7 @@ WeakAuras.event_prototypes = {
         return true;
       end
       ]];
-    local totemName = tonumber(trigger.totemName) and GetSpellInfo(tonumber(trigger.totemName)) or trigger.totemName;
+    local totemName = tonumber(trigger.totemName) and apiWrapper.GetSpellInfo(tonumber(trigger.totemName)) or trigger.totemName;
     ret = ret:format(trigger.use_totemType and tonumber(trigger.totemType) or "nil",
                      trigger.use_totemName and "[[" .. (totemName or "")  .. "]]" or "nil",
                      trigger.use_clones and "true" or "false",
@@ -2489,7 +2482,7 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
     local ret = [[
       local form = GetShapeshiftForm();
-      local _, class = UnitClass('player');
+      local _, class = apiWrapper.UnitClass('player');
       local form_ = %s;
       local inverse = %s;
     ]];
@@ -2517,7 +2510,7 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local _, class = UnitClass("player");
+      local _, class = apiWrapper.UnitClass("player");
       if(class == trigger.class) then
         local form = GetShapeshiftForm();
         local _, name = form > 0 and GetShapeshiftFormInfo(form) or "Humanoid";
@@ -2530,7 +2523,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, class = UnitClass("player");
+      local _, class = apiWrapper.UnitClass("player");
       if(class == trigger.class) then
         local form = GetShapeshiftForm();
         local icon = form > 0 and GetShapeshiftFormInfo(form) or "Interface\\Icons\\Achievement_Character_Human_Male";
@@ -2749,7 +2742,7 @@ WeakAuras.event_prototypes = {
     if(trigger.use_remaining and not trigger.use_inverse) then
       local ret2 = [[
         local expirationTime = startTime + duration
-        local remaining = expirationTime - GetTime();
+        local remaining = expirationTime - apiWrapper.GetTime();
         local remainingCheck = %s;
         if(remaining >= remainingCheck) then
           WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
@@ -2867,7 +2860,7 @@ WeakAuras.event_prototypes = {
     },
     nameFunc = function(trigger)
       if not trigger.use_inverse then
-        local name = GetItemInfo(trigger.itemName);
+        local name = apiWrapper.GetItemInfo(trigger.itemName);
         return name;
       else
         return nil;
@@ -2875,7 +2868,7 @@ WeakAuras.event_prototypes = {
     end,
     iconFunc = function(trigger)
       if not trigger.use_inverse then
-        local texture = select(10, GetItemInfo(trigger.itemName));
+        local texture = select(10, apiWrapper.GetItemInfo(trigger.itemName));
         return texture;
       else
         return nil;
@@ -3083,7 +3076,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists(unit) and ((not inverse and spell) or (inverse and not spell))"
+        test = "apiWrapper.UnitExists(unit) and ((not inverse and spell) or (inverse and not spell))"
       }
     },
     durationFunc = function(trigger)
@@ -3170,7 +3163,7 @@ WeakAuras.event_prototypes = {
         name = "incombat",
         display = L["In Combat"],
         type = "tristate",
-        init = "UnitAffectingCombat('player')"
+        init = "apiWrapper.UnitAffectingCombat('player')"
       },
       {
         name = "pvpflagged",
@@ -3188,7 +3181,7 @@ WeakAuras.event_prototypes = {
         name = "vehicle",
         display = L["In Vehicle"],
         type = "tristate",
-        init = "UnitInVehicle('player')"
+        init = "apiWrapper.UnitInVehicle('player')"
       },
       {
         name = "resting",
@@ -3206,13 +3199,13 @@ WeakAuras.event_prototypes = {
         name = "HasPet",
         display = L["HasPet"],
         type = "tristate",
-        init = "UnitExists('pet') and not UnitIsDead('pet')"
+        init = "apiWrapper.UnitExists('pet') and not apiWrapper.UnitIsDead('pet')"
       },
       {
         name = "ismoving",
         display = L["Is Moving"],
         type = "tristate",
-        init = "IsPlayerMoving()"
+        init = "apiWrapper.IsPlayerMoving()"
       }
     },
     automaticrequired = true
@@ -3264,7 +3257,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists('pet') and ((inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))"
+        test = "apiWrapper.UnitExists('pet') and ((inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))"
       }
     },
     automaticrequired = true

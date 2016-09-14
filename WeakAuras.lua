@@ -8,19 +8,6 @@ local _G = _G
 
 -- WoW APIs
 local apiWrapper = WowApiWrapper:create()
-local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-    = apiWrapper.GetTalentInfo, apiWrapper.GetPvpTalentInfo, apiWrapper.IsAddOnLoaded, apiWrapper.InCombatLockdown
-local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-    = apiWrapper.LoadAddOn, apiWrapper.setfenv, apiWrapper.UnitName, apiWrapper.GetRealmName, apiWrapper.GetRealZoneText, apiWrapper.GetCurrentMapAreaID, apiWrapper.UnitGroupRolesAssigned, apiWrapper.UnitRace, apiWrapper.UnitFactionGroup, apiWrapper.IsInRaid
-local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
-    = apiWrapper.UnitClass, apiWrapper.UnitExists, apiWrapper.UnitGUID, apiWrapper.UnitAffectingCombat, apiWrapper.GetSpecialization, apiWrapper.GetActiveSpecGroup, apiWrapper.GetInstanceInfo, apiWrapper.IsInInstance
-local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-    = apiWrapper.GetNumGroupMembers, apiWrapper.UnitIsUnit, apiWrapper.GetRaidRosterInfo, apiWrapper.GetSpecialization, apiWrapper.GetSpecializationRole, apiWrapper.UnitInVehicle, apiWrapper.UnitHasVehicleUI, apiWrapper.GetSpellInfo
-local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
-    = apiWrapper.SendChatMessage, apiWrapper.GetChannelName, apiWrapper.UnitInBattleground, apiWrapper.UnitInRaid, apiWrapper.UnitInParty, apiWrapper.PlaySoundFile, apiWrapper.PlaySoundKitID, apiWrapper.GetTime, apiWrapper.GetSpellLink, apiWrapper.GetItemInfo
-local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-    = apiWrapper.CreateFrame, apiWrapper.IsShiftKeyDown, apiWrapper.GetScreenWidth, apiWrapper.GetScreenHeight, apiWrapper.GetCursorPosition, apiWrapper.random, apiWrapper.UpdateAddOnCPUUsage, apiWrapper.GetFrameCPUUsage, apiWrapper.debugprofilestop
-local debugstack, IsSpellKnown = apiWrapper.debugstack, apiWrapper.IsSpellKnown
 
 local ADDON_NAME = "WeakAuras"
 local versionString = WeakAuras.versionString
@@ -43,15 +30,15 @@ local L = WeakAuras.L
 local queueshowooc;
 
 function WeakAuras.LoadOptions(msg)
-  if not(IsAddOnLoaded("WeakAurasOptions")) then
-    if InCombatLockdown() then
+  if not(apiWrapper.IsAddOnLoaded("WeakAurasOptions")) then
+    if apiWrapper.InCombatLockdown() then
       -- inform the user and queue ooc
       print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
       queueshowooc = msg or "";
       WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return false;
     else
-      local loaded, reason = LoadAddOn("WeakAurasOptions");
+      local loaded, reason = apiWrapper.LoadAddOn("WeakAurasOptions");
       if not(loaded) then
         print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
         return false;
@@ -426,7 +413,7 @@ function WeakAuras.LoadFunction(string)
     if errorString then
       print(errorString)
     else
-      setfenv(loadedFunction, exec_env)
+      apiWrapper.setfenv(loadedFunction, exec_env)
       local success, func = pcall(assert(loadedFunction))
       if success then
         function_cache[string] = func
@@ -597,10 +584,10 @@ end
 WeakAuras.talent_types_specific = {}
 WeakAuras.pvp_talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
-  local _, player_class = UnitClass("player")
+  local _, player_class = apiWrapper.UnitClass("player")
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
   WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
-  local spec = GetSpecialization()
+  local spec = apiWrapper.GetSpecialization()
   WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
   WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
 
@@ -610,7 +597,7 @@ function WeakAuras.CreateTalentCache()
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
       -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, GetActiveSpecGroup())
+      local _, talentName, talentIcon = apiWrapper.GetTalentInfo(tier, column, apiWrapper.GetActiveSpecGroup())
       local talentId = (tier-1)*3+column
       -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
       if (talentName and talentIcon) then
@@ -622,7 +609,7 @@ function WeakAuras.CreateTalentCache()
 
   for tier = 1, MAX_PVP_TALENT_TIERS do
     for column = 1, MAX_PVP_TALENT_COLUMNS do
-      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, GetActiveSpecGroup());
+      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, apiWrapper.GetActiveSpecGroup());
       local talentId = (tier-1)*3+column
       if (talentName and talentIcon) then
         WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
@@ -631,10 +618,10 @@ function WeakAuras.CreateTalentCache()
   end
 end
 
-local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
+local frame = apiWrapper.CreateFrame("FRAME", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = frame;
 frame:SetAllPoints(UIParent);
-local loadedFrame = CreateFrame("FRAME");
+local loadedFrame = apiWrapper.CreateFrame("FRAME");
 WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_LOGIN");
@@ -802,7 +789,7 @@ function WeakAuras.StoreBossGUIDs()
 end
 
 function WeakAuras.CheckForPreviousEncounter()
-  if (UnitAffectingCombat ("player") or InCombatLockdown()) then
+  if (UnitAffectingCombat ("player") or apiWrapper.InCombatLockdown()) then
     for i = 1, 5 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
@@ -828,7 +815,7 @@ function WeakAuras.DestroyEncounterTable()
 end
 
 function WeakAuras.CreateEncounterTable(encounter_id)
-  local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
+  local _, _, _, _, _, _, _, ZoneMapID = apiWrapper.GetInstanceInfo()
   WeakAuras.CurrentEncounter = {
     id = encounter_id,
     zone_id = ZoneMapID,
@@ -860,10 +847,10 @@ function WeakAuras.LoadEncounterInitScripts(id)
 end
 
 function WeakAuras.UpdateCurrentInstanceType(instanceType)
-  if (not IsInInstance()) then
+  if (not apiWrapper.IsInInstance()) then
     WeakAuras.currentInstanceType = "none"
   else
-    WeakAuras.currentInstanceType = instanceType or select (2, GetInstanceInfo())
+    WeakAuras.currentInstanceType = instanceType or select (2, apiWrapper.GetInstanceInfo())
   end
 end
 
@@ -901,18 +888,18 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, zone, zoneId, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetCurrentMapAreaID(), GetSpecialization(), UnitGroupRolesAssigned("player");
-  local _, race = UnitRace("player")
-  local faction, localized_faction = UnitFactionGroup("player")
+  local player, realm, zone, zoneId, spec, role = apiWrapper.UnitName("player"), apiWrapper.GetRealmName(),apiWrapper.GetRealZoneText(), apiWrapper.GetCurrentMapAreaID(), apiWrapper.GetSpecialization(), UnitGroupRolesAssigned("player");
+  local _, race = apiWrapper.UnitRace("player")
+  local faction, localized_faction = apiWrapper.UnitFactionGroup("player")
   -- Hack because there is no second arg for Neutral
   if faction == "Neutral" then
     localized_faction = "Neutral"
   end
   if role == "NONE" then
-    if IsInRaid() then
-      for i=1,GetNumGroupMembers() do
-        if UnitIsUnit(WeakAuras.raidUnits[i],"player") then
-          local _, _, _, _, _, _, _, _, _, raid_role, _, spec_role = GetRaidRosterInfo(i)
+    if apiWrapper.IsInRaid() then
+      for i=1,apiWrapper.GetNumGroupMembers() do
+        if apiWrapper.UnitIsUnit(WeakAuras.raidUnits[i],"player") then
+          local _, _, _, _, _, _, _, _, _, raid_role, _, spec_role = apiWrapper.GetRaidRosterInfo(i)
           if raid_role and raid_role == "MAINTANK" then role = "TANK" end
           if role == "NONE" then
             if spec and spec > 0 then
@@ -928,16 +915,16 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     end
   end
 
-  local _, class = UnitClass("player");
+  local _, class = apiWrapper.UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
-  local inInstance, Type = IsInInstance()
+  local inInstance, Type = apiWrapper.IsInInstance()
   local _, size, difficulty, instanceType, difficultyIndex;
-  local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
+  local incombat = apiWrapper.UnitAffectingCombat("player") -- or apiWrapper.UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
-  local vehicle = UnitInVehicle('player');
-  local vehicleUi = UnitHasVehicleUI('player');
+  local vehicle = apiWrapper.UnitInVehicle('player');
+  local vehicleUi = apiWrapper.UnitHasVehicleUI('player');
 
-  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
+  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = apiWrapper.GetInstanceInfo()
   if (inInstance) then
     WeakAuras.UpdateCurrentInstanceType(instanceType)
     size = Type
@@ -1066,7 +1053,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
 end
 
-local loadFrame = CreateFrame("FRAME");
+local loadFrame = apiWrapper.CreateFrame("FRAME");
 WeakAuras.loadFrame = loadFrame;
 WeakAuras.frames["Display Load Handling"] = loadFrame;
 
@@ -1770,7 +1757,7 @@ function WeakAuras.Add(data)
   -- local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
   -- print("|cFFFF0000WeakAuras "..id..": "..err);
   -- debug(id..": "..err, 3);
-  -- debug(debugstack(1, 6));
+  -- debug(apiWrapper.debugstack(1, 6));
   -- WeakAurasFrame:Hide();
   -- error(err);
   -- end
@@ -1785,12 +1772,12 @@ local function removeSpellNames(data)
       trigger = data.additional_triggers[triggernum].trigger;
     end
     if (trigger.spellId) then
-      trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
+      trigger.name = apiWrapper.GetSpellInfo(trigger.spellId) or trigger.name;
     end
     if (trigger.spellIds) then
       for i = 1, 10 do
         if (trigger.spellIds[i]) then
-          trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
+          trigger.names[i] = apiWrapper.GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
         end
       end
     end
@@ -2110,7 +2097,7 @@ function WeakAuras.Announce(message, output, _, extra, id, type)
     pausedMessage = pausedMessage:format(message, output..(extra and " "..extra or ""), id or "error", type == "start" and "was shown" or type == "finish" and "was hidden" or "error");
     DEFAULT_CHAT_FRAME:AddMessage(pausedMessage);
   else
-    SendChatMessage(message, output, _, extra);
+    apiWrapper.SendChatMessage(message, output, _, extra);
   end
 end
 
@@ -2137,25 +2124,25 @@ function WeakAuras.PerformActions(data, type, region)
     elseif(actions.message_type == "WHISPER") then
     if(actions.message_dest) then
       if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
-      WeakAuras.Announce(actions.message, "WHISPER", nil, UnitName("target"), data.id, type);
+      WeakAuras.Announce(actions.message, "WHISPER", nil, apiWrapper.UnitName("target"), data.id, type);
       else
       WeakAuras.Announce(actions.message, "WHISPER", nil, actions.message_dest, data.id, type);
       end
     end
     elseif(actions.message_type == "CHANNEL") then
     local channel = actions.message_channel and tonumber(actions.message_channel);
-    if(GetChannelName(channel)) then
+    if(apiWrapper.GetChannelName(channel)) then
       WeakAuras.Announce(actions.message, "CHANNEL", nil, channel, data.id, type);
     end
     elseif(actions.message_type == "SMARTRAID") then
-    if UnitInBattleground("player") then
-      SendChatMessage(actions.message, "INSTANCE_CHAT")
-    elseif UnitInRaid("player") then
-      SendChatMessage(actions.message, "RAID")
-    elseif UnitInParty("player") then
-      SendChatMessage(actions.message, "PARTY")
+    if apiWrapper.UnitInBattleground("player") then
+      apiWrapper.SendChatMessage(actions.message, "INSTANCE_CHAT")
+    elseif apiWrapper.UnitInRaid("player") then
+      apiWrapper.SendChatMessage(actions.message, "RAID")
+    elseif apiWrapper.UnitInParty("player") then
+      apiWrapper.SendChatMessage(actions.message, "PARTY")
     else
-      SendChatMessage(actions.message, "SAY")
+      apiWrapper.SendChatMessage(actions.message, "SAY")
     end
     else
     WeakAuras.Announce(actions.message, actions.message_type, nil, nil, data.id, type);
@@ -2165,14 +2152,14 @@ function WeakAuras.PerformActions(data, type, region)
   if(actions.do_sound and actions.sound and not squelch_actions) then
     if(actions.sound == " custom") then
       if(actions.sound_path) then
-        PlaySoundFile(actions.sound_path, actions.sound_channel or "Master");
+        apiWrapper.PlaySoundFile(actions.sound_path, actions.sound_channel or "Master");
       end
     elseif(actions.sound == " KitID") then
       if(actions.sound_kit_id) then
-        PlaySoundKitID(actions.sound_kit_id, actions.sound_channel or "Master");
+        apiWrapper.PlaySoundKitID(actions.sound_kit_id, actions.sound_channel or "Master");
       end
     else
-      PlaySoundFile(actions.sound, actions.sound_channel or "Master");
+      apiWrapper.PlaySoundFile(actions.sound, actions.sound_channel or "Master");
     end
   end
 
@@ -2198,7 +2185,7 @@ function WeakAuras.PerformActions(data, type, region)
       glow_frame = _G[actions.glow_frame];
       if (glow_frame) then
         if (not glow_frame.__WAGlowFrame) then
-          glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
+          glow_frame.__WAGlowFrame = apiWrapper.CreateFrame("Frame", nil, glow_frame);
           glow_frame.__WAGlowFrame:SetAllPoints();
         end
         glow_frame = glow_frame.__WAGlowFrame;
@@ -2216,13 +2203,13 @@ function WeakAuras.PerformActions(data, type, region)
 end
 
 local updatingAnimations;
-local last_update = GetTime();
+local last_update = apiWrapper.GetTime();
 function WeakAuras.UpdateAnimations()
   for groupId, groupRegion in pairs(pending_controls) do
   pending_controls[groupId] = nil;
   groupRegion:DoControlChildren();
   end
-  local time = GetTime();
+  local time = apiWrapper.GetTime();
   local elapsed = time - last_update;
   last_update = time;
   local num = 0;
@@ -2677,7 +2664,7 @@ end
 function WeakAuras.CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then
-    local name = GetSpellInfo(inputId);
+    local name = apiWrapper.GetSpellInfo(inputId);
     if(name) then
       return inputId;
     else
@@ -2688,7 +2675,7 @@ function WeakAuras.CorrectSpellName(input)
     if(input:sub(1,1) == "\124") then
       link = input;
     else
-      link = GetSpellLink(input);
+      link = apiWrapper.GetSpellLink(input);
     end
     if(link) then
       local itemId = link:match("spell:(%d+)");
@@ -2702,14 +2689,14 @@ end
 function WeakAuras.CorrectItemName(input)
   local inputId = tonumber(input);
   if(inputId) then
-    local name = GetItemInfo(inputId);
+    local name = apiWrapper.GetItemInfo(inputId);
     if(name) then
       return inputId;
     else
       return nil;
     end
   elseif(input) then
-    local _, link = GetItemInfo(input);
+    local _, link = apiWrapper.GetItemInfo(input);
     if(link) then
       local itemId = link:match("item:(%d+)");
       return tonumber(itemId);
@@ -2761,7 +2748,7 @@ do
   local hiddenTooltip;
   function WeakAuras.GetHiddenTooltip()
     if not(hiddenTooltip) then
-      hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
+      hiddenTooltip = apiWrapper.CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
       hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
       hiddenTooltip:AddFontStrings(
       hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
@@ -2820,13 +2807,13 @@ local function tooltip_draw()
   GameTooltip:Show();
 end
 
-local colorFrame = CreateFrame("frame");
+local colorFrame = apiWrapper.CreateFrame("frame");
 WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
 local colorElapsed = 0;
 local colorDelay = 2;
 local r, g, b = 0.8, 0, 1;
-local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
-local tooltip_update_frame = CreateFrame("FRAME");
+local r2, g2, b2 = apiWrapper.random(2)-1, apiWrapper.random(2)-1, apiWrapper.random(2)-1;
+local tooltip_update_frame = apiWrapper.CreateFrame("FRAME");
 WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 local Broker_WeakAuras;
 Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
@@ -2834,7 +2821,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   text = "WeakAuras",
   icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
   OnClick = function(self, button)
-    if(IsShiftKeyDown()) then
+    if(apiWrapper.IsShiftKeyDown()) then
       if not(WeakAuras.IsOptionsOpen()) then
         WeakAuras.Toggle();
       end
@@ -2848,7 +2835,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
       if(colorElapsed > colorDelay) then
         colorElapsed = colorElapsed - colorDelay;
         r, g, b = r2, g2, b2;
-        r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+        r2, g2, b2 = apiWrapper.random(2)-1, apiWrapper.random(2)-1, apiWrapper.random(2)-1;
       end
       Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
       Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
@@ -2864,9 +2851,9 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
       end
     end);
     -- Section the screen into 6 sextants and define the tooltip anchor position based on which sextant the cursor is in
-    local max_x = GetScreenWidth();
-    local max_y = GetScreenHeight();
-    local x, y = GetCursorPosition();
+    local max_x = apiWrapper.GetScreenWidth();
+    local max_y = apiWrapper.GetScreenHeight();
+    local x, y = apiWrapper.GetCursorPosition();
     local horizontal = (x < (max_x/3) and "LEFT") or ((x >= (max_x/3) and x < ((max_x/3)*2)) and "") or "RIGHT";
     local tooltip_vertical = (y < (max_y/2) and "BOTTOM") or "TOP";
     local anchor_vertical = (y < (max_y/2) and "TOP") or "BOTTOM";
@@ -2886,9 +2873,9 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
 
 local FrameTimes = {};
 function WeakAuras.ProfileFrames(all)
-  UpdateAddOnCPUUsage();
+  apiWrapper.UpdateAddOnCPUUsage();
   for name, frame in pairs(WeakAuras.frames) do
-    local FrameTime = GetFrameCPUUsage(frame);
+    local FrameTime = apiWrapper.GetFrameCPUUsage(frame);
     FrameTimes[name] = FrameTimes[name] or 0;
     if(all or FrameTime > FrameTimes[name]) then
       print("|cFFFF0000"..name.."|r -", FrameTime, "-", FrameTime - FrameTimes[name]);
@@ -2899,9 +2886,9 @@ end
 
 local DisplayTimes = {};
 function WeakAuras.ProfileDisplays(all)
-  UpdateAddOnCPUUsage();
+  apiWrapper.UpdateAddOnCPUUsage();
   for id, regionData in pairs(WeakAuras.regions) do
-  local DisplayTime = GetFrameCPUUsage(regionData.region, true);
+  local DisplayTime = apiWrapper.GetFrameCPUUsage(regionData.region, true);
   DisplayTimes[id] = DisplayTimes[id] or 0;
   if(all or DisplayTime > DisplayTimes[id]) then
     print("|cFFFF0000"..id.."|r -", DisplayTime, "-", DisplayTime - DisplayTimes[id]);
@@ -2939,7 +2926,7 @@ do
 
   function WeakAuras.InitCustomTextUpdates()
     if not(customTextUpdateFrame) then
-      customTextUpdateFrame = CreateFrame("frame");
+      customTextUpdateFrame = apiWrapper.CreateFrame("frame");
       customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
     end
   end
@@ -3011,7 +2998,7 @@ end
 local dynFrame = {};
 do
   -- Internal data
-  dynFrame.frame = CreateFrame("frame");
+  dynFrame.frame = apiWrapper.CreateFrame("frame");
   dynFrame.update = {};
   dynFrame.size = 0;
 
@@ -3043,11 +3030,11 @@ do
   dynFrame.frame:Hide();
   dynFrame.frame:SetScript("OnUpdate", function(self, elapsed)
     -- Start timing
-    local start = debugprofilestop();
+    local start = apiWrapper.debugprofilestop();
     local hasData = true;
 
     -- Resume as often as possible (Limit to 16ms per frame -> 60 FPS)
-    while (debugprofilestop() - start < 16 and hasData) do
+    while (apiWrapper.debugprofilestop() - start < 16 and hasData) do
       -- Stop loop without data
       hasData = false;
 
@@ -3060,7 +3047,7 @@ do
         if coroutine.status(func) ~= "dead" then
           local err,ret1,ret2 = assert(coroutine.resume(func))
           if err then
-            WeakAuras.debug(debugstack(func))
+            WeakAuras.debug(apiWrapper.debugstack(func))
           end
         else
           dynFrame:RemoveAction(name);
@@ -3087,7 +3074,7 @@ end
 function WeakAuras.GetDynamicIconCache(name)
   if (db.dynamicIconCache[name]) then
     for spellId, icon in pairs(db.dynamicIconCache[name]) do
-      if (IsSpellKnown(spellId)) then -- TODO save this information?
+      if (apiWrapper.IsSpellKnown(spellId)) then -- TODO save this information?
         return db.dynamicIconCache[name][spellId];
       end
     end
@@ -3120,7 +3107,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
       local record = timers[id][triggernum][cloneId];
       local createTimer = false;
       if (state.expirationTime == nil) then
-        state.expirationTime = GetTime() + state.duration;
+        state.expirationTime = apiWrapper.GetTime() + state.duration;
         state.resort = true;
       end
       if (record.expirationTime ~= state.expirationTime) then
@@ -3136,7 +3123,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
               WeakAuras.UpdatedTriggerState(id);
             end
           end,
-          state.expirationTime - GetTime() + 0.01);
+          state.expirationTime - apiWrapper.GetTime() + 0.01);
         record.expirationTime = state.expirationTime;
       end
     else -- no auto hide, delete timer
@@ -3165,7 +3152,7 @@ local function ApplyStateToRegion(id, region, state)
   region.state = state;
   if(region.SetDurationInfo) then
     if (state.progressType == "timed") then
-      local now = GetTime();
+      local now = apiWrapper.GetTime();
       local value = math.huge - now;
       if (state.expirationTime and state.expirationTime > 0) then
         value = state.expirationTime - now;

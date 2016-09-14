@@ -72,6 +72,9 @@ function WowApiWrapper:ConnectGlobalFunctions(wrapper)
     WowApiWrapper:ConnectGlobalFunction(wrapper, "IsSpellKnown")
     WowApiWrapper:ConnectGlobalFunction(wrapper, "GetTalentInfo")
     WowApiWrapper:ConnectGlobalFunction(wrapper, "GetPvpTalentInfo")
+    WowApiWrapper:ConnectGlobalFunction(wrapper, "GetAddOnEnableState")
+    WowApiWrapper:ConnectGlobalFunction(wrapper, "IsPlayerMoving")
+    WowApiWrapper:ConnectGlobalFunction(wrapper, "UnitIsDead")
 end
 
 function WowApiWrapper:ConnectGlobalFunction(wrapper, name)
