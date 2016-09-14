@@ -73,18 +73,7 @@ function WowApiMock:CreateMockedMethods(wrapper)
     MockMethodPartial(wrapper, "UnitIsDead", nil)
 end
 
--- TESTING When we change the mock on one instance it doesn't affect others.
-local mock1 = WowApiMock.create()
-local mock2 = WowApiMock.create()
-local talentInfoTemp = "TODO: Mock TalentInfo"
-assert(mock1.GetTalentInfo() == talentInfoTemp, "FAIL")
-assert(mock2.GetTalentInfo() == talentInfoTemp, "FAIL")
-
-local talentInfoMocked = "New Talent Info"
-mock1.MockGetTalentInfo(talentInfoMocked)
-assert(mock1.GetTalentInfo() == talentInfoMocked, "FAIL")
-assert(mock2.GetTalentInfo() == talentInfoTemp, "FAIL")
-
+local mock1 = WowApiMock:create()
 --TESTING When the mocked value is a function, its called appropriately.
 local func = function(input) 
     if input == "IsMatch" then 
@@ -94,29 +83,29 @@ local func = function(input)
     end
 end
 
-local mock3 = WowApiMock.create()
-assert(mock3.GetTalentInfo("IsMatch") == talentInfoTemp, "FAIL")
-assert(mock3.GetTalentInfo("IsNotMatch") == talentInfoTemp, "FAIL")
+local talentInfoTemp = "TODO: Mock TalentInfo"
+assert(GetTalentInfo("IsMatch") == talentInfoTemp, "FAIL")
+assert(GetTalentInfo("IsNotMatch") == talentInfoTemp, "FAIL")
 
-mock3.MockGetTalentInfo(func)
 
-assert(mock3.GetTalentInfo("IsMatch") == "Success", "FAIL")
-assert(mock3.GetTalentInfo("IsNotMatch") == "Failure", "FAIL")
+MockGetTalentInfo(func)
+assert(GetTalentInfo("IsMatch") == "Success", "FAIL")
+assert(GetTalentInfo("IsNotMatch") == "Failure", "FAIL")
 
 --TESTING When the mock has multiple return values, we get them all.
-mock1.MockLoadAddOn({1,"Successful Load"})
-local success, reason = mock1.LoadAddOn("WeakAuras2")
+MockLoadAddOn({1,"Successful Load"})
+local success, reason = LoadAddOn("WeakAuras2")
 assert(success == 1, "FAIL")
 assert(reason == "Successful Load")
 
 --TESTING When the mock return nil as one of its multiple return values, we get them all.
-mock1.MockLoadAddOn({nil,"Failed Load"})
-local success, reason = mock1.LoadAddOn("WeakAuras2")
+MockLoadAddOn({nil,"Failed Load"})
+local success, reason = LoadAddOn("WeakAuras2")
 assert(success == nil, "FAIL")
 assert(reason == "Failed Load")
 
 --TESTING Assigning functions on the wrapper to local variables.
-local wrapperFunction = mock1.IsShiftKeyDown
-mock1.MockIsShiftKeyDown(true)
+local wrapperFunction = IsShiftKeyDown
+MockIsShiftKeyDown(true)
 local shiftIsDown = wrapperFunction()
 assert(shiftIsDown == true, "FAIL")
