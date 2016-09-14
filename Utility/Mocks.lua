@@ -12,7 +12,7 @@ If you specify a function, then the function will be called whenever someone cal
 Your function will be passed all of the values that the WoW API would have been passed.]]
 function MockMethodFull(mockInstance, propertyName, getMethodName, setMethodName, defaultValue)
     mockInstance[getMethodName] = function(...)
-        local realParameters = select(2, ...)
+        local realParameters = select(1, ...)
         -- The method being mocked may or may not have parameters
         -- so ... to grab them all.
 
@@ -31,8 +31,8 @@ function MockMethodFull(mockInstance, propertyName, getMethodName, setMethodName
         return returnValue
     end
 
-    mockInstance[setMethodName] = function(instance, value)
-        instance[propertyName] = value
+    mockInstance[setMethodName] = function(value)
+        mockInstance[propertyName] = value
     end
 end
 
