@@ -13,6 +13,15 @@ function WowApiMock:create()
     return wrapper
 end
 
+WowApiMock.MockedMethods = {}
+WowApiMock.BackingProperties = {}
+
+function ResetMocks()
+    for index, property in ipairs(WowApiMock.BackingProperties) do
+        WowApiMock[property] = nil
+    end
+end
+
 function WowApiMock:CreateMockedMethods(wrapper)
     MockMethodPartial(wrapper, "GetTalentInfo", "TODO: Mock TalentInfo")
     MockMethodPartial(wrapper, "GetPvpTalentInfo", "TODO: Mock PvpTalentInfo")
@@ -109,3 +118,11 @@ local wrapperFunction = IsShiftKeyDown
 MockIsShiftKeyDown(true)
 local shiftIsDown = wrapperFunction()
 assert(shiftIsDown == true, "FAIL")
+
+--TESTING Reset functionality.
+MockIsShiftKeyDown(true)
+shiftIsDown = IsShiftKeyDown()
+assert(shiftIsDown == true, "FAIL")
+ResetMocks()
+shiftIsDown = IsShiftKeyDown()
+assert(shiftIsDown == nil, "FAIL")
