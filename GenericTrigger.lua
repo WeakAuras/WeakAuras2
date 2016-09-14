@@ -63,7 +63,8 @@ local tostring, select, pairs, type = tostring, select, pairs, type
 local error, setmetatable = error, setmetatable
 
 -- WoW APIs
-local IsPlayerMoving = IsPlayerMoving
+local apiWrapper = WowApiWrapper:create()
+local IsPlayerMoving = apiWrapper.IsPlayerMoving
 
 WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" end});
 LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);

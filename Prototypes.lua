@@ -8,13 +8,14 @@ local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local ceil, min = ceil, min
 
 -- WoW APIs
-local GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo = GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo
-local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
-local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
-local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
-local GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon
-local GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm = GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm
-local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
+local apiWrapper = WowApiWrapper:create()
+local GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo = apiWrapper.GetPvpTalentInfo, apiWrapper.GetActiveSpecGroup, apiWrapper.GetTalentInfo
+local GetNumSpecializationsForClassID, GetSpecialization = apiWrapper.GetNumSpecializationsForClassID, apiWrapper.GetSpecialization
+local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = apiWrapper.UnitClass, apiWrapper.UnitHealth, apiWrapper.UnitHealthMax, apiWrapper.UnitName, apiWrapper.UnitStagger, apiWrapper.UnitPower, apiWrapper.UnitPowerMax
+local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = apiWrapper.UnitAlternatePowerInfo, apiWrapper.UnitAlternatePowerTextureInfo
+local GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon = apiWrapper.GetSpellInfo, apiWrapper.GetItemInfo, apiWrapper.GetTotemInfo, apiWrapper.GetItemCount, apiWrapper.GetItemIcon
+local GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm = apiWrapper.GetShapeshiftFormInfo, apiWrapper.GetNumShapeshiftForms, apiWrapper.GetShapeshiftForm
+local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = apiWrapper.GetRuneCooldown, apiWrapper.UnitCastingInfo, apiWrapper.UnitChannelInfo
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;

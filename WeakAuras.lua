@@ -7,19 +7,20 @@ local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
+local apiWrapper = WowApiWrapper:create()
 local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-    = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+    = apiWrapper.GetTalentInfo, apiWrapper.GetPvpTalentInfo, apiWrapper.IsAddOnLoaded, apiWrapper.InCombatLockdown
 local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-    = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+    = apiWrapper.LoadAddOn, apiWrapper.setfenv, apiWrapper.UnitName, apiWrapper.GetRealmName, apiWrapper.GetRealZoneText, apiWrapper.GetCurrentMapAreaID, apiWrapper.UnitGroupRolesAssigned, apiWrapper.UnitRace, apiWrapper.UnitFactionGroup, apiWrapper.IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
-    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+    = apiWrapper.UnitClass, apiWrapper.UnitExists, apiWrapper.UnitGUID, apiWrapper.UnitAffectingCombat, apiWrapper.GetSpecialization, apiWrapper.GetActiveSpecGroup, apiWrapper.GetInstanceInfo, apiWrapper.IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-    = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+    = apiWrapper.GetNumGroupMembers, apiWrapper.UnitIsUnit, apiWrapper.GetRaidRosterInfo, apiWrapper.GetSpecialization, apiWrapper.GetSpecializationRole, apiWrapper.UnitInVehicle, apiWrapper.UnitHasVehicleUI, apiWrapper.GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
-    = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+    = apiWrapper.SendChatMessage, apiWrapper.GetChannelName, apiWrapper.UnitInBattleground, apiWrapper.UnitInRaid, apiWrapper.UnitInParty, apiWrapper.PlaySoundFile, apiWrapper.PlaySoundKitID, apiWrapper.GetTime, apiWrapper.GetSpellLink, apiWrapper.GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-    = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-local debugstack, IsSpellKnown = debugstack, IsSpellKnown
+    = apiWrapper.CreateFrame, apiWrapper.IsShiftKeyDown, apiWrapper.GetScreenWidth, apiWrapper.GetScreenHeight, apiWrapper.GetCursorPosition, apiWrapper.random, apiWrapper.UpdateAddOnCPUUsage, apiWrapper.GetFrameCPUUsage, apiWrapper.debugprofilestop
+local debugstack, IsSpellKnown = apiWrapper.debugstack, apiWrapper.IsSpellKnown
 
 local ADDON_NAME = "WeakAuras"
 local versionString = WeakAuras.versionString

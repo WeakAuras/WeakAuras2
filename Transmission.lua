@@ -43,6 +43,9 @@ local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub, removeSpellNam
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
+-- WoW APIs
+local apiWrapper = WowApiWrapper:create()
+
 -- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent BNGetNumFriendGameAccounts BNGetFriendGameAccountInfo
 
 local bytetoB64 = {
@@ -1002,8 +1005,8 @@ local function checkTrigger(codes, id, trigger, untrigger)
         end
       end
 
-      if (not IsAddOnLoaded('WeakAurasOptions')) then
-        LoadAddOn('WeakAurasOptions')
+      if (not apiWrapper.IsAddOnLoaded('WeakAurasOptions')) then
+        apiWrapper.LoadAddOn('WeakAurasOptions')
       end
 
       local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);

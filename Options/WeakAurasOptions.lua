@@ -9,12 +9,13 @@ local coroutine, rad, sqrt, atan2, floor, cos, sin = coroutine, rad, sqrt, atan2
 local _G = _G
 
 -- WoW APIs
+local apiWrapper = WowApiWrapper:create()
 local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
-    = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+    = apiWrapper.InCombatLockdown, apiWrapper.IsShiftKeyDown, apiWrapper.IsMouseButtonDown, apiWrapper.SetCursor, apiWrapper.GetMouseFocus, apiWrapper.MouseIsOver, apiWrapper.ResetCursor
 local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
-    = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+    = apiWrapper.GetSpellInfo, apiWrapper.GetItemInfo, apiWrapper.IsSpellKnown, apiWrapper.GetItemIcon, apiWrapper.UnitName
 local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
-    = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+    = apiWrapper.GetScreenWidth, apiWrapper.GetScreenHeight, apiWrapper.GetBuildInfo, apiWrapper.GetLocale, apiWrapper.GetTime, apiWrapper.PlaySoundFile, apiWrapper.PlaySoundKitID, apiWrapper.CreateFrame, apiWrapper.GetAddOnInfo, apiWrapper.PlaySound, apiWrapper.IsAddOnLoaded, apiWrapper.LoadAddOn
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local AceGUI = LibStub("AceGUI-3.0")

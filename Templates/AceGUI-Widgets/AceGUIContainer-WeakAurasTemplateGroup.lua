@@ -10,7 +10,8 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local pairs = pairs
 
 -- WoW APIs
-local CreateFrame, UIParent = CreateFrame, UIParent
+local apiWrapper = WowApiWrapper:create()
+local CreateFrame, UIParent = apiWrapper.CreateFrame, apiWrapper.UIParent
 
 --[[-----------------------------------------------------------------------------
 Methods
