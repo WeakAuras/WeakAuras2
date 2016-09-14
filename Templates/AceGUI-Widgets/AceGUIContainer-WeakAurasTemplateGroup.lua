@@ -10,7 +10,7 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local pairs = pairs
 
 -- WoW APIs
-local apiWrapper = WowApiWrapper:create()
+local CreateFrame, UIParent = CreateFrame, UIParent
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -58,11 +58,11 @@ local PaneBackdrop  = {
 }
 
 local function Constructor()
-	local frame = apiWrapper.CreateFrame("Frame", nil, UIParent)
+	local frame = CreateFrame("Frame", nil, UIParent)
 	frame:SetFrameStrata("FULLSCREEN_DIALOG")
 
 	--Container Support
-	local content = apiWrapper.CreateFrame("Frame", nil, frame)
+	local content = CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", 20, 0)
 	content:SetPoint("BOTTOMRIGHT", 0, 15)
 

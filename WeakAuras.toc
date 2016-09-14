@@ -19,7 +19,6 @@ Init.lua
 
 locales.xml
 
-WowApiWrapper.lua
 Prototypes.lua
 Types.lua
 WeakAuras.lua

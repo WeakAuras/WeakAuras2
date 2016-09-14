@@ -9,7 +9,12 @@ local coroutine, rad, sqrt, atan2, floor, cos, sin = coroutine, rad, sqrt, atan2
 local _G = _G
 
 -- WoW APIs
-local apiWrapper = WowApiWrapper:create()
+local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+    = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+    = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+    = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -400,7 +405,7 @@ function WeakAuras.CreateIconCache(callback)
 
     while (misses < 400) do
       id = id + 1;
-      local name, _, icon = apiWrapper.GetSpellInfo(id);
+      local name, _, icon = GetSpellInfo(id);
 
       if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
         misses = 0;
@@ -435,7 +440,7 @@ function WeakAuras.GetIconFromSpellCache(name)
     for spellId, icon in pairs(icons) do
       if (not bestMatch) then
         bestMatch = spellId;
-      elseif(apiWrapper.IsSpellKnown(spellId)) then
+      elseif(IsSpellKnown(spellId)) then
         bestMatch = spellId;
       end
     end
@@ -743,17 +748,17 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 local icon = WeakAuras.GetIconFromSpellCache(trigger[realname]);
                 return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "spell") then
-                local _, _, icon = apiWrapper.GetSpellInfo(trigger[realname]);
+                local _, _, icon = GetSpellInfo(trigger[realname]);
                 return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "item") then
-                local _, _, _, _, _, _, _, _, _, icon = apiWrapper.GetItemInfo(trigger[realname]);
+                local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
                 return icon and tostring(icon) or "", 18, 18;
               end
             else
               return "", 18, 18;
             end
           end,
-          disabled = function() return not ((arg.type == "aura" and trigger[realname] and WeakAuras.GetIconFromSpellCache(trigger[realname])) or (arg.type == "spell" and trigger[realname] and apiWrapper.GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
+          disabled = function() return not ((arg.type == "aura" and trigger[realname] and WeakAuras.GetIconFromSpellCache(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
         };
         order = order + 1;
         options[name] = {
@@ -766,7 +771,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           get = function()
             if(arg.type == "item") then
               if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                local name = apiWrapper.GetItemInfo(trigger[realname]);
+                local name = GetItemInfo(trigger[realname]);
                 if(name) then
                   return name;
                 else
@@ -777,7 +782,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               end
             elseif(arg.type == "spell") then
               if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                local name = apiWrapper.GetSpellInfo(trigger[realname]);
+                local name = GetSpellInfo(trigger[realname]);
                 if(name) then
                   return name;
                 else
@@ -857,7 +862,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             trigger[realname] = v;
             if(arg.type == "unit" and v == "member") then
               trigger["use_specific_"..realname] = true;
-              trigger[realname] = apiWrapper.UnitName("player");
+              trigger[realname] = UnitName("player");
             else
               trigger["use_specific_"..realname] = nil;
             end
@@ -1074,7 +1079,7 @@ local loadedOptions;
 local unloadedOptions;
 local pickonupdate;
 local reopenAfterCombat = false;
-local loadedFrame = apiWrapper.CreateFrame("FRAME");
+local loadedFrame = CreateFrame("FRAME");
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 loadedFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -1199,7 +1204,7 @@ end
 function WeakAuras.ToggleOptions(msg)
   if(frame and frame:IsVisible()) then
     WeakAuras.HideOptions();
-  elseif (apiWrapper.InCombatLockdown()) then
+  elseif (InCombatLockdown()) then
     print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will open after combat.")
     reopenAfterCombat = true;
   else
@@ -1295,7 +1300,7 @@ end
 function WeakAuras.DoConfigUpdate()
   local function GiveDynamicInfo(id, region, data, cloneNum)
     if(WeakAuras.CanHaveDuration(data) == "timed") then
-      local rem = apiWrapper.GetTime() + 8 - (frame.count + frame.elapsed);
+      local rem = GetTime() + 8 - (frame.count + frame.elapsed);
       if(cloneNum) then
         rem = rem + (cloneNum == 1 and (frame.count >= 1 and 1 or -3) or (frame.count >= 2 and 2 or -2));
       end
@@ -2226,9 +2231,9 @@ function WeakAuras.AddOption(id, data)
           data.actions[field] = data.actions[field] or {};
           data.actions[field][value] = v;
           if(value == "sound" or value == "sound_path") then
-            apiWrapper.PlaySoundFile(v, data.actions.start.sound_channel or "Master");
+            PlaySoundFile(v, data.actions.start.sound_channel or "Master");
           elseif(value == "sound_kit_id") then
-            apiWrapper.PlaySoundKitID(v, data.actions.start.sound_channel or "Master");
+            PlaySoundKitID(v, data.actions.start.sound_channel or "Master");
           end
           WeakAuras.Add(data);
         end,
@@ -4086,7 +4091,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     if(ids) then
       local descText = "";
       for id, _ in pairs(ids) do
-        local name, _, icon = apiWrapper.GetSpellInfo(id);
+        local name, _, icon = GetSpellInfo(id);
         if(icon) then
           if(descText == "") then
             descText = "|T"..icon..":0|t: "..id;
@@ -5162,7 +5167,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.OpenTriggerTemplate(data);
       end,
       hidden = function()
-        return apiWrapper.GetAddOnEnableState(apiWrapper.UnitName("player"), "WeakAurasTemplates") == 0
+        return GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
       end
     },
     deleteTriggerHalf = {
@@ -5171,7 +5176,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 3,
       func = deleteTrigger,
       hidden = function()
-        return data.numTriggers == 1 or apiWrapper.GetAddOnEnableState(apiWrapper.UnitName("player"), "WeakAurasTemplates") == 0
+        return data.numTriggers == 1 or GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
       end
     },
     deleteTriggerSpace = {
@@ -5180,7 +5185,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 3.1,
       image = function() return "", 0, 0 end,
       hidden = function()
-        return data.numTriggers ~= 1 or apiWrapper.GetAddOnEnableState(apiWrapper.UnitName("player"), "WeakAurasTemplates") == 0
+        return data.numTriggers ~= 1 or GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
       end,
     },
     deleteTriggerFull = {
@@ -5189,7 +5194,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 3,
       width = "double",
       func = deleteTrigger,
-      hidden = function() return data.numTriggers == 1 or apiWrapper.GetAddOnEnableState(apiWrapper.UnitName("player"), "WeakAurasTemplates") ~= 0 end
+      hidden = function() return data.numTriggers == 1 or GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0 end
     },
     typedesc = {
       type = "toggle",
@@ -6017,7 +6022,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
 end
 
 function WeakAuras.AddPositionOptions(input, id, data)
-  local screenWidth, screenHeight = math.ceil(apiWrapper.GetScreenWidth() / 20) * 20, math.ceil(apiWrapper.GetScreenHeight() / 20) * 20;
+  local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
     width = {
       type = "range",
@@ -6284,10 +6289,10 @@ function WeakAuras.AddBorderOptions(input, id, data)
 end
 
 function WeakAuras.CreateFrame()
-  local WeakAuras_DropDownMenu = apiWrapper.CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate");
+  local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate");
   local frame;
   -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = apiWrapper.CreateFrame("FRAME", nil, UIParent);
+  frame = CreateFrame("FRAME", nil, UIParent);
   frame:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
@@ -6309,8 +6314,8 @@ function WeakAuras.CreateFrame()
     xOffset, yOffset = db.frame.xOffset, db.frame.yOffset;
   end
   if not(xOffset and yOffset) then
-    xOffset = (610 - apiWrapper.GetScreenWidth()) / 2;
-    yOffset = (492 - apiWrapper.GetScreenHeight()) / 2;
+    xOffset = (610 - GetScreenWidth()) / 2;
+    yOffset = (492 - GetScreenHeight()) / 2;
   end
   frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
   frame:Hide();
@@ -6325,7 +6330,7 @@ function WeakAuras.CreateFrame()
   frame:SetWidth(width);
   frame:SetHeight(height);
 
-  local close = apiWrapper.CreateFrame("Frame", nil, frame);
+  local close = CreateFrame("Frame", nil, frame);
   close:SetWidth(17)
   close:SetHeight(40)
   close:SetPoint("TOPRIGHT", -30, 12)
@@ -6335,7 +6340,7 @@ function WeakAuras.CreateFrame()
   closebg:SetTexCoord(0.31, 0.67, 0, 0.63)
   closebg:SetAllPoints(close);
 
-  local closebutton = apiWrapper.CreateFrame("BUTTON", nil, close)
+  local closebutton = CreateFrame("BUTTON", nil, close)
   closebutton:SetWidth(30);
   closebutton:SetHeight(30);
   closebutton:SetPoint("CENTER", close, "CENTER", 1, -1);
@@ -6358,7 +6363,7 @@ function WeakAuras.CreateFrame()
   closebg_r:SetWidth(10)
   closebg_r:SetHeight(40)
 
-  local import = apiWrapper.CreateFrame("Frame", nil, frame);
+  local import = CreateFrame("Frame", nil, frame);
   import:SetWidth(17)
   import:SetHeight(40)
   import:SetPoint("TOPRIGHT", -100, 12)
@@ -6369,7 +6374,7 @@ function WeakAuras.CreateFrame()
   importbg:SetTexCoord(0.31, 0.67, 0, 0.63)
   importbg:SetAllPoints(import);
 
-  local importbutton = apiWrapper.CreateFrame("CheckButton", nil, import, "OptionsCheckButtonTemplate")
+  local importbutton = CreateFrame("CheckButton", nil, import, "OptionsCheckButtonTemplate")
   importbutton:SetWidth(30);
   importbutton:SetHeight(30);
   importbutton:SetPoint("CENTER", import, "CENTER", 1, -1);
@@ -6428,18 +6433,18 @@ function WeakAuras.CreateFrame()
   titlebg_r:SetWidth(30)
   titlebg_r:SetHeight(40)
 
-  local title = apiWrapper.CreateFrame("Frame", nil, frame)
+  local title = CreateFrame("Frame", nil, frame)
 
   local function commitWindowChanges()
-    local xOffset = frame:GetRight() - apiWrapper.GetScreenWidth();
-    local yOffset = frame:GetTop() - apiWrapper.GetScreenHeight();
-    if(title:GetRight() > apiWrapper.GetScreenWidth()) then
-      xOffset = xOffset + (apiWrapper.GetScreenWidth() - title:GetRight());
+    local xOffset = frame:GetRight() - GetScreenWidth();
+    local yOffset = frame:GetTop() - GetScreenHeight();
+    if(title:GetRight() > GetScreenWidth()) then
+      xOffset = xOffset + (GetScreenWidth() - title:GetRight());
     elseif(title:GetLeft() < 0) then
       xOffset = xOffset + (0 - title:GetLeft());
     end
-    if(title:GetTop() > apiWrapper.GetScreenHeight()) then
-      yOffset = yOffset + (apiWrapper.GetScreenHeight() - title:GetTop());
+    if(title:GetTop() > GetScreenHeight()) then
+      yOffset = yOffset + (GetScreenHeight() - title:GetTop());
     elseif(title:GetBottom() < 0) then
       yOffset = yOffset + (0 - title:GetBottom());
     end
@@ -6467,7 +6472,7 @@ function WeakAuras.CreateFrame()
   titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
   titletext:SetText(L["WeakAurasOptions"]);
 
-  local sizer_sw = apiWrapper.CreateFrame("button",nil,frame);
+  local sizer_sw = CreateFrame("button",nil,frame);
   sizer_sw:SetPoint("bottomleft",frame,"bottomleft",0,0);
   sizer_sw:SetWidth(25);
   sizer_sw:SetHeight(25);
@@ -6518,7 +6523,7 @@ function WeakAuras.CreateFrame()
   --------------------------------------------------------
 
 
-  local minimize = apiWrapper.CreateFrame("Frame", nil, frame);
+  local minimize = CreateFrame("Frame", nil, frame);
   minimize:SetWidth(17)
   minimize:SetHeight(40)
   minimize:SetPoint("TOPRIGHT", -65, 12)
@@ -6528,7 +6533,7 @@ function WeakAuras.CreateFrame()
   minimizebg:SetTexCoord(0.31, 0.67, 0, 0.63)
   minimizebg:SetAllPoints(minimize);
 
-  local minimizebutton = apiWrapper.CreateFrame("BUTTON", nil, minimize)
+  local minimizebutton = CreateFrame("BUTTON", nil, minimize)
   minimizebutton:SetWidth(30);
   minimizebutton:SetHeight(30);
   minimizebutton:SetPoint("CENTER", minimize, "CENTER", 1, -1);
@@ -6599,7 +6604,7 @@ function WeakAuras.CreateFrame()
 
   local _, _, _, enabled, loadable = GetAddOnInfo("WeakAurasTutorials");
   if(enabled and loadable) then
-    local tutorial = apiWrapper.CreateFrame("Frame", nil, frame);
+    local tutorial = CreateFrame("Frame", nil, frame);
     tutorial:SetWidth(17)
     tutorial:SetHeight(40)
     tutorial:SetPoint("TOPRIGHT", -140, 12)
@@ -6609,7 +6614,7 @@ function WeakAuras.CreateFrame()
     tutorialbg:SetTexCoord(0.31, 0.67, 0, 0.63)
     tutorialbg:SetAllPoints(tutorial);
 
-    local tutorialbutton = apiWrapper.CreateFrame("BUTTON", nil, tutorial)
+    local tutorialbutton = CreateFrame("BUTTON", nil, tutorial)
     tutorialbutton:SetWidth(30);
     tutorialbutton:SetHeight(30);
     tutorialbutton:SetPoint("CENTER", tutorial, "CENTER", 1, -1);
@@ -6623,8 +6628,8 @@ function WeakAuras.CreateFrame()
     tutorialbutton:GetPushedTexture():SetPoint("center", -2, -2);
     tutorialbutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
     tutorialbutton:SetScript("OnClick", function()
-      if not(apiWrapper.IsAddOnLoaded("WeakAurasTutorials")) then
-        local loaded, reason = apiWrapper.LoadAddOn("WeakAurasTutorials");
+      if not(IsAddOnLoaded("WeakAurasTutorials")) then
+        local loaded, reason = LoadAddOn("WeakAurasTutorials");
         if not(loaded) then
           print("|cff9900FF".."WeakAurasTutorials"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
           return;
@@ -6851,14 +6856,14 @@ function WeakAuras.CreateFrame()
     texturePick.Close();
   end
 
-  local texturePickCancel = apiWrapper.CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
+  local texturePickCancel = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
   texturePickCancel:SetScript("OnClick", texturePick.CancelClose)
   texturePickCancel:SetPoint("BOTTOMRIGHT", -27, -23)
   texturePickCancel:SetHeight(20)
   texturePickCancel:SetWidth(100)
   texturePickCancel:SetText(L["Cancel"])
 
-  local texturePickClose = apiWrapper.CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
+  local texturePickClose = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
   texturePickClose:SetScript("OnClick", texturePick.Close)
   texturePickClose:SetPoint("RIGHT", texturePickCancel, "LEFT", -10, 0)
   texturePickClose:SetHeight(20)
@@ -6886,7 +6891,7 @@ function WeakAuras.CreateFrame()
     local distances = {};
     local names = {};
 
-    subname = tonumber(subname) and apiWrapper.GetSpellInfo(tonumber(subname)) or subname;
+    subname = tonumber(subname) and GetSpellInfo(tonumber(subname)) or subname;
     subname = subname:lower();
 
     local usedIcons = {};
@@ -6923,7 +6928,7 @@ function WeakAuras.CreateFrame()
     end
   end
 
-  local iconPickInput = apiWrapper.CreateFrame("EDITBOX", nil, iconPick.frame, "InputBoxTemplate");
+  local iconPickInput = CreateFrame("EDITBOX", nil, iconPick.frame, "InputBoxTemplate");
   iconPickInput:SetScript("OnTextChanged", function(...) iconPickFill(iconPickInput:GetText(), false); end);
   iconPickInput:SetScript("OnEnterPressed", function(...) iconPickFill(iconPickInput:GetText(), true); end);
   iconPickInput:SetScript("OnEscapePressed", function(...) iconPickInput:SetText(""); iconPickFill(iconPickInput:GetText(), true); end);
@@ -7020,14 +7025,14 @@ function WeakAuras.CreateFrame()
     iconPick.Close();
   end
 
-  local iconPickCancel = apiWrapper.CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
+  local iconPickCancel = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
   iconPickCancel:SetScript("OnClick", iconPick.CancelClose);
   iconPickCancel:SetPoint("bottomright", frame, "bottomright", -27, 11);
   iconPickCancel:SetHeight(20);
   iconPickCancel:SetWidth(100);
   iconPickCancel:SetText(L["Cancel"]);
 
-  local iconPickClose = apiWrapper.CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
+  local iconPickClose = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
   iconPickClose:SetScript("OnClick", iconPick.Close);
   iconPickClose:SetPoint("RIGHT", iconPickCancel, "LEFT", -10, 0);
   iconPickClose:SetHeight(20);
@@ -7096,7 +7101,7 @@ function WeakAuras.CreateFrame()
   end);
   modelPick:AddChild(modelTree);
 
-  local model = apiWrapper.CreateFrame("PlayerModel", nil, modelPick.content);
+  local model = CreateFrame("PlayerModel", nil, modelPick.content);
   model:SetAllPoints(modelTree.content);
   model:SetFrameStrata("FULLSCREEN");
   modelPick.model = model;
@@ -7209,14 +7214,14 @@ function WeakAuras.CreateFrame()
     modelPick.Close();
   end
 
-  local modelPickCancel = apiWrapper.CreateFrame("Button", nil, modelPick.frame, "UIPanelButtonTemplate");
+  local modelPickCancel = CreateFrame("Button", nil, modelPick.frame, "UIPanelButtonTemplate");
   modelPickCancel:SetScript("OnClick", modelPick.CancelClose);
   modelPickCancel:SetPoint("bottomright", frame, "bottomright", -27, 16);
   modelPickCancel:SetHeight(20);
   modelPickCancel:SetWidth(100);
   modelPickCancel:SetText(L["Cancel"]);
 
-  local modelPickClose = apiWrapper.CreateFrame("Button", nil, modelPick.frame, "UIPanelButtonTemplate");
+  local modelPickClose = CreateFrame("Button", nil, modelPick.frame, "UIPanelButtonTemplate");
   modelPickClose:SetScript("OnClick", modelPick.Close);
   modelPickClose:SetPoint("RIGHT", modelPickCancel, "LEFT", -10, 0);
   modelPickClose:SetHeight(20);
@@ -7236,7 +7241,7 @@ function WeakAuras.CreateFrame()
   importexportbox.button:Hide();
   importexport:AddChild(importexportbox);
 
-  local importexportClose = apiWrapper.CreateFrame("Button", nil, importexport.frame, "UIPanelButtonTemplate");
+  local importexportClose = CreateFrame("Button", nil, importexport.frame, "UIPanelButtonTemplate");
   importexportClose:SetScript("OnClick", function() importexport:Close() end);
   importexportClose:SetPoint("BOTTOMRIGHT", -27, 13);
   importexportClose:SetHeight(20);
@@ -7289,8 +7294,8 @@ function WeakAuras.CreateFrame()
       end
 
       importexportbox.editBox:SetScript('OnChar', function(self, c)
-        if lastPaste ~= apiWrapper.GetTime() then
-          textBuffer, i, lastPaste = {}, 0, apiWrapper.GetTime()
+        if lastPaste ~= GetTime() then
+          textBuffer, i, lastPaste = {}, 0, GetTime()
           self:SetScript('OnUpdate', clearBuffer)
         end
         i = i + 1
@@ -7370,14 +7375,14 @@ function WeakAuras.CreateFrame()
 
   IndentationLib.enable(texteditorbox.editBox, colorTable, 4);
 
-  local texteditorCancel = apiWrapper.CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
+  local texteditorCancel = CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
   texteditorCancel:SetScript("OnClick", function() texteditor:CancelClose() end);
   texteditorCancel:SetPoint("BOTTOMRIGHT", -27, 13);
   texteditorCancel:SetHeight(20);
   texteditorCancel:SetWidth(100);
   texteditorCancel:SetText(L["Cancel"]);
 
-  local texteditorClose = apiWrapper.CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
+  local texteditorClose = CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
   texteditorClose:SetScript("OnClick", function() texteditor:Close() end);
   texteditorClose:SetPoint("RIGHT", texteditorCancel, "LEFT", -10, 0)
   texteditorClose:SetHeight(20);
@@ -7580,7 +7585,7 @@ function WeakAuras.CreateFrame()
      end
   end);
 
-  local codereviewCancel = apiWrapper.CreateFrame("Button", nil, codereview.frame, "UIPanelButtonTemplate");
+  local codereviewCancel = CreateFrame("Button", nil, codereview.frame, "UIPanelButtonTemplate");
   codereviewCancel:SetScript("OnClick", function() codereview:Close() end);
   codereviewCancel:SetPoint("bottomright", frame, "bottomright", -27, 11);
   codereviewCancel:SetHeight(20);
@@ -7628,7 +7633,7 @@ function WeakAuras.CreateFrame()
   loadProgress:SetText(L["Creating options: "].."0/0");
   frame.loadProgress = loadProgress;
 
-  local filterInput = apiWrapper.CreateFrame("editbox", "WeakAurasFilterInput", buttonsContainer.frame, "InputBoxTemplate");
+  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", buttonsContainer.frame, "InputBoxTemplate");
 
   filterInput:SetAutoFocus(false);
   filterInput:SetScript("OnTextChanged", function(...) WeakAuras.SortDisplayButtons(filterInput:GetText()) end);
@@ -7649,7 +7654,7 @@ function WeakAuras.CreateFrame()
   frame.filterInput = filterInput;
   filterInput:Hide();
 
-  local filterInputClear = apiWrapper.CreateFrame("BUTTON", nil, buttonsContainer.frame);
+  local filterInputClear = CreateFrame("BUTTON", nil, buttonsContainer.frame);
   frame.filterInputClear = filterInputClear;
   filterInputClear:SetWidth(12);
   filterInputClear:SetHeight(12);
@@ -7717,7 +7722,7 @@ function WeakAuras.CreateFrame()
     self:FixScroll();
   end
 
-  local moversizer = apiWrapper.CreateFrame("FRAME", nil, frame);
+  local moversizer = CreateFrame("FRAME", nil, frame);
   frame.moversizer = moversizer;
   moversizer:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -7727,7 +7732,7 @@ function WeakAuras.CreateFrame()
   moversizer:EnableMouse();
   moversizer:SetFrameStrata("HIGH");
 
-  moversizer.bl = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.bl = CreateFrame("FRAME", nil, moversizer);
   moversizer.bl:EnableMouse();
   moversizer.bl:SetWidth(16);
   moversizer.bl:SetHeight(16);
@@ -7754,7 +7759,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.bl.Clear();
 
-  moversizer.br = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.br = CreateFrame("FRAME", nil, moversizer);
   moversizer.br:EnableMouse();
   moversizer.br:SetWidth(16);
   moversizer.br:SetHeight(16);
@@ -7781,7 +7786,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.br.Clear();
 
-  moversizer.tl = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.tl = CreateFrame("FRAME", nil, moversizer);
   moversizer.tl:EnableMouse();
   moversizer.tl:SetWidth(16);
   moversizer.tl:SetHeight(16);
@@ -7808,7 +7813,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.tl.Clear();
 
-  moversizer.tr = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.tr = CreateFrame("FRAME", nil, moversizer);
   moversizer.tr:EnableMouse();
   moversizer.tr:SetWidth(16);
   moversizer.tr:SetHeight(16);
@@ -7835,7 +7840,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.tr.Clear();
 
-  moversizer.l = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.l = CreateFrame("FRAME", nil, moversizer);
   moversizer.l:EnableMouse();
   moversizer.l:SetWidth(8);
   moversizer.l:SetPoint("TOPLEFT", moversizer.tl, "BOTTOMLEFT");
@@ -7854,7 +7859,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.l.Clear();
 
-  moversizer.b = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.b = CreateFrame("FRAME", nil, moversizer);
   moversizer.b:EnableMouse();
   moversizer.b:SetHeight(8);
   moversizer.b:SetPoint("BOTTOMLEFT", moversizer.bl, "BOTTOMRIGHT");
@@ -7873,7 +7878,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.b.Clear();
 
-  moversizer.r = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.r = CreateFrame("FRAME", nil, moversizer);
   moversizer.r:EnableMouse();
   moversizer.r:SetWidth(8);
   moversizer.r:SetPoint("BOTTOMRIGHT", moversizer.br, "TOPRIGHT");
@@ -7891,7 +7896,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.r.Clear();
 
-  moversizer.t = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  moversizer.t = CreateFrame("FRAME", nil, moversizer);
   moversizer.t:EnableMouse();
   moversizer.t:SetHeight(8);
   moversizer.t:SetPoint("TOPRIGHT", moversizer.tr, "TOPLEFT");
@@ -7909,7 +7914,7 @@ function WeakAuras.CreateFrame()
   end
   moversizer.t.Clear();
 
-  local mover = apiWrapper.CreateFrame("FRAME", nil, moversizer);
+  local mover = CreateFrame("FRAME", nil, moversizer);
   frame.mover = mover;
   mover:EnableMouse();
   mover.moving = {};
@@ -8170,7 +8175,7 @@ function WeakAuras.CreateFrame()
   end
 
   mover:SetScript("OnUpdate", function(self, elaps)
-    if(apiWrapper.IsShiftKeyDown()) then
+    if(IsShiftKeyDown()) then
       self.goalAlpha = 0.1;
     else
       self.goalAlpha = 1;
@@ -8409,7 +8414,7 @@ function WeakAuras.CreateFrame()
       container:SetLayout("fill");
       container:AddChild(containerScroll);
 
-      if(apiWrapper.GetAddOnEnableState(apiWrapper.UnitName("player"), "WeakAurasTemplates") ~= 0) then
+      if(GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
         local button = AceGUI:Create("WeakAurasNewButton");
         button:SetTitle(L["From Template"]);
         button:SetDescription(L["Offer a guided way to create auras for your class"])
@@ -8955,8 +8960,8 @@ function WeakAuras.OpenIconPick(data, field)
 end
 
 function WeakAuras.OpenModelPick(data, field)
-  if not(apiWrapper.IsAddOnLoaded("WeakAurasModelPaths")) then
-    local loaded, reason = apiWrapper.LoadAddOn("WeakAurasModelPaths");
+  if not(IsAddOnLoaded("WeakAurasModelPaths")) then
+    local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
       print("|cff9900FF".."WeakAurasModelPaths"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
       WeakAuras.ModelPaths = {};
@@ -8975,8 +8980,8 @@ function WeakAuras.CloseCodeReview(data)
 end
 
 function WeakAuras.OpenTriggerTemplate(data)
-  if not(apiWrapper.IsAddOnLoaded("WeakAurasTemplates")) then
-    local loaded, reason = apiWrapper.LoadAddOn("WeakAurasTemplates");
+  if not(IsAddOnLoaded("WeakAurasTemplates")) then
+    local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
       print("|cff9900FF".."WeakAurasTemplates"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
       return;
@@ -8995,7 +9000,7 @@ end
 function WeakAuras.CorrectAuraName(input)
   local spellId = tonumber(input);
   if(spellId) then
-    local name, _, icon = apiWrapper.GetSpellInfo(spellId);
+    local name, _, icon = GetSpellInfo(spellId);
     if(name) then
       spellCache[name] = spellCache[name] or {};
       if (not spellCache[name][spellId]) then
@@ -9147,8 +9152,8 @@ do
 
   function WeakAuras.StartFrameChooser(data, path)
     if not(frameChooserFrame) then
-      frameChooserFrame = apiWrapper.CreateFrame("frame");
-      frameChooserBox = apiWrapper.CreateFrame("frame", nil, frameChooserFrame);
+      frameChooserFrame = CreateFrame("frame");
+      frameChooserBox = CreateFrame("frame", nil, frameChooserFrame);
       frameChooserBox:SetFrameStrata("TOOLTIP");
       frameChooserBox:SetBackdrop({
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",

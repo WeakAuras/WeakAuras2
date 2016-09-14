@@ -63,7 +63,7 @@ local tostring, select, pairs, type = tostring, select, pairs, type
 local error, setmetatable = error, setmetatable
 
 -- WoW APIs
-local apiWrapper = WowApiWrapper:create()
+local IsPlayerMoving = IsPlayerMoving
 
 WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" end});
 LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);
@@ -310,7 +310,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
     changed = true;
   end
   if (data.duration) then
-    local expirationTime = apiWrapper.GetTime() + data.duration;
+    local expirationTime = GetTime() + data.duration;
     if (state.expirationTime ~= expirationTime) then
       state.resort = state.expirationTime ~= expirationTime;
       state.expirationTime = expirationTime;
@@ -600,7 +600,7 @@ function GenericTrigger.UnloadDisplay(id)
   end
 end
 
-local frame = apiWrapper.CreateFrame("FRAME");
+local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 frame:SetScript("OnEvent", HandleEvent);
@@ -848,7 +848,7 @@ do
         update_clients_num = update_clients_num + 1;
       end
       if not(update_frame) then
-        update_frame = apiWrapper.CreateFrame("FRAME");
+        update_frame = CreateFrame("FRAME");
       end
       if not(updating) then
         update_frame:SetScript("OnUpdate", function()
@@ -1059,7 +1059,7 @@ do
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
       local itemId = GetInventoryItemID("player", mh);
-      local name, _, _, _, _, _, _, _, _, icon = apiWrapper.GetItemInfo(itemId or 0);
+      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingMain) then
         return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
       elseif (lastSwingRange) then
@@ -1069,7 +1069,7 @@ do
       end
     elseif(hand == "off") then
       local itemId = GetInventoryItemID("player", oh);
-      local name, _, _, _, _, _, _, _, _, icon = apiWrapper.GetItemInfo(itemId or 0);
+      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingOff) then
         return swingDurationOff, lastSwingOff + swingDurationOff, name, icon;
       else
@@ -1092,10 +1092,10 @@ do
   end
 
   local function swingTimerCheck(frame, event, _, message, _, _, source)
-    if(apiWrapper.UnitIsUnit(source or "", "player")) then
+    if(UnitIsUnit(source or "", "player")) then
       if(message == "SWING_DAMAGE" or message == "SWING_MISSED") then
         local event;
-        local currentTime = apiWrapper.GetTime();
+        local currentTime = GetTime();
         local mainSpeed, offSpeed = UnitAttackSpeed("player");
         offSpeed = offSpeed or 0;
         if not(lastSwingMain) then
@@ -1130,7 +1130,7 @@ do
         WeakAuras.ScanEvents(event);
       elseif(message == "RANGE_DAMAGE" or message == "RANGE_MISSED") then
         local event;
-        local currentTime = apiWrapper.GetTime();
+        local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
         if(lastSwingRange) then
           timer:CancelTimer(rangeTimer, true);
@@ -1149,7 +1149,7 @@ do
 
   function WeakAuras.InitSwingTimer()
     if not(swingTimerFrame) then
-      swingTimerFrame = apiWrapper.CreateFrame("frame");
+      swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:SetScript("OnEvent", swingTimerCheck);
     end
@@ -1188,7 +1188,7 @@ do
   local gcdEndCheck;
 
   function WeakAuras.InitCooldownReady()
-  cdReadyFrame = apiWrapper.CreateFrame("FRAME");
+  cdReadyFrame = CreateFrame("FRAME");
   cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
   cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
   cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
@@ -1323,7 +1323,7 @@ do
       startTime = startTime or 0;
       duration = duration or 0;
       runeDuration = duration > 0 and duration or runeDuration
-      local time = apiWrapper.GetTime();
+      local time = GetTime();
 
       if(not startTime or startTime == 0) then
         startTime = 0
@@ -1374,7 +1374,7 @@ do
       end
       startTime = startTime or 0;
       duration = duration or 0;
-      local time = apiWrapper.GetTime();
+      local time = GetTime();
       local remaining = startTime + duration - time;
 
       local chargesChanged = spellCharges[id] ~= charges;
@@ -1433,7 +1433,7 @@ do
       local startTime, duration = GetItemCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
-      local time = apiWrapper.GetTime();
+      local time = GetTime();
 
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
@@ -1493,7 +1493,7 @@ do
       end
 
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
-        local time = apiWrapper.GetTime();
+        local time = GetTime();
         local endTime = startTime + duration;
         runeCdDurs[id] = duration;
         runeCdExps[id] = endTime;
@@ -1533,7 +1533,7 @@ do
 
 
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
-        local time = apiWrapper.GetTime();
+        local time = GetTime();
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
         spellCdExps[id] = endTime;
@@ -1559,7 +1559,7 @@ do
       items[id] = true;
       local startTime, duration = GetItemCooldown(id);
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
-        local time = apiWrapper.GetTime();
+        local time = GetTime();
         local endTime = startTime + duration;
         itemCdDurs[id] = duration;
         itemCdExps[id] = endTime;
@@ -1613,7 +1613,7 @@ do
   local recheckTimer; -- handle of timer
 
   local function dbmRecheckTimers()
-    local now = apiWrapper.GetTime();
+    local now = GetTime();
     nextExpire = nil;
     local nextMsg = nil;
     for k, v in pairs(bars) do
@@ -1637,7 +1637,7 @@ do
   local function dbmEventCallback(event, ...)
     if (event == "DBM_TimerStart") then
       local id, msg, duration, icon, timerType, spellId, colorId = ...;
-      local now = apiWrapper.GetTime();
+      local now = GetTime();
       local expiring = now + duration;
       bars[id] = bars[id] or {}
       -- Store everything, event though we are only using some of those
@@ -1755,13 +1755,13 @@ do
   local scheduled_scans = {};
 
   local function doDbmScan(fireTime)
-    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..apiWrapper.GetTime()..")");
+    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..GetTime()..")");
     scheduled_scans[fireTime] = nil;
     WeakAuras.ScanEvents("DBM_TimerUpdate");
   end
   function WeakAuras.ScheduleDbmCheck(fireTime)
     if not(scheduled_scans[fireTime]) then
-      scheduled_scans[fireTime] = timer:ScheduleTimer(doDbmScan, fireTime - apiWrapper.GetTime() + 0.1, fireTime);
+      scheduled_scans[fireTime] = timer:ScheduleTimer(doDbmScan, fireTime - GetTime() + 0.1, fireTime);
       WeakAuras.debug("Scheduled dbm scan at "..fireTime);
     end
   end
@@ -1775,7 +1775,7 @@ do
   local recheckTimer; -- handle of timer
 
   local function recheckTimers()
-    local now = apiWrapper.GetTime();
+    local now = GetTime();
     nextExpire = nil;
     for id, bar in pairs(bars) do
       if (bar.expirationTime < now) then
@@ -1798,7 +1798,7 @@ do
       WeakAuras.ScanEvents("BigWigs_Message", ...);
     elseif (event == "BigWigs_StartBar") then
       local addon, spellId, text, duration, icon = ...
-      local now = apiWrapper.GetTime();
+      local now = GetTime();
       local expirationTime = now + duration;
 
       local newBar;
@@ -1925,13 +1925,13 @@ do
   local scheduled_scans = {};
 
   local function doBigWigsScan(fireTime)
-    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..apiWrapper.GetTime()..")");
+    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..GetTime()..")");
     scheduled_scans[fireTime] = nil;
     WeakAuras.ScanEvents("BigWigs_Timer_Update");
   end
   function WeakAuras.ScheduleBigWigsCheck(fireTime)
     if not(scheduled_scans[fireTime]) then
-      scheduled_scans[fireTime] = timer:ScheduleTimer(doBigWigsScan, fireTime - apiWrapper.GetTime() + 0.1, fireTime);
+      scheduled_scans[fireTime] = timer:ScheduleTimer(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime);
       WeakAuras.debug("Scheduled BigWigs scan at "..fireTime);
     end
   end
@@ -1959,7 +1959,7 @@ do
 
   function WeakAuras.TenchInit()
     if not(tenchFrame) then
-      tenchFrame = apiWrapper.CreateFrame("Frame");
+      tenchFrame = CreateFrame("Frame");
       tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
 
       tenchTip = WeakAuras.GetHiddenTooltip();
@@ -1984,7 +1984,7 @@ do
 
       local function tenchUpdate()
         local _, mh_rem, _, _, oh_rem = GetWeaponEnchantInfo();
-        local time = apiWrapper.GetTime();
+        local time = GetTime();
         local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
         local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
         if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
@@ -2027,7 +2027,7 @@ do
   WeakAuras.frames["Mount Use Handler"] = mountedFrame;
   function WeakAuras.WatchForMounts()
     if not(mountedFrame) then
-      mountedFrame = apiWrapper.CreateFrame("frame");
+      mountedFrame = CreateFrame("frame");
       mountedFrame:RegisterEvent("COMPANION_UPDATE");
       local elapsed = 0;
       local delay = 0.5;
@@ -2057,7 +2057,7 @@ do
   WeakAuras.frames["Pet Use Handler"] = petFrame;
   function WeakAuras.WatchForPetDeath()
     if not(petFrame) then
-      petFrame = apiWrapper.CreateFrame("frame");
+      petFrame = CreateFrame("frame");
       petFrame:RegisterUnitEvent("UNIT_HEALTH", "pet");
       petFrame:SetScript("OnEvent", function()
         WeakAuras.ScanEvents("PET_UPDATE");
@@ -2069,7 +2069,7 @@ do
   WeakAuras.frames["Unit Pet Handler"] = unitPetFrame;
   function WeakAuras.WatchForUnitPet()
     if (not unitPetFrame) then
-      unitPetFrame = apiWrapper.CreateFrame("frame");
+      unitPetFrame = CreateFrame("frame");
       unitPetFrame:RegisterEvent("UNIT_PET");
       unitPetFrame:SetScript("OnEvent", function()
         WeakAuras.ScanEvents("WA_UNIT_PET", "pet");
@@ -2085,16 +2085,16 @@ do
   local moving;
   function WeakAuras.WatchForPlayerMoving()
     if not(playerMovingFrame) then
-      playerMovingFrame = apiWrapper.CreateFrame("frame");
+      playerMovingFrame = CreateFrame("frame");
       playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
       playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
       playerMovingFrame:SetScript("OnEvent", function(self, event)
         -- channeling e.g. Mind Flay results in lots of PLAYER_STARTED_MOVING, PLAYER_STOPPED_MOVING
         -- for each frame
-        -- So check after 0.01 s if apiWrapper.IsPlayerMoving() actually returns something different.
+        -- So check after 0.01 s if IsPlayerMoving() actually returns something different.
         timer:ScheduleTimer(function()
-          if (moving ~= apiWrapper.IsPlayerMoving() or moving == nil) then
-            moving = apiWrapper.IsPlayerMoving();
+          if (moving ~= IsPlayerMoving() or moving == nil) then
+            moving = IsPlayerMoving();
             WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE");
           end
         end, 0.01);
@@ -2107,7 +2107,7 @@ end
 local itemCountWatchFrame;
 function WeakAuras.RegisterItemCountWatch()
   if not(itemCountWatchFrame) then
-    itemCountWatchFrame = apiWrapper.CreateFrame("frame");
+    itemCountWatchFrame = CreateFrame("frame");
     itemCountWatchFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
     itemCountWatchFrame:SetScript("OnEvent", function()
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
@@ -2120,14 +2120,14 @@ do
   local scheduled_scans = {};
 
   local function doCooldownScan(fireTime)
-    WeakAuras.debug("Performing cooldown scan at "..fireTime.." ("..apiWrapper.GetTime()..")");
+    WeakAuras.debug("Performing cooldown scan at "..fireTime.." ("..GetTime()..")");
     scheduled_scans[fireTime] = nil;
     WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
   end
   function WeakAuras.ScheduleCooldownScan(fireTime)
     if not(scheduled_scans[fireTime]) then
       WeakAuras.debug("Scheduled cooldown scan at "..fireTime);
-      scheduled_scans[fireTime] = timer:ScheduleTimer(doCooldownScan, fireTime - apiWrapper.GetTime() + 0.1, fireTime);
+      scheduled_scans[fireTime] = timer:ScheduleTimer(doCooldownScan, fireTime - GetTime() + 0.1, fireTime);
     end
   end
  end

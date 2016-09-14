@@ -43,9 +43,6 @@ local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub, removeSpellNam
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
--- WoW APIs
-local apiWrapper = WowApiWrapper:create()
-
 -- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent BNGetNumFriendGameAccounts BNGetFriendGameAccountInfo
 
 local bytetoB64 = {
@@ -260,7 +257,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   until(done)
   if newMsg ~= "" then
     local trimmedPlayer = Ambiguate(player, "none")
-    if event == "CHAT_MSG_WHISPER" and not apiWrapper.UnitInRaid(trimmedPlayer) and not apiWrapper.UnitInParty(trimmedPlayer) then -- XXX Need a guild check
+    if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX Need a guild check
       local _, num = BNGetNumFriends()
       for i=1, num do
         local toon = BNGetNumFriendGameAccounts(i)
@@ -356,7 +353,7 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
       if(characterName and displayName) then
         characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
         displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-        if(apiWrapper.IsShiftKeyDown()) then
+        if(IsShiftKeyDown()) then
           local editbox = GetCurrentKeyBoardFocus();
           if(editbox) then
             editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
@@ -779,7 +776,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
 
         if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
-          ItemRefTooltip.WeakAuras_Tooltip_Button = apiWrapper.CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
+          ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
         end
         importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
         importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -8, 8);
@@ -788,7 +785,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         importbutton:RegisterEvent("PLAYER_REGEN_DISABLED");
 
         if not(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
-          ItemRefTooltip.WeakAuras_Tooltip_Button2 = apiWrapper.CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
+          ItemRefTooltip.WeakAuras_Tooltip_Button2 = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
         end
         showcodebutton = ItemRefTooltip.WeakAuras_Tooltip_Button2;
         showcodebutton:SetPoint("BOTTOMLEFT", ItemRefTooltip, "BOTTOMLEFT", 8, 8);
@@ -803,7 +800,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
         end
 
         importbutton:SetScript("OnEvent", onCombat);
-        if (apiWrapper.InCombatLockdown()) then
+        if (InCombatLockdown()) then
           importbutton:Disable();
         end
         showcodebutton:SetText(L["Show Code"]);
@@ -906,7 +903,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
       end
 
       if not(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
-        ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame = apiWrapper.CreateFrame("frame", nil, ItemRefTooltip);
+        ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame = CreateFrame("frame", nil, ItemRefTooltip);
       end
       local thumbnail_frame = ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame;
       thumbnail_frame:SetWidth(40);
@@ -915,7 +912,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
 
       if(alterdesc) then
         if not(ItemRefTooltip.WeakAuras_Desc_Box) then
-          ItemRefTooltip.WeakAuras_Desc_Box = apiWrapper.CreateFrame("frame", nil, ItemRefTooltip);
+          ItemRefTooltip.WeakAuras_Desc_Box = CreateFrame("frame", nil, ItemRefTooltip);
         end
         local descboxframe = ItemRefTooltip.WeakAuras_Desc_Box;
         descboxframe:SetBackdrop({
@@ -938,7 +935,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
 
         local descbox = descboxframe.descbox;
         if not(descbox) then
-          descbox = apiWrapper.CreateFrame("editbox", nil, descboxframe);
+          descbox = CreateFrame("editbox", nil, descboxframe);
           descboxframe.descbox = descbox;
         end
         descbox:SetPoint("BOTTOMLEFT", descboxframe, "BOTTOMLEFT", 8, 8);
@@ -1005,8 +1002,8 @@ local function checkTrigger(codes, id, trigger, untrigger)
         end
       end
 
-      if (not apiWrapper.IsAddOnLoaded('WeakAurasOptions')) then
-        apiWrapper.LoadAddOn('WeakAurasOptions')
+      if (not IsAddOnLoaded('WeakAurasOptions')) then
+        LoadAddOn('WeakAurasOptions')
       end
 
       local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
