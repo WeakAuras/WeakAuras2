@@ -11,7 +11,7 @@ If you specify a literal (like "Bonechewer") GetRealmName would always return Bo
 If you specify a function, then the function will be called whenever someone calls that function on the API. 
 Your function will be passed all of the values that the WoW API would have been passed.]]
 function MockMethodFull(mockInstance, propertyName, getMethodName, setMethodName, defaultValue)
-    table.insert(WowApiMock.BackingProperties, propertyName)
+    table.insert(WowApiMock.BackingProperties.Values, propertyName)
     table.insert(WowApiMock.MockedMethods, getMethodName)
 
     _G[getMethodName] = function(...)
@@ -20,7 +20,7 @@ function MockMethodFull(mockInstance, propertyName, getMethodName, setMethodName
         -- so ... to grab them all.
 
         -- Grab the value we applied to this method on the mock.
-        local returnValue = WowApiMock[propertyName] or defaultValue; 
+        local returnValue = WowApiMock.BackingProperties.Values[propertyName] or defaultValue; 
 
         -- If that value is a function, call it with whatever parameters
         -- we were given.
@@ -35,7 +35,7 @@ function MockMethodFull(mockInstance, propertyName, getMethodName, setMethodName
     end
 
     _G[setMethodName] = function(value)
-        WowApiMock[propertyName] = value
+        WowApiMock.BackingProperties.Values[propertyName] = value
     end
 end
 

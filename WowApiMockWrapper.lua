@@ -15,10 +15,11 @@ end
 
 WowApiMock.MockedMethods = {}
 WowApiMock.BackingProperties = {}
+WowApiMock.BackingProperties.Values = {}
 
 function ResetMocks()
-    for index, property in ipairs(WowApiMock.BackingProperties) do
-        WowApiMock[property] = nil
+    for index, property in ipairs(WowApiMock.BackingProperties.Values) do
+        WowApiMock.BackingProperties.Values[property] = nil
     end
 end
 
