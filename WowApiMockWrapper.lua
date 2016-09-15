@@ -11,10 +11,16 @@ end
 WowApiMock.MockedMethods = {}
 WowApiMock.BackingProperties = {}
 WowApiMock.BackingProperties.Values = {}
+WowApiMock.MockedConstants = {}
+WowApiMock.ConstantDefaults = {}
 
 function ResetMocks()
     for index, property in ipairs(WowApiMock.BackingProperties.Values) do
         WowApiMock.BackingProperties.Values[property] = nil
+    end
+
+    for key, value in pairs(WowApiMock.ConstantDefaults) do
+        _G[key] = value
     end
 end
 
@@ -76,6 +82,12 @@ function WowApiMock:CreateMockedMethods()
     MockMethodPartial("GetAddOnEnableState", 2)
     --MockMethodPartial("IsPlayerMoving", "TODO: Mock IsPlayerMoving")
     MockMethodPartial("UnitIsDead", nil)
+
+    MockConstant("MAX_TALENT_TIERS", 6)
+    MockConstant("MAX_TALENT_COLUMNS", 3)
+
+    MockConstant("MAX_PVP_TALENT_TIERS", 6)
+    MockConstant("MAX_PVP_TALENT_COLUMNS", 3)
 end
 
 local mock1 = WowApiMock:initialize()
@@ -122,3 +134,17 @@ assert(shiftIsDown == true, "FAIL")
 ResetMocks()
 shiftIsDown = IsShiftKeyDown()
 assert(shiftIsDown == nil, "FAIL")
+
+--TESTING Mocking constants works.
+local maxTiersOriginal = MAX_TALENT_TIERS
+assert(maxTiersOriginal == 6, "FAIL")
+
+MockMAX_TALENT_TIERS(100)
+local maxTiersMocked = MAX_TALENT_TIERS
+assert(maxTiersMocked == 100, "FAIL")
+assert(maxTiersMocked ~= maxTiersOriginal, "FAIL")
+
+ResetMocks()
+
+local resetMaxTiers = MAX_TALENT_TIERS
+assert(resetMaxTiers == maxTiersOriginal, "FAIL")

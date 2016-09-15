@@ -52,3 +52,14 @@ function MockMethodPartial(methodName, defaultValue)
 
     MockMethodFull(propertyName, methodName, setMethodName, defaultValue)
 end
+
+function MockConstant(constantName, defaultValue)
+    _G[constantName] = defaultValue
+    WowApiMock.ConstantDefaults[constantName] = defaultValue
+
+    local setMethodName = "Mock"..constantName
+    _G[setMethodName] = function(mockValue)
+        _G[constantName] = mockValue
+    end
+    table.insert(WowApiMock.MockedConstants, constantName)
+end
