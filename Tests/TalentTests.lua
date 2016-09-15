@@ -6,13 +6,6 @@ require("WowApiMockWrapper")
 
 TalentTests = {}
 
-local wrapper = {}
-    setmetatable(wrapper, WowApiMock)
-
-    WowApiMock:CreateMockedMethods(wrapper)
-
-    return wrapper
-
 function TalentTests.GetPvxTalentConfiguration_ForPve_ReturnsCorrectData()
     local maxTiers, maxColumns, talentInfoFunc = WeakAuras.GetPvxTalentConfiguration("PVE")
     assert(maxTiers == MAX_TALENT_TIERS, "The PVE talent configuration returned the wrong number of talent tiers.")
