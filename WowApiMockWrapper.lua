@@ -84,7 +84,7 @@ function WowApiMock:CreateMockedMethods()
     MockMethodPartial("UnitIsDead", nil)
 
     MockConstant("MAX_TALENT_TIERS", 6)
-    MockConstant("MAX_TALENT_COLUMNS", 3)
+    MockConstant("NUM_TALENT_COLUMNS", 3)
 
     MockConstant("MAX_PVP_TALENT_TIERS", 6)
     MockConstant("MAX_PVP_TALENT_COLUMNS", 3)
