@@ -593,42 +593,13 @@ function WeakAuras.ConstructFunction(prototype, trigger)
   return ret;
 end
 
-WeakAuras.talent_types_specific = {}
-WeakAuras.pvp_talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
-  local _, player_class = UnitClass("player")
-  WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
-  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
-  local spec = GetSpecialization()
-  WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
-  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
-
-
   -- print ("Creating talent cache for", player_class, spec);
-
-  for tier = 1, MAX_TALENT_TIERS do
-    for column = 1, NUM_TALENT_COLUMNS do
-      -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, GetActiveSpecGroup())
-      local talentId = (tier-1)*3+column
-      -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
-      if (talentName and talentIcon) then
-        WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
-      end
-    end
-  end
-
-
-  for tier = 1, MAX_PVP_TALENT_TIERS do
-    for column = 1, MAX_PVP_TALENT_COLUMNS do
-      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, GetActiveSpecGroup());
-      local talentId = (tier-1)*3+column
-      if (talentName and talentIcon) then
-        WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
-      end
-    end
-  end
+  WeakAuras.talent_types_specific = WeakAurasTalentCache:create("PVE").Initialize()
+  WeakAuras.pvp_talent_types_specific = WeakAurasTalentCache:create("PVP").Initialize()
 end
+
+WeakAuras.CreateTalentCache()
 
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = frame;
