@@ -595,8 +595,8 @@ end
 
 function WeakAuras.CreateTalentCache()
   -- print ("Creating talent cache for", player_class, spec);
-  WeakAuras.talent_types_specific = WeakAurasTalentCache:create("PVE").Initialize()
-  WeakAuras.pvp_talent_types_specific = WeakAurasTalentCache:create("PVP").Initialize()
+  WeakAuras.talent_types_specific = WeakAurasTalentCache:create("PVE"):Initialize()
+  WeakAuras.pvp_talent_types_specific = WeakAurasTalentCache:create("PVP"):Initialize()
 end
 
 WeakAuras.CreateTalentCache()

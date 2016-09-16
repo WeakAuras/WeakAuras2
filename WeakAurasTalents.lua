@@ -11,7 +11,7 @@ function WeakAurasTalentCache:create(cacheType)
 
     if cacheType == "PVE" then
       cache.GetTalentInfo = GetTalentInfo
-      cache.MaxColumns = MAX_TALENT_COLUMNS
+      cache.MaxColumns = NUM_TALENT_COLUMNS
       cache.MaxTiers = MAX_TALENT_TIERS
     elseif cacheType == "PVP" then
       cache.GetTalentInfo = GetPvpTalentInfo
