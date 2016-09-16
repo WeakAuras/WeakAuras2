@@ -1,6 +1,6 @@
+-- Kind of a hack, but it lets us not care about the order in which these files get listed in the
+-- TOC until such a time as things get a little more organized
 WeakAuras = WeakAuras or {}
-WeakAuras.talent_types_specific = {}
-WeakAuras.pvp_talent_types_specific = {}
 
 WeakAurasTalentCache = {}
 WeakAurasTalentCache.__index = WeakAurasTalentCache
@@ -64,7 +64,5 @@ function WeakAurasTalentCache:GetTalentCacheForClassAndSpec()
 end
 
 function WeakAurasTalentCache:Clear()
-    for key, value in pairs(self.Classes) do
-    self[key] = nil
-  end
+  self.Classes = {}
 end

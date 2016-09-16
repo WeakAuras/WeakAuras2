@@ -73,4 +73,22 @@ function TalentTests.WhenFillingTalentCacheGetsAllTalents_For6Tiers2Columns()
     TalentTests.X_TestTalentCaching(6,2)
 end
 
+function TalentTests.WhenClearingCache_EverythingIsRemoved()
+    -- Every talent will return the same information.
+    -- We're just testing that we stored it all.
+    MockGetTalentInfo({"TalentID", "TalentName", "TalentIcon"})
+    local pveCache = WeakAurasTalentCache:create("PVE")
+    pveCache:Initialize()
+
+    local talentCache = pveCache:GetTalentCacheForClassAndSpec()
+    local numTalentsBeforeClear = #talentCache
+    assert(numTalentsBeforeClear > 0, "There were no talents in the cache.")
+
+    pveCache:Clear()
+    talentCache = pveCache:GetTalentCacheForClassAndSpec()
+    local numTalentsAfterClear = #talentCache
+
+    assert(numTalentsAfterClear == 0, "The cache did not clear successfully.")
+end
+
 RunAllTests(TalentTests)
