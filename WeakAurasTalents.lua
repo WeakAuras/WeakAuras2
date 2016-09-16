@@ -1,7 +1,3 @@
--- Kind of a hack, but it lets us not care about the order in which these files get listed in the
--- TOC until such a time as things get a little more organized
-WeakAuras = WeakAuras or {}
-
 WeakAurasTalentCache = {}
 WeakAurasTalentCache.__index = WeakAurasTalentCache
 
