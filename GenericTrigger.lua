@@ -304,7 +304,7 @@ function WeakAuras.EndEvent(id, triggernum, force, state)
 end
 
 function WeakAuras.ActivateEvent(id, triggernum, data, state)
-  local changed = false;
+  local changed = state.changed or false;
   if (state.show ~= true) then
     state.show = true;
     changed = true;
