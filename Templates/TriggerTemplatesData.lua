@@ -3872,7 +3872,9 @@ local runeOfPower =
 }
 
 for i = 1, 3 do
-  tinsert(templates.class.MAGE[i][1].args, runeOfPower);
+  local tmpTable = {};
+  WeakAuras.DeepCopy(runeOfPower, tmpTable);
+  tinsert(templates.class.MAGE[i][1].args, tmpTable);
 end
 
 -- Warlock
