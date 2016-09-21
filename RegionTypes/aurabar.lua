@@ -419,9 +419,11 @@ local function animRotate(object, degrees, anchor)
 
         rotate:SetOrigin(anchor, 0, 0);
         rotate:SetDegrees(degrees);
-        rotate:SetDuration(0.000001);
+        rotate:SetDuration(0);
         rotate:SetEndDelay(2147483647);
         group:Play();
+        rotate:SetSmoothProgress(1);
+        group:Pause();
     end
 end
 WeakAuras.animRotate = animRotate;

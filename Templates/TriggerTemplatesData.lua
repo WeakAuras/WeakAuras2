@@ -1545,7 +1545,7 @@ templates.class.SHAMAN = {
         { spell = 108281, type = "ability", talent = 5}, -- Ancestral Guidance
         { spell = 114050, type = "ability", talent = 19}, -- Ascendance
         { spell = 117014, type = "ability", talent = 10}, -- Elemental Blast
-        { spell = 192058, type = "ability", talent = 7}, -- w Totem
+        { spell = 192058, type = "ability", talent = 7}, -- Lightning Surge Totem
         { spell = 192063, type = "ability", talent = 4}, -- Gust of Wind
         { spell = 192077, type = "ability", talent = 6}, -- Wind Rush Totem
         { spell = 192222, type = "ability", talent = 21}, -- Liquid Magma Totem
@@ -3932,7 +3932,7 @@ for i = 1, 4 do
 end
 
 -- Efflorescence aka Mushroom
-tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem", totemNumber = 1 });
+tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem"});
 
 -- Demon Hunter
 tinsert(templates.class.DEMONHUNTER[1][5].args, createSimplePowerTemplate(17));

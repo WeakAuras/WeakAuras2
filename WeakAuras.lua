@@ -2322,8 +2322,14 @@ function WeakAuras.UpdateAnimations()
       animations[id] = nil;
       end
 
-      if(anim.onFinished) then
-      anim.onFinished();
+      if(anim.loop) then
+        WeakAuras.Animate(anim.namespace, anim.data,
+                          anim.type, anim.anim,
+                          anim.region, anim.inverse,
+                          anim.onFinished, anim.loop,
+                          anim.cloneId);
+      elseif(anim.onFinished) then
+        anim.onFinished();
       end
     end
   end
@@ -2343,7 +2349,6 @@ end
 function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinished, loop, cloneId)
   local id = data.id;
   local key = tostring(region);
-  local inAnim = anim;
   local valid;
   if(anim and anim.type == "custom" and anim.duration and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
   valid = true;
@@ -2463,10 +2468,6 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     end
   end
 
-  if(loop) then
-    onFinished = function() WeakAuras.Animate(namespace, data, type, inAnim, region, inverse, onFinished, loop, cloneId) end
-  end
-
   animations[key] = animations[key] or {};
   animations[key].progress = progress
   animations[key].startX = startX
@@ -2506,6 +2507,9 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
   animations[key].onFinished = onFinished
   animations[key].name = id
   animations[key].cloneId = cloneId or ""
+  animations[key].namespace = namespace;
+  animations[key].data = data;
+  animations[key].anim = anim;
 
   if not(updatingAnimations) then
     frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
