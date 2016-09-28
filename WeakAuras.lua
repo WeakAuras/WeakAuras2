@@ -37,7 +37,7 @@ local L = WeakAuras.L
 -- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
 -- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS MAX_PVP_TALENT_TIERS NUM_TALENT_COLUMNS MAX_PVP_TALENT_COLUMNS
--- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles
+-- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles LE_PARTY_CATEGORY_INSTANCE
 
 local queueshowooc;
 
@@ -2147,15 +2147,20 @@ function WeakAuras.PerformActions(data, type, region)
       WeakAuras.Announce(actions.message, "CHANNEL", nil, channel, data.id, type);
     end
     elseif(actions.message_type == "SMARTRAID") then
-    if UnitInBattleground("player") then
-      SendChatMessage(actions.message, "INSTANCE_CHAT")
-    elseif UnitInRaid("player") then
-      SendChatMessage(actions.message, "RAID")
-    elseif UnitInParty("player") then
-      SendChatMessage(actions.message, "PARTY")
-    else
-      SendChatMessage(actions.message, "SAY")
-    end
+      local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
+      if UnitInBattleground("player") then
+        SendChatMessage(actions.message, "INSTANCE_CHAT")
+      elseif UnitInRaid("player") then
+        SendChatMessage(actions.message, "RAID")
+      elseif UnitInParty("player") then
+        if isInstanceGroup then
+          SendChatMessage(actions.message, "INSTANCE_CHAT")
+        else
+          SendChatMessage(actions.message, "PARTY")
+        end
+      else
+        SendChatMessage(actions.message, "SAY")
+      end
     else
     WeakAuras.Announce(actions.message, actions.message_type, nil, nil, data.id, type);
     end
