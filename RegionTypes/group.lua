@@ -100,15 +100,12 @@ local function modify(parent, region, data)
     region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
 
     -- Adjust frame-level sorting
-    local lowestRegion = WeakAuras.regions[data.controlledChildren[1]] and WeakAuras.regions[data.controlledChildren[1]].region
-    if(lowestRegion) then
-        local frameLevel = lowestRegion:GetFrameLevel()
-        for i=1,#data.controlledChildren do
-            local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region
-            if(childRegion) then
-                frameLevel = frameLevel + 1
-                childRegion:SetFrameLevel(frameLevel)
-            end
+    local frameLevel = 1
+    for i=1,#data.controlledChildren do
+        local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region
+        if(childRegion) then
+            frameLevel = frameLevel + 4
+            childRegion:SetFrameLevel(frameLevel)
         end
     end
 

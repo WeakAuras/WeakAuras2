@@ -400,6 +400,22 @@ local function create(parent)
   region.duration = 0;
   region.expirationTime = math.huge;
 
+  local oldSetFrameLevel = region.SetFrameLevel;
+  function region.SetFrameLevel(self, frameLevel)
+    oldSetFrameLevel(self, frameLevel);
+    if region.barInFront then
+      iconFrame:SetFrameLevel(frameLevel + 1);
+      iconFrame:SetFrameLevel(frameLevel + 1);
+      bar:SetFrameLevel(frameLevel + 1);
+      border:SetFrameLevel(frameLevel);
+    else
+      iconFrame:SetFrameLevel(frameLevel);
+      iconFrame:SetFrameLevel(frameLevel);
+      bar:SetFrameLevel(frameLevel);
+      border:SetFrameLevel(frameLevel + 1);
+    end
+  end
+
 -- Return new display/region
   return region;
 end
@@ -884,17 +900,20 @@ local function modify(parent, region, data)
   bar.spark.sparkMirror = data.sparkMirror;
 
   -- Bar or Border (+Backdrop) in front
+  local frameLevel = region:GetFrameLevel();
   if data.barInFront then
-    iconFrame:SetFrameLevel(5);
-    iconFrame:SetFrameLevel(5);
-    bar:SetFrameLevel(5);
-    border:SetFrameLevel(2);
+    iconFrame:SetFrameLevel(frameLevel + 2);
+    iconFrame:SetFrameLevel(frameLevel + 2);
+    bar:SetFrameLevel(frameLevel + 2);
+    border:SetFrameLevel(frameLevel + 1);
   else
-    iconFrame:SetFrameLevel(2);
-    iconFrame:SetFrameLevel(2);
-    bar:SetFrameLevel(2);
-    border:SetFrameLevel(5);
+    iconFrame:SetFrameLevel(frameLevel + 1);
+    iconFrame:SetFrameLevel(frameLevel + 1);
+    bar:SetFrameLevel(frameLevel + 1);
+    border:SetFrameLevel(frameLevel + 2);
   end
+
+  region.barInFront = data.barInFront;
 
   -- Color update function
     region.Color = region.Color or function(self, r, g, b, a)
