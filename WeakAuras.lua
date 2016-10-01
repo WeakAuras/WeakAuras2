@@ -3141,7 +3141,16 @@ local function startStopTimers(id, cloneId, triggernum, state)
               WeakAuras.UpdatedTriggerState(id);
             end
           end,
-          state.expirationTime - GetTime() + 0.01);
+          -- We don't want to hide immediately on the expirationTime as that can create flicker.
+          -- That is: Consider two auras that track a cooldown or a buff with inverse Conditions
+          -- What we want to have, is that if one aura hides the other aura is shown
+          -- Now a aura is either hidden by receiving a COOLDOWN_CHANGED, or AURA_APPLIED/AURA_REMOVED event
+          -- or because the autoHide timer expired
+          -- Since there's not a 100% synchronization between when the autoHide timer expires and when
+          -- the event happens, we delay the autoHide timer for a bit, so that we usually get the event
+          -- first
+          -- Note: Maybe having the autoHide timer is actually unnecessary for most auras...
+          state.expirationTime - GetTime() + 0.03);
         record.expirationTime = state.expirationTime;
       end
     else -- no auto hide, delete timer
