@@ -122,6 +122,20 @@ local function createOptions(id, data)
       order = 48,
       values = WeakAuras.group_sort_types
     },
+    hybridPosition = {
+      type = "select",
+      name = L["Hybrid Position"],
+      order = 48.1,
+      values = WeakAuras.group_hybrid_position_types,
+      hidden = function() return not(data.sort == "hybrid") end,
+    },
+    hybridSortMode = {
+      type = "select",
+      name = L["Hybrid Sort Mode"],
+      order = 48.2,
+      values = WeakAuras.group_hybrid_sort_types,
+      hidden = function() return not(data.sort == "hybrid") end,
+    },
     sortHybrid = {
             type = "multiselect",
             name = L["Select the auras you always want to be listed first"],

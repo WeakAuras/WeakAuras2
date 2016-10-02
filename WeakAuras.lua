@@ -1667,6 +1667,15 @@ function WeakAuras.Modernize(data)
   if (not data.activeTriggerMode) then
     data.activeTriggerMode = 0;
   end
+
+  if (data.sort == "hybrid") then
+    if (not data.hybridPosition) then
+      data.hybridPosition = "hybridLast";
+    end
+    if (not data.hybridSortMode) then
+      data.hybridSortMode = "descending";
+    end
+  end
 end
 
 function WeakAuras.SyncParentChildRelationships(silent)

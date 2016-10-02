@@ -49,6 +49,16 @@ WeakAuras.group_sort_types = {
   none = L["None"]
 };
 
+WeakAuras.group_hybrid_position_types = {
+  hybridFirst = L["Marked First"],
+  hybridLast = L["Marked Last"]
+};
+
+WeakAuras.group_hybrid_sort_types = {
+  ascending = L["Ascending"],
+  descending = L["Descending"],
+};
+
 WeakAuras.precision_types = {
   [0] = "12",
   [1] = "12.3",
