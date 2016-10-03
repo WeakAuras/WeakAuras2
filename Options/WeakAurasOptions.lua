@@ -7373,6 +7373,9 @@ function WeakAuras.CreateFrame()
 
   colorTable[0] = "|r"
 
+  -- The indention lib overrides GetText, but for the line number
+  -- display we ned the original, so save it here.
+  local originalGetText = texteditorbox.editBox.GetText;
   IndentationLib.enable(texteditorbox.editBox, colorTable, 4);
 
   local texteditorCancel = CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
@@ -7396,6 +7399,44 @@ function WeakAuras.CreateFrame()
   texteditorError:SetTextColor(1, 0, 0);
   texteditorError:SetPoint("TOPLEFT", texteditorbox.frame, "BOTTOMLEFT", 5, 25);
   texteditorError:SetPoint("BOTTOMRIGHT", texteditorClose, "BOTTOMLEFT");
+
+  local textEditorLine = CreateFrame("Editbox", nil, texteditor.frame);
+  -- Set script on enter pressed..
+  textEditorLine:SetPoint("BOTTOMRIGHT", texteditorbox.frame, "TOPRIGHT", -10, -15);
+  textEditorLine:SetFont("Fonts\\FRIZQT__.TTF", 10)
+  textEditorLine:SetJustifyH("RIGHT");
+  textEditorLine:SetWidth(80);
+  textEditorLine:SetHeight(20);
+  textEditorLine:SetNumeric(true);
+  textEditorLine:SetTextInsets(10, 10, 0, 0);
+
+  local oldOnCursorChanged = texteditorbox.editBox:GetScript("OnCursorChanged");
+  texteditorbox.editBox:SetScript("OnCursorChanged", function(...)
+    oldOnCursorChanged(...);
+    local cursorPosition = texteditorbox.editBox:GetCursorPosition();
+    local next = -1;
+    local line = 0;
+    while (next and cursorPosition >= next) do
+      next = originalGetText(texteditorbox.editBox):find("[\n]", next + 1);
+      line = line + 1;
+    end
+    textEditorLine:SetNumber(line);
+  end);
+
+  textEditorLine:SetScript("OnEnterPressed", function()
+    local newLine = textEditorLine:GetNumber();
+    local newPosition = 0;
+    while (newLine > 1 and newPosition) do
+      newPosition = originalGetText(texteditorbox.editBox):find("[\n]", newPosition + 1);
+      newLine = newLine - 1;
+    end
+
+    if (newPosition) then
+      texteditorbox.editBox:SetCursorPosition(newPosition);
+      texteditorbox.editBox:SetFocus();
+    end
+  end);
+
 
   function texteditor.Open(self, data, path, enclose, addReturn)
     self.data = data;
