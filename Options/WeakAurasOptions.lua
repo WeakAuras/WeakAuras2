@@ -7395,7 +7395,7 @@ function WeakAuras.CreateFrame()
   texteditorError:SetJustifyV("TOP");
   texteditorError:SetTextColor(1, 0, 0);
   texteditorError:SetPoint("TOPLEFT", texteditorbox.frame, "BOTTOMLEFT", 5, 25);
-  texteditorError:SetPoint("BOTTOMRIGHT", texteditorCancel, "TOPRIGHT");
+  texteditorError:SetPoint("BOTTOMRIGHT", texteditorClose, "BOTTOMLEFT");
 
   function texteditor.Open(self, data, path, enclose, addReturn)
     self.data = data;
