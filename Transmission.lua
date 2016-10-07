@@ -228,6 +228,35 @@ function CompressDisplay(data)
   copiedData.controlledChildren = nil;
   copiedData.parent = nil;
   tableSubtract(copiedData, DisplayStub(copiedData.regionType));
+
+  for triggernum=0,(copiedData.numTriggers or 9) do
+    local trigger, untrigger;
+    if(triggernum == 0) then
+      trigger = copiedData.trigger;
+      untrigger = copiedData.untrigger;
+    elseif(copiedData.additional_triggers and copiedData.additional_triggers[triggernum]) then
+      trigger = copiedData.additional_triggers[triggernum].trigger;
+      untrigger = copiedData.additional_triggers[triggernum].untrigger;
+    end
+
+    if (trigger and trigger.type ~= "custom") then
+      -- Clean up custom trigger fields that are unused
+      -- Those can contain lots of unnecessary data.
+      -- Also we warn about any custom code, so removing unnecessary
+      -- custom code prevents unnecessary warnings
+      trigger.custom = nil;
+      trigger.customDuration = nil;
+      trigger.customName = nil;
+      trigger.customIcon = nil;
+      trigger.customTexture = nil;
+      trigger.customStacks = nil;
+      if (untrigger) then
+        untrigger.custom = nil;
+      end
+    end
+
+  end
+
   return copiedData;
 end
 
