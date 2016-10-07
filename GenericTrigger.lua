@@ -154,9 +154,9 @@ function TestForMultiSelect(trigger, arg)
     local any = false;
     for value, _ in pairs(trigger[name].multi) do
       if not arg.test then
-        test = test..name.."=="..(tonumber(value) or "\""..value.."\"").." or ";
+        test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
       else
-        test = test..arg.test:format(tonumber(value) or "\""..value.."\"").." or ";
+        test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
       end
       any = true;
     end
@@ -169,9 +169,9 @@ function TestForMultiSelect(trigger, arg)
   elseif(trigger["use_"..name]) then -- single selection
     local value = trigger[name].single;
     if not arg.test then
-      test = trigger[name].single and "("..name.."=="..(tonumber(value) or "\""..value.."\"")..")";
+      test = trigger[name].single and "("..name.."=="..(tonumber(value) or "[["..value.."]]")..")";
     else
-      test = trigger[name].single and "("..arg.test:format(tonumber(value) or "\""..value.."\"")..")";
+      test = trigger[name].single and "("..arg.test:format(tonumber(value) or "[["..value.."]]")..")";
     end
   end
   return test;
