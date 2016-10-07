@@ -727,7 +727,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = L["Zone ID List"],
-      test = "WeakAuras.CheckNumericIds('%s', zoneId)"
+      test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
     },
     {
       name = "encounterid",
@@ -735,7 +735,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_encounters_list,
-      test = "WeakAuras.CheckNumericIds('%s', encounterid)"
+      test = "WeakAuras.CheckNumericIds([[%s]], encounterid)"
     },
     {
       name = "size",
@@ -775,10 +775,10 @@ WeakAuras.event_prototypes = {
     name = L["Unit Characteristics"],
     init = function(trigger)
       trigger.unit = trigger.unit or "target";
-      local ret = [[
-        local unit = '%s';
-        local concernedUnit = '%s';
-      ]];
+      local ret = [=[
+        local unit = [[%s]];
+        local concernedUnit = [[%s]];
+      ]=];
 
     return ret:format(trigger.unit, trigger.unit);
     end,
@@ -860,13 +860,13 @@ WeakAuras.event_prototypes = {
     name = L["Health"],
     init = function(trigger)
     trigger.unit = trigger.unit or "player";
-      local ret = [[
-        local unit = unit or '%s';
-        local concernedUnit = '%s';
+      local ret = [=[
+        local unit = unit or [[%s]];
+        local concernedUnit = [[%s]];
         if (unit == "pet") then
           WeakAuras.WatchForUnitPet();
         end
-      ]];
+      ]=];
 
     return ret:format(trigger.unit, trigger.unit);
     end,
@@ -923,11 +923,11 @@ WeakAuras.event_prototypes = {
     name = L["Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
-      local ret = [[
-        local unit = unit or '%s';
-        local concernedUnit = '%s';
+      local ret = [=[
+        local unit = unit or [[%s]];
+        local concernedUnit = [[%s]];
         local powerType = %s;
-      ]];
+      ]=];
     ret = ret:format(trigger.unit, trigger.unit, trigger.use_powertype and trigger.powertype or "nil");
     if (trigger.use_powertype and trigger.powertype == 99) then
       ret = ret .. [[
@@ -1012,11 +1012,11 @@ WeakAuras.event_prototypes = {
     name = L["Alternate Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
-      local ret = [[
-        local unit = unit or '%s'
-        local concernedUnit = '%s'
-        local _, _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo('%s');
-      ]]
+      local ret = [=[
+        local unit = unit or [[%s]]
+        local concernedUnit = [[%s]]
+        local _, _, _, _, _, _, _, _, _, _, name = UnitAlternatePowerInfo([[%s]]);
+      ]=]
       return ret:format(trigger.unit, trigger.unit, trigger.unit);
     end,
     args = {
@@ -1083,7 +1083,7 @@ WeakAuras.event_prototypes = {
         name = "sourceUnit",
         display = L["Source Unit"],
         type = "unit",
-        test = "(sourceGUID or '') == (UnitGUID('%s') or '') and sourceGUID",
+        test = "(sourceGUID or '') == (UnitGUID([[%s]]) or '') and sourceGUID",
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
@@ -1113,7 +1113,7 @@ WeakAuras.event_prototypes = {
         name = "destUnit",
         display = L["Destination Unit"],
         type = "unit",
-        test = "(destGUID or '') == (UnitGUID('%s') or '') and destGUID",
+        test = "(destGUID or '') == (UnitGUID([[%s]]) or '') and destGUID",
         values = "actual_unit_types_with_specific",
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -1418,7 +1418,7 @@ WeakAuras.event_prototypes = {
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
       return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"),
-                                   "\"" .. (trigger.showOn or "") .. "\"");
+                                   "[[" .. (trigger.showOn or "") .. "]]");
     end,
     args = {
       {
@@ -1539,7 +1539,7 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
-      local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
+      local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       WeakAuras.WatchItemCooldown(trigger.itemName);
       local ret = [[
         local startTime, duration = WeakAuras.GetItemCooldown(%s);
@@ -1556,7 +1556,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(itemName,  "\"" .. (trigger.showOn or "") .. "\"");
+      return ret:format(itemName,  "[[" .. (trigger.showOn or "") .. "]]");
     end,
     args = {
       {
@@ -1728,10 +1728,10 @@ WeakAuras.event_prototypes = {
       end
 
       if (trigger.use_message) then
-        local ret2 = [[
-          local triggerMessage = "%s"
-          local triggerOperator = "%s"
-        ]]
+        local ret2 = [=[
+          local triggerMessage = [[%s]]
+          local triggerOperator = [[%s]]
+        ]=]
         ret = ret .. ret2:format(trigger.message or "", trigger.message_operator  or "")
       else
         ret = ret .. [[
@@ -1741,9 +1741,9 @@ WeakAuras.event_prototypes = {
       end
 
       if (trigger.use_spellId and trigger.spellId) then
-        local ret2 = [[
-          local triggerSpellId = "%s";
-        ]];
+        local ret2 = [=[
+          local triggerSpellId = [[%s]];
+        ]=];
         ret = ret .. ret2:format(trigger.spellId or "");
       else
         ret = ret .. [[
@@ -1938,17 +1938,17 @@ WeakAuras.event_prototypes = {
     canHaveDuration = true,
     triggerFunction = function(trigger)
       WeakAuras.RegisterBigWigsTimer();
-      local ret = [[
+      local ret = [=[
         return function(states, event, id)
         local triggerAddon = %s;
         local triggerSpellId = %s;
         local triggerText = %s;
-        local triggerTextOperator = "%s";
-      ]]
+        local triggerTextOperator = [[%s]];
+      ]=]
 
-      ret = ret:format(trigger.use_addon and ('"' .. (trigger.addon or '') .. '"') or "nil",
+      ret = ret:format(trigger.use_addon and ('[[' .. (trigger.addon or '') .. ']]') or "nil",
                        trigger.use_spellId and tostring(trigger.spellId) or "nil",
-                       trigger.use_text and ('"' .. (trigger.text or '') .. '"') or "nil",
+                       trigger.use_text and ('[[' .. (trigger.text or '') .. ']]') or "nil",
                        trigger.use_text and trigger.text_operator or ""
                        );
 
@@ -2120,11 +2120,11 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       trigger.hand = trigger.hand or "main";
       WeakAuras.InitSwingTimer();
-      local ret = [[
+      local ret = [=[
         local inverse = %s;
-        local hand = "%s";
+        local hand = [[%s]];
         local duration, expirationTime = WeakAuras.GetSwingTimerInfo(hand);
-      ]];
+      ]=];
       return ret:format((trigger.use_inverse and "true" or "false"), trigger.hand);
     end,
     args = {
@@ -2432,7 +2432,7 @@ WeakAuras.event_prototypes = {
       end
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
-      local itemName = type(trigger.itemName) == "number" and trigger.itemName or "'"..trigger.itemName.."'";
+      local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       local ret = [[
         local count = GetItemCount(%s, %s, %s);
       ]];
@@ -2969,7 +2969,7 @@ WeakAuras.event_prototypes = {
         local aggro = status == 2 or status == 3;
       ]];
 
-    return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "'"..trigger.threatUnit.."'" or "nil");
+    return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "[["..trigger.threatUnit.."]]" or "nil");
     end,
     args = {
       {
@@ -3033,8 +3033,8 @@ WeakAuras.event_prototypes = {
     name = L["Cast"],
     init = function(trigger)
       trigger.unit = trigger.unit or "";
-      local ret = [[
-        local unit = "%s"
+      local ret = [=[
+        local unit = [[%s]]
         local inverse = %s
         local spell, interruptible, _;
         local castType;
@@ -3048,7 +3048,7 @@ WeakAuras.event_prototypes = {
           end
         end
         interruptible = not interruptible;
-      ]];
+      ]=];
       return ret:format(trigger.unit, trigger.use_inverse and "true" or "false");
     end,
     args = {
