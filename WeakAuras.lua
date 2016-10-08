@@ -2104,6 +2104,9 @@ function WeakAuras.SetAllStatesHiddenExcept(id, triggernum, list)
 end
 
 function WeakAuras.ReleaseClone(id, cloneId, regionType)
+   if (not clones[id]) then
+     return;
+   end
    local region = clones[id][cloneId];
    clones[id][cloneId] = nil;
    clonePool[regionType][#clonePool[regionType]] = region;
