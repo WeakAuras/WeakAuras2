@@ -4,6 +4,7 @@ local L = WeakAuras.L;
 -- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
 -- Create region options table
+
 local function createOptions(id, data)
     local options = {
         model_path = {
@@ -11,6 +12,22 @@ local function createOptions(id, data)
             width = "double",
             name = L["Model"],
             order = 0
+        },
+        space2 = {
+            type = "execute",
+            name = "",
+            order = 1,
+            image = function() return "", 0, 0 end,
+            hidden = function() return data.modelIsUnit end
+        },
+        chooseModel = {
+            type = "execute",
+            name = L["Choose"],
+            order = 2,
+            func = function()
+                WeakAuras.OpenModelPick(data, "model_path");
+            end,
+            hidden = function() return data.modelIsUnit end
         },
         modelIsUnit = {
             type = "toggle",
@@ -21,26 +38,29 @@ local function createOptions(id, data)
             type = "toggle",
             name = L["Portrait Zoom"],
             order = 4,
-            hidden = function() return not data.modelIsUnit end
         },
-        space2 = {
-            type = "execute",
-            name = "",
-            width = "half",
+        advance = {
+            type = "toggle",
+            name = L["Animate"],
             order = 5,
-            image = function() return "", 0, 0 end,
-            hidden = function() return data.modelIsUnit end
         },
-        chooseModel = {
-            type = "execute",
-            name = L["Choose"],
-            width = "half",
+        sequence = {
+            type = "range",
+            name = L["Animation Sequence"],
+            min = 0,
+            max = 150,
+            step = 1,
+            bigStep = 1,
+            order = 6,
+            disabled = function() return not data.advance end
+        },
+        api = {
+            type = "toggle",
+            name = L["Use SetTransform api"],
             order = 7,
-            func = function()
-                WeakAuras.OpenModelPick(data, "model_path");
-            end,
-            hidden = function() return data.modelIsUnit end
+
         },
+        -- Old settings
         model_z = {
             type = "range",
             name = L["Z Offset"],
@@ -49,6 +69,7 @@ local function createOptions(id, data)
             step = .001,
             bigStep = 0.05,
             order = 20,
+            hidden = function() return data.api end
         },
         model_x = {
             type = "range",
@@ -58,6 +79,7 @@ local function createOptions(id, data)
             step = .001,
             bigStep = 0.05,
             order = 30,
+            hidden = function() return data.api end
         },
         model_y = {
             type = "range",
@@ -67,21 +89,7 @@ local function createOptions(id, data)
             step = .001,
             bigStep = 0.05,
             order = 40,
-        },
-        advance = {
-            type = "toggle",
-            name = L["Animate"],
-            order = 25,
-        },
-        sequence = {
-            type = "range",
-            name = L["Animation Sequence"],
-            min = 0,
-            max = 150,
-            step = 1,
-            bigStep = 1,
-            order = 35,
-            disabled = function() return not data.advance end
+            hidden = function() return data.api end
         },
         rotation = {
             type = "range",
@@ -90,7 +98,79 @@ local function createOptions(id, data)
             max = 360,
             step = 1,
             bigStep = 3,
-            order = 45
+            order = 45,
+            hidden = function() return data.api end
+        },
+        -- New Settings
+        model_st_tx = {
+            type = "range",
+            name = L["X Offset"],
+            softMin = -1000,
+            softMax = 1000,
+            step = 1,
+            bigStep = 5,
+            order = 20,
+            hidden = function() return not data.api end
+        },
+        model_st_ty = {
+            type = "range",
+            name = L["Y Offset"],
+            softMin = -1000,
+            softMax = 1000,
+            step = 1,
+            bigStep = 5,
+            order = 21,
+            hidden = function() return not data.api end
+        },
+        model_st_tz = {
+            type = "range",
+            name = L["Z Offset"],
+            softMin = -1000,
+            softMax = 1000,
+            step = 1,
+            bigStep = 5,
+            order = 22,
+            hidden = function() return not data.api end
+        },
+        model_st_rx = {
+            type = "range",
+            name = L["X Rotation"],
+            min = 0,
+            max = 360,
+            step = 1,
+            bigStep = 3,
+            order = 23,
+            hidden = function() return not data.api end
+        },
+        model_st_ry = {
+            type = "range",
+            name = L["Y Rotation"],
+            min = 0,
+            max = 360,
+            step = 1,
+            bigStep = 3,
+            order = 24,
+            hidden = function() return not data.api end
+        },
+        model_st_rz = {
+            type = "range",
+            name = L["Z Rotation"],
+            min = 0,
+            max = 360,
+            step = 1,
+            bigStep = 3,
+            order = 25,
+            hidden = function() return not data.api end
+        },
+        model_st_us = {
+            type = "range",
+            name = L["Scale"],
+            min = 5,
+            max = 1000,
+            step = 0.1,
+            bigStep = 5,
+            order = 26,
+            hidden = function() return not data.api end
         },
 		border_header = {
 			type = "header",
@@ -157,10 +237,28 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
 			else
 				pcall(function() model:SetModel(data.model_path) end);
 			end
+      model:SetPortraitZoom(data.portraitZoom and 1 or 0);
 		end
+
+    if (data.api) then
+      model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+                         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+                         data.model_st_us / 1000);
+    else
+      model:ClearTransform();
+      model:SetPosition(data.model_z, data.model_x, data.model_y);
+      model:SetFacing(rad(data.rotation));
+    end
     end);
-    model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(rad(data.rotation));
+
+    if (data.api) then
+      model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+                         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+                         data.model_st_us / 1000);
+    else
+      model:SetPosition(data.model_z, data.model_x, data.model_y);
+      model:SetFacing(rad(data.rotation));
+    end
 end
 
 local function createIcon()

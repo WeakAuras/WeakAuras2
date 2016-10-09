@@ -6,9 +6,19 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local default = {
     model_path             = "Creature/Arthaslichking/arthaslichking.m2",
     modelIsUnit         = false,
+    -- TODO upgrade code for old users
+    api                 = true, -- false ==> SetPosition + SetFacing; true ==> SetTransform
     model_x             = 0,
     model_y             = 0,
     model_z             = 0,
+    -- SetTransform
+    model_st_tx          = 0,
+    model_st_ty          = 0,
+    model_st_tz          = 0,
+    model_st_rx          = 270,
+    model_st_ry          = 0,
+    model_st_rz          = 0,
+    model_st_us          = 40,
     width                 = 200,
     height                 = 200,
     sequence             = 1,
@@ -77,12 +87,19 @@ local function modify(parent, region, data)
         if (data.modelIsUnit) then
             model:SetUnit(data.model_path)
             register = true;
-            model:SetPortraitZoom(data.portraitZoom and 1 or 0);
         else
             pcall(function() model:SetModel(data.model_path) end);
         end
+        model:SetPortraitZoom(data.portraitZoom and 1 or 0);
     end
-    model:SetPosition(data.model_z, data.model_x, data.model_y);
+    if (data.api) then
+      model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+                         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+                         data.model_st_us / 1000);
+    else
+      model:ClearTransform();
+      model:SetPosition(data.model_z, data.model_x, data.model_y);
+    end
 
     if (register) then
         model:RegisterEvent("UNIT_MODEL_CHANGED");
@@ -160,9 +177,19 @@ local function modify(parent, region, data)
     -- Roate model
     function region:Rotate(degrees)
         region.rotation = degrees;
-        model:SetFacing(rad(region.rotation));
+        if (data.api) then
+          model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+                             rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees),
+                             data.model_st_us / 1000);
+        else
+          model:SetFacing(rad(region.rotation));
+        end
     end
-    region:Rotate(data.rotation);
+    if (data.api) then
+      region:Rotate(data.model_st_rz);
+    else
+      region:Rotate(data.rotation);
+    end
 
     -- Get model rotation
     function region:GetRotation()
@@ -171,17 +198,24 @@ local function modify(parent, region, data)
 
     -- Ensure using correct model
     function region:PreShow()
---        if(type(model:GetModel()) ~= "string") then
-            if tonumber(data.model_path) then
-                model:SetDisplayInfo(tonumber(data.model_path))
-            else
-                if (data.modelIsUnit) then
-                    model:SetUnit(data.model_path)
-                else
-                    pcall(function() model:SetModel(data.model_path) end);
-                end
-            end
---        end
+      if tonumber(data.model_path) then
+          model:SetDisplayInfo(tonumber(data.model_path))
+      else
+          if (data.modelIsUnit) then
+              model:SetUnit(data.model_path)
+          else
+              pcall(function() model:SetModel(data.model_path) end);
+          end
+      end
+      model:SetPortraitZoom(data.portraitZoom and 1 or 0);
+      if (data.api) then
+        model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+                           rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+                           data.model_st_us / 1000);
+      else
+        model:ClearTransform();
+        model:SetPosition(data.model_z, data.model_x, data.model_y);
+      end
     end
 end
 

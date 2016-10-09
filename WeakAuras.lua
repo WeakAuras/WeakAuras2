@@ -1664,6 +1664,12 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if data.regionType == "model" then
+    if (data.api == nil) then
+      data.api = false;
+    end
+  end
+
   if (not data.activeTriggerMode) then
     data.activeTriggerMode = 0;
   end
