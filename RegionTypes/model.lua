@@ -6,7 +6,6 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local default = {
     model_path             = "Creature/Arthaslichking/arthaslichking.m2",
     modelIsUnit         = false,
-    -- TODO upgrade code for old users
     api                 = true, -- false ==> SetPosition + SetFacing; true ==> SetTransform
     model_x             = 0,
     model_y             = 0,
