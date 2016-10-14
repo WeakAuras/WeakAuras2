@@ -215,6 +215,8 @@ local function modify(parent, region, data)
         end);
         elseif(data.sort == "hybrid") then
             table.sort(region.controlledRegions, function(a, b)
+                if (not b) then return true; end
+                if (not a) then return false; end;
                 local aIndex;
                 local bIndex;
                 if (data.sortHybridTable and data.sortHybridTable[a.dataIndex]) then
