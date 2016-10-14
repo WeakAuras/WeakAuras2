@@ -948,7 +948,6 @@ WeakAuras.operator_types = {
   ["<="] = L["<="]
 };
 
--- TODO upgrade
 WeakAuras.string_operator_types = {
   ["=="] = L["Is Exactly"],
   ["find('%s')"] = L["Contains"],
