@@ -1313,3 +1313,21 @@ WeakAuras.cooldown_progress_behavior_types = {
   showOnReady    = L["Not on cooldown"],
   showAlways     = L["Always"]
 };
+
+WeakAuras.item_slot_types = {
+  [1]  = L["Head"],
+  [2]  = L["Neck"],
+  [3]  = L["Shoulder"],
+  [5]  = L["Chest"],
+  [6]  = L["Waist"],
+  [7]  = L["Legs"],
+  [8]  = L["Feet"],
+  [9]  = L["Wrist"],
+  [10] = L["Hands"],
+  [11] = L["Finger 1"],
+  [12] = L["Finger 2"],
+  [13] = L["Trinket 1"],
+  [14] = L["Trinket 2"],
+  [15] = L["Back"],
+  [19] = L["Tabard"]
+}

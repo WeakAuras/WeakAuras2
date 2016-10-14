@@ -1609,6 +1609,72 @@ WeakAuras.event_prototypes = {
     hasItemID = true,
     automaticrequired = true
   },
+  ["Cooldown Progress (Equipment Slot)"] = {
+    type = "status",
+    events = {
+      "BAG_UPDATE_COOLDOWN",
+      "COOLDOWN_REMAINING_CHECK"
+    },
+    force_events = "ITEM_COOLDOWN_FORCE",
+    name = L["Cooldown Progress (Equipment Slot)"],
+    init = function(trigger)
+      local ret = [[
+        local startTime, duration, enable = GetInventoryItemCooldown("player", %s);
+        local showOn = %s
+      ]];
+      return ret:format(trigger.itemSlot or "0",  "[[" .. (trigger.showOn or "") .. "]]");
+    end,
+    args = {
+      {
+        name = "itemSlot",
+        required = true,
+        display = L["Equipment Slot"],
+        type = "select",
+        values = "item_slot_types",
+        test = "true"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        enable = function(trigger) return (trigger.showOn == "showOnCooldown") end,
+        init = "remaining"
+      },
+      {
+        name = "testForCooldown",
+        display = L["is useable"],
+        type = "toggle",
+        test = "enable == 1"
+      },
+      {
+        name = "showOn",
+        display =  L["Show"],
+        type = "select",
+        values = "cooldown_progress_behavior_types",
+        test = "true",
+        required = true,
+      },
+      {
+        hidden = true,
+        test = "(showOn == \"showOnReady\" and startTime == 0) " ..
+               "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
+               "or (showOn == \"showAlways\")"
+      }
+    },
+    durationFunc = function(trigger)
+      local startTime, duration = GetInventoryItemCooldown("player", trigger.itemSlot or 0);
+      startTime = startTime or 0;
+      duration = duration or 0;
+      return duration, startTime + duration;
+    end,
+    nameFunc = function(trigger)
+      return "";
+    end,
+    iconFunc = function(trigger)
+      return GetInventoryItemTexture("player", trigger.itemSlot or 0);
+    end,
+    automaticrequired = true
+  },
   ["Cooldown Ready (Item)"] = {
     type = "event",
     events = {
