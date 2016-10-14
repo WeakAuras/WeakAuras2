@@ -1159,7 +1159,6 @@ end
 -- CD/Rune/GCD Support Code
 do
   local cdReadyFrame;
-  WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
 
   local spells = {};
   local spellsRune = {}
@@ -1189,6 +1188,7 @@ do
 
   function WeakAuras.InitCooldownReady()
   cdReadyFrame = CreateFrame("FRAME");
+  WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
   cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
   cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
   cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
