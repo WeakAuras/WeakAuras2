@@ -2115,7 +2115,7 @@ function WeakAuras.ReleaseClone(id, cloneId, regionType)
    end
    local region = clones[id][cloneId];
    clones[id][cloneId] = nil;
-   clonePool[regionType][#clonePool[regionType]] = region;
+   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
 -- This function is currently never called if WeakAuras is paused, but it is set up so that it can take a different action
