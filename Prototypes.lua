@@ -25,6 +25,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
 end
 
 WeakAuras.encounter_table = {
+  -- The Emerald Nightmare
   [1703] = 1853, -- Nythendra
   [1744] = 1876, -- Elerethe Renferal
   [1738] = 1873, -- Il'gynoth, Heart of Corruption
@@ -32,7 +33,7 @@ WeakAuras.encounter_table = {
   [1704] = 1854, -- Dragons of Nightmare
   [1750] = 1877, -- Cenarius
   [1726] = 1864, -- Xavius
-
+  -- The Nighthold
   [1706] = 1849, -- Skorpyron,
   [1725] = 1865, -- Chronomatic Anomaly
   [1731] = 1867, -- Trilliax,
@@ -43,6 +44,10 @@ WeakAuras.encounter_table = {
   [1732] = 1863, -- Star Augur Etraeus
   [1743] = 1872, -- Grand Magistrix Elisande
   [1737] = 1866, -- Gul'dan
+  -- Trial of Valor
+  [1819] = 1958, -- Odyn
+  [1830] = 1962, -- Guarm
+  [1829] = 2008, -- Helya
 }
 
 local function get_encounters_list()
