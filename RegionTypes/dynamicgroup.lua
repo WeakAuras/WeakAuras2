@@ -182,7 +182,11 @@ local function modify(parent, region, data)
           local aExpires = expirationTime(regionA);
           local bExpires = expirationTime(regionB);
 
+
           if (aExpires and bExpires) then
+            if (aExpires == bExpires) then
+              return nil;
+            end
             return aExpires < bExpires;
           end
 
