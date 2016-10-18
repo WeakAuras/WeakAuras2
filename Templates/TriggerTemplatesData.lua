@@ -3534,6 +3534,8 @@ templates.items[2] = {
     { spell = 208913, type = "buff", unit = "player", item = 137081},
     { spell = 208822, type = "buff", unit = "player", item = 132381},
     { spell = 208871, type = "buff", unit = "player", item = 132379},
+    { spell = 209406, type = "buff", unit = "player", item = 137092},
+    { spell = 209407, type = "buff", unit = "player", item = 137092},
     { spell = 209423, type = "buff", unit = "player", item = 137099},
     { spell = 209455, type = "buff", unit = "player", item = 132406},
     { spell = 210607, type = "buff", unit = "player", item = 137051},
