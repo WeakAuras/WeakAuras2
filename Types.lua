@@ -1228,6 +1228,7 @@ WeakAuras.sound_types = {
   ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TempleBellHuge.ogg"] = "Temple Bell",
   ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.ogg"] = "Torch",
   ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.ogg"] = "Warning Siren",
+  ["Sound\\Creature\\LichKing\\IC_Lich King_Special01.ogg"] = "Lich King Apocalypse",
   [" custom"] = "Custom",
   [" KitID"] = "Sound by Kit ID",
 };
