@@ -1157,6 +1157,7 @@ WeakAuras.chat_message_types = {
   CHAT_MSG_MONSTER_YELL = L["Monster Yell"],
   CHAT_MSG_MONSTER_EMOTE = L["Monster Emote"],
   CHAT_MSG_MONSTER_SAY = L["Monster Say"],
+  CHAT_MSG_MONSTER_WHISPER = L["Monster Whisper"],
   CHAT_MSG_MONSTER_PARTY = L["Monster Party"],
   CHAT_MSG_OFFICER = L["Officer"],
   CHAT_MSG_PARTY = L["Party"],
