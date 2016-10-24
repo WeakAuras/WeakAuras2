@@ -1,4 +1,4 @@
-## Interface: 70000
+## Interface: 70100
 ## Title: WeakAuras Templates
 ## Author: Infus
 ## Version: @project-version@
