@@ -1626,6 +1626,7 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local startTime, duration, enable = GetInventoryItemCooldown("player", %s);
         local showOn = %s
+        local remaining = startTime + duration - GetTime();
       ]];
       return ret:format(trigger.itemSlot or "0",  "[[" .. (trigger.showOn or "") .. "]]");
     end,
