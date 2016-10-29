@@ -383,9 +383,9 @@ templates.class.PALADIN = {
         { spell = 114165, type = "ability", talent = 15}, -- Holy Prism
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
         { spell = 156910, type = "ability", talent = 19}, -- Beacon of Faith
+        { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 200025, type = "ability", talent = 21}, -- Beacon of Virtue
         { spell = 200652, type = "ability"}, -- Tyr's Deliverance
-        { spell = 205656, type = "ability"}, -- Divine Steed
         { spell = 214202, type = "ability", talent = 6}, -- Rule of Law
         { spell = 223306, type = "ability", talent = 1}, -- Bestow Faith
       },
@@ -538,7 +538,6 @@ templates.class.PALADIN = {
         { spell = 105421, type = "debuff", unit = "target", talent = 9 }, -- Blinding Light
         { spell = 183218, type = "debuff", unit = "target" }, -- Hand of Hindrance
         { spell = 197277, type = "debuff", unit = "target" }, -- Judgment
-        { spell = 202270, type = "debuff", unit = "target" }, -- Blade of Wrath
         { spell = 205273, type = "debuff", unit = "target" }, -- Wake of Ashes
         { spell = 213757, type = "debuff", unit = "target", talent = 2 }, -- Execution Sentence
       },
@@ -563,11 +562,10 @@ templates.class.PALADIN = {
         { spell = 184575, type = "ability"}, -- Blade of Justice
         { spell = 184662, type = "ability"}, -- Shield of Vengeance
         { spell = 198034, type = "ability", talent = 12}, -- Divine Hammer
-        { spell = 202270, type = "ability", talent = 11}, -- Blade of Wrath
+        { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 205191, type = "ability", talent = 14}, -- Eye for an Eye
         { spell = 205228, type = "ability", talent = 3}, -- Consecration
         { spell = 205273, type = "ability"}, -- Wake of Ashes
-        { spell = 205656, type = "ability"}, -- Divine Steed
         { spell = 210191, type = "ability", talent = 15}, -- Word of Glory
         { spell = 210220, type = "ability", talent = 21}, -- Holy Wrath
         { spell = 213644, type = "ability"}, -- Cleanse Toxins
@@ -619,6 +617,7 @@ templates.class.HUNTER = {
         { spell = 193530, type = "buff", unit = "player" }, -- Aspect of the Wild
         { spell = 194386, type = "buff", unit = "player", talent = 18 }, -- Volley
         { spell = 197161, type = "buff", unit = "player" }, -- Mimiron's Shell
+        { spell = 199921, type = "buff", unit = "player", talent = 9 }, -- Trailblazer
         { spell = 211138, type = "buff", unit = "target" }, -- Hunter's Advantage
       },
       icon = 132242
@@ -707,6 +706,7 @@ templates.class.HUNTER = {
         { spell = 194386, type = "buff", unit = "player", talent = 18 }, -- Volley
         { spell = 194594, type = "buff", unit = "player", talent = 4 }, -- Lock and Load
         { spell = 199483, type = "buff", unit = "player", talent = 15 }, -- Camouflage
+        { spell = 199921, type = "buff", unit = "player", talent = 9 }, -- Trailblazer
         { spell = 203924, type = "buff", unit = "player" }, -- Healing Shell
         { spell = 204090, type = "buff", unit = "player" }, -- Bullseye
         { spell = 204477, type = "buff", unit = "player" }, -- Windburst
@@ -746,6 +746,7 @@ templates.class.HUNTER = {
         { spell = 53480, type = "ability"}, -- Roar of Sacrifice
         { spell = 55709, type = "ability"}, -- Heart of the Phoenix
         { spell = 109248, type = "ability", talent = 13}, -- Binding Shot
+        { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
         { spell = 131894, type = "ability", talent = 4}, -- A Murder of Crows
         { spell = 147362, type = "ability"}, -- Counter Shot
@@ -753,7 +754,6 @@ templates.class.HUNTER = {
         { spell = 186265, type = "ability"}, -- Aspect of the Turtle
         { spell = 186387, type = "ability"}, -- Bursting Shot
         { spell = 193526, type = "ability"}, -- Trueshot
-        { spell = 194291, type = "ability"}, -- Exhilaration
         { spell = 194599, type = "ability", talent = 5}, -- Black Arrow
         { spell = 198670, type = "ability", talent = 20}, -- Piercing Shot
         { spell = 199483, type = "ability", talent = 15}, -- Camouflage
@@ -800,11 +800,9 @@ templates.class.HUNTER = {
         { spell = 191414, type = "buff", unit = "pet", talent = 21 }, -- Bestial Tenacity
         { spell = 194407, type = "buff", unit = "player" }, -- Spitting Cobra
         { spell = 199483, type = "buff", unit = "player", talent = 15 }, -- Camouflage
+        { spell = 199921, type = "buff", unit = "player", talent = 9 }, -- Trailblazer
         { spell = 201081, type = "buff", unit = "player", talent = 3 }, -- Mok'Nathal Tactics
-        { spell = 203927, type = "buff", unit = "player" }, -- Aspect of the Skylord
-        { spell = 204321, type = "buff", unit = "player", talent = 1 }, -- Instincts of the Raptor
-        { spell = 204324, type = "buff", unit = "player", talent = 1 }, -- Instincts of the Cheetah
-        { spell = 204333, type = "buff", unit = "player", talent = 1 }, -- Instincts of the Mongoose
+        { spell = 203927, type = "buff", unit = "player" }, -- Aspect of the Skylord2
       },
       icon = 1376044
     },
@@ -1414,6 +1412,7 @@ templates.class.PRIEST = {
         { spell = 197937, type = "buff", unit = "player" }, -- Lingering Insanity
         { spell = 205065, type = "buff", unit = "player" }, -- Void Torrent
         { spell = 205372, type = "buff", unit = "player", talent = 12 }, -- Void Ray
+        { spell = 232698, type = "buff", unit = "player" }, -- Shadow Form
       },
       icon = 237566
     },
@@ -2022,7 +2021,7 @@ templates.class.WARLOCK = {
         { spell = 126, type = "buff", unit = "player" }, -- Eye of Kilrogg
         { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
         { spell = 20707, type = "buff", unit = "group" }, -- Soulstone
-        { spell = 48018, type = "buff", unit = "player", talent = 13 }, -- Demonic Circle
+        { spell = 48018, type = "buff", unit = "player", talent = 7 }, -- Demonic Circle
         { spell = 104773, type = "buff", unit = "player" }, -- Unending Resolve
         { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
         { spell = 108416, type = "buff", unit = "player", talent = 15 }, -- Dark Pact
@@ -2075,7 +2074,7 @@ templates.class.WARLOCK = {
         { spell = 18540, type = "ability"}, -- Summon Doomguard
         { spell = 20707, type = "ability"}, -- Soulstone
         { spell = 29893, type = "ability"}, -- Create Soulwell
-        { spell = 48020, type = "ability", talent = 13}, -- Demonic Circle
+        { spell = 48020, type = "ability", talent = 7}, -- Demonic Circle
         { spell = 48181, type = "ability", talent = 1}, -- Haunt
         { spell = 104773, type = "ability"}, -- Unending Resolve
         { spell = 108416, type = "ability", talent = 15}, -- Dark Pact
@@ -2117,7 +2116,7 @@ templates.class.WARLOCK = {
       args = {
         { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
         { spell = 20707, type = "buff", unit = "group" }, -- Soulstone
-        { spell = 48018, type = "buff", unit = "player", talent = 13 }, -- Demonic Circle
+        { spell = 48018, type = "buff", unit = "player", talent = 7 }, -- Demonic Circle
         { spell = 104773, type = "buff", unit = "player" }, -- Unending Resolve
         { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
         { spell = 108416, type = "buff", unit = "player", talent = 18 }, -- Dark Pact
@@ -2163,7 +2162,7 @@ templates.class.WARLOCK = {
         { spell = 20707, type = "ability"}, -- Soulstone
         { spell = 29893, type = "ability"}, -- Create Soulwell
         { spell = 30283, type = "ability", talent = 9}, -- Shadowfury
-        { spell = 48020, type = "ability", talent = 13}, -- Demonic Circle
+        { spell = 48020, type = "ability", talent = 7}, -- Demonic Circle
         { spell = 104316, type = "ability"}, -- Call Dreadstalkers
         { spell = 104773, type = "ability"}, -- Unending Resolve
         { spell = 108416, type = "ability", talent = 15}, -- Dark Pact
@@ -2209,7 +2208,7 @@ templates.class.WARLOCK = {
         { spell = 126, type = "buff", unit = "player" }, -- Eye of Kilrogg
         { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
         { spell = 20707, type = "buff", unit = "group" }, -- Soulstone
-        { spell = 48018, type = "buff", unit = "player", talent = 13 }, -- Demonic Circle
+        { spell = 48018, type = "buff", unit = "player", talent = 7 }, -- Demonic Circle
         { spell = 104773, type = "buff", unit = "player" }, -- Unending Resolve
         { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
         { spell = 108416, type = "buff", unit = "player", talent = 15 }, -- Dark Pact
@@ -2256,7 +2255,7 @@ templates.class.WARLOCK = {
         { spell = 20707, type = "ability"}, -- Soulstone
         { spell = 29893, type = "ability"}, -- Create Soulwell
         { spell = 30283, type = "ability", talent = 9}, -- Shadowfury
-        { spell = 48020, type = "ability", talent = 13}, -- Demonic Circle
+        { spell = 48020, type = "ability", talent = 7}, -- Demonic Circle
         { spell = 80240, type = "ability"}, -- Havoc
         { spell = 104773, type = "ability"}, -- Unending Resolve
         { spell = 108416, type = "ability", talent = 15}, -- Dark Pact
@@ -2276,9 +2275,10 @@ templates.class.WARLOCK = {
     [4] = {
       title = L["PvP Talents"],
       args = {
-        { spell = 212269, type = "debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]}, -- Fel Fissure
-        { spell = 212284, type = "ability", pvptalent = 17, titleSuffix = L["cooldown"]}, -- Firestone
-        { spell = 212284, type = "buff", unit = "player", pvptalent = 17, titleSuffix = L["buff"]}, -- Firestone
+        { spell = 212269, type = "debuff", unit = "target", pvptalent = 17, titleSuffix = L["debuff"]}, -- Fel Fissure
+        { spell = 212284, type = "ability", pvptalent = 15, titleSuffix = L["cooldown"]}, -- Firestone
+        { spell = 212284, type = "buff", unit = "player", pvptalent = 15, titleSuffix = L["buff"]}, -- Firestone
+        { spell = 233582, type = "debuff", unit = "target", pvptalent = 16, titleSuffix = L["buff"]}, -- Firestone
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2583,12 +2583,15 @@ templates.class.MONK = {
         { spell = 205655, type = "buff", unit = "target", pvptalent = 15}, -- Dome of Mist
         { spell = 216915, type = "buff", unit = "target", pvptalent = 16}, -- Fortune Turned
         { spell = 205234, type = "ability", pvptalent = 18}, -- Fortune Turned
-        { spell = 124682, type = "ability", pvptalent = 10}, -- Surge of Mist
+        { spell = 233759, type = "ability", pvptalent = 17, titleSuffix = L["cooldown"]}, -- Grapple Weapon
+        { spell = 233759, type = "debuff", unit = "target", pvptalent = 17, titleSuffix = L["buff"]}, -- Grapple Weapon
         { spell = 216113, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}, -- Way of the Crane
         { spell = 216113, type = "buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]}, -- Way of the Crane
         { spell = 124488, type = "buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]}, -- Zen Focus
         { spell = 195329, type = "buff", unit = "player", pvptalent = 4}, -- Defender of the Weak
         { spell = 195488, type = "buff", unit = "player", pvptalent = 5}, -- Vim and Vigor
+        { spell = 201325, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}, -- Zen Moment
+        { spell = 201325, type = "buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]}, -- Zen Moment
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3006,7 +3009,7 @@ templates.class.DRUID = {
         { spell = 33786, type = "debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]}, -- Cyclone
         { spell = 200947, type = "debuff", unit = "target", pvptalent = 11}, -- Encroaching Vines
         { spell = 203554, type = "buff", unit = "target", pvptalent = 16}, -- Focused Growth
-        { spell = 203651, type = "ability", pvptalent = 21}, -- Overgrowth
+        { spell = 203651, type = "ability", pvptalent = 18}, -- Overgrowth
         { spell = 203727, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}, -- Thorns
         { spell = 203727, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["buff"]}, -- Thorns
         { spell = 195329, type = "buff", unit = "player", pvptalent = 4}, -- Defender of the Weak
@@ -3195,6 +3198,7 @@ templates.class.DEATHKNIGHT = {
       args = {
         { spell = 3714, type = "buff", unit = "player" }, -- Path of Frost
         { spell = 48707, type = "buff", unit = "player" }, -- Anti-Magic Shell
+        { spell = 48792, type = "buff", unit = "player" }, -- Icebound Fortitude
         { spell = 53365, type = "buff", unit = "player" }, -- Unholy Strength
         { spell = 55233, type = "buff", unit = "player" }, -- Vampiric Blood
         { spell = 77535, type = "buff", unit = "player" }, -- Blood Shield
@@ -3239,6 +3243,7 @@ templates.class.DEATHKNIGHT = {
         { spell = 43265, type = "ability"}, -- Death and Decay
         { spell = 47528, type = "ability"}, -- Mind Freeze
         { spell = 48707, type = "ability"}, -- Anti-Magic Shell
+        { spell = 48792, type = "ability"}, -- Icebound Fortitude
         { spell = 49028, type = "ability"}, -- Dancing Rune Weapon
         { spell = 49576, type = "ability"}, -- Death Grip
         { spell = 50842, type = "ability"}, -- Blood Boil
@@ -3358,8 +3363,7 @@ templates.class.DEATHKNIGHT = {
       title = L["PvP Talents"],
       args = {
         { spell = 204160, type = "ability", pvptalent = 18}, -- Chill Streak
-        { spell = 204143, type = "ability", pvptalent = 17, titleSuffix = L["cooldown"]}, -- Killing Machine
-        { spell = 204143, type = "buff", unit = "player", pvptalent = 17, titleSuffix = L["buff"]}, -- Killing Machine
+        { spell = 222178, type = "buff", unit = "player", pvptalent = 15}, -- Delirium
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
