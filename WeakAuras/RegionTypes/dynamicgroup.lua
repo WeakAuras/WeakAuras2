@@ -15,6 +15,7 @@ local default = {
     sort = "none",
     animate = false,
     anchorPoint = "CENTER",
+    anchorFrameType = "SCREEN",
     xOffset = 0,
     yOffset = 0,
     radius = 200,
@@ -120,7 +121,8 @@ local function modify(parent, region, data)
     data.selfPoint = selfPoint;
 
     region:ClearAllPoints();
-    region:SetPoint(selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    region:SetPoint(selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     region.controlledRegions = {};
 

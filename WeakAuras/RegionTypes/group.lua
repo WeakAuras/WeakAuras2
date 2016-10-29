@@ -6,6 +6,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local default = {
     controlledChildren     = {},
     anchorPoint         = "CENTER",
+    anchorFrameType     = "SCREEN",
     xOffset             = 0,
     yOffset             = 0,
     frameStrata         = 1,
@@ -97,7 +98,9 @@ local function modify(parent, region, data)
 
     -- Reset position and size
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    region:SetParent(anchorFrame);
+    region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     -- Adjust frame-level sorting
     local frameLevel = 1

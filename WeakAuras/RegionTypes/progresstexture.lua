@@ -105,6 +105,7 @@ local default = {
     rotation = 0,
     selfPoint = "CENTER",
     anchorPoint = "CENTER",
+    anchorFrameType = "SCREEN",
     xOffset = 0,
     yOffset = 0,
     font = "Friz Quadrata TT",
@@ -375,7 +376,9 @@ local function modify(parent, region, data)
     backgroundSpinner:SetHeight((data.height + data.backgroundOffset * 2) * scaleWedge);
 
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    region:SetParent(anchorFrame);
+    region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
     region:SetAlpha(data.alpha);
 
     background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
