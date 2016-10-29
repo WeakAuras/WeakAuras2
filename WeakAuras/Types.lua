@@ -236,6 +236,13 @@ WeakAuras.inverse_point_types = {
   CENTER = "CENTER"
 };
 
+WeakAuras.anchor_frame_types = {
+  SCREEN = L["Screen/Parent Group"],
+  PRD = L["Personal Ressource Display"],
+  MOUSE = L["Mouse Cursor"],
+  SELECTFRAME = L["Select Frame"]
+}
+
 WeakAuras.spark_rotation_types = {
     AUTO = L["Automatic Rotation"],
     MANUAL = L["Manual Rotation"]

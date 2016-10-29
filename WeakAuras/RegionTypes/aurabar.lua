@@ -55,6 +55,7 @@ local default = {
   borderBackdrop = "Blizzard Tooltip",
   selfPoint = "CENTER",
   anchorPoint = "CENTER",
+  anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
   stickyDuration = false,
@@ -853,7 +854,10 @@ local function modify(parent, region, data)
 
   -- Reset anchors
     region:ClearAllPoints();
-    region:SetPoint(data.selfPoint, parent, data.anchorPoint, data.xOffset, data.yOffset);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    region:SetParent(anchorFrame);
+    region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
+
 
   -- Set overall alpha
     region:SetAlpha(data.alpha);
