@@ -114,7 +114,7 @@ local function modify(parent, region, data)
         elseif(data.align == "RIGHT") then
             selfPoint = "RIGHT";
         end
-    elseif(data.grow == "CIRCLE") then
+    elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
         selfPoint = "CENTER";
     end
     data.selfPoint = selfPoint;
@@ -309,7 +309,7 @@ local function modify(parent, region, data)
         end
         if(numVisible > 0) then
             minX, maxX, minY, maxY = minX or 0, maxX or 0, minY or 0, maxY or 0;
-            if(data.grow == "CIRCLE") then
+            if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
                 local originX, originY = region:GetCenter();
                 originX = originX or 0;
                 originY = originY or 0;
@@ -393,7 +393,7 @@ local function modify(parent, region, data)
             end
         end
 
-        if not(data.grow == "CIRCLE") then
+        if not(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
             if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
                 if(data.align == "LEFT" and data.stagger > 0) then
                     yOffset = yOffset - (data.stagger * (numVisible - 1));
@@ -433,8 +433,11 @@ local function modify(parent, region, data)
 
         local angle = data.rotation or 0;
         local angleInc = 360 / (numVisible ~= 0 and numVisible or 1);
+        if (data.grow == "COUNTERCIRCLE") then
+          angleInc = -angleInc;
+        end
         local radius = 0;
-        if(data.grow == "CIRCLE") then
+        if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
             if(data.constantFactor == "RADIUS") then
                 radius = data.radius;
             else
@@ -451,7 +454,7 @@ local function modify(parent, region, data)
             childRegion = regionData.region;
             if(childData and childRegion) then
                 if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-                    if(data.grow == "CIRCLE") then
+                    if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
                         yOffset = cos(angle) * radius * -1;
                         xOffset = sin(angle) * radius;
                         angle = angle + angleInc;
@@ -501,7 +504,7 @@ local function modify(parent, region, data)
                     elseif(data.grow == "DOWN") then
                         hiddenYOffset = yOffset + (childData.height + data.space);
                         hiddenXOffset = xOffset - data.stagger;
-                    elseif(data.grow == "CIRCLE") then
+                    elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
                         hiddenYOffset = cos(angle - angleInc) * radius * -1;
                         hiddenXOffset = sin(angle - angleInc) * radius;
                     end
@@ -571,7 +574,7 @@ local function modify(parent, region, data)
                 previousPreviousX, previousPreviousY = previousX, previousY;
                 if((childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") and data.animate and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
                     local anim;
-                    if(data.grow == "CIRCLE") then
+                    if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
                         local originX, originY = region:GetCenter();
                         local radius1, previousAngle = WeakAuras.GetPolarCoordinates(previousX, previousY, originX, originY);
                         local radius2, newAngle = WeakAuras.GetPolarCoordinates(xOffset, yOffset, originX, originY);
