@@ -6862,6 +6862,7 @@ function WeakAuras.CreateFrame()
   texturePickCancel:SetHeight(20)
   texturePickCancel:SetWidth(100)
   texturePickCancel:SetText(L["Cancel"])
+  texturePickCancel:SetFrameLevel(100);
 
   local texturePickClose = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
   texturePickClose:SetScript("OnClick", texturePick.Close)
@@ -6869,6 +6870,7 @@ function WeakAuras.CreateFrame()
   texturePickClose:SetHeight(20)
   texturePickClose:SetWidth(100)
   texturePickClose:SetText(L["Okay"])
+  texturePickClose:SetFrameLevel(100);
 
   local iconPick = AceGUI:Create("InlineGroup");
   iconPick.frame:SetParent(frame);
