@@ -2347,7 +2347,12 @@ function WeakAuras.AddOption(id, data)
             name = L["Message"],
             width = "double",
             order = 5,
-            disabled = function() return not data.actions.start.do_message end
+            disabled = function() return not data.actions.start.do_message end,
+            desc = function()
+                 local ret = L["Dynamic text tooltip"];
+                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
+                 return ret
+            end,
           },
           start_do_sound = {
             type = "toggle",
@@ -2522,7 +2527,12 @@ function WeakAuras.AddOption(id, data)
             name = L["Message"],
             width = "double",
             order = 25,
-            disabled = function() return not data.actions.finish.do_message end
+            disabled = function() return not data.actions.finish.do_message end,
+            desc = function()
+                 local ret = L["Dynamic text tooltip"];
+                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
+                 return ret
+            end,
           },
           finish_do_sound = {
             type = "toggle",
