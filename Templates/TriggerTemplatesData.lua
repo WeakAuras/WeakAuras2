@@ -2612,7 +2612,7 @@ templates.class.DRUID = {
         { spell = 774, type = "buff", unit = "player", talent = 9 }, -- Rejuvenation
         { spell = 1850, type = "buff", unit = "player" }, -- Dash
         { spell = 5215, type = "buff", unit = "player" }, -- Prowl
-        { spell = 8936, type = "buff", unit = "player", talent = 9 }, -- Regrowth
+        { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
         { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
         { spell = 22842, type = "buff", unit = "player", talent = 8 }, -- Frenzied Regeneration
         { spell = 24858, type = "buff", unit = "player" }, -- Moonkin Form
@@ -2712,7 +2712,7 @@ templates.class.DRUID = {
         { spell = 1850, type = "buff", unit = "player" }, -- Dash
         { spell = 5215, type = "buff", unit = "player" }, -- Prowl
         { spell = 5217, type = "buff", unit = "player" }, -- Tiger's Fury
-        { spell = 8936, type = "buff", unit = "player", talent = 9 }, -- Regrowth
+        { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
         { spell = 22842, type = "buff", unit = "player", talent = 8 }, -- Frenzied Regeneration
         { spell = 52610, type = "buff", unit = "player", talent = 15 }, -- Savage Roar
         { spell = 61336, type = "buff", unit = "player" }, -- Survival Instincts
@@ -2819,7 +2819,7 @@ templates.class.DRUID = {
         { spell = 774, type = "buff", unit = "player", talent = 9 }, -- Rejuvenation
         { spell = 1850, type = "buff", unit = "player" }, -- Dash
         { spell = 5215, type = "buff", unit = "player" }, -- Prowl
-        { spell = 8936, type = "buff", unit = "player", talent = 9 }, -- Regrowth
+        { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
         { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
         { spell = 22842, type = "buff", unit = "player" }, -- Frenzied Regeneration
         { spell = 61336, type = "buff", unit = "player" }, -- Survival Instincts
