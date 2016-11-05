@@ -2337,7 +2337,8 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "PLAYER_TOTEM_UPDATE",
-      "COOLDOWN_REMAINING_CHECK"
+      "COOLDOWN_REMAINING_CHECK",
+      "PLAYER_ENTERING_WORLD"
     },
     force_events = true,
     name = L["Totem"],
