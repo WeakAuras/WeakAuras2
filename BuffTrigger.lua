@@ -332,7 +332,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
     state.changed = true;
   end
 
-  local autoHide = not inverse and duration ~= 0;
+  local autoHide = false;
   if (state.autoHide ~= autoHide) then
     state.autoHide = autoHide;
     state.changed = true;
