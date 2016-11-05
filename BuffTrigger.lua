@@ -527,7 +527,7 @@ function WeakAuras.ScanAuras(unit)
                 -- Show display and handle clones
                 WeakAuras.SetDynamicIconCache(name, spellId, icon);
                 if(data.autoclone) then
-                  local cloneId = name.."-"..(casGUID or "unknown");
+                  local cloneId = name .. spellId .."-"..(casGUID or "unknown");
                   if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.inverse, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
                     updateTriggerState = true;
                   end
