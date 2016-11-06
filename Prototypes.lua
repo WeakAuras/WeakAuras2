@@ -1057,7 +1057,6 @@ WeakAuras.event_prototypes = {
     automatic = true
   },
   -- Todo: Give useful options to condition based on GUID and flag info
-  -- Todo: Allow options to pass information from combat message to the display?
   ["Combat Log"] = {
     type = "event",
     events = {
