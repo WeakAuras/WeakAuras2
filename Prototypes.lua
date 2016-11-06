@@ -622,7 +622,6 @@ WeakAuras.load_prototype = {
             single_spec = GetSpecialization();
           end
 
-          -- print ("Using talent cache", single_class, single_spec);
           -- If a single specific class was found, load the specific list for it
           if(single_class and WeakAuras.talent_types_specific[single_class]
             and single_spec and WeakAuras.talent_types_specific[single_class][single_spec]) then
