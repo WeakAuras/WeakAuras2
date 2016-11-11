@@ -1333,3 +1333,9 @@ WeakAuras.item_slot_types = {
   [15] = L["Back"],
   [19] = L["Tabard"]
 }
+
+WeakAuras.charges_change_type = {
+  GAINED = L["Gained"],
+  LOST = L["Lost"],
+  CHANGED = L["Changed"]
+}

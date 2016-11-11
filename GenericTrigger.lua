@@ -1276,7 +1276,12 @@ do
     spellCdExps[id] = nil;
     spellCdDursRune[id] = nil;
     spellCdExpsRune[id] = nil;
-    spellCharges[id] = select(2, GetSpellCharges(id));
+    local charges = select(2, GetSpellCharges(id));
+    local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
+    if (chargesDifference ~= 0 ) then
+      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
+    end
+    spellCharges[id] = charges
     WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
 
@@ -1378,6 +1383,10 @@ do
       local remaining = startTime + duration - time;
 
       local chargesChanged = spellCharges[id] ~= charges;
+      local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
+      if (chargesDifference ~= 0 ) then
+        WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
+      end
       spellCharges[id] = charges;
 
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then

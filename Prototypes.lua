@@ -1529,6 +1529,62 @@ WeakAuras.event_prototypes = {
     end,
     hasSpellID = true
   },
+  ["Charges Changed (Spell)"] = {
+    type = "event",
+    events = {
+      "SPELL_CHARGES_CHANGED",
+    },
+    name = L["Charges Changed (Spell)"],
+    init = function(trigger)
+    --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
+      trigger.spellName = trigger.spellName or 0;
+      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
+      local ret = [[
+        local triggerDirection = "%s";
+        local directionCheck = triggerDirection == "CHANGED"
+           or (triggerDirection == "GAINED" and direction > 0)
+           or (triggerDirection == "LOST" and direction < 0)
+      ]]
+      return ret:format(trigger.direction or "CHANGED");
+    end,
+    args = {
+      {
+        name = "spellName",
+        required = true,
+        display = L["Spell"],
+        type = "spell",
+        init = "arg"
+      },
+      {
+        name = "direction",
+        required = true,
+        display = L["Charge gained/lost"],
+        type = "select",
+        values = "charges_change_type",
+        init = "arg",
+        test = "directionCheck"
+      },
+      {
+        name = "charges",
+        display = L["Charges"],
+        type = "number",
+        init = "arg",
+      }
+    },
+    nameFunc = function(trigger)
+      local name = GetSpellInfo(trigger.spellName or 0);
+      if(name) then
+        return name;
+      else
+        return "Invalid";
+      end
+    end,
+    iconFunc = function(trigger)
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      return icon;
+    end,
+    hasSpellID = true
+  },
   ["Cooldown Progress (Item)"] = {
     type = "status",
     events = {
