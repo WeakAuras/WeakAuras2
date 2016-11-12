@@ -746,7 +746,8 @@ WeakAuras.load_prototype = {
       display = L["Instance Type"],
       type = "multiselect",
       values = "group_types",
-      init = "arg"
+      init = "arg",
+      control = "WeakAurasSortedDropdown"
     },
     {
       name = "difficulty",
@@ -2808,7 +2809,8 @@ WeakAuras.event_prototypes = {
         display = L["Message Type"],
         type = "select",
         values = "chat_message_types",
-        test = "event=='%s'"
+        test = "event=='%s'",
+        control = "WeakAurasSortedDropdown"
       },
       {
         name = "message",
