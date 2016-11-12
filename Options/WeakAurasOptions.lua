@@ -900,6 +900,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           options[name] = nil;
           order = order - 1;
         end
+        if (arg.control) then
+          options[name].control = arg.control;
+        end
         order = order + 1;
         if(arg.type == "unit" and not (arg.required and triggertype == "untrigger")) then
           options["use_specific_"..name] = {
@@ -2306,7 +2309,8 @@ function WeakAuras.AddOption(id, data)
             name = L["Message Type"],
             order = 2,
             values = send_chat_message_types,
-            disabled = function() return not data.actions.start.do_message end
+            disabled = function() return not data.actions.start.do_message end,
+            control = "WeakAurasSortedDropdown"
           },
           start_message_space = {
             type = "execute",
@@ -2366,7 +2370,8 @@ function WeakAuras.AddOption(id, data)
             name = L["Sound"],
             order = 8,
             values = sound_types,
-            disabled = function() return not data.actions.start.do_sound end
+            disabled = function() return not data.actions.start.do_sound end,
+            control = "WeakAurasSortedDropdown"
           },
           start_sound_channel = {
             type = "select",
@@ -2486,7 +2491,8 @@ function WeakAuras.AddOption(id, data)
             name = L["Message Type"],
             order = 22,
             values = send_chat_message_types,
-            disabled = function() return not data.actions.finish.do_message end
+            disabled = function() return not data.actions.finish.do_message end,
+            control = "WeakAurasSortedDropdown"
           },
           finish_message_space = {
             type = "execute",
@@ -2546,7 +2552,8 @@ function WeakAuras.AddOption(id, data)
             name = L["Sound"],
             order = 28,
             values = sound_types,
-            disabled = function() return not data.actions.finish.do_sound end
+            disabled = function() return not data.actions.finish.do_sound end,
+            control = "WeakAurasSortedDropdown"
           },
           finish_sound_channel = {
             type = "select",
@@ -5263,6 +5270,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           return status_types;
         end
       end,
+      control = "WeakAurasSortedDropdown",
       hidden = function() return not (trigger.type == "event" or trigger.type == "status"); end
     },
     subeventPrefix = {

@@ -45,4 +45,4 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasTextureButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasIconButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
-
+AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropdown.lua
