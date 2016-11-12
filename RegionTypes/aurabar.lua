@@ -442,7 +442,6 @@ local function animRotate(object, degrees, anchor)
         group:Pause();
     end
 end
-WeakAuras.animRotate = animRotate;
 
 -- Calculate offset after rotation
 local function getRotateOffset(object, degrees, point)
