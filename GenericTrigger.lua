@@ -324,13 +324,14 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       state.progressType = "timed";
       changed = true;
     end
-    if (state.value or state.total or state.inverse or not state.autoHide) then
+    local autoHide = data.automaticAutoHide;
+    if (state.value or state.total or state.inverse or state.autoHide ~= autoHide) then
       changed = true;
     end
     state.value = nil;
     state.total = nil;
     state.inverse = nil;
-    state.autoHide = true;
+    state.autoHide = autoHide;
   elseif (data.durationFunc) then
     local arg1, arg2, arg3, inverse = data.durationFunc(data.trigger);
     arg1 = type(arg1) == "number" and arg1 or 0;
@@ -394,8 +395,10 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         state.expirationTime = arg2;
         changed = true;
       end
-      if (state.autoHide ~= (arg1 > 0.01)) then
-        state.autoHide = arg1 > 0.01;
+      local autoHide = data.automaticAutoHide and (arg1 > 0.01);
+      if (state.autoHide ~= autoHide) then
+        state.autoHide = autoHide;
+        changed = true;
       end
       if (state.value or state.total) then
         changed = true;
@@ -444,6 +447,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
   end
 
   state.changed = changed;
+
   return changed;
 end
 
@@ -789,6 +793,10 @@ function GenericTrigger.Add(data, region)
           duration = tonumber(trigger.duration);
         end
 
+        local automaticAutoHide = true;
+        if (event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide) then
+          automaticAutoHide = event_prototypes[trigger.event].automaticAutoHide;
+        end
         events[id] = events[id] or {};
         events[id][triggernum] = {
           trigger = trigger,
@@ -806,6 +814,7 @@ function GenericTrigger.Add(data, region)
           textureFunc = textureFunc,
           stacksFunc = stacksFunc,
           duration = duration,
+          automaticAutoHide = automaticAutoHide
         };
 
         if(
@@ -2383,7 +2392,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.duration = arg1;
       state.resort = state.expirationTime ~= arg2;
       state.expirationTime = arg2;
-      state.autoHide = arg1 > 0.01;
+      state.autoHide = arg1 > 0.01 and data.automaticAutoHide;
       state.value = nil;
       state.total = nil;
       state.inverse = inverse;
