@@ -2690,7 +2690,6 @@ function WeakAuras.CreateFallbackState(id, triggernum, state)
   end
 end
 
-
 function WeakAuras.CanShowNameInfo(data)
   if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
     return true;
