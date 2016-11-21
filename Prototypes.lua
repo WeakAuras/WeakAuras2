@@ -1674,17 +1674,31 @@ WeakAuras.event_prototypes = {
   ["Cooldown Progress (Equipment Slot)"] = {
     type = "status",
     events = {
-      "BAG_UPDATE_COOLDOWN",
-      "COOLDOWN_REMAINING_CHECK"
+      "ITEM_SLOT_COOLDOWN_READY",
+      "ITEM_SLOT_COOLDOWN_STARTED",
+      "ITEM_SLOT_COOLDOWN_CHANGED",
+      "COOLDOWN_REMAINING_CHECK",
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],
     init = function(trigger)
+      WeakAuras.WatchItemSlotCooldown(trigger.itemSlot);
       local ret = [[
-        local startTime, duration, enable = GetInventoryItemCooldown("player", %s);
+        local startTime, duration, enable = WeakAuras.GetItemSlotCooldown(%s);
         local showOn = %s
         local remaining = startTime + duration - GetTime();
       ]];
+      if(trigger.use_remaining and trigger.showOn == "showOnCooldown") then
+        local ret2 = [[
+          local expirationTime = startTime + duration
+          local remaining = expirationTime - GetTime();
+          local remainingCheck = %s;
+          if(remaining >= remainingCheck) then
+            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+          end
+        ]];
+        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
+      end
       return ret:format(trigger.itemSlot or "0",  "[[" .. (trigger.showOn or "") .. "]]");
     end,
     args = {

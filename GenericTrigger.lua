@@ -1183,6 +1183,12 @@ do
   local itemCdExps = {};
   local itemCdHandles = {};
 
+  local itemSlots = {};
+  local itemSlotsCdDurs = {};
+  local itemSlotsCdExps = {};
+  local itemSlotsCdHandles = {};
+  local itemSlotsEnable = {};
+
   local runes = {};
   local runeCdDurs = {};
   local runeCdExps = {};
@@ -1205,8 +1211,9 @@ do
   cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
   cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+  cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
+  cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
-
     if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
        or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE"
        or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
@@ -1220,6 +1227,8 @@ do
           gcdSpellIcon = icon;
         end
       end
+    elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN") then
+      WeakAuras.CheckItemSlotCooldowns();
     end
   end);
   end
@@ -1272,6 +1281,14 @@ do
     return gcdDuration or 0;
   end
 
+  function WeakAuras.GetItemSlotCooldown(id)
+    if(itemSlots[id] and itemSlotsCdExps[id] and itemSlotsCdDurs[id]) then
+      return itemSlotsCdExps[id] - itemSlotsCdDurs[id], itemSlotsCdDurs[id], itemSlotsEnable[id];
+    else
+      return 0, 0, itemSlotsEnable[id];
+    end
+  end
+
   local function RuneCooldownFinished(id)
     runeCdHandles[id] = nil;
     runeCdDurs[id] = nil;
@@ -1301,6 +1318,13 @@ do
     WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
   end
 
+  local function ItemSlotCooldownFinished(id)
+    itemSlotsCdHandles[id] = nil;
+    itemSlotsCdDurs[id] = nil;
+    itemSlotsCdExps[id] = nil;
+    WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_READY", id);
+  end
+
   local function CheckGCD()
     local event;
     local startTime, duration = GetSpellCooldown(61304);
@@ -1328,9 +1352,7 @@ do
     end
   end
 
-  function WeakAuras.CheckCooldownReady()
-    CheckGCD();
-
+  function WeakAuras.CheckRuneCooldown()
     local runeDuration = -100;
     for id, _ in pairs(runes) do
       local startTime, duration = GetRuneCooldown(id);
@@ -1377,7 +1399,10 @@ do
         end
       end
     end
+    return runeDuration;
+  end
 
+  function WeakAuras.CheckSpellCooldows(runeDuration)
     for id, _ in pairs(spells) do
       local charges, maxCharges, startTime, duration = GetSpellCharges(id);
       if (charges == nil) then -- charges is nil if the spell has no charges
@@ -1446,7 +1471,9 @@ do
         end
       end
     end
+  end
 
+  function WeakAuras.CheckItemCooldowns()
     for id, _ in pairs(items) do
       local startTime, duration = GetItemCooldown(id);
       startTime = startTime or 0;
@@ -1486,6 +1513,57 @@ do
         end
       end
     end
+  end
+
+  function WeakAuras.CheckItemSlotCooldowns()
+    for id, _ in pairs(itemSlots) do
+      local startTime, duration, enable = GetInventoryItemCooldown("player", id);
+      itemSlotsEnable[id] = enable;
+      startTime = startTime or 0;
+      duration = duration or 0;
+      local time = GetTime();
+
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+        -- On non-GCD cooldown
+        local endTime = startTime + duration;
+
+        if not(itemSlotsCdExps[id]) then
+          -- New cooldown
+          itemSlotsCdDurs[id] = duration;
+          itemSlotsCdExps[id] = endTime;
+          itemSlotsCdHandles[id] = timer:ScheduleTimer(ItemSlotCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_STARTED", id);
+        elseif(itemSlotsCdExps[id] ~= endTime) then
+          -- Cooldown is now different
+          if(itemSlotsCdHandles[id]) then
+            timer:CancelTimer(itemSlotsCdHandles[id]);
+          end
+          itemSlotsCdDurs[id] = duration;
+          itemSlotsCdExps[id] = endTime;
+          itemSlotsCdHandles[id] = timer:ScheduleTimer(ItemSlotCooldownFinished, endTime - time, id);
+          WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_CHANGED", id);
+        end
+      elseif(duration > 0) then
+        -- GCD, do nothing
+      else
+        if(itemSlotsCdExps[id]) then
+          -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
+          -- This shouldn't happen, but if it does, no problem
+          if(itemSlotsCdHandles[id]) then
+            timer:CancelTimer(itemSlotsCdHandles[id]);
+          end
+          ItemSlotCooldownFinished(id);
+        end
+      end
+    end
+  end
+
+  function WeakAuras.CheckCooldownReady()
+    CheckGCD();
+    local runeDuration = WeakAuras.CheckRuneCooldown();
+    WeakAuras.CheckSpellCooldows(runeDuration);
+    WeakAuras.CheckItemCooldowns();
+    WeakAuras.CheckItemSlotCooldowns();
   end
 
   function WeakAuras.WatchGCD()
@@ -1583,6 +1661,29 @@ do
         itemCdExps[id] = endTime;
         if not(itemCdHandles[id]) then
           itemCdHandles[id] = timer:ScheduleTimer(ItemCooldownFinished, endTime - time, id);
+        end
+      end
+    end
+  end
+
+  function WeakAuras.WatchItemSlotCooldown(id)
+    if not(cdReadyFrame) then
+      WeakAuras.InitCooldownReady();
+    end
+
+    if not id or id == 0 then return end
+
+    if not(itemSlots[id]) then
+      itemSlots[id] = true;
+      local startTime, duration, enable = GetInventoryItemCooldown("player", id);
+      itemSlotsEnable[id] = enable;
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+        local time = GetTime();
+        local endTime = startTime + duration;
+        itemSlotsCdDurs[id] = duration;
+        itemSlotsCdExps[id] = endTime;
+        if not(itemSlotsCdHandles[id]) then
+          itemSlotsCdHandles[id] = timer:ScheduleTimer(ItemSlotCooldownFinished, endTime - time, id);
         end
       end
     end
