@@ -2147,9 +2147,6 @@ function WeakAuras.PerformActions(data, type, region)
   if(actions.do_message and actions.message_type and actions.message and not squelch_actions) then
     local message = actions.message;
     if (message:find('%%')) then
-      for k, v in pairs(region.values) do
-        print(k, v);
-      end
       message = WeakAuras.ReplacePlaceHolders(message, region.values, region.state);
     end
     if(actions.message_type == "PRINT") then
@@ -3422,8 +3419,10 @@ function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
       end
     end
   end
-  for symbol, v in pairs(WeakAuras.dynamic_texts) do
-    textStr = textStr:gsub(symbol, regionValues[v.value] or "");
+  if (regionValues) then
+    for symbol, v in pairs(WeakAuras.dynamic_texts) do
+      textStr = textStr:gsub(symbol, regionValues[v.value] or "");
+    end
   end
   return textStr;
 end
