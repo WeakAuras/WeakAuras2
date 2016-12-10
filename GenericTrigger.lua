@@ -1809,11 +1809,11 @@ do
           return false;
         end
       elseif (operator == "find('%s')") then
-        if (v.message == nil or not v.message:find(message)) then
+        if (v.message == nil or not v.message:find(message, 1, true)) then
           return false;
        end
       elseif (operator == "match('%s')") then
-        if (v.message == nil or not v.message:match(message)) then
+        if (v.message == nil or not v.message:match(message, 1, true)) then
           return false;
         end
       end
@@ -2009,11 +2009,11 @@ do
           return false;
         end
       elseif (textOperator == "find('%s')") then
-        if (v.text == nil or not v.text:find(text)) then
+        if (v.text == nil or not v.text:find(text, 1, true)) then
           return false;
         end
       elseif (textOperator == "match('%s')") then
-        if (v.text == nil or v.text:match(text)) then
+        if (v.text == nil or v.text:match(text, 1, true)) then
           return false;
         end
       end
