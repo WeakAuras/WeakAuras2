@@ -1339,3 +1339,9 @@ WeakAuras.charges_change_type = {
   LOST = L["Lost"],
   CHANGED = L["Changed"]
 }
+
+WeakAuras.combat_event_type =
+{
+  PLAYER_REGEN_ENABLED = L["Leaving"],
+  PLAYER_REGEN_DISABLED = L["Entering"]
+}
