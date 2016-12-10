@@ -794,7 +794,7 @@ function GenericTrigger.Add(data, region)
         end
 
         local automaticAutoHide = true;
-        if (event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide) then
+        if (event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide ~= nil) then
           automaticAutoHide = event_prototypes[trigger.event].automaticAutoHide;
         end
         events[id] = events[id] or {};
