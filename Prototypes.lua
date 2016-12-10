@@ -2863,6 +2863,24 @@ WeakAuras.event_prototypes = {
     name = L["Ready Check"],
     args = {}
   },
+  ["Combat Events"] = {
+    type = "event",
+    events = {
+      "PLAYER_REGEN_ENABLED",
+      "PLAYER_REGEN_DISABLED"
+    },
+    name = L["Entering/Leaving Combat"],
+    args = {
+      {
+        name = "eventtype",
+        required = true,
+        display = L["Type"],
+        type = "select",
+        values = "combat_event_type",
+        test = "event == (\"%s\")"
+      }
+    }
+  },
   ["Death Knight Rune"] = {
     type = "status",
     events = {
