@@ -6899,17 +6899,14 @@ function WeakAuras.CreateFrame()
   local iconPick = AceGUI:Create("InlineGroup");
   iconPick.frame:SetParent(frame);
   iconPick.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 30); -- 12
-  iconPick.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+  iconPick.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -50);
   iconPick.frame:Hide();
   iconPick:SetLayout("flow");
   frame.iconPick = iconPick;
 
-  local iconPickScroll = AceGUI:Create("InlineGroup");
-  iconPickScroll:SetWidth(540);
+  local iconPickScroll = AceGUI:Create("ScrollFrame");
   iconPickScroll:SetLayout("flow");
-  iconPickScroll.frame:SetParent(iconPick.frame);
-  iconPickScroll.frame:SetPoint("BOTTOMLEFT", iconPick.frame, "BOTTOMLEFT", 10, 22); -- 30
-  iconPickScroll.frame:SetPoint("TOPRIGHT", iconPick.frame, "TOPRIGHT", -10, -70);
+  iconPick:AddChild(iconPickScroll);
 
   local function iconPickFill(subname, doSort)
     iconPickScroll:ReleaseChildren();
@@ -6940,14 +6937,14 @@ function WeakAuras.CreateFrame()
 
               usedIcons[icon] = true;
               num = num + 1;
-              if(num >= 60) then
+              if(num >= 500) then
                 break;
               end
             end
           end
         end
 
-        if(num >= 60) then
+        if(num >= 500) then
           break;
         end
       end
@@ -6960,7 +6957,7 @@ function WeakAuras.CreateFrame()
   iconPickInput:SetScript("OnEscapePressed", function(...) iconPickInput:SetText(""); iconPickFill(iconPickInput:GetText(), true); end);
   iconPickInput:SetWidth(170);
   iconPickInput:SetHeight(15);
-  iconPickInput:SetPoint("TOPRIGHT", iconPick.frame, "TOPRIGHT", -12, -65);
+  iconPickInput:SetPoint("BOTTOMRIGHT", iconPick.frame, "TOPRIGHT", -12, -5);
   WeakAuras.iconPickInput = iconPickInput;
 
   local iconPickInputLabel = iconPickInput:CreateFontString(nil, "OVERLAY", "GameFontNormal");
@@ -6971,7 +6968,7 @@ function WeakAuras.CreateFrame()
   local iconPickIcon = AceGUI:Create("WeakAurasIconButton");
   iconPickIcon.frame:Disable();
   iconPickIcon.frame:SetParent(iconPick.frame);
-  iconPickIcon.frame:SetPoint("TOPLEFT", iconPick.frame, "TOPLEFT", 15, -30);
+  iconPickIcon.frame:SetPoint("BOTTOMLEFT", iconPick.frame, "TOPLEFT", 15, -15);
 
   local iconPickIconLabel = iconPickInput:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge");
   iconPickIconLabel:SetNonSpaceWrap("true");
