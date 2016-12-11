@@ -33,6 +33,7 @@ function WeakAuras.CreateTemplateView(frame)
 
   local newViewScroll = AceGUI:Create("ScrollFrame");
   newViewScroll:SetLayout("flow");
+  newViewScroll.frame:SetClipsChildren(true);
   newView:AddChild(newViewScroll);
 
   local function createNewId(prefix)
@@ -483,7 +484,6 @@ function WeakAuras.CreateTemplateView(frame)
   end
 
   local newViewBack = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
-  newViewBack:SetFrameLevel(100);
   newViewBack:SetScript("OnClick", function()
     if (newView.existingAura) then
       newView.choosenItem = nil;
@@ -499,7 +499,6 @@ function WeakAuras.CreateTemplateView(frame)
   newView.backButton = newViewBack;
 
   local newViewCancel = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
-  newViewCancel:SetFrameLevel(100);
   newViewCancel:SetScript("OnClick", function() newView:CancelClose() end);
   newViewCancel:SetPoint("BOTTOMRIGHT", -27, -23);
   newViewCancel:SetHeight(20);
