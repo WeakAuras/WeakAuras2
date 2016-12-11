@@ -6708,6 +6708,7 @@ function WeakAuras.CreateFrame()
   local texturePickScroll = AceGUI:Create("ScrollFrame");
   texturePickScroll:SetWidth(540);
   texturePickScroll:SetLayout("flow");
+  texturePickScroll.frame:SetClipsChildren(true);
   texturePickDropdown:AddChild(texturePickScroll);
 
   local function texturePickGroupSelected(widget, event, uniquevalue)
@@ -6887,7 +6888,6 @@ function WeakAuras.CreateFrame()
   texturePickCancel:SetHeight(20)
   texturePickCancel:SetWidth(100)
   texturePickCancel:SetText(L["Cancel"])
-  texturePickCancel:SetFrameLevel(100);
 
   local texturePickClose = CreateFrame("Button", nil, texturePick.frame, "UIPanelButtonTemplate")
   texturePickClose:SetScript("OnClick", texturePick.Close)
@@ -6895,7 +6895,6 @@ function WeakAuras.CreateFrame()
   texturePickClose:SetHeight(20)
   texturePickClose:SetWidth(100)
   texturePickClose:SetText(L["Okay"])
-  texturePickClose:SetFrameLevel(100);
 
   local iconPick = AceGUI:Create("InlineGroup");
   iconPick.frame:SetParent(frame);
@@ -7058,7 +7057,6 @@ function WeakAuras.CreateFrame()
   iconPickCancel:SetHeight(20);
   iconPickCancel:SetWidth(100);
   iconPickCancel:SetText(L["Cancel"]);
-  iconPickCancel:SetFrameLevel(100);
 
   local iconPickClose = CreateFrame("Button", nil, iconPick.frame, "UIPanelButtonTemplate");
   iconPickClose:SetScript("OnClick", iconPick.Close);
@@ -7066,7 +7064,6 @@ function WeakAuras.CreateFrame()
   iconPickClose:SetHeight(20);
   iconPickClose:SetWidth(100);
   iconPickClose:SetText(L["Okay"]);
-  iconPickClose:SetFrameLevel(100);
 
   iconPickScroll.frame:SetPoint("BOTTOM", iconPickClose, "TOP", 0, 10);
 
@@ -7502,6 +7499,7 @@ function WeakAuras.CreateFrame()
   local importexportbox = AceGUI:Create("MultiLineEditBox");
   importexportbox:SetWidth(400);
   importexportbox.button:Hide();
+  importexportbox.scrollFrame:SetClipsChildren(true);
   importexport:AddChild(importexportbox);
 
   local importexportClose = CreateFrame("Button", nil, importexport.frame, "UIPanelButtonTemplate");
@@ -7510,7 +7508,6 @@ function WeakAuras.CreateFrame()
   importexportClose:SetHeight(20);
   importexportClose:SetWidth(100);
   importexportClose:SetText(L["Done"])
-  importexportClose:SetFrameLevel(100);
 
   function importexport.Open(self, mode, id)
     if(frame.window == "texture") then
@@ -7599,6 +7596,7 @@ function WeakAuras.CreateFrame()
     texteditorbox.editBox:SetFont(fontPath, 12);
   end
   texteditor:AddChild(texteditorbox);
+  texteditorbox.scrollFrame:SetClipsChildren(true);
 
   local colorTable = {}
   colorTable[IndentationLib.tokens.TOKEN_SPECIAL] = "|c00ff3333"
@@ -7648,7 +7646,6 @@ function WeakAuras.CreateFrame()
   texteditorCancel:SetHeight(20);
   texteditorCancel:SetWidth(100);
   texteditorCancel:SetText(L["Cancel"]);
-  texteditorCancel:SetFrameLevel(100);
 
   local texteditorClose = CreateFrame("Button", nil, texteditor.frame, "UIPanelButtonTemplate");
   texteditorClose:SetScript("OnClick", function() texteditor:Close() end);
@@ -7656,7 +7653,6 @@ function WeakAuras.CreateFrame()
   texteditorClose:SetHeight(20);
   texteditorClose:SetWidth(100);
   texteditorClose:SetText(L["Done"]);
-  texteditorClose:SetFrameLevel(100);
 
   local texteditorError = texteditor.frame:CreateFontString(nil, "OVERLAY");
   texteditorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
@@ -7874,6 +7870,7 @@ function WeakAuras.CreateFrame()
   codebox.frame:SetAllPoints(codeTree.content);
   codebox.frame:SetFrameStrata("FULLSCREEN");
   codebox:SetLabel("");
+  codebox.scrollFrame:SetClipsChildren(true);
   codereview:AddChild(codebox);
 
   codebox.button:Hide();
@@ -7898,7 +7895,6 @@ function WeakAuras.CreateFrame()
   codereviewCancel:SetHeight(20);
   codereviewCancel:SetWidth(100);
   codereviewCancel:SetText(L["Okay"]);
-  codereviewCancel:SetFrameLevel(100);
 
   function codereview.Open(self, data)
     if frame.window == "codereview" then
