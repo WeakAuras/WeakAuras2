@@ -1962,7 +1962,7 @@ do
       return
     end
     if (BigWigsLoader) then
-      BigWigsLoader:RegisterMessage(event, bigWigsEventCallback);
+      BigWigsLoader.RegisterMessage(WeakAuras, event, bigWigsEventCallback);
       registeredBigWigsEvents [event] = true;
     end
   end
