@@ -2540,7 +2540,7 @@ WeakAuras.event_prototypes = {
       {
         name = "totemName",
         display = L["Totem Name"],
-        type = "spell",
+        type = "string",
       },
       {
         name = "clones",
