@@ -1178,6 +1178,7 @@ do
   local spellCdExpsRune = {};
   local spellCharges = {};
   local spellCdHandles = {};
+  local spellCdRuneHandles = {};
 
   local items = {};
   local itemCdDurs = {};
@@ -1297,12 +1298,23 @@ do
     WeakAuras.ScanEvents("RUNE_COOLDOWN_READY", id);
   end
 
+  local function SpellCooldownRuneFinished(id)
+    spellCdRuneHandles[id] = nil;
+    spellCdDursRune[id] = nil;
+    spellCdExpsRune[id] = nil;
+    local charges = select(2, GetSpellCharges(id));
+    local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
+    if (chargesDifference ~= 0 ) then
+      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
+    end
+    spellCharges[id] = charges
+    WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
+  end
+
   local function SpellCooldownFinished(id)
     spellCdHandles[id] = nil;
     spellCdDurs[id] = nil;
     spellCdExps[id] = nil;
-    spellCdDursRune[id] = nil;
-    spellCdExpsRune[id] = nil;
     local charges = select(2, GetSpellCharges(id));
     local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
@@ -1436,6 +1448,7 @@ do
           if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
+            spellCdRuneHandles[id] = timer:ScheduleTimer(SpellCooldownRuneFinished, endTime - time, id);
           end
           WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
         elseif(spellCdExps[id] ~= endTime or chargesChanged) then
@@ -1452,6 +1465,11 @@ do
           if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
+
+            if(spellCdRuneHandles[id]) then
+              timer:CancelTimer(spellCdRuneHandles[id]);
+            end
+            spellCdRuneHandles[id] = timer:ScheduleTimer(SpellCooldownRuneFinished, endTime - time, id);
           end
           WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
@@ -1465,6 +1483,11 @@ do
               timer:CancelTimer(spellCdHandles[id]);
             end
             SpellCooldownFinished(id);
+
+            if(spellCdRuneHandles[id]) then
+              timer:CancelTimer(spellCdRuneHandles[id]);
+            end
+            SpellCooldownRuneFinished(id);
           end
         end
         if (chargesChanged) then
@@ -1634,9 +1657,19 @@ do
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
         spellCdExps[id] = endTime;
-        if (duration ~= 10 and ignoreRunes) then
+        local runeDuration = -100;
+        for id, _ in pairs(runes) do
+          local startTime, duration = GetRuneCooldown(id);
+          startTime = startTime or 0;
+          duration = duration or 0;
+          runeDuration = duration > 0 and duration or runeDuration
+        end
+        if (duration ~= runeDuration and ignoreRunes) then
           spellCdDursRune[id] = duration;
           spellCdExpsRune[id] = endTime;
+          if not(spellCdRuneHandles[id]) then
+            spellCdRuneHandles[id] = timer:ScheduleTimer(SpellCooldownRuneFinished, endTime - time, id);
+          end
         end
         if not(spellCdHandles[id]) then
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
