@@ -1,42 +1,40 @@
 package-as: WeakAuras
 
 externals:
- libs/LibStub:
-  url: svn://svn.wowace.com/wow/libstub/mainline/trunk
-  tag: latest
+ libs/LibStub:  
+  url: https://repos.wowace.com/wow/libstub/trunk
  libs/CallbackHandler-1.0:
-  url: svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
-  tag: latest
+  url: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
  libs/AceConfig-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConfig-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
  libs/AceConsole-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConsole-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
  libs/AceGUI-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceGUI-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
  libs/AceEvent-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceEvent-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
  libs/AceGUI-3.0-SharedMediaWidgets:
-  url: svn://svn.wowace.com/wow/ace-gui-3-0-shared-media-widgets/mainline/trunk/AceGUI-3.0-SharedMediaWidgets
+  url: https://repos.wowace.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
  libs/AceTimer-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceTimer-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
  libs/AceSerializer-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceSerializer-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
  libs/AceComm-3.0:
-  url: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceComm-3.0
+  url: https://repos.wowace.com/wow/ace3/trunk/AceComm-3.0
  libs/LibSharedMedia-3.0:
-  url: svn://svn.wowace.com/wow/libsharedmedia-3-0/mainline/trunk/LibSharedMedia-3.0
+  url: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
  libs/LibDataBroker-1.1:
   url: git://github.com/tekkub/libdatabroker-1-1.git
  libs/LibCompress:
-  url: svn://svn.wowace.com/wow/libcompress/mainline/trunk
+  url: https://repos.wowace.com/wow/libcompress/trunk
  libs/LibChatAnims:
-  url: svn://svn.wowace.com/wow/libchatanims/mainline/trunk/LibChatAnims
+  url: https://repos.wowace.com/wow/libchatanims/trunk/LibChatAnims
  libs/LibBabble-Race-3.0:
-  url: svn://svn.wowace.com/wow/libbabble-race-3-0/mainline/trunk
+  url: https://repos.wowace.com/wow/libbabble-race-3-0/trunk
  libs/LibButtonGlow-1.0:
-  url: git://git.wowace.com/wow/libbuttonglow-1-0/mainline.git
+  url: https://repos.wowace.com/wow/libbuttonglow-1-0
  libs/LibSpellRange-1.0:
-  url: svn://svn.curseforge.com/wow/libspellrange-1-0/mainline/trunk
+  url: https://repos.curseforge.com/wow/libspellrange-1-0/trunk
 
 enable-nolib-creation: no
 
@@ -44,6 +42,7 @@ ignore:
  - README.md
  - Locales\babelfish.lua
  - .gitignore
+ - .github
 
 move-folders:
  WeakAuras/Options: WeakAurasOptions
