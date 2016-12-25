@@ -13,4 +13,4 @@ Do you have an error log of what happened? If you don't see any errors, make sur
 Please provide any additional information below.
 
 
-Please attach your WeakAuras SavedVariables file. It's the `WeakAuras.lua` file in `World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables\`
+Please attach a ZIP archive of your WeakAuras SavedVariables file. It's the `WeakAuras.lua` file in `World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables\`
