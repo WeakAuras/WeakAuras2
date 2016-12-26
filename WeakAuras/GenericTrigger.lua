@@ -37,22 +37,22 @@ CanGroupShowWithZero(data)
   If that is the case no automatic icon can be determined. Only used by the Options dialog.
   (If I understood the code correctly)
 
-CanHaveDuration(data)
+CanHaveDuration(data, triggernum)
   Returns whether the trigger can have a duration
 
-CanHaveAuto(data)
+CanHaveAuto(data, triggernum)
   Returns whether the icon can be automatically selected
 
 CanHaveClones(data)
   Returns whether the trigger can have clones
 
-CanHaveTooltip(data)
+CanHaveTooltip(data, triggernum)
   Returns the type of tooltip to show for the trigger
 
-GetNameAndIcon(data)
+GetNameAndIcon(data, triggernum)
     Returns the name and icon to show in the options
 
-GetAdditionalProperties(data)
+GetAdditionalProperties(data, triggernum)
   Returns the a tooltip for the additional properties
 ]]--
 

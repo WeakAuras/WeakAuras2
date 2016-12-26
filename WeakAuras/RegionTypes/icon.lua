@@ -32,9 +32,6 @@ local default = {
     customTextUpdate = "update"
 };
 
-local function SkinChanged(skinID, gloss, backdrop, colors, button)
-
-end
 
 local function GetTexCoord(region, texWidth)
     local texCoord
