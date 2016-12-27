@@ -1,4 +1,4 @@
-Locales/WeakAuras.lua
-Locales/WeakAuras_Options.lua
-Locales/WeakAuras_Tutorials.lua
-Locales/WeakAuras_Templates.lua
+WeakAuras/Locales/WeakAuras.lua
+WeakAuras/Locales/WeakAuras_Options.lua
+WeakAuras/Locales/WeakAuras_Tutorials.lua
+WeakAuras/Locales/WeakAuras_Templates.lua

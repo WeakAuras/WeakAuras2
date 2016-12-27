@@ -7,44 +7,46 @@ externals:
   url: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
  libs/AceConfig-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
- libs/AceConsole-3.0:
+ WeakAuras/libs/AceConsole-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
- libs/AceGUI-3.0:
+ WeakAuras/libs/AceGUI-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
- libs/AceEvent-3.0:
+ WeakAuras/libs/AceEvent-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
- libs/AceGUI-3.0-SharedMediaWidgets:
+ WeakAuras/libs/AceGUI-3.0-SharedMediaWidgets:
   url: https://repos.wowace.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
- libs/AceTimer-3.0:
+ WeakAuras/libs/AceTimer-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
- libs/AceSerializer-3.0:
+ WeakAuras/libs/AceSerializer-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
- libs/AceComm-3.0:
+ WeakAuras/libs/AceComm-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceComm-3.0
- libs/LibSharedMedia-3.0:
+ WeakAuras/libs/LibSharedMedia-3.0:
   url: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
- libs/LibDataBroker-1.1:
+ WeakAuras/libs/LibDataBroker-1.1:
   url: git://github.com/tekkub/libdatabroker-1-1.git
- libs/LibCompress:
+ WeakAuras/libs/LibCompress:
   url: https://repos.wowace.com/wow/libcompress/trunk
- libs/LibChatAnims:
+ WeakAuras/libs/LibChatAnims:
   url: https://repos.wowace.com/wow/libchatanims/trunk/LibChatAnims
- libs/LibBabble-Race-3.0:
+ WeakAuras/libs/LibBabble-Race-3.0:
   url: https://repos.wowace.com/wow/libbabble-race-3-0/trunk
- libs/LibButtonGlow-1.0:
+ WeakAuras/libs/LibButtonGlow-1.0:
   url: https://repos.wowace.com/wow/libbuttonglow-1-0
- libs/LibSpellRange-1.0:
+ WeakAuras/libs/LibSpellRange-1.0:
   url: https://repos.curseforge.com/wow/libspellrange-1-0/trunk
 
 enable-nolib-creation: no
 
 ignore:
  - README.md
- - Locales\babelfish.lua
+ - WeakAuras\Locales\babelfish.lua
  - .gitignore
  - .github
+ - .gitattributes
 
 move-folders:
- WeakAuras/Options: WeakAurasOptions
- WeakAuras/ModelPaths: WeakAurasModelPaths
- WeakAuras/Templates: WeakAurasTemplates
+ WeakAuras/WeakAuras: WeakAuras
+ WeakAuras/WeakAurasOptions: WeakAurasOptions
+ WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
+ WeakAuras/WeakAurasTemplates: WeakAurasTemplates
