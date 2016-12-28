@@ -1,11 +1,11 @@
 package-as: WeakAuras
 
 externals:
- libs/LibStub:  
+ WeakAuras/libs/LibStub:  
   url: https://repos.wowace.com/wow/libstub/trunk
- libs/CallbackHandler-1.0:
+ WeakAuras/libs/CallbackHandler-1.0:
   url: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
- libs/AceConfig-3.0:
+ WeakAuras/libs/AceConfig-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
  WeakAuras/libs/AceConsole-3.0:
   url: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
