@@ -3517,6 +3517,13 @@ local function ensureMouseFrame()
   moverFrame.texture = texture;
   texture:SetAllPoints(moverFrame);
   texture:SetTexture("Interface\\Cursor\\Point");
+
+  local label = moverFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+  label:SetJustifyH("LEFT")
+  label:SetJustifyV("TOP")
+  label:SetPoint("TOPLEFT", moverFrame, "BOTTOMLEFT");
+  label:SetText("WA Anchor");
+
   moverFrame:Hide();
 
   mouseFrame.OptionsOpened = function()
@@ -3598,6 +3605,10 @@ local function ensurePRDFrame()
   personalRessourceDisplayFrame.texture = texture;
   texture:SetAllPoints(moverFrame);
   texture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\PRDFrame");
+
+  local label = moverFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
+  label:SetPoint("CENTER", moverFrame, "CENTER");
+  label:SetText("WeakAuras Anchor");
 
   personalRessourceDisplayFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED');
   personalRessourceDisplayFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED');
