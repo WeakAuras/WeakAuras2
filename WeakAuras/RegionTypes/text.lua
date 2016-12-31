@@ -69,7 +69,7 @@ local function modify(parent, region, data)
     text:SetPoint(data.justify, region, data.justify);
 
     region:ClearAllPoints();
-    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
     region:SetParent(anchorFrame);
     region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
@@ -88,7 +88,7 @@ local function modify(parent, region, data)
               WeakAuras.regions[data.parent].region:ControlChildren();
           else
               region:ClearAllPoints();
-              local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+              local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
               region:SetParent(anchorFrame);
               region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
           end
@@ -292,7 +292,7 @@ local function fallbackmodify(parent, region, data)
     region:SetHeight(text:GetHeight());
 
     region:ClearAllPoints();
-    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
     region:SetParent(anchorFrame);
     region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 end

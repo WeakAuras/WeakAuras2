@@ -121,7 +121,7 @@ local function modify(parent, region, data)
     data.selfPoint = selfPoint;
 
     region:ClearAllPoints();
-    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
     region:SetPoint(selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 
     region.controlledRegions = {};
