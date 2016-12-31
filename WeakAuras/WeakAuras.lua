@@ -38,7 +38,7 @@ local L = WeakAuras.L
 -- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
 -- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS MAX_PVP_TALENT_TIERS NUM_TALENT_COLUMNS MAX_PVP_TALENT_COLUMNS
 -- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles LE_PARTY_CATEGORY_INSTANCE
--- GLOBALS: C_NamePlate NamePlateDriverFrame Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore
+-- GLOBALS: C_NamePlate NamePlateDriverFrame Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor
 
 local queueshowooc;
 
@@ -3760,6 +3760,8 @@ local function ensurePRDFrame()
     if (frame) then
       if (frame.kui and frame.kui.bg) then
         personalRessourceDisplayFrame:Attach(frame.kui, frame.kui.bg, frame.kui.bg);
+      elseif (ElvUIPlayerNamePlateAnchor) then
+        personalRessourceDisplayFrame:Attach(ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor);
       else
         personalRessourceDisplayFrame:Attach(frame, frame.UnitFrame.healthBar, NamePlateDriverFrame.nameplateManaBar);
       end
@@ -3781,6 +3783,8 @@ local function ensurePRDFrame()
         if (frame) then
           if (frame.kui and frame.kui.bg) then
             personalRessourceDisplayFrame:Attach(frame.kui, frame.kui.bg, frame.kui.bg);
+          elseif (ElvUIPlayerNamePlateAnchor) then
+            personalRessourceDisplayFrame:Attach(ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor);
           else
             personalRessourceDisplayFrame:Attach(frame, frame.UnitFrame.healthBar, NamePlateDriverFrame.nameplateManaBar);
           end
