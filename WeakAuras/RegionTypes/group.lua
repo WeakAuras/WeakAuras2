@@ -98,7 +98,7 @@ local function modify(parent, region, data)
 
     -- Reset position and size
     region:ClearAllPoints();
-    local anchorFrame = WeakAuras.GetAnchorFrame(data.anchorFrameType, parent, data.anchorFrameFrame);
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
     region:SetParent(anchorFrame);
     region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
 

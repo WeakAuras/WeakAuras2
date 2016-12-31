@@ -989,6 +989,12 @@ local function Constructor()
             if(self.region and self.region.Expand) then
                 button.terribleCodeOrganizationHackTable.OnShow();
                 self.region:Expand();
+                if (WeakAuras.personalRessourceDisplayFrame) then
+                  WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
+                end
+                if (WeakAuras.mouseFrame) then
+                  WeakAuras.mouseFrame:expand(self.region.id);
+                end
             end
         end
     end
@@ -998,6 +1004,12 @@ local function Constructor()
             if(self.region and self.region.Collapse) then
                 button.terribleCodeOrganizationHackTable.OnHide();
                 self.region:Collapse();
+                if (WeakAuras.personalRessourceDisplayFrame) then
+                  WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
+                end
+                if (WeakAuras.mouseFrame) then
+                  WeakAuras.mouseFrame:collapse(self.region.id);
+                end
             end
         end
     end

@@ -1217,6 +1217,14 @@ function WeakAuras.Delete(data)
 
   aura_environments[id] = nil;
   triggerState[id] = nil;
+
+  if (WeakAuras.personalRessourceDisplayFrame) then
+    WeakAuras.personalRessourceDisplayFrame:delete(id);
+  end
+
+  if (WeakAuras.mouseFrame) then
+    WeakAuras.mouseFrame:delete(id);
+  end
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1283,6 +1291,14 @@ function WeakAuras.Rename(data, newid)
   aura_environments[newid] = aura_environments[oldid] or {};
   aura_environments[newid].id = newid;
   aura_environments[oldid] = nil;
+
+  if (WeakAuras.personalRessourceDisplayFrame) then
+    WeakAuras.personalRessourceDisplayFrame:rename(oldid, newid);
+  end
+
+  if (WeakAuras.mouseFrame) then
+    WeakAuras.mouseFrame:rename(oldid, newid);
+  end
 end
 
 function WeakAuras.Convert(data, newType)
@@ -3485,6 +3501,7 @@ local function ensureMouseFrame()
     return;
   end
   mouseFrame = CreateFrame("FRAME", "WeakAurasAttachToMouseFrame", UIParent);
+  mouseFrame.attachedVisibleFrames = {};
   mouseFrame:SetWidth(1);
   mouseFrame:SetHeight(1);
 
@@ -3522,12 +3539,11 @@ local function ensureMouseFrame()
   label:SetJustifyH("LEFT")
   label:SetJustifyV("TOP")
   label:SetPoint("TOPLEFT", moverFrame, "BOTTOMLEFT");
-  label:SetText("WA Anchor");
+  label:SetText("WeakAuras Anchor");
 
   moverFrame:Hide();
 
   mouseFrame.OptionsOpened = function()
-    moverFrame:Show();
     if (db.mousePointerFrame) then
       -- Restore from settings
       mouseFrame:ClearAllPoints();
@@ -3558,6 +3574,53 @@ local function ensureMouseFrame()
     mouseFrame:ClearAllPoints();
     mouseFrame:SetScript("OnUpdate", mouseFrame.moveWithMouse);
     moverFrame:SetScript("OnUpdate", nil);
+    wipe(mouseFrame.attachedVisibleFrames);
+
+  end
+
+  mouseFrame.expand = function(self, id)
+    local data = WeakAuras.GetData(id);
+    if (data.anchorFrameType == "MOUSE") then
+      self.attachedVisibleFrames[id] = true;
+      self:updateVisible();
+    end
+  end
+
+  mouseFrame.collapse = function(self, id)
+    self.attachedVisibleFrames[id] = nil;
+    self:updateVisible();
+  end
+
+  mouseFrame.rename = function(self, oldid, newid)
+    self.attachedVisibleFrames[newid] = self.attachedVisibleFrames[oldid];
+    self.attachedVisibleFrames[oldid] = nil;
+    self:updateVisible();
+  end
+
+  mouseFrame.delete = function(self, id)
+    self.attachedVisibleFrames[id] = nil;
+    self:updateVisible();
+  end
+
+  mouseFrame.anchorFrame = function(self, id, anchorFrameType)
+    if (anchorFrameType == "MOUSE") then
+      self.attachedVisibleFrames[id] = true;
+    else
+      self.attachedVisibleFrames[id] = nil;
+    end
+    self:updateVisible();
+  end
+
+  mouseFrame.updateVisible = function(self)
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
+
+    if (next(self.attachedVisibleFrames)) then
+      mouseFrame.moverFrame:Show();
+    else
+      mouseFrame.moverFrame:Hide();
+    end
   end
 
   if (WeakAuras.IsOptionsOpen()) then
@@ -3575,6 +3638,8 @@ local function ensurePRDFrame()
     return;
   end
   personalRessourceDisplayFrame = CreateFrame("FRAME", "WeakAurasAttachToPRD", UIParent);
+  personalRessourceDisplayFrame:Hide();
+  personalRessourceDisplayFrame.attachedVisibleFrames = {};
   WeakAuras.personalRessourceDisplayFrame = personalRessourceDisplayFrame;
 
   local moverFrame = CreateFrame("FRAME", "WeakAurasPRDMoverFrame", personalRessourceDisplayFrame);
@@ -3687,10 +3752,6 @@ local function ensurePRDFrame()
 
     personalRessourceDisplayFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
     personalRessourceDisplayFrame:SetPoint("BOTTOMLEFT", UIParent, "TOPRIGHT", xOffset - prdWidth, yOffset - prdHeight);
-
-    personalRessourceDisplayFrame.moverFrame:Show();
-    personalRessourceDisplayFrame.texture:Show();
-    personalRessourceDisplayFrame:Show();
   end
 
   personalRessourceDisplayFrame.OptionsClosed = function()
@@ -3710,6 +3771,7 @@ local function ensurePRDFrame()
     personalRessourceDisplayFrame:SetScript("OnEvent", personalRessourceDisplayFrame.eventHandler);
     personalRessourceDisplayFrame.texture:Hide();
     personalRessourceDisplayFrame.moverFrame:Hide();
+    wipe(personalRessourceDisplayFrame.attachedVisibleFrames);
   end
 
   personalRessourceDisplayFrame.eventHandler = function(self, event, nameplate)
@@ -3737,6 +3799,55 @@ local function ensurePRDFrame()
     end
   end
 
+  personalRessourceDisplayFrame.expand = function(self, id)
+    local data = WeakAuras.GetData(id);
+    if (data.anchorFrameType == "PRD") then
+      self.attachedVisibleFrames[id] = true;
+      self:updateVisible();
+    end
+  end
+
+  personalRessourceDisplayFrame.collapse = function(self, id)
+    self.attachedVisibleFrames[id] = nil;
+    self:updateVisible();
+  end
+
+  personalRessourceDisplayFrame.rename = function(self, oldid, newid)
+    self.attachedVisibleFrames[newid] = self.attachedVisibleFrames[oldid];
+    self.attachedVisibleFrames[oldid] = nil;
+    self:updateVisible();
+  end
+
+  personalRessourceDisplayFrame.delete = function(self, id)
+    self.attachedVisibleFrames[id] = nil;
+    self:updateVisible();
+  end
+
+  personalRessourceDisplayFrame.anchorFrame = function(self, id, anchorFrameType)
+    if (anchorFrameType == "PRD") then
+      self.attachedVisibleFrames[id] = true;
+    else
+      self.attachedVisibleFrames[id] = nil;
+    end
+    self:updateVisible();
+  end
+
+  personalRessourceDisplayFrame.updateVisible = function(self)
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
+
+    if (next(self.attachedVisibleFrames)) then
+      personalRessourceDisplayFrame.texture:Show();
+      personalRessourceDisplayFrame.moverFrame:Show();
+      personalRessourceDisplayFrame:Show();
+    else
+      personalRessourceDisplayFrame.texture:Hide();
+      personalRessourceDisplayFrame.moverFrame:Hide();
+      personalRessourceDisplayFrame:Hide();
+    end
+  end
+
   if (WeakAuras.IsOptionsOpen()) then
     personalRessourceDisplayFrame.OptionsOpened();
   else
@@ -3744,18 +3855,28 @@ local function ensurePRDFrame()
   end
 end
 
-function WeakAuras.GetAnchorFrame(anchorFrameType, parent, anchorFrameFrame)
+function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
+  if (personalRessourceDisplayFrame) then
+    personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
+  end
+
+  if (mouseFrame) then
+    mouseFrame:anchorFrame(id, anchorFrameType);
+  end
+
   if (anchorFrameType == "SCREEN") then
     return parent;
   end
 
   if (anchorFrameType == "PRD") then
     ensurePRDFrame();
+    personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
     return personalRessourceDisplayFrame;
   end
 
   if (anchorFrameType == "MOUSE") then
     ensureMouseFrame();
+    mouseFrame:anchorFrame(id, anchorFrameType);
     return mouseFrame;
   end
 
