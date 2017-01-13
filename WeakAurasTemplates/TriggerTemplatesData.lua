@@ -3515,63 +3515,63 @@ tinsert(templates.general.args, { spell = 2825, type = "buff", unit = "player",
 templates.items[1] = {
   title = L["Enchants"],
   args = {
-    { spell = 190909, type = "buff", unit = "player"},
-    { spell = 228399, type = "buff", unit = "player"},
+    { spell = 190909, type = "buff", unit = "player"}, -- Mark of the Claw
+    { spell = 228399, type = "buff", unit = "player"}, -- Mark of the Heavy Hide
   }
 }
 
 templates.items[2] = {
   title = L["Legendaries"],
   args = {
-    { spell = 205675, type = "debuff", unit = "target", item = 132460},
-    { spell = 207283, type = "buff", unit = "player", item = 133977},
-    { spell = 207472, type = "buff", unit = "player", item = 132444},
-    { spell = 207589, type = "buff", unit = "player", item = 137046},
-    { spell = 207635, type = "buff", unit = "player", item = 137020},
-    { spell = 207724, type = "buff", unit = "player", item = 133973},
-    { spell = 207776, type = "buff", unit = "player", item = 137053},
-    { spell = 207844, type = "buff", unit = "player", item = 137108},
-    { spell = 208052, type = "buff", unit = "player", item = 132452},
-    { spell = 208081, type = "buff", unit = "player", item = 132413},
-    { spell = 208215, type = "buff", unit = "player", item = 132455},
-    { spell = 208218, type = "buff", unit = "player", item = 137025},
-    { spell = 208284, type = "buff", unit = "player", item = 137023},
-    { spell = 208403, type = "buff", unit = "player", item = 137069},
-    { spell = 208723, type = "buff", unit = "player", item = 137074},
-    { spell = 208742, type = "buff", unit = "player", item = 137616},
-    { spell = 208764, type = "buff", unit = "player", item = 137104},
-    { spell = 208913, type = "buff", unit = "player", item = 137081},
-    { spell = 208822, type = "buff", unit = "player", item = 132381},
-    { spell = 208871, type = "buff", unit = "player", item = 132379},
-    { spell = 209406, type = "buff", unit = "player", item = 137092},
-    { spell = 209407, type = "buff", unit = "player", item = 137092},
-    { spell = 209423, type = "buff", unit = "player", item = 137099},
-    { spell = 209455, type = "buff", unit = "player", item = 132406},
-    { spell = 210607, type = "buff", unit = "player", item = 137051},
-    { spell = 211319, type = "debuff", unit = "player", item = 137109},
-    { spell = 211442, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Sanctify"], item = 132445},
-    { spell = 214404, type = "buff", unit = "player", item = 138140},
-    { spell = 215210, type = "buff", unit = "player", item = 132409},
-    { spell = 211440, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Serenity"], item = 132445},
-    { spell = 211440, type = "buff", unit = "player", titleSuffix = L["- Any"], item = 132445},
-    { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chastise"], item = 132445},
-    { spell = 214265, type = "debuff", unit = "target", item = 137103},
-    { spell = 214637, type = "buff", unit = "player", item = 132861},
-    { spell = 215157, type = "buff", unit = "player", item = 137018},
-    { spell = 217474, type = "buff", unit = "player", item = 137045},
-    { spell = 224852, type = "debuff", unit = "target", item = 137083},
-    { spell = 225947, type = "buff", unit = "player", item = 137052},
-    { spell = 226318, type = "buff", unit = "player", item = 141321},
-    { spell = 226852, type = "buff", unit = "player", item = 133970},
-    { spell = 228224, type = "buff", unit = "player", item = 137021},
-    { spell = 235559, type = "buff", unit = "player", item = 144281},
-    { spell = 236757, type = "buff", unit = "player", item = 144354},
-    { spell = 235054, type = "buff", unit = "player", item = 144239},
-    { spell = 236546, type = "buff", unit = "player", item = 144438},
-    { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]},
-    { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]},
-    { spell = 144249, type = "item", titleSuffix = L["cooldown"]},
-    { spell = 144258, type = "item", titleSuffix = L["cooldown"]},
+    { spell = 205675, type = "debuff", unit = "target", item = 132460}, -- Alythess's Pyrogenics
+    { spell = 207283, type = "buff", unit = "player", item = 133977}, -- Belo'vir's Final Stand
+    { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+    { spell = 207589, type = "buff", unit = "player", item = 137046}, -- Ilterendi, Crown Jewel of Silvermoon
+    { spell = 207635, type = "buff", unit = "player", item = 137020}, -- Whisper of the Nathrezim
+    { spell = 207724, type = "buff", unit = "player", item = 133973}, -- The Twins' Painful Touch
+    { spell = 207776, type = "buff", unit = "player", item = 137053}, -- Kazzalax, Fujieda's Fury
+    { spell = 207844, type = "buff", unit = "player", item = 137108}, -- Kakushan's Stormscale Gauntlets
+    { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+    { spell = 208081, type = "buff", unit = "player", item = 132413}, -- Rhonin's Assaulting Armwraps
+    { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+    { spell = 208218, type = "buff", unit = "player", item = 137025}, -- Skysec's Hold
+    { spell = 208284, type = "buff", unit = "player", item = 137023}, -- Promise of Elune, the Moon Goddess
+    { spell = 208403, type = "buff", unit = "player", item = 137069}, -- Will of Valeera
+    { spell = 208723, type = "buff", unit = "player", item = 137074}, -- Echoes of the Great Sundering
+    { spell = 208742, type = "buff", unit = "player", item = 137616}, -- Emalon's Charged Core
+    { spell = 208764, type = "buff", unit = "player", item = 137104}, -- Nobundo's Redemption
+    { spell = 208913, type = "buff", unit = "player", item = 137081}, -- War Belt of the Sentinel Army
+    { spell = 208822, type = "buff", unit = "player", item = 132381}, -- Streten's Sleepless Shackles
+    { spell = 208871, type = "buff", unit = "player", item = 132379}, -- Sin'dorei Spite
+    { spell = 209406, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
+    { spell = 209407, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
+    { spell = 209423, type = "buff", unit = "player", item = 137099}, -- Greenskin's Waterlogged Wristcuffs
+    { spell = 209455, type = "buff", unit = "player", item = 132406}, -- Marquee Bindings of the Sun King
+    { spell = 210607, type = "buff", unit = "player", item = 137051}, -- Focuser of Jonat, the Elder
+    { spell = 211319, type = "debuff", unit = "player", item = 137109}, -- X'anshi, Shroud of Archbishop Benedictus
+    { spell = 211442, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Sanctify"], item = 132445}, -- Al'maiesh, the Cord of Hope
+    { spell = 214404, type = "buff", unit = "player", item = 138140}, -- Magtheridon's Banished Bracers
+    { spell = 215210, type = "buff", unit = "player", item = 132409}, -- Anund's Seared Shackles
+    { spell = 211440, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Serenity"], item = 132445}, -- Al'maiesh, the Cord of Hope
+    { spell = 211440, type = "buff", unit = "player", titleSuffix = L["- Any"], item = 132445}, -- Al'maiesh, the Cord of Hope
+    { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chastise"], item = 132445}, -- Al'maiesh, the Cord of Hope
+    { spell = 214265, type = "debuff", unit = "target", item = 137103}, -- Storm Tempests
+    { spell = 214637, type = "buff", unit = "player", item = 132861}, -- Estel, Dejahna's Inspiration
+    { spell = 215157, type = "buff", unit = "player", item = 137018}, -- Destiny Driver
+    { spell = 217474, type = "buff", unit = "player", item = 137045}, -- Eye of Collidus the Warp-Watcher
+    { spell = 224852, type = "debuff", unit = "target", item = 137083}, -- Pristine Proto-Scale Girdle
+    { spell = 225947, type = "buff", unit = "player", item = 137052}, -- Ayala's Stone Heart
+    { spell = 226318, type = "buff", unit = "player", item = 141321}, -- Shivarran Symmetry
+    { spell = 226852, type = "buff", unit = "player", item = 133970}, -- Zann'esu Journey
+    { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
+    { spell = 235559, type = "buff", unit = "player", item = 144281}, -- Skullflower's Haemostasis
+    { spell = 236757, type = "buff", unit = "player", item = 144354}, -- Fiery Red Maimers
+    { spell = 235054, type = "buff", unit = "player", item = 144239}, -- The Emperor's Capacitor
+    { spell = 236546, type = "buff", unit = "player", item = 144438}, -- Zeks Exterminatus
+    { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+    { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+    { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+    { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
   }
 }
 
