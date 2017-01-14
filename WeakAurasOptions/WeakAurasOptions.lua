@@ -28,7 +28,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
--- GLOBALS: WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu AceGUIWidgetLSMlists
+-- GLOBALS: WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
 -- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GetAddOnEnableState
 
@@ -9425,6 +9425,31 @@ function WeakAuras.SetGrouping(data)
   for id, button in pairs(displayButtons) do
     button:SetGrouping(data);
   end
+end
+
+function WeakAuras.SetDragging(data)
+  WeakAuras_DropDownMenu:Hide()
+  for id, button in pairs(displayButtons) do
+    button:SetDragging(data);
+  end
+end
+
+function WeakAuras.DropIndicator()
+  local indicator = frame.dropIndicator
+  if not indicator then
+    indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")
+    indicator:SetHeight(4)
+    indicator:SetFrameStrata("FULLSCREEN")
+    indicator:Hide()
+    frame.dropIndicator = indicator
+
+    local texture = indicator:CreateTexture(nil, "FULLSCREEN")
+    texture:SetBlendMode("ADD")
+    texture:SetAllPoints(indicator)
+    texture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
+    indicator.texture = texture
+  end
+  return indicator
 end
 
 function WeakAuras.UpdateDisplayButton(data)

@@ -5,7 +5,7 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local L = WeakAuras.L;
 local fullName;
 
--- GLOBALS: GameTooltip GetCursorPosition UIParent WeakAuras WeakAurasOptionsSaved
+-- GLOBALS: GameTooltip GetCursorPosition UIParent WeakAuras WeakAuras_DropDownMenu WeakAurasOptionsSaved
 
 local function Hide_Tooltip()
     GameTooltip:Hide();
@@ -51,6 +51,27 @@ local function IsOverDisplay(display)
     return MouseIsOver(button.frame)
 end
 
+local function Show_DropIndicator(dataDragging)
+    local data, indicator = dataDragging, WeakAuras.DropIndicator()
+    if data then
+        local buttonList = WeakAuras.displayButtons
+        local id, button
+        repeat
+            id, button = next(buttonList, id)
+        until not id or id ~= data.id and button:IsEnabled() and button.frame:IsMouseOver()
+        if button then
+            indicator:SetPoint("TOPLEFT", button.frame, "BOTTOMLEFT", 0, 1)
+            indicator:SetPoint("TOPRIGHT", button.frame, "BOTTOMRIGHT", 0, 1)
+            indicator:Show()
+        else
+            indicator:ClearAllPoints()
+            indicator:Hide()
+        end
+    else
+        indicator:ClearAllPoints()
+        indicator:Hide()
+    end
+end
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -430,22 +451,26 @@ local methods = {
 
         function self.callbacks.OnDragStart()
             if WeakAuras.IsImporting() or not data.parent then return end;
-
-            local x, y = GetCursorPosition()
-            local scale = UIParent:GetScale()
-
-            self.frame.isDragged = true
-            self.frame:StartMoving()
-            self.frame:ClearAllPoints()
-            self.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", x/scale, y/scale)
-
+            WeakAuras.PickDisplay(data.id)
+            WeakAuras.SetDragging(data)
             WeakAuras.UpdateButtonsScroll()
         end
 
         function self.callbacks.OnDragStop()
             if self.frame.isDragged then
+                WeakAuras.SetDragging()
+                Show_DropIndicator()
+
+                self.frame:SetScript("OnUpdate", nil)
+
                 self.frame.isDragged = false
                 self.frame:StopMovingOrSizing()
+                -- show controls
+                self.downgroup:Show()
+                self.loaded:Show()
+                self.ungroup:Show()
+                self.upgroup:Show()
+                self.view:Show()
 
                 local id, parent = data.id, data.parent
                 local parentData = WeakAuras.GetData(parent)
@@ -743,6 +768,43 @@ local methods = {
             self:Enable();
         end
     end,
+    ["SetDragging"] = function(self, draggingData)
+        if draggingData then
+            local id, parent = draggingData.id, draggingData.parent
+            self.frame:SetScript("OnClick", nil)
+            Hide_Tooltip()
+            if self.data.id == id then
+                local x, y = GetCursorPosition()
+                local scale = UIParent:GetScale()
+
+                self.downgroup:Hide()
+                self.loaded:Hide()
+                self.ungroup:Hide()
+                self.upgroup:Hide()
+                self.view:Hide()
+
+                self.frame:SetScript("OnUpdate", function(self,elapsed)
+                    self.elapsed = (self.elapsed or 0) + elapsed
+                    if self.elapsed > 0.1 then
+                        Show_DropIndicator(draggingData)
+                        self.elapsed = 0
+                    end
+                end)
+
+                self.frame.isDragged = true
+                self.frame:StartMoving()
+                self.frame:ClearAllPoints()
+                self.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", x/scale, y/scale)
+            else
+                if self.data.id ~= parent and self.data.parent ~= parent then
+                    self:Disable()
+                end
+            end
+        else
+            self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
+            self:Enable()
+        end
+    end,
     ["ShowTooltip"] = function(self)
     end,
     ["GetGroupOrCopying"] = function(self)
@@ -980,6 +1042,8 @@ local methods = {
         self.frame:SetScript("OnEnter", nil);
         self.frame:SetScript("OnLeave", nil);
         self.frame:SetScript("OnClick", nil);
+        self.frame:SetScript("OnDragStart", nil);
+        self.frame:SetScript("OnDragStop", nil);
         --self.frame:EnableMouse(false);
         self.frame:ClearAllPoints();
         self.frame:Hide();
