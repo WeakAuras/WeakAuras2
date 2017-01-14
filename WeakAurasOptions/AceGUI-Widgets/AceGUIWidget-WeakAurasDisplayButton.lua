@@ -5,7 +5,7 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local L = WeakAuras.L;
 local fullName;
 
--- GLOBALS: GameTooltip UIParent WeakAuras WeakAurasOptionsSaved
+-- GLOBALS: GameTooltip GetCursorPosition UIParent WeakAuras WeakAurasOptionsSaved
 
 local function Hide_Tooltip()
     GameTooltip:Hide();
@@ -43,6 +43,14 @@ local function Show_Long_Tooltip(owner, description)
     end
     GameTooltip:Show();
 end
+
+local function IsOverDisplay(display)
+    if not display then return nil end
+
+    local button = WeakAuras.GetDisplayButton(display)
+    return MouseIsOver(button.frame)
+end
+
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -420,6 +428,63 @@ local methods = {
             end
         end
 
+        function self.callbacks.OnDragStart()
+            if WeakAuras.IsImporting() or not data.parent then return end;
+
+            local x, y = GetCursorPosition()
+            local scale = UIParent:GetScale()
+
+            self.frame.isDragged = true
+            self.frame:StartMoving()
+            self.frame:ClearAllPoints()
+            self.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", x/scale, y/scale)
+
+            WeakAuras.UpdateButtonsScroll()
+        end
+
+        function self.callbacks.OnDragStop()
+            if self.frame.isDragged then
+                self.frame.isDragged = false
+                self.frame:StopMovingOrSizing()
+
+                local id, parent = data.id, data.parent
+                local parentData = WeakAuras.GetData(parent)
+                local children = parentData.controlledChildren
+
+                local i, v
+                repeat
+                    i, v = next(children, i)
+                until not i or v == id
+                if i then
+                    if IsOverDisplay(parent) then
+                        tremove(children, i)
+                        tinsert(children, 1, id)
+                        WeakAuras.Add(parentData);
+                        WeakAuras.UpdateGroupOrders(parentData)
+                    else
+                        local j, v
+                        repeat
+                            j, v = next(children, j)
+                        until not j or j ~= i and IsOverDisplay(v)
+                        if j then
+                            tremove(children, i)
+                            if i < j then
+                               tinsert(children, j, id)
+                            else
+                                tinsert(children,j+1, id)
+                            end
+                            WeakAuras.Add(parentData);
+                            WeakAuras.UpdateGroupOrders(parentData)
+                        end
+                    end
+                else
+                    error("Display thinks it is a member of a group which does not control it")
+                end
+                WeakAuras.SortDisplayButtons()
+                WeakAuras.UpdateDisplayButton(parentData)
+            end
+        end
+
         self.frame.terribleCodeOrganizationHackTable = {};
 
         function self.frame.terribleCodeOrganizationHackTable.IsGroupingOrCopying()
@@ -527,6 +592,11 @@ local methods = {
         end
         self:SetNormalTooltip();
         self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
+        self.frame:SetMovable(true);
+        self.frame:RegisterForDrag("LeftButton");
+        self.frame:SetScript("OnDragStart", self.callbacks.OnDragStart);
+        self.frame:SetScript("OnDragStop", self.callbacks.OnDragStop);
+
         self:Enable();
         self:SetRenameAction(self.callbacks.OnRenameAction);
         self.group:SetScript("OnClick", self.callbacks.OnGroupClick);

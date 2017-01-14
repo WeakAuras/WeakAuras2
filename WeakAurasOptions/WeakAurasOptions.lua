@@ -369,24 +369,26 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
   for i = 1, #children do
     local child = children[i]
     local frame = child.frame;
-    local frameHeight = (frame.height or frame:GetHeight() or 0);
 
-    frame:ClearAllPoints();
-    if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
-        frame:Show();
-        frame:SetPoint("LEFT", content);
-        frame:SetPoint("RIGHT", content);
-        frame:SetPoint("TOP", content, "TOP", 0, yOffset)
-    else
-        frame:Hide();
-        frame.yOffset = yOffset
+    if not frame.isDragged then
+      local frameHeight = (frame.height or frame:GetHeight() or 0);
+      frame:ClearAllPoints();
+      if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
+          frame:Show();
+          frame:SetPoint("LEFT", content);
+          frame:SetPoint("RIGHT", content);
+          frame:SetPoint("TOP", content, "TOP", 0, yOffset)
+      else
+          frame:Hide();
+          frame.yOffset = yOffset
+      end
+      yOffset = yOffset - (frameHeight + 2);
     end
 
     if child.DoLayout then
         child:DoLayout()
     end
 
-    yOffset = yOffset - (frameHeight + 2);
   end
   if(content.obj.LayoutFinished) then
     content.obj:LayoutFinished(nil, yOffset * -1);
@@ -9183,6 +9185,11 @@ function WeakAuras.UpdateGroupOrders(data)
       button:SetGroupOrder(index, total);
     end
   end
+end
+
+function WeakAuras.UpdateButtonsScroll()
+  if WeakAuras.IsOptionsProcessingPaused() then return end
+  frame.buttonsScroll:DoLayout()
 end
 
 local previousFilter;
