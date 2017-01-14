@@ -1445,7 +1445,7 @@ do
           spellCdDurs[id] = duration;
           spellCdExps[id] = endTime;
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
+          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 or charges ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
             spellCdRuneHandles[id] = timer:ScheduleTimer(SpellCooldownRuneFinished, endTime - time, id);
@@ -1462,7 +1462,7 @@ do
           if (maxCharges == nil or charges + 1 == maxCharges) then
             spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
           end
-          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
+          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 or charges ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
 
