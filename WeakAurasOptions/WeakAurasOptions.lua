@@ -6886,6 +6886,7 @@ function WeakAuras.CreateFrame()
   container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
   container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -423, -10);
   container.frame:Show();
+  container.frame:SetClipsChildren(true);
   container.titletext:Hide();
   frame.container = container;
 
