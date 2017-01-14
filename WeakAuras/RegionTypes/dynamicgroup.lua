@@ -48,12 +48,6 @@ end
 local function modify(parent, region, data)
     local background = region.background;
 
-    if(data.frameStrata == 1) then
-        region:SetFrameStrata(region:GetParent():GetFrameStrata());
-    else
-        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
-    end
-
     local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
     local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or "";
     background:SetBackdrop({
@@ -123,6 +117,11 @@ local function modify(parent, region, data)
     region:ClearAllPoints();
     local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
     region:SetPoint(selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
+    if(data.frameStrata == 1) then
+        region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
 
     region.controlledRegions = {};
 
