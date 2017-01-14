@@ -1181,6 +1181,7 @@ function WeakAuras.Delete(data)
         local childData = db.displays[childId];
         if(childData) then
           childData.parent = nil;
+          WeakAuras.Add(childData);
         end
       end
   end

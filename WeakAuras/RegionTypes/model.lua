@@ -66,18 +66,17 @@ local function modify(parent, region, data)
     -- Localize
     local model, border = region.model, region.border;
 
+    -- Reset position and size
+    region:ClearAllPoints();
+    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
+    region:SetParent(anchorFrame);
+    region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
     -- Adjust framestrata
     if(data.frameStrata == 1) then
         region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
         region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
-
-    -- Reset position and size
-    region:ClearAllPoints();
-    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
-    region:SetParent(anchorFrame);
-    region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
     region:SetWidth(data.width);
     region:SetHeight(data.height);
 
