@@ -63,10 +63,10 @@ local methods = {
             elseif(IsShiftKeyDown()) then
                 local editbox = GetCurrentKeyBoardFocus();
                 if(editbox) then
-				    if (not fullName) then
-				      local name, realm = UnitFullName("player")
-					  fullName = name.."-"..realm
-					end
+                    if (not fullName) then
+                      local name, realm = UnitFullName("player")
+                      fullName = name.."-"..realm
+                    end
                     editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
                 end
             else
