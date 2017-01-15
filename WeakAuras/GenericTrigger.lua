@@ -1302,8 +1302,8 @@ do
     spellCdRuneHandles[id] = nil;
     spellCdDursRune[id] = nil;
     spellCdExpsRune[id] = nil;
-    local charges = select(2, GetSpellCharges(id));
-    local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
+    local charges = GetSpellCharges(id);
+    local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
@@ -1315,7 +1315,7 @@ do
     spellCdHandles[id] = nil;
     spellCdDurs[id] = nil;
     spellCdExps[id] = nil;
-    local charges = select(2, GetSpellCharges(id));
+    local charges = GetSpellCharges(id);
     local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
