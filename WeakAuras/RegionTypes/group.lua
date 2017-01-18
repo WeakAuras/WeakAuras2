@@ -42,6 +42,10 @@ local function getRect(data)
     local blx, bly, trx, try;
     blx, bly = data.xOffset, data.yOffset;
 
+    if (data.width == nil or data.height == nil) then
+      return blx, bly, blx, bly;
+    end
+
     -- Calc bounding box
     if(data.selfPoint:find("LEFT")) then
         trx = blx + data.width;
