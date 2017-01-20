@@ -370,7 +370,7 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
     local child = children[i]
     local frame = child.frame;
 
-    if not frame.isDragged then
+    if not child.dragging then
       local frameHeight = (frame.height or frame:GetHeight() or 0);
       frame:ClearAllPoints();
       if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
@@ -1281,6 +1281,7 @@ end
 function WeakAuras.HideOptions()
   -- dynFrame:SetScript("OnUpdate", nil);
   WeakAuras.UnlockUpdateInfo();
+  WeakAuras.SetDragging()
 
   if(frame) then
     frame:Hide();
@@ -9427,10 +9428,10 @@ function WeakAuras.SetGrouping(data)
   end
 end
 
-function WeakAuras.SetDragging(data)
+function WeakAuras.SetDragging(data, drop)
   WeakAuras_DropDownMenu:Hide()
   for id, button in pairs(displayButtons) do
-    button:SetDragging(data);
+    button:SetDragging(data, drop)
   end
 end
 
@@ -9440,14 +9441,20 @@ function WeakAuras.DropIndicator()
     indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")
     indicator:SetHeight(4)
     indicator:SetFrameStrata("FULLSCREEN")
-    indicator:Hide()
-    frame.dropIndicator = indicator
 
     local texture = indicator:CreateTexture(nil, "FULLSCREEN")
     texture:SetBlendMode("ADD")
     texture:SetAllPoints(indicator)
     texture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
+
+    local icon = indicator:CreateTexture(nil, "OVERLAY")
+    icon:SetSize(16,16)
+    icon:SetPoint("CENTER", indicator)
+
+    indicator.icon = icon
     indicator.texture = texture
+    frame.dropIndicator = indicator
+    indicator:Hide()
   end
   return indicator
 end
