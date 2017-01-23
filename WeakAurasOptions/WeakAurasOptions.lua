@@ -28,7 +28,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
--- GLOBALS: WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu AceGUIWidgetLSMlists
+-- GLOBALS: WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
 -- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GetAddOnEnableState
 
@@ -369,24 +369,26 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
   for i = 1, #children do
     local child = children[i]
     local frame = child.frame;
-    local frameHeight = (frame.height or frame:GetHeight() or 0);
 
-    frame:ClearAllPoints();
-    if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
-        frame:Show();
-        frame:SetPoint("LEFT", content);
-        frame:SetPoint("RIGHT", content);
-        frame:SetPoint("TOP", content, "TOP", 0, yOffset)
-    else
-        frame:Hide();
-        frame.yOffset = yOffset
+    if not child.dragging then
+      local frameHeight = (frame.height or frame:GetHeight() or 0);
+      frame:ClearAllPoints();
+      if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
+          frame:Show();
+          frame:SetPoint("LEFT", content);
+          frame:SetPoint("RIGHT", content);
+          frame:SetPoint("TOP", content, "TOP", 0, yOffset)
+      else
+          frame:Hide();
+          frame.yOffset = yOffset
+      end
+      yOffset = yOffset - (frameHeight + 2);
     end
 
     if child.DoLayout then
         child:DoLayout()
     end
 
-    yOffset = yOffset - (frameHeight + 2);
   end
   if(content.obj.LayoutFinished) then
     content.obj:LayoutFinished(nil, yOffset * -1);
@@ -1279,6 +1281,7 @@ end
 function WeakAuras.HideOptions()
   -- dynFrame:SetScript("OnUpdate", nil);
   WeakAuras.UnlockUpdateInfo();
+  WeakAuras.SetDragging()
 
   if(frame) then
     frame:Hide();
@@ -9185,6 +9188,11 @@ function WeakAuras.UpdateGroupOrders(data)
   end
 end
 
+function WeakAuras.UpdateButtonsScroll()
+  if WeakAuras.IsOptionsProcessingPaused() then return end
+  frame.buttonsScroll:DoLayout()
+end
+
 local previousFilter;
 function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   if (WeakAuras.IsOptionsProcessingPaused()) then
@@ -9418,6 +9426,37 @@ function WeakAuras.SetGrouping(data)
   for id, button in pairs(displayButtons) do
     button:SetGrouping(data);
   end
+end
+
+function WeakAuras.SetDragging(data, drop)
+  WeakAuras_DropDownMenu:Hide()
+  for id, button in pairs(displayButtons) do
+    button:SetDragging(data, drop)
+  end
+end
+
+function WeakAuras.DropIndicator()
+  local indicator = frame.dropIndicator
+  if not indicator then
+    indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")
+    indicator:SetHeight(4)
+    indicator:SetFrameStrata("FULLSCREEN")
+
+    local texture = indicator:CreateTexture(nil, "FULLSCREEN")
+    texture:SetBlendMode("ADD")
+    texture:SetAllPoints(indicator)
+    texture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
+
+    local icon = indicator:CreateTexture(nil, "OVERLAY")
+    icon:SetSize(16,16)
+    icon:SetPoint("CENTER", indicator)
+
+    indicator.icon = icon
+    indicator.texture = texture
+    frame.dropIndicator = indicator
+    indicator:Hide()
+  end
+  return indicator
 end
 
 function WeakAuras.UpdateDisplayButton(data)
