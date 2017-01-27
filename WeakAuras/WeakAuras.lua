@@ -3711,19 +3711,10 @@ local function ensurePRDFrame()
       prdWidth = KuiNameplatesCore.profile.frame_width_personal;
       prdHeight = KuiNameplatesCore.profile.frame_height_personal;
       if (KuiNameplatesCore.profile.ignore_uiscale) then
-        local resolutions = {GetScreenResolutions()}
-        local resolution = GetCurrentResolution()
+        local _, screenWidth = GetPhysicalScreenSize();
         local uiScale = 1;
-
-        if #resolutions > 0 and resolution > 0 then
-            local resolution_text = resolutions[resolution]
-
-            if resolution_text then
-                resolution_text = tonumber(string.match(resolution_text,"%d+x(%d+)"))
-            end
-            if resolution_text then
-                uiScale = 768 / resolution_text
-            end
+        if (screenWidth) then
+            uiScale = 768 / screenWidth;
         end
         personalRessourceDisplayFrame:SetScale(uiScale / UIParent:GetEffectiveScale());
       else
