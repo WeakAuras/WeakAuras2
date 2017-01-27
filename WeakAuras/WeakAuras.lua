@@ -2040,6 +2040,19 @@ function WeakAuras.SetRegion(data, cloneId)
           end
           region.toShow = true;
 
+          if (data.anchorFrameType == "SELECTFRAME") then
+            local anchorParent = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
+            if (anchorParent ~= region:GetParent()) then
+              region:SetParent(anchorParent);
+              region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
+              if(data.frameStrata == 1) then
+                  region:SetFrameStrata(region:GetParent():GetFrameStrata());
+              else
+                  region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+              end
+            end
+          end
+
           region.justCreated = nil;
           if(region.PreShow) then
             region:PreShow();
