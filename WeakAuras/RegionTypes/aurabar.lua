@@ -415,6 +415,9 @@ local function create(parent)
       bar:SetFrameLevel(frameLevel);
       border:SetFrameLevel(frameLevel + 1);
     end
+    if (self.__WAGlowFrame) then
+      self.__WAGlowFrame:SetFrameLevel(frameLevel + 1);
+    end
   end
 
 -- Return new display/region
