@@ -22,13 +22,16 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")
-local IndentationLib = IndentationLib
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
--- GLOBALS: WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
+WeakAurasOptions = {}
+WeakAurasOptions.db = {}
+WeakAurasOptions.odb = {}
+
+-- GLOBALS: WeakAuras WeakAurasOptions WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
 -- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GetAddOnEnableState
 
@@ -44,6 +47,7 @@ local dynFrame = WeakAuras.dynFrame;
 WeakAuras.transmitCache = {};
 
 local spellCache = {};
+WeakAurasOptions.spellCache = spellCache
 local talentCache = {};
 
 local regionOptions = WeakAuras.regionOptions;
@@ -58,7 +62,7 @@ local displayOptions = {};
 WeakAuras.displayOptions = displayOptions;
 local loaded = WeakAuras.loaded;
 
-local tempGroup = {
+WeakAurasOptions.tempGroup = {
   id = {"tempGroup"},
   regionType = "group",
   controlledChildren = {},
@@ -69,6 +73,8 @@ local tempGroup = {
   xOffset = 0,
   yOffset = 0
 };
+local tempGroup = WeakAurasOptions.tempGroup
+
 function WeakAuras.MultipleDisplayTooltipDesc()
   local desc = {{L["Multiple Displays"], L["Temporary Group"]}};
   for index, id in pairs(tempGroup.controlledChildren) do
@@ -1078,12 +1084,9 @@ end
 
 local frame;
 
-local db;
-local odb;
+local db = WeakAurasOptions.db;
+local odb = WeakAurasOptions.odb;
 local options;
-local newOptions;
-local loadedOptions;
-local unloadedOptions;
 local pickonupdate;
 local reopenAfterCombat = false;
 local loadedFrame = CreateFrame("FRAME");
@@ -1144,6 +1147,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     --Saves the talent names and icons for the current class
     --Used for making the Talent Selected load option prettier
 
+    WeakAurasOptions.db = db
+    WeakAurasOptions.odb = odb
+    WeakAurasOptions.spellCache = spellCache
     end
   elseif (event == "PLAYER_REGEN_DISABLED") then
     if(frame and frame:IsVisible()) then
