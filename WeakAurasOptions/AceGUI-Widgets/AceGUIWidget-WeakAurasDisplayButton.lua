@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 26
+local Type, Version = "WeakAurasDisplayButton", 27
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -854,6 +854,7 @@ local methods = {
         tinsert(namestable, " ");
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
         if not(data.controlledChildren) then
+            tinsert(namestable, {" ", "|cFF00FFFF"..L["Drag to move"]});
             tinsert(namestable, {" ", "|cFF00FFFF"..L["Control-click to select multiple displays"]});
         end
         tinsert(namestable, {" ", "|cFF00FFFF"..L["Shift-click to create chat link"]});
