@@ -40,7 +40,7 @@ enable-nolib-creation: no
 
 ignore:
  - README.md
- - WeakAuras\Locales\babelfish.lua
+ - babelfish.lua
  - .gitignore
  - .github
  - .gitattributes

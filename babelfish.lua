@@ -1,7 +1,7 @@
 #!/usr/bin/lua
 
 -- Prefix to all files if this script is run from a subdir, for example
-local filePrefix = "../"
+local filePrefix = ""
 
 -- find . -name "*.lua" | grep -v Localization-
 local fileList = {
