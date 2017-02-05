@@ -3897,7 +3897,7 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
         return regions[frame_name].region;
       end
     else
-      return _G[anchorFrameFrame];
+      return _G[anchorFrameFrame] or parent;
     end
   end
 
