@@ -2294,7 +2294,7 @@ function WeakAuras.AddOption(id, data)
               if not(data.actions.init.custom) then
                 return "";
               end
-              local _, errorString = loadstring("return function() "..data.actions.init.custom.." end");
+              local _, errorString = loadstring("return function() "..data.actions.init.custom.."\n end");
               return errorString and "|cFFFF0000"..errorString or "";
             end,
             width = "double",
@@ -2303,7 +2303,7 @@ function WeakAuras.AddOption(id, data)
               if not(data.actions.init.do_custom and data.actions.init.custom) then
                 return true;
               else
-                local loadedFunction, errorString = loadstring("return function() "..data.actions.init.custom.." end");
+                local loadedFunction, errorString = loadstring("return function() "..data.actions.init.custom.."\n end");
                 if(errorString and not loadedFunction) then
                   return false;
                 else
@@ -2476,7 +2476,7 @@ function WeakAuras.AddOption(id, data)
               if not(data.actions.start.custom) then
                 return "";
               end
-              local _, errorString = loadstring("return function() "..data.actions.start.custom.." end");
+              local _, errorString = loadstring("return function() "..data.actions.start.custom.."\n end");
               return errorString and "|cFFFF0000"..errorString or "";
             end,
             width = "double",
@@ -2485,7 +2485,7 @@ function WeakAuras.AddOption(id, data)
               if not(data.actions.start.do_custom and data.actions.start.custom) then
                 return true;
               else
-                local loadedFunction, errorString = loadstring("return function() "..data.actions.start.custom.." end");
+                local loadedFunction, errorString = loadstring("return function() "..data.actions.start.custom.."\n end");
                 if(errorString and not loadedFunction) then
                   return false;
                 else
@@ -2659,7 +2659,7 @@ function WeakAuras.AddOption(id, data)
               if not(data.actions.finish.custom) then
                 return "";
               end
-              local _, errorString = loadstring("return function() "..data.actions.finish.custom.." end");
+              local _, errorString = loadstring("return function() "..data.actions.finish.custom.."\n end");
               return errorString and "|cFFFF0000"..errorString or "";
             end,
             width = "double",
@@ -2668,7 +2668,7 @@ function WeakAuras.AddOption(id, data)
               if not(data.actions.finish.do_custom and data.actions.finish.custom) then
                 return true;
               else
-                local loadedFunction, errorString = loadstring("return function() "..data.actions.finish.custom.." end");
+                local loadedFunction, errorString = loadstring("return function() "..data.actions.finish.custom.."\n end");
                 if(errorString and not loadedFunction) then
                   return false;
                 else
@@ -7935,7 +7935,7 @@ function WeakAuras.CreateFrame()
       else
         local _, errorString
         if(enclose) then
-          _, errorString = loadstring("return function() "..str.." end");
+          _, errorString = loadstring("return function() "..str.."\n end");
         else
           _, errorString = loadstring("return "..str);
         end
