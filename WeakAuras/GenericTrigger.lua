@@ -657,6 +657,10 @@ function GenericTrigger.LoadDisplay(id)
   end
 end
 
+local function trueFunction()
+  return true;
+end
+
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
@@ -741,6 +745,9 @@ function GenericTrigger.Add(data, region)
           triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""));
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
             untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
+            if (not untriggerFunc) then
+              untriggerFunc = trueFunction;
+            end
           end
 
           if(trigger.custom_type ~= "stateupdate" and trigger.customDuration and trigger.customDuration ~= "") then
