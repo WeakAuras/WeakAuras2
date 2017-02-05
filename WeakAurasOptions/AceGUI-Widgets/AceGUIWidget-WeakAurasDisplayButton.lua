@@ -941,7 +941,9 @@ local methods = {
             -- restore events and layout
             self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
             self:Enable()
-            self:Drop(true)
+            if (self.dragging) then
+              self:Drop(true)
+            end
         end
     end,
     ["ShowTooltip"] = function(self)
