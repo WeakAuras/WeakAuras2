@@ -466,7 +466,7 @@ function WeakAuras.DisplayToString(id, forChat)
     if(data.trigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.spellCache) then
       transmit.a = {};
       for i,v in pairs(data.trigger.names) do
-        transmit.a[v] = WeakAuras.GetIconFromSpellCache(v);
+        transmit.a[v] = WeakAuras.spellCache.GetIcon(v);
       end
     end
     if(children) then
@@ -752,7 +752,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
                 if (icons) then
                   tinsert(tooltip, {2, left, name..(icons[name] and (" |T"..icons[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
                 else
-                  local icon = WeakAuras.GetIconFromSpellCache(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+                  local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
                   tinsert(tooltip, {2, left, name.." |T"..icon..":12:12:0:0:64:64:4:60:4:60|t", 1, 1, 1, 1, 1, 1});
                 end
               end

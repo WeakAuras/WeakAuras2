@@ -1613,7 +1613,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
       name, _, icon = GetSpellInfo(trigger.spellId);
     else
       name = trigger.name;
-      icon = WeakAuras.GetIconFromSpellCache(trigger.name);
+      icon = WeakAuras.spellCache.GetIcon(trigger.name);
     end
   else
     if (trigger.spellIds and trigger.spellIds[1]) then
@@ -1623,7 +1623,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
        and trigger.names) then
       -- Try to get an icon from the icon cache
       for index, checkname in pairs(trigger.names) do
-        local iconFromSpellCache = WeakAuras.GetIconFromSpellCache(checkname);
+        local iconFromSpellCache = WeakAuras.spellCache.GetIcon(checkname);
         if(iconFromSpellCache) then
           name, icon = checkname, iconFromSpellCache;
           break;
