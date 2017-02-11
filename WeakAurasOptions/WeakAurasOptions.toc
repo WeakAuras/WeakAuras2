@@ -31,6 +31,8 @@ Cache.lua
 WeakAurasOptions.lua
 ExternalAddons.lua
 
+OptionsFrames\FrameChooser.lua
+
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua
