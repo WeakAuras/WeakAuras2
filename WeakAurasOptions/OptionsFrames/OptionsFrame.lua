@@ -32,6 +32,89 @@ local savedVars = WeakAuras.savedVars
 local spellCache = WeakAuras.spellCache
 local tempGroup = WeakAuras.tempGroup
 
+local function CreateDecoration(frame)
+  local deco = CreateFrame("Frame", nil, frame)
+  deco:SetSize(17, 40)
+
+  local bg1 = deco:CreateTexture(nil, "BACKGROUND")
+  bg1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  bg1:SetTexCoord(0.31, 0.67, 0, 0.63)
+  bg1:SetAllPoints(deco)
+
+  local bg2 = deco:CreateTexture(nil, "BACKGROUND")
+  bg2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  bg2:SetTexCoord(0.235, 0.275, 0, 0.63)
+  bg2:SetPoint("RIGHT", bg1, "LEFT")
+  bg2:SetSize(10, 40)
+
+  local bg3 = deco:CreateTexture(nil, "BACKGROUND")
+  bg3:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  bg3:SetTexCoord(0.72, 0.76, 0, 0.63)
+  bg3:SetPoint("LEFT", bg1, "RIGHT")
+  bg3:SetSize(10, 40)
+
+  return deco
+end
+
+local function CreateDecorationWide(frame)
+  local deco1 = frame:CreateTexture(nil, "OVERLAY")
+  deco1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  deco1:SetTexCoord(0.31, 0.67, 0, 0.63)
+  deco1:SetSize(120, 40)
+
+  local deco2 = frame:CreateTexture(nil, "OVERLAY")
+  deco2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  deco2:SetTexCoord(0.21, 0.31, 0, 0.63)
+  deco2:SetPoint("RIGHT", deco1, "LEFT")
+  deco2:SetSize(30, 40)
+
+  local deco3 = frame:CreateTexture(nil, "OVERLAY")
+  deco3:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  deco3:SetTexCoord(0.67, 0.77, 0, 0.63)
+  deco3:SetPoint("LEFT", deco1, "RIGHT")
+  deco3:SetSize(30, 40)
+
+  return deco1
+end
+
+local function CreateFrameSizer(frame, callback)
+  callback = callback or (function() end)
+
+  local handle = CreateFrame("BUTTON", nil, frame)
+  handle:SetPoint("BOTTOMLEFT", frame)
+  handle:SetSize(25, 25)
+  handle:EnableMouse()
+
+  handle:SetScript("OnMouseDown", function() frame:StartSizing("BOTTOMLEFT") end)
+  handle:SetScript("OnMouseUp", function()
+    frame:StopMovingOrSizing()
+    callback()
+  end)
+
+  local normal = handle:CreateTexture(nil, "OVERLAY")
+  normal:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+  normal:SetTexCoord(1, 0, 0, 1)
+  normal:SetPoint("BOTTOMLEFT", handle, 6, 6)
+  normal:SetPoint("TOPRIGHT", handle)
+  handle:SetNormalTexture(normal)
+
+  local pushed = handle:CreateTexture(nil, "OVERLAY")
+  pushed:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+  pushed:SetTexCoord(1, 0, 0, 1)
+  pushed:SetPoint("BOTTOMLEFT", handle, 6, 6)
+  pushed:SetPoint("TOPRIGHT", handle)
+  handle:SetPushedTexture(pushed)
+
+  local highlight = handle:CreateTexture(nil, "OVERLAY")
+  highlight:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+  highlight:SetTexCoord(1, 0, 0, 1)
+  highlight:SetPoint("BOTTOMLEFT", handle, 6, 6)
+  highlight:SetPoint("TOPRIGHT", handle)
+  handle:SetHighlightTexture(highlight)
+
+  return handle
+end
+
 function WeakAuras.CreateFrame()
   local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate");
   local frame;
@@ -76,15 +159,8 @@ function WeakAuras.CreateFrame()
   frame:SetWidth(width);
   frame:SetHeight(height);
 
-  local close = CreateFrame("Frame", nil, frame);
-  close:SetWidth(17)
-  close:SetHeight(40)
+  local close = CreateDecoration(frame)
   close:SetPoint("TOPRIGHT", -30, 12)
-
-  local closebg = close:CreateTexture(nil, "BACKGROUND")
-  closebg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  closebg:SetTexCoord(0.31, 0.67, 0, 0.63)
-  closebg:SetAllPoints(close);
 
   local closebutton = CreateFrame("BUTTON", nil, close)
   closebutton:SetWidth(30);
@@ -95,30 +171,9 @@ function WeakAuras.CreateFrame()
   closebutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
   closebutton:SetScript("OnClick", WeakAuras.HideOptions);
 
-  local closebg_l = close:CreateTexture(nil, "BACKGROUND")
-  closebg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  closebg_l:SetTexCoord(0.235, 0.275, 0, 0.63)
-  closebg_l:SetPoint("RIGHT", closebg, "LEFT")
-  closebg_l:SetWidth(10)
-  closebg_l:SetHeight(40)
-
-  local closebg_r = close:CreateTexture(nil, "BACKGROUND")
-  closebg_r:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  closebg_r:SetTexCoord(0.72, 0.76, 0, 0.63)
-  closebg_r:SetPoint("LEFT", closebg, "RIGHT")
-  closebg_r:SetWidth(10)
-  closebg_r:SetHeight(40)
-
-  local import = CreateFrame("Frame", nil, frame);
-  import:SetWidth(17)
-  import:SetHeight(40)
+  local import = CreateDecoration(frame)
   import:SetPoint("TOPRIGHT", -100, 12)
   --import:Hide()
-
-  local importbg = import:CreateTexture(nil, "BACKGROUND")
-  importbg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  importbg:SetTexCoord(0.31, 0.67, 0, 0.63)
-  importbg:SetAllPoints(import);
 
   local importbutton = CreateFrame("CheckButton", nil, import, "OptionsCheckButtonTemplate")
   importbutton:SetWidth(30);
@@ -144,40 +199,8 @@ function WeakAuras.CreateFrame()
   end)
   importbutton:SetScript("OnLeave", GameTooltip_Hide)
 
-  local importbg_l = import:CreateTexture(nil, "BACKGROUND")
-  importbg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  importbg_l:SetTexCoord(0.235, 0.275, 0, 0.63)
-  importbg_l:SetPoint("RIGHT", importbg, "LEFT")
-  importbg_l:SetWidth(10)
-  importbg_l:SetHeight(40)
-
-  local importbg_r = import:CreateTexture(nil, "BACKGROUND")
-  importbg_r:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  importbg_r:SetTexCoord(0.72, 0.76, 0, 0.63)
-  importbg_r:SetPoint("LEFT", importbg, "RIGHT")
-  importbg_r:SetWidth(10)
-  importbg_r:SetHeight(40)
-
-  local titlebg = frame:CreateTexture(nil, "OVERLAY")
-  titlebg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  titlebg:SetTexCoord(0.31, 0.67, 0, 0.63)
+  local titlebg = CreateDecorationWide(frame)
   titlebg:SetPoint("TOP", 0, 12)
-  titlebg:SetWidth(120)
-  titlebg:SetHeight(40)
-
-  local titlebg_l = frame:CreateTexture(nil, "OVERLAY")
-  titlebg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  titlebg_l:SetTexCoord(0.21, 0.31, 0, 0.63)
-  titlebg_l:SetPoint("RIGHT", titlebg, "LEFT")
-  titlebg_l:SetWidth(30)
-  titlebg_l:SetHeight(40)
-
-  local titlebg_r = frame:CreateTexture(nil, "OVERLAY")
-  titlebg_r:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  titlebg_r:SetTexCoord(0.67, 0.77, 0, 0.63)
-  titlebg_r:SetPoint("LEFT", titlebg, "RIGHT")
-  titlebg_r:SetWidth(30)
-  titlebg_r:SetHeight(40)
 
   local title = CreateFrame("Frame", nil, frame)
 
@@ -218,66 +241,10 @@ function WeakAuras.CreateFrame()
   titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
   titletext:SetText(L["WeakAurasOptions"]);
 
-  local sizer_sw = CreateFrame("button",nil,frame);
-  sizer_sw:SetPoint("bottomleft",frame,"bottomleft",0,0);
-  sizer_sw:SetWidth(25);
-  sizer_sw:SetHeight(25);
-  sizer_sw:EnableMouse();
-  sizer_sw:SetScript("OnMouseDown", function() frame:StartSizing("bottomleft") end);
-  sizer_sw:SetScript("OnMouseUp", function()
-    frame:StopMovingOrSizing();
-    commitWindowChanges();
-  end);
-  frame.sizer_sw = sizer_sw;
+  frame.sizer = CreateFrameSizer(frame, commitWindowChanges);
 
-  local sizer_sw_texture = sizer_sw:CreateTexture(nil, "OVERLAY");
-  sizer_sw_texture:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up");
-  sizer_sw_texture:SetTexCoord(1, 0, 0, 1);
-  sizer_sw_texture:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
-  sizer_sw_texture:SetPoint("topright", sizer_sw, "topright");
-  sizer_sw:SetNormalTexture(sizer_sw_texture);
-
-  local sizer_sw_texture_pushed = sizer_sw:CreateTexture(nil, "OVERLAY");
-  sizer_sw_texture_pushed:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down");
-  sizer_sw_texture_pushed:SetTexCoord(1, 0, 0, 1);
-  sizer_sw_texture_pushed:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
-  sizer_sw_texture_pushed:SetPoint("topright", sizer_sw, "topright");
-  sizer_sw:SetPushedTexture(sizer_sw_texture_pushed);
-
-  local sizer_sw_texture_highlight = sizer_sw:CreateTexture(nil, "OVERLAY");
-  sizer_sw_texture_highlight:SetTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight");
-  sizer_sw_texture_highlight:SetTexCoord(1, 0, 0, 1);
-  sizer_sw_texture_highlight:SetPoint("bottomleft", sizer_sw, "bottomleft", 6, 6);
-  sizer_sw_texture_highlight:SetPoint("topright", sizer_sw, "topright");
-  sizer_sw:SetHighlightTexture(sizer_sw_texture_highlight);
-
-  -- local line1 = sizer_sw:CreateTexture(nil, "BACKGROUND")
-  -- line1:SetWidth(14)
-  -- line1:SetHeight(14)
-  -- line1:SetPoint("bottomleft", 8, 8)
-  -- line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
-  -- local x = 0.1 * 14/17
-  -- line1:SetTexCoord(0.05,0.5 - x, 0.5 + x,0.5, 0.05 - x,0.5, 0.05,0.5 + x)
-
-  -- local line2 = sizer_sw:CreateTexture(nil, "BACKGROUND")
-  -- line2:SetWidth(8)
-  -- line2:SetHeight(8)
-  -- line2:SetPoint("bottomleft", 8, 8)
-  -- line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
-  -- local x = 0.1 * 8/17
-  -- line2:SetTexCoord(0.05,0.5 - x, 0.5 + x,0.5, 0.05 - x,0.5, 0.05,0.5 + x)
-  --------------------------------------------------------
-
-
-  local minimize = CreateFrame("Frame", nil, frame);
-  minimize:SetWidth(17)
-  minimize:SetHeight(40)
+  local minimize = CreateDecoration(frame)
   minimize:SetPoint("TOPRIGHT", -65, 12)
-
-  local minimizebg = minimize:CreateTexture(nil, "BACKGROUND")
-  minimizebg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  minimizebg:SetTexCoord(0.31, 0.67, 0, 0.63)
-  minimizebg:SetAllPoints(minimize);
 
   local minimizebutton = CreateFrame("BUTTON", nil, minimize)
   minimizebutton:SetWidth(30);
@@ -334,31 +301,10 @@ function WeakAuras.CreateFrame()
     end
   end);
 
-  local minimizebg_l = minimize:CreateTexture(nil, "BACKGROUND")
-  minimizebg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  minimizebg_l:SetTexCoord(0.235, 0.275, 0, 0.63)
-  minimizebg_l:SetPoint("RIGHT", minimizebg, "LEFT")
-  minimizebg_l:SetWidth(10)
-  minimizebg_l:SetHeight(40)
-
-  local minimizebg_r = minimize:CreateTexture(nil, "BACKGROUND")
-  minimizebg_r:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  minimizebg_r:SetTexCoord(0.72, 0.76, 0, 0.63)
-  minimizebg_r:SetPoint("LEFT", minimizebg, "RIGHT")
-  minimizebg_r:SetWidth(10)
-  minimizebg_r:SetHeight(40)
-
   local _, _, _, enabled, loadable = GetAddOnInfo("WeakAurasTutorials");
   if(enabled and loadable) then
-    local tutorial = CreateFrame("Frame", nil, frame);
-    tutorial:SetWidth(17)
-    tutorial:SetHeight(40)
+    local tutorial = CreateDecoration(frame)
     tutorial:SetPoint("TOPRIGHT", -140, 12)
-
-    local tutorialbg = tutorial:CreateTexture(nil, "BACKGROUND")
-    tutorialbg:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    tutorialbg:SetTexCoord(0.31, 0.67, 0, 0.63)
-    tutorialbg:SetAllPoints(tutorial);
 
     local tutorialbutton = CreateFrame("BUTTON", nil, tutorial)
     tutorialbutton:SetWidth(30);
@@ -383,20 +329,6 @@ function WeakAuras.CreateFrame()
       end
       WeakAuras.ToggleTutorials();
     end);
-
-    local tutorialbg_l = tutorial:CreateTexture(nil, "BACKGROUND")
-    tutorialbg_l:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    tutorialbg_l:SetTexCoord(0.235, 0.275, 0, 0.63)
-    tutorialbg_l:SetPoint("RIGHT", tutorialbg, "LEFT")
-    tutorialbg_l:SetWidth(10)
-    tutorialbg_l:SetHeight(40)
-
-    local tutorialbg_r = tutorial:CreateTexture(nil, "BACKGROUND")
-    tutorialbg_r:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    tutorialbg_r:SetTexCoord(0.72, 0.76, 0, 0.63)
-    tutorialbg_r:SetPoint("LEFT", tutorialbg, "RIGHT")
-    tutorialbg_r:SetWidth(10)
-    tutorialbg_r:SetHeight(40)
   end
 
   local container = AceGUI:Create("InlineGroup");
