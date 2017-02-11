@@ -36,7 +36,7 @@ RegionOptions\model.lua
 RegionOptions\progresstexture.lua
 
 WeakAurasOptions.lua
-
+ExternalAddons.lua
 
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
