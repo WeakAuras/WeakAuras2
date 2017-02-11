@@ -99,7 +99,7 @@ local function createOptions(id, data)
             order = 41.2,
             name = L["Expand Text Editor"],
             func = function()
-                WeakAuras.TextEditor(data, {"customText"})
+                WeakAuras.OpenTextEditor(data, {"customText"})
             end,
             hidden = function()
                 return not data.displayStacks:find("%%c")
