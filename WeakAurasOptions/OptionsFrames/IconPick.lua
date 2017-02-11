@@ -1,0 +1,195 @@
+-- Lua APIs
+local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+
+-- WoW APIs
+local CreateFrame, GetSpellInfo = CreateFrame, GetSpellInfo
+
+-- GLOBALS: WeakAuras
+
+local AceGUI = LibStub("AceGUI-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
+
+local iconPick
+
+local savedVars = WeakAuras.savedVars -- provisional
+
+local function ConstructIconPick(frame)
+  local group = AceGUI:Create("InlineGroup");
+  group.frame:SetParent(frame);
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 30); -- 12
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -50);
+  group.frame:Hide();
+  group:SetLayout("flow");
+
+  local scroll = AceGUI:Create("ScrollFrame");
+  scroll:SetLayout("flow");
+  scroll.frame:SetClipsChildren(true);
+  group:AddChild(scroll);
+
+  local function iconPickFill(subname, doSort)
+    scroll:ReleaseChildren();
+
+    print("iconPickFill")
+
+    local distances = {};
+    local names = {};
+
+    subname = tonumber(subname) and GetSpellInfo(tonumber(subname)) or subname;
+    subname = subname:lower();
+
+    local usedIcons = {};
+    local num = 0;
+    if(subname ~= "") then
+      for name, icons in pairs(savedVars.odb.spellCache) do -- provisional
+        local bestDistance = math.huge;
+        local bestName;
+        if(name:lower():find(subname, 1, true)) then
+
+          for spellId, icon in pairs(icons) do
+            if (not usedIcons[icon]) then
+              local button = AceGUI:Create("WeakAurasIconButton");
+              button:SetName(name);
+              button:SetTexture(icon);
+              button:SetClick(function()
+                group:Pick(icon);
+              end);
+              scroll:AddChild(button);
+
+              usedIcons[icon] = true;
+              num = num + 1;
+              if(num >= 500) then
+                break;
+              end
+            end
+          end
+        end
+
+        if(num >= 500) then
+          break;
+        end
+      end
+    end
+  end
+
+  local input = CreateFrame("EDITBOX", nil, group.frame, "InputBoxTemplate");
+  input:SetScript("OnTextChanged", function(...) iconPickFill(input:GetText(), false); end);
+  input:SetScript("OnEnterPressed", function(...) iconPickFill(input:GetText(), true); end);
+  input:SetScript("OnEscapePressed", function(...) input:SetText(""); iconPickFill(input:GetText(), true); end);
+  input:SetWidth(170);
+  input:SetHeight(15);
+  input:SetPoint("BOTTOMRIGHT", group.frame, "TOPRIGHT", -12, -5);
+  WeakAuras.input = input;
+
+  local inputLabel = input:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+  inputLabel:SetText(L["Search"]);
+  inputLabel:SetJustifyH("RIGHT");
+  inputLabel:SetPoint("BOTTOMLEFT", input, "TOPLEFT", 0, 5);
+
+  local icon = AceGUI:Create("WeakAurasIconButton");
+  icon.frame:Disable();
+  icon.frame:SetParent(group.frame);
+  icon.frame:SetPoint("BOTTOMLEFT", group.frame, "TOPLEFT", 15, -15);
+
+  local iconLabel = input:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge");
+  iconLabel:SetNonSpaceWrap("true");
+  iconLabel:SetJustifyH("LEFT");
+  iconLabel:SetPoint("LEFT", icon.frame, "RIGHT", 5, 0);
+  iconLabel:SetPoint("RIGHT", input, "LEFT", -50, 0);
+
+  function group.Pick(self, texturePath)
+    if(self.data.controlledChildren) then
+      for index, childId in pairs(self.data.controlledChildren) do
+        local childData = WeakAuras.GetData(childId);
+        if(childData) then
+          childData[self.field] = texturePath;
+          WeakAuras.Add(childData);
+          WeakAuras.SetThumbnail(childData);
+          WeakAuras.SetIconNames(childData);
+        end
+      end
+    else
+      self.data[self.field] = texturePath;
+      WeakAuras.Add(self.data);
+      WeakAuras.SetThumbnail(self.data);
+      WeakAuras.SetIconNames(self.data);
+    end
+    local success = icon:SetTexture(texturePath) and texturePath;
+    if(success) then
+      iconLabel:SetText(texturePath);
+    else
+      iconLabel:SetText();
+    end
+  end
+
+  function group.Open(self, data, field)
+    self.data = data;
+    self.field = field;
+    if(data.controlledChildren) then
+      self.givenPath = {};
+      for index, childId in pairs(data.controlledChildren) do
+        local childData = WeakAuras.GetData(childId);
+        if(childData) then
+          self.givenPath[childId] = childData[field];
+        end
+      end
+    else
+      self.givenPath = self.data[self.field];
+    end
+    -- group:Pick(self.givenPath);
+    frame.container.frame:Hide();
+    frame.buttonsContainer.frame:Hide();
+    self.frame:Show();
+    frame.window = "icon";
+    input:SetText("");
+  end
+
+  function group.Close()
+    group.frame:Hide();
+    frame.container.frame:Show();
+    frame.buttonsContainer.frame:Show();
+    frame.window = "default";
+    AceConfigDialog:Open("WeakAuras", frame.container);
+  end
+
+  function group.CancelClose()
+    if(group.data.controlledChildren) then
+      for index, childId in pairs(group.data.controlledChildren) do
+        local childData = WeakAuras.GetData(childId);
+        if(childData) then
+          childData[group.field] = group.givenPath[childId] or childData[group.field];
+          WeakAuras.Add(childData);
+          WeakAuras.SetThumbnail(childData);
+          WeakAuras.SetIconNames(childData);
+        end
+      end
+    else
+      group:Pick(group.givenPath);
+    end
+    group.Close();
+  end
+
+  local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
+  cancel:SetScript("OnClick", group.CancelClose);
+  cancel:SetPoint("bottomright", frame, "bottomright", -27, 11);
+  cancel:SetHeight(20);
+  cancel:SetWidth(100);
+  cancel:SetText(L["Cancel"]);
+
+  local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
+  close:SetScript("OnClick", group.Close);
+  close:SetPoint("RIGHT", cancel, "LEFT", -10, 0);
+  close:SetHeight(20);
+  close:SetWidth(100);
+  close:SetText(L["Okay"]);
+
+  scroll.frame:SetPoint("BOTTOM", close, "TOP", 0, 10);
+  return group
+end
+
+function WeakAuras.IconPick(frame)
+  iconPick = iconPick or ConstructIconPick(frame)
+  return iconPick
+end

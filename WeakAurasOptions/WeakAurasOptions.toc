@@ -41,6 +41,15 @@ WeakAurasOptions.lua
 ExternalAddons.lua
 
 OptionsFrames\OptionsFrame.lua
+# -- Groups
+OptionsFrames\CodeReview.lua
+OptionsFrames\IconPick.lua
+OptionsFrames\ImportExport.lua
+OptionsFrames\ModelPick.lua
+OptionsFrames\TextEditor.lua
+OptionsFrames\TexturePick.lua
+# -- misc Frames
+OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua

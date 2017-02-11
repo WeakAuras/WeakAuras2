@@ -227,8 +227,6 @@ function WeakAuras.MultipleDisplayTooltipMenu()
   return menu;
 end
 
-local valueFromPath = WeakAuras.ValueFromPath;
-local valueToPath = WeakAuras.ValueToPath;
 local trigger_types = WeakAuras.trigger_types;
 local debuff_types = WeakAuras.debuff_types;
 local unit_types = WeakAuras.unit_types;
@@ -2186,7 +2184,7 @@ function WeakAuras.AddOption(id, data)
             order = 0.014,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"actions", "init", "custom"}, true)
+              WeakAuras.OpenTextEditor(data, {"actions", "init", "custom"}, true)
             end,
             hidden = function() return not data.actions.init.do_custom end
           },
@@ -2368,7 +2366,7 @@ function WeakAuras.AddOption(id, data)
             order = 14,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"actions", "start", "custom"}, true)
+              WeakAuras.OpenTextEditor(data, {"actions", "start", "custom"}, true)
             end,
             hidden = function() return not data.actions.start.do_custom end
           },
@@ -2551,7 +2549,7 @@ function WeakAuras.AddOption(id, data)
             order = 34,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"actions", "finish", "custom"}, true)
+              WeakAuras.OpenTextEditor(data, {"actions", "finish", "custom"}, true)
             end,
             hidden = function() return not data.actions.finish.do_custom end
           },
@@ -2734,7 +2732,7 @@ function WeakAuras.AddOption(id, data)
             order = 35.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "start", "alphaFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "start", "alphaFunc"}, nil, true)
             end,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.alphaType ~= "custom" or not data.animation.start.use_alpha end
           },
@@ -2801,7 +2799,7 @@ function WeakAuras.AddOption(id, data)
             order = 39.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "start", "translateFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "start", "translateFunc"}, nil, true)
             end,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.translateType ~= "custom" or not data.animation.start.use_translate end,
           },
@@ -2881,7 +2879,7 @@ function WeakAuras.AddOption(id, data)
             order = 43.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "start", "scaleFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "start", "scaleFunc"}, nil, true)
             end,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.scaleType ~= "custom" or not (data.animation.start.use_scale and WeakAuras.regions[id].region.Scale) end,
           },
@@ -2957,7 +2955,7 @@ function WeakAuras.AddOption(id, data)
             order = 47.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "start", "rotateFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "start", "rotateFunc"}, nil, true)
             end,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.rotateType ~= "custom" or not (data.animation.start.use_rotate and WeakAuras.regions[id].region.Rotate) end,
           },
@@ -3023,7 +3021,7 @@ function WeakAuras.AddOption(id, data)
             order = 48.8,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "start", "colorFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "start", "colorFunc"}, nil, true)
             end,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.colorType ~= "custom" or not (data.animation.start.use_color and WeakAuras.regions[id].region.Color) end,
           },
@@ -3158,7 +3156,7 @@ function WeakAuras.AddOption(id, data)
             order = 55.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "main", "alphaFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "main", "alphaFunc"}, nil, true)
             end,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.alphaType ~= "custom" or not data.animation.main.use_alpha end,
           },
@@ -3225,7 +3223,7 @@ function WeakAuras.AddOption(id, data)
             order = 59.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "main", "translateFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "main", "translateFunc"}, nil, true)
             end,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.translateType ~= "custom" or not data.animation.main.use_translate end,
           },
@@ -3301,7 +3299,7 @@ function WeakAuras.AddOption(id, data)
             order = 63.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "main", "scaleFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "main", "scaleFunc"}, nil, true)
             end,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.scaleType ~= "custom" or not (data.animation.main.use_scale and WeakAuras.regions[id].region.Scale) end,
           },
@@ -3377,7 +3375,7 @@ function WeakAuras.AddOption(id, data)
             order = 67.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "main", "rotateFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "main", "rotateFunc"}, nil, true)
             end,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.rotateType ~= "custom" or not (data.animation.main.use_rotate and WeakAuras.regions[id].region.Rotate) end,
           },
@@ -3443,7 +3441,7 @@ function WeakAuras.AddOption(id, data)
             order = 68.8,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "main", "colorFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "main", "colorFunc"}, nil, true)
             end,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.colorType ~= "custom" or not (data.animation.main.use_color and WeakAuras.regions[id].region.Color) end,
           },
@@ -3555,7 +3553,7 @@ function WeakAuras.AddOption(id, data)
             order = 75.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "finish", "alphaFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "finish", "alphaFunc"}, nil, true)
             end,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.alphaType ~= "custom" or not data.animation.finish.use_alpha end,
           },
@@ -3622,7 +3620,7 @@ function WeakAuras.AddOption(id, data)
             order = 79.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "finish", "translateFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "finish", "translateFunc"}, nil, true)
             end,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.translateType ~= "custom" or not data.animation.finish.use_translate end,
           },
@@ -3698,7 +3696,7 @@ function WeakAuras.AddOption(id, data)
             order = 83.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "finish", "scaleFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "finish", "scaleFunc"}, nil, true)
             end,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.scaleType ~= "custom" or not (data.animation.finish.use_scale and WeakAuras.regions[id].region.Scale) end,
           },
@@ -3774,7 +3772,7 @@ function WeakAuras.AddOption(id, data)
             order = 87.4,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "finish", "rotateFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "finish", "rotateFunc"}, nil, true)
             end,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.rotateType ~= "custom" or not (data.animation.finish.use_rotate and WeakAuras.regions[id].region.Rotate) end,
           },
@@ -3840,7 +3838,7 @@ function WeakAuras.AddOption(id, data)
             order = 88.8,
             name = L["Expand Text Editor"],
             func = function()
-              WeakAuras.TextEditor(data, {"animation", "finish", "colorFunc"}, nil, true)
+              WeakAuras.OpenTextEditor(data, {"animation", "finish", "colorFunc"}, nil, true)
             end,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.colorType ~= "custom" or not (data.animation.finish.use_color and WeakAuras.regions[id].region.Color) end,
           },
@@ -4960,7 +4958,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 0.15,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, {"customTriggerLogic"})
+        WeakAuras.OpenTextEditor(data, {"customTriggerLogic"})
       end,
       hidden = function() return not (data.disjunctive == "custom") end,
     },
@@ -5313,7 +5311,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 10.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("custom"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("custom"))
       end,
       hidden = function() return not (trigger.type == "custom") end,
     },
@@ -5402,7 +5400,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 14.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToUntriggerPath("custom"))
+        WeakAuras.OpenTextEditor(data, appendToUntriggerPath("custom"))
       end,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom"))) end,
@@ -5454,7 +5452,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 16.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("customDuration"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customDuration"))
       end,
       hidden = function() return not (trigger.type == "custom"
           and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
@@ -5509,7 +5507,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 18.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("customName"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customName"))
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -5558,7 +5556,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 20.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("customIcon"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customIcon"))
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -5607,7 +5605,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 22,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("customTexture"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customTexture"))
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -5656,7 +5654,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 23.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.TextEditor(data, appendToTriggerPath("customStacks"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customStacks"))
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -6433,7 +6431,7 @@ function WeakAuras.AddBorderOptions(input, id, data)
   return union(input, borderOptions);
 end
 
-function WeakAuras.TextEditor(...)
+function WeakAuras.OpenTextEditor(...)
   frame.texteditor:Open(...);
 end
 
