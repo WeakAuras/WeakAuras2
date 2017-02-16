@@ -48,6 +48,16 @@ WeakAuras.encounter_table = {
   [1819] = 1958, -- Odyn
   [1830] = 1962, -- Guarm
   [1829] = 2008, -- Helya
+  -- Tomb of Sargeras
+  [1862] = 2032, -- Goroth
+  [1867] = 2048, -- Demonic Inquisition
+  [1856] = 2048, -- Harjatan
+  [1861] = 2037, -- Mistress Sasszine
+  [1903] = 2050, -- Sisters of the Moon
+  [1896] = 2054, -- Desolate Host
+  [1897] = 2052, -- Maiden of Vigilance
+  [1873] = 2038, -- Fallen Avatar
+  [1898] = 2051, -- Kiljaeden
 }
 
 local function get_encounters_list()
