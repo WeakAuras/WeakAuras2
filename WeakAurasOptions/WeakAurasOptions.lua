@@ -6107,6 +6107,17 @@ function WeakAuras.AddPositionOptions(input, id, data)
       values = {["CENTER"] = L["Anchor Point"]},
       get = function() return "CENTER"; end
     },
+    anchorFrameParent = {
+      type = "toggle",
+      name = L["Set Parent to Anchor"],
+      order = 77,
+      get = function()
+        return data.anchorFrameParent or data.anchorFrameParent == nil;
+      end,
+      hidden = function()
+        return (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE");
+      end,
+    },
     frameStrata = {
       type = "select",
       name = L["Frame Strata"],
@@ -6119,7 +6130,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       order = 79,
       image = function() return "", 0, 0 end,
       hidden = function()
-        return not (data.anchorFrameType == "MOUSE");
+        return not (data.anchorFrameType ~= "SCREEN");
       end
     },
     -- IsParentDynamicGroup => none
