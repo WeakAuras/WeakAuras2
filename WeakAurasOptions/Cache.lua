@@ -72,7 +72,8 @@ function spellCache.GetIcon(name)
       end
     end
 
-    return bestMatch and icons[bestMatch]
+    bestIcon[name] = bestMatch and icons[bestMatch];
+    return bestIcon[name];
   else
     error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
   end
