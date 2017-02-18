@@ -1253,20 +1253,34 @@ do
     end
   end
 
-  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD)
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd)
+    local startTime, duration;
     if (ignoreRuneCD) then
       if (spellsRune[id] and spellCdExpsRune[id] and spellCdDursRune[id]) then
-        return spellCdExpsRune[id] - spellCdDursRune[id], spellCdDursRune[id];
+        startTime = spellCdExpsRune[id] - spellCdDursRune[id]
+        duration = spellCdDursRune[id];
       else
-        return 0, 0
+        startTime = 0;
+        duration = 0;
+      end
+    else
+      if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
+        startTime = spellCdExps[id] - spellCdDurs[id];
+        duration = spellCdDurs[id];
+      else
+        startTime = 0;
+        duration = 0;
       end
     end
 
-    if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
-      return spellCdExps[id] - spellCdDurs[id], spellCdDurs[id];
-    else
-      return 0, 0;
+    if (showgcd) then
+      if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        startTime = gcdStart;
+        duration = gcdDuration;
+      end
     end
+
+    return startTime, duration;
   end
 
   function WeakAuras.GetSpellCharges(id)
