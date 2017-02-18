@@ -3150,8 +3150,8 @@ function WeakAuras.GetDynamicIconCache(name)
     end
   end
 
-  if (WeakAuras.GetIconFromSpellCache) then
-    return WeakAuras.GetIconFromSpellCache(name);
+  if WeakAuras.spellCache then
+    return WeakAuras.spellCache.GetIcon(name);
   end
   return nil;
 end

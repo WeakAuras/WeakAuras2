@@ -821,7 +821,7 @@ local methods = {
                                         end
                                     end
                                 end
-                                local icon = WeakAuras.GetIconFromSpellCache(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+                                local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
                                 tinsert(namestable, {left, name, icon});
                             end
                         end
