@@ -3934,10 +3934,13 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
   return parent;
 end
 
-
 function WeakAuras.AnchorFrame(data, region, parent)
   local anchorParent = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
-  region:SetParent(anchorParent);
+  if (data.anchorFrameParent or data.anchorFrameParent == nil) then
+    region:SetParent(anchorParent);
+  else
+    region:SetParent(frame);
+  end
   region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
   if(data.frameStrata == 1) then
       region:SetFrameStrata(region:GetParent():GetFrameStrata());
