@@ -1401,13 +1401,21 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Spell)"] = {
     type = "status",
-    events = {
-      "SPELL_COOLDOWN_READY",
-      "SPELL_COOLDOWN_CHANGED",
-      "SPELL_COOLDOWN_STARTED",
-      "COOLDOWN_REMAINING_CHECK",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
+    events = function(trigger, untrigger)
+      local events = {
+        "SPELL_COOLDOWN_READY",
+        "SPELL_COOLDOWN_CHANGED",
+        "SPELL_COOLDOWN_STARTED",
+        "COOLDOWN_REMAINING_CHECK",
+        "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      };
+      if (trigger.use_showgcd) then
+        tinsert(events, "GCD_START");
+        tinsert(events, "GCD_CHANGE");
+        tinsert(events, "GCD_END");
+      end
+      return events;
+    end,
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
@@ -1415,10 +1423,14 @@ WeakAuras.event_prototypes = {
       local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
+      if (trigger.use_showgcd) then
+        WeakAuras.WatchGCD();
+      end
       local ret = [=[
         local spellname = [[%s]]
         local ignoreRuneCD = %s
-        local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD);
+        local showgcd = %s;
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
         local charges = WeakAuras.GetSpellCharges(spellname);
         if (charges == nil) then
             charges = (duration == 0) and 1 or 0;
@@ -1439,8 +1451,10 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"),
-                                   "[[" .. (trigger.showOn or "") .. "]]");
+      return ret:format(spellName,
+                        (trigger.use_matchedRune and "true" or "false"),
+                        (trigger.use_showgcd and "true" or "false"),
+                        "[[" .. (trigger.showOn or "") .. "]]");
     end,
     args = {
       {
@@ -1448,6 +1462,12 @@ WeakAuras.event_prototypes = {
       {
         name = "matchedRune",
         display = L["Ignore Rune CD"],
+        type = "toggle",
+        test = "true",
+      },
+      {
+        name = "showgcd",
+        display = L["Show Global Cooldown"],
         type = "toggle",
         test = "true"
       },
@@ -1485,7 +1505,7 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.realSpellName or 0, trigger.use_matchedRune);
+      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.realSpellName or 0, trigger.use_matchedRune, trigger.use_showgcd);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
