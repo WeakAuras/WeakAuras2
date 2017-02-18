@@ -3320,22 +3320,46 @@ WeakAuras.event_prototypes = {
   },
   ["Conditions"] = {
     type = "status",
-    events = {
-      "PLAYER_REGEN_ENABLED",
-      "PLAYER_REGEN_DISABLED",
-      "PLAYER_FLAGS_CHANGED",
-      "PLAYER_DEAD",
-      "PLAYER_ALIVE",
-      "PLAYER_UNGHOST",
-      "UNIT_PET",
-      "PET_UPDATE",
-      "UNIT_ENTERED_VEHICLE",
-      "UNIT_EXITED_VEHICLE",
-      "PLAYER_UPDATE_RESTING",
-      "MOUNTED_UPDATE",
-      "CONDITIONS_CHECK",
-      "PLAYER_MOVING_UPDATE"
-    },
+    events = function(trigger, untrigger)
+      local events = {};
+      tinsert(events,  "CONDITIONS_CHECK");
+      if (trigger.use_incombat ~= nil) then
+        tinsert(events, "PLAYER_REGEN_ENABLED");
+        tinsert(events, "PLAYER_REGEN_DISABLED");
+      end
+      if (trigger.use_pvpflagged ~= nil) then
+        tinsert(events, "PLAYER_FLAGS_CHANGED");
+      end
+
+      if (trigger.use_alive ~= nil) then
+        tinsert(events, "PLAYER_DEAD");
+        tinsert(events, "PLAYER_ALIVE");
+        tinsert(events, "PLAYER_UNGHOST");
+      end
+
+      if (trigger.use_vehicle ~= nil) then
+        tinsert(events, "UNIT_ENTERED_VEHICLE");
+        tinsert(events, "UNIT_EXITED_VEHICLE");
+      end
+
+      if (trigger.use_resting ~= nil) then
+        tinsert(events, "PLAYER_UPDATE_RESTING");
+      end
+
+      if (trigger.use_mounted ~= nil) then
+        tinsert(events, "MOUNTED_UPDATE");
+      end
+
+      if (trigger.use_HasPet ~= nil) then
+        tinsert(events, "PET_UPDATE");
+      end
+
+      if (trigger.use_ismoving ~= nil) then
+        tinsert(events, "PLAYER_MOVING_UPDATE");
+      end
+
+      return events;
+    end,
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
     init = function(trigger)

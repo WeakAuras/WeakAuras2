@@ -729,6 +729,9 @@ function GenericTrigger.Add(data, region)
             local prototype = event_prototypes[trigger.event];
             if(prototype) then
               trigger_events = prototype.events;
+              if (type(trigger_events) == "function") then
+                trigger_events = trigger_events(trigger, untrigger);
+              end
               for index, event in ipairs(trigger_events) do
                 frame:RegisterEvent(event);
                 aceEvents:RegisterMessage(event, HandleEvent, frame)
