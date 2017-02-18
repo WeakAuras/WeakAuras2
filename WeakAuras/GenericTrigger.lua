@@ -1973,7 +1973,7 @@ do
       bar.duration = duration;
       bar.expirationTime = expirationTime;
       bar.icon = icon;
-      WeakAuras.ScanEvents("BigWigs_StartBar", spellId);
+      WeakAuras.ScanEvents("BigWigs_StartBar", text);
       if (nextExpire == nil) then
         recheckTimer = timer:ScheduleTimer(recheckTimers, expirationTime - now);
         nextExpire = expirationTime;
