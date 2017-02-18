@@ -233,37 +233,6 @@ end
 
 local valueFromPath = WeakAuras.ValueFromPath;
 local valueToPath = WeakAuras.ValueToPath;
-
--- This function computes the Levenshtein distance between two strings
--- It is based on the Wagner-Fisher algorithm
---
--- The Levenshtein distance between two strings is the minimum number of operations needed
--- to transform one into the other, with allowable operations being addition of one letter,
--- subtraction of one letter, or substitution of one letter for another
---
--- It is used in this program to match spell icon textures with "good" spell names; i.e.,
--- spell names that are very similar to the name of the texture
-local function Lev(str1, str2)
-   local matrix = {};
-   for i=0, str1:len() do
-      matrix[i] = {[0] = i};
-   end
-   for j=0, str2:len() do
-      matrix[0][j] = j;
-   end
-   for j=1, str2:len() do
-      for i =1, str1:len() do
-         if(str1:sub(i, i) == str2:sub(j, j)) then
-            matrix[i][j] = matrix[i-1][j-1];
-         else
-            matrix[i][j] = math.min(matrix[i-1][j], matrix[i][j-1], matrix[i-1][j-1]) + 1;
-         end
-      end
-   end
-
-   return matrix[str1:len()][str2:len()];
-end
-
 local trigger_types = WeakAuras.trigger_types;
 local debuff_types = WeakAuras.debuff_types;
 local unit_types = WeakAuras.unit_types;
@@ -746,7 +715,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           set = function(info, v)
             local fixedInput = v;
             if(arg.type == "aura") then
-              fixedInput = WeakAuras.CorrectAuraName(v);
+              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
             elseif(arg.type == "spell") then
               fixedInput = WeakAuras.CorrectSpellName(v);
             elseif(arg.type == "item") then
@@ -765,7 +734,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           options[name].set = function(info, v)
             local fixedInput = v;
             if(arg.type == "aura") then
-              fixedInput = WeakAuras.CorrectAuraName(v);
+              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
             elseif(arg.type == "spell") then
               fixedInput = WeakAuras.CorrectSpellName(v);
             elseif(arg.type == "item") then
@@ -4259,7 +4228,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           trigger.name = nil;
           trigger.spellId = nil;
         else
-          trigger.name, trigger.spellId = WeakAuras.CorrectAuraName(v);
+          trigger.name, trigger.spellId = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4297,7 +4266,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[1], trigger.spellIds[1] = WeakAuras.CorrectAuraName(v);
+          trigger.names[1], trigger.spellIds[1] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4342,7 +4311,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[2], trigger.spellIds[2] = WeakAuras.CorrectAuraName(v);
+          trigger.names[2], trigger.spellIds[2] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4387,7 +4356,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[3], trigger.spellIds[3] = WeakAuras.CorrectAuraName(v);
+          trigger.names[3], trigger.spellIds[3] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4432,7 +4401,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[4], trigger.spellIds[4] = WeakAuras.CorrectAuraName(v);
+          trigger.names[4], trigger.spellIds[4] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4477,7 +4446,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[5], trigger.spellIds[5] = WeakAuras.CorrectAuraName(v);
+          trigger.names[5], trigger.spellIds[5] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4522,7 +4491,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[6], trigger.spellIds[6] = WeakAuras.CorrectAuraName(v);
+          trigger.names[6], trigger.spellIds[6] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4567,7 +4536,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[7], trigger.spellIds[7] = WeakAuras.CorrectAuraName(v);
+          trigger.names[7], trigger.spellIds[7] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4612,7 +4581,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[8], trigger.spellIds[8] = WeakAuras.CorrectAuraName(v);
+          trigger.names[8], trigger.spellIds[8] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -4657,7 +4626,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           if(tonumber(v)) then
             WeakAuras.ShowSpellIDDialog(trigger, v);
           end
-          trigger.names[9], trigger.spellIds[9] = WeakAuras.CorrectAuraName(v);
+          trigger.names[9], trigger.spellIds[9] = WeakAuras.spellCache.CorrectAuraName(v);
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -7068,9 +7037,6 @@ function WeakAuras.CreateFrame()
   local function iconPickFill(subname, doSort)
     iconPickScroll:ReleaseChildren();
 
-    local distances = {};
-    local names = {};
-
     subname = tonumber(subname) and GetSpellInfo(tonumber(subname)) or subname;
     subname = subname:lower();
 
@@ -7078,10 +7044,7 @@ function WeakAuras.CreateFrame()
     local num = 0;
     if(subname ~= "") then
       for name, icons in pairs(spellCache.Get()) do
-        local bestDistance = math.huge;
-        local bestName;
         if(name:lower():find(subname, 1, true)) then
-
           for spellId, icon in pairs(icons) do
             if (not usedIcons[icon]) then
               local button = AceGUI:Create("WeakAurasIconButton");
@@ -9493,55 +9456,6 @@ function WeakAuras.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end
-end
-
-function WeakAuras.CorrectAuraName(input)
-  local spellId = tonumber(input);
-  if(spellId) then
-    local name, _, icon = GetSpellInfo(spellId);
-    if(name) then
-      spellCache.AddIcon(name, spellId, icon)
-      return name, spellId;
-    else
-      return "Invalid Spell ID";
-    end
-  else
-    local ret = WeakAuras.BestKeyMatch(input, spellCache.Get());
-    if(ret == "") then
-      return "No Match Found", nil;
-    else
-      return ret, nil;
-    end
-  end
-end
-
-function WeakAuras.BestKeyMatch(nearkey, table)
-  for key, value in pairs(table) do
-    if(nearkey == key) then
-      return key;
-    end
-  end
-  for key, value in pairs(table) do
-    if(nearkey:lower() == key:lower()) then
-      return key;
-    end
-  end
-  local bestKey = "";
-  local bestDistance = math.huge;
-  local partialMatches = {};
-  for key, value in pairs(table) do
-    if(key:lower():find(nearkey:lower(), 1, true)) then
-      partialMatches[key] = value;
-    end
-  end
-  for key, value in pairs(partialMatches) do
-    local distance = Lev(nearkey, key);
-    if(distance < bestDistance) then
-      bestKey = key;
-      bestDistance = distance;
-    end
-  end
-  return bestKey;
 end
 
 function WeakAuras.ShowCloneDialog(data)
