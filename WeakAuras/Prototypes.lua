@@ -497,10 +497,18 @@ WeakAuras.load_prototype = {
       init = "false"
     },
     {
+      name = "ingroup",
+      display = L["In Group"],
+      type = "tristate",
+      width = "normal",
+      init = "arg"
+    },
+    {
       name = "petbattle",
       display = L["In Pet Battle"],
       type = "tristate",
-      init = "arg"
+      init = "arg",
+      width = "normal",
     },
     {
       name = "vehicle",
