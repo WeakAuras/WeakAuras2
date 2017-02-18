@@ -884,9 +884,10 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   -- first firing, and FALSE during the second. I am not sure if this check is necessary, but the
   -- following IF statement limits the impact of the PET_BATTLE_CLOSE event to the second one.
   if (event == "PET_BATTLE_CLOSE" and C_PetBattles.IsInBattle()) then return end
-    if(event == "PLAYER_LEVEL_UP") then
-      playerLevel = arg1;
-    end
+
+  if(event == "PLAYER_LEVEL_UP") then
+    playerLevel = arg1;
+  end
 
   -- encounter id stuff, we are holding the current combat id to further load checks.
   -- there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
