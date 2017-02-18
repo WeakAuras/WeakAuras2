@@ -156,14 +156,8 @@ local function modify(parent, region, data)
     icon:SetAllPoints();
 
     region:ClearAllPoints();
-    local anchorFrame = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent, data.anchorFrameFrame);
-    region:SetParent(anchorFrame);
-    region:SetPoint(data.selfPoint, anchorFrame, data.anchorPoint, data.xOffset, data.yOffset);
-    if(data.frameStrata == 1) then
-        region:SetFrameStrata(region:GetParent():GetFrameStrata());
-    else
-        region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
-    end
+
+    WeakAuras.AnchorFrame(data, region, parent);
 
     local fontPath = SharedMedia:Fetch("font", data.font);
     local sxo, syo = 0, 0;
