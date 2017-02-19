@@ -2238,7 +2238,8 @@ function WeakAuras.PerformActions(data, type, region)
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   local squelch_glow = squelch_actions and (type == "finish");
   if(actions.do_glow and actions.glow_action and actions.glow_frame and not squelch_glow) then
-    local glow_frame;
+    local glow_frame
+    local original_glow_frame
     if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
       local frame_name = actions.glow_frame:sub(11);
       if(regions[frame_name]) then
@@ -2246,6 +2247,7 @@ function WeakAuras.PerformActions(data, type, region)
       end
     else
       glow_frame = _G[actions.glow_frame];
+      original_glow_frame = glow_frame
     end
 
     if (glow_frame) then
@@ -2261,6 +2263,7 @@ function WeakAuras.PerformActions(data, type, region)
         WeakAuras_ShowOverlayGlow(glow_frame);
       elseif(actions.glow_action == "hide") then
         WeakAuras_HideOverlayGlow(glow_frame);
+        WeakAuras_HideOverlayGlow(original_glow_frame);
       end
     end
   end
