@@ -55,6 +55,9 @@ function spellCache.Build(callback)
 end
 
 function spellCache.GetIcon(name)
+  if (name == nil) then
+    return nil;
+  end
   if cache then
     if (bestIcon[name]) then
       return bestIcon[name]
