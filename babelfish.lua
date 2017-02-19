@@ -5,7 +5,7 @@ local filePrefix = ""
 
 -- find . -name "*.lua" | grep -v Localization-
 local fileList = {
-	WeakAuras = {
+	WeakAuras_Main = {
 		"WeakAuras/BuffTrigger.lua",
 		"WeakAuras/GenericTrigger.lua",
 		"WeakAuras/Init.lua",
@@ -40,7 +40,7 @@ local fileList = {
 		"WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasNewHeaderButton.lua",
 		"WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasSortedDropDown.lua",
  		"WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasTextureButton.lua",
-	},	
+	},
 	WeakAuras_Templates = {
 		"WeakAurasTemplates/TriggerTemplates.lua",
 		"WeakAurasTemplates/TriggerTemplatesData.lua",
@@ -48,7 +48,7 @@ local fileList = {
 }
 
 local ordered = {
-	"WeakAuras",
+	"WeakAuras_Main",
 	"WeakAuras_Options",
 	"WeakAuras_Templates",
 }
