@@ -13,9 +13,9 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local texturePick
+local texturePicker
 
-local function ConstructTexturePick(frame)
+local function ConstructTexturePicker(frame)
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 42);
@@ -39,7 +39,7 @@ local function ConstructTexturePick(frame)
   scroll.frame:SetClipsChildren(true);
   dropdown:AddChild(scroll);
 
-  local function texturePickGroupSelected(widget, event, uniquevalue)
+  local function texturePickerGroupSelected(widget, event, uniquevalue)
     scroll:ReleaseChildren();
     for texturePath, textureName in pairs(group.textures[uniquevalue]) do
       local textureWidget = AceGUI:Create("WeakAurasTextureButton");
@@ -69,7 +69,7 @@ local function ConstructTexturePick(frame)
     group:Pick(group.data[group.field]);
   end
 
-  dropdown:SetCallback("OnGroupSelected", texturePickGroupSelected)
+  dropdown:SetCallback("OnGroupSelected", texturePickerGroupSelected)
 
   function group.UpdateList(self)
     wipe(dropdown.list);
@@ -225,7 +225,7 @@ local function ConstructTexturePick(frame)
   return group
 end
 
-function WeakAuras.TexturePick(frame)
-  texturePick = texturePick or ConstructTexturePick(frame)
-  return texturePick
+function WeakAuras.TexturePicker(frame)
+  texturePicker = texturePicker or ConstructTexturePicker(frame)
+  return texturePicker
 end

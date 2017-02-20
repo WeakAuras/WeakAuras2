@@ -12,11 +12,11 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local iconPick
+local iconPicker
 
 local savedVars = WeakAuras.savedVars -- provisional
 
-local function ConstructIconPick(frame)
+local function ConstructIconPicker(frame)
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 30); -- 12
@@ -29,10 +29,8 @@ local function ConstructIconPick(frame)
   scroll.frame:SetClipsChildren(true);
   group:AddChild(scroll);
 
-  local function iconPickFill(subname, doSort)
+  local function iconPickerFill(subname, doSort)
     scroll:ReleaseChildren();
-
-    print("iconPickFill")
 
     local distances = {};
     local names = {};
@@ -75,9 +73,9 @@ local function ConstructIconPick(frame)
   end
 
   local input = CreateFrame("EDITBOX", nil, group.frame, "InputBoxTemplate");
-  input:SetScript("OnTextChanged", function(...) iconPickFill(input:GetText(), false); end);
-  input:SetScript("OnEnterPressed", function(...) iconPickFill(input:GetText(), true); end);
-  input:SetScript("OnEscapePressed", function(...) input:SetText(""); iconPickFill(input:GetText(), true); end);
+  input:SetScript("OnTextChanged", function(...) iconPickerFill(input:GetText(), false); end);
+  input:SetScript("OnEnterPressed", function(...) iconPickerFill(input:GetText(), true); end);
+  input:SetScript("OnEscapePressed", function(...) input:SetText(""); iconPickerFill(input:GetText(), true); end);
   input:SetWidth(170);
   input:SetHeight(15);
   input:SetPoint("BOTTOMRIGHT", group.frame, "TOPRIGHT", -12, -5);
@@ -189,7 +187,7 @@ local function ConstructIconPick(frame)
   return group
 end
 
-function WeakAuras.IconPick(frame)
-  iconPick = iconPick or ConstructIconPick(frame)
-  return iconPick
+function WeakAuras.IconPicker(frame)
+  iconPicker = iconPicker or ConstructIconPicker(frame)
+  return iconPicker
 end

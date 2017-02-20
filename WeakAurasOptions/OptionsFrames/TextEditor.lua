@@ -145,9 +145,9 @@ local function ConstructTextEditor(frame)
     self.path = path;
     self.addReturn = addReturn;
     if(frame.window == "texture") then
-      frame.texturePick:CancelClose();
+      frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
-      frame.iconPick:CancelClose();
+      frame.iconPicker:CancelClose();
     end
     frame.container.frame:Hide();
     frame.buttonsContainer.frame:Hide();

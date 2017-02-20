@@ -34,11 +34,11 @@ ExternalAddons.lua
 OptionsFrames\OptionsFrame.lua
 # -- Groups
 OptionsFrames\CodeReview.lua
-OptionsFrames\IconPick.lua
+OptionsFrames\IconPicker.lua
 OptionsFrames\ImportExport.lua
-OptionsFrames\ModelPick.lua
+OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
-OptionsFrames\TexturePick.lua
+OptionsFrames\TexturePicker.lua
 # -- misc Frames
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua

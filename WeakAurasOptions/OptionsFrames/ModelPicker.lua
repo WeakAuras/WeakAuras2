@@ -12,9 +12,9 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local modelPick
+local modelPicker
 
-local function ConstructModelPick(frame)
+local function ConstructModelPicker(frame)
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 87);
@@ -23,85 +23,85 @@ local function ConstructModelPick(frame)
   group:SetLayout("flow");
 
   -- Old X Y Z controls
-  local modelPickZ = AceGUI:Create("Slider");
-  modelPickZ:SetSliderValues(-20, 20, 0.05);
-  modelPickZ:SetLabel(L["Z Offset"]);
-  modelPickZ.frame:SetParent(group.frame);
-  modelPickZ:SetCallback("OnValueChanged", function()
-    group:Pick(nil, modelPickZ:GetValue());
+  local modelPickerZ = AceGUI:Create("Slider");
+  modelPickerZ:SetSliderValues(-20, 20, 0.05);
+  modelPickerZ:SetLabel(L["Z Offset"]);
+  modelPickerZ.frame:SetParent(group.frame);
+  modelPickerZ:SetCallback("OnValueChanged", function()
+    group:Pick(nil, modelPickerZ:GetValue());
   end);
 
-  local modelPickX = AceGUI:Create("Slider");
-  modelPickX:SetSliderValues(-20, 20, 0.05);
-  modelPickX:SetLabel(L["X Offset"]);
-  modelPickX.frame:SetParent(group.frame);
-  modelPickX:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, modelPickX:GetValue());
+  local modelPickerX = AceGUI:Create("Slider");
+  modelPickerX:SetSliderValues(-20, 20, 0.05);
+  modelPickerX:SetLabel(L["X Offset"]);
+  modelPickerX.frame:SetParent(group.frame);
+  modelPickerX:SetCallback("OnValueChanged", function()
+    group:Pick(nil, nil, modelPickerX:GetValue());
   end);
 
-  local modelPickY = AceGUI:Create("Slider");
-  modelPickY:SetSliderValues(-20, 20, 0.05);
-  modelPickY:SetLabel(L["Y Offset"]);
-  modelPickY.frame:SetParent(group.frame);
-  modelPickY:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, nil, modelPickY:GetValue());
+  local modelPickerY = AceGUI:Create("Slider");
+  modelPickerY:SetSliderValues(-20, 20, 0.05);
+  modelPickerY:SetLabel(L["Y Offset"]);
+  modelPickerY.frame:SetParent(group.frame);
+  modelPickerY:SetCallback("OnValueChanged", function()
+    group:Pick(nil, nil, nil, modelPickerY:GetValue());
   end);
 
   -- New TX TY TZ, RX, RY, RZ, US controls
-  local modelPickTX = AceGUI:Create("Slider");
-  modelPickTX:SetSliderValues(-1000, 1000, 1);
-  modelPickTX:SetLabel(L["X Offset"]);
-  modelPickTX.frame:SetParent(group.frame);
-  modelPickTX:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, modelPickTX:GetValue());
+  local modelPickerTX = AceGUI:Create("Slider");
+  modelPickerTX:SetSliderValues(-1000, 1000, 1);
+  modelPickerTX:SetLabel(L["X Offset"]);
+  modelPickerTX.frame:SetParent(group.frame);
+  modelPickerTX:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, modelPickerTX:GetValue());
   end);
 
-  local modelPickTY = AceGUI:Create("Slider");
-  modelPickTY:SetSliderValues(-1000, 1000, 1);
-  modelPickTY:SetLabel(L["Y Offset"]);
-  modelPickTY.frame:SetParent(group.frame);
-  modelPickTY:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, modelPickTY:GetValue());
+  local modelPickerTY = AceGUI:Create("Slider");
+  modelPickerTY:SetSliderValues(-1000, 1000, 1);
+  modelPickerTY:SetLabel(L["Y Offset"]);
+  modelPickerTY.frame:SetParent(group.frame);
+  modelPickerTY:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, nil, modelPickerTY:GetValue());
   end);
 
-  local modelPickTZ = AceGUI:Create("Slider");
-  modelPickTZ:SetSliderValues(-1000, 1000, 1);
-  modelPickTZ:SetLabel(L["Z Offset"]);
-  modelPickTZ.frame:SetParent(group.frame);
-  modelPickTZ:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, modelPickTZ:GetValue());
+  local modelPickerTZ = AceGUI:Create("Slider");
+  modelPickerTZ:SetSliderValues(-1000, 1000, 1);
+  modelPickerTZ:SetLabel(L["Z Offset"]);
+  modelPickerTZ.frame:SetParent(group.frame);
+  modelPickerTZ:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, nil, nil, modelPickerTZ:GetValue());
   end);
 
-  local modelPickRX = AceGUI:Create("Slider");
-  modelPickRX:SetSliderValues(0, 360, 1);
-  modelPickRX:SetLabel(L["X Rotation"]);
-  modelPickRX.frame:SetParent(group.frame);
-  modelPickRX:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, modelPickRX:GetValue());
+  local modelPickerRX = AceGUI:Create("Slider");
+  modelPickerRX:SetSliderValues(0, 360, 1);
+  modelPickerRX:SetLabel(L["X Rotation"]);
+  modelPickerRX.frame:SetParent(group.frame);
+  modelPickerRX:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, nil, nil, nil, modelPickerRX:GetValue());
   end);
 
-  local modelPickRY = AceGUI:Create("Slider");
-  modelPickRY:SetSliderValues(0, 360, 1);
-  modelPickRY:SetLabel(L["Y Rotation"]);
-  modelPickRY.frame:SetParent(group.frame);
-  modelPickRY:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, modelPickRY:GetValue());
+  local modelPickerRY = AceGUI:Create("Slider");
+  modelPickerRY:SetSliderValues(0, 360, 1);
+  modelPickerRY:SetLabel(L["Y Rotation"]);
+  modelPickerRY.frame:SetParent(group.frame);
+  modelPickerRY:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, nil, nil, nil, nil, modelPickerRY:GetValue());
   end);
 
-  local modelPickRZ = AceGUI:Create("Slider");
-  modelPickRZ:SetSliderValues(0, 360, 1);
-  modelPickRZ:SetLabel(L["Z Rotation"]);
-  modelPickRZ.frame:SetParent(group.frame);
-  modelPickRZ:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, modelPickRZ:GetValue());
+  local modelPickerRZ = AceGUI:Create("Slider");
+  modelPickerRZ:SetSliderValues(0, 360, 1);
+  modelPickerRZ:SetLabel(L["Z Rotation"]);
+  modelPickerRZ.frame:SetParent(group.frame);
+  modelPickerRZ:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, nil, nil, nil, nil, nil, modelPickerRZ:GetValue());
   end);
 
-  local modelPickUS = AceGUI:Create("Slider");
-  modelPickUS:SetSliderValues(5, 1000, 1);
-  modelPickUS:SetLabel(L["Scale"]);
-  modelPickUS.frame:SetParent(group.frame);
-  modelPickUS:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, nil, modelPickUS:GetValue());
+  local modelPickerUS = AceGUI:Create("Slider");
+  modelPickerUS:SetSliderValues(5, 1000, 1);
+  modelPickerUS:SetLabel(L["Scale"]);
+  modelPickerUS.frame:SetParent(group.frame);
+  modelPickerUS:SetCallback("OnValueChanged", function()
+    group:PickSt(nil, nil, nil, nil, nil, nil, nil, modelPickerUS:GetValue());
   end);
 
   local modelTree = AceGUI:Create("TreeGroup");
@@ -113,36 +113,36 @@ local function ConstructModelPick(frame)
 
     modelTree:SetTreeWidth(frameWidth - 370);
 
-    modelPickZ.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
-    modelPickZ.frame:SetPoint("bottomright", frame, "bottomleft", 15 + sliderWidth, 43);
+    modelPickerZ.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
+    modelPickerZ.frame:SetPoint("bottomright", frame, "bottomleft", 15 + sliderWidth, 43);
 
-    modelPickX.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + sliderWidth, 43);
-    modelPickX.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (2 * sliderWidth), 43);
+    modelPickerX.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + sliderWidth, 43);
+    modelPickerX.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (2 * sliderWidth), 43);
 
-    modelPickY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (2 * sliderWidth), 43);
-    modelPickY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (3 * sliderWidth), 43);
+    modelPickerY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (2 * sliderWidth), 43);
+    modelPickerY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (3 * sliderWidth), 43);
 
     -- New controls
-    modelPickTX.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
-    modelPickTX.frame:SetPoint("bottomright", frame, "bottomleft", 15 + narrowSliderWidth, 43);
+    modelPickerTX.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
+    modelPickerTX.frame:SetPoint("bottomright", frame, "bottomleft", 15 + narrowSliderWidth, 43);
 
-    modelPickTY.frame:SetPoint("bottomleft", frame, "bottomleft", 20 + narrowSliderWidth, 43);
-    modelPickTY.frame:SetPoint("bottomright", frame, "bottomleft", 20 + (2 * narrowSliderWidth), 43);
+    modelPickerTY.frame:SetPoint("bottomleft", frame, "bottomleft", 20 + narrowSliderWidth, 43);
+    modelPickerTY.frame:SetPoint("bottomright", frame, "bottomleft", 20 + (2 * narrowSliderWidth), 43);
 
-    modelPickTZ.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + (2 * narrowSliderWidth), 43);
-    modelPickTZ.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (3 * narrowSliderWidth), 43);
+    modelPickerTZ.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + (2 * narrowSliderWidth), 43);
+    modelPickerTZ.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (3 * narrowSliderWidth), 43);
 
-    modelPickRX.frame:SetPoint("bottomleft", frame, "bottomleft", 30 + (3 * narrowSliderWidth), 43);
-    modelPickRX.frame:SetPoint("bottomright", frame, "bottomleft", 30 + (4 * narrowSliderWidth), 43);
+    modelPickerRX.frame:SetPoint("bottomleft", frame, "bottomleft", 30 + (3 * narrowSliderWidth), 43);
+    modelPickerRX.frame:SetPoint("bottomright", frame, "bottomleft", 30 + (4 * narrowSliderWidth), 43);
 
-    modelPickRY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (4 * narrowSliderWidth), 43);
-    modelPickRY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (5 * narrowSliderWidth), 43);
+    modelPickerRY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (4 * narrowSliderWidth), 43);
+    modelPickerRY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (5 * narrowSliderWidth), 43);
 
-    modelPickRZ.frame:SetPoint("bottomleft", frame, "bottomleft", 40 + (5 * narrowSliderWidth), 43);
-    modelPickRZ.frame:SetPoint("bottomright", frame, "bottomleft", 40 + (6 * narrowSliderWidth), 43);
+    modelPickerRZ.frame:SetPoint("bottomleft", frame, "bottomleft", 40 + (5 * narrowSliderWidth), 43);
+    modelPickerRZ.frame:SetPoint("bottomright", frame, "bottomleft", 40 + (6 * narrowSliderWidth), 43);
 
-    modelPickUS.frame:SetPoint("bottomleft", frame, "bottomleft", 45 + (6 * narrowSliderWidth), 43);
-    modelPickUS.frame:SetPoint("bottomright", frame, "bottomleft", 45 + (7 * narrowSliderWidth), 43);
+    modelPickerUS.frame:SetPoint("bottomleft", frame, "bottomleft", 45 + (6 * narrowSliderWidth), 43);
+    modelPickerUS.frame:SetPoint("bottomright", frame, "bottomleft", 45 + (7 * narrowSliderWidth), 43);
 
   end);
   group:SetLayout("fill");
@@ -267,57 +267,57 @@ local function ConstructModelPick(frame)
                               rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
                               data.model_st_us / 1000);
 
-      modelPickTX:SetValue(data.model_st_tx);
-      modelPickTX.editbox:SetText(("%.2f"):format(data.model_st_tx));
-      modelPickTY:SetValue(data.model_st_ty);
-      modelPickTY.editbox:SetText(("%.2f"):format(data.model_st_ty));
-      modelPickTZ:SetValue(data.model_st_tz);
-      modelPickTZ.editbox:SetText(("%.2f"):format(data.model_st_tz));
+      modelPickerTX:SetValue(data.model_st_tx);
+      modelPickerTX.editbox:SetText(("%.2f"):format(data.model_st_tx));
+      modelPickerTY:SetValue(data.model_st_ty);
+      modelPickerTY.editbox:SetText(("%.2f"):format(data.model_st_ty));
+      modelPickerTZ:SetValue(data.model_st_tz);
+      modelPickerTZ.editbox:SetText(("%.2f"):format(data.model_st_tz));
 
-      modelPickRX:SetValue(data.model_st_rx);
-      modelPickRX.editbox:SetText(("%.2f"):format(data.model_st_rx));
-      modelPickRY:SetValue(data.model_st_ry);
-      modelPickRY.editbox:SetText(("%.2f"):format(data.model_st_ry));
-      modelPickRZ:SetValue(data.model_st_rz);
-      modelPickRZ.editbox:SetText(("%.2f"):format(data.model_st_rz));
+      modelPickerRX:SetValue(data.model_st_rx);
+      modelPickerRX.editbox:SetText(("%.2f"):format(data.model_st_rx));
+      modelPickerRY:SetValue(data.model_st_ry);
+      modelPickerRY.editbox:SetText(("%.2f"):format(data.model_st_ry));
+      modelPickerRZ:SetValue(data.model_st_rz);
+      modelPickerRZ.editbox:SetText(("%.2f"):format(data.model_st_rz));
 
-      modelPickUS:SetValue(data.model_st_us);
-      modelPickUS.editbox:SetText(("%.2f"):format(data.model_st_us));
+      modelPickerUS:SetValue(data.model_st_us);
+      modelPickerUS.editbox:SetText(("%.2f"):format(data.model_st_us));
 
-      modelPickZ.frame:Hide();
-      modelPickY.frame:Hide();
-      modelPickX.frame:Hide();
+      modelPickerZ.frame:Hide();
+      modelPickerY.frame:Hide();
+      modelPickerX.frame:Hide();
 
-      modelPickTX.frame:Show();
-      modelPickTY.frame:Show();
-      modelPickTZ.frame:Show();
-      modelPickRX.frame:Show();
-      modelPickRY.frame:Show();
-      modelPickRZ.frame:Show();
-      modelPickUS.frame:Show();
+      modelPickerTX.frame:Show();
+      modelPickerTY.frame:Show();
+      modelPickerTZ.frame:Show();
+      modelPickerRX.frame:Show();
+      modelPickerRY.frame:Show();
+      modelPickerRZ.frame:Show();
+      modelPickerUS.frame:Show();
 
     else
       self.model:ClearTransform();
       self.model:SetPosition(data.model_z, data.model_x, data.model_y);
       self.model:SetFacing(rad(data.rotation));
-      modelPickZ:SetValue(data.model_z);
-      modelPickZ.editbox:SetText(("%.2f"):format(data.model_z));
-      modelPickX:SetValue(data.model_x);
-      modelPickX.editbox:SetText(("%.2f"):format(data.model_x));
-      modelPickY:SetValue(data.model_y);
-      modelPickY.editbox:SetText(("%.2f"):format(data.model_y));
+      modelPickerZ:SetValue(data.model_z);
+      modelPickerZ.editbox:SetText(("%.2f"):format(data.model_z));
+      modelPickerX:SetValue(data.model_x);
+      modelPickerX.editbox:SetText(("%.2f"):format(data.model_x));
+      modelPickerY:SetValue(data.model_y);
+      modelPickerY.editbox:SetText(("%.2f"):format(data.model_y));
 
-      modelPickZ.frame:Show();
-      modelPickY.frame:Show();
-      modelPickX.frame:Show();
+      modelPickerZ.frame:Show();
+      modelPickerY.frame:Show();
+      modelPickerX.frame:Show();
 
-      modelPickTX.frame:Hide();
-      modelPickTY.frame:Hide();
-      modelPickTZ.frame:Hide();
-      modelPickRX.frame:Hide();
-      modelPickRY.frame:Hide();
-      modelPickRZ.frame:Hide();
-      modelPickUS.frame:Hide();
+      modelPickerTX.frame:Hide();
+      modelPickerTY.frame:Hide();
+      modelPickerTZ.frame:Hide();
+      modelPickerRX.frame:Hide();
+      modelPickerRY.frame:Hide();
+      modelPickerRZ.frame:Hide();
+      modelPickerUS.frame:Hide();
     end
 
     if(data.controlledChildren) then
@@ -438,7 +438,7 @@ local function ConstructModelPick(frame)
   return group
 end
 
-function WeakAuras.ModelPick(frame)
-  modelPick = modelPick or ConstructModelPick(frame)
-  return modelPick
+function WeakAuras.ModelPicker(frame)
+  modelPicker = modelPicker or ConstructModelPicker(frame)
+  return modelPicker
 end
