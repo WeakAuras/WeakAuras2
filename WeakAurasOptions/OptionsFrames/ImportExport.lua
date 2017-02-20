@@ -37,11 +37,11 @@ local function ConstructImportExport(frame)
 
   function group.Open(self, mode, id)
     if(frame.window == "texture") then
-      frame.texturePick:CancelClose();
+      frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
-      frame.iconPick:CancelClose();
+      frame.iconPicker:CancelClose();
     elseif(frame.window == "model") then
-      frame.modelPick:CancelClose();
+      frame.modelPicker:CancelClose();
     end
     frame.container.frame:Hide();
     frame.buttonsContainer.frame:Hide();

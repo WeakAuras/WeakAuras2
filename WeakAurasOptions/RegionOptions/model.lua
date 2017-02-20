@@ -25,7 +25,7 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 2,
             func = function()
-                WeakAuras.OpenModelPick(data, "model_path");
+                WeakAuras.OpenModelPicker(data, "model_path");
             end,
             hidden = function() return data.modelIsUnit end
         },

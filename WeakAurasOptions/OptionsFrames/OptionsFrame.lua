@@ -258,11 +258,11 @@ function WeakAuras.CreateFrame()
         frame.buttonsContainer.frame:Show();
         frame.container.frame:Show();
       elseif(frame.window == "texture") then
-        frame.texturePick.frame:Show();
+        frame.texturePicker.frame:Show();
       elseif(frame.window == "icon") then
-        frame.iconPick.frame:Show();
+        frame.iconPicker.frame:Show();
       elseif(frame.window == "model") then
-        frame.modelPick.frame:Show();
+        frame.modelPicker.frame:Show();
       elseif(frame.window == "importexport") then
         frame.importexport.frame:Show();
       elseif(frame.window == "texteditor") then
@@ -278,9 +278,9 @@ function WeakAuras.CreateFrame()
       frame.minimized = true;
       frame:SetHeight(40);
       frame.buttonsContainer.frame:Hide();
-      frame.texturePick.frame:Hide();
-      frame.iconPick.frame:Hide();
-      frame.modelPick.frame:Hide();
+      frame.texturePicker.frame:Hide();
+      frame.iconPicker.frame:Hide();
+      frame.modelPicker.frame:Hide();
       frame.importexport.frame:Hide();
       frame.texteditor.frame:Hide();
       frame.codereview.frame:Hide();
@@ -332,9 +332,9 @@ function WeakAuras.CreateFrame()
   container.titletext:Hide();
   frame.container = container;
 
-  frame.texturePick = WeakAuras.TexturePick(frame)
-  frame.iconPick = WeakAuras.IconPick(frame)
-  frame.modelPick = WeakAuras.ModelPick(frame)
+  frame.texturePicker = WeakAuras.TexturePicker(frame)
+  frame.iconPicker = WeakAuras.IconPicker(frame)
+  frame.modelPicker = WeakAuras.ModelPicker(frame)
   frame.importexport = WeakAuras.ImportExport(frame)
   frame.texteditor = WeakAuras.TextEditor(frame)
   frame.codereview = WeakAuras.CodeReview(frame);

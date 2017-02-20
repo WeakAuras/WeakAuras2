@@ -259,7 +259,7 @@ local function createOptions(id, data)
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
             disabled = function() return not data.icon end,
             order = 38.5,
-            func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
+            func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
         },
         icon_side = {
             type = "select",
@@ -373,7 +373,7 @@ local function createOptions(id, data)
             width = "half",
             order = 44.3,
             func = function()
-                WeakAuras.OpenTexturePick(data, "sparkTexture", WeakAuras.texture_types);
+                WeakAuras.OpenTexturePicker(data, "sparkTexture", WeakAuras.texture_types);
             end,
             disabled = function() return not data.spark end,
             hidden = function() return not data.spark end,

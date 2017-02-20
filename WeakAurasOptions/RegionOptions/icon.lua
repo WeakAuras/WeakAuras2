@@ -39,7 +39,7 @@ local function createOptions(id, data)
             name = L["Choose"],
             hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
             order = 18,
-            func = function() WeakAuras.OpenIconPick(data, "displayIcon"); end
+            func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
         },
 
         desaturate = {

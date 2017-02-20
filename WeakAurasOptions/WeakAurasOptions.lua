@@ -6805,24 +6805,24 @@ function WeakAuras.SetThumbnail(data)
   end
 end
 
-function WeakAuras.OpenTexturePick(data, field, textures, stopMotion)
-  frame.texturePick:Open(data, field, textures, stopMotion);
+function WeakAuras.OpenTexturePicker(data, field, textures, stopMotion)
+  frame.texturePicker:Open(data, field, textures, stopMotion);
 end
 
-function WeakAuras.OpenIconPick(data, field)
-  frame.iconPick:Open(data, field);
+function WeakAuras.OpenIconPicker(data, field)
+  frame.iconPicker:Open(data, field);
 end
 
-function WeakAuras.OpenModelPick(data, field)
+function WeakAuras.OpenModelPicker(data, field)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
       print("|cff9900FF".."WeakAurasModelPaths"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
       WeakAuras.ModelPaths = {};
     end
-    frame.modelPick.modelTree:SetTree(WeakAuras.ModelPaths);
+    frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
   end
-  frame.modelPick:Open(data, field);
+  frame.modelPicker:Open(data, field);
 end
 
 function WeakAuras.OpenCodeReview(data)
