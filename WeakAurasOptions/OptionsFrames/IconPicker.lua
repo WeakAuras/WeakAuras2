@@ -14,7 +14,7 @@ local L = WeakAuras.L
 
 local iconPicker
 
-local savedVars = WeakAuras.savedVars -- provisional
+local spellCache = WeakAuras.spellCache
 
 local function ConstructIconPicker(frame)
   local group = AceGUI:Create("InlineGroup");
@@ -41,7 +41,7 @@ local function ConstructIconPicker(frame)
     local usedIcons = {};
     local num = 0;
     if(subname ~= "") then
-      for name, icons in pairs(savedVars.odb.spellCache) do -- provisional
+      for name, icons in pairs(spellCache.Get()) do
         local bestDistance = math.huge;
         local bestName;
         if(name:lower():find(subname, 1, true)) then
