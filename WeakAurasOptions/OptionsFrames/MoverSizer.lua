@@ -346,6 +346,7 @@ local function ConstructMoverSizer(parent)
     frame:SetPoint("TOPRIGHT", mover, "TOPRIGHT", 8, 8);
     frame:ScaleCorners(region:GetWidth(), region:GetHeight());
 
+    local db = savedVars.db;
     mover.startMoving = function()
       WeakAuras.CancelAnimation(region, true, true, true, true, true);
       mover:ClearAllPoints();
@@ -526,6 +527,7 @@ local function ConstructMoverSizer(parent)
       self.currentAlpha = newAlpha;
     end
 
+    local db = savedVars.db;
     local region = self.moving.region;
     local data = self.moving.data;
     if not(self.isMoving) then
