@@ -13,16 +13,7 @@
 ## Dependencies: WeakAuras
 ## SavedVariables: WeakAurasOptionsSaved
 
-Localization-enUS.lua
-Localization-deDE.lua
-Localization-esES.lua
-Localization-esMX.lua
-Localization-frFR.lua
-Localization-koKR.lua
-Localization-ptBR.lua
-Localization-ruRU.lua
-Localization-zhCN.lua
-Localization-zhTW.lua
+Locales\locales.xml
 
 ForAllIndentsAndPurposes.lua
 
