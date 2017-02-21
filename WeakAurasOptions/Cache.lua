@@ -16,10 +16,6 @@ local bestIcon = {}
 local dynFrame = WeakAuras.dynFrame
 
 -- Builds a cache of name/icon pairs from existing spell data
--- Why? Because if you call GetSpellInfo with a spell name, it only works if the spell is an actual castable ability,
--- but if you call it with a spell id, you can get buffs, talents, etc. This is useful for displaying faux aura information
--- for displays that are not actually connected to auras (for non-automatic icon displays with predefined icons)
---
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function spellCache.Build(callback)
   if cache then
@@ -108,33 +104,27 @@ function spellCache.Load(data)
 end
 
 -- This function computes the Levenshtein distance between two strings
--- It is based on the Wagner-Fisher algorithm
---
--- The Levenshtein distance between two strings is the minimum number of operations needed
--- to transform one into the other, with allowable operations being addition of one letter,
--- subtraction of one letter, or substitution of one letter for another
---
 -- It is used in this program to match spell icon textures with "good" spell names; i.e.,
 -- spell names that are very similar to the name of the texture
 local function Lev(str1, str2)
-   local matrix = {};
-   for i=0, str1:len() do
-      matrix[i] = {[0] = i};
-   end
-   for j=0, str2:len() do
-      matrix[0][j] = j;
-   end
-   for j=1, str2:len() do
-      for i =1, str1:len() do
-         if(str1:sub(i, i) == str2:sub(j, j)) then
-            matrix[i][j] = matrix[i-1][j-1];
-         else
-            matrix[i][j] = math.min(matrix[i-1][j], matrix[i][j-1], matrix[i-1][j-1]) + 1;
-         end
+  local matrix = {};
+  for i=0, str1:len() do
+    matrix[i] = {[0] = i};
+  end
+  for j=0, str2:len() do
+    matrix[0][j] = j;
+  end
+  for j=1, str2:len() do
+    for i =1, str1:len() do
+      if(str1:sub(i, i) == str2:sub(j, j)) then
+        matrix[i][j] = matrix[i-1][j-1];
+      else
+        matrix[i][j] = math.min(matrix[i-1][j], matrix[i][j-1], matrix[i-1][j-1]) + 1;
       end
-   end
+    end
+  end
 
-   return matrix[str1:len()][str2:len()];
+  return matrix[str1:len()][str2:len()];
 end
 
 function spellCache.BestKeyMatch(nearkey)
@@ -163,6 +153,7 @@ function spellCache.BestKeyMatch(nearkey)
       bestDistance = distance;
     end
   end
+
   return bestKey;
 end
 

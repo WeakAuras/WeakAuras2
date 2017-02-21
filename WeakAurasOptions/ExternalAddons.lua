@@ -289,7 +289,8 @@ function WeakAuras.EnableAddonDisplay(id)
   end
 end
 
--- This function overrides the WeakAuras.CollisionResolved that is defined in WeakAuras.lua, ensuring that sidebar buttons are created properly after collision resolution
+-- This function overrides the WeakAuras.CollisionResolved that is defined in WeakAuras.lua,
+-- ensuring that sidebar buttons are created properly after collision resolution
 function WeakAuras.CollisionResolved(addon, data, force)
   WeakAuras.EnableAddonDisplay(data.id);
 end
