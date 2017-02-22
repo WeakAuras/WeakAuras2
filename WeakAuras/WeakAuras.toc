@@ -17,7 +17,7 @@
 embeds.xml
 Init.lua
 
-locales.xml
+Locales\locales.xml
 
 Prototypes.lua
 Types.lua

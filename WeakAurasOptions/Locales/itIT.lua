@@ -1,4 +1,4 @@
-if not(GetLocale() == "zhTW") then
+if not(GetLocale() == "itIT") then
   return
 end
 
