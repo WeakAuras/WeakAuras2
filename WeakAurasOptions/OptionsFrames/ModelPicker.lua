@@ -183,8 +183,8 @@ local function ConstructModelPicker(frame)
       self.model:SetModel(model_path);
     end
     self.model:SetTransform(model_tx / 1000, model_ty / 1000, model_tz / 1000,
-                            rad(model_rx), rad(model_ry), rad(model_rz),
-                            model_us / 1000);
+      rad(model_rx), rad(model_ry), rad(model_rz),
+      model_us / 1000);
     if(self.data.controlledChildren) then
       for index, childId in pairs(self.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
@@ -264,8 +264,8 @@ local function ConstructModelPicker(frame)
     end
     if (data.api) then
       self.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-                              rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-                              data.model_st_us / 1000);
+        rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+        data.model_st_us / 1000);
 
       modelPickerTX:SetValue(data.model_st_tx);
       modelPickerTX.editbox:SetText(("%.2f"):format(data.model_st_tx));
@@ -413,7 +413,7 @@ local function ConstructModelPicker(frame)
     else
       if (group.givenApi) then
         group:PickSt(group.givenPath, group.givenTX, group.givenTY, group.givenTZ,
-                         group.givenRX, group.givenRY, group.givenRZ, group.givenUS );
+          group.givenRX, group.givenRY, group.givenRZ, group.givenUS );
       else
         group:Pick(group.givenPath, group.givenZ, group.givenX, group.givenY);
       end

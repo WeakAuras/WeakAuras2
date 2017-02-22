@@ -4,7 +4,7 @@ local loadstring, assert, error = loadstring, assert, error
 
 -- WoW APIs
 local CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
-    = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+  = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
 
 -- GLOBALS: WeakAuras
 

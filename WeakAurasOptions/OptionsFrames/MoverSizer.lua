@@ -249,7 +249,7 @@ local function ConstructMoverSizer(parent)
   frame:SetFrameStrata("HIGH");
 
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
-    = ConstructSizer(frame)
+  = ConstructSizer(frame)
 
   frame.top.Clear();
   frame.topright.Clear();

@@ -69,15 +69,15 @@ local function ConstructImportExport(frame)
       local textBuffer, i, lastPaste = {}, 0, 0
       local function clearBuffer(self)
         self:SetScript('OnUpdate', nil)
-          local pasted = strtrim(table.concat(textBuffer))
-          input.editBox:ClearFocus();
-          pasted = pasted:match( "^%s*(.-)%s*$" );
-          if (#pasted > 20) then
-            WeakAuras.ImportString(pasted);
-            input:SetLabel(L["Processed %i chars"]:format(i));
-            input.editBox:SetMaxBytes(2500);
-            input.editBox:SetText(strsub(pasted, 1, 2500));
-          end
+        local pasted = strtrim(table.concat(textBuffer))
+        input.editBox:ClearFocus();
+        pasted = pasted:match( "^%s*(.-)%s*$" );
+        if (#pasted > 20) then
+          WeakAuras.ImportString(pasted);
+          input:SetLabel(L["Processed %i chars"]:format(i));
+          input.editBox:SetMaxBytes(2500);
+          input.editBox:SetText(strsub(pasted, 1, 2500));
+        end
       end
 
       input.editBox:SetScript('OnChar', function(self, c)

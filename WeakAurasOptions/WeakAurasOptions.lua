@@ -10,11 +10,11 @@ local _G = _G
 
 -- WoW APIs
 local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
-    = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+  = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
 local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
-    = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+  = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
 local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
-    = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -337,19 +337,19 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
       local frameHeight = (frame.height or frame:GetHeight() or 0);
       frame:ClearAllPoints();
       if (-yOffset + frameHeight > scrollTop and -yOffset - frameHeight < scrollBottom) then
-          frame:Show();
-          frame:SetPoint("LEFT", content);
-          frame:SetPoint("RIGHT", content);
-          frame:SetPoint("TOP", content, "TOP", 0, yOffset)
+        frame:Show();
+        frame:SetPoint("LEFT", content);
+        frame:SetPoint("RIGHT", content);
+        frame:SetPoint("TOP", content, "TOP", 0, yOffset)
       else
-          frame:Hide();
-          frame.yOffset = yOffset
+        frame:Hide();
+        frame.yOffset = yOffset
       end
       yOffset = yOffset - (frameHeight + 2);
     end
 
     if child.DoLayout then
-        child:DoLayout()
+      child:DoLayout()
     end
 
   end
@@ -1129,8 +1129,8 @@ function WeakAuras.UpdateCloneConfig(data)
 
     --if(data.parent and WeakAuras.regions[data.parent]) then
     if(data.parent and WeakAuras.regions[data.parent] and
-       WeakAuras.regions[data.parent].region and
-       WeakAuras.regions[data.parent].region.ControlChildren) then
+      WeakAuras.regions[data.parent].region and
+      WeakAuras.regions[data.parent].region.ControlChildren) then
       WeakAuras.regions[data.parent].region:ControlChildren();
     end
 
@@ -1303,7 +1303,7 @@ function WeakAuras.GetSortedOptionsLists()
   local to_sort = {};
   for id, data in pairs(db.displays) do
     if(data.parent) then
-      -- Do nothing; children will be added later
+    -- Do nothing; children will be added later
     elseif(loaded[id]) then
       tinsert(to_sort, id);
     end
@@ -1323,7 +1323,7 @@ function WeakAuras.GetSortedOptionsLists()
   wipe(to_sort);
   for id, data in pairs(db.displays) do
     if(data.parent) then
-      -- Do nothing; children will be added later
+    -- Do nothing; children will be added later
     elseif not(loaded[id]) then
       tinsert(to_sort, id);
     end
@@ -1427,7 +1427,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
     if (WeakAuras.IsOptionsOpen()) then
       for id, button in pairs(displayButtons) do
         if(loaded[id] ~= nil) then
-         button:PriorityShow(1);
+          button:PriorityShow(1);
         end
       end
     end
@@ -2026,7 +2026,7 @@ local function replaceValuesFuncs(intable, data)
         else
           for k, v in pairs(values) do
             if (handledValues[k] and handledValues[k][v]) then
-              -- Already known key/value pair
+            -- Already known key/value pair
             else
               if (combinedValues[k]) then
                 combinedValues[k] = combinedValues[k] .. "/" .. v;
@@ -2272,9 +2272,9 @@ function WeakAuras.AddOption(id, data)
             order = 5,
             disabled = function() return not data.actions.start.do_message end,
             desc = function()
-                 local ret = L["Dynamic text tooltip"];
-                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
-                 return ret
+              local ret = L["Dynamic text tooltip"];
+              ret = ret .. WeakAuras.GetAdditionalProperties(data);
+              return ret
             end,
           },
           start_do_sound = {
@@ -2454,9 +2454,9 @@ function WeakAuras.AddOption(id, data)
             order = 25,
             disabled = function() return not data.actions.finish.do_message end,
             desc = function()
-                 local ret = L["Dynamic text tooltip"];
-                 ret = ret .. WeakAuras.GetAdditionalProperties(data);
-                 return ret
+              local ret = L["Dynamic text tooltip"];
+              ret = ret .. WeakAuras.GetAdditionalProperties(data);
+              return ret
             end,
           },
           finish_do_sound = {
@@ -2852,10 +2852,10 @@ function WeakAuras.AddOption(id, data)
             name = L["Zoom In"],
             order = 42,
             hidden = function()
-            return (
-            data.animation.start.type ~= "custom"
-            or not WeakAuras.regions[id].region.Scale
-            ) end
+              return (
+                data.animation.start.type ~= "custom"
+                or not WeakAuras.regions[id].region.Scale
+                ) end
           },
           start_scaleType = {
             type = "select",
@@ -3057,9 +3057,9 @@ function WeakAuras.AddOption(id, data)
             hidden = function() return (data.animation.start.type ~= "custom" or not WeakAuras.regions[id].region.Color) end,
             get = function()
               return data.animation.start.colorR,
-                   data.animation.start.colorG,
-                   data.animation.start.colorB,
-                   data.animation.start.colorA;
+                data.animation.start.colorG,
+                data.animation.start.colorB,
+                data.animation.start.colorA;
             end,
             set = function(info, r, g, b, a)
               data.animation.start.colorR = r;
@@ -3477,9 +3477,9 @@ function WeakAuras.AddOption(id, data)
             hidden = function() return (data.animation.main.type ~= "custom" or not WeakAuras.regions[id].region.Color) end,
             get = function()
               return data.animation.main.colorR,
-                   data.animation.main.colorG,
-                   data.animation.main.colorB,
-                   data.animation.main.colorA;
+                data.animation.main.colorG,
+                data.animation.main.colorB,
+                data.animation.main.colorA;
             end,
             set = function(info, r, g, b, a)
               data.animation.main.colorR = r;
@@ -3874,9 +3874,9 @@ function WeakAuras.AddOption(id, data)
             hidden = function() return (data.animation.finish.type ~= "custom" or not WeakAuras.regions[id].region.Color) end,
             get = function()
               return data.animation.finish.colorR,
-                   data.animation.finish.colorG,
-                   data.animation.finish.colorB,
-                   data.animation.finish.colorA;
+                data.animation.finish.colorG,
+                data.animation.finish.colorB,
+                data.animation.finish.colorA;
             end,
             set = function(info, r, g, b, a)
               data.animation.finish.colorR = r;
@@ -4019,7 +4019,7 @@ function WeakAuras.ReloadTriggerOptions(data)
   -- the spell id table is sparse, so tremove doesn't work
   local function spellId_tremove(tbl, pos)
     for i = pos, 9, 1 do
-        tbl[i] = tbl[i + 1]
+      tbl[i] = tbl[i + 1]
     end
   end
 
@@ -4949,7 +4949,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       hidden = function() return not (data.disjunctive == "custom") end,
       get = function() return data.customTriggerLogic end,
       set = function(info, v)
-      data.customTriggerLogic = v;
+        data.customTriggerLogic = v;
         WeakAuras.Add(data);
       end
     },
@@ -5226,8 +5226,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 8,
       values = check_types,
       hidden = function() return not (trigger.type == "custom"
-          and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
-          and trigger.check ~= "update")
+        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+        and trigger.check ~= "update")
       end,
       get = function() return trigger.check end,
       set = function(info, v)
@@ -5245,8 +5245,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       values = check_types,
       hidden = function() return not (trigger.type == "custom"
-          and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
-          and trigger.check == "update")
+        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+        and trigger.check == "update")
       end,
       get = function() return trigger.check end,
       set = function(info, v)
@@ -5455,15 +5455,15 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.OpenTextEditor(data, appendToTriggerPath("customDuration"))
       end,
       hidden = function() return not (trigger.type == "custom"
-          and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
+        and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
       end,
     },
     custom_duration_error = {
       type = "description",
       name = function()
         if not(trigger.type == "custom"
-            and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed"))
-            and trigger.customDuration and trigger.customDuration ~= "") then
+          and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed"))
+          and trigger.customDuration and trigger.customDuration ~= "") then
           return "";
         end
         local _, errorString = loadstring("return "..(trigger.customDuration or ""));
@@ -5473,8 +5473,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 17,
       hidden = function()
         if not(trigger.type == "custom"
-            and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed"))
-            and trigger.customDuration and trigger.customDuration ~= "") then
+          and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed"))
+          and trigger.customDuration and trigger.customDuration ~= "") then
           return true;
         else
           local loadedFunction, errorString = loadstring("return "..(trigger.customDuration or ""));
@@ -6357,75 +6357,75 @@ end
 
 function WeakAuras.AddBorderOptions(input, id, data)
   local borderOptions = {
-  border = {
-    type = "toggle",
-    name = L["Border"],
-    order = 46.05
-  },
-  borderEdge = {
-    type = "select",
-    dialogControl = "LSM30_Border",
-    name = L["Border Style"],
-    order = 46.1,
-    values = AceGUIWidgetLSMlists.border,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
-  borderBackdrop = {
-    type = "select",
-    dialogControl = "LSM30_Background",
-    name = L["Backdrop Style"],
-    order = 46.2,
-    values = AceGUIWidgetLSMlists.background,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
-  borderOffset = {
-    type = "range",
-    name = L["Border Offset"],
-    order = 46.3,
-    softMin = 0,
-    softMax = 32,
-    bigStep = 1,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
-  borderSize = {
-    type = "range",
-    name = L["Border Size"],
-    order = 46.4,
-    softMin = 1,
-    softMax = 64,
-    bigStep = 1,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
-  borderInset = {
-    type = "range",
-    name = L["Border Inset"],
-    order = 46.5,
-    softMin = 1,
-    softMax = 32,
-    bigStep = 1,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
-  borderColor = {
-    type = "color",
-    name = L["Border Color"],
-    hasAlpha = true,
-    order = 46.6,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
-  backdropColor = {
-    type = "color",
-    name = L["Backdrop Color"],
-    hasAlpha = true,
-    order = 46.8,
-    disabled = function() return not data.border end,
-    hidden = function() return not data.border end,
-  },
+    border = {
+      type = "toggle",
+      name = L["Border"],
+      order = 46.05
+    },
+    borderEdge = {
+      type = "select",
+      dialogControl = "LSM30_Border",
+      name = L["Border Style"],
+      order = 46.1,
+      values = AceGUIWidgetLSMlists.border,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    borderBackdrop = {
+      type = "select",
+      dialogControl = "LSM30_Background",
+      name = L["Backdrop Style"],
+      order = 46.2,
+      values = AceGUIWidgetLSMlists.background,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    borderOffset = {
+      type = "range",
+      name = L["Border Offset"],
+      order = 46.3,
+      softMin = 0,
+      softMax = 32,
+      bigStep = 1,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    borderSize = {
+      type = "range",
+      name = L["Border Size"],
+      order = 46.4,
+      softMin = 1,
+      softMax = 64,
+      bigStep = 1,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    borderInset = {
+      type = "range",
+      name = L["Border Inset"],
+      order = 46.5,
+      softMin = 1,
+      softMax = 32,
+      bigStep = 1,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    borderColor = {
+      type = "color",
+      name = L["Border Color"],
+      hasAlpha = true,
+      order = 46.6,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    backdropColor = {
+      type = "color",
+      name = L["Backdrop Color"],
+      hasAlpha = true,
+      order = 46.8,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
   }
 
   return union(input, borderOptions);
@@ -6541,7 +6541,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
       if(
         frame.loadedButton:GetExpanded()
         and (not filter or id:lower():find(filter, 1, true) or containsFilter)
-      ) then
+        ) then
         child.frame:Show();
         local group = child:GetGroup();
         if(group) then
@@ -6603,7 +6603,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
     if(
       frame.unloadedButton:GetExpanded()
       and (not filter or id:lower():find(filter, 1, true) or containsFilter)
-    ) then
+      ) then
       local group = child:GetGroup();
       if(group) then
         if not(loaded[group]) then
@@ -6797,7 +6797,7 @@ function WeakAuras.SetThumbnail(data)
 
     thumbnail = thumbnails[id].region;
     if(regionOptions[regionType] and regionOptions[regionType].modifyThumbnail) then
-       WeakAuras.validate(data, regionTypes[regionType].default);
+      WeakAuras.validate(data, regionTypes[regionType].default);
       regionOptions[regionType].modifyThumbnail(button.frame, thumbnail, data, regionTypes[regionType].modify);
     end
 
@@ -6854,12 +6854,12 @@ end
 function WeakAuras.ShowCloneDialog(data)
   if(
     not(
-      data.parent
-      and WeakAuras.GetData(data.parent)
-      and WeakAuras.GetData(data.parent).regionType == "dynamicgroup"
+    data.parent
+    and WeakAuras.GetData(data.parent)
+    and WeakAuras.GetData(data.parent).regionType == "dynamicgroup"
     )
     and not(odb.preventCloneDialog)
-  ) then
+    ) then
     StaticPopupDialogs["WEAKAURAS_CLONE_OPTION_ENABLED"] = {
       text = L["Clone option enabled dialog"],
       button1 = L["Yes"],
@@ -6901,7 +6901,7 @@ function WeakAuras.ShowCloneDialog(data)
         pickonupdate = data.id;
       end,
       OnCancel = function()
-        -- do nothing
+      -- do nothing
       end,
       OnAlt = function()
         odb.preventCloneDialog = true
@@ -6931,7 +6931,7 @@ function WeakAuras.ShowSpellIDDialog(trigger, id)
         AceConfigDialog:Open("WeakAuras", frame.container);
       end,
       OnCancel = function()
-        -- do nothing
+      -- do nothing
       end,
       OnAlt = function()
         odb.preventSpellIDDialog = true

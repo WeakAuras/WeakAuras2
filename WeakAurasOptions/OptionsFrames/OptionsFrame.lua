@@ -5,7 +5,7 @@ local _G = _G
 
 -- WoW APIs
 local GetScreenWidth, GetScreenHeight, GetTime, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
-    = GetScreenWidth, GetScreenHeight, GetTime, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
+  = GetScreenWidth, GetScreenHeight, GetTime, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
 
 -- GLOBALS: WeakAuras WeakAuras_DropDownMenu
 -- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE GetAddOnEnableState
@@ -184,10 +184,10 @@ function WeakAuras.CreateFrame()
     end
   end)
   importbutton:SetScript("OnEnter", function(self)
-      GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-      GameTooltip:SetText("Disable Import")
-      GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras.", 1, 1, 1)
-      GameTooltip:Show()
+    GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+    GameTooltip:SetText("Disable Import")
+    GameTooltip:AddLine("If this option is enabled, you are no longer able to import auras.", 1, 1, 1)
+    GameTooltip:Show()
   end)
   importbutton:SetScript("OnLeave", GameTooltip_Hide)
 
@@ -212,10 +212,10 @@ function WeakAuras.CreateFrame()
     db.frame = db.frame or {};
     db.frame.xOffset = xOffset;
     db.frame.yOffset = yOffset;
-  if(not frame.minimized) then
-    db.frame.width = frame:GetWidth();
-    db.frame.height = frame:GetHeight();
-  end
+    if(not frame.minimized) then
+      db.frame.width = frame:GetWidth();
+      db.frame.height = frame:GetHeight();
+    end
     frame:ClearAllPoints();
     frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
   end

@@ -83,11 +83,11 @@ local function ConstructCodeReview(frame)
   group.codebox = codebox;
 
   codeTree:SetCallback("OnGroupSelected", function(self, event, value)
-     for _, v in pairs(group.data) do
-       if (v.value == value) then
-          codebox:SetText(v.code);
-       end
-     end
+    for _, v in pairs(group.data) do
+      if (v.value == value) then
+        codebox:SetText(v.code);
+      end
+    end
   end);
 
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
