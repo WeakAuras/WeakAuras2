@@ -8,6 +8,7 @@
 ## Notes-ruRU: Опции WeakAuras
 ## Notes-zhTW: WeakAuras的設定
 ## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras
