@@ -924,6 +924,7 @@ function GenericTrigger.Modernize(data)
     local trigger, untrigger;
     if(triggernum == 0) then
       trigger = data.trigger;
+      untrigger = data.untrigger;
     elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
       trigger = data.additional_triggers[triggernum].trigger;
     end
@@ -938,9 +939,9 @@ function GenericTrigger.Modernize(data)
   -- Rename ["event"] = "Cooldown (Spell)" to ["event"] = "Cooldown Progress (Spell)"
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
-
     if(triggernum == 0) then
       trigger = data.trigger;
+      untrigger = data.untrigger;
     elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
       trigger = data.additional_triggers[triggernum].trigger;
     end
