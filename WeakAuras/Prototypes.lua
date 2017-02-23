@@ -2020,7 +2020,6 @@ WeakAuras.event_prototypes = {
       end
     end,
     statesParameter = "full",
-    canHaveAuto = true,
     args = {
       {
         name = "id", -- TODO Is there ever anything useful in ID?
@@ -2217,7 +2216,6 @@ WeakAuras.event_prototypes = {
       end
     end,
     statesParameter = "full",
-    canHaveAuto = true,
     args = {
       {
         name = "addon",

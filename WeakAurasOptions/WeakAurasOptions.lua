@@ -2537,7 +2537,6 @@ function WeakAuras.AddOption(id, data)
           },
           finish_custom = {
             type = "input",
-            width = "half",
             name = L["Custom Code"],
             order = 33,
             multiline = true,
