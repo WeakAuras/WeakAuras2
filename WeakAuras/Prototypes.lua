@@ -449,16 +449,14 @@ end
 function WeakAuras.CheckTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local spec = GetActiveSpecGroup()
-  local _, _, _, selected = GetTalentInfo(tier, column, spec)
+  local _, _, _, selected = GetTalentInfo(tier, column, 1)
   return selected
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local spec = GetActiveSpecGroup()
-  local _, _, _, selected = GetPvpTalentInfo(tier, column, spec)
+  local _, _, _, selected = GetPvpTalentInfo(tier, column, 1)
   return selected
 end
 
