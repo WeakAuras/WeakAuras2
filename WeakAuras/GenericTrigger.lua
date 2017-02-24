@@ -2251,18 +2251,6 @@ do
       end)
     end
   end
-
-  local unitPetFrame;
-  WeakAuras.frames["Unit Pet Handler"] = unitPetFrame;
-  function WeakAuras.WatchForUnitPet()
-    if (not unitPetFrame) then
-      unitPetFrame = CreateFrame("frame");
-      unitPetFrame:RegisterEvent("UNIT_PET");
-      unitPetFrame:SetScript("OnEvent", function()
-        WeakAuras.ScanEvents("WA_UNIT_PET", "pet");
-      end);
-    end
-  end
 end
 
 -- Player Moving
