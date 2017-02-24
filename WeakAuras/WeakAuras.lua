@@ -2407,7 +2407,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
   local id = data.id;
   local key = tostring(region);
   local valid;
-  if(anim and anim.type == "custom" and anim.duration and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
+  if(anim and anim.type == "custom" and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
   valid = true;
   elseif(anim and anim.type == "preset" and anim.preset and anim_presets[anim.preset]) then
   anim = anim_presets[anim.preset];
