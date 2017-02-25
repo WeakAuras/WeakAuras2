@@ -783,9 +783,19 @@ local function checkTrigger(codes, id, trigger, untrigger)
         end
       end
 
-      if(data.desc and data.desc ~= "") then
+      local hasDescription = data.desc and data.desc ~= "";
+      local hasUrl = data.url and data.url ~= "";
+
+      if(hasDescription or hasUrl) then
         tinsert(tooltip, {1, " "});
-        tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
+      end
+
+      if(hasDescription) then
+          tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
+      end
+
+      if (hasUrl) then
+        tinsert(tooltip, {1, data.url, 1, 0.82, 0, 1});
       end
 
       local importbutton;
@@ -957,7 +967,11 @@ local function checkTrigger(codes, id, trigger, untrigger)
           });
         descboxframe:SetBackdropColor(0, 0, 0);
         descboxframe:SetBackdropBorderColor(0.4, 0.4, 0.4);
-        descboxframe:SetHeight(80);
+        if (alterdesc == "desc") then
+          descboxframe:SetHeight(80);
+        else
+          descboxframe:SetHeight(20);
+        end
         descboxframe:SetWidth(260);
         descboxframe:SetPoint("TOP", ItemRefTooltip, "BOTTOM");
         descboxframe:Show();
@@ -973,9 +987,30 @@ local function checkTrigger(codes, id, trigger, untrigger)
         descbox:EnableMouse(true);
         descbox:SetAutoFocus(false);
         descbox:SetCountInvisibleLetters(false);
-        descbox:SetMultiLine(true);
+        descbox:SetMultiLine(alterdesc == "desc");
+
+        if (alterdesc == "url") then
+          if (not descbox.label) then
+            local label = descbox:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
+            label:SetPoint("TOPLEFT", descboxframe, "BOTTOMLEFT", 8, 0);
+            label:SetText(L["Press Ctrl+C to copy"]);
+            descbox.label = label;
+          end
+          descbox.label:Show();
+        else
+          if (descbox.label) then
+            descbox.label:Hide();
+          end
+        end
+
+        local text = data[alterdesc] and data[alterdesc] ~= "" and data[alterdesc] or "";
+        descbox:SetText(text);
+
         descbox:SetScript("OnEscapePressed", function()
             descbox:ClearFocus();
+            if (alterdesc == "url") then
+              return;
+            end
             if(data.desc and data.desc ~= "") then
               descbox:SetText(data.desc);
             else
@@ -983,13 +1018,16 @@ local function checkTrigger(codes, id, trigger, untrigger)
             end
           end);
         descbox:SetScript("OnEnterPressed", function()
+            descbox:ClearFocus();
+            if (alterdesc == "url") then
+              return;
+            end
             if(descbox:GetText() ~= "") then
               data.desc = descbox:GetText();
             else
               data.desc = nil;
             end
-            WeakAuras.ShowDisplayTooltip(data, children, nil, nil, import, nil, true);
-            descbox:ClearFocus();
+            WeakAuras.ShowDisplayTooltip(data, children, nil, nil, import, nil, "desc");
             if(WeakAuras.GetDisplayButton) then
               local button = WeakAuras.GetDisplayButton(data.id);
               if(button) then
@@ -997,12 +1035,18 @@ local function checkTrigger(codes, id, trigger, untrigger)
               end
             end
           end);
-        if(data.desc and data.desc ~= "") then
-          descbox:SetText(data.desc);
+        if (alterdesc == "url") then
+          descbox:SetScript("OnChar", function() descbox:SetText(text); descbox:HighlightText(); end);
+          descbox:SetScript("OnMouseUp", function() descbox:HighlightText(); end);
         else
-          descbox:SetText("");
+          descbox:SetScript("OnChar", nil);
+          descbox:SetScript("OnMouseUp", nil);
         end
+
         descbox:SetFocus();
+        if (alterdesc == "url") then
+          descbox:HighlightText();
+        end
         descbox:Show();
       end
 
