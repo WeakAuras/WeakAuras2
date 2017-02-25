@@ -1,3 +1,5 @@
+local L = WeakAuras.L;
+
 -- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown
@@ -106,6 +108,39 @@ local default = {
     mirror = false,
     frameStrata = 1
 };
+
+local properties = {
+    desaturateForeground = {
+      display = L["Desaturate Foreground"],
+      setter = "SetForegroundDesaturated",
+      type = "bool",
+    },
+    desaturateBackground = {
+      display = L["Desaturate Background"],
+      setter = "SetBackgroundDesaturated",
+      type = "bool",
+    },
+    foregroundColor = {
+      display = L["Foreground Color"],
+      setter = "Color",
+      type = "color"
+    },
+    backgroundColor = {
+      display = L["Background Color"],
+      setter = "SetBackgroundColor",
+      type = "color"
+    },
+    width = {
+      display = L["Width"],
+      setter = "SetRegionWidth",
+      type = "number"
+    },
+    height = {
+      display = L["Height"],
+      setter = "SetRegionHeight",
+      type = "number"
+    },
+}
 
 local spinnerFunctions = {};
 
@@ -349,6 +384,10 @@ local function modify(parent, region, data)
 
     region:SetWidth(data.width);
     region:SetHeight(data.height);
+    region.width = data.width;
+    region.height = data.height;
+    region.scalex = 1;
+    region.scaley = 1;
     region.aspect =  data.width / data.height;
     foreground:SetWidth(data.width);
     foreground:SetHeight(data.height);
@@ -600,6 +639,8 @@ local function modify(parent, region, data)
     region:SetValue(0.667);
 
     function region:Scale(scalex, scaley)
+        region.scalex = scalex;
+        region.scaley = scaley;
         foreground:ClearAllPoints();
         if(scalex < 0) then
             region.mirror_h = not data.mirror;
@@ -637,21 +678,21 @@ local function modify(parent, region, data)
             end
         end
 
-        region:SetWidth(data.width * scalex);
-        region:SetHeight(data.height * scaley);
+        region:SetWidth(region.width * scalex);
+        region:SetHeight(region.height * scaley);
 
         local scaleWedge =  1 / 1.4142 * (1 + (data.crop or 0.41));
-        foregroundSpinner:SetWidth(data.width * scaleWedge * scalex);
-        foregroundSpinner:SetHeight(data.height * scaleWedge * scaley);
-        backgroundSpinner:SetWidth((data.width + data.backgroundOffset * 2) * scaleWedge * scalex);
-        backgroundSpinner:SetHeight((data.height + data.backgroundOffset * 2) * scaleWedge * scaley);
+        foregroundSpinner:SetWidth(region.width * scaleWedge * scalex);
+        foregroundSpinner:SetHeight(region.height * scaleWedge * scaley);
+        backgroundSpinner:SetWidth((region.width + data.backgroundOffset * 2) * scaleWedge * scalex);
+        backgroundSpinner:SetHeight((region.height + data.backgroundOffset * 2) * scaleWedge * scaley);
 
         if(data.orientation == "HORIZONTAL_INVERSE" or data.orientation == "HORIZONTAL") then
-            foreground:SetWidth(data.width * scalex * (region.progress or 1));
-            foreground:SetHeight(data.height * scaley);
+            foreground:SetWidth(region.width * scalex * (region.progress or 1));
+            foreground:SetHeight(region.height * scaley);
         else
-            foreground:SetWidth(data.width * scalex);
-            foreground:SetHeight(data.height * scaley * (region.progress or 1));
+            foreground:SetWidth(region.width * scalex);
+            foreground:SetHeight(region.height * scaley * (region.progress or 1));
         end
         background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", -1 * scalex * data.backgroundOffset, -1 * scaley * data.backgroundOffset);
         background:SetPoint("TOPRIGHT", region, "TOPRIGHT", scalex * data.backgroundOffset, scaley * data.backgroundOffset);
@@ -748,6 +789,31 @@ local function modify(parent, region, data)
             end
         end
     end
+
+    function region:SetForegroundDesaturated(b)
+      region.foreground:SetDesaturated(b);
+      region.foregroundSpinner:SetDesaturated(b);
+    end
+
+    function region:SetBackgroundDesaturated(b)
+      region.background:SetDesaturated(b);
+      region.backgroundSpinner:SetDesaturated(b);
+    end
+
+    function region:SetBackgroundColor(r, g, b, a)
+      region.background:SetVertexColor(r, g, b, a);
+      region.backgroundSpinner:Color(r, g, b, a);
+    end
+
+    function region:SetRegionWidth(width)
+      region.width = width;
+      region:Scale(region.scalex, region.scaley);
+    end
+
+    function region:SetRegionHeight(height)
+      region.height = height;
+      region:Scale(region.scalex, region.scaley);
+    end
 end
 
-WeakAuras.RegisterRegionType("progresstexture", create, modify, default);
+WeakAuras.RegisterRegionType("progresstexture", create, modify, default, properties);
