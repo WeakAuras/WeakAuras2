@@ -1327,7 +1327,8 @@ do
     spellCdRuneHandles[id] = nil;
     spellCdDursRune[id] = nil;
     spellCdExpsRune[id] = nil;
-    local charges = GetSpellCharges(id);
+
+    local charges = WeakAuras.GetSpellCooldownUnified(id);
     local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
@@ -1340,7 +1341,7 @@ do
     spellCdHandles[id] = nil;
     spellCdDurs[id] = nil;
     spellCdExps[id] = nil;
-    local charges = GetSpellCharges(id);
+    local charges = WeakAuras.GetSpellCooldownUnified(id);
     local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
@@ -1440,20 +1441,29 @@ do
     return runeDuration;
   end
 
+  function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
+    local charges, maxCharges, startTime, duration = GetSpellCharges(id);
+    local cooldownBecauseRune = false;
+    if (charges == nil) then -- charges is nil if the spell has no charges
+      startTime, duration = GetSpellCooldown(id);
+      charges = GetSpellCount(id);
+      cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
+    elseif (charges == maxCharges) then
+      startTime, duration = 0, 0;
+    elseif (charges == 0 and duration == 0) then
+      charges = 1;
+    end
+
+    startTime = startTime or 0;
+    duration = duration or 0;
+
+    return charges, maxCharges, startTime, duration, cooldownBecauseRune;
+  end
+
   function WeakAuras.CheckSpellCooldows(runeDuration)
     for id, _ in pairs(spells) do
-      local charges, maxCharges, startTime, duration = GetSpellCharges(id);
-      local cooldownBecauseRune = false;
-      if (charges == nil) then -- charges is nil if the spell has no charges
-        startTime, duration = GetSpellCooldown(id);
-        charges = GetSpellCount(id);
-        cooldownBecauseRune = duration and abs(duration - runeDuration) < 0.001;
-      elseif (charges == maxCharges) then
-        startTime, duration = 0, 0;
-      end
+      local charges, maxCharges, startTime, duration, cooldownBecauseRune = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
 
-      startTime = startTime or 0;
-      duration = duration or 0;
       local time = GetTime();
       local remaining = startTime + duration - time;
 
@@ -1674,17 +1684,9 @@ do
 
     if not(spells[id]) then
       spells[id] = true;
-      local charges, maxCharges, startTime, duration = GetSpellCharges(id);
-      if (charges == nil) then
-          startTime, duration = GetSpellCooldown(id);
-      elseif (charges == maxCharges) then
-          startTime, duration = 0, 0;
-      end
-      startTime = startTime or 0;
-      duration = duration or 0;
 
+      local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
       spellCharges[id] = charges;
-
 
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
