@@ -53,6 +53,8 @@ GetNameAndIcon(data, triggernum)
 GetAdditionalProperties(data, triggernum)
   Returns the tooltip text for additional properties.
 
+GetTriggerConditions(data, triggernum)
+  Returns the potential conditions for a trigger
 ]]--
 
 
@@ -1664,6 +1666,35 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
 
   return ret;
+end
+
+function BuffTrigger.GetTriggerConditions(data, triggernum)
+  local result = {};
+  result["unitCaster"] = {
+    display = L["Caster"],
+    type = "string",
+  }
+
+  result["expirationTime"] = {
+    display = L["Remaining Duration"],
+    type = "timer",
+  }
+  result["duration"] = {
+    display = L["Total Duration"],
+    type = "number",
+  }
+
+  result["stacks"] = {
+    display = L["Stacks"],
+    type = "number"
+  }
+
+  result["name"] = {
+    display = L["Name"],
+    type = "string"
+  }
+
+  return result;
 end
 
 function BuffTrigger.CreateFallbackState(data, triggernum, state)

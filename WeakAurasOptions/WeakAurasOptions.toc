@@ -31,6 +31,7 @@ Cache.lua
 
 WeakAurasOptions.lua
 ExternalAddons.lua
+ConditionOptions.lua
 
 OptionsFrames\OptionsFrame.lua
 # -- Groups

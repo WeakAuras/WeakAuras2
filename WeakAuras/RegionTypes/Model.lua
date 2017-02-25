@@ -1,4 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
+local L = WeakAuras.L;
 
 -- Default settings
 local default = {
@@ -38,6 +39,19 @@ local default = {
     borderBackdrop = "Blizzard Tooltip",
 };
 
+local properties = {
+    width = {
+      display = L["Width"],
+      setter = "SetRegionWidth",
+      type = "number"
+    },
+    height = {
+      display = L["Height"],
+      setter = "SetRegionHeight",
+      type = "number"
+    },
+}
+
 -- Called when first creating a new region/display
 local function create(parent)
     -- Main region
@@ -69,6 +83,10 @@ local function modify(parent, region, data)
     WeakAuras.AnchorFrame(data, region, parent);
     region:SetWidth(data.width);
     region:SetHeight(data.height);
+    region.width = data.width;
+    region.height = data.height;
+    region.scalex = 1;
+    region.scaley = 1;
 
     -- Adjust model
     local register = false;
@@ -155,14 +173,24 @@ local function modify(parent, region, data)
         else
             region.mirror_h = nil;
         end
-        region:SetWidth(data.width * scalex);
+        region:SetWidth(region.width * scalex);
         if(scaley < 0) then
             scaley = scaley * -1;
             region.mirror_v = true;
         else
             region.mirror_v = nil;
         end
-        region:SetHeight(data.height * scaley);
+        region:SetHeight(region.height * scaley);
+    end
+
+    function region:SetRegionWidth(width)
+      region.width = width;
+      region:Scale(region.scalex, region.scaley);
+    end
+
+    function region:SetRegionHeight(height)
+      region.height = height;
+      region:Scale(region.scalex, region.scaley);
     end
 
     -- Roate model
@@ -211,7 +239,7 @@ local function modify(parent, region, data)
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("model", create, modify, default);
+WeakAuras.RegisterRegionType("model", create, modify, default, properties);
 
 -- Work around for movies and world map hiding all models
 do

@@ -10,6 +10,13 @@ local function createOptions(id, data)
             disabled = function() return not WeakAuras.CanHaveDuration(data); end,
             get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
         },
+        inverse = {
+            type = "toggle",
+            name = L["Inverse"],
+            order = 6,
+            disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
+            get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end
+        },
         auto = {
             type = "toggle",
             name = L["Automatic Icon"],
@@ -39,18 +46,15 @@ local function createOptions(id, data)
             order = 18,
             func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
         },
-
         desaturate = {
             type = "toggle",
             name = L["Desaturate"],
             order = 18.5,
         },
-        inverse = {
+        glow = {
             type = "toggle",
-            name = L["Inverse"],
-            order = 6,
-            disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
-            get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end
+            name = L["Glow"],
+            order = 19,
         },
         displayStacks = {
             type = "input",
@@ -66,13 +70,7 @@ local function createOptions(id, data)
             type = "color",
             name = L["Color"],
             hasAlpha = true,
-            order = 42
-        },
-        stacksPoint = {
-            type = "select",
-            name = L["Text Position"],
-            order = 41,
-            values = WeakAuras.point_types
+            order = 40.5
         },
         customTextUpdate = {
             type = "select",
@@ -102,6 +100,12 @@ local function createOptions(id, data)
             hidden = function()
                 return not data.displayStacks:find("%%c")
             end,
+        },
+        stacksPoint = {
+            type = "select",
+            name = L["Text Position"],
+            order = 42,
+            values = WeakAuras.point_types
         },
         stacksContainment = {
             type = "select",

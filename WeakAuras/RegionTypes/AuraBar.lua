@@ -1,5 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
+local L = WeakAuras.L;
 
 -- Default settings
 local default = {
@@ -64,6 +64,79 @@ local default = {
   frameStrata = 1,
   customTextUpdate = "update",
   zoom = 0,
+};
+
+local properties = {
+    barColor = {
+      display = L["Bar Color"],
+      setter = "Color",
+      type = "color",
+    },
+    icon_color = {
+      display = L["Icon Color"],
+      setter = "SetIconColor",
+      type = "color"
+    },
+    backgroundColor = {
+      display = L["Background Color"],
+      setter = "SetBackgroundColor",
+      type = "color"
+    },
+    sparkColor = {
+      display = L["Spark Color"],
+      setter = "SetSparkColor",
+      type = "color"
+    },
+    sparkHeight = {
+      display = L["Spark Height"],
+      setter = "SetSparkHeight",
+      type = "number"
+    },
+    sparkWidth = {
+      display = L["Spark Width"],
+      setter = "SetSparkWidth",
+      type = "number"
+    },
+    borderColor = {
+      display = L["Border Color"],
+      setter = "SetBorderColor",
+      type = "color"
+    },
+    backdropColor = {
+      display = L["Backdrop Color"],
+      setter = "SetBackdropColor",
+      type = "color"
+    },
+    textColor = {
+      display = L["First Text Color"],
+      setter = "SetTextColor",
+      type = "color"
+    },
+    timerColor = {
+      display = L["Second Text Color"],
+      setter = "SetTimerColor",
+      type = "color"
+    },
+    textSize = {
+      display = L["First Text Size"],
+      setter = "SetTextSize",
+      type = "number"
+    },
+    timerSize = {
+      display = L["Second Text Size"],
+      setter = "SetTimerSize",
+      type = "number"
+    },
+    width = {
+      display = L["Width"],
+      setter = "SetRegionWidth",
+      type = "number"
+    },
+    height = {
+      display = L["Height"],
+      setter = "SetRegionHeight",
+      type = "number"
+    },
 };
 
 -- Returns tex Coord for 90° rotations + x or y flip
@@ -523,7 +596,7 @@ local function orientHorizontalInverse(region, data)
   if textDegrees == 0 then
     local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
     if (data.icon) then
-      usedSpace = usedSpace + math.min(data.height, data.width);
+      usedSpace = usedSpace + math.min(region.height, region.width);
     end
     text:SetWidth(data.width - usedSpace);
     text:SetJustifyH("RIGHT");
@@ -532,6 +605,7 @@ local function orientHorizontalInverse(region, data)
     text:SetJustifyH("CENTER");
   end
 end
+
 local function orientHorizontal(region, data)
   -- Localize
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
@@ -578,7 +652,7 @@ local function orientHorizontal(region, data)
   if textDegrees == 0 then
     local usedSpace = timer.visible and (timer:GetWidth() + (data.textSize/2)) or 0;
     if (data.icon) then
-      usedSpace = usedSpace + math.min(data.height, data.width);
+      usedSpace = usedSpace + math.min(region.height, region.width);
     end
     text:SetWidth(data.width - usedSpace);
     text:SetJustifyH("LEFT");
@@ -844,15 +918,19 @@ local function modify(parent, region, data)
   region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
 
   -- Adjust region size
-    region:SetWidth(data.width);
-    region:SetHeight(data.height);
+  region:SetWidth(data.width);
+  region:SetHeight(data.height);
+  region.width = data.width;
+  region.height = data.height;
+  region.scalex = 1;
+  region.scaley = 1;
 
   -- Reset anchors
   region:ClearAllPoints();
   WeakAuras.AnchorFrame(data, region, parent);
 
   -- Set overall alpha
-    region:SetAlpha(data.alpha);
+  region:SetAlpha(data.alpha);
 
     -- Update border
   if data.border then
@@ -882,7 +960,7 @@ local function modify(parent, region, data)
   bar:SetBackgroundColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   -- Update spark settings
   bar.spark:SetTexture(data.sparkTexture);
-  bar.spark:SetVertexColor(data.sparkColor[1], data.sparkColor[2], data.sparkColor[3], data.sparkColor[4]); -- TODO introduce function?
+  bar.spark:SetVertexColor(data.sparkColor[1], data.sparkColor[2], data.sparkColor[3], data.sparkColor[4]);
   bar.spark:SetWidth(data.sparkWidth);
   bar.spark:SetHeight(data.sparkHeight);
   bar.spark.sparkHidden = data.spark and data.sparkHidden or "ALWAYS";
@@ -961,11 +1039,13 @@ local function modify(parent, region, data)
   -- Update icon visibility
     if data.icon then
     -- Update icon
-    local iconsize = math.min(data.height, data.width);
+    local iconsize = math.min(region.height, region.width);
     icon:SetWidth(iconsize);
     icon:SetHeight(iconsize);
     local texWidth = 0.25 * data.zoom;
     icon:SetTexCoord(GetTexCoordZoom(texWidth))
+    icon:SetDesaturated(data.desaturate);
+    icon:SetVertexColor(data.icon_color[1], data.icon_color[2], data.icon_color[3], data.icon_color[4]);
 
     -- Icon update function
         function region:SetIcon(path)
@@ -978,16 +1058,13 @@ local function modify(parent, region, data)
                 or "Interface\\Icons\\INV_Misc_QuestionMark"
             );
             self.icon:SetTexture(iconPath);
-            self.icon:SetDesaturated(data.desaturate);
-            self.icon:SetVertexColor(data.icon_color[1], data.icon_color[2], data.icon_color[3], data.icon_color[4]);
             region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
 
-      -- Update text
+            -- Update text
             UpdateText(self, data);
         end
---    region:SetIcon("");
 
-    -- Update icon visibility
+        -- Update icon visibility
         icon:Show();
 
     -- Update stack text visibility
@@ -1085,8 +1162,10 @@ local function modify(parent, region, data)
 
   -- Scale update function
     function region:Scale(scalex, scaley)
-    -- Icon size
-    local iconsize = math.min(data.height, data.width);
+      region.scalex = scalex;
+      region.scaley = scaley;
+      -- Icon size
+      local iconsize = math.min(region.height, region.width);
 
     -- Re-orientate region
         if scalex < 0 then
@@ -1113,7 +1192,7 @@ local function modify(parent, region, data)
         end
 
     -- Update width
-        self:SetWidth(data.width * scalex);
+        self:SetWidth(region.width * scalex);
         icon:SetWidth(iconsize * scalex);
 
     -- Re-orientate region
@@ -1141,7 +1220,7 @@ local function modify(parent, region, data)
         end
 
     -- Update height
-        self:SetHeight(data.height * scaley);
+        self:SetHeight(region.height * scaley);
         icon:SetHeight(iconsize * scaley);
     end
 --  region:Scale(1.0, 1.0);
@@ -1206,9 +1285,67 @@ local function modify(parent, region, data)
     end
 --  region:SetDurationInfo(1, 0, nil, nil);
 
+    function region:SetIconColor(r, g, b, a)
+      self.icon:SetVertexColor(r, g, b, a);
+    end
+
+    function region:SetBackgroundColor(r, g, b, a)
+      self.bar:SetBackgroundColor(r, g, b, a);
+    end
+
+    function region:SetSparkColor(r, g, b, a)
+      self.bar.spark:SetVertexColor(r, g, b, a);
+    end
+
+    function region:SetSparkHeight(height)
+      self.bar.spark:SetHeight(height);
+    end
+
+    function region:SetSparkWidth(width)
+      self.bar.spark:SetWidth(width);
+    end
+
+    function region:SetBorderColor(r, g, b, a)
+      self.border:SetBackdropBorderColor(r, g, b, a);
+    end
+
+    function region:SetBackdropColor(r, g, b, a)
+      self.border:SetBackdropColor(r, g, b, a);
+    end
+
+    function region:SetTextColor(r, g, b, a)
+      self.text:SetTextColor(r, g, b, a);
+    end
+
+    function region:SetTimerColor(r, g, b, a)
+      self.timer:SetTextColor(r, g, b, a);
+    end
+
+    function region:SetTextSize(size)
+      self.text:SetFont(SharedMedia:Fetch("font", data.textFont), size, data.textFlags and data.textFlags ~= "None" and data.textFlags);
+      self.text:SetTextHeight(size);
+      self.bar:Update();
+    end
+
+    function region:SetTimerSize(size)
+      timer:SetFont(SharedMedia:Fetch("font", data.timerFont), size, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
+      timer:SetTextHeight(size);
+      self.bar:Update();
+    end
+
+    function region:SetRegionWidth(width)
+      self.width = width;
+      self:Scale(self.scalex, self.scaley);
+    end
+
+    function region:SetRegionHeight(height)
+      self.height = height;
+      self:Scale(self.scalex, self.scaley);
+    end
+
   -- Update internal bar alignment
   region.bar:Update();
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, properties);

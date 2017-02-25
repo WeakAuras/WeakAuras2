@@ -2,8 +2,6 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer
 
--- TODO Display Templates
-
 -- The templates tables are created on demand
 local templates =
 {

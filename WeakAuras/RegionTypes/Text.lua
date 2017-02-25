@@ -1,5 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L
+local L = WeakAuras.L;
 
 local default = {
     displayText = "%p",
@@ -16,6 +16,19 @@ local default = {
     frameStrata = 1,
     customTextUpdate = "update"
 };
+
+local properties = {
+    color = {
+      display = L["Color"],
+      setter = "Color",
+      type = "color",
+    },
+    fontSize = {
+      display = L["Font Size"],
+      setter = "SetTextHeight",
+      type = "number"
+    }
+}
 
 local function create(parent)
     local region = CreateFrame("FRAME", nil, parent);
@@ -245,6 +258,12 @@ local function modify(parent, region, data)
         UpdateText();
     end
 
+    function region:SetTextHeight(size)
+      local fontPath = SharedMedia:Fetch("font", data.font);
+      region.text:SetFont(fontPath, size, data.outline);
+      region.text:SetTextHeight(size)
+    end
+
     function region:SetName(name)
         region.values.name = name or data.id;
         UpdateText();
@@ -256,7 +275,7 @@ local function modify(parent, region, data)
     end
 end
 
-WeakAuras.RegisterRegionType("text", create, modify, default);
+WeakAuras.RegisterRegionType("text", create, modify, default, properties);
 
 -- Fallback region type
 

@@ -389,12 +389,12 @@ WeakAuras.miss_types = {
 };
 
 WeakAuras.environmental_types = {
-  DROWNING = L["Drowning"],
-  FALLING = L["Falling"],
-  FATIGUE = L["Fatigue"],
-  FIRE = L["Fire"],
-  LAVA = L["Lava"],
-  SLIME = L["Slime"]
+  Drowning = L["Drowning"],
+  Falling = L["Falling"],
+  Fatigue = L["Fatigue"],
+  Fire = L["Fire"],
+  Lava = L["Lava"],
+  Slime = L["Slime"]
 };
 
 WeakAuras.orientation_types = {
@@ -956,6 +956,12 @@ WeakAuras.operator_types = {
   ["<="] = L["<="]
 };
 
+WeakAuras.equality_operator_types = {
+  ["=="] = L["="],
+  ["~="] = L["!="],
+};
+
+
 WeakAuras.string_operator_types = {
   ["=="] = L["Is Exactly"],
   ["find('%s')"] = L["Contains"],
@@ -1348,7 +1354,18 @@ WeakAuras.charges_change_type = {
   CHANGED = L["Changed"]
 }
 
+WeakAuras.charges_change_condition_type = {
+  GAINED = L["Gained"],
+  LOST = L["Lost"]
+}
+
 WeakAuras.combat_event_type = {
   PLAYER_REGEN_ENABLED = L["Leaving"],
   PLAYER_REGEN_DISABLED = L["Entering"]
+}
+
+WeakAuras.bool_types =
+{
+  [0] = L["False"],
+  [1] = L["True"],
 }
