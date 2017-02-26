@@ -2263,7 +2263,9 @@ function WeakAuras.PerformActions(data, type, region)
         WeakAuras_ShowOverlayGlow(glow_frame);
       elseif(actions.glow_action == "hide") then
         WeakAuras_HideOverlayGlow(glow_frame);
-        WeakAuras_HideOverlayGlow(original_glow_frame);
+        if original_glow_frame then
+          WeakAuras_HideOverlayGlow(original_glow_frame);
+        end
       end
     end
   end
