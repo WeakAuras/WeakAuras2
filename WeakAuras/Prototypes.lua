@@ -1716,6 +1716,7 @@ WeakAuras.event_prototypes = {
       "ITEM_SLOT_COOLDOWN_STARTED",
       "ITEM_SLOT_COOLDOWN_CHANGED",
       "COOLDOWN_REMAINING_CHECK",
+      "ITEM_SLOT_COOLDOWN_ITEM_CHANGED"
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],

@@ -1568,7 +1568,7 @@ do
   end
 
   function WeakAuras.CheckItemSlotCooldowns()
-    for id, _ in pairs(itemSlots) do
+    for id, itemId in pairs(itemSlots) do
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
       startTime = startTime or 0;
@@ -1606,6 +1606,12 @@ do
           end
           ItemSlotCooldownFinished(id);
         end
+      end
+
+      local newItemId = GetInventoryItemID("player", id);
+      if (itemId ~= newItemId) then
+        WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_ITEM_CHANGED");
+        itemSlots[id] = newItemId;
       end
     end
   end
@@ -1736,7 +1742,7 @@ do
     if not id or id == 0 then return end
 
     if not(itemSlots[id]) then
-      itemSlots[id] = true;
+      itemSlots[id] = GetInventoryItemID("player", id);
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
