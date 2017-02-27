@@ -1,12 +1,7 @@
 if not(GetLocale() == "koKR") then
-    return;
+  return
 end
 
 local L = WeakAuras.L
 
--- Options translation
 --@localization(locale="koKR", format="lua_additive_table", namespace="WeakAuras / Templates")@
-
-
---@do-not-package@
---@end-do-not-package@

@@ -1,5 +1,5 @@
 if not(GetLocale() == "koKR") then
-    return
+  return
 end
 
 local L = WeakAuras.L

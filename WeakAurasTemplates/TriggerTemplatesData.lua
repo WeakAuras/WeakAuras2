@@ -3507,7 +3507,7 @@ tinsert(templates.general.args, {
 });
 
 tinsert(templates.general.args, { spell = 2825, type = "buff", unit = "player",
-  overideTitle = L["BloodLust/Heroism"],
+  overideTitle = L["Bloodlust/Heroism"],
   spellIds = {2825, 32182, 80353, 90355, 160452} }
 );
 
@@ -3647,8 +3647,8 @@ templates.items[7] = {
   title = L["PVP Set"],
   args = {
     { spell = 165638, type = "buff", unit = "player", titleSuffix = L["- Warrior 2P Bonus"]},
-    { spell = 166062, type = "buff", unit = "player", titleSuffix = L["- Deathknight Unholy 4P Bonus"]},
-    { spell = 166021, type = "buff", unit = "player", titleSuffix = L["- Deathknight 2P Bonus"]},
+    { spell = 166062, type = "buff", unit = "player", titleSuffix = L["- Death Knight Unholy 4P Bonus"]},
+    { spell = 166021, type = "buff", unit = "player", titleSuffix = L["- Death Knight 2P Bonus"]},
     { spell = 171380, type = "buff", unit = "player", titleSuffix = L["- Warlock Affliction 4P/Demonology 2P Bonus"]},
     { spell = 181744, type = "buff", unit = "player", titleSuffix = L["- Monk Windwalker 4P Bonus"]},
     { spell = 170882, type = "buff", unit = "player", titleSuffix = L["- Rogue Assassination/Outlaw 4P Bonus"]},

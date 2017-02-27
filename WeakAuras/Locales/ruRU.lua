@@ -1,5 +1,5 @@
 if not(GetLocale() == "ruRU") then
-    return
+  return
 end
 
 local L = WeakAuras.L

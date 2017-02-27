@@ -9,16 +9,7 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
 
-Localization-enUS.lua
-Localization-deDE.lua
-Localization-esES.lua
-Localization-esMX.lua
-Localization-frFR.lua
-Localization-koKR.lua
-Localization-ptBR.lua
-Localization-ruRU.lua
-Localization-zhCN.lua
-Localization-zhTW.lua
+locales.xml
 
 TriggerTemplates.lua
 TriggerTemplatesData.lua
