@@ -1806,7 +1806,7 @@ WeakAuras.event_prototypes = {
       return "";
     end,
     iconFunc = function(trigger)
-      return GetInventoryItemTexture("player", trigger.itemSlot or 0);
+      return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
     end,
     automaticrequired = true,
     automaticAutoHide = false

@@ -1621,7 +1621,7 @@ do
       local newItemId = GetInventoryItemID("player", id);
       if (itemId ~= newItemId) then
         WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_ITEM_CHANGED");
-        itemSlots[id] = newItemId;
+        itemSlots[id] = newItemId or 0;
       end
     end
   end
