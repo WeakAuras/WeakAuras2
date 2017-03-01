@@ -844,7 +844,7 @@ WeakAuras.event_prototypes = {
         name = "class",
         display = L["Class"],
         type = "select",
-        init = "select(2, UnitClass(unit))",
+        init = "select(2, UnitClass(concernedUnit))",
         values = "class_types",
         store = true
       },
@@ -923,13 +923,13 @@ WeakAuras.event_prototypes = {
         name = "health",
         display = L["Health"],
         type = "number",
-        init = "UnitHealth(unit)"
+        init = "UnitHealth(concernedUnit)"
       },
       {
         name = "percenthealth",
         display = L["Health (%)"],
         type = "number",
-        init = "(UnitHealth(unit) / math.max(1, UnitHealthMax(unit))) * 100"
+        init = "(UnitHealth(concernedUnit) / math.max(1, UnitHealthMax(concernedUnit))) * 100"
       },
       {
         hidden = true,
@@ -1009,13 +1009,13 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = "UnitPower(unit, powerType)"
+        init = "UnitPower(concernedUnit, powerType)"
       },
       {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "((UnitPower(unit, powerType) or 0) / math.max(1, UnitPowerMax(unit, powerType))) * 100;"
+        init = "((UnitPower(concernedUnit, powerType) or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType))) * 100;"
       },
       {
         hidden = true,
@@ -1077,7 +1077,7 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Alternate Power"],
         type = "number",
-        init = "UnitPower(unit, 10)"
+        init = "UnitPower(concernedUnit, 10)"
       },
       {
         hidden = true,
