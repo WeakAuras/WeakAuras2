@@ -1,5 +1,4 @@
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 -- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 

@@ -1,11 +1,9 @@
 -- Lua APIs
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
-local loadstring, assert, error = loadstring, assert, error
+local pairs, type = pairs, type
+local loadstring = loadstring
 
 -- WoW APIs
 local CreateFrame = CreateFrame
-
--- GLOBALS: WeakAuras
 
 local AceGUI = LibStub("AceGUI-3.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")

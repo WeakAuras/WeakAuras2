@@ -1,10 +1,8 @@
 -- Lua APIs
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local pairs  = pairs
 
 -- WoW APIs
 local CreateFrame, GetSpellInfo = CreateFrame, GetSpellInfo
-
--- GLOBALS: WeakAuras
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")

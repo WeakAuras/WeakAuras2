@@ -1,10 +1,8 @@
 -- Lua APIs
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local pairs = pairs
 
 -- WoW APIs
 local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
-
--- GLOBALS: WeakAuras
 
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -586,7 +584,7 @@ local function ConstructMoverSizer(parent)
 end
 
 function WeakAuras.MoverSizer(parent)
-  if not moversizer or not __mover then
+  if not moversizer or not mover then
     moversizer, mover = ConstructMoverSizer(parent)
   end
   return moversizer, mover

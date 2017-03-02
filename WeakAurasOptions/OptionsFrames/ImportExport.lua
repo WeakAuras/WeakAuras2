@@ -1,11 +1,8 @@
 -- Lua APIs
-local fmt, tostring, string_char, strtrim, strsub = string.format, tostring, string.char, strtrim, strsub
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local strtrim, strsub = strtrim, strsub
 
 -- WoW APIs
 local GetTime, CreateFrame = GetTime, CreateFrame
-
--- GLOBALS: WeakAuras
 
 local AceGUI = LibStub("AceGUI-3.0")
 

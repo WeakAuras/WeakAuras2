@@ -11,8 +11,8 @@ local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
     = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
     = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
-    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
+    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
     = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo

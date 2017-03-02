@@ -1,12 +1,9 @@
 -- Lua APIs
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
-local loadstring, assert, error = loadstring, assert, error
+local pairs = pairs
 
 -- WoW APIs
 local CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
   = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
-
--- GLOBALS: WeakAuras
 
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 

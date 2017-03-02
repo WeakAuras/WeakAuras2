@@ -1,6 +1,6 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local tinsert, wipe = table.insert, wipe
+local pairs = pairs
 
 local AceGUI = LibStub("AceGUI-3.0")
 

@@ -1,19 +1,16 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local fmt, tostring, string_char = string.format, tostring, string.char
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
-local loadstring, assert, error = loadstring, assert, error
-local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
-local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
+local tinsert = table.insert
+local tostring = tostring
+local select, pairs, type = select, pairs, type
 local ceil, min = ceil, min
 
 -- WoW APIs
-local GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo = GetPvpTalentInfo, GetActiveSpecGroup, GetTalentInfo
+local GetPvpTalentInfo, GetTalentInfo = GetPvpTalentInfo, GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
 local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
 local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
-local GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetTotemInfo, GetItemCount, GetItemIcon
-local GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm = GetShapeshiftFormInfo, GetNumShapeshiftForms, GetShapeshiftForm
+local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
+local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
 
 local WeakAuras = WeakAuras;

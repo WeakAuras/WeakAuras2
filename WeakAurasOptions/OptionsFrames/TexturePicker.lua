@@ -1,17 +1,17 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local wipe = wipe
+local pairs, next, type = pairs, next, type
 
 -- WoW APIs
 local CreateFrame = CreateFrame
-
--- GLOBALS: WeakAuras
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
+local getAll = WeakAuras.getAll
+local setAll = WeakAuras.setAll
 
 local texturePicker
 

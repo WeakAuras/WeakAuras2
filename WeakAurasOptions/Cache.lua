@@ -1,10 +1,8 @@
 -- Lua APIs
-local select, pairs, next, type, assert, error, coroutine = select, pairs, next, type, assert, error, coroutine
+local pairs, error, coroutine = pairs, error, coroutine
 
 -- WoW APIs
 local GetSpellInfo, IsSpellKnown = GetSpellInfo, IsSpellKnown
-
--- GLOBALS: WeakAuras
 
 local WeakAuras = WeakAuras
 

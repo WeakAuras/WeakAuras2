@@ -1,13 +1,12 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local select, pairs, next, type, unpack, error = select, pairs, next, type, unpack, error
+local tinsert, tremove, wipe = table.insert, table.remove, wipe
+local pairs, type, error = pairs, type, error
 local _G = _G
 
 -- WoW APIs
-local GetScreenWidth, GetScreenHeight, GetTime, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
-  = GetScreenWidth, GetScreenHeight, GetTime, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
+local GetScreenWidth, GetScreenHeight, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
+  = GetScreenWidth, GetScreenHeight, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
 
--- GLOBALS: WeakAuras WeakAuras_DropDownMenu
 -- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE GetAddOnEnableState
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -670,16 +669,17 @@ function WeakAuras.CreateFrame()
         font = "Friz Quadrata TT",
         fontSize = 8,
         displayText = [[
-b4vmErLxtfM
-xu5fDEn1CEn
-vmUmJyZ4hyY
-DtnEnvBEnfz
-EnfzErLxtjx
-zNL2BUrvEWv
-MxtfwDYfMyH
-jNxtLgzEnLt
-LDNx051u25L
-tXmdmY4fDE5]];
+          b4vmErLxtfM
+          xu5fDEn1CEn
+          vmUmJyZ4hyY
+          DtnEnvBEnfz
+          EnfzErLxtjx
+          zNL2BUrvEWv
+          MxtfwDYfMyH
+          jNxtLgzEnLt
+          LDNx051u25L
+          tXmdmY4fDE5
+        ]];
       };
 
       local thumbnail = regionOptions["text"].createThumbnail(UIParent);

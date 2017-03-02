@@ -1,20 +1,17 @@
 -- Lua APIs
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local fmt, tostring, string_char, strtrim, strsub = string.format, tostring, string.char, strtrim, strsub
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
+local tinsert, tremove, wipe = table.insert, table.remove, wipe
+local fmt, tostring = string.format, tostring
+local pairs, type, unpack = pairs, type, unpack
 local loadstring, assert, error = loadstring, assert, error
-local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
-local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-local coroutine, rad, sqrt, atan2, floor, cos, sin = coroutine, rad, sqrt, atan2, floor, cos, sin
+local coroutine = coroutine
 local _G = _G
 
 -- WoW APIs
-local InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
-  = InCombatLockdown, IsShiftKeyDown, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
+local InCombatLockdown, IsShiftKeyDown, SetCursor = InCombatLockdown, IsShiftKeyDown, SetCursor
 local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
   = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
-local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
-  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
+  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -1567,6 +1564,7 @@ local function getAll(data, info, ...)
   end
   return unpack(combinedValues);
 end
+WeakAuras.getAll = getAll
 
 local function setAll(data, info, ...)
   WeakAuras.pauseOptionsProcessing(true);
@@ -1598,6 +1596,7 @@ local function setAll(data, info, ...)
   WeakAuras.ScanForLoads();
   WeakAuras.SortDisplayButtons();
 end
+WeakAuras.setAll = setAll
 
 local function hiddenAll(data, info)
   if(#data.controlledChildren == 0 and info[1] ~= "group") then
