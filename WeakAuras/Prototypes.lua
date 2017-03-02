@@ -2390,11 +2390,11 @@ WeakAuras.event_prototypes = {
         local charges = WeakAuras.GetSpellCharges(spellname);
         startTime = startTime or 0;
         duration = duration or 0;
-        local onCooldown = startTime > 0;
-        local active = IsUsableSpell(spellname) and not onCooldown
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
+        local ready = startTime == 0 or charges > 0
+        local active = IsUsableSpell(spellname) and ready
       ]=]
       if(trigger.use_targetRequired) then
         ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
