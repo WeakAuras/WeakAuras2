@@ -1452,7 +1452,7 @@ WeakAuras.event_prototypes = {
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
         local charges = WeakAuras.GetSpellCharges(spellname);
         if (charges == nil) then
-            charges = (duration == 0) and 1 or 0;
+          charges = (duration == 0) and 1 or 0;
         end
         local showOn = %s
       ]=];
@@ -2385,8 +2385,6 @@ WeakAuras.event_prototypes = {
         local spellname = [[%s]]
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
         local charges = WeakAuras.GetSpellCharges(spellname);
-        startTime = startTime or 0;
-        duration = duration or 0;
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
