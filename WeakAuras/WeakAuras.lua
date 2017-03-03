@@ -606,7 +606,7 @@ function WeakAuras.CreateTalentCache()
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
       -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, GetActiveSpecGroup())
+      local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
       local talentId = (tier-1)*3+column
       -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
       if (talentName and talentIcon) then
@@ -617,7 +617,7 @@ function WeakAuras.CreateTalentCache()
 
   for tier = 1, MAX_PVP_TALENT_TIERS do
     for column = 1, MAX_PVP_TALENT_COLUMNS do
-      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, GetActiveSpecGroup());
+      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, 1);
       local talentId = (tier-1)*3+column
       if (talentName and talentIcon) then
         WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
