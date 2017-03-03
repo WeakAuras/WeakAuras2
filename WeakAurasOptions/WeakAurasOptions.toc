@@ -18,14 +18,14 @@ locales.xml
 
 ForAllIndentsAndPurposes.lua
 
-RegionOptions\aurabar.lua
-RegionOptions\texture.lua
-RegionOptions\icon.lua
-RegionOptions\text.lua
-RegionOptions\group.lua
-RegionOptions\dynamicgroup.lua
-RegionOptions\model.lua
-RegionOptions\progresstexture.lua
+RegionOptions\AuraBar.lua
+RegionOptions\Texture.lua
+RegionOptions\Icon.lua
+RegionOptions\Text.lua
+RegionOptions\Group.lua
+RegionOptions\DynamicGroup.lua
+RegionOptions\Model.lua
+RegionOptions\ProgressTexture.lua
 
 Cache.lua
 
