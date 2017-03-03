@@ -1,5 +1,3 @@
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-
 -- GLOBALS: WeakAuras
 
 -- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function

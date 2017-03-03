@@ -7,7 +7,7 @@ local coroutine = coroutine
 local _G = _G
 
 -- WoW APIs
-local InCombatLockdown, IsShiftKeyDown, SetCursor = InCombatLockdown, IsShiftKeyDown, SetCursor
+local InCombatLockdown = InCombatLockdown
 local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
   = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
 local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
@@ -20,7 +20,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
--- GLOBALS: WeakAuras WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
+-- GLOBALS: WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
 -- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
 -- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GetAddOnEnableState
 
@@ -62,6 +62,7 @@ local tempGroup = {
   yOffset = 0
 };
 WeakAuras.tempGroup = tempGroup;
+
 function WeakAuras.MultipleDisplayTooltipDesc()
   local desc = {{L["Multiple Displays"], L["Temporary Group"]}};
   for index, id in pairs(tempGroup.controlledChildren) do
@@ -72,6 +73,7 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
   return desc;
 end
+
 function WeakAuras.MultipleDisplayTooltipMenu()
   local menu = {
     {
@@ -227,46 +229,20 @@ end
 local trigger_types = WeakAuras.trigger_types;
 local debuff_types = WeakAuras.debuff_types;
 local unit_types = WeakAuras.unit_types;
-local actual_unit_types = WeakAuras.actual_unit_types;
 local actual_unit_types_with_specific = WeakAuras.actual_unit_types_with_specific;
-local threat_unit_types = WeakAuras.threat_unit_types;
-local unit_threat_situations = WeakAuras.unit_threat_situations;
-local no_unit_threat_situations = WeakAuras.no_unit_threat_situations;
-local class_for_stance_types = WeakAuras.class_for_stance_types;
-local class_types = WeakAuras.class_types;
-local deathknight_form_types = WeakAuras.deathknight_form_types;
-local druid_form_types = WeakAuras.druid_form_types;
-local paladin_form_types = WeakAuras.paladin_form_types;
-local priest_form_types = WeakAuras.priest_form_types;
-local rogue_form_types = WeakAuras.rogue_form_types;
-local shaman_form_types = WeakAuras.shaman_form_types;
-local warrior_form_types = WeakAuras.warrior_form_types;
-local monk_form_types = WeakAuras.monk_form_types;
-local single_form_types = WeakAuras.single_form_types;
-local blend_types = WeakAuras.blend_types;
 local point_types = WeakAuras.point_types;
 local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
 local subevent_prefix_types = WeakAuras.subevent_prefix_types;
 local subevent_actual_prefix_types = WeakAuras.subevent_actual_prefix_types;
 local subevent_suffix_types = WeakAuras.subevent_suffix_types;
-local power_types = WeakAuras.power_types;
-local miss_types = WeakAuras.miss_types;
-local environmental_types = WeakAuras.environmental_types;
-local aura_types = WeakAuras.aura_types;
-local orientation_types = WeakAuras.orientation_types;
-local spec_types = WeakAuras.spec_types;
-local totem_types = WeakAuras.totem_types;
 local operator_types = WeakAuras.operator_types;
 local string_operator_types = WeakAuras.string_operator_types;
-local weapon_types = WeakAuras.weapon_types;
-local rune_specific_types = WeakAuras.rune_specific_types;
 local check_types = WeakAuras.check_types;
 local custom_trigger_types = WeakAuras.custom_trigger_types;
 local eventend_types = WeakAuras.eventend_types;
 local autoeventend_types = WeakAuras.autoeventend_types;
 local justify_types = WeakAuras.justify_types;
-local grow_types = WeakAuras.grow_types;
 local align_types = WeakAuras.align_types;
 local rotated_align_types = WeakAuras.rotated_align_types;
 local anim_types = WeakAuras.anim_types;
@@ -276,11 +252,9 @@ local anim_alpha_types = WeakAuras.anim_alpha_types;
 local anim_rotate_types = WeakAuras.anim_rotate_types;
 local anim_color_types = WeakAuras.anim_color_types;
 local group_types = WeakAuras.group_types;
-local difficulty_types = WeakAuras.difficulty_types;
 local anim_start_preset_types = WeakAuras.anim_start_preset_types;
 local anim_main_preset_types = WeakAuras.anim_main_preset_types;
 local anim_finish_preset_types = WeakAuras.anim_finish_preset_types;
-local chat_message_types = WeakAuras.chat_message_types;
 local send_chat_message_types = WeakAuras.send_chat_message_types;
 local sound_types = WeakAuras.sound_types;
 local duration_types = WeakAuras.duration_types;

@@ -21,7 +21,7 @@ ImportString(str)
 -- Lua APIs
 local tinsert = table.insert
 local tostring, string_char, strsplit = tostring, string.char, strsplit
-local pairs, next, type, unpack = pairs, next, type, unpack
+local pairs, type, unpack = pairs, type, unpack
 local error = error
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 local coroutine = coroutine
@@ -37,7 +37,7 @@ local regionTypes = WeakAuras.regionTypes;
 local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
 
--- Local Functions
+-- Local functions
 local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay

@@ -1,14 +1,13 @@
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
-local fmt, tostring, select, pairs, next, type, unpack = string.format, tostring, select, pairs, next, type, unpack
+local fmt, tostring, select, pairs, next, type = string.format, tostring, select, pairs, next, type
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable = setmetatable, getmetatable
 local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
-local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-    = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
     = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
@@ -319,7 +318,7 @@ local function WeakAuras_HideOverlayGlow(frame)
 end
 
 local function forbidden()
-  print("|cffffff00A WeakAura you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
+  print("|cffffff00A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
 end
 
 local blockedFunctions = {
@@ -604,9 +603,6 @@ function WeakAuras.CreateTalentCache()
   WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
   WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
 
-
-  -- print ("Creating talent cache for", player_class, spec);
-
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
       -- Get name and icon info for the current talent of the current class and save it
@@ -618,7 +614,6 @@ function WeakAuras.CreateTalentCache()
       end
     end
   end
-
 
   for tier = 1, MAX_PVP_TALENT_TIERS do
     for column = 1, MAX_PVP_TALENT_COLUMNS do
@@ -2182,9 +2177,9 @@ function WeakAuras.PerformActions(data, type, region)
     elseif(actions.message_type == "WHISPER") then
     if(actions.message_dest) then
       if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
-      WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
+        WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
       else
-      WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
+        WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
       end
     end
     elseif(actions.message_type == "CHANNEL") then
@@ -2380,11 +2375,7 @@ function WeakAuras.UpdateAnimations()
       end
 
       if(anim.loop) then
-        WeakAuras.Animate(anim.namespace, anim.data,
-                          anim.type, anim.anim,
-                          anim.region, anim.inverse,
-                          anim.onFinished, anim.loop,
-                          anim.cloneId);
+        WeakAuras.Animate(anim.namespace, anim.data, anim.type, anim.anim, anim.region, anim.inverse, anim.onFinished, anim.loop, anim.cloneId);
       elseif(anim.onFinished) then
         anim.onFinished();
       end
@@ -3229,10 +3220,7 @@ local function ApplyStateToRegion(id, region, state)
       local total = state.duration or 0
       local func = nil;
 
-      region:SetDurationInfo(total,
-                             now + value,
-                             func,
-                             state.inverseDirection);
+      region:SetDurationInfo(total, now + value, func, state.inverseDirection);
     elseif (state.progressType == "static") then
       local value = state.value or 0;
       local total = state.total or 0;
@@ -3368,7 +3356,7 @@ function WeakAuras.UpdatedTriggerState(id)
     end
   end
 
--- Figure out whether we should be shown or not
+  -- Figure out whether we should be shown or not
   local show = triggerState[id].show;
   if (changed or show == nil) then
     show = evaluateTriggerStateTriggers(id);
@@ -3934,7 +3922,6 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
       return  parent;
     end
   end
-
   -- Fallback
   return parent;
 end

@@ -59,7 +59,7 @@ GetAdditionalProperties(data, triggernum)
 
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
-local tostring, select, pairs, type = tostring, select, pairs, type
+local tostring, pairs, type = tostring, pairs, type
 local error, setmetatable = error, setmetatable
 
 -- WoW APIs
@@ -83,7 +83,7 @@ local loaded_events = WeakAuras.loaded_events;
 local timers = WeakAuras.timers;
 local specificBosses = WeakAuras.specificBosses;
 
--- local function
+-- Local functions
 local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
