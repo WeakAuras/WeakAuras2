@@ -1447,8 +1447,8 @@ do
     local cooldownBecauseRune = false;
     if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
       local basecd = GetSpellBaseCooldown(id);
-      if (basecd and basecd > 0) then
-        startTime, duration = GetSpellCooldown(id);
+      startTime, duration = GetSpellCooldown(id);
+      if ((basecd and basecd > 0) or startTime ~= 0 or duration > 0) then
         cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
       else
         charges = GetSpellCount(id);
@@ -1457,7 +1457,7 @@ do
       end
     elseif (charges == maxCharges) then
       startTime, duration = 0, 0;
-    elseif (charges == 0 and duration == 0) then -- Lavaburst with Ascendance
+    elseif (charges == 0 and duration == 0) then -- Lavaburst while under Ascendance can return 0 charges even if the spell is useable
       charges = 1;
     end
 
