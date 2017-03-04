@@ -6622,7 +6622,7 @@ end
 WeakAuras.afterScanForLoads = function()
   if(frame) then
     if (frame:IsVisible()) then
-      WeakAuras.SortDisplayButtons();
+      WeakAuras.SortDisplayButtons(nil, true);
     else
       frame.needsSort = true;
     end
