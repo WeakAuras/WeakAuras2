@@ -2106,10 +2106,10 @@ do
     return bars[id];
   end
 
-  function WeakAuras.GetBigWigsTimer(addon, spellId, text, operator)
+  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text)
     local bestMatch
     for id, bar in pairs(bars) do
-      if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, text, operator)) then
+      if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, operator, text)) then
         if (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime) then
           bestMatch = bar;
         end
