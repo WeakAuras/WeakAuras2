@@ -3055,6 +3055,7 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "UNIT_INVENTORY_CHANGED",
+      "PLAYER_EQUIPMENT_CHANGED",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = true,
