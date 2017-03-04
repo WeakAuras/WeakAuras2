@@ -1226,6 +1226,7 @@ do
   cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
   cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
+  cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
     if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
        or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE"
@@ -1240,7 +1241,7 @@ do
           gcdSpellIcon = icon;
         end
       end
-    elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN") then
+    elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
       WeakAuras.CheckItemSlotCooldowns();
     end
   end);
