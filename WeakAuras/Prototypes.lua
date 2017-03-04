@@ -459,6 +459,10 @@ end
 
 
 function WeakAuras.CheckNumericIds(loadids, currentId)
+  if (not loadids or not currentId) then
+    return false;
+  end
+
   local searchFrom = 0;
 
   local startI, endI = string.find(loadids, currentId, searchFrom);
