@@ -8,8 +8,8 @@ local _G = _G
 
 -- WoW APIs
 local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-    = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+    = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
     = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
@@ -25,6 +25,7 @@ local versionString = WeakAuras.versionString
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
+local HBD = LibStub("HereBeDragons-1.0")
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
@@ -897,7 +898,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, zone, zoneId, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetCurrentMapAreaID(), GetSpecialization(), UnitGroupRolesAssigned("player");
+  local player, realm, spec, role = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player");
+  local zoneId = HBD:GetPlayerZone();
+  local zone = HBD:GetLocalizedMap(zoneId);
   local _, race = UnitRace("player")
   local faction, localized_faction = UnitFactionGroup("player")
   -- Hack because there is no second arg for Neutral
