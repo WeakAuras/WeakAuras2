@@ -338,7 +338,7 @@ function WeakAuras.CreateFrame()
   frame.texteditor = WeakAuras.TextEditor(frame)
   frame.codereview = WeakAuras.CodeReview(frame);
 
-  frame.moversizer, frame.move = WeakAuras.MoverSizer(frame);
+  frame.moversizer, frame.mover = WeakAuras.MoverSizer(frame);
 
   local buttonsContainer = AceGUI:Create("InlineGroup");
   buttonsContainer:SetWidth(170);
