@@ -72,7 +72,6 @@ local auras = WeakAuras.auras;
 local specificBosses = WeakAuras.specificBosses;
 local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
-local duration_cache = WeakAuras.duration_cache;
 
 -- GLOBALS: GameTooltip UNKNOWNOBJECT
 
@@ -139,7 +138,6 @@ do
 
   function aura_cache.GetNumber(self, id, data)
     local num = 0;
-    local active;
     for guid, _ in pairs(self.players) do
       -- Need to check if cached data conforms to trigger
       if(self.watched[id].players[guid] and TestNonUniformSettings(self.watched[id].players[guid], data)) then

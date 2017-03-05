@@ -312,7 +312,7 @@ local function Transform(tx, x, y, angle, aspect) -- Translates texture to x, y 
     tx:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
 end
 
-local function createThumbnail(parent, fullCreate)
+local function createThumbnail(parent)
     local borderframe = CreateFrame("FRAME", nil, parent);
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);

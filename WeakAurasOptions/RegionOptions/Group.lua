@@ -523,7 +523,7 @@ local function createOptions(id, data)
 end
 
 -- Create preview thumbnail
-local function createThumbnail(parent, fullCreate)
+local function createThumbnail(parent)
   -- Preview frame
   local borderframe = CreateFrame("FRAME", nil, parent);
   borderframe:SetWidth(32);

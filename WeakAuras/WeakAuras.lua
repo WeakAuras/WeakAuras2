@@ -207,11 +207,9 @@ local playerLevel = UnitLevel("player");
 
 WeakAuras.currentInstanceType = "none"
 
-local function_strings = WeakAuras.function_strings;
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
 local load_prototype = WeakAuras.load_prototype;
-local event_prototypes = WeakAuras.event_prototypes;
 
 local levelColors = {
   [0] = "|cFFFFFFFF",
@@ -927,7 +925,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
   local inInstance, Type = IsInInstance()
-  local _, size, difficulty, instanceType, difficultyIndex;
+  local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
   local vehicle = UnitInVehicle('player');
@@ -3165,7 +3163,6 @@ local function startStopTimers(id, cloneId, triggernum, state)
       timers[id][triggernum] = timers[id][triggernum] or {};
       timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
       local record = timers[id][triggernum][cloneId];
-      local createTimer = false;
       if (state.expirationTime == nil) then
         state.expirationTime = GetTime() + state.duration;
         state.resort = true;
@@ -3461,7 +3458,6 @@ local function colorWheel(angle)
   local p = 0;
   local q = 0.75 * (1.0 - ff);
   local t = 0.75 * ff;
-  local r, g, b;
   if (i == 0) then
     return 0.75, t, p;
   elseif (i == 1) then

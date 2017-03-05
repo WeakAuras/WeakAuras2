@@ -208,7 +208,7 @@ local function createOptions(id, data)
     return options;
 end
 
-local function createThumbnail(parent, fullCreate)
+local function createThumbnail(parent)
     local icon = parent:CreateTexture();
     icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 

@@ -1,6 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
-local dynamics = WeakAuras.dynamic_texts;
 
 -- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
 
@@ -136,7 +135,7 @@ local function createOptions(id, data)
     return options;
 end
 
-local function createThumbnail(parent, fullCreate)
+local function createThumbnail(parent)
     local borderframe = CreateFrame("FRAME", nil, parent);
     borderframe:SetWidth(32);
     borderframe:SetHeight(32);
