@@ -902,11 +902,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local zoneId = HBD:GetPlayerZone();
   local zone = HBD:GetLocalizedMap(zoneId);
   local _, race = UnitRace("player")
-  local faction, localized_faction = UnitFactionGroup("player")
-  -- Hack because there is no second arg for Neutral
-  if faction == "Neutral" then
-    localized_faction = "Neutral"
-  end
+  local faction = UnitFactionGroup("player")
+
   if role == "NONE" then
     if IsInRaid() then
       for i=1,GetNumGroupMembers() do
