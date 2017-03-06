@@ -7,8 +7,6 @@ local _G = _G
 local GetScreenWidth, GetScreenHeight, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
   = GetScreenWidth, GetScreenHeight, CreateFrame, GetAddOnInfo, PlaySound, IsAddOnLoaded, LoadAddOn, UnitName
 
--- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE GetAddOnEnableState
-
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")

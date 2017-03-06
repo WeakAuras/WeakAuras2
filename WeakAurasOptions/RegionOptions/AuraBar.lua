@@ -1,8 +1,6 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
--- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
-
 -- Create region options table
 local function createOptions(id, data)
 	-- Region options

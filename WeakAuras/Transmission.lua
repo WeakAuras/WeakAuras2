@@ -42,8 +42,6 @@ local encodeB64, decodeB64, tableAdd, tableSubtract, DisplayStub
 local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
--- GLOBALS: WeakAurasOptionsSaved WeakAurasSaved UIParent BNGetNumFriendGameAccounts BNGetFriendGameAccountInfo
-
 local bytetoB64 = {
   [0]="a","b","c","d","e","f","g","h",
   "i","j","k","l","m","n","o","p",
@@ -655,7 +653,6 @@ local function checkTrigger(codes, id, trigger, untrigger)
   end
 
   local function scamCheck(codes, data)
-    local r
     checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
     if (data.additional_triggers) then
       for i, v in ipairs(data.additional_triggers) do
@@ -664,23 +661,23 @@ local function checkTrigger(codes, id, trigger, untrigger)
     end
 
     if (data.actions) then
-      r = checkCustom(codes, L["%s - Init Action"]:format(data.id), data.actions.init);
-      r = checkCustom(codes, L["%s - Start Action"]:format(data.id), data.actions.start);
-      r = checkCustom(codes, L["%s - Finish Action"]:format(data.id), data.actions.finish);
+      checkCustom(codes, L["%s - Init Action"]:format(data.id), data.actions.init);
+      checkCustom(codes, L["%s - Start Action"]:format(data.id), data.actions.start);
+      checkCustom(codes, L["%s - Finish Action"]:format(data.id), data.actions.finish);
     end
 
     if (data.animation) then
-      r = checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start);
-      r = checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
-      r = checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
+      checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start);
+      checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
+      checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
     end
 
     if(data.customTriggerLogic) then
-      r = checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
+      checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
     end
 
     if(data.customText) then
-      r = checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
+      checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
     end
   end
 
@@ -1167,8 +1164,8 @@ local function checkTrigger(codes, id, trigger, untrigger)
   Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
       if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
         local done, total, displayName = strsplit(" ", message, 3)
-        local done = tonumber(done)
-        local total = tonumber(total)
+        done = tonumber(done)
+        total = tonumber(total)
         if(done and total and total >= done) then
           local red = min(255, (1 - done / total) * 511)
           local green = min(255, (done / total) * 511)

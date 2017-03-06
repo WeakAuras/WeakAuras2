@@ -1,5 +1,3 @@
--- GLOBALS: WeakAuras
-
 WeakAuras = {}
 WeakAuras.L = {}
 
@@ -11,5 +9,6 @@ WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\
 --These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 function WeakAuras.RegisterRegionType()
 end
+
 function WeakAuras.RegisterRegionOptions()
 end

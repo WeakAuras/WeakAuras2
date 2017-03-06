@@ -50,7 +50,7 @@ CanHaveTooltip(data, triggernum)
   Returns the type of tooltip to show for the trigger
 
 GetNameAndIcon(data, triggernum)
-    Returns the name and icon to show in the options
+  Returns the name and icon to show in the options
 
 GetAdditionalProperties(data, triggernum)
   Returns the a tooltip for the additional properties
@@ -87,7 +87,7 @@ local specificBosses = WeakAuras.specificBosses;
 local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
--- GLOBALS: WeakAurasAceEvents GameTooltip GTFO DBM BigWigsLoader
+-- luacheck: globals GTFO DBM BigWigsLoader
 
 function WeakAuras.split(input)
   input = input or "";
@@ -858,7 +858,7 @@ end
 do
   local update_clients = {};
   local update_clients_num = 0;
-  local update_frame;
+  local update_frame = nil
   WeakAuras.frames["Custom Trigger Every Frame Updater"] = update_frame;
   local updating = false;
 
@@ -1140,7 +1140,7 @@ do
             event = "SWING_TIMER_CHANGE";
             mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
           else
-            timer:CancelTimer(mainTimer, true);
+            timer:CancelTimer(mainTimer, true); -- XXX ???
             lastSwingOff = currentTime;
             swingDurationOff = offSpeed;
             event = "SWING_TIMER_CHANGE";
@@ -2149,7 +2149,7 @@ do
   local oh_dur;
   local oh_icon = GetInventoryItemTexture("player", oh);
 
-  local tenchFrame;
+  local tenchFrame = nil
   WeakAuras.frames["Temporary Enchant Handler"] = tenchFrame;
   local tenchTip;
 
@@ -2219,7 +2219,7 @@ end
 
 -- Mount
 do
-  local mountedFrame;
+  local mountedFrame = nil
   WeakAuras.frames["Mount Use Handler"] = mountedFrame;
   function WeakAuras.WatchForMounts()
     if not(mountedFrame) then
@@ -2249,7 +2249,7 @@ end
 
 -- Pet
 do
-  local petFrame;
+  local petFrame = nil
   WeakAuras.frames["Pet Use Handler"] = petFrame;
   function WeakAuras.WatchForPetDeath()
     if not(petFrame) then
@@ -2264,7 +2264,7 @@ end
 
 -- Player Moving
 do
-  local playerMovingFrame;
+  local playerMovingFrame = nil
   WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
   local moving;
   function WeakAuras.WatchForPlayerMoving()

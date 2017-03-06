@@ -3138,10 +3138,7 @@ WeakAuras.event_prototypes = {
         local equipped = WeakAuras.GetEquipmentSetInfo(useItemSetName and itemSetName or nil, partial);
       ]];
 
-      return ret:format(trigger.use_itemSetName and "true" or "false",
-                        itemSetName,
-                        trigger.use_inverse and "true" or "false",
-                        trigger.use_partial and "true" or "false");
+      return ret:format(trigger.use_itemSetName and "true" or "false", itemSetName, trigger.use_inverse and "true" or "false", trigger.use_partial and "true" or "false");
     end,
     args = {
       {
@@ -3350,7 +3347,7 @@ WeakAuras.event_prototypes = {
       if not(icon) then
         local _, _, _, icon = UnitChannelInfo(trigger.unit);
         if not(icon) then
-          return "Interface\\AddOns\\WeakAuras\\icon";
+          return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon";
         else
           return icon;
         end

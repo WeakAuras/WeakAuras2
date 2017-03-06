@@ -22,7 +22,7 @@ local revision = 19
 -- Read through this code for further usage help.
 -- (The documentation IS the code)
 
--- GLOBALS: IndentationLib
+-- luacheck: globals IndentationLib
 
 if not IndentationLib then
     IndentationLib = {}

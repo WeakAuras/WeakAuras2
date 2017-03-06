@@ -1,9 +1,5 @@
 local L = WeakAuras.L;
 
--- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
-
--- Create region options table
-
 local function createOptions(id, data)
     local options = {
         model_path = {
@@ -183,13 +179,9 @@ local function createOptions(id, data)
         }
     };
 
-	--
     options = WeakAuras.AddPositionOptions(options, id, data);
-
-	--
 	options = WeakAuras.AddBorderOptions(options, id, data);
 
-	--
     return options;
 end
 

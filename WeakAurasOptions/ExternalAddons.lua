@@ -4,8 +4,6 @@ local pairs = pairs
 
 local AceGUI = LibStub("AceGUI-3.0")
 
--- GLOBALS: WeakAuras WeakAurasOptions
-
 local collisions = WeakAuras.collisions
 local displayButtons = WeakAuras.displayButtons
 local savedVars = WeakAuras.savedVars

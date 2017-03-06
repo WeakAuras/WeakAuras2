@@ -10,8 +10,8 @@ local _G = _G
 local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
     = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
-    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
+local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
+    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
     = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
@@ -33,12 +33,8 @@ WeakAuras.timer = timer
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
--- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
--- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
--- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
--- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS MAX_PVP_TALENT_TIERS NUM_TALENT_COLUMNS MAX_PVP_TALENT_COLUMNS
--- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles LE_PARTY_CATEGORY_INSTANCE
--- GLOBALS: C_NamePlate NamePlateDriverFrame Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor
+-- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION
+-- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO
 
 local queueshowooc;
 
@@ -1420,7 +1416,6 @@ function WeakAuras.ResolveCollisions(onFinished)
     end
   end
 
-  local resolved = {};
   local numResolved = 0;
   local currentId = next(collisions);
 
@@ -1432,21 +1427,20 @@ function WeakAuras.ResolveCollisions(onFinished)
     text = baseText,
     button1 = buttonText,
     OnAccept = function(self)
-    -- Do the collision resolution
-    local newId = self.editBox:GetText();
-    if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
-      WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
-    else
-      local data = WeakAuras.GetData(currentId);
-      if(data) then
-        WeakAuras.Rename(data, newId);
+      -- Do the collision resolution
+      local newId = self.editBox:GetText();
+      if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
+        WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
       else
-        print("Data not found");
-      end
+        local data = WeakAuras.GetData(currentId);
+        if(data) then
+          WeakAuras.Rename(data, newId);
+        else
+          print("Data not found");
+        end
     end
 
     WeakAuras.CollisionResolved(collisions[currentId][1], collisions[currentId][2], true);
-    resolved[currentId] = newId;
     numResolved = numResolved + 1;
 
     -- Get the next id to resolve
@@ -2674,7 +2668,6 @@ local function wrapTriggerSystemFunction(functionName, mode)
       end
       return triggerSystem[functionName](data, triggernum);
     end
-    return false;
   end
   return func;
 end

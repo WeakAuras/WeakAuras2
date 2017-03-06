@@ -4,8 +4,6 @@ local MSQ = LibStub("Masque", true);
 -- WoW API
 local _G = _G
 
--- GLOBALS: WeakAuras
-
 local default = {
     icon = true,
     desaturate = false,

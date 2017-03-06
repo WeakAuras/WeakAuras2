@@ -73,8 +73,6 @@ local specificBosses = WeakAuras.specificBosses;
 local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
 
--- GLOBALS: GameTooltip UNKNOWNOBJECT
-
 WeakAuras.me = GetUnitName("player",true)
 WeakAuras.myGUID = nil
 

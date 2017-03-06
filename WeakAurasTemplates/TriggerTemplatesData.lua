@@ -4019,14 +4019,14 @@ tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
 -- Enrich items from spell, set title
 local function handleItem(item)
   if (item.spell) then
-    local name, icon, tmp;
+    local name, icon, _;
     if (item.type == "item") then
-      name, tmp, tmp, tmp, tmp, tmp, tmp, tmp, tmp, icon = GetItemInfo(item.spell);
+      name, _, _, _, _, _, _, _, _, icon = GetItemInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Item"] .. " " .. tostring(item.spell);
       end
     else
-      name, tmp, icon = GetSpellInfo(item.spell);
+      name, _, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
         print ("Error: Unknown spell", item.spell);

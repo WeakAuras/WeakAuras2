@@ -9,8 +9,6 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local L = WeakAuras.L;
 local fullName;
 
--- GLOBALS: GameTooltip GetCursorPosition UIParent WeakAuras WeakAuras_DropDownMenu WeakAurasOptionsSaved
-
 local function Hide_Tooltip()
     GameTooltip:Hide();
 end

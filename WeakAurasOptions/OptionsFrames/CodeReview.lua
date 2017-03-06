@@ -4,9 +4,6 @@ local pairs = pairs
 -- WoW APIs
 local CreateFrame = CreateFrame
 
--- GLOBALS: WeakAuras_DropDownMenu
--- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE GetAddOnEnableState
-
 local AceGUI = LibStub("AceGUI-3.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 local IndentationLib = IndentationLib

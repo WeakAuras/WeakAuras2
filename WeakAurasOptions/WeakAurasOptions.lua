@@ -19,10 +19,6 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
--- GLOBALS: WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
--- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
--- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GetAddOnEnableState
-
 local font_close,yellow_font,red_font = FONT_COLOR_CODE_CLOSE,YELLOW_FONT_COLOR_CODE,RED_FONT_COLOR_CODE
 local ValidateNumeric = function(info,val)
   if not tonumber(val) then
@@ -957,7 +953,6 @@ local options;
 local newOptions;
 local loadedOptions;
 local unloadedOptions;
-local pickonupdate;
 local reopenAfterCombat = false;
 local loadedFrame = CreateFrame("FRAME");
 loadedFrame:RegisterEvent("ADDON_LOADED");
@@ -6864,8 +6859,6 @@ function WeakAuras.ShowCloneDialog(data)
         WeakAuras.ReloadGroupRegionOptions(parentData);
         WeakAuras.SortDisplayButtons();
         parentButton:Expand();
-
-        pickonupdate = data.id;
       end,
       OnCancel = function()
       -- do nothing

@@ -1,7 +1,5 @@
 local L = WeakAuras.L;
 
--- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
-
 -- Calculate bounding box
 local function getRect(data)
   -- Temp variables

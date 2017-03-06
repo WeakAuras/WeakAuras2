@@ -1,7 +1,5 @@
 local L = WeakAuras.L
 
--- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
-
 local function createOptions(id, data)
   local options = {
     grow = {
@@ -189,7 +187,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   local region = borderframe.region;
   size = size or 24;
 
-  local selfPoint,actualSelfPoint;
+  local selfPoint;
   if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
     selfPoint = "LEFT";
     if(data.align == "LEFT") then
@@ -220,7 +218,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     end
   elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
     selfPoint = "CENTER";
-    actualSelfPoint = "CENTER";
   end
   data.selfPoint = selfPoint;
 
@@ -308,7 +305,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   if (data.grow == "COUNTERCIRCLE") then
     angleInc = -angleInc;
   end
-  local radius = 0;
+  radius = 0;
   if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
     if(data.constantFactor == "RADIUS") then
       radius = data.radius;

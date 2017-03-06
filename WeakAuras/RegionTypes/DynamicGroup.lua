@@ -1,7 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
--- GLOBALS: WeakAuras
-
 local default = {
     controlledChildren = {},
     border = "None",

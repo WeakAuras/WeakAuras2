@@ -1,7 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
--- GLOBALS: WeakAuras
-
 -- Default settings
 local default = {
   icon = true,

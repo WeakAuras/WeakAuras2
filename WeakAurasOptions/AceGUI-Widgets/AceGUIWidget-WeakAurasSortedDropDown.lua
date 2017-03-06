@@ -23,7 +23,6 @@ local function Constructor()
       return a.value < b.value;
     end);
 
-    local order = {};
     for i, item in ipairs(orderTable) do
       order[i] = item.key;
     end

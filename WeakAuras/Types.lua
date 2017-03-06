@@ -4,7 +4,7 @@ local L = WeakAuras.L;
 local LSM = LibStub("LibSharedMedia-3.0");
 local LBR = LibStub("LibBabble-Race-3.0"):GetLookupTable()
 
--- GLOBALS: MANA RAGE FOCUS ENERGY COMBO_POINTS RUNIC_POWER SOUL_SHARDS LUNAR_POWER HOLY_POWER MAELSTROM CHI INSANITY ARCANE_CHARGES FURY PAIN
+-- luacheck: globals MANA RAGE FOCUS ENERGY COMBO_POINTS RUNIC_POWER SOUL_SHARDS LUNAR_POWER HOLY_POWER MAELSTROM CHI INSANITY ARCANE_CHARGES FURY PAIN
 
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
@@ -224,6 +224,7 @@ WeakAuras.point_types = {
   LEFT = L["Left"],
   CENTER = L["Center"]
 };
+
 WeakAuras.inverse_point_types = {
   BOTTOMLEFT = "TOPRIGHT",
   BOTTOM = "TOP",
@@ -1347,8 +1348,7 @@ WeakAuras.charges_change_type = {
   CHANGED = L["Changed"]
 }
 
-WeakAuras.combat_event_type =
-{
+WeakAuras.combat_event_type = {
   PLAYER_REGEN_ENABLED = L["Leaving"],
   PLAYER_REGEN_DISABLED = L["Entering"]
 }
