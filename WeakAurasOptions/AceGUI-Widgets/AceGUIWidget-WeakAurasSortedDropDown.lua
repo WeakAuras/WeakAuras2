@@ -13,11 +13,13 @@ local function Constructor()
   end
 
   local oldSetList = widget.SetList
-  widget.SetList = function(self, list, order, itemType)
+  widget.SetList = function(self, list, _, itemType)
     local orderTable = {};
     for k, v in pairs(list) do
       tinsert(orderTable, { key = k, value = v  });
     end
+
+    local order = {};
 
     table.sort(orderTable, function(a, b)
       return a.value < b.value;
