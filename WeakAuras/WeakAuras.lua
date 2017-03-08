@@ -892,9 +892,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, spec, role = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player");
+  local player, realm, spec, role, zone = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player"), GetRealZoneText();
   local zoneId = HBD:GetPlayerZone();
-  local zone = HBD:GetLocalizedMap(zoneId);
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
