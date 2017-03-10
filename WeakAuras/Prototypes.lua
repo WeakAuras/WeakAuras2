@@ -1024,14 +1024,14 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local powerType = trigger.use_powertype and trigger.powertype;
+      local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then
         return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
       end
       return UnitPower(trigger.unit, powerType), math.max(1, UnitPowerMax(trigger.unit, powerType)), "fastUpdate";
     end,
     stacksFunc = function(trigger)
-      local powerType = trigger.use_powertype and trigger.powertype;
+      local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then
         return UnitStagger(trigger.unit);
       end
