@@ -1563,33 +1563,6 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Delete conditions fields and convert them to additional triggers
-  if(data.conditions) then
-    data.additional_triggers = data.additional_triggers or {};
-    local condition_trigger = {
-      trigger = {
-        type = "status",
-        unevent = "auto",
-        event = "Conditions"
-      },
-      untrigger = {
-      }
-    }
-    local num = 0;
-    for i,v in pairs(data.conditions) do
-      if(i == "combat") then
-        data.load.use_combat = v;
-      else
-        condition_trigger.trigger["use_"..i] = v;
-        num = num + 1;
-      end
-    end
-    if(num > 0) then
-      tinsert(data.additional_triggers, condition_trigger);
-    end
-    data.conditions = nil;
-  end
-
   -- Add dynamic text info to Progress Bars
   -- Also convert custom displayText to new displayText
   if(data.regionType == "aurabar") then
