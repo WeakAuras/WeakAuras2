@@ -134,7 +134,7 @@ local function modify(parent, region, data)
                 region.controlledRegions[regionIndex].data = childData;
                 region.controlledRegions[regionIndex].region = childRegion;
                 region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
-                anyIndexInfo = anyIndexInfo or childRegion.index;
+                anyIndexInfo = anyIndexInfo or childRegion.state and childRegion.state.index;
                 region.controlledRegions[regionIndex].dataIndex = dataIndex;
                 dataIndex = dataIndex + 1;
                 regionIndex = regionIndex + 1;
@@ -148,7 +148,7 @@ local function modify(parent, region, data)
                         region.controlledRegions[regionIndex].cloneId = cloneId;
                         region.controlledRegions[regionIndex].region = cloneRegion;
                         region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
-                        anyIndexInfo = anyIndexInfo or cloneRegion.index;
+                        anyIndexInfo = anyIndexInfo or cloneRegion.state and cloneRegion.state.index;
                         region.controlledRegions[regionIndex].dataIndex = dataIndex;
                         regionIndex = regionIndex + 1;
                     end
