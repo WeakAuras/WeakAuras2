@@ -204,7 +204,7 @@ local function modify(parent, region, data)
         region.color_a = a;
         icon:SetVertexColor(r, g, b, a);
         if MSQ then
-            button:SetAlpha(a);
+          button:SetAlpha(a or 1);
         end
     end
 
