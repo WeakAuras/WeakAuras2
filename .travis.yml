@@ -1,0 +1,22 @@
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - luarocks
+
+install:
+  - eval $(luarocks path --bin)
+  - luarocks install --local luacheck
+
+script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
+
+notifications:
+  email:
+    on_failure: always
+    on_success: never
+
+cache:
+  apt: true
+  directories:
+    - $HOME/.luarocks
