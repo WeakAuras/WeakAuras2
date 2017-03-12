@@ -43,9 +43,6 @@ enable-nolib-creation: no
 ignore:
  - README.md
  - babelfish.lua
- - .gitignore
- - .github
- - .gitattributes
 
 move-folders:
  WeakAuras/WeakAuras: WeakAuras
