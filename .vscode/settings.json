@@ -1,0 +1,14 @@
+{
+    "search.exclude": {
+        "WeakAuras_Main.lua": true,
+        "WeakAuras_Options.lua": true,
+        "WeakAuras_Templates.lua": true,
+        "WeakAuras/Libs/": true
+    },
+    "files.exclude": {
+        "WeakAuras_Main.lua": true,
+        "WeakAuras_Options.lua": true,
+        "WeakAuras_Templates.lua": true,
+        "WeakAuras/Libs/": true
+    }
+}
