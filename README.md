@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/WeakAuras/WeakAuras2.svg?branch=master)](https://travis-ci.org/WeakAuras/WeakAuras2)
-[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat-square)](https://discord.me/wa2)
+[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.me/wa2)
 
 # WeakAuras 2
 
