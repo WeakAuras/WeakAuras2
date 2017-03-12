@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/WeakAuras/WeakAuras2.svg?branch=master)](https://travis-ci.org/WeakAuras/WeakAuras2)
+[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat-square)](https://discord.me/wa2)
+
 # WeakAuras 2
 
 WeakAuras is a powerful and flexible framework that allows you to display highly customizable graphics on your screen to indicate buffs, debuffs, and a whole host of similar types of information. It was originally meant to be a lightweight replacement for Power Auras, but it now incorporates many features that Power Auras does not, while still remaining more efficient and easy to use.
