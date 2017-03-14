@@ -130,6 +130,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
           trigger = {},
           load = {}
         };
+
         WeakAuras.Add(data);
         WeakAuras.NewDisplayButton(data);
 
