@@ -1309,10 +1309,6 @@ do
     return gcdDuration or 0;
   end
 
-  function WeakAuras.CompareToGCD(startTime, duration)
-    return startTime > 0 and duration > 0 and duration == gcdDuration and gcdStart == gcdStart;
-  end
-
   function WeakAuras.GetItemSlotCooldown(id)
     if(itemSlots[id] and itemSlotsCdExps[id] and itemSlotsCdDurs[id]) then
       return itemSlotsCdExps[id] - itemSlotsCdDurs[id], itemSlotsCdDurs[id], itemSlotsEnable[id];
@@ -1410,9 +1406,7 @@ do
         duration = 0
       end
 
-
-
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1487,7 +1481,7 @@ do
       end
       spellCharges[id] = charges;
 
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1527,7 +1521,7 @@ do
       else
         if(spellCdExps[id]) then
           local endTime = startTime + duration;
-          if (WeakAuras.CompareToGCD(startTime, duration) and spellCdExps[id] > endTime or duration == 0) then
+          if (duration == WeakAuras.gcdDuration() and spellCdExps[id] > endTime or duration == 0) then
            -- CheckCooldownReady caught the spell cooldown before the timer callback
            -- This happens if a proc resets the cooldown
             if(spellCdHandles[id]) then
@@ -1555,7 +1549,7 @@ do
       duration = duration or 0;
       local time = GetTime();
 
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1598,7 +1592,7 @@ do
       duration = duration or 0;
       local time = GetTime();
 
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1669,7 +1663,7 @@ do
         duration = 0
       end
 
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         runeCdDurs[id] = duration;
@@ -1701,7 +1695,7 @@ do
       local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
       spellCharges[id] = charges;
 
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
@@ -1737,7 +1731,7 @@ do
     if not(items[id]) then
       items[id] = true;
       local startTime, duration = GetItemCooldown(id);
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         itemCdDurs[id] = duration;
@@ -1760,7 +1754,7 @@ do
       itemSlots[id] = GetInventoryItemID("player", id);
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
-      if(not WeakAuras.CompareToGCD(startTime, duration)) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
         itemSlotsCdDurs[id] = duration;
