@@ -436,7 +436,7 @@ function WeakAuras.ScanAuras(unit)
   -- Iterate over all displays (list of display lists)
   for _, aura_list in pairs(aura_lists) do
     -- Locals
-    local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = true;
+    local name, icon, count, duration, expirationTime, unitCaster, isStealable, spellId = true;
     local tooltip, debuffClass, tooltipSize;
     local remaining, checkPassed;
 
@@ -470,7 +470,7 @@ function WeakAuras.ScanAuras(unit)
               -- Update scan cache
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
-                name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, index, filter);
+                name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
                 -- unitCaster = unitCaster or "unknown";
                 tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
@@ -566,7 +566,7 @@ function WeakAuras.ScanAuras(unit)
             -- Check all selected auras (for one trigger)
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
-              name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, checkname, nil, filter);
+              name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
               checkPassed = false;
 
               -- Aura conforms to trigger options?

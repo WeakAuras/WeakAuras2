@@ -283,7 +283,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   until(done)
   if newMsg ~= "" then
     local trimmedPlayer = Ambiguate(player, "none")
-    if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX Need a guild check
+    if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX: Need a guild check
       local _, num = BNGetNumFriends()
       for i=1, num do
         local toon = BNGetNumFriendGameAccounts(i)

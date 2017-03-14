@@ -1140,7 +1140,7 @@ do
             event = "SWING_TIMER_CHANGE";
             mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
           else
-            timer:CancelTimer(mainTimer, true); -- XXX ???
+            timer:CancelTimer(mainTimer, true); -- XXX: should this be offTimer instead?
             lastSwingOff = currentTime;
             swingDurationOff = offSpeed;
             event = "SWING_TIMER_CHANGE";
@@ -1817,17 +1817,14 @@ do
   local function dbmRecheckTimers()
     local now = GetTime();
     nextExpire = nil;
-    local nextMsg = nil;
     for k, v in pairs(bars) do
       if (v.expirationTime < now) then
         bars[k] = nil;
         WeakAuras.ScanEvents("DBM_TimerStop", k);
       elseif (nextExpire == nil) then
         nextExpire = v.expirationTime;
-        nextMsg = v.message;
       elseif (v.expirationTime < nextExpire) then
         nextExpire = v.expirationTime;
-        nextMsg = v.message;
       end
     end
 

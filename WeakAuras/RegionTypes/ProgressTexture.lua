@@ -44,10 +44,6 @@ local function ApplyTransform(x, y, region)
   end
 
   -- 5) Rotate texture by user-defined value
-  --[[local x_tmp = region.cos_rotation * x - region.sin_rotation * y
-  local y_tmp = region.sin_rotation * x + region.cos_rotation * y
-  x = x_tmp
-  y = y_tmp]]
   x, y = region.cos_rotation * x - region.sin_rotation * y, region.sin_rotation * x + region.cos_rotation * y
 
   -- 6) Translate texture-coords back to (0,0)
@@ -59,13 +55,13 @@ local function ApplyTransform(x, y, region)
     y = y + region.user_y
   end
 
-  -- Return results
   return x, y
 end
 
-local function Transform(tx, x, y, angle, aspect) -- Translates texture to x, y and rotates about its center
+local function Transform(tx, x, y, angle, aspect) -- Translates texture to x, y and rotates around its center
     local c, s = cos(angle), sin(angle)
-    local y, oy = y / aspect, 0.5 / aspect
+    y = y / aspect
+    local oy =  0.5 / aspect
 
 
     local ULx, ULy = 0.5 + (x - 0.5) * c - (y - oy) * s, (oy + (y - oy) * c + (x - 0.5) * s) * aspect
@@ -185,7 +181,7 @@ local function animRotate(object, degrees, anchor, regionRotate, aspect)
     object.aspect = aspect;
 
     -- Something to rotate
-    -- Create AnimatioGroup and rotation animation
+    -- Create AnimationGroup and rotation animation
     if (not object.animationGroup) then
       object.animationGroup = object:CreateAnimationGroup();
       object.animationGroup:SetScript('OnUpdate', function()
@@ -207,7 +203,6 @@ function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progre
   local pAngle = progress * (endAngle - startAngle) + startAngle;
 
   -- Show/hide necessary textures if we need to
-  local showing = {};
   for i = 1, 4 do
      local quadrantAngle1;
      local quadrantAngle2;
@@ -222,10 +217,8 @@ function spinnerFunctions.SetProgress(self, region, startAngle, endAngle, progre
 
      if clockwise then
        self.circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
-       showing[i] = betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2);
      else
        self.circularTextures[i]:SetShown(betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2));
-       showing[i] = betweenAngles(startAngle, pAngle, quadrantAngle1, quadrantAngle2);
      end
   end
 
@@ -323,7 +316,7 @@ local function createSpinner(parent, layer, frameLevel)
     return spinner;
 end
 
--- Make available for the Thumbmail display
+-- Make available for the thumbnail display
 WeakAuras.createSpinner = createSpinner;
 
 local function create(parent)
@@ -482,7 +475,6 @@ local function modify(parent, region, data)
             function region:SetValue(progress)
                 region.progress = progress;
 
-
                 local ULx, ULy = ApplyTransform(0, 0, region)
                 local LLx, LLy = ApplyTransform(0, 1, region)
                 local URx, URy = ApplyTransform(1, 0, region)
@@ -496,10 +488,10 @@ local function modify(parent, region, data)
             function region:SetValue(progress)
                 region.progress = progress;
 
-                local ULx , ULy  = ApplyTransform(0, 1-progress, region)
+                local ULx , ULy  = ApplyTransform(0, 1 - progress, region)
                 local ULx_, ULy_ = ApplyTransform(0, 0, region)
                 local LLx , LLy  = ApplyTransform(0, 1, region)
-                local URx , URy  = ApplyTransform(1, 1-progress, region)
+                local URx , URy  = ApplyTransform(1, 1 - progress, region)
                 local URx_, URy_ = ApplyTransform(1, 0, region)
                 local LRx , LRy  = ApplyTransform(1, 1, region)
 
@@ -516,7 +508,6 @@ local function modify(parent, region, data)
         if(data.compress) then
             function region:SetValue(progress)
                 region.progress = progress;
-
 
                 local ULx, ULy = ApplyTransform(0, 0, region)
                 local LLx, LLy = ApplyTransform(0, 1, region)
@@ -558,7 +549,7 @@ local function modify(parent, region, data)
         endAngle = endAngle + 360;
       end
 
-      -- start is now 0-359, end 1-719, but atmost 360 difference
+      -- start is now 0-359, end 1-719, but at most 360 difference
 
       region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
 

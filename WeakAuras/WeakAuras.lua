@@ -2345,7 +2345,7 @@ function WeakAuras.UpdateAnimations()
       end
     end
   end
-  -- XXX I tried to have animations only update if there are actually animation data to animate upon.
+  -- XXX: I tried to have animations only update if there are actually animation data to animate upon.
   -- This caused all start animations to break, and I couldn't figure out why.
   -- May revisit at a later time.
   --[[
