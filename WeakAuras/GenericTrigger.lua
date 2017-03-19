@@ -1463,7 +1463,7 @@ do
       end
       spellCharges[id] = charges;
 
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1503,7 +1503,7 @@ do
       else
         if(spellCdExps[id]) then
           local endTime = startTime + duration;
-          if (duration == WeakAuras.gcdDuration() and spellCdExps[id] > endTime or duration == 0) then
+          if (duration == WeakAuras.gcdDuration() and startTime == gcdStart and spellCdExps[id] > endTime or duration == 0) then
            -- CheckCooldownReady caught the spell cooldown before the timer callback
            -- This happens if a proc resets the cooldown
             if(spellCdHandles[id]) then
@@ -1677,7 +1677,7 @@ do
       local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
       spellCharges[id] = charges;
 
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
         local time = GetTime();
         local endTime = startTime + duration;
         spellCdDurs[id] = duration;
