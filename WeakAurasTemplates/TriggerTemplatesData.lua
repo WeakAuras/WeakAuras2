@@ -240,7 +240,7 @@ templates.class.WARRIOR = {
         { spell = 23920, type = "buff", unit = "player" }, -- Spell Reflection
         { spell = 107574, type = "buff", unit = "player", talent = 9 }, -- Avatar
         { spell = 125565, type = "buff", unit = "player" }, -- Demoralizing Shout
-        { spell = 132404, type = "buff", unit = "player" }, -- Shield Block
+        { spell = 132404, type = "buff", unit = "player", fullscan = true }, -- Shield Block
         { spell = 147833, type = "buff", unit = "target" }, -- Intervene
         { spell = 188783, type = "buff", unit = "player" }, -- Might of the Vrykul
         { spell = 189064, type = "buff", unit = "player" }, -- Scales of Earth
