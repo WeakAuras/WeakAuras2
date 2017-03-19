@@ -1,32 +1,31 @@
 --[[ BuffTrigger.lua
 This file contains the "aura" trigger for buffs and debuffs.
 
-It registers the BuffTrigger table for the trigger type "aura".
-It has the following API:
+It registers the BuffTrigger table for the trigger type "aura" and has the following API:
 
 Add(data)
-  Adds an aura, setting up internal data structures for all buff triggers
+  Adds an aura, setting up internal data structures for all buff triggers.
 
 LoadDisplay(id)
-  Loads the aura id, enabling all buff triggers in the aura
+  Loads the aura id, enabling all buff triggers in the aura.
 
 UnloadDisplay(id)
-  Unloads the aura id, disabling all buff triggers in the aura
+  Unloads the aura id, disabling all buff triggers in the aura.
 
 UnloadAll()
-  Unloads all auras, disabling all buff triggers
+  Unloads all auras, disabling all buff triggers.
 
 ScanAll()
-  Updates all triggers by checking all triggers
+  Updates all triggers by checking all triggers.
 
 Delete(id)
-  Removes all data for aura id
+  Removes all data for aura id.
 
 Rename(oldid, newid)
-  Updates all data for aura oldid to use newid
+  Updates all data for aura oldid to use newid.
 
 Modernize(data)
-  Updates all buff triggers in data
+  Updates all buff triggers in data.
 
 #####################################################
 # Helper functions mainly for the WeakAuras Options #
@@ -35,25 +34,24 @@ Modernize(data)
 CanGroupShowWithZero(data, triggernum)
   Returns whether the first trigger could be shown without any affected group members.
   If that is the case no automatic icon can be determined. Only used by the options dialog.
-  (If I understood the code correctly)
 
 CanHaveDuration(data, triggernum)
-  Returns whether the trigger can have a duration
+  Returns whether the trigger can have a duration.
 
 CanHaveAuto(data, triggernum)
-  Returns whether the icon can be automatically selected
+  Returns whether the icon can be automatically selected.
 
 CanHaveClones(data, triggernum)
-  Returns whether the trigger can have clones
+  Returns whether the trigger can have clones.
 
 CanHaveTooltip(data, triggernum)
-  Returns the type of tooltip to show for the trigger
+  Returns the type of tooltip to show for the trigger.
 
 GetNameAndIcon(data, triggernum)
-  Returns the name and icon to show in the options
+  Returns the name and icon to show in the options.
 
 GetAdditionalProperties(data, triggernum)
-  Returns the a tooltip for the additional properties
+  Returns the tooltip text for additional properties.
 
 ]]--
 
@@ -73,9 +71,8 @@ local specificBosses = WeakAuras.specificBosses;
 local specificUnits = WeakAuras.specificUnits;
 local loaded_auras = WeakAuras.loaded_auras;
 
-WeakAuras.me = GetUnitName("player",true)
+WeakAuras.me = GetUnitName("player", true)
 WeakAuras.myGUID = nil
-
 
 local aura_cache = {};
 do
@@ -83,8 +80,11 @@ do
   aura_cache.watched = {};
   aura_cache.players = {};
 
-  -- Test if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount, ect.
-  -- Extra check needed, because aura_cache can potentially contain data of two different triggers with different settings!
+  --- Tests if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount.
+  -- Extra check needed because aura_cache can potentially contain data of two different triggers with different settings!
+  -- @param acEntry
+  -- @param data
+  -- @return boolean
   local function TestNonUniformSettings(acEntry, data)
     if(data.remFunc) then
       if not(data.remFunc(acEntry.expirationTime - GetTime())) then
@@ -305,6 +305,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
     state.index = index;
     state.changed = true;
   end
+
   if (state.spellId ~= spellId) then
     state.spellId = spellId;
     state.changed = true;
@@ -314,15 +315,18 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
     state.show = show;
     state.changed = true;
   end
+
   if (state.progressType ~= "timed") then
     state.progressType = "timed";
     state.changed = true;
   end
+
   if (state.expirationTime ~= expirationTime) then
     state.resort = true;
     state.expirationTime = expirationTime;
     state.changed = true;
   end
+
   if (state.duration ~= duration) then
     state.duration = duration;
     state.changed = true;
@@ -355,7 +359,6 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
     state.changed = true;
   end
 
-
   if (state.GUID ~= UnitGUID(unit)) then
     state.GUID = UnitGUID(unit);
     state.changed = true;
@@ -367,6 +370,9 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
   return false;
  end
 
+--- Calls GetSpellInfo on trigger data to return aura name and icon.
+-- @param trigger
+-- @return name and icon
 local function GetNameAndIconFromTrigger(trigger)
   if (trigger.fullscan) then
     if (trigger.spellId) then
@@ -421,7 +427,7 @@ function WeakAuras.ScanAuras(unit)
     aura_lists[1] = loaded_auras[unit];
   end
 
-  -- Add group auras for specific units (?why?)
+  -- Add group auras for specific units -- XXX: why?
   if(specificUnits[unit] and not aura_object) then
     tinsert(aura_lists, loaded_auras["group"]);
   end
@@ -471,7 +477,6 @@ function WeakAuras.ScanAuras(unit)
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
                 name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
-                -- unitCaster = unitCaster or "unknown";
                 tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
 
@@ -492,7 +497,7 @@ function WeakAuras.ScanAuras(unit)
                 -- Updated
                 aura_scan_cache[unit][filter].up_to_date = index;
 
-                -- Use cache data instead
+                -- Use cached data instead
               else
                 -- Fetch cached aura data
                 local current_aura = aura_scan_cache[unit][filter][index];
@@ -578,7 +583,7 @@ function WeakAuras.ScanAuras(unit)
                     checkPassed = false;
                   end
 
-                  -- Schedule remaining time re-scan later
+                  -- Schedule remaining time, re-scan later
                   if(remaining > data.rem) then
                     WeakAuras.ScheduleAuraScan(unit, time + (remaining - data.rem));
                   end
@@ -598,7 +603,7 @@ function WeakAuras.ScanAuras(unit)
                   if(data.groupclone) then
                     groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
                   end
-                -- Simply update visibility (show)
+                -- Update visibility (show)
                 else
                   if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, true, unit, duration, expirationTime, name, icon, count, nil, spellId, unitCaster)) then
                     updateTriggerState = true;
@@ -606,7 +611,7 @@ function WeakAuras.ScanAuras(unit)
                   break;
                 end
 
-              -- Aura does not conforms to trigger
+              -- Aura does not conform to trigger
               elseif(aura_object and not data.specificUnit) then
                 -- Update aura cache (and clones)
                  aura_object:DeassertAura(id, uGUID);
@@ -616,7 +621,7 @@ function WeakAuras.ScanAuras(unit)
               end
             end
 
-            -- Proccecing a unit=group related unit
+            -- Processing a unit=group related unit
             if(aura_object and not data.specificUnit) then
               -- unit=group require valid count function
               if(data.group_count) then
@@ -850,6 +855,12 @@ do
     return nil;
   end
 
+  --- Updates region data to see if states changed.
+  -- @param id
+  -- @param data
+  -- @param triggernum
+  -- @param GUID
+  -- @return boolean
   local function updateRegion(id, data, triggernum, GUID)
      local auradata = data.GUIDs[GUID];
      local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
@@ -865,11 +876,13 @@ do
          state.show = true;
          state.changed = true;
        end
+
        if (state.expirationTime ~= auradata.expirationTime) then
          state.resort = state.expirationTime ~= auradata.expirationTime;
          state.expirationTime = auradata.expirationTime;
          state.changed = true;
        end
+
        if (state.duration ~= auradata.duration) then
          state.duration = auradata.duration;
          state.changed = true;
@@ -884,6 +897,7 @@ do
          state.name = auradata.unitName;
          state.changed = true;
        end
+
        local icon = auradata.icon or WeakAuras.GetDynamicIconCache(auradata.name) or "Interface\\Icons\\INV_Misc_QuestionMark";
        if (state.icon ~= icon) then
          state.icon = icon;
@@ -894,6 +908,7 @@ do
          state.stacks = auradata.count;
          state.changed  = true;
        end
+
        if (state.unitCaster ~= auradata.unitCaster) then
          state.unitCaster = auradata.unitCaster;
          state.changed = true;
@@ -1140,6 +1155,10 @@ do
   end
 end
 
+--- Adds auras to the loaded_auras table
+-- @param id
+-- @param triggernum
+-- @param data
 local function LoadAura(id, triggernum, data)
   local unit;
   if(data.specificUnit) then
@@ -1256,6 +1275,8 @@ function BuffTrigger.UnloadDisplay(id)
   end
 end
 
+--- Removes all data for an aura id
+-- @param id
 function BuffTrigger.Delete(id)
   auras[id] = nil;
   for i,v in pairs(loaded_auras) do
@@ -1263,6 +1284,9 @@ function BuffTrigger.Delete(id)
   end
 end
 
+--- Updates all data for aura oldid to use newid
+-- @param oldid
+-- @param newid
 function BuffTrigger.Rename(oldid, newid)
   auras[newid] = auras[oldid];
   auras[oldid] = nil;
@@ -1275,6 +1299,8 @@ function BuffTrigger.Rename(oldid, newid)
   end
 end
 
+--- Adds an aura, setting up internal data structures for all buff triggers.
+-- @param data
 function BuffTrigger.Add(data)
   local id = data.id;
   auras[id] = nil;
@@ -1395,34 +1421,16 @@ function BuffTrigger.Add(data)
   end
 end
 
+--- Updates old data to the new format.
+-- @param data
 function BuffTrigger.Modernize(data)
-  -- Give Name Info and Stack Info options to group auras
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if(trigger and trigger.type == "aura" and trigger.unit and trigger.unit == "group") then
-      trigger.name_info = trigger.name_info or "aura";
-      trigger.stack_info = trigger.stack_info or "count";
-    end
-  end
-
-  -- Fix corrupted data to time remaining and stacks (ticket #366, mod allowed users to input non numeric values)
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if(trigger and (trigger.count) and not tonumber(trigger.count)) then trigger.count = 0 end
-    if(trigger and (trigger.remaining) and not tonumber(trigger.remaining)) then trigger.remaining = 0 end
-  end
+  -- Nothing for now
 end
 
+--- Returns whether the first trigger could be shown without any affected group members.
+-- @param data
+-- @param triggernum
+-- @return boolean
 function BuffTrigger.CanGroupShowWithZero(data, triggernum)
   local trigger
   if (triggernum == 0) then
@@ -1449,6 +1457,9 @@ function BuffTrigger.CanGroupShowWithZero(data, triggernum)
   end
 end
 
+--- Returns whether the trigger can have a duration.
+-- @param data
+-- @param triggernum
 function BuffTrigger.CanHaveDuration(data, triggernum)
   local trigger
   if (triggernum == 0) then
@@ -1463,6 +1474,10 @@ function BuffTrigger.CanHaveDuration(data, triggernum)
   end
 end
 
+--- Returns whether the icon can be automatically selected.
+-- @param data
+-- @param triggernum
+-- @return boolean
 function BuffTrigger.CanHaveAuto(data, triggernum)
   local trigger;
   if (triggernum == 0) then
@@ -1488,6 +1503,11 @@ function BuffTrigger.CanHaveAuto(data, triggernum)
   return false;
 end
 
+
+--- Returns whether the trigger can have clones.
+-- @param data
+-- @param triggernum
+-- @return
 function BuffTrigger.CanHaveClones(data, triggernum)
   local trigger;
   if (triggernum == 0) then
@@ -1500,6 +1520,10 @@ function BuffTrigger.CanHaveClones(data, triggernum)
           or (trigger.unit == "multi");
 end
 
+---Returns the type of tooltip to show for the trigger.
+-- @param data
+-- @param triggernum
+-- @return string
 function BuffTrigger.CanHaveTooltip(data, triggernum)
   local trigger;
   if (triggernum == 0) then
@@ -1594,9 +1618,12 @@ function BuffTrigger.SetToolTip(trigger, state)
   end
 end
 
+--- Returns the name and icon to show in the options.
+-- @param data
+-- @param triggernum
+-- @return name and icon
 function BuffTrigger.GetNameAndIcon(data, triggernum)
-  local name, icon;
-  local trigger;
+  local _, name, icon, trigger;
   if (triggernum == 0) then
     trigger = data.trigger;
   else
@@ -1604,8 +1631,6 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
   end
   if (trigger.fullscan) then
     if (trigger.spellId) then
-      local _;
-
       name, _, icon = GetSpellInfo(trigger.spellId);
     else
       name = trigger.name;
@@ -1613,10 +1638,8 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
     end
   else
     if (trigger.spellIds and trigger.spellIds[1]) then
-      local _;
       name, _, icon = GetSpellInfo(trigger.spellIds[1])
-    elseif(not (trigger.inverse or BuffTrigger.CanGroupShowWithZero(data, triggernum))
-       and trigger.names) then
+    elseif(not (trigger.inverse or BuffTrigger.CanGroupShowWithZero(data, triggernum)) and trigger.names) then
       -- Try to get an icon from the icon cache
       for index, checkname in pairs(trigger.names) do
         local iconFromSpellCache = WeakAuras.spellCache.GetIcon(checkname);
@@ -1627,13 +1650,19 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
       end
     end
   end
+
   return name, icon;
 end
 
+--- Returns the tooltip text for additional properties.
+-- @param data
+-- @param triggernum
+-- @return string of additional properties
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
+
   return ret;
 end
 
