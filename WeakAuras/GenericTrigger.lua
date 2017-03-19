@@ -1421,10 +1421,19 @@ do
     if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
       local basecd = GetSpellBaseCooldown(id);
       startTime, duration = GetSpellCooldown(id);
+      local spellcount = GetSpellCount(id);
+      -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
+      -- either the spell count is greater than 0
+      -- or we have a ability without a base cooldown
+      -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
+      -- e.g. Raging Blow that gains a cooldown with a talent
+      if (spellcount > 0) then
+        charges = spellcount;
+      end
       if ((basecd and basecd > 0) or startTime ~= 0 or duration > 0) then
         cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
       else
-        charges = GetSpellCount(id);
+        charges = spellcount;
         startTime = 0;
         duration = 0;
       end
