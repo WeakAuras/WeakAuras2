@@ -2815,7 +2815,6 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
 
-
 local function tooltip_draw()
   GameTooltip:ClearLines();
   GameTooltip:AddDoubleLine("WeakAuras", versionString, 0.5333, 0, 1, 1, 1, 1);
@@ -3538,7 +3537,6 @@ local function ensureMouseFrame()
     mouseFrame:SetScript("OnUpdate", mouseFrame.moveWithMouse);
     moverFrame:SetScript("OnUpdate", nil);
     wipe(mouseFrame.attachedVisibleFrames);
-
   end
 
   mouseFrame.expand = function(self, id)
@@ -3654,7 +3652,6 @@ local function ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.OptionsOpened = function()
-
     personalRessourceDisplayFrame:Detach();
     personalRessourceDisplayFrame:SetScript("OnEvent", nil);
     personalRessourceDisplayFrame:ClearAllPoints();
