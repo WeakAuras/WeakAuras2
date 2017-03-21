@@ -3567,6 +3567,7 @@ templates.items[2] = {
     { spell = 235559, type = "buff", unit = "player", item = 144281}, -- Skullflower's Haemostasis
     { spell = 236757, type = "buff", unit = "player", item = 144354}, -- Fiery Red Maimers
     { spell = 235054, type = "buff", unit = "player", item = 144239}, -- The Emperor's Capacitor
+    { spell = 235712, type = "buff", unit = "player", item = 144303}, -- MKII Gyroscopic Stabilizer
     { spell = 236546, type = "buff", unit = "player", item = 144438}, -- Zeks Exterminatus
     { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
     { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
