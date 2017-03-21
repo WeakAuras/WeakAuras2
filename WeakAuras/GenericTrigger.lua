@@ -1113,7 +1113,7 @@ do
             event = "SWING_TIMER_CHANGE";
             mainTimer = timer:ScheduleTimer(swingEnd, mainSpeed, "main");
           else
-            timer:CancelTimer(mainTimer, true); -- XXX: should this be offTimer instead?
+            timer:CancelTimer(offTimer, true);
             lastSwingOff = currentTime;
             swingDurationOff = offSpeed;
             event = "SWING_TIMER_CHANGE";
