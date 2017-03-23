@@ -3911,7 +3911,7 @@ tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(12));
 templates.class.MONK[1][6] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 115072, type = "ability", showOn = "always"}, -- Expel Harm
+    { spell = 115072, type = "ability", showOn = "showAlways"}, -- Expel Harm
   },
   icon = 627486,
 };
@@ -3919,7 +3919,7 @@ templates.class.MONK[1][6] = {
 templates.class.MONK[2][6] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 205406, type = "ability", showOn = "always"}, -- Sheilun's Gift
+    { spell = 205406, type = "ability", showOn = "showAlways"}, -- Sheilun's Gift
   },
   icon = 1242282,
 };
@@ -3927,7 +3927,7 @@ templates.class.MONK[2][6] = {
 templates.class.MONK[3][6] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 101546, type = "ability", showOn = "always"}, -- Spinning Crane Kick
+    { spell = 101546, type = "ability", showOn = "showAlways"}, -- Spinning Crane Kick
   },
   icon = 606543,
 };
