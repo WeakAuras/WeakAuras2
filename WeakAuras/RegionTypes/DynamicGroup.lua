@@ -251,7 +251,7 @@ local function modify(parent, region, data)
                 return (
                     (
                         a.dataIndex == b.dataIndex
-                        and (a.region.state.index or 0) < (b.region.state.index or 0)
+                        and (a.region.state and a.region.state.index or 0) < (b.region.state and b.region.state.index or 0)
                     )
                     or (a.dataIndex or 0) < (b.dataIndex or 0)
                 )
