@@ -366,13 +366,12 @@ local function modify(parent, region, data)
 
     function region:PositionChildren()
         region:EnsureTrays();
-        local childId, childData, childRegion;
+        local childData, childRegion;
         local xOffset, yOffset = 0, 0;
         local currentWidth, currentHeight = 0, 0;
         local numVisible = 0;
 
         for index, regionData in pairs(region.controlledRegions) do
-            childId = regionData.id;
             childData = regionData.data;
             childRegion = regionData.region;
             if(childData and childRegion) then
@@ -443,7 +442,6 @@ local function modify(parent, region, data)
             end
         end
         for index, regionData in pairs(region.controlledRegions) do
-            childId = regionData.id;
             childData = regionData.data;
             childRegion = regionData.region;
             if(childData and childRegion) then
