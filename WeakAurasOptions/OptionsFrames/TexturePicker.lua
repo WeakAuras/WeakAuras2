@@ -178,9 +178,9 @@ local function ConstructTexturePicker(frame)
       end
     end
     if not(picked) then
-      for categoryName, category in pairs(self.textures) do
+      local categoryName = next(self.textures)
+      if(categoryName) then
         dropdown:SetGroup(categoryName);
-        break;
       end
     end
   end
