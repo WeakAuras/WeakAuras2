@@ -1430,7 +1430,10 @@ do
       if (spellcount > 0) then
         charges = spellcount;
       end
-      if ((basecd and basecd > 0) or startTime ~= 0 or duration > 0) then
+
+      local onNonGCDCD = duration and startTime and duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart);
+
+      if ((basecd and basecd > 0) or onNonGCDCD) then
         cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
       else
         charges = spellcount;
