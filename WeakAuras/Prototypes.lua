@@ -1001,7 +1001,7 @@ WeakAuras.event_prototypes = {
         name = "requirePowerType",
         display = L["Only if Primary"],
         type = "toggle",
-        test = "UnitPowerType(unit) == powerType",
+        test = "UnitPowerType(concernedUnit) == powerType",
         enable = function(trigger)
           return trigger.use_powertype
         end,
