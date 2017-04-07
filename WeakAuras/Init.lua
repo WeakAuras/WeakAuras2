@@ -12,3 +12,7 @@ end
 
 function WeakAuras.RegisterRegionOptions()
 end
+
+--@alpha@
+  SetCVar("scriptErrors", 1)
+--@end-alpha@
