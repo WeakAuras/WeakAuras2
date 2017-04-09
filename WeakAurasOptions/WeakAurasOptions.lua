@@ -820,7 +820,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           name = arg.display,
           order = order,
           values = values,
-          hidden = function() return hidden or trigger["use_"..realname] == false; end,
+          hidden = function()
+            return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] == false;
+          end,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
           set = function(info, v)
@@ -850,7 +852,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           type = "multiselect",
           name = arg.display,
           order = order,
-          hidden = function() return hidden or trigger["use_"..realname] ~= false; end,
+          hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
           values = values,
           -- width = "half",
           get = function(info, v)
@@ -878,7 +880,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           type = "execute",
           name = "",
           order = (order - 0.5),
-          hidden = function() return hidden or trigger["use_"..realname] ~= false; end,
+          hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
           disabled = true,
           image = function() return "", 52, 52 end
         };
