@@ -148,14 +148,30 @@ local function descIfNoValue(data, object, variable, type)
   return nil;
 end
 
-local function addControlsForChange(args, order, data, conditions, i, j, allProperties)
+local function filterUsedProperties(indexToProperty, allDisplays, usedProperties, ownProperty)
+  local filtered = {};
+  for index, value in pairs(allDisplays) do
+    local property = indexToProperty[index];
+    local isUsed = property and usedProperties[property];
+    local isOwn = ownProperty and property == ownProperty;
+    if ( not isUsed or isOwn) then
+      filtered[index] = value;
+    end
+  end
+
+  return filtered;
+end
+
+local function addControlsForChange(args, order, data, conditions, i, j, allProperties, usedProperties)
   local thenText = (j == 1) and L["Then "] or L["And "];
+  local display = isSubset(data, conditions[i].changes[j]) and allProperties.displayWithCopy or allProperties.display;
+  local valuesForProperty = filterUsedProperties(allProperties.indexToProperty, display, usedProperties, conditions[i].changes[j].property);
   args["condition" .. i .. "property" .. j] = {
     type = "select",
     name = blueIfSubset(data, conditions[i].changes[j]) .. thenText,
     desc = descIfSubset(data, conditions[i].changes[j]),
     order = order,
-    values = isSubset(data, conditions[i].changes[j]) and allProperties.displayWithCopy or allProperties.display,
+    values = valuesForProperty,
     get = function()
       local property = conditions[i].changes[j].property;
       return property and allProperties.propertyToIndex[property];
@@ -604,10 +620,18 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
   end
 
   -- Add Property changes
+
+  local usedProperties = {};
   for j = 1, conditions[i].changes and #conditions[i].changes or 0 do
-    order = addControlsForChange(args, order, data, conditions, i, j, allProperties);
+    local property = conditions[i].changes[j].property;
+    if (property) then
+      usedProperties[property] = true;
+    end
   end
 
+  for j = 1, conditions[i].changes and #conditions[i].changes or 0 do
+    order = addControlsForChange(args, order, data, conditions, i, j, allProperties, usedProperties);
+  end
 
   args["condition" .. i .. "_addChange"] = {
     type = "execute",
