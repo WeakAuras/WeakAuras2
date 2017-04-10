@@ -2564,7 +2564,7 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
       end
 
       for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
-        if (v.conditionType and v.store and v.name and v.display) then
+        if (v.conditionType and v.name and v.display) then
           local enable = true;
           if (v.enable) then
             enable = v.enable(trigger);

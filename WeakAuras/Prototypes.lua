@@ -1572,6 +1572,14 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
+        name = "onCooldown",
+        test = "true",
+        display = L["On Cooldown"],
+        conditionType = "bool",
+        conditionTest = "(state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+      },
+      {
+        hidden = true,
         test = "(showOn == \"showOnReady\" and startTime == 0) " ..
                "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
                "or (showOn == \"showAlways\")"
@@ -1756,6 +1764,14 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
+        name = "onCooldown",
+        test = "true",
+        display = L["On Cooldown"],
+        conditionType = "bool",
+        conditionTest = "(state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+      },
+      {
+        hidden = true,
         test = "(showOn == \"showOnReady\" and startTime == 0) " ..
                "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
                "or (showOn == \"showAlways\")"
@@ -1843,6 +1859,14 @@ WeakAuras.event_prototypes = {
         values = "cooldown_progress_behavior_types",
         test = "true",
         required = true,
+      },
+      {
+        hidden = true,
+        name = "onCooldown",
+        test = "true",
+        display = L["On Cooldown"],
+        conditionType = "bool",
+        conditionTest = "(state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
       },
       {
         hidden = true,
