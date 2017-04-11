@@ -6,6 +6,7 @@
 WeakAuras is a powerful and flexible framework that allows you to display highly customizable graphics on your screen to indicate buffs, debuffs, and a whole host of similar types of information. It was originally meant to be a lightweight replacement for Power Auras, but it now incorporates many features that Power Auras does not, while still remaining more efficient and easy to use.
 
 Features include:
+
 * An intuitive and powerful configuration interface
 * Custom textures including all textures from Power Auras and the new Cataclysm spell alerts
 * Progress bars and textures that show the exact duration of auras
@@ -34,7 +35,8 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
 * You're a programmer yourself and want to contribute? We accept [pull requests](https://github.com/WeakAuras/WeakAuras2/pulls) on GitHub!
 * Feel free to join our [Discord Community](https://discord.gg/wa2) at https://discord.gg/wa2 to talk and discuss everything WeakAuras!
 
-## Support the project
+## Donations?
+You can donate to the WeakAuras project maintainers using PayPal:
+
 [![WeakAuras on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN)
-[![WeakAuras on G2A](https://i.imgur.com/sRAX4Ij.png)](https://www.g2a.com/r/weakauras)
 
