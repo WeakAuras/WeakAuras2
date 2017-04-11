@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/WeakAuras/WeakAuras2.svg?branch=master)](https://travis-ci.org/WeakAuras/WeakAuras2)
-[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.me/wa2)
+[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.gg/wa2)
 
 # WeakAuras 2
 
@@ -32,7 +32,9 @@ For some examples of what WeakAuras can do, see the [examples](https://github.co
 * If you need help with your set-up, post in the [forum](https://www.wowace.com/addons/weakauras-2/forum/).
 * If you've discovered something that's clearly wrong, or if you get an error, [post](https://www.wowace.com/addons/weakauras-2/create-ticket/) a [ticket](https://www.wowace.com/addons/weakauras-2/tickets/).
 * If you have a general comment or concern, feel free to comment on the main page!
-* **NEW**: Feel free to join our [Discord Community](https://discord.me/wa2) at https://discord.me/wa2 to talk and discuss everything WeakAuras!
+* Feel free to join our [Discord Community](https://discord.gg/wa2) at https://discord.gg/wa2 to talk and discuss everything WeakAuras!
 
-<h2>Donations</h2>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN" title="PayPal"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal Button"/></a>
+## Donations
+[![WeakAuras on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN)
+
+
