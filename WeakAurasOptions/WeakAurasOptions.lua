@@ -4895,7 +4895,7 @@ function WeakAuras.ReloadTriggerOptions(data)
   local trigger_options = {
     disjunctive = {
       type = "select",
-      name = L["Required For Activation"],
+      name = L["Required for Activation"],
       width = "double",
       order = 0,
       hidden = function() return not (data.additional_triggers and #data.additional_triggers > 0) end,
@@ -4951,12 +4951,12 @@ function WeakAuras.ReloadTriggerOptions(data)
     },
     activeTriggerMode = {
       type = "select",
-      name = L["Dynamic information"],
+      name = L["Dynamic Information"],
       width = "double",
       order = 0.3,
       values = function()
         local vals = {};
-        vals[WeakAuras.trigger_modes.first_active] = L["Dynamic information from first Active Trigger"];
+        vals[WeakAuras.trigger_modes.first_active] = L["Dynamic information from first active trigger"];
         local numTriggers = data.additional_triggers and #data.additional_triggers or 0;
         for i=0,numTriggers do
           vals[i] = L["Dynamic information from Trigger %i"]:format(i + 1);
@@ -5960,7 +5960,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
     },
     anchorFrameType = {
       type = "select",
-      name = L["anchored to"],
+      name = L["Anchored To"],
       order = 72,
       hidden = IsParentDynamicGroup,
       values = WeakAuras.anchor_frame_types
@@ -5996,11 +5996,11 @@ function WeakAuras.AddPositionOptions(input, id, data)
       type = "select",
       name = function()
         if (data.anchorFrameType == "SCREEN") then
-          return L["to screen's"]
+          return L["To Screen's"]
         elseif (data.anchorFrameType == "PRD") then
-          return L["to Personal Ressource Display's"];
+          return L["To Personal Ressource Display's"];
         elseif (data.anchorFrameType == "SELECTFRAME") then
-          return L["frame's"];
+          return L["To Frame's"];
         end
       end,
       order = 75,
