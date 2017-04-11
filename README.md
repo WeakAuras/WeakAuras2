@@ -25,16 +25,16 @@ To open the options window, type `/wa` or `/weakauras` into your chat and hit en
 
 For in-depth documentation, see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 
-For some examples of what WeakAuras can do, see the [examples](https://github.com/WeakAuras/WeakAuras2/wiki/Examples) page or the [UI Showcase](https://www.wowace.com/addons/weakauras-2/pages/ui-showcase/) where we feature popular interfaces utilizing WeakAuras!
+For some examples of what WeakAuras can do, take a look at [wago.io](https://wago.io/) where tons of people upload their creations and even feature complete interfaces utilizing WeakAuras!
 
 ## Problem?
 * Please see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
-* If you need help with your set-up, post in the [forum](https://www.wowace.com/addons/weakauras-2/forum/).
 * If you've discovered something that's clearly wrong, or if you get an error, [post](https://www.wowace.com/addons/weakauras-2/create-ticket/) a [ticket](https://www.wowace.com/addons/weakauras-2/tickets/).
 * If you have a general comment or concern, feel free to comment on the main page!
+* You're a programmer yourself and want to contribute? We accept [pull requests](https://github.com/WeakAuras/WeakAuras2/pulls) on GitHub!
 * Feel free to join our [Discord Community](https://discord.gg/wa2) at https://discord.gg/wa2 to talk and discuss everything WeakAuras!
 
-## Donations
+## Support the project
 [![WeakAuras on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN)
-
+[![WeakAuras on G2A](https://i.imgur.com/sRAX4Ij.png)](https://www.g2a.com/r/weakauras)
 
