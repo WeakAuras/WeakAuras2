@@ -26,7 +26,10 @@ local properties = {
     fontSize = {
       display = L["Font Size"],
       setter = "SetTextHeight",
-      type = "number"
+      type = "number",
+      min = 6,
+      softMax = 72,
+      step = 1
     }
 }
 
