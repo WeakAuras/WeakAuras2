@@ -33,6 +33,8 @@ local default = {
     glow = false
 };
 
+local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
+
 local properties = {
     desaturate = {
       display = L["Desaturate"],
@@ -42,12 +44,18 @@ local properties = {
     width = {
       display = L["Width"],
       setter = "SetRegionWidth",
-      type = "number"
+      type = "number",
+      min = 1,
+      softMax = screenWidth,
+      bigStep = 1,
     },
     height = {
       display = L["Height"],
       setter = "SetRegionHeight",
-      type = "number"
+      type = "number",
+      min = 1,
+      softMax = screenHeight,
+      bigStep = 1
     },
     glow = {
       display = L["Glow"],
@@ -62,7 +70,10 @@ local properties = {
     fontSize = {
       display = L["Text Size"],
       setter = "SetTextHeight",
-      type = "number"
+      type = "number",
+      min = 6,
+      softMax = 72,
+      step = 1
     },
     color = {
       display = L["Color"],

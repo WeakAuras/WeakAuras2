@@ -315,8 +315,19 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
     }
     order = order + 1;
     if (propertyType == "number") then
-      args["condition" .. i .. "value" .. j].type = "input";
-      args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
+      local properties = allProperties.propertyMap[property];
+      if (properties.min or properties.softMin) and (properties.max or properties.softMax) then
+        args["condition" .. i .. "value" .. j].type = "range";
+        args["condition" .. i .. "value" .. j].min = properties.min;
+        args["condition" .. i .. "value" .. j].softMin = properties.softMin;
+        args["condition" .. i .. "value" .. j].max = properties.max;
+        args["condition" .. i .. "value" .. j].softMax = properties.softMax;
+        args["condition" .. i .. "value" .. j].step = properties.step;
+        args["condition" .. i .. "value" .. j].bigStep = properties.bigStep;
+      else
+        args["condition" .. i .. "value" .. j].type = "input";
+        args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
+      end
     end
   elseif (propertyType == "color") then
     args["condition" .. i .. "value" .. j] = {

@@ -39,16 +39,24 @@ local default = {
     borderBackdrop = "Blizzard Tooltip",
 };
 
+local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
+
 local properties = {
     width = {
       display = L["Width"],
       setter = "SetRegionWidth",
-      type = "number"
+      type = "number",
+      min = 1,
+      softMax = screenWidth,
+      bigStep = 1,
     },
     height = {
       display = L["Height"],
       setter = "SetRegionHeight",
-      type = "number"
+      type = "number",
+      min = 1,
+      softMax = screenHeight,
+      bigStep = 1
     },
 }
 
