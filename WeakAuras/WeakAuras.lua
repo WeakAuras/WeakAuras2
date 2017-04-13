@@ -412,11 +412,11 @@ function env_getglobal(k)
 end
 
 local function_cache = {};
-function WeakAuras.LoadFunction(string)
+function WeakAuras.LoadFunction(string, id, inTrigger)
   if function_cache[string] then
     return function_cache[string]
   else
-    local loadedFunction, errorString = loadstring(string)
+    local loadedFunction, errorString = loadstring("--[[ ".. (id or "Unknown") .. (inTrigger and (": "..  inTrigger) or "") .." ]]" .. string)
     if errorString then
       print(errorString)
     else
