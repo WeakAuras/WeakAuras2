@@ -1,5 +1,6 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local MSQ = LibStub("Masque", true);
+local L = WeakAuras.L
 
 -- WoW API
 local _G = _G
@@ -236,7 +237,7 @@ local function modify(parent, region, data)
 
     local customTextFunc = nil
     if(data.displayStacks:find("%%c") and data.customText) then
-        customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+        customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id)
     end
     if (customTextFunc) then
         local values = region.values;

@@ -412,11 +412,11 @@ function env_getglobal(k)
 end
 
 local function_cache = {};
-function WeakAuras.LoadFunction(string)
+function WeakAuras.LoadFunction(string, id, inTrigger)
   if function_cache[string] then
     return function_cache[string]
   else
-    local loadedFunction, errorString = loadstring(string)
+    local loadedFunction, errorString = loadstring("--[[ Error in ' ".. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."' ]]" .. string)
     if errorString then
       print(errorString)
     else
@@ -1816,7 +1816,7 @@ function WeakAuras.pAdd(data)
     data.actions.finish = data.actions.finish or {};
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
-    local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""));
+    local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""), id);
     WeakAuras.debug(id.." - Load", 1);
     WeakAuras.debug(loadFuncStr);
 
@@ -2186,7 +2186,7 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_custom and actions.custom and not squelch_actions) then
-    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end");
+    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end", region.id);
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       func();
@@ -2421,7 +2421,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.translateType = anim.translateType or "straightTranslate";
       anim.translateFunc = anim_function_strings[anim.translateType] or anim_function_strings.straightTranslate;
     end
-    translateFunc = WeakAuras.LoadFunction(anim.translateFunc);
+    translateFunc = WeakAuras.LoadFunction(anim.translateFunc, id);
   else
     region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
   end
@@ -2430,7 +2430,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.alphaType = anim.alphaType or "straight";
       anim.alphaFunc = anim_function_strings[anim.alphaType] or anim_function_strings.straight;
     end
-    alphaFunc = WeakAuras.LoadFunction(anim.alphaFunc);
+    alphaFunc = WeakAuras.LoadFunction(anim.alphaFunc, id);
   else
     region:SetAlpha(startAlpha);
   end
@@ -2439,7 +2439,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.scaleType = anim.scaleType or "straightScale";
       anim.scaleFunc = anim_function_strings[anim.scaleType] or anim_function_strings.straightScale;
     end
-    scaleFunc = WeakAuras.LoadFunction(anim.scaleFunc);
+    scaleFunc = WeakAuras.LoadFunction(anim.scaleFunc, id);
   elseif(region.Scale) then
     region:Scale(1, 1);
   end
@@ -2448,7 +2448,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.rotateType = anim.rotateType or "straight";
       anim.rotateFunc = anim_function_strings[anim.rotateType] or anim_function_strings.straight;
     end
-    rotateFunc = WeakAuras.LoadFunction(anim.rotateFunc);
+    rotateFunc = WeakAuras.LoadFunction(anim.rotateFunc, id);
   elseif(region.Rotate) then
     region:Rotate(startRotation);
   end
@@ -2457,7 +2457,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.colorType = anim.colorType or "straightColor";
       anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
     end
-    colorFunc = WeakAuras.LoadFunction(anim.colorFunc);
+    colorFunc = WeakAuras.LoadFunction(anim.colorFunc, id);
   elseif(region.Color) then
     region:Color(startR, startG, startB, startA);
   end
