@@ -703,7 +703,7 @@ function GenericTrigger.Add(data, region)
             statesParameter = event_prototypes[trigger.event].statesParameter;
             WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
             WeakAuras.debug(triggerFuncStr);
-            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
+            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr, id, L["Trigger"]);
 
             durationFunc = event_prototypes[trigger.event].durationFunc;
             nameFunc = event_prototypes[trigger.event].nameFunc;
@@ -725,7 +725,7 @@ function GenericTrigger.Add(data, region)
             if(untriggerFuncStr) then
               WeakAuras.debug(id.." - "..triggernum.." - Untrigger", 1)
               WeakAuras.debug(untriggerFuncStr);
-              untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr);
+              untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr, id, L["Untrigger"]);
             end
 
             local prototype = event_prototypes[trigger.event];
@@ -747,28 +747,28 @@ function GenericTrigger.Add(data, region)
             end
           end
         else
-          triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""));
+          triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""), id, L["Trigger"]);
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
-            untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
+            untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""), id, L["Untrigger"]);
             if (not untriggerFunc) then
               untriggerFunc = trueFunction;
             end
           end
 
           if(trigger.custom_type ~= "stateupdate" and trigger.customDuration and trigger.customDuration ~= "") then
-            durationFunc = WeakAuras.LoadFunction("return "..trigger.customDuration);
+            durationFunc = WeakAuras.LoadFunction("return "..trigger.customDuration, id, L["Custom Duration"]);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customName and trigger.customName ~= "") then
-            nameFunc = WeakAuras.LoadFunction("return "..trigger.customName);
+            nameFunc = WeakAuras.LoadFunction("return "..trigger.customName, id, L["Custom Name"]);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customIcon and trigger.customIcon ~= "") then
-            iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon);
+            iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon, id, L["Custom Icon"]);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customTexture and trigger.customTexture ~= "") then
-            textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture);
+            textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture, id, L["Custom Texture"]);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customStacks and trigger.customStacks ~= "") then
-            stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks);
+            stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks, id, L["Custom Stacks"]);
           end
 
           if((trigger.custom_type == "status" or trigger.custom_type == "stateupdate") and trigger.check == "update") then

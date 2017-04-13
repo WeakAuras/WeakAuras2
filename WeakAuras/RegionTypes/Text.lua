@@ -1,4 +1,5 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
+local L = WeakAuras.L
 
 local default = {
     displayText = "%p",
@@ -101,7 +102,7 @@ local function modify(parent, region, data)
 
     local customTextFunc = nil
     if(data.displayText:find("%%c") and data.customText) then
-        customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id, region.trigger)
+        customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id, L["Custom Text"])
     end
     if (customTextFunc) then
         local values = region.values;
