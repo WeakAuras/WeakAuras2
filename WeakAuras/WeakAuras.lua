@@ -691,39 +691,44 @@ function WeakAuras.ConstructConditionFunction(data)
       local type = conditionTemplate and conditionTemplate.type;
       local test = conditionTemplate and conditionTemplate.test;
 
-
       local check = nil;
+      local stateCheck = "state and ";
+      local stateVariableCheck = "state." .. variable .. "~= nil and ";
       if (test) then
         if (value) then
-          check = "state and " .. string.format(test, value);
+          check = string.format(test, value);
         end
       elseif (type == "number" and op) then
-        check = "state." .. variable .. " and state." .. variable .. op .. value;
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. value;
       elseif (type == "timer" and op) then
-        check = "state." .. variable .. " and state." .. variable .. "- now" .. op .. value;
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. "- now" .. op .. value;
       elseif (type == "select" and op) then
         if (tonumber(value)) then
-          check = "state." .. variable .. " and state." .. variable .. op .. tonumber(value);
+          check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. tonumber(value);
         else
-          check = "state." .. variable .. " and state." .. variable .. op .. "'" .. value .. "'";
+          check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. "'" .. value .. "'";
         end
       elseif (type == "bool") then
         local rightSide = value == 0 and "false" or "true";
-        check = "state." .. variable .. " and state." .. variable .. "==" .. rightSide;
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. "==" .. rightSide
       elseif (type == "string") then
         if(op == "==") then
-          check = "state." .. variable .. " and state." .. variable .. " == [[" .. value .. "]]";
+          check = stateCheck .. stateVariableCheck .. "state." .. variable .. " == [[" .. value .. "]]";
         elseif (op  == "find('%s')") then
-          check = "state." .. variable .. " and state." .. variable .. ":find([[" .. value .. "]], 1, true)";
+          check = stateCheck .. stateVariableCheck .. "state." .. variable .. ":find([[" .. value .. "]], 1, true)";
         elseif (op == "match('%s')") then
-          check = "state." .. variable .. " and state." ..  variable .. ":match([[" .. value .. "]], 1, true)";
+          check = stateCheck .. stateVariableCheck .. "state." ..  variable .. ":match([[" .. value .. "]], 1, true)";
         end
+      end
+
+      if (data.id == "test") then
+        print("######", check);
       end
 
       if (check) then
         ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. trigger .. ")\n";
         ret = ret .. "  state = allStates[cloneId] or allStates['']\n";
-        ret = ret .. "  if (state and " .. check .. ") then\n";
+        ret = ret .. "  if (" .. check .. ") then\n";
         ret = ret .. "    newActiveConditions[" .. conditionNumber .. "] = true;\n";
         ret = ret .. "  end\n";
       end
@@ -2949,7 +2954,8 @@ function WeakAuras.GetTriggerConditions(data)
       conditions[i] = conditions[i] or {};
       conditions[i].show = {
         display = L["Active"],
-        type = "bool"
+        type = "bool",
+        test = "(state and state.show or false) == (%s == 1)"
       }
     end
   end
