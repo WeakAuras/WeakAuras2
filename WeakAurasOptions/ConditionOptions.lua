@@ -49,7 +49,7 @@ local debug = false;
 
 local function addSpace(args, order)
   args["space" .. order] = {
-    type = "execute",
+    type = "description",
     name = "",
     image = function() return "", 0, 0 end,
     order = order,
@@ -60,7 +60,7 @@ end
 
 local function addHalfSpace(args, order)
   args["space" .. order] = {
-    type = "execute",
+    type = "description",
     name = "",
     image = function() return "", 0, 0 end,
     order = order,
