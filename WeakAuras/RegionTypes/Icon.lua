@@ -4,7 +4,6 @@ local L = WeakAuras.L
 
 -- WoW API
 local _G = _G
-local L = WeakAuras.L;
 
 local default = {
     icon = true,
