@@ -636,13 +636,11 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   conditionChecksTimers.recheckHandle[id] = conditionChecksTimers.recheckHandle[id] or {};
 
   if (conditionChecksTimers.recheckTime[id][cloneId] and conditionChecksTimers.recheckTime[id][cloneId] > time) then
-    print("Canceling timer for", id, cloneId);
     timer:CancelTimer(conditionChecksTimers.recheckHandle);
     conditionChecksTimers.recheckHandle = nil;
   end
 
   if (conditionChecksTimers.recheckTime[id][cloneId] == nil) then
-    print("Starting timer for", id, cloneId, string.format("rechecking in roughly %.1f", time - GetTime()));
     conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimer(function()
         local region;
         if(cloneId and cloneId ~= "") then
@@ -692,7 +690,7 @@ function WeakAuras.ConstructConditionFunction(data)
       local test = conditionTemplate and conditionTemplate.test;
 
       local check = nil;
-      local stateCheck = "state and ";
+      local stateCheck = "state and state.show and ";
       local stateVariableCheck = "state." .. variable .. "~= nil and ";
       if (test) then
         if (value) then
