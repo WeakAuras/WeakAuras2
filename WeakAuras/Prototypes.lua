@@ -1576,7 +1576,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
       },
       {
         hidden = true,
@@ -1682,7 +1682,7 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         conditionValues = "charges_change_condition_type";
-        conditionTest = "state and WeakAuras.CheckChargesDirection(state.direction, '%s')",
+        conditionTest = "state and state.show and WeakAuras.CheckChargesDirection(state.direction, '%s')",
       },
       {
         name = "charges",
@@ -1768,7 +1768,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
       },
       {
         hidden = true,
@@ -1866,7 +1866,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
       },
       {
         hidden = true,
