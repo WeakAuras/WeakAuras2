@@ -5,16 +5,16 @@ For that it hooks into the chat frame and addon message channels.
 This file adds the following API to the WeakAuras object:
 
 DisplayToString(id, forChat)
-    Converts the display id to a plain text string
+Converts the display id to a plain text string
 
 DisplayToTableString(id)
-    Converts the display id to a formatted table
+Converts the display id to a formatted table
 
 ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
-    Shows a tooltip frame for an aura, which allows for importing if import is true
+Shows a tooltip frame for an aura, which allows for importing if import is true
 
 ImportString(str)
-    Imports an aura from a string
+Imports an aura from a string
 
 ]]--
 
@@ -358,48 +358,48 @@ local Comm = LibStub:GetLibrary("AceComm-3.0");
 local tooltipLoading;
 
 hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
-    if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
-      ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:Hide();
-      ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = nil;
-    end
-    if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
-      ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame:Hide();
-    end
-    if(ItemRefTooltip.WeakAuras_Tooltip_Button) then
-      ItemRefTooltip.WeakAuras_Tooltip_Button:Hide();
-    end
-    if(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
-      ItemRefTooltip.WeakAuras_Tooltip_Button2:Hide();
-    end
-    if(ItemRefTooltip.WeakAuras_Desc_Box) then
-      ItemRefTooltip.WeakAuras_Desc_Box:Hide();
-    end
-    if(link == "weakauras") then
-      local _, _, characterName, displayName = text:find("|Hweakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
-      if(characterName and displayName) then
-        characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-        displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-        if(IsShiftKeyDown()) then
-          local editbox = GetCurrentKeyBoardFocus();
-          if(editbox) then
-            editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
-          end
-        else
-          ShowTooltip({
-              {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-              {1, "Requesting display information from "..characterName.."...", 1, 0.82, 0}
-            });
-          tooltipLoading = true;
-          RequestDisplay(characterName, displayName);
+  if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
+    ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:Hide();
+    ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = nil;
+  end
+  if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
+    ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame:Hide();
+  end
+  if(ItemRefTooltip.WeakAuras_Tooltip_Button) then
+    ItemRefTooltip.WeakAuras_Tooltip_Button:Hide();
+  end
+  if(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
+    ItemRefTooltip.WeakAuras_Tooltip_Button2:Hide();
+  end
+  if(ItemRefTooltip.WeakAuras_Desc_Box) then
+    ItemRefTooltip.WeakAuras_Desc_Box:Hide();
+  end
+  if(link == "weakauras") then
+    local _, _, characterName, displayName = text:find("|Hweakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
+    if(characterName and displayName) then
+      characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
+      displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
+      if(IsShiftKeyDown()) then
+        local editbox = GetCurrentKeyBoardFocus();
+        if(editbox) then
+          editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
         end
       else
         ShowTooltip({
-            {1, "WeakAuras", 0.5, 0, 1},
-            {1, "Malformed WeakAuras link", 1, 0, 0}
-          });
+          {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+          {1, "Requesting display information from "..characterName.."...", 1, 0.82, 0}
+        });
+        tooltipLoading = true;
+        RequestDisplay(characterName, displayName);
       end
+    else
+      ShowTooltip({
+        {1, "WeakAuras", 0.5, 0, 1},
+        {1, "Malformed WeakAuras link", 1, 0, 0}
+      });
     end
-  end);
+  end
+end);
 
 local OriginalSetHyperlink = ItemRefTooltip.SetHyperlink
 function ItemRefTooltip:SetHyperlink(link, ...)
@@ -523,700 +523,700 @@ end
 
 local function checkTrigger(codes, id, trigger, untrigger)
   if (not trigger) then return end;
-    local t = {};
-    if (trigger.custom) then
-      t.text = L["%s Trigger Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.custom;
-      tinsert(codes, t);
-    end
-
-    if (untrigger and untrigger.custom) then
-      t = {}
-      t.text = L["%s Untrigger Function"]:format(id);
-      t.value = t.text;
-      t.code = untrigger.custom;
-      tinsert(codes, t);
-    end
-
-    if (trigger.customDuration) then
-      t = {}
-      t.text = L["%s Duration Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customDuration
-      tinsert(codes, t);
-    end
-
-    if (trigger.customName) then
-      t = {}
-      t.text = L["%s Name Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customName
-      tinsert(codes, t);
-    end
-
-    if (trigger.customIcon) then
-      t = {}
-      t.text = L["%s Icon Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customIcon
-      tinsert(codes, t);
-    end
-
-    if (trigger.customTexture) then
-      t = {}
-      t.text = L["%s Texture Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customTexture
-      tinsert(codes, t);
-    end
-
-    if (trigger.customStacks) then
-      t = {}
-      t.text = L["%s Stacks Function"]:format(id);
-      t.value = t.text;
-      t.code = trigger.customStacks
-      tinsert(codes, t);
-    end
-  end
-
-  local function checkCustom(codes, id, base)
-    if (not base) then return end
-    if (base.custom) then
-      local t = {};
-      t.text = id;
-      t.value = id;
-      t.code = base.custom
-      tinsert(codes, t);
-    end
-  end
-
-  local function checkAnimation(codes, id, a)
-    if (not a) then return end
-    if (a.alphaType == "custom" and a.use_alpha and a.alphaFunc) then
-      local t = {};
-      t.text = L["%s - Alpha Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.alphaFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.translateType == "custom" and a.use_translate and a.translateFunc) then
-      local t = {};
-      t.text = L["%s - Translate Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.translateFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.scaleType == "custom" and a.use_scale and a.scaleFunc) then
-      local t = {};
-      t.text = L["%s - Scale Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.scaleFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.rotateType == "custom" and a.use_rotate and a.rotateFunc) then
-      local t = {};
-      t.text = L["%s - Rotate Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.rotateFunc;
-      tinsert(codes, t);
-    end
-
-    if (a.colorType == "custom" and a.use_color and a.colorFunc) then
-      local t = {};
-      t.text = L["%s - Color Animation"]:format(id);
-      t.value = t.text;
-      t.code = a.colorFunc
-      tinsert(codes, t);
-    end
-  end
-
-  local function checkTriggerLogic(codes, id, logic)
-    if (not logic) then return end
-    local t = {};
-    t.text = id;
-    t.value = id;
-    t.code = logic;
+  local t = {};
+  if (trigger.custom) then
+    t.text = L["%s Trigger Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.custom;
     tinsert(codes, t);
   end
 
-  local function checkText(codes, id, customText)
-    if (not customText) then return end
-    local t = {};
-    t.text = id;
-    t.value = id;
-    t.code = customText;
+  if (untrigger and untrigger.custom) then
+    t = {}
+    t.text = L["%s Untrigger Function"]:format(id);
+    t.value = t.text;
+    t.code = untrigger.custom;
     tinsert(codes, t);
   end
 
-  local function scamCheck(codes, data)
-    checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
-    if (data.additional_triggers) then
-      for i, v in ipairs(data.additional_triggers) do
-        checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i+1), v.trigger, v.untrigger);
-      end
-    end
+  if (trigger.customDuration) then
+    t = {}
+    t.text = L["%s Duration Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customDuration
+    tinsert(codes, t);
+  end
 
-    if (data.actions) then
-      checkCustom(codes, L["%s - Init Action"]:format(data.id), data.actions.init);
-      checkCustom(codes, L["%s - Start Action"]:format(data.id), data.actions.start);
-      checkCustom(codes, L["%s - Finish Action"]:format(data.id), data.actions.finish);
-    end
+  if (trigger.customName) then
+    t = {}
+    t.text = L["%s Name Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customName
+    tinsert(codes, t);
+  end
 
-    if (data.animation) then
-      checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start);
-      checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
-      checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
-    end
+  if (trigger.customIcon) then
+    t = {}
+    t.text = L["%s Icon Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customIcon
+    tinsert(codes, t);
+  end
 
-    if(data.customTriggerLogic) then
-      checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
-    end
+  if (trigger.customTexture) then
+    t = {}
+    t.text = L["%s Texture Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customTexture
+    tinsert(codes, t);
+  end
 
-    if(data.customText) then
-      checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
+  if (trigger.customStacks) then
+    t = {}
+    t.text = L["%s Stacks Function"]:format(id);
+    t.value = t.text;
+    t.code = trigger.customStacks
+    tinsert(codes, t);
+  end
+end
+
+local function checkCustom(codes, id, base)
+  if (not base) then return end
+  if (base.custom) then
+    local t = {};
+    t.text = id;
+    t.value = id;
+    t.code = base.custom
+    tinsert(codes, t);
+  end
+end
+
+local function checkAnimation(codes, id, a)
+  if (not a) then return end
+  if (a.alphaType == "custom" and a.use_alpha and a.alphaFunc) then
+    local t = {};
+    t.text = L["%s - Alpha Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.alphaFunc;
+    tinsert(codes, t);
+  end
+
+  if (a.translateType == "custom" and a.use_translate and a.translateFunc) then
+    local t = {};
+    t.text = L["%s - Translate Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.translateFunc;
+    tinsert(codes, t);
+  end
+
+  if (a.scaleType == "custom" and a.use_scale and a.scaleFunc) then
+    local t = {};
+    t.text = L["%s - Scale Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.scaleFunc;
+    tinsert(codes, t);
+  end
+
+  if (a.rotateType == "custom" and a.use_rotate and a.rotateFunc) then
+    local t = {};
+    t.text = L["%s - Rotate Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.rotateFunc;
+    tinsert(codes, t);
+  end
+
+  if (a.colorType == "custom" and a.use_color and a.colorFunc) then
+    local t = {};
+    t.text = L["%s - Color Animation"]:format(id);
+    t.value = t.text;
+    t.code = a.colorFunc
+    tinsert(codes, t);
+  end
+end
+
+local function checkTriggerLogic(codes, id, logic)
+  if (not logic) then return end
+  local t = {};
+  t.text = id;
+  t.value = id;
+  t.code = logic;
+  tinsert(codes, t);
+end
+
+local function checkText(codes, id, customText)
+  if (not customText) then return end
+  local t = {};
+  t.text = id;
+  t.value = id;
+  t.code = customText;
+  tinsert(codes, t);
+end
+
+local function scamCheck(codes, data)
+  checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
+  if (data.additional_triggers) then
+    for i, v in ipairs(data.additional_triggers) do
+      checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i+1), v.trigger, v.untrigger);
     end
   end
 
-  function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
-    if(type(data) == "table") then
-      if(compressed) then
-        DecompressDisplay(data);
-        data.controlledChildren = nil;
+  if (data.actions) then
+    checkCustom(codes, L["%s - Init Action"]:format(data.id), data.actions.init);
+    checkCustom(codes, L["%s - Start Action"]:format(data.id), data.actions.start);
+    checkCustom(codes, L["%s - Finish Action"]:format(data.id), data.actions.finish);
+  end
+
+  if (data.animation) then
+    checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start);
+    checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
+    checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
+  end
+
+  if(data.customTriggerLogic) then
+    checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
+  end
+
+  if(data.customText) then
+    checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
+  end
+end
+
+function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
+  if(type(data) == "table") then
+    if(compressed) then
+      DecompressDisplay(data);
+      data.controlledChildren = nil;
+    end
+
+    local regionType = data.regionType;
+    local regionData = regionOptions[regionType or ""]
+    local displayName = regionData and regionData.displayName or regionType or "";
+
+    local tooltip = {
+      {2, data.id, "          ", 0.5333, 0, 1},
+      {2, displayName, "          ", 1, 0.82, 0},
+      {1, " ", 1, 1, 1}
+    };
+
+    local codes = {};
+    scamCheck(codes, data);
+    if(children) then
+      for index, childData in pairs(children) do
+        tinsert(tooltip, {2, " ", childData.id, 1, 1, 1, 1, 1, 1});
+        scamCheck(codes, childData);
       end
-
-      local regionType = data.regionType;
-      local regionData = regionOptions[regionType or ""]
-      local displayName = regionData and regionData.displayName or regionType or "";
-
-      local tooltip = {
-        {2, data.id, "          ", 0.5333, 0, 1},
-        {2, displayName, "          ", 1, 0.82, 0},
-        {1, " ", 1, 1, 1}
-      };
-
-      local codes = {};
-      scamCheck(codes, data);
-      if(children) then
-        for index, childData in pairs(children) do
-          tinsert(tooltip, {2, " ", childData.id, 1, 1, 1, 1, 1, 1});
-          scamCheck(codes, childData);
-        end
-        if(#tooltip > 3) then
-          tooltip[4][2] = L["Children:"];
-        else
-          tinsert(tooltip, {1, L["No Children:"], 1, 1, 1});
-        end
-      elseif(data.controlledChildren) then
-        for index, childId in pairs(data.controlledChildren) do
-          tinsert(tooltip, {2, " ", childId, 1, 1, 1, 1, 1, 1});
-        end
-        if(#tooltip > 3) then
-          tooltip[4][2] = L["Children:"];
-        else
-          tinsert(tooltip, {1, L["No Children:"], 1, 1, 1});
-        end
+      if(#tooltip > 3) then
+        tooltip[4][2] = L["Children:"];
       else
-        for triggernum = 0, 9 do
-          local trigger;
-          if(triggernum == 0) then
-            trigger = data.trigger;
-          elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-            trigger = data.additional_triggers[triggernum].trigger;
-          end
-          if(trigger) then
-            if(trigger.type == "aura") then
-              for index, name in pairs(trigger.names) do
-                local left = " ";
-                if(index == 1) then
-                  if(#trigger.names > 0) then
-                    if(#trigger.names > 1) then
-                      left = L["Auras:"];
-                    else
-                      left = L["Aura:"];
-                    end
+        tinsert(tooltip, {1, L["No Children:"], 1, 1, 1});
+      end
+    elseif(data.controlledChildren) then
+      for index, childId in pairs(data.controlledChildren) do
+        tinsert(tooltip, {2, " ", childId, 1, 1, 1, 1, 1, 1});
+      end
+      if(#tooltip > 3) then
+        tooltip[4][2] = L["Children:"];
+      else
+        tinsert(tooltip, {1, L["No Children:"], 1, 1, 1});
+      end
+    else
+      for triggernum = 0, 9 do
+        local trigger;
+        if(triggernum == 0) then
+          trigger = data.trigger;
+        elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+          trigger = data.additional_triggers[triggernum].trigger;
+        end
+        if(trigger) then
+          if(trigger.type == "aura") then
+            for index, name in pairs(trigger.names) do
+              local left = " ";
+              if(index == 1) then
+                if(#trigger.names > 0) then
+                  if(#trigger.names > 1) then
+                    left = L["Auras:"];
+                  else
+                    left = L["Aura:"];
                   end
                 end
-
-                if (icons) then
-                  tinsert(tooltip, {2, left, name..(icons[name] and (" |T"..icons[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
-                else
-                  local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
-                  tinsert(tooltip, {2, left, name.." |T"..icon..":12:12:0:0:64:64:4:60:4:60|t", 1, 1, 1, 1, 1, 1});
-                end
               end
-            elseif(trigger.type == "event" or trigger.type == "status") then
-              if(trigger.type == "event") then
-                tinsert(tooltip, {2, L["Trigger:"], (event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+
+              if (icons) then
+                tinsert(tooltip, {2, left, name..(icons[name] and (" |T"..icons[name]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1});
               else
-                tinsert(tooltip, {2, L["Trigger:"], (status_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+                local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+                tinsert(tooltip, {2, left, name.." |T"..icon..":12:12:0:0:64:64:4:60:4:60|t", 1, 1, 1, 1, 1, 1});
               end
-              if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
-                tinsert(tooltip, {2, L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
-              end
-            else
-              tinsert(tooltip, {2, L["Trigger:"], L["Custom"], 1, 1, 1, 1, 1, 1});
             end
-          end
-        end
-      end
-
-      if (import and #tooltip > 30) then
-        -- Truncate the tooltip to ~25 auras if there are more than ~30
-        local size = #tooltip
-        tooltip[26] = {2, " ",  "[...]", 1, 1, 1, 1, 1, 1};
-        local nrOfChildren = children and #children or data.controlledChildren and #data.controlledChildren or 0
-        tooltip[27] = {1, string.format(L["%s total auras"], nrOfChildren), "", 1, 1, 1, 1, 1, 1};
-        for i = 28, size do
-          tooltip[i] = nil;
-        end
-      end
-
-      local hasDescription = data.desc and data.desc ~= "";
-      local hasUrl = data.url and data.url ~= "";
-
-      if(hasDescription or hasUrl) then
-        tinsert(tooltip, {1, " "});
-      end
-
-      if(hasDescription) then
-          tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
-      end
-
-      if (hasUrl) then
-        tinsert(tooltip, {1, data.url, 1, 0.82, 0, 1});
-      end
-
-      local importbutton;
-      local showcodebutton;
-      if(import) then
-        tinsert(tooltip, {1, " "});
-        if(type(import) == "string" and import ~= "unknown") then
-          tinsert(tooltip, {2, L["From"]..": "..import, "                         ", 0, 1, 0});
-        end
-
-        if #codes > 0 then
-          tinsert(tooltip, {1, "This aura contains custom Lua code.", 1, 0, 0});
-          tinsert(tooltip, {1, "Make sure you can trust the person who sent it!", 1, 0, 0});
-        end
-
-        tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
-        tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
-
-        if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
-          ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
-        end
-        importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
-        importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -8, 8);
-        importbutton:SetWidth(90);
-        importbutton:RegisterEvent("PLAYER_REGEN_ENABLED");
-        importbutton:RegisterEvent("PLAYER_REGEN_DISABLED");
-
-        if not(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
-          ItemRefTooltip.WeakAuras_Tooltip_Button2 = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
-        end
-        showcodebutton = ItemRefTooltip.WeakAuras_Tooltip_Button2;
-        showcodebutton:SetPoint("BOTTOMLEFT", ItemRefTooltip, "BOTTOMLEFT", 8, 8);
-        showcodebutton:SetWidth(90);
-
-        local function onCombat(self, event)
-          if (event == "PLAYER_REGEN_ENABLED") then
-            importbutton:Enable();
+          elseif(trigger.type == "event" or trigger.type == "status") then
+            if(trigger.type == "event") then
+              tinsert(tooltip, {2, L["Trigger:"], (event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+            else
+              tinsert(tooltip, {2, L["Trigger:"], (status_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+            end
+            if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
+              tinsert(tooltip, {2, L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+            end
           else
-            importbutton:Disable();
+            tinsert(tooltip, {2, L["Trigger:"], L["Custom"], 1, 1, 1, 1, 1, 1});
           end
         end
+      end
+    end
 
-        importbutton:SetScript("OnEvent", onCombat);
-        if (InCombatLockdown()) then
+    if (import and #tooltip > 30) then
+      -- Truncate the tooltip to ~25 auras if there are more than ~30
+      local size = #tooltip
+      tooltip[26] = {2, " ",  "[...]", 1, 1, 1, 1, 1, 1};
+      local nrOfChildren = children and #children or data.controlledChildren and #data.controlledChildren or 0
+      tooltip[27] = {1, string.format(L["%s total auras"], nrOfChildren), "", 1, 1, 1, 1, 1, 1};
+      for i = 28, size do
+        tooltip[i] = nil;
+      end
+    end
+
+    local hasDescription = data.desc and data.desc ~= "";
+    local hasUrl = data.url and data.url ~= "";
+
+    if(hasDescription or hasUrl) then
+      tinsert(tooltip, {1, " "});
+    end
+
+    if(hasDescription) then
+      tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
+    end
+
+    if (hasUrl) then
+      tinsert(tooltip, {1, data.url, 1, 0.82, 0, 1});
+    end
+
+    local importbutton;
+    local showcodebutton;
+    if(import) then
+      tinsert(tooltip, {1, " "});
+      if(type(import) == "string" and import ~= "unknown") then
+        tinsert(tooltip, {2, L["From"]..": "..import, "                         ", 0, 1, 0});
+      end
+
+      if #codes > 0 then
+        tinsert(tooltip, {1, "This aura contains custom Lua code.", 1, 0, 0});
+        tinsert(tooltip, {1, "Make sure you can trust the person who sent it!", 1, 0, 0});
+      end
+
+      tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
+      tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
+
+      if not(ItemRefTooltip.WeakAuras_Tooltip_Button) then
+        ItemRefTooltip.WeakAuras_Tooltip_Button = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
+      end
+      importbutton = ItemRefTooltip.WeakAuras_Tooltip_Button;
+      importbutton:SetPoint("BOTTOMRIGHT", ItemRefTooltip, "BOTTOMRIGHT", -8, 8);
+      importbutton:SetWidth(90);
+      importbutton:RegisterEvent("PLAYER_REGEN_ENABLED");
+      importbutton:RegisterEvent("PLAYER_REGEN_DISABLED");
+
+      if not(ItemRefTooltip.WeakAuras_Tooltip_Button2) then
+        ItemRefTooltip.WeakAuras_Tooltip_Button2 = CreateFrame("Button", "WeakAurasTooltipImportButton", ItemRefTooltip, "UIPanelButtonTemplate")
+      end
+      showcodebutton = ItemRefTooltip.WeakAuras_Tooltip_Button2;
+      showcodebutton:SetPoint("BOTTOMLEFT", ItemRefTooltip, "BOTTOMLEFT", 8, 8);
+      showcodebutton:SetWidth(90);
+
+      local function onCombat(self, event)
+        if (event == "PLAYER_REGEN_ENABLED") then
+          importbutton:Enable();
+        else
           importbutton:Disable();
         end
-        showcodebutton:SetText(L["Show Code"]);
-        if not WeakAurasSaved.import_disabled or WeakAuras.IsImporting() then
-          importbutton:SetText("Import");
-          importbutton:SetScript("OnClick", function()
-              local func = function()
-                WeakAuras.SetImporting(true);
-                WeakAuras.LoadOptions();
+      end
 
-                local optionsFrame = WeakAuras.OptionsFrame();
-                if not(optionsFrame) then
-                  WeakAuras.ToggleOptions();
-                  optionsFrame = WeakAuras.OptionsFrame();
-                end
+      importbutton:SetScript("OnEvent", onCombat);
+      if (InCombatLockdown()) then
+        importbutton:Disable();
+      end
+      showcodebutton:SetText(L["Show Code"]);
+      if not WeakAurasSaved.import_disabled or WeakAuras.IsImporting() then
+        importbutton:SetText("Import");
+        importbutton:SetScript("OnClick", function()
+          local func = function()
+            WeakAuras.SetImporting(true);
+            WeakAuras.LoadOptions();
 
-                if not(WeakAuras.IsOptionsOpen()) then
-                  WeakAuras.ToggleOptions();
-                end
+            local optionsFrame = WeakAuras.OptionsFrame();
+            if not(optionsFrame) then
+              WeakAuras.ToggleOptions();
+              optionsFrame = WeakAuras.OptionsFrame();
+            end
 
-                local function importData(data)
-                  local id = data.id
-                  local num = 2;
-                  while(WeakAurasSaved.displays[id]) do
-                    id = data.id.." "..num;
-                    num = num + 1;
-                  end
-                  data.id = id;
-                  data.parent = nil;
+            if not(WeakAuras.IsOptionsOpen()) then
+              WeakAuras.ToggleOptions();
+            end
 
-                  WeakAuras.Add(data);
-                  WeakAuras.NewDisplayButton(data);
-                end
+            local function importData(data)
+              local id = data.id
+              local num = 2;
+              while(WeakAurasSaved.displays[id]) do
+                id = data.id.." "..num;
+                num = num + 1;
+              end
+              data.id = id;
+              data.parent = nil;
 
-                importData(data);
+              WeakAuras.Add(data);
+              WeakAuras.NewDisplayButton(data);
+            end
+
+            importData(data);
+            WeakAuras.Add(data);
+            WeakAuras.NewDisplayButton(data);
+            coroutine.yield();
+
+            if(children) then
+              for index, childData in pairs(children) do
+                importData(childData);
+                tinsert(data.controlledChildren, childData.id);
+                childData.parent = data.id;
                 WeakAuras.Add(data);
-                WeakAuras.NewDisplayButton(data);
+                WeakAuras.Add(childData);
                 coroutine.yield();
+              end
+            end
 
-                if(children) then
-                  for index, childData in pairs(children) do
-                    importData(childData);
-                    tinsert(data.controlledChildren, childData.id);
-                    childData.parent = data.id;
-                    WeakAuras.Add(data);
-                    WeakAuras.Add(childData);
-                    coroutine.yield();
-                  end
-                end
-
-                if (children) then
-                  for index, childData in pairs(children) do
-                    WeakAuras.NewDisplayButton(childData);
-                    local childButton = WeakAuras.GetDisplayButton(childData.id);
-                    childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
-                    childButton:SetGroupOrder(index, #data.controlledChildren);
-                    coroutine.yield();
-                  end
-
-                  local button = WeakAuras.GetDisplayButton(data.id);
-                  button.callbacks.UpdateExpandButton();
-                  WeakAuras.UpdateDisplayButton(data);
-                  WeakAuras.ReloadGroupRegionOptions(data);
-                  WeakAuras.SortDisplayButtons();
-                end
-
-                WeakAuras.Add(data);
-                ItemRefTooltip:Hide();
-                WeakAuras.PickDisplay(data.id);
-                WeakAuras.CloseImportExport();
-                WeakAuras.SetImporting(false);
+            if (children) then
+              for index, childData in pairs(children) do
+                WeakAuras.NewDisplayButton(childData);
+                local childButton = WeakAuras.GetDisplayButton(childData.id);
+                childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+                childButton:SetGroupOrder(index, #data.controlledChildren);
+                coroutine.yield();
               end
 
-              local co = coroutine.create(func);
-              WeakAuras.dynFrame:AddAction("import", co);
-            end);
-        else
-          -- TODO enable button after importing finished
-          importbutton:SetText("Import disabled");
-          importbutton:SetScript("OnClick", function()
-              WeakAuras.CloseImportExport();
-            end);
-        end
-
-        showcodebutton:SetScript("OnClick", function()
-            WeakAuras.OpenOptions();
-            WeakAuras.OpenCodeReview(codes);
-          end);
-      end
-
-      ShowTooltip(tooltip);
-
-      if(import) then
-        importbutton:Show();
-        if (#codes > 0) then
-          showcodebutton:Show();
-        else
-          showcodebutton:Hide();
-        end
-      end
-
-      if not(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
-        ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame = CreateFrame("frame", nil, ItemRefTooltip);
-      end
-      local thumbnail_frame = ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame;
-      thumbnail_frame:SetWidth(40);
-      thumbnail_frame:SetHeight(40);
-      thumbnail_frame:SetPoint("TOPRIGHT", ItemRefTooltip, "TOPRIGHT", -27, -7);
-
-      if(alterdesc) then
-        if not(ItemRefTooltip.WeakAuras_Desc_Box) then
-          ItemRefTooltip.WeakAuras_Desc_Box = CreateFrame("frame", nil, ItemRefTooltip);
-        end
-        local descboxframe = ItemRefTooltip.WeakAuras_Desc_Box;
-        descboxframe:SetBackdrop({
-            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            edgeSize = 16,
-            insets = {
-              left = 4,
-              right = 3,
-              top = 4,
-              bottom = 3
-            }
-          });
-        descboxframe:SetBackdropColor(0, 0, 0);
-        descboxframe:SetBackdropBorderColor(0.4, 0.4, 0.4);
-        if (alterdesc == "desc") then
-          descboxframe:SetHeight(80);
-        else
-          descboxframe:SetHeight(20);
-        end
-        descboxframe:SetWidth(260);
-        descboxframe:SetPoint("TOP", ItemRefTooltip, "BOTTOM");
-        descboxframe:Show();
-
-        local descbox = descboxframe.descbox;
-        if not(descbox) then
-          descbox = CreateFrame("editbox", nil, descboxframe);
-          descboxframe.descbox = descbox;
-        end
-        descbox:SetPoint("BOTTOMLEFT", descboxframe, "BOTTOMLEFT", 8, 8);
-        descbox:SetPoint("TOPRIGHT", descboxframe, "TOPRIGHT", -8, -8);
-        descbox:SetFont("Fonts\\FRIZQT__.TTF", 12);
-        descbox:EnableMouse(true);
-        descbox:SetAutoFocus(false);
-        descbox:SetCountInvisibleLetters(false);
-        descbox:SetMultiLine(alterdesc == "desc");
-
-        if (alterdesc == "url") then
-          if (not descbox.label) then
-            local label = descbox:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
-            label:SetPoint("TOPLEFT", descboxframe, "BOTTOMLEFT", 8, 0);
-            label:SetText(L["Press Ctrl+C to copy"]);
-            descbox.label = label;
-          end
-          descbox.label:Show();
-        else
-          if (descbox.label) then
-            descbox.label:Hide();
-          end
-        end
-
-        local text = data[alterdesc] and data[alterdesc] ~= "" and data[alterdesc] or "";
-        descbox:SetText(text);
-
-        descbox:SetScript("OnEscapePressed", function()
-            descbox:ClearFocus();
-            if (alterdesc == "url") then
-              return;
-            end
-            if(data.desc and data.desc ~= "") then
-              descbox:SetText(data.desc);
-            else
-              descbox:SetText("");
-            end
-          end);
-        descbox:SetScript("OnEnterPressed", function()
-            descbox:ClearFocus();
-            if (alterdesc == "url") then
-              return;
-            end
-            if(descbox:GetText() ~= "") then
-              data.desc = descbox:GetText();
-            else
-              data.desc = nil;
-            end
-            WeakAuras.ShowDisplayTooltip(data, children, nil, nil, import, nil, "desc");
-            if(WeakAuras.GetDisplayButton) then
               local button = WeakAuras.GetDisplayButton(data.id);
-              if(button) then
-                button:SetNormalTooltip();
-              end
+              button.callbacks.UpdateExpandButton();
+              WeakAuras.UpdateDisplayButton(data);
+              WeakAuras.ReloadGroupRegionOptions(data);
+              WeakAuras.SortDisplayButtons();
             end
-          end);
-        if (alterdesc == "url") then
-          descbox:SetScript("OnChar", function() descbox:SetText(text); descbox:HighlightText(); end);
-          descbox:SetScript("OnMouseUp", function() descbox:HighlightText(); end);
-        else
-          descbox:SetScript("OnChar", nil);
-          descbox:SetScript("OnMouseUp", nil);
-        end
 
-        descbox:SetFocus();
-        if (alterdesc == "url") then
-          descbox:HighlightText();
-        end
-        descbox:Show();
+            WeakAuras.Add(data);
+            ItemRefTooltip:Hide();
+            WeakAuras.PickDisplay(data.id);
+            WeakAuras.CloseImportExport();
+            WeakAuras.SetImporting(false);
+          end
+
+          local co = coroutine.create(func);
+          WeakAuras.dynFrame:AddAction("import", co);
+        end);
+      else
+        -- TODO enable button after importing finished
+        importbutton:SetText("Import disabled");
+        importbutton:SetScript("OnClick", function()
+          WeakAuras.CloseImportExport();
+        end);
       end
 
-      local RegularGetData;
-      if(children) then
-        data.controlledChildren = {};
-        for index, childData in pairs(children) do
-          if(compressed) then
-            DecompressDisplay(childData);
-          end
-          data.controlledChildren[index] = childData.id;
-        end
+      showcodebutton:SetScript("OnClick", function()
+        WeakAuras.OpenOptions();
+        WeakAuras.OpenCodeReview(codes);
+      end);
+    end
 
-        -- WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
-        -- the tooltip, it will look to the incoming transmission data for child data. This allows thumbnails of incoming
-        -- groups to be constructed properly.
-        RegularGetData = WeakAuras.GetData;
-        WeakAuras.GetData = function(id)
-          if(children) then
-            for index, childData in pairs(children) do
-              if(childData.id == id) then
-                return childData;
-              end
+    ShowTooltip(tooltip);
+
+    if(import) then
+      importbutton:Show();
+      if (#codes > 0) then
+        showcodebutton:Show();
+      else
+        showcodebutton:Hide();
+      end
+    end
+
+    if not(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame) then
+      ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame = CreateFrame("frame", nil, ItemRefTooltip);
+    end
+    local thumbnail_frame = ItemRefTooltip.WeakAuras_Tooltip_Thumbnail_Frame;
+    thumbnail_frame:SetWidth(40);
+    thumbnail_frame:SetHeight(40);
+    thumbnail_frame:SetPoint("TOPRIGHT", ItemRefTooltip, "TOPRIGHT", -27, -7);
+
+    if(alterdesc) then
+      if not(ItemRefTooltip.WeakAuras_Desc_Box) then
+        ItemRefTooltip.WeakAuras_Desc_Box = CreateFrame("frame", nil, ItemRefTooltip);
+      end
+      local descboxframe = ItemRefTooltip.WeakAuras_Desc_Box;
+      descboxframe:SetBackdrop({
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 16,
+        insets = {
+          left = 4,
+          right = 3,
+          top = 4,
+          bottom = 3
+        }
+      });
+      descboxframe:SetBackdropColor(0, 0, 0);
+      descboxframe:SetBackdropBorderColor(0.4, 0.4, 0.4);
+      if (alterdesc == "desc") then
+        descboxframe:SetHeight(80);
+      else
+        descboxframe:SetHeight(20);
+      end
+      descboxframe:SetWidth(260);
+      descboxframe:SetPoint("TOP", ItemRefTooltip, "BOTTOM");
+      descboxframe:Show();
+
+      local descbox = descboxframe.descbox;
+      if not(descbox) then
+        descbox = CreateFrame("editbox", nil, descboxframe);
+        descboxframe.descbox = descbox;
+      end
+      descbox:SetPoint("BOTTOMLEFT", descboxframe, "BOTTOMLEFT", 8, 8);
+      descbox:SetPoint("TOPRIGHT", descboxframe, "TOPRIGHT", -8, -8);
+      descbox:SetFont("Fonts\\FRIZQT__.TTF", 12);
+      descbox:EnableMouse(true);
+      descbox:SetAutoFocus(false);
+      descbox:SetCountInvisibleLetters(false);
+      descbox:SetMultiLine(alterdesc == "desc");
+
+      if (alterdesc == "url") then
+        if (not descbox.label) then
+          local label = descbox:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
+          label:SetPoint("TOPLEFT", descboxframe, "BOTTOMLEFT", 8, 0);
+          label:SetText(L["Press Ctrl+C to copy"]);
+          descbox.label = label;
+        end
+        descbox.label:Show();
+      else
+        if (descbox.label) then
+          descbox.label:Hide();
+        end
+      end
+
+      local text = data[alterdesc] and data[alterdesc] ~= "" and data[alterdesc] or "";
+      descbox:SetText(text);
+
+      descbox:SetScript("OnEscapePressed", function()
+        descbox:ClearFocus();
+        if (alterdesc == "url") then
+          return;
+        end
+        if(data.desc and data.desc ~= "") then
+          descbox:SetText(data.desc);
+        else
+          descbox:SetText("");
+        end
+      end);
+      descbox:SetScript("OnEnterPressed", function()
+        descbox:ClearFocus();
+        if (alterdesc == "url") then
+          return;
+        end
+        if(descbox:GetText() ~= "") then
+          data.desc = descbox:GetText();
+        else
+          data.desc = nil;
+        end
+        WeakAuras.ShowDisplayTooltip(data, children, nil, nil, import, nil, "desc");
+        if(WeakAuras.GetDisplayButton) then
+          local button = WeakAuras.GetDisplayButton(data.id);
+          if(button) then
+            button:SetNormalTooltip();
+          end
+        end
+      end);
+      if (alterdesc == "url") then
+        descbox:SetScript("OnChar", function() descbox:SetText(text); descbox:HighlightText(); end);
+        descbox:SetScript("OnMouseUp", function() descbox:HighlightText(); end);
+      else
+        descbox:SetScript("OnChar", nil);
+        descbox:SetScript("OnMouseUp", nil);
+      end
+
+      descbox:SetFocus();
+      if (alterdesc == "url") then
+        descbox:HighlightText();
+      end
+      descbox:Show();
+    end
+
+    local RegularGetData;
+    if(children) then
+      data.controlledChildren = {};
+      for index, childData in pairs(children) do
+        if(compressed) then
+          DecompressDisplay(childData);
+        end
+        data.controlledChildren[index] = childData.id;
+      end
+
+      -- WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
+      -- the tooltip, it will look to the incoming transmission data for child data. This allows thumbnails of incoming
+      -- groups to be constructed properly.
+      RegularGetData = WeakAuras.GetData;
+      WeakAuras.GetData = function(id)
+        if(children) then
+          for index, childData in pairs(children) do
+            if(childData.id == id) then
+              return childData;
             end
           end
         end
       end
-
-      if (not IsAddOnLoaded('WeakAurasOptions')) then
-        LoadAddOn('WeakAurasOptions')
-      end
-
-      local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
-      if not ok then
-        error("Error creating thumbnail", 2)
-      end
-
-      WeakAuras.validate(data, regionTypes[regionType].default);
-      regionOptions[regionType].modifyThumbnail(thumbnail_frame, thumbnail, data, regionTypes[regionType].modify);
-      ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = thumbnail;
-
-      thumbnail:SetAllPoints(thumbnail_frame);
-      if(thumbnail.SetIcon) then
-        local i;
-        if(icon) then
-          i = icon;
-        elseif(WeakAuras.transmitCache and WeakAuras.transmitCache[data.id]) then
-          i = WeakAuras.transmitCache[data.id];
-        end
-        if (i) then
-          thumbnail:SetIcon(i);
-        end
-      end
-      thumbnail_frame:Show();
-
-      if(children and RegularGetData) then
-        WeakAuras.GetData = RegularGetData;
-        data.controlledChildren = nil;
-      end
-    elseif(type(data) == "string") then
-      ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
-          {1, data, 1, 0, 0}
-        });
     end
-  end
 
-  function WeakAuras.ImportString(str)
-    local received = StringToTable(str, true);
-    if(received and type(received) == "table" and received.m) then
-      if(received.m == "d") then
-        tooltipLoading = nil;
-        if(version < received.v) then
-          local errorMsg = L["Version error received higher"]
-          ShowTooltip({
-              {1, "WeakAuras", 0.5333, 0, 1},
-              {1, errorMsg:format(received.s, versionString), 1, 0, 0}
-            });
-        else
-          local data = received.d;
-          WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
-        end
-      end
-    elseif(type(received) == "string") then
-      ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
-          {1, received, 1, 0, 0, 1}
-        });
+    if (not IsAddOnLoaded('WeakAurasOptions')) then
+      LoadAddOn('WeakAurasOptions')
     end
-  end
 
-  local safeSenders = {}
-  function RequestDisplay(characterName, displayName)
-    safeSenders[characterName] = true
-    safeSenders[Ambiguate(characterName, "none")] = true
-    local transmit = {
-      m = "dR",
-      d = displayName
-    };
-    local transmitString = TableToString(transmit);
-    Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
-  end
-
-  function TransmitError(errorMsg, characterName)
-    local transmit = {
-      m = "dE",
-      eM = errorMsg
-    };
-    Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
-  end
-
-  function TransmitDisplay(id, characterName)
-    local encoded = WeakAuras.DisplayToString(id);
-    if(encoded ~= "") then
-      Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
-          Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
-        end, id);
-    else
-      TransmitError("dne", characterName);
+    local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
+    if not ok then
+      error("Error creating thumbnail", 2)
     end
-  end
 
-  Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
-      if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
-        local done, total, displayName = strsplit(" ", message, 3)
-        done = tonumber(done)
-        total = tonumber(total)
-        if(done and total and total >= done) then
-          local red = min(255, (1 - done / total) * 511)
-          local green = min(255, (done / total) * 511)
-          ShowTooltip({
-              {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-              {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
-              {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
-            })
-        end
+    WeakAuras.validate(data, regionTypes[regionType].default);
+    regionOptions[regionType].modifyThumbnail(thumbnail_frame, thumbnail, data, regionTypes[regionType].modify);
+    ItemRefTooltip.WeakAuras_Tooltip_Thumbnail = thumbnail;
+
+    thumbnail:SetAllPoints(thumbnail_frame);
+    if(thumbnail.SetIcon) then
+      local i;
+      if(icon) then
+        i = icon;
+      elseif(WeakAuras.transmitCache and WeakAuras.transmitCache[data.id]) then
+        i = WeakAuras.transmitCache[data.id];
       end
-    end)
+      if (i) then
+        thumbnail:SetIcon(i);
+      end
+    end
+    thumbnail_frame:Show();
 
-  Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
-      local received = StringToTable(message);
-      if(received and type(received) == "table" and received.m) then
-        if(received.m == "d") and safeSenders[sender] then
-          tooltipLoading = nil;
-          if(version ~= received.v) then
-            local errorMsg = version > received.v and L["Version error received lower"] or L["Version error received higher"]
-            ShowTooltip({
-                {1, "WeakAuras", 0.5333, 0, 1},
-                {1, errorMsg:format(received.s, versionString), 1, 0, 0}
-              });
-          else
-            local data = received.d;
-            WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, sender, true)
-          end
-        elseif(received.m == "dR") then
-          --if(WeakAuras.linked[received.d]) then
-          TransmitDisplay(received.d, sender);
-          --else
-          --    TransmitError("not authorized", sender);
-          --end
-        elseif(received.m == "dE") then
-          tooltipLoading = nil;
-          if(received.eM == "dne") then
-            ShowTooltip({
-                {1, "WeakAuras", 0.5333, 0, 1},
-                {1, L["Requested display does not exist"], 1, 0, 0}
-              });
-          elseif(received.eM == "na") then
-            ShowTooltip({
-                {1, "WeakAuras", 0.5333, 0, 1},
-                {1, L["Requested display not authorized"], 1, 0, 0}
-              });
-          end
-        end
-      elseif(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail and ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:IsVisible()) then
+    if(children and RegularGetData) then
+      WeakAuras.GetData = RegularGetData;
+      data.controlledChildren = nil;
+    end
+  elseif(type(data) == "string") then
+    ShowTooltip({
+      {1, "WeakAuras", 0.5333, 0, 1},
+      {1, data, 1, 0, 0}
+    });
+  end
+end
+
+function WeakAuras.ImportString(str)
+  local received = StringToTable(str, true);
+  if(received and type(received) == "table" and received.m) then
+    if(received.m == "d") then
+      tooltipLoading = nil;
+      if(version < received.v) then
+        local errorMsg = L["Version error received higher"]
         ShowTooltip({
-            {1, "WeakAuras", 0.5333, 0, 1},
-            {1, L["Transmission error"], 1, 0, 0}
-          });
+          {1, "WeakAuras", 0.5333, 0, 1},
+          {1, errorMsg:format(received.s, versionString), 1, 0, 0}
+        });
+      else
+        local data = received.d;
+        WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
       end
-    end);
+    end
+  elseif(type(received) == "string") then
+    ShowTooltip({
+      {1, "WeakAuras", 0.5333, 0, 1},
+      {1, received, 1, 0, 0, 1}
+    });
+  end
+end
+
+local safeSenders = {}
+function RequestDisplay(characterName, displayName)
+  safeSenders[characterName] = true
+  safeSenders[Ambiguate(characterName, "none")] = true
+  local transmit = {
+    m = "dR",
+    d = displayName
+  };
+  local transmitString = TableToString(transmit);
+  Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
+end
+
+function TransmitError(errorMsg, characterName)
+  local transmit = {
+    m = "dE",
+    eM = errorMsg
+  };
+  Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
+end
+
+function TransmitDisplay(id, characterName)
+  local encoded = WeakAuras.DisplayToString(id);
+  if(encoded ~= "") then
+    Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
+      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
+    end, id);
+  else
+    TransmitError("dne", characterName);
+  end
+end
+
+Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
+  if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
+    local done, total, displayName = strsplit(" ", message, 3)
+    done = tonumber(done)
+    total = tonumber(total)
+    if(done and total and total >= done) then
+      local red = min(255, (1 - done / total) * 511)
+      local green = min(255, (done / total) * 511)
+      ShowTooltip({
+        {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+        {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
+        {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
+      })
+    end
+  end
+end)
+
+Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
+  local received = StringToTable(message);
+  if(received and type(received) == "table" and received.m) then
+    if(received.m == "d") and safeSenders[sender] then
+      tooltipLoading = nil;
+      if(version ~= received.v) then
+        local errorMsg = version > received.v and L["Version error received lower"] or L["Version error received higher"]
+        ShowTooltip({
+          {1, "WeakAuras", 0.5333, 0, 1},
+          {1, errorMsg:format(received.s, versionString), 1, 0, 0}
+        });
+      else
+        local data = received.d;
+        WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, sender, true)
+      end
+    elseif(received.m == "dR") then
+      --if(WeakAuras.linked[received.d]) then
+      TransmitDisplay(received.d, sender);
+    --else
+    --    TransmitError("not authorized", sender);
+    --end
+    elseif(received.m == "dE") then
+      tooltipLoading = nil;
+      if(received.eM == "dne") then
+        ShowTooltip({
+          {1, "WeakAuras", 0.5333, 0, 1},
+          {1, L["Requested display does not exist"], 1, 0, 0}
+        });
+      elseif(received.eM == "na") then
+        ShowTooltip({
+          {1, "WeakAuras", 0.5333, 0, 1},
+          {1, L["Requested display not authorized"], 1, 0, 0}
+        });
+      end
+    end
+  elseif(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail and ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:IsVisible()) then
+    ShowTooltip({
+      {1, "WeakAuras", 0.5333, 0, 1},
+      {1, L["Transmission error"], 1, 0, 0}
+    });
+  end
+end);

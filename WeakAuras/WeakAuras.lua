@@ -9,15 +9,15 @@ local _G = _G
 -- WoW APIs
 local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-    = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+  = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
-    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
+  = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-    = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+  = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
-    = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-    = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+  = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown = debugstack, IsSpellKnown
 
 local ADDON_NAME = "WeakAuras"
@@ -263,12 +263,12 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   elseif(regionTypes[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionType - region type \""..name.."\" already defined");
   else
-  regionTypes[name] = {
-    create = createFunction,
-    modify = modifyFunction,
-    default = default,
-    properties = properties
-  };
+    regionTypes[name] = {
+      create = createFunction,
+      modify = modifyFunction,
+      default = default,
+      properties = properties
+    };
   end
 end
 
@@ -292,15 +292,15 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   elseif(regionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined");
   else
-  regionOptions[name] = {
-    create = createFunction,
-    icon = icon,
-    displayName = displayName,
-    createThumbnail = createThumbnail,
-    modifyThumbnail = modifyThumbnail,
-    description = description,
-    templates = templates
-  };
+    regionOptions[name] = {
+      create = createFunction,
+      icon = icon,
+      displayName = displayName,
+      createThumbnail = createThumbnail,
+      modifyThumbnail = modifyThumbnail,
+      description = description,
+      templates = templates
+    };
   end
 end
 
@@ -642,16 +642,16 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
 
   if (conditionChecksTimers.recheckTime[id][cloneId] == nil) then
     conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimer(function()
-        local region;
-        if(cloneId and cloneId ~= "") then
-          region = clones[id] and clones[id][cloneId];
-        else
-          region = WeakAuras.regions[id].region;
-        end
-        if (region and region.state and region.state.show) then
-          checkConditions[id](region);
-        end
-      end, time - GetTime())
+      local region;
+      if(cloneId and cloneId ~= "") then
+        region = clones[id] and clones[id][cloneId];
+      else
+        region = WeakAuras.regions[id].region;
+      end
+      if (region and region.state and region.state.show) then
+        checkConditions[id](region);
+      end
+    end, time - GetTime())
   end
 end
 
@@ -888,11 +888,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif(event == "PLAYER_LOGIN") then
     local toAdd = {};
     for id, data in pairs(db.displays) do
-    if(id ~= data.id) then
-      print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
-      data.id = id;
-    end
-    tinsert(toAdd, data);
+      if(id ~= data.id) then
+        print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+        data.id = id;
+      end
+      tinsert(toAdd, data);
     end
     WeakAuras.AddMany(toAdd);
     WeakAuras.AddManyFromAddons(from_files);
@@ -1006,7 +1006,7 @@ function WeakAuras.ScanAll()
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.ScanAll();
-   end
+  end
 end
 
 -- encounter stuff
@@ -1230,7 +1230,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
 
   if (event == "ZONE_CHANGED_NEW_AREA") then
     WeakAuras.LoadEncounterInitScripts();
- end
+  end
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
@@ -1408,24 +1408,24 @@ function WeakAuras.Delete(data)
   local id = data.id;
 
   if(data.parent) then
-      local parentData = db.displays[data.parent];
-      if(parentData and parentData.controlledChildren) then
-        for index, childId in pairs(parentData.controlledChildren) do
-          if(childId == id) then
-            tremove(parentData.controlledChildren, index);
-          end
+    local parentData = db.displays[data.parent];
+    if(parentData and parentData.controlledChildren) then
+      for index, childId in pairs(parentData.controlledChildren) do
+        if(childId == id) then
+          tremove(parentData.controlledChildren, index);
         end
       end
+    end
   end
 
   if(data.controlledChildren) then
-      for index, childId in pairs(data.controlledChildren) do
-        local childData = db.displays[childId];
-        if(childData) then
-          childData.parent = nil;
-          WeakAuras.Add(childData);
-        end
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = db.displays[childId];
+      if(childData) then
+        childData.parent = nil;
+        WeakAuras.Add(childData);
       end
+    end
   end
 
   animations[tostring(regions[id].region)] = nil
@@ -1625,7 +1625,7 @@ end
 
 function WeakAuras.AddManyFromAddons(table)
   for _, addData in ipairs(table) do
-  WeakAuras.AddFromAddon(addData[1], addData[2], addData[3]);
+    WeakAuras.AddFromAddon(addData[1], addData[2], addData[3]);
   end
 end
 
@@ -1634,8 +1634,8 @@ function WeakAuras.AddFromAddon(addon, data, force)
   if(id and addons[addon]) then
     addons[addon].displays[id] = data;
     if(db.registered[id]) then
-      -- This display was already registered
-      -- It is unnecessary to add it again
+    -- This display was already registered
+    -- It is unnecessary to add it again
     elseif(force and not db.registered[id] == false) then
       if(db.displays[id]) then
         -- ID collision
@@ -1659,102 +1659,102 @@ end
 function WeakAuras.ResolveCollisions(onFinished)
   local num = 0;
   for id, _ in pairs(collisions) do
-  num = num + 1;
+    num = num + 1;
   end
 
   if(num > 0) then
-  local baseText;
-  local buttonText;
-  if(registeredFromAddons) then
-    if(num == 1) then
-    baseText = L["Resolve collisions dialog singular"];
-    buttonText = L["Done"];
-    else
-    baseText = L["Resolve collisions dialog"];
-    buttonText = L["Next"];
-    end
-  else
-    if(num == 1) then
-    baseText = L["Resolve collisions dialog startup singular"];
-    buttonText = L["Done"];
-    else
-    baseText = L["Resolve collisions dialog startup"];
-    buttonText = L["Next"];
-    end
-  end
-
-  local numResolved = 0;
-  local currentId = next(collisions);
-
-  local function UpdateText(popup)
-    popup.text:SetText(baseText..(numResolved or "error").."/"..(num or "error"));
-  end
-
-  StaticPopupDialogs["WEAKAURAS_RESOLVE_COLLISIONS"] = {
-    text = baseText,
-    button1 = buttonText,
-    OnAccept = function(self)
-      -- Do the collision resolution
-      local newId = self.editBox:GetText();
-      if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
-        WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
+    local baseText;
+    local buttonText;
+    if(registeredFromAddons) then
+      if(num == 1) then
+        baseText = L["Resolve collisions dialog singular"];
+        buttonText = L["Done"];
       else
-        local data = WeakAuras.GetData(currentId);
-        if(data) then
-          WeakAuras.Rename(data, newId);
-        else
-          print("Data not found");
-        end
-    end
-
-    WeakAuras.CollisionResolved(collisions[currentId][1], collisions[currentId][2], true);
-    numResolved = numResolved + 1;
-
-    -- Get the next id to resolve
-    currentId = next(collisions, currentId);
-    if(currentId) then
-      -- There is another conflict to resolve - hook OnHide to reshow the dialog as soon as it hides
-      self:SetScript("OnHide", function(self)
-        self:Show();
-        UpdateText(self);
-        self.editBox:SetText(currentId);
-        self:SetScript("OnHide", nil);
-        if not(next(collisions, currentId)) then
-          self.button1:SetText(L["Done"]);
-        end
-      end);
-    else
-      self.editBox:SetScript("OnTextChanged", nil);
-        wipe(collisions);
-        if(onFinished) then
-          onFinished();
-        end
+        baseText = L["Resolve collisions dialog"];
+        buttonText = L["Next"];
       end
-    end,
-    hasEditBox = true,
-    hasWideEditBox = true,
-    hideOnEscape = true,
-    whileDead = true,
-    showAlert = true,
-    timeout = 0,
-    preferredindex = STATICPOPUP_NUMDIALOGS
-  };
-
-  local popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
-  popup.editBox:SetScript("OnTextChanged", function(self)
-    local newid = self:GetText();
-    if(collisions[newid] or db.displays[newid]) then
-      popup.button1:Disable();
     else
-      popup.button1:Enable();
+      if(num == 1) then
+        baseText = L["Resolve collisions dialog startup singular"];
+        buttonText = L["Done"];
+      else
+        baseText = L["Resolve collisions dialog startup"];
+        buttonText = L["Next"];
+      end
     end
-  end);
-  popup.editBox:SetText(currentId);
-  popup.text:SetJustifyH("left");
-  popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp");
-  popup.icon:SetVertexColor(0.833, 0, 1);
 
-  UpdateText(popup);
+    local numResolved = 0;
+    local currentId = next(collisions);
+
+    local function UpdateText(popup)
+      popup.text:SetText(baseText..(numResolved or "error").."/"..(num or "error"));
+    end
+
+    StaticPopupDialogs["WEAKAURAS_RESOLVE_COLLISIONS"] = {
+      text = baseText,
+      button1 = buttonText,
+      OnAccept = function(self)
+        -- Do the collision resolution
+        local newId = self.editBox:GetText();
+        if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
+          WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
+        else
+          local data = WeakAuras.GetData(currentId);
+          if(data) then
+            WeakAuras.Rename(data, newId);
+          else
+            print("Data not found");
+          end
+        end
+
+        WeakAuras.CollisionResolved(collisions[currentId][1], collisions[currentId][2], true);
+        numResolved = numResolved + 1;
+
+        -- Get the next id to resolve
+        currentId = next(collisions, currentId);
+        if(currentId) then
+          -- There is another conflict to resolve - hook OnHide to reshow the dialog as soon as it hides
+          self:SetScript("OnHide", function(self)
+            self:Show();
+            UpdateText(self);
+            self.editBox:SetText(currentId);
+            self:SetScript("OnHide", nil);
+            if not(next(collisions, currentId)) then
+              self.button1:SetText(L["Done"]);
+            end
+          end);
+        else
+          self.editBox:SetScript("OnTextChanged", nil);
+          wipe(collisions);
+          if(onFinished) then
+            onFinished();
+          end
+        end
+      end,
+      hasEditBox = true,
+      hasWideEditBox = true,
+      hideOnEscape = true,
+      whileDead = true,
+      showAlert = true,
+      timeout = 0,
+      preferredindex = STATICPOPUP_NUMDIALOGS
+    };
+
+    local popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
+    popup.editBox:SetScript("OnTextChanged", function(self)
+      local newid = self:GetText();
+      if(collisions[newid] or db.displays[newid]) then
+        popup.button1:Disable();
+      else
+        popup.button1:Enable();
+      end
+    end);
+    popup.editBox:SetText(currentId);
+    popup.text:SetJustifyH("left");
+    popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp");
+    popup.icon:SetVertexColor(0.833, 0, 1);
+
+    UpdateText(popup);
   elseif(onFinished) then
     onFinished();
   end
@@ -1807,17 +1807,17 @@ function WeakAuras.Modernize(data)
 
   -- Change English-language class tokens to locale-agnostic versions
   local class_agnosticize = {
-  ["Death Knight"] = "DEATHKNIGHT",
-  ["Druid"] = "DRUID",
-  ["Hunter"] = "HUNTER",
-  ["Mage"] = "MAGE",
-  ["Monk"] = "MONK",
-  ["Paladin"] = "PALADIN",
-  ["Priest"] = "PRIEST",
-  ["Rogue"] = "ROGUE",
-  ["Shaman"] = "SHAMAN",
-  ["Warlock"] = "WARLOCK",
-  ["Warrior"] = "WARRIOR"
+    ["Death Knight"] = "DEATHKNIGHT",
+    ["Druid"] = "DRUID",
+    ["Hunter"] = "HUNTER",
+    ["Mage"] = "MAGE",
+    ["Monk"] = "MONK",
+    ["Paladin"] = "PALADIN",
+    ["Priest"] = "PRIEST",
+    ["Rogue"] = "ROGUE",
+    ["Shaman"] = "SHAMAN",
+    ["Warlock"] = "WARLOCK",
+    ["Warrior"] = "WARRIOR"
   };
   if(load.class.single) then
     load.class.single = class_agnosticize[load.class.single] or load.class.single;
@@ -1902,7 +1902,7 @@ function WeakAuras.Modernize(data)
 
     -- fontFlags (outline)
     if not data.fontFlags then
-        data.fontFlags = "OUTLINE";
+      data.fontFlags = "OUTLINE";
     end
   end
 
@@ -1959,17 +1959,17 @@ function WeakAuras.SyncParentChildRelationships(silent)
         if not(silent) then
           print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
         end
-      -- A display cannot have both children and a parent
-      data.parent = nil;
+        -- A display cannot have both children and a parent
+        data.parent = nil;
       elseif(db.displays[data.parent] and db.displays[data.parent].controlledChildren) then
         childToParent[id] = data.parent;
         parentToChild[data.parent] = parentToChild[data.parent] or {};
         parentToChild[data.parent][id] = true;
       else
-      if not(silent) then
-        print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
-      end
-      data.parent = nil;
+        if not(silent) then
+          print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
+        end
+        data.parent = nil;
       end
     end
   end
@@ -1988,10 +1988,10 @@ function WeakAuras.SyncParentChildRelationships(silent)
       if(parentToChild[id]) then
         for childId, _ in pairs(parentToChild[id]) do
           if not(tContains(data.controlledChildren, childId)) then
-          if not(silent) then
-            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
-          end
-          tinsert(data.controlledChildren, childId);
+            if not(silent) then
+              print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
+            end
+            tinsert(data.controlledChildren, childId);
           end
         end
       end
@@ -2006,21 +2006,21 @@ function WeakAuras.AddMany(table)
   end
   local loaded = {};
   local function load(id, depends)
-  local data = idtable[id];
-  if(data.parent) then
-    if(idtable[data.parent]) then
-      if(tContains(depends, data.parent)) then
-        error("Circular dependency in WeakAuras.AddMany between "..tconcat(depends, ", "));
-      else
-        if not(loaded[data.parent]) then
-          local dependsOut = {};
-          for i,v in pairs(depends) do
-            dependsOut[i] = v;
+    local data = idtable[id];
+    if(data.parent) then
+      if(idtable[data.parent]) then
+        if(tContains(depends, data.parent)) then
+          error("Circular dependency in WeakAuras.AddMany between "..tconcat(depends, ", "));
+        else
+          if not(loaded[data.parent]) then
+            local dependsOut = {};
+            for i,v in pairs(depends) do
+              dependsOut[i] = v;
+            end
+            tinsert(dependsOut, data.parent);
+            load(data.parent, dependsOut);
           end
-          tinsert(dependsOut, data.parent);
-          load(data.parent, dependsOut);
         end
-      end
       else
         data.parent = nil;
       end
@@ -2045,15 +2045,15 @@ end
 function WeakAuras.Add(data)
   WeakAuras.Modernize(data);
   WeakAuras.pAdd(data);
-  -- local status, err = pcall(WeakAuras.pAdd, data);
-  -- if not(status) then
-  -- local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
-  -- print("|cFFFF0000WeakAuras "..id..": "..err);
-  -- debug(id..": "..err, 3);
-  -- debug(debugstack(1, 6));
-  -- WeakAurasFrame:Hide();
-  -- error(err);
-  -- end
+-- local status, err = pcall(WeakAuras.pAdd, data);
+-- if not(status) then
+-- local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
+-- print("|cFFFF0000WeakAuras "..id..": "..err);
+-- debug(id..": "..err, 3);
+-- debug(debugstack(1, 6));
+-- WeakAurasFrame:Hide();
+-- error(err);
+-- end
 end
 
 local function removeSpellNames(data)
@@ -2352,7 +2352,7 @@ end
 function WeakAuras.GetRegion(id, cloneId)
   if(cloneId and cloneId ~= "") then
     return WeakAuras.EnsureClone(id, cloneId);
-   end
+  end
   return WeakAuras.regions[id] and WeakAuras.regions[id].region;
 end
 
@@ -2383,12 +2383,12 @@ function WeakAuras.SetAllStatesHiddenExcept(id, triggernum, list)
 end
 
 function WeakAuras.ReleaseClone(id, cloneId, regionType)
-   if (not clones[id]) then
-     return;
-   end
-   local region = clones[id][cloneId];
-   clones[id][cloneId] = nil;
-   clonePool[regionType][#clonePool[regionType] + 1] = region;
+  if (not clones[id]) then
+    return;
+  end
+  local region = clones[id][cloneId];
+  clones[id][cloneId] = nil;
+  clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
 -- This function is currently never called if WeakAuras is paused, but it is set up so that it can take a different action
@@ -2425,22 +2425,22 @@ function WeakAuras.PerformActions(data, type, region)
     if(actions.message_type == "PRINT") then
       DEFAULT_CHAT_FRAME:AddMessage(message, actions.r or 1, actions.g or 1, actions.b or 1);
     elseif(actions.message_type == "COMBAT") then
-    if(CombatText_AddMessage) then
-      CombatText_AddMessage(message, COMBAT_TEXT_SCROLL_FUNCTION, actions.r or 1, actions.g or 1, actions.b or 1);
-    end
-    elseif(actions.message_type == "WHISPER") then
-    if(actions.message_dest) then
-      if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
-        WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
-      else
-        WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
+      if(CombatText_AddMessage) then
+        CombatText_AddMessage(message, COMBAT_TEXT_SCROLL_FUNCTION, actions.r or 1, actions.g or 1, actions.b or 1);
       end
-    end
+    elseif(actions.message_type == "WHISPER") then
+      if(actions.message_dest) then
+        if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
+          WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
+        else
+          WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
+        end
+      end
     elseif(actions.message_type == "CHANNEL") then
-    local channel = actions.message_channel and tonumber(actions.message_channel);
-    if(GetChannelName(channel)) then
-      WeakAuras.Announce(message, "CHANNEL", nil, channel, data.id, type);
-    end
+      local channel = actions.message_channel and tonumber(actions.message_channel);
+      if(GetChannelName(channel)) then
+        WeakAuras.Announce(message, "CHANNEL", nil, channel, data.id, type);
+      end
     elseif(actions.message_type == "SMARTRAID") then
       local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
       if UnitInBattleground("player") then
@@ -2457,7 +2457,7 @@ function WeakAuras.PerformActions(data, type, region)
         SendChatMessage(message, "SAY")
       end
     else
-    WeakAuras.Announce(message, actions.message_type, nil, nil, data.id, type);
+      WeakAuras.Announce(message, actions.message_type, nil, nil, data.id, type);
     end
   end
 
@@ -2525,108 +2525,108 @@ local updatingAnimations;
 local last_update = GetTime();
 function WeakAuras.UpdateAnimations()
   for groupId, groupRegion in pairs(pending_controls) do
-  pending_controls[groupId] = nil;
-  groupRegion:DoControlChildren();
+    pending_controls[groupId] = nil;
+    groupRegion:DoControlChildren();
   end
   local time = GetTime();
   local elapsed = time - last_update;
   last_update = time;
   local num = 0;
   for id, anim in pairs(animations) do
-  num = num + 1;
-  local finished = false;
-  if(anim.duration_type == "seconds") then
-    if anim.duration > 0 then
-      anim.progress = anim.progress + (elapsed / anim.duration);
-    else
-      anim.progress = anim.progress + (elapsed / 1);
-    end
-    if(anim.progress >= 1) then
-    anim.progress = 1;
-    finished = true;
-    end
-  elseif(anim.duration_type == "relative") then
-    local state = anim.region.state;
-    if (not state
+    num = num + 1;
+    local finished = false;
+    if(anim.duration_type == "seconds") then
+      if anim.duration > 0 then
+        anim.progress = anim.progress + (elapsed / anim.duration);
+      else
+        anim.progress = anim.progress + (elapsed / 1);
+      end
+      if(anim.progress >= 1) then
+        anim.progress = 1;
+        finished = true;
+      end
+    elseif(anim.duration_type == "relative") then
+      local state = anim.region.state;
+      if (not state
         or (state.progressType == "timed" and state.duration < 0.01)
         or (state.progressType == "static" and state.value < 0.01)) then
-      anim.progress = 0;
-      if(anim.type == "start" or anim.type == "finish") then
-        finished = true;
+        anim.progress = 0;
+        if(anim.type == "start" or anim.type == "finish") then
+          finished = true;
+        end
+      else
+        local relativeProgress = 0;
+        if(state.progressType == "static") then
+          relativeProgress = state.value / state.total;
+        elseif (state.progressType == "timed") then
+          relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
+        end
+        relativeProgress = state.inverseDirection and (1 - relativeProgress) or relativeProgress;
+        anim.progress = relativeProgress / anim.duration
+        local iteration = math.floor(anim.progress);
+        --anim.progress = anim.progress - iteration;
+        if not(anim.iteration) then
+          anim.iteration = iteration;
+        elseif(anim.iteration ~= iteration) then
+          anim.iteration = nil;
+          finished = true;
+        end
       end
     else
-      local relativeProgress = 0;
-      if(state.progressType == "static") then
-        relativeProgress = state.value / state.total;
-      elseif (state.progressType == "timed") then
-        relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
-      end
-      relativeProgress = state.inverseDirection and (1 - relativeProgress) or relativeProgress;
-      anim.progress = relativeProgress / anim.duration
-      local iteration = math.floor(anim.progress);
-      --anim.progress = anim.progress - iteration;
-      if not(anim.iteration) then
-        anim.iteration = iteration;
-      elseif(anim.iteration ~= iteration) then
-        anim.iteration = nil;
-        finished = true;
+      anim.progress = 1;
+    end
+    local progress = anim.inverse and (1 - anim.progress) or anim.progress;
+    WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
+    if(anim.translateFunc) then
+      anim.region:ClearAllPoints();
+      anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.translateFunc(progress, anim.startX, anim.startY, anim.dX, anim.dY));
+    end
+    if(anim.alphaFunc) then
+      anim.region:SetAlpha(anim.alphaFunc(progress, anim.startAlpha, anim.dAlpha));
+    end
+    if(anim.scaleFunc) then
+      local scaleX, scaleY = anim.scaleFunc(progress, 1, 1, anim.scaleX, anim.scaleY);
+      if(anim.region.Scale) then
+        anim.region:Scale(scaleX, scaleY);
+      else
+        anim.region:SetWidth(anim.startWidth * scaleX);
+        anim.region:SetHeight(anim.startHeight * scaleY);
       end
     end
-  else
-    anim.progress = 1;
-  end
-  local progress = anim.inverse and (1 - anim.progress) or anim.progress;
-  WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
-  if(anim.translateFunc) then
-    anim.region:ClearAllPoints();
-    anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.translateFunc(progress, anim.startX, anim.startY, anim.dX, anim.dY));
-  end
-  if(anim.alphaFunc) then
-    anim.region:SetAlpha(anim.alphaFunc(progress, anim.startAlpha, anim.dAlpha));
-  end
-  if(anim.scaleFunc) then
-    local scaleX, scaleY = anim.scaleFunc(progress, 1, 1, anim.scaleX, anim.scaleY);
-    if(anim.region.Scale) then
-      anim.region:Scale(scaleX, scaleY);
-    else
-      anim.region:SetWidth(anim.startWidth * scaleX);
-      anim.region:SetHeight(anim.startHeight * scaleY);
+    if(anim.rotateFunc and anim.region.Rotate) then
+      anim.region:Rotate(anim.rotateFunc(progress, anim.startRotation, anim.rotate));
     end
-  end
-  if(anim.rotateFunc and anim.region.Rotate) then
-    anim.region:Rotate(anim.rotateFunc(progress, anim.startRotation, anim.rotate));
-  end
-  if(anim.colorFunc and anim.region.Color) then
-    anim.region:Color(anim.colorFunc(progress, anim.startR, anim.startG, anim.startB, anim.startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA));
-  end
-  WeakAuras.ActivateAuraEnvironment(nil);
-  if(finished) then
-    if not(anim.loop) then
-      if(anim.startX) then
-        anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
-      end
-      if(anim.startAlpha) then
-        anim.region:SetAlpha(anim.startAlpha);
-      end
-      if(anim.startWidth) then
-        if(anim.region.Scale) then
-          anim.region:Scale(1, 1);
-        else
-          anim.region:SetWidth(anim.startWidth);
-          anim.region:SetHeight(anim.startHeight);
+    if(anim.colorFunc and anim.region.Color) then
+      anim.region:Color(anim.colorFunc(progress, anim.startR, anim.startG, anim.startB, anim.startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA));
+    end
+    WeakAuras.ActivateAuraEnvironment(nil);
+    if(finished) then
+      if not(anim.loop) then
+        if(anim.startX) then
+          anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
         end
-      end
-      if(anim.startRotation) then
-        if(anim.region.Rotate) then
-          anim.region:Rotate(anim.startRotation);
+        if(anim.startAlpha) then
+          anim.region:SetAlpha(anim.startAlpha);
         end
-      end
-      if(anim.startR and anim.startG and anim.startB and anim.startA) then
-        if(anim.region.Color) then
-          anim.region:Color(anim.startR, anim.startG, anim.startB, anim.startA);
+        if(anim.startWidth) then
+          if(anim.region.Scale) then
+            anim.region:Scale(1, 1);
+          else
+            anim.region:SetWidth(anim.startWidth);
+            anim.region:SetHeight(anim.startHeight);
+          end
         end
-      end
-      animations[id] = nil;
+        if(anim.startRotation) then
+          if(anim.region.Rotate) then
+            anim.region:Rotate(anim.startRotation);
+          end
+        end
+        if(anim.startR and anim.startG and anim.startB and anim.startA) then
+          if(anim.region.Color) then
+            anim.region:Color(anim.startR, anim.startG, anim.startB, anim.startA);
+          end
+        end
+        animations[id] = nil;
       end
 
       if(anim.loop) then
@@ -2641,10 +2641,10 @@ function WeakAuras.UpdateAnimations()
   -- May revisit at a later time.
   --[[
   if(num == 0) then
-      WeakAuras.debug("Animation stopped", 3);
-      frame:SetScript("OnUpdate", nil);
-      updatingAnimations = nil;
-      updatingAnimations = nil;
+  WeakAuras.debug("Animation stopped", 3);
+  frame:SetScript("OnUpdate", nil);
+  updatingAnimations = nil;
+  updatingAnimations = nil;
   end
   ]]--
 end
@@ -2654,178 +2654,178 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
   local key = tostring(region);
   local valid;
   if(anim and anim.type == "custom" and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
-  valid = true;
+    valid = true;
   elseif(anim and anim.type == "preset" and anim.preset and anim_presets[anim.preset]) then
-  anim = anim_presets[anim.preset];
-  valid = true;
+    anim = anim_presets[anim.preset];
+    valid = true;
   end
   if(valid) then
-  local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation;
-  local startR, startG, startB, startA, translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc;
-  if(animations[key]) then
-    if(animations[key].type == type and not loop) then
-      return "no replace";
-    end
-    anim.x = anim.x or 0;
-    anim.y = anim.y or 0;
-    selfPoint, anchor, anchorPoint, startX, startY = animations[key].selfPoint, animations[key].anchor, animations[key].anchorPoint, animations[key].startX, animations[key].startY;
-    anim.alpha = anim.alpha or 0;
-    startAlpha = animations[key].startAlpha;
-    anim.scalex = anim.scalex or 1;
-    anim.scaley = anim.scaley or 1;
-    startWidth, startHeight = animations[key].startWidth, animations[key].startHeight;
-    anim.rotate = anim.rotate or 0;
-    startRotation = animations[key].startRotation;
-    anim.colorR = anim.colorR or 1;
-    anim.colorG = anim.colorG or 1;
-    anim.colorB = anim.colorB or 1;
-    anim.colorA = anim.colorA or 1;
-    startR = animations[key].startR;
-    startG = animations[key].startG;
-    startB = animations[key].startB;
-    startA = animations[key].startA;
-  else
-    anim.x = anim.x or 0;
-    anim.y = anim.y or 0;
-    selfPoint, anchor, anchorPoint, startX, startY = region:GetPoint(1);
-    anim.alpha = anim.alpha or 0;
-    startAlpha = region:GetAlpha();
-    anim.scalex = anim.scalex or 1;
-    anim.scaley = anim.scaley or 1;
-    startWidth, startHeight = region:GetWidth(), region:GetHeight();
-    anim.rotate = anim.rotate or 0;
-    startRotation = region.GetRotation and region:GetRotation() or 0;
-    anim.colorR = anim.colorR or 1;
-    anim.colorG = anim.colorG or 1;
-    anim.colorB = anim.colorB or 1;
-    anim.colorA = anim.colorA or 1;
-    if(region.GetColor) then
-      startR, startG, startB, startA = region:GetColor();
+    local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation;
+    local startR, startG, startB, startA, translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc;
+    if(animations[key]) then
+      if(animations[key].type == type and not loop) then
+        return "no replace";
+      end
+      anim.x = anim.x or 0;
+      anim.y = anim.y or 0;
+      selfPoint, anchor, anchorPoint, startX, startY = animations[key].selfPoint, animations[key].anchor, animations[key].anchorPoint, animations[key].startX, animations[key].startY;
+      anim.alpha = anim.alpha or 0;
+      startAlpha = animations[key].startAlpha;
+      anim.scalex = anim.scalex or 1;
+      anim.scaley = anim.scaley or 1;
+      startWidth, startHeight = animations[key].startWidth, animations[key].startHeight;
+      anim.rotate = anim.rotate or 0;
+      startRotation = animations[key].startRotation;
+      anim.colorR = anim.colorR or 1;
+      anim.colorG = anim.colorG or 1;
+      anim.colorB = anim.colorB or 1;
+      anim.colorA = anim.colorA or 1;
+      startR = animations[key].startR;
+      startG = animations[key].startG;
+      startB = animations[key].startB;
+      startA = animations[key].startA;
     else
-      startR, startG, startB, startA = 1, 1, 1, 1;
+      anim.x = anim.x or 0;
+      anim.y = anim.y or 0;
+      selfPoint, anchor, anchorPoint, startX, startY = region:GetPoint(1);
+      anim.alpha = anim.alpha or 0;
+      startAlpha = region:GetAlpha();
+      anim.scalex = anim.scalex or 1;
+      anim.scaley = anim.scaley or 1;
+      startWidth, startHeight = region:GetWidth(), region:GetHeight();
+      anim.rotate = anim.rotate or 0;
+      startRotation = region.GetRotation and region:GetRotation() or 0;
+      anim.colorR = anim.colorR or 1;
+      anim.colorG = anim.colorG or 1;
+      anim.colorB = anim.colorB or 1;
+      anim.colorA = anim.colorA or 1;
+      if(region.GetColor) then
+        startR, startG, startB, startA = region:GetColor();
+      else
+        startR, startG, startB, startA = 1, 1, 1, 1;
+      end
     end
-  end
 
-  if(anim.use_translate) then
-    if not(anim.translateType == "custom" and anim.translateFunc) then
-      anim.translateType = anim.translateType or "straightTranslate";
-      anim.translateFunc = anim_function_strings[anim.translateType] or anim_function_strings.straightTranslate;
+    if(anim.use_translate) then
+      if not(anim.translateType == "custom" and anim.translateFunc) then
+        anim.translateType = anim.translateType or "straightTranslate";
+        anim.translateFunc = anim_function_strings[anim.translateType] or anim_function_strings.straightTranslate;
+      end
+      translateFunc = WeakAuras.LoadFunction(anim.translateFunc, id);
+    else
+      region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
     end
-    translateFunc = WeakAuras.LoadFunction(anim.translateFunc, id);
-  else
-    region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
-  end
-  if(anim.use_alpha) then
-    if not(anim.alphaType == "custom" and anim.alphaFunc) then
-      anim.alphaType = anim.alphaType or "straight";
-      anim.alphaFunc = anim_function_strings[anim.alphaType] or anim_function_strings.straight;
+    if(anim.use_alpha) then
+      if not(anim.alphaType == "custom" and anim.alphaFunc) then
+        anim.alphaType = anim.alphaType or "straight";
+        anim.alphaFunc = anim_function_strings[anim.alphaType] or anim_function_strings.straight;
+      end
+      alphaFunc = WeakAuras.LoadFunction(anim.alphaFunc, id);
+    else
+      region:SetAlpha(startAlpha);
     end
-    alphaFunc = WeakAuras.LoadFunction(anim.alphaFunc, id);
-  else
-    region:SetAlpha(startAlpha);
-  end
-  if(anim.use_scale) then
-    if not(anim.scaleType == "custom" and anim.scaleFunc) then
-      anim.scaleType = anim.scaleType or "straightScale";
-      anim.scaleFunc = anim_function_strings[anim.scaleType] or anim_function_strings.straightScale;
+    if(anim.use_scale) then
+      if not(anim.scaleType == "custom" and anim.scaleFunc) then
+        anim.scaleType = anim.scaleType or "straightScale";
+        anim.scaleFunc = anim_function_strings[anim.scaleType] or anim_function_strings.straightScale;
+      end
+      scaleFunc = WeakAuras.LoadFunction(anim.scaleFunc, id);
+    elseif(region.Scale) then
+      region:Scale(1, 1);
     end
-    scaleFunc = WeakAuras.LoadFunction(anim.scaleFunc, id);
-  elseif(region.Scale) then
-    region:Scale(1, 1);
-  end
-  if(anim.use_rotate) then
-    if not(anim.rotateType == "custom" and anim.rotateFunc) then
-      anim.rotateType = anim.rotateType or "straight";
-      anim.rotateFunc = anim_function_strings[anim.rotateType] or anim_function_strings.straight;
+    if(anim.use_rotate) then
+      if not(anim.rotateType == "custom" and anim.rotateFunc) then
+        anim.rotateType = anim.rotateType or "straight";
+        anim.rotateFunc = anim_function_strings[anim.rotateType] or anim_function_strings.straight;
+      end
+      rotateFunc = WeakAuras.LoadFunction(anim.rotateFunc, id);
+    elseif(region.Rotate) then
+      region:Rotate(startRotation);
     end
-    rotateFunc = WeakAuras.LoadFunction(anim.rotateFunc, id);
-  elseif(region.Rotate) then
-    region:Rotate(startRotation);
-  end
-  if(anim.use_color) then
-    if not(anim.colorType == "custom" and anim.colorFunc) then
-      anim.colorType = anim.colorType or "straightColor";
-      anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
+    if(anim.use_color) then
+      if not(anim.colorType == "custom" and anim.colorFunc) then
+        anim.colorType = anim.colorType or "straightColor";
+        anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
+      end
+      colorFunc = WeakAuras.LoadFunction(anim.colorFunc, id);
+    elseif(region.Color) then
+      region:Color(startR, startG, startB, startA);
     end
-    colorFunc = WeakAuras.LoadFunction(anim.colorFunc, id);
-  elseif(region.Color) then
-    region:Color(startR, startG, startB, startA);
-  end
 
-  duration = WeakAuras.ParseNumber(anim.duration) or 0;
-  progress = 0;
-  if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
-    local data = WeakAuras.GetData(id);
-    if(data and data.parent) then
-      local parentRegion = regions[data.parent].region;
-      if(parentRegion and parentRegion.controlledRegions) then
-        for index, regionData in pairs(parentRegion.controlledRegions) do
-          local childRegion = regionData.region;
-          local childKey = regionData.key;
-          if(childKey and childKey ~= tostring(region) and animations[childKey] and animations[childKey].type == "main" and duration == animations[childKey].duration) then
+    duration = WeakAuras.ParseNumber(anim.duration) or 0;
+    progress = 0;
+    if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
+      local data = WeakAuras.GetData(id);
+      if(data and data.parent) then
+        local parentRegion = regions[data.parent].region;
+        if(parentRegion and parentRegion.controlledRegions) then
+          for index, regionData in pairs(parentRegion.controlledRegions) do
+            local childRegion = regionData.region;
+            local childKey = regionData.key;
+            if(childKey and childKey ~= tostring(region) and animations[childKey] and animations[childKey].type == "main" and duration == animations[childKey].duration) then
               progress = animations[childKey].progress;
               break;
+            end
           end
         end
       end
     end
-  end
 
-  animations[key] = animations[key] or {};
-  animations[key].progress = progress
-  animations[key].startX = startX
-  animations[key].startY = startY
-  animations[key].startAlpha = startAlpha
-  animations[key].startWidth = startWidth
-  animations[key].startHeight = startHeight
-  animations[key].startRotation = startRotation
-  animations[key].startR = startR
-  animations[key].startG = startG
-  animations[key].startB = startB
-  animations[key].startA = startA
-  animations[key].dX = (anim.use_translate and anim.x)
-  animations[key].dY = (anim.use_translate and anim.y)
-  animations[key].dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
-  animations[key].scaleX = (anim.use_scale and anim.scalex)
-  animations[key].scaleY = (anim.use_scale and anim.scaley)
-  animations[key].rotate = anim.rotate
-  animations[key].colorR = (anim.use_color and anim.colorR)
-  animations[key].colorG = (anim.use_color and anim.colorG)
-  animations[key].colorB = (anim.use_color and anim.colorB)
-  animations[key].colorA = (anim.use_color and anim.colorA)
-  animations[key].translateFunc = translateFunc
-  animations[key].alphaFunc = alphaFunc
-  animations[key].scaleFunc = scaleFunc
-  animations[key].rotateFunc = rotateFunc
-  animations[key].colorFunc = colorFunc
-  animations[key].region = region
-  animations[key].selfPoint = selfPoint
-  animations[key].anchor = anchor
-  animations[key].anchorPoint = anchorPoint
-  animations[key].duration = duration
-  animations[key].duration_type = anim.duration_type or "seconds"
-  animations[key].inverse = inverse
-  animations[key].type = type
-  animations[key].loop = loop
-  animations[key].onFinished = onFinished
-  animations[key].name = id
-  animations[key].cloneId = cloneId or ""
-  animations[key].namespace = namespace;
-  animations[key].data = data;
-  animations[key].anim = anim;
+    animations[key] = animations[key] or {};
+    animations[key].progress = progress
+    animations[key].startX = startX
+    animations[key].startY = startY
+    animations[key].startAlpha = startAlpha
+    animations[key].startWidth = startWidth
+    animations[key].startHeight = startHeight
+    animations[key].startRotation = startRotation
+    animations[key].startR = startR
+    animations[key].startG = startG
+    animations[key].startB = startB
+    animations[key].startA = startA
+    animations[key].dX = (anim.use_translate and anim.x)
+    animations[key].dY = (anim.use_translate and anim.y)
+    animations[key].dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
+    animations[key].scaleX = (anim.use_scale and anim.scalex)
+    animations[key].scaleY = (anim.use_scale and anim.scaley)
+    animations[key].rotate = anim.rotate
+    animations[key].colorR = (anim.use_color and anim.colorR)
+    animations[key].colorG = (anim.use_color and anim.colorG)
+    animations[key].colorB = (anim.use_color and anim.colorB)
+    animations[key].colorA = (anim.use_color and anim.colorA)
+    animations[key].translateFunc = translateFunc
+    animations[key].alphaFunc = alphaFunc
+    animations[key].scaleFunc = scaleFunc
+    animations[key].rotateFunc = rotateFunc
+    animations[key].colorFunc = colorFunc
+    animations[key].region = region
+    animations[key].selfPoint = selfPoint
+    animations[key].anchor = anchor
+    animations[key].anchorPoint = anchorPoint
+    animations[key].duration = duration
+    animations[key].duration_type = anim.duration_type or "seconds"
+    animations[key].inverse = inverse
+    animations[key].type = type
+    animations[key].loop = loop
+    animations[key].onFinished = onFinished
+    animations[key].name = id
+    animations[key].cloneId = cloneId or ""
+    animations[key].namespace = namespace;
+    animations[key].data = data;
+    animations[key].anim = anim;
 
-  if not(updatingAnimations) then
-    frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
-    updatingAnimations = true;
-  end
-  return true;
-  else
-  if(animations[key]) then
-    if(animations[key].type ~= type or loop) then
-      WeakAuras.CancelAnimation(region, true, true, true, true, true);
+    if not(updatingAnimations) then
+      frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
+      updatingAnimations = true;
     end
-  end
-  return false;
+    return true;
+  else
+    if(animations[key]) then
+      if(animations[key].type ~= type or loop) then
+        WeakAuras.CancelAnimation(region, true, true, true, true, true);
+      end
+    end
+    return false;
   end
 end
 
@@ -2871,9 +2871,9 @@ function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, res
       anim.onFinished();
     end
     return true;
-    else
-      return false;
-    end
+  else
+    return false;
+  end
 end
 
 function WeakAuras.GetData(id)
@@ -3085,8 +3085,8 @@ do
       hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
       hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
       hiddenTooltip:AddFontStrings(
-      hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
-      hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+        hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+        hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
       );
     end
     return hiddenTooltip;
@@ -3221,23 +3221,23 @@ local DisplayTimes = {};
 function WeakAuras.ProfileDisplays(all)
   UpdateAddOnCPUUsage();
   for id, regionData in pairs(WeakAuras.regions) do
-  local DisplayTime = GetFrameCPUUsage(regionData.region, true);
-  DisplayTimes[id] = DisplayTimes[id] or 0;
-  if(all or DisplayTime > DisplayTimes[id]) then
-    print("|cFFFF0000"..id.."|r -", DisplayTime, "-", DisplayTime - DisplayTimes[id]);
-  end
-  DisplayTimes[id] = DisplayTime;
+    local DisplayTime = GetFrameCPUUsage(regionData.region, true);
+    DisplayTimes[id] = DisplayTimes[id] or 0;
+    if(all or DisplayTime > DisplayTimes[id]) then
+      print("|cFFFF0000"..id.."|r -", DisplayTime, "-", DisplayTime - DisplayTimes[id]);
+    end
+    DisplayTimes[id] = DisplayTime;
   end
 end
 
 function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps, order)
   tutorials[name] = {
-  name = name,
-  displayName = displayName,
-  description = description,
-  icon = icon,
-  steps = steps,
-  order = order
+    name = name,
+    displayName = displayName,
+    description = description,
+    icon = icon,
+    steps = steps,
+    order = order
   };
 end
 
@@ -3318,10 +3318,10 @@ function WeakAuras.FixGroupChildrenOrder()
 end
 
 function WeakAuras.EnsureString(input)
-   if (input == nil) then
-     return "";
-   end
-   return tostring(input);
+  if (input == nil) then
+    return "";
+  end
+  return tostring(input);
 end
 
 -- Handle coroutines
@@ -3463,7 +3463,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
         end
         record.handle = nil;
         record.expirationTime = nil;
-      end
+    end
     end
   else -- not shown
     if(timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
@@ -3473,7 +3473,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
       end
       record.handle = nil;
       record.expirationTime = nil;
-    end
+  end
   end
 end
 
@@ -3497,7 +3497,7 @@ local function ApplyStateToRegion(id, region, state)
 
       region:SetDurationInfo(value, total, durationFunc or true, state.inverseDirection);
     else
-      -- Do nothing, should ideally clear duration info on region
+    -- Do nothing, should ideally clear duration info on region
     end
   end
   local controlChidren = state.resort;
@@ -3560,10 +3560,10 @@ local function evaluateTriggerStateTriggers(id)
   local result = false;
   WeakAuras.ActivateAuraEnvironment(id);
   if(triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0
-      or (triggerState[id].disjunctive == "all" and triggerState[id].triggerCount == triggerState[id].numTriggers)
-      or (triggerState[id].disjunctive == "custom"
-          and triggerState[id].triggerLogicFunc
-          and triggerState[id].triggerLogicFunc(triggerState[id].triggers))
+    or (triggerState[id].disjunctive == "all" and triggerState[id].triggerCount == triggerState[id].numTriggers)
+    or (triggerState[id].disjunctive == "custom"
+    and triggerState[id].triggerLogicFunc
+    and triggerState[id].triggerLogicFunc(triggerState[id].triggers))
     ) then
     result = true;
   end
@@ -3672,9 +3672,9 @@ function WeakAuras.UpdatedTriggerState(id)
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
         clone:Collapse();
       end
-    end
-    -- Show new states
-    ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
+  end
+  -- Show new states
+  ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   end
 
 
@@ -3987,7 +3987,7 @@ local function ensurePRDFrame()
         local _, screenWidth = GetPhysicalScreenSize();
         local uiScale = 1;
         if (screenWidth) then
-            uiScale = 768 / screenWidth;
+          uiScale = 768 / screenWidth;
         end
         personalRessourceDisplayFrame:SetScale(uiScale / UIParent:GetEffectiveScale());
       else
@@ -4208,8 +4208,8 @@ function WeakAuras.AnchorFrame(data, region, parent)
   end
   region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
   if(data.frameStrata == 1) then
-      region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    region:SetFrameStrata(region:GetParent():GetFrameStrata());
   else
-      region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
   end
 end

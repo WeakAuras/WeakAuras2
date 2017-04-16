@@ -134,21 +134,21 @@ local function createOptions(id, data)
       hidden = function() return not(data.sort == "hybrid") end,
     },
     sortHybrid = {
-            type = "multiselect",
-            name = L["Select the auras you always want to be listed first"],
-            order = 49,
-            hidden = function() return not(data.sort == "hybrid") end,
-            values = function()
-				return data.controlledChildren
-            end,
-            get = function(info, id)
-				return data.sortHybridTable and data.sortHybridTable [id] or false;
-            end,
-            set = function(info, id)
-				if not data.sortHybridTable then data.sortHybridTable = {}; end
-					local cur = data.sortHybridTable and data.sortHybridTable[id] or false;
-                    data.sortHybridTable[id] = not(cur);
-            end,
+      type = "multiselect",
+      name = L["Select the auras you always want to be listed first"],
+      order = 49,
+      hidden = function() return not(data.sort == "hybrid") end,
+      values = function()
+        return data.controlledChildren
+      end,
+      get = function(info, id)
+        return data.sortHybridTable and data.sortHybridTable [id] or false;
+      end,
+      set = function(info, id)
+        if not data.sortHybridTable then data.sortHybridTable = {}; end
+        local cur = data.sortHybridTable and data.sortHybridTable[id] or false;
+        data.sortHybridTable[id] = not(cur);
+      end,
     },
     spacer = {
       type = "header",
@@ -427,12 +427,12 @@ local function createIcon()
       t2:SetPoint("TOP", t1, "BOTTOM", 0, -2 + (28 * self.elapsed));
       t2:SetAlpha(1 - (2 * self.elapsed));
     elseif(self.elapsed < 1.5) then
-      -- do nothing
+    -- do nothing
     elseif(self.elapsed < 2) then
       t2:SetPoint("TOP", t1, "BOTTOM", 0, -2 + (28 * (2 - self.elapsed)));
       t2:SetAlpha((2 * self.elapsed) - 3);
     elseif(self.elapsed < 3) then
-      -- do nothing
+    -- do nothing
     else
       self.elapsed = self.elapsed - 3;
     end

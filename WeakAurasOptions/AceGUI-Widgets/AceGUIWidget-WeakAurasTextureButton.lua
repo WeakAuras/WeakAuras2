@@ -19,10 +19,10 @@ end
 Methods
 -------------------------------------------------------------------------------]]
 local methods = {
-	["OnAcquire"] = function(self)
-		self:SetWidth(128);
-		self:SetHeight(128);
-	end,
+  ["OnAcquire"] = function(self)
+    self:SetWidth(128);
+    self:SetHeight(128);
+  end,
   ["OnRelease"] = function(self)
     self:ClearPick();
     self.texture:SetTexture();
@@ -84,18 +84,18 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-	local name = "WeakAurasTextureButton"..AceGUI:GetNextWidgetNum(Type);
-	local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
+  local name = "WeakAurasTextureButton"..AceGUI:GetNextWidgetNum(Type);
+  local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(128);
   button:SetWidth(128);
-	button:SetBackdrop({
+  button:SetBackdrop({
     bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
     tile = true, tileSize = 16, edgeSize = 16,
     insets = { left = 4, right = 4, top = 4, bottom = 4 }
   });
-	button:SetBackdropColor(0.1,0.1,0.1);
-	button:SetBackdropBorderColor(0.4,0.4,0.4);
+  button:SetBackdropColor(0.1,0.1,0.1);
+  button:SetBackdropBorderColor(0.4,0.4,0.4);
 
   local highlighttexture = button:CreateTexture(nil, "OVERLAY");
   highlighttexture:SetTexture("Interface\\BUTTONS\\ButtonHilight-SquareQuickslot.blp");
@@ -109,18 +109,18 @@ local function Constructor()
   texture:SetPoint("TOPRIGHT", button, -4, -4);
 
   button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path:gsub("\\", "\n")) end);
-	button:SetScript("OnLeave", Hide_Tooltip);
+  button:SetScript("OnLeave", Hide_Tooltip);
 
-	local widget = {
-		frame = button,
+  local widget = {
+    frame = button,
     texture = texture,
-		type = Type
-	}
-	for method, func in pairs(methods) do
-		widget[method] = func
-	end
+    type = Type
+  }
+  for method, func in pairs(methods) do
+    widget[method] = func
+  end
 
-	return AceGUI:RegisterAsWidget(widget)
+  return AceGUI:RegisterAsWidget(widget)
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)

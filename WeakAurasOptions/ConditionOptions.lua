@@ -109,8 +109,8 @@ end
 
 local function blueIfSubset(data, reference)
   if (isSubset(data, reference)) then
-      return "|cFF4080FF";
-    end
+    return "|cFF4080FF";
+  end
   return "";
 end
 
@@ -181,7 +181,7 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
       if (property == "COPY") then
         for _, id in ipairs(data.controlledChildren) do
           if (conditions[i].changes[j].references[id]) then
-            -- Already exist
+          -- Already exist
           else
             local insertPoint = 1;
             for index = j, 1, -1 do
@@ -356,9 +356,9 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
     return;
   end
   args["condition" .. i .. "header"] = {
-      type = "header",
-      name = "",
-      order = order
+    type = "header",
+    name = "",
+    order = order
   };
   order = order + 1;
 
@@ -379,7 +379,7 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
       if (conditionTemplates.indexToTrigger[v] == "COPY") then
         for _, id in ipairs(data.controlledChildren) do
           if (conditions[i].check.references[id]) then
-            -- Already exists
+          -- Already exists
           else
             -- find a good insertion point, if any other condition has a reference to this
             -- insert directly after that
@@ -839,7 +839,7 @@ local function findMatchingCondition(all, needle, start)
     end
 
     if (condition.check.trigger == needle.check.trigger and condition.check.variable == needle.check.variable) then
-        return start;
+      return start;
     end
     start = start + 1;
   end

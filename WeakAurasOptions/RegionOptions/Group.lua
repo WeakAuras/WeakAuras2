@@ -492,11 +492,11 @@ local function createOptions(id, data)
         WeakAuras.ResetMoverSizer();
       end
     },
-  border_header = {
-    type = "header",
-    name = L["Border Settings"],
-    order = 46.0
-  },
+    border_header = {
+      type = "header",
+      name = L["Border Settings"],
+      order = 46.0
+    },
     spacer = {
       type = "header",
       name = "",

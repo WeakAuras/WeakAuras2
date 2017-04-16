@@ -19,10 +19,10 @@ end
 Methods
 -------------------------------------------------------------------------------]]
 local methods = {
-	["OnAcquire"] = function(self)
-		self:SetWidth(52);
-		self:SetHeight(52);
-	end,
+  ["OnAcquire"] = function(self)
+    self:SetWidth(52);
+    self:SetHeight(52);
+  end,
   ["OnRelease"] = function(self)
     self:ClearPick();
     self.texture:SetTexture();
@@ -60,7 +60,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-	local button = CreateFrame("BUTTON", nil, UIParent);
+  local button = CreateFrame("BUTTON", nil, UIParent);
   button:SetHeight(52);
   button:SetWidth(52);
 
@@ -78,18 +78,18 @@ local function Constructor()
   texture.name = "Undefined";
 
   button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path) end);
-	button:SetScript("OnLeave", Hide_Tooltip);
+  button:SetScript("OnLeave", Hide_Tooltip);
 
-	local widget = {
-		frame = button,
+  local widget = {
+    frame = button,
     texture = texture,
-		type = Type
-	}
-	for method, func in pairs(methods) do
-		widget[method] = func
-	end
+    type = Type
+  }
+  for method, func in pairs(methods) do
+    widget[method] = func
+  end
 
-	return AceGUI:RegisterAsWidget(widget)
+  return AceGUI:RegisterAsWidget(widget)
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)

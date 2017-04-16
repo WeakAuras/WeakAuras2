@@ -4,57 +4,57 @@ This file contains the generic trigger system. That is every trigger except the 
 It registers the GenericTrigger table for the trigger types "status", "event" and "custom" and has the following API:
 
 Add(data)
-  Adds a display, creating all internal data structures for all triggers.
+Adds a display, creating all internal data structures for all triggers.
 
 Delete(id)
-  Deletes all triggers for display id.
+Deletes all triggers for display id.
 
 Rename(oldid, newid)
-  Updates all trigger information from oldid to newid.
+Updates all trigger information from oldid to newid.
 
 LoadDisplay(id)
-  Loads all triggers of display id.
+Loads all triggers of display id.
 
 UnloadAll
-  Unloads all triggers.
+Unloads all triggers.
 
 UnloadDisplay(id)
-  Unloads all triggers of the display id.
+Unloads all triggers of the display id.
 
 ScanAll
-  Resets the trigger state for all triggers.
+Resets the trigger state for all triggers.
 
 Modernize(data)
-  Modernizes all generic triggers in data.
+Modernizes all generic triggers in data.
 
 #####################################################
 # Helper functions mainly for the WeakAuras Options #
 #####################################################
 
 CanGroupShowWithZero(data)
-  Returns whether the first trigger could be shown without any affected group members.
-  If that is the case no automatic icon can be determined. Only used by the options dialog.
+Returns whether the first trigger could be shown without any affected group members.
+If that is the case no automatic icon can be determined. Only used by the options dialog.
 
 CanHaveDuration(data, triggernum)
-  Returns whether the trigger can have a duration.
+Returns whether the trigger can have a duration.
 
 CanHaveAuto(data, triggernum)
-  Returns whether the icon can be automatically selected.
+Returns whether the icon can be automatically selected.
 
 CanHaveClones(data)
-  Returns whether the trigger can have clones.
+Returns whether the trigger can have clones.
 
 CanHaveTooltip(data, triggernum)
-  Returns the type of tooltip to show for the trigger.
+Returns the type of tooltip to show for the trigger.
 
 GetNameAndIcon(data, triggernum)
-  Returns the name and icon to show in the options.
+Returns the name and icon to show in the options.
 
 GetAdditionalProperties(data, triggernum)
-  Returns the a tooltip for the additional properties.
+Returns the a tooltip for the additional properties.
 
 GetTriggerConditions(data, triggernum)
-  Returns potential conditions that this trigger provides.
+Returns potential conditions that this trigger provides.
 ]]--
 
 
@@ -459,7 +459,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
     event_list = event_list and event_list[arg2];
   end
   if(event_list) then
-  -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
+    -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
     if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
       event = "COMBAT_LOG_EVENT_UNFILTERED";
     end
@@ -550,7 +550,7 @@ function GenericTrigger.ScanAll()
   for event, v in pairs(WeakAuras.forceable_events) do
     if(type(v) == "table") then
       for index, arg1 in pairs(v) do
-      WeakAuras.ScanEvents(event, arg1);
+        WeakAuras.ScanEvents(event, arg1);
       end
     elseif(event == "SPELL_COOLDOWN_FORCE") then
       WeakAuras.SpellCooldownForce();
@@ -583,10 +583,10 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   end
   if (event == "PLAYER_ENTERING_WORLD") then
     timer:ScheduleTimer(function()
-         HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
-         WeakAuras.CheckCooldownReady();
-       end,
-       0.5);  -- Data not available
+      HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
+      WeakAuras.CheckCooldownReady();
+    end,
+    0.5);  -- Data not available
   end
 end
 
@@ -804,14 +804,14 @@ function GenericTrigger.Add(data, region)
 
         local duration = nil;
         if(triggerType == "custom"
-           and trigger.custom_type == "event"
-           and trigger.custom_hide == "timed") then
+          and trigger.custom_type == "event"
+          and trigger.custom_hide == "timed") then
           duration = tonumber(trigger.duration);
         end
 
         local automaticAutoHide = true;
         if ((triggerType == "status" or triggerType == "event")
-             and event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide ~= nil) then
+          and event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide ~= nil) then
           automaticAutoHide = event_prototypes[trigger.event].automaticAutoHide;
         end
         events[id] = events[id] or {};
@@ -835,19 +835,19 @@ function GenericTrigger.Add(data, region)
         };
 
         if(
-        (
+          (
           (
           triggerType == "status"
           or triggerType == "event"
           )
           and trigger.unevent == "timed"
-        )
-        or (
+          )
+          or (
           triggerType == "custom"
           and trigger.custom_type == "event"
           and trigger.custom_hide == "timed"
-        )
-        ) then
+          )
+          ) then
           events[id][triggernum].duration = tonumber(trigger.duration);
         end
       end
@@ -869,21 +869,21 @@ do
   local updating = false;
 
   function WeakAuras.RegisterEveryFrameUpdate(id)
-      if not(update_clients[id]) then
-        update_clients[id] = true;
-        update_clients_num = update_clients_num + 1;
-      end
-      if not(update_frame) then
-        update_frame = CreateFrame("FRAME");
-      end
-      if not(updating) then
-        update_frame:SetScript("OnUpdate", function()
+    if not(update_clients[id]) then
+      update_clients[id] = true;
+      update_clients_num = update_clients_num + 1;
+    end
+    if not(update_frame) then
+      update_frame = CreateFrame("FRAME");
+    end
+    if not(updating) then
+      update_frame:SetScript("OnUpdate", function()
         if not(WeakAuras.IsPaused()) then
           WeakAuras.ScanEvents("FRAME_UPDATE");
         end
-        end);
-        updating = true;
-      end
+      end);
+      updating = true;
+    end
   end
 
   function WeakAuras.EveryFrameUpdateRename(oldid, newid)
@@ -892,14 +892,14 @@ do
   end
 
   function WeakAuras.UnregisterEveryFrameUpdate(id)
-  if(update_clients[id]) then
-    update_clients[id] = nil;
-    update_clients_num = update_clients_num - 1;
-  end
-  if(update_clients_num == 0 and update_frame and updating) then
-    update_frame:SetScript("OnUpdate", nil);
-    updating = false;
-  end
+    if(update_clients[id]) then
+      update_clients[id] = nil;
+      update_clients_num = update_clients_num - 1;
+    end
+    if(update_clients_num == 0 and update_frame and updating) then
+      update_frame:SetScript("OnUpdate", nil);
+      updating = false;
+    end
   end
 end
 
@@ -968,13 +968,13 @@ function GenericTrigger.Modernize(data)
     end
 
     if (trigger and trigger.type and trigger.event and trigger.type == "status"
-        and (trigger.event == "Cooldown Progress (Spell)"
-        or trigger.event == "Cooldown Progress (Item)")) then
+      and (trigger.event == "Cooldown Progress (Spell)"
+      or trigger.event == "Cooldown Progress (Item)")) then
       if (not trigger.showOn) then
         if (trigger.use_inverse) then
-            trigger.showOn = "showOnReady"
+          trigger.showOn = "showOnReady"
         else
-            trigger.showOn = "showOnCooldown"
+          trigger.showOn = "showOnCooldown"
         end
         trigger.use_inverse = nil
       end
@@ -1404,7 +1404,7 @@ do
           WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0) then
-        -- GCD, do nothing
+      -- GCD, do nothing
       else
         if(runeCdExps[id]) then
           -- Somehow CheckCooldownReady caught the rune cooldown before the timer callback
@@ -1511,8 +1511,8 @@ do
         if(spellCdExps[id]) then
           local endTime = startTime + duration;
           if (duration == WeakAuras.gcdDuration() and startTime == gcdStart and spellCdExps[id] > endTime or duration == 0) then
-           -- CheckCooldownReady caught the spell cooldown before the timer callback
-           -- This happens if a proc resets the cooldown
+            -- CheckCooldownReady caught the spell cooldown before the timer callback
+            -- This happens if a proc resets the cooldown
             if(spellCdHandles[id]) then
               timer:CancelTimer(spellCdHandles[id]);
             end
@@ -1559,7 +1559,7 @@ do
           WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0) then
-        -- GCD, do nothing
+      -- GCD, do nothing
       else
         if(itemCdExps[id]) then
           -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
@@ -1602,7 +1602,7 @@ do
           WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0) then
-        -- GCD, do nothing
+      -- GCD, do nothing
       else
         if(itemSlotsCdExps[id]) then
           -- Somehow CheckCooldownReady caught the item cooldown before the timer callback
@@ -1778,12 +1778,12 @@ function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
     local name, icon, _, _, numItems, numEquipped = C_EquipmentSet.GetEquipmentSetInfo(i);
     if (itemSetName == nil or (name and itemSetName == name)) then
       local match = (not partial and numItems == numEquipped)
-                    or (partial and numEquipped > bestMatchNumEquipped);
+        or (partial and numEquipped > bestMatchNumEquipped);
       if (match) then
-         bestMatchNumEquipped = numEquipped;
-         bestMatchNumItems = numItems;
-         bestMatchName = name;
-         bestMatchIcon = icon;
+        bestMatchNumEquipped = numEquipped;
+        bestMatchNumItems = numItems;
+        bestMatchName = name;
+        bestMatchIcon = icon;
       end
     end
   end
@@ -1861,7 +1861,7 @@ do
     local v = bars[timerId];
 
     if (id and id ~= timerId) then
-     return false;
+      return false;
     end
     if (spellId and spellId ~= v.spellId) then
       return false;
@@ -1874,7 +1874,7 @@ do
       elseif (operator == "find('%s')") then
         if (v.message == nil or not v.message:find(message, 1, true)) then
           return false;
-       end
+        end
       elseif (operator == "match('%s')") then
         if (v.message == nil or not v.message:match(message)) then
           return false;
@@ -1896,7 +1896,7 @@ do
     local bar;
     for k, v in pairs(bars) do
       if (WeakAuras.DBMTimerMatches(k, id, message, operator, spellId)
-          and (bar == nil or bars[k].expirationTime < bar.expirationTime)) then
+        and (bar == nil or bars[k].expirationTime < bar.expirationTime)) then
         bar = bars[k];
       end
     end
@@ -2008,8 +2008,8 @@ do
         bars[text] = nil;
       end
     elseif (event == "BigWigs_StopBars"
-            or event == "BigWigs_OnBossDisable"
-            or event == "BigWigs_OnPluginDisable") then
+      or event == "BigWigs_OnBossDisable"
+      or event == "BigWigs_OnPluginDisable") then
       local addon = ...
       for key, bar in pairs(bars) do
         if (bar.addon == addon) then
@@ -2222,8 +2222,8 @@ do
         end
       end
       mountedFrame:SetScript("OnEvent", function()
-      elapsed = 0;
-      mountedFrame:SetScript("OnUpdate", checkForMounted);
+        elapsed = 0;
+        mountedFrame:SetScript("OnUpdate", checkForMounted);
       end)
     end
   end
@@ -2296,7 +2296,7 @@ do
       scheduled_scans[fireTime] = timer:ScheduleTimer(doCooldownScan, fireTime - GetTime() + 0.1, fireTime);
     end
   end
- end
+end
 
 function GenericTrigger.CanGroupShowWithZero(data)
   return false;
@@ -2304,8 +2304,8 @@ end
 
 local uniqueId = 0;
 function WeakAuras.GetUniqueCloneId()
-   uniqueId = (uniqueId + 1) % 1000000;
-   return uniqueId;
+  uniqueId = (uniqueId + 1) % 1000000;
+  return uniqueId;
 end
 
 function GenericTrigger.CanHaveDuration(data, triggernum)
@@ -2317,41 +2317,41 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
   end
 
   if(
-  (
+    (
     (
     trigger.type == "event"
     or trigger.type == "status"
     )
     and (
     (
-      trigger.event
-      and WeakAuras.event_prototypes[trigger.event]
-      and (WeakAuras.event_prototypes[trigger.event].durationFunc
-        or WeakAuras.event_prototypes[trigger.event].canHaveDuration)
+    trigger.event
+    and WeakAuras.event_prototypes[trigger.event]
+    and (WeakAuras.event_prototypes[trigger.event].durationFunc
+    or WeakAuras.event_prototypes[trigger.event].canHaveDuration)
     )
     or (
-      trigger.unevent == "timed"
-      and trigger.duration
+    trigger.unevent == "timed"
+    and trigger.duration
     )
     )
     and not trigger.use_inverse
-  )
-  or (
+    )
+    or (
     trigger.type == "custom"
     and (
     (
-      trigger.custom_type == "event"
-      and trigger.custom_hide == "timed"
-      and trigger.duration
+    trigger.custom_type == "event"
+    and trigger.custom_hide == "timed"
+    and trigger.duration
     )
     or (
-      trigger.customDuration
-      and trigger.customDuration ~= ""
+    trigger.customDuration
+    and trigger.customDuration ~= ""
     )
     or trigger.custom_type == "stateupdate"
     )
-  )
-  ) then
+    )
+    ) then
     if(
       (
       trigger.type == "event"
@@ -2360,7 +2360,7 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
       and trigger.event
       and WeakAuras.event_prototypes[trigger.event]
       and WeakAuras.event_prototypes[trigger.event].durationFunc
-    ) then
+      ) then
       if(type(WeakAuras.event_prototypes[trigger.event].init) == "function") then
         WeakAuras.event_prototypes[trigger.event].init(trigger);
       end
@@ -2375,7 +2375,7 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
     elseif trigger.event
       and WeakAuras.event_prototypes[trigger.event]
       and WeakAuras.event_prototypes[trigger.event].canHaveDuration then
-        return WeakAuras.event_prototypes[trigger.event].canHaveDuration
+      return WeakAuras.event_prototypes[trigger.event].canHaveDuration
     else
       return "timed";
     end
@@ -2397,7 +2397,7 @@ function GenericTrigger.CanHaveAuto(data, triggernum)
     return false;
   end
   if(
-  (
+    (
     (
     trigger.type == "event"
     or trigger.type == "status"
@@ -2408,15 +2408,15 @@ function GenericTrigger.CanHaveAuto(data, triggernum)
     WeakAuras.event_prototypes[trigger.event].iconFunc
     or WeakAuras.event_prototypes[trigger.event].canHaveAuto
     )
-  )
-  or (
+    )
+    or (
     trigger.type == "custom"
     and ((
-      trigger.customIcon
-      and trigger.customIcon ~= ""
+    trigger.customIcon
+    and trigger.customIcon ~= ""
     ) or trigger.custom_type == "stateupdate")
-  )
-  ) then
+    )
+    ) then
     return true;
   else
     return false;
@@ -2447,7 +2447,7 @@ function GenericTrigger.GetNameAndIcon(data, triggernum)
   end
 
   return name, icon
- end
+end
 
 ---Returns the type of tooltip to show for the trigger.
 -- @param data
