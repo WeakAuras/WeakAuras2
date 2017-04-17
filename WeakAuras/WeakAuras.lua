@@ -1838,12 +1838,33 @@ function WeakAuras.Modernize(data)
     data.displayTextRight = data.displayTextRight or "%p";
   end
 
-  -- Add dynamic text info to icons
-  -- Also convert alpha to color
+
   if(data.regionType == "icon") then
-    data.displayStacks = data.displayStacks or "%s";
-    if(not data.color) then
-      data.color = {1, 1, 1, data.alpha};
+    if (data.text1Enabled == nil) then
+      data.text1Enabled = true;
+      data.text1 = data.displayStacks;
+      data.displayStacks = nil;
+      data.text1Color = data.textColor;
+      data.textColor = nil;
+      data.text1Point = data.stacksPoint;
+      data.stacksPoint = nil;
+      data.text1Containment = data.stacksContainment;
+      data.stacksContainment = nil;
+      data.text1Font = data.font;
+      data.font = nil;
+      data.text1FontSize = data.fontSize;
+      data.fontSize = nil;
+      data.text1FontFlags = data.fontFlags;
+      data.fontFlags = nil;
+
+      data.text2Enabled = false;
+      data.text2 = "%p";
+      data.text2Color = {1, 1, 1, 1};
+      data.text2Point = "CENTER";
+      data.text2Containment = "INSIDE";
+      data.text2Font = "Friz Quadrata TT";
+      data.text2FontSize = 24;
+      data.text2FontFlags = "OUTLINE";
     end
   end
 
@@ -3814,6 +3835,18 @@ function WeakAuras.UpdatedTriggerState(id)
 end
 
 local replaceStringCache = {};
+function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
+  if (textStr == nil or toCheck == nil) then
+    return false;
+  end
+  for i = 1, #toCheck do
+    if (textStr:find("%%" .. toCheck:sub(i, i))) then
+      return true;
+    end
+  end
+  return false;
+end
+
 function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
   if (regionState and textStr:len() > 2) then
     for key, value in pairs(regionState) do
