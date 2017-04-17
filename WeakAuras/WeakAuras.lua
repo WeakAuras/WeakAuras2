@@ -1840,6 +1840,9 @@ function WeakAuras.Modernize(data)
 
 
   if(data.regionType == "icon") then
+    if (data.cooldownTextEnabled == nil) then
+      data.cooldownTextEnabled = true;
+    end
     if (data.text1Enabled == nil) then
       data.text1Enabled = true;
       data.text1 = data.displayStacks;

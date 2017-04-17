@@ -38,7 +38,8 @@ local default = {
   zoom = 0,
   frameStrata = 1,
   customTextUpdate = "update",
-  glow = false
+  glow = false,
+  cooldownTextEnabled = true
 };
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
@@ -294,6 +295,7 @@ local function modify(parent, region, data)
   end
 
   cooldown:SetReverse(not data.inverse);
+  cooldown:SetHideCountdownNumbers(not data.cooldownTextEnabled or IsAddOnLoaded("OmniCC") or false);
 
   function region:Color(r, g, b, a)
     region.color_r = r;

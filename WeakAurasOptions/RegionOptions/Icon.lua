@@ -15,7 +15,22 @@ local function createOptions(id, data)
       name = L["Inverse"],
       order = 6,
       disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
-      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end
+      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
+      hidden = function() return not data.cooldown end
+    },
+    cooldownTextEnabled = {
+      type = "toggle",
+      name = L["Show Cooldown Text"],
+      order = 6.5,
+      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
+      hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC")) end
+    },
+    cooldownTextSpace = {
+      type = "description",
+      name = "",
+      order = 6.6,
+      width = "normal",
+      hidden = function() return data.cooldown and IsAddOnLoaded("OmniCC") end
     },
     color = {
       type = "color",
