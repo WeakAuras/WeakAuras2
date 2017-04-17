@@ -1936,6 +1936,33 @@ WeakAuras.event_prototypes = {
     end,
     hasItemID = true
   },
+  ["Cooldown Ready (Equipment Slot)"] = {
+    type = "event",
+    events = {
+      "ITEM_SLOT_COOLDOWN_READY"
+    },
+    name = L["Cooldown Ready (Equipment Slot)"],
+    init = function(trigger)
+      WeakAuras.WatchItemSlotCooldown(trigger.itemSlot);
+    end,
+    args = {
+      {
+        name = "itemSlot",
+        required = true,
+        display = L["Equipment Slot"],
+        type = "select",
+        values = "item_slot_types",
+        init = "arg"
+      }
+    },
+    nameFunc = function(trigger)
+      return "";
+    end,
+    iconFunc = function(trigger)
+      return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
+    end,
+    hasItemID = true
+  },
   ["GTFO"] = {
     type = "event",
     events = {
