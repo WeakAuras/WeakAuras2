@@ -1997,6 +1997,7 @@ templates.class.MAGE = {
         { spell = 108839, type = "ability"}, -- Ice Floes
         { spell = 113724, type = "ability", talent = 14}, -- Ring of Frost
         { spell = 116011, type = "ability", talent = 8}, -- Rune of Power
+        { spell = 135029, type = "ability", titleSuffix = L["(Water Elemental)"]}, -- Freeze
         { spell = 153595, type = "ability", talent = 21}, -- Comet Storm
         { spell = 157997, type = "ability", talent = 10}, -- Ice Nova
         { spell = 190356, type = "ability"}, -- Blizzard
