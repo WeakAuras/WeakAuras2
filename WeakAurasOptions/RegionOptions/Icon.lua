@@ -17,6 +17,12 @@ local function createOptions(id, data)
       disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
       get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end
     },
+    color = {
+      type = "color",
+      name = L["Color"],
+      hasAlpha = true,
+      order = 7
+    },
     auto = {
       type = "toggle",
       name = L["Automatic Icon"],
@@ -56,7 +62,17 @@ local function createOptions(id, data)
       name = L["Glow"],
       order = 19,
     },
-    displayStacks = {
+    textHeader1 = {
+      type = "header",
+      order = 39,
+      name = L["1. Text Settings"]
+    },
+    text1Enabled = {
+      type = "toggle",
+      order = 39.1,
+      name = L["1. Text"],
+    },
+    text1 = {
       type = "input",
       name = L["Text"],
       desc = function()
@@ -64,54 +80,164 @@ local function createOptions(id, data)
         ret = ret .. WeakAuras.GetAdditionalProperties(data);
         return ret
       end,
-      order = 40
+      order = 39.2,
+      hidden = function() return not data.text1Enabled end,
     },
-    textColor = {
+    text1Color = {
       type = "color",
       name = L["Color"],
       hasAlpha = true,
-      order = 40.5
+      order = 39.3,
+      hidden = function() return not data.text1Enabled end,
+    },
+    text1Point = {
+      type = "select",
+      name = L["Text Position"],
+      order = 39.4,
+      values = WeakAuras.point_types,
+      hidden = function() return not data.text1Enabled end,
+    },
+    text1Containment = {
+      type = "select",
+      name = " ",
+      order = 39.5,
+      values = WeakAuras.containment_types,
+      hidden = function() return not data.text1Enabled end,
+    },
+    text1Font = {
+      type = "select",
+      dialogControl = "LSM30_Font",
+      name = L["Font"],
+      order = 39.6,
+      values = AceGUIWidgetLSMlists.font,
+      hidden = function() return not data.text1Enabled end,
+    },
+    text1FontSize = {
+      type = "range",
+      name = L["Size"],
+      order = 39.7,
+      min = 6,
+      softMax = 72,
+      step = 1,
+      hidden = function() return not data.text1Enabled end,
+    },
+    text1FontFlags = {
+      type = "select",
+      name = L["Outline"],
+      order = 39.8,
+      values = WeakAuras.font_flags,
+      hidden = function() return not data.text1Enabled end,
+    },
+
+    textHeader2 = {
+      type = "header",
+      order = 40,
+      name = L["2. Text Settings"]
+    },
+    text2Enabled = {
+      type = "toggle",
+      order = 40.1,
+      name = L["2. Text"],
+    },
+    text2 = {
+      type = "input",
+      name = L["Text"],
+      desc = function()
+        local ret = L["Dynamic text tooltip"];
+        ret = ret .. WeakAuras.GetAdditionalProperties(data);
+        return ret
+      end,
+      order = 40.2,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2Color = {
+      type = "color",
+      name = L["Color"],
+      hasAlpha = true,
+      order = 40.3,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2Point = {
+      type = "select",
+      name = L["Text Position"],
+      order = 40.4,
+      values = WeakAuras.point_types,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2Containment = {
+      type = "select",
+      name = " ",
+      order = 40.5,
+      values = WeakAuras.containment_types,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2Font = {
+      type = "select",
+      dialogControl = "LSM30_Font",
+      name = L["Font"],
+      order = 40.6,
+      values = AceGUIWidgetLSMlists.font,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2FontSize = {
+      type = "range",
+      name = L["Size"],
+      order = 40.7,
+      min = 6,
+      softMax = 72,
+      step = 1,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2FontFlags = {
+      type = "select",
+      name = L["Outline"],
+      order = 40.8,
+      values = WeakAuras.font_flags,
+      hidden = function() return not data.text2Enabled end,
+    },
+
+    generalHeader = {
+      type = "header",
+      order = 43,
+      name = L["General Text Settings"],
+      hidden = function()
+        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "cpt"))
+                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "cpt")))
+      end,
     },
     customTextUpdate = {
       type = "select",
       width = "double",
-      hidden = function() return not data.displayStacks:find("%%c"); end,
+      hidden = function()
+        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
+                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
+      end,
       name = L["Update Custom Text On..."],
       values = WeakAuras.text_check_types,
-      order = 41.1
+      order = 43.1
     },
     customText = {
       type = "input",
       width = "normal",
       hidden = function()
-        return not data.displayStacks:find("%%c")
+        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
+                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
       end,
       multiline = true,
       name = L["Custom Function"],
-      order = 41.2
+      order = 43.2
     },
     customText_expand = {
       type = "execute",
-      order = 41.2,
+      order = 43.3,
       name = L["Expand Text Editor"],
       func = function()
         WeakAuras.OpenTextEditor(data, {"customText"})
       end,
       hidden = function()
-        return not data.displayStacks:find("%%c")
+        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
+                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
       end,
-    },
-    stacksPoint = {
-      type = "select",
-      name = L["Text Position"],
-      order = 42,
-      values = WeakAuras.point_types
-    },
-    stacksContainment = {
-      type = "select",
-      name = " ",
-      order = 43,
-      values = WeakAuras.containment_types
     },
     progressPrecision = {
       type = "select",
@@ -120,10 +246,11 @@ local function createOptions(id, data)
       values = WeakAuras.precision_types,
       get = function() return data.progressPrecision or 1 end,
       hidden = function()
-        return not (data.displayStacks:find("%%p") or data.displayStacks:find("%%t"));
+        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "pt"))
+                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
       end,
       disabled = function()
-        return not data.displayStacks:find("%%p");
+        return not (WeakAuras.ContainsPlaceHolders(data.text1, "p") or WeakAuras.ContainsPlaceHolders(data.text2, "p"));
       end
     },
     totalPrecision = {
@@ -133,32 +260,17 @@ local function createOptions(id, data)
       values = WeakAuras.precision_types,
       get = function() return data.totalPrecision or 1 end,
       hidden = function()
-        return not (data.displayStacks:find("%%p") or data.displayStacks:find("%%t"));
+        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "pt"))
+                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
       end,
       disabled = function()
-        return not data.displayStacks:find("%%t");
+        return not (WeakAuras.ContainsPlaceHolders(data.text1, "t") or WeakAuras.ContainsPlaceHolders(data.text2, "t"));
       end
     },
-    color = {
-      type = "color",
-      name = L["Color"],
-      hasAlpha = true,
-      order = 7
-    },
-    font = {
-      type = "select",
-      dialogControl = "LSM30_Font",
-      name = L["Font"],
-      order = 45,
-      values = AceGUIWidgetLSMlists.font
-    },
-    fontSize = {
-      type = "range",
-      name = L["Size"],
-      order = 47,
-      min = 6,
-      softMax = 72,
-      step = 1
+    otherHeader = {
+      type = "header",
+      order = 48,
+      name = "",
     },
     zoom = {
       type = "range",
@@ -169,16 +281,10 @@ local function createOptions(id, data)
       bigStep = 0.01,
       isPercent = true
     },
-    fontFlags = {
-      type = "select",
-      name = L["Outline"],
-      order = 48,
-      values = WeakAuras.font_flags
-    },
     iconInset = {
       type = "range",
       name = L["Icon Inset"],
-      order = 49.25,
+      order = 49.1,
       min = 0,
       max = 1,
       bigStep = 0.01,
@@ -191,7 +297,7 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Sticky Duration"],
       desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
-      order = 49
+      order = 49.2
     },
     useTooltip = {
       type = "toggle",
