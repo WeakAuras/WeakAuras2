@@ -832,99 +832,6 @@ local function UpdateText(region, data)
   end
 end
 
--- Update time (status-bar and text)
-local function UpdateTime(region, data, inverse)
-  -- Timing variables
-  local remaining  = region.expirationTime - GetTime();
-  local duration  = region.duration;
-  local progress  = duration ~= 0 and remaining / duration or 0;
-
-  -- Need to invert?
-  if (
-    (data.inverse and not inverse)
-    or (inverse and not data.inverse)
-    )
-  then
-    progress = 1 - progress;
-  end
-  region.bar:SetValue(progress);
-
-  -- Format a remaining time string
-  local remainingStr     = "";
-  if remaining == math.huge then
-    remainingStr     = " ";
-  elseif remaining > 60 then
-    remainingStr     = string.format("%i:", math.floor(remaining / 60));
-    remaining       = remaining % 60;
-    remainingStr     = remainingStr..string.format("%02i", remaining);
-  elseif remaining > 0 then
-    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-    if data.progressPrecision == 4 and remaining <= 3 then
-      remainingStr = remainingStr..string.format("%.1f", remaining);
-    elseif data.progressPrecision == 5 and remaining <= 3 then
-      remainingStr = remainingStr..string.format("%.2f", remaining);
-    elseif (data.progressPrecision == 4 or data.progressPrecision == 5) and remaining > 3 then
-      remainingStr = remainingStr..string.format("%d", remaining);
-    else
-      remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-    end
-  else
-    remainingStr     = " ";
-  end
-  region.values.progress   = remainingStr;
-
-  -- Format a duration time string
-  local durationStr     = "";
-  if duration > 60 then
-    durationStr     = string.format("%i:", math.floor(duration / 60));
-    duration       = duration % 60;
-    durationStr     = durationStr..string.format("%02i", duration);
-  elseif duration > 0 then
-    -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
-    if data.totalPrecision == 4 and duration <= 3 then
-      durationStr = durationStr..string.format("%.1f", duration);
-    elseif data.totalPrecision == 5 and duration <= 3 then
-      durationStr = durationStr..string.format("%.2f", duration);
-    elseif (data.totalPrecision == 4 or data.totalPrecision == 5) and duration > 3 then
-      durationStr = durationStr..string.format("%d", duration);
-    else
-      durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
-    end
-  else
-    durationStr     = " ";
-  end
-  region.values.duration   = durationStr;
-
-  -- Update text
-  UpdateText(region, data);
-end
-local function UpdateTimeInverse(region, data)
-  -- Relay
-  UpdateTime(region, data, true);
-end
-
--- Update current state (progress)
-local function UpdateValue(region, data, value, total)
-  -- Calc progress (percent)
-  local progress = 1
-  if total > 0 then
-    progress = value / total;
-  else
-    progress = 0;
-  end
-  if data.inverse then
-    progress = 1 - progress;
-  end
-
-  -- Save values
-  region.values.progress = value;
-  region.values.duration = total;
-  region.bar:SetValue(progress);
-
-  -- Update text
-  UpdateText(region, data);
-end
-
 local function GetTexCoordZoom(texWidth)
   local texCoord = {texWidth, texWidth, texWidth, 1 - texWidth, 1 - texWidth, texWidth, 1 - texWidth, 1 - texWidth}
   return unpack(texCoord)
@@ -944,6 +851,10 @@ local function modify(parent, region, data)
   region.height = data.height;
   region.scalex = 1;
   region.scaley = 1;
+
+  region.stickyDuration = data.stickyDuration;
+  region.progressPrecision = data.progressPrecision;
+  region.totalPrecision = data.totalPrecision;
 
   -- Reset anchors
   region:ClearAllPoints();
@@ -1252,58 +1163,38 @@ local function modify(parent, region, data)
   end
   --  region:SetName("");
 
-  function region:OnUpdateHandler()
-    local value, total = self.customValueFunc(self.state.trigger);
-    value = type(value) == "number" and value or 0
-    total = type(value) == "number" and total or 0
-    UpdateValue(self, data, value, total);
+  function region:SetValue(value, total)
+    local progress = (total > 0) and (value / total) or 0
+    if data.inverse then
+      progress = 1 - progress;
+    end
+    region.bar:SetValue(progress);
+    UpdateText(region, data);
   end
 
-  -- Duration update function
-  function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
-    -- Update duration/expiration values
-    if duration <= 0 or duration > self.duration or not data.stickyDuration then
-      self.duration = duration;
-    end
-    self.expirationTime = expirationTime;
-
-    -- Use custom OnUpdate handler
-    if customValue then
-      -- Update via custom OnUpdate handler
-      if type(customValue) == "function" then
-        local value, total = customValue(region.state.trigger);
-        value = type(value) == "number" and value or 0
-        total = type(value) == "number" and total or 0
-        if total > 0 and value < total then
-          self.customValueFunc = customValue;
-          self:SetScript("OnUpdate", region.OnUpdateHandler);
-        else
-          UpdateValue(self, data, duration, expirationTime);
-          self:SetScript("OnUpdate", nil);
-        end
-        -- Remove OnUpdate handler, call update once
-      else
-        UpdateValue(self, data, duration, expirationTime);
-        self:SetScript("OnUpdate", nil);
+  function region:SetTime(duration, expirationTime, inverse)
+    if (duration > 0) then
+      local remaining = expirationTime - GetTime();
+      local progress = duration ~= 0 and remaining / duration or 0;
+      -- Need to invert?
+      if (
+        (data.inverse and not inverse)
+        or (inverse and not data.inverse)
+        )
+      then
+        progress = 1 - progress;
       end
-      -- Use default OnUpdate handler
+      region.bar:SetValue(progress);
+      UpdateText(region, data);
     else
-      -- Enable OnUpdate script
-      if duration > 0 then
-        if inverse then
-          self:SetScript("OnUpdate", function() UpdateTimeInverse(self, data) end);
-        else
-          self:SetScript("OnUpdate", function() UpdateTime(self, data, inverse) end);
-        end
-        -- Reset to full
-      else
-        bar:SetValue(1);
-        self:SetScript("OnUpdate", nil);
-        UpdateTime(self, data, inverse);
-      end
+      region.bar:SetValue(1);
+      UpdateText(region, text);
     end
   end
-  --  region:SetDurationInfo(1, 0, nil, nil);
+
+  function region:TimerTick()
+    self:SetTime(region.duration, region.expirationTime, region.inverse);
+  end
 
   function region:SetIconColor(r, g, b, a)
     self.icon:SetVertexColor(r, g, b, a);
