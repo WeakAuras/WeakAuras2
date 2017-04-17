@@ -1425,6 +1425,17 @@ do
     if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
       local basecd = GetSpellBaseCooldown(id);
       startTime, duration = GetSpellCooldown(id);
+      if (startTime == 0 and duration == 0) then
+        -- id is actually the spell name, not a spell id
+        -- In 7.2, Frost Mages's Water Elemental's Water Jet's cooldown isn't returned by GetSpellCooldown("Water Jet")
+        -- but GetSpellCooldown(select(7, GetSpellInfo("Water Jet"))) works
+        -- So for now do that. This code should be removed once Blizzard fixes the underlying bug.
+        local spellId = select(7, GetSpellInfo(id));
+        if (spellId) then
+          startTime, duration = GetSpellCooldown(spellId);
+        end
+      end
+
       local spellcount = GetSpellCount(id);
       -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
       -- either the spell count is greater than 0
