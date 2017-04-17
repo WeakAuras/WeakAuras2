@@ -2193,7 +2193,7 @@ function WeakAuras.SetRegion(data, cloneId)
       local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
 
       regionTypes[regionType].modify(parent, region, data);
-
+      WeakAuras.AddSetDurationInfo(region);
 
       if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" and pSelfPoint and pAnchor and pAnchorPoint and pX and pY) then
         region:ClearAllPoints();
@@ -3474,6 +3474,118 @@ local function startStopTimers(id, cloneId, triggernum, state)
       record.handle = nil;
       record.expirationTime = nil;
   end
+  end
+end
+
+function WeakAuras.SetProgressValue(region, value, total)
+  region.values.progress = value;
+  region.values.duration = total;
+  region:SetValue(value, total);
+end
+
+function WeakAuras.UpateRegionValues(region)
+  local remaining  = region.expirationTime - GetTime();
+  local duration  = region.duration;
+
+  local remainingStr     = "";
+  if remaining == math.huge then
+    remainingStr     = " ";
+  elseif remaining > 60 then
+    remainingStr     = string.format("%i:", math.floor(remaining / 60));
+    remaining       = remaining % 60;
+    remainingStr     = remainingStr..string.format("%02i", remaining);
+  elseif remaining > 0 then
+    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+    if region.progressPrecision == 4 and remaining <= 3 then
+      remainingStr = remainingStr..string.format("%.1f", remaining);
+    elseif region.progressPrecision == 5 and remaining <= 3 then
+      remainingStr = remainingStr..string.format("%.2f", remaining);
+    elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
+      remainingStr = remainingStr..string.format("%d", remaining);
+    else
+      remainingStr = remainingStr..string.format("%."..(region.progressPrecision or 1).."f", remaining);
+    end
+  else
+    remainingStr     = " ";
+  end
+  region.values.progress   = remainingStr;
+
+  -- Format a duration time string
+  local durationStr     = "";
+  if duration > 60 then
+    durationStr     = string.format("%i:", math.floor(duration / 60));
+    duration       = duration % 60;
+    durationStr     = durationStr..string.format("%02i", duration);
+  elseif duration > 0 then
+    -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+    if region.totalPrecision == 4 and duration <= 3 then
+      durationStr = durationStr..string.format("%.1f", duration);
+    elseif region.totalPrecision == 5 and duration <= 3 then
+      durationStr = durationStr..string.format("%.2f", duration);
+    elseif (region.totalPrecision == 4 or region.totalPrecision == 5) and duration > 3 then
+      durationStr = durationStr..string.format("%d", duration);
+    else
+      durationStr = durationStr..string.format("%."..(region.totalPrecision or 1).."f", duration);
+    end
+  else
+    durationStr     = " ";
+  end
+  region.values.duration   = durationStr;
+end
+
+function WeakAuras.TimerTick(region)
+  WeakAuras.UpateRegionValues(region);
+  region:TimerTick();
+end
+
+function WeakAuras.AddSetDurationInfo(region)
+  if (region.SetValue and region.SetTime and region.TimerTick) then
+    region.generatedSetDurationInfo = true;
+    region.SetValueFromCustomValueFunc = function()
+      local value, total = region.customValueFunc(region.state.trigger);
+      value = type(value) == "number" and value or 0
+      total = type(value) == "number" and total or 0
+      WeakAuras.SetProgressValue(region, value, total);
+    end
+
+    region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
+      if duration <= 0 or duration > self.duration or not region.stickyDuration then
+        self.duration = duration;
+      end
+      self.expirationTime = expirationTime;
+      self.inverse = inverse;
+
+      if customValue then
+        if type(customValue) == "function" then
+          local value, total = customValue(region.state.trigger);
+          value = type(value) == "number" and value or 0
+          total = type(value) == "number" and total or 0
+          if total > 0 and value < total then
+            self.customValueFunc = customValue;
+            self:SetScript("OnUpdate", region.SetValueFromCustomValueFunc);
+          else
+            WeakAuras.SetProgressValue(region, duration, expirationTime);
+            self:SetScript("OnUpdate", nil);
+          end
+        else
+          WeakAuras.SetProgressValue(region, duration, expirationTime);
+          self:SetScript("OnUpdate", nil);
+        end
+      else
+        WeakAuras.UpateRegionValues(region);
+        region:SetTime(duration, expirationTime, inverse);
+        if duration > 0 then
+          self:SetScript("OnUpdate", function() WeakAuras.TimerTick(region) end);
+        else
+          self:SetScript("OnUpdate", nil);
+        end
+      end
+    end
+  elseif (region.generatedSetDurationInfo) then
+    region.generatedSetDurationInfo = nil;
+    region.SetDurationInfo = nil;
+    region.SetValueFromCustomValueFunc = nil;
+    region:SetScript("OnUpdate", nil);
   end
 end
 

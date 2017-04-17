@@ -187,6 +187,10 @@ local function modify(parent, region, data)
 
   region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
 
+  region.stickyDuration = data.stickyDuration;
+  region.progressPrecision = data.progressPrecision;
+  region.totalPrecision = data.totalPrecision;
+
   if MSQ and not region.MSQGroup then
     region.MSQGroup = MSQ:Group("WeakAuras", region.frameId);
     region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
@@ -343,105 +347,6 @@ local function modify(parent, region, data)
     UpdateText();
   end
 
-  local function UpdateTime()
-    local remaining = region.expirationTime - GetTime();
-    local progress
-    if region.duration > 0 then
-      progress = remaining / region.duration;
-      if(data.inverse) then
-        progress = 1 - progress;
-      end
-      progress = progress > 0.0001 and progress or 0.0001;
-    end
-
-    local remainingStr = "";
-    if(remaining == math.huge) then
-      remainingStr = " ";
-    elseif(remaining > 60) then
-      remainingStr = string.format("%i:", math.floor(remaining / 60));
-      remaining = remaining % 60;
-      remainingStr = remainingStr..string.format("%02i", remaining);
-    elseif(remaining > 0) then
-      -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-      if data.progressPrecision == 4 and remaining <= 3 then
-        remainingStr = remainingStr..string.format("%.1f", remaining);
-      elseif data.progressPrecision == 5 and remaining <= 3 then
-        remainingStr = remainingStr..string.format("%.2f", remaining);
-      elseif (data.progressPrecision == 4 or data.progressPrecision == 5) and remaining > 3 then
-        remainingStr = remainingStr..string.format("%d", remaining);
-      else
-        remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-      end
-    else
-      remainingStr = " ";
-    end
-    region.values.progress = remainingStr;
-
-    local duration = region.duration;
-    local durationStr = "";
-    if(duration > 60) then
-      durationStr = string.format("%i:", math.floor(duration / 60));
-      duration = duration % 60;
-      durationStr = durationStr..string.format("%02i", duration);
-    elseif(duration > 0) then
-      -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
-      if data.totalPrecision == 4 and duration <= 3 then
-        durationStr = durationStr..string.format("%.1f", duration);
-      elseif data.totalPrecision == 5 and duration <= 3 then
-        durationStr = durationStr..string.format("%.2f", duration);
-      elseif (data.totalPrecision == 4 or data.totalPrecision == 5) and duration > 3 then
-        durationStr = durationStr..string.format("%d", duration);
-      else
-        durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
-      end
-    else
-      durationStr = " ";
-    end
-    region.values.duration = durationStr;
-    UpdateText();
-  end
-
-  local function UpdateValue(value, total)
-    region.values.progress = value;
-    region.values.duration = total;
-    UpdateText();
-  end
-
-  local function UpdateCustom()
-    UpdateValue(region.customValueFunc(region.state.trigger));
-  end
-
-  local function UpdateDurationInfo(duration, expirationTime, customValue)
-    if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
-      region.duration = duration;
-    end
-    region.expirationTime = expirationTime;
-
-    if(customValue) then
-      if(type(customValue) == "function") then
-        local value, total = customValue(region.state.trigger);
-        if(total > 0 and value < total) then
-          region.customValueFunc = customValue;
-          region:SetScript("OnUpdate", UpdateCustom);
-        else
-          UpdateValue(duration, expirationTime);
-          region:SetScript("OnUpdate", nil);
-          UpdateText();
-        end
-      else
-        UpdateValue(duration, expirationTime);
-        region:SetScript("OnUpdate", nil);
-      end
-    else
-      if(duration > 0.01) then
-        region:SetScript("OnUpdate", UpdateTime);
-      else
-        region:SetScript("OnUpdate", nil);
-        UpdateTime();
-      end
-    end
-  end
-
   function region:Scale(scalex, scaley)
     region.scalex = scalex;
     region.scaley = scaley;
@@ -524,19 +429,22 @@ local function modify(parent, region, data)
 
   region:SetGlow(data.glow);
 
-  if(data.cooldown and WeakAuras.CanHaveDuration(data) == "timed") then
-    function region:SetDurationInfo(duration, expirationTime, customValue)
-      if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
-        region.duration = duration;
-      end
-      if(customValue or duration <= 0.01) then
-        cooldown:Hide();
-      else
-        cooldown:Show();
-        cooldown:SetCooldown(expirationTime - region.duration, region.duration);
-      end
-      UpdateDurationInfo(duration, expirationTime, customValue)
+  if(data.cooldown) then
+    function region:SetValue(value, total)
+      cooldown:Hide();
+      UpdateText();
     end
+
+    function region:SetTime(duration, expirationTime)
+      cooldown:Show();
+      cooldown:SetCooldown(expirationTime - duration, duration);
+      UpdateText();
+    end
+
+    function region:TimerTick()
+      UpdateText();
+    end
+
     function region:PreShow()
       if (region.duration > 0.01) then
         cooldown:Show();
@@ -545,9 +453,18 @@ local function modify(parent, region, data)
     end
   else
     cooldown:Hide();
-    function region:SetDurationInfo(duration, expirationTime, customValue)
-      UpdateDurationInfo(duration, expirationTime, customValue)
+    function region:SetValue(value, total)
+      UpdateText();
     end
+
+    function region:SetTime(duration, expirationTime)
+      UpdateText();
+    end
+
+    function region:TimerTick()
+      UpdateText();
+    end
+
     function region:PreShow()
     end
   end

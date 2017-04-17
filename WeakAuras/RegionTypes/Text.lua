@@ -52,6 +52,8 @@ local function modify(parent, region, data)
   local text = region.text;
 
   region.useAuto = WeakAuras.CanHaveAuto(data);
+  region.progressPrecision = data.progressPrecision;
+  region.totalPrecision = data.totalPrecision;
 
   local fontPath = SharedMedia:Fetch("font", data.font);
   text:SetFont(fontPath, data.fontSize, data.outline);
@@ -158,85 +160,16 @@ local function modify(parent, region, data)
 
   region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
 
-  local function UpdateTime()
-    local remaining = region.expirationTime - GetTime();
-    local progress
-    if region.duration > 0 then
-      progress = remaining / region.duration;
-      if(data.inverse) then
-        progress = 1 - progress;
-      end
-      progress = progress > 0.0001 and progress or 0.0001;
-    end
-
-    local remainingStr = "";
-    if(remaining == math.huge) then
-      remainingStr = " ";
-    elseif(remaining > 60) then
-      remainingStr = string.format("%i:", math.floor(remaining / 60));
-      remaining = remaining % 60;
-      remainingStr = remainingStr..string.format("%02i", remaining);
-    elseif(remaining > 0) then
-      remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-    else
-      remainingStr = " ";
-    end
-    region.values.progress = remainingStr;
-
-    local duration = region.duration;
-    local durationStr = "";
-    if(duration > 60) then
-      durationStr = string.format("%i:", math.floor(duration / 60));
-      duration = duration % 60;
-      durationStr = durationStr..string.format("%02i", duration);
-    elseif(duration > 0) then
-      durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
-    else
-      durationStr = "INF";
-    end
-    region.values.duration = durationStr;
+  function region:SetValue()
     UpdateText();
   end
 
-  local function UpdateValue(value, total)
-    region.values.progress = value;
-    region.values.duration = total;
+  function region:SetTime()
     UpdateText();
   end
 
-  local function UpdateCustom()
-    UpdateValue(region.customValueFunc(region.state.trigger));
-  end
-
-  function region:SetDurationInfo(duration, expirationTime, customValue)
-    if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
-      region.duration = duration;
-    end
-    region.expirationTime = expirationTime;
-
-    if(customValue) then
-      if(type(customValue) == "function") then
-        local value, total = customValue(region.state.trigger);
-        if(total > 0 and value < total) then
-          region.customValueFunc = customValue;
-          region:SetScript("OnUpdate", UpdateCustom);
-        else
-          UpdateValue(duration, expirationTime);
-          region:SetScript("OnUpdate", nil);
-          UpdateText();
-        end
-      else
-        UpdateValue(duration, expirationTime);
-        region:SetScript("OnUpdate", nil);
-      end
-    else
-      if(duration > 0.01) then
-        region:SetScript("OnUpdate", UpdateTime);
-      else
-        region:SetScript("OnUpdate", nil);
-        UpdateTime();
-      end
-    end
+  function region:TimerTick()
+    UpdateText();
   end
 
   function region:SetStacks(count)
