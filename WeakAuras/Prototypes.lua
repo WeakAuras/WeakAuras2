@@ -1486,6 +1486,36 @@ WeakAuras.event_prototypes = {
       }
     }
   },
+  ["Spell Activation Overlay"] = {
+    type = "status",
+    events = {
+      "WA_UPDATE_OVERLAY_GLOW"
+    },
+    force_events = "WA_UPDATE_OVERLAY_GLOW",
+    name = L["Spell Activation Overlay Glow"],
+    init = function(trigger)
+      WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
+      return string.format("local spellName = tonumber(%q)", trigger.spellName);
+    end,
+    args = {
+      {
+        name = "spellName",
+        required = true,
+        display = L["Spell"],
+        type = "spell",
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "WeakAuras.SpellActivationActive(spellName)";
+      }
+    },
+    iconFunc = function(trigger)
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      return icon;
+    end,
+    automaticrequired = true
+  },
   ["Cooldown Progress (Spell)"] = {
     type = "status",
     events = function(trigger, untrigger)

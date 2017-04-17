@@ -1779,6 +1779,38 @@ do
   end
 end
 
+do
+  local spellActivationSpells = {};
+  local spellActivationSpellsCurrent = {};
+  local spellActivationFrame;
+  local function InitSpellActivation()
+    spellActivationFrame = CreateFrame("FRAME");
+    WeakAuras.frames["Spell Activation"] = spellActivationFrame;
+    spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+    spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
+    spellActivationFrame:SetScript("OnEvent", function(self, event, spell)
+      if (spellActivationSpells[spell]) then
+        spellActivationSpellsCurrent[spell] = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+        WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell);
+      end
+    end);
+  end
+
+  function WeakAuras.WatchSpellActivation(id)
+    if (not id) then
+      return;
+    end
+    if (not spellActivationFrame) then
+      InitSpellActivation();
+    end
+    spellActivationSpells[id] = true;
+  end
+
+  function WeakAuras.SpellActivationActive(id)
+    return spellActivationSpellsCurrent[id];
+  end
+end
+
 function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
   local bestMatchNumItems = 0;
   local bestMatchNumEquipped = 0;
