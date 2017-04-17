@@ -3643,6 +3643,50 @@ WeakAuras.event_prototypes = {
     },
     automaticrequired = true
   },
+
+  ["Spell Known"] = {
+    type = "status",
+    events = {
+      "WA_DELAYED_PLAYER_ENTERING_WORLD",
+      "SPELLS_CHANGED",
+      "UNIT_PET",
+      "WA_SPELL_CHECK"
+    },
+    force_events = "WA_SPELL_CHECK",
+    name = L["Spell Known"],
+    init = function(trigger)
+      local ret = [[
+        local spellName = tonumber(%q);
+        local usePet = %s;
+      ]]
+      return ret:format(trigger.spellName or "", trigger.use_petspell and "true" or "false");
+    end,
+    args = {
+      {
+        name = "spellName",
+        required = true,
+        display = L["Spell"],
+        type = "spell",
+        test = "true"
+      },
+      {
+        name = "petspell",
+        display = L["Pet Spell"],
+        type = "toggle",
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "spellName and IsSpellKnown(spellName, usePet)";
+      }
+    },
+    iconFunc = function(trigger)
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      return icon;
+    end,
+    automaticrequired = true
+  },
+
   ["Pet Behavior"] = {
     type = "status",
     events = {
