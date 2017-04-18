@@ -1942,6 +1942,23 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if (data.regionType == "progresstexture") then
+    if (not data.version or data.version < 2) then
+      if (data.orientation == "CLOCKWISE") then
+        if (data.inverse) then
+          data.startAngle, data.endAngle = 360 - data.endAngle, 360 - data.startAngle;
+          data.orientation = (data.orientation == "CLOCKWISE") and "ANTICLOCKWISE" or "CLOCKWISE";
+        end
+      elseif (data.orientation == "ANTICLOCKWISE") then
+        data.startAngle, data.endAngle = 360 - data.endAngle, 360 - data.startAngle;
+        if (data.inverse) then
+          data.orientation = (data.orientation == "CLOCKWISE") and "ANTICLOCKWISE" or "CLOCKWISE";
+        end
+      end
+      data.version = 2;
+    end
+  end
+
   if (not data.activeTriggerMode) then
     data.activeTriggerMode = 0;
   end

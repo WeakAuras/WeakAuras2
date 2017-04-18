@@ -75,6 +75,12 @@ globals = {
 	"FONT_COLOR_CODE_CLOSE",
 	"RED_FONT_COLOR_CODE",
 
+	-- ENUMS
+	"UPPER_RIGHT_VERTEX",
+	"UPPER_LEFT_VERTEX",
+	"LOWER_RIGHT_VERTEX",
+	"LOWER_LEFT_VERTEX",
+
 	-- api functions
 	"AbandonQuest",
 	"AbandonSkill",
