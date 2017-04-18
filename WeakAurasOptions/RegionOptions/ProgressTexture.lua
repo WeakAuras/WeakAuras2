@@ -122,16 +122,16 @@ local function createOptions(id, data)
     startAngle = {
       type = "range",
       order = 42,
-      name = function() if (data.inverse) then return L["End Angle"] else return L["Start Angle"] end end,
+      name = L["Start Angle"],
       min = 0,
       max = 360,
-      step = 90,
+      bigStep = 1,
       hidden = function() return data.orientation ~= "CLOCKWISE" and data.orientation ~= "ANTICLOCKWISE"; end
     },
     endAngle = {
       type = "range",
       order = 44,
-      name = function() if (data.inverse) then return L["Start Angle"] else return L["End Angle"] end end,
+      name = L["End Angle"],
       min = 0,
       max = 360,
       bigStep = 1,
@@ -332,8 +332,8 @@ local function createThumbnail(parent)
   local foreground = region:CreateTexture(nil, "ART");
   borderframe.foreground = foreground;
 
-  borderframe.foregroundSpinner = WeakAuras.createSpinner(borderframe, "ARTWORK", parent:GetFrameLevel() + 2);
-  borderframe.backgroundSpinner = WeakAuras.createSpinner(borderframe, "BACKGROUND", parent:GetFrameLevel() + 1);
+  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND");
+  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK");
 
   return borderframe;
 end
@@ -386,14 +386,13 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
 
   foregroundSpinner:SetTexture(data.foregroundTexture);
   foregroundSpinner:SetDesaturated(data.desaturateForeground);
-  foregroundSpinner:SetBlendMode(data.blendMode);
   foregroundSpinner:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4])
+  foregroundSpinner:SetBlendMode(data.blendMode);
 
   background:ClearAllPoints();
   foreground:ClearAllPoints();
   background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT");
   background:SetPoint("TOPRIGHT", region, "TOPRIGHT");
-  backgroundSpinner:SetBackgroundOffset(region, 0);
 
   region.mirror_h = data.mirror;
   region.scale_x = 1 + (data.crop_x or 0.41);
@@ -548,23 +547,35 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     local startAngle = data.startAngle % 360;
     local endAngle = data.endAngle % 360;
 
-    if (data.inverse) then
-      startAngle, endAngle = endAngle, startAngle
-      startAngle = 360 - startAngle;
-      endAngle = 360 - endAngle;
-      clockwise = not clockwise;
-    end
     if (endAngle <= startAngle) then
       endAngle = endAngle + 360;
     end
 
-    backgroundSpinner:SetProgress(region, startAngle, endAngle, 0, clockwise);
+    backgroundSpinner:SetProgress(region, startAngle, endAngle);
+    foregroundSpinner:SetProgress(region, startAngle, endAngle);
 
     function region:SetValue(progress)
-      progress = progress or 0;
       region.progress = progress;
 
-      foregroundSpinner:SetProgress(region, startAngle, endAngle, progress, clockwise);
+      if (progress < 0) then
+        progress = 0;
+      end
+
+      if (progress > 1) then
+        progress = 1;
+      end
+
+      if (not clockwise) then
+        progress = 1 - progress;
+      end
+
+      local pAngle = (endAngle - startAngle) * progress + startAngle;
+
+      if (clockwise) then
+        foregroundSpinner:SetProgress(region, startAngle, pAngle);
+      else
+        foregroundSpinner:SetProgress(region, pAngle, endAngle);
+      end
     end
   end
 
