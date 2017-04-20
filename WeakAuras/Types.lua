@@ -239,7 +239,7 @@ WeakAuras.inverse_point_types = {
 
 WeakAuras.anchor_frame_types = {
   SCREEN = L["Screen/Parent Group"],
-  PRD = L["Personal Ressource Display"],
+  PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"]
 }
