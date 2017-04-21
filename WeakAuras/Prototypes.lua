@@ -1495,7 +1495,7 @@ WeakAuras.event_prototypes = {
     name = L["Spell Activation Overlay Glow"],
     init = function(trigger)
       WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
-      return string.format("local spellName = tonumber(%q)", trigger.spellName);
+      return string.format("local spellName = tonumber(%q)", trigger.spellName or "");
     end,
     args = {
       {
