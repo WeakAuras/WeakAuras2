@@ -76,7 +76,7 @@ local properties = {
     setter = "SetText1Color",
     type = "color"
   },
-  font1Size = {
+  text1FontSize = {
     display = L["1. Text Size"],
     setter = "SetText1Height",
     type = "number",
@@ -89,7 +89,7 @@ local properties = {
     setter = "SetText2Color",
     type = "color"
   },
-  font2Size = {
+  text2FontSize = {
     display = L["2. Text Size"],
     setter = "SetText2Height",
     type = "number",
@@ -484,8 +484,8 @@ local function modify(parent, region, data)
 
   function region:SetText2Height(height)
     local fontPath = SharedMedia:Fetch("font", data.text2Font);
-    region.stacks:SetFont(fontPath, height, data.text2FontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or data.text2FontFlags);
-    region.stacks:SetTextHeight(height);
+    region.text2:SetFont(fontPath, height, data.text2FontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or data.text2FontFlags);
+    region.text2:SetTextHeight(height);
   end
 
 
