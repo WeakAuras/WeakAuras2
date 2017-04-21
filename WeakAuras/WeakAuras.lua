@@ -719,10 +719,6 @@ function WeakAuras.ConstructConditionFunction(data)
         end
       end
 
-      if (data.id == "test") then
-        print("######", check);
-      end
-
       if (check) then
         ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. trigger .. ")\n";
         ret = ret .. "  state = allStates[cloneId] or allStates['']\n";
