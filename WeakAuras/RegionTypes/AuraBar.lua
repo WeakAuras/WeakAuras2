@@ -1173,23 +1173,18 @@ local function modify(parent, region, data)
   end
 
   function region:SetTime(duration, expirationTime, inverse)
-    if (duration > 0) then
-      local remaining = expirationTime - GetTime();
-      local progress = duration ~= 0 and remaining / duration or 0;
-      -- Need to invert?
-      if (
-        (data.inverse and not inverse)
-        or (inverse and not data.inverse)
-        )
-      then
-        progress = 1 - progress;
-      end
-      region.bar:SetValue(progress);
-      UpdateText(region, data);
-    else
-      region.bar:SetValue(1);
-      UpdateText(region, text);
+    local remaining = expirationTime - GetTime();
+    local progress = duration ~= 0 and remaining / duration or 0;
+    -- Need to invert?
+    if (
+      (data.inverse and not inverse)
+      or (inverse and not data.inverse)
+      )
+    then
+      progress = 1 - progress;
     end
+    region.bar:SetValue(progress);
+    UpdateText(region, data);
   end
 
   function region:TimerTick()
