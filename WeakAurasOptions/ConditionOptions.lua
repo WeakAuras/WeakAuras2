@@ -830,7 +830,6 @@ local function buildAllPotentialProperies(data)
   return allProperties;
 end
 
-
 local function findMatchingCondition(all, needle, start)
   while (true) do
     local condition = all[start];
