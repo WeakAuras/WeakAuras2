@@ -512,8 +512,12 @@ local function modify(parent, region, data)
     end
 
     function region:SetTime(duration, expirationTime)
-      cooldown:Show();
-      cooldown:SetCooldown(expirationTime - duration, duration);
+      if (duration > 0) then
+        cooldown:Show();
+        cooldown:SetCooldown(expirationTime - duration, duration);
+      else
+        cooldown:Hide();
+      end
       UpdateText();
     end
 
