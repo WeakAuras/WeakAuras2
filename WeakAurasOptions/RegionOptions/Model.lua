@@ -51,11 +51,11 @@ local function createOptions(id, data)
     },
     api = {
       type = "toggle",
-      name = L["Use SetTransform api"],
+      name = L["Use SetTransform() API"],
       order = 7,
 
     },
-    -- Old settings
+    -- old settings
     model_z = {
       type = "range",
       name = L["Z Offset"],
@@ -281,7 +281,7 @@ local templates = {
   },
   {
     title = L["Fire Orb"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -293,7 +293,7 @@ local templates = {
   },
   {
     title = L["Blue Sparkle Orb"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -307,7 +307,7 @@ local templates = {
   },
   {
     title = L["Arcane Orb"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -321,7 +321,7 @@ local templates = {
   },
   {
     title = L["Orange Rune"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -332,7 +332,7 @@ local templates = {
   },
   {
     title = L["Blue Rune"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -343,7 +343,7 @@ local templates = {
   },
   {
     title = L["Yellow Rune"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -354,7 +354,7 @@ local templates = {
   },
   {
     title = L["Purple Rune"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
@@ -365,7 +365,7 @@ local templates = {
   },
   {
     title = L["Green Rune"],
-    description = L[""],
+    description = "",
     data = {
       width = 100,
       height = 100,
