@@ -5854,7 +5854,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           displayOptions[id].args.trigger.args.subeventSuffix.set = options_set;
         end
       else
-        print("No prototype for", trigger.event);
+        print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
         displayOptions[id].args.trigger.args = union(trigger_options, {});
       end
     else
@@ -6522,7 +6522,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
     containsFilter = false;
     local data = WeakAuras.GetData(id);
     if not(data) then
-      print("No data for", id);
+      print("|cFF8800FFWeakAuras|r: No data for", id);
     else
       if(filter and data.controlledChildren) then
         for index, childId in pairs(data.controlledChildren) do
@@ -6710,7 +6710,7 @@ function WeakAuras.EnsureDisplayButton(data)
       displayButtons[id]:SetData(data);
       displayButtons[id]:Initialize();
     else
-      print("Error creating button for", id);
+      print("|cFF8800FFWeakAuras|r: Error creating button for", id);
     end
   end
 end
