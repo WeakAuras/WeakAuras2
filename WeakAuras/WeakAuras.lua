@@ -1839,7 +1839,7 @@ function WeakAuras.Modernize(data)
     if (data.cooldownTextEnabled == nil) then
       data.cooldownTextEnabled = true;
     end
-    if (data.text1Enabled == nil) then
+    if (data.displayStacks) then
       data.text1Enabled = true;
       data.text1 = data.displayStacks;
       data.displayStacks = nil;
