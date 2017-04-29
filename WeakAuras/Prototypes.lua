@@ -1547,7 +1547,7 @@ WeakAuras.event_prototypes = {
         local spellname = [[%s]]
         local ignoreRuneCD = %s
         local showgcd = %s;
-        local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
+        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
         local charges = WeakAuras.GetSpellCharges(spellname);
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
@@ -1618,7 +1618,13 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "(state and state.show and not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+      },
+      {
+        hidden = true,
+        name = "gcdCooldown",
+        store = true,
+        test = "true"
       },
       {
         hidden = true,
