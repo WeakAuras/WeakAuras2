@@ -200,6 +200,11 @@ function ConstructTest(trigger, arg)
       test = "(".. name .." and "..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
     end
   end
+
+  if (test == "(true)") then
+    return nil;
+  end
+
   return test;
 end
 
