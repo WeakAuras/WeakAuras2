@@ -609,6 +609,8 @@ local function formatValueForAssignment(vtype, value)
   end
   if (vtype == "bool" or vtype == "number") then
     return tostring(value);
+  elseif (vtype == "list") then
+    return type(value) == "string" and string.format("%q", value) or "nil";
   elseif(vtype == "color") then
     if (value and type(value) == "table") then
       return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
@@ -618,7 +620,7 @@ local function formatValueForAssignment(vtype, value)
 end
 
 local function formatValueForCall(type, property)
-  if (type == "bool" or type == "number") then
+  if (type == "bool" or type == "number" or type == "list") then
     return "propertyChanges." .. property;
   elseif (type == "color") then
     local pcp = "propertyChanges." .. property;
