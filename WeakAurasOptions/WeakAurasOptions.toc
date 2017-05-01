@@ -26,6 +26,7 @@ RegionOptions\Group.lua
 RegionOptions\DynamicGroup.lua
 RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
+RegionOptions\Sound.lua
 
 Cache.lua
 
