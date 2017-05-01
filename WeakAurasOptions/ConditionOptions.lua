@@ -134,13 +134,17 @@ local function descIfSubset(data, reference)
   return "";
 end
 
-local function descIfNoValue(data, object, variable, type)
+local function descIfNoValue(data, object, variable, type, values)
   if (data.controlledChildren) then
     local auraCount = #data.controlledChildren;
     if (object["same" .. variable] == false) then
       local desc = "";
       for id, reference in pairs(object.references) do
-        desc = desc .."|cFFE0E000".. id .. ": |r" .. (valueToString(reference[variable], type) or "") .. "\n";
+        if (type == "list" and values) then
+          desc = desc .."|cFFE0E000".. id .. ": |r" .. (values[reference[variable]] or "") .. "\n";
+        else
+          desc = desc .."|cFFE0E000".. id .. ": |r" .. (valueToString(reference[variable], type) or "") .. "\n";
+        end
       end
       return desc;
     end
@@ -343,6 +347,20 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
         return nil;
       end,
       set = setValueColor
+    }
+    order = order + 1;
+  elseif (propertyType == "list") then
+    local values = property and allProperties.propertyMap[property] and allProperties.propertyMap[property].values;
+    args["condition" .. i .. "value" .. j] = {
+      type = "select",
+      values = values,
+      name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
+      desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType, values),
+      order = order,
+      get = function()
+        return conditions[i].changes[j].value;
+      end,
+      set = setValue
     }
     order = order + 1;
   else
@@ -781,6 +799,15 @@ local function buildAllPotentialProperies(data)
           if (allProperties.propertyMap[k]) then
             if (allProperties.propertyMap[k].type ~= v.type) then
               allProperties.propertyMap[k].type = "incompatible";
+            end
+
+            if (allProperties.propertyMap[k].type == "list") then
+              -- Merge value lists
+              for key, value in pairs(v.values) do
+                if (allProperties.propertyMap[k].values[key] == nil) then
+                  allProperties.propertyMap[k].values[key] = value;
+                end
+              end
             end
           else
             allProperties.propertyMap[k] = {};

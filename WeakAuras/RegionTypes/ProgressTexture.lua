@@ -129,6 +129,17 @@ local properties = {
     softMax = screenHeight,
     bigStep = 1
   },
+  orientation = {
+    display = L["Orientation"],
+    setter = "SetOrientation",
+    type = "list",
+    values = WeakAuras.orientation_with_circle_types
+  },
+  inverse = {
+    display = L["Inverse"],
+    setter = "SetInverse",
+    type = "bool"
+  }
 }
 
 local spinnerFunctions = {};
@@ -463,6 +474,194 @@ end
 -- Make available for the thumbnail display
 WeakAuras.createSpinner = createSpinner;
 
+
+local SetValueFunctions = {
+  ["HORIZONTAL"] = {
+    [true] = function(self, progress)
+      self.progress = progress;
+
+      local ULx, ULy = ApplyTransform(0, 0, self)
+      local LLx, LLy = ApplyTransform(0, 1, self)
+      local URx, URy = ApplyTransform(1, 0, self)
+      local LRx, LRy = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+      self.foreground:SetWidth(self:GetWidth() * progress);
+      self.background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+    end,
+    [false] = function(self, progress)
+      self.progress = progress;
+
+      local ULx , ULy  = ApplyTransform(0, 0, self)
+      local LLx , LLy  = ApplyTransform(0, 1, self)
+      local URx , URy  = ApplyTransform(progress, 0, self)
+      local URx_, URy_ = ApplyTransform(1, 0, self)
+      local LRx , LRy  = ApplyTransform(progress, 1, self)
+      local LRx_, LRy_ = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx , URy , LRx , LRy );
+      self.foreground:SetWidth(self:GetWidth() * progress);
+      self.background:SetTexCoord(ULx, ULy, LLx, LLy, URx_, URy_, LRx_, LRy_);
+    end
+  },
+  ["HORIZONTAL_INVERSE"] = {
+    [true] = function(self, progress)
+      self.progress = progress;
+
+      local ULx, ULy = ApplyTransform(0, 0, self)
+      local LLx, LLy = ApplyTransform(0, 1, self)
+      local URx, URy = ApplyTransform(1, 0, self)
+      local LRx, LRy = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+      self.foreground:SetWidth(self:GetWidth() * progress);
+      self.background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+    end,
+    [false] = function(self, progress)
+      self.progress = progress;
+
+      local ULx , ULy  = ApplyTransform(1 - progress, 0, self)
+      local ULx_, ULy_ = ApplyTransform(0, 0, self)
+      local LLx , LLy  = ApplyTransform(1 - progress, 1, self)
+      local LLx_, LLy_ = ApplyTransform(0, 1, self)
+      local URx , URy  = ApplyTransform(1, 0, self)
+      local LRx , LRy  = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx , ULy , LLx , LLy , URx, URy, LRx, LRy);
+      self.foreground:SetWidth(self:GetWidth() * progress);
+      self.background:SetTexCoord(ULx_, ULy_, LLx_, LLy_, URx, URy, LRx, LRy);
+      end
+  },
+  ["VERTICAL"] = {
+    [true] = function(self, progress)
+      self.progress = progress;
+
+      local ULx, ULy = ApplyTransform(0, 0, self)
+      local LLx, LLy = ApplyTransform(0, 1, self)
+      local URx, URy = ApplyTransform(1, 0, self)
+      local LRx, LRy = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+      self.foreground:SetHeight(self:GetHeight() * progress);
+      self.background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+    end,
+    [false] = function(self, progress)
+      self.progress = progress;
+
+      local ULx , ULy  = ApplyTransform(0, 1 - progress, self)
+      local ULx_, ULy_ = ApplyTransform(0, 0, self)
+      local LLx , LLy  = ApplyTransform(0, 1, self)
+      local URx , URy  = ApplyTransform(1, 1 - progress, self)
+      local URx_, URy_ = ApplyTransform(1, 0, self)
+      local LRx , LRy  = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+      self.foreground:SetHeight(self:GetHeight() * progress);
+      self.background:SetTexCoord(ULx_, ULy_, LLx, LLy, URx_, URy_, LRx, LRy);
+    end
+  },
+  ["VERTICAL_INVERSE"] = {
+    [true] = function(self, progress)
+      self.progress = progress;
+
+      local ULx, ULy = ApplyTransform(0, 0, self)
+      local LLx, LLy = ApplyTransform(0, 1, self)
+      local URx, URy = ApplyTransform(1, 0, self)
+      local LRx, LRy = ApplyTransform(1, 1, self)
+
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+      self.foreground:SetHeight(self:GetHeight() * progress);
+      self.background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+    end,
+    [false] = function(self, progress)
+      self.progress = progress;
+      local ULx , ULy  = ApplyTransform(0, 0, self)
+      local LLx , LLy  = ApplyTransform(0, progress, self)
+      local LLx_, LLy_ = ApplyTransform(0, 1, self)
+      local URx , URy  = ApplyTransform(1, 0, self)
+      local LRx , LRy  = ApplyTransform(1, progress, self)
+      local LRx_, LRy_ = ApplyTransform(1, 1, self)
+      self.foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+      self.foreground:SetHeight(self:GetHeight() * progress);
+      self.background:SetTexCoord(ULx, ULy, LLx_, LLy_, URx, URy, LRx_, LRy_);
+    end
+  },
+  ["CLOCKWISE"] = function(self, progress)
+    local startAngle = self.startAngle;
+    local endAngle = self.endAngle;
+    progress = progress or 0;
+    self.progress = progress;
+
+    if (progress < 0) then
+      progress = 0;
+    end
+
+    if (progress > 1) then
+      progress = 1;
+    end
+
+    local pAngle = (endAngle - startAngle) * progress + startAngle;
+    self.foregroundSpinner:SetProgress(self, startAngle, pAngle);
+  end,
+  ["ANTICLOCKWISE"] = function(self, progress)
+    local startAngle = self.startAngle;
+    local endAngle = self.endAngle;
+    progress = progress or 0;
+    self.progress = progress;
+
+    if (progress < 0) then
+      progress = 0;
+    end
+
+    if (progress > 1) then
+      progress = 1;
+    end
+    progress = 1 - progress;
+
+    local pAngle = (endAngle - startAngle) * progress + startAngle;
+    self.foregroundSpinner:SetProgress(self, pAngle, endAngle);
+  end
+}
+
+local orientationToAnchorPoint = {
+  ["HORIZONTAL"] = "LEFT",
+  ["HORIZONTAL_INVERSE"] = "RIGHT",
+  ["VERTICAL"] = "BOTTOM",
+  ["VERTICAL_INVERSE"] = "TOP"
+}
+
+local function showCircularProgress(region)
+  region.foreground:Hide();
+  region.background:Hide();
+  region.foregroundSpinner:Show();
+  region.backgroundSpinner:Show();
+end
+
+local function hideCircularProgress(region)
+  region.foreground:Show();
+  region.background:Show();
+  region.foregroundSpinner:Hide();
+  region.backgroundSpinner:Hide();
+end
+
+local function SetOrientation(region, orientation)
+  region.orientation = orientation;
+  if(region.orientation == "CLOCKWISE" or region.orientation == "ANTICLOCKWISE") then
+    showCircularProgress(region);
+    region.backgroundSpinner:SetProgress(region, region.startAngle, region.endAngle);
+    region.SetValue = SetValueFunctions[region.orientation];
+  else
+    hideCircularProgress(region);
+    region.foreground:ClearAllPoints();
+    region.foreground:SetWidth(region.width * region.scalex);
+    region.foreground:SetHeight(region.height * region.scaley);
+    local anchor = orientationToAnchorPoint[region.orientation];
+    region.foreground:SetPoint(anchor, region, anchor);
+    region.SetValue = SetValueFunctions[region.orientation][region.compress];
+  end
+  region:SetValue(region.progress);
+end
+
 local function create(parent)
   local font = "GameFontHighlight";
 
@@ -483,6 +682,8 @@ local function create(parent)
 
   region.duration = 0;
   region.expirationTime = math.huge;
+
+  region.SetOrientation = SetOrientation;
 
   return region;
 end
@@ -539,221 +740,18 @@ local function modify(parent, region, data)
   region.user_x = -1 * (data.user_x or 0);
   region.user_y = data.user_y or 0;
 
-  region.startAngle = data.startAngle or 0;
-  region.endAngle = data.endAngle or 360;
+  region.startAngle = (data.startAngle or 0) % 360;
+  region.endAngle = (data.endAngle or 360) % 360;
 
-  local function orientHorizontal()
-    foreground:ClearAllPoints();
-    foreground:SetPoint("LEFT", region, "LEFT");
-    region.orientation = "HORIZONTAL_INVERSE";
-    if(data.compress) then
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx, ULy = ApplyTransform(0, 0, region)
-        local LLx, LLy = ApplyTransform(0, 1, region)
-        local URx, URy = ApplyTransform(1, 0, region)
-        local LRx, LRy = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-        foreground:SetWidth(region:GetWidth() * progress);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-      end
-    else
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx , ULy  = ApplyTransform(0, 0, region)
-        local LLx , LLy  = ApplyTransform(0, 1, region)
-        local URx , URy  = ApplyTransform(progress, 0, region)
-        local URx_, URy_ = ApplyTransform(1, 0, region)
-        local LRx , LRy  = ApplyTransform(progress, 1, region)
-        local LRx_, LRy_ = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx , URy , LRx , LRy );
-        foreground:SetWidth(region:GetWidth() * progress);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx_, URy_, LRx_, LRy_);
-      end
-    end
-  end
-  local function orientHorizontalInverse()
-    foreground:ClearAllPoints();
-    foreground:SetPoint("RIGHT", region, "RIGHT");
-    region.orientation = "HORIZONTAL";
-    if(data.compress) then
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx, ULy = ApplyTransform(0, 0, region)
-        local LLx, LLy = ApplyTransform(0, 1, region)
-        local URx, URy = ApplyTransform(1, 0, region)
-        local LRx, LRy = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-        foreground:SetWidth(region:GetWidth() * progress);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-      end
-    else
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx , ULy  = ApplyTransform(1-progress, 0, region)
-        local ULx_, ULy_ = ApplyTransform(0, 0, region)
-        local LLx , LLy  = ApplyTransform(1-progress, 1, region)
-        local LLx_, LLy_ = ApplyTransform(0, 1, region)
-        local URx , URy  = ApplyTransform(1, 0, region)
-        local LRx , LRy  = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx , ULy , LLx , LLy , URx, URy, LRx, LRy);
-        foreground:SetWidth(region:GetWidth() * progress);
-        background:SetTexCoord(ULx_, ULy_, LLx_, LLy_, URx, URy, LRx, LRy);
-      end
-    end
-  end
-  local function orientVertical()
-    foreground:ClearAllPoints();
-    foreground:SetPoint("BOTTOM", region, "BOTTOM");
-    region.orientation = "VERTICAL_INVERSE";
-    if(data.compress) then
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx, ULy = ApplyTransform(0, 0, region)
-        local LLx, LLy = ApplyTransform(0, 1, region)
-        local URx, URy = ApplyTransform(1, 0, region)
-        local LRx, LRy = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-        foreground:SetHeight(region:GetHeight() * progress);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-      end
-    else
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx , ULy  = ApplyTransform(0, 1 - progress, region)
-        local ULx_, ULy_ = ApplyTransform(0, 0, region)
-        local LLx , LLy  = ApplyTransform(0, 1, region)
-        local URx , URy  = ApplyTransform(1, 1 - progress, region)
-        local URx_, URy_ = ApplyTransform(1, 0, region)
-        local LRx , LRy  = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-        foreground:SetHeight(region:GetHeight() * progress);
-        background:SetTexCoord(ULx_, ULy_, LLx, LLy, URx_, URy_, LRx, LRy);
-      end
-    end
-  end
-  local function orientVerticalInverse()
-    foreground:ClearAllPoints();
-    foreground:SetPoint("TOP", region, "TOP");
-    region.orientation = "VERTICAL";
-    if(data.compress) then
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx, ULy = ApplyTransform(0, 0, region)
-        local LLx, LLy = ApplyTransform(0, 1, region)
-        local URx, URy = ApplyTransform(1, 0, region)
-        local LRx, LRy = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-        foreground:SetHeight(region:GetHeight() * progress);
-        background:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-      end
-    else
-      function region:SetValue(progress)
-        region.progress = progress;
-
-        local ULx , ULy  = ApplyTransform(0, 0, region)
-        local LLx , LLy  = ApplyTransform(0, progress, region)
-        local LLx_, LLy_ = ApplyTransform(0, 1, region)
-        local URx , URy  = ApplyTransform(1, 0, region)
-        local LRx , LRy  = ApplyTransform(1, progress, region)
-        local LRx_, LRy_ = ApplyTransform(1, 1, region)
-
-        foreground:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
-        foreground:SetHeight(region:GetHeight() * progress);
-        background:SetTexCoord(ULx, ULy, LLx_, LLy_, URx, URy, LRx_, LRy_);
-      end
-    end
+  if (region.endAngle <= region.startAngle) then
+    region.endAngle = region.endAngle + 360;
   end
 
-  local function orientCircular(clockwise)
-    local startAngle = region.startAngle % 360; -- Convert 360 to 0
-    local endAngle = region.endAngle % 360;
+  region.compress = data.compress;
 
-    if (endAngle <= startAngle) then
-      endAngle = endAngle + 360;
-    end
-
-    -- start is now 0-359, end 1-719, but at most 360 difference
-
-    region.orientation = clockwise and "CLOCKWISE" or "ANTICLOCKWISE";
-
-    backgroundSpinner:SetProgress(region, startAngle, endAngle);
-
-    function region:SetValue(progress)
-      progress = progress or 0;
-      region.progress = progress;
-
-      if (progress < 0) then
-        progress = 0;
-      end
-
-      if (progress > 1) then
-        progress = 1;
-      end
-
-      if (not clockwise) then
-        progress = 1 - progress;
-      end
-
-      local pAngle = (endAngle - startAngle) * progress + startAngle;
-
-      if (clockwise) then
-        foregroundSpinner:SetProgress(region, startAngle, pAngle);
-      else
-        foregroundSpinner:SetProgress(region, pAngle, endAngle);
-      end
-    end
-  end
-
-  local function showCircularProgress()
-    foreground:Hide();
-    background:Hide();
-    foregroundSpinner:Show();
-    backgroundSpinner:Show();
-  end
-
-  local function hideCircularProgress()
-    foreground:Show();
-    background:Show();
-    foregroundSpinner:Hide();
-    backgroundSpinner:Hide();
-  end
-
-  if(data.orientation == "HORIZONTAL_INVERSE") then
-    hideCircularProgress();
-    orientHorizontalInverse();
-  elseif(data.orientation == "HORIZONTAL") then
-    hideCircularProgress();
-    orientHorizontal();
-  elseif(data.orientation == "VERTICAL_INVERSE") then
-    hideCircularProgress();
-    orientVerticalInverse();
-  elseif(data.orientation == "VERTICAL") then
-    hideCircularProgress();
-    orientVertical();
-  elseif(data.orientation == "CLOCKWISE") then
-    showCircularProgress();
-    orientCircular(true);
-  elseif(data.orientation == "ANTICLOCKWISE") then
-    showCircularProgress();
-    orientCircular(false);
-  end
-
-  region:SetValue(0.667);
+  region.inverse = data.inverse;
+  region.progress = 0.667;
+  region:SetOrientation(data.orientation);
 
   function region:Scale(scalex, scaley)
     region.scalex = scalex;
@@ -840,7 +838,7 @@ local function modify(parent, region, data)
     local remaining = region.expirationTime - GetTime();
     local progress = remaining / region.duration;
 
-    if((data.inverse and not inverse) or (inverse and not data.inverse)) then
+    if((region.inverse and not inverse) or (inverse and not region.inverse)) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
@@ -856,7 +854,7 @@ local function modify(parent, region, data)
     if(total > 0) then
       progress = value / total;
     end
-    if(data.inverse) then
+    if(region.inverse) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
@@ -924,6 +922,11 @@ local function modify(parent, region, data)
   function region:SetRegionHeight(height)
     region.height = height;
     region:Scale(region.scalex, region.scaley);
+  end
+
+  function region:SetInverse(inverse)
+    region.inverse = inverse;
+    region:SetValue(1 - region.progress);
   end
 end
 
