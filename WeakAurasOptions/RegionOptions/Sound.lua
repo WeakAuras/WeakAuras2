@@ -37,19 +37,35 @@ local function createOptions(id, data)
         width = "double",
         hidden = function() return data.sound ~= " KitID" end,
       },
-      shouldRepeat = {
+      
+      shouldDelay = {
         type = "toggle",
         order = 3,
-        name = "Repeat",
+        name = "Delay",
+      },
+      delayTime = {
+        type = "range",
+        name = "Delay Time",
+        order = 3.5,
+        min = 0,
+        softMax = 5,
+        step = .05,
+        disabled = function() return not data.shouldDelay end,
+      },
+      
+      shouldRepeat = {
+        type = "toggle",
+        order = 4,
+        name = "Repeat/Loop",
       },
       repeatTime = {
         type = "range",
         name = "Repeat Time",
-        order = 3.5,
+        order = 4.5,
         min = 0.1,
-        softMax = 5,
-        step = .05,
-        hidden = function() return not data.shouldRepeat end,
+        softMax = 20,
+        step = .25,
+        disabled = function() return not data.shouldRepeat end,
       },
   };
   

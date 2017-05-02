@@ -15,6 +15,9 @@ local default = {
   
   shouldRepeat = false,
   repeatTime = 1,
+  
+  shouldDelay = false,
+  delayTime = 1,
 }
 
 local function create(parent)
@@ -32,15 +35,14 @@ local function modify(parent, region, data)
   
   WeakAuras.AnchorFrame(data, region, parent);
   
-  local function killTicker()
-    if (region.ticker) then
-      region.ticker:Cancel();
-      region.ticker = nil;
-      region.tickerCallback = nil;
+  local function killTimer()
+    if (region.timer) then
+      region.timer:Cancel();
+      region.timer = nil;
     end
   end
   
-  killTicker();
+  killTimer();
   
   local function playSound()
     if (not WeakAuras.IsOptionsOpen()) then
@@ -68,19 +70,28 @@ local function modify(parent, region, data)
     end
   end
   
+  local function startPlaying()
+    -- immediately play the sound
+    playSound();
+    
+    -- setup a callback every 'repeatTime' seconds if repeating
+    if (data.shouldRepeat) then
+      local function callback()
+        stopSound();
+        playSound();
+      end
+      
+      region.timer = C_Timer.NewTicker(data.repeatTime, callback);
+    end
+  end
+  
   local function OnShow()
     if (region.toShow) then
-      -- immediately play the sound
-      playSound();
-      
-      -- setup a callback every 'repeatTime' seconds if repeating
-      if (data.shouldRepeat) then
-        region.tickerCallback = function()
-          stopSound();
-          playSound();
-        end
-        
-        region.ticker = C_Timer.NewTicker(data.repeatTime, region.tickerCallback);
+      if (not data.shouldDelay) then
+        startPlaying();
+      else
+        -- wait for the timer to fire, then start
+        region.timer = C_Timer.NewTimer(data.delayTime, startPlaying);
       end
     end
   end
@@ -88,11 +99,11 @@ local function modify(parent, region, data)
   region:SetScript("OnShow", OnShow);
   
   local function OnHide()
-    -- immediately stop playing sound
+    -- immediately stop playing sound if we're playing one
     stopSound();
     
-    -- kill our ticker if it exists
-    killTicker();
+    -- kill our ticker or timer if they exist
+    killTimer();
   end
   
   region:SetScript("OnHide", OnHide);
