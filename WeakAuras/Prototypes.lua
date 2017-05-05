@@ -1628,8 +1628,8 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(showOn == \"showOnReady\" and startTime == 0) " ..
-        "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
+        test = "(showOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " ..
+        "or (showOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " ..
         "or (showOn == \"showAlways\")"
       }
     },
