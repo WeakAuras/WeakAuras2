@@ -749,7 +749,7 @@ local function modify(parent, region, data)
 
   region.compress = data.compress;
 
-  region.inverse = data.inverse;
+  region.inverseDirection = data.inverse;
   region.progress = 0.667;
   region:SetOrientation(data.orientation);
 
@@ -838,7 +838,7 @@ local function modify(parent, region, data)
     local remaining = region.expirationTime - GetTime();
     local progress = remaining / region.duration;
 
-    if((region.inverse and not inverse) or (inverse and not region.inverse)) then
+    if((region.inverseDirection and not inverse) or (inverse and not region.inverseDirection)) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
@@ -854,7 +854,7 @@ local function modify(parent, region, data)
     if(total > 0) then
       progress = value / total;
     end
-    if(region.inverse) then
+    if(region.inverseDirection) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
@@ -925,8 +925,10 @@ local function modify(parent, region, data)
   end
 
   function region:SetInverse(inverse)
-    region.inverse = inverse;
-    region:SetValue(1 - region.progress);
+    region.inverseDirection = inverse;
+    local progress = 1 - region.progress;
+    progress = progress > 0.0001 and progress or 0.0001;
+    region:SetValue(progress);
   end
 end
 
