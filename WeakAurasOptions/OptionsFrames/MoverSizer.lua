@@ -395,7 +395,7 @@ local function ConstructMoverSizer(parent)
         end
       end
       AceConfigDialog:Open("WeakAuras", parent.container);
-      WeakAuras.Animate("display", data.id, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true);
+      WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true);
     end
 
     if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
@@ -452,7 +452,7 @@ local function ConstructMoverSizer(parent)
         mover:SetWidth(region:GetWidth() * scale);
         mover:SetHeight(region:GetHeight() * scale);
         mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff * scale, yOff * scale);
-        WeakAuras.Animate("display", data.id, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true);
+        WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true);
       end
 
       frame.bottomleft:SetScript("OnMouseDown", function() frame.startSizing("BOTTOMLEFT") end);
