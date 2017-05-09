@@ -591,7 +591,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
       WeakAuras.CheckCooldownReady();
     end,
-    0.5);  -- Data not available
+    0.8);  -- Data not available
   end
 end
 
