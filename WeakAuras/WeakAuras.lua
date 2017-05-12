@@ -2452,16 +2452,46 @@ function WeakAuras.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
--- This function is currently never called if WeakAuras is paused, but it is set up so that it can take a different action
--- if it is called while paused. This is simply because it used to need to deal with that contingency and there's no reason
--- to delete that code (it could be useful in the future)
-function WeakAuras.Announce(message, output, _, extra, id, type)
-  if(paused) then
-    local pausedMessage = "WeakAuras would announce \"%s\" to %s because %s %s, but did not because it is paused.";
-    pausedMessage = pausedMessage:format(message, output..(extra and " "..extra or ""), id or "error", type == "start" and "was shown" or type == "finish" and "was hidden" or "error");
-    DEFAULT_CHAT_FRAME:AddMessage(pausedMessage);
+function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region)
+  if (message:find('%%')) then
+    message = WeakAuras.ReplacePlaceHolders(message, region.values, region.state);
+  end
+  if(message_type == "PRINT") then
+    DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
+  elseif(message_type == "COMBAT") then
+    if(CombatText_AddMessage) then
+      CombatText_AddMessage(message, COMBAT_TEXT_SCROLL_FUNCTION, r or 1, g or 1, b or 1);
+    end
+  elseif(message_type == "WHISPER") then
+    if(message_dest) then
+      if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
+        SendChatMessage(message, "WHISPER", nil, UnitName("target"));
+      else
+        SendChatMessage(message, "WHISPER", nil, message_dest);
+      end
+    end
+  elseif(message_type == "CHANNEL") then
+    local channel = message_channel and tonumber(message_channel);
+    if(GetChannelName(channel)) then
+      SendChatMessage(message, "CHANNEL", nil, channel);
+    end
+  elseif(message_type == "SMARTRAID") then
+    local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
+    if UnitInBattleground("player") then
+      SendChatMessage(message, "INSTANCE_CHAT")
+    elseif UnitInRaid("player") then
+      SendChatMessage(message, "RAID")
+    elseif UnitInParty("player") then
+      if isInstanceGroup then
+        SendChatMessage(message, "INSTANCE_CHAT")
+      else
+        SendChatMessage(message, "PARTY")
+      end
+    else
+      SendChatMessage(message, "SAY")
+    end
   else
-    SendChatMessage(message, output, _, extra);
+    SendChatMessage(message, message_type, nil, nil);
   end
 end
 
@@ -2479,47 +2509,7 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_message and actions.message_type and actions.message and not squelch_actions) then
-    local message = actions.message;
-    if (message:find('%%')) then
-      message = WeakAuras.ReplacePlaceHolders(message, region.values, region.state);
-    end
-    if(actions.message_type == "PRINT") then
-      DEFAULT_CHAT_FRAME:AddMessage(message, actions.r or 1, actions.g or 1, actions.b or 1);
-    elseif(actions.message_type == "COMBAT") then
-      if(CombatText_AddMessage) then
-        CombatText_AddMessage(message, COMBAT_TEXT_SCROLL_FUNCTION, actions.r or 1, actions.g or 1, actions.b or 1);
-      end
-    elseif(actions.message_type == "WHISPER") then
-      if(actions.message_dest) then
-        if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
-          WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
-        else
-          WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
-        end
-      end
-    elseif(actions.message_type == "CHANNEL") then
-      local channel = actions.message_channel and tonumber(actions.message_channel);
-      if(GetChannelName(channel)) then
-        WeakAuras.Announce(message, "CHANNEL", nil, channel, data.id, type);
-      end
-    elseif(actions.message_type == "SMARTRAID") then
-      local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
-      if UnitInBattleground("player") then
-        SendChatMessage(message, "INSTANCE_CHAT")
-      elseif UnitInRaid("player") then
-        SendChatMessage(message, "RAID")
-      elseif UnitInParty("player") then
-        if isInstanceGroup then
-          SendChatMessage(message, "INSTANCE_CHAT")
-        else
-          SendChatMessage(message, "PARTY")
-        end
-      else
-        SendChatMessage(message, "SAY")
-      end
-    else
-      WeakAuras.Announce(message, actions.message_type, nil, nil, data.id, type);
-    end
+    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region);
   end
 
   if(actions.do_sound and actions.sound and not squelch_actions) then
