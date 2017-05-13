@@ -615,6 +615,20 @@ local function formatValueForAssignment(vtype, value)
     if (value and type(value) == "table") then
       return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
     end
+  elseif(vtype == "chat") then
+    if (value and type(value) == "table") then
+      return string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q}",
+        tostring(value.message_type), tostring(value.message), tostring(value.message_dest), tostring(value.message_channel));
+    end
+  elseif(vtype == "sound") then
+    if (value and type(value) == "table") then
+      return string.format("{ sound = %q, sound_channel = %q, sound_path = %q, sound_kit_id = %q, sound_type = %q, %s}",
+        tostring(value.sound or ""), tostring(value.sound_channel or ""), tostring(value.sound_path or ""),
+        tostring(value.sound_kit_id or ""), tostring(value.sound_type or ""),
+        value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil");
+    end
+  elseif(vtype == "soundstop") then
+    return "true";
   end
   return "nil";
 end
@@ -625,6 +639,9 @@ local function formatValueForCall(type, property)
   elseif (type == "color") then
     local pcp = "propertyChanges." .. property;
     return pcp  .. "[1], " .. pcp .. "[2], " .. pcp  .. "[3], " .. pcp  .. "[4]";
+  elseif (type == "chat" or type == "sound") then
+    local pcp = "propertyChanges." .. property;
+    return "propertyChanges." .. property;
   end
   return "nil";
 end
@@ -657,9 +674,129 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 end
 
+local function CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
+  local trigger = condition.check and condition.check.trigger;
+  local variable = condition.check and condition.check.variable;
+  local op = condition.check and condition.check.op;
+  local value = condition.check and condition.check.value;
+  if (trigger and variable and value) then
+    local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
+    local type = conditionTemplate and conditionTemplate.type;
+    local test = conditionTemplate and conditionTemplate.test;
+
+    local check = nil;
+    local stateCheck = "state and state.show and ";
+    local stateVariableCheck = "state." .. variable .. "~= nil and ";
+    if (test) then
+      if (value) then
+        check = string.format(test, value);
+      end
+    elseif (type == "number" and op) then
+      check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. value;
+    elseif (type == "timer" and op) then
+      if (op == "==") then
+        check = stateCheck .. stateVariableCheck .. "abs(state." ..variable .. "- now -" .. value .. ") < 0.05";
+      else
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. "- now" .. op .. value;
+      end
+    elseif (type == "select" and op) then
+      if (tonumber(value)) then
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. tonumber(value);
+      else
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. "'" .. value .. "'";
+      end
+    elseif (type == "bool") then
+      local rightSide = value == 0 and "false" or "true";
+      check = stateCheck .. stateVariableCheck .. "state." .. variable .. "==" .. rightSide
+    elseif (type == "string") then
+      if(op == "==") then
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. " == [[" .. value .. "]]";
+      elseif (op  == "find('%s')") then
+        check = stateCheck .. stateVariableCheck .. "state." .. variable .. ":find([[" .. value .. "]], 1, true)";
+      elseif (op == "match('%s')") then
+        check = stateCheck .. stateVariableCheck .. "state." ..  variable .. ":match([[" .. value .. "]], 1, true)";
+      end
+    end
+
+    if (check) then
+      ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. trigger .. ")\n";
+      ret = ret .. "  state = allStates[cloneId] or allStates['']\n";
+      ret = ret .. "  if (" .. check .. ") then\n";
+      ret = ret .. "    newActiveConditions[" .. conditionNumber .. "] = true;\n";
+      ret = ret .. "  end\n";
+    end
+
+    if (type == "timer" and value) then
+      ret = ret .. "  local nextTime = state and state." .. variable .. " and (state." .. variable .. " -" .. value .. ")\n";
+      ret = ret .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
+      ret = ret .. "    recheckTime = nextTime\n";
+      ret = ret .. "  end\n"
+    end
+    ret = ret .. "\n";
+  end
+  return ret;
+end
+
+local function CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
+  if (condition.changes) then
+    ret = ret .. "  if (activatedConditions[".. conditionNumber .. "] and not newActiveConditions[" .. conditionNumber .. "]) then\n"
+    if (debug) then ret = ret .. "    print('Deactivating condition " .. conditionNumber .. "' )\n"; end
+    for changeNum, change in ipairs(condition.changes) do
+      if (change.property) then
+        local type = properties and properties[change.property] and properties[change.property].type;
+        if (type) then
+          usedProperties[change.property] = true;
+          ret = ret .. "    propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, data[change.property]) .. "\n";
+          if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(type,  data[change.property]) .. "')\n"; end
+        end
+      end
+    end
+    ret = ret .. "  end\n"
+  end
+  return ret;
+end
+
+local function CreateActivateCondition(ret, condition, conditionNumber, properties, debug)
+  if (condition.changes) then
+    ret = ret .. "  if (newActiveConditions[" .. conditionNumber .. "]) then\n"
+    ret = ret .. "    if (not activatedConditions[".. conditionNumber .. "]) then\n"
+    if (debug) then ret = ret .. "      print('Activating condition " .. conditionNumber .. "' )\n"; end
+    -- non active => active
+    for changeNum, change in ipairs(condition.changes) do
+      if (change.property) then
+        local type = properties and properties[change.property] and properties[change.property].type;
+        if (type) then
+          ret = ret .. "      propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, change.value) .. "\n";
+          if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(type, change.value) .. "')\n"; end
+        end
+      end
+    end
+    ret = ret .. "    else\n"
+    -- active => active, only override properties
+    for changeNum, change in ipairs(condition.changes) do
+      if (change.property) then
+        local type = properties and properties[change.property] and properties[change.property].type;
+        if (type) then
+          ret = ret .. "      if(propertyChanges.".. change.property .."~= nil) then\n"
+          ret = ret .. "        propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, change.value) .. "\n";
+          if (debug) then ret = ret .. "        print('- " .. change.property .. " " .. formatValueForAssignment(type,  change.value) .. "')\n"; end
+          ret = ret .. "      end\n"
+        end
+      end
+    end
+    ret = ret .. "    end\n"
+    ret = ret .. "  end\n"
+    ret = ret .. "\n";
+    ret = ret .. "  activatedConditions[".. conditionNumber .. "] = newActiveConditions[" .. conditionNumber .. "]\n";
+  end
+
+  return ret;
+end
+
 function WeakAuras.ConstructConditionFunction(data)
   local debug = false;
-  if (not data.conditions or #data.conditions == 0) then
+  if ((not data.conditions or #data.conditions == 0)
+      and (not data.actionConditions or #data.actionConditions == 0)) then
     return nil;
   end
 
@@ -680,62 +817,17 @@ function WeakAuras.ConstructConditionFunction(data)
   ret = ret .. "  local state\n";
   ret = ret .. "  local recheckTime;\n"
   ret = ret .. "  local now = GetTime();\n"
+
+  local normalConditionCount = data.conditions and #data.conditions;
   -- First Loop gather which conditions are active
-  for conditionNumber, condition in ipairs(data.conditions) do
-    local trigger = condition.check and condition.check.trigger;
-    local variable = condition.check and condition.check.variable;
-    local op = condition.check and condition.check.op;
-    local value = condition.check and condition.check.value;
-    if (trigger and variable and value) then
-      local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
-      local type = conditionTemplate and conditionTemplate.type;
-      local test = conditionTemplate and conditionTemplate.test;
-
-      local check = nil;
-      local stateCheck = "state and state.show and ";
-      local stateVariableCheck = "state." .. variable .. "~= nil and ";
-      if (test) then
-        if (value) then
-          check = string.format(test, value);
-        end
-      elseif (type == "number" and op) then
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. value;
-      elseif (type == "timer" and op) then
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. "- now" .. op .. value;
-      elseif (type == "select" and op) then
-        if (tonumber(value)) then
-          check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. tonumber(value);
-        else
-          check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. "'" .. value .. "'";
-        end
-      elseif (type == "bool") then
-        local rightSide = value == 0 and "false" or "true";
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. "==" .. rightSide
-      elseif (type == "string") then
-        if(op == "==") then
-          check = stateCheck .. stateVariableCheck .. "state." .. variable .. " == [[" .. value .. "]]";
-        elseif (op  == "find('%s')") then
-          check = stateCheck .. stateVariableCheck .. "state." .. variable .. ":find([[" .. value .. "]], 1, true)";
-        elseif (op == "match('%s')") then
-          check = stateCheck .. stateVariableCheck .. "state." ..  variable .. ":match([[" .. value .. "]], 1, true)";
-        end
-      end
-
-      if (check) then
-        ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. trigger .. ")\n";
-        ret = ret .. "  state = allStates[cloneId] or allStates['']\n";
-        ret = ret .. "  if (" .. check .. ") then\n";
-        ret = ret .. "    newActiveConditions[" .. conditionNumber .. "] = true;\n";
-        ret = ret .. "  end\n";
-      end
-
-      if (type == "timer" and value) then
-        ret = ret .. "  local nextTime = state and state." .. variable .. " and (state." .. variable .. " -" .. value .. ")\n";
-        ret = ret .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
-        ret = ret .. "    recheckTime = nextTime\n";
-        ret = ret .. "  end\n"
-      end
-      ret = ret .. "\n";
+  if (data.conditions) then
+    for conditionNumber, condition in ipairs(data.conditions) do
+      ret = CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
+    end
+  end
+  if (data.actionConditions) then
+    for conditionNumber, condition in ipairs(data.actionConditions) do
+      ret = CreateCheckCondition(ret, condition, conditionNumber + normalConditionCount, allConditionsTemplate, debug)
     end
   end
 
@@ -748,58 +840,28 @@ function WeakAuras.ConstructConditionFunction(data)
   -- Now build a propety + change list
   -- Second Loop deals with conditions that are no longer active
   ret = ret .. "  wipe(propertyChanges)\n"
-  for conditionNumber, condition in ipairs(data.conditions) do
-    if (condition.changes) then
-      ret = ret .. "  if (activatedConditions[".. conditionNumber .. "] and not newActiveConditions[" .. conditionNumber .. "]) then\n"
-      if (debug) then ret = ret .. "    print('Deactivating condition " .. conditionNumber .. "' )\n"; end
-      for changeNum, change in ipairs(condition.changes) do
-        if (change.property) then
-          local type = properties and properties[change.property] and properties[change.property].type;
-          if (type) then
-            usedProperties[change.property] = true;
-            ret = ret .. "    propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, data[change.property]) .. "\n";
-            if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(type,  data[change.property]) .. "')\n"; end
-          end
-        end
-      end
-      ret = ret .. "  end\n"
+  if (data.conditions) then
+    for conditionNumber, condition in ipairs(data.conditions) do
+      ret = CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
+    end
+  end
+  if (data.actionConditions) then
+    for conditionNumber, condition in ipairs(data.actionConditions) do
+      ret = CreateDeactivateCondition(ret, condition, conditionNumber + normalConditionCount, data, properties, usedProperties, debug)
     end
   end
   ret = ret .. "\n";
 
   -- Third Loop deals with conditions that are newly active
-  for conditionNumber, condition in ipairs(data.conditions) do
-    if (condition.changes) then
-      ret = ret .. "  if (newActiveConditions[" .. conditionNumber .. "]) then\n"
-      ret = ret .. "    if (not activatedConditions[".. conditionNumber .. "]) then\n"
-      if (debug) then ret = ret .. "      print('Activating condition " .. conditionNumber .. "' )\n"; end
-      -- non active => active
-      for changeNum, change in ipairs(condition.changes) do
-        if (change.property) then
-          local type = properties and properties[change.property] and properties[change.property].type;
-          if (type) then
-            ret = ret .. "      propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, change.value) .. "\n";
-            if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(type, change.value) .. "')\n"; end
-          end
-        end
-      end
-      ret = ret .. "    else\n"
-      -- active => active, only override properties
-      for changeNum, change in ipairs(condition.changes) do
-        if (change.property) then
-          local type = properties and properties[change.property] and properties[change.property].type;
-          if (type) then
-            ret = ret .. "      if(propertyChanges.".. change.property .."~= nil) then\n"
-            ret = ret .. "        propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, change.value) .. "\n";
-            if (debug) then ret = ret .. "        print('- " .. change.property .. " " .. formatValueForAssignment(type,  change.value) .. "')\n"; end
-            ret = ret .. "      end\n"
-          end
-        end
-      end
-      ret = ret .. "    end\n"
-      ret = ret .. "  end\n"
-      ret = ret .. "\n";
-      ret = ret .. "  activatedConditions[".. conditionNumber .. "] = newActiveConditions[" .. conditionNumber .. "]\n";
+  if (data.conditions) then
+    for conditionNumber, condition in ipairs(data.conditions) do
+      ret = CreateActivateCondition(ret, condition, conditionNumber, properties, debug)
+    end
+  end
+
+  if (data.actionConditions) then
+    for conditionNumber, condition in ipairs(data.actionConditions) do
+      ret = CreateActivateCondition(ret, condition, conditionNumber + normalConditionCount, properties, debug)
     end
   end
 
@@ -2254,7 +2316,10 @@ function WeakAuras.SetRegion(data, cloneId)
       local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
 
       regionTypes[regionType].modify(parent, region, data);
-      WeakAuras.AddSetDurationInfo(region);
+      WeakAuras.regionPrototype.AddSetDurationInfo(region);
+      local parentRegionType = data.parent and db.displays[data.parent] and db.displays[data.parent].regionType;
+      WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, parent, parentRegionType)
+
 
       if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" and pSelfPoint and pAnchor and pAnchorPoint and pX and pY) then
         region:ClearAllPoints();
@@ -2275,116 +2340,12 @@ function WeakAuras.SetRegion(data, cloneId)
         data.animation.finish.duration_type = "seconds";
       end
 
-      local startMainAnimation = function()
-        WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
-      end
-
-      local hideRegion;
-      if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
-        hideRegion = function()
-          region:Hide();
-          if (cloneId) then
-            WeakAuras.ReleaseClone(id, cloneId, regionType);
-          end
-          parent:ControlChildren();
-        end
-      else
-        hideRegion = function()
-          region:Hide();
-          if (cloneId) then
-            WeakAuras.ReleaseClone(id, cloneId, regionType);
-          end
-        end
-      end
-
-      if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
-        if not(cloneId) then
-          parent:PositionChildren();
-        end
-        function region:Collapse()
-          if (not region.toShow) then
-            return;
-          end
-          region.toShow = false;
-
-          WeakAuras.PerformActions(data, "finish", region);
-          if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
-            hideRegion();
-          end
-          parent:ControlChildren();
-        end
-        function region:Expand()
-          if (region.toShow) then
-            return;
-          end
-          region.toShow = true;
-          if(region.PreShow) then
-            region:PreShow();
-          end
-
-          parent:EnsureTrays();
-          region.justCreated = nil;
-          WeakAuras.PerformActions(data, "start", region);
-          if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
-            startMainAnimation();
-          end
-          parent:ControlChildren();
-        end
-      elseif not(data.controlledChildren) then
-        function region:Collapse()
-          if (not region.toShow) then
-            return;
-          end
-          region.toShow = false;
-
-          WeakAuras.PerformActions(data, "finish", region);
-          if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
-            hideRegion();
-          end
-
-          if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
-            parent:UpdateBorder(region);
-          end
-        end
-        function region:Expand()
-          if (region.toShow) then
-            return;
-          end
-          region.toShow = true;
-
-          if (data.anchorFrameType == "SELECTFRAME") then
-            WeakAuras.AnchorFrame(data, region, parent);
-          end
-
-          region.justCreated = nil;
-          if(region.PreShow) then
-            region:PreShow();
-          end
-          region:Show();
-          WeakAuras.PerformActions(data, "start", region);
-          if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
-            startMainAnimation();
-          end
-
-          if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "group" then
-            parent:UpdateBorder(region);
-          end
-        end
-      end
-      -- Stubs that allow for polymorphism
-      if not region.Collapse then
-        function region:Collapse() end
-      end
-      if not region.Expand then
-        function region:Expand() end
-      end
-
       if(cloneId) then
         clonePool[regionType] = clonePool[regionType] or {};
       end
 
       if(anim_cancelled) then
-        startMainAnimation();
+        WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
       end
       return region;
     end
@@ -2512,17 +2473,15 @@ function WeakAuras.PerformActions(data, type, region)
     WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region);
   end
 
+  if (actions.stop_sound) then
+    if (region.SoundStop) then
+      region:SoundStop();
+    end
+  end
+
   if(actions.do_sound and actions.sound and not squelch_actions) then
-    if(actions.sound == " custom") then
-      if(actions.sound_path) then
-        PlaySoundFile(actions.sound_path, actions.sound_channel or "Master");
-      end
-    elseif(actions.sound == " KitID") then
-      if(actions.sound_kit_id) then
-        PlaySoundKitID(actions.sound_kit_id, actions.sound_channel or "Master");
-      end
-    else
-      PlaySoundFile(actions.sound, actions.sound_channel or "Master");
+    if (region.SoundPlay) then
+      region:SoundPlay(actions);
     end
   end
 
@@ -3587,57 +3546,6 @@ end
 function WeakAuras.TimerTick(region)
   WeakAuras.UpateRegionValues(region);
   region:TimerTick();
-end
-
-function WeakAuras.AddSetDurationInfo(region)
-  if (region.SetValue and region.SetTime and region.TimerTick) then
-    region.generatedSetDurationInfo = true;
-    region.SetValueFromCustomValueFunc = function()
-      local value, total = region.customValueFunc(region.state.trigger);
-      value = type(value) == "number" and value or 0
-      total = type(value) == "number" and total or 0
-      WeakAuras.SetProgressValue(region, value, total);
-    end
-
-    region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
-      if duration <= 0 or duration > self.duration or not region.stickyDuration then
-        self.duration = duration;
-      end
-      self.expirationTime = expirationTime;
-      self.inverse = inverse;
-
-      if customValue then
-        if type(customValue) == "function" then
-          local value, total = customValue(region.state.trigger);
-          value = type(value) == "number" and value or 0
-          total = type(value) == "number" and total or 0
-          if total > 0 and value < total then
-            self.customValueFunc = customValue;
-            self:SetScript("OnUpdate", region.SetValueFromCustomValueFunc);
-          else
-            WeakAuras.SetProgressValue(region, duration, expirationTime);
-            self:SetScript("OnUpdate", nil);
-          end
-        else
-          WeakAuras.SetProgressValue(region, duration, expirationTime);
-          self:SetScript("OnUpdate", nil);
-        end
-      else
-        WeakAuras.UpateRegionValues(region);
-        region:SetTime(duration, expirationTime, inverse);
-        if duration > 0 then
-          self:SetScript("OnUpdate", function() WeakAuras.TimerTick(region) end);
-        else
-          self:SetScript("OnUpdate", nil);
-        end
-      end
-    end
-  elseif (region.generatedSetDurationInfo) then
-    region.generatedSetDurationInfo = nil;
-    region.SetDurationInfo = nil;
-    region.SetValueFromCustomValueFunc = nil;
-    region:SetScript("OnUpdate", nil);
-  end
 end
 
 local function ApplyStateToRegion(id, region, state)

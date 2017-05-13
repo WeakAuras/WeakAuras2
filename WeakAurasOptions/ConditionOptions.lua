@@ -84,7 +84,7 @@ local function compareValues(a, b, propertytype)
   return a == b;
 end
 
-local function valueToString(a, propertytype)
+local function valueToString(a, propertytype, subtype)
   if (propertytype == "color") then
     if (type(a) == "table") then
       local r, g, b, a = floor((a[1] or 0) * 255), floor((a[2] or 0) * 255), floor((a[3] or 0) * 255), floor((a[4] or 0) * 255)
@@ -92,6 +92,8 @@ local function valueToString(a, propertytype)
     else
       return "";
     end
+  elseif (propertytype == "chat" or propertytype == "sound") then
+    return tostring(a);
   elseif (propertytype == "bool") then
     return (a == 1 or a == true) and L["True"] or L["False"];
   end
@@ -115,13 +117,22 @@ local function blueIfSubset(data, reference)
   return "";
 end
 
-local function blueIfNoValue(data, object, variable, string)
+local function blueIfNoValue(data, object, variable, blueString, normalString)
   if (data.controlledChildren) then
     if (object["same" .. variable] == false) then
-      return "|cFF4080FF" .. string;
+      return "|cFF4080FF" .. blueString;
     end
   end
-  return "";
+  return normalString or "";
+end
+
+local function blueIfNoValue2(data, object, variable, subvariable, blueString, normalString)
+  if (data.controlledChildren) then
+    if (not object["same" .. variable] or not object["same" .. variable][subvariable]) then
+      return "|cFF4080FF" .. blueString;
+    end
+  end
+  return normalString or "";
 end
 
 local function descIfSubset(data, reference)
@@ -153,6 +164,24 @@ local function descIfNoValue(data, object, variable, type, values)
   return nil;
 end
 
+local function descIfNoValue2(data, object, variable, subvariable, type, values)
+  if (data.controlledChildren) then
+    local auraCount = #data.controlledChildren;
+    if (object["same" .. variable] and object["same" .. variable][subvariable] == false) then
+      local desc = "";
+      for id, reference in pairs(object.references) do
+        if (values) then
+          desc = desc .."|cFFE0E000".. id .. ": |r" .. (values[reference[variable][subvariable]] or "") .. "\n";
+        else
+          desc = desc .."|cFFE0E000".. id .. ": |r" .. (valueToString(reference[variable][subvariable], type, subvariable) or "") .. "\n";
+        end
+      end
+      return desc;
+    end
+  end
+  return nil;
+end
+
 local function filterUsedProperties(indexToProperty, allDisplays, usedProperties, ownProperty)
   local filtered = {};
   for index, value in pairs(allDisplays) do
@@ -167,7 +196,18 @@ local function filterUsedProperties(indexToProperty, allDisplays, usedProperties
   return filtered;
 end
 
-local function addControlsForChange(args, order, data, conditions, i, j, allProperties, usedProperties)
+local function wrapWithPlaySound(func, kit)
+  return function(info, v)
+    func(info, v);
+    if (tonumber(v)) then
+      PlaySoundKitID(tonumber(v), "Master");
+    else
+      PlaySoundFile(v, "Master");
+    end
+  end
+end
+
+local function addControlsForChange(args, order, data, conditionVariable, conditions, i, j, allProperties, usedProperties)
   local thenText = (j == 1) and L["Then "] or L["And "];
   local display = isSubset(data, conditions[i].changes[j]) and allProperties.displayWithCopy or allProperties.display;
   local valuesForProperty = filterUsedProperties(allProperties.indexToProperty, display, usedProperties, conditions[i].changes[j].property);
@@ -207,7 +247,7 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
 
             local conditionIndex = conditions[i].check.references[id].conditionIndex;
             local auraData = WeakAuras.GetData(id);
-            tinsert(auraData.conditions[conditionIndex].changes, insertPoint, change);
+            tinsert(auraData[conditionVariable][conditionIndex].changes, insertPoint, change);
             WeakAuras.Add(auraData);
           end
         end
@@ -218,7 +258,7 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
           for id, reference in pairs(conditions[i].changes[j].references) do
             local auraData = WeakAuras.GetData(id);
             local conditionIndex = conditions[i].check.references[id].conditionIndex;
-            tremove(auraData.conditions[conditionIndex].changes, reference.changeIndex);
+            tremove(auraData[conditionVariable][conditionIndex].changes, reference.changeIndex);
             WeakAuras.Add(auraData);
           end
           WeakAuras.ReloadTriggerOptions(data);
@@ -234,8 +274,8 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].property = property;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value = nil;
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].property = property;
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = nil;
           WeakAuras.Add(auraData);
         end
         conditions[i].changes[j].property = property;
@@ -258,12 +298,13 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
 
   local setValue;
   local setValueColor;
+  local setValueComplex;
   if (data.controlledChildren) then
     setValue = function(info, v)
       for id, reference in pairs(conditions[i].changes[j].references) do
         local auraData = WeakAuras.GetData(id);
         local conditionIndex = conditions[i].check.references[id].conditionIndex;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value = v;
+        auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = v;
         WeakAuras.Add(auraData);
       end
       conditions[i].changes[j].value = v;
@@ -273,11 +314,11 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
       for id, reference in pairs(conditions[i].changes[j].references) do
         local auraData = WeakAuras.GetData(id);
         local conditionIndex = conditions[i].check.references[id].conditionIndex;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value = auraData.conditions[conditionIndex].changes[reference.changeIndex].value or {};
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[1] = r;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[2] = g;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[3] = b;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[4] = a;
+        auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value or {};
+        auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[1] = r;
+        auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[2] = g;
+        auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[3] = b;
+        auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[4] = a;
         WeakAuras.Add(auraData);
       end
       conditions[i].changes[j].value = conditions[i].changes[j].value or {};
@@ -286,6 +327,25 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
       conditions[i].changes[j].value[3] = b;
       conditions[i].changes[j].value[4] = a;
       WeakAuras.ReloadTriggerOptions(data);
+    end
+
+    setValueComplex = function(property)
+      return function(info, v)
+        for id, reference in pairs(conditions[i].changes[j].references) do
+          local auraData = WeakAuras.GetData(id);
+          local conditionIndex = conditions[i].check.references[id].conditionIndex;
+          if (type(auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value) ~= "table") then
+            auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = {};
+          end
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property] = v;
+          WeakAuras.Add(auraData);
+        end
+        if (type(conditions[i].changes[j].value) ~= "table") then
+          conditions[i].changes[j].value = {};
+        end
+        conditions[i].changes[j].value[property] = v;
+        WeakAuras.ReloadTriggerOptions(data);
+      end
     end
   else
     setValue = function(info, v)
@@ -299,6 +359,16 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
       conditions[i].changes[j].value[3] = b;
       conditions[i].changes[j].value[4] = a;
       WeakAuras.Add(data);
+    end
+
+    setValueComplex = function(property)
+      return function(info, v)
+        if (type (conditions[i].changes[j].value) ~= "table") then
+          conditions[i].changes[j].value = {};
+        end
+        conditions[i].changes[j].value[property] = v;
+        WeakAuras.Add(data);
+      end
     end
   end
 
@@ -364,13 +434,222 @@ local function addControlsForChange(args, order, data, conditions, i, j, allProp
       set = setValue
     }
     order = order + 1;
+  elseif (propertyType == "sound") then
+    args["condition" .. i .. "value" .. j .. "sound_type"] = {
+      type = "select",
+      values = WeakAuras.sound_condition_types,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", L["Differences"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", propertyType, WeakAuras.sound_condition_types),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_type;
+      end,
+      set = setValueComplex("sound_type"),
+    }
+    order = order + 1;
+
+    local function anySoundType(needle)
+      local sound_type = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_type;
+      if (sound_type) then
+        return sound_type == needle;
+      end
+      if (conditions[i].changes[j].references) then
+        for id, reference in pairs(conditions[i].changes[j].references) do
+          if (type(reference.value) == "table" and reference.value.sound_type == needle) then
+            return true;
+          end
+        end
+      end
+      return false;
+    end
+
+    args["condition" .. i .. "value" .. j .. "sound"] = {
+      type = "select",
+      values = WeakAuras.sound_types,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Differences"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, WeakAuras.sound_types),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound;
+      end,
+      set = wrapWithPlaySound(setValueComplex("sound")),
+      control = "WeakAurasSortedDropdown",
+      hidden = function() return not (anySoundType("Play") or anySoundType("Loop")) end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "sound_channel"] = {
+      type = "select",
+      values = WeakAuras.sound_channel_types,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", L["Sound Channel"], L["Sound Channel"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", propertyType, WeakAuras.sound_channel_types),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_channel;
+      end,
+      set = setValueComplex("sound_channel"),
+      hidden = function() return not (anySoundType("Loop") or anySoundType("Play")) end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "sound_repeat"] = {
+      type = "range",
+      min = 0,
+      softMax = 60,
+      bigStep = 1,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_repeat", L["Repeat every"], L["Repeat every"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_repeat", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_repeat;
+      end,
+      set = setValueComplex("sound_repeat"),
+      disabled = function() return not anySoundType("Loop") end,
+      hidden = function() return not (anySoundType("Loop")) end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "sound_repeat_space"] = {
+      type = "description",
+      name = "",
+      order = order,
+      hidden = function() return not (anySoundType("Loop")) end
+    }
+    order = order + 1;
+
+    local function anySoundValue(needle)
+      local sound_type = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound;
+      if (sound_type) then
+        return sound_type == needle;
+      end
+      if (conditions[i].changes[j].references) then
+        for id, reference in pairs(conditions[i].changes[j].references) do
+          if (type(reference.value) == "table" and reference.value.sound == needle) then
+            return true;
+          end
+        end
+      end
+      return false;
+    end
+
+    args["condition" .. i .. "value" .. j .. "sound_path"] = {
+      type = "input",
+      width = "double",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_path", L["Sound File Path"], L["Sound File Path"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_path", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_path;
+      end,
+      set = wrapWithPlaySound(setValueComplex("sound_path")),
+      hidden = function() return not (anySoundValue(" custom") and (anySoundType("Loop") or anySoundType("Play"))) end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "sound_kit_id"] = {
+      type = "input",
+      width = "double",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_kit_id", L["Sound Kit ID"], L["Sound Kit ID"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_kit_id", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_kit_id;
+      end,
+      set = wrapWithPlaySound(setValueComplex("sound_kit_id")),
+      hidden = function() return not (anySoundValue(" KitID")  and (anySoundType("Loop") or anySoundType("Play"))) end
+    }
+    order = order + 1;
+
+
+  elseif (propertyType == "chat") then
+    args["condition" .. i .. "value" .. j .. "message type"] = {
+      type = "select",
+      values = WeakAuras.send_chat_message_types,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_type", L["Differences"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_type", propertyType, WeakAuras.send_chat_message_types),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type;
+      end,
+      set = setValueComplex("message_type")
+    }
+    order = order + 1;
+
+    local function anyMessageType(needle)
+      local message_type = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type;
+      if (message_type) then
+        return message_type == needle;
+      end
+      if (conditions[i].changes[j].references) then
+        for id, reference in pairs(conditions[i].changes[j].references) do
+          if (type(reference.value) == "table" and reference.value.message_type == needle) then
+            return true;
+          end
+        end
+      end
+      return false;
+    end
+
+    args["condition" .. i .. "value" .. j .. "message dest"] = {
+      type = "input",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", L["Send To"], L["Send To"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest;
+      end,
+      set = setValueComplex("message_dest"),
+      hidden = function()
+        return not anyMessageType("WHISPER");
+      end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "message channel"] = {
+      type = "input",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_channel", L["Channel Number"], L["Channel Number"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_channel", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_channel;
+      end,
+      set = setValueComplex("message_channel"),
+      hidden = function()
+        return not anyMessageType("CHANNEL");
+      end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "message"] = {
+      type = "input",
+      width = "double",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message", L["Differences"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
+      end,
+      set = setValueComplex("message")
+    }
+    order = order + 1;
   else
     order = addSpace(args, order);
   end
   return order;
 end
 
-local function addControlsForCondition(args, order, data, conditions, i, conditionTemplates, allProperties)
+
+local function checkSameValue(samevalue, propertyType)
+  if (propertyType == "chat") then
+    return samevalue.message_type and samevalue.message;
+  elseif (propertyType == "sound") then
+    return samevalue.sound and samevalue.sound_type;
+  else
+    return samevalue;
+  end
+end
+
+local function addControlsForCondition(args, order, data, conditionVariable, conditions, i, conditionTemplates, allProperties)
   if (not conditions[i].check) then
     return;
   end
@@ -419,7 +698,8 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
 
             condition.changes = {};
             for changeIndex, change in ipairs(conditions[i].changes) do
-              if (change.samevalue) then
+              local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type
+              if (checkSameValue(change.samevalue, propertyType)) then
                 local copy = {};
                 copy.property = change.property;
                 if (type(change.value) == "table") then
@@ -433,7 +713,7 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
             end
 
             local auraData = WeakAuras.GetData(id);
-            tinsert(auraData.conditions, insertPoint, condition);
+            tinsert(auraData[conditionVariable], insertPoint, condition);
             WeakAuras.Add(auraData);
 
           end
@@ -444,7 +724,7 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
         if (data.controlledChildren) then
           for id, reference in pairs(conditions[i].check.references) do
             local auraData = WeakAuras.GetData(id);
-            tremove(auraData.conditions, reference.conditionIndex);
+            tremove(auraData[conditionVariable], reference.conditionIndex);
             WeakAuras.Add(auraData);
           end
           WeakAuras.ReloadTriggerOptions(data);
@@ -466,9 +746,9 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
-          auraData.conditions[reference.conditionIndex].check.variable = variable;
-          auraData.conditions[reference.conditionIndex].check.trigger = trigger;
-          auraData.conditions[reference.conditionIndex].check.value = nil;
+          auraData[conditionVariable][reference.conditionIndex].check.variable = variable;
+          auraData[conditionVariable][reference.conditionIndex].check.trigger = trigger;
+          auraData[conditionVariable][reference.conditionIndex].check.value = nil;
           WeakAuras.Add(auraData);
         end
         WeakAuras.ReloadTriggerOptions(data);
@@ -518,7 +798,7 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
       conditions[i].check.op = v;
       for id, reference in pairs(conditions[i].check.references) do
         local auraData = WeakAuras.GetData(id);
-        auraData.conditions[reference.conditionIndex].check.op = v;
+        auraData[conditionVariable][reference.conditionIndex].check.op = v;
         WeakAuras.Add(auraData);
       end
       conditions[i].check.op = v;
@@ -528,7 +808,7 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
       conditions[i].check.op = v;
       for id, reference in pairs(conditions[i].check.references) do
         local auraData = WeakAuras.GetData(id);
-        auraData.conditions[reference.conditionIndex].check.value = v;
+        auraData[conditionVariable][reference.conditionIndex].check.value = v;
         WeakAuras.Add(auraData);
       end
       conditions[i].check.value = v;
@@ -660,7 +940,7 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
   end
 
   for j = 1, conditions[i].changes and #conditions[i].changes or 0 do
-    order = addControlsForChange(args, order, data, conditions, i, j, allProperties, usedProperties);
+    order = addControlsForChange(args, order, data, conditionVariable, conditions, i, j, allProperties, usedProperties);
   end
 
   args["condition" .. i .. "_addChange"] = {
@@ -671,8 +951,8 @@ local function addControlsForCondition(args, order, data, conditions, i, conditi
       if (data.controlledChildren) then
         for _, id in ipairs(data.controlledChildren) do
           local auradata = WeakAuras.GetData(id);
-          auradata.conditions[i].changes = auradata.conditions[i].changes or {};
-          auradata.conditions[i].changes[#auradata.conditions[i].changes + 1] = {};
+          auradata[conditionVariable][i].changes = auradata[conditionVariable][i].changes or {};
+          auradata[conditionVariable][i].changes[#auradata[conditionVariable][i].changes + 1] = {};
           WeakAuras.Add(auradata);
         end
         WeakAuras.ReloadTriggerOptions(data);
@@ -788,7 +1068,7 @@ local function createConditionTemplates(data)
   return conditionTemplates;
 end
 
-local function buildAllPotentialProperies(data)
+local function buildAllPotentialProperies(data, category)
   local allProperties = {};
   allProperties.propertyMap = {};
   if (data.controlledChildren) then
@@ -797,22 +1077,24 @@ local function buildAllPotentialProperies(data)
       local regionProperties = WeakAuras.regionTypes[auradata.regionType] and WeakAuras.regionTypes[auradata.regionType].properties
       if (regionProperties) then
         for k, v in pairs(regionProperties) do
-          if (allProperties.propertyMap[k]) then
-            if (allProperties.propertyMap[k].type ~= v.type) then
-              allProperties.propertyMap[k].type = "incompatible";
-            end
+          if (v.category == category) then
+            if (allProperties.propertyMap[k]) then
+              if (allProperties.propertyMap[k].type ~= v.type) then
+                allProperties.propertyMap[k].type = "incompatible";
+              end
 
-            if (allProperties.propertyMap[k].type == "list") then
-              -- Merge value lists
-              for key, value in pairs(v.values) do
-                if (allProperties.propertyMap[k].values[key] == nil) then
-                  allProperties.propertyMap[k].values[key] = value;
+              if (allProperties.propertyMap[k].type == "list") then
+                -- Merge value lists
+                for key, value in pairs(v.values) do
+                  if (allProperties.propertyMap[k].values[key] == nil) then
+                    allProperties.propertyMap[k].values[key] = value;
+                  end
                 end
               end
+            else
+              allProperties.propertyMap[k] = {};
+              WeakAuras.DeepCopy(v, allProperties.propertyMap[k])
             end
-          else
-            allProperties.propertyMap[k] = {};
-            WeakAuras.DeepCopy(v, allProperties.propertyMap[k])
           end
         end
       end
@@ -821,7 +1103,9 @@ local function buildAllPotentialProperies(data)
     local regionProperties = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties
     if (regionProperties) then
       for k, v in pairs(regionProperties) do
-        allProperties.propertyMap[k] = v;
+        if (v.category == category) then
+          allProperties.propertyMap[k] = v;
+        end
       end
     end
   end
@@ -884,11 +1168,39 @@ local function findMatchingProperty(all, change, id)
   return nil;
 end
 
+local propertyTypeToSubProperty = {
+  chat = { "message_type", "message_dest", "message_channel", "message" },
+  sound = { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"},
+};
+
 local function mergeConditionChange(all, change, id, changeIndex, allProperties)
   local propertyType = all.property and allProperties.propertyMap[all.property] and allProperties.propertyMap[all.property].type
-  if not compareValues(all.value, change.value, propertyType) then
-    all.value = nil;
-    all.samevalue = false;
+  if (propertyType == "chat" or propertyType == "sound") then
+    if (type(all.value) ~= type(change.value)) then
+      all.value = nil;
+      all.samevalue = nil;
+    else
+      if (type(change.value) ~= "table") then
+        if not compareValues(all.value, change.value, propertyType) then
+          all.value = nil;
+          all.samevalue = false;
+        end
+      else
+        for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
+          if (all.value[propertyName] ~= change.value[propertyName]) then
+            all.value[propertyName] = nil;
+            if all.samevalue then
+              all.samevalue[propertyName] = false;
+            end
+          end
+        end
+      end
+    end
+  else
+    if not compareValues(all.value, change.value, propertyType) then
+      all.value = nil;
+      all.samevalue = false;
+    end
   end
 
   all.references = all.references or {};
@@ -927,12 +1239,22 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
     if (not matchIndex) then
       local copy = {};
       WeakAuras.DeepCopy(change, copy);
-      copy.samevalue = true;
+
+      local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
+      if (type == "chat" or type == "sound") then
+        copy.samevalue = {};
+        for _, propertyName in ipairs(propertyTypeToSubProperty[type]) do
+          copy.samevalue[propertyName] = true;
+        end
+      else
+        copy.samevalue = true;
+      end
       copy.references = {};
       copy.references[id] = {
         ["changeIndex"] = changeIndex,
         ["value"] = copy.value
       }
+
       copy.referenceCount = 1;
       tinsert(all.changes, currentInsertPoint, copy);
       currentInsertPoint = currentInsertPoint + 1;
@@ -966,11 +1288,19 @@ local function mergeConditions(all, aura, id, propertyTypes)
 
       if (copy.changes) then
         for changeIndex, change in pairs(copy.changes) do
-          change.samevalue = true;
+          local propertyType = change.property and propertyTypes.propertyMap[change.property] and propertyTypes.propertyMap[change.property].type;
+          if (propertyType == "chat" or propertyType == "sound") then
+            change.samevalue = {};
+            for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
+              change.samevalue[propertyName] = true;
+            end
+          else
+            change.samevalue = true;
+          end
           change.references = {};
           change.references[id] = {
             ["changeIndex"] = changeIndex,
-            ["value"] = change.value
+            ["value"] = condition.changes[changeIndex].value
           };
           change.referenceCount = 1;
         end
@@ -985,12 +1315,12 @@ local function mergeConditions(all, aura, id, propertyTypes)
   end
 end
 
-function WeakAuras.GetConditionOptions(data)
+function WeakAuras.GetConditionOptions(data, args, conditionVariable, startorder, category)
   -- Build potential Conditions Templates structure
   local conditionTemplates = createConditionTemplates(data);
 
   -- Build potential properties structure
-  local allProperties = buildAllPotentialProperies(data);
+  local allProperties = buildAllPotentialProperies(data, category);
 
   -- Build currently selected conditions
   local conditions;
@@ -1000,17 +1330,16 @@ function WeakAuras.GetConditionOptions(data)
     for index = last, 1, -1 do
       local id = data.controlledChildren[index];
       local data = WeakAuras.GetData(id);
-      mergeConditions(conditions, data.conditions, data.id, allProperties);
+      mergeConditions(conditions, data[conditionVariable], data.id, allProperties);
     end
   else
-    data.conditions = data.conditions or {};
-    conditions = data.conditions;
+    data[conditionVariable] = data[conditionVariable] or {};
+    conditions = data[conditionVariable];
   end
 
-  local args = {};
-  local order = 0;
+  local order = startorder;
   for i = 1, #conditions do
-    order = addControlsForCondition(args, order, data, conditions, i, conditionTemplates, allProperties);
+    order = addControlsForCondition(args, order, data, conditionVariable, conditions, i, conditionTemplates, allProperties);
   end
   args["addCondition"] = {
     type = "execute",
@@ -1020,10 +1349,11 @@ function WeakAuras.GetConditionOptions(data)
       if (data.controlledChildren) then
         for _, id in ipairs(data.controlledChildren) do
           local aura = WeakAuras.GetData(id);
-          aura.conditions[#aura.conditions + 1] = {};
-          aura.conditions[#aura.conditions].check = {};
-          aura.conditions[#aura.conditions].changes = {};
-          aura.conditions[#aura.conditions].changes[1] = {}
+          aura[conditionVariable][#aura[conditionVariable] + 1] = {};
+          aura[conditionVariable][#aura[conditionVariable]].check = {};
+          aura[conditionVariable][#aura[conditionVariable]].changes = {};
+          aura[conditionVariable][#aura[conditionVariable]].changes[1] = {}
+          aura[conditionVariable][#aura[conditionVariable]].category = category;
           WeakAuras.Add(aura);
         end
         WeakAuras.ReloadTriggerOptions(data);
@@ -1032,6 +1362,7 @@ function WeakAuras.GetConditionOptions(data)
         conditions[#conditions].check = {};
         conditions[#conditions].changes = {};
         conditions[#conditions].changes[1] = {}
+        conditions[#conditions].category = category;
         WeakAuras.Add(data);
         WeakAuras.ReloadTriggerOptions(data);
       end

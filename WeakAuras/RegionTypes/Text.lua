@@ -33,6 +33,8 @@ local properties = {
   }
 }
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent);
   region:SetMovable(true);
@@ -44,6 +46,8 @@ local function create(parent)
   region.values = {};
   region.duration = 0;
   region.expirationTime = math.huge;
+
+  WeakAuras.regionPrototype.create(region);
 
   return region;
 end

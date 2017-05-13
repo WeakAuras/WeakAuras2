@@ -104,6 +104,8 @@ local properties = {
   }
 };
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
 local function GetTexCoord(region, texWidth)
   local texCoord
 
@@ -206,6 +208,8 @@ local function create(parent, data)
       button:SetFrameLevel(level);
     end
   end
+
+  WeakAuras.regionPrototype.create(region);
 
   return region;
 end

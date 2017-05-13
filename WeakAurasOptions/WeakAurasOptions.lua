@@ -2132,6 +2132,9 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.Add(data);
         end,
+        plugins = {
+          conditions = {}
+        },
         args = {
           init_header = {
             type = "header",
@@ -2253,9 +2256,28 @@ function WeakAuras.AddOption(id, data)
           },
           start_do_sound = {
             type = "toggle",
-            width = "double",
             name = L["Play Sound"],
             order = 7
+          },
+          start_do_loop = {
+            type = "toggle",
+            name = L["Loop"],
+            order = 7.1,
+            disabled = function() return not data.actions.start.do_sound end,
+          },
+          start_sound_repeat = {
+            type = "range",
+            name = L["Repeat After"],
+            order = 7.2,
+            hidden = function() return not data.actions.start.do_loop end,
+            disabled = function() return not data.actions.start.do_sound end,
+          },
+          start_sound_repeat_space = {
+            type = "description",
+            order = 7.3,
+            width = "normal",
+            name = "",
+            hidden = function() return not data.actions.start.do_loop end,
           },
           start_sound = {
             type = "select",
@@ -2436,7 +2458,6 @@ function WeakAuras.AddOption(id, data)
           },
           finish_do_sound = {
             type = "toggle",
-            width = "double",
             name = L["Play Sound"],
             order = 27
           },
@@ -2471,6 +2492,12 @@ function WeakAuras.AddOption(id, data)
             width = "double",
             hidden = function() return data.actions.finish.sound ~= " KitID" end,
             disabled = function() return not data.actions.finish.do_sound end
+          },
+          finish_stop_sound = {
+            type = "toggle",
+            name = L["Stop Sound"],
+            order = 29.1,
+            width = "double"
           },
           finish_do_glow = {
             type = "toggle",
@@ -2551,8 +2578,8 @@ function WeakAuras.AddOption(id, data)
                 end
               end
             end
-          }
-        }
+          },
+        },
       },
       animation = {
         type = "group",
@@ -5952,8 +5979,10 @@ function WeakAuras.ReloadTriggerOptions(data)
     end;
   end
 
-
-  displayOptions[id].args.conditions.args = WeakAuras.GetConditionOptions(data);
+  displayOptions[id].args.conditions.args = {};
+  displayOptions[id].args.action.plugins.conditions = {};
+  WeakAuras.GetConditionOptions(data, displayOptions[id].args.conditions.args, "conditions", 0, nil);
+  WeakAuras.GetConditionOptions(data, displayOptions[id].args.action.plugins.conditions, "actionConditions", 40, "action");
 
   if(type(id) ~= "string") then
     displayOptions[id].args.group = nil;
