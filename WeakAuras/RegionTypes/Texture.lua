@@ -53,6 +53,8 @@ local properties = {
   },
 }
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
 local function create(parent)
   local frame = CreateFrame("FRAME", nil, UIParent);
   frame:SetMovable(true);
@@ -62,6 +64,8 @@ local function create(parent)
   local texture = frame:CreateTexture();
   frame.texture = texture;
   texture:SetAllPoints(frame);
+
+  WeakAuras.regionPrototype.create(frame);
   return frame;
 end
 

@@ -27,6 +27,7 @@ Transmission.lua
 BuffTrigger.lua
 GenericTrigger.lua
 
+RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua
 RegionTypes\Texture.lua
 RegionTypes\AuraBar.lua

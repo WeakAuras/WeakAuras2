@@ -60,6 +60,8 @@ local properties = {
   },
 }
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
 -- Called when first creating a new region/display
 local function create(parent)
   -- Main region
@@ -77,6 +79,8 @@ local function create(parent)
   model:SetAllPoints(region);
   model:SetCamera(1);
   region.model = model;
+
+  WeakAuras.regionPrototype.create(region);
 
   -- Return complete region
   return region;

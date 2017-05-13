@@ -170,6 +170,8 @@ local properties = {
   }
 };
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
 -- Returns tex Coord for 90° rotations + x or y flip
 
 local texCoords = { 0, 0, 1, 1,
@@ -522,6 +524,8 @@ local function create(parent)
       self.__WAGlowFrame:SetFrameLevel(frameLevel + 1);
     end
   end
+
+  WeakAuras.regionPrototype.create(region);
 
   -- Return new display/region
   return region;

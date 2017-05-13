@@ -142,6 +142,8 @@ local properties = {
   }
 }
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
 local spinnerFunctions = {};
 
 function spinnerFunctions.SetTexture(self, texture)
@@ -684,6 +686,8 @@ local function create(parent)
   region.expirationTime = math.huge;
 
   region.SetOrientation = SetOrientation;
+
+  WeakAuras.regionPrototype.create(region);
 
   return region;
 end
