@@ -488,12 +488,12 @@ local function modify(parent, region, data)
     region.text2:SetTextHeight(height);
   end
 
-
   function region:SetGlow(showGlow)
     if (showGlow) then
       if (not region.__WAGlowFrame) then
         region.__WAGlowFrame = CreateFrame("Frame", nil, region);
         region.__WAGlowFrame:SetAllPoints();
+        region.__WAGlowFrame:SetSize(region.width, region.height);
       end
       WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
     else
