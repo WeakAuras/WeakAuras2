@@ -3301,6 +3301,7 @@ WeakAuras.event_prototypes = {
         local triggerItemSetName = %s;
         local inverse = %s;
         local partial = %s;
+
       ]];
 
       return ret:format(trigger.use_itemSetName and "true" or "false", itemSetName, trigger.use_inverse and "true" or "false", trigger.use_partial and "true" or "false");
