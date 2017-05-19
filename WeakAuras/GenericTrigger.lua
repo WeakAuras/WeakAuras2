@@ -1823,11 +1823,11 @@ function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
   local bestMatchName = nil;
   local bestMatchIcon = nil;
 
-  for i = 0, C_EquipmentSet.GetNumEquipmentSets() do
+  for i = 0, C_EquipmentSet.GetNumEquipmentSets() - 1 do
     local name, icon, _, _, numItems, numEquipped = C_EquipmentSet.GetEquipmentSetInfo(i);
     if (itemSetName == nil or (name and itemSetName == name)) then
       local match = (not partial and numItems == numEquipped)
-        or (partial and numEquipped > bestMatchNumEquipped);
+        or (partial and (numEquipped or 0) > bestMatchNumEquipped);
       if (match) then
         bestMatchNumEquipped = numEquipped;
         bestMatchNumItems = numItems;
