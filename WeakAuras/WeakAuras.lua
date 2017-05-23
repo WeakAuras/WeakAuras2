@@ -1758,6 +1758,24 @@ function WeakAuras.ResolveCollisions(onFinished)
   end
 end
 
+local function ModernizeAnimation(animation)
+  if (type(animation) ~= "string") then
+    return nil;
+  end
+  return animation:gsub("^%s*return%s*", "");
+end
+
+local function ModernizeAnimations(animations)
+  if (not animations) then
+    return;
+  end
+  animations.alphaFunc     = ModernizeAnimation(animations.alphaFunc);
+  animations.translateFunc = ModernizeAnimation(animations.translateFunc);
+  animations.scaleFunc     = ModernizeAnimation(animations.scaleFunc);
+  animations.rotateFunc    = ModernizeAnimation(animations.rotateFunc);
+  animations.colorFunc     = ModernizeAnimation(animations.colorFunc);
+end
+
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 function WeakAuras.Modernize(data)
   -- Add trigger count
@@ -1986,6 +2004,10 @@ function WeakAuras.Modernize(data)
       end
     end
   end
+
+  ModernizeAnimations(data.animation and data.animation.start);
+  ModernizeAnimations(data.animation and data.animation.main);
+  ModernizeAnimations(data.animation and data.animation.finish);
 
 end
 
@@ -2750,7 +2772,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.translateType = anim.translateType or "straightTranslate";
         anim.translateFunc = anim_function_strings[anim.translateType] or anim_function_strings.straightTranslate;
       end
-      translateFunc = WeakAuras.LoadFunction(anim.translateFunc, id);
+      translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
     else
       region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
     end
@@ -2759,7 +2781,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.alphaType = anim.alphaType or "straight";
         anim.alphaFunc = anim_function_strings[anim.alphaType] or anim_function_strings.straight;
       end
-      alphaFunc = WeakAuras.LoadFunction(anim.alphaFunc, id);
+      alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
     else
       region:SetAlpha(startAlpha);
     end
@@ -2768,7 +2790,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.scaleType = anim.scaleType or "straightScale";
         anim.scaleFunc = anim_function_strings[anim.scaleType] or anim_function_strings.straightScale;
       end
-      scaleFunc = WeakAuras.LoadFunction(anim.scaleFunc, id);
+      scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id);
     elseif(region.Scale) then
       region:Scale(1, 1);
     end
@@ -2777,7 +2799,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.rotateType = anim.rotateType or "straight";
         anim.rotateFunc = anim_function_strings[anim.rotateType] or anim_function_strings.straight;
       end
-      rotateFunc = WeakAuras.LoadFunction(anim.rotateFunc, id);
+      rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id);
     elseif(region.Rotate) then
       region:Rotate(startRotation);
     end
@@ -2786,7 +2808,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.colorType = anim.colorType or "straightColor";
         anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
       end
-      colorFunc = WeakAuras.LoadFunction(anim.colorFunc, id);
+      colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
     elseif(region.Color) then
       region:Color(startR, startG, startB, startA);
     end
