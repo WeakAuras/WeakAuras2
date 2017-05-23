@@ -48,7 +48,7 @@ WeakAuras.encounter_table = {
   -- Tomb of Sargeras
   [1862] = 2032, -- Goroth
   [1867] = 2048, -- Demonic Inquisition
-  [1856] = 2048, -- Harjatan
+  [1856] = 2036, -- Harjatan
   [1861] = 2037, -- Mistress Sasszine
   [1903] = 2050, -- Sisters of the Moon
   [1896] = 2054, -- Desolate Host
