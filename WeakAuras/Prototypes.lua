@@ -3568,6 +3568,7 @@ WeakAuras.event_prototypes = {
       end
 
       if (trigger.use_HasPet ~= nil) then
+        tinsert(events, "UNIT_PET");
         tinsert(events, "PET_UPDATE");
         tinsert(events, "UNIT_PET");
       end
