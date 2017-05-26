@@ -3291,7 +3291,7 @@ WeakAuras.event_prototypes = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = "PLAYER_EQUIPMENT_CHANGED",
-    name = L["Item Set Equipped"],
+    name = L["Equipment Set Equipped"],
     init = function(trigger)
       trigger.itemSetName = trigger.itemSetName or "";
       local itemSetName = type(trigger.itemSetName) == "string" and ("[=[" .. trigger.itemSetName .. "]=]") or "nil";
