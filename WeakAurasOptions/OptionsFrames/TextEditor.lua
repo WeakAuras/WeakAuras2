@@ -138,9 +138,10 @@ local function ConstructTextEditor(frame)
     end
   end);
 
-  function group.Open(self, data, path, enclose)
+  function group.Open(self, data, path, enclose, multipath)
     self.data = data;
     self.path = path;
+    self.multipath = multipath;
     if(frame.window == "texture") then
       frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
@@ -151,11 +152,13 @@ local function ConstructTextEditor(frame)
     self.frame:Show();
     frame.window = "texteditor";
     local title = (type(data.id) == "string" and data.id or L["Temporary Group"]).." -";
-    for index, field in pairs(path) do
-      if(type(field) == "number") then
-        field = "Trigger "..field+1
+    if (not multipath) then
+      for index, field in pairs(path) do
+        if(type(field) == "number") then
+          field = "Trigger "..field+1
+        end
+        title = title.." "..field:sub(1, 1):upper()..field:sub(2);
       end
-      title = title.." "..field:sub(1, 1):upper()..field:sub(2);
     end
     editor:SetLabel(title);
     editor.editBox:SetScript("OnEscapePressed", function() group:CancelClose(); end);
@@ -181,7 +184,7 @@ local function ConstructTextEditor(frame)
       local combinedText = "";
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
-        local text = valueFromPath(childData, path);
+        local text = valueFromPath(childData, multipath and path[childId] or path);
         if not(singleText) then
           singleText = text;
         else
@@ -256,7 +259,7 @@ local function ConstructTextEditor(frame)
       for index, childId in pairs(self.data.controlledChildren) do
         local text = editor.combinedText and (textById[childId] or "") or editor:GetText();
         local childData = WeakAuras.GetData(childId);
-        valueToPath(childData, self.path, text);
+        valueToPath(childData, self.multipath and self.path[childId] or self.path, text);
         WeakAuras.Add(childData);
       end
     else
