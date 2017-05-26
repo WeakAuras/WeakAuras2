@@ -2150,7 +2150,8 @@ function WeakAuras.AddOption(id, data)
             name = L["Custom Code"],
             order = 0.013,
             multiline = true,
-            hidden = function() return not data.actions.init.do_custom end
+            hidden = function() return not data.actions.init.do_custom end,
+            control = "WeakAurasMultiLineEditBox"
           },
           init_expand = {
             type = "execute",
@@ -2332,7 +2333,8 @@ function WeakAuras.AddOption(id, data)
             name = L["Custom Code"],
             order = 13,
             multiline = true,
-            hidden = function() return not data.actions.start.do_custom end
+            hidden = function() return not data.actions.start.do_custom end,
+            control = "WeakAurasMultiLineEditBox"
           },
           start_expand = {
             type = "execute",
@@ -2514,7 +2516,8 @@ function WeakAuras.AddOption(id, data)
             order = 33,
             multiline = true,
             width = "normal",
-            hidden = function() return not data.actions.finish.do_custom end
+            hidden = function() return not data.actions.finish.do_custom end,
+            control = "WeakAurasMultiLineEditBox"
           },
           finish_expand = {
             type = "execute",
@@ -2697,7 +2700,8 @@ function WeakAuras.AddOption(id, data)
             order = 35.3,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.alphaType ~= "custom" or not data.animation.start.use_alpha end,
             get = function() return data.animation.start.alphaFunc; end,
-            set = function(info, v) data.animation.start.alphaFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.start.alphaFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           start_alphaFunc_expand = {
             type = "execute",
@@ -2764,7 +2768,8 @@ function WeakAuras.AddOption(id, data)
             order = 39.3,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.translateType ~= "custom" or not data.animation.start.use_translate end,
             get = function() return data.animation.start.translateFunc; end,
-            set = function(info, v) data.animation.start.translateFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.start.translateFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           start_translateFunc_expand = {
             type = "execute",
@@ -2844,7 +2849,8 @@ function WeakAuras.AddOption(id, data)
             order = 43.3,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.scaleType ~= "custom" or not (data.animation.start.use_scale and WeakAuras.regions[id].region.Scale) end,
             get = function() return data.animation.start.scaleFunc; end,
-            set = function(info, v) data.animation.start.scaleFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.start.scaleFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           start_scaleFunc_expand = {
             type = "execute",
@@ -2920,7 +2926,8 @@ function WeakAuras.AddOption(id, data)
             order = 47.3,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.rotateType ~= "custom" or not (data.animation.start.use_rotate and WeakAuras.regions[id].region.Rotate) end,
             get = function() return data.animation.start.rotateFunc; end,
-            set = function(info, v) data.animation.start.rotateFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.start.rotateFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           start_rotateFunc_expand = {
             type = "execute",
@@ -2986,7 +2993,8 @@ function WeakAuras.AddOption(id, data)
             order = 48.7,
             hidden = function() return data.animation.start.type ~= "custom" or data.animation.start.colorType ~= "custom" or not (data.animation.start.use_color and WeakAuras.regions[id].region.Color) end,
             get = function() return data.animation.start.colorFunc; end,
-            set = function(info, v) data.animation.start.colorFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.start.colorFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           start_colorFunc_expand = {
             type = "execute",
@@ -3121,7 +3129,8 @@ function WeakAuras.AddOption(id, data)
             order = 55.3,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.alphaType ~= "custom" or not data.animation.main.use_alpha end,
             get = function() return data.animation.main.alphaFunc; end,
-            set = function(info, v) data.animation.main.alphaFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.main.alphaFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           main_alphaFunc_expand = {
             type = "execute",
@@ -3188,7 +3197,8 @@ function WeakAuras.AddOption(id, data)
             order = 59.3,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.translateType ~= "custom" or not data.animation.main.use_translate end,
             get = function() return data.animation.main.translateFunc; end,
-            set = function(info, v) data.animation.main.translateFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.main.translateFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           main_translateFunc_expand = {
             type = "execute",
@@ -3264,7 +3274,8 @@ function WeakAuras.AddOption(id, data)
             order = 63.3,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.scaleType ~= "custom" or not (data.animation.main.use_scale and WeakAuras.regions[id].region.Scale) end,
             get = function() return data.animation.main.scaleFunc end,
-            set = function(info, v) data.animation.main.scaleFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.main.scaleFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           main_scaleFunc_expand = {
             type = "execute",
@@ -3340,7 +3351,8 @@ function WeakAuras.AddOption(id, data)
             order = 67.3,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.rotateType ~= "custom" or not (data.animation.main.use_rotate and WeakAuras.regions[id].region.Rotate) end,
             get = function() return data.animation.main.rotateFunc end,
-            set = function(info, v) data.animation.main.rotateFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.main.rotateFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           main_rotateFunc_expand = {
             type = "execute",
@@ -3406,7 +3418,8 @@ function WeakAuras.AddOption(id, data)
             order = 68.7,
             hidden = function() return data.animation.main.type ~= "custom" or data.animation.main.colorType ~= "custom" or not (data.animation.main.use_color and WeakAuras.regions[id].region.Color) end,
             get = function() return data.animation.main.colorFunc; end,
-            set = function(info, v) data.animation.main.colorFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.main.colorFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           main_colorFunc_expand = {
             type = "execute",
@@ -3518,7 +3531,8 @@ function WeakAuras.AddOption(id, data)
             order = 75.3,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.alphaType ~= "custom" or not data.animation.finish.use_alpha end,
             get = function() return data.animation.finish.alphaFunc end,
-            set = function(info, v) data.animation.finish.alphaFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.finish.alphaFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           finish_alphaFunc_expand = {
             type = "execute",
@@ -3585,7 +3599,8 @@ function WeakAuras.AddOption(id, data)
             order = 79.3,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.translateType ~= "custom" or not data.animation.finish.use_translate end,
             get = function() return data.animation.finish.translateFunc; end,
-            set = function(info, v) data.animation.finish.translateFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.finish.translateFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           finish_translateFunc_expand = {
             type = "execute",
@@ -3661,7 +3676,8 @@ function WeakAuras.AddOption(id, data)
             order = 83.3,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.scaleType ~= "custom" or not (data.animation.finish.use_scale and WeakAuras.regions[id].region.Scale) end,
             get = function() return data.animation.finish.scaleFunc; end,
-            set = function(info, v) data.animation.finish.scaleFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.finish.scaleFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           finish_scaleFunc_expand = {
             type = "execute",
@@ -3737,7 +3753,8 @@ function WeakAuras.AddOption(id, data)
             order = 87.3,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.rotateType ~= "custom" or not (data.animation.finish.use_rotate and WeakAuras.regions[id].region.Rotate) end,
             get = function() return data.animation.finish.rotateFunc; end,
-            set = function(info, v) data.animation.finish.rotateFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.finish.rotateFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           finish_rotateFunc_expand = {
             type = "execute",
@@ -3803,7 +3820,8 @@ function WeakAuras.AddOption(id, data)
             order = 88.7,
             hidden = function() return data.animation.finish.type ~= "custom" or data.animation.finish.colorType ~= "custom" or not (data.animation.finish.use_color and WeakAuras.regions[id].region.Color) end,
             get = function() return data.animation.finish.colorFunc; end,
-            set = function(info, v) data.animation.finish.colorFunc = v; WeakAuras.Add(data); end
+            set = function(info, v) data.animation.finish.colorFunc = v; WeakAuras.Add(data); end,
+            control = "WeakAurasMultiLineEditBox"
           },
           finish_colorFunc_expand = {
             type = "execute",
@@ -4941,7 +4959,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       set = function(info, v)
         data.customTriggerLogic = v;
         WeakAuras.Add(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_trigger_combination_expand = {
       type = "execute",
@@ -5294,7 +5313,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_trigger_expand = {
       type = "execute",
@@ -5383,7 +5403,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_untrigger_expand = {
       type = "execute",
@@ -5435,7 +5456,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_duration_expand = {
       type = "execute",
@@ -5490,7 +5512,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_name_expand = {
       type = "execute",
@@ -5539,7 +5562,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_icon_expand = {
       type = "execute",
@@ -5588,7 +5612,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_texture_expand = {
       type = "execute",
@@ -5637,7 +5662,8 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
-      end
+      end,
+      control = "WeakAurasMultiLineEditBox"
     },
     custom_stacks_expand = {
       type = "execute",
