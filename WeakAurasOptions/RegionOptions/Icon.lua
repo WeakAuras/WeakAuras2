@@ -23,14 +23,8 @@ local function createOptions(id, data)
       name = L["Show Cooldown Text"],
       order = 6.5,
       disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC")) end
-    },
-    cooldownTextSpace = {
-      type = "description",
-      name = "",
-      order = 6.6,
-      width = "normal",
-      hidden = function() return data.cooldown and IsAddOnLoaded("OmniCC") end
+      hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC") and GetCVar("countdownForCooldowns") == "1") end,
+      width = "double"
     },
     color = {
       type = "color",
