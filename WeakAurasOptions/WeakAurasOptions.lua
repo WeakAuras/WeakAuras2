@@ -3967,7 +3967,46 @@ function WeakAuras.ReloadTriggerOptions(data)
     end
   end
 
-  if(optionTriggerChoices[id] == 0) then
+  if (data.controlledChildren) then
+    function appendToTriggerPath(...)
+      local baseRet = {...};
+      local result = {};
+
+      for index, childId in pairs(data.controlledChildren) do
+        local ret = {};
+        WeakAuras.DeepCopy(baseRet, ret);
+        local optionTriggerChoice = optionTriggerChoices[childId];
+        if (optionTriggerChoice == 0) then
+          tinsert(ret, 1, "trigger");
+        elseif (optionTriggerChoice > 0) then
+          tinsert(ret, 1, "trigger");
+          tinsert(ret, 1, optionTriggerChoice);
+          tinsert(ret, 1, "additional_triggers");
+        end
+        result[childId] = ret;
+      end
+      return result;
+    end
+    function appendToUntriggerPath(...)
+      local baseRet = {...};
+      local result = {};
+
+      for index, childId in pairs(data.controlledChildren) do
+        local ret = {};
+        WeakAuras.DeepCopy(baseRet, ret);
+        local optionTriggerChoice = optionTriggerChoices[childId];
+        if (optionTriggerChoice == 0) then
+          tinsert(ret, 1, "untrigger");
+        elseif (optionTriggerChoice > 0) then
+          tinsert(ret, 1, "untrigger");
+          tinsert(ret, 1, optionTriggerChoice);
+          tinsert(ret, 1, "additional_triggers");
+        end
+        result[childId] = ret;
+      end
+      return result;
+    end
+  elseif(optionTriggerChoices[id] == 0) then
     function appendToTriggerPath(...)
       local ret = {...};
       tinsert(ret, 1, "trigger");
@@ -3995,9 +4034,6 @@ function WeakAuras.ReloadTriggerOptions(data)
       tinsert(ret, 1, "additional_triggers");
       return ret;
     end
-  else
-    function appendToTriggerPath(...) end
-    function appendToUntriggerPath(...) end
   end
 
   local function getAuraMatchesLabel(name)
@@ -5321,7 +5357,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 10.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToTriggerPath("custom"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("custom"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom") end,
     },
@@ -5411,7 +5447,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 14.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToUntriggerPath("custom"))
+        WeakAuras.OpenTextEditor(data, appendToUntriggerPath("custom"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom"))) end,
@@ -5464,7 +5500,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 16.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customDuration"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customDuration"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
@@ -5520,7 +5556,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 18.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customName"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customName"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -5570,7 +5606,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 20.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customIcon"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customIcon"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -5620,7 +5656,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 22,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customTexture"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customTexture"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
@@ -5670,7 +5706,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 23.5,
       name = L["Expand Text Editor"],
       func = function()
-        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customStacks"))
+        WeakAuras.OpenTextEditor(data, appendToTriggerPath("customStacks"), nil, true)
       end,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate") end,
     },
