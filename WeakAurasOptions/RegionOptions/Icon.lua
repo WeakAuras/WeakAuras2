@@ -240,7 +240,8 @@ local function createOptions(id, data)
       end,
       multiline = true,
       name = L["Custom Function"],
-      order = 43.2
+      order = 43.2,
+      control = "WeakAurasMultiLineEditBox"
     },
     customText_expand = {
       type = "execute",
