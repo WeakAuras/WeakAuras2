@@ -795,8 +795,7 @@ end
 
 function WeakAuras.ConstructConditionFunction(data)
   local debug = false;
-  if ((not data.conditions or #data.conditions == 0)
-      and (not data.actionConditions or #data.actionConditions == 0)) then
+  if (not data.conditions or #data.conditions == 0) then
     return nil;
   end
 
@@ -825,11 +824,6 @@ function WeakAuras.ConstructConditionFunction(data)
       ret = CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
     end
   end
-  if (data.actionConditions) then
-    for conditionNumber, condition in ipairs(data.actionConditions) do
-      ret = CreateCheckCondition(ret, condition, conditionNumber + normalConditionCount, allConditionsTemplate, debug)
-    end
-  end
 
   ret = ret .. "  if (recheckTime) then\n"
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, id, cloneId);\n"
@@ -845,23 +839,12 @@ function WeakAuras.ConstructConditionFunction(data)
       ret = CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
     end
   end
-  if (data.actionConditions) then
-    for conditionNumber, condition in ipairs(data.actionConditions) do
-      ret = CreateDeactivateCondition(ret, condition, conditionNumber + normalConditionCount, data, properties, usedProperties, debug)
-    end
-  end
   ret = ret .. "\n";
 
   -- Third Loop deals with conditions that are newly active
   if (data.conditions) then
     for conditionNumber, condition in ipairs(data.conditions) do
       ret = CreateActivateCondition(ret, condition, conditionNumber, properties, debug)
-    end
-  end
-
-  if (data.actionConditions) then
-    for conditionNumber, condition in ipairs(data.actionConditions) do
-      ret = CreateActivateCondition(ret, condition, conditionNumber + normalConditionCount, properties, debug)
     end
   end
 

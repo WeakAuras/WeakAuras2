@@ -2132,9 +2132,6 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.Add(data);
         end,
-        plugins = {
-          conditions = {}
-        },
         args = {
           init_header = {
             type = "header",
@@ -5980,9 +5977,7 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 
   displayOptions[id].args.conditions.args = {};
-  displayOptions[id].args.action.plugins.conditions = {};
   WeakAuras.GetConditionOptions(data, displayOptions[id].args.conditions.args, "conditions", 0, nil);
-  WeakAuras.GetConditionOptions(data, displayOptions[id].args.action.plugins.conditions, "actionConditions", 40, "action");
 
   if(type(id) ~= "string") then
     displayOptions[id].args.group = nil;

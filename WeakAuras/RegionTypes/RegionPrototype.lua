@@ -8,13 +8,11 @@ function WeakAuras.regionPrototype.AddProperties(properties)
     display = L["Sound"],
     setter = "SoundPlay",
     type = "sound",
-    category = "action"
   };
   properties["chat"] = {
     display = L["Chat Message"],
     setter = "SendChat",
     type = "chat",
-    category = "action"
   };
 end
 
