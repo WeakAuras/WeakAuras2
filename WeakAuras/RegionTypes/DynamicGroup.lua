@@ -578,7 +578,7 @@ local function modify(parent, region, data)
               );
             if(math.abs(radius1 - radius2) > 0.1) then
               local translateFunc = [[
-                                return function(progress, _, _, previousAngle, dAngle)
+                                function(progress, _, _, previousAngle, dAngle)
                                     local previousRadius, dRadius = %f, %f;
                                     local radius = previousRadius + (1 - progress) * dRadius;
                                     local angle = previousAngle + (1 - progress) * dAngle;
@@ -596,7 +596,7 @@ local function modify(parent, region, data)
               };
             else
               local translateFunc = [[
-                                return function(progress, _, _, previousAngle, dAngle)
+                                function(progress, _, _, previousAngle, dAngle)
                                     local radius = %f;
                                     local angle = previousAngle + (1 - progress) * dAngle;
                                     return cos(angle) * radius, sin(angle) * radius;
