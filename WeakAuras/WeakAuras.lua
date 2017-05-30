@@ -618,7 +618,7 @@ local function formatValueForAssignment(vtype, value)
   elseif(vtype == "chat") then
     if (value and type(value) == "table") then
       return string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q}",
-        tostring(value.message_type), tostring(value.message), tostring(value.message_dest), tostring(value.message_channel));
+        tostring(value.message_type), tostring(value.message or ""), tostring(value.message_dest), tostring(value.message_channel));
     end
   elseif(vtype == "sound") then
     if (value and type(value) == "table") then
@@ -639,9 +639,6 @@ local function formatValueForCall(type, property)
   elseif (type == "color") then
     local pcp = "propertyChanges." .. property;
     return pcp  .. "[1], " .. pcp .. "[2], " .. pcp  .. "[3], " .. pcp  .. "[4]";
-  elseif (type == "chat" or type == "sound") then
-    local pcp = "propertyChanges." .. property;
-    return "propertyChanges." .. property;
   end
   return "nil";
 end
@@ -743,11 +740,11 @@ local function CreateDeactivateCondition(ret, condition, conditionNumber, data, 
     if (debug) then ret = ret .. "    print('Deactivating condition " .. conditionNumber .. "' )\n"; end
     for changeNum, change in ipairs(condition.changes) do
       if (change.property) then
-        local type = properties and properties[change.property] and properties[change.property].type;
-        if (type) then
+        local propertyData = properties and properties[change.property]
+        if (propertyData and propertyData.type and propertyData.setter) then
           usedProperties[change.property] = true;
-          ret = ret .. "    propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, data[change.property]) .. "\n";
-          if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(type,  data[change.property]) .. "')\n"; end
+          ret = ret .. "    propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, data[change.property]) .. "\n";
+          if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(propertyData.type,  data[change.property]) .. "')\n"; end
         end
       end
     end
@@ -764,10 +761,15 @@ local function CreateActivateCondition(ret, condition, conditionNumber, properti
     -- non active => active
     for changeNum, change in ipairs(condition.changes) do
       if (change.property) then
-        local type = properties and properties[change.property] and properties[change.property].type;
-        if (type) then
-          ret = ret .. "      propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, change.value) .. "\n";
-          if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(type, change.value) .. "')\n"; end
+        local propertyData = properties and properties[change.property]
+        if (propertyData and propertyData.type) then
+          if (propertyData.setter) then
+            ret = ret .. "      propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
+            if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
+          elseif (propertyData.action) then
+            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value) .. ")" .. "\n";
+            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
+          end
         end
       end
     end
@@ -775,11 +777,11 @@ local function CreateActivateCondition(ret, condition, conditionNumber, properti
     -- active => active, only override properties
     for changeNum, change in ipairs(condition.changes) do
       if (change.property) then
-        local type = properties and properties[change.property] and properties[change.property].type;
-        if (type) then
+        local propertyData = properties and properties[change.property]
+        if (propertyData and propertyData.type and propertyData.setter) then
           ret = ret .. "      if(propertyChanges.".. change.property .."~= nil) then\n"
-          ret = ret .. "        propertyChanges." .. change.property .. " = " .. formatValueForAssignment(type, change.value) .. "\n";
-          if (debug) then ret = ret .. "        print('- " .. change.property .. " " .. formatValueForAssignment(type,  change.value) .. "')\n"; end
+          ret = ret .. "        propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
+          if (debug) then ret = ret .. "        print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type,  change.value) .. "')\n"; end
           ret = ret .. "      end\n"
         end
       end
@@ -860,6 +862,8 @@ function WeakAuras.ConstructConditionFunction(data)
     ret = ret .. "  end\n";
   end
   ret = ret .. "end\n";
+
+  --print(ret);
 
   return ret;
 end

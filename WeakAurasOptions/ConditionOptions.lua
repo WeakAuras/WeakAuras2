@@ -38,7 +38,8 @@
 --             the condition system
 -- [] Property Name
 --   - display: A display Name
---   - setter: The setter Function
+--   - setter: The setter function, called both on activating and deactivating a property change
+---  - action: The action function, called on activating a condition
 --   - type: The type
 
 
@@ -571,7 +572,8 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type;
       end,
-      set = setValueComplex("message_type")
+      set = setValueComplex("message_type"),
+      control = "WeakAurasSortedDropdown"
     }
     order = order + 1;
 

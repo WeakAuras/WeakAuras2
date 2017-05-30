@@ -6,12 +6,12 @@ WeakAuras.regionPrototype = {};
 function WeakAuras.regionPrototype.AddProperties(properties)
   properties["sound"] = {
     display = L["Sound"],
-    setter = "SoundPlay",
+    action = "SoundPlay",
     type = "sound",
   };
   properties["chat"] = {
     display = L["Chat Message"],
-    setter = "SendChat",
+    action = "SendChat",
     type = "chat",
   };
 end
