@@ -2437,7 +2437,8 @@ WeakAuras.event_prototypes = {
     events = {
       "GCD_START",
       "GCD_CHANGE",
-      "GCD_END"
+      "GCD_END",
+      "GCD_UPDATE"
     },
     name = L["Global Cooldown"],
     init = function(trigger)
@@ -2445,6 +2446,7 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local inverse = %s;
         local onGCD = WeakAuras.GetGCDInfo();
+        local hasSpellName = WeakAuras.GcdSpellName();
       ]];
       return ret:format(trigger.use_inverse and "true" or "false");
     end,
@@ -2457,7 +2459,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(inverse and onGCD == 0) or (not inverse and onGCD > 0)"
+        test = "(inverse and onGCD == 0) or (not inverse and onGCD > 0 and hasSpellName)"
       }
     },
     durationFunc = function(trigger)
