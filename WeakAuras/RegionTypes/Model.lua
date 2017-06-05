@@ -75,6 +75,7 @@ local function create(parent)
   -- Model display
   local model = CreateFrame("PlayerModel", nil, region);
   model:SetAllPoints(region);
+  model:SetCamera(1);
   region.model = model;
 
   -- Return complete region
@@ -239,7 +240,6 @@ local function modify(parent, region, data)
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
         data.model_st_us / 1000);
-      model:SetCamera(1);
     else
       model:ClearTransform();
       model:SetPosition(data.model_z, data.model_x, data.model_y);
