@@ -1221,6 +1221,7 @@ do
             local icon = GetSpellTexture(name);
             gcdSpellName = name;
             gcdSpellIcon = icon;
+            WeakAuras.ScanEvents("GCD_UPDATE");
           end
         end
       elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
@@ -1290,6 +1291,10 @@ do
 
   function WeakAuras.gcdDuration()
     return gcdDuration or 0;
+  end
+
+  function WeakAuras.GcdSpellName()
+    return gcdSpellName;
   end
 
   function WeakAuras.GetItemSlotCooldown(id)
@@ -1368,6 +1373,7 @@ do
         event = "GCD_END"
       end
       gcdStart, gcdDuration = nil, nil;
+      gcdSpellName, gcdSpellIcon = nil, nil;
       gcdEndCheck = 0;
     end
     if(event) then
