@@ -26,6 +26,15 @@ local function createOptions(id, data)
       hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC") and GetCVar("countdownForCooldowns") == "1") end,
       width = "double"
     },
+    cooldownSpace = {
+      type = "description",
+      name = "",
+      order = 6.6,
+      width = "normal",
+      hidden = function()
+        return data.cooldown and (IsAddOnLoaded("OmniCC") or GetCVar("countdownForCooldowns") ~= "1");
+      end
+    },
     color = {
       type = "color",
       name = L["Color"],
