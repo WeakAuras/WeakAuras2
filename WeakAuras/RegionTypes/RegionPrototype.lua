@@ -75,7 +75,6 @@ function WeakAuras.regionPrototype.create(region)
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
   region.SoundRepeatStop = SoundRepeatStop;
-  region.SoundStopAll = SoundStopAll;
   region.SendChat = SendChat;
 end
 
