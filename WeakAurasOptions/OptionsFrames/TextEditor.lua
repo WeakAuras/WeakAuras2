@@ -213,6 +213,7 @@ local function ConstructTextEditor(frame)
   end
 
   function group.CancelClose(self)
+    print("group.CancelClose");
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();
     self.frame:Hide();
@@ -266,6 +267,7 @@ local function ConstructTextEditor(frame)
       valueToPath(self.data, self.path, editor:GetText());
       WeakAuras.Add(self.data);
     end
+    WeakAuras.ReloadTriggerOptions(self.data);
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();

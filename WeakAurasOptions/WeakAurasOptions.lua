@@ -2251,6 +2251,63 @@ function WeakAuras.AddOption(id, data)
               return ret
             end,
           },
+          start_message_custom = {
+            type = "input",
+            width = "normal",
+            name = L["Custom Code"],
+            order = 5.1,
+            multiline = true,
+            hidden = function()
+              return not (data.actions.start.do_message and WeakAuras.ContainsPlaceHolders(data.actions.start.message, "c"))
+            end,
+            control = "WeakAurasMultiLineEditBox",
+          },
+          start_message_custom_expand = {
+            type = "execute",
+            order = 5.2,
+            name = L["Expand Text Editor"],
+            func = function()
+              WeakAuras.OpenTextEditor(data, {"actions", "start", "message_custom"});
+            end,
+            hidden = function()
+              return not (data.actions.start.do_message and WeakAuras.ContainsPlaceHolders(data.actions.start.message, "c"))
+            end,
+          },
+          start_message_error = {
+            type = "description",
+            name = function()
+              local custom = data.actions.start.message_custom;
+              if not custom then
+                return "";
+              end
+              local _, errorString = loadstring("return  " .. custom);
+              return errorString and "|cFFFF0000"..errorString or "";
+            end,
+            width = "double",
+            order = 5.3,
+            hidden = function()
+              local message = data.actions.start.message;
+              if (not message) then
+                return true;
+              end
+              if (not WeakAuras.ContainsPlaceHolders(message, "c")) then
+                return true;
+              end
+
+              local custom = data.actions.start.message_custom;
+
+              if (not custom) then
+                return true;
+              end
+
+              local loadedFunction, errorString = loadstring("return " .. custom);
+              if(errorString and not loadedFunction) then
+                return false;
+              else
+                return true;
+              end
+            end
+          },
           start_do_sound = {
             type = "toggle",
             name = L["Play Sound"],
@@ -2452,6 +2509,63 @@ function WeakAuras.AddOption(id, data)
               ret = ret .. WeakAuras.GetAdditionalProperties(data);
               return ret
             end,
+          },
+          finish_message_custom = {
+            type = "input",
+            width = "normal",
+            name = L["Custom Code"],
+            order = 25.1,
+            multiline = true,
+            hidden = function()
+              return not (data.actions.finish.do_message and WeakAuras.ContainsPlaceHolders(data.actions.finish.message, "c"))
+            end,
+            control = "WeakAurasMultiLineEditBox",
+          },
+          finish_message_custom_expand = {
+            type = "execute",
+            order = 25.2,
+            name = L["Expand Text Editor"],
+            func = function()
+              WeakAuras.OpenTextEditor(data, {"actions", "finish", "message_custom"});
+            end,
+            hidden = function()
+              return not (data.actions.finish.do_message and WeakAuras.ContainsPlaceHolders(data.actions.finish.message, "c"))
+            end,
+          },
+          finish_message_error = {
+            type = "description",
+            name = function()
+              local custom = data.actions.finish.message_custom;
+              if not custom then
+                return "";
+              end
+              local _, errorString = loadstring("return  " .. custom);
+              return errorString and "|cFFFF0000"..errorString or "";
+            end,
+            width = "double",
+            order = 25.3,
+            hidden = function()
+              local message = data.actions.finish.message;
+              if (not message) then
+                return true;
+              end
+              if (not WeakAuras.ContainsPlaceHolders(message, "c")) then
+                return true;
+              end
+
+              local custom = data.actions.finish.message_custom;
+
+              if (not custom) then
+                return true;
+              end
+
+              local loadedFunction, errorString = loadstring("return " .. custom);
+              if(errorString and not loadedFunction) then
+                return false;
+              else
+                return true;
+              end
+            end
           },
           finish_do_sound = {
             type = "toggle",

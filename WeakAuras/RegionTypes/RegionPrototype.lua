@@ -14,6 +14,11 @@ function WeakAuras.regionPrototype.AddProperties(properties)
     action = "SendChat",
     type = "chat",
   };
+  properties["customcode"] = {
+    display = L["Run Custom Code"],
+    action = "RunCode",
+    type = "customcode"
+  }
 end
 
 local function SoundRepeatStop(self)
@@ -68,7 +73,15 @@ local function SoundPlay(self, options)
 end
 
 local function SendChat(self, options)
-  WeakAuras.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_channel, options.r, options.g, options.b, self);
+  WeakAuras.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_channel, options.r, options.g, options.b, self, options.message_custom);
+end
+
+local function RunCode(self, func)
+  if func then
+    WeakAuras.ActivateAuraEnvironment(self.id, self.cloneId, self.state);
+    func();
+    WeakAuras.ActivateAuraEnvironment(nil);
+  end
 end
 
 function WeakAuras.regionPrototype.create(region)
@@ -76,6 +89,7 @@ function WeakAuras.regionPrototype.create(region)
   region.SoundStop = SoundStop;
   region.SoundRepeatStop = SoundRepeatStop;
   region.SendChat = SendChat;
+  region.RunCode = RunCode;
 end
 
 function WeakAuras.regionPrototype.AddSetDurationInfo(region)

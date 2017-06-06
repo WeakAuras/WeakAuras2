@@ -811,7 +811,7 @@ local function UpdateText(region, data)
   -- Replace %-marks
   textStr = data.displayTextLeft or "";
   if (textStr:find('%%')) then
-    textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+    textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
   end
 
   -- Update left text
@@ -826,7 +826,7 @@ local function UpdateText(region, data)
   -- Replace %-marks
   textStr = data.displayTextRight or "";
   if (textStr:find('%%')) then
-    textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+    textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
   end
 
   -- Update right text
