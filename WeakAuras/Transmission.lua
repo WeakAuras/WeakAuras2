@@ -591,6 +591,17 @@ local function checkCustom(codes, id, base)
   end
 end
 
+local function checkActionCustomText(codes, id, base)
+  if (not base) then return end
+  if (base.do_message and base.message_custom) then
+    local t = {};
+    t.text = id;
+    t.value = id;
+    t.code = base.message_custom
+    tinsert(codes, t);
+  end
+end
+
 local function checkAnimation(codes, id, a)
   if (not a) then return end
   if (a.alphaType == "custom" and a.use_alpha and a.alphaFunc) then
@@ -652,6 +663,17 @@ local function checkText(codes, id, customText)
   tinsert(codes, t);
 end
 
+local function checkCustomCondition(codes, id, customText)
+  if (not customText) then return end
+  local t = {};
+  t.text = id;
+  t.value = id;
+  t.code = customText;
+  tinsert(codes, t);
+end
+
+
+
 local function scamCheck(codes, data)
   checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
   if (data.additional_triggers) then
@@ -664,6 +686,8 @@ local function scamCheck(codes, data)
     checkCustom(codes, L["%s - Init Action"]:format(data.id), data.actions.init);
     checkCustom(codes, L["%s - Start Action"]:format(data.id), data.actions.start);
     checkCustom(codes, L["%s - Finish Action"]:format(data.id), data.actions.finish);
+    checkActionCustomText(codes, L["%s - Start Custom Text"]:format(data.id), data.actions.start);
+    checkActionCustomText(codes, L["%s - Finish Custom Text"]:format(data.id), data.actions.finish);
   end
 
   if (data.animation) then
@@ -678,6 +702,18 @@ local function scamCheck(codes, data)
 
   if(data.customText) then
     checkText(codes, L["%s - Custom Text"]:format(data.id), data.customText);
+  end
+
+  if (data.conditions) then
+    for _, condition in ipairs(data.conditions) do
+      if (condition) then
+        for _, property in ipairs(condition.changes) do
+          if ((property.property == "chat" or property.property == "customcode") and type(property.value) == "table" and property.value.custom) then
+            checkCustomCondition(codes, L["%s - Condition Custom Chat"]:format(data.id), property.value.custom);
+          end
+        end
+      end
+    end
   end
 end
 

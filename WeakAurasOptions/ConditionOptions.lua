@@ -93,7 +93,7 @@ local function valueToString(a, propertytype, subtype)
     else
       return "";
     end
-  elseif (propertytype == "chat" or propertytype == "sound") then
+  elseif (propertytype == "chat" or propertytype == "sound" or propertytype == "customcode") then
     return tostring(a);
   elseif (propertytype == "bool") then
     return (a == 1 or a == true) and L["True"] or L["False"];
@@ -634,7 +634,161 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       set = setValueComplex("message")
     }
     order = order + 1;
-  else
+
+    local function customHiden()
+      local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
+      if (not message) then return true; end
+      return not WeakAuras.ContainsPlaceHolders(message, "c");
+    end
+
+    args["condition" .. i .. "value" .. j .. "custom"] = {
+      type = "input",
+      width = "normal",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "custom", L["Custom Code"], L["Custom Code"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "custom", propertyType),
+      order = order,
+      multiline = true,
+      hidden = customHiden,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
+      end,
+      control = "WeakAurasMultiLineEditBox",
+      set = setValueComplex("custom")
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "custom_expand"] = {
+      type = "execute",
+      order = order,
+      name = L["Expand Text Editor"],
+      func = function()
+        -- TODO use multipath for this...
+        -- TODO how does this update the display?
+        if (data.controlledChildren) then
+          -- Collect multi paths
+          local multipath = {};
+          for id, reference in pairs(conditions[i].changes[j].references) do
+            local conditionIndex = conditions[i].check.references[id].conditionIndex;
+            local changeIndex = reference.changeIndex;
+            multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
+            print("Adding path", id, conditionIndex, changeIndex);
+          end
+          WeakAuras.OpenTextEditor(data, multipath, nil, true);
+        else
+          WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"});
+        end
+      end,
+      hidden = customHiden
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "custom_error"] = {
+      type = "description",
+      name = function()
+        local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
+        if not custom then
+          return "";
+        end
+        local _, errorString = loadstring("return  " .. custom);
+        return errorString and "|cFFFF0000"..errorString or "";
+      end,
+      width = "double",
+      order = order,
+      hidden = function()
+        local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
+        if (not message) then
+          return true;
+        end
+        if (not WeakAuras.ContainsPlaceHolders(message, "c")) then
+          return true;
+        end
+
+        local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
+
+        if (not custom) then
+          return true;
+        end
+
+        local loadedFunction, errorString = loadstring("return " .. custom);
+        if(errorString and not loadedFunction) then
+          return false;
+        else
+          return true;
+        end
+      end
+    }
+    order = order + 1;
+
+  elseif(propertyType == "customcode") then
+    order = addSpace(args, order);
+
+    args["condition" .. i .. "value" .. j .. "custom"] = {
+      type = "input",
+      width = "normal",
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", L["Custom Code"], L["Custom Code"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", propertyType),
+      order = order,
+      multiline = true,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
+      end,
+      control = "WeakAurasMultiLineEditBox",
+      set = setValueComplex("custom")
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "custom_expand"] = {
+      type = "execute",
+      order = order,
+      name = L["Expand Text Editor"],
+      func = function()
+        -- TODO multipath
+        -- TODO how does this update the display?
+        if (data.controlledChildren) then
+          -- Collect multi paths
+          local multipath = {};
+          for id, reference in pairs(conditions[i].changes[j].references) do
+            local conditionIndex = conditions[i].check.references[id].conditionIndex;
+            local changeIndex = reference.changeIndex;
+            multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
+            print("Adding path", id, conditionIndex, changeIndex);
+          end
+          WeakAuras.OpenTextEditor(data, multipath, nil, true);
+        else
+          WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"});
+        end
+      end,
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "custom_error"] = {
+      type = "description",
+      name = function()
+        local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
+        if not custom then
+          return "";
+        end
+        local _, errorString = loadstring("return function() " .. custom .. "\n end");
+        return errorString and "|cFFFF0000"..errorString or "";
+      end,
+      width = "double",
+      order = order,
+      hidden = function()
+        local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
+
+        if (not custom) then
+          return true;
+        end
+        local loadedFunction, errorString = loadstring("return function() " .. custom .. "\n end");
+        if(errorString and not loadedFunction) then
+          return false;
+        else
+          return true;
+        end
+      end
+    }
+    order = order + 1;
+  else -- Unknown property type
     order = addSpace(args, order);
   end
   return order;
@@ -646,6 +800,8 @@ local function checkSameValue(samevalue, propertyType)
     return samevalue.message_type and samevalue.message;
   elseif (propertyType == "sound") then
     return samevalue.sound and samevalue.sound_type;
+  elseif (propertyType == "customcode") then
+    return samevalue.custom;
   else
     return samevalue;
   end
@@ -1171,13 +1327,14 @@ local function findMatchingProperty(all, change, id)
 end
 
 local propertyTypeToSubProperty = {
-  chat = { "message_type", "message_dest", "message_channel", "message" },
+  chat = { "message_type", "message_dest", "message_channel", "message", "custom" },
   sound = { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"},
+  customcode = { "custom" }
 };
 
 local function mergeConditionChange(all, change, id, changeIndex, allProperties)
   local propertyType = all.property and allProperties.propertyMap[all.property] and allProperties.propertyMap[all.property].type
-  if (propertyType == "chat" or propertyType == "sound") then
+  if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode") then
     if (type(all.value) ~= type(change.value)) then
       all.value = nil;
       all.samevalue = nil;
@@ -1243,7 +1400,7 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
       WeakAuras.DeepCopy(change, copy);
 
       local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
-      if (type == "chat" or type == "sound") then
+      if (type == "chat" or type == "sound" or type == "customcode") then
         copy.samevalue = {};
         for _, propertyName in ipairs(propertyTypeToSubProperty[type]) do
           copy.samevalue[propertyName] = true;
@@ -1291,7 +1448,7 @@ local function mergeConditions(all, aura, id, propertyTypes)
       if (copy.changes) then
         for changeIndex, change in pairs(copy.changes) do
           local propertyType = change.property and propertyTypes.propertyMap[change.property] and propertyTypes.propertyMap[change.property].type;
-          if (propertyType == "chat" or propertyType == "sound") then
+          if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode") then
             change.samevalue = {};
             for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
               change.samevalue[propertyName] = true;

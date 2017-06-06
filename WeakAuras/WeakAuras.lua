@@ -206,6 +206,12 @@ local playerLevel = UnitLevel("player");
 
 WeakAuras.currentInstanceType = "none"
 
+-- Custom Action Functions, keyed on id, "init" / "start" / "finish"
+WeakAuras.customActionsFunctions = {};
+
+-- Custom Functions used in conditions, keyed on id, condition number, "changes", property number
+WeakAuras.customConditionsFunctions = {};
+
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
 local load_prototype = WeakAuras.load_prototype;
@@ -385,7 +391,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       -- Run the init function if supplied
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end", id);
+        local func = WeakAuras.customActionsFunctions[id]["init"];
         if func then
           current_aura_env.id = id;
           func();
@@ -603,7 +609,7 @@ function WeakAuras.GetActiveConditions(id, cloneId)
 end
 
 
-local function formatValueForAssignment(vtype, value)
+local function formatValueForAssignment(vtype, value, pathToCustomFunction)
   if (value == nil) then
     value = false;
   end
@@ -617,8 +623,10 @@ local function formatValueForAssignment(vtype, value)
     end
   elseif(vtype == "chat") then
     if (value and type(value) == "table") then
-      return string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q}",
-        tostring(value.message_type), tostring(value.message or ""), tostring(value.message_dest), tostring(value.message_channel));
+      return string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q, message_custom = %s}",
+        tostring(value.message_type), tostring(value.message or ""),
+        tostring(value.message_dest), tostring(value.message_channel),
+        pathToCustomFunction);
     end
   elseif(vtype == "sound") then
     if (value and type(value) == "table") then
@@ -627,8 +635,8 @@ local function formatValueForAssignment(vtype, value)
         tostring(value.sound_kit_id or ""), tostring(value.sound_type or ""),
         value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil");
     end
-  elseif(vtype == "soundstop") then
-    return "true";
+  elseif(vtype == "customcode") then
+    return string.format("%s", pathToCustomFunction);
   end
   return "nil";
 end
@@ -753,7 +761,7 @@ local function CreateDeactivateCondition(ret, condition, conditionNumber, data, 
   return ret;
 end
 
-local function CreateActivateCondition(ret, condition, conditionNumber, properties, debug)
+local function CreateActivateCondition(ret, id, condition, conditionNumber, properties, debug)
   if (condition.changes) then
     ret = ret .. "  if (newActiveConditions[" .. conditionNumber .. "]) then\n"
     ret = ret .. "    if (not activatedConditions[".. conditionNumber .. "]) then\n"
@@ -767,8 +775,15 @@ local function CreateActivateCondition(ret, condition, conditionNumber, properti
             ret = ret .. "      propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
             if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
           elseif (propertyData.action) then
-            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value) .. ")" .. "\n";
-            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
+            local pathToCustomFunction = "nil";
+            if (WeakAuras.customConditionsFunctions[id]
+                and WeakAuras.customConditionsFunctions[id][conditionNumber]
+                and  WeakAuras.customConditionsFunctions[id][conditionNumber].changes
+                and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
+              pathToCustomFunction = string.format("WeakAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
+            end
+            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. ")" .. "\n";
+            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. "')\n"; end
           end
         end
       end
@@ -793,6 +808,72 @@ local function CreateActivateCondition(ret, condition, conditionNumber, properti
   end
 
   return ret;
+end
+
+
+function WeakAuras.LoadCustomActionFunctions(data)
+  local id = data.id;
+  WeakAuras.customActionsFunctions[id] = {};
+
+  if (data.actions) then
+    if (data.actions.init and data.actions.init.do_custom and data.actions.init.custom) then
+      local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end", id);
+      WeakAuras.customActionsFunctions[id]["init"] = func;
+    end
+
+    if (data.actions.start) then
+      if (data.actions.start.do_custom and data.actions.start.custom) then
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.start.custom).."\n end", id);
+        WeakAuras.customActionsFunctions[id]["start"] = func;
+      end
+
+      if (data.actions.start.do_message and data.actions.start.message_custom) then
+        local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_custom), id);
+        WeakAuras.customActionsFunctions[id]["start_message"] = func;
+      end
+    end
+
+    if (data.actions.finish) then
+      if (data.actions.finish.do_custom and data.actions.finish.custom) then
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.finish.custom).."\n end", id);
+        WeakAuras.customActionsFunctions[id]["finish"] = func;
+      end
+
+      if (data.actions.finish.do_message and data.actions.finish.message_custom) then
+        local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_custom), id);
+        WeakAuras.customActionsFunctions[id]["finish_message"] = func;
+      end
+    end
+
+  end
+end
+
+function WeakAuras.LoadConditionPropertyFunctions(data)
+  local id = data.id;
+  if (data.conditions) then
+    WeakAuras.customConditionsFunctions[id] = {};
+    for conditionNumber, condition in ipairs(data.conditions) do
+      if (condition.changes) then
+        for changeIndex, change in ipairs(condition.changes) do
+          if ( (change.property == "chat" or change.property == "customcode") and type(change.value) == "table" and change.value.custom) then
+            local custom = change.value.custom;
+            local prefix, suffix;
+            if (change.property == "chat") then
+              prefix, suffix = "return ", "";
+            else
+              prefix, suffix = "return function()", "\nend";
+            end
+            local customFunc = WeakAuras.LoadFunction(prefix .. custom .. suffix, id, "condition");
+            if (customFunc) then
+              WeakAuras.customConditionsFunctions[id][conditionNumber] = WeakAuras.customConditionsFunctions[id][conditionNumber] or {};
+              WeakAuras.customConditionsFunctions[id][conditionNumber].changes = WeakAuras.customConditionsFunctions[id][conditionNumber].changes or {};
+              WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeIndex] = customFunc;
+            end
+          end
+        end
+      end
+    end
+  end
 end
 
 function WeakAuras.ConstructConditionFunction(data)
@@ -846,7 +927,7 @@ function WeakAuras.ConstructConditionFunction(data)
   -- Third Loop deals with conditions that are newly active
   if (data.conditions) then
     for conditionNumber, condition in ipairs(data.conditions) do
-      ret = CreateActivateCondition(ret, condition, conditionNumber, properties, debug)
+      ret = CreateActivateCondition(ret, data.id, condition, conditionNumber, properties, debug)
     end
   end
 
@@ -2213,6 +2294,8 @@ function WeakAuras.pAdd(data)
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
     local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""), id);
+    WeakAuras.LoadCustomActionFunctions(data);
+    WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
     local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr);
     WeakAuras.debug(id.." - Load", 1);
@@ -2245,7 +2328,7 @@ function WeakAuras.pAdd(data)
     triggerState[id].triggerCount = 0;
     triggerState[id].activatedConditions = {};
 
-    WeakAuras.LoadEncounterInitScripts(id)
+    WeakAuras.LoadEncounterInitScripts(id);
 
     if not(paused) then
       region:Collapse();
@@ -2400,9 +2483,9 @@ function WeakAuras.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
-function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region)
+function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc)
   if (message:find('%%')) then
-    message = WeakAuras.ReplacePlaceHolders(message, region.values, region.state);
+    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc);
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
@@ -2413,33 +2496,33 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
   elseif(message_type == "WHISPER") then
     if(message_dest) then
       if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
-        SendChatMessage(message, "WHISPER", nil, UnitName("target"));
+        pcall(function() SendChatMessage(message, "WHISPER", nil, UnitName("target")) end);
       else
-        SendChatMessage(message, "WHISPER", nil, message_dest);
+        pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
       end
     end
   elseif(message_type == "CHANNEL") then
     local channel = message_channel and tonumber(message_channel);
     if(GetChannelName(channel)) then
-      SendChatMessage(message, "CHANNEL", nil, channel);
+      pcall(function() SendChatMessage(message, "CHANNEL", nil, channel) end);
     end
   elseif(message_type == "SMARTRAID") then
     local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
     if UnitInBattleground("player") then
-      SendChatMessage(message, "INSTANCE_CHAT")
+      pcall(function() SendChatMessage(message, "INSTANCE_CHAT") end)
     elseif UnitInRaid("player") then
-      SendChatMessage(message, "RAID")
+      pcall(function() SendChatMessage(message, "RAID") end)
     elseif UnitInParty("player") then
       if isInstanceGroup then
-        SendChatMessage(message, "INSTANCE_CHAT")
+        pcall(function() SendChatMessage(message, "INSTANCE_CHAT") end)
       else
-        SendChatMessage(message, "PARTY")
+        pcall(function() SendChatMessage(message, "PARTY") end)
       end
     else
-      SendChatMessage(message, "SAY")
+      pcall(function() SendChatMessage(message, "SAY") end)
     end
   else
-    SendChatMessage(message, message_type, nil, nil);
+    pcall(function() SendChatMessage(message, message_type, nil, nil) end);
   end
 end
 
@@ -2457,7 +2540,8 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_message and actions.message_type and actions.message and not squelch_actions) then
-    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region);
+    local customFunc = WeakAuras.customActionsFunctions[data.id][type .. "_message"];
+    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
   end
 
   if (actions.stop_sound) then
@@ -2473,7 +2557,7 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_custom and actions.custom and not squelch_actions) then
-    local func = WeakAuras.LoadFunction("return function() "..(actions.custom).."\n end", region.id);
+    local func = WeakAuras.customActionsFunctions[data.id][type]
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       func();
@@ -3772,7 +3856,9 @@ function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
   return false;
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
+function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
+  local regionValues = region.values;
+  local regionState = region.state;
   if (regionState and textStr:len() > 2) then
     for key, value in pairs(regionState) do
       if (type(value) == "string" or type(value) == "number") then
@@ -3785,7 +3871,15 @@ function WeakAuras.ReplacePlaceHolders(textStr, regionValues, regionState)
   end
   if (regionValues) then
     for symbol, v in pairs(WeakAuras.dynamic_texts) do
-      textStr = textStr:gsub(symbol, regionValues[v.value] or "");
+      if (customFunc and symbol == "%%c") then
+
+        WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+        local custom = customFunc(region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
+        WeakAuras.ActivateAuraEnvironment(nil);
+        textStr = textStr:gsub(symbol, custom or "");
+      else
+        textStr = textStr:gsub(symbol, regionValues[v.value] or "");
+      end
     end
   end
   textStr = textStr:gsub("\\n", "\n");

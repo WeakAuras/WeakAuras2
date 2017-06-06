@@ -324,7 +324,7 @@ local function modify(parent, region, data)
     UpdateText = function()
       if (data.text1Enabled) then
         local textStr = data.text1 or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
 
         if(stacks.text ~= textStr) then
           if stacks:GetFont() then
@@ -336,7 +336,7 @@ local function modify(parent, region, data)
 
       if (data.text2Enabled) then
         local textStr = data.text2 or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
 
         if(text2.text ~= textStr) then
           if text2:GetFont() then

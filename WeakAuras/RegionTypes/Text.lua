@@ -111,7 +111,7 @@ local function modify(parent, region, data)
   if (data.displayText:find('%%')) then
     UpdateText = function()
       local textStr = data.displayText;
-      textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+      textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
       if (textStr == nil or textStr == "") then
         textStr = " ";
       end
