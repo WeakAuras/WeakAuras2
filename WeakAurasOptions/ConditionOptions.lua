@@ -622,11 +622,16 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     }
     order = order + 1;
 
+    local descMessage= descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
+    if (not descMessage) then
+      descMessage = L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data);
+    end
+
     args["condition" .. i .. "value" .. j .. "message"] = {
       type = "input",
       width = "double",
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message", L["Differences"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message", L["Message"], L["Message"]),
+      desc = descMessage,
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
