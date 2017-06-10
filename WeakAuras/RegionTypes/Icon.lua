@@ -101,6 +101,11 @@ local properties = {
     display = L["Color"],
     setter = "Color",
     type = "color"
+  },
+  inverse = {
+    display = L["Inverse"],
+    setter = "SetInverse",
+    type = "bool"
   }
 };
 
@@ -490,6 +495,10 @@ local function modify(parent, region, data)
     local fontPath = SharedMedia:Fetch("font", data.text2Font);
     region.text2:SetFont(fontPath, height, data.text2FontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or data.text2FontFlags);
     region.text2:SetTextHeight(height);
+  end
+
+  function region:SetInverse(inverse)
+    cooldown:SetReverse(not inverse);
   end
 
   function region:SetGlow(showGlow)
