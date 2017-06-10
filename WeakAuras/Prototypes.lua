@@ -3132,7 +3132,7 @@ WeakAuras.event_prototypes = {
       local ret = [[
       local rune = %s;
       local startTime, duration = WeakAuras.GetRuneCooldown(rune);
-      local inverse = %s;
+      local showOn = %s
 
       local numRunes = 0;
       for index = 1, 6 do
@@ -3154,7 +3154,7 @@ WeakAuras.event_prototypes = {
       ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(trigger.rune, (trigger.use_inverse and "true" or "false"));
+      return ret:format(trigger.rune, "[[" .. (trigger.showOn or "") .. "]]");
     end,
     args = {
       {
@@ -3162,7 +3162,9 @@ WeakAuras.event_prototypes = {
         display = L["Rune"],
         type = "select",
         values = "rune_specific_types",
-        test = "(inverse and startTime == 0) or (not inverse and startTime > 0)",
+        test = "(showOn == \"showOnReady\" and (startTime == 0)) " ..
+               "or (showOn == \"showOnCooldown\" and startTime > 0) "  ..
+               "or (showOn == \"showAlways\")",
         enable = function(trigger) return not trigger.use_runesCount end
       },
       {
@@ -3172,9 +3174,10 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return trigger.use_rune and not(trigger.use_inverse) end
       },
       {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
+        name = "showOn",
+        display =  L["Show"],
+        type = "select",
+        values = "cooldown_progress_behavior_types",
         test = "true",
         enable = function(trigger) return trigger.use_rune end
       },

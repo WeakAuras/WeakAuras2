@@ -974,12 +974,18 @@ function GenericTrigger.Modernize(data)
 
     if (trigger and trigger.type and trigger.event and trigger.type == "status"
       and (trigger.event == "Cooldown Progress (Spell)"
-      or trigger.event == "Cooldown Progress (Item)")) then
+          or trigger.event == "Cooldown Progress (Item)"
+          or trigger.event == "Death Knight Rune")) then
+
       if (not trigger.showOn) then
         if (trigger.use_inverse) then
           trigger.showOn = "showOnReady"
         else
           trigger.showOn = "showOnCooldown"
+        end
+
+        if (trigger.event == "Death Knight Rune") then
+          trigger.use_showOn = true;
         end
         trigger.use_inverse = nil
       end
