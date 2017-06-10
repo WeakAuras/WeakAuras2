@@ -403,6 +403,11 @@ WeakAuras.environmental_types = {
   Slime = L["Slime"]
 };
 
+WeakAuras.combatlog_flags_check_type = {
+  InGroup = L["In Group"],
+  NotInGroup = L["Not in Group"]
+}
+
 WeakAuras.orientation_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],

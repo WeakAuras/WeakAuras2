@@ -485,6 +485,14 @@ function WeakAuras.CheckChargesDirection(direction, triggerDirection)
     or (triggerDirection == "LOST" and direction < 0)
 end
 
+function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
+  if (flagToCheck == "InGroup") then
+    return bit.band(flags, 7) > 0;
+  elseif (flagToCheck == "NotInGroup") then
+    return bit.band(flags, 7) == 0;
+  end
+end
+
 local function valuesForTalentFunction(trigger)
   return function()
     local single_class;
@@ -1183,7 +1191,17 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "string"
       },
-      {}, -- sourceFlags ignored with _ argument
+      {
+        name = "sourceFlags",
+        display = L["Source In Group"],
+        type = "select",
+        values = "combatlog_flags_check_type",
+        init = "arg",
+        store = true,
+        test = "WeakAuras.CheckCombatLogFlags(sourceFlags, '%s')",
+        conditionType = "select",
+        conditionTest = "state and state.show and WeakAuras.CheckCombatLogFlags(sourceFlags, '%s')",
+      },
       {}, -- sourceRaidFlags ignored with _ argument
       {
         name = "destGUID",
@@ -1220,7 +1238,25 @@ WeakAuras.event_prototypes = {
           return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end
       },
-      {}, -- destFlags ignored with _ argument
+      {
+        name = "destFlags",
+        display = L["Destination In Group"],
+        type = "select",
+        values = "combatlog_flags_check_type",
+        init = "arg",
+        store = true,
+        test = "WeakAuras.CheckCombatLogFlags(destFlags, '%s')",
+        conditionType = "select",
+        conditionTest = "state and state.show and WeakAuras.CheckCombatLogFlags(destFlags, '%s')",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
+      {
+        enable = function(trigger)
+          return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
       {}, -- destRaidFlags ignored with _ argument
       {
         name = "spellId",
