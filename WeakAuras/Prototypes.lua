@@ -2257,7 +2257,7 @@ WeakAuras.event_prototypes = {
         name = "spellId",
         init = "arg",
         display = L["Spell Id"],
-        type = "number"
+        type = "longstring"
       },
       {
         name = "text",
@@ -2407,7 +2407,7 @@ WeakAuras.event_prototypes = {
       {
         name = "spellId",
         display = L["Spell Id"], -- Correct?
-        type = "number",
+        type = "longstring",
       },
       {
         name = "text",
