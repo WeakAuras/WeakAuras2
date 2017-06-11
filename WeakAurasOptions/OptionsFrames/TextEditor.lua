@@ -213,7 +213,6 @@ local function ConstructTextEditor(frame)
   end
 
   function group.CancelClose(self)
-    print("group.CancelClose");
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();
     self.frame:Hide();
