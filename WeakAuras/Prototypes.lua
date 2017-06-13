@@ -1014,6 +1014,7 @@ WeakAuras.event_prototypes = {
         ret = ret .. [[
         local UnitPower = UnitStagger;
         local UnitPowerMax = UnitHealthMax;
+        local UnitPowerDisplayMod = function() return nil end;
       ]]
       end
       return ret
@@ -1052,7 +1053,7 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = "UnitPower(concernedUnit, powerType)",
+        init = "UnitPower(concernedUnit, powerType, true) / (UnitPowerDisplayMod(powerType or powertype) or 1)",
         store = true,
         conditionType = "number"
       },
@@ -1060,7 +1061,7 @@ WeakAuras.event_prototypes = {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "((UnitPower(concernedUnit, powerType) or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType))) * 100;",
+        init = "((UnitPower(concernedUnit, powerType, true) or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType, true))) * 100;",
         store = true,
         conditionType = "number"
       },
