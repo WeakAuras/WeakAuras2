@@ -36,3 +36,4 @@ RegionTypes\Text.lua
 RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
 RegionTypes\Model.lua
+RegionTypes\Sound.lua
