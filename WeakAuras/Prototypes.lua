@@ -446,8 +446,8 @@ end
 function WeakAuras.CheckTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local _, _, _, selected = GetTalentInfo(tier, column, 1)
-  return selected
+  local _, _, _, selected, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+  return selected or known;
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
@@ -491,6 +491,13 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
   elseif (flagToCheck == "NotInGroup") then
     return bit.band(flags, 7) == 0;
   end
+end
+
+function WeakAuras.IsSpellKnown(spell, pet)
+  if (pet) then
+    return IsSpellKnown(spell);
+  end
+  return IsPlayerSpell(spell) or IsSpellKnown(spell);
 end
 
 local function valuesForTalentFunction(trigger)
@@ -740,7 +747,7 @@ WeakAuras.load_prototype = {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
-      test = "IsSpellKnown(%s)"
+      test = "WeakAuras.IsSpellKnown(%s)"
     },
     {
       name = "race",
@@ -3728,7 +3735,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "spellName and IsSpellKnown(spellName, usePet)";
+        test = "spellName and WeakAuras.IsSpellKnown(spellName, usePet)";
       }
     },
     iconFunc = function(trigger)
