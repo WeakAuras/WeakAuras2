@@ -747,19 +747,19 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       order = order,
       name = L["Expand Text Editor"],
       func = function()
-        -- TODO multipath
-        -- TODO how does this update the display?
         if (data.controlledChildren) then
           -- Collect multi paths
           local multipath = {};
           for id, reference in pairs(conditions[i].changes[j].references) do
             local conditionIndex = conditions[i].check.references[id].conditionIndex;
             local changeIndex = reference.changeIndex;
+            local childData = WeakAuras.GetData(id);
+            childData.conditions[conditionIndex].changes[changeIndex].value = childData.conditions[conditionIndex].changes[changeIndex].value or {};
             multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
-            print("Adding path", id, conditionIndex, changeIndex);
           end
           WeakAuras.OpenTextEditor(data, multipath, nil, true);
         else
+          data.conditions[i].changes[j].value = data.conditions[i].changes[j].value or {};
           WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"});
         end
       end,
