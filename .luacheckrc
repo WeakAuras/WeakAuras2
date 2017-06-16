@@ -3588,6 +3588,7 @@ globals = {
 	"UnitPosition",
 	"UnitPower",
 	"UnitPowerBarTimerInfo",
+	"UnitPowerDisplayMod",
 	"UnitPowerMax",
 	"UnitPowerType",
 	"UnitPrestige",

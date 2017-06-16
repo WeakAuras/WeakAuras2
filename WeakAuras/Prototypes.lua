@@ -7,7 +7,7 @@ local ceil, min = ceil, min
 -- WoW APIs
 local GetPvpTalentInfo, GetTalentInfo = GetPvpTalentInfo, GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
-local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
+local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax,  UnitPowerDisplayMod = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax,  UnitPowerDisplayMod
 local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
 local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
@@ -1075,14 +1075,16 @@ WeakAuras.event_prototypes = {
       if (powerType == 99) then
         return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
       end
-      return UnitPower(trigger.unit, powerType), math.max(1, UnitPowerMax(trigger.unit, powerType)), "fastUpdate";
+      local pdm = UnitPowerDisplayMod(trigger.powertype or UnitPowerType(trigger.unit)) or 1;
+      return UnitPower(trigger.unit, powerType, true) / pdm, math.max(1, UnitPowerMax(trigger.unit, powerType, true)) / pdm, "fastUpdate";
     end,
     stacksFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then
         return UnitStagger(trigger.unit);
       end
-      return UnitPower(trigger.unit, powerType);
+      local pdm = UnitPowerDisplayMod(trigger.powertype or UnitPowerType(trigger.unit)) or 1;
+      return UnitPower(trigger.unit, powerType, true) / pdm;
     end,
     automatic = true
   },
