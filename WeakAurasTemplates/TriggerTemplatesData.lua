@@ -1616,7 +1616,7 @@ templates.class.SHAMAN = {
         { spell = 199055, type = "buff", unit = "player" }, -- Unleash Doom
         { spell = 201846, type = "buff", unit = "player" }, -- Stormbringer
         { spell = 201898, type = "buff", unit = "player", talent = 1 }, -- Windsong
-        { spell = 202004, type = "buff", unit = "player", talent = 20 }, -- Landslide
+        { spell = 202004, type = "buff", unit = "player", talent = 3 }, -- Landslide
         { spell = 204945, type = "buff", unit = "player" }, -- Doom Winds
         { spell = 215785, type = "buff", unit = "player", talent = 2 }, -- Hot Hand
         { spell = 215864, type = "buff", unit = "player", talent = 4 }, -- Rainfall
