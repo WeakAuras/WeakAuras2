@@ -1124,11 +1124,13 @@ function WeakAuras.ShowOptions(msg)
   frame:Show();
   frame:PickOption("New");
   if not(firstLoad) then
+    WeakAuras.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
       if(loaded[id] ~= nil) then
         button:PriorityShow(1);
       end
     end
+    WeakAuras.ResumeAllDynamicGroups();
   end
 
   if (frame.window == "codereview") then
@@ -1389,6 +1391,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
     frame.buttonsScroll:PerformLayout()
     WeakAuras.SortDisplayButtons(msg);
 
+    WeakAuras.PauseAllDynamicGroups();
     if (WeakAuras.IsOptionsOpen()) then
       for id, button in pairs(displayButtons) do
         if(loaded[id] ~= nil) then
@@ -1396,6 +1399,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
         end
       end
     end
+    WeakAuras.ResumeAllDynamicGroups();
 
     frame.loadProgress:Hide();
     frame.filterInput:Show();
