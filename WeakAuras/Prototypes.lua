@@ -7,7 +7,7 @@ local ceil, min = ceil, min
 -- WoW APIs
 local GetPvpTalentInfo, GetTalentInfo = GetPvpTalentInfo, GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
-local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax,  UnitPowerDisplayMod = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax,  UnitPowerDisplayMod
+local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
 local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
 local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
@@ -498,6 +498,20 @@ function WeakAuras.IsSpellKnown(spell, pet)
     return IsSpellKnown(spell);
   end
   return IsPlayerSpell(spell) or IsSpellKnown(spell);
+end
+
+function WeakAuras.UnitPowerDisplayMod(powerType)
+  if (powerType == 7) then
+    return 10;
+  end
+  return 1;
+end
+
+function WeakAuras.UseUnitPowerThirdArg(powerType)
+  if (powerType == 7) then
+    return true;
+  end
+  return nil;
 end
 
 local function valuesForTalentFunction(trigger)
@@ -1015,13 +1029,15 @@ WeakAuras.event_prototypes = {
         local unit = unit or [[%s]];
         local concernedUnit = [[%s]];
         local powerType = %s;
+        local unitPowerType = UnitPowerType(concernedUnit);
+        local powerTypeToCheck = powerType or unitPowerType;
+        local powerThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck);
       ]=];
       ret = ret:format(trigger.unit, trigger.unit, trigger.use_powertype and trigger.powertype or "nil");
       if (trigger.use_powertype and trigger.powertype == 99) then
         ret = ret .. [[
         local UnitPower = UnitStagger;
         local UnitPowerMax = UnitHealthMax;
-        local UnitPowerDisplayMod = function() return nil end;
       ]]
       end
       return ret
@@ -1042,7 +1058,7 @@ WeakAuras.event_prototypes = {
         display = L["Power Type"],
         type = "select",
         values = "power_types_with_stagger",
-        init = "UnitPowerType(concernedUnit)",
+        init = "unitPowerType",
         test = "true",
         store = true,
         conditionType = "select"
@@ -1051,7 +1067,7 @@ WeakAuras.event_prototypes = {
         name = "requirePowerType",
         display = L["Only if Primary"],
         type = "toggle",
-        test = "powertype == powerType",
+        test = "unitPowerType == powerType",
         enable = function(trigger)
           return trigger.use_powertype
         end,
@@ -1060,7 +1076,7 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = "UnitPower(concernedUnit, powerType, true) / (UnitPowerDisplayMod(powerType or powertype) or 1)",
+        init = "UnitPower(concernedUnit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         conditionType = "number"
       },
@@ -1068,7 +1084,7 @@ WeakAuras.event_prototypes = {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "((UnitPower(concernedUnit, powerType, true) or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType, true))) * 100;",
+        init = "(power or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType, powerThirdArg)) * 100;",
         store = true,
         conditionType = "number"
       },
@@ -1082,16 +1098,21 @@ WeakAuras.event_prototypes = {
       if (powerType == 99) then
         return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
       end
-      local pdm = UnitPowerDisplayMod(trigger.powertype or UnitPowerType(trigger.unit)) or 1;
-      return UnitPower(trigger.unit, powerType, true) / pdm, math.max(1, UnitPowerMax(trigger.unit, powerType, true)) / pdm, "fastUpdate";
+      local powerTypeToCheck = trigger.powertype or UnitPowerType(trigger.unit);
+      local pdm = WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);
+      local useThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck)
+
+      return UnitPower(trigger.unit, powerType, useThirdArg) / pdm, math.max(1, UnitPowerMax(trigger.unit, powerType, useThirdArg)) / pdm, "fastUpdate";
     end,
     stacksFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then
         return UnitStagger(trigger.unit);
       end
-      local pdm = UnitPowerDisplayMod(trigger.powertype or UnitPowerType(trigger.unit)) or 1;
-      return UnitPower(trigger.unit, powerType, true) / pdm;
+      local powerTypeToCheck = trigger.powertype or UnitPowerType(trigger.unit);
+      local pdm = WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);
+      local useThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck)
+      return UnitPower(trigger.unit, powerType, useThirdArg) / pdm;
     end,
     automatic = true
   },
