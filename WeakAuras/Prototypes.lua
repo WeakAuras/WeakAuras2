@@ -2372,7 +2372,7 @@ WeakAuras.event_prototypes = {
       local ret = [=[
         return function(states, event, id)
         local triggerAddon = %s;
-        local triggerSpellId = %s;
+        local triggerSpellId = %q;
         local triggerText = %s;
         local triggerTextOperator = [[%s]];
       ]=]
@@ -2474,7 +2474,7 @@ WeakAuras.event_prototypes = {
       {
         name = "spellId",
         display = L["Spell Id"], -- Correct?
-        type = "longstring",
+        type = "string",
       },
       {
         name = "text",

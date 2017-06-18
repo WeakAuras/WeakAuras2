@@ -2051,7 +2051,7 @@ do
       bars[text] = bars[text] or {};
       local bar = bars[text];
       bar.addon = addon;
-      bar.spellId = spellId;
+      bar.spellId = tostring(spellId);
       bar.text = text;
       bar.duration = duration;
       bar.expirationTime = expirationTime;
@@ -2127,7 +2127,7 @@ do
     if (addon and addon ~= v.addon) then
       return false;
     end
-    if (spellId and spellId ~= v.spellId) then
+    if (spellId and tostring(spellId) ~= v.spellId) then
       return false;
     end
     if (text) then
