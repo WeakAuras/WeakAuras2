@@ -66,6 +66,8 @@ local default = {
   zoom = 0,
 };
 
+WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
+
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 local properties = {
@@ -851,6 +853,8 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
+
+  WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local bar, border, timer, text, iconFrame, icon, stacks = region.bar, region.border, region.timer, region.text, region.iconFrame, region.icon, region.stacks;
 
@@ -1202,7 +1206,8 @@ local function modify(parent, region, data)
   end
 
   function region:TimerTick()
-    self:SetTime(region.duration, region.expirationTime, region.inverse);
+    local adjustMin = region.adjustedMin or 0;
+    self:SetTime( (region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
   end
 
   function region:SetIconColor(r, g, b, a)

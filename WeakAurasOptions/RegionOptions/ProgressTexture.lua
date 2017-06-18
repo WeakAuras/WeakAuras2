@@ -242,6 +242,7 @@ local function createOptions(id, data)
       order = 60
     }
   };
+  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 54);
   options = WeakAuras.AddPositionOptions(options, id, data);
 
   return options;

@@ -3560,67 +3560,6 @@ local function startStopTimers(id, cloneId, triggernum, state)
   end
 end
 
-function WeakAuras.SetProgressValue(region, value, total)
-  region.values.progress = value;
-  region.values.duration = total;
-  region:SetValue(value, total);
-end
-
-function WeakAuras.UpateRegionValues(region)
-  local remaining  = region.expirationTime - GetTime();
-  local duration  = region.duration;
-
-  local remainingStr     = "";
-  if remaining == math.huge then
-    remainingStr     = " ";
-  elseif remaining > 60 then
-    remainingStr     = string.format("%i:", math.floor(remaining / 60));
-    remaining       = remaining % 60;
-    remainingStr     = remainingStr..string.format("%02i", remaining);
-  elseif remaining > 0 then
-    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-    if region.progressPrecision == 4 and remaining <= 3 then
-      remainingStr = remainingStr..string.format("%.1f", remaining);
-    elseif region.progressPrecision == 5 and remaining <= 3 then
-      remainingStr = remainingStr..string.format("%.2f", remaining);
-    elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
-      remainingStr = remainingStr..string.format("%d", remaining);
-    else
-      remainingStr = remainingStr..string.format("%."..(region.progressPrecision or 1).."f", remaining);
-    end
-  else
-    remainingStr     = " ";
-  end
-  region.values.progress   = remainingStr;
-
-  -- Format a duration time string
-  local durationStr     = "";
-  if duration > 60 then
-    durationStr     = string.format("%i:", math.floor(duration / 60));
-    duration       = duration % 60;
-    durationStr     = durationStr..string.format("%02i", duration);
-  elseif duration > 0 then
-    -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
-    if region.totalPrecision == 4 and duration <= 3 then
-      durationStr = durationStr..string.format("%.1f", duration);
-    elseif region.totalPrecision == 5 and duration <= 3 then
-      durationStr = durationStr..string.format("%.2f", duration);
-    elseif (region.totalPrecision == 4 or region.totalPrecision == 5) and duration > 3 then
-      durationStr = durationStr..string.format("%d", duration);
-    else
-      durationStr = durationStr..string.format("%."..(region.totalPrecision or 1).."f", duration);
-    end
-  else
-    durationStr     = " ";
-  end
-  region.values.duration   = durationStr;
-end
-
-function WeakAuras.TimerTick(region)
-  WeakAuras.UpateRegionValues(region);
-  region:TimerTick();
-end
-
 local function ApplyStateToRegion(id, region, state)
   region.state = state;
   if(region.SetDurationInfo) then

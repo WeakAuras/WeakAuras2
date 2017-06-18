@@ -660,6 +660,8 @@ local function createOptions(id, data)
     },
   };
 
+  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 36.5);
+
   -- Positioning options
   options = WeakAuras.AddPositionOptions(options, id, data);
 

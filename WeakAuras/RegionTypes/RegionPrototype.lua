@@ -3,6 +3,69 @@ local L = WeakAuras.L;
 
 WeakAuras.regionPrototype = {};
 
+-- Adjusted Duration
+
+function WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default)
+  default.useAdjustededMax = false;
+  default.useAdjustededMin = false;
+end
+
+function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
+  options.useAdjustededMin = {
+    type = "toggle",
+    name = L["Set Minimum Progress"],
+    desc = L["Values/Remaining Time below this value are displayed as no progress."],
+    order = order
+  };
+
+  options.adjustedMin = {
+    type = "range",
+    min = 0,
+    softMax = 200,
+    bigStep = 1,
+    order = order + 0.01,
+    name = L["Minimum"],
+    hidden = function() return not data.useAdjustededMin end,
+  };
+
+  options.useAdjustedMinSpacer = {
+    type = "description",
+    width = "normal",
+    name = "",
+    order = order + 0.02,
+    hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
+  };
+
+  options.useAdjustededMax = {
+    type = "toggle",
+    name = L["Set Maximum Progress"],
+    desc = L["Values/Remaining Time above this value are displayed as full progress."],
+    order = order + 0.03
+  };
+
+  options.adjustedMax = {
+    type = "range",
+    min = 0,
+    softMax = 200,
+    bigStep = 1,
+    order = order + 0.04,
+    name = L["Maximum"],
+    hidden = function() return not data.useAdjustededMax end,
+  };
+
+  options.useAdjustedMaxSpacer = {
+    type = "description",
+    width = "normal",
+    name = "",
+    order = order + 0.05,
+    hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,
+  };
+
+  return options;
+end
+
+-- Sound / Chat Message / Custom Code
+
 function WeakAuras.regionPrototype.AddProperties(properties)
   properties["sound"] = {
     display = L["Sound"],
@@ -94,6 +157,82 @@ function WeakAuras.regionPrototype.create(region)
   region.RunCode = RunCode;
 end
 
+-- SetDurationInfo
+
+function WeakAuras.regionPrototype.modify(parent, region, data)
+  local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
+  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin;
+  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax;
+
+  region.adjustedMin = hasAdjustedMin and data.adjustedMin and data.adjustedMin > 0 and data.adjustedMin;
+  region.adjustedMax = hasAdjustedMax and data.adjustedMax and data.adjustedMax > 0 and data.adjustedMax;
+end
+
+local function SetProgressValue(region, value, total)
+  region.values.progress = value;
+  region.values.duration = total;
+
+  local adjustMin = region.adjustedMin or 0;
+  local max = region.adjustedMax or total;
+
+  region:SetValue(value - adjustMin, max - adjustMin);
+end
+
+local function UpateRegionValues(region)
+  local remaining  = region.expirationTime - GetTime();
+  local duration  = region.duration;
+
+  local remainingStr     = "";
+  if remaining == math.huge then
+    remainingStr     = " ";
+  elseif remaining > 60 then
+    remainingStr     = string.format("%i:", math.floor(remaining / 60));
+    remaining       = remaining % 60;
+    remainingStr     = remainingStr..string.format("%02i", remaining);
+  elseif remaining > 0 then
+    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+    if region.progressPrecision == 4 and remaining <= 3 then
+      remainingStr = remainingStr..string.format("%.1f", remaining);
+    elseif region.progressPrecision == 5 and remaining <= 3 then
+      remainingStr = remainingStr..string.format("%.2f", remaining);
+    elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
+      remainingStr = remainingStr..string.format("%d", remaining);
+    else
+      remainingStr = remainingStr..string.format("%."..(region.progressPrecision or 1).."f", remaining);
+    end
+  else
+    remainingStr     = " ";
+  end
+  region.values.progress   = remainingStr;
+
+  -- Format a duration time string
+  local durationStr     = "";
+  if duration > 60 then
+    durationStr     = string.format("%i:", math.floor(duration / 60));
+    duration       = duration % 60;
+    durationStr     = durationStr..string.format("%02i", duration);
+  elseif duration > 0 then
+    -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
+    if region.totalPrecision == 4 and duration <= 3 then
+      durationStr = durationStr..string.format("%.1f", duration);
+    elseif region.totalPrecision == 5 and duration <= 3 then
+      durationStr = durationStr..string.format("%.2f", duration);
+    elseif (region.totalPrecision == 4 or region.totalPrecision == 5) and duration > 3 then
+      durationStr = durationStr..string.format("%d", duration);
+    else
+      durationStr = durationStr..string.format("%."..(region.totalPrecision or 1).."f", duration);
+    end
+  else
+    durationStr     = " ";
+  end
+  region.values.duration   = durationStr;
+end
+
+function WeakAuras.TimerTick(region)
+  UpateRegionValues(region);
+  region:TimerTick();
+end
+
 function WeakAuras.regionPrototype.AddSetDurationInfo(region)
   if (region.SetValue and region.SetTime and region.TimerTick) then
     region.generatedSetDurationInfo = true;
@@ -101,7 +240,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
       local value, total = region.customValueFunc(region.state.trigger);
       value = type(value) == "number" and value or 0
       total = type(value) == "number" and total or 0
-      WeakAuras.SetProgressValue(region, value, total);
+      SetProgressValue(region, value, total);
     end
 
     region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
@@ -120,16 +259,17 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
             self.customValueFunc = customValue;
             self:SetScript("OnUpdate", region.SetValueFromCustomValueFunc);
           else
-            WeakAuras.SetProgressValue(region, duration, expirationTime);
+            SetProgressValue(region, duration, expirationTime);
             self:SetScript("OnUpdate", nil);
           end
         else
-          WeakAuras.SetProgressValue(region, duration, expirationTime);
+          SetProgressValue(region, duration, expirationTime);
           self:SetScript("OnUpdate", nil);
         end
       else
-        WeakAuras.UpateRegionValues(region);
-        region:SetTime(duration, expirationTime, inverse);
+        UpateRegionValues(region);
+        local adjustMin = region.adjustedMin or 0;
+        region:SetTime((region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
         if duration > 0 then
           self:SetScript("OnUpdate", function() WeakAuras.TimerTick(region) end);
         else
@@ -144,6 +284,8 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
     region:SetScript("OnUpdate", nil);
   end
 end
+
+-- Expand/Collapse function
 
 function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, parent, parentRegionType)
   local indynamicgroup = parentRegionType == "dynamicgroup";
