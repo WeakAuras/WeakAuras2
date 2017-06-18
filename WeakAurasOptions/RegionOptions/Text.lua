@@ -17,7 +17,7 @@ local function createOptions(id, data)
       get = function()
         local ret = data.displayText;
         for symbol, v in pairs(WeakAuras.dynamic_texts) do
-          ret = ret:gsub("("..symbol..")", "|cFFFF0000%1|r");
+          ret = ret:gsub("(%"..symbol..")", "|cFFFF0000%1|r");
         end
         return ret;
       end,
@@ -199,14 +199,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   mask:SetScript("OnScrollRangeChanged", rescroll);
 
   local function UpdateText()
-    local textStr = data.displayText
-    for symbol, v in pairs(WeakAuras.dynamic_texts) do
-      if(v.static) then
-        textStr = textStr:gsub(symbol, v.static);
-      else
-        textStr = textStr:gsub(symbol, borderframe.values[v.value] or "?");
-      end
-    end
     text:SetText(textStr);
     rescroll();
   end

@@ -3856,6 +3856,22 @@ function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
   return false;
 end
 
+local function ReplaceValuePlaceHolders(textStr, region, customFunc)
+  local regionValues = region.values;
+  local value;
+  if (textStr == "%c" and customFunc) then
+    WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+    local value = customFunc(region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
+    WeakAuras.ActivateAuraEnvironment(nil);
+    value = value or "";
+  else
+    local variable = WeakAuras.dynamic_texts[textStr];
+    variable = variable and variable.value;
+    value = variable and regionValues[variable] or "";
+  end
+  return value;
+end
+
 function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   local regionValues = region.values;
   local regionState = region.state;
@@ -3874,17 +3890,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   end
 
   if (endPos == 2) then
-    local value = nil;
-    if (textStr == "%c" and customFunc) then
-      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      local value = customFunc(region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
-      WeakAuras.ActivateAuraEnvironment(nil);
-      value = value or "";
-    else
-      local variable = WeakAuras.dynamic_texts["%" .. textStr];
-      variable = variable and variable.value;
-      value = variable and regionValues[variable];
-    end
+    local value = ReplaceValuePlaceHolders(textStr, region, customFunc);
     if (value) then
       return tostring(value);
     else
@@ -3899,27 +3905,20 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     if (char == 37) then   --%
       if (endPos - currentPos == 1 and regionValues) then
         local symbol = string.sub(textStr, currentPos, endPos)
-        local value = nil;
-        if (symbol == "%c" and customFunc) then
-          WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-          local value = customFunc(region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
-          WeakAuras.ActivateAuraEnvironment(nil);
-          value = value or "";
-        else
-          local variable = WeakAuras.dynamic_texts["%" .. symbol];
-          variable = variable and variable.value;
-          value = variable and regionValues[variable];
-        end
+        local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
         if (value) then
           textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
         end
-        endPos = currentPos - 1;
       elseif (endPos > currentPos and regionState) then
         local symbol = string.sub(textStr, currentPos + 1, endPos);
-        local value = tostring(regionState[symbol]) or "";
+        local value = regionState[symbol] and tostring(regionState[symbol]);
+        if (not value) then
+          value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos +1), region, customFunc);
+          value = value or "";
+        end
         textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-        endPos = currentPos - 1;
       end
+      endPos = currentPos - 1;
     elseif (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
       -- a-zA-Z character
     else
