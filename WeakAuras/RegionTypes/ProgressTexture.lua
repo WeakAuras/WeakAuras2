@@ -90,6 +90,8 @@ local default = {
   version = 2
 };
 
+WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
+
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 local properties = {
@@ -651,7 +653,7 @@ local function SetOrientation(region, orientation)
   if(region.orientation == "CLOCKWISE" or region.orientation == "ANTICLOCKWISE") then
     showCircularProgress(region);
     region.backgroundSpinner:SetProgress(region, region.startAngle, region.endAngle);
-    region.SetValue = SetValueFunctions[region.orientation];
+    region.SetValueOnTexture = SetValueFunctions[region.orientation];
   else
     hideCircularProgress(region);
     region.foreground:ClearAllPoints();
@@ -659,9 +661,9 @@ local function SetOrientation(region, orientation)
     region.foreground:SetHeight(region.height * region.scaley);
     local anchor = orientationToAnchorPoint[region.orientation];
     region.foreground:SetPoint(anchor, region, anchor);
-    region.SetValue = SetValueFunctions[region.orientation][region.compress];
+    region.SetValueOnTexture = SetValueFunctions[region.orientation][region.compress];
   end
-  region:SetValue(region.progress);
+  region:SetValueOnTexture(region.progress);
 end
 
 local function create(parent)
@@ -682,6 +684,7 @@ local function create(parent)
   region.foregroundSpinner = createSpinner(region, "ARTWORK", parent:GetFrameLevel() + 2);
   region.backgroundSpinner = createSpinner(region, "BACKGROUND", parent:GetFrameLevel() + 1);
 
+  region.values = {};
   region.duration = 0;
   region.expirationTime = math.huge;
 
@@ -693,6 +696,8 @@ local function create(parent)
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
+
   local background, foreground = region.background, region.foreground;
   local foregroundSpinner, backgroundSpinner = region.foregroundSpinner, region.backgroundSpinner;
 
@@ -815,7 +820,7 @@ local function modify(parent, region, data)
     region.rotation = angle or 0;
     region.cos_rotation = cos(region.rotation);
     region.sin_rotation = sin(region.rotation);
-    region:SetValue(region.progress);
+    region:SetValueOnTexture(region.progress);
   end
 
   function region:GetRotation()
@@ -838,22 +843,23 @@ local function modify(parent, region, data)
 
   region:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
 
-  local function UpdateTime(self, elaps, inverse)
-    local remaining = region.expirationTime - GetTime();
-    local progress = remaining / region.duration;
+  function region:SetTime(duration, expirationTime, inverse)
+    if (duration == 0) then
+      region:SetValueOnTexture(1);
+      return;
+    end
+
+    local remaining = expirationTime - GetTime();
+    local progress = remaining / duration;
 
     if((region.inverseDirection and not inverse) or (inverse and not region.inverseDirection)) then
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
-    region:SetValue(progress);
+    region:SetValueOnTexture(progress);
   end
 
-  local function UpdateTimeInverse(self, elaps)
-    UpdateTime(self, elaps, true);
-  end
-
-  local function UpdateValue(value, total)
+  function region:SetValue(value, total)
     local progress = 1
     if(total > 0) then
       progress = value / total;
@@ -862,45 +868,12 @@ local function modify(parent, region, data)
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
-    region:SetValue(progress);
+    region:SetValueOnTexture(progress);
   end
 
-  local function UpdateCustom()
-    UpdateValue(region.customValueFunc(region.state.trigger));
-  end
-
-  function region:SetDurationInfo(duration, expirationTime, customValue, inverse)
-    if(duration <= 0.01 or duration > region.duration or not data.stickyDuration) then
-      region.duration = duration;
-    end
-    region.expirationTime = expirationTime;
-
-    if(customValue) then
-      if(type(customValue) == "function") then
-        local value, total = customValue(region.state.trigger);
-        if(total > 0 and value < total) then
-          region.customValueFunc = customValue;
-          region:SetScript("OnUpdate", UpdateCustom);
-        else
-          UpdateValue(duration, expirationTime);
-          region:SetScript("OnUpdate", nil);
-        end
-      else
-        UpdateValue(duration, expirationTime);
-        region:SetScript("OnUpdate", nil);
-      end
-    else
-      if(duration > 0.01) then
-        if(inverse) then
-          region:SetScript("OnUpdate", UpdateTimeInverse);
-        else
-          region:SetScript("OnUpdate", UpdateTime);
-        end
-      else
-        region:SetValue(1);
-        region:SetScript("OnUpdate", nil);
-      end
-    end
+  function region:TimerTick()
+    local adjustMin = region.adjustedMin or 0;
+    self:SetTime( (region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
   end
 
   function region:SetForegroundDesaturated(b)
@@ -932,7 +905,7 @@ local function modify(parent, region, data)
     region.inverseDirection = inverse;
     local progress = 1 - region.progress;
     progress = progress > 0.0001 and progress or 0.0001;
-    region:SetValue(progress);
+    region:SetValueOnTexture(progress);
   end
 end
 
