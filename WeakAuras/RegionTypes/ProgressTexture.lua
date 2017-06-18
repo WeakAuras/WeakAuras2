@@ -85,6 +85,7 @@ local default = {
   font = "Friz Quadrata TT",
   fontSize = 12,
   stickyDuration = false,
+  useProgressScale = false,
   mirror = false,
   frameStrata = 1,
   version = 2
@@ -753,6 +754,7 @@ local function modify(parent, region, data)
 
   region.compress = data.compress;
 
+  region.progressScale = data.useProgressScale and tonumber(data.progressScale) or nil;
   region.inverseDirection = data.inverse;
   region.progress = 0.667;
   region:SetOrientation(data.orientation);
@@ -840,7 +842,8 @@ local function modify(parent, region, data)
 
   local function UpdateTime(self, elaps, inverse)
     local remaining = region.expirationTime - GetTime();
-    local progress = remaining / region.duration;
+    local adjustedDuration = region.progressScale or region.duration
+    local progress = remaining / adjustedDuration;
 
     if((region.inverseDirection and not inverse) or (inverse and not region.inverseDirection)) then
       progress = 1 - progress;
@@ -854,9 +857,10 @@ local function modify(parent, region, data)
   end
 
   local function UpdateValue(value, total)
+    local adjustedTotal = region.progressScale or total
     local progress = 1
-    if(total > 0) then
-      progress = value / total;
+    if(adjustedTotal > 0) then
+      progress = value / adjustedTotal;
     end
     if(region.inverseDirection) then
       progress = 1 - progress;
