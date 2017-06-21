@@ -34,41 +34,43 @@ local function SoundStop(self)
   end
 end
 
-local function SoundPlayHelper(options)
+local function SoundPlayHelper(self)
+  local options = self.soundOptions;
+  self.soundHandle = nil;
   if (options.sound_type == "Stop") then
     return;
   end
-  if (options.sound == " custom") then
-    if (options.sound_path) then
-      local _, handle = PlaySoundFile(options.sound_path, options.sound_channel or "Master");
-      return handle;
-    end
-  elseif (options.sound == " KitID") then
-    if (options.sound_kit_id) then
-      local _, handle = PlaySoundKitID(options.sound_kit_id, options.sound_channel or "Master");
-      return handle;
-    end
-  else
-    local _, handle = PlaySoundFile(options.sound, options.sound_channel or "Master");
-    return handle;
-  end
-  return nil;
-end
 
-local function SoundPlay(self, options)
   if (WeakAuras.IsOptionsOpen()) then
     return;
   end
 
+  if (options.sound == " custom") then
+    if (options.sound_path) then
+      local _, handle = PlaySoundFile(options.sound_path, options.sound_channel or "Master");
+      self.soundHandle = handle;
+    end
+  elseif (options.sound == " KitID") then
+    if (options.sound_kit_id) then
+      local _, handle = PlaySoundKitID(options.sound_kit_id, options.sound_channel or "Master");
+      self.soundHandle = handle;
+    end
+  else
+    local _, handle = PlaySoundFile(options.sound, options.sound_channel or "Master");
+    self.soundHandle = handle;
+  end
+end
+
+local function SoundPlay(self, options)
   self:SoundStop();
   self:SoundRepeatStop();
 
   self.soundOptions = options;
-  self.soundHandle = SoundPlayHelper(options);
+  SoundPlayHelper(self);
 
   local loop = options.do_loop or options.sound_type == "Loop";
   if (loop and options.sound_repeat) then
-    self.soundRepeatTimer = WeakAuras.timer:ScheduleRepeatingTimer(SoundPlayHelper, options.sound_repeat, options);
+    self.soundRepeatTimer = WeakAuras.timer:ScheduleRepeatingTimer(SoundPlayHelper, options.sound_repeat, self);
   end
 end
 
