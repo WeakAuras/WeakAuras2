@@ -1405,9 +1405,9 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
       WeakAuras.DeepCopy(change, copy);
 
       local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
-      if (type == "chat" or type == "sound" or type == "customcode") then
+      if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode") then
         copy.samevalue = {};
-        for _, propertyName in ipairs(propertyTypeToSubProperty[type]) do
+        for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
           copy.samevalue[propertyName] = true;
         end
       else
