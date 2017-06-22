@@ -2127,7 +2127,7 @@ do
     if (addon and addon ~= v.addon) then
       return false;
     end
-    if (spellId and tostring(spellId) ~= v.spellId) then
+    if (spellId ~= "" and spellId ~= v.spellId) then
       return false;
     end
     if (text) then
