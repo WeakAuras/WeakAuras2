@@ -390,11 +390,11 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       tinsert(aura_env_stack, current_aura_env);
       -- Run the init function if supplied
       local actions = data.actions.init;
+      data.init_started = 1;
       if(actions and actions.do_custom and actions.custom) then
         local func = WeakAuras.customActionsFunctions[id]["init"];
         if func then
           current_aura_env.id = id;
-          data.init_started = 1;
           func();
         end
       end
