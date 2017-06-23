@@ -372,7 +372,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
     current_aura_env = aura_env_stack[#aura_env_stack] or nil;
   else
     local data = db.displays[id];
-    if data.init_not_started then
+    if data.init_started then
       -- Point the current environment to the correct table
       aura_environments[id] = aura_environments[id] or {};
       current_aura_env = aura_environments[id];
@@ -394,7 +394,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
         local func = WeakAuras.customActionsFunctions[id]["init"];
         if func then
           current_aura_env.id = id;
-          data.init_completed = 1;
+          data.init_started = 1;
           func();
         end
       end
@@ -1202,13 +1202,13 @@ function WeakAuras.LoadEncounterInitScripts(id)
   end
   if (id) then
     local data = db.displays[id]
-    if (data and data.load.use_encounterid and not data.init_not_started and data.actions.init and data.actions.init.do_custom) then
+    if (data and data.load.use_encounterid and not data.init_started and data.actions.init and data.actions.init.do_custom) then
       WeakAuras.ActivateAuraEnvironment(id)
       WeakAuras.ActivateAuraEnvironment(nil)
     end
   else
     for id, data in pairs(db.displays) do
-      if (data.load.use_encounterid and not data.init_not_started and data.actions.init and data.actions.init.do_custom) then
+      if (data.load.use_encounterid and not data.init_started and data.actions.init and data.actions.init.do_custom) then
         WeakAuras.ActivateAuraEnvironment(id)
         WeakAuras.ActivateAuraEnvironment(nil)
       end
@@ -2291,7 +2291,7 @@ function WeakAuras.pAdd(data)
       end
     end
 
-    data.init_not_started = nil;
+    data.init_started = nil;
     data.load = data.load or {};
     data.actions = data.actions or {};
     data.actions.init = data.actions.init or {};
