@@ -394,10 +394,10 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
         local func = WeakAuras.customActionsFunctions[id]["init"];
         if func then
           current_aura_env.id = id;
-          data.init_completed = 1;
           func();
         end
       end
+      data.init_completed = 1;
     end
     current_aura_env.id = id;
   end
