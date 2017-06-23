@@ -372,7 +372,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
     current_aura_env = aura_env_stack[#aura_env_stack] or nil;
   else
     local data = db.displays[id];
-    if data.init_progress and data.init_progress ~= 'not started' then
+    if data.init_completed then
       -- Point the current environment to the correct table
       aura_environments[id] = aura_environments[id] or {};
       current_aura_env = aura_environments[id];
@@ -389,7 +389,6 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env);
       -- Run the init function if supplied
-      data.init_progress = 'started'
       local actions = data.actions.init;
       if(actions and actions.do_custom and actions.custom) then
         local func = WeakAuras.customActionsFunctions[id]["init"];
@@ -398,7 +397,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
           func();
         end
       end
-      data.init_progress = 'complete'
+      data.init_completed = 1;
     end
     current_aura_env.id = id;
   end
@@ -1203,13 +1202,13 @@ function WeakAuras.LoadEncounterInitScripts(id)
   end
   if (id) then
     local data = db.displays[id]
-    if (data and data.load.use_encounterid and (not data.init_progress or data.init_progress == 'not started') and data.actions.init and data.actions.init.do_custom) then
+    if (data and data.load.use_encounterid and not data.init_completed and data.actions.init and data.actions.init.do_custom) then
       WeakAuras.ActivateAuraEnvironment(id)
       WeakAuras.ActivateAuraEnvironment(nil)
     end
   else
     for id, data in pairs(db.displays) do
-      if (data.load.use_encounterid and (not data.init_progress or data.init_progress == 'not started') and data.actions.init and data.actions.init.do_custom) then
+      if (data.load.use_encounterid and not data.init_completed and data.actions.init and data.actions.init.do_custom) then
         WeakAuras.ActivateAuraEnvironment(id)
         WeakAuras.ActivateAuraEnvironment(nil)
       end
@@ -2292,7 +2291,7 @@ function WeakAuras.pAdd(data)
       end
     end
 
-    data.init_progress = 'not started';
+    data.init_completed = nil;
     data.load = data.load or {};
     data.actions = data.actions or {};
     data.actions.init = data.actions.init or {};
