@@ -608,12 +608,6 @@ function WeakAuras.GetActiveConditions(id, cloneId)
   return triggerState[id].activatedConditions[cloneId];
 end
 
-function WeakAuras.ClearActiveConditions(id, cloneId)
-  if (triggerState[id]) then
-    triggerState[id].activatedConditions[cloneId] = nil;
-  end
-end
-
 
 local function formatValueForAssignment(vtype, value, pathToCustomFunction)
   if (value == nil) then
