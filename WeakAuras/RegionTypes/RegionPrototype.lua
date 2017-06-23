@@ -161,7 +161,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
         WeakAuras.ReleaseClone(id, cloneId, data.regionType);
       end
       parent:ControlChildren();
-      WeakAuras.ClearActiveConditions(region.id, region.cloneId);
     end
   else
     hideRegion = function()
@@ -169,7 +168,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if (cloneId) then
         WeakAuras.ReleaseClone(id, cloneId, data.regionType);
       end
-      WeakAuras.ClearActiveConditions(region.id, region.cloneId);
     end
   end
 
