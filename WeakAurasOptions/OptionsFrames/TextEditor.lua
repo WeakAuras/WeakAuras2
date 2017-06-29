@@ -243,10 +243,11 @@ local function ConstructTextEditor(frame)
     end
   end);
 
-  function group.Open(self, data, path, enclose, multipath)
+  function group.Open(self, data, path, enclose, multipath, reloadOptions)
     self.data = data;
     self.path = path;
     self.multipath = multipath;
+    self.reloadOptions = reloadOptions;
     if(frame.window == "texture") then
       frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
@@ -371,7 +372,18 @@ local function ConstructTextEditor(frame)
       valueToPath(self.data, self.path, editor:GetText());
       WeakAuras.Add(self.data);
     end
-    WeakAuras.ReloadTriggerOptions(self.data);
+    if (self.reloadOptions) then
+      if(self.data.controlledChildren) then
+        for index, childId in pairs(self.data.controlledChildren) do
+           WeakAuras.ScheduleReloadOptions(WeakAuras.GetData(childId));
+        end
+        WeakAuras.ScheduleReloadOptions(self.data);
+      else
+        WeakAuras.ScheduleReloadOptions(self.data);
+      end
+    else
+      WeakAuras.ScheduleReloadOptions(self.data);
+    end
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();

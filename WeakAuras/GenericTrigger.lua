@@ -38,6 +38,9 @@ If that is the case no automatic icon can be determined. Only used by the option
 CanHaveDuration(data, triggernum)
 Returns whether the trigger can have a duration.
 
+GetOverlayInfo(data, triggernum)
+Returns a table containing the names of all overlays
+
 CanHaveAuto(data, triggernum)
 Returns whether the icon can be automatically selected.
 
@@ -313,6 +316,47 @@ function WeakAuras.EndEvent(id, triggernum, force, state)
   end
 end
 
+local function RunOverlayFuncs(event, state)
+  state.additionalProgress = state.additionalProgress or {};
+  local changed = false;
+  for i, overlayFunc in ipairs(event.overlayFuncs) do
+    state.additionalProgress[i] = state.additionalProgress[i] or {};
+    local additionalProgress = state.additionalProgress[i];
+    local a, b, c = overlayFunc(event.trigger, state);
+    if (type(a) == "string") then
+      if (additionalProgress.direction ~= a) then
+        additionalProgress.direction = a;
+        changed = true;
+      end
+      if (additionalProgress.width ~= b) then
+        additionalProgress.width = b;
+        changed = true;
+      end
+      if (additionalProgress.offset ~= c) then
+        additionalProgress.offset = c;
+        changed = true;
+      end
+      additionalProgress.min = nil;
+      additionalProgress.max = nil;
+    else
+      if (additionalProgress.min ~= a) then
+        additionalProgress.min = a;
+        changed = true;
+      end
+      if (additionalProgress.max ~= b) then
+        additionalProgress.max = b;
+        changed = true;
+      end
+      additionalProgress.direction = nil;
+      additionalProgress.width = nil;
+      additionalProgress.offset = nil;
+    end
+
+  end
+  state.changed = changed or state.changed;
+end
+
+
 function WeakAuras.ActivateEvent(id, triggernum, data, state)
   local changed = state.changed or false;
   if (state.show ~= true) then
@@ -364,6 +408,11 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       end
     end
 
+    if (state.inverse ~= inverse) then
+      state.inverse = inverse;
+      changed = true;
+    end
+
     if (arg3) then
       if (state.progressType ~= "static") then
         state.progressType = "static";
@@ -383,7 +432,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         changed = true;
       end
       state.autoHide = nil;
-      state.inverse = nil;
       if (state.value ~= arg1) then
         state.value = arg1;
         changed = true;
@@ -415,10 +463,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       end
       state.value = nil;
       state.total = nil;
-      if (state.inverse ~= inverse) then
-        state.inverse = inverse;
-        changed = true;
-      end
     end
   else
     if (state.progressType ~= "timed") then
@@ -456,9 +500,90 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
     changed = true;
   end
 
+  if (data.overlayFuncs) then
+    RunOverlayFuncs(data, state);
+  else
+    state.additionalProgress = nil;
+  end
+
   state.changed = changed;
 
   return changed;
+end
+
+local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)
+  local updateTriggerState = false;
+  local optionsEvent = event == "OPTIONS";
+  if(data.triggerFunc) then
+    local untriggerCheck = false;
+    if (data.statesParameter == "full") then
+      if (data.triggerFunc(allStates, event, arg1, arg2, ...)) then
+        updateTriggerState = true;
+      end
+    elseif (data.statesParameter == "all") then
+      if(data.triggerFunc(allStates, event, arg1, arg2, ...) or optionsEvent) then
+        for id, state in pairs(allStates) do
+          if (state.changed) then
+            if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+              updateTriggerState = true;
+            end
+          end
+        end
+      else
+        untriggerCheck = true;
+      end
+    elseif (data.statesParameter == "one") then
+      allStates[""] = allStates[""] or {};
+      local state = allStates[""];
+      if(data.triggerFunc(state, event, arg1, arg2, ...) or optionsEvent) then
+        if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+          updateTriggerState = true;
+        end
+      else
+        untriggerCheck = true;
+      end
+    else
+      if(data.triggerFunc(event, arg1, arg2, ...) or optionsEvent) then
+        allStates[""] = allStates[""] or {};
+        local state = allStates[""];
+        if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+          updateTriggerState = true;
+        end
+      else
+        untriggerCheck = true;
+      end
+    end
+    if (untriggerCheck and not optionsEvent) then
+      if (data.statesParameter == "all") then
+        if(data.untriggerFunc and data.untriggerFunc(allStates, event, arg1, arg2, ...)) then
+          for id, state in pairs(allStates) do
+            if (state.changed) then
+              if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                updateTriggerState = true;
+              end
+            end
+          end
+        end
+      elseif (data.statesParameter == "one") then
+        allStates[""] = allStates[""] or {};
+        local state = allStates[""];
+        if(data.untriggerFunc and data.untriggerFunc(state, event, arg1, arg2, ...)) then
+          if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+            updateTriggerState = true;
+          end
+        end
+      else
+        if(data.untriggerFunc and data.untriggerFunc(event, arg1, arg2, ...)) then
+          allStates[""] = allStates[""] or {};
+          local state = allStates[""];
+          if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
+            updateTriggerState = true;
+          end
+        end
+      end
+    end
+  end
+  return updateTriggerState;
 end
 
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
@@ -475,75 +600,9 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
       WeakAuras.ActivateAuraEnvironment(id);
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
-        if(data.triggerFunc) then
-          local untriggerCheck = false;
-          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-          if (data.statesParameter == "full") then
-            if (data.triggerFunc(allStates, event, arg1, arg2, ...)) then
-              updateTriggerState = true;
-            end
-          elseif (data.statesParameter == "all") then
-            if(data.triggerFunc(allStates, event, arg1, arg2, ...)) then
-              for id, state in pairs(allStates) do
-                if (state.changed) then
-                  if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-                    updateTriggerState = true;
-                  end
-                end
-              end
-            else
-              untriggerCheck = true;
-            end
-          elseif (data.statesParameter == "one") then
-            allStates[""] = allStates[""] or {};
-            local state = allStates[""];
-            if(data.triggerFunc(state, event, arg1, arg2, ...)) then
-              if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-                updateTriggerState = true;
-              end
-            else
-              untriggerCheck = true;
-            end
-          else
-            if(data.triggerFunc(event, arg1, arg2, ...)) then
-              allStates[""] = allStates[""] or {};
-              local state = allStates[""];
-              if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-                updateTriggerState = true;
-              end
-            else
-              untriggerCheck = true;
-            end
-          end
-          if (untriggerCheck) then
-            if (data.statesParameter == "all") then
-              if(data.untriggerFunc and data.untriggerFunc(allStates, event, arg1, arg2, ...)) then
-                for id, state in pairs(allStates) do
-                  if (state.changed) then
-                    if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                      updateTriggerState = true;
-                    end
-                  end
-                end
-              end
-            elseif (data.statesParameter == "one") then
-              allStates[""] = allStates[""] or {};
-              local state = allStates[""];
-              if(data.untriggerFunc and data.untriggerFunc(state, event, arg1, arg2, ...)) then
-                if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                  updateTriggerState = true;
-                end
-              end
-            else
-              if(data.untriggerFunc and data.untriggerFunc(event, arg1, arg2, ...)) then
-                allStates[""] = allStates[""] or {};
-                local state = allStates[""];
-                if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                  updateTriggerState = true;
-                end
-              end
-            end
-          end
+        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+        if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
+          updateTriggerState = true;
         end
       end
       if (updateTriggerState) then
@@ -697,7 +756,7 @@ function GenericTrigger.Add(data, region)
       if(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
-        local durationFunc, nameFunc, iconFunc, textureFunc, stacksFunc;
+        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc;
         if(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -722,6 +781,17 @@ function GenericTrigger.Add(data, region)
             iconFunc = event_prototypes[trigger.event].iconFunc;
             textureFunc = event_prototypes[trigger.event].textureFunc;
             stacksFunc = event_prototypes[trigger.event].stacksFunc;
+
+            if (event_prototypes[trigger.event].overlayFuncs) then
+              overlayFuncs = {};
+              local dest = 1;
+              for i, v in ipairs(event_prototypes[trigger.event].overlayFuncs) do
+                if (v.enable(trigger)) then
+                  overlayFuncs[dest] = v.func;
+                  dest = dest + 1;
+                end
+              end
+            end
 
             trigger.unevent = trigger.unevent or "auto";
             if (event_prototypes[trigger.event].automaticrequired) then
@@ -769,6 +839,15 @@ function GenericTrigger.Add(data, region)
 
           if(trigger.custom_type ~= "stateupdate" and trigger.customDuration and trigger.customDuration ~= "") then
             durationFunc = WeakAuras.LoadFunction("return "..trigger.customDuration, id);
+          end
+          if(trigger.custom_type ~= "stateupdate") then
+            overlayFuncs = {};
+            for i = 1, 7 do
+              local property = "customOverlay" .. i;
+              if (trigger[property] and trigger[property] ~= "") then
+                overlayFuncs[i] = WeakAuras.LoadFunction("return ".. trigger[property], id);
+              end
+            end
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customName and trigger.customName ~= "") then
             nameFunc = WeakAuras.LoadFunction("return "..trigger.customName, id);
@@ -822,6 +901,7 @@ function GenericTrigger.Add(data, region)
           and event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide ~= nil) then
           automaticAutoHide = event_prototypes[trigger.event].automaticAutoHide;
         end
+
         events[id] = events[id] or {};
         events[id][triggernum] = {
           trigger = trigger,
@@ -834,6 +914,7 @@ function GenericTrigger.Add(data, region)
           subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
           unevent = trigger.unevent,
           durationFunc = durationFunc,
+          overlayFuncs = overlayFuncs,
           nameFunc = nameFunc,
           iconFunc = iconFunc,
           textureFunc = textureFunc,
@@ -2474,6 +2555,59 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
   end
 end
 
+--- Returns a table containing the names of all overlays
+-- @param data
+-- @param triggernum
+function GenericTrigger.GetOverlayInfo(data, triggernum)
+  local result;
+
+  local trigger;
+  if (triggernum == 0) then
+    trigger = data.trigger;
+  elseif (data.additional_triggers and data.additional_triggers[triggernum]) then
+    trigger = data.additional_triggers[triggernum].trigger;
+  end
+
+  if (trigger.type ~= "custom" and trigger.event and WeakAuras.event_prototypes[trigger.event] and WeakAuras.event_prototypes[trigger.event].overlayFuncs) then
+    result = {};
+    local dest = 1;
+    for i, v in ipairs(WeakAuras.event_prototypes[trigger.event].overlayFuncs) do
+      if (v.enable(trigger)) then
+        result[dest] = v.name;
+        dest = dest + 1;
+      end
+    end
+  end
+
+  if (trigger.type == "custom") then
+    if (trigger.custom_type == "stateupdate") then
+      local allStates = {};
+      RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
+      local count = 0;
+      for id, state in pairs(allStates) do
+        if (state.additionalProgress) then
+          count = max(count, #state.additionalProgress);
+        end
+      end
+      count = min(count, 7);
+      for i = 1, count do
+        result = result or {};
+        result[i] = string.format(L["Overlay %s"], i);
+      end
+    else
+      for i = 1, 7 do
+        local property = "customOverlay" .. i;
+        if (trigger[property] and trigger[property] ~= "") then
+          result = result or {};
+          result[i] = string.format(L["Overlay %s"], i);
+        end
+      end
+    end
+  end
+
+  return result;
+end
+
 function GenericTrigger.CanHaveAuto(data, triggernum)
   -- Is also called on importing before conversion, so do a few checks
   local trigger;
@@ -2716,6 +2850,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.expirationTime = nil;
       state.value = arg1;
       state.total = arg2;
+      state.inverse = inverse;
     else
       state.progressType = "timed";
       state.duration = arg1;
@@ -2733,6 +2868,9 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     state.expirationTime = nil;
     state.value = nil;
     state.total = nil;
+  end
+  if (event.overlayFuncs) then
+    RunOverlayFuncs(event, state);
   end
   WeakAuras.ActivateAuraEnvironment(nil);
 end

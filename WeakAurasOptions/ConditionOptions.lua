@@ -1235,7 +1235,7 @@ local function buildAllPotentialProperies(data, category)
   if (data.controlledChildren) then
     for _, id in ipairs(data.controlledChildren) do
       local auradata = WeakAuras.GetData(id);
-      local regionProperties = WeakAuras.regionTypes[auradata.regionType] and WeakAuras.regionTypes[auradata.regionType].properties
+      local regionProperties = WeakAuras.GetProperties(auradata);
       if (regionProperties) then
         for k, v in pairs(regionProperties) do
           if (v.category == category) then
@@ -1261,7 +1261,7 @@ local function buildAllPotentialProperies(data, category)
       end
     end
   else
-    local regionProperties = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties
+    local regionProperties = WeakAuras.GetProperties(data);
     if (regionProperties) then
       for k, v in pairs(regionProperties) do
         if (v.category == category) then

@@ -655,9 +655,9 @@ end
 
 local function formatValueForCall(type, property)
   if (type == "bool" or type == "number" or type == "list") then
-    return "propertyChanges." .. property;
+    return "propertyChanges['" .. property .. "']";
   elseif (type == "color") then
-    local pcp = "propertyChanges." .. property;
+    local pcp = "propertyChanges['" .. property .. "']";
     return pcp  .. "[1], " .. pcp .. "[2], " .. pcp  .. "[3], " .. pcp  .. "[4]";
   end
   return "nil";
@@ -754,6 +754,19 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
   return ret;
 end
 
+local function GetBaseProperty(data, property, start)
+  if (not data) then
+    return nil;
+  end
+  start = start or 1;
+  local next = string.find(property, ".", start, true);
+  if (next) then
+    return GetBaseProperty(data[string.sub(property, start, next - 1)], property, next + 1);
+  end
+
+  return data[string.sub(property, start)]
+end
+
 local function CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
   if (condition.changes) then
     ret = ret .. "  if (activatedConditions[".. conditionNumber .. "] and not newActiveConditions[" .. conditionNumber .. "]) then\n"
@@ -763,8 +776,8 @@ local function CreateDeactivateCondition(ret, condition, conditionNumber, data, 
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type and propertyData.setter) then
           usedProperties[change.property] = true;
-          ret = ret .. "    propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, data[change.property]) .. "\n";
-          if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(propertyData.type,  data[change.property]) .. "')\n"; end
+          ret = ret .. "    propertyChanges['" .. change.property .. "'] = " .. formatValueForAssignment(propertyData.type, GetBaseProperty(data, change.property)) .. "\n";
+          if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(propertyData.type,  GetBaseProperty(data, change.property)) .. "')\n"; end
         end
       end
     end
@@ -785,7 +798,7 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type) then
           if (propertyData.setter) then
-            ret = ret .. "      propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
+            ret = ret .. "      propertyChanges['" .. change.property .. "'] = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
             if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
@@ -809,8 +822,8 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
       if (change.property) then
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type and propertyData.setter) then
-          ret = ret .. "      if(propertyChanges.".. change.property .."~= nil) then\n"
-          ret = ret .. "        propertyChanges." .. change.property .. " = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
+          ret = ret .. "      if(propertyChanges['" .. change.property .. "'] ~= nil) then\n"
+          ret = ret .. "        propertyChanges['" .. change.property .. "'] = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
           if (debug) then ret = ret .. "        print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type,  change.value) .. "')\n"; end
           ret = ret .. "      end\n"
         end
@@ -861,6 +874,17 @@ function WeakAuras.LoadCustomActionFunctions(data)
   end
 end
 
+function WeakAuras.GetProperties(data)
+  local properties;
+  local propertiesFunction = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
+  if (type(propertiesFunction) == "function") then
+    properties = propertiesFunction(data);
+  else
+    properties = propertiesFunction;
+  end
+  return properties;
+end
+
 function WeakAuras.LoadConditionPropertyFunctions(data)
   local id = data.id;
   if (data.conditions) then
@@ -901,7 +925,7 @@ function WeakAuras.ConstructConditionFunction(data)
 
   local ret = "";
   ret = ret .. "local newActiveConditions = {};\n"
-  ret = ret .. "local propertyChanges = {}\n;"
+  ret = ret .. "local propertyChanges = {};\n"
   ret = ret .. "return function(region, skipActions)\n";
   if (debug) then ret = ret .. "  print('check conditions for:', region.id, region.cloneId)\n"; end
   ret = ret .. "  local id = region.id\n";
@@ -925,9 +949,9 @@ function WeakAuras.ConstructConditionFunction(data)
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, id, cloneId);\n"
   ret = ret .. "  end\n"
 
-  local properties = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
+  local properties = WeakAuras.GetProperties(data);
 
-  -- Now build a propety + change list
+  -- Now build a property + change list
   -- Second Loop deals with conditions that are no longer active
   ret = ret .. "  wipe(propertyChanges)\n"
   if (data.conditions) then
@@ -945,14 +969,19 @@ function WeakAuras.ConstructConditionFunction(data)
   end
 
   -- Last apply changes to region
-
-  local allPotentialProperties = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
-  if (not allPotentialProperties) then return nil; end
-
   for property, _  in pairs(usedProperties) do
-    ret = ret .. "  if( propertyChanges." .. property  .. "~= nil) then\n"
-    ret = ret .. "    region:" .. allPotentialProperties[property].setter .. "(" .. formatValueForCall(allPotentialProperties[property].type, property)  .. ")\n";
-    if (debug) then ret = ret .. "    print('Calling "  .. allPotentialProperties[property].setter ..  " with', " ..  formatValueForCall(allPotentialProperties[property].type, property) .. ")\n"; end
+    ret = ret .. "  if(propertyChanges['" .. property .. "'] ~= nil) then\n"
+    local arg1 = "";
+    if (properties[property].arg1) then
+      if (type(properties[property].arg1) == "number") then
+        arg1 = tostring(properties[property].arg1) .. ", ";
+      else
+        arg1 = "'" .. properties[property].arg1 .. "', ";
+      end
+    end
+
+    ret = ret .. "    region:" .. properties[property].setter .. "(" .. arg1 .. formatValueForCall(properties[property].type, property)  .. ")\n";
+    if (debug) then ret = ret .. "    print('Calling "  .. properties[property].setter ..  " with', " .. arg1 ..  formatValueForCall(properties[property].type, property) .. ")\n"; end
     ret = ret .. "  end\n";
   end
   ret = ret .. "end\n";
@@ -2687,7 +2716,7 @@ function WeakAuras.UpdateAnimations()
         elseif (state.progressType == "timed") then
           relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
         end
-        relativeProgress = state.inverseDirection and (1 - relativeProgress) or relativeProgress;
+        relativeProgress = state.inverse and (1 - relativeProgress) or relativeProgress;
         anim.progress = relativeProgress / anim.duration
         local iteration = math.floor(anim.progress);
         --anim.progress = anim.progress - iteration;
@@ -3022,7 +3051,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
   local func;
   func = function(data, triggernum)
     if (not triggernum) then
-      return func(data, data.activeTriggerMode);
+      return func(data, data.activeTriggerMode or -1);
     elseif (triggernum < 0) then
       local result;
       if (mode == "or") then
@@ -3034,6 +3063,16 @@ local function wrapTriggerSystemFunction(functionName, mode)
         result = true;
         for i = 0, data.numTriggers - 1 do
           result = result and func(data, i);
+        end
+      elseif (mode == "table") then
+        result = {};
+        for i = 0, data.numTriggers - 1 do
+          local tmp = func(data, i);
+          if (tmp) then
+            for k, v in pairs(tmp) do
+              result[k] = v;
+            end
+          end
         end
       elseif (mode == "firstValue") then
         result = false;
@@ -3071,6 +3110,26 @@ WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 WeakAuras.GetAdditionalProperties = wrapTriggerSystemFunction("GetAdditionalProperties", "firstValue");
+local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
+
+function WeakAuras.GetOverlayInfo(data, triggernum)
+  local overlayInfo;
+  if (data.controlledChildren) then
+    overlayInfo = {};
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId);
+      local tmp = wrappedGetOverlayInfo(childData, triggernum);
+      if (tmp) then
+        for k, v in pairs(tmp) do
+          overlayInfo[k] = v;
+        end
+      end
+    end
+  else
+    overlayInfo = wrappedGetOverlayInfo(data, triggernum);
+  end
+  return overlayInfo;
+end
 
 function WeakAuras.GetTriggerConditions(data)
   local conditions = {};
@@ -3617,16 +3676,19 @@ local function ApplyStateToRegion(id, region, state)
       local total = state.duration or 0
       local func = nil;
 
-      region:SetDurationInfo(total, now + value, func, state.inverseDirection);
+      region:SetDurationInfo(total, now + value, func, state.inverse);
     elseif (state.progressType == "static") then
       local value = state.value or 0;
       local total = state.total or 0;
       local durationFunc = state.durationFunc or true;
 
-      region:SetDurationInfo(value, total, durationFunc or true, state.inverseDirection);
+      region:SetDurationInfo(value, total, durationFunc or true, state.inverse);
     else
       region:SetDurationInfo(0, math.huge);
     end
+  end
+  if (region.SetAdditionalProgress) then
+    region:SetAdditionalProgress(state.additionalProgress, region.adjustMin or 0, region.adjustedMax or state.total or state.duration or 0, state.inverse);
   end
   local controlChidren = state.resort;
   if (state.resort) then
@@ -3881,16 +3943,17 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   -- textStr is in UTF-8 encoding. We assume all state variables are pure alphabetic strings
   local endPos = textStr:len();
   if (endPos < 2) then
+    textStr = textStr:gsub("\\n", "\n");
     return textStr;
   end
 
   if (endPos == 2) then
     local value = ReplaceValuePlaceHolders(textStr, region, customFunc);
     if (value) then
-      return tostring(value);
-    else
-      return textStr;
+      textStr = tostring(value);
     end
+    textStr = textStr:gsub("\\n", "\n");
+    return textStr;
   end
 
   local currentPos = endPos;

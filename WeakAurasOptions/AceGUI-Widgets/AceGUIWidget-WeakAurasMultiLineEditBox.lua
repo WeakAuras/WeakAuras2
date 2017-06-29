@@ -171,7 +171,6 @@ local function OnFrameShow(frame)
 	end
 
 	for i = numExtraButtons + 1, #self.extraButtons do
-		print("HIDING BUTTON");
 		self.extraButtons[i]:Hide();
 	end
 end

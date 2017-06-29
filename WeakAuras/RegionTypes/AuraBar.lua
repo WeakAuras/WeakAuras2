@@ -174,6 +174,27 @@ local properties = {
 
 WeakAuras.regionPrototype.AddProperties(properties);
 
+local function GetProperties(data)
+  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  if (overlayInfo and next(overlayInfo)) then
+    local auraProperties = {};
+    WeakAuras.DeepCopy(properties, auraProperties);
+
+    for id, display in ipairs(overlayInfo) do
+      auraProperties["overlays." .. id] = {
+        display = string.format(L["%s Overlay Color"], display),
+        setter = "SetOverlayColor",
+        arg1 = id,
+        type = "color",
+      }
+    end
+
+    return auraProperties;
+  else
+    return properties;
+  end
+end
+
 -- Returns tex Coord for 90° rotations + x or y flip
 
 local texCoords = {
@@ -184,7 +205,7 @@ local texCoords = {
 
 -- only supports multipliers of 90° degree
 -- returns in order: TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy
-local GetTexCoord = function(degree, mirror)
+local GetTexCoordSpark = function(degree, mirror)
   local offset = (degree or 0) / 90
   local TLx,  TLy = texCoords[2 + offset], texCoords[1 + offset]
   local TRx,  TRy = texCoords[3 + offset], texCoords[2 + offset]
@@ -201,22 +222,50 @@ local GetTexCoord = function(degree, mirror)
   return TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy
 end
 
+local GetTexCoordFunctions =
+{
+  ["HORIZONTAL"] = function(startProgress, endProgress)
+    local TLx,  TLy = startProgress, 0;
+    local TRx,  TRy = endProgress, 0;
+    local BLx,  BLy = startProgress, 1;
+    local BRx,  BRy = endProgress, 1;
+    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+  end,
+  ["HORIZONTAL_INVERSE"] = function(startProgress, endProgress)
+    local TLx,  TLy = endProgress, 0;
+    local TRx,  TRy = startProgress, 0;
+    local BLx,  BLy = endProgress, 1;
+    local BRx,  BRy = startProgress, 1;
+    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+  end,
+  ["VERTICAL"] = function(startProgress, endProgress)
+    local TLx,  TLy = startProgress, 1;
+    local TRx,  TRy = startProgress, 0;
+    local BLx,  BLy = endProgress, 1;
+    local BRx,  BRy = endProgress, 0;
+    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+  end,
+  ["VERTICAL_INVERSE"] = function(startProgress, endProgress)
+    local TLx,  TLy = endProgress, 0;
+    local TRx,  TRy = endProgress, 1;
+    local BLx,  BLy = startProgress, 0;
+    local BRx,  BRy = startProgress, 1;
+    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+  end
+}
+
+local anchorAlignment = {
+  ["HORIZONTAL"] = { "TOPLEFT", "BOTTOMLEFT", "RIGHT" },
+  ["HORIZONTAL_INVERSE"] = { "TOPRIGHT", "BOTTOMRIGHT", "LEFT" },
+  ["VERTICAL"] = { "TOPLEFT", "TOPRIGHT", "BOTTOM" },
+  ["VERTICAL_INVERSE"] = { "BOTTOMLEFT", "BOTTOMRIGHT", "TOP" }
+}
+
+local extraTextureWrapMode = "REPEAT";
+
 -- Emulate blizzard statusbar with advanced features (more grow directions)
 local barPrototype = {
-  -- Apply settings to bar (re-align textures)
-  ["Update"] = function(self, OnSizeChanged)
-    -- Limit values
-    self.value   = math.max(self.min, self.value);
-    self.value   = math.min(self.max, self.value);
-
-    -- Alignment variables
-    local progress = (self.value - self.min) / (self.max - self.min);
-    local align1, align2, alignSpark;
-    local xProgress, yProgress, sparkOffset;
-    local TLx,  TLy,  BLx,  BLy,  TRx,  TRy,  BRx,  BRy;
-    local TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_;
-    local sTLx, sTLy, sBLx, sBLy, sTRx, sTRy, sBRx, sBRy; -- spark rotation
-
+  ["UpdateAnchors"] = function(self)
     -- Do not flip/rotate textures
     local orientation = self.orientation;
     if not self.rotate then
@@ -227,102 +276,57 @@ local barPrototype = {
       end
     end
 
-    -- HORIZONTAL (Grow: L -> R, Deplete: R -> L)
-    if orientation == "HORIZONTAL" then
-      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(0, false)
+    self.GetTexCoord = GetTexCoordFunctions[orientation];
+    local anchorAlignment = anchorAlignment[orientation];
+    self.align1 = anchorAlignment[1];
+    self.align2 = anchorAlignment[2];
+    self.alignSpark = anchorAlignment[3];
 
-      TLx_, TLy_ = TLx      , TLy    ; TRx_, TRy_ = TRx*progress    , TRy      ;
-      BLx_, BLy_ = BLx      , BLy    ; BRx_, BRy_ = BRx*progress    , BRy      ;
+    self.horizontal = (self.orientation == "HORIZONTAL_INVERSE") or (self.orientation == "HORIZONTAL")
+    self.directionInverse = (self.orientation == "HORIZONTAL_INVERSE") or (self.orientation == "VERTICAL")
 
-    -- HORIZONTAL_INVERSE (Grow: R -> L, Deplete: L -> R)
-    elseif orientation == "HORIZONTAL_INVERSE" then
-      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(0, true)
+    local TLx,  TLy,  BLx,  BLy,  TRx,  TRy,  BRx,  BRy = self.GetTexCoord(0, 1);
+    self.bg:SetTexCoord(TLx , TLy , BLx , BLy , TRx , TRy , BRx , BRy );
 
-      TLx_, TLy_ = TLx*progress  , TLy      ; TRx_, TRy_ = TRx      , TRy      ;
-      BLx_, BLy_ = BLx*progress  , BLy      ; BRx_, BRy_ = BRx      , BRy      ;
+    -- Set alignment
+    self.fg:ClearAllPoints();
+    self.fg:SetPoint(self.align1);
+    self.fg:SetPoint(self.align2);
 
-    -- VERTICAL (Grow: T -> B, Deplete: B -> T)
-    elseif orientation == "VERTICAL" then
-      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(270, false)
-
-      TLx_, TLy_ = TLx           , TLy ; TRx_, TRy_ = TRx           , TRy;
-      BLx_, BLy_ = BLx * progress, BLy ; BRx_, BRy_ = BRx * progress, BRy;
-
-    -- VERTICAL_INVERSE (Grow: B -> T, Deplete: T -> B)
-    elseif orientation == "VERTICAL_INVERSE" then
-      TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy = GetTexCoord(90, false)
-
-      TLx_, TLy_ = TLx * progress, TLy ; TRx_, TRy_ = TRx * progress, TRy;
-      BLx_, BLy_ = BLx           , BLy ; BRx_, BRy_ = BRx           , BRy;
-    end
-
-    -- HORIZONTAL (Grow: L -> R, Deplete: R -> L)
-    if self.orientation == "HORIZONTAL" then
-      align1, align2  = "TOPLEFT", "BOTTOMLEFT";
-      alignSpark      = "LEFT";
-      xProgress       = self:GetWidth() * progress;
-      sparkOffset     = xProgress;
-
-    -- HORIZONTAL_INVERSE (Grow: R -> L, Deplete: L -> R)
-    elseif self.orientation == "HORIZONTAL_INVERSE" then
-      align1, align2  = "TOPRIGHT", "BOTTOMRIGHT";
-      alignSpark      = "RIGHT";
-      xProgress       = self:GetWidth() * progress;
-      sparkOffset     = -xProgress;
-
-    -- VERTICAL (Grow: T -> B, Deplete: B -> T)
-    elseif self.orientation == "VERTICAL" then
-      align1, align2  = "TOPLEFT", "TOPRIGHT";
-      alignSpark      = "TOP";
-      yProgress       = self:GetHeight() * progress;
-      sparkOffset     = -yProgress;
-
-    -- VERTICAL_INVERSE (Grow: B -> T, Deplete: T -> B)
-    elseif self.orientation == "VERTICAL_INVERSE" then
-      align1, align2  = "BOTTOMLEFT", "BOTTOMRIGHT";
-      alignSpark      = "BOTTOM";
-      yProgress       = self:GetHeight() * progress;
-      sparkOffset     = yProgress;
-    end
+    self.spark:SetPoint("CENTER", self.fg, self.alignSpark, self.spark.sparkOffsetX or 0, self.spark.sparkOffsetY or 0);
 
     local sparkMirror = self.spark.sparkMirror;
     local sparkRotationMode = self.spark.sparkRotationMode;
+    local sTLx, sTLy, sBLx, sBLy, sTRx, sTRy, sBRx, sBRy; -- spark rotation
     if (sparkRotationMode == "AUTO") then
       sTLx, sTLy, sBLx, sBLy, sTRx, sTRy, sBRx, sBRy = TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
     else
       local sparkRotation = tonumber(self.spark.sparkRotation);
-      sTLx, sTLy, sTRx, sTRy, sBLx, sBLy, sBRx, sBRy = GetTexCoord(sparkRotation, sparkMirror)
+      sTLx, sTLy, sTRx, sTRy, sBLx, sBLy, sBRx, sBRy = GetTexCoordSpark(sparkRotation, sparkMirror)
     end
+    self.spark:SetTexCoord(sTLx , sTLy , sBLx , sBLy , sTRx , sTRy , sBRx , sBRy);
+  end,
 
-    -- Only width/height of parent changed
-    if not OnSizeChanged then
-      -- Stretch bg accross complete frame
-      self.bg:ClearAllPoints();
-      self.bg:SetAllPoints();
-      self.bg:SetTexCoord(TLx , TLy , BLx , BLy , TRx , TRy , BRx , BRy );
-      self.spark:SetTexCoord(sTLx , sTLy , sBLx , sBLy , sTRx , sTRy , sBRx , sBRy);
+  ["UpdateProgress"] = function(self)
+    -- Limit values
+    self.value   = math.max(self.min, self.value);
+    self.value   = math.min(self.max, self.value);
 
-      -- Set alignment
-      self.fg:ClearAllPoints();
-      self.fg:SetPoint(align1);
-      self.fg:SetPoint(align2);
-
-      -- Stretch texture
-      self.fg:SetTexCoord(TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_);
-    end
+    -- Alignment variables
+    local progress = (self.value - self.min) / (self.max - self.min);
 
     -- Create statusbar illusion
-    if xProgress then
+    if (self.horizontal) then
+      local xProgress = self:GetWidth() * progress;
       self.fg:SetWidth(xProgress > 0.0001 and xProgress or 0.0001);
-      self.spark:ClearAllPoints();
-      self.spark:SetPoint("CENTER", self, alignSpark, sparkOffset + (self.spark.sparkOffsetX or 0), self.spark.sparkOffsetY or 0);
+    else
+      local yProgress = self:GetHeight() * progress;
+      self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
     end
 
-    if yProgress then
-      self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
-      self.spark:ClearAllPoints();
-      self.spark:SetPoint("CENTER", self, alignSpark, (self.spark.sparkOffsetX or 0), sparkOffset + (self.spark.sparkOffsetY or 0));
-    end
+    -- Stretch texture
+    local TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_ = self.GetTexCoord(0, progress);
+    self.fg:SetTexCoord(TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_);
 
     local sparkHidden = self.spark.sparkHidden;
     local sparkVisible = sparkHidden == "NEVER"
@@ -337,9 +341,114 @@ local barPrototype = {
     end
   end,
 
+  ["UpdateAdditionalBars"] = function(self)
+    if (self.additionalBars) then
+      for index, additionalBar in ipairs(self.additionalBars) do
+        if (not self.extraTextures[index]) then
+          local extraTexture = self:CreateTexture(nil, "ARTWORK");
+          extraTexture:SetTexture(self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode);
+          extraTexture:SetDrawLayer("ARTWORK", index);
+          self.extraTextures[index] = extraTexture;
+        end
+
+        local extraTexture = self.extraTextures[index];
+
+        local valueStart = self.additionalBarsMin
+        local valueWidth = self.additionalBarsMax - valueStart;
+
+        local startProgress = 0;
+        local endProgress = 0;
+
+        if (additionalBar.min and additionalBar.max) then
+          if (valueWidth ~= 0) then
+            startProgress = max( (additionalBar.min - valueStart) / valueWidth, 0);
+            endProgress = (additionalBar.max - valueStart) / valueWidth;
+
+            if (self.additionalBarsInverse) then
+              startProgress = 1 - startProgress;
+              endProgress = 1 - endProgress;
+            end
+          end
+        elseif (additionalBar.direction) then
+          local forwardDirection = (additionalBar.direction or "forward") == "forward";
+          if (self.additionalBarsInverse) then
+            forwardDirection = not forwardDirection;
+          end
+
+          local width = additionalBar.width or 0;
+          local offset = additionalBar.offset or 0;
+
+          if (width ~= 0) then
+            if (forwardDirection) then
+              startProgress = self.value + offset / valueWidth;
+              endProgress = self.value + (width + offset) / valueWidth;
+            else
+              startProgress = self.value - (width + offset) / valueWidth;
+              endProgress = self.value - offset / valueWidth;
+            end
+          end
+        end
+
+        if ((endProgress - startProgress) == 0) then
+          extraTexture:Hide();
+        else
+          extraTexture:Show();
+          local TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_ = self.GetTexCoord(startProgress, endProgress);
+          extraTexture:SetTexCoord(TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_);
+
+          local color = self.additionalBarsColors and self.additionalBarsColors[index];
+          if (color) then
+            extraTexture:SetVertexColor(unpack(color));
+          else
+            extraTexture:SetVertexColor(1, 1, 1, 1);
+          end
+
+          local xOffset = 0;
+          local yOffset = 0;
+          if (self.horizontal) then
+            xOffset = startProgress * self:GetWidth();
+            local width = (endProgress - startProgress) * self:GetWidth();
+            extraTexture:SetWidth( width  );
+            extraTexture:SetHeight( self:GetHeight() );
+          else
+            yOffset = startProgress * self:GetHeight();
+            local height = (endProgress - startProgress) * self:GetHeight();
+            extraTexture:SetWidth( self:GetWidth()  );
+            extraTexture:SetHeight( height );
+          end
+
+          if (self.directionInverse) then
+            xOffset = -xOffset;
+            yOffset = -yOffset;
+          end
+
+          extraTexture:ClearAllPoints();
+          extraTexture:SetPoint(self.align1, self, self.align1, xOffset, yOffset);
+          extraTexture:SetPoint(self.align2, self, self.align2, xOffset, yOffset);
+        end
+      end
+
+      if (#self.additionalBars < #self.extraTextures) then
+        for i = #self.additionalBars + 1, #self.extraTextures do
+          self.extraTextures[i]:Hide();
+        end
+      end
+    else
+      for i = 1, #self.extraTextures do
+        self.extraTextures[i]:Hide();
+      end
+    end
+  end,
+  ["Update"] = function(self)
+    self:UpdateAnchors();
+    self:UpdateProgress();
+    self:UpdateAdditionalBars();
+  end,
+
   -- Need to update progress!
   ["OnSizeChanged"] = function(self, width, height)
-    self:Update(true);
+    self:UpdateProgress();
+    self:UpdateAdditionalBars();
   end,
 
   -- Blizzard like SetMinMaxValues
@@ -356,7 +465,8 @@ local barPrototype = {
     end
 
     if update then
-      self:Update();
+      self:UpdateProgress();
+      self:UpdateAdditionalBars();
     end
   end,
 
@@ -368,8 +478,23 @@ local barPrototype = {
   ["SetValue"] = function(self, value)
     if value and type(value) == "number" then
       self.value = value;
-      self:Update();
+      self:UpdateProgress();
+      self:UpdateAdditionalBars();
     end
+  end,
+
+  ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse)
+    self.additionalBars = additionalBars;
+    self.additionalBarsColors = colors;
+    self.additionalBarsMin = min;
+    self.additionalBarsMax = max;
+    self.additionalBarsInverse = inverse;
+    self:UpdateAdditionalBars();
+  end,
+
+  ["SetAdditionalBarColor"] = function(self, id, color)
+    self.additionalBarsColors[id] = color;
+    self.extraTextures[id]:SetVertexColor(unpack(color));
   end,
 
   ["GetValue"] = function(self)
@@ -408,6 +533,9 @@ local barPrototype = {
   ["SetStatusBarTexture"] = function(self, texture)
     self.fg:SetTexture(texture);
     self.bg:SetTexture(texture);
+    for index, extraTexture in ipairs(self.extraTextures) do
+      extraTexture:SetTexture(texture, extraTextureWrapMode, extraTextureWrapMode);
+    end
   end,
 
   ["GetStatusBarTexture"] = function(self)
@@ -470,16 +598,18 @@ local function create(parent)
   Mixin(bar, SmoothStatusBarMixin);
   local fg = bar:CreateTexture(nil, "ARTWORK");
   local bg = bar:CreateTexture(nil, "ARTWORK");
+  bg:SetAllPoints();
   local spark = bar:CreateTexture(nil, "ARTWORK");
-  fg:SetDrawLayer("ARTWORK", 2);
-  bg:SetDrawLayer("ARTWORK", 1);
-  spark:SetDrawLayer("ARTWORK", 3);
+  fg:SetDrawLayer("ARTWORK", 0);
+  bg:SetDrawLayer("ARTWORK", -1);
+  spark:SetDrawLayer("ARTWORK", 7);
   bar.fg = fg;
   bar.bg = bg;
   bar.spark = spark;
   for key, value in pairs(barPrototype) do
     bar[key] = value;
   end
+  bar.extraTextures = {};
   bar:SetRotatesTexture(true);
   bar:HookScript("OnSizeChanged", bar.OnSizeChanged);
   region.bar = bar;
@@ -876,6 +1006,11 @@ local function modify(parent, region, data)
   region.progressPrecision = data.progressPrecision;
   region.totalPrecision = data.totalPrecision;
 
+  region.overlays = {};
+  if (data.overlays) then
+    WeakAuras.DeepCopy(data.overlays, region.overlays);
+  end
+
   -- Set overall alpha
   region:SetAlpha(data.alpha);
 
@@ -1190,10 +1325,13 @@ local function modify(parent, region, data)
   --  region:SetName("");
 
   function region:SetValue(value, total)
-    local progress = (total > 0) and (value / total) or 0
+    local progress = 0;
+    if (total ~= 0) then
+      progress = value / total;
+    end
+
     if region.inverseDirection then
       progress = 1 - progress;
-
     end
 
     if (data.smoothProgress) then
@@ -1217,6 +1355,11 @@ local function modify(parent, region, data)
     end
     region.bar:SetValue(progress);
     UpdateText(region, data);
+  end
+
+  function region:SetAdditionalProgress(additionalProgress, min, max, inverse)
+    local effectiveInverse = (inverse and not region.inverseDirection) or (not inverse and region.inverseDirection);
+    region.bar:SetAdditionalBars(additionalProgress, region.overlays, min, max, effectiveInverse);
   end
 
   function region:TimerTick()
@@ -1263,13 +1406,11 @@ local function modify(parent, region, data)
   function region:SetTextSize(size)
     self.text:SetFont(SharedMedia:Fetch("font", data.textFont), size, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     self.text:SetTextHeight(size);
-    self.bar:Update();
   end
 
   function region:SetTimerSize(size)
     timer:SetFont(SharedMedia:Fetch("font", data.timerFont), size, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
     timer:SetTextHeight(size);
-    self.bar:Update();
   end
 
   function region:SetRegionWidth(width)
@@ -1292,9 +1433,13 @@ local function modify(parent, region, data)
     region.bar:SetValue(region.bar:GetValue());
   end
 
+  function region:SetOverlayColor(id, r, g, b, a)
+    region.bar:SetAdditionalBarColor(id, { r, g, b, a});
+  end
+
   -- Update internal bar alignment
   region.bar:Update();
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default, properties);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);

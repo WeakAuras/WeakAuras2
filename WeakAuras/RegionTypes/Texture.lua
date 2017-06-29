@@ -55,6 +55,10 @@ local properties = {
 
 WeakAuras.regionPrototype.AddProperties(properties);
 
+local function GetProperties(data)
+  return properties;
+end
+
 local function create(parent)
   local frame = CreateFrame("FRAME", nil, UIParent);
   frame:SetMovable(true);
@@ -212,4 +216,4 @@ local function modify(parent, region, data)
   end
 end
 
-WeakAuras.RegisterRegionType("texture", create, modify, default, properties);
+WeakAuras.RegisterRegionType("texture", create, modify, default, GetProperties);

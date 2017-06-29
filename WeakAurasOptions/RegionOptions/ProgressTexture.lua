@@ -240,15 +240,59 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Smooth Progress"],
       desc = L["Animates progress changes"],
-      order = 56
+      order = 55.1
+    },
+    textureWrapMode = {
+      type = "select",
+      name = L["Texture Wrap"],
+      order = 55.2,
+      values = WeakAuras.texture_wrap_types
     },
     spacer = {
       type = "header",
       name = "",
-      order = 60
+      order = 56
+    },
+    spacer2 = {
+      type = "header",
+      name = "",
+      order = 59
     }
   };
-  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 54);
+  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
+
+  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  if (overlayInfo and next(overlayInfo)) then
+    options["overlayheader"] = {
+      type = "header",
+      name = L["Overlays"],
+      order = 58
+    }
+    local index = 58.01
+    for id, display in ipairs(overlayInfo) do
+      options["overlaycolor" .. id] = {
+        type = "color",
+        name = string.format(L["%s Color"], display),
+        hasAlpha = true,
+        order = index,
+        get = function()
+          if (data.overlays and data.overlays[id]) then
+            return unpack(data.overlays[id]);
+          end
+          return 1, 1, 1, 1;
+        end,
+        set = function(info, r, g, b, a)
+          if (not data.overlays) then
+            data.overlays = {};
+          end
+          data.overlays[id] = { r, g, b, a};
+          WeakAuras.Add(data);
+        end
+      }
+      index = index + 0.01
+    end
+  end
+
   options = WeakAuras.AddPositionOptions(options, id, data);
 
   return options;
@@ -339,8 +383,8 @@ local function createThumbnail(parent)
   local foreground = region:CreateTexture(nil, "ART");
   borderframe.foreground = foreground;
 
-  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND");
-  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK");
+  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND", 1);
+  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK", 1);
 
   return borderframe;
 end
