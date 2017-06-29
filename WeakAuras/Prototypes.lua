@@ -990,6 +990,12 @@ WeakAuras.event_prototypes = {
         "WA_DELAYED_PLAYER_ENTERING_WORLD"
       };
       AddUnitChangeEvents(trigger.unit, result);
+      if (trigger.use_showAbsorb) then
+        tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
+      end
+      if (trigger.use_showIncomingHeal) then
+        tinsert(result, "UNIT_HEAL_PREDICTION");
+      end
       return result;
     end,
     force_events = {
@@ -1036,6 +1042,38 @@ WeakAuras.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "showAbsorb",
+        display = L["Show Absorb"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true
+      },
+      {
+        name = "absorbMode",
+        display = L["Absorb Display"],
+        type = "select",
+        test = "true",
+        values = "absorb_modes",
+        required = true,
+        enable = function(trigger) return trigger.use_showAbsorb end
+      },
+      {
+        name = "showIncomingHeal",
+        display = L["Show Incoming Heal"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true
+      },
+      {
+        name = "absorb",
+        type = "number",
+        display = L["Absorb"],
+        init = "UnitGetTotalAbsorbs(concernedUnit)",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return trigger.use_showAbsorb end
+      },
+      {
         hidden = true,
         test = "UnitExists(concernedUnit)"
       }
@@ -1046,6 +1084,34 @@ WeakAuras.event_prototypes = {
     nameFunc = function(trigger)
       return UnitName(trigger.unit);
     end,
+    overlayFuncs = {
+      {
+        name = L["Absorb"],
+        func = function(trigger, state)
+          local absorb = UnitGetTotalAbsorbs(trigger.unit);
+          if (trigger.absorbMode == "OVERLAY_FROM_START") then
+            return 0, absorb;
+          else
+            return "forward", absorb;
+          end
+        end,
+        enable = function(trigger)
+          return trigger.use_showAbsorb;
+        end
+      },
+      {
+        name = L["Incoming Heal"],
+        func = function(trigger, state)
+          if (trigger.use_showIncomingHeal) then
+            local heal = UnitGetIncomingHeals(trigger.unit);
+            return "forward", heal;
+          end
+        end,
+        enable = function(trigger)
+          return trigger.use_showIncomingHeal;
+        end
+      }
+    },
     automatic = true
   },
   ["Power"] = {
@@ -1057,6 +1123,11 @@ WeakAuras.event_prototypes = {
         "UNIT_DISPLAYPOWER"
       };
       AddUnitChangeEvents(trigger.unit, result);
+      if (trigger.use_showCost) then
+        tinsert(result, "UNIT_SPELLCAST_START");
+        tinsert(result, "UNIT_SPELLCAST_STOP");
+        tinsert(result, "UNIT_SPELLCAST_FAILED");
+      end
       return result;
     end,
     force_events = {
@@ -1083,6 +1154,27 @@ WeakAuras.event_prototypes = {
         local UnitPowerMax = UnitHealthMax;
       ]]
       end
+      if (trigger.use_showCost) then
+        ret = ret .. [[
+          if (event == "UNIT_SPELLCAST_START" and unit == "player") then
+            local spellID = select(10, UnitCastingInfo("player"));
+            if spellID then
+              local costTable = GetSpellPowerCost(spellID);
+              for _, costInfo in pairs(costTable) do
+                if costInfo.type == powerTypeToCheck then
+                  state.cost = costInfo.cost;
+                  break;
+                end
+              end
+            end
+            state.changed = true;
+          elseif ( (event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED") and unit == "player") then
+            state.cost = nil;
+            state.changed = true;
+          end
+        ]]
+      end
+
       return ret
     end,
     statesParameter = "one",
@@ -1116,6 +1208,16 @@ WeakAuras.event_prototypes = {
         end,
       },
       {
+        name = "showCost",
+        display = L["Overlay Cost of Casts"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          return (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
+        end,
+        reloadOptions = true
+      },
+      {
         name = "power",
         display = L["Power"],
         type = "number",
@@ -1145,8 +1247,22 @@ WeakAuras.event_prototypes = {
       local pdm = WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);
       local useThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck)
 
-      return UnitPower(trigger.unit, powerType, useThirdArg) / pdm, math.max(1, UnitPowerMax(trigger.unit, powerType, useThirdArg)) / pdm, "fastUpdate";
+      local value = UnitPower(trigger.unit, powerType, useThirdArg) / pdm;
+      local total = math.max(1, UnitPowerMax(trigger.unit, powerType, useThirdArg)) / pdm;
+
+      return value, total, true;
     end,
+    overlayFuncs = {
+      {
+        name = L["Spell Cost"],
+        func = function(trigger, state)
+          return "back", state.cost;
+        end,
+        enable = function(trigger)
+          return trigger.use_showCost and (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
+        end
+      }
+    },
     stacksFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then

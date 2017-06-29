@@ -216,6 +216,12 @@ WeakAuras.blend_types = {
   BLEND = L["Opaque"],
 };
 
+WeakAuras.texture_wrap_types = {
+  CLAMP = L["Clamp"],
+  MIRROR = L["Mirror"],
+  REPEAT = L["Repeat"]
+}
+
 WeakAuras.text_check_types = {
   update = L["Every Frame"],
   event = L["Trigger Update"]
@@ -1413,3 +1419,8 @@ WeakAuras.bool_types =
     [0] = L["False"],
     [1] = L["True"],
   }
+
+WeakAuras.absorb_modes = {
+  OVERLAY_FROM_START = L["Attach to Start"],
+  OVERLAY_FROM_END = L["Attach to End"]
+}

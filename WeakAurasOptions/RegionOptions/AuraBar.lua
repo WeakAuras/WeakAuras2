@@ -190,12 +190,12 @@ local function createOptions(id, data)
     symbol_header = {
       type = "header",
       name = L["Symbol Settings"],
-      order = 38.1
+      order = 38.01
     },
     icon = {
       type = "toggle",
       name = L["Icon"],
-      order = 38.1
+      order = 38.1,
     },
     auto = {
       type = "toggle",
@@ -222,18 +222,9 @@ local function createOptions(id, data)
         WeakAuras.SetIconNames(data);
       end
     },
-    displaySpace = {
-      type = "execute",
-      name = "",
-      width = "half",
-      hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
-      image = function() return data.displayIcon and tostring(data.displayIcon) or "", 18, 18 end,
-      order = 38.4
-    },
     chooseIcon = {
       type = "execute",
       name = L["Choose"],
-      width = "half",
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
       order = 38.5,
@@ -635,7 +626,7 @@ local function createOptions(id, data)
     spacer = {
       type = "header",
       name = "",
-      order = 58
+      order = 59
     },
   };
 
@@ -649,6 +640,38 @@ local function createOptions(id, data)
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 10.2,  hideCustomTextEditor, {"customText"}, false);
 
   options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 36.5);
+
+  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  if (overlayInfo and next(overlayInfo)) then
+    options["overlayheader"] = {
+      type = "header",
+      name = L["Overlays"],
+      order = 58
+    }
+    local index = 0.01
+    for id, display in ipairs(overlayInfo) do
+      options["overlaycolor" .. id] = {
+        type = "color",
+        name = string.format(L["%s Color"], display),
+        hasAlpha = true,
+        order = 58 + index,
+        get = function()
+          if (data.overlays and data.overlays[id]) then
+            return unpack(data.overlays[id]);
+          end
+          return 1, 1, 1, 1;
+        end,
+        set = function(info, r, g, b, a)
+          if (not data.overlays) then
+            data.overlays = {};
+          end
+          data.overlays[id] = { r, g, b, a};
+          WeakAuras.Add(data);
+        end
+      }
+      index = index + 0.01
+    end
+  end
 
   -- Positioning options
   options = WeakAuras.AddPositionOptions(options, id, data);

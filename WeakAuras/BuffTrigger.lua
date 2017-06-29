@@ -38,6 +38,9 @@ If that is the case no automatic icon can be determined. Only used by the option
 CanHaveDuration(data, triggernum)
 Returns whether the trigger can have a duration.
 
+GetOverlayInfo(data, triggernum)
+Returns a table containing all overlays. Currently there aren't any
+
 CanHaveAuto(data, triggernum)
 Returns whether the icon can be automatically selected.
 
@@ -1492,6 +1495,13 @@ function BuffTrigger.CanHaveDuration(data, triggernum)
   else
     return false;
   end
+end
+
+--- Returns a table containing the names of all overlays
+-- @param data
+-- @param triggernum
+function BuffTrigger.GetOverlayInfo(data, triggernum)
+  return {};
 end
 
 --- Returns whether the icon can be automatically selected.

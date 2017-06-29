@@ -111,6 +111,10 @@ local properties = {
 
 WeakAuras.regionPrototype.AddProperties(properties);
 
+local function GetProperties(data)
+  return properties;
+end
+
 local function GetTexCoord(region, texWidth)
   local texCoord
 
@@ -577,4 +581,4 @@ local function modify(parent, region, data)
   end
 end
 
-WeakAuras.RegisterRegionType("icon", create, modify, default, properties);
+WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties);

@@ -35,6 +35,10 @@ local properties = {
 
 WeakAuras.regionPrototype.AddProperties(properties);
 
+local function GetProperties(data)
+  return properties;
+end
+
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent);
   region:SetMovable(true);
@@ -226,7 +230,7 @@ local function modify(parent, region, data)
   end
 end
 
-WeakAuras.RegisterRegionType("text", create, modify, default, properties);
+WeakAuras.RegisterRegionType("text", create, modify, default, GetProperties);
 
 -- Fallback region type
 

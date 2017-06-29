@@ -62,6 +62,9 @@ local properties = {
 
 WeakAuras.regionPrototype.AddProperties(properties);
 
+local function GetProperties(data)
+  return properties;
+end
 
 
 -- Called when first creating a new region/display
@@ -257,7 +260,7 @@ local function modify(parent, region, data)
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("model", create, modify, default, properties);
+WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties);
 
 -- Work around for movies and world map hiding all models
 do
