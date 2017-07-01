@@ -58,6 +58,7 @@ local default = {
   xOffset = 0,
   yOffset = 0,
   stickyDuration = false,
+  useProgressScale = false,
   icon_side = "RIGHT",
   icon_color = {1.0, 1.0, 1.0, 1.0},
   rotateText = "NONE",
@@ -1034,6 +1035,7 @@ local function modify(parent, region, data)
   end
 
   region.inverseDirection = data.inverse;
+  region.progressScale = data.useProgressScale and tonumber(data.progressScale) or nil;
 
   -- Apply orientation alignment
   orient(region, data, data.orientation);
@@ -1178,7 +1180,8 @@ local function modify(parent, region, data)
   --  region:SetName("");
 
   function region:SetValue(value, total)
-    local progress = (total > 0) and (value / total) or 0
+    local adjustedTotal = region.progressScale or total
+    local progress = (adjustedTotal > 0) and (value / adjustedTotal) or 0
     if region.inverseDirection then
       progress = 1 - progress;
     end
@@ -1188,7 +1191,8 @@ local function modify(parent, region, data)
 
   function region:SetTime(duration, expirationTime, inverse)
     local remaining = expirationTime - GetTime();
-    local progress = duration ~= 0 and remaining / duration or 0;
+    local adjustedDuration = region.progressScale or duration
+    local progress = adjustedDuration ~= 0 and remaining / adjustedDuration or 0;
     -- Need to invert?
     if (
       (region.inverseDirection and not inverse)

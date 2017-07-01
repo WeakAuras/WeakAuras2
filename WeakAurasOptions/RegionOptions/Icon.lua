@@ -18,6 +18,25 @@ local function createOptions(id, data)
       get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
       hidden = function() return not data.cooldown end
     },
+    useProgressScale = {
+      type = "toggle",
+      name = L["Custom Progress Scale"],
+      desc = L["The cooldown animation will begin when less than this duration remains."],
+      order = 6.2,
+      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
+      get = function() return data.useProgressScale and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
+      hidden = function() return not data.cooldown end
+    },
+    progressScale = {
+      type = "input",
+      name = L["Progress Scale"],
+      desc = L["The cooldown animation will begin when less than this duration remains."],
+      order = 6.25,
+      validate = WeakAuras.ValidateNumeric,
+      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown and data.useProgressScale); end,
+      get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown and data.progressScale; end,
+      hidden = function() return not data.cooldown end
+    },
     cooldownTextEnabled = {
       type = "toggle",
       name = L["Show Cooldown Text"],

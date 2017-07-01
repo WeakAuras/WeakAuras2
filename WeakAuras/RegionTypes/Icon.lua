@@ -35,6 +35,7 @@ local default = {
   text2FontFlags = "OUTLINE",
   text2FontSize = 24,
   stickyDuration = false,
+  useProgressScale = false,
   zoom = 0,
   frameStrata = 1,
   customTextUpdate = "update",
@@ -259,6 +260,7 @@ local function modify(parent, region, data)
   region.stickyDuration = data.stickyDuration;
   region.progressPrecision = data.progressPrecision;
   region.totalPrecision = data.totalPrecision;
+  region.progressScale = data.useProgressScale and tonumber(data.progressScale) or nil;
 
   if MSQ and not region.MSQGroup then
     region.MSQGroup = MSQ:Group("WeakAuras", region.frameId);
@@ -525,9 +527,10 @@ local function modify(parent, region, data)
     end
 
     function region:SetTime(duration, expirationTime)
-      if (duration > 0) then
+      local adjustedDuration = region.progressScale or duration;
+      if (adjustedDuration > 0) then
         cooldown:Show();
-        cooldown:SetCooldown(expirationTime - duration, duration);
+        cooldown:SetCooldown(expirationTime - adjustedDuration, adjustedDuration);
       else
         cooldown:Hide();
       end
