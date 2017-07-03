@@ -3921,11 +3921,13 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
       elseif (endPos > currentPos and regionState) then
         local symbol = string.sub(textStr, currentPos + 1, endPos);
         local value = regionState[symbol] and tostring(regionState[symbol]);
-        if (not value) then
-          value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos +1), region, customFunc);
+        if (value) then
+          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+        else
+          value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
           value = value or "";
+          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
         end
-        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
       end
       endPos = currentPos - 1;
     elseif (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then

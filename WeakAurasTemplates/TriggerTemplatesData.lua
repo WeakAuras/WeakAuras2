@@ -2459,6 +2459,7 @@ templates.class.MONK = {
         { spell = 107428, type = "ability"}, -- Rising Sun Kick
         { spell = 115008, type = "ability", talent = 4}, -- Chi Torpedo
         { spell = 115078, type = "ability"}, -- Paralysis
+        { spell = 115098, type = "ability", talent = 3}, -- Chi Wave
         { spell = 115151, type = "ability"}, -- Renewing Mist
         { spell = 115310, type = "ability"}, -- Revival
         { spell = 115313, type = "ability", talent = 18}, -- Summon Jade Serpent Statue
@@ -2475,6 +2476,7 @@ templates.class.MONK = {
         { spell = 122783, type = "ability", talent = 14}, -- Diffuse Magic
         { spell = 123986, type = "ability", talent = 1}, -- Chi Burst
         { spell = 124081, type = "ability", talent = 2}, -- Zen Pulse
+        { spell = 191837, type = "ability"}, -- Essence Font
         { spell = 196725, type = "ability", talent = 16}, -- Refreshing Jade Wind
         { spell = 197908, type = "ability", talent = 19}, -- Mana Tea
         { spell = 197945, type = "ability", talent = 3}, -- Mistwalk
