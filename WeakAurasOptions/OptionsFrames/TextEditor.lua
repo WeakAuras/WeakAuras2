@@ -124,6 +124,29 @@ local function ConstructTextEditor(frame)
     editorLine:SetNumber(line);
   end);
 
+  -- autocomplete for brackets and strings
+  local autocomplete_scripted = false
+  editor.editBox:SetScript("OnChar", function(_, char)
+    if autocomplete_scripted then
+      autocomplete_scripted = false
+      return
+    end
+    if char == "(" then
+      editor.editBox:Insert(")")
+      editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition()-1)
+    elseif char == "{" then
+      editor.editBox:Insert("}")
+      editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition()-1)
+    elseif char == "[" then
+      editor.editBox:Insert("]")
+      editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition()-1)
+    elseif char == "\"" or char == "\'" then
+      autocomplete_scripted = true
+      editor.editBox:Insert(char)
+      editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition()-1)
+    end
+  end)
+
   editorLine:SetScript("OnEnterPressed", function()
     local newLine = editorLine:GetNumber();
     local newPosition = 0;
