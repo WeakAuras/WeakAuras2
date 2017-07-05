@@ -493,6 +493,38 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
   end
 end
 
+local marks = {
+    COMBATLOG_OBJECT_RAIDTARGET1,
+    COMBATLOG_OBJECT_RAIDTARGET2,
+    COMBATLOG_OBJECT_RAIDTARGET3,
+    COMBATLOG_OBJECT_RAIDTARGET4,
+    COMBATLOG_OBJECT_RAIDTARGET5,
+    COMBATLOG_OBJECT_RAIDTARGET6,
+    COMBATLOG_OBJECT_RAIDTARGET7,
+    COMBATLOG_OBJECT_RAIDTARGET8,
+}
+
+function WeakAuras.CheckRaidFlags(flags, flagToCheck)
+  flagToCheck = tonumber(flagToCheck)
+  if not flagToCheck then return end --bailout
+  if flagToCheck == 0 then --no raid mark
+    for mask in ipairs(marks) do
+      if bit.band(flags,mask) then
+        return false
+      end
+    end
+    return true
+  elseif flagToCheck == 9 then --any raid mark
+    for mask in ipairs(marks) do
+      if bit.band(flags,mask) then
+        return true
+      end
+    end
+    return false
+  else -- specific raid mark
+    return bit.band(flags,marks[flagToCheck]) > 0
+  end
+end
 function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
     return IsSpellKnown(spell);
@@ -1233,7 +1265,17 @@ WeakAuras.event_prototypes = {
         conditionType = "select",
         conditionTest = "state and state.show and WeakAuras.CheckCombatLogFlags(sourceFlags, '%s')",
       },
-      {}, -- sourceRaidFlags ignored with _ argument
+      {
+        name = "sourceRaidFlags",
+        display = L["Source Raid Mark"],
+        type = "select",
+        values = "combatlog_raid_mark_check_type",
+        init = "arg",
+        store = true,
+        test = "WeakAuras.CheckRaidFlags(sourceRaidFlags,'%s')",
+        conditionType = "select",
+        conditionTest = "state and state.show and WeakAuras.CheckRaidFlags(sourceRaidFlags,'%s')",
+      },
       {
         name = "destGUID",
         init = "arg",
@@ -1288,7 +1330,20 @@ WeakAuras.event_prototypes = {
           return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
       },
-      {}, -- destRaidFlags ignored with _ argument
+      {
+        name = "destRaidFlags",
+        display = L["Dest Raid Mark"],
+        type = "select",
+        values = "combatlog_raid_mark_check_type",
+        init = "arg",
+        store = true,
+        test = "WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
+        conditionType = "select",
+        conditionTest = "state and state.show and WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
       {
         name = "spellId",
         display = L["Spell Id"],
