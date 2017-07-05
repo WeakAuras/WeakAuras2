@@ -4821,7 +4821,11 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Unit"],
       order = 41,
       values = function()
+        if(trigger.fullscan) then
+          return actual_unit_types_with_specific;
+        else
           return unit_types;
+        end
       end,
       hidden = function() return not (trigger.type == "aura"); end,
       set = function(info, v)
@@ -4836,6 +4840,9 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.Add(data);
       end,
       get = function()
+        if(trigger.fullscan and (trigger.unit == "group" or trigger.unit == "multi")) then
+          trigger.unit = "player";
+        end
         return trigger.unit;
       end
     },
