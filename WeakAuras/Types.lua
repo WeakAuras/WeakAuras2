@@ -407,7 +407,18 @@ WeakAuras.combatlog_flags_check_type = {
   InGroup = L["In Group"],
   NotInGroup = L["Not in Group"]
 }
-
+WeakAuras.combatlog_raid_mark_check_type = {
+  L["None"]
+  L["Star"],
+  L["Circle"],
+  L["Diamond"],
+  L["Triangle"],
+  L["Moon"],
+  L["Square"],
+  L["Cross"],
+  L["Skull"],
+  L["Any"],
+}
 WeakAuras.orientation_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],
