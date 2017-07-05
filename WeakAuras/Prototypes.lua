@@ -505,6 +505,8 @@ local marks = {
 }
 
 function WeakAuras.CheckRaidFlags(flags, flagToCheck)
+  flagToCheck = tonumber(flagToCheck)
+  if not flagToCheck then return end --bailout
   if flagToCheck == 0 then --no raid mark
     for mask in ipairs(marks) do
       if bit.band(flags,mask) then
@@ -520,7 +522,7 @@ function WeakAuras.CheckRaidFlags(flags, flagToCheck)
     end
     return false
   else -- specific raid mark
-    return bit.band(flags,marks[flagToCheck])
+    return bit.band(flags,marks[flagToCheck]) > 0
   end
 end
 function WeakAuras.IsSpellKnown(spell, pet)
@@ -1328,7 +1330,20 @@ WeakAuras.event_prototypes = {
           return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
       },
-      {}, -- destRaidFlags ignored with _ argument
+      {
+        name = "destRaidFlags",
+        display = L["Dest Raid Mark"],
+        type = "select",
+        values = "combatlog_raid_mark_check_type",
+        init = "arg",
+        store = true,
+        test = "WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
+        conditionType = "select",
+        conditionTest = "state and state.show and WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
       {
         name = "spellId",
         display = L["Spell Id"],

@@ -408,15 +408,15 @@ WeakAuras.combatlog_flags_check_type = {
   NotInGroup = L["Not in Group"]
 }
 WeakAuras.combatlog_raid_mark_check_type = {
-  L["None"]
-  L["Star"],
-  L["Circle"],
-  L["Diamond"],
-  L["Triangle"],
-  L["Moon"],
-  L["Square"],
-  L["Cross"],
-  L["Skull"],
+  [0] = L["None"],
+  L["Star"].. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:0|t",
+  L["Circle"].. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_2:0|t",
+  L["Diamond"].. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_3:0|t",
+  L["Triangle"].. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_4:0|t",
+  L["Moon"].. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_5:0|t",
+  L["Square"].. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_6:0|t",
+  L["Cross"] .. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_7:0|t",
+  L["Skull"] .. "  |TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8:0|t",
   L["Any"],
 }
 WeakAuras.orientation_types = {
