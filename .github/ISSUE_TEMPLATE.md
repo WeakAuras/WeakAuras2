@@ -9,7 +9,7 @@ What version of WeakAuras are you using?
 Was it working in a previous version? If yes, which was the last good one?
 
 
-Do you have an error log of what happened? If you don't see any errors, make sure that error reporting is enabled (`/run scriptErrors 1`) or install [BugSack](https://mods.curse.com/addons/wow/BugSack). 
+Do you have an error log of what happened? If you don't see any errors, make sure that error reporting is enabled (`/console scriptErrors 1`) or install [BugSack](https://mods.curse.com/addons/wow/BugSack). 
 
 
 Please provide any additional information below.
