@@ -148,6 +148,33 @@ local function ConstructTextEditor(frame)
     end
   end)
 
+  -- bracket mathcing
+  local ctrl_down = false
+  editor.editBox:HookScript("OnKeyDown", function(_, key)
+    if key == "LCTRL" or key == "RCTRL" then
+      ctrl_down = true
+    end
+  end)
+  editor.editBox:HookScript("OnKeyUp", function(_, key)
+    if key == "LCTRL" or key == "RCTRL" then
+      ctrl_down = false
+    end
+  end)
+  editor.editBox:HookScript("OnChar", function(_, char)
+    if not ctrl_down then
+      if char == "(" then
+        editor.editBox:Insert(")")
+        editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
+      elseif char == "{" then
+        editor.editBox:Insert("}")
+        editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
+      elseif char == "[" then
+        editor.editBox:Insert("]")
+        editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
+      end
+    end
+  end)
+
   local editorError = group.frame:CreateFontString(nil, "OVERLAY");
   editorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
   editorError:SetJustifyH("LEFT");
