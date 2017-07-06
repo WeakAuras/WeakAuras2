@@ -17,44 +17,67 @@ local textEditor
 local valueFromPath = WeakAuras.ValueFromPath;
 local valueToPath = WeakAuras.ValueToPath;
 
-local tableColor = "|c00ff3333"
-local arithmeticColor = "|c00ff3333"
-local relationColor = "|c00ff3333"
-local logicColor = "|c004444ff"
-
-local colorScheme = {
-  [IndentationLib.tokens.TOKEN_SPECIAL] = "|c00ff3333",
-  [IndentationLib.tokens.TOKEN_KEYWORD] = "|c004444ff",
-  [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = "|c0000aa00",
-  [IndentationLib.tokens.TOKEN_COMMENT_LONG] = "|c0000aa00",
-  [IndentationLib.tokens.TOKEN_NUMBER] = "|c00ff9900",
-  [IndentationLib.tokens.TOKEN_STRING] = "|c00999999",
-  -- ellipsis, curly braces, table acces
-  ["..."] = tableColor,
-  ["{"] = tableColor,
-  ["}"] = tableColor,
-  ["["] = tableColor,
-  ["]"] = tableColor,
-  -- arithmetic operators
-  ["+"] = arithmeticColor,
-  ["-"] = arithmeticColor,
-  ["/"] = arithmeticColor,
-  ["*"] = arithmeticColor,
-  [".."] = arithmeticColor,
-  -- relational operators
-  ["=="] = relationColor,
-  ["<"] = relationColor,
-  ["<="] = relationColor,
-  [">"] = relationColor,
-  [">="] = relationColor,
-  ["~="] = relationColor,
-  -- logical operators
-  ["and"] = logicColor,
-  ["or"] = logicColor,
-  ["not"] = logicColor,
-  -- misc
-  [0] = "|r",
+local editor_themes = {
+  ["Standard"] = {
+    ["Table"] = "|c00ff3333",
+    ["Arithmetic"] = "|c00ff3333",
+    ["Relational"] = "|c00ff3333",
+    ["Logical"] = "|c004444ff",
+    ["Special"] = "|c00ff3333",
+    ["Keyword"] =  "|c004444ff",
+    ["Comment"] = "|c0000aa00",
+    ["Number"] = "|c00ff9900",
+    ["String"] = "|c00999999"
+  },
+  ["Monokai"] = {
+    ["Table"] = "|c00ffffff",
+    ["Arithmetic"] = "|c00f92672",
+    ["Relational"] = "|c00ff3333",
+    ["Logical"] = "|c00f92672",
+    ["Special"] = "|c0066d9ef",
+    ["Keyword"] =  "|c00f92672",
+    ["Comment"] = "|c0075715e",
+    ["Number"] = "|c00ae81ff",
+    ["String"] = "|c00e6db74"
+  }
 }
+
+local function get_scheme(theme_name)
+  local color_scheme = {
+    [IndentationLib.tokens.TOKEN_SPECIAL] = editor_themes[theme_name]["Special"],
+    [IndentationLib.tokens.TOKEN_KEYWORD] = editor_themes[theme_name]["Keyword"],
+    [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = editor_themes[theme_name]["Comment"],
+    [IndentationLib.tokens.TOKEN_COMMENT_LONG] = editor_themes[theme_name]["Comment"],
+    [IndentationLib.tokens.TOKEN_NUMBER] = editor_themes[theme_name]["Number"],
+
+    [IndentationLib.tokens.TOKEN_STRING] = editor_themes[theme_name]["String"],
+    [".."] = editor_themes[theme_name]["String"],
+
+    ["..."] = editor_themes[theme_name]["Table"],
+    ["{"] = editor_themes[theme_name]["Table"],
+    ["}"] = editor_themes[theme_name]["Table"],
+    ["["] = editor_themes[theme_name]["Table"],
+    ["]"] = editor_themes[theme_name]["Table"],
+
+    ["+"] = editor_themes[theme_name]["Arithmetic"],
+    ["-"] = editor_themes[theme_name]["Arithmetic"],
+    ["/"] = editor_themes[theme_name]["Arithmetic"],
+    ["*"] = editor_themes[theme_name]["Arithmetic"],
+
+    ["=="] = editor_themes[theme_name]["Relational"],
+    ["<"] = editor_themes[theme_name]["Relational"],
+    ["<="] = editor_themes[theme_name]["Relational"],
+    [">"] = editor_themes[theme_name]["Relational"],
+    [">="] = editor_themes[theme_name]["Relational"],
+    ["~="] = editor_themes[theme_name]["Relational"],
+
+    ["and"] = editor_themes[theme_name]["Logical"],
+    ["or"] = editor_themes[theme_name]["Logical"],
+    ["not"] = editor_themes[theme_name]["Logical"],
+    [0] = "|r",
+  }
+  return color_scheme
+end
 
 local function ConstructTextEditor(frame)
   local group = AceGUI:Create("InlineGroup");
@@ -77,7 +100,6 @@ local function ConstructTextEditor(frame)
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText;
-  IndentationLib.enable(editor.editBox, colorScheme, 4);
 
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   cancel:SetScript("OnClick", function() group:CancelClose() end);
@@ -92,6 +114,38 @@ local function ConstructTextEditor(frame)
   close:SetHeight(20);
   close:SetWidth(100);
   close:SetText(L["Done"]);
+
+  local selected_theme = "Monokai"
+  IndentationLib.enable(editor.editBox, get_scheme(selected_theme), 4)
+  local theme_frame = CreateFrame("Button", "WAThemeButton", close, "UIPanelButtonTemplate")
+  theme_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
+  theme_frame:SetHeight(20)
+  theme_frame:SetWidth(100)
+  theme_frame:SetText("Theme")
+  theme_frame:EnableMouse(true)
+  theme_frame:RegisterForClicks("AnyDown")
+  theme_frame:SetScript("OnClick", function(self, button, down)
+    if button == "LeftButton" then
+      local menu = {}
+      for k, v in pairs(editor_themes) do
+        local item = {
+          text = k,
+          isNotRadio = false,
+          checked = k == selected_theme,
+          func = function()
+            selected_theme = k
+            IndentationLib.disable(editor.editBox)
+            IndentationLib.enable(editor.editBox, get_scheme(selected_theme), 4)
+          end
+        }
+        table.insert(menu, item)
+      end
+      local menu_frame = CreateFrame("Frame", "ThemeMenuFrame", theme_frame, "UIDropDownMenuTemplate")
+      menu_frame:SetPoint("CENTER", theme_frame, "Center")
+      menu_frame:Hide()
+      EasyMenu(menu, menu_frame, theme_frame, 0, 0, "MENU")
+    end
+  end)
 
   local editorError = group.frame:CreateFontString(nil, "OVERLAY");
   editorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
