@@ -134,7 +134,8 @@ local function ConstructTextEditor(frame)
           checked = k == selected_theme,
           func = function()
             selected_theme = k
-            IndentationLib.disable(editor.editBox)
+            -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
+            --IndentationLib.disable(editor.editBox)
             IndentationLib.enable(editor.editBox, get_scheme(selected_theme), 4)
           end
         }
