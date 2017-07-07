@@ -1286,7 +1286,7 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "string"
       },
-      {
+      { -- destName ignore for SPELL_CAST_START
         enable = function(trigger)
           return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end
@@ -1305,7 +1305,7 @@ WeakAuras.event_prototypes = {
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
       },
-      {
+      {-- destFlags ignore for SPELL_CAST_START
         enable = function(trigger)
           return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -1320,6 +1320,14 @@ WeakAuras.event_prototypes = {
         test = "WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
         conditionType = "select",
         conditionTest = "state and state.show and WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
+      { -- destRaidFlags ignore for SPELL_CAST_START
+        enable = function(trigger)
+          return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end
       },
       {
         name = "spellId",
