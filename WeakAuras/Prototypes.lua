@@ -446,7 +446,7 @@ end
 function WeakAuras.CheckTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local _, _, _, selected, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+  local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
   return selected or known;
 end
 
