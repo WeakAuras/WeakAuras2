@@ -176,14 +176,16 @@ WeakAuras.regionPrototype.AddProperties(properties);
 
 -- Returns tex Coord for 90° rotations + x or y flip
 
-local texCoords = { 0, 0, 1, 1,
+local texCoords = {
   0, 0, 1, 1,
-  0, 0, 1, 1 };
+  0, 0, 1, 1,
+  0, 0, 1, 1
+};
 
 -- only supports multipliers of 90° degree
 -- returns in order: TLx, TLy, TRx, TRy, BLx, BLy, BRx, BRy
 local GetTexCoord = function(degree, mirror)
-  local offset = (degree or 0)/ 90
+  local offset = (degree or 0) / 90
   local TLx,  TLy = texCoords[2 + offset], texCoords[1 + offset]
   local TRx,  TRy = texCoords[3 + offset], texCoords[2 + offset]
   local BLx,  BLy = texCoords[1 + offset], texCoords[4 + offset]
@@ -256,31 +258,31 @@ local barPrototype = {
 
     -- HORIZONTAL (Grow: L -> R, Deplete: R -> L)
     if self.orientation == "HORIZONTAL" then
-      align1, align2   = "TOPLEFT", "BOTTOMLEFT";
-      alignSpark       = "LEFT";
-      xProgress    = self:GetWidth() * progress;
-      sparkOffset   = xProgress;
+      align1, align2  = "TOPLEFT", "BOTTOMLEFT";
+      alignSpark      = "LEFT";
+      xProgress       = self:GetWidth() * progress;
+      sparkOffset     = xProgress;
 
     -- HORIZONTAL_INVERSE (Grow: R -> L, Deplete: L -> R)
     elseif self.orientation == "HORIZONTAL_INVERSE" then
-      align1, align2   = "TOPRIGHT", "BOTTOMRIGHT";
-      alignSpark       = "RIGHT";
-      xProgress    = self:GetWidth() * progress;
-      sparkOffset   = -xProgress;
+      align1, align2  = "TOPRIGHT", "BOTTOMRIGHT";
+      alignSpark      = "RIGHT";
+      xProgress       = self:GetWidth() * progress;
+      sparkOffset     = -xProgress;
 
     -- VERTICAL (Grow: T -> B, Deplete: B -> T)
     elseif self.orientation == "VERTICAL" then
-      align1, align2   = "TOPLEFT", "TOPRIGHT";
-      alignSpark       = "TOP";
-      yProgress    = self:GetHeight() * progress;
-      sparkOffset   = -yProgress;
+      align1, align2  = "TOPLEFT", "TOPRIGHT";
+      alignSpark      = "TOP";
+      yProgress       = self:GetHeight() * progress;
+      sparkOffset     = -yProgress;
 
     -- VERTICAL_INVERSE (Grow: B -> T, Deplete: T -> B)
     elseif self.orientation == "VERTICAL_INVERSE" then
-      align1, align2   = "BOTTOMLEFT", "BOTTOMRIGHT";
-      alignSpark       = "BOTTOM";
-      yProgress    = self:GetHeight() * progress;
-      sparkOffset   = yProgress;
+      align1, align2  = "BOTTOMLEFT", "BOTTOMRIGHT";
+      alignSpark      = "BOTTOM";
+      yProgress       = self:GetHeight() * progress;
+      sparkOffset     = yProgress;
     end
 
     local sparkMirror = self.spark.sparkMirror;
@@ -315,6 +317,7 @@ local barPrototype = {
       self.spark:ClearAllPoints();
       self.spark:SetPoint("CENTER", self, alignSpark, sparkOffset + (self.spark.sparkOffsetX or 0), self.spark.sparkOffsetY or 0);
     end
+
     if yProgress then
       self.fg:SetHeight(yProgress > 0 and yProgress or 0.0001);
       self.spark:ClearAllPoints();
@@ -326,6 +329,7 @@ local barPrototype = {
       or (sparkHidden == "FULL" and progress < 1)
       or (sparkHidden == "EMPTY" and progress > 0)
       or (sparkHidden == "BOTH" and progress < 1 and progress > 0);
+
     if (sparkVisible) then
       self.spark:Show();
     else
@@ -342,18 +346,20 @@ local barPrototype = {
   ["SetMinMaxValues"] = function(self, minVal, maxVal)
     local update = false;
     if minVal and type(minVal) == "number" then
-      self.min   = minVal;
-      update    = true;
+      self.min = minVal;
+      update = true;
     end
+
     if maxVal and type(maxVal) == "number" then
-      self.max   = maxVal;
-      update    = true;
+      self.max = maxVal;
+      update = true;
     end
 
     if update then
       self:Update();
     end
   end,
+
   ["GetMinMaxValues"] = function(self)
     return self.min, self.max
   end,
@@ -362,10 +368,10 @@ local barPrototype = {
   ["SetValue"] = function(self, value)
     if value and type(value) == "number" then
       self.value = value;
-
       self:Update();
     end
   end,
+
   ["GetValue"] = function(self)
     return self.value;
   end,
@@ -378,10 +384,10 @@ local barPrototype = {
       or orientation == "VERTICAL_INVERSE"
     then
       self.orientation = orientation;
-
       self:Update();
     end
   end,
+
   ["GetOrientation"] = function(self)
     return self.orientation;
   end,
@@ -390,10 +396,10 @@ local barPrototype = {
   ["SetRotatesTexture"] = function(self, rotate)
     if rotate and type(rotate) == "boolean" then
       self.rotate = rotate;
-
       self:Update();
     end
   end,
+
   ["GetRotatesTexture"] = function(self)
     return self.rotate;
   end,
@@ -403,6 +409,7 @@ local barPrototype = {
     self.fg:SetTexture(texture);
     self.bg:SetTexture(texture);
   end,
+
   ["GetStatusBarTexture"] = function(self)
     return self.fg:GetTexture();
   end,
@@ -411,6 +418,7 @@ local barPrototype = {
   ["SetForegroundColor"] = function(self, r, g, b, a)
     self.fg:SetVertexColor(r, g, b, a);
   end,
+
   ["GetForegroundColor"] = function(self)
     return self.fg:GetVertexColor();
   end,
@@ -419,6 +427,7 @@ local barPrototype = {
   ["SetBackgroundColor"] = function(self, r, g, b, a)
     self.bg:SetVertexColor(r, g, b, a);
   end,
+
   ["GetBackgroundColor"] = function(self)
     return self.bg:GetVertexColor();
   end,
@@ -427,22 +436,25 @@ local barPrototype = {
   ["SetTexture"] = function(self, texture)
     self:SetStatusBarTexture(texture);
   end,
+
   ["GetTexture"] = function(self)
     return self:GetStatusBarTexture();
   end,
+
   ["SetVertexColor"] = function(self, r, g, b, a)
     self:SetForegroundColor(r, g, b, a);
   end,
+
   ["GetVertexColor"] = function(self)
     return self.fg:GetVertexColor();
   end,
 
   -- Internal variables
-  ["min"]     = 0,
-  ["max"]     = 1,
-  ["value"]     = 0.5,
-  ["rotate"]     = true,
-  ["orientation"]  = "HORIZONTAL",
+  ["min"] = 0,
+  ["max"] = 1,
+  ["value"] = 0.5,
+  ["rotate"] = true,
+  ["orientation"] = "HORIZONTAL",
 }
 
 -- Called when first creating a new region/display
@@ -561,10 +573,9 @@ local function getRotateOffset(object, degrees, point)
   -- Any rotation at all?
   if degrees ~= 0 then
     -- Basic offset
-    local xo, yo;
     local originoffset = object:GetStringHeight() / 2;
-    xo = -1 * originoffset * sin(degrees);
-    yo = originoffset * (cos(degrees) - 1);
+    local xo = -1 * originoffset * sin(degrees);
+    local yo = originoffset * (cos(degrees) - 1);
 
     -- Alignment dependant offset
     if point == "BOTTOM" then
@@ -615,11 +626,8 @@ local function orientHorizontalInverse(region, data)
   -- Save orientation
   bar:SetOrientation(region.orientation);
 
-  -- Temp variable
-  local xo, yo;
-
   -- Align timer text
-  xo, yo = getRotateOffset(timer, textDegrees, "LEFT");
+  local xo, yo = getRotateOffset(timer, textDegrees, "LEFT");
   timer:ClearAllPoints();
   timer:SetPoint("LEFT", bar, "LEFT", 2 + xo, 0 + yo);
 
@@ -670,11 +678,8 @@ local function orientHorizontal(region, data)
   -- Save orientation
   bar:SetOrientation(region.orientation);
 
-  -- Temp variable
-  local xo, yo;
-
   -- Align timer text
-  xo, yo = getRotateOffset(timer, textDegrees, "RIGHT");
+  local xo, yo = getRotateOffset(timer, textDegrees, "RIGHT");
   timer:ClearAllPoints();
   timer:SetPoint("RIGHT", bar, "RIGHT", -2 + xo, 0 + yo);
 
@@ -724,11 +729,8 @@ local function orientVerticalInverse(region, data)
   -- Save orientation
   bar:SetOrientation("VERTICAL_INVERSE");
 
-  -- Temp variable
-  local xo, yo;
-
   -- Align timer text
-  xo, yo = getRotateOffset(timer, textDegrees, "BOTTOM");
+  local xo, yo = getRotateOffset(timer, textDegrees, "BOTTOM");
   timer:ClearAllPoints();
   timer:SetPoint("BOTTOM", bar, "BOTTOM", 0 + xo, 2 + yo);
 
@@ -769,11 +771,8 @@ local function orientVertical(region, data)
   -- Save orientation
   bar:SetOrientation("VERTICAL");
 
-  -- Temp variable
-  local xo, yo;
-
   -- Align timer text
-  xo, yo = getRotateOffset(timer, textDegrees, "TOP");
+  local xo, yo = getRotateOffset(timer, textDegrees, "TOP");
   timer:ClearAllPoints();
   timer:SetPoint("TOP", bar, "TOP", 0 + xo, -2 + yo);
 
@@ -820,6 +819,7 @@ local function UpdateText(region, data)
   if not text.displayTextLeft or #text.displayTextLeft ~= #textStr then
     shouldOrient = true;
   end
+
   if text.displayTextLeft ~= textStr then
     text:SetText(textStr);
     text.displayTextLeft = textStr;
@@ -835,6 +835,7 @@ local function UpdateText(region, data)
   if not timer.displayTextRight or #timer.displayTextRight ~= #textStr then
     shouldOrient = true;
   end
+
   if timer.displayTextRight ~= textStr then
     timer:SetText(textStr);
     timer.displayTextRight = textStr;
@@ -886,10 +887,10 @@ local function modify(parent, region, data)
       edgeSize = data.borderSize,
       bgFile = SharedMedia:Fetch("background", data.borderBackdrop) or "",
       insets = {
-        left   = data.borderInset,
-        right   = data.borderInset,
-        top   = data.borderInset,
-        bottom   = data.borderInset,
+        left = data.borderInset,
+        right = data.borderInset,
+        top = data.borderInset,
+        bottom = data.borderInset,
       },
     });
     border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
@@ -943,11 +944,9 @@ local function modify(parent, region, data)
     self.color_a = a;
     self.bar:SetForegroundColor(r, g, b, a);
   end
+
   region.GetColor = region.GetColor or function(self)
-    return   self.color_r,
-      self.color_g,
-      self.color_b,
-      self.color_a;
+    return self.color_r, self.color_g, self.color_b, self.color_a
   end
   region:Color(data.barColor[1], data.barColor[2], data.barColor[3], data.barColor[4]);
 
