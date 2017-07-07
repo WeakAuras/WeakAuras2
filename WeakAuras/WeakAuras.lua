@@ -355,6 +355,7 @@ local blockedFunctions = {
   hash_SlashCmdList = true,
   CreateMacro = true,
   SetBindingMacro = true,
+  GuildDisband = true,
 }
 
 local overrideFunctions = {
