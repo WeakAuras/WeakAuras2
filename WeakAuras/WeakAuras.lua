@@ -356,6 +356,7 @@ local blockedFunctions = {
   CreateMacro = true,
   SetBindingMacro = true,
   GuildDisband = true,
+  GuildUninvite = true,
 }
 
 local overrideFunctions = {
