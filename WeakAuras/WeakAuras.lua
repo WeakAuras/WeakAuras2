@@ -4342,12 +4342,13 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
   if (anchorFrameType == "SELECTFRAME" and anchorFrameFrame) then
     if(anchorFrameFrame:sub(1, 10) == "WeakAuras:") then
       local frame_name = anchorFrameFrame:sub(11);
-      if (frame == id) then
+      if (frame_name == id) then
         return parent;
       end
       if(regions[frame_name]) then
         return regions[frame_name].region;
       end
+      postponeAnchor(id);
     else
       if (_G[anchorFrameFrame]) then
         return _G[anchorFrameFrame];
@@ -4367,6 +4368,7 @@ function WeakAuras.AnchorFrame(data, region, parent)
   else
     region:SetParent(frame);
   end
+  region:ClearAllPoints();
   region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
   if(data.frameStrata == 1) then
     region:SetFrameStrata(region:GetParent():GetFrameStrata());
