@@ -70,6 +70,8 @@ local function create(parent)
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
+
   region.texture:SetTexture(data.texture);
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
@@ -80,8 +82,6 @@ local function modify(parent, region, data)
   region.scaley = 1;
   region.texture:SetBlendMode(data.blendMode);
   --region.texture:SetRotation((data.rotation / 180) * math.pi);
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
 
   local function GetRotatedPoints(degrees)
     local angle = rad(135 - degrees);

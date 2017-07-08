@@ -31,6 +31,8 @@ local function create(parent)
 
   region.trays = {};
 
+  WeakAuras.regionPrototype.create(region);
+
   return region;
 end
 
@@ -44,6 +46,8 @@ function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
+
   local background = region.background;
 
   local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
@@ -111,10 +115,6 @@ local function modify(parent, region, data)
     selfPoint = "CENTER";
   end
   data.selfPoint = selfPoint;
-
-  region:ClearAllPoints();
-
-  WeakAuras.AnchorFrame(data, region, parent);
 
   region.controlledRegions = {};
 
@@ -270,11 +270,8 @@ local function modify(parent, region, data)
         tray:SetWidth(regionData.data.width);
         tray:SetHeight(regionData.data.height);
 
-        local point, relativeTo, relativePoint, xOfs, yOfs = regionData.region:GetPoint();
-        if (relativeTo ~= tray or relativePoint ~= selfPoint or point ~= selfPoint or xOfs ~= 0 or yOfs ~= 0) then
-          regionData.region:ClearAllPoints();
-          regionData.region:SetPoint(selfPoint, tray, selfPoint);
-        end
+        regionData.region:SetAnchor(selfPoint, tray, selfPoint);
+        regionData.region:SetOffset(0, 0);
       end
     end
   end

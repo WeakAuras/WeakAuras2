@@ -711,8 +711,6 @@ local function modify(parent, region, data)
   foreground:SetWidth(data.width);
   foreground:SetHeight(data.height);
 
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent)
   region:SetAlpha(data.alpha);
 
   background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);

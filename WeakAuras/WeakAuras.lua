@@ -2387,18 +2387,12 @@ function WeakAuras.SetRegion(data, cloneId)
       end
 
       local anim_cancelled = WeakAuras.CancelAnimation(region, true, true, true, true, true);
-      local pSelfPoint, pAnchor, pAnchorPoint, pX, pY = region:GetPoint(1);
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);
       local parentRegionType = data.parent and db.displays[data.parent] and db.displays[data.parent].regionType;
       WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, parent, parentRegionType)
 
-
-      if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" and pSelfPoint and pAnchor and pAnchorPoint and pX and pY) then
-        region:ClearAllPoints();
-        region:SetPoint(pSelfPoint, pAnchor, pAnchorPoint, pX, pY);
-      end
 
       data.animation = data.animation or {};
       data.animation.start = data.animation.start or {type = "none"};
@@ -2663,8 +2657,12 @@ function WeakAuras.UpdateAnimations()
     local progress = anim.inverse and (1 - anim.progress) or anim.progress;
     WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
     if(anim.translateFunc) then
-      anim.region:ClearAllPoints();
-      anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.translateFunc(progress, anim.startX, anim.startY, anim.dX, anim.dY));
+      if (anim.region.SetOffsetAnim) then
+        anim.region:SetOffsetAnim(anim.translateFunc(progress, 0, 0, anim.dX, anim.dY))
+      else
+        anim.region:ClearAllPoints();
+        anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.translateFunc(progress, anim.startX, anim.startY, anim.dX, anim.dY));
+      end
     end
     if(anim.alphaFunc) then
       anim.region:SetAlpha(anim.alphaFunc(progress, anim.startAlpha, anim.dAlpha));
@@ -2687,8 +2685,12 @@ function WeakAuras.UpdateAnimations()
     WeakAuras.ActivateAuraEnvironment(nil);
     if(finished) then
       if not(anim.loop) then
-        if(anim.startX) then
-          anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
+        if (anim.region.SetOffsetAnim) then
+          anim.region:SetOffsetAnim(0, 0);
+        else
+          if(anim.startX) then
+            anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
+          end
         end
         if(anim.startAlpha) then
           anim.region:SetAlpha(anim.startAlpha);
@@ -2798,7 +2800,11 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       end
       translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
     else
-      region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
+      if (region.SetOffsetAnim) then
+        region:SetOffsetAnim(0, 0);
+      else
+        region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
+      end
     end
     if(anim.use_alpha) then
       if not(anim.alphaType == "custom" and anim.alphaFunc) then
@@ -2930,8 +2936,12 @@ function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, res
 
   if(anim) then
     if(resetPos) then
-      anim.region:ClearAllPoints();
-      anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
+      if (anim.region.SetOffsetAnim) then
+        anim.region:SetOffsetAnim(0, 0);
+      else
+        anim.region:ClearAllPoints();
+        anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
+      end
     end
     if(resetAlpha) then
       anim.region:SetAlpha(anim.startAlpha);
@@ -4310,11 +4320,11 @@ end
 local function postponeAnchor(id)
   postPonedAnchors[id] = true;
   if (not anchorTimer) then
-    anchorTimer = timer:ScheduleTimer(tryAnchorAgain, 5);
+    anchorTimer = timer:ScheduleTimer(tryAnchorAgain, 1);
   end
 end
 
-function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
+local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
   if (personalRessourceDisplayFrame) then
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
   end
@@ -4362,14 +4372,15 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
 end
 
 function WeakAuras.AnchorFrame(data, region, parent)
-  local anchorParent = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
+  local anchorParent = GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
   if (data.anchorFrameParent or data.anchorFrameParent == nil) then
     region:SetParent(anchorParent);
   else
     region:SetParent(frame);
   end
-  region:ClearAllPoints();
-  region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
+
+  region:SetAnchor(data.selfPoint, anchorParent, data.anchorPoint);
+
   if(data.frameStrata == 1) then
     region:SetFrameStrata(region:GetParent():GetFrameStrata());
   else

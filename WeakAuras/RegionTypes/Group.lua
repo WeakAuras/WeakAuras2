@@ -30,7 +30,8 @@ local function create(parent)
   local border = CreateFrame("frame", nil, region);
   region.border = border;
 
-  -- Return new region
+  WeakAuras.regionPrototype.create(region);
+
   return region;
 end
 
@@ -70,6 +71,7 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local border = region.border;
 
@@ -90,10 +92,6 @@ local function modify(parent, region, data)
   region.bly = lowest;
   region.trx = rightest;
   region.try = highest;
-
-  -- Reset position and size
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
 
   -- Adjust frame-level sorting
   local frameLevel = 1

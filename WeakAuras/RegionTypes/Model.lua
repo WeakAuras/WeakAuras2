@@ -91,12 +91,11 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local model, border = region.model, region.border;
 
   -- Reset position and size
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
   region:SetWidth(data.width);
   region:SetHeight(data.height);
   region.width = data.width;
