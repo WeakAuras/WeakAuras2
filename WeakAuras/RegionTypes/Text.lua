@@ -53,6 +53,7 @@ local function create(parent)
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   region.useAuto = WeakAuras.CanHaveAuto(data);
@@ -83,9 +84,6 @@ local function modify(parent, region, data)
   text:ClearAllPoints();
   text:SetPoint(data.justify, region, data.justify);
 
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
-
   local function SetText(textStr)
     if(textStr ~= text.displayText) then
       if text:GetFont() then
@@ -99,9 +97,6 @@ local function modify(parent, region, data)
       region:SetHeight(data.height);
       if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
         WeakAuras.regions[data.parent].region:ControlChildren();
-      else
-        region:ClearAllPoints();
-        WeakAuras.AnchorFrame(data, region, parent);
       end
     end
     text.displayText = textStr;
@@ -220,6 +215,7 @@ WeakAuras.RegisterRegionType("text", create, modify, default, properties);
 -- Fallback region type
 
 local function fallbackmodify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize, data.outline and "OUTLINE" or nil);
@@ -232,9 +228,6 @@ local function fallbackmodify(parent, region, data)
 
   region:SetWidth(text:GetWidth());
   region:SetHeight(text:GetHeight());
-
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
 end
 
 WeakAuras.RegisterRegionType("fallback", create, fallbackmodify, default);

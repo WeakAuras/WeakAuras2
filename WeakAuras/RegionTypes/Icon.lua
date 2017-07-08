@@ -252,6 +252,7 @@ local function configureText(fontString, icon, enabled, point, width, height, co
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   local button, icon, cooldown, stacks, text2 = region.button, region.icon, region.cooldown, region.stacks, region.text2;
 
   region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
@@ -279,10 +280,6 @@ local function modify(parent, region, data)
   region.scalex = 1;
   region.scaley = 1;
   icon:SetAllPoints();
-
-  region:ClearAllPoints();
-
-  WeakAuras.AnchorFrame(data, region, parent);
 
   configureText(stacks, icon, data.text1Enabled, data.text1Point, data.width, data.height, data.text1Containment, data.text1Font, data.text1FontSize, data.text1FontFlags, data.text1Color);
   configureText(text2, icon, data.text2Enabled, data.text2Point, data.width, data.height, data.text2Containment, data.text2Font, data.text2FontSize, data.text2FontFlags, data.text2Color);

@@ -873,10 +873,6 @@ local function modify(parent, region, data)
   region.progressPrecision = data.progressPrecision;
   region.totalPrecision = data.totalPrecision;
 
-  -- Reset anchors
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
-
   -- Set overall alpha
   region:SetAlpha(data.alpha);
 
