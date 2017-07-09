@@ -137,6 +137,8 @@ local function ConstructTextEditor(frame)
             -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
             --IndentationLib.disable(editor.editBox)
             IndentationLib.enable(editor.editBox, get_scheme(selected_theme), 4)
+            -- switches directly to the new color scheme
+            editor.editBox:SetText(editor.editBox:GetText())
           end
         }
         table.insert(menu, item)
