@@ -2679,8 +2679,10 @@ function WeakAuras.UpdateAnimations()
     if(anim.rotateFunc and anim.region.Rotate) then
       anim.region:Rotate(anim.rotateFunc(progress, anim.startRotation, anim.rotate));
     end
-    if(anim.colorFunc and anim.region.Color) then
-      anim.region:Color(anim.colorFunc(progress, anim.startR, anim.startG, anim.startB, anim.startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA));
+    if(anim.colorFunc and anim.region.ColorAnim) then
+      local startR, startG, startB, startA = anim.region:GetColor();
+      startR, startG, startB, startA = startR or 1, startG or 1, startB or 1, startA or 1;
+      anim.region:ColorAnim(anim.colorFunc(progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA));
     end
     WeakAuras.ActivateAuraEnvironment(nil);
     if(finished) then
@@ -2708,10 +2710,8 @@ function WeakAuras.UpdateAnimations()
             anim.region:Rotate(anim.startRotation);
           end
         end
-        if(anim.startR and anim.startG and anim.startB and anim.startA) then
-          if(anim.region.Color) then
-            anim.region:Color(anim.startR, anim.startG, anim.startB, anim.startA);
-          end
+        if(anim.region.ColorAnim) then
+          anim.region:ColorAnim(nil);
         end
         animations[id] = nil;
       end
@@ -2748,7 +2748,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
   end
   if(valid) then
     local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation;
-    local startR, startG, startB, startA, translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc;
+    local translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc;
     if(animations[key]) then
       if(animations[key].type == type and not loop) then
         return "no replace";
@@ -2767,10 +2767,6 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.colorG = anim.colorG or 1;
       anim.colorB = anim.colorB or 1;
       anim.colorA = anim.colorA or 1;
-      startR = animations[key].startR;
-      startG = animations[key].startG;
-      startB = animations[key].startB;
-      startA = animations[key].startA;
     else
       anim.x = anim.x or 0;
       anim.y = anim.y or 0;
@@ -2786,11 +2782,6 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       anim.colorG = anim.colorG or 1;
       anim.colorB = anim.colorB or 1;
       anim.colorA = anim.colorA or 1;
-      if(region.GetColor) then
-        startR, startG, startB, startA = region:GetColor();
-      else
-        startR, startG, startB, startA = 1, 1, 1, 1;
-      end
     end
 
     if(anim.use_translate) then
@@ -2839,8 +2830,8 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
       end
       colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
-    elseif(region.Color) then
-      region:Color(startR, startG, startB, startA);
+    elseif(region.ColorAnim) then
+      region:ColorAnim(nil);
     end
 
     duration = WeakAuras.ParseNumber(anim.duration) or 0;
@@ -2870,10 +2861,6 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     animations[key].startWidth = startWidth
     animations[key].startHeight = startHeight
     animations[key].startRotation = startRotation
-    animations[key].startR = startR
-    animations[key].startG = startG
-    animations[key].startB = startB
-    animations[key].startA = startA
     animations[key].dX = (anim.use_translate and anim.x)
     animations[key].dY = (anim.use_translate and anim.y)
     animations[key].dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
@@ -2957,8 +2944,8 @@ function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, res
     if(resetRotation and anim.region.Rotate) then
       anim.region:Rotate(anim.startRotation);
     end
-    if(resetColor and anim.region.Color) then
-      anim.region:Color(anim.startR, anim.startG, anim.startB, anim.startA);
+    if(resetColor and anim.region.ColorAnim) then
+      anim.region:ColorAnim(nil);
     end
 
     animations[key] = nil;

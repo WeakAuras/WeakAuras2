@@ -149,7 +149,21 @@ local function modify(parent, region, data)
     region.color_g = g;
     region.color_b = b;
     region.color_a = a;
-    text:SetTextColor(r, g, b, a);
+    if (r or g or b) then
+      a = a or 1;
+    end
+    text:SetTextColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a);
+  end
+
+  function region:ColorAnim(r, g, b, a)
+    region.color_anim_r = r;
+    region.color_anim_g = g;
+    region.color_anim_b = b;
+    region.color_anim_a = a;
+    if (r or g or b) then
+      a = a or 1;
+    end
+    text:SetTextColor(r or region.color_r, g or region.color_g, b or region.color_b, a or region.color_a);
   end
 
   function region:GetColor()

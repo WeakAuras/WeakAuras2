@@ -938,7 +938,15 @@ local function modify(parent, region, data)
     self.color_g = g;
     self.color_b = b;
     self.color_a = a;
-    self.bar:SetForegroundColor(r, g, b, a);
+    self.bar:SetForegroundColor(self.color_anim_r or r, self.color_anim_g or g, self.color_anim_b or b, self.color_anim_a or a);
+  end
+
+  region.ColorAnim = function(self, r, g, b, a)
+    self.color_anim_r = r;
+    self.color_anim_g = g;
+    self.color_anim_b = b;
+    self.color_anim_a = a;
+    self.bar:SetForegroundColor(r or self.color_r, g or self.color_g, b or self.color_b, a or self.color_a);
   end
 
   region.GetColor = region.GetColor or function(self)
