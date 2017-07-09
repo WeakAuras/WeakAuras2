@@ -2545,7 +2545,8 @@ WeakAuras.event_prototypes = {
       "GCD_START",
       "GCD_CHANGE",
       "GCD_END",
-      "GCD_UPDATE"
+      "GCD_UPDATE",
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     name = L["Global Cooldown"],
     init = function(trigger)
