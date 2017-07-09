@@ -109,6 +109,7 @@ local function ConstructTextEditor(frame)
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   cancel:SetScript("OnClick", function() group:CancelClose() end);
   cancel:SetPoint("BOTTOMRIGHT", -27, 13);
+  cancel:SetFrameLevel(cancel:GetFrameLevel() + 1)
   cancel:SetHeight(20);
   cancel:SetWidth(100);
   cancel:SetText(L["Cancel"]);
@@ -116,6 +117,7 @@ local function ConstructTextEditor(frame)
   local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   close:SetScript("OnClick", function() group:Close() end);
   close:SetPoint("RIGHT", cancel, "LEFT", -10, 0)
+  close:SetFrameLevel(close:GetFrameLevel() + 1)
   close:SetHeight(20);
   close:SetWidth(100);
   close:SetText(L["Done"]);
