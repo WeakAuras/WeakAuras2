@@ -115,8 +115,10 @@ local function ConstructTextEditor(frame)
   close:SetWidth(100);
   close:SetText(L["Done"]);
 
-  local selected_theme = "Monokai"
-  IndentationLib.enable(editor.editBox, get_scheme(selected_theme), 4)
+  if not WeakAurasSaved["editor_theme"] then
+    WeakAurasSaved["editor_theme"] = "Monokai"
+  end
+  IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved["editor_theme"]), 4)
   local theme_frame = CreateFrame("Button", "WAThemeButton", close, "UIPanelButtonTemplate")
   theme_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   theme_frame:SetHeight(20)
@@ -131,13 +133,12 @@ local function ConstructTextEditor(frame)
         local item = {
           text = k,
           isNotRadio = false,
-          checked = k == selected_theme,
+          checked = (WeakAurasSaved["editor_theme"] == k and true) or false,
           func = function()
-            selected_theme = k
+            WeakAurasSaved["editor_theme"] = k
             -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
             --IndentationLib.disable(editor.editBox)
-            IndentationLib.enable(editor.editBox, get_scheme(selected_theme), 4)
-            -- switches directly to the new color scheme
+            IndentationLib.enable(editor.editBox, get_scheme(k), 4)
             editor.editBox:SetText(editor.editBox:GetText())
           end
         }
