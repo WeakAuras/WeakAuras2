@@ -17,63 +17,68 @@ local textEditor
 local valueFromPath = WeakAuras.ValueFromPath;
 local valueToPath = WeakAuras.ValueToPath;
 
-local editor_themes = {
-  ["Standard"] = {
-    ["Table"] = "|c00ff3333",
-    ["Arithmetic"] = "|c00ff3333",
-    ["Relational"] = "|c00ff3333",
-    ["Logical"] = "|c004444ff",
-    ["Special"] = "|c00ff3333",
-    ["Keyword"] =  "|c004444ff",
-    ["Comment"] = "|c0000aa00",
-    ["Number"] = "|c00ff9900",
-    ["String"] = "|c00999999"
-  },
-  ["Monokai"] = {
-    ["Table"] = "|c00ffffff",
-    ["Arithmetic"] = "|c00f92672",
-    ["Relational"] = "|c00ff3333",
-    ["Logical"] = "|c00f92672",
-    ["Special"] = "|c0066d9ef",
-    ["Keyword"] =  "|c00f92672",
-    ["Comment"] = "|c0075715e",
-    ["Number"] = "|c00ae81ff",
-    ["String"] = "|c00e6db74"
+if not WeakAurasSaved["editor_themes"] then
+WeakAurasSaved["editor_themes"] = {
+    ["selected"] = "Monokai",
+    ["themes"] = {
+      ["Standard"] = {
+        ["Table"] = "|c00ff3333",
+        ["Arithmetic"] = "|c00ff3333",
+        ["Relational"] = "|c00ff3333",
+        ["Logical"] = "|c004444ff",
+        ["Special"] = "|c00ff3333",
+        ["Keyword"] =  "|c004444ff",
+        ["Comment"] = "|c0000aa00",
+        ["Number"] = "|c00ff9900",
+        ["String"] = "|c00999999"
+      },
+      ["Monokai"] = {
+        ["Table"] = "|c00ffffff",
+        ["Arithmetic"] = "|c00f92672",
+        ["Relational"] = "|c00ff3333",
+        ["Logical"] = "|c00f92672",
+        ["Special"] = "|c0066d9ef",
+        ["Keyword"] =  "|c00f92672",
+        ["Comment"] = "|c0075715e",
+        ["Number"] = "|c00ae81ff",
+        ["String"] = "|c00e6db74"
+      }
+    }
   }
-}
+end
 
 local function get_scheme(theme_name)
   local color_scheme = {
-    [IndentationLib.tokens.TOKEN_SPECIAL] = editor_themes[theme_name]["Special"],
-    [IndentationLib.tokens.TOKEN_KEYWORD] = editor_themes[theme_name]["Keyword"],
-    [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = editor_themes[theme_name]["Comment"],
-    [IndentationLib.tokens.TOKEN_COMMENT_LONG] = editor_themes[theme_name]["Comment"],
-    [IndentationLib.tokens.TOKEN_NUMBER] = editor_themes[theme_name]["Number"],
+    [IndentationLib.tokens.TOKEN_SPECIAL] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Special"],
+    [IndentationLib.tokens.TOKEN_KEYWORD] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Keyword"],
+    [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Comment"],
+    [IndentationLib.tokens.TOKEN_COMMENT_LONG] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Comment"],
+    [IndentationLib.tokens.TOKEN_NUMBER] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Number"],
 
-    [IndentationLib.tokens.TOKEN_STRING] = editor_themes[theme_name]["String"],
-    [".."] = editor_themes[theme_name]["String"],
+    [IndentationLib.tokens.TOKEN_STRING] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["String"],
+    [".."] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["String"],
 
-    ["..."] = editor_themes[theme_name]["Table"],
-    ["{"] = editor_themes[theme_name]["Table"],
-    ["}"] = editor_themes[theme_name]["Table"],
-    ["["] = editor_themes[theme_name]["Table"],
-    ["]"] = editor_themes[theme_name]["Table"],
+    ["..."] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
+    ["{"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
+    ["}"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
+    ["["] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
+    ["]"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
 
-    ["+"] = editor_themes[theme_name]["Arithmetic"],
-    ["-"] = editor_themes[theme_name]["Arithmetic"],
-    ["/"] = editor_themes[theme_name]["Arithmetic"],
-    ["*"] = editor_themes[theme_name]["Arithmetic"],
+    ["+"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
+    ["-"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
+    ["/"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
+    ["*"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
 
-    ["=="] = editor_themes[theme_name]["Relational"],
-    ["<"] = editor_themes[theme_name]["Relational"],
-    ["<="] = editor_themes[theme_name]["Relational"],
-    [">"] = editor_themes[theme_name]["Relational"],
-    [">="] = editor_themes[theme_name]["Relational"],
-    ["~="] = editor_themes[theme_name]["Relational"],
+    ["=="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
+    ["<"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
+    ["<="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
+    [">"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
+    [">="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
+    ["~="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
 
-    ["and"] = editor_themes[theme_name]["Logical"],
-    ["or"] = editor_themes[theme_name]["Logical"],
-    ["not"] = editor_themes[theme_name]["Logical"],
+    ["and"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Logical"],
+    ["or"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Logical"],
+    ["not"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Logical"],
     [0] = "|r",
   }
   return color_scheme
@@ -115,10 +120,7 @@ local function ConstructTextEditor(frame)
   close:SetWidth(100);
   close:SetText(L["Done"]);
 
-  if not WeakAurasSaved["editor_theme"] then
-    WeakAurasSaved["editor_theme"] = "Monokai"
-  end
-  IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved["editor_theme"]), 4)
+  IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved["editor_themes"]["selected"]), 4)
   local theme_frame = CreateFrame("Button", "WAThemeButton", close, "UIPanelButtonTemplate")
   theme_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   theme_frame:SetHeight(20)
@@ -129,13 +131,13 @@ local function ConstructTextEditor(frame)
   theme_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
       local menu = {}
-      for k, v in pairs(editor_themes) do
+      for k, v in pairs(WeakAurasSaved["editor_themes"]["themes"]) do
         local item = {
           text = k,
           isNotRadio = false,
-          checked = (WeakAurasSaved["editor_theme"] == k and true) or false,
+          checked = (WeakAurasSaved["editor_themes"]["selected"] == k and true) or false,
           func = function()
-            WeakAurasSaved["editor_theme"] = k
+            WeakAurasSaved["editor_themes"]["selected"] = k
             -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
             --IndentationLib.disable(editor.editBox)
             IndentationLib.enable(editor.editBox, get_scheme(k), 4)
