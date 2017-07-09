@@ -1292,6 +1292,7 @@ templates.class.PRIEST = {
         { spell = 204263, type = "ability", talent = 7}, -- Shining Force
         { spell = 207946, type = "ability"}, -- Light's Wrath
         { spell = 214621, type = "ability", talent = 3}, -- Schism
+        { spell = 246287, type = "ability", talent = 21}, -- Evangelism
       },
       icon = 253400
     },
@@ -1380,7 +1381,6 @@ templates.class.PRIEST = {
         { spell = 204883, type = "ability", talent = 21}, -- Circle of Healing
         { spell = 208065, type = "ability"}, -- Light of T'uure
         { spell = 214121, type = "ability", talent = 5}, -- Body and Mind
-        { spell = 246287, type = "ability", talent = 21}, -- Evangelism
       },
       icon = 135937
     },
