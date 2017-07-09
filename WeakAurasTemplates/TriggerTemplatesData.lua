@@ -1250,6 +1250,7 @@ templates.class.PRIEST = {
         { spell = 198069, type = "buff", unit = "player" }, -- Power of the Dark Side
         { spell = 198076, type = "buff", unit = "player" }, -- Sins of the Many
         { spell = 216135, type = "buff", unit = "player" }, -- Vestments of Discipline
+        { spell = 123254, type = "buff", unit = "player", talent = 1 }, -- Twist of Fate
       },
       icon = 458720
     },
@@ -1335,7 +1336,6 @@ templates.class.PRIEST = {
         { spell = 111759, type = "buff", unit = "player" }, -- Levitate
         { spell = 114255, type = "buff", unit = "player", talent = 13 }, -- Surge of Light
         { spell = 121557, type = "buff", unit = "player", talent = 4 }, -- Angelic Feather
-        { spell = 123254, type = "buff", unit = "player", talent = 1 }, -- Twist of Fate
         { spell = 196490, type = "buff", unit = "player" }, -- Power of the Naaru
         { spell = 196644, type = "buff", unit = "player" }, -- Blessing of T'uure
         { spell = 197030, type = "buff", unit = "player" }, -- Divinity
