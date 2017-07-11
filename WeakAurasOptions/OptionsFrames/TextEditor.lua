@@ -139,35 +139,46 @@ local function ConstructTextEditor(frame)
   menu_frame:SetPoint("CENTER", settings_frame, "Center")
   menu_frame:Hide()
 
+  local function settings_menu()
+    local menu = {}
+    -- themes options
+    for k, v in pairs(WeakAurasSaved["editor_themes"]["themes"]) do
+      local item = {
+        text = k,
+        isNotRadio = false,
+        checked = (WeakAurasSaved["editor_themes"]["selected"] == k and true) or false,
+        func = function()
+          WeakAurasSaved["editor_themes"]["selected"] = k
+          -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
+          --IndentationLib.disable(editor.editBox)
+          IndentationLib.enable(editor.editBox, get_scheme(k), 4)
+          editor.editBox:SetText(editor.editBox:GetText())
+        end
+    }
+    table.insert(menu, item)
+    end
+    -- bracket matching option
+    table.insert(menu, {
+      text = "Bracket Matching",
+      isNotRadio = true,
+      checked = WeakAurasSaved["bracket_matching"],
+      func = function()
+        WeakAurasSaved["bracket_matching"] = not WeakAurasSaved["bracket_matching"]
+      end
+    })
+    return menu
+  end
+
+  local is_settings_open = false
   settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
-      local menu = {}
-      -- themes options
-      for k, v in pairs(WeakAurasSaved["editor_themes"]["themes"]) do
-        local item = {
-          text = k,
-          isNotRadio = false,
-          checked = (WeakAurasSaved["editor_themes"]["selected"] == k and true) or false,
-          func = function()
-            WeakAurasSaved["editor_themes"]["selected"] = k
-            -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
-            --IndentationLib.disable(editor.editBox)
-            IndentationLib.enable(editor.editBox, get_scheme(k), 4)
-            editor.editBox:SetText(editor.editBox:GetText())
-          end
-        }
-        table.insert(menu, item)
+        if is_settings_open then
+          ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 0)
+          is_settings_open = false
+        else
+          EasyMenu(settings_menu(), menu_frame, settings_frame, 0, 0, "MENU")
+          is_settings_open = true
       end
-      -- bracket matching option
-      table.insert(menu, {
-        text = "Bracket Matching",
-        isNotRadio = true,
-        checked = WeakAurasSaved["bracket_matching"],
-        func = function()
-          WeakAurasSaved["bracket_matching"] = not WeakAurasSaved["bracket_matching"]
-        end
-      })
-      EasyMenu(menu, menu_frame, settings_frame, 0, 0, "MENU")
     end
   end)
 
