@@ -126,14 +126,20 @@ local function ConstructTextEditor(frame)
   close:SetText(L["Done"]);
 
   IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved["editor_themes"]["selected"]), 4)
-  local theme_frame = CreateFrame("Button", "WAThemeButton", close, "UIPanelButtonTemplate")
-  theme_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
-  theme_frame:SetHeight(20)
-  theme_frame:SetWidth(100)
-  theme_frame:SetText("Settings")
-  theme_frame:EnableMouse(true)
-  theme_frame:RegisterForClicks("AnyDown")
-  theme_frame:SetScript("OnClick", function(self, button, down)
+
+  local settings_frame = CreateFrame("Button", "WASettingsButton", close, "UIPanelButtonTemplate")
+  settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
+  settings_frame:SetHeight(20)
+  settings_frame:SetWidth(100)
+  settings_frame:SetText("Settings")
+  settings_frame:EnableMouse(true)
+  settings_frame:RegisterForClicks("AnyDown")
+
+  local menu_frame = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
+  menu_frame:SetPoint("CENTER", settings_frame, "Center")
+  menu_frame:Hide()
+
+  settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
       local menu = {}
       -- themes options
@@ -161,10 +167,7 @@ local function ConstructTextEditor(frame)
           WeakAurasSaved["bracket_matching"] = not WeakAurasSaved["bracket_matching"]
         end
       })
-      local menu_frame = CreateFrame("Frame", "ThemeMenuFrame", theme_frame, "UIDropDownMenuTemplate")
-      menu_frame:SetPoint("CENTER", theme_frame, "Center")
-      menu_frame:Hide()
-      EasyMenu(menu, menu_frame, theme_frame, 0, 0, "MENU")
+      EasyMenu(menu, menu_frame, settings_frame, 0, 0, "MENU")
     end
   end)
 
