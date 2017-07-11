@@ -209,33 +209,6 @@ local function ConstructTextEditor(frame)
     end
   end)
 
-  -- bracket mathcing, saving (ctrl + s) and closing (esc)
-  editor.editBox:HookScript("OnKeyDown", function(_, key)
-    if IsControlKeyDown() and key == "S" then
-      close:Click("LeftButton", true)
-      close:Click("LeftButton", false)
-    end
-    if key == "ESCAPE" then
-      cancel:Click("LeftButton", true)
-      cancel:Click("LeftButton", false)
-    end
-  end)
-
-  editor.editBox:HookScript("OnChar", function(_, char)
-    if not IsControlKeyDown() then
-      if char == "(" then
-        editor.editBox:Insert(")")
-        editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
-      elseif char == "{" then
-        editor.editBox:Insert("}")
-        editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
-      elseif char == "[" then
-        editor.editBox:Insert("]")
-        editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
-      end
-    end
-  end)
-
   local editorError = group.frame:CreateFontString(nil, "OVERLAY");
   editorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
   editorError:SetJustifyH("LEFT");
