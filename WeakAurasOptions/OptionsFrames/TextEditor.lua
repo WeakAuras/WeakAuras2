@@ -18,7 +18,7 @@ local valueFromPath = WeakAuras.ValueFromPath;
 local valueToPath = WeakAuras.ValueToPath;
 
 if not WeakAurasSaved["editor_themes"] then
-WeakAurasSaved["editor_themes"] = {
+  WeakAurasSaved["editor_themes"] = {
     ["selected"] = "Monokai",
     ["themes"] = {
       ["Standard"] = {
@@ -46,6 +46,7 @@ WeakAurasSaved["editor_themes"] = {
     }
   }
 end
+
 if not WeakAurasSaved["bracket_matching"] then
   WeakAurasSaved["bracket_matching"] = true
 end
@@ -153,8 +154,8 @@ local function ConstructTextEditor(frame)
           IndentationLib.enable(editor.editBox, get_scheme(k), 4)
           editor.editBox:SetText(editor.editBox:GetText())
         end
-    }
-    table.insert(menu, item)
+      }
+      table.insert(menu, item)
     end
     -- bracket matching option
     table.insert(menu, {
@@ -169,20 +170,19 @@ local function ConstructTextEditor(frame)
     return menu
   end
 
-
   settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
-        if is_settings_open then
-          ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 0)
-          is_settings_open = false
-        else
-          EasyMenu(settings_menu(), menu_frame, settings_frame, 0, 0, "MENU")
-          is_settings_open = true
+      if is_settings_open then
+        ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 0)
+        is_settings_open = false
+      else
+        EasyMenu(settings_menu(), menu_frame, settings_frame, 0, 0, "MENU")
+        is_settings_open = true
       end
     end
   end)
 
-  -- bracket mathcing, saving (ctrl + s) and closing (esc)
+  -- bracket matching, saving (ctrl + s) and closing (esc)
   editor.editBox:HookScript("OnKeyDown", function(_, key)
     if IsControlKeyDown() and key == "S" then
       close:Click("LeftButton", true)
