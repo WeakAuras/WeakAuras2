@@ -126,7 +126,7 @@ local function ConstructTextEditor(frame)
   close:SetText(L["Done"]);
 
   IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved["editor_themes"]["selected"]), 4)
-
+  local is_settings_open = false
   local settings_frame = CreateFrame("Button", "WASettingsButton", close, "UIPanelButtonTemplate")
   settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   settings_frame:SetHeight(20)
@@ -148,6 +148,7 @@ local function ConstructTextEditor(frame)
         isNotRadio = false,
         checked = (WeakAurasSaved["editor_themes"]["selected"] == k and true) or false,
         func = function()
+          is_settings_open = false
           WeakAurasSaved["editor_themes"]["selected"] = k
           -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
           --IndentationLib.disable(editor.editBox)
@@ -169,7 +170,7 @@ local function ConstructTextEditor(frame)
     return menu
   end
 
-  local is_settings_open = false
+
   settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
         if is_settings_open then
