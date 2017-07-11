@@ -150,8 +150,6 @@ local function ConstructTextEditor(frame)
         func = function()
           is_settings_open = false
           WeakAurasSaved["editor_themes"]["selected"] = k
-          -- Caused mentioned overflow bug, the codeeditor text now has to be changed for the given theme to appear
-          --IndentationLib.disable(editor.editBox)
           IndentationLib.enable(editor.editBox, get_scheme(k), 4)
           editor.editBox:SetText(editor.editBox:GetText())
         end
