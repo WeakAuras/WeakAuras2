@@ -164,6 +164,7 @@ local function ConstructTextEditor(frame)
       isNotRadio = true,
       checked = WeakAurasSaved["bracket_matching"],
       func = function()
+        is_settings_open = false
         WeakAurasSaved["bracket_matching"] = not WeakAurasSaved["bracket_matching"]
       end
     })
