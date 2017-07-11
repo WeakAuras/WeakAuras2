@@ -46,6 +46,9 @@ WeakAurasSaved["editor_themes"] = {
     }
   }
 end
+if not WeakAurasSaved["bracket_matching"] then
+  WeakAurasSaved["bracket_matching"] = true
+end
 
 local function get_scheme(theme_name)
   local color_scheme = {
@@ -127,12 +130,13 @@ local function ConstructTextEditor(frame)
   theme_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   theme_frame:SetHeight(20)
   theme_frame:SetWidth(100)
-  theme_frame:SetText("Theme")
+  theme_frame:SetText("Settings")
   theme_frame:EnableMouse(true)
   theme_frame:RegisterForClicks("AnyDown")
   theme_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
       local menu = {}
+      -- themes options
       for k, v in pairs(WeakAurasSaved["editor_themes"]["themes"]) do
         local item = {
           text = k,
@@ -148,6 +152,15 @@ local function ConstructTextEditor(frame)
         }
         table.insert(menu, item)
       end
+      -- bracket matching option
+      table.insert(menu, {
+        text = "Bracket Matching",
+        isNotRadio = true,
+        checked = WeakAurasSaved["bracket_matching"],
+        func = function()
+          WeakAurasSaved["bracket_matching"] = not WeakAurasSaved["bracket_matching"]
+        end
+      })
       local menu_frame = CreateFrame("Frame", "ThemeMenuFrame", theme_frame, "UIDropDownMenuTemplate")
       menu_frame:SetPoint("CENTER", theme_frame, "Center")
       menu_frame:Hide()
@@ -168,7 +181,7 @@ local function ConstructTextEditor(frame)
   end)
 
   editor.editBox:HookScript("OnChar", function(_, char)
-    if not IsControlKeyDown() then
+    if not IsControlKeyDown() and WeakAurasSaved["bracket_matching"] then
       if char == "(" then
         editor.editBox:Insert(")")
         editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
