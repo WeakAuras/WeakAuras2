@@ -17,10 +17,11 @@ local textEditor
 local valueFromPath = WeakAuras.ValueFromPath;
 local valueToPath = WeakAuras.ValueToPath;
 
-if not WeakAurasSaved["editor_themes"] then
-  WeakAurasSaved["editor_themes"] = {
-    ["selected"] = "Monokai",
-    ["themes"] = {
+if not WeakAurasSaved.editor_themes.selected then
+  WeakAurasSaved.editor_themes.selected = "Monokai"
+end
+
+local editor_themes = {
       ["Standard"] = {
         ["Table"] = "|c00ff3333",
         ["Arithmetic"] = "|c00ff3333",
@@ -43,46 +44,40 @@ if not WeakAurasSaved["editor_themes"] then
         ["Number"] = "|c00ae81ff",
         ["String"] = "|c00e6db74"
       }
-    }
-  }
-end
-
-if not WeakAurasSaved["bracket_matching"] then
-  WeakAurasSaved["bracket_matching"] = true
-end
+}
 
 local function get_scheme(theme_name)
   local color_scheme = {
-    [IndentationLib.tokens.TOKEN_SPECIAL] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Special"],
-    [IndentationLib.tokens.TOKEN_KEYWORD] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Keyword"],
-    [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Comment"],
-    [IndentationLib.tokens.TOKEN_COMMENT_LONG] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Comment"],
-    [IndentationLib.tokens.TOKEN_NUMBER] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Number"],
+    [IndentationLib.tokens.TOKEN_SPECIAL] = editor_themes[theme_name]["Special"],
+    [IndentationLib.tokens.TOKEN_KEYWORD] = editor_themes[theme_name]["Keyword"],
+    [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = editor_themes[theme_name]["Comment"],
+    [IndentationLib.tokens.TOKEN_COMMENT_LONG] = editor_themes[theme_name]["Comment"],
+    [IndentationLib.tokens.TOKEN_NUMBER] = editor_themes[theme_name]["Number"],
 
-    [IndentationLib.tokens.TOKEN_STRING] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["String"],
-    [".."] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["String"],
+    [IndentationLib.tokens.TOKEN_STRING] = editor_themes[theme_name]["String"],
+    [".."] = editor_themes[theme_name]["String"],
 
-    ["..."] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
-    ["{"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
-    ["}"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
-    ["["] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
-    ["]"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Table"],
+    ["..."] = editor_themes[theme_name]["Table"],
+    ["{"] = editor_themes[theme_name]["Table"],
+    ["}"] = editor_themes[theme_name]["Table"],
+    ["["] = editor_themes[theme_name]["Table"],
+    ["]"] = editor_themes[theme_name]["Table"],
 
-    ["+"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
-    ["-"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
-    ["/"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
-    ["*"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Arithmetic"],
+    ["+"] = editor_themes[theme_name]["Arithmetic"],
+    ["-"] = editor_themes[theme_name]["Arithmetic"],
+    ["/"] = editor_themes[theme_name]["Arithmetic"],
+    ["*"] = editor_themes[theme_name]["Arithmetic"],
 
-    ["=="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
-    ["<"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
-    ["<="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
-    [">"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
-    [">="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
-    ["~="] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Relational"],
+    ["=="] = editor_themes[theme_name]["Relational"],
+    ["<"] = editor_themes[theme_name]["Relational"],
+    ["<="] = editor_themes[theme_name]["Relational"],
+    [">"] = editor_themes[theme_name]["Relational"],
+    [">="] = editor_themes[theme_name]["Relational"],
+    ["~="] = editor_themes[theme_name]["Relational"],
 
-    ["and"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Logical"],
-    ["or"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Logical"],
-    ["not"] = WeakAurasSaved["editor_themes"]["themes"][theme_name]["Logical"],
+    ["and"] = editor_themes[theme_name]["Logical"],
+    ["or"] = editor_themes[theme_name]["Logical"],
+    ["not"] = editor_themes[theme_name]["Logical"],
     [0] = "|r",
   }
   return color_scheme
@@ -126,15 +121,13 @@ local function ConstructTextEditor(frame)
   close:SetWidth(100);
   close:SetText(L["Done"]);
 
-  IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved["editor_themes"]["selected"]), 4)
-  local is_settings_open = false
+  IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved.editor_themes.selected), 4)
   local settings_frame = CreateFrame("Button", "WASettingsButton", close, "UIPanelButtonTemplate")
   settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   settings_frame:SetHeight(20)
   settings_frame:SetWidth(100)
   settings_frame:SetText("Settings")
   settings_frame:EnableMouse(true)
-  settings_frame:RegisterForClicks("AnyDown")
 
   local menu_frame = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
   menu_frame:SetPoint("CENTER", settings_frame, "Center")
@@ -143,46 +136,41 @@ local function ConstructTextEditor(frame)
   local function settings_menu()
     local menu = {}
     -- themes options
-    for k, v in pairs(WeakAurasSaved["editor_themes"]["themes"]) do
+    for k, v in pairs(editor_themes) do
       local item = {
         text = k,
         isNotRadio = false,
-        checked = (WeakAurasSaved["editor_themes"]["selected"] == k and true) or false,
+        checked = WeakAurasSaved.editor_themes.selected == k,
         func = function()
-          is_settings_open = false
-          WeakAurasSaved["editor_themes"]["selected"] = k
+          WeakAurasSaved.editor_themes.selected = k
           IndentationLib.enable(editor.editBox, get_scheme(k), 4)
           editor.editBox:SetText(editor.editBox:GetText())
         end
-      }
-      table.insert(menu, item)
+    }
+    table.insert(menu, item)
     end
     -- bracket matching option
     table.insert(menu, {
       text = "Bracket Matching",
       isNotRadio = true,
-      checked = WeakAurasSaved["bracket_matching"],
+      checked = WeakAurasSaved.editor_bracket_mathcing,
       func = function()
-        is_settings_open = false
-        WeakAurasSaved["bracket_matching"] = not WeakAurasSaved["bracket_matching"]
+        WeakAurasSaved.editor_bracket_mathcing = not WeakAurasSaved.editor_bracket_mathcing
       end
     })
     return menu
   end
+  EasyMenu(settings_menu(), menu_frame, settings_frame, 0, 0, "MENU")
+  ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 0)
+
 
   settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
-      if is_settings_open then
-        ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 0)
-        is_settings_open = false
-      else
-        EasyMenu(settings_menu(), menu_frame, settings_frame, 0, 0, "MENU")
-        is_settings_open = true
-      end
+        ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 27)
     end
   end)
 
-  -- bracket matching, saving (ctrl + s) and closing (esc)
+  -- bracket mathcing, saving (ctrl + s) and closing (esc)
   editor.editBox:HookScript("OnKeyDown", function(_, key)
     if IsControlKeyDown() and key == "S" then
       close:Click("LeftButton", true)
@@ -195,7 +183,7 @@ local function ConstructTextEditor(frame)
   end)
 
   editor.editBox:HookScript("OnChar", function(_, char)
-    if not IsControlKeyDown() and WeakAurasSaved["bracket_matching"] then
+    if not IsControlKeyDown() and WeakAurasSaved.editor_bracket_mathcing then
       if char == "(" then
         editor.editBox:Insert(")")
         editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
