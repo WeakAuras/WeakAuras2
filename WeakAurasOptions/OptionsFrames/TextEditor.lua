@@ -153,9 +153,9 @@ local function ConstructTextEditor(frame)
     table.insert(menu, {
       text = "Bracket Matching",
       isNotRadio = true,
-      checked = WeakAurasSaved.editor_bracket_mathcing,
+      checked = WeakAurasSaved.editor_bracket_matching,
       func = function()
-        WeakAurasSaved.editor_bracket_mathcing = not WeakAurasSaved.editor_bracket_mathcing
+        WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
       end
     })
     return menu
@@ -170,7 +170,7 @@ local function ConstructTextEditor(frame)
     end
   end)
 
-  -- bracket mathcing, saving (ctrl + s) and closing (esc)
+  -- bracket matching, saving (ctrl + s) and closing (esc)
   editor.editBox:HookScript("OnKeyDown", function(_, key)
     if IsControlKeyDown() and key == "S" then
       close:Click("LeftButton", true)
@@ -183,7 +183,7 @@ local function ConstructTextEditor(frame)
   end)
 
   editor.editBox:HookScript("OnChar", function(_, char)
-    if not IsControlKeyDown() and WeakAurasSaved.editor_bracket_mathcing then
+    if not IsControlKeyDown() and WeakAurasSaved.editor_bracket_matching then
       if char == "(" then
         editor.editBox:Insert(")")
         editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
