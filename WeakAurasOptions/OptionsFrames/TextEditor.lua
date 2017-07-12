@@ -17,70 +17,64 @@ local textEditor
 local valueFromPath = WeakAuras.ValueFromPath;
 local valueToPath = WeakAuras.ValueToPath;
 
-if not WeakAurasSaved.editor_themes.selected then
-  WeakAurasSaved.editor_themes.selected = "Monokai"
-end
-
 local editor_themes = {
-      ["Standard"] = {
-        ["Table"] = "|c00ff3333",
-        ["Arithmetic"] = "|c00ff3333",
-        ["Relational"] = "|c00ff3333",
-        ["Logical"] = "|c004444ff",
-        ["Special"] = "|c00ff3333",
-        ["Keyword"] =  "|c004444ff",
-        ["Comment"] = "|c0000aa00",
-        ["Number"] = "|c00ff9900",
-        ["String"] = "|c00999999"
-      },
-      ["Monokai"] = {
-        ["Table"] = "|c00ffffff",
-        ["Arithmetic"] = "|c00f92672",
-        ["Relational"] = "|c00ff3333",
-        ["Logical"] = "|c00f92672",
-        ["Special"] = "|c0066d9ef",
-        ["Keyword"] =  "|c00f92672",
-        ["Comment"] = "|c0075715e",
-        ["Number"] = "|c00ae81ff",
-        ["String"] = "|c00e6db74"
-      }
+  ["Standard"] = {
+    ["Table"] = "|c00ff3333",
+    ["Arithmetic"] = "|c00ff3333",
+    ["Relational"] = "|c00ff3333",
+    ["Logical"] = "|c004444ff",
+    ["Special"] = "|c00ff3333",
+    ["Keyword"] =  "|c004444ff",
+    ["Comment"] = "|c0000aa00",
+    ["Number"] = "|c00ff9900",
+    ["String"] = "|c00999999"
+  },
+  ["Monokai"] = {
+    ["Table"] = "|c00ffffff",
+    ["Arithmetic"] = "|c00f92672",
+    ["Relational"] = "|c00ff3333",
+    ["Logical"] = "|c00f92672",
+    ["Special"] = "|c0066d9ef",
+    ["Keyword"] =  "|c00f92672",
+    ["Comment"] = "|c0075715e",
+    ["Number"] = "|c00ae81ff",
+    ["String"] = "|c00e6db74"
+  }
 }
 
-local function get_scheme(theme_name)
-  local color_scheme = {
-    [IndentationLib.tokens.TOKEN_SPECIAL] = editor_themes[theme_name]["Special"],
-    [IndentationLib.tokens.TOKEN_KEYWORD] = editor_themes[theme_name]["Keyword"],
-    [IndentationLib.tokens.TOKEN_COMMENT_SHORT] = editor_themes[theme_name]["Comment"],
-    [IndentationLib.tokens.TOKEN_COMMENT_LONG] = editor_themes[theme_name]["Comment"],
-    [IndentationLib.tokens.TOKEN_NUMBER] = editor_themes[theme_name]["Number"],
+local color_scheme = { [0] = "|r" }
+local function set_scheme(theme_name)
+  local theme = editor_themes[theme_name]
+  color_scheme[IndentationLib.tokens.TOKEN_SPECIAL] = theme["Special"]
+  color_scheme[IndentationLib.tokens.TOKEN_KEYWORD] = theme["Keyword"]
+  color_scheme[IndentationLib.tokens.TOKEN_COMMENT_SHORT] = theme["Comment"]
+  color_scheme[IndentationLib.tokens.TOKEN_COMMENT_LONG] = theme["Comment"]
+  color_scheme[IndentationLib.tokens.TOKEN_NUMBER] = theme["Number"]
+  color_scheme[IndentationLib.tokens.TOKEN_STRING] = theme["String"]
 
-    [IndentationLib.tokens.TOKEN_STRING] = editor_themes[theme_name]["String"],
-    [".."] = editor_themes[theme_name]["String"],
+  color_scheme[".."] = theme["String"]
 
-    ["..."] = editor_themes[theme_name]["Table"],
-    ["{"] = editor_themes[theme_name]["Table"],
-    ["}"] = editor_themes[theme_name]["Table"],
-    ["["] = editor_themes[theme_name]["Table"],
-    ["]"] = editor_themes[theme_name]["Table"],
+  color_scheme["..."] = theme["Table"]
+  color_scheme["{"] = theme["Table"]
+  color_scheme["}"] = theme["Table"]
+  color_scheme["["] = theme["Table"]
+  color_scheme["]"] = theme["Table"]
 
-    ["+"] = editor_themes[theme_name]["Arithmetic"],
-    ["-"] = editor_themes[theme_name]["Arithmetic"],
-    ["/"] = editor_themes[theme_name]["Arithmetic"],
-    ["*"] = editor_themes[theme_name]["Arithmetic"],
+  color_scheme[""] = theme["Arithmetic"]
+  color_scheme["-"] = theme["Arithmetic"]
+  color_scheme["/"] = theme["Arithmetic"]
+  color_scheme["*"] = theme["Arithmetic"]
 
-    ["=="] = editor_themes[theme_name]["Relational"],
-    ["<"] = editor_themes[theme_name]["Relational"],
-    ["<="] = editor_themes[theme_name]["Relational"],
-    [">"] = editor_themes[theme_name]["Relational"],
-    [">="] = editor_themes[theme_name]["Relational"],
-    ["~="] = editor_themes[theme_name]["Relational"],
+  color_scheme["=="] = theme["Relational"]
+  color_scheme["<"] = theme["Relational"]
+  color_scheme["<="] = theme["Relational"]
+  color_scheme[">"] = theme["Relational"]
+  color_scheme[">="] = theme["Relational"]
+  color_scheme["~="] = theme["Relational"]
 
-    ["and"] = editor_themes[theme_name]["Logical"],
-    ["or"] = editor_themes[theme_name]["Logical"],
-    ["not"] = editor_themes[theme_name]["Logical"],
-    [0] = "|r",
-  }
-  return color_scheme
+  color_scheme["and"] = theme["Logical"]
+  color_scheme["or"] = theme["Logical"]
+  color_scheme["not"] = theme["Logical"]
 end
 
 local menu = {}
@@ -90,14 +84,14 @@ for k, v in pairs(editor_themes) do
     text = k,
     isNotRadio = false,
     checked = function()
-      return WeakAurasSaved.editor_themes.selected == k
+      return WeakAurasSaved.editor_theme == k
     end,
     func = function()
-      WeakAurasSaved.editor_themes.selected = k
-      IndentationLib.enable(WeakAuras.editor.editBox, get_scheme(k), 4)
+      WeakAurasSaved.editor_theme = k
+      set_scheme(k)
       WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
     end
-}
+  }
   table.insert(menu, item)
 end
 -- bracket matching option
@@ -130,9 +124,15 @@ local function ConstructTextEditor(frame)
   group:AddChild(editor);
   editor.frame:SetClipsChildren(true);
 
+  if not WeakAurasSaved.editor_theme then
+    WeakAurasSaved.editor_theme = "Monokai"
+  end
+  set_scheme(WeakAurasSaved.editor_theme)
+
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText;
+  IndentationLib.enable(editor.editBox, color_scheme, 4)
 
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   cancel:SetScript("OnClick", function() group:CancelClose() end);
@@ -150,7 +150,6 @@ local function ConstructTextEditor(frame)
   close:SetWidth(100);
   close:SetText(L["Done"]);
 
-  IndentationLib.enable(editor.editBox, get_scheme(WeakAurasSaved.editor_themes.selected), 4)
   local settings_frame = CreateFrame("Button", "WASettingsButton", close, "UIPanelButtonTemplate")
   settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   settings_frame:SetHeight(20)
@@ -167,11 +166,11 @@ local function ConstructTextEditor(frame)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
-        ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
+      ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
     end
   end)
 
-  -- bracket matching, saving (ctrl + s) and closing (esc)
+  -- CTRL + S saves and closes, ESC cancels and closes
   editor.editBox:HookScript("OnKeyDown", function(_, key)
     if IsControlKeyDown() and key == "S" then
       close:Click("LeftButton", true)
@@ -183,6 +182,7 @@ local function ConstructTextEditor(frame)
     end
   end)
 
+  -- Bracket matching
   editor.editBox:HookScript("OnChar", function(_, char)
     if not IsControlKeyDown() and WeakAurasSaved.editor_bracket_matching then
       if char == "(" then
