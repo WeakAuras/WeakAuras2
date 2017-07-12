@@ -90,9 +90,7 @@ for k, v in pairs(editor_themes) do
     text = k,
     isNotRadio = false,
     checked = function()
-      if WeakAurasSaved.editor_themes.selected == k then
-        return true
-      end
+      return WeakAurasSaved.editor_themes.selected == k
     end,
     func = function()
       WeakAurasSaved.editor_themes.selected = k
@@ -107,9 +105,7 @@ table.insert(menu, {
   text = "Bracket Matching",
   isNotRadio = true,
   checked = function()
-    if WeakAurasSaved.editor_bracket_matching then
-      return true
-    end
+    return WeakAurasSaved.editor_bracket_matching
   end,
   func = function()
     WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
