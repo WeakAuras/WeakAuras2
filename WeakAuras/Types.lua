@@ -1241,88 +1241,97 @@ WeakAuras.cast_types = {
   channel = L["Channel (Spell)"]
 };
 
-WeakAuras.sound_types = {
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.ogg"] = "Batman Punch",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BikeHorn.ogg"] = "Bike Horn",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BoxingArenaSound.ogg"] = "Boxing Arena Gong",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Bleat.ogg"] = "Bleat",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonHop.ogg"] = "Cartoon Hop",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CatMeow2.ogg"] = "Cat Meow",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\KittenMeow.ogg"] = "Kitten Meow",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RobotBlip.ogg"] = "Robot Blip",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SharpPunch.ogg"] = "Sharp Punch",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WaterDrop.ogg"] = "Water Drop",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AirHorn.ogg"] = "Air Horn",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Applause.ogg"] = "Applause",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BananaPeelSlip.ogg"] = "Banana Peel Slip",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Blast.ogg"] = "Blast",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonVoiceBaritone.ogg"] = "Cartoon Voice Baritone",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonWalking.ogg"] = "Cartoon Walking",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CowMooing.ogg"] = "Cow Mooing",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RingingPhone.ogg"] = "Ringing Phone",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RoaringLion.ogg"] = "Roaring Lion",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Shotgun.ogg"] = "Shotgun",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SquishFart.ogg"] = "Squish Fart",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TempleBellHuge.ogg"] = "Temple Bell",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.ogg"] = "Torch",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.ogg"] = "Warning Siren",
-  ["Sound\\Creature\\LichKing\\IC_Lich King_Special01.ogg"] = "Lich King Apocalypse",
-  [" custom"] = " " .. L["Custom"],
-  [" KitID"] = " " .. L["Sound by Kit ID"],
-};
+-- register sounds
+LSM:Register("sound", "Batman Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.ogg")
+LSM:Register("sound", "Bike Horn", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BikeHorn.ogg")
+LSM:Register("sound", "Boxing Arena Gong", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BoxingArenaSound.ogg")
+LSM:Register("sound", "Bleat", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Bleat.ogg")
+LSM:Register("sound", "Cartoon Hop", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonHop.ogg")
+LSM:Register("sound", "Cat Meow", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CatMeow2.ogg")
+LSM:Register("sound", "Kitten Meow", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\KittenMeow.ogg")
+LSM:Register("sound", "Robot Blip", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RobotBlip.ogg")
+LSM:Register("sound", "Sharp Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SharpPunch.ogg")
+LSM:Register("sound", "Water Drop", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WaterDrop.ogg")
+LSM:Register("sound", "Air Horn", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AirHorn.ogg")
+LSM:Register("sound", "Applause", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Applause.ogg")
+LSM:Register("sound", "Banana Peel Slip", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BananaPeelSlip.ogg")
+LSM:Register("sound", "Blast", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Blast.ogg")
+LSM:Register("sound", "Cartoon Voice Baritone", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonVoiceBaritone.ogg")
+LSM:Register("sound", "Cartoon Walking", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonWalking.ogg")
+LSM:Register("sound", "Cow Mooing", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CowMooing.ogg")
+LSM:Register("sound", "Ringing Phone", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RingingPhone.ogg")
+LSM:Register("sound", "Roaring Lion", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RoaringLion.ogg")
+LSM:Register("sound", "Shotgun", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Shotgun.ogg")
+LSM:Register("sound", "Squish Fart", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SquishFart.ogg")
+LSM:Register("sound", "Temple Bell", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TempleBellHuge.ogg")
+LSM:Register("sound", "Torch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.ogg")
+LSM:Register("sound", "Warning Siren", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.ogg")
+LSM:Register("sound", "Lich King Apocalypse", "Sound\\Creature\\LichKing\\IC_Lich King_Special01.ogg")
 
 if(WeakAuras.PowerAurasSoundPath ~= "") then
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."aggro.ogg"] = "Aggro";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."Arrow_swoosh.ogg"] = "Arrow Swoosh";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."bam.ogg"] = "Bam";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."bear_polar.ogg"] = "Polar Bear";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."bigkiss.ogg"] = "Big Kiss";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."BITE.ogg"] = "Bite";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."burp4.ogg"] = "Burp";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."cat2.ogg"] = "Cat";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."chant2.ogg"] = "Chant Major 2nd";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."chant4.ogg"] = "Chant Minor 3rd";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."chimes.ogg"] = "Chimes";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."cookie.ogg"] = "Cookie Monster";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."ESPARK1.ogg"] = "Electrical Spark";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."Fireball.ogg"] = "Fireball";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."Gasp.ogg"] = "Gasp";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."heartbeat.ogg"] = "Heartbeat";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."hic3.ogg"] = "Hiccup";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."huh_1.ogg"] = "Huh?";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."hurricane.ogg"] = "Hurricane";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."hyena.ogg"] = "Hyena";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."kaching.ogg"] = "Kaching";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."moan.ogg"] = "Moan";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."panther1.ogg"] = "Panther";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."phone.ogg"] = "Phone";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."PUNCH.ogg"] = "Punch";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."rainroof.ogg"] = "Rain";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."rocket.ogg"] = "Rocket";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."shipswhistle.ogg"] = "Ship's Whistle";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."shot.ogg"] = "Gunshot";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."snakeatt.ogg"] = "Snake Attack";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."sneeze.ogg"] = "Sneeze";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."sonar.ogg"] = "Sonar";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."splash.ogg"] = "Splash";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."Squeakypig.ogg"] = "Squeaky Toy";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."swordecho.ogg"] = "Sword Ring";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."throwknife.ogg"] = "Throwing Knife";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."thunder.ogg"] = "Thunder";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wickedmalelaugh1.ogg"] = "Wicked Male Laugh";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wilhelm.ogg"] = "Wilhelm Scream";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wlaugh.ogg"] = "Wicked Female Laugh";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."wolf5.ogg"] = "Wolf Howl";
-  WeakAuras.sound_types[WeakAuras.PowerAurasSoundPath.."yeehaw.ogg"] = "Yeehaw";
+  LSM:Register("sound", "Aggro", WeakAuras.PowerAurasSoundPath.."aggro.ogg")
+  LSM:Register("sound", "Arrow Swoosh", WeakAuras.PowerAurasSoundPath.."Arrow_swoosh.ogg")
+  LSM:Register("sound", "Bam", WeakAuras.PowerAurasSoundPath.."bam.ogg")
+  LSM:Register("sound", "Polar Bear", WeakAuras.PowerAurasSoundPath.."bear_polar.ogg")
+  LSM:Register("sound", "Big Kiss", WeakAuras.PowerAurasSoundPath.."bigkiss.ogg")
+  LSM:Register("sound", "Bite", WeakAuras.PowerAurasSoundPath.."BITE.ogg")
+  LSM:Register("sound", "Burp", WeakAuras.PowerAurasSoundPath.."burp4.ogg")
+  LSM:Register("sound", "Cat", WeakAuras.PowerAurasSoundPath.."cat2.ogg")
+  LSM:Register("sound", "Chant Major 2nd", WeakAuras.PowerAurasSoundPath.."chant2.ogg")
+  LSM:Register("sound", "Chant Minor 3rd", WeakAuras.PowerAurasSoundPath.."chant4.ogg")
+  LSM:Register("sound", "Chimes", WeakAuras.PowerAurasSoundPath.."chimes.ogg")
+  LSM:Register("sound", "Cookie Monster", WeakAuras.PowerAurasSoundPath.."cookie.ogg")
+  LSM:Register("sound", "Electrical Spark", WeakAuras.PowerAurasSoundPath.."ESPARK1.ogg")
+  LSM:Register("sound", "Fireball", WeakAuras.PowerAurasSoundPath.."Fireball.ogg")
+  LSM:Register("sound", "Gasp", WeakAuras.PowerAurasSoundPath.."Gasp.ogg")
+  LSM:Register("sound", "Heartbeat", WeakAuras.PowerAurasSoundPath.."heartbeat.ogg")
+  LSM:Register("sound", "Hiccup", WeakAuras.PowerAurasSoundPath.."hic3.ogg")
+  LSM:Register("sound", "Huh?", WeakAuras.PowerAurasSoundPath.."huh_1.ogg")
+  LSM:Register("sound", "Hurricane", WeakAuras.PowerAurasSoundPath.."hurricane.ogg")
+  LSM:Register("sound", "Hyena", WeakAuras.PowerAurasSoundPath.."hyena.ogg")
+  LSM:Register("sound", "Kaching", WeakAuras.PowerAurasSoundPath.."kaching.ogg")
+  LSM:Register("sound", "Moan", WeakAuras.PowerAurasSoundPath.."moan.ogg")
+  LSM:Register("sound", "Panther", WeakAuras.PowerAurasSoundPath.."panther1.ogg")
+  LSM:Register("sound", "Phone", WeakAuras.PowerAurasSoundPath.."phone.ogg")
+  LSM:Register("sound", "Punch", WeakAuras.PowerAurasSoundPath.."PUNCH.ogg")
+  LSM:Register("sound", "Rain", WeakAuras.PowerAurasSoundPath.."rainroof.ogg")
+  LSM:Register("sound", "Rocket", WeakAuras.PowerAurasSoundPath.."rocket.ogg")
+  LSM:Register("sound", "Ship's Whistle", WeakAuras.PowerAurasSoundPath.."shipswhistle.ogg")
+  LSM:Register("sound", "Gunshot", WeakAuras.PowerAurasSoundPath.."shot.ogg")
+  LSM:Register("sound", "Snake Attack", WeakAuras.PowerAurasSoundPath.."snakeatt.ogg")
+  LSM:Register("sound", "Sneeze", WeakAuras.PowerAurasSoundPath.."sneeze.ogg")
+  LSM:Register("sound", "Sonar", WeakAuras.PowerAurasSoundPath.."sonar.ogg")
+  LSM:Register("sound", "Splash", WeakAuras.PowerAurasSoundPath.."splash.ogg")
+  LSM:Register("sound", "Squeaky Toy", WeakAuras.PowerAurasSoundPath.."Squeakypig.ogg")
+  LSM:Register("sound", "Sword Ring", WeakAuras.PowerAurasSoundPath.."swordecho.ogg")
+  LSM:Register("sound", "Throwing Knife", WeakAuras.PowerAurasSoundPath.."throwknife.ogg")
+  LSM:Register("sound", "Thunder", WeakAuras.PowerAurasSoundPath.."thunder.ogg")
+  LSM:Register("sound", "Wicked Male Laugh", WeakAuras.PowerAurasSoundPath.."wickedmalelaugh1.ogg")
+  LSM:Register("sound", "Wilhelm Scream", WeakAuras.PowerAurasSoundPath.."wilhelm.ogg")
+  LSM:Register("sound", "Wicked Female Laugh", WeakAuras.PowerAurasSoundPath.."wlaugh.ogg")
+  LSM:Register("sound", "Wolf Howl", WeakAuras.PowerAurasSoundPath.."wolf5.ogg")
+  LSM:Register("sound", "Yeehaw", WeakAuras.PowerAurasSoundPath.."yeehaw.ogg")
 end
+
+WeakAuras.sound_types = {
+  [" custom"] = " " .. L["Custom"],
+  [" KitID"] = " " .. L["Sound by Kit ID"],
+}
+for name, path in next, LSM:HashTable("sound") do
+  WeakAuras.sound_types[path] = name
+end
+
+LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediatype, key)
+  if mediatype == "sound" then
+    local path = LSM:Fetch(mediatype, key)
+    if path then
+      WeakAuras.sound_types[path] = key
+    end
+  end
+end)
 
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf")
-
-local SharedMediaSounds = LSM:HashTable("sound");
-for name, path in pairs(SharedMediaSounds) do
-  WeakAuras.sound_types[path] = name;
-end
 
 WeakAuras.duration_types = {
   seconds = L["Seconds"],
