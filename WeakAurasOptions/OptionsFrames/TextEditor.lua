@@ -83,6 +83,39 @@ local function get_scheme(theme_name)
   return color_scheme
 end
 
+local menu = {}
+-- themes options
+for k, v in pairs(editor_themes) do
+  local item = {
+    text = k,
+    isNotRadio = false,
+    checked = function()
+      if WeakAurasSaved.editor_themes.selected == k then
+        return true
+      end
+    end,
+    func = function()
+      WeakAurasSaved.editor_themes.selected = k
+      IndentationLib.enable(WeakAuras.editor.editBox, get_scheme(k), 4)
+      WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
+    end
+}
+  table.insert(menu, item)
+end
+-- bracket matching option
+table.insert(menu, {
+  text = "Bracket Matching",
+  isNotRadio = true,
+  checked = function()
+    if WeakAurasSaved.editor_bracket_matching then
+      return true
+    end
+  end,
+  func = function()
+    WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
+  end
+})
+
 local function ConstructTextEditor(frame)
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
@@ -133,40 +166,12 @@ local function ConstructTextEditor(frame)
   menu_frame:SetPoint("CENTER", settings_frame, "Center")
   menu_frame:Hide()
 
-  local function settings_menu()
-    local menu = {}
-    -- themes options
-    for k, v in pairs(editor_themes) do
-      local item = {
-        text = k,
-        isNotRadio = false,
-        checked = WeakAurasSaved.editor_themes.selected == k,
-        func = function()
-          WeakAurasSaved.editor_themes.selected = k
-          IndentationLib.enable(editor.editBox, get_scheme(k), 4)
-          editor.editBox:SetText(editor.editBox:GetText())
-        end
-    }
-    table.insert(menu, item)
-    end
-    -- bracket matching option
-    table.insert(menu, {
-      text = "Bracket Matching",
-      isNotRadio = true,
-      checked = WeakAurasSaved.editor_bracket_matching,
-      func = function()
-        WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
-      end
-    })
-    return menu
-  end
-  EasyMenu(settings_menu(), menu_frame, settings_frame, 0, 0, "MENU")
-  ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 0)
-
+  EasyMenu(menu, menu_frame, settings_frame, 0, 0, "MENU")
+  ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 0)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
     if button == "LeftButton" then
-        ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, settings_menu(), nil, 27)
+        ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
     end
   end)
 
@@ -381,6 +386,7 @@ local function ConstructTextEditor(frame)
 
     frame:RefreshPick();
   end
+  WeakAuras.editor = editor
 
   return group
 end
