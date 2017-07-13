@@ -16,5 +16,5 @@ indent_style = space
 indent_size = 4
 
 [.luacheckrc]
-indent_style = tabs
+indent_style = tab
 indent_size = 4
