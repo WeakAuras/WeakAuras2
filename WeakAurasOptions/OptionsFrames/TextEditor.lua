@@ -155,7 +155,7 @@ local function ConstructTextEditor(frame)
   settings_frame:SetHeight(20)
   settings_frame:SetWidth(100)
   settings_frame:SetText("Settings")
-  settings_frame:EnableMouse(true)
+  settings_frame:RegisterForClicks("LeftButtonUp")
 
   local menu_frame = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
   menu_frame:SetPoint("CENTER", settings_frame, "Center")
@@ -165,20 +165,16 @@ local function ConstructTextEditor(frame)
   ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 0)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
-    if button == "LeftButton" then
-      ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
-    end
+    ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
   end)
 
   -- CTRL + S saves and closes, ESC cancels and closes
   editor.editBox:HookScript("OnKeyDown", function(_, key)
     if IsControlKeyDown() and key == "S" then
-      close:Click("LeftButton", true)
-      close:Click("LeftButton", false)
+      group:Close()
     end
     if key == "ESCAPE" then
-      cancel:Click("LeftButton", true)
-      cancel:Click("LeftButton", false)
+      group:CancelClose()
     end
   end)
 
