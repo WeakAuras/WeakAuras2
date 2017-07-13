@@ -156,10 +156,10 @@ local function ConstructTextEditor(frame)
   settings_frame:RegisterForClicks("LeftButtonUp")
 
   local dropdown = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
-  UIDropDownMenu_Initialize(dropdown, settings_dropdown_initialize, "MENU", nil, menu)
+  UIDropDownMenu_Initialize(dropdown, settings_dropdown_initialize, "MENU")
 
   settings_frame:SetScript("OnClick", function(self, button, down)
-    ToggleDropDownMenu(1, nil, dropdown, settings_frame, 0, 0, menu, nil, 27)
+    ToggleDropDownMenu(1, nil, dropdown, settings_frame, 0, 0)
   end)
 
   -- CTRL + S saves and closes, ESC cancels and closes
