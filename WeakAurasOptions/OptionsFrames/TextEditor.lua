@@ -63,7 +63,7 @@ local function set_scheme()
   color_scheme["["] = theme["Table"]
   color_scheme["]"] = theme["Table"]
 
-  color_scheme[""] = theme["Arithmetic"]
+  color_scheme["+"] = theme["Arithmetic"]
   color_scheme["-"] = theme["Arithmetic"]
   color_scheme["/"] = theme["Arithmetic"]
   color_scheme["*"] = theme["Arithmetic"]
