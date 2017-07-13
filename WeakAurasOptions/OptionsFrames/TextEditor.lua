@@ -78,7 +78,7 @@ local function set_scheme(theme_name)
 end
 
 local menu = {}
--- themes options
+-- themes option
 for k, v in pairs(editor_themes) do
   local item = {
     text = k,
@@ -158,19 +158,17 @@ local function ConstructTextEditor(frame)
   settings_frame:RegisterForClicks("LeftButtonUp")
 
   local menu_frame = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
-  menu_frame:SetPoint("CENTER", settings_frame, "Center")
-  menu_frame:Hide()
 
-  local function settings_dropdown_inittialize(frame, level, menuList)
-    for index = 1, #menuList do
-      local value = menuList[index]
+  local function settings_dropdown_initialize(frame, level, menu)
+    for index = 1, #menu do
+      local value = menu[index]
       if (value.text) then
         value.index = index
         UIDropDownMenu_AddButton(value, level)
       end
     end
   end
-  UIDropDownMenu_Initialize(menu_frame, settings_dropdown_inittialize, "MENU", nil, menu)
+  UIDropDownMenu_Initialize(menu_frame, settings_dropdown_initialize, "MENU", nil, menu)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
     ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
@@ -186,7 +184,7 @@ local function ConstructTextEditor(frame)
     end
   end)
 
-  -- Bracket matching
+  -- bracket matching
   editor.editBox:HookScript("OnChar", function(_, char)
     if not IsControlKeyDown() and WeakAurasSaved.editor_bracket_matching then
       if char == "(" then

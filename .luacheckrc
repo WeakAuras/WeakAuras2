@@ -57,6 +57,8 @@ globals = {
 	"STATICPOPUP_NUMDIALOGS",
 	"SlashCmdList",
 	"ChatFrame_AddMessageEventFilter",
+  "UIDropDownMenu_AddButton",
+  "UIDropDownMenu_Initialize",
 
 	-- framexml frames
 	"GameTooltip",
