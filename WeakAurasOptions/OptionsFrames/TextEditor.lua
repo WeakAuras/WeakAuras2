@@ -97,7 +97,7 @@ local function settings_dropdown_initialize(frame, level, menu)
     UIDropDownMenu_AddButton(item)
   end
   UIDropDownMenu_AddButton({
-    text = "Bracket Matching",
+    text = L["Bracket Matching"],
     isNotRadio = true,
     checked = function()
       return WeakAurasSaved.editor_bracket_matching
@@ -152,7 +152,7 @@ local function ConstructTextEditor(frame)
   settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   settings_frame:SetHeight(20)
   settings_frame:SetWidth(100)
-  settings_frame:SetText("Settings")
+  settings_frame:SetText(L["Settings"])
   settings_frame:RegisterForClicks("LeftButtonUp")
 
   local dropdown = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
