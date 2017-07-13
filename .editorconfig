@@ -14,3 +14,7 @@ trim_trailing_whitespace = false
 [{babelfish.lua,ForAllIndentsAndPurposes.lua}]
 indent_style = space
 indent_size = 4
+
+[.luacheckrc]
+indent_style = tab
+indent_size = 4
