@@ -39,7 +39,18 @@ local editor_themes = {
     ["Comment"] = "|c0075715e",
     ["Number"] = "|c00ae81ff",
     ["String"] = "|c00e6db74"
-  }
+  },
+  ["Obsidian"] = {
+    ["Table"] = "|c00AFC0E5",
+    ["Arithmetic"] = "|c00E0E2E4",
+    ["Relational"] = "|c00B3B689",
+    ["Logical"] = "|c0093C763",
+    ["Special"] = "|c00AFC0E5",
+    ["Keyword"] =  "|c0093C763",
+    ["Comment"] = "|c0066747B",
+    ["Number"] = "|c00FFCD22",
+    ["String"] = "|c00EC7600"
+  },
 }
 
 local color_scheme = { [0] = "|r" }
