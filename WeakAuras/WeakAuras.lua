@@ -1290,6 +1290,12 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local inpetbattle = C_PetBattles.IsInBattle()
   local vehicle = UnitInVehicle('player');
   local vehicleUi = UnitHasVehicleUI('player');
+  -- Consider the gemcutting UI as a vehicle UI as well
+  for i=1,40 do
+    if select(11, UnitBuff("player", i)) == 235786 then
+      vehicleUi = true
+    end
+  end
 
   local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
   if (inInstance) then
@@ -1445,6 +1451,7 @@ loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
+loadFrame:RegisterEvent("UNIT_AURA");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
