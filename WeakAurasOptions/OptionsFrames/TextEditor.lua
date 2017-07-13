@@ -161,8 +161,16 @@ local function ConstructTextEditor(frame)
   menu_frame:SetPoint("CENTER", settings_frame, "Center")
   menu_frame:Hide()
 
-  EasyMenu(menu, menu_frame, settings_frame, 0, 0, "MENU")
-  ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 0)
+  local function settings_dropdown_inittialize(frame, level, menuList)
+    for index = 1, #menuList do
+      local value = menuList[index]
+      if (value.text) then
+        value.index = index
+        UIDropDownMenu_AddButton(value, level)
+      end
+    end
+  end
+  UIDropDownMenu_Initialize(menu_frame, settings_dropdown_inittialize, "MENU", nil, menu)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
     ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
