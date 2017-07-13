@@ -66,8 +66,6 @@ local function set_scheme()
   color_scheme[IndentationLib.tokens.TOKEN_NUMBER] = theme["Number"]
   color_scheme[IndentationLib.tokens.TOKEN_STRING] = theme["String"]
 
-  color_scheme[".."] = theme["String"]
-
   color_scheme["..."] = theme["Table"]
   color_scheme["{"] = theme["Table"]
   color_scheme["}"] = theme["Table"]
@@ -78,6 +76,7 @@ local function set_scheme()
   color_scheme["-"] = theme["Arithmetic"]
   color_scheme["/"] = theme["Arithmetic"]
   color_scheme["*"] = theme["Arithmetic"]
+  color_scheme[".."] = theme["Arithmetic"]
 
   color_scheme["=="] = theme["Relational"]
   color_scheme["<"] = theme["Relational"]
