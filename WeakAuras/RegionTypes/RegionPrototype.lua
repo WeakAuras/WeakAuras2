@@ -154,8 +154,8 @@ local function UpdatePosition(self)
     return;
   end
 
-  local xOffset = (self.xOffset or 0) + (self.xOffsetAnim or 0);
-  local yOffset = (self.yOffset or 0) + (self.yOffsetAnim or 0);
+  local xOffset = self.xOffset + self.xOffsetAnim;
+  local yOffset = self.yOffset + self.yOffsetAnim;
   self:SetPoint(self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset );
 end
 
@@ -173,6 +173,9 @@ local function SetAnchor(self, anchorPoint, relativeTo, relativePoint)
 end
 
 local function SetOffset(self, xOffset, yOffset)
+  if (self.xOffset == xOffset and self.yOffset == yOffset) then
+    return;
+  end
   self.xOffset = xOffset;
   self.yOffset = yOffset;
   UpdatePosition(self);
@@ -187,6 +190,9 @@ local function GetYOffset(self)
 end
 
 local function SetOffsetAnim(self, xOffset, yOffset)
+  if (self.xOffsetAnim == xOffset and self.yOffsetAnim == yOffset) then
+    return;
+  end
   self.xOffsetAnim = xOffset;
   self.yOffsetAnim = yOffset;
   UpdatePosition(self);
@@ -217,6 +223,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   region.adjustedMax = hasAdjustedMax and data.adjustedMax and data.adjustedMax > 0 and data.adjustedMax;
 
   region:SetOffset(data.xOffset, data.yOffset);
+  region:SetOffsetAnim(0, 0);
   WeakAuras.AnchorFrame(data, region, parent);
 end
 
