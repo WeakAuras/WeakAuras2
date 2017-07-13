@@ -77,43 +77,32 @@ local function set_scheme(theme_name)
   color_scheme["not"] = theme["Logical"]
 end
 
-local menu = {}
--- themes option
-for k, v in pairs(editor_themes) do
-  local item = {
-    text = k,
-    isNotRadio = false,
+local function settings_dropdown_initialize(frame, level, menu)
+  for k, v in pairs(editor_themes) do
+    local item = {
+      text = k,
+      isNotRadio = false,
+      checked = function()
+        return WeakAurasSaved.editor_theme == k
+      end,
+      func = function()
+        WeakAurasSaved.editor_theme = k
+        set_scheme(k)
+        WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
+      end
+    }
+    UIDropDownMenu_AddButton(item)
+  end
+  UIDropDownMenu_AddButton({
+    text = "Bracket Matching",
+    isNotRadio = true,
     checked = function()
-      return WeakAurasSaved.editor_theme == k
+      return WeakAurasSaved.editor_bracket_matching
     end,
     func = function()
-      WeakAurasSaved.editor_theme = k
-      set_scheme(k)
-      WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
+      WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
     end
-  }
-  table.insert(menu, item)
-end
--- bracket matching option
-table.insert(menu, {
-  text = "Bracket Matching",
-  isNotRadio = true,
-  checked = function()
-    return WeakAurasSaved.editor_bracket_matching
-  end,
-  func = function()
-    WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
-  end
-})
-
-local function settings_dropdown_initialize(frame, level, menu)
-  for index = 1, #menu do
-    local value = menu[index]
-    if (value.text) then
-      value.index = index
-      UIDropDownMenu_AddButton(value, level)
-    end
-  end
+  })
 end
 
 local function ConstructTextEditor(frame)
