@@ -106,6 +106,16 @@ table.insert(menu, {
   end
 })
 
+local function settings_dropdown_initialize(frame, level, menu)
+  for index = 1, #menu do
+    local value = menu[index]
+    if (value.text) then
+      value.index = index
+      UIDropDownMenu_AddButton(value, level)
+    end
+  end
+end
+
 local function ConstructTextEditor(frame)
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
@@ -157,21 +167,11 @@ local function ConstructTextEditor(frame)
   settings_frame:SetText("Settings")
   settings_frame:RegisterForClicks("LeftButtonUp")
 
-  local menu_frame = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
-
-  local function settings_dropdown_initialize(frame, level, menu)
-    for index = 1, #menu do
-      local value = menu[index]
-      if (value.text) then
-        value.index = index
-        UIDropDownMenu_AddButton(value, level)
-      end
-    end
-  end
-  UIDropDownMenu_Initialize(menu_frame, settings_dropdown_initialize, "MENU", nil, menu)
+  local dropdown = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
+  UIDropDownMenu_Initialize(dropdown, settings_dropdown_initialize, "MENU", nil, menu)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
-    ToggleDropDownMenu(1, nil, menu_frame, settings_frame, 0, 0, menu, nil, 27)
+    ToggleDropDownMenu(1, nil, dropdown, settings_frame, 0, 0, menu, nil, 27)
   end)
 
   -- CTRL + S saves and closes, ESC cancels and closes
