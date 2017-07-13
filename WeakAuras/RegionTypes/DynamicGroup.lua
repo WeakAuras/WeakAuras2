@@ -46,28 +46,6 @@ function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
 end
 
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
-
-  local background = region.background;
-
-  local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
-  local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or "";
-  background:SetBackdrop({
-    bgFile = bgFile,
-    edgeFile = edgeFile,
-    tile = false,
-    tileSize = 0,
-    edgeSize = 16,
-    insets = {
-      left = data.backgroundInset,
-      right = data.backgroundInset,
-      top = data.backgroundInset,
-      bottom = data.backgroundInset
-    }
-  });
-  background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
-  background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
-
   local selfPoint;
   if(data.grow == "RIGHT") then
     selfPoint = "LEFT";
@@ -115,6 +93,30 @@ local function modify(parent, region, data)
     selfPoint = "CENTER";
   end
   data.selfPoint = selfPoint;
+
+  WeakAuras.regionPrototype.modify(parent, region, data);
+
+  local background = region.background;
+
+  local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
+  local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or "";
+  background:SetBackdrop({
+    bgFile = bgFile,
+    edgeFile = edgeFile,
+    tile = false,
+    tileSize = 0,
+    edgeSize = 16,
+    insets = {
+      left = data.backgroundInset,
+      right = data.backgroundInset,
+      top = data.backgroundInset,
+      bottom = data.backgroundInset
+    }
+  });
+  background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
+  background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
+
+
 
   region.controlledRegions = {};
 
