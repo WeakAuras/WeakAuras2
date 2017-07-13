@@ -43,8 +43,11 @@ local editor_themes = {
 }
 
 local color_scheme = { [0] = "|r" }
-local function set_scheme(theme_name)
-  local theme = editor_themes[theme_name]
+local function set_scheme()
+  if not WeakAurasSaved.editor_theme then
+    WeakAurasSaved.editor_theme = "Monokai"
+  end
+  local theme = editor_themes[WeakAurasSaved.editor_theme]
   color_scheme[IndentationLib.tokens.TOKEN_SPECIAL] = theme["Special"]
   color_scheme[IndentationLib.tokens.TOKEN_KEYWORD] = theme["Keyword"]
   color_scheme[IndentationLib.tokens.TOKEN_COMMENT_SHORT] = theme["Comment"]
@@ -87,7 +90,7 @@ local function settings_dropdown_initialize(frame, level, menu)
       end,
       func = function()
         WeakAurasSaved.editor_theme = k
-        set_scheme(k)
+        set_scheme()
         WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
       end
     }
@@ -123,14 +126,10 @@ local function ConstructTextEditor(frame)
   group:AddChild(editor);
   editor.frame:SetClipsChildren(true);
 
-  if not WeakAurasSaved.editor_theme then
-    WeakAurasSaved.editor_theme = "Monokai"
-  end
-  set_scheme(WeakAurasSaved.editor_theme)
-
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText;
+  set_scheme()
   IndentationLib.enable(editor.editBox, color_scheme, 4)
 
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
