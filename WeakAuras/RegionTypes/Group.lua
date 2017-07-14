@@ -71,12 +71,12 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
+  data.selfPoint = "BOTTOMLEFT";
   WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local border = region.border;
 
   -- Get overall bounding box
-  data.selfPoint = "BOTTOMLEFT";
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
