@@ -1445,7 +1445,7 @@ loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
-loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+loadFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
