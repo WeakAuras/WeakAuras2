@@ -154,9 +154,15 @@ local function UpdatePosition(self)
     return;
   end
 
-  local xOffset = self.xOffset + self.xOffsetAnim;
-  local yOffset = self.yOffset + self.yOffsetAnim;
+  local xOffset = self.xOffset + (self.xOffsetAnim or 0);
+  local yOffset = self.yOffset + (self.yOffsetAnim or 0);
   self:SetPoint(self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset );
+end
+
+local function ResetPosition(self)
+  self.anchorPoint = nil;
+  self.relativeTo = nil;
+  self.relativePoint = nil;
 end
 
 local function SetAnchor(self, anchorPoint, relativeTo, relativePoint)
@@ -210,6 +216,7 @@ function WeakAuras.regionPrototype.create(region)
   region.SetOffsetAnim = SetOffsetAnim;
   region.GetXOffset = GetXOffset;
   region.GetYOffset = GetYOffset;
+  region.ResetPosition = ResetPosition;
 end
 
 -- SetDurationInfo

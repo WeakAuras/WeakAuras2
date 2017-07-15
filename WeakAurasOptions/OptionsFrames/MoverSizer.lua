@@ -375,9 +375,9 @@ local function ConstructMoverSizer(parent)
         data.xOffset = dX / scale;
         data.yOffset = dY / scale;
       end
+      region:ResetPosition();
       WeakAuras.Add(data);
       WeakAuras.SetThumbnail(data);
-      region:SetPoint(self.selfPoint, self.anchor, self.anchorPoint, data.xOffset, data.yOffset);
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1);
       mover:ClearAllPoints();
       if(data.regionType == "group") then
@@ -430,8 +430,6 @@ local function ConstructMoverSizer(parent)
             data.height = region:GetHeight();
           end
           WeakAuras.Add(data);
-          region:ClearAllPoints();
-          region:SetPoint(rSelfPoint, rAnchor, rAnchorPoint, rXOffset, rYOffset);
           frame:ScaleCorners(region:GetWidth(), region:GetHeight());
           AceConfigDialog:Open("WeakAuras", parent.container);
         end);
@@ -441,6 +439,7 @@ local function ConstructMoverSizer(parent)
         local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale();
         mover.isMoving = false;
         region:StopMovingOrSizing();
+        region:ResetPosition();
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         if(data.parent) then
