@@ -1288,8 +1288,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
-  local vehicle = UnitInVehicle('player') or UnitBuff("player", GetSpellInfo(235806));
-  local vehicleUi = UnitHasVehicleUI('player') or UnitBuff("player", GetSpellInfo(235806));
+  local vehicle = UnitInVehicle('player') or HasOverrideActionBar();
+  local vehicleUi = UnitHasVehicleUI('player')
 
   local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
   if (inInstance) then
@@ -1445,7 +1445,7 @@ loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
-loadFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
