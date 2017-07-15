@@ -1,4 +1,4 @@
-local internalVersion = 2;
+local internalVersion = 3;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -2237,6 +2237,21 @@ function WeakAuras.Modernize(data)
     ModernizeAnimations(data.animation and data.animation.main);
     ModernizeAnimations(data.animation and data.animation.finish);
   end -- ENd of V1 => V2
+
+  -- Version 3 was introduced April 2018 in Legion
+  if (data.internalVersion < 3) then
+    if (data.parent) then
+      local parentData = WeakAuras.GetData(data.parent);
+      if(parentData and parentData.regionType == "dynamicgroup") then
+        -- Version 3 allowed for offsets for dynamic groups, before that they were ignored
+        -- Thus reset them in the V2 to V3 upgrade
+        data.xOffset = 0;
+        data.yOffset = 0;
+      end
+    end
+
+  end
+
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);

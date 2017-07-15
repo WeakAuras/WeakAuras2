@@ -282,7 +282,6 @@ local function modify(parent, region, data)
         tray:SetHeight(regionData.data.height);
 
         regionData.region:SetAnchor(selfPoint, tray, selfPoint);
-        regionData.region:SetOffset(0, 0);
       end
     end
   end
