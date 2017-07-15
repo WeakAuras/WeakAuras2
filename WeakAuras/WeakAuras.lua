@@ -1288,8 +1288,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
-  local vehicle = UnitInVehicle('player') or HasOverrideActionBar();
-  local vehicleUi = UnitHasVehicleUI('player')
+  local vehicle = UnitInVehicle('player')
+  local vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
 
   local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
   if (inInstance) then
