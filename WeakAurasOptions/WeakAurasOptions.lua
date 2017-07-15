@@ -3328,10 +3328,10 @@ function WeakAuras.AddPositionOptions(input, id, data)
       order = 79,
       image = function() return "", 0, 0 end,
       hidden = function()
-        return not (data.anchorFrameType ~= "SCREEN");
+        return not (data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup());
       end
     },
-    -- IsParentDynamicGroup => none
+    -- IsParentDynamicGroup => xOffset4 / yOffset4
     -- InGroup/Attached to mouse/PRD/SELECTFRAME => -screen -- +screen
     -- Attached to Screen => depends on anchorPoint
     --   LEFT/BOTTOM => 0 -- +screen
@@ -3345,10 +3345,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = screenWidth,
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return true;
         end
         return not data.anchorPoint:find("LEFT")
@@ -3376,10 +3373,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = ((1/2) * screenWidth),
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return true;
         end
         return (data.anchorPoint:find("LEFT") or data.anchorPoint:find("RIGHT"));
@@ -3407,10 +3401,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = 0,
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return true;
         end
         return not data.anchorPoint:find("RIGHT");
@@ -3438,10 +3429,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = screenWidth,
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return false;
         end
         return true;
@@ -3469,10 +3457,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = screenHeight,
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return true;
         end
         return not data.anchorPoint:find("BOTTOM");
@@ -3500,10 +3485,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = ((1/2) * screenHeight),
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return true;
         end
         return data.anchorPoint:find("BOTTOM") or data.anchorPoint:find("TOP");
@@ -3531,10 +3513,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = 0,
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return true;
         end
         return not data.anchorPoint:find("TOP");
@@ -3562,10 +3541,7 @@ function WeakAuras.AddPositionOptions(input, id, data)
       softMax = screenHeight,
       bigStep = 10,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        if (data.parent or data.anchorFrameType ~= "SCREEN") then
+        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
           return false;
         end
         return true;
