@@ -41,7 +41,7 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
 * Create a new branch, `Somebug-patch` for example and move into it
   ```
   $ git branch Somebug-patch
-  $ git checkout Somebug-patch
+  $ git checkout -b Somebug-patch
   ```
 * Commit and push your changes to your new branch
   ```
@@ -58,7 +58,7 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
   ```
   $ git fetch upstream
   $ git checkout master
-  $ git merge upstream/master
+  $ git rebase upstream/master
   ````
 * You now are synced with the latest changes in the WeakAuras repository :)
 
@@ -66,4 +66,3 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
 You can donate to the WeakAuras project maintainers using PayPal:
 
 [![WeakAuras on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN)
-
