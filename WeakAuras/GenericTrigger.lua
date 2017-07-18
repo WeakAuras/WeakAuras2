@@ -977,8 +977,8 @@ function GenericTrigger.Modernize(data)
 
     if (trigger and trigger.type and trigger.event and trigger.type == "status"
       and (trigger.event == "Cooldown Progress (Spell)"
-          or trigger.event == "Cooldown Progress (Item)"
-          or trigger.event == "Death Knight Rune")) then
+      or trigger.event == "Cooldown Progress (Item)"
+      or trigger.event == "Death Knight Rune")) then
 
       if (not trigger.showOn) then
         if (trigger.use_inverse) then
@@ -1484,6 +1484,11 @@ do
 
     startTime = startTime or 0;
     duration = duration or 0;
+    -- Sometimes the API returns very high bogus numbers causing client freeezes, discard them here. WowAce issue #1008
+    if (duration > 604800) then
+      duration = 0;
+      startTime = 0;
+    end
 
     return charges, maxCharges, startTime, duration, cooldownBecauseRune;
   end
