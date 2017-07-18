@@ -794,7 +794,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           options["specific_"..name] = {
             type = "input",
             name = L["Specific Unit"],
-            desc = L["Can be a name or a UID (e.g., party1). Only works on friendly players in your group."],
+            desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
             order = order,
             hidden = function() return (not trigger["use_specific_"..realname]) or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
             get = function() return trigger[realname] end,
@@ -4858,7 +4858,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       type = "input",
       name = L["Specific Unit"],
       order = 43,
-      desc = L["Can be a name or a UID (e.g., party1). Only works on friendly players in your group."],
+      desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "member") end
     },
     useGroup_count = {
