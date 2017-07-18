@@ -3,7 +3,6 @@
 * Clone your fork to your local disk
 * Create a new branch, `Somebug-patch` for example and move into it
   ```
-  $ git branch Somebug-patch
   $ git checkout -b Somebug-patch
   ```
 * Commit and push your changes to your new branch
