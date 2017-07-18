@@ -467,6 +467,7 @@ local function create(parent)
 
   -- Create statusbar (inherit prototype)
   local bar = CreateFrame("FRAME", nil, region);
+  Mixin(bar, SmoothStatusBarMixin);
   local fg = bar:CreateTexture(nil, "ARTWORK");
   local bg = bar:CreateTexture(nil, "ARTWORK");
   local spark = bar:CreateTexture(nil, "ARTWORK");
@@ -1188,8 +1189,14 @@ local function modify(parent, region, data)
     local progress = (total > 0) and (value / total) or 0
     if region.inverseDirection then
       progress = 1 - progress;
+
     end
-    region.bar:SetValue(progress);
+
+    if (data.smoothProgress) then
+      region.bar:SetSmoothedValue(progress);
+    else
+      region.bar:SetValue(progress);
+    end
     UpdateText(region, data);
   end
 

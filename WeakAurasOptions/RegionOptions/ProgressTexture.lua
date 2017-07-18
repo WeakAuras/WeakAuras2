@@ -236,6 +236,12 @@ local function createOptions(id, data)
       desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
       order = 55
     },
+    smoothProgress = {
+      type = "toggle",
+      name = L["Smooth Progress"],
+      desc = L["Animates progress changes"],
+      order = 56
+    },
     spacer = {
       type = "header",
       name = "",
