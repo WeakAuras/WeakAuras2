@@ -280,6 +280,7 @@ do
   local movieWatchFrame;
   movieWatchFrame = CreateFrame("frame");
   movieWatchFrame:RegisterEvent("PLAY_MOVIE");
+  movieWatchFrame:RegisterEvent("CINEMATIC_STOP");
   movieWatchFrame:RegisterEvent("PLAYER_LOGIN");
 
   movieWatchFrame:SetScript("OnEvent", preShowModels);
