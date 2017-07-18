@@ -429,6 +429,7 @@ local function ConstructMoverSizer(parent)
             data.width = region:GetWidth();
             data.height = region:GetHeight();
           end
+          region:ResetPosition();
           WeakAuras.Add(data);
           frame:ScaleCorners(region:GetWidth(), region:GetHeight());
           AceConfigDialog:Open("WeakAuras", parent.container);
