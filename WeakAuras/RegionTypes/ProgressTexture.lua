@@ -686,6 +686,24 @@ local function create(parent)
 
   region.values = {};
   region.duration = 0;
+
+  -- Use a dummy object for the SmoothStatusBarMixin, because our SetValue
+  -- is used for a different purpose
+  region.smoothProgress = {};
+  Mixin(region.smoothProgress, SmoothStatusBarMixin);
+  region.smoothProgress.SetValue = function(self, progress)
+    region:SetValueOnTexture(progress);
+  end
+
+  region.smoothProgress.GetValue = function(self)
+    return region.progress;
+  end
+
+  region.smoothProgress.GetMinMaxValues = function(self)
+    return 0, 1;
+  end
+
+
   region.expirationTime = math.huge;
 
   region.SetOrientation = SetOrientation;
@@ -869,7 +887,11 @@ local function modify(parent, region, data)
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
-    region:SetValueOnTexture(progress);
+    if (data.smoothProgress) then
+      region.smoothProgress:SetSmoothedValue(progress);
+    else
+      region:SetValueOnTexture(progress);
+    end
   end
 
   function region:SetValue(value, total)
@@ -881,7 +903,11 @@ local function modify(parent, region, data)
       progress = 1 - progress;
     end
     progress = progress > 0.0001 and progress or 0.0001;
-    region:SetValueOnTexture(progress);
+    if (data.smoothProgress) then
+      region.smoothProgress:SetSmoothedValue(progress);
+    else
+      region:SetValueOnTexture(progress);
+    end
   end
 
   function region:TimerTick()
