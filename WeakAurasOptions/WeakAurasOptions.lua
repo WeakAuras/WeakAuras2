@@ -5467,7 +5467,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       desc = L["Custom trigger event tooltip"],
       width = "double",
       order = 9,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.check ~= "update") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
       get = function() return trigger.events end,
       set = function(info, v)
         trigger.events = v;
