@@ -59,6 +59,8 @@ globals = {
 	"ChatFrame_AddMessageEventFilter",
 	"UIDropDownMenu_AddButton",
 	"UIDropDownMenu_Initialize",
+	"Mixin",
+	"SmoothStatusBarMixin",
 
 	-- FrameXML frames
 	"GameTooltip",
