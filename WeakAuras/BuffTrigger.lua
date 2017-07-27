@@ -807,7 +807,6 @@ end);
 
 do
   local pendingTracks = {};
-
   local UIDsfromGUID = {};
   local GUIDfromUID = {};
 
@@ -932,7 +931,6 @@ do
     end
     return false;
   end
-
 
   local function updateSpell(spellName, unit, destGUID)
     if (not loaded_auras[spellName]) then return end;
@@ -1308,7 +1306,7 @@ function BuffTrigger.Add(data)
   auras[id] = nil;
 
   for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
+    local trigger, untrigger; -- luacheck: ignore
     if(triggernum == 0) then
       trigger = data.trigger;
       data.untrigger = data.untrigger or {};
@@ -1504,7 +1502,6 @@ function BuffTrigger.CanHaveAuto(data, triggernum)
 
   return false;
 end
-
 
 --- Returns whether the trigger can have clones.
 -- @param data

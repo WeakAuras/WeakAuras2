@@ -610,7 +610,6 @@ function WeakAuras.GetActiveConditions(id, cloneId)
   return triggerState[id].activatedConditions[cloneId];
 end
 
-
 local function formatValueForAssignment(vtype, value, pathToCustomFunction)
   if (value == nil) then
     value = false;
@@ -760,6 +759,7 @@ local function CreateDeactivateCondition(ret, condition, conditionNumber, data, 
     end
     ret = ret .. "  end\n"
   end
+
   return ret;
 end
 
@@ -814,7 +814,6 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
   return ret;
 end
 
-
 function WeakAuras.LoadCustomActionFunctions(data)
   local id = data.id;
   WeakAuras.customActionsFunctions[id] = {};
@@ -848,7 +847,6 @@ function WeakAuras.LoadCustomActionFunctions(data)
         WeakAuras.customActionsFunctions[id]["finish_message"] = func;
       end
     end
-
   end
 end
 
@@ -947,8 +945,6 @@ function WeakAuras.ConstructConditionFunction(data)
     ret = ret .. "  end\n";
   end
   ret = ret .. "end\n";
-
-  --print(ret);
 
   return ret;
 end
@@ -1119,7 +1115,6 @@ function WeakAuras.ResumeAllDynamicGroups()
 end
 
 function WeakAuras.ScanAll()
-
   WeakAuras.PauseAllDynamicGroups();
 
   for id, region in pairs(regions) do
@@ -1133,7 +1128,6 @@ function WeakAuras.ScanAll()
   end
 
   WeakAuras.ResumeAllDynamicGroups();
-
   WeakAuras.ReloadAll();
 
   for _, triggerSystem in pairs(triggerSystems) do
@@ -1652,7 +1646,6 @@ function WeakAuras.Rename(data, newid)
   triggerState[newid] = triggerState[oldid];
   triggerState[oldid] = nil;
 
-
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
 
@@ -1970,9 +1963,11 @@ function WeakAuras.Modernize(data)
     ["Warlock"] = "WARLOCK",
     ["Warrior"] = "WARRIOR"
   };
+
   if(load.class.single) then
     load.class.single = class_agnosticize[load.class.single] or load.class.single;
   end
+
   if(load.class.multi) then
     for i,v in pairs(load.class.multi) do
       if(class_agnosticize[i]) then
@@ -1988,7 +1983,6 @@ function WeakAuras.Modernize(data)
     data.displayTextLeft = data.displayTextLeft or (not data.auto and data.displayText) or "%n";
     data.displayTextRight = data.displayTextRight or "%p";
   end
-
 
   if(data.regionType == "icon") then
     if (data.cooldownTextEnabled == nil) then
@@ -2143,7 +2137,6 @@ function WeakAuras.Modernize(data)
   ModernizeAnimations(data.animation and data.animation.start);
   ModernizeAnimations(data.animation and data.animation.main);
   ModernizeAnimations(data.animation and data.animation.finish);
-
 end
 
 function WeakAuras.SyncParentChildRelationships(silent)
@@ -3123,7 +3116,6 @@ function WeakAuras.CorrectItemName(input)
   end
 end
 
-
 local currentTooltipRegion;
 local currentTooltipOwner;
 function WeakAuras.UpdateMouseoverTooltip(region)
@@ -3766,7 +3758,6 @@ function WeakAuras.UpdatedTriggerState(id)
       checkConditions[id](region, not state.show);
     end
   end
-
 
   for triggernum = 0, triggerState[id].numTriggers - 1 do
     triggerState[id][triggernum] = triggerState[id][triggernum] or {};

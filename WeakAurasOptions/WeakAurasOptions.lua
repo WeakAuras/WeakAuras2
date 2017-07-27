@@ -950,7 +950,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
 end
 
 local frame;
-
 local db;
 local odb;
 local options;
@@ -2027,7 +2026,6 @@ local function replaceValuesFuncs(intable, data)
   recurse(intable);
 end
 
-
 function WeakAuras.AddOption(id, data)
   local regionOption;
   if(regionOptions[data.regionType]) then
@@ -2558,7 +2556,6 @@ function WeakAuras.AddOption(id, data)
               end
 
               local custom = data.actions.finish.message_custom;
-
               if (not custom) then
                 return true;
               end

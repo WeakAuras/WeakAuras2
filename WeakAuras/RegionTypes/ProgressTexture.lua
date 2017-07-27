@@ -703,7 +703,6 @@ local function create(parent)
     return 0, 1;
   end
 
-
   region.expirationTime = math.huge;
 
   region.SetOrientation = SetOrientation;
