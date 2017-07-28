@@ -805,7 +805,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       local size = #tooltip
       tooltip[26] = {2, " ",  "[...]", 1, 1, 1, 1, 1, 1};
       local nrOfChildren = children and #children or data.controlledChildren and #data.controlledChildren or 0
-      tooltip[27] = {1, string.format(L["%s total auras"], nrOfChildren), "", 1, 1, 1, 1, 1, 1};
+      tooltip[27] = {1, string.format(L["%s total auras"], nrOfChildren), "", 1, 1, 1, 1};
       for i = 28, size do
         tooltip[i] = nil;
       end
@@ -813,8 +813,9 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
 
     local hasDescription = data.desc and data.desc ~= "";
     local hasUrl = data.url and data.url ~= "";
+    local hasVersion = data.version and data.version ~= "";
 
-    if(hasDescription or hasUrl) then
+    if(hasDescription or hasUrl or hasVersion) then
       tinsert(tooltip, {1, " "});
     end
 
@@ -824,6 +825,10 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
 
     if (hasUrl) then
       tinsert(tooltip, {1, data.url, 1, 0.82, 0, 1});
+    end
+
+    if (hasVersion) then
+      tinsert(tooltip, {1, L["Version: "] .. data.version, 1, 0.82, 0, 1});
     end
 
     local importbutton;
