@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 28
+local Type, Version = "WeakAurasDisplayButton", 29
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -872,8 +872,9 @@ local methods = {
 
     local hasDescription = data.desc and data.desc ~= "";
     local hasUrl = data.url and data.url ~= "";
+    local hasVersion = data.version and data.version ~= "";
 
-    if(hasDescription or hasUrl) then
+    if(hasDescription or hasUrl or hasVersion) then
       tinsert(namestable, " ");
     end
 
@@ -882,7 +883,11 @@ local methods = {
     end
 
     if (hasUrl) then
-      tinsert(namestable, "|cFFFFD100".. data.url);
+      tinsert(namestable, "|cFFFFD100" .. data.url .. "|r");
+    end
+
+    if (hasVersion) then
+      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. data.version .. "|r");
     end
 
     tinsert(namestable, " ");
