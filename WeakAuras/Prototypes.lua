@@ -536,6 +536,21 @@ function WeakAuras.UseUnitPowerThirdArg(powerType)
   return nil;
 end
 
+function WeakAuras.GetNumSetItemsEquipped(setID)
+  if not setID or not type(setID) == "number" then return end
+  local itemList = C_LootJournal.GetItemSetItems(setID)
+  if not itemList then return end
+  local setName = GetItemSetInfo(setID)
+  local max = #itemList
+  local equipped = 0
+  for _,v in ipairs(itemList) do
+    if IsEquippedItem(v.itemID) then
+      equipped = equipped + 1
+    end
+  end
+  return equipped, max, setName
+end
+
 local function valuesForTalentFunction(trigger)
   return function()
     local single_class;
@@ -3404,7 +3419,63 @@ WeakAuras.event_prototypes = {
     hasItemID = true,
     automaticrequired = true
   },
-  ["Item Set Equipped"] = {
+  ["Item Set"] = {
+    type = "status",
+    events = {
+      "PLAYER_EQUIPMENT_CHANGED",
+    },
+    force_events = "PLAYER_EQUIPMENT_CHANGED",
+    name = L["Item Set Equipped"],
+    automaticrequired = true,
+    init = function(trigger)
+      return string.format("local setid = %s;\n", trigger.itemSetId and tonumber(trigger.itemSetId) or "0");
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "itemSetId",
+        display = L["Item Set Id"],
+        type = "string",
+        test = "true",
+        store = "true",
+        required = true,
+        validate = WeakAuras.ValidateNumeric,
+        desc = function()
+          local classFilter, specFilter = C_LootJournal.GetClassAndSpecFilters();
+          local currentClass = select(3, UnitClass("player"));
+          local specID = GetSpecializationInfo(GetSpecialization());
+
+          local sets = C_LootJournal.GetFilteredItemSets();
+          C_LootJournal.SetClassAndSpecFilters(classFilter, specFilter);
+
+          local description = "";
+          for index, set in ipairs(sets) do
+            description = description .. set.name .. ": " .. set.setID .. "\n";
+          end
+
+          description = description .. "\n" .. L["Older set IDs can be found on websites such as wowhead.com/item-sets"];
+
+          return description;
+        end
+      },
+      {
+        name = "equipped",
+        display = L["Equipped"],
+        type = "number",
+        init = "WeakAuras.GetNumSetItemsEquipped(setid)",
+        store = true,
+        required = true,
+        conditionType = "number"
+      }
+    },
+    durationFunc = function(trigger)
+      return WeakAuras.GetNumSetItemsEquipped(trigger.itemSetId and tonumber(trigger.itemSetId) or 0)
+    end,
+    nameFunc = function(trigger)
+      return select(3, WeakAuras.GetNumSetItemsEquipped(trigger.itemSetId and tonumber(trigger.itemSetId) or 0));
+    end
+  },
+  ["Equipment Set"] = {
     type = "status",
     events = {
       "PLAYER_EQUIPMENT_CHANGED",

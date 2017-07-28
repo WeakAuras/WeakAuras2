@@ -957,6 +957,10 @@ function GenericTrigger.Modernize(data)
       end
     end
 
+    if trigger and trigger["event"] and trigger["event"] == "Item Set Equipped" then
+      trigger.event = "Equipment Set";
+    end
+
     -- Convert ember trigger
     local fixEmberTrigger = function(trigger)
       if (trigger.power and not trigger.ember) then
