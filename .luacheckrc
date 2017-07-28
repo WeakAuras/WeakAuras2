@@ -1977,6 +1977,7 @@ globals = {
 	"GetItemLevelColor",
 	"GetItemLevelIncrement",
 	"GetItemQualityColor",
+	"GetItemSetInfo",
 	"GetItemSpecInfo",
 	"GetItemSpell",
 	"GetItemStatDelta",
