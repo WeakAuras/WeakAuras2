@@ -3572,7 +3572,7 @@ local function ApplyStateToRegion(id, region, state)
 
       region:SetDurationInfo(value, total, durationFunc or true, state.inverseDirection);
     else
-    -- Do nothing, should ideally clear duration info on region
+      region:SetDurationInfo(0, math.huge);
     end
   end
   local controlChidren = state.resort;
