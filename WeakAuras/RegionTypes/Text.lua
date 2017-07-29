@@ -66,7 +66,9 @@ local function modify(parent, region, data)
     text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize, data.outline);
   end
   if text:GetFont() then
+    text:SetWidth(0); -- This makes the text use its internal text size calculation
     text:SetText(data.displayText);
+    text:SetWidth(text:GetWidth() + 1); -- But that internal text size calculation is wrong, see ticket 1014
   end
   text.displayText = data.displayText;
   text:SetJustifyH(data.justify);
@@ -87,7 +89,9 @@ local function modify(parent, region, data)
   local function SetText(textStr)
     if(textStr ~= text.displayText) then
       if text:GetFont() then
+        text:SetWidth(0);
         text:SetText(textStr);
+        text:SetWidth(text:GetWidth() + 1);
       end
     end
     if(#textStr ~= #text.displayText) then
@@ -210,7 +214,9 @@ local function modify(parent, region, data)
   function region:SetTextHeight(size)
     local fontPath = SharedMedia:Fetch("font", data.font);
     region.text:SetFont(fontPath, size, data.outline);
+    region.text:SetWidth(0);
     region.text:SetTextHeight(size)
+    region.text:SetWidth(region.text:GetWidth() + 1);
   end
 
   function region:SetName(name)
