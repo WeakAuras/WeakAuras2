@@ -361,6 +361,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     foregroundSpinner:SetHeight(size);
     backgroundSpinner:SetWidth(scale * data.width)
     backgroundSpinner:SetHeight(size);
+    region.width = scale * data.width;
+    region.height = size;
   else
     scale = size/data.width;
     region:SetWidth(size);
@@ -371,6 +373,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     foregroundSpinner:SetHeight(scale * data.height);
     backgroundSpinner:SetWidth(size)
     backgroundSpinner:SetHeight(scale * data.height);
+    region.width = size;
+    region.height = scale * data.height;
   end
 
   region:ClearAllPoints();
