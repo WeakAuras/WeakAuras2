@@ -266,7 +266,7 @@ function WeakAuras.CreateFrame()
         frame.texteditor.frame:Show();
       elseif(frame.window == "codereview") then
         frame.codereview.frame:Show();
-      elseif(frame.window == "newview") then
+      elseif(frame.window == "newView") then
         frame.newView.frame:Show();
       end
       minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp");
