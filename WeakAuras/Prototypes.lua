@@ -3617,6 +3617,7 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_DELAYED",
         "UNIT_SPELLCAST_INTERRUPTIBLE",
         "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+        "CAST_REMAINING_CHECK"
       };
       AddUnitChangeEvents(trigger.unit, result);
       return result;
@@ -3630,18 +3631,32 @@ WeakAuras.event_prototypes = {
         local inverse = %s
         local spell, interruptible, _;
         local castType;
-        spell, _, _, _, _, _, _, _, interruptible = UnitCastingInfo(unit)
+        local endTime;
+        spell, _, _, _, _, endTime, _, _, interruptible = UnitCastingInfo(unit)
         if(spell) then
           castType = "cast"
         else
-          spell, _, _, _, _, _, _, interruptible = UnitChannelInfo(unit)
+          spell, _, _, _, _, endTime, _, interruptible = UnitChannelInfo(unit)
           if(spell) then
             castType = "channel"
           end
         end
         interruptible = not interruptible;
       ]=];
-      return ret:format(trigger.unit, trigger.use_inverse and "true" or "false");
+      ret = ret:format(trigger.unit, trigger.use_inverse and "true" or "false");
+
+      if(trigger.use_remaining) then
+        local ret2 = [[
+          local expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0;
+          local remaining = expirationTime - GetTime();
+          local remainingCheck = %s;
+          if(remaining >= remainingCheck) then
+            WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck);
+          end
+        ]];
+        ret = ret .. ret2:format(tonumber(trigger.remaining or 0) or 0);
+      end
+      return ret;
     end,
     statesParameter = "one",
     args = {
@@ -3678,6 +3693,11 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return not(trigger.use_inverse) end,
         store = true,
         conditionType = "bool"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
       },
       {
         name = "inverse",
