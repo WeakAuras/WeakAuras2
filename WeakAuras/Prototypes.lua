@@ -3544,10 +3544,13 @@ WeakAuras.event_prototypes = {
   },
   ["Threat Situation"] = {
     type = "status",
-    events = {
-      "UNIT_THREAT_SITUATION_UPDATE",
-      "PLAYER_TARGET_CHANGED"
-    },
+    events = function(trigger)
+      local result = {
+        "UNIT_THREAT_SITUATION_UPDATE",
+      };
+      AddUnitChangeEvents(trigger.threatUnit, result);
+      return result;
+    end,
     force_events = true,
     name = L["Threat Situation"],
     init = function(trigger)
@@ -3563,7 +3566,7 @@ WeakAuras.event_prototypes = {
         name = "threatUnit",
         display = L["Unit"],
         required = true,
-        type = "select",
+        type = "unit",
         values = "threat_unit_types",
         test = "true"
       },

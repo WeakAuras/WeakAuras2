@@ -145,6 +145,8 @@ WeakAuras.actual_unit_types = {
 
 WeakAuras.threat_unit_types = {
   target = L["Target"],
+  focus = L["Focus"],
+  member = L["Specific Unit"],
   none = L["At Least One Enemy"]
 };
 
