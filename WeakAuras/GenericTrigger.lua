@@ -2370,6 +2370,22 @@ do
   end
 end
 
+do
+  local scheduled_scans = {};
+
+  local function doCastScan(fireTime)
+    WeakAuras.debug("Performing cast scan at "..fireTime.." ("..GetTime()..")");
+    scheduled_scans[fireTime] = nil;
+    WeakAuras.ScanEvents("CAST_REMAINING_CHECK");
+  end
+  function WeakAuras.ScheduleCastCheck(fireTime)
+    if not(scheduled_scans[fireTime]) then
+      WeakAuras.debug("Scheduled cast scan at "..fireTime);
+      scheduled_scans[fireTime] = timer:ScheduleTimer(doCastScan, fireTime - GetTime() + 0.1, fireTime);
+    end
+  end
+end
+
 function GenericTrigger.CanGroupShowWithZero(data)
   return false;
 end
