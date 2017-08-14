@@ -10,5 +10,7 @@
       "WeakAuras_Options.lua": true,
       "WeakAuras_Templates.lua": true,
       "WeakAuras/Libs/": true
-    }
-  }
+    },
+  "lua.format.indentCount": 2,
+  "luaformatter.spaces": 2
+}
