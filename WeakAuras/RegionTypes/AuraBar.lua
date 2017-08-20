@@ -313,13 +313,13 @@ local barPrototype = {
 
     -- Create statusbar illusion
     if xProgress then
-      self.fg:SetWidth(xProgress > 0 and xProgress or 0.0001);
+      self.fg:SetWidth(xProgress > 0.0001 and xProgress or 0.0001);
       self.spark:ClearAllPoints();
       self.spark:SetPoint("CENTER", self, alignSpark, sparkOffset + (self.spark.sparkOffsetX or 0), self.spark.sparkOffsetY or 0);
     end
 
     if yProgress then
-      self.fg:SetHeight(yProgress > 0 and yProgress or 0.0001);
+      self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
       self.spark:ClearAllPoints();
       self.spark:SetPoint("CENTER", self, alignSpark, (self.spark.sparkOffsetX or 0), sparkOffset + (self.spark.sparkOffsetY or 0));
     end
