@@ -21,6 +21,8 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
 end
 
+local HBD = LibStub("HereBeDragons-1.0")
+
 WeakAuras.encounter_table = {
   -- The Emerald Nightmare
   [1703] = 1853, -- Nythendra
@@ -831,7 +833,9 @@ WeakAuras.load_prototype = {
       display = L["Zone ID"],
       type = "string",
       init = "arg",
-      desc = L["Zone ID List"],
+      desc = function()
+         return L["Zone ID List"] .. "\n" .. L["Current Zone ID:"] .. " " .. HBD:GetPlayerZone();
+       end,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
     },
     {
