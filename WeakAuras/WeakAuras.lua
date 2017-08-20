@@ -3805,6 +3805,9 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
     value = value or "";
   else
     local variable = WeakAuras.dynamic_texts[textStr];
+    if (not variable) then
+      return nil;
+    end
     variable = variable and variable.value;
     value = variable and regionValues[variable] or "";
   end
