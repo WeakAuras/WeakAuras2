@@ -885,6 +885,7 @@ local function AddUnitChangeEvents(unit, t)
     tinsert(t, "PLAYER_FOCUS_CHANGED");
     tinsert(t, "UNIT_TARGET");
     tinsert(t, "INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+    tinsert(t, "GROUP_ROSTER_UPDATE");
   end
 end
 
