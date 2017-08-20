@@ -571,6 +571,9 @@ function WeakAuras.ScanAuras(unit)
             end
 
             -- Check all selected auras (for one trigger)
+
+            local bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, bestCasGUID, bestSpellId, bestUnitCaster;
+
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
               name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
@@ -599,26 +602,45 @@ function WeakAuras.ScanAuras(unit)
                 active = true;
                 WeakAuras.SetDynamicIconCache(name, spellId, icon);
 
-                -- Update aura cache (and clones)
-                if(aura_object and not data.specificUnit) then
-                  aura_object:AssertAura(id, uGUID, duration, expirationTime, name, icon, count, casGUID, spellId, unitCaster);
-                  if(data.groupclone) then
-                    groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
-                  end
-                  -- Update visibility (show)
-                else
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, true, unit, duration, expirationTime, name, icon, count, nil, spellId, unitCaster)) then
-                    updateTriggerState = true;
-                  end
-                  break;
+                if (not bestExpirationTime or expirationTime > bestExpirationTime) then
+                  bestDuration = duration;
+                  bestExpirationTime = expirationTime;
+                  bestName = name;
+                  bestIcon = icon;
+                  bestCount = count;
+                  bestCasGUID = casGUID;
+                  bestSpellId = spellId;
+                  bestUnitCaster = unitCaster;
                 end
+              end
+            end
 
-                -- Aura does not conform to trigger
-              elseif(aura_object and not data.specificUnit) then
+            -- Update aura cache (and clones)
+            if (active) then
+              if(aura_object and not data.specificUnit) then
+                aura_object:AssertAura(id, uGUID, bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, bestCasGUID, bestSpellId, bestUnitCaster);
+                if(data.groupclone) then
+                  groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
+                end
+              else
+                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, true, unit, bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, nil, bestSpellId, bestUnitCaster)) then
+                  updateTriggerState = true;
+                end
+              end
+            else
+              if(aura_object and not data.specificUnit) then
                 -- Update aura cache (and clones)
                 aura_object:DeassertAura(id, uGUID);
                 if(data.groupclone) then
                   groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
+                end
+              else
+                local nameFromTrigger, iconFromTrigger;
+                if (data.inverse) then
+                  nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+                end
+                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+                  updateTriggerState = true;
                 end
               end
             end
@@ -717,16 +739,6 @@ function WeakAuras.ScanAuras(unit)
                     end
                   end
                 end
-              end
-
-              -- Update display visibility (hide)
-            elseif not(active) then
-              local nameFromTrigger, iconFromTrigger;
-              if (data.inverse) then
-                nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-              end
-              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
-                updateTriggerState = true;
               end
             end
           end
