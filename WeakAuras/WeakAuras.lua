@@ -406,8 +406,9 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
 end
 
 local env_getglobal
-local exec_env = setmetatable({}, { __index =
-  function(t, k)
+
+local exec_env = setmetatable({}, {
+  __index = function(t, k)
     if k == "_G" then
       return t
     elseif k == "getglobal" then
@@ -421,7 +422,12 @@ local exec_env = setmetatable({}, { __index =
     else
       return _G[k]
     end
-  end
+  end,
+  __newindex = function(t, k, v)
+    if k ~= "aura_env" then
+      rawset(t,k,v)
+    end
+  end,
 })
 
 function env_getglobal(k)
@@ -601,7 +607,6 @@ function WeakAuras.ConstructFunction(prototype, trigger)
     ret = ret.."print('ret: true');\n";
   end
   ret = ret.."return true else return false end end";
-
   return ret;
 end
 
