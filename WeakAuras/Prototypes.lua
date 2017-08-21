@@ -519,7 +519,7 @@ end
 
 function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
-    return IsSpellKnown(spell);
+    return IsSpellKnown(spell, pet);
   end
   return IsPlayerSpell(spell) or IsSpellKnown(spell);
 end
