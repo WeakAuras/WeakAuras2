@@ -1,4 +1,4 @@
-## Interface: 70200
+## Interface: 70300
 ## Title: WeakAuras Model Paths
 ## Author: Mirrored and the WeakAuras Team
 ## Version: @project-version@
