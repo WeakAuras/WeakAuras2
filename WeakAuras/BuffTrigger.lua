@@ -1162,7 +1162,7 @@ do
         scheduled_scans[unit][fireTime] = nil;
         WeakAuras.ScanAuras(unit);
       end
-      scheduled_scans[unit][fireTime] = timer:ScheduleTimer(doScan, fireTime - GetTime() + 0.1);
+      scheduled_scans[unit][fireTime] = timer:ScheduleTimerFixed(doScan, fireTime - GetTime() + 0.1);
     end
   end
 end
