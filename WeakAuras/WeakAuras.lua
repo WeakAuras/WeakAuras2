@@ -27,13 +27,9 @@ WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
 WeakAuras.maxTimerDuration = 60 * 60 * 24 * 7; -- A week
-local isScheduled
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
-    if (delay < WeakAuras.maxTimerDuration) and not isScheduled then
-      self:ScheduleTimer(func, delay, ...);
-      isScheduled = true
-    else
-      isScheduled = false
+  if (delay < WeakAuras.maxTimerDuration) then
+    return self:ScheduleTimer(func, delay, ...);
   end
 end
 
