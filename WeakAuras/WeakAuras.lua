@@ -14,8 +14,8 @@ local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsI
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
   = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
-  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
+  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown = debugstack, IsSpellKnown

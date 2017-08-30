@@ -9,8 +9,8 @@ local _G = _G
 -- WoW APIs
 local InCombatLockdown = InCombatLockdown
 local GetSpellInfo, GetItemInfo, GetItemIcon, UnitName = GetSpellInfo, GetItemInfo, GetItemIcon, UnitName
-local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
-  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySound, CreateFrame, IsAddOnLoaded, LoadAddOn
+  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySound, CreateFrame, IsAddOnLoaded, LoadAddOn
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -2131,7 +2131,7 @@ function WeakAuras.AddOption(id, data)
           if(value == "sound" or value == "sound_path") then
             PlaySoundFile(v, data.actions.start.sound_channel or "Master");
           elseif(value == "sound_kit_id") then
-            PlaySoundKitID(v, data.actions.start.sound_channel or "Master");
+            PlaySound(v, data.actions.start.sound_channel or "Master");
           end
           WeakAuras.Add(data);
         end,

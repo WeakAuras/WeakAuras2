@@ -115,7 +115,7 @@ local function SoundPlayHelper(self)
     end
   elseif (options.sound == " KitID") then
     if (options.sound_kit_id) then
-      local _, handle = PlaySoundKitID(options.sound_kit_id, options.sound_channel or "Master");
+      local _, handle = PlaySound(options.sound_kit_id, options.sound_channel or "Master");
       self.soundHandle = handle;
     end
   else

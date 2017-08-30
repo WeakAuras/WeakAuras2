@@ -201,7 +201,7 @@ local function wrapWithPlaySound(func, kit)
   return function(info, v)
     func(info, v);
     if (tonumber(v)) then
-      PlaySoundKitID(tonumber(v), "Master");
+      PlaySound(tonumber(v), "Master");
     else
       PlaySoundFile(v, "Master");
     end
