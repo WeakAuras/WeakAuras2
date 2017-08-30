@@ -25,6 +25,14 @@ local WeakAuras = WeakAuras
 local versionString = WeakAuras.versionString
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
+
+WeakAuras.maxTimerDuration = 60 * 60 * 24 * 7; -- A week
+function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
+  if (delay < WeakAuras.maxTimerDuration) then
+    self:ScheduleTimer(func, delay, ...);
+  end
+end
+
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local HBD = LibStub("HereBeDragons-1.0")
 
@@ -666,7 +674,7 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 
   if (conditionChecksTimers.recheckTime[id][cloneId] == nil) then
-    conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimer(function()
+    conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimerFixed(function()
       local region;
       if(cloneId and cloneId ~= "") then
         region = clones[id] and clones[id][cloneId];
@@ -3519,7 +3527,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
           timer:CancelTimer(record.handle);
         end
 
-        record.handle = timer:ScheduleTimer(
+        record.handle = timer:ScheduleTimerFixed(
           function()
             if (state.show ~= false and state.show ~= nil) then
               state.show = false;
