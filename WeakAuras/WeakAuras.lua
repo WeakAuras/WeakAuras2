@@ -29,7 +29,7 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 WeakAuras.maxTimerDuration = 60 * 60 * 24 * 7; -- A week
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < WeakAuras.maxTimerDuration) then
-    self:ScheduleTimer(func, delay, ...);
+    return self:ScheduleTimer(func, delay, ...);
   end
 end
 
