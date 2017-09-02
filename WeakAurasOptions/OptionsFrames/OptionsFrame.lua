@@ -173,10 +173,10 @@ function WeakAuras.CreateFrame()
 
   importbutton:SetScript("PostClick", function(self)
     if self:GetChecked() then
-      PlaySound("igMainMenuOptionCheckBoxOn")
+      PlaySound(856)
       db.import_disabled = true
     else
-      PlaySound("igMainMenuOptionCheckBoxOff")
+      PlaySound(857)
       db.import_disabled = nil
     end
   end)
