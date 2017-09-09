@@ -23,6 +23,7 @@ local function ConstructImportExport(frame)
   input:SetWidth(400);
   input.button:Hide();
   input.frame:SetClipsChildren(true);
+  input.editBox:SetIgnoreParentScale(true);
   group:AddChild(input);
 
   local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");

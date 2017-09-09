@@ -131,8 +131,11 @@ local function ConstructTextEditor(frame)
   editor.button:Hide();
   local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium");
   if(fontPath) then
-    editor.editBox:SetFont(fontPath, 12);
+    -- Manually scale our font size
+    editor.editBox:SetFont(fontPath, 12 * editor.editBox:GetEffectiveScale());
   end
+  -- And ignore our parent scale, to work around a bug in 7.3
+  editor.editBox:SetIgnoreParentScale(true);
   group:AddChild(editor);
   editor.frame:SetClipsChildren(true);
 
