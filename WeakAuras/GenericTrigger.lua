@@ -1070,6 +1070,7 @@ do
   local lastSwingMain, lastSwingOff, lastSwingRange;
   local swingDurationMain, swingDurationOff, swingDurationRange;
   local mainTimer, offTimer, rangeTimer;
+  local selfGUID;
 
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
@@ -1106,40 +1107,27 @@ do
     WeakAuras.ScanEvents("SWING_TIMER_END");
   end
 
-  local function swingTimerCheck(frame, event, _, message, _, _, source)
-    if(UnitIsUnit(source or "", "player")) then
+  local function swingTimerCheck(frame, event, _, message, _, sourceGUID, _, _, _, destGUID, ...)
+    if(sourceGUID == selfGUID) then
       if(message == "SWING_DAMAGE" or message == "SWING_MISSED") then
+        local isOffHand = select(message == "SWING_DAMAGE" and 13 or 5, ...);
+
         local event;
         local currentTime = GetTime();
         local mainSpeed, offSpeed = UnitAttackSpeed("player");
         offSpeed = offSpeed or 0;
-        if not(lastSwingMain) then
+        if not(isOffHand) then
           lastSwingMain = currentTime;
           swingDurationMain = mainSpeed;
           event = "SWING_TIMER_START";
+          timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
-        elseif(OffhandHasWeapon() and not lastSwingOff) then
+        elseif(isOffHand) then
           lastSwingOff = currentTime;
           swingDurationOff = offSpeed;
           event = "SWING_TIMER_START";
+          timer:CancelTimer(offTimer);
           offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off");
-        else
-          -- A swing occurred while both weapons are supposed to be on cooldown
-          -- Simply refresh the timer of the weapon swing which would have ended sooner
-          local mainRem, offRem = (lastSwingMain or math.huge) + mainSpeed - currentTime, (lastSwingOff or math.huge) + offSpeed - currentTime;
-          if(mainRem < offRem or not OffhandHasWeapon()) then
-            timer:CancelTimer(mainTimer, true);
-            lastSwingMain = currentTime;
-            swingDurationMain = mainSpeed;
-            event = "SWING_TIMER_CHANGE";
-            mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
-          else
-            timer:CancelTimer(offTimer, true);
-            lastSwingOff = currentTime;
-            swingDurationOff = offSpeed;
-            event = "SWING_TIMER_CHANGE";
-            offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off");
-          end
         end
 
         WeakAuras.ScanEvents(event);
@@ -1159,6 +1147,19 @@ do
 
         WeakAuras.ScanEvents(event);
       end
+    elseif (destGUID == selfGUID and (select(4, ...) == "PARRY" or select(7, ...) == "PARRY")) then
+      if (lastSwingMain) then
+        local timeLeft = lastSwingMain + swingDurationMain - GetTime();
+        if (timeLeft > 0.6 * swingDurationMain) then
+          timer:CancelTimer(mainTimer);
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.4 * swingDurationMain, "main");
+          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
+        elseif (timeLeft > 0.2 * swingDurationMain) then
+          timer:CancelTimer(mainTimer);
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.2 * swingDurationMain, "main");
+          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
+        end
+      end
     end
   end
 
@@ -1167,6 +1168,7 @@ do
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:SetScript("OnEvent", swingTimerCheck);
+      selfGUID = UnitGUID("player");
     end
   end
 end
