@@ -1366,13 +1366,22 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.LoadEncounterInitScripts();
   end
 
+  local group = nil;
+  if (IsInRaid()) then
+    group = "raid";
+  elseif (IsInGroup()) then
+    group = "group";
+  else
+    group = "solo";
+  end
+
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, IsInGroup(), inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1920,6 +1929,24 @@ function WeakAuras.Modernize(data)
   end
 
   local load = data.load;
+
+  if (not load.ingroup) then
+    load.ingroup = {};
+    if (load.use_ingroup == true) then
+      load.ingroup.single = nil;
+      load.ingroup.multi = {
+        ["group"] = true,
+        ["raid"] = true
+      };
+      load.use_ingroup = false;
+    elseif (load.use_ingroup == false) then
+        load.ingroup.single = "solo";
+      load.ingroup.multi = {};
+      load.use_ingroup = true;
+    end
+  end
+
+
   -- Convert load options into single/multi format
   for index, prototype in pairs(WeakAuras.load_prototype.args) do
     local protoname = prototype.name;
@@ -1944,6 +1971,7 @@ function WeakAuras.Modernize(data)
     load.talent.single = talent;
     load.talent.multi = {}
   end
+
 
   --upgrade to support custom trigger combination logic
   if (data.disjunctive == true) then

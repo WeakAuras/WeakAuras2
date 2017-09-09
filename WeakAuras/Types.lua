@@ -1117,7 +1117,7 @@ WeakAuras.anim_color_types = {
   custom = L["Custom Function"]
 };
 
-WeakAuras.group_types = {
+WeakAuras.instance_types = {
   none = L["No Instance"],
   scenario = L["Scenario"],
   party = L["5 Man Dungeon"],
@@ -1129,6 +1129,12 @@ WeakAuras.group_types = {
   pvp = L["Battleground"],
   arena = L["Arena"]
 };
+
+WeakAuras.group_types = {
+  solo = L["Not in Group"],
+  group = L["In Group"],
+  raid = L["In Raid"]
+}
 
 WeakAuras.difficulty_types = {
   none = L["None"],
