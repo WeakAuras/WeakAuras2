@@ -624,20 +624,6 @@ WeakAuras.load_prototype = {
       init = "false"
     },
     {
-      name = "ingroup",
-      display = L["In Group"],
-      type = "tristate",
-      width = "normal",
-      init = "arg"
-    },
-    {
-      name = "petbattle",
-      display = L["In Pet Battle"],
-      type = "tristate",
-      init = "arg",
-      width = "normal",
-    },
-    {
       name = "vehicle",
       display = L["In Vehicle"],
       type = "tristate",
@@ -650,6 +636,21 @@ WeakAuras.load_prototype = {
       type = "tristate",
       init = "arg",
       width = "normal",
+    },
+    {
+      name = "petbattle",
+      display = L["In Pet Battle"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
+    },
+    {
+      name = "ingroup",
+      display = L["In Group"],
+      type = "multiselect",
+      width = "normal",
+      init = "arg",
+      values = "group_types"
     },
     {
       name = "name",
@@ -850,7 +851,7 @@ WeakAuras.load_prototype = {
       name = "size",
       display = L["Instance Type"],
       type = "multiselect",
-      values = "group_types",
+      values = "instance_types",
       init = "arg",
       control = "WeakAurasSortedDropdown"
     },
