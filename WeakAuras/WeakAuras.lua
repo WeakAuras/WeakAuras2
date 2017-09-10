@@ -345,6 +345,8 @@ local blockedFunctions = {
   setfenv = true,
   loadstring = true,
   pcall = true,
+  _G = true,
+  getglobal = true,
   -- blocked WoW API
   SendMail = true,
   SetTradeMoney = true,
@@ -2539,6 +2541,10 @@ function WeakAuras.PerformActions(data, type, region)
     return;
   end
 
+  if blockedFunctions[actions.glow_frame] then
+    return forbidden() --returns nil, but warns user about potential abuse
+  end
+
   if(actions.do_message and actions.message_type and actions.message and not squelch_actions) then
     local customFunc = WeakAuras.customActionsFunctions[data.id][type .. "_message"];
     WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
@@ -4315,6 +4321,10 @@ local function postponeAnchor(id)
 end
 
 local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
+  if blockedFunctions[anchorFrameFrame] then
+    return forbidden() --returns nil, but warns user about potential abuse
+  end
+
   if (personalRessourceDisplayFrame) then
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
   end
