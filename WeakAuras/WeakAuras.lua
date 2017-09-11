@@ -365,6 +365,7 @@ local blockedFunctions = {
   SetBindingMacro = true,
   GuildDisband = true,
   GuildUninvite = true,
+  ForceQuit = true,
 }
 
 local overrideFunctions = {
