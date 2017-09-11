@@ -479,11 +479,11 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
           local untriggerCheck = false;
           local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
           if (data.statesParameter == "full") then
-            if (data.triggerFunc(allStates, event, scrub(argi, arg2, ...))) then
+            if (data.triggerFunc(allStates, event, scrub(arg1, arg2, ...))) then
               updateTriggerState = true;
             end
           elseif (data.statesParameter == "all") then
-            if(data.triggerFunc(allStates, event, scrub(argi, arg2, ...))) then
+            if(data.triggerFunc(allStates, event, scrub(arg1, arg2, ...))) then
               for id, state in pairs(allStates) do
                 if (state.changed) then
                   if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
@@ -497,7 +497,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
           elseif (data.statesParameter == "one") then
             allStates[""] = allStates[""] or {};
             local state = allStates[""];
-            if(data.triggerFunc(state, event, scrub(argi, arg2, ...))) then
+            if(data.triggerFunc(state, event, scrub(arg1, arg2, ...))) then
               if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
                 updateTriggerState = true;
               end
@@ -505,7 +505,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
               untriggerCheck = true;
             end
           else
-            if(data.triggerFunc(event, scrub(argi, arg2, ...))) then
+            if(data.triggerFunc(event, scrub(arg1, arg2, ...))) then
               allStates[""] = allStates[""] or {};
               local state = allStates[""];
               if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
@@ -517,7 +517,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
           end
           if (untriggerCheck) then
             if (data.statesParameter == "all") then
-              if(data.untriggerFunc and data.untriggerFunc(allStates, event, scrub(argi, arg2, ...))) then
+              if(data.untriggerFunc and data.untriggerFunc(allStates, event, scrub(arg1, arg2, ...))) then
                 for id, state in pairs(allStates) do
                   if (state.changed) then
                     if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
@@ -529,13 +529,13 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
             elseif (data.statesParameter == "one") then
               allStates[""] = allStates[""] or {};
               local state = allStates[""];
-              if(data.untriggerFunc and data.untriggerFunc(state, event, scrub(argi, arg2, ...))) then
+              if(data.untriggerFunc and data.untriggerFunc(state, event, scrub(arg1, arg2, ...))) then
                 if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
                   updateTriggerState = true;
                 end
               end
             else
-              if(data.untriggerFunc and data.untriggerFunc(event, scrub(argi, arg2, ...))) then
+              if(data.untriggerFunc and data.untriggerFunc(event, scrub(arg1, arg2, ...))) then
                 allStates[""] = allStates[""] or {};
                 local state = allStates[""];
                 if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
