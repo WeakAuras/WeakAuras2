@@ -2605,7 +2605,7 @@ function WeakAuras.PerformActions(data, type, region)
         glow_frame = regions[frame_name].region;
       end
     else
-      glow_frame = _G[actions.glow_frame];
+      glow_frame = exec_env[actions.glow_frame];
       original_glow_frame = glow_frame
     end
 
@@ -4379,8 +4379,8 @@ local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
       end
       postponeAnchor(id);
     else
-      if (_G[anchorFrameFrame]) then
-        return _G[anchorFrameFrame];
+      if (exec_env[anchorFrameFrame]) then
+        return exec_env[anchorFrameFrame];
       end
       postponeAnchor(id);
       return  parent;
