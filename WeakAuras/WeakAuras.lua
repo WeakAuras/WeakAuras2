@@ -3837,7 +3837,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local value;
   if (textStr == "%c" and customFunc) then
     WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-    local value = customFunc(region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
+    value = customFunc(region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
     WeakAuras.ActivateAuraEnvironment(nil);
     value = value or "";
   else
