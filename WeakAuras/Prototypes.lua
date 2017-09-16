@@ -3420,13 +3420,14 @@ WeakAuras.event_prototypes = {
         test = "(showOn == \"showOnReady\" and (startTime == 0)) " ..
                "or (showOn == \"showOnCooldown\" and startTime > 0) "  ..
                "or (showOn == \"showAlways\")",
-        enable = function(trigger) return not trigger.use_runesCount end
+        enable = function(trigger) return not trigger.use_runesCount end,
+        reloadOptions = true
       },
       {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return trigger.use_rune and not(trigger.use_inverse) end
+        enable = function(trigger) return trigger.use_rune and not(trigger.showOn == "showOnReady") end
       },
       {
         name = "showOn",
@@ -3442,6 +3443,15 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "numRunes",
         enable = function(trigger) return not trigger.use_rune end
+      },
+      {
+        hidden = true,
+        name = "onCooldown",
+        test = "true",
+        display = L["On Cooldown"],
+        conditionType = "bool",
+        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        enable = function(trigger) return trigger.use_rune end
       },
     },
     durationFunc = function(trigger)
