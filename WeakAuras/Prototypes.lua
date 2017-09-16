@@ -2850,7 +2850,8 @@ WeakAuras.event_prototypes = {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
-        test = "true"
+        test = "true",
+        reloadOptions = true
       },
       {
         hidden = true,
