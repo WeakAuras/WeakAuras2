@@ -3831,12 +3831,14 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
+        enable = function(trigger) return not(trigger.use_inverse) end,
       },
       {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
-        test = "true"
+        test = "true",
+        reloadOptions = true
       },
       {
         hidden = true,
