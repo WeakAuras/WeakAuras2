@@ -252,13 +252,20 @@ local function modify(parent, region, data)
       end);
     elseif(anyIndexInfo) then
       table.sort(region.controlledRegions, function(a, b)
-        return (
-          (
-          a.dataIndex == b.dataIndex
-          and (a.region.state and a.region.state.index or 0) < (b.region.state and b.region.state.index or 0)
-          )
-          or (a.dataIndex or 0) < (b.dataIndex or 0)
-          )
+        if (a.dataIndex ~= b.dataIndex) then
+          return (a.dataIndex or 0) < (b.dataIndex or 0)
+        end
+
+        local aIndex = a.region.state and a.region.state.index;
+        local bIndex = b.region.state and b.region.state.index;
+        if (aIndex == nil) then
+          return false;
+        end
+        if (bIndex == nil) then
+          return true;
+        end
+
+        return aIndex < bIndex;
       end)
     end
   end
