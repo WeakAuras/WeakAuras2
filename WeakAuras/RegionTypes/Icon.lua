@@ -347,7 +347,7 @@ local function modify(parent, region, data)
 
         if(stacks.text ~= textStr) then
           if stacks:GetFont() then
-            stacks:SetText(textStr);
+            WeakAuras.regionPrototype.SetTextOnText(stacks, textStr);
             stacks.text = textStr;
           end
         end
@@ -359,7 +359,7 @@ local function modify(parent, region, data)
 
         if(text2.text ~= textStr) then
           if text2:GetFont() then
-            text2:SetText(textStr);
+            WeakAuras.regionPrototype.SetTextOnText(text2, textStr);
             text2.text = textStr;
           end
         end
@@ -367,12 +367,12 @@ local function modify(parent, region, data)
     end
   else
     if (data.text1Enabled) then
-      stacks:SetText(data.text1);
+      WeakAuras.regionPrototype.SetTextOnText(stacks, data.text1);
       stacks.text = data.text1;
     end
 
     if (data.text2Enabled) then
-      text2:SetText(data.text2);
+      WeakAuras.regionPrototype.SetTextOnText(text2, data.text2);
       text2.text = data.text2;
     end
 
