@@ -525,11 +525,13 @@ local function create(parent)
   function region.SetFrameLevel(self, frameLevel)
     oldSetFrameLevel(self, frameLevel);
     if region.barInFront then
+      -- WORKAROUND against strata being wonky in WoW
       iconFrame:SetFrameLevel(frameLevel + 1);
       iconFrame:SetFrameLevel(frameLevel + 1);
       bar:SetFrameLevel(frameLevel + 1);
       border:SetFrameLevel(frameLevel);
     else
+      -- WORKAROUND against strata being wonky in WoW
       iconFrame:SetFrameLevel(frameLevel);
       iconFrame:SetFrameLevel(frameLevel);
       bar:SetFrameLevel(frameLevel);
@@ -920,11 +922,13 @@ local function modify(parent, region, data)
   -- Bar or Border (+Backdrop) in front
   local frameLevel = region:GetFrameLevel();
   if data.barInFront then
+    -- WORKAROUND against strata being wonky in WoW
     iconFrame:SetFrameLevel(frameLevel + 2);
     iconFrame:SetFrameLevel(frameLevel + 2);
     bar:SetFrameLevel(frameLevel + 2);
     border:SetFrameLevel(frameLevel + 1);
   else
+    -- WORKAROUND against strata being wonky in WoW
     iconFrame:SetFrameLevel(frameLevel + 1);
     iconFrame:SetFrameLevel(frameLevel + 1);
     bar:SetFrameLevel(frameLevel + 1);
