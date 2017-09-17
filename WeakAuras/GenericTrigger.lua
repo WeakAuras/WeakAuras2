@@ -1455,7 +1455,7 @@ do
         -- id is actually the spell name, not a spell id
         -- In 7.2, Frost Mages's Water Elemental's Water Jet's cooldown isn't returned by GetSpellCooldown("Water Jet")
         -- but GetSpellCooldown(select(7, GetSpellInfo("Water Jet"))) works
-        -- So for now do that. This code should be removed once Blizzard fixes the underlying bug.
+        -- WORKAROUND So for now do that. This code should be removed once Blizzard fixes the underlying bug.
         local spellId = select(7, GetSpellInfo(id));
         if (spellId) then
           startTime, duration = GetSpellCooldown(spellId);
@@ -1489,7 +1489,7 @@ do
 
     startTime = startTime or 0;
     duration = duration or 0;
-    -- Sometimes the API returns very high bogus numbers causing client freeezes, discard them here. WowAce issue #1008
+    -- WORKAROUND Sometimes the API returns very high bogus numbers causing client freeezes, discard them here. WowAce issue #1008
     if (duration > 604800) then
       duration = 0;
       startTime = 0;
