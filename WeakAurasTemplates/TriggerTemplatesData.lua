@@ -2719,7 +2719,7 @@ templates.class.DRUID = {
         { spell = 5217, type = "buff", unit = "player" }, -- Tiger's Fury
         { spell = 8936, type = "buff", unit = "player"}, -- Regrowth
         { spell = 22842, type = "buff", unit = "player", talent = 8 }, -- Frenzied Regeneration
-        { spell = 52610, type = "buff", unit = "player", talent = 15 }, -- Savage Roar
+        { spell = 52610, type = "buff", unit = "player", talent = 18 }, -- Savage Roar
         { spell = 61336, type = "buff", unit = "player" }, -- Survival Instincts
         { spell = 69369, type = "buff", unit = "player" }, -- Predatory Swiftness
         { spell = 102543, type = "buff", unit = "player", talent = 14 }, -- Incarnation: King of the Jungle
