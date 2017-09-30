@@ -23,6 +23,7 @@ To open the options window, type `/wa` or `/weakauras` into your chat and hit en
 * [WeakAuras_StopMotion](https://www.wowace.com/addons/weakauras-stop-motion): This addon adds a new region type to WeakAuras that allows for stop motion animations. Stop Motion textures contain each frame of the animation as a separate image. The addon ships with a number of animations and it supports custom textures.
 * [SharedMedia](https://www.wowace.com/addons/sharedmedia) for more bar textures.
 * [SharedMediaAdditionalFonts](https://www.wowace.com/addons/shared-media-additional-fonts) for more fonts.
+* [ColorPickerPlus](https://mods.curse.com/addons/wow/colorpickerplus) for a better version of the WoW color picker that includes class color templates and a copy and paste function.
 
 For in-depth documentation, see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 
