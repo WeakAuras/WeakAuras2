@@ -29,6 +29,9 @@ RegionOptions\ProgressTexture.lua
 
 Cache.lua
 
+ActionOptions.lua
+AnimationOptions.lua
+
 WeakAurasOptions.lua
 ExternalAddons.lua
 ConditionOptions.lua
