@@ -1974,6 +1974,103 @@ local function replaceValuesFuncs(intable, data)
   recurse(intable);
 end
 
+local function GetCustomCode(data, path)
+  for _, key in ipairs(path) do
+    if (not data or not data[key]) then
+      return nil;
+    end
+    data = data[key];
+  end
+  return data;
+end
+
+function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction)
+  args[prefix .. "_custom"] = {
+    type = "input",
+    width = "normal",
+    name = name,
+    order = order,
+    multiline = true,
+    hidden = hiddenFunc,
+    control = "WeakAurasMultiLineEditBox",
+    set = function(info, v)
+      local subdata = data;
+      for i = 1, #path -1 do
+        local key = path[i];
+        subdata[key] = subdata[key] or {};
+        subdata = subdata[key];
+      end
+
+      subdata[path[#path]] = v;
+      WeakAuras.Add(data);
+      extraSetFunction();
+    end,
+    get = function(info)
+      return GetCustomCode(data, path);
+    end
+  };
+
+  args[prefix .. "_expand"] = {
+    type = "execute",
+    order = order + 0.001,
+    name = L["Expand Text Editor"],
+    func = function()
+      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath)
+    end,
+    hidden = hiddenFunc
+  };
+
+
+  args[prefix .. "_customError"] = {
+    type = "description",
+    name = function()
+      if hiddenFunc() then
+        return "";
+      end
+
+      local code = GetCustomCode(data, path);
+
+      if (not code) then
+        return ""
+      end
+
+      if (encloseInFunction) then
+        code = "function() "..code.."\n end";
+      end
+
+      code = "return " .. code;
+
+      local _, errorString = loadstring(code);
+      return errorString and "|cFFFF0000"..errorString or "";
+    end,
+    width = "double",
+    order = order + 0.002,
+    hidden = function()
+      if (hiddenFunc()) then
+        return true;
+      end
+
+      local code = GetCustomCode(data, path);
+      if (not code) then
+        return true;
+      end
+
+      if (encloseInFunction) then
+        code = "function() "..code.."\n end";
+      end
+
+      code = "return " .. code;
+
+      local loadedFunction, errorString = loadstring(code);
+      if(errorString and not loadedFunction) then
+        return false;
+      else
+        return true;
+      end
+    end
+  };
+end
+
 function WeakAuras.AddOption(id, data)
   local regionOption;
   if(regionOptions[data.regionType]) then
@@ -2196,53 +2293,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       get = function() return data.disjunctive or "all" end,
       set = function(info, v) data.disjunctive = v end
     },
-    custom_trigger_combination = {
-      type = "input",
-      name = L["Custom"],
-      order = 0.1,
-      multiline = true,
-      width = "normal",
-      hidden = function() return not (data.disjunctive == "custom") end,
-      get = function() return data.customTriggerLogic end,
-      set = function(info, v)
-        data.customTriggerLogic = v;
-        WeakAuras.Add(data);
-      end,
-      control = "WeakAurasMultiLineEditBox"
-    },
-    custom_trigger_combination_expand = {
-      type = "execute",
-      order = 0.15,
-      name = L["Expand Text Editor"],
-      func = function()
-        WeakAuras.OpenTextEditor(data, {"customTriggerLogic"})
-      end,
-      hidden = function() return not (data.disjunctive == "custom") end,
-    },
-    custom_trigger_combination_error = {
-      type = "description",
-      name = function()
-        if not(data.customTriggerLogic) then
-          return "";
-        end
-        local _, errorString = loadstring("return "..data.customTriggerLogic);
-        return errorString and "|cFFFF0000"..errorString or "";
-      end,
-      width = "double",
-      order = 0.2,
-      hidden = function()
-        if not(data.disjunctive == "custom" and data.customTriggerLogic) then
-          return true;
-        else
-          local loadedFunction, errorString = loadstring("return "..data.customTriggerLogic);
-          if(errorString and not loadedFunction) then
-            return false;
-          else
-            return true;
-          end
-        end
-      end
-    },
+    -- custom trigger combiner text editor added below
     activeTriggerMode = {
       type = "select",
       name = L["Dynamic Information"],
@@ -2423,6 +2474,11 @@ function WeakAuras.ReloadTriggerOptions(data)
       end
     },
   };
+
+  local function hideTriggerCombiner()
+    return not (data.disjunctive == "custom")
+  end
+  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", 0.1, hideTriggerCombiner, {"customTriggerLogic"}, false);
 
   trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger));
 

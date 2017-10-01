@@ -46,48 +46,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 0.011,
         width = "double"
       },
-      init_custom = {
-        type = "input",
-        width = "normal",
-        name = L["Custom Code"],
-        order = 0.013,
-        multiline = true,
-        hidden = function() return not data.actions.init.do_custom end,
-        control = "WeakAurasMultiLineEditBox"
-      },
-      init_expand = {
-        type = "execute",
-        order = 0.014,
-        name = L["Expand Text Editor"],
-        func = function()
-          WeakAuras.OpenTextEditor(data, {"actions", "init", "custom"}, true)
-        end,
-        hidden = function() return not data.actions.init.do_custom end
-      },
-      init_customError = {
-        type = "description",
-        name = function()
-          if not(data.actions.init.custom) then
-            return "";
-          end
-          local _, errorString = loadstring("return function() "..data.actions.init.custom.."\n end");
-          return errorString and "|cFFFF0000"..errorString or "";
-        end,
-        width = "double",
-        order = 0.015,
-        hidden = function()
-          if not(data.actions.init.do_custom and data.actions.init.custom) then
-            return true;
-          else
-            local loadedFunction, errorString = loadstring("return function() "..data.actions.init.custom.."\n end");
-            if(errorString and not loadedFunction) then
-              return false;
-            else
-              return true;
-            end
-          end
-        end
-      },
+      -- texteditor added here by AddCodeOption
       start_header = {
         type = "header",
         name = L["On Show"],
@@ -153,63 +112,7 @@ function WeakAuras.AddActionOption(id, data)
           return ret
         end,
       },
-      start_message_custom = {
-        type = "input",
-        width = "normal",
-        name = L["Custom Code"],
-        order = 5.1,
-        multiline = true,
-        hidden = function()
-          return not (data.actions.start.do_message and WeakAuras.ContainsPlaceHolders(data.actions.start.message, "c"))
-        end,
-        control = "WeakAurasMultiLineEditBox",
-      },
-      start_message_custom_expand = {
-        type = "execute",
-        order = 5.2,
-        name = L["Expand Text Editor"],
-        func = function()
-          WeakAuras.OpenTextEditor(data, {"actions", "start", "message_custom"});
-        end,
-        hidden = function()
-          return not (data.actions.start.do_message and WeakAuras.ContainsPlaceHolders(data.actions.start.message, "c"))
-        end,
-      },
-      start_message_error = {
-        type = "description",
-        name = function()
-          local custom = data.actions.start.message_custom;
-          if not custom then
-            return "";
-          end
-          local _, errorString = loadstring("return  " .. custom);
-          return errorString and "|cFFFF0000"..errorString or "";
-        end,
-        width = "double",
-        order = 5.3,
-        hidden = function()
-          local message = data.actions.start.message;
-          if (not message) then
-            return true;
-          end
-          if (not WeakAuras.ContainsPlaceHolders(message, "c")) then
-            return true;
-          end
-
-          local custom = data.actions.start.message_custom;
-
-          if (not custom) then
-            return true;
-          end
-
-          local loadedFunction, errorString = loadstring("return " .. custom);
-          if(errorString and not loadedFunction) then
-            return false;
-          else
-            return true;
-          end
-        end
-      },
+      -- texteditor added later
       start_do_sound = {
         type = "toggle",
         name = L["Play Sound"],
@@ -305,48 +208,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 11,
         width = "double"
       },
-      start_custom = {
-        type = "input",
-        width = "normal",
-        name = L["Custom Code"],
-        order = 13,
-        multiline = true,
-        hidden = function() return not data.actions.start.do_custom end,
-        control = "WeakAurasMultiLineEditBox"
-      },
-      start_expand = {
-        type = "execute",
-        order = 14,
-        name = L["Expand Text Editor"],
-        func = function()
-          WeakAuras.OpenTextEditor(data, {"actions", "start", "custom"}, true)
-        end,
-        hidden = function() return not data.actions.start.do_custom end
-      },
-      start_customError = {
-        type = "description",
-        name = function()
-          if not(data.actions.start.custom) then
-            return "";
-          end
-          local _, errorString = loadstring("return function() "..data.actions.start.custom.."\n end");
-          return errorString and "|cFFFF0000"..errorString or "";
-        end,
-        width = "double",
-        order = 15,
-        hidden = function()
-          if not(data.actions.start.do_custom and data.actions.start.custom) then
-            return true;
-          else
-            local loadedFunction, errorString = loadstring("return function() "..data.actions.start.custom.."\n end");
-            if(errorString and not loadedFunction) then
-              return false;
-            else
-              return true;
-            end
-          end
-        end
-      },
+      -- texteditor added laters
       finish_header = {
         type = "header",
         name = L["On Hide"],
@@ -412,62 +274,7 @@ function WeakAuras.AddActionOption(id, data)
           return ret
         end,
       },
-      finish_message_custom = {
-        type = "input",
-        width = "normal",
-        name = L["Custom Code"],
-        order = 25.1,
-        multiline = true,
-        hidden = function()
-          return not (data.actions.finish.do_message and WeakAuras.ContainsPlaceHolders(data.actions.finish.message, "c"))
-        end,
-        control = "WeakAurasMultiLineEditBox",
-      },
-      finish_message_custom_expand = {
-        type = "execute",
-        order = 25.2,
-        name = L["Expand Text Editor"],
-        func = function()
-          WeakAuras.OpenTextEditor(data, {"actions", "finish", "message_custom"});
-        end,
-        hidden = function()
-          return not (data.actions.finish.do_message and WeakAuras.ContainsPlaceHolders(data.actions.finish.message, "c"))
-        end,
-      },
-      finish_message_error = {
-        type = "description",
-        name = function()
-          local custom = data.actions.finish.message_custom;
-          if not custom then
-            return "";
-          end
-          local _, errorString = loadstring("return  " .. custom);
-          return errorString and "|cFFFF0000"..errorString or "";
-        end,
-        width = "double",
-        order = 25.3,
-        hidden = function()
-          local message = data.actions.finish.message;
-          if (not message) then
-            return true;
-          end
-          if (not WeakAuras.ContainsPlaceHolders(message, "c")) then
-            return true;
-          end
-
-          local custom = data.actions.finish.message_custom;
-          if (not custom) then
-            return true;
-          end
-
-          local loadedFunction, errorString = loadstring("return " .. custom);
-          if(errorString and not loadedFunction) then
-            return false;
-          else
-            return true;
-          end
-        end
-      },
+      -- texteditor added below
       finish_do_sound = {
         type = "toggle",
         name = L["Play Sound"],
@@ -549,52 +356,17 @@ function WeakAuras.AddActionOption(id, data)
         order = 31,
         width = "double"
       },
-      finish_custom = {
-        type = "input",
-        name = L["Custom Code"],
-        order = 33,
-        multiline = true,
-        width = "normal",
-        hidden = function() return not data.actions.finish.do_custom end,
-        control = "WeakAurasMultiLineEditBox"
-      },
-      finish_expand = {
-        type = "execute",
-        order = 34,
-        name = L["Expand Text Editor"],
-        func = function()
-          WeakAuras.OpenTextEditor(data, {"actions", "finish", "custom"}, true)
-        end,
-        hidden = function() return not data.actions.finish.do_custom end
-      },
-      finish_customError = {
-        type = "description",
-        name = function()
-          if not(data.actions.finish.custom) then
-            return "";
-          end
-          local _, errorString = loadstring("return function() "..data.actions.finish.custom.."\n end");
-          return errorString and "|cFFFF0000"..errorString or "";
-        end,
-        width = "double",
-        order = 35,
-        hidden = function()
-          if not(data.actions.finish.do_custom and data.actions.finish.custom) then
-            return true;
-          else
-            local loadedFunction, errorString = loadstring("return function() "..data.actions.finish.custom.."\n end");
-            if(errorString and not loadedFunction) then
-              return false;
-            else
-              return true;
-            end
-          end
-        end
-      },
+      -- Text editor added below
     },
   }
 
-  WeakAuras.AddCodeOption(action.args, data, "init", 0.011, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true);
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "init", 0.011, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true);
+
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start_message", 5.1, function() return not (data.actions.start.do_message and WeakAuras.ContainsPlaceHolders(data.actions.start.message, "c")) end, {"actions", "start", "message_custom"}, false);
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start", 13, function() return not data.actions.start.do_custom end, {"actions", "start", "custom"}, true);
+
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", 26, function() return not (data.actions.finish.do_message and WeakAuras.ContainsPlaceHolders(data.actions.finish.message, "c")) end, {"actions", "finish", "message_custom"}, false);
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish", 32, function() return not data.actions.finish.do_custom end, {"actions", "finish", "custom"}, true);
 
   return action;
 end
