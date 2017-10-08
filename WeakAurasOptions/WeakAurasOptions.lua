@@ -1987,12 +1987,22 @@ end
 function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction)
   args[prefix .. "_custom"] = {
     type = "input",
-    width = "normal",
+    width = "double",
     name = name,
     order = order,
     multiline = true,
     hidden = hiddenFunc,
     control = "WeakAurasMultiLineEditBox",
+    arg = {
+      extraFunctions = {
+        {
+          name = L["Expand"],
+          func = function()
+            WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath)
+          end
+        }
+      }
+    },
     set = function(info, v)
       local subdata = data;
       for i = 1, #path -1 do
@@ -2009,17 +2019,6 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
       return GetCustomCode(data, path);
     end
   };
-
-  args[prefix .. "_expand"] = {
-    type = "execute",
-    order = order + 0.001,
-    name = L["Expand Text Editor"],
-    func = function()
-      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath)
-    end,
-    hidden = hiddenFunc
-  };
-
 
   args[prefix .. "_customError"] = {
     type = "description",
