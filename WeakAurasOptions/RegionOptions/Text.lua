@@ -41,25 +41,22 @@ local function createOptions(id, data)
     },
     customText = {
       type = "input",
-      width = "normal",
+      width = "double",
       hidden = function()
         return not data.displayText:find("%%c")
       end,
       multiline = true,
       name = L["Custom Function"],
       order = 37,
-      control = "WeakAurasMultiLineEditBox"
-    },
-    customText_expand = {
-      type = "execute",
-      order = 38,
-      name = L["Expand Text Editor"],
-      func = function()
-        WeakAuras.OpenTextEditor(data, {"customText"})
-      end,
-      hidden = function()
-        return not data.displayText:find("%%c")
-      end,
+      control = "WeakAurasMultiLineEditBox",
+      arg = {
+        extraFunctions = {
+          name = L["Expand"],
+          func = function()
+            WeakAuras.OpenTextEditor(data, {"customText"})
+          end
+        }
+      }
     },
     progressPrecision = {
       type = "select",

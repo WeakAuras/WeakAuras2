@@ -648,7 +648,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
       type = "input",
-      width = "normal",
+      width = "double",
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "custom", L["Custom Code"], L["Custom Code"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "custom", propertyType),
       order = order,
@@ -658,31 +658,31 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
       end,
       control = "WeakAurasMultiLineEditBox",
-      set = setValueComplex("custom")
+      set = setValueComplex("custom"),
+      arg = {
+        extraFunctions = {
+          {
+            name = L["Expand"],
+            func = function()
+              if (data.controlledChildren) then
+                -- Collect multi paths
+                local multipath = {};
+                for id, reference in pairs(conditions[i].changes[j].references) do
+                  local conditionIndex = conditions[i].check.references[id].conditionIndex;
+                  local changeIndex = reference.changeIndex;
+                  multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
+                  print("Adding path", id, conditionIndex, changeIndex);
+                end
+                WeakAuras.OpenTextEditor(data, multipath, nil, true);
+              else
+                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"});
+              end
+            end
+          }
+        }
+      }
     }
-    order = order + 1;
 
-    args["condition" .. i .. "value" .. j .. "custom_expand"] = {
-      type = "execute",
-      order = order,
-      name = L["Expand Text Editor"],
-      func = function()
-        if (data.controlledChildren) then
-          -- Collect multi paths
-          local multipath = {};
-          for id, reference in pairs(conditions[i].changes[j].references) do
-            local conditionIndex = conditions[i].check.references[id].conditionIndex;
-            local changeIndex = reference.changeIndex;
-            multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
-            print("Adding path", id, conditionIndex, changeIndex);
-          end
-          WeakAuras.OpenTextEditor(data, multipath, nil, true);
-        else
-          WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"});
-        end
-      end,
-      hidden = customHiden
-    }
     order = order + 1;
 
     args["condition" .. i .. "value" .. j .. "custom_error"] = {
@@ -727,7 +727,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
       type = "input",
-      width = "normal",
+      width = "double",
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", L["Custom Code"], L["Custom Code"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", propertyType),
       order = order,
@@ -736,31 +736,31 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
       end,
       control = "WeakAurasMultiLineEditBox",
-      set = setValueComplex("custom")
-    }
-    order = order + 1;
-
-    args["condition" .. i .. "value" .. j .. "custom_expand"] = {
-      type = "execute",
-      order = order,
-      name = L["Expand Text Editor"],
-      func = function()
-        if (data.controlledChildren) then
-          -- Collect multi paths
-          local multipath = {};
-          for id, reference in pairs(conditions[i].changes[j].references) do
-            local conditionIndex = conditions[i].check.references[id].conditionIndex;
-            local changeIndex = reference.changeIndex;
-            local childData = WeakAuras.GetData(id);
-            childData.conditions[conditionIndex].changes[changeIndex].value = childData.conditions[conditionIndex].changes[changeIndex].value or {};
-            multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
-          end
-          WeakAuras.OpenTextEditor(data, multipath, true, true);
-        else
-          data.conditions[i].changes[j].value = data.conditions[i].changes[j].value or {};
-          WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, true);
-        end
-      end,
+      set = setValueComplex("custom"),
+      arg = {
+        extraFunctions = {
+          {
+            name = L["Expand"],
+            func = function()
+              if (data.controlledChildren) then
+                -- Collect multi paths
+                local multipath = {};
+                for id, reference in pairs(conditions[i].changes[j].references) do
+                  local conditionIndex = conditions[i].check.references[id].conditionIndex;
+                  local changeIndex = reference.changeIndex;
+                  local childData = WeakAuras.GetData(id);
+                  childData.conditions[conditionIndex].changes[changeIndex].value = childData.conditions[conditionIndex].changes[changeIndex].value or {};
+                  multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
+                end
+                WeakAuras.OpenTextEditor(data, multipath, true, true);
+              else
+                data.conditions[i].changes[j].value = data.conditions[i].changes[j].value or {};
+                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, true);
+              end
+            end
+          }
+        }
+      }
     }
     order = order + 1;
 

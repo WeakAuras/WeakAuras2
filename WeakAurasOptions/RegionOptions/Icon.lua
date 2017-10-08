@@ -236,7 +236,7 @@ local function createOptions(id, data)
     },
     customText = {
       type = "input",
-      width = "normal",
+      width = "double",
       hidden = function()
         return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
                     or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
@@ -244,19 +244,17 @@ local function createOptions(id, data)
       multiline = true,
       name = L["Custom Function"],
       order = 43.2,
-      control = "WeakAurasMultiLineEditBox"
-    },
-    customText_expand = {
-      type = "execute",
-      order = 43.3,
-      name = L["Expand Text Editor"],
-      func = function()
-        WeakAuras.OpenTextEditor(data, {"customText"})
-      end,
-      hidden = function()
-        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
-                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
-      end,
+      control = "WeakAurasMultiLineEditBox",
+      arg = {
+        extraFunctions = {
+          {
+            name = L["Expand"],
+            func = function()
+              WeakAuras.OpenTextEditor(data, {"customText"})
+            end
+          }
+        }
+      }
     },
     progressPrecision = {
       type = "select",
