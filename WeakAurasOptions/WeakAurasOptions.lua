@@ -2013,7 +2013,9 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
 
       subdata[path[#path]] = v;
       WeakAuras.Add(data);
-      extraSetFunction();
+      if (extraSetFunction) then
+        extraSetFunction();
+      end
     end,
     get = function(info)
       return GetCustomCode(data, path);
