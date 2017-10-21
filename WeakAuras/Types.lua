@@ -88,6 +88,11 @@ WeakAuras.trigger_require_types = {
   custom = L["Custom Function"]
 };
 
+WeakAuras.trigger_require_types_one = {
+  any = L["Trigger 1"],
+  custom = L["Custom Function"]
+};
+
 WeakAuras.trigger_modes = {
   ["first_active"] = -10,
 };

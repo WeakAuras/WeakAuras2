@@ -2289,8 +2289,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Required for Activation"],
       width = "double",
       order = 0,
-      hidden = function() return not (data.additional_triggers and #data.additional_triggers > 0) end,
-      values = WeakAuras.trigger_require_types,
+      values = function()
+        if (data.additional_triggers and #data.additional_triggers > 0) then
+          return WeakAuras.trigger_require_types;
+        end
+        return  WeakAuras.trigger_require_types_one;
+      end,
       get = function() return data.disjunctive or "all" end,
       set = function(info, v) data.disjunctive = v end
     },
