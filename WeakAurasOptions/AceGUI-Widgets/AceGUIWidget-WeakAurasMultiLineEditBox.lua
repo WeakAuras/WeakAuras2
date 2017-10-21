@@ -160,11 +160,11 @@ local function OnFrameShow(frame)
 				local extraButton = CreateFrame("Button", ("%s%dExpandButton%d"):format(Type, self.widgetNum, index), frame, "UIPanelButtonTemplate")
 				extraButton:SetPoint("LEFT", self.extraButtons[index - 1], "RIGHT");
 				extraButton:SetHeight(22)
+				extraButton:SetWidth(100);
 				self.extraButtons[index] = extraButton;
 			end
 			local extraButton = self.extraButtons[index];
 			extraButton:SetText(data.buttonLabel);
-			extraButton:SetWidth(100);
 			extraButton:SetScript("OnClick", data.func);
 			extraButton:Show();
 		end
