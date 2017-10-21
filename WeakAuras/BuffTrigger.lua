@@ -381,10 +381,16 @@ local function GetNameAndIconFromTrigger(trigger)
       local name, _, icon = GetSpellInfo(trigger.spellId);
       return name, icon;
     end
+    if (trigger.name) then
+      return trigger.name, WeakAuras.GetDynamicIconCache(trigger.name);
+    end
   else
     if (trigger.spellIds and trigger.spellIds[1]) then
       local name, _, icon = GetSpellInfo(trigger.spellIds[1]);
       return name, icon;
+    end
+    if (trigger.names and trigger.names[1]) then
+      return trigger.names[1], WeakAuras.GetDynamicIconCache(trigger.names[1]);
     end
   end
 end
@@ -577,6 +583,9 @@ function WeakAuras.ScanAuras(unit)
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
               name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
+              if (name) then
+                WeakAuras.SetDynamicIconCache(name, spellId, icon);
+              end
               checkPassed = false;
 
               -- Aura conforms to trigger options?
@@ -600,7 +609,6 @@ function WeakAuras.ScanAuras(unit)
               -- Aura conforms to trigger
               if(checkPassed) then
                 active = true;
-                WeakAuras.SetDynamicIconCache(name, spellId, icon);
 
                 if (not bestExpirationTime or expirationTime > bestExpirationTime) then
                   bestDuration = duration;
@@ -1491,28 +1499,7 @@ end
 -- @param triggernum
 -- @return boolean
 function BuffTrigger.CanHaveAuto(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
-  if (trigger.unit == "group" or trigger.unit == "multi") then
-    return true;
-  end
-  if (not trigger.inverse) then
-    return true;
-  end
-
-  if (trigger.fullscan and trigger.spellId) then
-    return true;
-  end
-
-  if (not trigger.fullscan and trigger.spellIds and trigger.spellIds[1]) then
-    return true;
-  end
-
-  return false;
+  return true;
 end
 
 --- Returns whether the trigger can have clones.
