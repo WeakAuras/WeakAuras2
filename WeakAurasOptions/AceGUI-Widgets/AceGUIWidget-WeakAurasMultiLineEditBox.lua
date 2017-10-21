@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasMultiLineEditBox", 29
+local Type, Version = "WeakAurasMultiLineEditBox", 30
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -163,7 +163,7 @@ local function OnFrameShow(frame)
 				self.extraButtons[index] = extraButton;
 			end
 			local extraButton = self.extraButtons[index];
-			extraButton:SetText(data.name);
+			extraButton:SetText(data.buttonLabel);
 			extraButton:SetWidth(100);
 			extraButton:SetScript("OnClick", data.func);
 			extraButton:Show();

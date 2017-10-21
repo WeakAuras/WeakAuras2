@@ -662,7 +662,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       arg = {
         extraFunctions = {
           {
-            name = L["Expand"],
+            buttonLabel = L["Expand"],
             func = function()
               if (data.controlledChildren) then
                 -- Collect multi paths
@@ -740,7 +740,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       arg = {
         extraFunctions = {
           {
-            name = L["Expand"],
+            buttonLabel = L["Expand"],
             func = function()
               if (data.controlledChildren) then
                 -- Collect multi paths

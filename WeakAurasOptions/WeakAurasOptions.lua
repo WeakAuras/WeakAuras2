@@ -1996,7 +1996,7 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
     arg = {
       extraFunctions = {
         {
-          name = L["Expand"],
+          buttonLabel = L["Expand"],
           func = function()
             WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath)
           end
