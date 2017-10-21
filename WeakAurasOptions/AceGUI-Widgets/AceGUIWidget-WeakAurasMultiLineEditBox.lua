@@ -325,12 +325,6 @@ local function Constructor()
 	local extraButtons = {};
 	extraButtons[0] = button;
 
-	local text = button:GetFontString()
-	text:ClearAllPoints()
-	text:SetPoint("TOPLEFT", button, "TOPLEFT", 5, -5)
-	text:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -5, 1)
-	text:SetJustifyV("MIDDLE")
-
 	local scrollBG = CreateFrame("Frame", nil, frame)
 	scrollBG:SetBackdrop(backdrop)
 	scrollBG:SetBackdropColor(0, 0, 0)
