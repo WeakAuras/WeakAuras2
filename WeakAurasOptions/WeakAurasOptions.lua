@@ -2225,13 +2225,12 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
 
-    if(optionTriggerChoices[id] >= 0) then
-      for index, childId in pairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        if(childData) then
-          optionTriggerChoices[childId] = optionTriggerChoices[id];
-          WeakAuras.ReloadTriggerOptions(childData);
-        end
+    local commonOptionTriggerChoice = optionTriggerChoices[id] >= 0 and optionTriggerChoices[id];
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId);
+      if(childData) then
+        optionTriggerChoices[childId] = commonOptionTriggerChoice or optionTriggerChoices[childId] or 0;
+        WeakAuras.ReloadTriggerOptions(childData);
       end
     end
   else
