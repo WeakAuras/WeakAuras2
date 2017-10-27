@@ -8,6 +8,7 @@
 <Script file="Locales\zhCN.lua"/>
 <Script file="Locales\zhTW.lua"/>
 <Script file="Locales\esES.lua"/>
+<Script file="Locales\esMX.lua"/>
 <Script file="Locales\ruRU.lua"/>
 <Script file="Locales\ptBR.lua"/>
 <Script file="Locales\itIT.lua"/>
