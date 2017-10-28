@@ -104,7 +104,7 @@ local function SoundPlayHelper(self)
     return;
   end
 
-  if (WeakAuras.IsOptionsOpen() or WeakAuras.SquelchingActions()) then
+  if (WeakAuras.IsOptionsOpen()) then
     return;
   end
 
