@@ -102,6 +102,7 @@ local importing = false;
 -- squelches actions and sounds from auras. is used e.g. to prevent lots of actions/sounds from triggering
 -- on login or after closing the options dialog
 local squelch_actions = true;
+local in_loading_screen = false;
 
 -- Load functions, keyed on id
 local loadFuncs = {};
@@ -1000,6 +1001,8 @@ WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
+loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
 loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
@@ -1056,6 +1059,10 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
     WeakAuras.UpdateCurrentInstanceType();
+  elseif(event == "LOADING_SCREEN_ENABLED") then
+    in_loading_screen = true;
+  elseif(event == "LOADING_SCREEN_DISABLED") then
+    in_loading_screen = false;
   elseif(event == "ACTIVE_TALENT_GROUP_CHANGED") then
     WeakAuras.CreateTalentCache();
   elseif(event == "PLAYER_REGEN_ENABLED") then
@@ -1106,6 +1113,14 @@ function WeakAuras.Toggle()
   else
     WeakAuras.Pause();
   end
+end
+
+function WeakAuras.SquelchingActions()
+  return squelch_actions;
+end
+
+function WeakAuras.InLoadingScreen()
+  return in_loading_screen;
 end
 
 function WeakAuras.PauseAllDynamicGroups()
@@ -2580,7 +2595,7 @@ function WeakAuras.PerformActions(data, type, region)
     end
   end
 
-  if(actions.do_sound and actions.sound and not squelch_actions) then
+  if(actions.do_sound and actions.sound) then
     if (region.SoundPlay) then
       region:SoundPlay(actions);
     end
