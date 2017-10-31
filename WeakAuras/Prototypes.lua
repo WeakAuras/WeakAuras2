@@ -3929,12 +3929,16 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       local ret = [[
           local inverse = %s
-          local check_behavior = "%s"
-          local name,_,_,_,active,_,_,exists
+          local check_behavior = %s
+          local name, i, active, exists
+          local activeIcon
           local behavior
           local index = 1
           repeat
-            name,_,_,_,active,_,_,exists = GetPetActionInfo(index);
+            name,_,i,_,active,_,_,exists = GetPetActionInfo(index);
+            if (active) then
+              activeIcon = _G[i];
+            end
             index = index + 1
             if(name == "PET_MODE_ASSIST" and active == true) then
               behavior = "assist"
@@ -3945,14 +3949,14 @@ WeakAuras.event_prototypes = {
             end
           until index == 12
       ]]
-      return ret:format(trigger.use_inverse and "true" or "false", trigger.behavior or "");
+      return ret:format(trigger.use_inverse and "true" or "false", trigger.use_behavior and ('"' .. (trigger.behavior or "") .. '"') or "nil");
     end,
     statesParameter = "one",
+    canHaveAuto = true,
     args = {
       {
         name = "behavior",
         display = L["Pet Behavior"],
-        required = true,
         type = "select",
         values = "pet_behavior_types",
         test = "true",
@@ -3961,11 +3965,19 @@ WeakAuras.event_prototypes = {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
+        test = "true",
+        enable = function(trigger) return trigger.use_behavior end
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "activeIcon",
+        store = "true",
         test = "true"
       },
       {
         hidden = true,
-        test = "UnitExists('pet') and ((inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))"
+        test = "UnitExists('pet') and (not check_behavior or (inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))"
       }
     },
     automaticrequired = true
