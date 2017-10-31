@@ -1525,7 +1525,7 @@ templates.class.SHAMAN = {
         { spell = 210652, type = "buff", unit = "player", talent = 1 }, -- Storm Totem
         { spell = 210658, type = "buff", unit = "player", talent = 1 }, -- Ember Totem
         { spell = 210659, type = "buff", unit = "player", talent = 1 }, -- Tailwind Totem
-        { spell = 210714, type = "buff", unit = "player", talent = 15 }, -- Icefury
+        { spell = 210714, type = "buff", unit = "player", talent = 21 }, -- Icefury
       },
       icon = 451169
     },
