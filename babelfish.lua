@@ -14,6 +14,7 @@ local fileList = {
         "WeakAuras/RegionTypes/Icon.lua",
         "WeakAuras/RegionTypes/Model.lua",
         "WeakAuras/RegionTypes/ProgressTexture.lua",
+        "WeakAuras/RegionTypes/RegionPrototype.lua",
         "WeakAuras/RegionTypes/Text.lua",
         "WeakAuras/RegionTypes/Texture.lua",
         "WeakAuras/BuffTrigger.lua",
