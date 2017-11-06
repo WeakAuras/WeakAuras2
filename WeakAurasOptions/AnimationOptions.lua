@@ -566,7 +566,7 @@ function WeakAuras.AddAnimationOption(id, data)
       finish_duration = {
         type = "input",
         name = L["Duration (s)"],
-        desc = "The duration of the animation in seconds.\n\nThe finish animation does not start playing until after the display would normally be hidden.",
+        desc = L["The duration of the animation in seconds.\n\nThe finish animation does not start playing until after the display would normally be hidden."],
         order = 73.5,
         width = "half",
         hidden = function() return data.animation.finish.type ~= "custom" end

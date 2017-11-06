@@ -840,8 +840,8 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       end
 
       if #codes > 0 then
-        tinsert(tooltip, {1, "This aura contains custom Lua code.", 1, 0, 0});
-        tinsert(tooltip, {1, "Make sure you can trust the person who sent it!", 1, 0, 0});
+        tinsert(tooltip, {1, L["This aura contains custom Lua code."], 1, 0, 0});
+        tinsert(tooltip, {1, L["Make sure you can trust the person who sent it!"], 1, 0, 0});
       end
 
       tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
