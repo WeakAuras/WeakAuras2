@@ -130,6 +130,7 @@ local specificUnits = WeakAuras.specificUnits;
 -- contains regions for clones
 WeakAuras.clones = {};
 local clones = WeakAuras.clones;
+
 -- Unused regions that are kept around for clones
 WeakAuras.clonePool = {};
 local clonePool = WeakAuras.clonePool;
