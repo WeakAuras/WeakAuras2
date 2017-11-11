@@ -434,10 +434,12 @@ function StringToTable(inString, fromChat)
   else
     decoded = Encoder:Decode(inString);
   end
+
   local decompressed, errorMsg = Compresser:Decompress(decoded);
   if not(decompressed) then
     return "Error decompressing: "..errorMsg;
   end
+
   local success, deserialized = Serializer:Deserialize(decompressed);
   if not(success) then
     return "Error deserializing "..deserialized;
