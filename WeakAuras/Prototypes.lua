@@ -1037,7 +1037,7 @@ WeakAuras.event_prototypes = {
         name = "percenthealth",
         display = L["Health (%)"],
         type = "number",
-        init = "(UnitHealth(concernedUnit) / math.max(1, UnitHealthMax(concernedUnit))) * 100",
+        init = "string.format(\"%.2f\",(UnitHealth(concernedUnit) / math.max(1, UnitHealthMax(concernedUnit))) * 100)",
         store = true,
         conditionType = "number"
       },
