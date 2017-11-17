@@ -30,7 +30,7 @@ local function createOptions(id, data)
       name = L["Constant Factor"],
       order = 10,
       values = WeakAuras.circular_group_constant_factor_types,
-      hidden = function() return data.grow ~= "CIRCLE" or data.grow == "COUNTERCIRCLE" end
+      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
     space = {
       type = "range",
