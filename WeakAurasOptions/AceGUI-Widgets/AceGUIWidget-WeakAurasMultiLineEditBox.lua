@@ -79,6 +79,7 @@ end
 local function OnEditFocusLost(self)                                             -- EditBox
 	self:HighlightText(0, 0)
 	self.obj:Fire("OnEditFocusLost")
+	self.obj.scrollFrame:EnableMouseWheel(false);
 end
 
 local function OnEnter(self)                                                     -- EditBox / ScrollFrame
@@ -178,6 +179,7 @@ end
 local function OnEditFocusGained(frame)
 	AceGUI:SetFocus(frame.obj)
 	frame.obj:Fire("OnEditFocusGained")
+	frame.obj.scrollFrame:EnableMouseWheel(true);
 end
 
 --[[-----------------------------------------------------------------------------
@@ -330,6 +332,7 @@ local function Constructor()
 	scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
 
 	local scrollFrame = CreateFrame("ScrollFrame", ("%s%dScrollFrame"):format(Type, widgetNum), frame, "UIPanelScrollFrameTemplate")
+	scrollFrame:EnableMouseWheel(false);
 
 	local scrollBar = _G[scrollFrame:GetName() .. "ScrollBar"]
 	scrollBar:ClearAllPoints()
