@@ -2582,7 +2582,9 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
   if (trigger.type == "custom") then
     if (trigger.custom_type == "stateupdate") then
       local allStates = {};
+      WeakAuras.ActivateAuraEnvironment(data.id);
       RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
+      WeakAuras.ActivateAuraEnvironment(nil);
       local count = 0;
       for id, state in pairs(allStates) do
         if (state.additionalProgress) then
