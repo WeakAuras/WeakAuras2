@@ -1074,6 +1074,15 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return trigger.use_showAbsorb end
       },
       {
+        name = "healprediction",
+        type = "number",
+        display = L["Incoming Heal"],
+        init = "UnitGetIncomingHeals(concernedUnit)",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return trigger.use_showIncomingHeal end
+      },
+      {
         hidden = true,
         test = "UnitExists(concernedUnit)"
       }
