@@ -84,6 +84,7 @@ local debug = WeakAuras.debug;
 
 local events = WeakAuras.events;
 local loaded_events = WeakAuras.loaded_events;
+local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 local specificBosses = WeakAuras.specificBosses;
 
@@ -613,20 +614,28 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   end
 end
 
-function GenericTrigger.ScanAll()
-  for event, v in pairs(WeakAuras.forceable_events) do
-    if(type(v) == "table") then
-      for index, arg1 in pairs(v) do
-        WeakAuras.ScanEvents(event, arg1);
+function GenericTrigger.ScanAll(recentlyLoaded)
+  for id, _ in pairs(loaded_auras) do
+    if (not recentlyLoaded or recentlyLoaded[id]) then
+      local updateTriggerState = false;
+      WeakAuras.ActivateAuraEnvironment(id);
+      for triggernum, event in pairs(events[id] or {}) do
+        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+        if (event.force_events) then
+          if (type(event.force_events) == "string") then
+            updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event.force_events) or updateTriggerState;
+          elseif (type(event.force_events) == "boolean" and event.force_events) then
+            for i, eventName in pairs(event.events) do
+              updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName);
+            end
+          end
+        end
       end
-    elseif(event == "SPELL_COOLDOWN_FORCE") then
-      WeakAuras.SpellCooldownForce();
-    elseif(event == "ITEM_COOLDOWN_FORCE") then
-      WeakAuras.ItemCooldownForce();
-    elseif(event == "RUNE_COOLDOWN_FORCE") then
-      WeakAuras.RuneCooldownForce();
-    else
-      WeakAuras.ScanEvents(event);
+
+      if (updateTriggerState) then
+        WeakAuras.UpdatedTriggerState(id);
+      end
+      WeakAuras.ActivateAuraEnvironment(nil);
     end
   end
 end
@@ -658,10 +667,12 @@ function HandleEvent(frame, event, arg1, arg2, ...)
 end
 
 function GenericTrigger.UnloadAll()
+  wipe(loaded_auras);
   wipe(loaded_events);
 end
 
 function GenericTrigger.UnloadDisplay(id)
+  loaded_auras[id] = false;
   for eventname, events in pairs(loaded_events) do
     if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
       for subeventname, subevents in pairs(events) do
@@ -718,6 +729,7 @@ end
 
 function GenericTrigger.LoadDisplay(id)
   if(events[id]) then
+    loaded_auras[id] = true;
     for triggernum, data in pairs(events[id]) do
       if(events[id] and events[id][triggernum]) then
         LoadEvent(id, triggernum, data);
@@ -736,6 +748,7 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
+  WeakAuras.forceable_events[id] = {};
 
   local register_for_frame_updates = false;
 
@@ -756,6 +769,7 @@ function GenericTrigger.Add(data, region)
       if(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
+        local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc;
         if(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
@@ -813,18 +827,14 @@ function GenericTrigger.Add(data, region)
             local prototype = event_prototypes[trigger.event];
             if(prototype) then
               trigger_events = prototype.events;
+              force_events = prototype.force_events;
               if (type(trigger_events) == "function") then
                 trigger_events = trigger_events(trigger, untrigger);
               end
+
               for index, event in ipairs(trigger_events) do
                 frame:RegisterEvent(event);
                 aceEvents:RegisterMessage(event, HandleEvent, frame)
-                if(type(prototype.force_events) == "boolean" or type(prototype.force_events) == "table") then
-                  WeakAuras.forceable_events[event] = prototype.force_events;
-                end
-              end
-              if(type(prototype.force_events) == "string") then
-                WeakAuras.forceable_events[prototype.force_events] = true;
               end
             end
           end
@@ -879,9 +889,7 @@ function GenericTrigger.Add(data, region)
                 frame:RegisterEvent(event);
                 aceEvents:RegisterMessage(event, HandleEvent, frame)
               end
-              if(trigger.custom_type == "status") then
-                WeakAuras.forceable_events[event] = true;
-              end
+              force_events = trigger.custom_type == "status";
             end
           end
           if (trigger.custom_type == "stateupdate") then
@@ -910,6 +918,7 @@ function GenericTrigger.Add(data, region)
           statesParameter = statesParameter,
           event = trigger.event,
           events = trigger_events,
+          force_events = force_events,
           inverse = trigger.use_inverse,
           subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
           unevent = trigger.unevent,
@@ -1876,18 +1885,6 @@ do
         end
       end
     end
-  end
-
-  function WeakAuras.RuneCooldownForce()
-    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
-  end
-
-  function WeakAuras.SpellCooldownForce()
-    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
-  end
-
-  function WeakAuras.ItemCooldownForce()
-    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
   end
 end
 

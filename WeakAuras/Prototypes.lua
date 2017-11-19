@@ -901,7 +901,7 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
-    force_events = true,
+    force_events = "UNIT_LEVEL",
     name = L["Unit Characteristics"],
     init = function(trigger)
       trigger.unit = trigger.unit or "target";
@@ -998,12 +998,7 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Health"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -1139,12 +1134,7 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -1293,12 +1283,7 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
-    force_events = {
-      "player",
-      "target",
-      "focus",
-      "pet"
-    },
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Alternate Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -2806,7 +2791,7 @@ WeakAuras.event_prototypes = {
       "RUNE_POWER_UPDATE",
       "RUNE_TYPE_UPDATE"
     },
-    force_events = true,
+    force_events = "SPELL_UPDATE_USABLE",
     name = L["Action Usable"],
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
@@ -2898,7 +2883,7 @@ WeakAuras.event_prototypes = {
       "COOLDOWN_REMAINING_CHECK",
       "PLAYER_ENTERING_WORLD"
     },
-    force_events = true,
+    force_events = "PLAYER_ENTERING_WORLD",
     name = L["Totem"],
     statesParameter = "full",
     canHaveAuto = true,
@@ -3059,7 +3044,7 @@ WeakAuras.event_prototypes = {
       "ITEM_COUNT_UPDATE",
       "PLAYER_ENTERING_WORLD"
     },
-    force_events = true,
+    force_events = "BAG_UPDATE",
     name = L["Item Count"],
     init = function(trigger)
       if(trigger.use_includeCharges) then
@@ -3118,7 +3103,7 @@ WeakAuras.event_prototypes = {
       "UPDATE_SHAPESHIFT_FORM",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
-    force_events = true,
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Stance/Form/Aura"],
     init = function(trigger)
       local ret = [[
@@ -3183,7 +3168,7 @@ WeakAuras.event_prototypes = {
       "MAINHAND_TENCH_UPDATE",
       "OFFHAND_TENCH_UPDATE"
     },
-    force_events = true,
+    force_events = "MAINHAND_TENCH_UPDATE",
     name = L["Fishing Lure / Weapon Enchant (Old)"],
     init = function(trigger)
       WeakAuras.TenchInit();
@@ -3509,7 +3494,7 @@ WeakAuras.event_prototypes = {
       "PLAYER_EQUIPMENT_CHANGED",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
-    force_events = true,
+    force_events = "UNIT_INVENTORY_CHANGED",
     name = L["Item Equipped"],
     init = function(trigger)
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
@@ -3693,7 +3678,7 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.threatUnit, result);
       return result;
     end,
-    force_events = true,
+    force_events = "UNIT_THREAT_SITUATION_UPDATE",
     name = L["Threat Situation"],
     init = function(trigger)
       local ret = [[
@@ -3735,7 +3720,7 @@ WeakAuras.event_prototypes = {
     events = {
       "UNIT_AURA"
     },
-    force_events = true,
+    force_events = "UNIT_AURA",
     name = L["Crowd Controlled"],
     args = {
       {
@@ -3764,7 +3749,7 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
-    force_events = true,
+    force_events = "CAST_REMAINING_CHECK",
     name = L["Cast"],
     init = function(trigger)
       trigger.unit = trigger.unit or "";
@@ -4062,7 +4047,7 @@ WeakAuras.event_prototypes = {
       "UNIT_PET",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
-    force_events = true,
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Pet Behavior"],
     init = function(trigger)
       local ret = [[
