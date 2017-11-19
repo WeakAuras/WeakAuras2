@@ -289,6 +289,17 @@ WeakAuras.font_flags = {
   ["MONOCHROME|THICKOUTLINE"] = L["Monochrome Thick Outline"],
 };
 
+WeakAuras.text_automatic_width = {
+  Auto = L["Automatic"],
+  Fixed = L["Fixed"],
+};
+
+WeakAuras.text_word_wrap = {
+  WordWrap = L["Word Wrap"],
+  Elide = L["Elide"]
+}
+
+
 WeakAuras.event_types = {};
 for name, prototype in pairs(WeakAuras.event_prototypes) do
   if(prototype.type == "event") then

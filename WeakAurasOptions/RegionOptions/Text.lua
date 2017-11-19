@@ -1,6 +1,8 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
+local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
+
 local function createOptions(id, data)
   local options = {
     displayText = {
@@ -92,6 +94,27 @@ local function createOptions(id, data)
       min = 6,
       softMax = 72,
       step = 1
+    },
+    automaticWidth = {
+      type = "select",
+      name = L["Width"],
+      order = 47.1,
+      values = WeakAuras.text_automatic_width
+    },
+    fixedWidth = {
+      name = L["Width"],
+      order = 47.2,
+      type = "range",
+      min = 1,
+      softMax = screenWidth,
+      bigStep = 1,
+      hidden = function() return data.automaticWidth  ~= "Fixed" end
+    },
+    wordWrap = {
+      type = "select",
+      name = L["Width"],
+      order = 47.2,
+      values = WeakAuras.text_word_wrap
     },
     outline = {
       type = "select",
