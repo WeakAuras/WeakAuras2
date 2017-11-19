@@ -1184,10 +1184,6 @@ function WeakAuras.ScanAll()
 
   WeakAuras.ResumeAllDynamicGroups();
   WeakAuras.ReloadAll();
-
-  for _, triggerSystem in pairs(triggerSystems) do
-    triggerSystem.ScanAll();
-  end
 end
 
 -- encounter stuff
@@ -1280,6 +1276,7 @@ function WeakAuras.IsOptionsProcessingPaused()
   return pausedOptionsProcessing;
 end
 
+local recentlyLoaded = {}
 function WeakAuras.ScanForLoads(self, event, arg1)
   if (WeakAuras.IsOptionsProcessingPaused()) then
     return;
@@ -1424,6 +1421,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
+  wipe(recentlyLoaded);
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
@@ -1433,6 +1431,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
         changed = changed + 1;
+        recentlyLoaded[id] = true;
       end
 
       if(loaded[id] and not shouldBeLoaded) then
@@ -1459,6 +1458,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
         for index, childId in pairs(data.controlledChildren) do
           if(loaded[childId] ~= nil) then
             any_loaded = true;
+            break;
           end
         end
         loaded[id] = any_loaded;
@@ -1469,13 +1469,14 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
   if(changed > 0 and not paused) then
     for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.ScanAll();
+      triggerSystem.ScanAll(recentlyLoaded);
     end
   end
 
   if (WeakAuras.afterScanForLoads) then -- Hook for Options
     WeakAuras.afterScanForLoads();
   end
+  wipe(recentlyLoaded);
 end
 
 local loadFrame = CreateFrame("FRAME");

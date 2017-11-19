@@ -1207,12 +1207,22 @@ local function LoadAura(id, triggernum, data)
 end
 
 function BuffTrigger.ScanAll()
+  local unitIdstoScan = {};
+  local groupScan = false;
   for unit, auras in pairs(loaded_auras) do
     if(unit == "group") then
-      WeakAuras.ScanAurasGroup();
+      groupScan = true;
     elseif(WeakAuras.unit_types[unit]) then
-      WeakAuras.ScanAuras(unit);
+      unitIdstoScan[unit] = true;
     end
+  end
+
+  if (groupScan) then
+    WeakAuras.ScanAurasGroup();
+  end
+
+  for unit, _ in pairs(unitIdstoScan) do
+    WeakAuras.ScanAuras(unit);
   end
 end
 
