@@ -1647,8 +1647,6 @@ local function setAll(data, info, ...)
     end
   end
 
-  WeakAuras.ScheduleReloadOptions(data);
-
   WeakAuras.pauseOptionsProcessing(false);
   WeakAuras.ScanForLoads();
   WeakAuras.SortDisplayButtons();
@@ -2298,7 +2296,7 @@ end
 -- which AceConfig doesn't like.
 -- Thus Reload the options after a very small delay.
 function WeakAuras.ScheduleReloadOptions(data)
-  C_Timer.After(0.00001, function()
+  C_Timer.After(0.1, function()
     WeakAuras.ReloadOptions(data.id)
   end );
 end
