@@ -307,7 +307,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
     region.SetValueFromCustomValueFunc = function()
       local value, total, _ = region.customValueFunc(region.state.trigger);
       value = type(value) == "number" and value or 0
-      total = type(value) == "number" and total or 0
+      total = type(total) == "number" and total or 0
       SetProgressValue(region, value, total);
     end
 
@@ -322,7 +322,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
         if type(customValue) == "function" then
           local value, total = customValue(region.state.trigger);
           value = type(value) == "number" and value or 0
-          total = type(value) == "number" and total or 0
+          total = type(total) == "number" and total or 0
           if total > 0 and value < total then
             self.customValueFunc = customValue;
             self:SetScript("OnUpdate", region.SetValueFromCustomValueFunc);
