@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 29
+local Type, Version = "WeakAurasDisplayButton", 30
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1226,12 +1226,12 @@ local methods = {
     self.downgroup.texture:SetVertexColor(1, 1, 1);
   end,
   ["DisableLoaded"] = function(self)
-    self.loaded.title = "Not Loaded";
+    self.loaded.title = L["Not Loaded"];
     self.loaded.desc = L["This display is not currently loaded"];
     self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
   end,
   ["EnableLoaded"] = function(self)
-    self.loaded.title = "Loaded";
+    self.loaded.title = L["Loaded"];
     self.loaded.desc = L["This display is currently loaded"];
     self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
   end,

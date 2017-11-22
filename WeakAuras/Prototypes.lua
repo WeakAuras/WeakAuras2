@@ -2257,7 +2257,7 @@ WeakAuras.event_prototypes = {
     args = {
       {
         name = "alertType",
-        display = "Alert Type",
+        display = L["Alert Type"],
         type = "select",
         init = "arg",
         values = "gtfo_types",
