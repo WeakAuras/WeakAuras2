@@ -879,7 +879,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       end
       showcodebutton:SetText(L["Show Code"]);
       if not WeakAurasSaved.import_disabled or WeakAuras.IsImporting() then
-        importbutton:SetText("Import");
+        importbutton:SetText(L["Import"]);
         importbutton:SetScript("OnClick", function()
           local func = function()
             WeakAuras.SetImporting(true);
@@ -953,7 +953,8 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         end);
       else
         -- TODO enable button after importing finished
-        importbutton:SetText("Import disabled");
+        importbutton:SetText(L["Import disabled"]);
+        importbutton:SetWidth(importbutton:GetTextWidth() + 24)
         importbutton:SetScript("OnClick", function()
           WeakAuras.CloseImportExport();
         end);
