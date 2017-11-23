@@ -717,6 +717,12 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
       else
         check = stateCheck .. stateVariableCheck .. "state." .. variable .. "- now" .. op .. value;
       end
+    elseif (type == "timerinverse" and op) then
+      if (op == "==") then
+        check = stateCheck .. stateVariableCheck .. "abs(state." ..variable .. "- now -" .. value .. ") < 0.05";
+      else
+        check = stateCheck .. stateVariableCheck .. "now - " .. "state." .. variable .. op .. value;
+      end
     elseif (type == "select" and op) then
       if (tonumber(value)) then
         check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. tonumber(value);
@@ -750,6 +756,14 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
       ret = ret .. "    recheckTime = nextTime\n";
       ret = ret .. "  end\n"
     end
+
+    if (type == "timerinverse" and value) then
+      ret = ret .. "  local nextTime = state and state." .. variable .. " and (state." .. variable .. " +" .. value .. ")\n";
+      ret = ret .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
+      ret = ret .. "    recheckTime = nextTime\n";
+      ret = ret .. "  end\n"
+    end
+
     ret = ret .. "\n";
   end
   return ret;

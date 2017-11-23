@@ -320,6 +320,9 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, u
   if (state.show ~= show) then
     state.show = show;
     state.changed = true;
+    if (state.show) then
+      state.activationTime = GetTime();
+    end
   end
 
   if (state.progressType ~= "timed") then
@@ -900,6 +903,7 @@ do
       if (state.show ~= true) then
         state.show = true;
         state.changed = true;
+        state.activationTime = GetTime();
       end
 
       if (state.expirationTime ~= auradata.expirationTime) then
@@ -1709,6 +1713,11 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   result["name"] = {
     display = L["Name"],
     type = "string"
+  }
+
+  result["activationTime"] = {
+    display = L["Active For"],
+    type = "timerinverse"
   }
 
   return result;
