@@ -119,6 +119,7 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
       name = L["Message Prefix"],
       order = 8,
       values = subevent_prefix_types,
+      control = "WeakAurasSortedDropdown",
       hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log"); end
     },
     subeventSuffix = {
@@ -126,6 +127,7 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
       name = L["Message Suffix"],
       order = 9,
       values = subevent_suffix_types,
+      control = "WeakAurasSortedDropdown",
       hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and subevent_actual_prefix_types[trigger.subeventPrefix]); end
     },
     spacer_suffix = {
