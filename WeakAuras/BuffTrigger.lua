@@ -287,16 +287,18 @@ do
 end
 WeakAuras.aura_cache = aura_cache;
 
-function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, inverse, active, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)
+function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, showOn, unitExists, active, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
 
-  local show = false
-  if(active ~= nil) then
-    if not(inverse and UnitExists(unit)) then
-      show = true;
-    end
-  elseif(inverse and UnitExists(unit)) then
+  local show;
+  if (not UnitExists(unit)) then
+    show = unitExists;
+  elseif (showOn == "showAlways") then
     show = true;
+  elseif(showOn == "showOnMissing") then
+    show = not active;
+  else
+    show = active;
   end
 
   cloneId = cloneId or "";
@@ -544,14 +546,14 @@ function WeakAuras.ScanAuras(unit)
                 WeakAuras.SetDynamicIconCache(name, spellId, icon);
                 if(data.autoclone) then
                   local cloneId = name .. spellId .."-"..(casGUID or "unknown");
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.inverse, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
+                  if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.showOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
                     updateTriggerState = true;
                   end
                   active = true;
                   cloneIdList[cloneId] = true;
                 -- Simply show display (show)
                 else
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
+                  if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
                     updateTriggerState = true;
                   end
                   active = true;
@@ -563,10 +565,8 @@ function WeakAuras.ScanAuras(unit)
             -- Update display visibility and clones visibility (hide)
             if not(active) then
               local nameFromTrigger, iconFromTrigger;
-              if (data.inverse) then
-                nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-              end
-              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+              nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                 updateTriggerState = true;
               end
             end
@@ -638,7 +638,7 @@ function WeakAuras.ScanAuras(unit)
                   groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
                 end
               else
-                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, true, unit, bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, nil, bestSpellId, bestUnitCaster)) then
+                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, true, unit, bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, nil, bestSpellId, bestUnitCaster)) then
                   updateTriggerState = true;
                 end
               end
@@ -651,10 +651,8 @@ function WeakAuras.ScanAuras(unit)
                 end
               else
                 local nameFromTrigger, iconFromTrigger;
-                if (data.inverse) then
-                  nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-                end
-                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+                nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                   updateTriggerState = true;
                 end
               end
@@ -679,11 +677,11 @@ function WeakAuras.ScanAuras(unit)
                     for guid, playerName in pairs(groupcloneToUpdate) do
                       local duration, expirationTime, name, icon, count, spellId, unitCaster = aura_object:GetPlayerDynamicInfo(id, triggernum, guid, data);
                       if(name ~= "") then
-                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.inverse, true, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
+                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.showOn, data.unitExists, true, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
                           updateTriggerState = true;
                         end
                       else
-                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.inverse, nil, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
+                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.showOn, data.unitExists, nil, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
                           updateTriggerState = true;
                         end
                       end
@@ -732,7 +730,7 @@ function WeakAuras.ScanAuras(unit)
                     end
 
                     -- Update display visibility (show)
-                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, true, unit, duration, expirationTime, name, icon, count, nil, spellId, unitCaster)) then
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, nil, spellId, unitCaster)) then
                       updateTriggerState = true;
                     end
                   end
@@ -746,10 +744,8 @@ function WeakAuras.ScanAuras(unit)
                   -- Update display visibility (hide)
                   else
                     local nameFromTrigger, iconFromTrigger;
-                    if (data.inverse) then
-                      nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-                    end
-                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.inverse, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+                    nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                       updateTriggerState = true;
                     end
                   end
@@ -1428,6 +1424,22 @@ function BuffTrigger.Add(data)
           WeakAuras.InitMultiAura();
         end
 
+        if (trigger.showOn == nil) then
+          trigger.showOn = "showOnActive";
+        end
+
+        local showOn = "showOnActive";
+        local unitExists = true;
+
+        if (not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and trigger.unit ~= "group" and trigger.unit ~= "player") then
+          unitExists = trigger.unitExists;
+        end
+
+        if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone)
+            and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
+          showOn = trigger.showOn;
+        end
+
         auras[id] = auras[id] or {};
         auras[id][triggernum] = {
           count = countFunc,
@@ -1448,7 +1460,8 @@ function BuffTrigger.Add(data)
           specificUnit = trigger.unit == "member",
           useCount = trigger.useCount,
           ownOnly = trigger.ownOnly,
-          inverse = trigger.inverse and not (trigger.unit == "group" and not trigger.groupclone),
+          showOn = showOn,
+          unitExists = unitExists,
           numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
           hideAlone = trigger.hideAlone,
           stack_info = trigger.stack_info,
@@ -1462,7 +1475,20 @@ end
 --- Updates old data to the new format.
 -- @param data
 function BuffTrigger.Modernize(data)
--- Nothing for now
+  for triggernum=0,(data.numTriggers or 9) do
+    local trigger;
+
+    if(triggernum == 0) then
+      trigger = data.trigger;
+    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+      trigger = data.additional_triggers[triggernum].trigger;
+    end
+
+    if (trigger and trigger.type == "aura" and trigger.showOn == nil) then
+      trigger.showOn = trigger.inverse and "showOnMissing" or "showOnActive";
+      trigger.inverse = nil;
+    end
+  end
 end
 
 --- Returns whether the first trigger could be shown without any affected group members.
@@ -1505,7 +1531,7 @@ function BuffTrigger.CanHaveDuration(data, triggernum)
   else
     trigger = data.additional_triggers[triggernum].trigger;
   end
-  if (not trigger.inverse) then
+  if (trigger.showOn ~= "showOnMissing") then
     return "timed";
   else
     return false;
@@ -1662,7 +1688,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
   else
     if (trigger.spellIds and trigger.spellIds[1]) then
       name, _, icon = GetSpellInfo(trigger.spellIds[1])
-    elseif(not (trigger.inverse or BuffTrigger.CanGroupShowWithZero(data, triggernum)) and trigger.names) then
+    elseif(not (trigger.showOn == "showOnMissing" or BuffTrigger.CanGroupShowWithZero(data, triggernum)) and trigger.names) then
       -- Try to get an icon from the icon cache
       for index, checkname in pairs(trigger.names) do
         local iconFromSpellCache = WeakAuras.spellCache.GetIcon(checkname);

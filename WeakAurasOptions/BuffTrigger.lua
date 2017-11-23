@@ -896,18 +896,28 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       order = 70,
       hidden = function() return not (trigger.type == "aura"); end
     },
-    inverse = {
-      type = "toggle",
-      name = L["Inverse"],
-      desc = function()
-        if(trigger.unit == "group") then
-          return L["Show players that are |cFFFF0000not affected"];
-        else
-          return L["Activate when the given aura(s) |cFFFF0000can't|r be found"];
-        end
+    showOn = {
+      type = "select",
+      name = L["Show On"],
+      values = WeakAuras.bufftrigger_progress_behavior_types,
+      order = 71,
+      get = function()
+        return trigger.showOn or "showOnActive";
       end,
-      order = 75,
       hidden = function() return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
+    },
+    unitExists = {
+      type = "toggle",
+      name = L["Show if unit is invalid"],
+      order = 72,
+      width = "double",
+      hidden = function()
+        return not (trigger.type == "aura"
+          and not(trigger.unit ~= "group" and trigger.autoclone)
+          and trigger.unit ~= "multi"
+          and trigger.unit ~= "group"
+          and trigger.unit ~= "player");
+      end
     }
   };
   return aura_options;

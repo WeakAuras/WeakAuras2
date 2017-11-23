@@ -1391,6 +1391,12 @@ WeakAuras.cooldown_progress_behavior_types = {
   showAlways     = L["Always"]
 };
 
+WeakAuras.bufftrigger_progress_behavior_types = {
+  showOnActive = L["Buffed/Debuffed"],
+  showOnMissing = L["Missing"],
+  showAlways    = L["Always"]
+};
+
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],
   [2]  = L["Neck"],
