@@ -295,7 +295,7 @@ WeakAuras.text_automatic_width = {
 };
 
 WeakAuras.text_word_wrap = {
-  WordWrap = L["Word Wrap"],
+  WordWrap = L["Wrap"],
   Elide = L["Elide"]
 }
 

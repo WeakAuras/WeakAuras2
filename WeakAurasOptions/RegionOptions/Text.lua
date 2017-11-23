@@ -112,9 +112,10 @@ local function createOptions(id, data)
     },
     wordWrap = {
       type = "select",
-      name = L["Width"],
+      name = L["Overflow"],
       order = 47.2,
-      values = WeakAuras.text_word_wrap
+      values = WeakAuras.text_word_wrap,
+      hidden = function() return data.automaticWidth  ~= "Fixed" end
     },
     outline = {
       type = "select",
