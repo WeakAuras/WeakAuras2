@@ -378,61 +378,7 @@ local methods = {
 
     function self.callbacks.OnDuplicateClick()
       if (WeakAuras.IsImporting()) then return end;
-      local base_id = data.id .. " ";
-      local num = 2;
-
-      -- if the old id ends with a number increment the number
-      local matchName, matchNumber = string.match(data.id, "^(.-)(%d*)$")
-      matchNumber = tonumber(matchNumber)
-      if (matchName ~= "" and matchNumber ~= nil) then
-        base_id = matchName;
-        num = matchNumber + 1
-      end
-
-      local new_id = base_id .. num;
-      while(WeakAuras.GetData(new_id)) do
-        new_id = base_id .. num;
-        num = num + 1;
-      end
-
-      local newData = {};
-      WeakAuras.DeepCopy(data, newData);
-      newData.id = new_id;
-      newData.parent = nil;
-      WeakAuras.Add(newData);
-      WeakAuras.NewDisplayButton(newData);
-      if(data.parent) then
-        local parentData = WeakAuras.GetData(data.parent);
-        local index;
-        for i, childId in pairs(parentData.controlledChildren) do
-          if(childId == data.id) then
-            index = i;
-            break;
-          end
-        end
-        if(index) then
-          local newIndex = index + 1;
-          if(newIndex > #parentData.controlledChildren) then
-            tinsert(parentData.controlledChildren, newData.id);
-          else
-            tinsert(parentData.controlledChildren, index + 1, newData.id);
-          end
-          newData.parent = data.parent;
-          WeakAuras.Add(parentData);
-          WeakAuras.Add(newData);
-
-          for index, id in pairs(parentData.controlledChildren) do
-            local childButton = WeakAuras.GetDisplayButton(id);
-            childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup");
-            childButton:SetGroupOrder(index, #parentData.controlledChildren);
-          end
-
-          local button = WeakAuras.GetDisplayButton(parentData.id);
-          button.callbacks.UpdateExpandButton();
-          WeakAuras.UpdateDisplayButton(parentData);
-          WeakAuras.ReloadGroupRegionOptions(parentData);
-        end
-      end
+      local new_id = WeakAuras.DuplicateOneAura(data);
       WeakAuras.SortDisplayButtons();
       WeakAuras.DoConfigUpdate();
       WeakAuras.PickAndEditDisplay(new_id);
