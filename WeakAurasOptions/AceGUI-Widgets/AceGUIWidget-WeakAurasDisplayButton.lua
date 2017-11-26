@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 30
+local Type, Version = "WeakAurasDisplayButton", 31
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -378,7 +378,7 @@ local methods = {
 
     function self.callbacks.OnDuplicateClick()
       if (WeakAuras.IsImporting()) then return end;
-      local new_id = WeakAuras.DuplicateOneAura(data);
+      local new_id = WeakAuras.DuplicateAura(data);
       WeakAuras.SortDisplayButtons();
       WeakAuras.DoConfigUpdate();
       WeakAuras.PickAndEditDisplay(new_id);

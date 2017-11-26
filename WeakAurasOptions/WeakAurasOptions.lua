@@ -70,7 +70,7 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   return desc;
 end
 
-function WeakAuras.DuplicateOneAura(data)
+function WeakAuras.DuplicateAura(data)
   local base_id = data.id .. " ";
   local num = 2;
 
@@ -218,7 +218,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
       end
     },
     {
-      text = L["Duplicate all"],
+      text = L["Duplicate All"],
       notCheckable = 1,
       func = function()
         local toDuplicate = {};
@@ -230,7 +230,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
 
         for index, id in ipairs(toDuplicate) do
           local childData = WeakAuras.GetData(id);
-          duplicated[index] = WeakAuras.DuplicateOneAura(childData);
+          duplicated[index] = WeakAuras.DuplicateAura(childData);
         end
 
         WeakAuras.ClearPicks();
