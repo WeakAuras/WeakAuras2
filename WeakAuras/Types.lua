@@ -13,12 +13,12 @@ local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumS
 WeakAuras.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
-};
+}
 
 WeakAuras.circular_group_constant_factor_types = {
   RADIUS = L["Radius"],
   SPACING = L["Spacing"]
-};
+}
 
 WeakAuras.frame_strata_types = {
   [1] = L["Inherited"],
@@ -30,34 +30,34 @@ WeakAuras.frame_strata_types = {
   [7] = "FULLSCREEN",
   [8] = "FULLSCREEN_DIALOG",
   [9] = "TOOLTIP"
-};
+}
 
 WeakAuras.hostility_types = {
   hostile = L["Hostile"],
   friendly = L["Friendly"]
-};
+}
 
 WeakAuras.character_types = {
   player = L["Player Character"],
   npc = L["Non-player Character"]
-};
+}
 
 WeakAuras.group_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"],
   hybrid = L["Hybrid"],
   none = L["None"]
-};
+}
 
 WeakAuras.group_hybrid_position_types = {
   hybridFirst = L["Marked First"],
   hybridLast = L["Marked Last"]
-};
+}
 
 WeakAuras.group_hybrid_sort_types = {
   ascending = L["Ascending"],
-  descending = L["Descending"],
-};
+  descending = L["Descending"]
+}
 
 WeakAuras.precision_types = {
   [0] = "12",
@@ -65,8 +65,8 @@ WeakAuras.precision_types = {
   [2] = "12.34",
   [3] = "12.345",
   [4] = "Dynamic 12.3", -- will show 1 digit precision when time is lower than 3 seconds, hardcoded
-  [5] = "Dynamic 12.34", -- will show 2 digits precision when time is lower than 3 seconds, hardcoded
-};
+  [5] = "Dynamic 12.34" -- will show 2 digits precision when time is lower than 3 seconds, hardcoded
+}
 
 WeakAuras.sound_channel_types = {
   Master = L["Master"],
@@ -74,7 +74,7 @@ WeakAuras.sound_channel_types = {
   Ambience = L["Ambience"],
   Music = L["Music"],
   Dialog = L["Dialog"]
-};
+}
 
 WeakAuras.sound_condition_types = {
   Play = L["Play"],
@@ -86,33 +86,33 @@ WeakAuras.trigger_require_types = {
   any = L["Any Triggers"],
   all = L["All Triggers"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.trigger_require_types_one = {
   any = L["Trigger 1"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.trigger_modes = {
   ["first_active"] = -10,
-};
+}
 
 WeakAuras.trigger_types = {
   aura = L["Aura"],
   status = L["Status"],
   event = L["Event"],
   custom = L["Custom"]
-};
+}
 
 WeakAuras.debuff_types = {
   HELPFUL = L["Buff"],
   HARMFUL = L["Debuff"]
-};
+}
 
 WeakAuras.aura_types = {
   BUFF = L["Buff"],
   DEBUFF = L["Debuff"]
-};
+}
 
 WeakAuras.debuff_class_types = {
   magic = L["Magic"],
@@ -121,7 +121,7 @@ WeakAuras.debuff_class_types = {
   poison = L["Poison"],
   enrage = L["Enrage"],
   none = L["None"]
-};
+}
 
 WeakAuras.unit_types = {
   player = L["Player"],
@@ -131,7 +131,7 @@ WeakAuras.unit_types = {
   member = L["Specific Unit"],
   pet = L["Pet"],
   multi = L["Multi-target"]
-};
+}
 
 WeakAuras.actual_unit_types_with_specific = {
   player = L["Player"],
@@ -139,21 +139,21 @@ WeakAuras.actual_unit_types_with_specific = {
   focus = L["Focus"],
   pet = L["Pet"],
   member = L["Specific Unit"]
-};
+}
 
 WeakAuras.actual_unit_types = {
   player = L["Player"],
   target = L["Target"],
   focus = L["Focus"],
   pet = L["Pet"]
-};
+}
 
 WeakAuras.threat_unit_types = {
   target = L["Target"],
   focus = L["Focus"],
   member = L["Specific Unit"],
   none = L["At Least One Enemy"]
-};
+}
 
 WeakAuras.unit_threat_situation_types = {
   [-1] = L["Not On Threat Table"],
@@ -161,11 +161,11 @@ WeakAuras.unit_threat_situation_types = {
   [1] = "|cFFFFFF77"..L["Higher Than Tank"],
   [2] = "|cFFFF9900"..L["Tanking But Not Highest"],
   [3] = "|cFFFF0000"..L["Tanking And Highest"]
-};
+}
 
 WeakAuras.class_types = {}
 WeakAuras.class_color_types = {}
-local C_S_O, R_C_C, L_C_N_M, F_C_C_C =  _G.CLASS_SORT_ORDER, _G.RAID_CLASS_COLORS, _G.LOCALIZED_CLASS_NAMES_MALE, _G.FONT_COLOR_CODE_CLOSE
+local C_S_O, R_C_C, L_C_N_M, F_C_C_C = _G.CLASS_SORT_ORDER, _G.RAID_CLASS_COLORS, _G.LOCALIZED_CLASS_NAMES_MALE, _G.FONT_COLOR_CODE_CLOSE
 do
   for i,eClass in ipairs(C_S_O) do
     WeakAuras.class_color_types[eClass] = "|c"..R_C_C[eClass].colorStr
@@ -192,7 +192,7 @@ WeakAuras.race_types = {
 WeakAuras.faction_group = {
   Alliance = L["Alliance"],
   Horde = L["Horde"],
-  Neutral = L["Neutral"],
+  Neutral = L["Neutral"]
 }
 
 WeakAuras.form_types = {};
@@ -213,8 +213,8 @@ form_frame:SetScript("OnEvent", update_forms);
 
 WeakAuras.blend_types = {
   ADD = L["Glow"],
-  BLEND = L["Opaque"],
-};
+  BLEND = L["Opaque"]
+}
 
 WeakAuras.texture_wrap_types = {
   CLAMP = L["Clamp"],
@@ -242,7 +242,7 @@ WeakAuras.point_types = {
   TOPLEFT = L["Top Left"],
   LEFT = L["Left"],
   CENTER = L["Center"]
-};
+}
 
 WeakAuras.inverse_point_types = {
   BOTTOMLEFT = "TOPRIGHT",
@@ -254,7 +254,7 @@ WeakAuras.inverse_point_types = {
   TOPLEFT = "BOTTOMRIGHT",
   LEFT = "RIGHT",
   CENTER = "CENTER"
-};
+}
 
 WeakAuras.anchor_frame_types = {
   SCREEN = L["Screen/Parent Group"],
@@ -278,7 +278,7 @@ WeakAuras.spark_hide_types = {
 WeakAuras.containment_types = {
   OUTSIDE = L["Outside"],
   INSIDE = L["Inside"]
-};
+}
 
 WeakAuras.font_flags = {
   None = L["None"],
@@ -286,19 +286,18 @@ WeakAuras.font_flags = {
   OUTLINE = L["Outline"],
   THICKOUTLINE  = L["Thick Outline"],
   ["MONOCHROME|OUTLINE"] = L["Monochrome Outline"],
-  ["MONOCHROME|THICKOUTLINE"] = L["Monochrome Thick Outline"],
-};
+  ["MONOCHROME|THICKOUTLINE"] = L["Monochrome Thick Outline"]
+}
 
 WeakAuras.text_automatic_width = {
   Auto = L["Automatic"],
-  Fixed = L["Fixed"],
-};
+  Fixed = L["Fixed"]
+}
 
 WeakAuras.text_word_wrap = {
   WordWrap = L["Wrap"],
   Elide = L["Elide"]
 }
-
 
 WeakAuras.event_types = {};
 for name, prototype in pairs(WeakAuras.event_prototypes) do
@@ -327,7 +326,7 @@ WeakAuras.subevent_prefix_types = {
   PARTY_KILL = L["Party Kill"],
   UNIT_DIED = L["Unit Died"],
   UNIT_DESTROYED = L["Unit Destroyed"]
-};
+}
 
 WeakAuras.subevent_actual_prefix_types = {
   SWING = L["Swing"],
@@ -336,7 +335,7 @@ WeakAuras.subevent_actual_prefix_types = {
   SPELL_PERIODIC = L["Periodic Spell"],
   SPELL_BUILDING = L["Spell (Building)"],
   ENVIRONMENTAL = L["Environmental"]
-};
+}
 
 WeakAuras.subevent_suffix_types = {
   _DAMAGE = L["Damage"],
@@ -366,7 +365,7 @@ WeakAuras.subevent_suffix_types = {
   _CREATE = L["Create"],
   _SUMMON = L["Summon"],
   _RESURRECT = L["Resurrect"]
-};
+}
 
 WeakAuras.power_types = {
   [0] = MANA,
@@ -383,8 +382,8 @@ WeakAuras.power_types = {
   [13] = INSANITY,
   [16] = ARCANE_CHARGES,
   [17] = FURY,
-  [18] = PAIN,
-};
+  [18] = PAIN
+}
 
 WeakAuras.power_types_with_stagger = {
   [0] = MANA,
@@ -403,7 +402,7 @@ WeakAuras.power_types_with_stagger = {
   [17] = FURY,
   [18] = PAIN,
   [99] = L["Stagger"]
-};
+}
 
 WeakAuras.miss_types = {
   ABSORB = L["Absorb"],
@@ -416,7 +415,7 @@ WeakAuras.miss_types = {
   PARRY = L["Parry"],
   REFLECT = L["Reflect"],
   RESIST = L["Resist"]
-};
+}
 
 WeakAuras.environmental_types = {
   Drowning = L["Drowning"],
@@ -425,12 +424,13 @@ WeakAuras.environmental_types = {
   Fire = L["Fire"],
   Lava = L["Lava"],
   Slime = L["Slime"]
-};
+}
 
 WeakAuras.combatlog_flags_check_type = {
   InGroup = L["In Group"],
   NotInGroup = L["Not in Group"]
 }
+
 WeakAuras.combatlog_raid_mark_check_type = {
   [0] = L["None"],
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:0|t " .. L["Star"],
@@ -441,14 +441,15 @@ WeakAuras.combatlog_raid_mark_check_type = {
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_6:0|t " .. L["Square"],
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_7:0|t " .. L["Cross"],
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8:0|t " .. L["Skull"],
-  L["Any"],
+  L["Any"]
 }
+
 WeakAuras.orientation_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],
   VERTICAL = L["Bottom to Top"],
   VERTICAL_INVERSE = L["Top to Bottom"]
-};
+}
 
 WeakAuras.orientation_with_circle_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
@@ -457,7 +458,7 @@ WeakAuras.orientation_with_circle_types = {
   VERTICAL_INVERSE = L["Top to Bottom"],
   CLOCKWISE = L["Clockwise"],
   ANTICLOCKWISE = L["Anticlockwise"]
-};
+}
 
 WeakAuras.spec_types = {
   [1] = _G.SPECIALIZATION.." 1",
@@ -474,7 +475,7 @@ WeakAuras.spec_types_3 = {
 
 WeakAuras.spec_types_2 = {
   [1] = _G.SPECIALIZATION.." 1",
-  [2] = _G.SPECIALIZATION.." 2",
+  [2] = _G.SPECIALIZATION.." 2"
 }
 
 WeakAuras.spec_types_specific = {}
@@ -490,13 +491,14 @@ local function update_specs()
     end
   end
 end
+
 local spec_frame = CreateFrame("frame");
 spec_frame:RegisterEvent("PLAYER_LOGIN")
 spec_frame:SetScript("OnEvent", update_specs);
 WeakAuras.talent_types = {}
 do
   local numTalents, numTiers, numColumns = MAX_TALENT_TIERS * NUM_TALENT_COLUMNS, MAX_TALENT_TIERS, NUM_TALENT_COLUMNS
-  local talentId,tier,column = 1,1,1
+  local talentId, tier, column = 1, 1, 1
   while talentId <= numTalents do
     while tier <= numTiers do
       while column <= numColumns do
@@ -514,7 +516,7 @@ end
 WeakAuras.pvp_talent_types = {};
 do
   local numTalents, numTiers, numColumns =  MAX_PVP_TALENT_TIERS * MAX_PVP_TALENT_COLUMNS, MAX_PVP_TALENT_TIERS, MAX_PVP_TALENT_COLUMNS
-  local talentId,tier,column = 1,1,1
+  local talentId, tier, column = 1, 1, 1
   while talentId <= numTalents do
     while tier <= numTiers do
       while column <= numColumns do
@@ -831,9 +833,9 @@ WeakAuras.texture_types = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
   },
   ["Sparks"] = {
-    ["Interface\\CastingBar\\UI-CastingBar-Spark"] = "Blizzard Spark",
-  },
-};
+    ["Interface\\CastingBar\\UI-CastingBar-Spark"] = "Blizzard Spark"
+  }
+}
 
 if(WeakAuras.PowerAurasPath ~= "") then
   WeakAuras.texture_types["PowerAuras Heads-Up"] = {
@@ -852,7 +854,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura24"] = "Smoke",
     [WeakAuras.PowerAurasPath.."Aura28"] = "Flourished Text",
     [WeakAuras.PowerAurasPath.."Aura33"] = "Droplet Highlights"
-  };
+  }
   WeakAuras.texture_types["PowerAuras Icons"] = {
     [WeakAuras.PowerAurasPath.."Aura8"] = "Rune",
     [WeakAuras.PowerAurasPath.."Aura9"] = "Stylized Ghost",
@@ -928,7 +930,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura141"] = "Blue Ring",
     [WeakAuras.PowerAurasPath.."Aura142"] = "Ornate Ring",
     [WeakAuras.PowerAurasPath.."Aura143"] = "Ghostly Skull"
-  };
+  }
   WeakAuras.texture_types["PowerAuras Separated"] = {
     [WeakAuras.PowerAurasPath.."Aura46"] = "8-Part Ring 1",
     [WeakAuras.PowerAurasPath.."Aura47"] = "8-Part Ring 2",
@@ -977,7 +979,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura137"] = "Sliced Orb 5",
     [WeakAuras.PowerAurasPath.."Aura144"] = "Taijitu Bottom",
     [WeakAuras.PowerAurasPath.."Aura145"] = "Taijitu Top"
-  };
+  }
   WeakAuras.texture_types["PowerAuras Words"] = {
     [WeakAuras.PowerAurasPath.."Aura20"] = "Power",
     [WeakAuras.PowerAurasPath.."Aura37"] = "Slow",
@@ -989,8 +991,8 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura43"] = "Danger",
     [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
     [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt",
-  };
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt"
+  }
 end
 
 WeakAuras.operator_types = {
@@ -1000,29 +1002,28 @@ WeakAuras.operator_types = {
   ["<"] = L["<"],
   [">="] = L[">="],
   ["<="] = L["<="]
-};
+}
 
 WeakAuras.equality_operator_types = {
   ["=="] = L["="],
-  ["~="] = L["!="],
-};
-
+  ["~="] = L["!="]
+}
 
 WeakAuras.string_operator_types = {
   ["=="] = L["Is Exactly"],
   ["find('%s')"] = L["Contains"],
   ["match('%s')"] = L["Matches (Pattern)"]
-};
+}
 
 WeakAuras.weapon_types = {
   ["main"] = L["Main Hand"],
   ["off"] = L["Off Hand"]
-};
+}
 
 WeakAuras.swing_types = {
   ["main"] = L["Main Hand"],
   ["off"] = L["Off Hand"]
-};
+}
 
 WeakAuras.rune_specific_types = {
   [1] = L["Rune #1"],
@@ -1031,29 +1032,29 @@ WeakAuras.rune_specific_types = {
   [4] = L["Rune #4"],
   [5] = L["Rune #5"],
   [6] = L["Rune #6"]
-};
+}
 
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
   ["status"] = L["Status"],
   ["stateupdate"] = L["Trigger State Updater"]
-};
+}
 
 WeakAuras.eventend_types = {
   ["timed"] = L["Timed"],
   ["custom"] = L["Custom"]
-};
+}
 
 WeakAuras.autoeventend_types = {
   ["auto"] = L["Automatic"],
   ["custom"] = L["Custom"]
-};
+}
 
 WeakAuras.justify_types = {
   ["LEFT"] = L["Left"],
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Right"]
-};
+}
 
 WeakAuras.grow_types = {
   ["LEFT"] = L["Left"],
@@ -1064,41 +1065,41 @@ WeakAuras.grow_types = {
   ["VERTICAL"] = L["Centered Vertical"],
   ["CIRCLE"] = L["Counter Clockwise"],
   ["COUNTERCIRCLE"] =L["Clockwise"]
-};
+}
 
 WeakAuras.text_rotate_types = {
   ["LEFT"] = L["Left"],
   ["NONE"] = L["None"],
   ["RIGHT"] = L["Right"]
-};
+}
 
 WeakAuras.align_types = {
   ["LEFT"] = L["Left"],
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Right"]
-};
+}
 
 WeakAuras.rotated_align_types = {
   ["LEFT"] = L["Top"],
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Bottom"]
-};
+}
 
 WeakAuras.icon_side_types = {
   ["LEFT"] = L["Left"],
   ["RIGHT"] = L["Right"]
-};
+}
 
 WeakAuras.rotated_icon_side_types = {
   ["LEFT"] = L["Top"],
   ["RIGHT"] = L["Bottom"]
-};
+}
 
 WeakAuras.anim_types = {
   none = L["None"],
   preset = L["Preset"],
   custom = L["Custom"]
-};
+}
 
 WeakAuras.anim_translate_types = {
   straightTranslate = L["Normal"],
@@ -1109,7 +1110,7 @@ WeakAuras.anim_translate_types = {
   bounce = L["Bounce"],
   bounceDecay = L["Bounce with Decay"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.anim_scale_types = {
   straightScale = L["Normal"],
@@ -1117,27 +1118,27 @@ WeakAuras.anim_scale_types = {
   fauxspin = L["Spin"],
   fauxflip = L["Flip"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.anim_alpha_types = {
   straight = L["Normal"],
   alphaPulse = L["Pulse"],
   hide = L["Hide"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.anim_rotate_types = {
   straight = L["Normal"],
   backandforth = L["Back and Forth"],
   wobble = L["Wobble"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.anim_color_types = {
   straightColor = L["Gradient"],
   pulseColor = L["Gradient Pulse"],
   custom = L["Custom Function"]
-};
+}
 
 WeakAuras.instance_types = {
   none = L["No Instance"],
@@ -1150,7 +1151,7 @@ WeakAuras.instance_types = {
   flexible = L["Flex Raid"],
   pvp = L["Battleground"],
   arena = L["Arena"]
-};
+}
 
 WeakAuras.group_types = {
   solo = L["Not in Group"],
@@ -1166,13 +1167,13 @@ WeakAuras.difficulty_types = {
   timewalking = L["Timewalking"],
   lfr = L["Looking for Raid"],
   challenge = L["Challenge"]
-};
+}
 
 WeakAuras.role_types = {
   TANK = L["Tank"],
   DAMAGER = L["Damager"],
   HEALER = L["Healer"]
-};
+}
 
 WeakAuras.anim_start_preset_types = {
   slidetop = L["Slide from Top"],
@@ -1184,7 +1185,7 @@ WeakAuras.anim_start_preset_types = {
   grow = L["Shrink"],
   spiral = L["Spiral"],
   bounceDecay = L["Bounce"]
-};
+}
 
 WeakAuras.anim_main_preset_types = {
   shake = L["Shake"],
@@ -1198,7 +1199,7 @@ WeakAuras.anim_main_preset_types = {
   spiralandpulse = L["Spiral"],
   orbit = L["Orbit"],
   bounce = L["Bounce"]
-};
+}
 
 WeakAuras.anim_finish_preset_types = {
   slidetop = L["Slide to Top"],
@@ -1236,7 +1237,7 @@ WeakAuras.chat_message_types = {
   CHAT_MSG_WHISPER = L["Whisper"],
   CHAT_MSG_YELL = L["Yell"],
   CHAT_MSG_SYSTEM = L["System"]
-};
+}
 
 WeakAuras.send_chat_message_types = {
   WHISPER = L["Whisper"],
@@ -1253,23 +1254,23 @@ WeakAuras.send_chat_message_types = {
   INSTANCE_CHAT = L["Instance"],
   COMBAT = L["Blizzard Combat Text"],
   PRINT = L["Chat Frame"]
-};
+}
 
 WeakAuras.group_aura_name_info_types = {
   aura = L["Aura Name"],
   players = L["Player(s) Affected"],
   nonplayers = L["Player(s) Not Affected"]
-};
+}
 
 WeakAuras.group_aura_stack_info_types = {
   count = L["Number Affected"],
   stack = L["Aura Stack"]
-};
+}
 
 WeakAuras.cast_types = {
   cast = L["Cast"],
   channel = L["Channel (Spell)"]
-};
+}
 
 -- register sounds
 LSM:Register("sound", "Batman Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.ogg")
@@ -1345,8 +1346,9 @@ end
 
 WeakAuras.sound_types = {
   [" custom"] = " " .. L["Custom"],
-  [" KitID"] = " " .. L["Sound by Kit ID"],
+  [" KitID"] = " " .. L["Sound by Kit ID"]
 }
+
 for name, path in next, LSM:HashTable("sound") do
   WeakAuras.sound_types[path] = name
 end
@@ -1366,36 +1368,36 @@ LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\F
 WeakAuras.duration_types = {
   seconds = L["Seconds"],
   relative = L["Relative"]
-};
+}
 
 WeakAuras.duration_types_no_choice = {
   seconds = L["Seconds"]
-};
+}
 
 WeakAuras.gtfo_types = {
   [1] = L["High Damage"],
   [2] = L["Low Damage"],
   [3] = L["Fail Alert"],
   [4] = L["Friendly Fire"]
-};
+}
 
 WeakAuras.pet_behavior_types = {
   passive = L["Passive"],
   defensive = L["Defensive"],
   assist = L["Assist"]
-};
+}
 
 WeakAuras.cooldown_progress_behavior_types = {
   showOnCooldown = L["On Cooldown"],
-  showOnReady    = L["Not on Cooldown"],
-  showAlways     = L["Always"]
-};
+  showOnReady = L["Not on Cooldown"],
+  showAlways = L["Always"]
+}
 
 WeakAuras.bufftrigger_progress_behavior_types = {
   showOnActive = L["Buffed/Debuffed"],
   showOnMissing = L["Missing"],
-  showAlways    = L["Always"]
-};
+  showAlways = L["Always"]
+}
 
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],
@@ -1431,11 +1433,10 @@ WeakAuras.combat_event_type = {
   PLAYER_REGEN_DISABLED = L["Entering"]
 }
 
-WeakAuras.bool_types =
-  {
-    [0] = L["False"],
-    [1] = L["True"],
-  }
+WeakAuras.bool_types = {
+  [0] = L["False"],
+  [1] = L["True"]
+}
 
 WeakAuras.absorb_modes = {
   OVERLAY_FROM_START = L["Attach to Start"],

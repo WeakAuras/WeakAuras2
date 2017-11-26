@@ -908,7 +908,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     unitExists = {
       type = "toggle",
-      name = L["Show if unit is invalid"],
+      name = L["Show If Unit Is Invalid"],
       order = 72,
       width = "double",
       hidden = function()
