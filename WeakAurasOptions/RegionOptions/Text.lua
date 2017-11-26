@@ -205,6 +205,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   mask:SetScript("OnScrollRangeChanged", rescroll);
 
   local function UpdateText()
+    local textStr = data.displayText;
+    textStr = WeakAuras.ReplacePlaceHolders(textStr, borderframe);
     text:SetText(textStr);
     rescroll();
   end
