@@ -2416,7 +2416,7 @@ function WeakAuras.pAdd(data)
       data.activeTriggerMode = WeakAuras.trigger_modes.first_active;
     end
     triggerState[id] = {};
-    triggerState[id].disjunctive = data.numTriggers > 1 and data.disjunctive or "all";
+    triggerState[id].disjunctive = data.disjunctive or "all";
     triggerState[id].numTriggers = data.numTriggers;
     triggerState[id].activeTriggerMode = data.activeTriggerMode or 0;
     triggerState[id].triggerLogicFunc = triggerLogicFunc;
@@ -3765,7 +3765,8 @@ end
 local function evaluateTriggerStateTriggers(id)
   local result = false;
   WeakAuras.ActivateAuraEnvironment(id);
-  if(triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0
+
+  if((triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0)
     or (triggerState[id].disjunctive == "all" and triggerState[id].triggerCount == triggerState[id].numTriggers)
     or (triggerState[id].disjunctive == "custom"
     and triggerState[id].triggerLogicFunc
