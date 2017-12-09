@@ -1154,6 +1154,9 @@ local function modify(parent, region, data)
   end
 
   function region:SetInverse(inverse)
+    if (region.inverseDirection == inverse) then
+      return;
+    end
     region.inverseDirection = inverse;
     local progress = 1 - region.progress;
     progress = progress > 0.0001 and progress or 0.0001;

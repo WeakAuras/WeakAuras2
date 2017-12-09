@@ -1424,6 +1424,9 @@ local function modify(parent, region, data)
   end
 
   function region:SetInverse(inverse)
+    if (region.inverseDirection == inverse) then
+      return;
+    end
     region.inverseDirection = inverse;
     region.bar:SetValue(1 - region.bar:GetValue());
   end
