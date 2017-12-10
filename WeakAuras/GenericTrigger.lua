@@ -362,7 +362,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
   local changed = state.changed or false;
   if (state.show ~= true) then
     state.show = true;
-    state.activationTime = GetTime();
     changed = true;
   end
   if (data.duration) then
@@ -2781,11 +2780,6 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
           type = "number",
         }
       end
-
-      result["activationTime"] = {
-        display = L["Active For"],
-        type = "timerinverse"
-      }
 
       if (WeakAuras.event_prototypes[trigger.event].stacksFunc) then
         result["stacks"] = {
