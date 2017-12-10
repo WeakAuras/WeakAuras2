@@ -407,7 +407,7 @@ local function createTexCoord(texture)
     self:MoveCorner(width, height, endCorner2, angleToCoord(angle2));
   end
 
-  local function TransformPoint(x, y, scalex, scaley, rotation, mirror_h, mirror_v)
+  local function TransformPoint(x, y, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y)
     -- 1) Translate texture-coords to user-defined center
     x = x - 0.5
     y = y - 0.5
@@ -439,14 +439,17 @@ local function createTexCoord(texture)
     x = x + 0.5
     y = y + 0.5
 
+    x = x + (user_x or 0);
+    y = y + (user_y or 0);
+
     return x, y
   end
 
-  function coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v)
-    coord.ULx, coord.ULy = TransformPoint(coord.ULx, coord.ULy, scalex, scaley, rotation, mirror_h, mirror_v);
-    coord.LLx, coord.LLy = TransformPoint(coord.LLx, coord.LLy, scalex, scaley, rotation, mirror_h, mirror_v);
-    coord.URx, coord.URy = TransformPoint(coord.URx, coord.URy, scalex, scaley, rotation, mirror_h, mirror_v);
-    coord.LRx, coord.LRy = TransformPoint(coord.LRx, coord.LRy, scalex, scaley, rotation, mirror_h, mirror_v);
+  function coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y)
+    coord.ULx, coord.ULy = TransformPoint(coord.ULx, coord.ULy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
+    coord.LLx, coord.LLy = TransformPoint(coord.LLx, coord.LLy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
+    coord.URx, coord.URy = TransformPoint(coord.URx, coord.URy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
+    coord.LRx, coord.LRy = TransformPoint(coord.LRx, coord.LRy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
   end
 
   return coord;
@@ -566,8 +569,10 @@ local textureFunctions = {
       local rotation = region.rotation or 0;
       local mirror_h = region.mirror_h or false;
       local mirror_v = region.mirror_v or false;
+      local user_x = region.user_x;
+      local user_y = region.user_y;
 
-      self.coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+      self.coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
       self.coord:Apply();
     end,
 
