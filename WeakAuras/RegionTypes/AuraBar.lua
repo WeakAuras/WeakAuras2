@@ -127,6 +127,11 @@ local properties = {
     setter = "SetTimerColor",
     type = "color"
   },
+  stacksColor = {
+    display = L["Stacks Text Color"],
+    setter = "SetStacksColor",
+    type = "color"
+  },
   textSize = {
     display = L["First Text Size"],
     setter = "SetTextSize",
@@ -138,6 +143,14 @@ local properties = {
   timerSize = {
     display = L["Second Text Size"],
     setter = "SetTimerSize",
+    type = "number",
+    min = 6,
+    softMax = 72,
+    step = 1,
+  },
+  stacksSize = {
+    display = L["Stacks Text Size"],
+    setter = "SetStacksSize",
     type = "number",
     min = 6,
     softMax = 72,
@@ -1403,14 +1416,23 @@ local function modify(parent, region, data)
     self.timer:SetTextColor(r, g, b, a);
   end
 
+  function region:SetStacksColor(r, g, b, a)
+    self.stacks:SetTextColor(r, g, b, a);
+  end
+
   function region:SetTextSize(size)
     self.text:SetFont(SharedMedia:Fetch("font", data.textFont), size, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     self.text:SetTextHeight(size);
   end
 
   function region:SetTimerSize(size)
-    timer:SetFont(SharedMedia:Fetch("font", data.timerFont), size, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
-    timer:SetTextHeight(size);
+    self.timer:SetFont(SharedMedia:Fetch("font", data.timerFont), size, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
+    self.timer:SetTextHeight(size);
+  end
+
+  function region:SetStacksSize(size)
+    self.stacks:SetFont(SharedMedia:Fetch("font", data.stacksFont), size, data.stacksFlags and data.stacksFlags ~= "None" and data.stacksFlags);
+    self.stacks:SetTextHeight(size);
   end
 
   function region:SetRegionWidth(width)
