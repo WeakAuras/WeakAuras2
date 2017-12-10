@@ -6,7 +6,7 @@
 -- [] Trigger number
 --   [] Condition name
 --      - display: Display Name
---      - type: Type, e.g. "select", "number", "timer", "timerinverse"
+--      - type: Type, e.g. "select", "number", "timer"
 --      - values: (only for "select")
 --      - test: a test function template
 
@@ -987,7 +987,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
   end
 
   if (currentConditionTemplate) then
-    if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer" or currentConditionTemplate.type == "timerinverse") then
+    if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer") then
       args["condition" .. i .. "_op"] = {
         name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
