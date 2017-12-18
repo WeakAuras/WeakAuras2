@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 32
+local Type, Version = "WeakAurasDisplayButton", 33
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -275,7 +275,11 @@ local methods = {
 
     function self.callbacks.OnClickNormal(_, mouseButton)
       if(IsControlKeyDown() and not data.controlledChildren) then
-        WeakAuras.PickDisplayMultiple(data.id);
+        if (WeakAuras.IsDisplayPicked(data.id)) then
+          WeakAuras.ClearPick(data.id);
+        else
+          WeakAuras.PickDisplayMultiple(data.id);
+        end
         self:ReloadTooltip();
       elseif(IsShiftKeyDown()) then
         local editbox = GetCurrentKeyBoardFocus();
