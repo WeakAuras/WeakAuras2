@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 31
+local Type, Version = "WeakAurasDisplayButton", 32
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -760,6 +760,16 @@ local methods = {
       for index, childId in pairs(data.controlledChildren) do
         tinsert(namestable, {" ", childId});
       end
+
+      if (#namestable > 30) then
+        local size = #namestable;
+        namestable[26] = {" ", "[...]"};
+        namestable[27] = {L[string.format(L["%s total auras"], #data.controlledChildren)], " " }
+        for i = 28, size do
+          namestable[i] = nil;
+        end
+      end
+
       if(#namestable > 0) then
         namestable[1][1] = L["Children:"];
       else
