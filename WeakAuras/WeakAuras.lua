@@ -2066,6 +2066,12 @@ function WeakAuras.Modernize(data)
   if(data.regionType == "aurabar") then
     data.displayTextLeft = data.displayTextLeft or (not data.auto and data.displayText) or "%n";
     data.displayTextRight = data.displayTextRight or "%p";
+
+    if (data.barInFront ~= nil) then
+      data.borderInFront = not data.barInFront;
+      data.backdropInFront = not data.barInFront;
+      data.barInFront = nil;
+    end
   end
 
   if(data.regionType == "icon") then

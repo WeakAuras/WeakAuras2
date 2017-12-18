@@ -441,10 +441,17 @@ local function createOptions(id, data)
       name = L["Border Settings"],
       order = 46.0
     },
-    barInFront  = {
+    borderInFront  = {
       type = "toggle",
-      name = L["Bar in Front"],
+      name = L["Border in Front"],
       order = 46.7,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border end,
+    },
+    backdropInFront  = {
+      type = "toggle",
+      name = L["Backdrop in Front"],
+      order = 46.8,
       disabled = function() return not data.border end,
       hidden = function() return not data.border end,
     },

@@ -6,7 +6,8 @@ local default = {
   icon = true,
   desaturate = false,
   auto = true,
-  barInFront = true,
+  borderInFront = true,
+  backdropInFront = false,
   border = false,
   timer = true,
   text = true,
@@ -627,10 +628,6 @@ local function create(parent)
   bar:HookScript("OnSizeChanged", bar.OnSizeChanged);
   region.bar = bar;
 
-  -- Create border
-  local border = CreateFrame("frame", nil, region);
-  region.border = border;
-
   -- Create timer text
   local timer = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
   region.timer = timer;
@@ -667,21 +664,28 @@ local function create(parent)
   local oldSetFrameLevel = region.SetFrameLevel;
   function region.SetFrameLevel(self, frameLevel)
     oldSetFrameLevel(self, frameLevel);
-    if region.barInFront then
-      -- WORKAROUND against strata being wonky in WoW
-      iconFrame:SetFrameLevel(frameLevel + 1);
-      iconFrame:SetFrameLevel(frameLevel + 1);
-      bar:SetFrameLevel(frameLevel + 1);
-      border:SetFrameLevel(frameLevel);
-    else
-      -- WORKAROUND against strata being wonky in WoW
-      iconFrame:SetFrameLevel(frameLevel);
-      iconFrame:SetFrameLevel(frameLevel);
-      bar:SetFrameLevel(frameLevel);
-      border:SetFrameLevel(frameLevel + 1);
+
+    iconFrame:SetFrameLevel(frameLevel + 2);
+    bar:SetFrameLevel(frameLevel + 2);
+
+    if (region.border) then
+      if (region.borderInFront) then
+        region.border:SetFrameLevel(frameLevel + 4);
+      else
+        region.border:SetFrameLevel(frameLevel + 1);
+      end
     end
+
+    if (region.backdrop) then
+      if (region.backdropInFront) then
+        region.backdrop:SetFrameLevel(frameLevel + 3);
+      else
+        region.backdrop:SetFrameLevel(frameLevel + 0);
+      end
+    end
+
     if (self.__WAGlowFrame) then
-      self.__WAGlowFrame:SetFrameLevel(frameLevel + 1);
+      self.__WAGlowFrame:SetFrameLevel(frameLevel + 5);
     end
   end
 
@@ -1003,7 +1007,7 @@ local function modify(parent, region, data)
 
   WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
-  local bar, border, timer, text, iconFrame, icon, stacks = region.bar, region.border, region.timer, region.text, region.iconFrame, region.icon, region.stacks;
+  local bar, timer, text, iconFrame, icon, stacks = region.bar, region.timer, region.text, region.iconFrame, region.icon, region.stacks;
 
   region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
 
@@ -1029,10 +1033,23 @@ local function modify(parent, region, data)
 
   -- Update border
   if data.border then
+    -- Create border
+    if (not region.border) then
+      local border = CreateFrame("frame", nil, region);
+      region.border = border;
+    end
+
+    if (not region.backdrop) then
+      local backdrop = CreateFrame("frame", nil, region);
+      region.backdrop = backdrop;
+    end
+
+    local border = region.border;
+    local backdrop = region.backdrop;
     border:SetBackdrop({
       edgeFile = SharedMedia:Fetch("border", data.borderEdge) or "",
       edgeSize = data.borderSize,
-      bgFile = SharedMedia:Fetch("background", data.borderBackdrop) or "",
+      bgFile = nil,
       insets = {
         left = data.borderInset,
         right = data.borderInset,
@@ -1043,10 +1060,33 @@ local function modify(parent, region, data)
     border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
     border:SetPoint("topright",   region, "topright",    data.borderOffset,  data.borderOffset);
     border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
-    border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+    border:SetBackdropColor(0, 0, 0, 0);
+
+    backdrop:SetBackdrop({
+      edgeFile = nil,
+      edgeSize = data.borderSize,
+      bgFile = SharedMedia:Fetch("background", data.borderBackdrop) or "",
+      insets = {
+        left = data.borderInset,
+        right = data.borderInset,
+        top = data.borderInset,
+        bottom = data.borderInset,
+      },
+    });
+    backdrop:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
+    backdrop:SetPoint("topright",   region, "topright",    data.borderOffset,  data.borderOffset);
+    backdrop:SetBackdropBorderColor(0, 0, 0, 0);
+    backdrop:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+
     border:Show();
+    backdrop:Show();
   else
-    border:Hide();
+    if (region.border) then
+      region.border:Hide();
+    end
+    if (region.backdrop) then
+      region.backdrop:Hide();
+    end
   end
 
   -- Update texture settings
@@ -1069,21 +1109,28 @@ local function modify(parent, region, data)
 
   -- Bar or Border (+Backdrop) in front
   local frameLevel = region:GetFrameLevel();
-  if data.barInFront then
-    -- WORKAROUND against strata being wonky in WoW
-    iconFrame:SetFrameLevel(frameLevel + 2);
-    iconFrame:SetFrameLevel(frameLevel + 2);
-    bar:SetFrameLevel(frameLevel + 2);
-    border:SetFrameLevel(frameLevel + 1);
-  else
-    -- WORKAROUND against strata being wonky in WoW
-    iconFrame:SetFrameLevel(frameLevel + 1);
-    iconFrame:SetFrameLevel(frameLevel + 1);
-    bar:SetFrameLevel(frameLevel + 1);
-    border:SetFrameLevel(frameLevel + 2);
+
+  iconFrame:SetFrameLevel(frameLevel + 2);
+  bar:SetFrameLevel(frameLevel + 2);
+
+  if (region.border) then
+    if (data.borderInFront) then
+      region.border:SetFrameLevel(frameLevel + 4);
+    else
+      region.border:SetFrameLevel(frameLevel + 1);
+    end
   end
 
-  region.barInFront = data.barInFront;
+  if (region.backdrop) then
+    if (data.backdropInFront) then
+      region.backdrop:SetFrameLevel(frameLevel + 3);
+    else
+      region.backdrop:SetFrameLevel(frameLevel + 0);
+    end
+  end
+
+  region.borderInFront = data.borderInFront;
+  region.backdropInFront = data.backdropInFront;
 
   -- Color update function
   region.Color = region.Color or function(self, r, g, b, a)
@@ -1401,11 +1448,15 @@ local function modify(parent, region, data)
   end
 
   function region:SetBorderColor(r, g, b, a)
-    self.border:SetBackdropBorderColor(r, g, b, a);
+    if (self.border) then
+      self.border:SetBackdropBorderColor(r, g, b, a);
+    end
   end
 
   function region:SetBackdropColor(r, g, b, a)
-    self.border:SetBackdropColor(r, g, b, a);
+    if (self.backdrop) then
+      self.backdrop:SetBackdropColor(r, g, b, a);
+    end
   end
 
   function region:SetTextColor(r, g, b, a)
