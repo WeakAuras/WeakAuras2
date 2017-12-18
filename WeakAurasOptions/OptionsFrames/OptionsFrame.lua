@@ -578,6 +578,22 @@ function WeakAuras.CreateFrame()
     container:SetTitle("");
   end
 
+  frame.ClearPick = function(self, id)
+    local index = nil;
+    for i, childId in pairs(tempGroup.controlledChildren) do
+      if (childId == id) then
+        index = i;
+        break;
+      end
+    end
+
+    tremove(tempGroup.controlledChildren, index);
+    displayButtons[id]:ClearPick();
+
+    WeakAuras.ReloadTriggerOptions(tempGroup);
+    self:FillOptions(displayOptions[tempGroup.id]);
+  end
+
   frame.ClearPicks = function(self, except)
     WeakAuras.PauseAllDynamicGroups();
 

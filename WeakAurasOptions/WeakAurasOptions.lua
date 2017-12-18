@@ -3724,6 +3724,10 @@ function WeakAuras.PickAndEditDisplay(id)
   displayButtons[id].callbacks.OnRenameClick();
 end
 
+function WeakAuras.ClearPick(id)
+  frame:ClearPick(id);
+end
+
 function WeakAuras.ClearPicks()
   frame:ClearPicks();
 end
