@@ -1656,6 +1656,7 @@ templates.class.SHAMAN = {
         { spell = 188089, type = "ability", talent = 21}, -- Earthen Spike
         { spell = 192058, type = "ability", talent = 7}, -- Lightning Surge Totem
         { spell = 192077, type = "ability", talent = 6}, -- Wind Rush Totem
+        { spell = 193786, type = "ability"}, -- Rock Biter
         { spell = 193796, type = "ability"}, -- Flametongue
         { spell = 196884, type = "ability", talent = 5}, -- Feral Lunge
         { spell = 196932, type = "ability", talent = 9}, -- Voodoo Totem
