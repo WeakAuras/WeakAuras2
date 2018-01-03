@@ -2230,7 +2230,7 @@ do
           return false;
         end
       elseif (textOperator == "match('%s')") then
-        if (v.text == nil or v.text:match(text)) then
+        if (v.text == nil or not v.text:match(text)) then
           return false;
         end
       end
