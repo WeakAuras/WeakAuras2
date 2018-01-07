@@ -2522,7 +2522,10 @@ function WeakAuras.ReloadTriggerOptions(data)
         return  WeakAuras.trigger_require_types_one;
       end,
       get = function() return data.disjunctive or "all" end,
-      set = function(info, v) data.disjunctive = v end
+      set = function(info, v)
+        data.disjunctive = v;
+        WeakAuras.Add(data);
+      end
     },
     -- custom trigger combiner text editor added below
     activeTriggerMode = {
