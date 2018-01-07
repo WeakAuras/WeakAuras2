@@ -685,7 +685,7 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
       else
         region = WeakAuras.regions[id].region;
       end
-      if (region and region.state and region.state.show) then
+      if (region and region.toShow) then
         checkConditions[id](region);
       end
     end, time - GetTime())
