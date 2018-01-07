@@ -36,6 +36,7 @@ local default = {
   text2FontSize = 24,
   stickyDuration = false,
   zoom = 0,
+  keepAspectRatio = false,
   frameStrata = 1,
   customTextUpdate = "update",
   glow = false,
@@ -115,29 +116,27 @@ local function GetProperties(data)
   return properties;
 end
 
-local function GetTexCoord(region, texWidth)
-  local texCoord
+local function GetTexCoord(region, texWidth, aspectRatio)
+  local currentCoord
 
   if region.MSQGroup then
     region.MSQGroup:ReSkin();
 
     local db = region.MSQGroup.db
     if db and not db.Disabled then
-      local currentCoord = {region.icon:GetTexCoord()}
-
-      texCoord = {}
-      for i, coord in pairs(currentCoord) do
-        if coord > 0.5 then
-          texCoord[i] = coord - coord * texWidth
-        else
-          texCoord[i] = coord + (1 - coord) * texWidth
-        end
-      end
+      currentCoord = {region.icon:GetTexCoord()}
     end
   end
+  if (not currentCoord) then
+    currentCoord = {0, 0, 0, 1, 1, 0, 1, 1};
+  end
 
-  if not texCoord then
-    texCoord = {texWidth, texWidth, texWidth, 1 - texWidth, 1 - texWidth, texWidth, 1 - texWidth, 1 - texWidth}
+  local xRatio = aspectRatio < 1 and aspectRatio or 1;
+  local yRatio = aspectRatio > 1 and 1 / aspectRatio or 1;
+  local texCoord = {}
+  for i, coord in pairs(currentCoord) do
+    local aspectRatio = (i % 2 == 1) and xRatio or yRatio;
+    texCoord[i] = (coord - 0.5) * texWidth * aspectRatio + 0.5;
   end
 
   return unpack(texCoord)
@@ -283,14 +282,16 @@ local function modify(parent, region, data)
   region.height = data.height;
   region.scalex = 1;
   region.scaley = 1;
+  region.keepAspectRatio = data.keepAspectRatio;
   icon:SetAllPoints();
 
   configureText(stacks, icon, data.text1Enabled, data.text1Point, data.width, data.height, data.text1Containment, data.text1Font, data.text1FontSize, data.text1FontFlags, data.text1Color);
   configureText(text2, icon, data.text2Enabled, data.text2Point, data.width, data.height, data.text2Containment, data.text2Font, data.text2FontSize, data.text2FontFlags, data.text2Color);
 
-  local texWidth = 0.25 * data.zoom;
+  local texWidth = 1 - data.zoom * 0.5;
+  local aspectRatio = region.keepAspectRatio and region.width / region.height or 1;
 
-  icon:SetTexCoord(GetTexCoord(region, texWidth))
+  icon:SetTexCoord(GetTexCoord(region, texWidth, aspectRatio))
   icon:SetDesaturated(data.desaturate);
 
   local tooltipType = WeakAuras.CanHaveTooltip(data);
@@ -462,9 +463,10 @@ local function modify(parent, region, data)
     end
     icon:SetAllPoints();
 
-    local texWidth = 0.25 * data.zoom;
+    local texWidth = 1 - 0.5 * data.zoom;
+    local aspectRatio = region.keepAspectRatio and width / height or 1;
 
-    local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth)
+    local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
 
     if(mirror_h) then
       if(mirror_v) then
