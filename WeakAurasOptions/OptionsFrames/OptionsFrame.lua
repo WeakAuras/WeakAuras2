@@ -14,9 +14,11 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local addonVersion = GetAddOnMetadata("WeakAuras", "version")
+--@debug@
 if addonVersion == "@project-version@" then
   addonVersion = "Dev"
 end
+--@end-debug@
 
 local displayButtons = WeakAuras.displayButtons
 local displayOptions = WeakAuras.displayOptions
