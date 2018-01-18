@@ -291,7 +291,7 @@ local function createOptions(id, data)
     },
     keepAspectRatio = {
       type = "toggle",
-      name = "Keep Aspect Ratio",
+      name = L["Keep Aspect Ratio"],
       order = 49.1
     },
     stickyDuration = {
