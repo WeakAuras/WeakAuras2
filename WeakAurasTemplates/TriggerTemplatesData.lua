@@ -3577,6 +3577,28 @@ templates.items[2] = {
     { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
     { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
     { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+    { spell = 224706, type = "buff", unit = "player", item = 137062}, -- The Emerald Dreamcatcher
+    { spell = 236479, type = "buff", unit = "player", item = 144432}, -- Oakheart's Puny Quods
+    { spell = 248176, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
+    { spell = 248177, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
+    { spell = 248146, type = "buff", unit = "player", item = 151809}, -- Contained Infernal Core
+    { spell = 209316, type = "buff", unit = "player", item = 132442}, -- Cord of Infinity
+    { spell = 234862, type = "buff", unit = "player", item = 144273}, -- Maraad's Dying Breath
+    { spell = 248289, type = "buff", unit = "player", item = 151813}, -- Scarlet Inquisitor's Expurgation
+    { spell = 225056, type = "debuff", unit = "player", item = 140846}, -- Aegisjalmur, the Armguards of Awe
+    { spell = 216758, type = "buff", unit = "player", item = 137014}, -- Achor, the Eternal Hunger
+    { spell = 235543, type = "buff", unit = "player", item = 144292}, -- Spirit of the Darkness Flame
+    { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
+    { spell = 248088, type = "buff", unit = "player", item = 151803}, -- Celerity of the Windrunners
+    { spell = 248085, type = "buff", unit = "player", item = 151805}, -- Parsel's Tongue
+    { spell = 247993, type = "buff", unit = "player", item = 144326}, -- The Mantle of Command
+    { spell = 248212, type = "debuff", unit = "target", item = 151807}, -- Unseen Predator's Cloak
+    { spell = 236446, type = "buff", unit = "player", item = 144361}, -- Butcher's Bone Apron
+    { spell = 213156, type = "buff", unit = "player", item = 137082}, -- Helbrine, Rope of the Mist Marauder
+    { spell = 211336, type = "buff", unit = "player", item = 137109}, -- X'anshi, Shroud of Archbishop Benedictus
+    { spell = 234711, type = "buff", unit = "target", item = 144247}, -- Rammal's Ulterior Motive
+    { spell = 234693, type = "buff", unit = "target", item = 132449}, -- Phyrix's Embrace
+    { spell = 233997, type = "buff", unit = "player", item = 144244}, -- Kam Xi'raff
   }
 }
 
