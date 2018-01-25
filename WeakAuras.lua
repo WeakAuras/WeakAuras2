@@ -368,6 +368,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env = aura_environments[id];
       current_aura_env.cloneId = cloneId;
       current_aura_env.state = state;
+      current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env);
     else
@@ -376,6 +377,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env = aura_environments[id];
       current_aura_env.cloneId = cloneId;
       current_aura_env.state = state;
+      current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env);
       -- Run the init function if supplied
