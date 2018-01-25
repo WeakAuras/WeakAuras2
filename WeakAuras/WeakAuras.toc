@@ -9,7 +9,7 @@
 ## Notes-zhTW: 一個強大且全面實用的顯示圖形和訊息基於增益，減益和其它觸發。
 ## X-Category: Interface Enhancements
 ## Globe-Post: WeakAurasOptions, WeakAurasModelPaths, WeakAurasTemplates
-## X-Website: http://www.curse.com/addons/wow/weakauras-2
+## X-Website: https://www.curseforge.com/wow/addons/weakauras-2
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved

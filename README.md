@@ -20,6 +20,7 @@ Features include:
 To open the options window, type `/wa` or `/weakauras` into your chat and hit enter or use the LDB feed.
 
 ## Extending WeakAuras 2
+
 * [WeakAuras_StopMotion](https://www.wowace.com/addons/weakauras-stop-motion): This addon adds a new region type to WeakAuras that allows for stop motion animations. Stop Motion textures contain each frame of the animation as a separate image. The addon ships with a number of animations and it supports custom textures.
 * [SharedMedia](https://www.wowace.com/addons/sharedmedia) for more bar textures.
 * [SharedMediaAdditionalFonts](https://www.wowace.com/addons/shared-media-additional-fonts) for more fonts.
@@ -29,15 +30,16 @@ For in-depth documentation, see the [wiki](https://github.com/WeakAuras/WeakAura
 
 For some examples of what WeakAuras can do, take a look at [wago.io](https://wago.io/) where tons of people upload their creations and even feature complete interfaces utilizing WeakAuras!
 
-## Problem?
+## Problems
+
 * Please see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 * If you've discovered something that's clearly wrong, or if you get an error, [post](https://www.wowace.com/addons/weakauras-2/create-ticket/) a [ticket](https://www.wowace.com/addons/weakauras-2/tickets/).
 * If you have a general comment or concern, feel free to comment on the main page!
-* You're a programmer yourself and want to contribute? We accept [pull requests](https://github.com/WeakAuras/WeakAuras2/pulls) on GitHub!
-* Feel free to join our [Discord Community](https://discord.gg/wa2) at https://discord.gg/wa2 to talk and discuss everything WeakAuras!
+* You're a programmer yourself and want to contribute? Check out our [contributing guidelines](https://github.com/WeakAuras/WeakAuras2/blob/master/CONTRIBUTING.md) to get started!
+* Feel free to join our [Discord Community](https://discord.gg/wa2) to talk, get help and discuss everything WeakAuras!
 
-## Donations?
-You can donate to the WeakAuras project maintainers using PayPal:
+## Support
+
+If you want to help out with development without providing code yourself, you can always donate to the WeakAuras project maintainers using PayPal:
 
 [![WeakAuras on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FRVH7EYXFDTUN)
-
