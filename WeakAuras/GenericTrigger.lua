@@ -454,11 +454,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         state.expirationTime = arg2;
         changed = true;
       end
-      local autoHide = data.automaticAutoHide and (arg1 > 0.01);
-      if (state.autoHide ~= autoHide) then
-        state.autoHide = autoHide;
-        changed = true;
-      end
       if (state.value or state.total) then
         changed = true;
       end
@@ -2857,7 +2852,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.duration = arg1;
       state.resort = state.expirationTime ~= arg2;
       state.expirationTime = arg2;
-      state.autoHide = arg1 > 0.01 and data.automaticAutoHide;
+      state.autoHide = nil;
       state.value = nil;
       state.total = nil;
       state.inverse = inverse;
