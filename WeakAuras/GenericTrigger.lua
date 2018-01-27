@@ -507,7 +507,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
     state.additionalProgress = nil;
   end
 
-  state.changed = changed;
+  state.changed = state.changed or changed;
 
   return changed;
 end
