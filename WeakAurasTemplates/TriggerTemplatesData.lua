@@ -1746,7 +1746,7 @@ templates.class.SHAMAN = {
         { spell = 98008, type = "ability"}, -- Spirit Link Totem
         { spell = 108271, type = "ability"}, -- Astral Shift
         { spell = 108280, type = "ability"}, -- Healing Tide Totem
-        { spell = 108281, type = "ability", talent = 8}, -- Ancestral Guidance
+        { spell = 108281, type = "ability", talent = 11}, -- Ancestral Guidance
         { spell = 114052, type = "ability", talent = 19}, -- Ascendance
         { spell = 157153, type = "ability", talent = 17}, -- Cloudburst Totem
         { spell = 188838, type = "ability"}, -- Flame Shock
