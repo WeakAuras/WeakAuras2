@@ -3600,11 +3600,14 @@ end
 
 function WeakAuras.GetDynamicIconCache(name)
   if (db.dynamicIconCache[name]) then
+    local fallback = nil;
     for spellId, icon in pairs(db.dynamicIconCache[name]) do
+      fallback = icon;
       if (IsSpellKnown(spellId)) then -- TODO save this information?
         return db.dynamicIconCache[name][spellId];
       end
     end
+    return fallback;
   end
 
   if WeakAuras.spellCache then
