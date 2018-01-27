@@ -1330,15 +1330,8 @@ do
         end
       elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
         WeakAuras.CheckItemSlotCooldowns();
-      elseif(event == "GET_ITEM_INFO_RECEIVED") then
-        cdReadyFrame:UnregisterEvent("GET_ITEM_INFO_RECEIVED");
-        WeakAuras.ScanEvents("ITEM_INFO_UPDATED");
       end
     end);
-  end
-
-  function WeakAuras.WatchForItemInfoUpdate()
-    cdReadyFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED");
   end
 
   function WeakAuras.GetRuneCooldown(id)
