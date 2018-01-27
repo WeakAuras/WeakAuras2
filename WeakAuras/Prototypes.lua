@@ -2089,10 +2089,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
-      if (icon == nil) then
-        WeakAuras.WatchForItemInfoUpdate();
-      end
+      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true,
@@ -2220,10 +2217,7 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger.itemName or 0);
-      if (icon == nil) then
-        WeakAuras.WatchForItemInfoUpdate();
-      end
+      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true
@@ -3546,11 +3540,8 @@ WeakAuras.event_prototypes = {
     end,
     iconFunc = function(trigger)
       if not trigger.use_inverse then
-        local texture = select(10, GetItemInfo(trigger.itemName));
-        if (texture == nil) then
-          WeakAuras.WatchForItemInfoUpdate();
-        end
-        return texture;
+        local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
+        return icon;
       else
         return nil;
       end
