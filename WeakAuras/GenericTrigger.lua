@@ -2153,8 +2153,8 @@ do
     elseif (event == "BigWigs_StopBar") then
       local addon, text = ...
       if(bars[text]) then
-        WeakAuras.ScanEvents("BigWigs_StopBar", text);
         bars[text] = nil;
+        WeakAuras.ScanEvents("BigWigs_StopBar", text);
       end
     elseif (event == "BigWigs_StopBars"
       or event == "BigWigs_OnBossDisable"
