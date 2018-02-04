@@ -366,10 +366,10 @@ local function modify(parent, region, data)
       region.previousWidth = 1;
       region.previousHeight = 1;
     end
-    -- Tentative fix for https://github.com/WeakAuras/WeakAuras2/issues/326
-    -- if(WeakAuras.IsOptionsOpen()) then
-    --   WeakAuras.OptionsFrame().moversizer:ReAnchor();
-    -- end
+
+    if(WeakAuras.IsOptionsOpen()) then
+      WeakAuras.OptionsFrame().moversizer:ReAnchor();
+    end
   end
 
   function region:PositionChildren()
