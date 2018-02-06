@@ -2,7 +2,10 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
-local LBR = LibStub("LibBabble-Race-3.0"):GetLookupTable()
+local LibBabbleRace = LibStub("LibBabble-Race-3.0");
+local LBR_Locale = LibBabbleRace:GetUnstrictLookupTable()
+local LBR_Base = LibBabbleRace:GetBaseLookupTable();
+
 
 -- luacheck: globals MANA RAGE FOCUS ENERGY COMBO_POINTS RUNIC_POWER SOUL_SHARDS LUNAR_POWER HOLY_POWER MAELSTROM CHI INSANITY ARCANE_CHARGES FURY PAIN
 
@@ -173,26 +176,30 @@ do
   end
 end
 
+local function LBR(key)
+  return LBR_Locale[key] or LBR_Base[key];
+end
+
 WeakAuras.race_types = {
-  Pandaren = LBR["Pandaren"],
-  Worgen = LBR["Worgen"],
-  Draenei = LBR["Draenei"],
-  Dwarf = LBR["Dwarf"],
-  Gnome = LBR["Gnome"],
-  Human = LBR["Human"],
-  NightElf = LBR["Night Elf"],
-  Goblin = LBR["Goblin"],
-  BloodElf = LBR["Blood Elf"],
-  Orc = LBR["Orc"],
-  Tauren = LBR["Tauren"],
-  Troll = LBR["Troll"],
-  Scourge = LBR["Undead"],
-  LightforgedDraenei = LBR["Lightforged Draenei"],
-  VoidElf = LBR["Void Elf"],
-  HighmountainTauren = LBR["Highmountain Tauren"],
-  Nightborne = LBR["Nightborne"],
-  DarkIronDwarf = LBR["Dark Iron Dwarf"],
-  ZandalariTroll = LBR["Zandalari Troll"]
+  Pandaren = LBR("Pandaren"),
+  Worgen = LBR("Worgen"),
+  Draenei = LBR("Draenei"),
+  Dwarf = LBR("Dwarf"),
+  Gnome = LBR("Gnome"),
+  Human = LBR("Human"),
+  NightElf = LBR("Night Elf"),
+  Goblin = LBR("Goblin"),
+  BloodElf = LBR("Blood Elf"),
+  Orc = LBR("Orc"),
+  Tauren = LBR("Tauren"),
+  Troll = LBR("Troll"),
+  Scourge = LBR("Undead"),
+  LightforgedDraenei = LBR("Lightforged Draenei"),
+  VoidElf = LBR("Void Elf"),
+  HighmountainTauren = LBR("Highmountain Tauren"),
+  Nightborne = LBR("Nightborne"),
+  DarkIronDwarf = LBR("Dark Iron Dwarf"),
+  ZandalariTroll = LBR("Zandalari Troll")
 }
 
 WeakAuras.faction_group = {
