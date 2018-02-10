@@ -899,6 +899,9 @@ WeakAuras.event_prototypes = {
         "UNIT_FACTION"
       };
       AddUnitChangeEvents(trigger.unit, result);
+      if trigger.unitisunit then
+        AddUnitChangeEvents(trigger.unitisunit, result);
+      end
       return result;
     end,
     force_events = "UNIT_LEVEL",
@@ -908,9 +911,10 @@ WeakAuras.event_prototypes = {
       local ret = [=[
         local unit = [[%s]];
         local concernedUnit = [[%s]];
+        local extraUnit = [[%s]];
       ]=];
 
-      return ret:format(trigger.unit, trigger.unit);
+      return ret:format(trigger.unit, trigger.unit, trigger.unitisunit or "");
     end,
     statesParameter = "one",
     args = {
@@ -922,6 +926,16 @@ WeakAuras.event_prototypes = {
         init = "arg",
         values = "actual_unit_types_with_specific",
         test = "(event ~= 'UNIT_LEVEL' and event ~= 'UNIT_FACTION') or UnitIsUnit(unit, '%s' or '')"
+      },
+      {
+        name = "unitisunit",
+        display = L["Unit is Unit"],
+        type = "unit",
+        init = "UnitIsUnit(concernedUnit, extraUnit)",
+        values = "actual_unit_types_with_specific",
+        test = "unitisunit",
+        conditionType = "bool",
+        desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end
       },
       {
         name = "name",
