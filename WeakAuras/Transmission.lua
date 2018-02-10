@@ -356,6 +356,7 @@ local Serializer = LibStub:GetLibrary("AceSerializer-3.0");
 local Comm = LibStub:GetLibrary("AceComm-3.0");
 
 local tooltipLoading;
+local receivedData;
 
 hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
   if(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail) then
@@ -387,15 +388,26 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
       else
         ShowTooltip({
           {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-          {1, "Requesting display information from "..characterName.."...", 1, 0.82, 0}
+          {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
+          {1, L["Note, that cross realm transmission is not possible"], 1, 0.82, 0}
         });
         tooltipLoading = true;
+        receivedData = false;
         RequestDisplay(characterName, displayName);
+        WeakAuras.timer:ScheduleTimer(function()
+          if (tooltipLoading and not receivedData and ItemRefTooltip:IsVisible()) then
+            ShowTooltip({
+              {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+              {1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0},
+              {1, L["Note, that cross realm transmission is not possible"], 1, 0.82, 0}
+            })
+          end
+        end, 5);
       end
     else
       ShowTooltip({
         {1, "WeakAuras", 0.5, 0, 1},
-        {1, "Malformed WeakAuras link", 1, 0, 0}
+        {1, L["Malformed WeakAuras link"], 1, 0, 0}
       });
     end
   end
@@ -1207,6 +1219,7 @@ end
 
 Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
   if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
+    receivedData = true;
     local done, total, displayName = strsplit(" ", message, 3)
     done = tonumber(done)
     total = tonumber(total)
