@@ -709,7 +709,7 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
     local stateVariableCheck = "state." .. variable .. "~= nil and ";
     if (test) then
       if (value) then
-        check = string.format(test, value);
+        check = string.format(test, value, op or "");
       end
     elseif (type == "number" and op) then
       check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. value;

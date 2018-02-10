@@ -22,6 +22,20 @@ function WeakAuras.IsSpellInRange(spellId, unit)
 end
 
 local HBD = LibStub("HereBeDragons-1.0")
+local LibRangeCheck = LibStub("LibRangeCheck-2.0")
+
+function WeakAuras:GetRange(unit)
+  return LibRangeCheck:GetRange(unit);
+end
+
+function WeakAuras.CheckRange(unit, range, operator)
+  local min, max = LibRangeCheck:GetRange(unit);
+  if (operator == "<=") then
+    return max <= range;
+  else
+    return min <= range;
+  end
+end
 
 WeakAuras.encounter_table = {
   -- The Emerald Nightmare
@@ -4110,7 +4124,80 @@ WeakAuras.event_prototypes = {
       }
     },
     automaticrequired = true
-  }
+  },
+
+  ["Range Check"] = {
+    type = "status",
+    events = {
+      "FRAME_UPDATE",
+    },
+    name = L["Range Check"],
+    init = function(trigger)
+      trigger.unit = trigger.unit or "target";
+      local ret = [=[
+          local unit = [[%s]];
+          local min, max = WeakAuras:GetRange(unit);
+          min = min or 0;
+          max = max or 999;
+          local triggerResult = true;
+      ]=]
+      if (trigger.use_range) then
+        trigger.range = trigger.range or 8;
+        if (trigger.range_operator == "<=") then
+          ret = ret .. "triggerResult = max <= " .. tostring(trigger.range) .. "\n";
+        else
+          ret = ret .. "triggerResult = min >= " .. tostring(trigger.range).. "\n";
+        end
+      end
+      return ret:format(trigger.unit);
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "unit",
+        required = true,
+        display = L["Unit"],
+        type = "unit",
+        init = "unit",
+        values = "actual_unit_types_with_specific",
+        test = "true",
+        store = true
+      },
+      {
+        hidden = true,
+        name = "minRange",
+        display = L["Minimum Estimate"],
+        type = "number",
+        init = "min",
+        store = true,
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "maxRange",
+        display = L["Maximum Estimate"],
+        type = "number",
+        init = "max",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "range",
+        display = L["Range"],
+        type = "number",
+        operator_types_without_equal = true,
+        test = "triggerResult",
+        conditionType = "number",
+        conditionTest = "state and state.show and WeakAuras.CheckRange(state.unit, %s, '%s')",
+      },
+      {
+        hidden = true,
+        test = "UnitExists(unit)"
+      }
+    },
+    automaticrequired = true
+  },
+
 };
 
 WeakAuras.dynamic_texts = {
