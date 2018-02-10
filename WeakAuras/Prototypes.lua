@@ -1132,6 +1132,9 @@ WeakAuras.event_prototypes = {
         tinsert(result, "UNIT_SPELLCAST_STOP");
         tinsert(result, "UNIT_SPELLCAST_FAILED");
       end
+      if (trigger.use_powertype and trigger.powertype == 99) then
+        tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
+      end
       return result;
     end,
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
