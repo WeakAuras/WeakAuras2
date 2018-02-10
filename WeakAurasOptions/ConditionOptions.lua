@@ -993,7 +993,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
         desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
         type = "select",
         order = order,
-        values = WeakAuras.operator_types,
+        values = currentConditionTemplate.operator_types_without_equal and WeakAuras.operator_types_without_equal or  WeakAuras.operator_types,
         width = "half",
         get = function()
           return conditions[i].check.op;

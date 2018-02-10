@@ -307,6 +307,7 @@ end
 local trigger_types = WeakAuras.trigger_types;
 local point_types = WeakAuras.point_types;
 local operator_types = WeakAuras.operator_types;
+local operator_types_without_equal = WeakAuras.operator_types_without_equal;
 local string_operator_types = WeakAuras.string_operator_types;
 local eventend_types = WeakAuras.eventend_types;
 local autoeventend_types = WeakAuras.autoeventend_types;
@@ -556,7 +557,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           width = "half",
           order = order,
           hidden = hidden,
-          values = operator_types,
+          values = arg.operator_types_without_equal and operator_types_without_equal or operator_types,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
           set = function(info, v)

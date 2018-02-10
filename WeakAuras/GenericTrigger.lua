@@ -2805,6 +2805,9 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
             if (v.conditionTest) then
               result[v.name].test = v.conditionTest;
             end
+            if (v.operator_types_without_equal) then
+              result[v.name].operator_types_without_equal = true;
+            end
           end
         end
       end

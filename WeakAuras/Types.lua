@@ -1022,6 +1022,11 @@ WeakAuras.equality_operator_types = {
   ["~="] = L["!="]
 }
 
+WeakAuras.operator_types_without_equal = {
+  [">="] = L[">="],
+  ["<="] = L["<="]
+}
+
 WeakAuras.string_operator_types = {
   ["=="] = L["Is Exactly"],
   ["find('%s')"] = L["Contains"],
