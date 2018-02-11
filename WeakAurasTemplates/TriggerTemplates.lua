@@ -444,18 +444,7 @@ function WeakAuras.CreateTemplateView(frame)
 
       createTriggerButton(WeakAuras.triggerTemplates.general, selectedItem);
 
-      -- Race
-      local raceHeader = AceGUI:Create("Heading");
-      raceHeader:SetFullWidth(true);
-      newViewScroll:AddChild(raceHeader);
-      local raceSelector = createDropdown("race", WeakAuras.race_types);
-      newViewScroll:AddChild(raceSelector);
-      newViewScroll:AddChild(createSpacer());
-      if (WeakAuras.triggerTemplates.race[newView.race]) then
-        local group = createTriggerFlyout(WeakAuras.triggerTemplates.race[newView.race], true);
-        newViewScroll:AddChild(group);
-      end
-
+      -- Items
       local itemHeader = AceGUI:Create("Heading");
       itemHeader:SetFullWidth(true);
       newViewScroll:AddChild(itemHeader);
@@ -471,6 +460,20 @@ function WeakAuras.CreateTemplateView(frame)
         local group = createTriggerFlyout(WeakAuras.triggerTemplates.items[newView.item].args, true);
         newViewScroll:AddChild(group);
       end
+
+      -- Race
+      local raceHeader = AceGUI:Create("Heading");
+      raceHeader:SetFullWidth(true);
+      newViewScroll:AddChild(raceHeader);
+      local raceSelector = createDropdown("race", WeakAuras.race_types);
+      newViewScroll:AddChild(raceSelector);
+      newViewScroll:AddChild(createSpacer());
+      if (WeakAuras.triggerTemplates.race[newView.race]) then
+        local group = createTriggerFlyout(WeakAuras.triggerTemplates.race[newView.race], true);
+        newViewScroll:AddChild(group);
+      end
+
+      -- backButton
       if (newView.existingAura) then
         newView.backButton:Hide();
       else

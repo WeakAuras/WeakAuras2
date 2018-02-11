@@ -3545,13 +3545,15 @@ templates.items[2] = {
     { spell = 208764, type = "buff", unit = "player", item = 137104}, -- Nobundo's Redemption
     { spell = 208913, type = "buff", unit = "player", item = 137081}, -- War Belt of the Sentinel Army
     { spell = 208822, type = "buff", unit = "player", item = 132381}, -- Streten's Sleepless Shackles
-    { spell = 208871, type = "buff", unit = "player", item = 132379}, -- Sin'dorei Spite
+    { spell = 208871, type = "buff", unit = "player", item = 132379, titleSuffix = L["buff"]}, -- Sin'dorei Spite
+    { spell = 242690, type = "debuff", unit = "player", item = 132379, titleSuffix = L["debuff"]}, -- Sin'dorei Spite
     { spell = 209406, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
     { spell = 209407, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
     { spell = 209423, type = "buff", unit = "player", item = 137099}, -- Greenskin's Waterlogged Wristcuffs
     { spell = 209455, type = "buff", unit = "player", item = 132406}, -- Marquee Bindings of the Sun King
     { spell = 210607, type = "buff", unit = "player", item = 137051}, -- Focuser of Jonat, the Elder
-    { spell = 211319, type = "debuff", unit = "player", item = 137109}, -- X'anshi, Shroud of Archbishop Benedictus
+    { spell = 211319, type = "debuff", unit = "player", item = 137109, titleSuffix = L["debuff"]}, -- X'anshi, Shroud of Archbishop Benedictus
+    { spell = 211336, type = "buff", unit = "player", item = 137109, titleSuffix = L["buff"]}, -- X'anshi, Shroud of Archbishop Benedictus
     { spell = 211442, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Sanctify"], item = 132445}, -- Al'maiesh, the Cord of Hope
     { spell = 214404, type = "buff", unit = "player", item = 138140}, -- Magtheridon's Banished Bracers
     { spell = 215210, type = "buff", unit = "player", item = 132409}, -- Anund's Seared Shackles
@@ -3577,6 +3579,7 @@ templates.items[2] = {
     { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
     { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
     { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+    { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
     { spell = 224706, type = "buff", unit = "player", item = 137062}, -- The Emerald Dreamcatcher
     { spell = 236479, type = "buff", unit = "player", item = 144432}, -- Oakheart's Puny Quods
     { spell = 248176, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
@@ -3595,10 +3598,26 @@ templates.items[2] = {
     { spell = 248212, type = "debuff", unit = "target", item = 151807}, -- Unseen Predator's Cloak
     { spell = 236446, type = "buff", unit = "player", item = 144361}, -- Butcher's Bone Apron
     { spell = 213156, type = "buff", unit = "player", item = 137082}, -- Helbrine, Rope of the Mist Marauder
-    { spell = 211336, type = "buff", unit = "player", item = 137109}, -- X'anshi, Shroud of Archbishop Benedictus
     { spell = 234711, type = "buff", unit = "target", item = 144247}, -- Rammal's Ulterior Motive
     { spell = 234693, type = "buff", unit = "target", item = 132449}, -- Phyrix's Embrace
     { spell = 233997, type = "buff", unit = "player", item = 144244}, -- Kam Xi'raff
+    { spell = 217551, type = "debuff", unit = "player", item = 132357}, -- Pillars of the Dark Portal
+    { spell = 236200, type = "buff", unit = "player", item = 144385}, -- Wakener's Loyalty
+    { spell = 235599, type = "buff", unit = "player", item = 151796, titleSuffix = L["buff"]}, -- Cold Heart
+    { spell = 248406, type = "debuff", unit = "target", item = 151796, titleSuffix = L["debuff"]}, -- Cold Heart
+    { spell = 207995, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+    { spell = 207998, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+    { spell = 207999, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+    { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
+    { spell = 248201, type = "buff", unit = "player", item = 151815}, -- The Empty Crown
+    { spell = 248210, type = "buff", unit = "player", item = 151818}, -- The First of the Dead
+    { spell = 248145, type = "buff", unit = "player", item = 151823}, -- The Great Storm's Eye
+    { spell = 216509, type = "buff", unit = "player", item = 137068, titleSuffix = L["Renewing Mist"]}, -- Leggings of The Black Flame
+    { spell = 216995, type = "buff", unit = "player", item = 137068, titleSuffix = L["Enveloping Mist"]}, -- Leggings of The Black Flame
+    { spell = 216992, type = "buff", unit = "player", item = 137068, titleSuffix = L["Effuse"]}, -- Leggings of The Black Flame
+    { spell = 217006, type = "buff", unit = "player", item = 137068, titleSuffix = L["Vivify"]}, -- Leggings of The Black Flame
+    { spell = 217642, type = "debuff", unit = "target", item = 138879}, -- Ovyd's Winter Wrap
+    { spell = 213114, type = "debuff", unit = "target", item = 137057}, -- Hidden Master's Forbidden Touch
   }
 }
 
@@ -3654,6 +3673,19 @@ templates.items[3] = {
     { spell = 253383, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Arms 4P Bonus - "]},
     { spell = 253385, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Fury 4P Bonus - "]},
     { spell = 253428, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Protection 2P Bonus - "]},
+
+    { spell = 253381, type = "buff", unit = "player", titlePrefix = L["Death Knight T21 Blood 4P Bonus - "]},
+    { spell = 252165, type = "buff", unit = "player", titlePrefix = L["Demon Hunter T21 Havoc 4P Bonus - "]},
+    { spell = 253575, type = "buff", unit = "player", titlePrefix = L["Druid T21 Guardian 4P Bonus - "]},
+    { spell = 253434, type = "buff", unit = "player", titlePrefix = L["Druid T21 Restoration 4P Bonus - "]},
+    { spell = 253262, type = "buff", unit = "player", titlePrefix = L["Mage T21 Arcane 2P Bonus - "]},
+    { spell = 253220, type = "buff", unit = "player", titlePrefix = L["Mage T21 Fire 4P Bonus - "]},
+    { spell = 253257, type = "buff", unit = "player", titlePrefix = L["Mage T21 Frost 4P Bonus - "]},
+    { spell = 253448, type = "buff", unit = "target", titlePrefix = L["Monk T21 Mistweaver 2P Bonus - "]},
+    { spell = 252909, type = "buff", unit = "player", titlePrefix = L["Priest T21 Shadow 4P Bonus - "]},
+    { spell = 252285, type = "buff", unit = "player", titlePrefix = L["Rogue T21 Outlaw 2P Bonus - "]},
+    { spell = 257926, type = "buff", unit = "player", titlePrefix = L["Warlock T21 Demonology 2P Bonus - "]},
+    { spell = 254339, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Protection 4P Bonus - "]},
   }
 }
 
@@ -3679,11 +3711,14 @@ templates.items[4] = {
     { spell = 242617, type = "buff", unit = "player", titleItemPrefix = 147025},
     { spell = 242536, type = "debuff", unit = "target", titleItemPrefix = 147023},
     -- T21
-    { spell = 251940, type = "buff", unit = "player", titleItemPrefix = 151977},
+    { spell = 251940, type = "debuff", unit = "target", titleItemPrefix = 151977},
+    { spell = 251941, type = "buff", unit = "player", titleItemPrefix = 151977},
     { spell = 251938, type = "buff", unit = "player", titleItemPrefix = 151976},
     { spell = 252545, type = "buff", unit = "player", titleItemPrefix = 151976},
     { spell = 252550, type = "buff", unit = "player", titleItemPrefix = 151976},
 
+    { spell = 251946, type = "buff", unit = "player", titleItemPrefix = 151978},
+    { spell = 251952, type = "buff", unit = "player", titleItemPrefix = 151975},
 
   }
 }
@@ -3714,13 +3749,16 @@ templates.items[5] = {
     { spell = 243644, type = "buff", unit = "player", titleItemPrefix = 147018},
     { spell = 242570, type = "buff", unit = "player", titleItemPrefix = 147017},
     -- T21
-    { spell = 253326, type = "buff", unit = "player", titleItemPrefix = 152093},
-    { spell = 253305, type = "buff", unit = "player", titleItemPrefix = 151968},
-    { spell = 253304, type = "buff", unit = "player", titleItemPrefix = 151968},
+    { spell = 253327, type = "buff", unit = "player", titleItemPrefix = 152093},
+    { spell = 253308, type = "buff", unit = "player", titleItemPrefix = 151968},
+    { spell = 253307, type = "buff", unit = "player", titleItemPrefix = 151968},
     { spell = 253261, type = "buff", unit = "player", titleItemPrefix = 151955},
     { spell = 255742, type = "buff", unit = "player", titleItemPrefix = 151955},
     { spell = 255744, type = "buff", unit = "player", titleItemPrefix = 151955},
     { spell = 253258, type = "buff", unit = "player", titleItemPrefix = 151970},
+    { spell = 255870, type = "debuff", unit = "target", titleItemPrefix = 151971},
+    { spell = 255856, type = "buff", unit = "player", titleItemPrefix = 151971},
+    { spell = 253260, type = "buff", unit = "player", titleItemPrefix = 151955},
   }
 }
 
@@ -3742,29 +3780,34 @@ templates.items[6] = {
     { spell = 242458, type = "buff", unit = "target", titleItemPrefix = 147002},
     -- T21
     { spell = 253277, type = "buff", unit = "target", titleItemPrefix = 151957},
-    { spell = 253285, type = "buff", unit = "target", titleItemPrefix = 152289},
-    { spell = 253284, type = "buff", unit = "multi", titleItemPrefix = 253284},
-    { spell = 253269, type = "buff", unit = "target", titleItemPrefix = 151956},
-    { spell = 253258, type = "buff", unit = "target", titleItemPrefix = 151970},
+    { spell = 253287, type = "buff", unit = "target", titleItemPrefix = 152289},
+    { spell = 253284, type = "debuff", unit = "multi", titleItemPrefix = 253284},
+    { spell = 253269, type = "buff", unit = "player", titleItemPrefix = 151956},
+    { spell = 253258, type = "buff", unit = "player", titleItemPrefix = 151970},
   }
 }
 
 templates.items[7] = {
   title = L["Pantheon Trinkets"],
   args = {
-    { spell = 256815, type = "buff", unit = "player"},
-    { spell = 256817, type = "buff", unit = "player"},
-    { spell = 256819, type = "buff", unit = "player"},
-    { spell = 256822, type = "buff", unit = "player"},
-    { spell = 256825, type = "buff", unit = "player"},
-    { spell = 256827, type = "buff", unit = "player"},
+    { spell = 256816, type = "buff", unit = "player"},
+    { spell = 256818, type = "buff", unit = "player"},
+    { spell = 256826, type = "buff", unit = "player"},
+    { spell = 256828, type = "buff", unit = "player"},
 
-    { spell = 256831, type = "buff", unit = "player"},
-    { spell = 256832, type = "buff", unit = "player"},
-    { spell = 256833, type = "buff", unit = "player"},
-    { spell = 256834, type = "buff", unit = "player"},
-    { spell = 256835, type = "buff", unit = "player"},
-    { spell = 256836, type = "buff", unit = "player"},
+    { spell = 256831, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256832, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256833, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256835, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256836, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+
+    { spell = 257475, type = "buff", unit = "player", titleSuffix = L["Shaman"]},
+    { spell = 257470, type = "buff", unit = "player", titleSuffix = L["Druid"]},
+    { spell = 257471, type = "buff", unit = "player", titleSuffix = L["Monk"]},
+    { spell = 257472, type = "buff", unit = "player", titleSuffix = L["Paladin"]},
+    { spell = 257473, type = "buff", unit = "player", titleSuffix = L["Discipline Priest"]},
+    { spell = 257474, type = "buff", unit = "player", titleSuffix = L["Holy Priest"]},
+    { spell = 257744, type = "buff", unit = "target", titleSuffix = L["Absorb Shield"]},
 
   }
 }
@@ -3772,10 +3815,11 @@ templates.items[7] = {
 templates.items[8] = {
   title = L["Netherlight Crucible"],
   args = {
-    { spell = 252091, type = "buff", unit = "player"},
-    { spell = 252875, type = "buff", unit = "player"},
-    { spell = 252906, type = "debuff", unit = "target"},
-    { spell = 252088, type = "buff", unit = "player"},
+    { spell = 252907, type = "debuff", unit = "target"},
+    { spell = 252208, type = "buff", unit = "player"},
+    { spell = 253216, type = "buff", unit = "player"},
+    { spell = 253072, type = "buff", unit = "player"},
+    { spell = 252921, type = "debuff", unit = "target"},
   }
 }
 
