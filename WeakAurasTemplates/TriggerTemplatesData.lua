@@ -19,7 +19,11 @@ local templates =
       Tauren = {},
       Troll = {},
       BloodElf = {},
-      Goblin = {}
+      Goblin = {},
+      Nightborne = {},
+      LightforgedDraenei = {},
+      HighmountainTauren = {},
+      VoidElf = {}
     },
     general = {
       title = L["General"],
@@ -4733,6 +4737,19 @@ tinsert(templates.race.BloodElf, { spell = 69179, type = "buff", titleSuffix = L
 tinsert(templates.race.Goblin, { spell = 69046, type = "ability" });
 -- Rocket Barrage
 tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
+
+-- Arcane Pulse
+tinsert(templates.race.Nightborne, { spell = 260364, type = "ability" });
+-- Cantrips
+tinsert(templates.race.Nightborne, { spell = 255661, type = "ability" });
+-- Light's Judgment
+tinsert(templates.race.LightforgedDraenei, { spell = 255647, type = "ability" });
+-- Forge of Light
+tinsert(templates.race.LightforgedDraenei, { spell = 259930, type = "ability" });
+-- Bull Rush
+tinsert(templates.race.HighmountainTauren, { spell = 255654, type = "ability" });
+--Spatial Rift
+tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
 
 ------------------------------
 -- Helper code for options
