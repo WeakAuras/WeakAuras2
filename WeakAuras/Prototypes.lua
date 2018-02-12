@@ -1723,9 +1723,15 @@ WeakAuras.event_prototypes = {
         conditionType = "number"
       },
       {
+        enable = function(trigger)
+          return trigger.subeventSuffix and (trigger.subeventSuffix == "_ENERGIZE")
+        end
+      }, -- unknown argument for _ENERGIZE ignored
+      {
         name = "powerType",
         display = L["Power Type"],
-        type = "select", init = "arg",
+        type = "select",
+        init = "arg",
         values = "power_types",
         store = true,
         enable = function(trigger)
