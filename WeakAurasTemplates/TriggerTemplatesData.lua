@@ -53,7 +53,7 @@ local powerTypes =
 -- Collected by WeakAurasTemplateCollector:
 
 templates.class.WARRIOR = {
-  [1] = {
+  [1] = { -- Arms
     [1] = {
       title = L["Buffs"],
       args = {
@@ -121,6 +121,24 @@ templates.class.WARRIOR = {
       icon = 132355
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 225947, type = "buff", unit = "player", item = 137052}, -- Ayala's Stone Heart
+        { spell = 248145, type = "buff", unit = "player", item = 151823}, -- The Great Storm's Eye
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 253382, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 253383, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 198827, type = "debuff", unit = "target", pvptalent = 17}, -- Echo Slam
@@ -134,14 +152,14 @@ templates.class.WARRIOR = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
-  [2] = {
+  [2] = { -- Fury
     [1] = {
       title = L["Buffs"],
       args = {
@@ -212,6 +230,25 @@ templates.class.WARRIOR = {
       icon = 136012
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 207776, type = "buff", unit = "player", item = 137053}, -- Kazzalax, Fujieda's Fury
+        { spell = 225947, type = "buff", unit = "player", item = 137052}, -- Ayala's Stone Heart
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 206333, type = "buff", unit = "player", titlePrefix = L["T19 2P Bonus - "]},
+        { spell = 242300, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253385, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 213858, type = "buff", unit = "group", pvptalent = 14}, -- Battle Trance
@@ -222,14 +259,14 @@ templates.class.WARRIOR = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
-  [3] = {
+  [3] = { -- Protection
     [1] = {
       title = L["Buffs"],
       args = {
@@ -296,6 +333,27 @@ templates.class.WARRIOR = {
       icon = 134951
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 207844, type = "buff", unit = "player", item = 137108}, -- Kakushan's Stormscale Gauntlets
+        { spell = 215157, type = "buff", unit = "player", item = 137018}, -- Destiny Driver
+        { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+        { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 242303, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253428, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 254339, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 198912, type = "ability", pvptalent = 15}, -- Shield Bash
@@ -307,7 +365,7 @@ templates.class.WARRIOR = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -317,7 +375,7 @@ templates.class.WARRIOR = {
 }
 
 templates.class.PALADIN = {
-  [1] = {
+  [1] = { -- Holy
     [1] = {
       title = L["Buffs"],
       args = {
@@ -396,6 +454,27 @@ templates.class.PALADIN = {
       icon = 135972
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 207589, type = "buff", unit = "player", item = 137046}, -- Ilterendi, Crown Jewel of Silvermoon
+        { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+        { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 234862, type = "buff", unit = "player", item = 144273}, -- Maraad's Dying Breath
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 247237, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+        { spell = 254332, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 216331, type = "ability", pvptalent = 18, titleSuffix = L["cooldown"]}, -- Avenging Crusader
@@ -409,14 +488,14 @@ templates.class.PALADIN = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
-  [2] = {
+  [2] = { -- Protection
     [1] = {
       title = L["Buffs"],
       args = {
@@ -491,6 +570,23 @@ templates.class.PALADIN = {
       icon = 135874
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+        { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 242265, type = "debuff", unit = "target", titlePrefix = L["T20 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 216857, type = "buff", unit = "player", pvptalent = 14}, -- Guarded by the Light
@@ -504,14 +600,14 @@ templates.class.PALADIN = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
-  [3] = {
+  [3] = { -- Retribution
     [1] = {
       title = L["Buffs"],
       args = {
@@ -580,6 +676,26 @@ templates.class.PALADIN = {
       icon = 135891
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 207635, type = "buff", unit = "player", item = 137020}, -- Whisper of the Nathrezim
+        { spell = 248289, type = "buff", unit = "player", item = 151813}, -- Scarlet Inquisitor's Expurgation
+        { spell = 225056, type = "debuff", unit = "player", item = 140846}, -- Aegisjalmur, the Armguards of Awe
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246973, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+        { spell = 209785, type = "buff", unit = "player", titlePrefix = L["T19 4P Bonus - "]},
+        { spell = 253806, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 210324, type = "buff", unit = "player", pvptalent = 13}, -- Vengeance Aura
@@ -591,7 +707,7 @@ templates.class.PALADIN = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -601,7 +717,7 @@ templates.class.PALADIN = {
 }
 
 templates.class.HUNTER = {
-  [1] = {
+  [1] = { -- Beast Master
     [1] = {
       title = L["Buffs"],
       args = {
@@ -677,6 +793,25 @@ templates.class.HUNTER = {
       icon = 132176
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208913, type = "buff", unit = "player", item = 137081}, -- War Belt of the Sentinel Army
+        { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
+        { spell = 248085, type = "buff", unit = "player", item = 151805}, -- Parsel's Tongue
+        { spell = 247993, type = "buff", unit = "player", item = 144326}, -- The Mantle of Command
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 205691, type = "ability", pvptalent = 18}, -- Dire Beast: Basilisk
@@ -686,14 +821,14 @@ templates.class.HUNTER = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\ability_hunter_focusfire",
     },
   },
-  [2] = {
+  [2] = { -- Marksmanship
     [1] = {
       title = L["Buffs"],
       args = {
@@ -778,6 +913,24 @@ templates.class.HUNTER = {
       icon = 132329
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235712, type = "buff", unit = "player", item = 144303}, -- MKII Gyroscopic Stabilizer
+        { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
+        { spell = 248088, type = "buff", unit = "player", item = 151803}, -- Celerity of the Windrunners
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246153, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 209789, type = "ability", pvptalent = 15, titleSuffix = L["cooldown"]}, -- Freezing Arrow
@@ -789,14 +942,14 @@ templates.class.HUNTER = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\ability_hunter_focusfire",
     },
   },
-  [3] = {
+  [3] = { -- Survival
     [1] = {
       title = L["Buffs"],
       args = {
@@ -879,6 +1032,26 @@ templates.class.HUNTER = {
       icon = 236184
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
+        { spell = 248212, type = "debuff", unit = "target", item = 151807}, -- Unseen Predator's Cloak
+        { spell = 236446, type = "buff", unit = "player", item = 144361}, -- Butcher's Bone Apron
+        { spell = 213156, type = "buff", unit = "player", item = 137082}, -- Helbrine, Rope of the Mist Marauder
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 252094, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 252095, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 53271, type = "ability", pvptalent = 15, titleSuffix = L["cooldown"]}, -- Master's Call
@@ -891,7 +1064,7 @@ templates.class.HUNTER = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -902,7 +1075,7 @@ templates.class.HUNTER = {
 
 
 templates.class.ROGUE = {
-  [1] = {
+  [1] = { -- Assassination
     [1] = {
       title = L["Buffs"],
       args = {
@@ -994,6 +1167,25 @@ templates.class.ROGUE = {
       icon = 458726
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208403, type = "buff", unit = "player", item = 137069}, -- Will of Valeera
+        { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
+        { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
+        { spell = 248201, type = "buff", unit = "player", item = 151815}, -- The Empty Crown
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 252277, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 209754, type = "buff", unit = "player", pvptalent = 8}, -- Boarding Party
@@ -1013,14 +1205,14 @@ templates.class.ROGUE = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
-  [2] = {
+  [2] = { -- Outlaw
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1107,6 +1299,27 @@ templates.class.ROGUE = {
       icon = 135610
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208403, type = "buff", unit = "player", item = 137069}, -- Will of Valeera
+        { spell = 209423, type = "buff", unit = "player", item = 137099}, -- Greenskin's Waterlogged Wristcuffs
+        { spell = 226318, type = "buff", unit = "player", item = 141321}, -- Shivarran Symmetry
+        { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
+        { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 211669, type = "buff", unit = "player", titlePrefix = L["T19 4P Bonus - "]},
+        { spell = 252285, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 198097, type = "debuff", unit = "target", pvptalent = 16}, -- Creeping Venom
@@ -1116,14 +1329,14 @@ templates.class.ROGUE = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
-  [3] = {
+  [3] = { -- Subtlety
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1203,6 +1416,25 @@ templates.class.ROGUE = {
       icon = 236279
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208403, type = "buff", unit = "player", item = 137069}, -- Will of Valeera
+        { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
+        { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
+        { spell = 248210, type = "buff", unit = "player", item = 151818}, -- The First of the Dead
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 257945, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 213981, type = "ability", pvptalent = 15, titleSuffix = L["cooldown"]}, -- Cold Blood
@@ -1216,7 +1448,7 @@ templates.class.ROGUE = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -1226,7 +1458,7 @@ templates.class.ROGUE = {
 }
 
 templates.class.PRIEST = {
-  [1] = {
+  [1] = { -- Discipline
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1298,6 +1530,28 @@ templates.class.PRIEST = {
       icon = 253400
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 214637, type = "buff", unit = "player", item = 132861}, -- Estel, Dejahna's Inspiration
+        { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+        { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 233997, type = "buff", unit = "player", item = 144244}, -- Kam Xi'raff
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246519, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+        { spell = 252848, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 197862, type = "ability", pvptalent = 17, titleSuffix = L["cooldown"]}, -- Archangel
@@ -1312,14 +1566,14 @@ templates.class.PRIEST = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
-  [2] = {
+  [2] = { -- Holy
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1385,6 +1639,34 @@ templates.class.PRIEST = {
       icon = 135937
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 211319, type = "debuff", unit = "player", item = 137109, titleSuffix = L["debuff"]}, -- X'anshi, Shroud of Archbishop Benedictus
+        { spell = 211336, type = "buff", unit = "player", item = 137109, titleSuffix = L["buff"]}, -- X'anshi, Shroud of Archbishop Benedictus
+        { spell = 211442, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Sanctify"], item = 132445}, -- Al'maiesh, the Cord of Hope
+        { spell = 211440, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Serenity"], item = 132445}, -- Al'maiesh, the Cord of Hope
+        { spell = 211440, type = "buff", unit = "player", titleSuffix = L["- Any"], item = 132445}, -- Al'maiesh, the Cord of Hope
+        { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chastise"], item = 132445}, -- Al'maiesh, the Cord of Hope
+        { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+        { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 234711, type = "buff", unit = "target", item = 144247}, -- Rammal's Ulterior Motive
+        { spell = 234693, type = "buff", unit = "target", item = 132449}, -- Phyrix's Embrace
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 253437, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 253443, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 221660, type = "buff", unit = "player", pvptalent = 11}, -- Holy Concentration
@@ -1402,14 +1684,14 @@ templates.class.PRIEST = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
-  [3] = {
+  [3] = { -- Shadow
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1481,6 +1763,26 @@ templates.class.PRIEST = {
       icon = 136230
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 207724, type = "buff", unit = "player", item = 133973}, -- The Twins' Painful Touch
+        { spell = 215210, type = "buff", unit = "player", item = 132409}, -- Anund's Seared Shackles
+        { spell = 236546, type = "buff", unit = "player", item = 144438}, -- Zeks Exterminatus
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 252909, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+        { spell = 247226, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 199412, type = "buff", unit = "player", pvptalent = 12}, -- Edge of Insanity
@@ -1491,7 +1793,7 @@ templates.class.PRIEST = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -1501,7 +1803,7 @@ templates.class.PRIEST = {
 }
 
 templates.class.SHAMAN = {
-  [1] = {
+  [1] = { -- Elemental
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1577,6 +1879,27 @@ templates.class.SHAMAN = {
       icon = 135790
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208723, type = "buff", unit = "player", item = 137074}, -- Echoes of the Great Sundering
+        { spell = 224852, type = "debuff", unit = "target", item = 137083}, -- Pristine Proto-Scale Girdle
+        { spell = 207995, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+        { spell = 207998, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+        { spell = 207999, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246594, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 252141, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 204399, type = "debuff", unit = "target", pvptalent = 16}, -- Earthfury
@@ -1586,14 +1909,14 @@ templates.class.SHAMAN = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = 135990,
     },
   },
-  [2] = {
+  [2] = { -- Enhancement
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1669,6 +1992,29 @@ templates.class.SHAMAN = {
       icon = 1370984
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208742, type = "buff", unit = "player", item = 137616}, -- Emalon's Charged Core
+        { spell = 214265, type = "debuff", unit = "target", item = 137103}, -- Storm Tempests
+        { spell = 207995, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+        { spell = 207998, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+        { spell = 207999, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 254308, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 252151, type = "debuff", unit = "target", titlePrefix = L["T21 4P Bonus - "]},
+        { spell = 242284, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 242286, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 210918, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}, -- Ethereal Form
@@ -1678,14 +2024,14 @@ templates.class.SHAMAN = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = 135990,
     },
   },
-  [3] = {
+  [3] = { -- Restoration
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1762,6 +2108,27 @@ templates.class.SHAMAN = {
       icon = 135127
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208764, type = "buff", unit = "player", item = 137104}, -- Nobundo's Redemption
+        { spell = 210607, type = "buff", unit = "player", item = 137051}, -- Focuser of Jonat, the Elder
+        { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+        { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246729, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 246771, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 204288, type = "ability", pvptalent = 17, titleSuffix = L["cooldown"]}, -- Earth Shield
@@ -1772,7 +2139,7 @@ templates.class.SHAMAN = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -1782,7 +2149,7 @@ templates.class.SHAMAN = {
 }
 
 templates.class.MAGE = {
-  [1] = {
+  [1] = { -- Arcane
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1843,6 +2210,27 @@ templates.class.MAGE = {
       icon = 136075
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207283, type = "buff", unit = "player", item = 133977}, -- Belo'vir's Final Stand
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208081, type = "buff", unit = "player", item = 132413}, -- Rhonin's Assaulting Armwraps
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 209316, type = "buff", unit = "player", item = 132442}, -- Cord of Infinity
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246224, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253299, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+        { spell = 253262, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 198158, type = "ability", pvptalent = 18, titleSuffix = L["cooldown"]}, -- Mass Invisibility
@@ -1850,14 +2238,14 @@ templates.class.MAGE = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\spell_arcane_arcane01",
     },
   },
-  [2] = {
+  [2] = { -- Fire
     [1] = {
       title = L["Buffs"],
       args = {
@@ -1925,6 +2313,26 @@ templates.class.MAGE = {
       icon = 610633
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207283, type = "buff", unit = "player", item = 133977}, -- Belo'vir's Final Stand
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 209455, type = "buff", unit = "player", item = 132406}, -- Marquee Bindings of the Sun King
+        { spell = 248146, type = "buff", unit = "player", item = 151809}, -- Contained Infernal Core
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246261, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253220, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 203285, type = "buff", unit = "player", pvptalent = 17}, -- Flamecannon
@@ -1932,14 +2340,14 @@ templates.class.MAGE = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
-  [3] = {
+  [3] = { -- Frost
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2009,6 +2417,28 @@ templates.class.MAGE = {
       icon = 629077
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207283, type = "buff", unit = "player", item = 133977}, -- Belo'vir's Final Stand
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 214404, type = "buff", unit = "player", item = 138140}, -- Magtheridon's Banished Bracers
+        { spell = 226852, type = "buff", unit = "player", item = 133970}, -- Zann'esu Journey
+        { spell = 248176, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
+        { spell = 248177, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 242253, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253257, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 206432, type = "buff", unit = "player", pvptalent = 17}, -- Burst of Cold
@@ -2018,7 +2448,7 @@ templates.class.MAGE = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -2029,7 +2459,7 @@ templates.class.MAGE = {
 
 
 templates.class.WARLOCK = {
-  [1] = {
+  [1] = { -- Affliction
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2108,6 +2538,24 @@ templates.class.WARLOCK = {
       icon = 615103
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 208822, type = "buff", unit = "player", item = 132381}, -- Streten's Sleepless Shackles
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 242292, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+        { spell = 252938, type = "debuff", unit = "target", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 75015, type = "debuff", unit = "target", pvptalent = 18}, -- Curse of Shadows
@@ -2115,14 +2563,14 @@ templates.class.WARLOCK = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_misc_gem_amethyst_02",
     },
   },
-  [2] = {
+  [2] = { -- Demonology
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2196,6 +2644,26 @@ templates.class.WARLOCK = {
       icon = 1378282
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 208871, type = "buff", unit = "player", item = 132379, titleSuffix = L["buff"]}, -- Sin'dorei Spite
+        { spell = 242690, type = "debuff", unit = "player", item = 132379, titleSuffix = L["debuff"]}, -- Sin'dorei Spite
+        { spell = 236200, type = "buff", unit = "player", item = 144385}, -- Wakener's Loyalty
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 257926, type = "buff", unit = "player", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 246962, type = "buff", unit = "player", titlePrefix = L["T20 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 212459, type = "ability", pvptalent = 17}, -- Call Fel Lord
@@ -2205,14 +2673,14 @@ templates.class.WARLOCK = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_misc_gem_amethyst_02",
     },
   },
-  [3] = {
+  [3] = { -- Destruction
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2284,6 +2752,26 @@ templates.class.WARLOCK = {
       icon = 135807
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 205675, type = "debuff", unit = "target", item = 132460}, -- Alythess's Pyrogenics
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
+        { spell = 236176, type = "buff", unit = "player", item = 144369}, -- Lessons of Space-Time
+        { spell = 217551, type = "debuff", unit = "player", item = 132357}, -- Pillars of the Dark Portal
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 253092, type = "debuff", unit = "target", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 212019, type = "buff", unit = "player", titlePrefix = L["T19 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 212269, type = "debuff", unit = "target", pvptalent = 17, titleSuffix = L["debuff"]}, -- Fel Fissure
@@ -2293,7 +2781,7 @@ templates.class.WARLOCK = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -2303,7 +2791,7 @@ templates.class.WARLOCK = {
 }
 
 templates.class.MONK = {
-  [1] = {
+  [1] = { -- Brewmaster
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2381,6 +2869,23 @@ templates.class.MONK = {
       icon = 133701
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+        { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 202335, type = "ability", pvptalent = 17, titleSuffix = L["cooldown"]}, -- Double Barrel
@@ -2402,14 +2907,14 @@ templates.class.MONK = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\monk_stance_drunkenox",
     },
   },
-  [2] = {
+  [2] = { -- Mistweaver
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2487,6 +2992,31 @@ templates.class.MONK = {
       icon = 627485
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 217474, type = "buff", unit = "player", item = 137045}, -- Eye of Collidus the Warp-Watcher
+        { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+        { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 216509, type = "buff", unit = "player", item = 137068, titleSuffix = L["Renewing Mist"]}, -- Leggings of The Black Flame
+        { spell = 216995, type = "buff", unit = "player", item = 137068, titleSuffix = L["Enveloping Mist"]}, -- Leggings of The Black Flame
+        { spell = 216992, type = "buff", unit = "player", item = 137068, titleSuffix = L["Effuse"]}, -- Leggings of The Black Flame
+        { spell = 217006, type = "buff", unit = "player", item = 137068, titleSuffix = L["Vivify"]}, -- Leggings of The Black Flame
+        { spell = 217642, type = "debuff", unit = "target", item = 138879}, -- Ovyd's Winter Wrap
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 246328, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253448, type = "buff", unit = "target", titlePrefix = L["T21 2P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 201318, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}, -- Fortifying Elixir
@@ -2500,14 +3030,14 @@ templates.class.MONK = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\Icons\\inv_elemental_mote_mana",
     },
   },
-  [3] = {
+  [3] = { -- Windwalker
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2584,6 +3114,23 @@ templates.class.MONK = {
       icon = 627606
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235054, type = "buff", unit = "player", item = 144239}, -- The Emperor's Capacitor
+        { spell = 213114, type = "debuff", unit = "target", item = 137057}, -- Hidden Master's Forbidden Touch
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 205655, type = "buff", unit = "target", pvptalent = 15}, -- Dome of Mist
@@ -2601,7 +3148,7 @@ templates.class.MONK = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -2611,7 +3158,7 @@ templates.class.MONK = {
 }
 
 templates.class.DRUID = {
-  [1] = {
+  [1] = { -- Balance
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2692,6 +3239,25 @@ templates.class.DRUID = {
       icon = 136060
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208284, type = "buff", unit = "player", item = 137023}, -- Promise of Elune, the Moon Goddess
+        { spell = 209406, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
+        { spell = 209407, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
+        { spell = 224706, type = "buff", unit = "player", item = 137062}, -- The Emerald Dreamcatcher
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 252767, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 209753, type = "ability", pvptalent = 16, titleSuffix = L["cooldown"]}, -- Cyclone
@@ -2703,14 +3269,14 @@ templates.class.DRUID = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
       icon = "Interface\\Icons\\ability_druid_eclipseorange",
     },
   },
-  [2] = {
+  [2] = { -- Feral
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2803,6 +3369,22 @@ templates.class.DRUID = {
       icon = 236149
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 236757, type = "buff", unit = "player", item = 144354}, -- Fiery Red Maimers
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 252752, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 203199, type = "buff", unit = "player", pvptalent = 15}, -- Fury Swipes
@@ -2811,14 +3393,14 @@ templates.class.DRUID = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
       icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
     },
   },
-  [3] = {
+  [3] = { -- Guardian
     [1] = {
       title = L["Buffs"],
       args = {
@@ -2900,6 +3482,26 @@ templates.class.DRUID = {
       icon = 236169
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 208218, type = "buff", unit = "player", item = 137025}, -- Skysec's Hold
+        { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+        { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+        { spell = 236479, type = "buff", unit = "player", item = 144432}, -- Oakheart's Puny Quods
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 211160, type = "buff", unit = "player", titlePrefix = L["T19 4P Bonus - "]},
+        { spell = 253575, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 201664, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}, -- Demoralizing Roar
@@ -2913,14 +3515,14 @@ templates.class.DRUID = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
       icon = "Interface\\Icons\\spell_misc_emotionangry",
     },
   },
-  [4] = {
+  [4] = { -- Restoration
     [1] = {
       title = L["Buffs"],
       args = {
@@ -3007,6 +3609,25 @@ templates.class.DRUID = {
       icon = 236153
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret#
+        { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
+        { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 253432, type = "buff", unit = "target", titlePrefix = L["T21 2P Bonus - "]},
+        { spell = 253434, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 33786, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"]}, -- Cyclone
@@ -3021,7 +3642,7 @@ templates.class.DRUID = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
@@ -3031,7 +3652,7 @@ templates.class.DRUID = {
 }
 
 templates.class.DEMONHUNTER = {
-  [1] = {
+  [1] = { -- Havoc
     [1] = {
       title = L["Buffs"],
       args = {
@@ -3093,6 +3714,22 @@ templates.class.DEMONHUNTER = {
       icon = 1305156
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 216758, type = "buff", unit = "player", item = 137014}, -- Achor, the Eternal Hunger
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 252165, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 203704, type = "ability", pvptalent = 18}, -- Mana Break
@@ -3101,14 +3738,14 @@ templates.class.DEMONHUNTER = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = 1344651,
     },
   },
-  [2] = {
+  [2] = { -- Vengeance
     [1] = {
       title = L["Buffs"],
       args = {
@@ -3174,6 +3811,24 @@ templates.class.DEMONHUNTER = {
       icon = 1344650
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+        { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+        { spell = 235543, type = "buff", unit = "player", item = 144292}, -- Spirit of the Darkness Flame
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 205629, type = "ability", pvptalent = 17}, -- Demonic Trample
@@ -3185,7 +3840,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -3195,7 +3850,7 @@ templates.class.DEMONHUNTER = {
 }
 
 templates.class.DEATHKNIGHT = {
-  [1] = {
+  [1] = { -- Blood
     [1] = {
       title = L["Buffs"],
       args = {
@@ -3271,6 +3926,25 @@ templates.class.DEATHKNIGHT = {
       icon = 136120
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235559, type = "buff", unit = "player", item = 144281}, -- Skullflower's Haemostasis
+        { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
+        { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+        { spell = 242010, type = "buff", unit = "player", titlePrefix = L["T20 2P Bonus - "]},
+        { spell = 253381, type = "buff", unit = "player", titlePrefix = L["T21 4P Bonus - "]},
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 203173, type = "buff", unit = "player", pvptalent = 18}, -- Death Chain
@@ -3283,14 +3957,14 @@ templates.class.DEATHKNIGHT = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune",
     },
   },
-  [2] = {
+  [2] = { -- Frost
     [1] = {
       title = L["Buffs"],
       args = {
@@ -3363,6 +4037,23 @@ templates.class.DEATHKNIGHT = {
       icon = 135372
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235599, type = "buff", unit = "player", item = 151796, titleSuffix = L["buff"]}, -- Cold Heart
+        { spell = 248406, type = "debuff", unit = "target", item = 151796, titleSuffix = L["debuff"]}, -- Cold Heart
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 204160, type = "ability", pvptalent = 18}, -- Chill Streak
@@ -3370,14 +4061,14 @@ templates.class.DEATHKNIGHT = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
       icon = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune",
     },
   },
-  [3] = {
+  [3] = { -- Unholy
     [1] = {
       title = L["Buffs"],
       args = {
@@ -3457,6 +4148,21 @@ templates.class.DEATHKNIGHT = {
       icon = 136144
     },
     [4] = {
+      title = L["Legendaries"],
+      args = {
+        { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
+        { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+      },
+      icon = 135349
+    },
+    [5] = {
+      title = L["Set Bonus"],
+      args = {
+
+      },
+      icon = 136031
+    },
+    [6] = {
       title = L["PvP Talents"],
       args = {
         { spell = 204160, type = "ability", pvptalent = 18}, -- Necrotic Strike
@@ -3466,7 +4172,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [5] = {
+    [7] = {
       title = L["Resources"],
       args = {
       },
@@ -3516,176 +4222,47 @@ tinsert(templates.general.args, { spell = 243096, type = "buff", unit = "player"
 
 -- Items section
 templates.items[1] = {
-  title = L["Enchants"],
+  title = L["Pantheon Trinkets"],
   args = {
-    { spell = 190909, type = "buff", unit = "player"}, -- Mark of the Claw
-    { spell = 228399, type = "buff", unit = "player"}, -- Mark of the Heavy Hide
+    { spell = 256816, type = "buff", unit = "player"},
+    { spell = 256818, type = "buff", unit = "player"},
+    { spell = 256826, type = "buff", unit = "player"},
+    { spell = 256828, type = "buff", unit = "player"},
+
+    { spell = 256831, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256832, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256833, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256835, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+    { spell = 256836, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
+
+    { spell = 257475, type = "buff", unit = "player", titleSuffix = L["Shaman"]},
+    { spell = 257470, type = "buff", unit = "player", titleSuffix = L["Druid"]},
+    { spell = 257471, type = "buff", unit = "player", titleSuffix = L["Monk"]},
+    { spell = 257472, type = "buff", unit = "player", titleSuffix = L["Paladin"]},
+    { spell = 257473, type = "buff", unit = "player", titleSuffix = L["Discipline Priest"]},
+    { spell = 257474, type = "buff", unit = "player", titleSuffix = L["Holy Priest"]},
+    { spell = 257444, type = "buff", unit = "target", titleSuffix = L["Absorb Shield"]},
+
   }
 }
 
 templates.items[2] = {
-  title = L["Legendaries"],
+  title = L["Netherlight Crucible"],
   args = {
-    { spell = 205675, type = "debuff", unit = "target", item = 132460}, -- Alythess's Pyrogenics
-    { spell = 207283, type = "buff", unit = "player", item = 133977}, -- Belo'vir's Final Stand
-    { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
-    { spell = 207589, type = "buff", unit = "player", item = 137046}, -- Ilterendi, Crown Jewel of Silvermoon
-    { spell = 207635, type = "buff", unit = "player", item = 137020}, -- Whisper of the Nathrezim
-    { spell = 207724, type = "buff", unit = "player", item = 133973}, -- The Twins' Painful Touch
-    { spell = 207776, type = "buff", unit = "player", item = 137053}, -- Kazzalax, Fujieda's Fury
-    { spell = 207844, type = "buff", unit = "player", item = 137108}, -- Kakushan's Stormscale Gauntlets
-    { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
-    { spell = 208081, type = "buff", unit = "player", item = 132413}, -- Rhonin's Assaulting Armwraps
-    { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
-    { spell = 208218, type = "buff", unit = "player", item = 137025}, -- Skysec's Hold
-    { spell = 208284, type = "buff", unit = "player", item = 137023}, -- Promise of Elune, the Moon Goddess
-    { spell = 208403, type = "buff", unit = "player", item = 137069}, -- Will of Valeera
-    { spell = 208723, type = "buff", unit = "player", item = 137074}, -- Echoes of the Great Sundering
-    { spell = 208742, type = "buff", unit = "player", item = 137616}, -- Emalon's Charged Core
-    { spell = 208764, type = "buff", unit = "player", item = 137104}, -- Nobundo's Redemption
-    { spell = 208913, type = "buff", unit = "player", item = 137081}, -- War Belt of the Sentinel Army
-    { spell = 208822, type = "buff", unit = "player", item = 132381}, -- Streten's Sleepless Shackles
-    { spell = 208871, type = "buff", unit = "player", item = 132379, titleSuffix = L["buff"]}, -- Sin'dorei Spite
-    { spell = 242690, type = "debuff", unit = "player", item = 132379, titleSuffix = L["debuff"]}, -- Sin'dorei Spite
-    { spell = 209406, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
-    { spell = 209407, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
-    { spell = 209423, type = "buff", unit = "player", item = 137099}, -- Greenskin's Waterlogged Wristcuffs
-    { spell = 209455, type = "buff", unit = "player", item = 132406}, -- Marquee Bindings of the Sun King
-    { spell = 210607, type = "buff", unit = "player", item = 137051}, -- Focuser of Jonat, the Elder
-    { spell = 211319, type = "debuff", unit = "player", item = 137109, titleSuffix = L["debuff"]}, -- X'anshi, Shroud of Archbishop Benedictus
-    { spell = 211336, type = "buff", unit = "player", item = 137109, titleSuffix = L["buff"]}, -- X'anshi, Shroud of Archbishop Benedictus
-    { spell = 211442, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Sanctify"], item = 132445}, -- Al'maiesh, the Cord of Hope
-    { spell = 214404, type = "buff", unit = "player", item = 138140}, -- Magtheridon's Banished Bracers
-    { spell = 215210, type = "buff", unit = "player", item = 132409}, -- Anund's Seared Shackles
-    { spell = 211440, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Serenity"], item = 132445}, -- Al'maiesh, the Cord of Hope
-    { spell = 211440, type = "buff", unit = "player", titleSuffix = L["- Any"], item = 132445}, -- Al'maiesh, the Cord of Hope
-    { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chastise"], item = 132445}, -- Al'maiesh, the Cord of Hope
-    { spell = 214265, type = "debuff", unit = "target", item = 137103}, -- Storm Tempests
-    { spell = 214637, type = "buff", unit = "player", item = 132861}, -- Estel, Dejahna's Inspiration
-    { spell = 215157, type = "buff", unit = "player", item = 137018}, -- Destiny Driver
-    { spell = 217474, type = "buff", unit = "player", item = 137045}, -- Eye of Collidus the Warp-Watcher
-    { spell = 224852, type = "debuff", unit = "target", item = 137083}, -- Pristine Proto-Scale Girdle
-    { spell = 225947, type = "buff", unit = "player", item = 137052}, -- Ayala's Stone Heart
-    { spell = 226318, type = "buff", unit = "player", item = 141321}, -- Shivarran Symmetry
-    { spell = 226852, type = "buff", unit = "player", item = 133970}, -- Zann'esu Journey
-    { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
-    { spell = 235559, type = "buff", unit = "player", item = 144281}, -- Skullflower's Haemostasis
-    { spell = 236757, type = "buff", unit = "player", item = 144354}, -- Fiery Red Maimers
-    { spell = 235054, type = "buff", unit = "player", item = 144239}, -- The Emperor's Capacitor
-    { spell = 235712, type = "buff", unit = "player", item = 144303}, -- MKII Gyroscopic Stabilizer
-    { spell = 236176, type = "buff", unit = "player", item = 144369}, -- Lessons of Space-Time
-    { spell = 236546, type = "buff", unit = "player", item = 144438}, -- Zeks Exterminatus
-    { spell = 235169, type = "buff", unit = "player", item = 144249, titleSuffix = L["buff"]}, -- Archimonde's Hatred Reborn
-    { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
-    { spell = 144249, type = "item", titleSuffix = L["cooldown"]}, -- Archimonde's Hatred Reborn
-    { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-    { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-    { spell = 224706, type = "buff", unit = "player", item = 137062}, -- The Emerald Dreamcatcher
-    { spell = 236479, type = "buff", unit = "player", item = 144432}, -- Oakheart's Puny Quods
-    { spell = 248176, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
-    { spell = 248177, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
-    { spell = 248146, type = "buff", unit = "player", item = 151809}, -- Contained Infernal Core
-    { spell = 209316, type = "buff", unit = "player", item = 132442}, -- Cord of Infinity
-    { spell = 234862, type = "buff", unit = "player", item = 144273}, -- Maraad's Dying Breath
-    { spell = 248289, type = "buff", unit = "player", item = 151813}, -- Scarlet Inquisitor's Expurgation
-    { spell = 225056, type = "debuff", unit = "player", item = 140846}, -- Aegisjalmur, the Armguards of Awe
-    { spell = 216758, type = "buff", unit = "player", item = 137014}, -- Achor, the Eternal Hunger
-    { spell = 235543, type = "buff", unit = "player", item = 144292}, -- Spirit of the Darkness Flame
-    { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
-    { spell = 248088, type = "buff", unit = "player", item = 151803}, -- Celerity of the Windrunners
-    { spell = 248085, type = "buff", unit = "player", item = 151805}, -- Parsel's Tongue
-    { spell = 247993, type = "buff", unit = "player", item = 144326}, -- The Mantle of Command
-    { spell = 248212, type = "debuff", unit = "target", item = 151807}, -- Unseen Predator's Cloak
-    { spell = 236446, type = "buff", unit = "player", item = 144361}, -- Butcher's Bone Apron
-    { spell = 213156, type = "buff", unit = "player", item = 137082}, -- Helbrine, Rope of the Mist Marauder
-    { spell = 234711, type = "buff", unit = "target", item = 144247}, -- Rammal's Ulterior Motive
-    { spell = 234693, type = "buff", unit = "target", item = 132449}, -- Phyrix's Embrace
-    { spell = 233997, type = "buff", unit = "player", item = 144244}, -- Kam Xi'raff
-    { spell = 217551, type = "debuff", unit = "player", item = 132357}, -- Pillars of the Dark Portal
-    { spell = 236200, type = "buff", unit = "player", item = 144385}, -- Wakener's Loyalty
-    { spell = 235599, type = "buff", unit = "player", item = 151796, titleSuffix = L["buff"]}, -- Cold Heart
-    { spell = 248406, type = "debuff", unit = "target", item = 151796, titleSuffix = L["debuff"]}, -- Cold Heart
-    { spell = 207995, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
-    { spell = 207998, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
-    { spell = 207999, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
-    { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
-    { spell = 248201, type = "buff", unit = "player", item = 151815}, -- The Empty Crown
-    { spell = 248210, type = "buff", unit = "player", item = 151818}, -- The First of the Dead
-    { spell = 248145, type = "buff", unit = "player", item = 151823}, -- The Great Storm's Eye
-    { spell = 216509, type = "buff", unit = "player", item = 137068, titleSuffix = L["Renewing Mist"]}, -- Leggings of The Black Flame
-    { spell = 216995, type = "buff", unit = "player", item = 137068, titleSuffix = L["Enveloping Mist"]}, -- Leggings of The Black Flame
-    { spell = 216992, type = "buff", unit = "player", item = 137068, titleSuffix = L["Effuse"]}, -- Leggings of The Black Flame
-    { spell = 217006, type = "buff", unit = "player", item = 137068, titleSuffix = L["Vivify"]}, -- Leggings of The Black Flame
-    { spell = 217642, type = "debuff", unit = "target", item = 138879}, -- Ovyd's Winter Wrap
-    { spell = 213114, type = "debuff", unit = "target", item = 137057}, -- Hidden Master's Forbidden Touch
+    { spell = 252907, type = "debuff", unit = "target"},
+    { spell = 252208, type = "buff", unit = "player"},
+    { spell = 253216, type = "buff", unit = "player"},
+    { spell = 253072, type = "buff", unit = "player"},
+    { spell = 252921, type = "debuff", unit = "target"},
   }
 }
 
-templates.items[3] = {
-  title = L["Legion Sets"],
-  args = {
-    { spell = 206333, type = "buff", unit = "player", titlePrefix = L["Warrior T19 Fury 2P Bonus - "]},
-    { spell = 209785, type = "buff", unit = "player", titlePrefix = L["Paladin T19 Retribution 4P Bonus - "]},
-    { spell = 211160, type = "buff", unit = "player", titlePrefix = L["Druid T19 Guardian 4P Bonus - "]},
-    { spell = 211669, type = "buff", unit = "player", titlePrefix = L["Rogue T19 Outlaw 4P Bonus - "]},
-    { spell = 212019, type = "buff", unit = "player", titlePrefix = L["Warlock T19 Destruction 4P Bonus - "]},
-    -- T20
-    { spell = 242010, type = "buff", unit = "player", titlePrefix = L["Death Knight T20 Blood 2P Bonus - "]},
-    { spell = 246153, type = "buff", unit = "player", titlePrefix = L["Hunter T20 Marksman 4P Bonus - "]},
-    { spell = 246224, type = "buff", unit = "player", titlePrefix = L["Mage T20 Arcane 2P Bonus - "]},
-    { spell = 246261, type = "buff", unit = "player", titlePrefix = L["Mage T20 Fire 2P Bonus - "]},
-    { spell = 242253, type = "buff", unit = "player", titlePrefix = L["Mage T20 Frost 2P Bonus - "]},
-    { spell = 246328, type = "buff", unit = "player", titlePrefix = L["Monk T20 Mistweaver 2P Bonus - "]},
-    { spell = 247237, type = "buff", unit = "player", titlePrefix = L["Paladin T20 Holy 4P Bonus - "]},
-    { spell = 242265, type = "debuff", unit = "target", titlePrefix = L["Paladin T20 Protection 4P Bonus - "]},
-    { spell = 246973, type = "buff", unit = "player", titlePrefix = L["Paladin T20 Retribution 4P Bonus - "]},
-    { spell = 247226, type = "buff", unit = "player", titlePrefix = L["Priest T20 Shadow 2P Bonus - "]},
-    { spell = 246519, type = "buff", unit = "player", titlePrefix = L["Priest T20 Discipline 4P Bonus - "]},
-    { spell = 246594, type = "buff", unit = "player", titlePrefix = L["Shaman T20 Elemental 2P Bonus - "]},
-    { spell = 242284, type = "buff", unit = "player", titlePrefix = L["Shaman T20 Enhancement 2P Bonus - "]},
-    { spell = 246729, type = "buff", unit = "player", titlePrefix = L["Shaman T20 Restoration 2P Bonus - "]},
-    { spell = 242286, type = "buff", unit = "player", titlePrefix = L["Shaman T20 Enhancement 4P Bonus - "]},
-    { spell = 246771, type = "buff", unit = "player", titlePrefix = L["Shaman T20 Restoration 4P Bonus - "]},
-    { spell = 242292, type = "buff", unit = "player", titlePrefix = L["Warlock T20 Affliction 4P Bonus - "]},
-    { spell = 246962, type = "buff", unit = "player", titlePrefix = L["Warlock T20 Demonology 4P Bonus - "]},
-    { spell = 242303, type = "buff", unit = "player", titlePrefix = L["Warrior T20 Protection 2P Bonus - "]},
-    { spell = 242300, type = "buff", unit = "player", titlePrefix = L["Warrior T20 Fury 2P Bonus - "]},
-    -- T21
-    { spell = 252767, type = "buff", unit = "player", titlePrefix = L["Druid T21 Balance 4P Bonus - "]},
-    { spell = 252752, type = "buff", unit = "player", titlePrefix = L["Druid T21 Feral 4P Bonus - "]},
-    { spell = 253432, type = "buff", unit = "target", titlePrefix = L["Druid T21 Restoration 2P Bonus - "]},
-    { spell = 252094, type = "buff", unit = "player", titlePrefix = L["Hunter T21 Survival 2P Bonus - "]},
-    { spell = 252095, type = "buff", unit = "player", titlePrefix = L["Hunter T21 Survival 4P Bonus - "]},
-    { spell = 253299, type = "buff", unit = "player", titlePrefix = L["Mage T21 Arcane 4P Bonus - "]},
-    { spell = 254332, type = "buff", unit = "player", titlePrefix = L["Paladin T21 Holy 4P Bonus - "]},
-    { spell = 253806, type = "buff", unit = "player", titlePrefix = L["Paladin T21 Retribution 4P Bonus - "]},
-    { spell = 252848, type = "buff", unit = "player", titlePrefix = L["Priest T21 Discipline 4P Bonus - "]},
-    { spell = 253437, type = "buff", unit = "player", titlePrefix = L["Priest T21 Holy 2P Bonus - "]},
-    { spell = 253443, type = "buff", unit = "player", titlePrefix = L["Priest T21 Holy 4P Bonus - "]},
-    { spell = 252277, type = "buff", unit = "player", titlePrefix = L["Rogue T21 Assassination 2P Bonus - "]},
-    { spell = 257945, type = "buff", unit = "player", titlePrefix = L["Rogue T21 Subtlety 4P Bonus - "]},
-    { spell = 252141, type = "buff", unit = "player", titlePrefix = L["Shaman T21 Elemental 2P Bonus - "]},
-    { spell = 254308, type = "buff", unit = "player", titlePrefix = L["Shaman T21 Enhancement 2P Bonus - "]},
-    { spell = 252151, type = "debuff", unit = "target", titlePrefix = L["Shaman T21 Enhancement 4P Bonus - "]},
-    { spell = 252938, type = "debuff", unit = "target", titlePrefix = L["Warlock T21 Affliction 4P Bonus - "]},
-    { spell = 253092, type = "debuff", unit = "target", titlePrefix = L["Warlock T21 Destruction 2P Bonus - "]},
-    { spell = 253382, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Arms 2P Bonus - "]},
-    { spell = 253383, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Arms 4P Bonus - "]},
-    { spell = 253385, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Fury 4P Bonus - "]},
-    { spell = 253428, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Protection 2P Bonus - "]},
 
-    { spell = 253381, type = "buff", unit = "player", titlePrefix = L["Death Knight T21 Blood 4P Bonus - "]},
-    { spell = 252165, type = "buff", unit = "player", titlePrefix = L["Demon Hunter T21 Havoc 4P Bonus - "]},
-    { spell = 253575, type = "buff", unit = "player", titlePrefix = L["Druid T21 Guardian 4P Bonus - "]},
-    { spell = 253434, type = "buff", unit = "player", titlePrefix = L["Druid T21 Restoration 4P Bonus - "]},
-    { spell = 253262, type = "buff", unit = "player", titlePrefix = L["Mage T21 Arcane 2P Bonus - "]},
-    { spell = 253220, type = "buff", unit = "player", titlePrefix = L["Mage T21 Fire 4P Bonus - "]},
-    { spell = 253257, type = "buff", unit = "player", titlePrefix = L["Mage T21 Frost 4P Bonus - "]},
-    { spell = 253448, type = "buff", unit = "target", titlePrefix = L["Monk T21 Mistweaver 2P Bonus - "]},
-    { spell = 252909, type = "buff", unit = "player", titlePrefix = L["Priest T21 Shadow 4P Bonus - "]},
-    { spell = 252285, type = "buff", unit = "player", titlePrefix = L["Rogue T21 Outlaw 2P Bonus - "]},
-    { spell = 257926, type = "buff", unit = "player", titlePrefix = L["Warlock T21 Demonology 2P Bonus - "]},
-    { spell = 254339, type = "buff", unit = "player", titlePrefix = L["Warrior T21 Protection 4P Bonus - "]},
+templates.items[3] = {
+  title = L["Enchants"],
+  args = {
+    { spell = 190909, type = "buff", unit = "player"}, -- Mark of the Claw
+    { spell = 228399, type = "buff", unit = "player"}, -- Mark of the Heavy Hide
   }
 }
 
@@ -3787,43 +4364,8 @@ templates.items[6] = {
   }
 }
 
+
 templates.items[7] = {
-  title = L["Pantheon Trinkets"],
-  args = {
-    { spell = 256816, type = "buff", unit = "player"},
-    { spell = 256818, type = "buff", unit = "player"},
-    { spell = 256826, type = "buff", unit = "player"},
-    { spell = 256828, type = "buff", unit = "player"},
-
-    { spell = 256831, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
-    { spell = 256832, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
-    { spell = 256833, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
-    { spell = 256835, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
-    { spell = 256836, type = "buff", unit = "player", titleSuffix = L["Secondary Effect"]},
-
-    { spell = 257475, type = "buff", unit = "player", titleSuffix = L["Shaman"]},
-    { spell = 257470, type = "buff", unit = "player", titleSuffix = L["Druid"]},
-    { spell = 257471, type = "buff", unit = "player", titleSuffix = L["Monk"]},
-    { spell = 257472, type = "buff", unit = "player", titleSuffix = L["Paladin"]},
-    { spell = 257473, type = "buff", unit = "player", titleSuffix = L["Discipline Priest"]},
-    { spell = 257474, type = "buff", unit = "player", titleSuffix = L["Holy Priest"]},
-    { spell = 257744, type = "buff", unit = "target", titleSuffix = L["Absorb Shield"]},
-
-  }
-}
-
-templates.items[8] = {
-  title = L["Netherlight Crucible"],
-  args = {
-    { spell = 252907, type = "debuff", unit = "target"},
-    { spell = 252208, type = "buff", unit = "player"},
-    { spell = 253216, type = "buff", unit = "player"},
-    { spell = 253072, type = "buff", unit = "player"},
-    { spell = 252921, type = "debuff", unit = "target"},
-  }
-}
-
-templates.items[9] = {
   title = L["PVP Set"],
   args = {
     { spell = 165638, type = "buff", unit = "player", titlePrefix = L["Warrior 2P Bonus - "]},
@@ -3840,7 +4382,7 @@ templates.items[9] = {
   }
 }
 
-templates.items[10] = {
+templates.items[8] = {
   title = L["PVP Trinkets"],
   args = {
     { spell = 136146, type = "item"}, -- Vindictive Gladiator's Emblem of Cruelty
@@ -3885,98 +4427,98 @@ end
 
 for _, class in pairs(templates.class) do
   for _, spec in pairs(class) do
-    tinsert(spec[4].args, { spell = 195710, type = "ability"}) -- Honorable Medallion
-    tinsert(spec[4].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
+    tinsert(spec[6].args, { spell = 195710, type = "ability"}) -- Honorable Medallion
+    tinsert(spec[6].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
   end
 end
 
 -- Death Knight
 for i = 1, 3 do
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 213726, type = "debuff", unit = "player", pvptalent = 7}); -- Cadaverous Pallor
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 77606, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Dark Simulacrum
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 77606, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["buff"]}); -- Dark Simulacrum
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 51052, type = "ability", pvptalent = 9}); -- Anti Magic Zone
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 199720, type = "debuff", unit = "target", pvptalent = 10}); -- Decomposing Aura
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 199719, type = "debuff", unit = "target", pvptalent = 11}); -- Hearthstop Aura
-  tinsert(templates.class.DEATHKNIGHT[i][4].args, { spell = 199642, type = "debuff", unit = "target", pvptalent = 12}); -- Necrotic Aura
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 213726, type = "debuff", unit = "player", pvptalent = 7}); -- Cadaverous Pallor
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 77606, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Dark Simulacrum
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 77606, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["buff"]}); -- Dark Simulacrum
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 51052, type = "ability", pvptalent = 9}); -- Anti Magic Zone
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 199720, type = "debuff", unit = "target", pvptalent = 10}); -- Decomposing Aura
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 199719, type = "debuff", unit = "target", pvptalent = 11}); -- Hearthstop Aura
+  tinsert(templates.class.DEATHKNIGHT[i][6].args, { spell = 199642, type = "debuff", unit = "target", pvptalent = 12}); -- Necrotic Aura
 end
 
 -- Demon Hunter
 for i = 1, 2 do
-  tinsert(templates.class.DEMONHUNTER[i][4].args, { spell = 206649, type = "debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]}); -- Eye of Leotheras
-  tinsert(templates.class.DEMONHUNTER[i][4].args, { spell = 206649, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Eye of Leotheras
-  tinsert(templates.class.DEMONHUNTER[i][4].args, { spell = 205604, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Reverse Magic
+  tinsert(templates.class.DEMONHUNTER[i][6].args, { spell = 206649, type = "debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]}); -- Eye of Leotheras
+  tinsert(templates.class.DEMONHUNTER[i][6].args, { spell = 206649, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Eye of Leotheras
+  tinsert(templates.class.DEMONHUNTER[i][6].args, { spell = 205604, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Reverse Magic
 end
 
 -- Druid
 for i = 1, 4 do
-  tinsert(templates.class.DRUID[i][4].args, { spell = 209731, type = "buff", unit = "player", pvptalent = 7}); -- Protector of the Grove
+  tinsert(templates.class.DRUID[i][6].args, { spell = 209731, type = "buff", unit = "player", pvptalent = 7}); -- Protector of the Grove
 end
 
 -- Hunter
 for i = 1, 3 do
-  tinsert(templates.class.HUNTER[i][4].args, { spell = 202627, type = "buff", unit = "player", pvptalent = 8}); -- Catlike Reflexes
-  tinsert(templates.class.HUNTER[i][4].args, { spell = 202900, type = "debuff", unit = "target", pvptalent = 11}); -- Scorpid Sting
-  tinsert(templates.class.HUNTER[i][4].args, { spell = 202914, type = "debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]}); -- Spider Sting
-  tinsert(templates.class.HUNTER[i][4].args, { spell = 202914, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Spider Sting
-  tinsert(templates.class.HUNTER[i][4].args, { spell = 202797, type = "debuff", unit = "target", pvptalent = 10}); -- Viper Sting
-  tinsert(templates.class.HUNTER[i][4].args, { spell = 195638, type = "buff", unit = "player", pvptalent = 4}); -- Focused Fire
+  tinsert(templates.class.HUNTER[i][6].args, { spell = 202627, type = "buff", unit = "player", pvptalent = 8}); -- Catlike Reflexes
+  tinsert(templates.class.HUNTER[i][6].args, { spell = 202900, type = "debuff", unit = "target", pvptalent = 11}); -- Scorpid Sting
+  tinsert(templates.class.HUNTER[i][6].args, { spell = 202914, type = "debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]}); -- Spider Sting
+  tinsert(templates.class.HUNTER[i][6].args, { spell = 202914, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Spider Sting
+  tinsert(templates.class.HUNTER[i][6].args, { spell = 202797, type = "debuff", unit = "target", pvptalent = 10}); -- Viper Sting
+  tinsert(templates.class.HUNTER[i][6].args, { spell = 195638, type = "buff", unit = "player", pvptalent = 4}); -- Focused Fire
 end
 
 -- Mage
 for i = 1, 3 do
-  tinsert(templates.class.MAGE[i][4].args, { spell = 221404, type = "buff", unit = "player", pvptalent = 8}); -- Burning Determination
-  tinsert(templates.class.MAGE[i][4].args, { spell = 198065, type = "buff", unit = "player", pvptalent = 9}); -- Prismatic Cloak
-  tinsert(templates.class.MAGE[i][4].args, { spell = 198111, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"]}); -- Temporal Shield
-  tinsert(templates.class.MAGE[i][4].args, { spell = 198111, type = "buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]}); -- Temporal Shield
-  tinsert(templates.class.MAGE[i][4].args, { spell = 195640, type = "buff", unit = "player", pvptalent = 4}); -- Train of Thought
+  tinsert(templates.class.MAGE[i][6].args, { spell = 221404, type = "buff", unit = "player", pvptalent = 8}); -- Burning Determination
+  tinsert(templates.class.MAGE[i][6].args, { spell = 198065, type = "buff", unit = "player", pvptalent = 9}); -- Prismatic Cloak
+  tinsert(templates.class.MAGE[i][6].args, { spell = 198111, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"]}); -- Temporal Shield
+  tinsert(templates.class.MAGE[i][6].args, { spell = 198111, type = "buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]}); -- Temporal Shield
+  tinsert(templates.class.MAGE[i][6].args, { spell = 195640, type = "buff", unit = "player", pvptalent = 4}); -- Train of Thought
 end
 
 -- Monk
 for i = 1, 3 do
-  tinsert(templates.class.MAGE[i][4].args, { spell = 201198, type = "buff", unit = "player", pvptalent = 9}); -- Fast Feet
+  tinsert(templates.class.MAGE[i][6].args, { spell = 201198, type = "buff", unit = "player", pvptalent = 9}); -- Fast Feet
 end
 
 -- Rogue
 for i = 1, 3 do
-  tinsert(templates.class.ROGUE[i][4].args, { spell = 198027, type = "buff", unit = "player", pvptalent = 10}); -- Turn the Tables
-  tinsert(templates.class.ROGUE[i][4].args, { spell = 209417, type = "buff", unit = "player", pvptalent = 12}); -- Unfair Advantage
-  tinsert(templates.class.ROGUE[i][4].args, { spell = 197023, type = "buff", unit = "player", pvptalent = 9}); -- Cutting to the Chase
+  tinsert(templates.class.ROGUE[i][6].args, { spell = 198027, type = "buff", unit = "player", pvptalent = 10}); -- Turn the Tables
+  tinsert(templates.class.ROGUE[i][6].args, { spell = 209417, type = "buff", unit = "player", pvptalent = 12}); -- Unfair Advantage
+  tinsert(templates.class.ROGUE[i][6].args, { spell = 197023, type = "buff", unit = "player", pvptalent = 9}); -- Cutting to the Chase
 end
 
 -- Shaman
 for i = 1, 3 do
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 204330, type = "ability", pvptalent = 7, titleSuffix = L["cooldown"]}); -- Skyfury Totem
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 208963, type = "buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]}); -- Skyfury Totem
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 204331, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Counterstrike Totem
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 208997, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]}); -- Counterstrike Totem
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 204332, type = "ability", pvptalent = 9, titleSuffix = L["cooldown"]}); -- Windfury Totem
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 78158, type = "buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]}); -- Windfury Totem
-  tinsert(templates.class.SHAMAN[i][4].args, { spell = 204262, type = "buff", unit = "player", pvptalent = 11}); -- Spectral Recovery
-  tinsert(templates.class.SHAMAN[i][4].args, {spell = 204330, type = "totem", pvptalent = 7, titleSuffix = L["Totem"]}); -- Skyfury Totem
-  tinsert(templates.class.SHAMAN[i][4].args, {spell = 204331, type = "totem", pvptalent = 8, titleSuffix = L["Totem"]}); -- Counterstrike Totem
-  tinsert(templates.class.SHAMAN[i][4].args, {spell = 204332, type = "totem", pvptalent = 9, titleSuffix = L["Totem"]}); -- Windfury Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 204330, type = "ability", pvptalent = 7, titleSuffix = L["cooldown"]}); -- Skyfury Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 208963, type = "buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]}); -- Skyfury Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 204331, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Counterstrike Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 208997, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]}); -- Counterstrike Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 204332, type = "ability", pvptalent = 9, titleSuffix = L["cooldown"]}); -- Windfury Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 78158, type = "buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]}); -- Windfury Totem
+  tinsert(templates.class.SHAMAN[i][6].args, { spell = 204262, type = "buff", unit = "player", pvptalent = 11}); -- Spectral Recovery
+  tinsert(templates.class.SHAMAN[i][6].args, {spell = 204330, type = "totem", pvptalent = 7, titleSuffix = L["Totem"]}); -- Skyfury Totem
+  tinsert(templates.class.SHAMAN[i][6].args, {spell = 204331, type = "totem", pvptalent = 8, titleSuffix = L["Totem"]}); -- Counterstrike Totem
+  tinsert(templates.class.SHAMAN[i][6].args, {spell = 204332, type = "totem", pvptalent = 9, titleSuffix = L["Totem"]}); -- Windfury Totem
 end
 
 -- Warlock
 for i = 1, 3 do
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 199890, type = "ability", pvptalent = 7, titleSuffix = L["cooldown"]}); -- Curse of Tongues
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 199890, type = "debuff", unit = "multi", pvptalent = 7, titleSuffix = L["debuff"]}); -- Curse of Tongues
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 199892, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Curse of Weakness
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 199892, type = "debuff", unit = "multi", pvptalent = 8, titleSuffix = L["debuff"]}); -- Curse of Weakness
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 199954, type = "ability", pvptalent = 9, titleSuffix = L["cooldown"]}); -- Curse of Fragility
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 199954, type = "debuff", unit = "multi", pvptalent = 9, titleSuffix = L["debuff"]}); -- Curse of Fragility
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 221703, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Casting Circle
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 221705, type = "buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]}); -- Casting Circle
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 212295, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Nether Ward
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 212295, type = "buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]}); -- Nether Ward
-  tinsert(templates.class.WARLOCK[i][4].args, { spell = 195640, type = "buff", unit = "player", pvptalent = 4}); -- Train of Thought
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 199890, type = "ability", pvptalent = 7, titleSuffix = L["cooldown"]}); -- Curse of Tongues
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 199890, type = "debuff", unit = "multi", pvptalent = 7, titleSuffix = L["debuff"]}); -- Curse of Tongues
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 199892, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"]}); -- Curse of Weakness
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 199892, type = "debuff", unit = "multi", pvptalent = 8, titleSuffix = L["debuff"]}); -- Curse of Weakness
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 199954, type = "ability", pvptalent = 9, titleSuffix = L["cooldown"]}); -- Curse of Fragility
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 199954, type = "debuff", unit = "multi", pvptalent = 9, titleSuffix = L["debuff"]}); -- Curse of Fragility
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 221703, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Casting Circle
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 221705, type = "buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]}); -- Casting Circle
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 212295, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"]}); -- Nether Ward
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 212295, type = "buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]}); -- Nether Ward
+  tinsert(templates.class.WARLOCK[i][6].args, { spell = 195640, type = "buff", unit = "player", pvptalent = 4}); -- Train of Thought
 end
 
 -- Warrior
 for i = 1, 3 do
-  tinsert(templates.class.WARRIOR[i][4].args, { spell = 216890, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Spell Reflection
-  tinsert(templates.class.WARRIOR[i][4].args, { spell = 216890, type = "buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]}); -- Spell Reflection
+  tinsert(templates.class.WARRIOR[i][6].args, { spell = 216890, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"]}); -- Spell Reflection
+  tinsert(templates.class.WARRIOR[i][6].args, { spell = 216890, type = "buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]}); -- Spell Reflection
 end
 
 ------------------------------
@@ -3985,37 +4527,37 @@ end
 
 -- Warrior
 for i = 1, 3 do
-  tinsert(templates.class.WARRIOR[i][5].args, createSimplePowerTemplate(1));
+  tinsert(templates.class.WARRIOR[i][7].args, createSimplePowerTemplate(1));
 end
 
 -- Paladin
-tinsert(templates.class.PALADIN[3][5].args, createSimplePowerTemplate(9));
+tinsert(templates.class.PALADIN[3][7].args, createSimplePowerTemplate(9));
 for i = 1, 3 do
-  tinsert(templates.class.PALADIN[i][5].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.PALADIN[i][7].args, createSimplePowerTemplate(0));
 end
 
 -- Hunter
 for i = 1, 3 do
-  tinsert(templates.class.HUNTER[i][5].args, createSimplePowerTemplate(2));
+  tinsert(templates.class.HUNTER[i][7].args, createSimplePowerTemplate(2));
 end
 
 -- Rogue
 for i = 1, 3 do
-  tinsert(templates.class.ROGUE[i][5].args, createSimplePowerTemplate(3));
-  tinsert(templates.class.ROGUE[i][5].args, createSimplePowerTemplate(4));
+  tinsert(templates.class.ROGUE[i][7].args, createSimplePowerTemplate(3));
+  tinsert(templates.class.ROGUE[i][7].args, createSimplePowerTemplate(4));
 end
 
 -- Priest
 for i = 1, 3 do
-  tinsert(templates.class.PRIEST[i][5].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.PRIEST[i][7].args, createSimplePowerTemplate(0));
 end
-tinsert(templates.class.PRIEST[3][5].args, createSimplePowerTemplate(13));
+tinsert(templates.class.PRIEST[3][7].args, createSimplePowerTemplate(13));
 
 -- Shaman
 for i = 1, 3 do
-  tinsert(templates.class.SHAMAN[i][5].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.SHAMAN[i][7].args, createSimplePowerTemplate(0));
 
-  templates.class.SHAMAN[i][6] = {
+  templates.class.SHAMAN[i][8] = {
     title = L["Totems"],
     args = {
       {spell = 226772, type = "totem", talent = 3}, -- Totem Mastery
@@ -4030,13 +4572,13 @@ for i = 1, 3 do
 end
 
 for i = 1, 2 do
-  tinsert(templates.class.SHAMAN[i][5].args, createSimplePowerTemplate(11));
+  tinsert(templates.class.SHAMAN[i][7].args, createSimplePowerTemplate(11));
 end
 
 -- Mage
-tinsert(templates.class.MAGE[1][5].args, createSimplePowerTemplate(16));
+tinsert(templates.class.MAGE[1][7].args, createSimplePowerTemplate(16));
 for i = 1, 3 do
-  tinsert(templates.class.MAGE[i][5].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.MAGE[i][7].args, createSimplePowerTemplate(0));
 end
 
 local runeOfPower =
@@ -4077,17 +4619,17 @@ end
 
 -- Warlock
 for i = 1, 3 do
-  tinsert(templates.class.WARLOCK[i][5].args, createSimplePowerTemplate(0));
-  tinsert(templates.class.WARLOCK[i][5].args, createSimplePowerTemplate(7));
+  tinsert(templates.class.WARLOCK[i][7].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.WARLOCK[i][7].args, createSimplePowerTemplate(7));
 end
 
 -- Monk
-tinsert(templates.class.MONK[1][5].args, createSimplePowerTemplate(3));
-tinsert(templates.class.MONK[2][5].args, createSimplePowerTemplate(0));
-tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(3));
-tinsert(templates.class.MONK[3][5].args, createSimplePowerTemplate(12));
+tinsert(templates.class.MONK[1][7].args, createSimplePowerTemplate(3));
+tinsert(templates.class.MONK[2][7].args, createSimplePowerTemplate(0));
+tinsert(templates.class.MONK[3][7].args, createSimplePowerTemplate(3));
+tinsert(templates.class.MONK[3][7].args, createSimplePowerTemplate(12));
 
-templates.class.MONK[1][6] = {
+templates.class.MONK[1][8] = {
   title = L["Ability Charges"],
   args = {
     { spell = 115072, type = "ability", showOn = "showAlways"}, -- Expel Harm
@@ -4095,7 +4637,7 @@ templates.class.MONK[1][6] = {
   icon = 627486,
 };
 
-templates.class.MONK[2][6] = {
+templates.class.MONK[2][8] = {
   title = L["Ability Charges"],
   args = {
     { spell = 205406, type = "ability", showOn = "showAlways"}, -- Sheilun's Gift
@@ -4103,7 +4645,7 @@ templates.class.MONK[2][6] = {
   icon = 1242282,
 };
 
-templates.class.MONK[3][6] = {
+templates.class.MONK[3][8] = {
   title = L["Ability Charges"],
   args = {
     { spell = 101546, type = "ability", showOn = "showAlways"}, -- Spinning Crane Kick
@@ -4114,7 +4656,7 @@ templates.class.MONK[3][6] = {
 -- Druid
 for i = 1, 4 do
   -- Shapeshift Form
-  tinsert(templates.class.DRUID[i][5].args, {
+  tinsert(templates.class.DRUID[i][7].args, {
     title = L["Shapeshift Form"],
     icon = 132276,
     triggers = {[0] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
@@ -4122,27 +4664,27 @@ for i = 1, 4 do
 end
 
 -- Astral Power
-tinsert(templates.class.DRUID[1][5].args, createSimplePowerTemplate(8));
+tinsert(templates.class.DRUID[1][7].args, createSimplePowerTemplate(8));
 
 for i = 1, 4 do
-  tinsert(templates.class.DRUID[i][5].args, createSimplePowerTemplate(0)); -- Mana
-  tinsert(templates.class.DRUID[i][5].args, createSimplePowerTemplate(1)); -- Rage
-  tinsert(templates.class.DRUID[i][5].args, createSimplePowerTemplate(3)); -- Energy
-  tinsert(templates.class.DRUID[i][5].args, createSimplePowerTemplate(4)); -- Combo Points
+  tinsert(templates.class.DRUID[i][7].args, createSimplePowerTemplate(0)); -- Mana
+  tinsert(templates.class.DRUID[i][7].args, createSimplePowerTemplate(1)); -- Rage
+  tinsert(templates.class.DRUID[i][7].args, createSimplePowerTemplate(3)); -- Energy
+  tinsert(templates.class.DRUID[i][7].args, createSimplePowerTemplate(4)); -- Combo Points
 end
 
 -- Efflorescence aka Mushroom
 tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem"});
 
 -- Demon Hunter
-tinsert(templates.class.DEMONHUNTER[1][5].args, createSimplePowerTemplate(17));
-tinsert(templates.class.DEMONHUNTER[2][5].args, createSimplePowerTemplate(18));
+tinsert(templates.class.DEMONHUNTER[1][7].args, createSimplePowerTemplate(17));
+tinsert(templates.class.DEMONHUNTER[2][7].args, createSimplePowerTemplate(18));
 
 -- Death Knight
 for i = 1, 3 do
-  tinsert(templates.class.DEATHKNIGHT[i][5].args, createSimplePowerTemplate(6));
+  tinsert(templates.class.DEATHKNIGHT[i][7].args, createSimplePowerTemplate(6));
 
-  tinsert(templates.class.DEATHKNIGHT[i][5].args, {
+  tinsert(templates.class.DEATHKNIGHT[i][7].args, {
     title = L["Runes"],
     icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
     triggers = {[0] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
