@@ -131,6 +131,7 @@ templates.class.WARRIOR = {
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 225947, type = "buff", unit = "player", item = 137052}, -- Ayala's Stone Heart
         { spell = 248145, type = "buff", unit = "player", item = 151823}, -- The Great Storm's Eye
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -240,6 +241,7 @@ templates.class.WARRIOR = {
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 207776, type = "buff", unit = "player", item = 137053}, -- Kazzalax, Fujieda's Fury
         { spell = 225947, type = "buff", unit = "player", item = 137052}, -- Ayala's Stone Heart
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -465,7 +467,6 @@ templates.class.PALADIN = {
         { spell = 207589, type = "buff", unit = "player", item = 137046}, -- Ilterendi, Crown Jewel of Silvermoon
         { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
         { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
         { spell = 234862, type = "buff", unit = "player", item = 144273}, -- Maraad's Dying Breath
       },
       icon = 135349
@@ -687,6 +688,7 @@ templates.class.PALADIN = {
         { spell = 207635, type = "buff", unit = "player", item = 137020}, -- Whisper of the Nathrezim
         { spell = 248289, type = "buff", unit = "player", item = 151813}, -- Scarlet Inquisitor's Expurgation
         { spell = 225056, type = "debuff", unit = "player", item = 140846}, -- Aegisjalmur, the Armguards of Awe
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -801,10 +803,10 @@ templates.class.HUNTER = {
       args = {
         { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
-        { spell = 208913, type = "buff", unit = "player", item = 137081}, -- War Belt of the Sentinel Army
         { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
         { spell = 248085, type = "buff", unit = "player", item = 151805}, -- Parsel's Tongue
         { spell = 247993, type = "buff", unit = "player", item = 144326}, -- The Mantle of Command
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -924,6 +926,8 @@ templates.class.HUNTER = {
         { spell = 235712, type = "buff", unit = "player", item = 144303}, -- MKII Gyroscopic Stabilizer
         { spell = 208888, type = "buff", unit = "player", item = 137064}, -- The Shadow Hunter's Voodoo Mask
         { spell = 248088, type = "buff", unit = "player", item = 151803}, -- Celerity of the Windrunners
+        { spell = 208913, type = "buff", unit = "player", item = 137081}, -- War Belt of the Sentinel Army
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -1044,6 +1048,7 @@ templates.class.HUNTER = {
         { spell = 248212, type = "debuff", unit = "target", item = 151807}, -- Unseen Predator's Cloak
         { spell = 236446, type = "buff", unit = "player", item = 144361}, -- Butcher's Bone Apron
         { spell = 213156, type = "buff", unit = "player", item = 137082}, -- Helbrine, Rope of the Mist Marauder
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -1179,6 +1184,7 @@ templates.class.ROGUE = {
         { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
         { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
         { spell = 248201, type = "buff", unit = "player", item = 151815}, -- The Empty Crown
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -1310,8 +1316,8 @@ templates.class.ROGUE = {
         { spell = 208403, type = "buff", unit = "player", item = 137069}, -- Will of Valeera
         { spell = 209423, type = "buff", unit = "player", item = 137099}, -- Greenskin's Waterlogged Wristcuffs
         { spell = 226318, type = "buff", unit = "player", item = 141321}, -- Shivarran Symmetry
-        { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
         { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -1428,6 +1434,7 @@ templates.class.ROGUE = {
         { spell = 228224, type = "buff", unit = "player", item = 137021}, -- The Dreadlord's Deceit
         { spell = 235027, type = "buff", unit = "player", item = 144236}, -- Mantle of the Master Assassin
         { spell = 248210, type = "buff", unit = "player", item = 151818}, -- The First of the Dead
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -1542,7 +1549,6 @@ templates.class.PRIEST = {
         { spell = 214637, type = "buff", unit = "player", item = 132861}, -- Estel, Dejahna's Inspiration
         { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
         { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
         { spell = 233997, type = "buff", unit = "player", item = 144244}, -- Kam Xi'raff
       },
       icon = 135349
@@ -1656,7 +1662,6 @@ templates.class.PRIEST = {
         { spell = 211443, type = "buff", unit = "player", fullscan = true, titleSuffix = L["- Holy Word: Chastise"], item = 132445}, -- Al'maiesh, the Cord of Hope
         { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
         { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
         { spell = 234711, type = "buff", unit = "target", item = 144247}, -- Rammal's Ulterior Motive
         { spell = 234693, type = "buff", unit = "target", item = 132449}, -- Phyrix's Embrace
       },
@@ -1775,6 +1780,7 @@ templates.class.PRIEST = {
         { spell = 207724, type = "buff", unit = "player", item = 133973}, -- The Twins' Painful Touch
         { spell = 215210, type = "buff", unit = "player", item = 132409}, -- Anund's Seared Shackles
         { spell = 236546, type = "buff", unit = "player", item = 144438}, -- Zeks Exterminatus
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -1892,6 +1898,7 @@ templates.class.SHAMAN = {
         { spell = 207995, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
         { spell = 207998, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
         { spell = 207999, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2005,6 +2012,7 @@ templates.class.SHAMAN = {
         { spell = 207995, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
         { spell = 207998, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
         { spell = 207999, type = "buff", unit = "player", item = 137050}, -- Eye of the Twisting Nether
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2120,7 +2128,6 @@ templates.class.SHAMAN = {
         { spell = 210607, type = "buff", unit = "player", item = 137051}, -- Focuser of Jonat, the Elder
         { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
         { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
       },
       icon = 135349
     },
@@ -2222,6 +2229,7 @@ templates.class.MAGE = {
         { spell = 208081, type = "buff", unit = "player", item = 132413}, -- Rhonin's Assaulting Armwraps
         { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
         { spell = 209316, type = "buff", unit = "player", item = 132442}, -- Cord of Infinity
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2325,6 +2333,8 @@ templates.class.MAGE = {
         { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
         { spell = 209455, type = "buff", unit = "player", item = 132406}, -- Marquee Bindings of the Sun King
         { spell = 248146, type = "buff", unit = "player", item = 151809}, -- Contained Infernal Core
+        { spell = 248147, type = "buff", unit = "player", item = 151809}, -- Contained Infernal Core
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2431,6 +2441,7 @@ templates.class.MAGE = {
         { spell = 226852, type = "buff", unit = "player", item = 133970}, -- Zann'esu Journey
         { spell = 248176, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
         { spell = 248177, type = "buff", unit = "player", item = 151810}, -- Shattered Fragments of Sindragosa
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2548,6 +2559,8 @@ templates.class.WARLOCK = {
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
         { spell = 208822, type = "buff", unit = "player", item = 132381}, -- Streten's Sleepless Shackles
+        { spell = 217551, type = "debuff", unit = "player", item = 132357}, -- Pillars of the Dark Portal
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2656,6 +2669,8 @@ templates.class.WARLOCK = {
         { spell = 208871, type = "buff", unit = "player", item = 132379, titleSuffix = L["buff"]}, -- Sin'dorei Spite
         { spell = 242690, type = "debuff", unit = "player", item = 132379, titleSuffix = L["debuff"]}, -- Sin'dorei Spite
         { spell = 236200, type = "buff", unit = "player", item = 144385}, -- Wakener's Loyalty
+        { spell = 217551, type = "debuff", unit = "player", item = 132357}, -- Pillars of the Dark Portal
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -2764,6 +2779,7 @@ templates.class.WARLOCK = {
         { spell = 208215, type = "buff", unit = "player", item = 132455}, -- Norgannon's Foresight
         { spell = 236176, type = "buff", unit = "player", item = 144369}, -- Lessons of Space-Time
         { spell = 217551, type = "debuff", unit = "player", item = 132357}, -- Pillars of the Dark Portal
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -3003,12 +3019,12 @@ templates.class.MONK = {
         { spell = 217474, type = "buff", unit = "player", item = 137045}, -- Eye of Collidus the Warp-Watcher
         { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
         { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
         { spell = 216509, type = "buff", unit = "player", item = 137068, titleSuffix = L["Renewing Mist"]}, -- Leggings of The Black Flame
         { spell = 216995, type = "buff", unit = "player", item = 137068, titleSuffix = L["Enveloping Mist"]}, -- Leggings of The Black Flame
         { spell = 216992, type = "buff", unit = "player", item = 137068, titleSuffix = L["Effuse"]}, -- Leggings of The Black Flame
         { spell = 217006, type = "buff", unit = "player", item = 137068, titleSuffix = L["Vivify"]}, -- Leggings of The Black Flame
-        { spell = 217642, type = "debuff", unit = "target", item = 138879}, -- Ovyd's Winter Wrap
+        { spell = 217000, type = "buff", unit = "player", item = 137068, titleSuffix = L["Essence Font"]}, -- Leggings of The Black Flame
+        { spell = 217642, type = "buff", unit = "target", item = 138879}, -- Ovyd's Winter Wrap
       },
       icon = 135349
     },
@@ -3123,7 +3139,8 @@ templates.class.MONK = {
         { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 235054, type = "buff", unit = "player", item = 144239}, -- The Emperor's Capacitor
-        { spell = 213114, type = "debuff", unit = "target", item = 137057}, -- Hidden Master's Forbidden Touch
+        { spell = 213114, type = "buff", unit = "player", item = 137057}, -- Hidden Master's Forbidden Touch
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -3251,6 +3268,7 @@ templates.class.DRUID = {
         { spell = 209406, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
         { spell = 209407, type = "buff", unit = "player", item = 137092}, -- Oneth's Intuition
         { spell = 224706, type = "buff", unit = "player", item = 137062}, -- The Emerald Dreamcatcher
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -3378,6 +3396,7 @@ templates.class.DRUID = {
         { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 236757, type = "buff", unit = "player", item = 144354}, -- Fiery Red Maimers
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -3619,7 +3638,6 @@ templates.class.DRUID = {
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret#
         { spell = 235966, type = "buff", unit = "player", item = 144258, titleSuffix = L["buff"]}, -- Velen's Future Sight
         { spell = 144258, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
-        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Velen's Future Sight
       },
       icon = 135349
     },
@@ -3723,6 +3741,7 @@ templates.class.DEMONHUNTER = {
         { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 216758, type = "buff", unit = "player", item = 137014}, -- Achor, the Eternal Hunger
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -4047,6 +4066,7 @@ templates.class.DEATHKNIGHT = {
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
         { spell = 235599, type = "buff", unit = "player", item = 151796, titleSuffix = L["buff"]}, -- Cold Heart
         { spell = 248406, type = "debuff", unit = "target", item = 151796, titleSuffix = L["debuff"]}, -- Cold Heart
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -4156,6 +4176,9 @@ templates.class.DEATHKNIGHT = {
       args = {
         { spell = 207472, type = "buff", unit = "player", item = 132444}, -- Prydaz, Xavaric's Magnum Opus
         { spell = 208052, type = "buff", unit = "player", item = 132452}, -- Sephuz's Secret
+        { spell = 235599, type = "buff", unit = "player", item = 151796, titleSuffix = L["buff"]}, -- Cold Heart
+        { spell = 248406, type = "debuff", unit = "target", item = 151796, titleSuffix = L["debuff"]}, -- Cold Heart
+        { spell = 144259, type = "item", titleSuffix = L["cooldown"]}, -- Kil'Jaeden's Burning Wish
       },
       icon = 135349
     },
@@ -4362,7 +4385,7 @@ templates.items[6] = {
     -- T21
     { spell = 253277, type = "buff", unit = "target", titleItemPrefix = 151957},
     { spell = 253287, type = "buff", unit = "target", titleItemPrefix = 152289},
-    { spell = 253284, type = "debuff", unit = "multi", titleItemPrefix = 253284},
+    { spell = 253284, type = "debuff", unit = "target", titleItemPrefix = 151960},
     { spell = 253269, type = "buff", unit = "player", titleItemPrefix = 151956},
     { spell = 253258, type = "buff", unit = "player", titleItemPrefix = 151970},
   }
