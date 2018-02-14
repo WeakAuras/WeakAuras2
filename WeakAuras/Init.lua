@@ -4,7 +4,7 @@ WeakAuras.L = {}
 local versionString = GetAddOnMetadata("WeakAuras", "Version");
 --@debug@
 if versionString == "@project-version@" then
-  versionString = "Development"
+  versionString = "Dev"
 end
 --@end-debug@
 WeakAuras.versionString = versionString
