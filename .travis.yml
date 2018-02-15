@@ -1,4 +1,4 @@
-sudo: false
+language: minimal
 
 addons:
   apt:
@@ -9,7 +9,9 @@ install:
   - eval $(luarocks path --bin)
   - luarocks install --local luacheck
 
-script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
+before_script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
+
+script: ./wowace_translations.sh
 
 notifications:
   email:

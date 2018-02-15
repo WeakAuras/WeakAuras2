@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasMultiLineEditBox", 31
+local Type, Version = "WeakAurasMultiLineEditBox", 32
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -12,7 +12,7 @@ local _G = _G
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
--- GLOBALS: ACCEPT, ChatFontNormal
+-- luacheck: globals ACCEPT ChatFontNormal AceGUIWeakAurasMultiLineEditBoxInsertLink
 
 --[[-----------------------------------------------------------------------------
 Support functions
