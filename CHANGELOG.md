@@ -1,10 +1,12 @@
 # WeakAuras 2
 
-## [2.5.6-16-g2402b83](https://repos.wowace.com/wow/weakauras-2/tree/2402b837f9c2220a817732d8803c823b956564c1) (2018-02-16)
+## [2.5.6-18-g0fbac76](https://repos.wowace.com/wow/weakauras-2/tree/0fbac763ea5ffd58e0b196976a35131bbd625100) (2018-02-16)
 
-[Full Changelog](https://repos.wowace.com/wow/weakauras-2/compare/2.5.6...2402b837f9c2220a817732d8803c823b956564c1)
+[Full Changelog](https://repos.wowace.com/wow/weakauras-2/compare/2.5.6...0fbac763ea5ffd58e0b196976a35131bbd625100)
 
-Benjamin Staneck (6):
+Benjamin Staneck (8):
+  - add the temp commit file to ,gitignore
+  - Update pkgmeta
   - switch to manual changelog generation and add a script to do that
   - only push localization if master changes and ignore the script in WowAce packaging
   - add a script to automatically push translations to WowAce
