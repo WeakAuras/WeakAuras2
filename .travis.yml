@@ -11,7 +11,7 @@ install:
 
 before_script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
 
-script: ./wowace_translations.sh
+script: if [ "$TRAVIS_BRANCH" = "master" ]; then ./wowace_translations.sh; fi
 
 notifications:
   email:

@@ -44,7 +44,9 @@ enable-nolib-creation: no
 
 ignore:
  - README.md
+ - CONTRIBUTING.md
  - babelfish.lua
+ - wowace_translations.sh
 
 move-folders:
  WeakAuras/WeakAuras: WeakAuras
