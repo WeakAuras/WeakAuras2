@@ -1,10 +1,11 @@
 # WeakAuras 2
 
-## [2.5.6-18-g0fbac76](https://repos.wowace.com/wow/weakauras-2/tree/0fbac763ea5ffd58e0b196976a35131bbd625100) (2018-02-16)
+## [2.5.6-19-gc5144d1](https://repos.wowace.com/wow/weakauras-2/tree/c5144d1d7b5d0d8407b16bca03283aa3cd46041b) (2018-02-16)
 
-[Full Changelog](https://repos.wowace.com/wow/weakauras-2/compare/2.5.6...0fbac763ea5ffd58e0b196976a35131bbd625100)
+[Full Changelog](https://repos.wowace.com/wow/weakauras-2/compare/2.5.6...c5144d1d7b5d0d8407b16bca03283aa3cd46041b)
 
-Benjamin Staneck (8):
+Benjamin Staneck (9):
+  - fix pkgmeta
   - add the temp commit file to ,gitignore
   - Update pkgmeta
   - switch to manual changelog generation and add a script to do that
