@@ -13,6 +13,8 @@ before_script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
 
 script: if [ "$TRAVIS_BRANCH" = "master" ]; then ./wowace_translations.sh; fi
 
+after_script: ./generate_changelog.sh
+
 notifications:
   email:
     on_failure: always
