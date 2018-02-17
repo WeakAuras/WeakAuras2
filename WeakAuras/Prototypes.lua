@@ -24,7 +24,7 @@ end
 local HBD = LibStub("HereBeDragons-1.0")
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
-function WeakAuras:GetRange(unit)
+function WeakAuras.GetRange(unit)
   return LibRangeCheck:GetRange(unit);
 end
 
@@ -4156,7 +4156,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "target";
       local ret = [=[
           local unit = [[%s]];
-          local min, max = WeakAuras:GetRange(unit);
+          local min, max = WeakAuras.GetRange(unit);
           min = min or 0;
           max = max or 999;
           local triggerResult = true;
