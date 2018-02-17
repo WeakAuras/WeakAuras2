@@ -4203,7 +4203,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "range",
-        display = L["Range"],
+        display = L["Distance"],
         type = "number",
         operator_types_without_equal = true,
         test = "triggerResult",
