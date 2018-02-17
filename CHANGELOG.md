@@ -1,11 +1,12 @@
 # WeakAuras 2
 
-## [2.5.6-21-g9750e49](https://github.com/WeakAuras/WeakAuras2/tree/9750e49d667044b512281e236752b0d0a03bb1ae) (2018-02-17)
+## [2.5.6-22-g08d8ce9](https://github.com/WeakAuras/WeakAuras2/tree/08d8ce9fa0b7b89b2f3ea6bb934b51ee0fae5027) (2018-02-17)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...9750e49d667044b512281e236752b0d0a03bb1ae)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...08d8ce9fa0b7b89b2f3ea6bb934b51ee0fae5027)
 
-Benjamin Staneck (11):
+Benjamin Staneck (12):
 
+- change back some power types as their format is not consistent
 - change the global strings used for power type translations to be the ones of power types instead of the resource itself
 - add some newlines to the changelog
 - fix pkgmeta
