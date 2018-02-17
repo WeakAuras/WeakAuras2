@@ -1,11 +1,12 @@
 # WeakAuras 2
 
-## [2.5.6-23-gc1a44b3](https://github.com/WeakAuras/WeakAuras2/tree/c1a44b3d184bee4e7e4b32dde8c77ce01f165c23) (2018-02-17)
+## [2.5.6-24-g4e4d721](https://github.com/WeakAuras/WeakAuras2/tree/4e4d72140d0a00eae1ffe3b836391172b62bb2e9) (2018-02-17)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...c1a44b3d184bee4e7e4b32dde8c77ce01f165c23)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...4e4d72140d0a00eae1ffe3b836391172b62bb2e9)
 
-Benjamin Staneck (13):
+Benjamin Staneck (14):
 
+- change some power types again
 - change range check label from `Range` to `Distance`
 - change back some power types as their format is not consistent
 - change the global strings used for power type translations to be the ones of power types instead of the resource itself
