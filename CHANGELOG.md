@@ -1,8 +1,8 @@
 # WeakAuras 2
 
-## [2.5.6-24-g4e4d721](https://github.com/WeakAuras/WeakAuras2/tree/4e4d72140d0a00eae1ffe3b836391172b62bb2e9) (2018-02-17)
+## [2.5.6-25-gdcfc46c](/tree/dcfc46ca03275abd101c4dbf0e2bc67cd227cbd9) (2018-02-18)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...4e4d72140d0a00eae1ffe3b836391172b62bb2e9)
+[Full Changelog](/compare/2.5.6...dcfc46ca03275abd101c4dbf0e2bc67cd227cbd9)
 
 Benjamin Staneck (14):
 
@@ -21,8 +21,9 @@ Benjamin Staneck (14):
 - use the same version string for the window title as for the LDB tooltip
 - fix LibRangecheck path
 
-Infus (9):
+Infus (10):
 
+- Fix Range Check trigger
 - Templates: Add KJ's burning wish to the correct specs
 - Combat Log Trigger: Fix SPELL_ENERGIZE
 - Add Allied Races to templates
