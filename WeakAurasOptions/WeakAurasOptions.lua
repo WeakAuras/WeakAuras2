@@ -867,7 +867,17 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             if(arg.type == "unit" and trigger["use_specific_"..realname]) then
               return "member";
             end
-            return trigger["use_"..realname] and trigger[realname] or nil;
+
+            if (not trigger["use_"..realname]) then
+              return nil;
+            end
+
+            if (arg.default and (not trigger[realname] or not values[trigger[realname]])) then
+              trigger[realname] = arg.default;
+              return arg.default;
+            end
+
+            return trigger[realname] or nil;
           end,
           set = function(info, v)
             trigger[realname] = v;

@@ -875,6 +875,9 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       values = WeakAuras.bufftrigger_progress_behavior_types,
       order = 71,
       get = function()
+        if (not trigger.showOn or not WeakAuras.bufftrigger_progress_behavior_types[trigger.showOn]) then
+          trigger.showOn = "showOnActive";
+        end
         return trigger.showOn or "showOnActive";
       end,
       hidden = function() return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end

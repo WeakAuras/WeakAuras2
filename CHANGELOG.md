@@ -1,8 +1,8 @@
 # WeakAuras 2
 
-## [2.5.6-25-gdcfc46c](/tree/dcfc46ca03275abd101c4dbf0e2bc67cd227cbd9) (2018-02-18)
+## [2.5.6-27-g9ba7e64](https://github.com/WeakAuras/WeakAuras2/tree/9ba7e64f47ea6b17dc4df20954e6f192b5522123) (2018-02-18)
 
-[Full Changelog](/compare/2.5.6...dcfc46ca03275abd101c4dbf0e2bc67cd227cbd9)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...9ba7e64f47ea6b17dc4df20954e6f192b5522123)
 
 Benjamin Staneck (14):
 
@@ -21,8 +21,10 @@ Benjamin Staneck (14):
 - use the same version string for the window title as for the LDB tooltip
 - fix LibRangecheck path
 
-Infus (10):
+Infus (12):
 
+- Options Window: Cooldown Progress: Fix initial value
+- *** Add offset options to auras in dynamic groups
 - Fix Range Check trigger
 - Templates: Add KJ's burning wish to the correct specs
 - Combat Log Trigger: Fix SPELL_ENERGIZE
