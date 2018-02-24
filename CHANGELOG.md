@@ -1,8 +1,8 @@
 # WeakAuras 2
 
-## [2.5.6-28-gb0c1065](https://github.com/WeakAuras/WeakAuras2/tree/b0c106515304cb7e64dbd4ec5508aac966c40a39) (2018-02-24)
+## [2.5.6-29-gb405d05](https://github.com/WeakAuras/WeakAuras2/tree/b405d0515c05ee59c7ffd832e9b602f2a0248f1f) (2018-02-24)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...b0c106515304cb7e64dbd4ec5508aac966c40a39)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...b405d0515c05ee59c7ffd832e9b602f2a0248f1f)
 
 Benjamin Staneck (14):
 
@@ -21,8 +21,9 @@ Benjamin Staneck (14):
 - use the same version string for the window title as for the LDB tooltip
 - fix LibRangecheck path
 
-Infus (13):
+Infus (14):
 
+- Remove a workaround for GetSpellCooldown("Water Jet")
 - Reimplement Copy and Paste
 - Options Window: Cooldown Progress: Fix initial value
 - *** Add offset options to auras in dynamic groups
