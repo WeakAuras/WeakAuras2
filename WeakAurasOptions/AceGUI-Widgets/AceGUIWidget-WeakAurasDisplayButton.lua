@@ -2,12 +2,69 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 33
+local Type, Version = "WeakAurasDisplayButton", 34
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 local L = WeakAuras.L;
 local fullName;
+local clipboard = {};
+clipboard.pasteMenuEntry = {
+  text = nil, -- Hidden by default
+  notCheckable = true,
+  func = function()
+    if (clipboard.part == "display") then
+      for k, v in pairs(clipboard.source) do
+        if (k ~= "trigger" and k~= "untrigger" and k~= "conditions" and k ~= "actions" and k ~= "animation"
+           and k~= "id" and k~= "parent" and k ~= "activeTriggerMode" and k~="numTriggers") then
+             if (type(v) == "table") then
+               clipboard.destination[k] = CopyTable(v);
+             else
+               clipboard.destination[k] = v;
+             end
+        end
+      end
+    elseif (clipboard.part == "trigger") then
+      -- Also copy untrigger,  "activeTriggerMode" "numTriggers"
+      clipboard.destination.trigger = {};
+      WeakAuras.DeepCopy(clipboard.source.trigger, clipboard.destination.trigger);
+      if (clipboard.source.additional_triggers) then
+        clipboard.destination.additional_triggers = {};
+        WeakAuras.DeepCopy(clipboard.source.additional_triggers, clipboard.destination.additional_triggers);
+      else
+        clipboard.destination.additional_triggers = nil;
+      end
+      clipboard.destination.untrigger = {};
+      WeakAuras.DeepCopy(clipboard.source.untrigger, clipboard.destination.untrigger);
+      clipboard.destination.activeTriggerMode = clipboard.source.activeTriggerMode;
+      clipboard.destination.numTriggers = clipboard.source.numTriggers;
+    elseif (clipboard.part == "condition") then
+      clipboard.destination.conditions = {};
+      WeakAuras.DeepCopy(clipboard.source.conditions, clipboard.destination.conditions);
+    elseif (clipboard.part == "load") then
+      clipboard.destination.load = {};
+      WeakAuras.DeepCopy(clipboard.source.load, clipboard.destination.load);
+    elseif (clipboard.part == "action") then
+      clipboard.destination.actions = {};
+      WeakAuras.DeepCopy(clipboard.source.actions, clipboard.destination.actions);
+    elseif (clipboard.part == "animation") then
+      clipboard.destination.animation = {};
+      WeakAuras.DeepCopy(clipboard.source.animation, clipboard.destination.animation);
+    end
+    WeakAuras.Add(clipboard.destination);
+    WeakAuras.ScanForLoads();
+    WeakAuras.SortDisplayButtons();
+    WeakAuras.PickDisplay(clipboard.destination.id);
+    WeakAuras.UpdateDisplayButton(clipboard.destination.id);
+  end
+}
+
+local function CopyToClipboard(data, part, description)
+  clipboard.part = part;
+  clipboard.pasteMenuEntry.text = description;
+  clipboard.source = {};
+  WeakAuras.DeepCopy(data, clipboard.source);
+end
 
 local function Hide_Tooltip()
   GameTooltip:Hide();
@@ -296,6 +353,7 @@ local methods = {
           if(WeakAuras.IsDisplayPicked(data.id) and WeakAuras.IsPickedMultiple()) then
             EasyMenu(WeakAuras.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
           else
+            clipboard.destination = data;
             EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
             if not(WeakAuras.IsDisplayPicked(data.id)) then
               WeakAuras.PickDisplay(data.id);
@@ -306,24 +364,6 @@ local methods = {
           self:ReloadTooltip();
         end
       end
-    end
-
-    function self.callbacks.OnClickCopying()
-      if (WeakAuras.IsImporting()) then return end;
-      WeakAuras.Copy(data.id, self.copying.id);
-      WeakAuras.ScanForLoads();
-      WeakAuras.SetIconNames(self.copying);
-      WeakAuras.SortDisplayButtons();
-      WeakAuras.AddOption(self.copying.id, self.copying);
-      WeakAuras.OptionsFrame():PickDisplay(self.copying.id);
-      WeakAuras.UpdateDisplayButton(self.copying);
-      WeakAuras.SetCopying();
-      self:ReloadTooltip();
-    end
-
-    function self.callbacks.OnClickCopyingSelf()
-      WeakAuras.SetCopying();
-      self:ReloadTooltip();
     end
 
     function self.callbacks.UpdateExpandButton()
@@ -355,11 +395,6 @@ local methods = {
     function self.callbacks.OnClickGroupingSelf()
       WeakAuras.SetGrouping();
       self:ReloadTooltip();
-    end
-
-    function self.callbacks.OnCopyClick()
-      WeakAuras.PickDisplay(data.id);
-      WeakAuras.SetCopying(data);
     end
 
     function self.callbacks.OnGroupClick()
@@ -580,7 +615,6 @@ local methods = {
           end
         end
 
-        WeakAuras.SetCopying();
         WeakAuras.SetGrouping();
         WeakAuras.SortDisplayButtons();
         WeakAuras.PickDisplay(newid);
@@ -607,7 +641,7 @@ local methods = {
     self.frame.terribleCodeOrganizationHackTable = {};
 
     function self.frame.terribleCodeOrganizationHackTable.IsGroupingOrCopying()
-      return self.grouping or self.copying;
+      return self.grouping;
     end
 
     function self.frame.terribleCodeOrganizationHackTable.SetNormalTooltip()
@@ -630,11 +664,64 @@ local methods = {
         func = self.callbacks.OnRenameClick
       },
       {
-        text = L["Copy settings from..."],
+        text = L["Copy settings..."],
         notCheckable = 1,
-        func = self.callbacks.OnCopyClick
+        hasArrow = true,
+        menuList = {
+          {
+            text = L["Display"],
+            notCheckable = true,
+            func = function()
+              CopyToClipboard(data, "display", L["Paste Display Settings"])
+              WeakAuras_DropDownMenu:Hide();
+            end
+          },
+          {
+            text = L["Trigger"],
+            notCheckable = true,
+            func = function()
+              CopyToClipboard(data, "trigger", L["Paste Trigger Settings"])
+              WeakAuras_DropDownMenu:Hide();
+            end
+          },
+          {
+            text = L["Conditions"],
+            notCheckable = true,
+            func = function()
+              CopyToClipboard(data, "condition", L["Paste Condition Settings"])
+              WeakAuras_DropDownMenu:Hide();
+            end
+          },
+          {
+            text = L["Load"],
+            notCheckable = true,
+            func = function()
+              CopyToClipboard(data, "load", L["Paste Load Settings"])
+              WeakAuras_DropDownMenu:Hide();
+            end
+          },
+          {
+            text = L["Actions"],
+            notCheckable = true,
+            func = function()
+              CopyToClipboard(data, "action", L["Paste Action Settings"])
+              WeakAuras_DropDownMenu:Hide();
+            end
+          },
+          {
+            text = L["Animations"],
+            notCheckable = true,
+            func = function()
+              CopyToClipboard(data, "animation", L["Paste Animations Settings"])
+              WeakAuras_DropDownMenu:Hide();
+            end
+          },
+        }
       },
     };
+
+    tinsert(self.menu, clipboard.pasteMenuEntry);
+
     if (not data.controlledChildren) then
       local convertMenu = {};
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
@@ -868,26 +955,6 @@ local methods = {
     Show_Long_Tooltip(self.frame, self.frame.description);
   end
   end,
-  ["SetCopying"] = function(self, copyingData)
-    self.copying = copyingData;
-    if(self.copying) then
-      if(self.data.id == self.copying.id) then
-        self:SetDescription(L["Cancel"], L["Do not copy any settings"]);
-        self.frame:SetScript("OnClick", self.callbacks.OnClickCopyingSelf);
-      else
-        if(self.data.regionType == self.copying.regionType) then
-          self:SetDescription(self.data.id, L["Copy settings from %s"]:format(self.data.id));
-          self.frame:SetScript("OnClick", self.callbacks.OnClickCopying);
-        else
-          self:Disable();
-        end
-      end
-    else
-      self:SetNormalTooltip();
-      self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
-      self:Enable();
-    end
-  end,
   ["SetGrouping"] = function(self, groupingData)
     self.grouping = groupingData;
     if(self.grouping) then
@@ -1013,7 +1080,7 @@ local methods = {
     WeakAuras.SortDisplayButtons()
   end,
   ["GetGroupOrCopying"] = function(self)
-    return self.group or self.copying;
+    return self.group;
   end,
   ["SetTitle"] = function(self, title)
     self.titletext = title;

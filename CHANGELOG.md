@@ -1,8 +1,8 @@
 # WeakAuras 2
 
-## [2.5.6-27-g9ba7e64](https://github.com/WeakAuras/WeakAuras2/tree/9ba7e64f47ea6b17dc4df20954e6f192b5522123) (2018-02-18)
+## [2.5.6-28-gb0c1065](https://github.com/WeakAuras/WeakAuras2/tree/b0c106515304cb7e64dbd4ec5508aac966c40a39) (2018-02-24)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...9ba7e64f47ea6b17dc4df20954e6f192b5522123)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...b0c106515304cb7e64dbd4ec5508aac966c40a39)
 
 Benjamin Staneck (14):
 
@@ -21,8 +21,9 @@ Benjamin Staneck (14):
 - use the same version string for the window title as for the LDB tooltip
 - fix LibRangecheck path
 
-Infus (12):
+Infus (13):
 
+- Reimplement Copy and Paste
 - Options Window: Cooldown Progress: Fix initial value
 - *** Add offset options to auras in dynamic groups
 - Fix Range Check trigger
