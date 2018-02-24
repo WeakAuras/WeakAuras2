@@ -1,8 +1,8 @@
 # WeakAuras 2
 
-## [2.5.6-29-gb405d05](https://github.com/WeakAuras/WeakAuras2/tree/b405d0515c05ee59c7ffd832e9b602f2a0248f1f) (2018-02-24)
+## [2.5.6-30-g17586f4](https://github.com/WeakAuras/WeakAuras2/tree/17586f4e1b6a34e3df9dc842ef53c790bfd711fa) (2018-02-24)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...b405d0515c05ee59c7ffd832e9b602f2a0248f1f)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.6...17586f4e1b6a34e3df9dc842ef53c790bfd711fa)
 
 Benjamin Staneck (14):
 
@@ -21,8 +21,9 @@ Benjamin Staneck (14):
 - use the same version string for the window title as for the LDB tooltip
 - fix LibRangecheck path
 
-Infus (14):
+Infus (15):
 
+- Fix cooldown handling of "disabled" cooldowns
 - Remove a workaround for GetSpellCooldown("Water Jet")
 - Reimplement Copy and Paste
 - Options Window: Cooldown Progress: Fix initial value

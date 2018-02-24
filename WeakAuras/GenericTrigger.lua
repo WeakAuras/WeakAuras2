@@ -1539,7 +1539,11 @@ do
     local cooldownBecauseRune = false;
     if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
       local basecd = GetSpellBaseCooldown(id);
-      startTime, duration = GetSpellCooldown(id);
+      local enabled;
+      startTime, duration, enabled = GetSpellCooldown(id);
+      if (enabled == 0) then
+        startTime, duration = 0, 0
+      end
 
       local spellcount = GetSpellCount(id);
       -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
