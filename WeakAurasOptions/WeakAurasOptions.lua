@@ -2520,6 +2520,69 @@ function WeakAuras.ReloadTriggerOptions(data)
     WeakAuras.ReloadTriggerOptions(data);
   end
 
+  local function moveTriggerDownImpl(data, i)
+    if (i < 0 or i + 1 >= data.numTriggers) then
+      return false;
+    end
+
+    if (i == 0) then
+      local tmp = data.additional_triggers[1];
+      tremove(data.additional_triggers, 1);
+      tinsert(data.additional_triggers, 1, {
+        trigger = data.trigger,
+        untrigger = data.untrigger
+      });
+      data.trigger = tmp.trigger;
+      data.untrigger = tmp.trigger;
+    else
+      local tmp = data.additional_triggers[i +1];
+      tremove(data.additional_triggers, i + 1);
+      tinsert(data.additional_triggers, i, tmp);
+    end
+
+    return true;
+  end
+
+  local function moveTriggerDown(data, i)
+    if (moveTriggerDownImpl(data, i)) then
+      optionTriggerChoices[data.id] = optionTriggerChoices[data.id] + 1;
+      WeakAuras.Add(data);
+      WeakAuras.ReloadTriggerOptions(data);
+    end
+  end
+
+  local function moveTriggerUp(data, i)
+    if (moveTriggerDownImpl(data, i - 1)) then
+      optionTriggerChoices[data.id] = optionTriggerChoices[data.id] - 1;
+      WeakAuras.Add(data);
+      WeakAuras.ReloadTriggerOptions(data);
+    end
+  end
+
+
+  local chooseTriggerWidth = 1.2;
+  if (data.controlledChildren) then
+    local hasMultipleTriggers = false;
+    for index, id in pairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(id);
+      if (childData.numTriggers ~=1) then
+        hasMultipleTriggers = true;
+        break;
+      end
+    end
+    if (not hasMultipleTriggers) then
+      chooseTriggerWidth = chooseTriggerWidth + 0.45;
+    end
+  else
+    if (data.numTriggers == 1) then
+      chooseTriggerWidth = chooseTriggerWidth + 0.45;
+    end
+  end
+
+  if (GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0) then
+    chooseTriggerWidth = chooseTriggerWidth + 0.15;
+  end
+
   local trigger_options = {
     disjunctive = {
       type = "select",
@@ -2604,14 +2667,15 @@ function WeakAuras.ReloadTriggerOptions(data)
       set = function(info, v)
         if(v == 0 or (data.additional_triggers and data.additional_triggers[v])) then
           optionTriggerChoices[id] = v;
-
           WeakAuras.ReloadTriggerOptions(data);
         end
-      end
+      end,
+      width = chooseTriggerWidth
     },
     addTrigger = {
       type = "execute",
-      name = L["Add Trigger"],
+      name = "",
+      desc = L["Add Trigger"],
       order = 1,
       func = function()
         if(data.controlledChildren) then
@@ -2632,7 +2696,129 @@ function WeakAuras.ReloadTriggerOptions(data)
           optionTriggerChoices[id] = #data.additional_triggers;
         end
         WeakAuras.ReloadTriggerOptions(data);
-      end
+      end,
+      width = 0.15,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\add",
+      imageWidth = 24,
+      imageHeight = 24
+    },
+    deleteTrigger = {
+      type = "execute",
+      name = "",
+      desc = L["Delete Trigger"],
+      order = 1.1,
+      func = deleteTrigger,
+      hidden = function()
+        return data.numTriggers == 1
+      end,
+      width = 0.15,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
+      imageWidth = 24,
+      imageHeight = 24
+    },
+    triggerUp = {
+      type = "execute",
+      name = "",
+      desc = L["Up"],
+      order = 1.2,
+      func = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            moveTriggerUp(childData, optionTriggerChoices[childId])
+          end
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        else
+          moveTriggerUp(data, optionTriggerChoices[id])
+        end
+      end,
+      disabled = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            if(childData) then
+              if (optionTriggerChoices[childId] ~= 0) then
+                return false;
+              end
+            end
+          end
+          return true;
+        else
+          if (optionTriggerChoices[id] == 0) then
+            return true;
+          else
+            return false;
+          end
+        end
+      end,
+      hidden = function()
+        return data.numTriggers == 1
+      end,
+      width = 0.15,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
+      imageWidth = 24,
+      imageHeight = 24
+    },
+    triggerDown = {
+      type = "execute",
+      name = "",
+      desc = L["Down"],
+      order = 1.3,
+      func = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            moveTriggerDown(childData, optionTriggerChoices[childId]);
+          end
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        else
+          moveTriggerDown(data, optionTriggerChoices[id]);
+        end
+      end,
+      disabled = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            if(childData) then
+              if (optionTriggerChoices[childId] ~= childData.numTriggers -1) then
+                return false;
+              end
+            end
+          end
+          return true;
+        else
+          if (optionTriggerChoices[id] == data.numTriggers - 1) then
+            return true;
+          else
+            return false;
+          end
+        end
+      end,
+      hidden = function()
+        return data.numTriggers == 1
+      end,
+      width = 0.15,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+      imageWidth = 24,
+      imageHeight = 24
+    },
+    applyTemplate = {
+      type = "execute",
+      name = "",
+      desc = L["Apply Template"],
+      order = 1.4,
+      func = function()
+        WeakAuras.OpenTriggerTemplate(data);
+      end,
+      hidden = function()
+        return GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
+      end,
+      width = 0.15,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\template",
+      imageWidth = 24,
+      imageHeight = 24
     },
     triggerHeader = {
       type = "header",
@@ -2648,43 +2834,6 @@ function WeakAuras.ReloadTriggerOptions(data)
         end
       end,
       order = 2
-    },
-    applyTemplate = {
-      type = "execute",
-      name = L["Apply Template"],
-      order = 2.5,
-      func = function()
-        WeakAuras.OpenTriggerTemplate(data);
-      end,
-      hidden = function()
-        return GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
-      end
-    },
-    deleteTriggerHalf = {
-      type = "execute",
-      name = L["Delete Trigger"],
-      order = 3,
-      func = deleteTrigger,
-      hidden = function()
-        return data.numTriggers == 1 or GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
-      end
-    },
-    deleteTriggerSpace = {
-      type = "execute",
-      name = "",
-      order = 3.1,
-      image = function() return "", 0, 0 end,
-      hidden = function()
-        return data.numTriggers ~= 1 or GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") == 0
-      end,
-    },
-    deleteTriggerFull = {
-      type = "execute",
-      name = L["Delete Trigger"],
-      order = 3,
-      width = "double",
-      func = deleteTrigger,
-      hidden = function() return data.numTriggers == 1 or GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0 end
     },
     typedesc = {
       type = "toggle",
