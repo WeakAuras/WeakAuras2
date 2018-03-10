@@ -671,7 +671,6 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   local conditionIndex = conditions[i].check.references[id].conditionIndex;
                   local changeIndex = reference.changeIndex;
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
-                  print("Adding path", id, conditionIndex, changeIndex);
                 end
                 WeakAuras.OpenTextEditor(data, multipath, nil, true);
               else
