@@ -2948,6 +2948,13 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 
   displayOptions[id].args.conditions.args = {};
+  -- We never want the condition options to use the hiddenAll, disabledAll functions
+  displayOptions[id].args.conditions.hidden = function()
+    return false;
+  end
+  displayOptions[id].args.conditions.disabled = function()
+    return false;
+  end
   WeakAuras.GetConditionOptions(data, displayOptions[id].args.conditions.args, "conditions", 0, nil);
 
   if(type(id) ~= "string") then
