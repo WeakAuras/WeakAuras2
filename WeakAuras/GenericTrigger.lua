@@ -238,7 +238,7 @@ function ConstructFunction(prototype, trigger, inverse)
     init = "";
   end
   for index, arg in pairs(prototype.args) do
-    local enable = true;
+    local enable = arg.type ~= "description";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
     end
