@@ -515,6 +515,28 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           hidden = hidden,
           order = order
         };
+      elseif (arg.type == "description") then
+        options["description_space_"..name] = {
+          type = "description",
+          name = "",
+          order = order,
+          hidden = hidden,
+        }
+        options["description_title_"..name] = {
+          type = "description",
+          name = arg.display,
+          order = order,
+          hidden = hidden,
+          fontSize = "large",
+        }
+        order = order + 1;
+        options["description_"..name] = {
+          type = "description",
+          name = arg.text,
+          order = order,
+          hidden = hidden,
+        }
+        order = order + 1;
       else
         options["use_"..name] = {
           type = "toggle",

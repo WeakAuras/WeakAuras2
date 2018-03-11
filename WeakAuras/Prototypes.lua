@@ -4178,6 +4178,12 @@ WeakAuras.event_prototypes = {
     statesParameter = "one",
     args = {
       {
+        name = "note",
+        type = "description",
+        display = L["Note"],
+        text = L["Ranges between units cannot be accurately measured inside raids and dungeons. This trigger type estimates the range to the hitbox with the help of LibRangeCheck-2.0.  Do note, that it estimates the distance to the hitbox. The range of friendly players is usually 3y more than the estimate."],
+      },
+      {
         name = "unit",
         required = true,
         display = L["Unit"],
