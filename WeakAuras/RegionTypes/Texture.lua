@@ -70,6 +70,7 @@ local function create(parent)
   texture:SetAllPoints(frame);
 
   WeakAuras.regionPrototype.create(frame);
+  frame.values = {};
   return frame;
 end
 
