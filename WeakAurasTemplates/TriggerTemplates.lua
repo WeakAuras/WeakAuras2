@@ -533,7 +533,9 @@ function WeakAuras.CreateTemplateView(frame)
     frame.buttonsContainer.frame:Show();
     frame.container.frame:Show();
     frame.window = "default";
-    frame:PickOption("New");
+    if (not self.data) then
+      frame:PickOption("New");
+    end
   end
 
   function WeakAuras.OpenTriggerTemplate(data)
