@@ -2694,6 +2694,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       width = chooseTriggerWidth
     },
+    chooseTriggerSpace = {
+      type = "description",
+      name = "",
+      order = 0.75,
+      width = 0.04
+    },
     addTrigger = {
       type = "execute",
       name = "",
