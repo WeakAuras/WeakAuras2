@@ -826,11 +826,19 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
   args["condition" .. i .. "up"] = {
     type = "execute",
     name = "",
-    desc = L["Move Up"],
     order = order,
     disabled = function()
-      -- TODO a bit more sophistcated needed
-      return i == 1;
+      if (data.controlledChildren) then
+        for id, reference in pairs(conditions[i].check.references) do
+          local index = reference.conditionIndex;
+          if (index > 1) then
+            return false;
+          end
+        end
+        return true;
+      else
+        return i == 1;
+      end
     end,
     func = function()
       if (data.controlledChildren) then
@@ -865,11 +873,20 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
   args["condition" .. i .. "down"] = {
     type = "execute",
     name = "",
-    desc = L["Move Down"],
     order = order,
     disabled = function()
-      -- TODO a bit more sophistcated
-      return i == #conditions;
+      if (data.controlledChildren) then
+        for id, reference in pairs(conditions[i].check.references) do
+          local index = reference.conditionIndex;
+          local auraData = WeakAuras.GetData(id);
+          if (index < #auraData[conditionVariable]) then
+            return false;
+          end
+        end
+        return true;
+      else
+        return i == #conditions;
+      end
     end,
     func = function()
       if (data.controlledChildren) then
@@ -906,10 +923,8 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
   args["condition" .. i .. "delete"] = {
     type = "execute",
     name = "",
-    desc = L["Move Down"],
     order = order,
     func = function()
-      -- TODO duplocated code
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
