@@ -1133,6 +1133,23 @@ local function modify(parent, region, data)
     self:SetTime( (region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
   end
 
+  function region:SetTexture(texture)
+    region.foreground:SetTexture(texture, region.textureWrapMode, region.textureWrapMode);
+    foregroundSpinner:SetTexture(texture);
+    if (data.sameTexture) then
+      background:SetTexture(texture, region.textureWrapMode, region.textureWrapMode);
+      backgroundSpinner:SetTexture(texture);
+    end
+
+    for _, extraTexture in ipairs(region.extraTextures) do
+      extraTexture:SetTexture(texture, region.textureWrapMode, region.textureWrapMode)
+    end
+
+    for _, extraSpinner in ipairs(region.extraSpinners) do
+      extraSpinner:SetTexture(texture);
+    end
+  end
+
   function region:SetForegroundDesaturated(b)
     region.foreground:SetDesaturated(b);
     region.foregroundSpinner:SetDesaturated(b);
