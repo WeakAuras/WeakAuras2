@@ -1,15 +1,17 @@
 # WeakAuras 2
 
-## [2.5.7-11-g13adf60](https://github.com/WeakAuras/WeakAuras2/tree/13adf60bcddf13a57179f0e17910f84fe4c31ca1) (2018-03-12)
+## [2.5.7-13-g685358e](https://github.com/WeakAuras/WeakAuras2/tree/685358effe5a71d1ef82b61fab2bde7ea3b3360a) (2018-03-13)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.7...13adf60bcddf13a57179f0e17910f84fe4c31ca1)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.7...685358effe5a71d1ef82b61fab2bde7ea3b3360a)
 
-Benjamin Staneck (1):
+Benjamin Staneck (2):
 
+- fix the translation script for PRs
 - adjust range check trigger text a bit
 
-Infus (10):
+Infus (11):
 
+- Fix canceling "Apply Template" picks the new option
 - Add a bit of space between Choose Trigger and "Add"
 - Fix text replacement for Texture auras
 - Add a text explaining the range trigger to the Range Trigger
