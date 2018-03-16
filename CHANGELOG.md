@@ -1,16 +1,19 @@
 # WeakAuras 2
 
-## [2.5.7-13-g685358e](https://github.com/WeakAuras/WeakAuras2/tree/685358effe5a71d1ef82b61fab2bde7ea3b3360a) (2018-03-13)
+## [2.5.8](https://github.com/WeakAuras/WeakAuras2/tree/2.5.8) (2018-03-16)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.7...685358effe5a71d1ef82b61fab2bde7ea3b3360a)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.7...2.5.8)
 
 Benjamin Staneck (2):
 
 - fix the translation script for PRs
 - adjust range check trigger text a bit
 
-Infus (11):
+Infus (14):
 
+- Fix Add Property for multi selection
+- Add a SetTexture function to Progress Textures
+- Implement TODOs
 - Fix canceling "Apply Template" picks the new option
 - Add a bit of space between Choose Trigger and "Add"
 - Fix text replacement for Texture auras
