@@ -1236,10 +1236,10 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     order = order,
     func = function()
       if (data.controlledChildren) then
-        for _, id in ipairs(data.controlledChildren) do
+        for id, reference in pairs(conditions[i].check.references) do
           local auradata = WeakAuras.GetData(id);
-          auradata[conditionVariable][i].changes = auradata[conditionVariable][i].changes or {};
-          auradata[conditionVariable][i].changes[#auradata[conditionVariable][i].changes + 1] = {};
+          auradata[conditionVariable][reference.conditionIndex].changes = auradata[conditionVariable][reference.conditionIndex].changes or {}
+          tinsert(auradata[conditionVariable][reference.conditionIndex].changes, {})
           WeakAuras.Add(auradata);
         end
         WeakAuras.ReloadTriggerOptions(data);
