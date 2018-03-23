@@ -1031,85 +1031,88 @@ function GenericTrigger.Modernize(data)
       trigger = data.additional_triggers[triggernum].trigger;
       untrigger = data.additional_triggers[triggernum].untrigger;
     end
-    -- Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
-    if(trigger and trigger.custom) then
-      trigger.custom = trigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
-    end
 
-    if(untrigger and untrigger.custom) then
-      untrigger.custom = untrigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
-    end
-
-    if trigger and trigger["event"] and trigger["event"] == "DBM Timer" then
-      if (type(trigger.spellId) == "number") then
-        trigger.spellId = tostring(trigger.spellId);
+    if (data.internalVersion < 2) then
+      -- Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
+      if(trigger and trigger.custom) then
+        trigger.custom = trigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
       end
-    end
 
-    if trigger and trigger["event"] and trigger["event"] == "Item Set Equipped" then
-      trigger.event = "Equipment Set";
-    end
-
-    -- Convert ember trigger
-    local fixEmberTrigger = function(trigger)
-      if (trigger.power and not trigger.ember) then
-        trigger.ember = tostring(tonumber(trigger.power) * 10);
-        trigger.use_ember = trigger.use_power
-        trigger.ember_operator = trigger.power_operator;
-        trigger.power = nil;
-        trigger.use_power = nil;
-        trigger.power_operator = nil;
+      if(untrigger and untrigger.custom) then
+        untrigger.custom = untrigger.custom:gsub("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", "COMBAT_LOG_EVENT_UNFILTERED");
       end
-    end
 
-    if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Burning Embers") then
-      fixEmberTrigger(trigger);
-      fixEmberTrigger(untrigger);
-    end
-
-    if (trigger and trigger.type and trigger.event and trigger.type == "status"
-      and (trigger.event == "Cooldown Progress (Spell)"
-      or trigger.event == "Cooldown Progress (Item)"
-      or trigger.event == "Death Knight Rune")) then
-
-      if (not trigger.showOn) then
-        if (trigger.use_inverse) then
-          trigger.showOn = "showOnReady"
-        else
-          trigger.showOn = "showOnCooldown"
+      if trigger and trigger["event"] and trigger["event"] == "DBM Timer" then
+        if (type(trigger.spellId) == "number") then
+          trigger.spellId = tostring(trigger.spellId);
         end
+      end
 
-        if (trigger.event == "Death Knight Rune") then
-          trigger.use_showOn = true;
+      if trigger and trigger["event"] and trigger["event"] == "Item Set Equipped" then
+        trigger.event = "Equipment Set";
+      end
+
+      -- Convert ember trigger
+      local fixEmberTrigger = function(trigger)
+        if (trigger.power and not trigger.ember) then
+          trigger.ember = tostring(tonumber(trigger.power) * 10);
+          trigger.use_ember = trigger.use_power
+          trigger.ember_operator = trigger.power_operator;
+          trigger.power = nil;
+          trigger.use_power = nil;
+          trigger.power_operator = nil;
         end
-        trigger.use_inverse = nil
       end
-    end
 
-    for old, new in pairs(combatLogUpgrade) do
-      if (trigger and trigger[old]) then
-        local useOld = "use_" .. old;
-        local useNew = "use_" .. new;
-        trigger[useNew] = trigger[useOld];
-        trigger[new] = trigger[old];
-
-        trigger[old] = nil;
-        trigger[useOld] = nil;
+      if (trigger and trigger.type and trigger.event and trigger.type == "status" and trigger.event == "Burning Embers") then
+        fixEmberTrigger(trigger);
+        fixEmberTrigger(untrigger);
       end
-    end
 
-    -- Convert separated Power Triggers to sub options of the Power trigger
-    if (trigger and trigger.type and trigger.event and trigger.type == "status" and oldPowerTriggers[trigger.event]) then
-      trigger.powertype = oldPowerTriggers[trigger.event]
-      trigger.use_powertype = true;
-      trigger.use_percentpower = false;
-      if (trigger.event == "Combo Points") then
-        trigger.power = trigger.combopoints;
-        trigger.power_operator = trigger.combopoints_operator
-        trigger.use_power = trigger.use_combopoints;
+      if (trigger and trigger.type and trigger.event and trigger.type == "status"
+        and (trigger.event == "Cooldown Progress (Spell)"
+        or trigger.event == "Cooldown Progress (Item)"
+        or trigger.event == "Death Knight Rune")) then
+
+        if (not trigger.showOn) then
+          if (trigger.use_inverse) then
+            trigger.showOn = "showOnReady"
+          else
+            trigger.showOn = "showOnCooldown"
+          end
+
+          if (trigger.event == "Death Knight Rune") then
+            trigger.use_showOn = true;
+          end
+          trigger.use_inverse = nil
+        end
       end
-      trigger.event = "Power";
-      trigger.unit = "player";
+
+      for old, new in pairs(combatLogUpgrade) do
+        if (trigger and trigger[old]) then
+          local useOld = "use_" .. old;
+          local useNew = "use_" .. new;
+          trigger[useNew] = trigger[useOld];
+          trigger[new] = trigger[old];
+
+          trigger[old] = nil;
+          trigger[useOld] = nil;
+        end
+      end
+
+      -- Convert separated Power Triggers to sub options of the Power trigger
+      if (trigger and trigger.type and trigger.event and trigger.type == "status" and oldPowerTriggers[trigger.event]) then
+        trigger.powertype = oldPowerTriggers[trigger.event]
+        trigger.use_powertype = true;
+        trigger.use_percentpower = false;
+        if (trigger.event == "Combo Points") then
+          trigger.power = trigger.combopoints;
+          trigger.power_operator = trigger.combopoints_operator
+          trigger.use_power = trigger.use_combopoints;
+        end
+        trigger.event = "Power";
+        trigger.unit = "player";
+      end
     end
   end
 end

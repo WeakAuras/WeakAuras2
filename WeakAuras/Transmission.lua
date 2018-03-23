@@ -29,7 +29,6 @@ local coroutine = coroutine
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
-local version = 1421;
 local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;
@@ -468,7 +467,7 @@ function WeakAuras.DisplayToString(id, forChat)
     local transmit = {
       m = "d",
       d = transmitData,
-      v = version,
+      v = 1421, -- Version of Transmisson, won't change anymore.
       s = versionString
     };
     if(WeakAuras.transmitCache and WeakAuras.transmitCache[id]) then
@@ -749,11 +748,14 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     };
 
     local codes = {};
+    local highestVersion = data.internalVersion or 1;
     scamCheck(codes, data);
     if(children) then
       for index, childData in pairs(children) do
         tinsert(tooltip, {2, " ", childData.id, 1, 1, 1, 1, 1, 1});
         scamCheck(codes, childData);
+        local childVersion = childData.internalVersion or 1;
+        highestVersion = max(highestVersion, childVersion);
       end
       if(#tooltip > 3) then
         tooltip[4][2] = L["Children:"];
@@ -856,6 +858,11 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       if #codes > 0 then
         tinsert(tooltip, {1, L["This aura contains custom Lua code."], 1, 0, 0});
         tinsert(tooltip, {1, L["Make sure you can trust the person who sent it!"], 1, 0, 0});
+      end
+
+      if (highestVersion > WeakAuras.InternalVersion()) then
+        tinsert(tooltip, {1, L["This aura was created with a newer version of WeakAuras."], 1, 0, 0});
+        tinsert(tooltip, {1, L["It might not work correctly with your version!"], 1, 0, 0});
       end
 
       tinsert(tooltip, {2, " ", "                         ", 0, 1, 0});
@@ -1167,16 +1174,8 @@ function WeakAuras.ImportString(str)
   if(received and type(received) == "table" and received.m) then
     if(received.m == "d") then
       tooltipLoading = nil;
-      if(version < received.v) then
-        local errorMsg = L["Version error received higher"]
-        ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
-          {1, errorMsg:format(received.s, versionString), 1, 0, 0}
-        });
-      else
-        local data = received.d;
-        WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
-      end
+      local data = received.d;
+      WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, "unknown", true)
     end
   elseif(type(received) == "string") then
     ShowTooltip({
@@ -1240,16 +1239,8 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
   if(received and type(received) == "table" and received.m) then
     if(received.m == "d") and safeSenders[sender] then
       tooltipLoading = nil;
-      if(version ~= received.v) then
-        local errorMsg = version > received.v and L["Version error received lower"] or L["Version error received higher"]
-        ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
-          {1, errorMsg:format(received.s, versionString), 1, 0, 0}
-        });
-      else
-        local data = received.d;
-        WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, sender, true)
-      end
+      local data = received.d;
+      WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
       TransmitDisplay(received.d, sender);
