@@ -343,7 +343,7 @@ function WeakAuras.CreateTemplateView(frame)
     local function handle(data, item)
       replaceTrigger(data, item);
       WeakAuras.optionTriggerChoices[data.id] = 0;
-      newView.CancelClose();
+      newView:CancelClose();
       WeakAuras.Add(data);
       WeakAuras.NewDisplayButton(data);
       WeakAuras.SetThumbnail(data);
@@ -367,7 +367,7 @@ function WeakAuras.CreateTemplateView(frame)
     local function handle(data, item)
       addTrigger(data, item);
       WeakAuras.optionTriggerChoices[data.id] = data.numTriggers - 1;
-      newView.CancelClose();
+      newView:CancelClose();
       WeakAuras.Add(data);
       WeakAuras.NewDisplayButton(data);
       WeakAuras.SetThumbnail(data);
