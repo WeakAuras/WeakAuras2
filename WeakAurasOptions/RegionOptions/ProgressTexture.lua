@@ -248,6 +248,34 @@ local function createOptions(id, data)
       order = 55.2,
       values = WeakAuras.texture_wrap_types
     },
+    slanted = {
+      type = "toggle",
+      name = L["Slanted"],
+      order = 55.3,
+      hidden = function() return data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE"; end
+    },
+    slant = {
+      type = "range",
+      name = L["Slant Amount"],
+      order = 55.4,
+      min = 0,
+      max = 1,
+      bigStep = 0.1,
+      hidden = function() return not data.slanted or data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE" end
+    },
+    slantFirst = {
+      type = "toggle",
+      name = L["Inverse Slant"],
+      order = 55.5,
+      hidden = function() return not data.slanted or data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE" end
+    },
+    slantMode = {
+      type = "select",
+      name = L["Slant Mode"],
+      order = 55.6,
+      hidden = function() return not data.slanted or data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE" end,
+      values = WeakAuras.slant_mode
+    },
     spacer = {
       type = "header",
       name = "",

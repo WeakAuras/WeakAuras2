@@ -234,6 +234,11 @@ WeakAuras.texture_wrap_types = {
   REPEAT = L["Repeat"]
 }
 
+WeakAuras.slant_mode = {
+  INSIDE = L["Keep Inside"],
+  EXTEND = L["Extend Outside"]
+}
+
 WeakAuras.text_check_types = {
   update = L["Every Frame"],
   event = L["Trigger Update"]
