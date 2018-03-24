@@ -2617,7 +2617,13 @@ function WeakAuras.ReloadTriggerOptions(data)
         end
         return  WeakAuras.trigger_require_types_one;
       end,
-      get = function() return data.disjunctive or "all" end,
+      get = function()
+        if (data.additional_triggers and #data.additional_triggers > 0) then
+          return data.disjunctive or "all";
+        else
+          return (data.disjunctive and data.disjunctive ~= "all") and data.disjunctive or "any";
+        end
+      end,
       set = function(info, v)
         data.disjunctive = v;
         WeakAuras.Add(data);
