@@ -65,6 +65,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 end
 
 -- Sound / Chat Message / Custom Code
+local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 function WeakAuras.regionPrototype.AddProperties(properties)
   properties["sound"] = {
@@ -81,6 +82,22 @@ function WeakAuras.regionPrototype.AddProperties(properties)
     display = L["Run Custom Code"],
     action = "RunCode",
     type = "customcode"
+  }
+  properties["xOffset"] = {
+    display = L["X-Offset"],
+    setter = "SetXOffset",
+    type = "number",
+    softMin = -screenWidth,
+    softMax = screenWidth,
+    bigStep = 1
+  }
+  properties["yOffset"] = {
+    display = L["Y-Offset"],
+    setter = "SetYOffset",
+    type = "number",
+    softMin = -screenHeight,
+    softMax = screenHeight,
+    bigStep = 1
   }
 end
 
@@ -187,6 +204,14 @@ local function SetOffset(self, xOffset, yOffset)
   UpdatePosition(self);
 end
 
+local function SetXOffset(self, xOffset)
+  self:SetOffset(xOffset, self:GetYOffset());
+end
+
+local function SetYOffset(self, yOffset)
+  self:SetOffset(self:GetXOffset(), yOffset);
+end
+
 local function GetXOffset(self)
   return self.xOffset;
 end
@@ -213,6 +238,8 @@ function WeakAuras.regionPrototype.create(region)
 
   region.SetAnchor = SetAnchor;
   region.SetOffset = SetOffset;
+  region.SetXOffset = SetXOffset;
+  region.SetYOffset = SetYOffset;
   region.SetOffsetAnim = SetOffsetAnim;
   region.GetXOffset = GetXOffset;
   region.GetYOffset = GetYOffset;
@@ -230,7 +257,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   region.adjustedMax = hasAdjustedMax and data.adjustedMax and data.adjustedMax > 0 and data.adjustedMax;
   region.inverse = false;
 
-  region:SetOffset(data.xOffset, data.yOffset);
+  region:SetOffset(data.xOffset or 0, data.yOffset or 0);
   region:SetOffsetAnim(0, 0);
   WeakAuras.AnchorFrame(data, region, parent);
 end
