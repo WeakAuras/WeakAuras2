@@ -50,7 +50,7 @@ local default = {
   stickyDuration = false,
   mirror = false,
   frameStrata = 1,
-  version = 2
+  slantMode = "INSIDE"
 };
 
 WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
