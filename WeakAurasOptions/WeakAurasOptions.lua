@@ -2555,7 +2555,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         untrigger = data.untrigger
       });
       data.trigger = tmp.trigger;
-      data.untrigger = tmp.trigger;
+      data.untrigger = tmp.untrigger;
     else
       local tmp = data.additional_triggers[i +1];
       tremove(data.additional_triggers, i + 1);
