@@ -110,7 +110,7 @@ templates.class.WARRIOR = {
         { spell = 12294, type = "ability"}, -- Mortal Strike
         { spell = 18499, type = "ability"}, -- Berserker Rage
         { spell = 34428, type = "ability"}, -- Victory Rush
-        { spell = 46924, type = "ability", talent = 19}, -- Bladestorm
+        { spell = 46924, type = "ability"}, -- Bladestorm
         { spell = 46968, type = "ability", talent = 4}, -- Shockwave
         { spell = 57755, type = "ability"}, -- Heroic Throw
         { spell = 97462, type = "ability"}, -- Commanding Shout
