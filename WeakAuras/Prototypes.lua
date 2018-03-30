@@ -1838,10 +1838,76 @@ WeakAuras.event_prototypes = {
           charges = (duration == 0) and 1 or 0;
         end
         local showOn = %s
+        local expirationTime = startTime + duration
       ]=];
+      if (not trigger.trackcharge) then
+        ret = ret .. [=[
+          if (state.expirationTime ~= expirationTime) then
+            state.expirationTime = expirationTime;
+            state.resort = true;
+            state.changed = true;
+          end
+          if (state.duration ~= duration) then
+            state.duration = duration;
+            state.resort = true;
+            state.changed = true;
+          end
+          state.progressType = 'timed';
+        ]=];
+      else
+        local ret2 = [=[
+          local trackedCharge = %s
+          if (charges < trackedCharge) then
+            if (state.value ~= 0) then
+              state.value = 0;
+              state.resort = true;
+              state.changed = true;
+            end
+            if (state.total ~= duration) then
+              state.total = duration;
+              state.resort = true;
+              state.changed = true;
+            end
+
+            state.expirationTime = nil;
+            state.duration = nil;
+            state.progressType = 'static';
+          elseif (charges > trackedCharge) then
+            if (state.expirationTime ~= 0) then
+              state.expirationTime = 0;
+              state.resort = true;
+              state.changed = true;
+            end
+            if (state.duration ~= 0) then
+              state.duration = 0;
+              state.resort = true;
+              state.changed = true;
+            end
+            state.value = nil;
+            state.total = nil;
+            state.progressType = 'timed';
+          else
+            if (state.expirationTime ~= expirationTime) then
+              state.expirationTime = expirationTime;
+              state.changed = true;
+              state.resort = true;
+              state.changed = true;
+            end
+            if (state.duration ~= duration) then
+              state.duration = duration;
+              state.resort = true;
+              state.changed = true;
+            end
+            state.value = nil;
+            state.total = nil;
+            state.progressType = 'timed';
+          end
+        ]=];
+        local trackedCharge = tonumber(trigger.trackcharge or 1) or 1;
+        ret = ret .. ret2:format(trackedCharge - 1);
+      end
       if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
         local ret2 = [[
-          local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck) then
@@ -1856,6 +1922,7 @@ WeakAuras.event_prototypes = {
         "[[" .. (trigger.showOn or "") .. "]]");
     end,
     statesParameter = "one",
+    canHaveDuration = "timed",
     args = {
       {
       }, -- Ignore first argument (id)
@@ -1886,8 +1953,16 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "charges",
-        display = L["Charges"],
+        display = L["Show if Charges"],
         type = "number",
+      },
+      {
+        name = "trackcharge",
+        display = L["Show CD of Charge"],
+        type = "number",
+        enable = function(trigger) return (trigger.showOn ~= "showOnReady") end,
+        test = "true",
+        noOperator = true,
       },
       {
         name = "showOn",
@@ -1919,12 +1994,6 @@ WeakAuras.event_prototypes = {
         "or (showOn == \"showAlways\")"
       }
     },
-    durationFunc = function(trigger)
-      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.realSpellName or 0, trigger.use_matchedRune, trigger.use_showgcd);
-      startTime = startTime or 0;
-      duration = duration or 0;
-      return duration, startTime + duration;
-    end,
     nameFunc = function(trigger)
       local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then

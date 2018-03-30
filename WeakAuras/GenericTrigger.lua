@@ -460,20 +460,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       state.value = nil;
       state.total = nil;
     end
-  else
-    if (state.progressType ~= "timed") then
-      state.progressType = "timed";
-      changed = true;
-    end
-    if (state.duration ~= 0) then
-      state.duration = 0;
-      changed = true;
-    end
-    if (state.expirationTime ~= math.huge) then
-      state.resort = state.expirationTime ~= math.huge;
-      state.expirationTime = math.huge;
-      changed = true;
-    end
   end
   local name = data.nameFunc and data.nameFunc(data.trigger) or state.name;
   local icon = data.iconFunc and data.iconFunc(data.trigger) or state.icon;
