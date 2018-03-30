@@ -573,49 +573,51 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
       end
       order = order + 1;
       if(arg.type == "number") then
-        options[name.."_operator"] = {
-          type = "select",
-          name = L["Operator"],
-          width = "half",
-          order = order,
-          hidden = hidden,
-          values = arg.operator_types_without_equal and operator_types_without_equal or operator_types,
-          disabled = function() return not trigger["use_"..realname]; end,
-          get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
-          set = function(info, v)
-            trigger[realname.."_operator"] = v;
-            WeakAuras.Add(data);
-            if (reloadOptions) then
-              WeakAuras.ScheduleReloadOptions(data);
+        if (not arg.noOperator) then
+          options[name.."_operator"] = {
+            type = "select",
+            name = L["Operator"],
+            width = "half",
+            order = order,
+            hidden = hidden,
+            values = arg.operator_types_without_equal and operator_types_without_equal or operator_types,
+            disabled = function() return not trigger["use_"..realname]; end,
+            get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
+            set = function(info, v)
+              trigger[realname.."_operator"] = v;
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ScheduleReloadOptions(data);
+              end
+              WeakAuras.ScanForLoads();
+              WeakAuras.SetThumbnail(data);
+              WeakAuras.SetIconNames(data);
+              WeakAuras.UpdateDisplayButton(data);
+              WeakAuras.SortDisplayButtons();
             end
-            WeakAuras.ScanForLoads();
-            WeakAuras.SetThumbnail(data);
-            WeakAuras.SetIconNames(data);
-            WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
-          end
-        };
-        if(arg.required and not triggertype) then
-          options[name.."_operator"].set = function(info, v)
-            trigger[realname.."_operator"] = v;
-            untrigger[realname.."_operator"] = v;
-            WeakAuras.Add(data);
-            if (reloadOptions) then
-              WeakAuras.ScheduleReloadOptions(data);
+          };
+          if(arg.required and not triggertype) then
+            options[name.."_operator"].set = function(info, v)
+              trigger[realname.."_operator"] = v;
+              untrigger[realname.."_operator"] = v;
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ScheduleReloadOptions(data);
+              end
+              WeakAuras.ScanForLoads();
+              WeakAuras.SortDisplayButtons();
             end
-            WeakAuras.ScanForLoads();
-            WeakAuras.SortDisplayButtons();
+          elseif(arg.required and triggertype == "untrigger") then
+            options[name.."_operator"] = nil;
+            order = order - 1;
           end
-        elseif(arg.required and triggertype == "untrigger") then
-          options[name.."_operator"] = nil;
-          order = order - 1;
+          order = order + 1;
         end
-        order = order + 1;
         options[name] = {
           type = "input",
           validate = ValidateNumeric,
           name = arg.display,
-          width = "half",
+          width = arg.noOperator and "normal" or "half",
           order = order,
           hidden = hidden,
           disabled = function() return not trigger["use_"..realname]; end,
