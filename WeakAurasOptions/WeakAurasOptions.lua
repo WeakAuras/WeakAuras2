@@ -3181,17 +3181,6 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
   end
   if(regionOption) then
-    if(data.regionType == "dynamicgroup") then
-      regionOption.selfPoint = nil;
-      regionOption.anchorPoint = nil;
-      regionOption.anchorPointGroup = nil;
-      regionOption.xOffset1 = nil;
-      regionOption.xOffset2 = nil;
-      regionOption.xOffset3 = nil;
-      regionOption.yOffset1 = nil;
-      regionOption.yOffset2 = nil;
-      regionOption.yOffset3 = nil;
-    end
     replaceNameDescFuncs(regionOption, data);
     replaceImageFuncs(regionOption, data);
     replaceValuesFuncs(regionOption, data);
