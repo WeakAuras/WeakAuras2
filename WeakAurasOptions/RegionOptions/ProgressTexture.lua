@@ -5,7 +5,7 @@ local function createOptions(id, data)
     foregroundTexture = {
       type = "input",
       name = L["Foreground Texture"],
-      order = 0
+      order = 1
     },
     backgroundTexture = {
       type = "input",
@@ -281,11 +281,6 @@ local function createOptions(id, data)
       name = "",
       order = 56
     },
-    spacer2 = {
-      type = "header",
-      name = "",
-      order = 59
-    }
   };
   options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
 
@@ -321,9 +316,10 @@ local function createOptions(id, data)
     end
   end
 
-  options = WeakAuras.AddPositionOptions(options, id, data);
-
-  return options;
+  return {
+    progresstexture = options,
+    position = WeakAuras.PositionOptions(id, data),
+  };
 end
 
 -- Credit to CommanderSirow for taking the time to properly craft the ApplyTransform function
