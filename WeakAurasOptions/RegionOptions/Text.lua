@@ -123,21 +123,14 @@ local function createOptions(id, data)
       order = 48,
       values = WeakAuras.font_flags
     },
-    spacer = {
-      type = "header",
-      name = "",
-      order = 50
-    }
   };
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 37, function() return not data.displayText:find("%%c") end, {"customText"}, false);
 
-  options = WeakAuras.AddPositionOptions(options, id, data);
-
-  options.width = nil;
-  options.height = nil;
-
-  return options;
+  return {
+    text = options;
+    position = WeakAuras.PositionOptions(id, data, true);
+  };
 end
 
 local function createThumbnail(parent)

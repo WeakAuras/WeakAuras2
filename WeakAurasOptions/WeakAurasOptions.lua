@@ -1912,6 +1912,15 @@ local function replaceNameDescFuncs(intable, data)
     return combinedKeys;
   end
 
+  local function regionPrefix(input)
+    local index = string.find(input, ".", 1, true);
+    if (index) then
+      local regionType = string.sub(input, 1, index - 1);
+      return regionOptions[regionType] and regionType;
+    end
+    return nil;
+  end
+
   local function sameAll(info)
     local combinedValues = {};
     local first = true;
@@ -1919,7 +1928,9 @@ local function replaceNameDescFuncs(intable, data)
 
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
-      if(childData) then
+
+      local regionType = regionPrefix(info[#info]);
+      if(childData and (not regionType or childData.regionType == regionType)) then
         WeakAuras.EnsureOptions(childId);
         local childOptions = displayOptions[childId];
 
@@ -2316,15 +2327,96 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
   };
 end
 
+local function copyOptionTable(input, orderAdjustment)
+  local resultOption = {};
+  WeakAuras.DeepCopy(input, resultOption);
+  resultOption.order = orderAdjustment + resultOption.order;
+  return resultOption;
+end
+
+local function flattenRegionOptions(allOptions, withoutHeader)
+  local result = {};
+
+  local base = 100;
+
+  for regionType, options in pairs(allOptions) do
+    if (regionType ~= "border" and regionType ~= "position") then
+      for optionName, option in pairs(options) do
+        result[regionType .. "." .. optionName] = copyOptionTable(option, base);
+      end
+
+      base = base + 100;
+    end
+  end
+
+  if (allOptions["border"]) then
+    for optionName, option in pairs(allOptions["border"]) do
+      result["border." .. optionName] = copyOptionTable(option, base);
+    end
+    base = base + 100;
+  end
+
+  if (allOptions["position"]) then
+    for optionName, option in pairs(allOptions["position"]) do
+      result["position." .. optionName] = copyOptionTable(option, base);
+    end
+  end
+
+  return result;
+end
+
+local function addHeadersForRegionOptions(allOptions, output)
+  local base = 100;
+  for regionType, options in pairs(allOptions) do
+    if (regionType ~= "border" and regionType ~= "position") then
+      output[regionType .. "_title"] = {
+        type = "description",
+        name = regionOptions[regionType].displayName,
+        width = "double",
+        order = base,
+        fontSize = "large",
+        hidden = false
+      }
+      output[regionType .. "_title_header"] = {
+        type = "header",
+        name = "",
+        width = "double",
+        order = base + 0.01,
+        hidden = false
+      }
+      base = base + 100;
+    end
+  end
+
+  output["common_title"] = {
+    type = "description",
+    name = L["Common Options"],
+    width = "double",
+    order = base,
+    fontSize = "large",
+    hidden = false
+  }
+end
+
+local function removePrefix(input)
+  local index = string.find(input, ".", 1, true);
+  if (index) then
+    return string.sub(input, index + 1);
+  end
+  return input;
+end
+
 function WeakAuras.AddOption(id, data)
   local regionOption;
   if(regionOptions[data.regionType]) then
     regionOption = regionOptions[data.regionType].create(id, data);
   else
     regionOption = {
-      unsupported = {
-        type = "description",
-        name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
+      [data.regionType] = {
+        unsupported = {
+          type = "description",
+          name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
+        }
       }
     };
   end
@@ -2338,23 +2430,25 @@ function WeakAuras.AddOption(id, data)
         name = L["Display"],
         order = 10,
         get = function(info)
+          local property = removePrefix(info[#info]);
           if(info.type == "color") then
-            data[info[#info]] = data[info[#info]] or {};
-            local c = data[info[#info]];
+            data[property] = data[property] or {};
+            local c = data[property];
             return c[1], c[2], c[3], c[4];
           else
-            return data[info[#info]];
+            return data[property];
           end
         end,
         set = function(info, v, g, b, a)
+          local property = removePrefix(info[#info]);
           if(info.type == "color") then
-            data[info[#info]] = data[info[#info]] or {};
-            local c = data[info[#info]];
+            data[property] = data[property] or {};
+            local c = data[property];
             c[1], c[2], c[3], c[4] = v, g, b, a;
           elseif(info.type == "toggle") then
-            data[info[#info]] = v;
+            data[property] = v;
           else
-            data[info[#info]] = (v ~= "" and v) or nil;
+            data[property] = (v ~= "" and v) or nil;
           end
           WeakAuras.Add(data);
           WeakAuras.SetThumbnail(data);
@@ -2368,7 +2462,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = regionOption
+        args = flattenRegionOptions(regionOption, false);
       },
       trigger = {
         type = "group",
@@ -3010,10 +3104,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       regionOption = regionOptions[data.regionType].create(id, data);
     else
       regionOption = {
-        unsupported = {
-          type = "description",
-          name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
-        }
+        [data.regionType] = {
+          unsupported = {
+            type = "description",
+            name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
+          }
+        };
       };
     end
     displayOptions[id].args.group = {
@@ -3021,23 +3117,25 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Group"],
       order = 0,
       get = function(info)
+        local property = removePrefix(info[#info]);
         if(info.type == "color") then
-          data[info[#info]] = data[info[#info]] or {};
-          local c = data[info[#info]];
+          data[property] = data[property] or {};
+          local c = data[property];
           return c[1], c[2], c[3], c[4];
         else
-          return data[info[#info]];
+          return data[property];
         end
       end,
       set = function(info, v, g, b, a)
+        local property = removePrefix(info[#info]);
         if(info.type == "color") then
-          data[info[#info]] = data[info[#info]] or {};
-          local c = data[info[#info]];
+          data[property] = data[property] or {};
+          local c = data[property];
           c[1], c[2], c[3], c[4] = v, g, b, a;
         elseif(info.type == "toggle") then
-          data[info[#info]] = v;
+          data[property] = v;
         else
-          data[info[#info]] = (v ~= "" and v) or nil;
+          data[property] = (v ~= "" and v) or nil;
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -3046,7 +3144,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = regionOption
+      args = flattenRegionOptions(regionOption, true);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3148,18 +3246,14 @@ function WeakAuras.ReloadTriggerOptions(data)
 end
 
 function WeakAuras.ReloadGroupRegionOptions(data)
-  local regionType;
-  local first = true;
+  local regionTypes = {};
+  local regionTypeCount = 0;
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
-      if(first) then
-        regionType = childData.regionType;
-        first = false;
-      else
-        if(childData.regionType ~= regionType) then
-          regionType = false;
-        end
+      if (not regionTypes[childData.regionType]) then
+        regionTypes[childData.regionType] = true;
+        regionTypeCount = regionTypeCount +1;
       end
     end
   end
@@ -3167,50 +3261,55 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   local id = data.id;
   WeakAuras.EnsureOptions(id);
   local options = displayOptions[id];
-  local regionOption;
-  if(regionType) then
+
+  local allOptions = {};
+  for regionType in pairs(regionTypes) do
     if(regionOptions[regionType]) then
-      regionOption = regionOptions[regionType].create(id, data);
+      allOptions = union(allOptions, regionOptions[regionType].create(id, data));
     else
-      regionOption = {
+      regionType = {
         unsupported = {
           type = "description",
-          name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
+          name = L["Regions of type \"%s\" are not supported."]:format(regionType);
         }
       };
     end
   end
-  if(regionOption) then
-    replaceNameDescFuncs(regionOption, data);
-    replaceImageFuncs(regionOption, data);
-    replaceValuesFuncs(regionOption, data);
-  else
-    regionOption = {
-      invalid = {
-        type = "description",
-        name = L["The children of this group have different display types, so their display options cannot be set as a group."],
-        fontSize = "large"
-      }
-    };
-  end
+
+  local regionOption = flattenRegionOptions(allOptions, false);
+
+  replaceNameDescFuncs(regionOption, data);
+  replaceImageFuncs(regionOption, data);
+  replaceValuesFuncs(regionOption, data);
   removeFuncs(regionOption);
+
+  if (regionTypeCount > 1) then
+    addHeadersForRegionOptions(allOptions, regionOption);
+  end
+
   options.args.region.args = regionOption;
 end
 
-function WeakAuras.AddPositionOptions(input, id, data)
+function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
   end
 
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
+    position_header = {
+      type = "header",
+      name = L["Position Settings"],
+      order = 46.0
+    },
     width = {
       type = "range",
       name = L["Width"],
       order = 60,
       min = 1,
       softMax = screenWidth,
-      bigStep = 1
+      bigStep = 1,
+      hidden = hideWidthHeight,
     },
     height = {
       type = "range",
@@ -3218,14 +3317,16 @@ function WeakAuras.AddPositionOptions(input, id, data)
       order = 65,
       min = 1,
       softMax = screenHeight,
-      bigStep = 1
+      bigStep = 1,
+      hidden = hideWidthHeight,
     },
     selfPoint = {
       type = "select",
       name = L["Anchor"],
       order = 70,
       hidden = IsParentDynamicGroup,
-      values = point_types
+      values = point_types,
+      disabled = disableSelfPoint
     },
     anchorFrameType = {
       type = "select",
@@ -3560,11 +3661,20 @@ function WeakAuras.AddPositionOptions(input, id, data)
     },
   };
 
-  return union(input, positionOptions);
+  return positionOptions;
 end
 
-function WeakAuras.AddBorderOptions(input, id, data)
+function WeakAuras.AddPositionOptions(input, id, data)
+  return union(input, WeakAuras.PositionOptions(id, data));
+end
+
+function WeakAuras.BorderOptions(id, data, showBackDropOptions)
   local borderOptions = {
+    border_header = {
+      type = "header",
+      name = L["Border Settings"],
+      order = 46.0
+    },
     border = {
       type = "toggle",
       name = L["Border"],
@@ -3626,6 +3736,20 @@ function WeakAuras.AddBorderOptions(input, id, data)
       disabled = function() return not data.border end,
       hidden = function() return not data.border end,
     },
+    borderInFront  = {
+      type = "toggle",
+      name = L["Border in Front"],
+      order = 46.7,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border or not showBackDropOptions  end,
+    },
+    backdropInFront  = {
+      type = "toggle",
+      name = L["Backdrop in Front"],
+      order = 46.75,
+      disabled = function() return not data.border end,
+      hidden = function() return not data.border or not showBackDropOptions end,
+    },
     backdropColor = {
       type = "color",
       name = L["Backdrop Color"],
@@ -3636,8 +3760,13 @@ function WeakAuras.AddBorderOptions(input, id, data)
     },
   }
 
-  return union(input, borderOptions);
+  return borderOptions;
 end
+
+function WeakAuras.AddBorderOptions(input, id, data)
+  return union(input, WeakAuras.BorderOptions(id, data));
+end
+
 
 function WeakAuras.OpenTextEditor(...)
   frame.texteditor:Open(...);
