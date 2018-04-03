@@ -2,68 +2,203 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 34
+local Type, Version = "WeakAurasDisplayButton", 35
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 local L = WeakAuras.L;
 local fullName;
 local clipboard = {};
+
+local function IsRegionAGroup(data)
+  return data and (data.regionType == "group" or data.regionType == "dynamicgroup");
+end
+
+local function copyAuraPart(source, destination, part)
+  local all = (part == "all");
+  if (part == "display" or all) then
+    for k, v in pairs(source) do
+      if (k ~= "trigger" and k~= "untrigger" and k~= "conditions" and k ~= "actions" and k ~= "animation"
+         and k~= "id" and k~= "parent" and k ~= "activeTriggerMode" and k~="numTriggers" and k~= "controlledChildren") then
+           if (type(v) == "table") then
+             destination[k] = CopyTable(v);
+           else
+             destination[k] = v;
+           end
+      end
+    end
+  end
+  if (part == "trigger" or all) and not IsRegionAGroup(source) then
+    destination.trigger = {};
+    WeakAuras.DeepCopy(source.trigger, destination.trigger);
+    if (source.additional_triggers) then
+      destination.additional_triggers = {};
+      WeakAuras.DeepCopy(source.additional_triggers, destination.additional_triggers);
+    else
+      destination.additional_triggers = nil;
+    end
+    destination.untrigger = {};
+    WeakAuras.DeepCopy(source.untrigger, destination.untrigger);
+    destination.activeTriggerMode = source.activeTriggerMode;
+    destination.numTriggers = source.numTriggers;
+  end
+  if (part == "condition" or all) and not IsRegionAGroup(source) then
+    destination.conditions = {};
+    WeakAuras.DeepCopy(source.conditions, destination.conditions);
+  end
+  if (part == "load" or all) and not IsRegionAGroup(source) then
+    destination.load = {};
+    WeakAuras.DeepCopy(source.load, destination.load);
+  end
+  if (part == "action" or all) and not IsRegionAGroup(source) then
+    destination.actions = {};
+    WeakAuras.DeepCopy(source.actions, destination.actions);
+  end
+  if (part == "animation" or all) and not IsRegionAGroup(source) then
+    destination.animation = {};
+    WeakAuras.DeepCopy(source.animation, destination.animation);
+  end
+end
+
+local function CopyToClipboard(part, description)
+  clipboard.part = part;
+  clipboard.pasteText = description;
+  clipboard.source = {};
+  WeakAuras.DeepCopy(clipboard.current, clipboard.source);
+end
+
 clipboard.pasteMenuEntry = {
   text = nil, -- Hidden by default
   notCheckable = true,
   func = function()
-    if (clipboard.part == "display") then
-      for k, v in pairs(clipboard.source) do
-        if (k ~= "trigger" and k~= "untrigger" and k~= "conditions" and k ~= "actions" and k ~= "animation"
-           and k~= "id" and k~= "parent" and k ~= "activeTriggerMode" and k~="numTriggers") then
-             if (type(v) == "table") then
-               clipboard.destination[k] = CopyTable(v);
-             else
-               clipboard.destination[k] = v;
-             end
-        end
+    if (not IsRegionAGroup(clipboard.source) and IsRegionAGroup(clipboard.current)) then
+      -- Copy from a single aura to a group => paste it to each individual aura
+      for index, childId in pairs(clipboard.current.controlledChildren) do
+        local childData = WeakAuras.GetData(childId);
+        copyAuraPart(clipboard.source, childData, clipboard.part);
+        WeakAuras.Add(childData);
       end
-    elseif (clipboard.part == "trigger") then
-      -- Also copy untrigger,  "activeTriggerMode" "numTriggers"
-      clipboard.destination.trigger = {};
-      WeakAuras.DeepCopy(clipboard.source.trigger, clipboard.destination.trigger);
-      if (clipboard.source.additional_triggers) then
-        clipboard.destination.additional_triggers = {};
-        WeakAuras.DeepCopy(clipboard.source.additional_triggers, clipboard.destination.additional_triggers);
-      else
-        clipboard.destination.additional_triggers = nil;
-      end
-      clipboard.destination.untrigger = {};
-      WeakAuras.DeepCopy(clipboard.source.untrigger, clipboard.destination.untrigger);
-      clipboard.destination.activeTriggerMode = clipboard.source.activeTriggerMode;
-      clipboard.destination.numTriggers = clipboard.source.numTriggers;
-    elseif (clipboard.part == "condition") then
-      clipboard.destination.conditions = {};
-      WeakAuras.DeepCopy(clipboard.source.conditions, clipboard.destination.conditions);
-    elseif (clipboard.part == "load") then
-      clipboard.destination.load = {};
-      WeakAuras.DeepCopy(clipboard.source.load, clipboard.destination.load);
-    elseif (clipboard.part == "action") then
-      clipboard.destination.actions = {};
-      WeakAuras.DeepCopy(clipboard.source.actions, clipboard.destination.actions);
-    elseif (clipboard.part == "animation") then
-      clipboard.destination.animation = {};
-      WeakAuras.DeepCopy(clipboard.source.animation, clipboard.destination.animation);
+    else
+      copyAuraPart(clipboard.source, clipboard.current, clipboard.part);
+      WeakAuras.Add(clipboard.current);
     end
-    WeakAuras.Add(clipboard.destination);
+
     WeakAuras.ScanForLoads();
     WeakAuras.SortDisplayButtons();
-    WeakAuras.PickDisplay(clipboard.destination.id);
-    WeakAuras.UpdateDisplayButton(clipboard.destination.id);
+    WeakAuras.PickDisplay(clipboard.current.id);
+    WeakAuras.UpdateDisplayButton(clipboard.current.id);
   end
 }
 
-local function CopyToClipboard(data, part, description)
-  clipboard.part = part;
-  clipboard.pasteMenuEntry.text = description;
-  clipboard.source = {};
-  WeakAuras.DeepCopy(data, clipboard.source);
+clipboard.copyEverythingEntry = {
+  text = L["Everything"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("all", L["Paste Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyGroupEntry = {
+  text = L["Group"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("display", L["Paste Group Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyDisplayEntry = {
+  text = L["Display"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("display", L["Paste Display Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyTriggerEntry = {
+  text = L["Trigger"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("trigger", L["Paste Trigger Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyConditionsEntry = {
+  text = L["Conditions"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("condition", L["Paste Condition Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyLoadEntry = {
+  text = L["Load"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("load", L["Paste Load Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyActionsEntry = {
+  text = L["Actions"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("action", L["Paste Action Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+clipboard.copyAnimationsEntry = {
+  text = L["Animations"],
+  notCheckable = true,
+  func = function()
+    CopyToClipboard("animation", L["Paste Animations Settings"])
+    WeakAuras_DropDownMenu:Hide();
+    WeakAuras_DropDownMenu:Hide();
+  end
+};
+
+local function UpdateClipboardMenuEntry(data)
+  clipboard.current = data;
+
+  if (IsRegionAGroup(clipboard.source) and not IsRegionAGroup(clipboard.current)) then
+    -- Don't copy from a group to a non group
+    clipboard.pasteMenuEntry.text = nil;
+  else
+    clipboard.pasteMenuEntry.text = clipboard.pasteText;
+  end
+
+  if (IsRegionAGroup(clipboard.current)) then
+    clipboard.copyEverythingEntry.text = nil;
+    clipboard.copyDisplayEntry.text = nil;
+    clipboard.copyTriggerEntry.text = nil;
+    clipboard.copyConditionsEntry.text = nil;
+    clipboard.copyLoadEntry.text = nil;
+    clipboard.copyActionsEntry.text = nil;
+    clipboard.copyAnimationsEntry.text = nil;
+    clipboard.copyGroupEntry.text = L["Group"];
+  else
+    clipboard.copyEverythingEntry.text = L["Everything"];
+    clipboard.copyDisplayEntry.text = L["Display"];
+    clipboard.copyTriggerEntry.text = L["Trigger"];
+    clipboard.copyConditionsEntry.text = L["Conditions"];
+    clipboard.copyLoadEntry.text = L["Load"];
+    clipboard.copyActionsEntry.text = L["Actions"];
+    clipboard.copyAnimationsEntry.text = L["Animations"];
+    clipboard.copyGroupEntry.text = nil;
+  end
 end
 
 local function Hide_Tooltip()
@@ -353,7 +488,7 @@ local methods = {
           if(WeakAuras.IsDisplayPicked(data.id) and WeakAuras.IsPickedMultiple()) then
             EasyMenu(WeakAuras.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
           else
-            clipboard.destination = data;
+            UpdateClipboardMenuEntry(data);
             EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
             if not(WeakAuras.IsDisplayPicked(data.id)) then
               WeakAuras.PickDisplay(data.id);
@@ -656,6 +791,16 @@ local methods = {
       WeakAuras.CollapseAllClones(data.id);
     end
 
+    local copyEntries = {};
+    tinsert(copyEntries, clipboard.copyEverythingEntry);
+    tinsert(copyEntries, clipboard.copyGroupEntry);
+    tinsert(copyEntries, clipboard.copyDisplayEntry);
+    tinsert(copyEntries, clipboard.copyTriggerEntry);
+    tinsert(copyEntries, clipboard.copyConditionsEntry);
+    tinsert(copyEntries, clipboard.copyLoadEntry);
+    tinsert(copyEntries, clipboard.copyActionsEntry);
+    tinsert(copyEntries, clipboard.copyAnimationsEntry);
+
     self:SetTitle(data.id);
     self.menu = {
       {
@@ -667,56 +812,7 @@ local methods = {
         text = L["Copy settings..."],
         notCheckable = 1,
         hasArrow = true,
-        menuList = {
-          {
-            text = L["Display"],
-            notCheckable = true,
-            func = function()
-              CopyToClipboard(data, "display", L["Paste Display Settings"])
-              WeakAuras_DropDownMenu:Hide();
-            end
-          },
-          {
-            text = L["Trigger"],
-            notCheckable = true,
-            func = function()
-              CopyToClipboard(data, "trigger", L["Paste Trigger Settings"])
-              WeakAuras_DropDownMenu:Hide();
-            end
-          },
-          {
-            text = L["Conditions"],
-            notCheckable = true,
-            func = function()
-              CopyToClipboard(data, "condition", L["Paste Condition Settings"])
-              WeakAuras_DropDownMenu:Hide();
-            end
-          },
-          {
-            text = L["Load"],
-            notCheckable = true,
-            func = function()
-              CopyToClipboard(data, "load", L["Paste Load Settings"])
-              WeakAuras_DropDownMenu:Hide();
-            end
-          },
-          {
-            text = L["Actions"],
-            notCheckable = true,
-            func = function()
-              CopyToClipboard(data, "action", L["Paste Action Settings"])
-              WeakAuras_DropDownMenu:Hide();
-            end
-          },
-          {
-            text = L["Animations"],
-            notCheckable = true,
-            func = function()
-              CopyToClipboard(data, "animation", L["Paste Animations Settings"])
-              WeakAuras_DropDownMenu:Hide();
-            end
-          },
-        }
+        menuList = copyEntries;
       },
     };
 

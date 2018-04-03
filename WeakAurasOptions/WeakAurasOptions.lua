@@ -3941,12 +3941,6 @@ function WeakAuras.EnsureDisplayButton(data)
   end
 end
 
-function WeakAuras.SetCopying(data)
-  for id, button in pairs(displayButtons) do
-    button:SetCopying(data);
-  end
-end
-
 function WeakAuras.SetGrouping(data)
   for id, button in pairs(displayButtons) do
     button:SetGrouping(data);
