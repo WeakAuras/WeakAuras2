@@ -464,6 +464,7 @@ function WeakAuras.ScanAuras(unit)
 
     -- Iterate over all displays (display lists)
     for id,triggers in pairs(aura_list) do
+      WeakAuras.StartProfileAura(id);
       -- Iterate over all triggers
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
@@ -757,6 +758,7 @@ function WeakAuras.ScanAuras(unit)
       if (updateTriggerState) then
         WeakAuras.UpdatedTriggerState(id);
       end
+      WeakAuras.StopProfileAura(id);
     end
   end
 
@@ -780,6 +782,7 @@ function WeakAuras.ScanAurasGroup()
 end
 
 local function GroupRosterUpdate(event)
+  WeakAuras.StartProfileSystem("bufftrigger");
   local recheck = false;
   local groupMembers,playerName,uid,guid = {};
   if IsInRaid() then
@@ -817,6 +820,7 @@ local function GroupRosterUpdate(event)
   if (recheck) then
     timer:ScheduleTimer(GroupRosterUpdate, 0.5);
   end
+  WeakAuras.StopProfileSystem("bufftrigger");
 end
 
 local groupFrame = CreateFrame("FRAME");
@@ -957,6 +961,7 @@ do
   local function updateSpell(spellName, unit, destGUID)
     if (not loaded_auras[spellName]) then return end;
     for id, triggers in pairs(loaded_auras[spellName]) do
+      WeakAuras.StartProfileAura(id);
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
@@ -978,6 +983,7 @@ do
       if (updateTriggerState) then
         WeakAuras.UpdatedTriggerState(id);
       end
+      WeakAuras.StopProfileAura(id);
     end
   end
 
@@ -989,6 +995,7 @@ do
           updateSpell(spellName, unit, destGUID);
         else
           for id, triggers in pairs(loaded_auras[spellName]) do
+            WeakAuras.StartProfileAura(id);
             local updateTriggerState = false;
             for triggernum, data in pairs(triggers) do
               if((not data.ownOnly) or UnitIsUnit(sourceName or "", "player")) then
@@ -1020,6 +1027,7 @@ do
             if (updateTriggerState) then
               WeakAuras.UpdatedTriggerState(id);
             end
+            WeakAuras.StopProfileAura(id);
           end
         end
       elseif(message == "SPELL_AURA_REMOVED") then
@@ -1071,9 +1079,11 @@ do
   end
 
   local function checkExists()
+    WeakAuras.StartProfileSystem("bufftrigger - multi");
     for unit, auras in pairs(loaded_auras) do
       if not(WeakAuras.unit_types[unit]) then
         for id, triggers in pairs(auras) do
+          WeakAuras.StartProfileAura(id);
           local updateTriggerState = false;
           for triggernum, data in pairs(triggers) do
             if(data.GUIDs) then
@@ -1088,12 +1098,15 @@ do
           if (updateTriggerState) then
             WeakAuras.UpdatedTriggerState(id);
           end
+          WeakAuras.StopProfileAura(id);
         end
       end
     end
+    WeakAuras.StopProfileSystem("bufftrigger - multi");
   end
 
   local function handleEvent(frame, event, ...)
+    WeakAuras.StartProfileSystem("bufftrigger - multi");
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
       combatLog(...);
     elseif(event == "UNIT_TARGET") then
@@ -1116,6 +1129,7 @@ do
       for spellName, auras in pairs(loaded_auras) do
         if not(WeakAuras.unit_types[spellName]) then
           for id, triggers in pairs(auras) do
+            WeakAuras.StartProfileAura(id);
             local updateTriggerState = false;
             for triggernum, data in pairs(triggers) do
               local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
@@ -1136,10 +1150,12 @@ do
             if (updateTriggerState) then
               WeakAuras.UpdatedTriggerState(id);
             end
+            WeakAuras.StopProfileAura(id);
           end
         end
       end
     end
+    WeakAuras.StopProfileSystem("bufftrigger - multi");
   end
 
   local combatAuraFrame;
@@ -1231,12 +1247,14 @@ local scanCooldownFrame = CreateFrame("frame");
 WeakAuras.frames["Aura Scan Cooldown"] = scanCooldownFrame;
 
 local checkScanCooldownsFunc = function()
+  WeakAuras.StartProfileSystem("bufftrigger")
   for unit,_ in pairs(aura_scan_cooldowns) do
     aura_scan_cooldowns[unit] = nil;
     WeakAuras.ScanAuras(unit);
   end
   checkingScanCooldowns = nil;
   scanCooldownFrame:SetScript("OnUpdate", nil);
+  WeakAuras.StopProfileSystem("bufftrigger")
 end
 
 local frame = CreateFrame("FRAME");
@@ -1246,6 +1264,7 @@ frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 frame:RegisterEvent("UNIT_AURA");
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
+  WeakAuras.StartProfileSystem("bufftrigger");
   if (WeakAuras.IsPaused()) then return end;
   if(event == "PLAYER_TARGET_CHANGED") then
     WeakAuras.ScanAuras("target");
@@ -1285,6 +1304,7 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       end
     end
   end
+  WeakAuras.StopProfileSystem("bufftrigger");
 end);
 
 function BuffTrigger.UnloadAll()

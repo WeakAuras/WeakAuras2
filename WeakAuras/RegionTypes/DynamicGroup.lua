@@ -546,6 +546,8 @@ local function modify(parent, region, data)
   end
 
   function region:DoControlChildren()
+    WeakAuras.StartProfileSystem("dynamicgroup");
+    WeakAuras.StartProfileAura(region.id);
     local previous = {};
     for index, regionData in pairs(region.controlledRegions) do
       local previousX, previousY = region.trays[regionData.key]:GetCenter();
@@ -641,6 +643,9 @@ local function modify(parent, region, data)
         end
       end
     end
+
+    WeakAuras.StopProfileSystem("dynamicgroup");
+    WeakAuras.StopProfileAura(region.id);
   end
 
   region:PositionChildren();
