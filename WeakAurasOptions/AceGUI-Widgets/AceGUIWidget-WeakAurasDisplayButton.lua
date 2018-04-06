@@ -14,12 +14,26 @@ local function IsRegionAGroup(data)
   return data and (data.regionType == "group" or data.regionType == "dynamicgroup");
 end
 
+local ignoreForCopyingDisplay = {
+  trigger = true,
+  untrigger = true,
+  conditions = true,
+  actions = true,
+  animation = true,
+  id = true,
+  parent = true,
+  activeTriggerMode = true,
+  numTriggers = true,
+  controlledChildren = true,
+  customTriggerLogic = true,
+  disjunctive = true
+}
+
 local function copyAuraPart(source, destination, part)
   local all = (part == "all");
   if (part == "display" or all) then
     for k, v in pairs(source) do
-      if (k ~= "trigger" and k~= "untrigger" and k~= "conditions" and k ~= "actions" and k ~= "animation"
-         and k~= "id" and k~= "parent" and k ~= "activeTriggerMode" and k~="numTriggers" and k~= "controlledChildren") then
+      if (not ignoreForCopyingDisplay[k]) then
            if (type(v) == "table") then
              destination[k] = CopyTable(v);
            else
@@ -41,6 +55,8 @@ local function copyAuraPart(source, destination, part)
     WeakAuras.DeepCopy(source.untrigger, destination.untrigger);
     destination.activeTriggerMode = source.activeTriggerMode;
     destination.numTriggers = source.numTriggers;
+    destination.customTriggerLogic = source.customTriggerLogic;
+    destination.disjunctive = source.disjunctive;
   end
   if (part == "condition" or all) and not IsRegionAGroup(source) then
     destination.conditions = {};
