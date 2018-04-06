@@ -1,28 +1,22 @@
 # WeakAuras 2
 
-## [2.5.8](https://github.com/WeakAuras/WeakAuras2/tree/2.5.8) (2018-03-16)
+## [2.5.9](https://github.com/WeakAuras/WeakAuras2/tree/2.5.9) (2018-04-06)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.7...2.5.8)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.8...2.5.9)
 
-Benjamin Staneck (2):
+Infus (13):
 
-- fix the translation script for PRs
-- adjust range check trigger text a bit
-
-Infus (14):
-
-- Fix Add Property for multi selection
-- Add a SetTexture function to Progress Textures
-- Implement TODOs
-- Fix canceling "Apply Template" picks the new option
-- Add a bit of space between Choose Trigger and "Add"
-- Fix text replacement for Texture auras
-- Add a text explaining the range trigger to the Range Trigger
-- Add "Reorder" for Triggers and Conditions
-- Fix editing conditions with multiple auras selected
-- Remove debug output
-- Fix cooldown handling of "disabled" cooldowns
-- Remove a workaround for GetSpellCooldown("Water Jet")
-- Reimplement Copy and Paste
-- Options Window: Cooldown Progress: Fix initial value
+- Copy disjunctive and customTriggerLogic in the copy trigger part
+- Fix Copy/Paste code for Groups
+- Remove code that is no longer needed
+- Implement tracking Cooldown of a specific charge for Spells
+- Templates: Bladestorm is not a talent for Arms
+- Fix a bug in reordering triggers
+- Add default value for slantMode
+- Add a "slanted" mode to Progress Textures
+- Fix empty "Required for Activation" for newly created trigger
+- Fix regression for Apply Templates button
+- Add Condition Properties for xOffset and yOffset
+- Add offset options to auras in dynamic groups
+- Add a "internal version" to auras, so that Modernize knows what to do
 
