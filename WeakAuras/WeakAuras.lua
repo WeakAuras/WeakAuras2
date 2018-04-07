@@ -1400,6 +1400,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     elseif difficultyIndex == 24 then
       size = "party"
       difficulty = "timewalking"
+    elseif difficultyIndex == 33 then
+      size = "flexible"
+      difficulty = "timewalking"
     end
   else
     WeakAuras.UpdateCurrentInstanceType();
