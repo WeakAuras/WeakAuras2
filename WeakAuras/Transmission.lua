@@ -914,7 +914,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
               WeakAuras.ToggleOptions();
             end
 
-            local function importData(data)
+            local function findUnusedId(data)
               local id = data.id
               local num = 2;
               while(WeakAurasSaved.displays[id]) do
@@ -922,24 +922,26 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                 num = num + 1;
               end
               data.id = id;
-              data.parent = nil;
+            end
 
+
+            local function importData(data)
               WeakAuras.Add(data);
               WeakAuras.NewDisplayButton(data);
             end
 
+
+            data.parent = nil;
+            findUnusedId(data);
             importData(data);
-            WeakAuras.Add(data);
-            WeakAuras.NewDisplayButton(data);
             coroutine.yield();
 
             if(children) then
               for index, childData in pairs(children) do
-                importData(childData);
-                tinsert(data.controlledChildren, childData.id);
+                findUnusedId(childData);
                 childData.parent = data.id;
-                WeakAuras.Add(data);
-                WeakAuras.Add(childData);
+                tinsert(data.controlledChildren, childData.id);
+                importData(childData);
                 coroutine.yield();
               end
             end
