@@ -2848,10 +2848,10 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.inverse = inverse;
     end
   else
-    state.progressType = "static";
-    state.duration = nil;
+    state.progressType = "timed";
+    state.duration = 0;
+    state.expirationTime = math.huge;
     state.resort = nil;
-    state.expirationTime = nil;
     state.value = nil;
     state.total = nil;
   end

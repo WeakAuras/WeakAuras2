@@ -1749,6 +1749,9 @@ end
 function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.show = true;
   state.changed = true;
+  state.progressType = "timed";
+  state.duration = 0;
+  state.expirationTime = math.huge;
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);
