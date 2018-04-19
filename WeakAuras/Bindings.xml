@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="WEAKAURASTOGGLE" header="WEAKAURAS" Category="ADDONS">
+		WeakAuras.OpenOptions()
+	</Binding>
+</Bindings>
