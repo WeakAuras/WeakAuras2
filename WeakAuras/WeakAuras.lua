@@ -76,6 +76,9 @@ function SlashCmdList.WEAKAURAS(msg)
   WeakAuras.OpenOptions(msg);
 end
 
+BINDING_HEADER_WEAKAURAS = "WeakAuras"
+BINDING_NAME_WEAKAURASTOGGLE = "Toggle WeakAuras Options"
+
 -- An alias for WeakAurasSaved, the SavedVariables
 -- Noteable properties:
 --  debug: If set to true, WeakAura.debug() outputs messages to the chat frame
