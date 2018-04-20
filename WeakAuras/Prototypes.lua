@@ -21,7 +21,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
 end
 
-local HBD = LibStub("HereBeDragons-1.0")
+-- local HBD = LibStub("HereBeDragons-1.0")
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
 function WeakAuras.GetRange(unit)
@@ -843,16 +843,16 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg"
     },
-    {
-      name = "zoneId",
-      display = L["Zone ID"],
-      type = "string",
-      init = "arg",
-      desc = function()
-         return L["Zone ID List"] .. "\n" .. L["Current Zone ID:"] .. " " .. HBD:GetPlayerZone();
-       end,
-      test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
-    },
+    -- {
+    --   name = "zoneId",
+    --   display = L["Zone ID"],
+    --   type = "string",
+    --   init = "arg",
+    --   desc = function()
+    --      return L["Zone ID List"] .. "\n" .. L["Current Zone ID:"] .. " " .. HBD:GetPlayerZone();
+    --    end,
+    --   test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
+    -- },
     {
       name = "encounterid",
       display = L["Encounter ID"],

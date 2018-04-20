@@ -1,11 +1,12 @@
 # WeakAuras 2
 
-## [2.5.10-3-g905d80f](https://github.com/WeakAuras/WeakAuras2/tree/905d80f6e47ae9176eda459d3305a3bf199da5cb) (2018-04-20)
+## [2.5.10-4-g8700ba2](https://github.com/WeakAuras/WeakAuras2/tree/8700ba23d69a8323035db01df41bf96511f06848) (2018-04-20)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.10...905d80f6e47ae9176eda459d3305a3bf199da5cb)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.10...8700ba23d69a8323035db01df41bf96511f06848)
 
-Benjamin Staneck (1):
+Benjamin Staneck (2):
 
+- disable HereBeDragons integration for now
 - Update TOC to 80000
 
 Infus (1):
