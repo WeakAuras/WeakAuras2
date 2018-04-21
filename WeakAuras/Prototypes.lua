@@ -765,7 +765,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "pvptalent",
-      display = L["PvP Talent selected (NYI)"], -- TODO 8.0 dry coded, untested
+      display = L["PvP Talent selected"],
       type = "multiselect",
       values = function(trigger)
         return function()

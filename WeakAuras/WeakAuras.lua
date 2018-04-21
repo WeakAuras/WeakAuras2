@@ -1007,10 +1007,8 @@ function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
 
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
-  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
   local spec = GetSpecialization()
   WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
-  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
 
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
@@ -1023,17 +1021,38 @@ function WeakAuras.CreateTalentCache()
       end
     end
   end
+end
 
-  WeakAuras.pvp_talent_types_specific[player_class][spec] = {
-    select(2, GetPvpTalentInfoByID(3589)),
-    select(2, GetPvpTalentInfoByID(3588)),
-    select(2, GetPvpTalentInfoByID(3587)),
-    nil
-  };
+local pvpTalentsInitialized = false;
+function WeakAuras.CreatePvPTalentCache()
+  if (pvpTalentsInitialized) then return end;
+  local _, player_class = UnitClass("player")
+  local spec = GetSpecialization()
 
-  local pvpSpecTalents = C_SpecializationInfo.GetPvpTalentSlotInfo(2).availableTalentIDs;
-  for i, talentId in ipairs(pvpSpecTalents) do
-    WeakAuras.pvp_talent_types_specific[player_class][spec][i + 3] = select(2, GetPvpTalentInfoByID(talentId));
+  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
+  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
+
+  local function formatTalent(talentId)
+    local _, name, icon = GetPvpTalentInfoByID(talentId);
+    return "|T"..icon..":0|t "..name
+  end
+
+  local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2);
+  if (slotInfo) then
+
+    WeakAuras.pvp_talent_types_specific[player_class][spec] = {
+      formatTalent(3589),
+      formatTalent(3588),
+      formatTalent(3587),
+      nil
+    };
+
+    local pvpSpecTalents = slotInfo.availableTalentIDs;
+    for i, talentId in ipairs(pvpSpecTalents) do
+      WeakAuras.pvp_talent_types_specific[player_class][spec][i + 3] = formatTalent(talentId);
+    end
+
+    pvpTalentsInitialized = true;
   end
 end
 
@@ -1048,6 +1067,7 @@ loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
 loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
     if(addon == ADDON_NAME) then
@@ -1103,6 +1123,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
     WeakAuras.UpdateCurrentInstanceType();
+  elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
+    WeakAuras.CreatePvPTalentCache();
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
   elseif(event == "LOADING_SCREEN_DISABLED") then
