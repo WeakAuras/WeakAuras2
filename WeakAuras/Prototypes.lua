@@ -24,14 +24,14 @@ function WeakAuras.IsSpellInRange(spellId, unit)
 end
 
 -- TODO 8.0 local HBD = LibStub("HereBeDragons-1.0")
--- TODO 8.0 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
+local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
 function WeakAuras.GetRange(unit)
-  return 0, 8; -- TODO 8.0 LibRangeCheck:GetRange(unit);
+  return LibRangeCheck:GetRange(unit);
 end
 
 function WeakAuras.CheckRange(unit, range, operator)
-  local min, max = 0, 8; --TODO 8.0 LibRangeCheck:GetRange(unit);
+  local min, max = LibRangeCheck:GetRange(unit);
   if (operator == "<=") then
     return max <= range;
   else
@@ -4236,7 +4236,7 @@ WeakAuras.event_prototypes = {
     events = {
       "FRAME_UPDATE",
     },
-    name = L["Range Check (NYI)"],
+    name = L["Range Check"],
     init = function(trigger)
       trigger.unit = trigger.unit or "target";
       local ret = [=[
