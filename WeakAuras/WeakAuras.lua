@@ -36,7 +36,7 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
 end
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
--- local HBD = LibStub("HereBeDragons-1.0")
+-- TODO 8.0 local HBD = LibStub("HereBeDragons-1.0")
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
@@ -1315,7 +1315,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
 
   local player, realm, spec, role, zone = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player"), GetRealZoneText();
-  -- local zoneId = HBD:GetPlayerZone();
+  local zoneId = nil; -- TODO 8.0 HBD:GetPlayerZone();
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
@@ -1439,8 +1439,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, encounter_id, size, difficulty, role); --zoneId
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, encounter_id, size, difficulty, role); -- oneId
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role); --zoneId
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role); -- oneId
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
