@@ -44,7 +44,7 @@ WeakAuras.timer = timer
 local L = WeakAuras.L
 
 -- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION
--- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO
+-- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO C_SpecializationInfo
 
 local queueshowooc;
 
@@ -1005,6 +1005,7 @@ WeakAuras.talent_types_specific = {}
 WeakAuras.pvp_talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
+
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
   WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
   local spec = GetSpecialization()
@@ -1023,14 +1024,16 @@ function WeakAuras.CreateTalentCache()
     end
   end
 
-  for tier = 1, MAX_PVP_TALENT_TIERS do
-    for column = 1, MAX_PVP_TALENT_COLUMNS do
-      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, 1);
-      local talentId = (tier-1)*3+column
-      if (talentName and talentIcon) then
-        WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
-      end
-    end
+  WeakAuras.pvp_talent_types_specific[player_class][spec] = {
+    select(2, GetPvpTalentInfoByID(3589)),
+    select(2, GetPvpTalentInfoByID(3588)),
+    select(2, GetPvpTalentInfoByID(3587)),
+    nil
+  };
+
+  local pvpSpecTalents = C_SpecializationInfo.GetPvpTalentSlotInfo(2).availableTalentIDs;
+  for i, talentId in ipairs(pvpSpecTalents) do
+    WeakAuras.pvp_talent_types_specific[player_class][spec][i + 3] = select(2, GetPvpTalentInfoByID(talentId));
   end
 end
 

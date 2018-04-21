@@ -16,6 +16,8 @@ local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitC
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
+-- luacheck: globals C_SpecializationInfo
+
 local SpellRange = LibStub("SpellRange-1.0")
 function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
@@ -479,10 +481,20 @@ function WeakAuras.CheckTalentByIndex(index)
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
-  local tier = ceil(index / 3)
-  local column = (index - 1) % 3 + 1
-  local _, _, _, selected = GetPvpTalentInfo(tier, column, 1)
-  return selected
+  if (index <= 3) then
+    local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
+    local checkTalentId = talentSlotInfo.availableTalentIDs[index];
+    return talentSlotInfo.selectedTalentID == checkTalentId;
+  else
+    local checkTalentId = C_SpecializationInfo.GetPvpTalentSlotInfo(2).availableTalentIDs[index - 3];
+    for i = 2, 4 do
+      local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i);
+      if (talentSlotInfo.selectedTalentID == checkTalentId) then
+        return true;
+      end
+    end
+    return false;
+  end
 end
 
 function WeakAuras.CheckNumericIds(loadids, currentId)
@@ -753,59 +765,59 @@ WeakAuras.load_prototype = {
     },
     {
       name = "pvptalent",
-      display = L["PvP Talent selected"],
+      display = L["PvP Talent selected (NYI)"], -- TODO 8.0 dry coded, untested
       type = "multiselect",
       values = function(trigger)
         return function()
           local single_class;
           -- First check to use if the class load is on multi-select with only one class selected
           if(trigger.use_class == false and trigger.class and trigger.class.multi) then
-            local num_classes = 0;
-            for class in pairs(trigger.class.multi) do
-              single_class = class;
-              num_classes = num_classes + 1;
-            end
-            if(num_classes ~= 1) then
-              single_class = nil;
-            end
+           local num_classes = 0;
+           for class in pairs(trigger.class.multi) do
+             single_class = class;
+             num_classes = num_classes + 1;
+           end
+           if(num_classes ~= 1) then
+             single_class = nil;
+           end
           end
           -- If that is not the case, see if it is on single-select
           if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
-            single_class = trigger.class.single
+           single_class = trigger.class.single
           end
 
           if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
+           single_class = select(2, UnitClass("player"));
           end
 
           local single_spec;
           if (single_class) then
-            if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
-              local num_specs = 0;
-              for spec in pairs(trigger.spec.multi) do
-                single_spec = spec;
-                num_specs = num_specs + 1;
-              end
-              if (num_specs ~= 1) then
-                single_spec = nil;
-              end
-            end
+           if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
+             local num_specs = 0;
+             for spec in pairs(trigger.spec.multi) do
+               single_spec = spec;
+               num_specs = num_specs + 1;
+             end
+             if (num_specs ~= 1) then
+               single_spec = nil;
+             end
+           end
           end
           if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
-            single_spec = trigger.spec.single;
+           single_spec = trigger.spec.single;
           end
 
           if (trigger.use_spec == nil) then
-            single_spec = GetSpecialization();
+           single_spec = GetSpecialization();
           end
 
           -- print ("Using talent cache", single_class, single_spec);
           -- If a single specific class was found, load the specific list for it
           if(single_class and WeakAuras.pvp_talent_types_specific[single_class]
-            and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
-            return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
+           and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
+           return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
           else
-            return WeakAuras.pvp_talent_types;
+           return WeakAuras.pvp_talent_types;
           end
         end
       end,

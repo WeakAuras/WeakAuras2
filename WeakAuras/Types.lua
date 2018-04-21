@@ -530,22 +530,15 @@ do
   end
 end
 
-WeakAuras.pvp_talent_types = {};
-do
-  local numTalents, numTiers, numColumns =  MAX_PVP_TALENT_TIERS * MAX_PVP_TALENT_COLUMNS, MAX_PVP_TALENT_TIERS, MAX_PVP_TALENT_COLUMNS
-  local talentId, tier, column = 1, 1, 1
-  while talentId <= numTalents do
-    while tier <= numTiers do
-      while column <= numColumns do
-        WeakAuras.pvp_talent_types[talentId] = L["Tier "]..tier.." - "..column
-        column = column + 1
-        talentId = talentId + 1
-      end
-      column = 1
-      tier = tier + 1
-    end
-    tier = 1
-  end
+WeakAuras.pvp_talent_types = {
+  select(2, GetPvpTalentInfoByID(3589)),
+  select(2, GetPvpTalentInfoByID(3588)),
+  select(2, GetPvpTalentInfoByID(3587)),
+  nil
+};
+
+for i = 1,10 do
+  tinsert(WeakAuras.pvp_talent_types, string.format(L["PvP Talent %i"], i));
 end
 
 -- GetTotemInfo() only works for the first 5 totems
