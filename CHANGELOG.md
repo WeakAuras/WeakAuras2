@@ -1,11 +1,12 @@
 # WeakAuras 2
 
-## [2.5.10-4-g8700ba2](https://github.com/WeakAuras/WeakAuras2/tree/8700ba23d69a8323035db01df41bf96511f06848) (2018-04-20)
+## [2.5.10-5-g7760785](https://github.com/WeakAuras/WeakAuras2/tree/7760785f21388326f68389c197b2c9353ca99647) (2018-04-21)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.10...8700ba23d69a8323035db01df41bf96511f06848)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.10...7760785f21388326f68389c197b2c9353ca99647)
 
-Benjamin Staneck (2):
+Benjamin Staneck (3):
 
+- the rank return from UnitAura has been removed
 - disable HereBeDragons integration for now
 - Update TOC to 80000
 

@@ -492,7 +492,7 @@ function WeakAuras.ScanAuras(unit)
               -- Update scan cache
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
-                name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+                name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
                 tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
 
@@ -588,7 +588,7 @@ function WeakAuras.ScanAuras(unit)
 
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
-              name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
+              name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
               if (name) then
                 WeakAuras.SetDynamicIconCache(name, spellId, icon);
               end
@@ -960,7 +960,7 @@ do
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, spellName, nil, filter);
+        local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, spellName, nil, filter);
         if(name and (data.spellId == nil or data.spellId == spellId)) then
           data.GUIDs = data.GUIDs or {};
           data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
@@ -1119,7 +1119,7 @@ do
             local updateTriggerState = false;
             for triggernum, data in pairs(triggers) do
               local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-              local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(uid, spellName, nil, filter);
+              local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(uid, spellName, nil, filter);
               if(name) then
                 data.GUIDs = data.GUIDs or {};
                 data.GUIDs[guid] = data.GUIDs[guid] or {};
