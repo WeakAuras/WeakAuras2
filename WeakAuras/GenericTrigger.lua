@@ -1415,7 +1415,7 @@ do
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
     spellCharges[id] = charges
-    WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
+    WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN", id, nil);
   end
 
   local function SpellCooldownFinished(id)
@@ -1428,7 +1428,7 @@ do
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
     spellCharges[id] = charges
-    WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
+    WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN", id, nil);
   end
 
   local function ItemCooldownFinished(id)
@@ -1598,7 +1598,7 @@ do
             spellCdExpsRune[id] = endTime;
             spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
           end
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
+          WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN", id);
         elseif(spellCdExps[id] ~= endTime or chargesChanged) then
           -- Cooldown is now different
           if(spellCdHandles[id]) then
@@ -1619,7 +1619,7 @@ do
             end
             spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
           end
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+          WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN", id);
         end
       else
         if(spellCdExps[id]) then
@@ -1639,7 +1639,7 @@ do
           end
         end
         if (chargesChanged) then
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+          WeakAuras.ScanEvents("SPELL_UPDATE_COOLDOWN", id);
         end
       end
     end
