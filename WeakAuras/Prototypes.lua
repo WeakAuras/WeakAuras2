@@ -982,8 +982,9 @@ WeakAuras.event_prototypes = {
     events = function(trigger)
       local result = {
         "UNIT_HEALTH_FREQUENT",
-        "WA_UNIT_PET",
-        "WA_DELAYED_PLAYER_ENTERING_WORLD"
+        -- TODO 8.0: Check for replacement
+        --"WA_UNIT_PET",
+        --"WA_DELAYED_PLAYER_ENTERING_WORLD"
       };
       AddUnitChangeEvents(trigger.unit, result);
       if (trigger.use_showAbsorb) then
@@ -1773,9 +1774,7 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger, untrigger)
       local events = {
-        "SPELL_COOLDOWN_READY",
-        "SPELL_COOLDOWN_CHANGED",
-        "SPELL_COOLDOWN_STARTED",
+        "SPELL_UPDATE_COOLDOWN",
         "COOLDOWN_REMAINING_CHECK",
         "WA_DELAYED_PLAYER_ENTERING_WORLD"
       };
@@ -1990,7 +1989,7 @@ WeakAuras.event_prototypes = {
   ["Cooldown Ready (Spell)"] = {
     type = "event",
     events = {
-      "SPELL_COOLDOWN_READY",
+      "SPELL_UPDATE_COOLDOWN",
     },
     name = L["Cooldown Ready (Spell)"],
     init = function(trigger)
@@ -2861,9 +2860,7 @@ WeakAuras.event_prototypes = {
   ["Action Usable"] = {
     type = "status",
     events = {
-      "SPELL_COOLDOWN_READY",
-      "SPELL_COOLDOWN_CHANGED",
-      "SPELL_COOLDOWN_STARTED",
+      "SPELL_UPDATE_COOLDOWN",
       "SPELL_UPDATE_USABLE",
       "PLAYER_TARGET_CHANGED",
       "UNIT_POWER_FREQUENT",
@@ -3824,13 +3821,12 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_STOP",
         "UNIT_SPELLCAST_DELAYED",
         "UNIT_SPELLCAST_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-        "CAST_REMAINING_CHECK"
+        "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"
       };
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
-    force_events = "CAST_REMAINING_CHECK",
+    force_events = "UNIT_SPELLCAST_START",
     name = L["Cast"],
     init = function(trigger)
       trigger.unit = trigger.unit or "";
@@ -3966,7 +3962,6 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger, untrigger)
       local events = {};
-      tinsert(events,  "CONDITIONS_CHECK");
       if (trigger.use_incombat ~= nil) then
         tinsert(events, "PLAYER_REGEN_ENABLED");
         tinsert(events, "PLAYER_REGEN_DISABLED");
@@ -3995,7 +3990,7 @@ WeakAuras.event_prototypes = {
       end
 
       if (trigger.use_HasPet ~= nil) then
-        tinsert(events, "PET_UPDATE");
+        tinsert(events, "PET_BAR_UPDATE");
         tinsert(events, "UNIT_PET");
       end
 
@@ -4005,7 +4000,8 @@ WeakAuras.event_prototypes = {
 
       return events;
     end,
-    force_events = "CONDITIONS_CHECK",
+    -- TODO 8.0: Not sure about this
+    force_events = "PLAYER_REGEN_ENABLED",
     name = L["Conditions"],
     init = function(trigger)
       if(trigger.use_mounted ~= nil) then
