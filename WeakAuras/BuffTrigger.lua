@@ -588,8 +588,18 @@ function WeakAuras.ScanAuras(unit)
 
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
-              name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
-              if (name) then
+              -- TODO 8.0: Check if there is a better way than iterating all auras
+              local detected
+              for i = 1, _G.BUFF_MAX_DISPLAY do
+                name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, i, filter);
+                if not name then break end
+                if name == checkname then
+                  detected = true
+                  break
+                end
+              end
+
+              if (detected) then
                 WeakAuras.SetDynamicIconCache(name, spellId, icon);
               end
               checkPassed = false;
@@ -960,8 +970,19 @@ do
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-        local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, spellName, nil, filter);
-        if(name and (data.spellId == nil or data.spellId == spellId)) then
+
+        -- TODO 8.0: Check if there is a better way than iterating all auras
+        local detected
+        for i = 1, _G.BUFF_MAX_DISPLAY do
+          local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, i, filter);
+          if not name then break end
+          if name == spellName then
+            detected = true
+            break
+          end
+        end
+
+        if(detected and (data.spellId == nil or data.spellId == spellId)) then
           data.GUIDs = data.GUIDs or {};
           data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
           data.GUIDs[destGUID].name = spellName;
@@ -1119,8 +1140,19 @@ do
             local updateTriggerState = false;
             for triggernum, data in pairs(triggers) do
               local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-              local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(uid, spellName, nil, filter);
-              if(name) then
+
+              -- TODO 8.0: Check if there is a better way than iterating all auras
+              local detected
+              for i = 1, _G.BUFF_MAX_DISPLAY do
+                local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(uid, i, filter);
+                if not name then break end
+                if name == spellName then
+                  detected = true
+                  break
+                end
+              end
+
+              if(detected) then
                 data.GUIDs = data.GUIDs or {};
                 data.GUIDs[guid] = data.GUIDs[guid] or {};
                 data.GUIDs[guid].name = spellName;
