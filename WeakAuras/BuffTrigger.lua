@@ -64,6 +64,7 @@ Returns the potential conditions for a trigger
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
+local BUFF_MAX_DISPLAY = _G.BUFF_MAX_DISPLAY
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -590,7 +591,7 @@ function WeakAuras.ScanAuras(unit)
               -- Fetch aura data
               -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
-              for i = 1, _G.BUFF_MAX_DISPLAY do
+              for i = 1, BUFF_MAX_DISPLAY do
                 name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, i, filter);
                 if not name then break end
                 if name == checkname then
@@ -973,8 +974,9 @@ do
 
         -- TODO 8.0: Check if there is a better way than iterating all auras
         local detected
-        for i = 1, _G.BUFF_MAX_DISPLAY do
-          local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, i, filter);
+        local name, icon, count, duration, expirationTime, unitCaster, spellId
+        for i = 1, BUFF_MAX_DISPLAY do
+          name, icon, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitAura(unit, i, filter);
           if not name then break end
           if name == spellName then
             detected = true
@@ -1143,8 +1145,9 @@ do
 
               -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
+              local name, icon, count, duration, expirationTime, unitCaster
               for i = 1, _G.BUFF_MAX_DISPLAY do
-                local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(uid, i, filter);
+                name, icon, count, _, duration, expirationTime, unitCaster = UnitAura(uid, i, filter);
                 if not name then break end
                 if name == spellName then
                   detected = true
