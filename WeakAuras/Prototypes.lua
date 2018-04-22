@@ -40,51 +40,7 @@ function WeakAuras.CheckRange(unit, range, operator)
 end
 
 WeakAuras.encounter_table = {
-  -- The Emerald Nightmare
-  [1703] = 1853, -- Nythendra
-  [1744] = 1876, -- Elerethe Renferal
-  [1738] = 1873, -- Il'gynoth, Heart of Corruption
-  [1667] = 1841, -- Ursoc
-  [1704] = 1854, -- Dragons of Nightmare
-  [1750] = 1877, -- Cenarius
-  [1726] = 1864, -- Xavius
-  -- The Nighthold
-  [1706] = 1849, -- Skorpyron,
-  [1725] = 1865, -- Chronomatic Anomaly
-  [1731] = 1867, -- Trilliax,
-  [1751] = 1871, -- Spellblade Aluriel
-  [1762] = 1862, -- Tichondrius
-  [1713] = 1842, -- Krosus
-  [1761] = 1886, -- High Botanist Tel'arn
-  [1732] = 1863, -- Star Augur Etraeus
-  [1743] = 1872, -- Grand Magistrix Elisande
-  [1737] = 1866, -- Gul'dan
-  -- Trial of Valor
-  [1819] = 1958, -- Odyn
-  [1830] = 1962, -- Guarm
-  [1829] = 2008, -- Helya
-  -- Tomb of Sargeras
-  [1862] = 2032, -- Goroth
-  [1867] = 2048, -- Demonic Inquisition
-  [1856] = 2036, -- Harjatan
-  [1861] = 2037, -- Mistress Sasszine
-  [1903] = 2050, -- Sisters of the Moon
-  [1896] = 2054, -- Desolate Host
-  [1897] = 2052, -- Maiden of Vigilance
-  [1873] = 2038, -- Fallen Avatar
-  [1898] = 2051, -- Kiljaeden
-  -- Antorus, the Burning Throne
-  [1984] = 2063, -- Aggramar
-  [1985] = 2064, -- Portal Keeper Hasabel
-  [1983] = 2069, -- Varimathras
-  [1997] = 2070, -- War Council
-  [1986] = 2073, -- The Coven of Shivarra
-  [1987] = 2074, -- Hounds of Sargeras
-  [2025] = 2075, -- Eonar, the Lifebinder
-  [1992] = 2076, -- Garothi Worldbreaker
-  [2009] = 2082, -- Imonar the Soulhunter
-  [2004] = 2088, -- Kin'garoth
-  [2031] = 2092, -- Argus the Unmaker
+  -- TODO 8.0 add Uldir
 }
 
 local function get_encounters_list()
