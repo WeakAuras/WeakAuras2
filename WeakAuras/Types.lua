@@ -212,9 +212,12 @@ local function update_forms()
   wipe(WeakAuras.form_types);
   WeakAuras.form_types[0] = "0 - "..L["Humanoid"]
   for i = 1, GetNumShapeshiftForms() do
-    local _, name = GetShapeshiftFormInfo(i);
-    if(name) then
-      WeakAuras.form_types[i] = i.." - "..name
+    local _, _, _, id = GetShapeshiftFormInfo(i);
+    if(id) then
+      local name = GetSpellInfo(id);
+      if(name) then
+        WeakAuras.form_types[i] = i.." - "..name
+      end
     end
   end
 end
