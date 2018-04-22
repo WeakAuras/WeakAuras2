@@ -1146,7 +1146,7 @@ do
               -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
               local name, icon, count, duration, expirationTime, unitCaster
-              for i = 1, _G.BUFF_MAX_DISPLAY do
+              for i = 1, BUFF_MAX_DISPLAY do
                 name, icon, count, _, duration, expirationTime, unitCaster = UnitAura(uid, i, filter);
                 if not name then break end
                 if name == spellName then
