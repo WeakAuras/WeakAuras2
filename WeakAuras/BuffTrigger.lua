@@ -60,11 +60,13 @@ GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]]--
 
+-- luacheck: globals CombatLogGetCurrentEventInfo
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 local BUFF_MAX_DISPLAY = _G.BUFF_MAX_DISPLAY
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -1118,7 +1120,7 @@ do
 
   local function handleEvent(frame, event, ...)
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-      combatLog(...);
+      combatLog(CombatLogGetCurrentEventInfo());
     elseif(event == "UNIT_TARGET") then
       uidTrack(...);
     elseif(event == "PLAYER_FOCUS_CHANGED") then

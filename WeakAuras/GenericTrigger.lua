@@ -60,11 +60,13 @@ GetTriggerConditions(data, triggernum)
 Returns potential conditions that this trigger provides.
 ]]--
 
+-- luacheck: globals GTFO DBM BigWigsLoader CombatLogGetCurrentEventInfo
 
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type
 local error, setmetatable = error, setmetatable
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
 
 -- WoW APIs
 local IsPlayerMoving = IsPlayerMoving
@@ -91,8 +93,6 @@ local specificBosses = WeakAuras.specificBosses;
 -- Local functions
 local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
-
--- luacheck: globals GTFO DBM BigWigsLoader
 
 function WeakAuras.split(input)
   input = input or "";
@@ -570,28 +570,43 @@ end
 
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   local event_list = loaded_events[event];
-  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-    event_list = event_list and event_list[arg2];
+  if (not event_list) then
+    return
   end
-  if(event_list) then
+  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+    local arg1, arg2 = CombatLogGetCurrentEventInfo();
+
+    event_list = event_list[arg2];
+    if (not event_list) then
+      return;
+    end
+    WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+
+  elseif (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
     -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
     if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
       event = "COMBAT_LOG_EVENT_UNFILTERED";
     end
-    for id, triggers in pairs(event_list) do
-      WeakAuras.ActivateAuraEnvironment(id);
-      local updateTriggerState = false;
-      for triggernum, data in pairs(triggers) do
-        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-        if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
-          updateTriggerState = true;
-        end
+    WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+  else
+    WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
+  end
+end
+
+function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
+  for id, triggers in pairs(event_list) do
+    WeakAuras.ActivateAuraEnvironment(id);
+    local updateTriggerState = false;
+    for triggernum, data in pairs(triggers) do
+      local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+      if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
+        updateTriggerState = true;
       end
-      if (updateTriggerState) then
-        WeakAuras.UpdatedTriggerState(id);
-      end
-      WeakAuras.ActivateAuraEnvironment(nil);
     end
+    if (updateTriggerState) then
+      WeakAuras.UpdatedTriggerState(id);
+    end
+    WeakAuras.ActivateAuraEnvironment(nil);
   end
 end
 
@@ -624,18 +639,12 @@ end
 function HandleEvent(frame, event, arg1, arg2, ...)
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-      if(loaded_events[event] and loaded_events[event][arg2]) then
-        WeakAuras.ScanEvents(event, arg1, arg2, ...);
-      end
+      WeakAuras.ScanEvents(event);
       -- This triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
       -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
-      if(loaded_events["COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"]) then
-        WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
-      end
+      WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM");
     else
-      if(loaded_events[event]) then
-        WeakAuras.ScanEvents(event, arg1, arg2, ...);
-      end
+      WeakAuras.ScanEvents(event, arg1, arg2, ...);
     end
   end
   if (event == "PLAYER_ENTERING_WORLD") then
