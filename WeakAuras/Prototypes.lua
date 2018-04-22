@@ -846,7 +846,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "role",
-      display = L["Player Dungeon Role"],
+      display = L["Spec Role"],
       type = "multiselect",
       values = "role_types",
       init = "arg"

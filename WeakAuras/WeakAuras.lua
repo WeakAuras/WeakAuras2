@@ -1339,30 +1339,12 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, spec, role, zone = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player"), GetRealZoneText();
+  local player, realm, spec, zone = UnitName("player"), GetRealmName(), GetSpecialization(), GetRealZoneText();
   local zoneId = nil; -- TODO 8.0 HBD:GetPlayerZone();
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
-  if role == "NONE" then
-    if IsInRaid() then
-      for i=1,GetNumGroupMembers() do
-        if UnitIsUnit(WeakAuras.raidUnits[i],"player") then
-          local _, _, _, _, _, _, _, _, _, raid_role, _, spec_role = GetRaidRosterInfo(i)
-          if raid_role and raid_role == "MAINTANK" then role = "TANK" end
-          if role == "NONE" then
-            if spec and spec > 0 then
-              local tmprole = GetSpecializationRole(spec)
-              if type(tmprole) == "string" then
-                role = tmprole
-              end
-            end
-          end
-          break;
-        end
-      end
-    end
-  end
+  local role = select(5, GetSpecializationInfo(GetSpecialization()));
 
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
@@ -1464,8 +1446,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role); --zoneId
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role); -- oneId
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
