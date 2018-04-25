@@ -1,6 +1,6 @@
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer
+local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
 -- The templates tables are created on demand
 local templates =
@@ -4812,6 +4812,12 @@ local function handleItem(item)
       end
     end
     if (item.type ~= "item") then
+      local spell = Spell:CreateFromSpellID(item.spell);
+      if (not spell:IsSpellEmpty()) then
+        spell:ContinueOnSpellLoad(function()
+          item.description = GetSpellDescription(spell:GetSpellID());
+        end);
+      end
       item.description = GetSpellDescription(item.spell);
     end
   end

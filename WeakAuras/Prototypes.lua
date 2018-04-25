@@ -1154,7 +1154,7 @@ WeakAuras.event_prototypes = {
       if (trigger.use_showCost) then
         ret = ret .. [[
           if (event == "UNIT_SPELLCAST_START" and unit == "player") then
-            local spellID = select(10, UnitCastingInfo("player"));
+            local spellID = select(9, UnitCastingInfo("player"));
             if spellID then
               local costTable = GetSpellPowerCost(spellID);
               for _, costInfo in pairs(costTable) do
@@ -3872,11 +3872,11 @@ WeakAuras.event_prototypes = {
         local spell, interruptible, _;
         local castType;
         local endTime;
-        spell, _, _, _, _, endTime, _, _, interruptible = UnitCastingInfo(unit)
+        spell, _, _, _, endTime, _, _, interruptible = UnitCastingInfo(unit)
         if(spell) then
           castType = "cast"
         else
-          spell, _, _, _, _, endTime, _, interruptible = UnitChannelInfo(unit)
+          spell, _, _, _, endTime, _, interruptible = UnitChannelInfo(unit)
           if(spell) then
             castType = "channel"
           end
@@ -3979,9 +3979,9 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, icon = UnitCastingInfo(trigger.unit);
+      local _, _, icon = UnitCastingInfo(trigger.unit);
       if not(icon) then
-        local _, _, _, icon = UnitChannelInfo(trigger.unit);
+        local _, _, icon = UnitChannelInfo(trigger.unit);
         if not(icon) then
           return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon";
         else
