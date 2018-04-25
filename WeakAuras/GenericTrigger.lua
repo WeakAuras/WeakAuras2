@@ -892,7 +892,7 @@ function GenericTrigger.Add(data, region)
                 trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
                 frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
               else
-                frame:RegisterEvent(event);
+                xpcall(frame.RegisterEvent, trueFunction, frame, event);
                 aceEvents:RegisterMessage(event, HandleEvent, frame)
               end
               force_events = trigger.custom_type == "status";
