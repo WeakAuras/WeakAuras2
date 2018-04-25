@@ -1,24 +1,10 @@
 # WeakAuras 2
 
-## [2.5.10-9-g06dc886](https://github.com/WeakAuras/WeakAuras2/tree/06dc8864c230cf3d7cea0b26892a70ef4532b93e) (2018-04-21)
+## [8.0-beta1-1-g288247e](https://github.com/WeakAuras/WeakAuras2/tree/288247e82309412dfdbf33639028f7c48f4867bc) (2018-04-25)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/2.5.10...06dc8864c230cf3d7cea0b26892a70ef4532b93e)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/8.0-beta1...288247e82309412dfdbf33639028f7c48f4867bc)
 
-Benjamin Staneck (4):
+Benjamin Staneck (1):
 
-- ship a patched version of LibRangeCheck-2.0 for testing
-- the rank return from UnitAura has been removed
-- disable HereBeDragons integration for now
-- Update TOC to 80000
-
-Infus (4):
-
-- Dry code PVP Talents
-- Disable LibRangeCheck-2.0 for now
-- Mark disabled HBD with a TODO 8.0
-- Setup fallback state so that it has no duration
-
-asakawa-k (1):
-
-- Add key bindings to open/close the options window (#385)
+- no longer pull in LRC as long as we ship a fork
 
