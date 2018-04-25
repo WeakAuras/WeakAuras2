@@ -2361,6 +2361,8 @@ WeakAuras.event_prototypes = {
   ["DBM Announce"] = {
     type = "event",
     events = {
+    },
+    internal_events = {
       "DBM_Announce"
     },
     name = L["DBM Announce"],
@@ -2406,6 +2408,9 @@ WeakAuras.event_prototypes = {
   ["DBM Timer"] = {
     type = "status",
     events = {
+
+    },
+    internal_events = {
       "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce"
     },
     force_events = "DBM_TimerForce",
