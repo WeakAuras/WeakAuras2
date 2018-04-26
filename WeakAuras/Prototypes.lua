@@ -3675,11 +3675,11 @@ WeakAuras.event_prototypes = {
         required = true,
         validate = WeakAuras.ValidateNumeric,
         desc = function()
-          -- TODO 8.0 doesn't seem to work
           local classFilter, specFilter = C_LootJournal.GetClassAndSpecFilters();
           local currentClass = select(3, UnitClass("player"));
           local specID = GetSpecializationInfo(GetSpecialization());
 
+          C_LootJournal.SetClassAndSpecFilters(currentClass, specID);
           local sets = C_LootJournal.GetFilteredItemSets();
           C_LootJournal.SetClassAndSpecFilters(classFilter, specFilter);
 
