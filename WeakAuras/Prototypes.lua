@@ -2087,7 +2087,7 @@ WeakAuras.event_prototypes = {
   ["Cooldown Progress (Item)"] = {
     type = "status",
     events = {
-      -- TODO 8.0 "ITEM_INFO_UPDATE" ?
+
     },
     internal_events = {
       "ITEM_COOLDOWN_READY",
@@ -2276,8 +2276,7 @@ WeakAuras.event_prototypes = {
   ["Cooldown Ready (Item)"] = {
     type = "event",
     events = {
-      -- TODO 8.0 "ITEM_INFO_UPDATE" ?
-    },
+          },
     internal_events = {
       "ITEM_COOLDOWN_READY",
     },
@@ -3600,7 +3599,6 @@ WeakAuras.event_prototypes = {
     events = {
       "UNIT_INVENTORY_CHANGED",
       "PLAYER_EQUIPMENT_CHANGED",
-      -- TODO 8.0 "ITEM_INFO_UPDATE" ?
     },
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
     force_events = "UNIT_INVENTORY_CHANGED",
