@@ -2835,7 +2835,7 @@ WeakAuras.event_prototypes = {
       "SWING_TIMER_CHANGE",
       "SWING_TIMER_END"
     },
-    name = L["Swing Timer (NYI)"], -- TODO 8.0
+    name = L["Swing Timer"],
     init = function(trigger)
       trigger.hand = trigger.hand or "main";
       WeakAuras.InitSwingTimer();

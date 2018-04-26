@@ -1207,10 +1207,10 @@ do
     WeakAuras.ScanEvents("SWING_TIMER_END");
   end
 
-  local function swingTimerCheck(frame, event, _, message, _, sourceGUID, _, _, _, destGUID, ...)
+  local function swingTimerCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
     if(sourceGUID == selfGUID) then
-      if(message == "SWING_DAMAGE" or message == "SWING_MISSED") then
-        local isOffHand = select(message == "SWING_DAMAGE" and 13 or 5, ...);
+      if(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
+        local isOffHand = select(event == "SWING_DAMAGE" and 10 or 2, ...);
 
         local event;
         local currentTime = GetTime();
@@ -1231,7 +1231,7 @@ do
         end
 
         WeakAuras.ScanEvents(event);
-      elseif(message == "RANGE_DAMAGE" or message == "RANGE_MISSED") then
+      elseif(event == "RANGE_DAMAGE" or event == "RANGE_MISSED") then
         local event;
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
@@ -1247,7 +1247,7 @@ do
 
         WeakAuras.ScanEvents(event);
       end
-    elseif (destGUID == selfGUID and (select(4, ...) == "PARRY" or select(7, ...) == "PARRY")) then
+    elseif (destGUID == selfGUID and (select(1, ...) == "PARRY" or select(4, ...) == "PARRY")) then
       if (lastSwingMain) then
         local timeLeft = lastSwingMain + swingDurationMain - GetTime();
         if (timeLeft > 0.6 * swingDurationMain) then
@@ -1267,7 +1267,10 @@ do
     if not(swingTimerFrame) then
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-      swingTimerFrame:SetScript("OnEvent", swingTimerCheck);
+      swingTimerFrame:SetScript("OnEvent",
+        function()
+          swingTimerCheck(CombatLogGetCurrentEventInfo())
+        end);
       selfGUID = UnitGUID("player");
     end
   end
