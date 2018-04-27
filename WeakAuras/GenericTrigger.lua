@@ -385,6 +385,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
     end
     state.value = nil;
     state.total = nil;
+    state.percent = nil;
     state.inverse = nil;
     state.autoHide = autoHide;
   elseif (data.durationFunc) then
@@ -435,10 +436,12 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       state.autoHide = nil;
       if (state.value ~= arg1) then
         state.value = arg1;
+        state.percent = Round((arg1/arg2)*100);
         changed = true;
       end
       if (state.total ~= arg2) then
         state.total = arg2;
+        state.percent = Round((arg1/arg2)*100);
         changed = true;
       end
     else
@@ -464,6 +467,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       end
       state.value = nil;
       state.total = nil;
+      state.percent = nil;
     end
   else
     if (state.progressType ~= "timed") then
@@ -2858,6 +2862,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.expirationTime = nil;
       state.value = arg1;
       state.total = arg2;
+      state.percent = Round((arg1/arg2)*100);
       state.inverse = inverse;
     else
       state.progressType = "timed";
@@ -2867,6 +2872,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.autoHide = arg1 > 0.01 and data.automaticAutoHide;
       state.value = nil;
       state.total = nil;
+      state.percent = nil;
       state.inverse = inverse;
     end
   else
@@ -2876,6 +2882,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     state.expirationTime = nil;
     state.value = nil;
     state.total = nil;
+    state.percent = nil;
   end
   if (event.overlayFuncs) then
     RunOverlayFuncs(event, state);
