@@ -1275,7 +1275,7 @@ local function modify(parent, region, data)
     region.UpdateCustomText = function()
       -- Evaluate and update text
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      local ok, custom = pcall(customTextFunc, region.expirationTime, region.duration,
+      local ok, custom = xpcall(customTextFunc, geterrorhandler(), region.expirationTime, region.duration,
         values.progress, values.duration, values.name, values.icon, values.stacks);
       if (not ok) then
         custom = "";

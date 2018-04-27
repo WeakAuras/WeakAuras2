@@ -323,7 +323,7 @@ local function RunOverlayFuncs(event, state)
   for i, overlayFunc in ipairs(event.overlayFuncs) do
     state.additionalProgress[i] = state.additionalProgress[i] or {};
     local additionalProgress = state.additionalProgress[i];
-    local ok, a, b, c = pcall(overlayFunc, event.trigger, state);
+    local ok, a, b, c = xpcall(overlayFunc, geterrorhandler(), event.trigger, state);
     if (not ok) then
       additionalProgress.min = nil;
       additionalProgress.max = nil;
@@ -505,12 +505,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
   if(data.triggerFunc) then
     local untriggerCheck = false;
     if (data.statesParameter == "full") then
-      local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), allStates, event, arg1, arg2, ...);
       if (ok and returnValue) then
         updateTriggerState = true;
       end
     elseif (data.statesParameter == "all") then
-      local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), allStates, event, arg1, arg2, ...);
       if( (ok and returnValue) or optionsEvent) then
         for id, state in pairs(allStates) do
           if (state.changed) then
@@ -525,7 +525,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     elseif (data.statesParameter == "one") then
       allStates[""] = allStates[""] or {};
       local state = allStates[""];
-      local ok, returnValue = pcall(data.triggerFunc, state, event, arg1, arg2, ...);
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), state, event, arg1, arg2, ...);
       if( (ok and returnValue) or optionsEvent) then
         if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
           updateTriggerState = true;
@@ -534,7 +534,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         untriggerCheck = true;
       end
     else
-      local ok, returnValue = pcall(data.triggerFunc, event, arg1, arg2, ...);
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), event, arg1, arg2, ...);
       if( (ok and returnValue) or optionsEvent) then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
@@ -548,7 +548,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     if (untriggerCheck and not optionsEvent) then
       if (data.statesParameter == "all") then
         if(data.untriggerFunc) then
-          local ok, returnValue = pcall(data.untriggerFunc, allStates, event, arg1, arg2, ...);
+          local ok, returnValue = xpcall(data.untriggerFunc, geterrorhandler(), allStates, event, arg1, arg2, ...);
           if(ok and returnValue) then
             for id, state in pairs(allStates) do
               if (state.changed) then
@@ -563,7 +563,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
         if(data.untriggerFunc) then
-          local ok, returnValue = pcall(data.untriggerFunc, state, event, arg1, arg2, ...);
+          local ok, returnValue = xpcall(data.untriggerFunc, geterrorhandler(), state, event, arg1, arg2, ...);
           if (ok and returnValue) then
             if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
               updateTriggerState = true;
@@ -572,7 +572,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         end
       else
         if(data.untriggerFunc) then
-          local ok, returnValue = pcall(data.untriggerFunc, event, arg1, arg2, ...);
+          local ok, returnValue = xpcall(data.untriggerFunc, geterrorhandler(), event, arg1, arg2, ...);
           if(ok and returnValue) then
             allStates[""] = allStates[""] or {};
             local state = allStates[""];
@@ -2856,16 +2856,16 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
 
   WeakAuras.ActivateAuraEnvironment(data.id, "", state);
   if (event.nameFunc) then
-    local ok, name = pcall(event.nameFunc, data.trigger);
+    local ok, name = xpcall(event.nameFunc, geterrorhandler(), data.trigger);
     state.name = ok and name or nil;
   end
   if (event.iconFunc) then
-    local ok, icon = pcall(event.iconFunc, data.trigger);
+    local ok, icon = xpcall(event.iconFunc, geterrorhandler(), data.trigger);
     state.icon = ok and icon or nil;
   end
 
   if (event.textureFunc ) then
-    local ok, texture = pcall(event.textureFunc, data.trigger);
+    local ok, texture = xpcall(event.textureFunc, geterrorhandler(), data.trigger);
     state.texture = ok and texture or nil;
   end
 
@@ -2875,7 +2875,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   end
 
   if (event.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = pcall(event.durationFunc, data.trigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, geterrorhandler(), data.trigger);
     if (not ok) then
       state.progressType = "timed";
       state.duration = 0;

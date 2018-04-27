@@ -2786,24 +2786,24 @@ function WeakAuras.UpdateAnimations()
     WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
-        local ok, x, y = pcall(anim.translateFunc, progress, 0, 0, anim.dX, anim.dY);
+        local ok, x, y = xpcall(anim.translateFunc, geterrorhandler(), progress, 0, 0, anim.dX, anim.dY);
         anim.region:SetOffsetAnim(x, y);
       else
         anim.region:ClearAllPoints();
-        local ok, x, y = pcall(anim.translateFunc, progress, anim.startX, anim.startY, anim.dX, anim.dY);
+        local ok, x, y = xpcall(anim.translateFunc, geterrorhandler(), progress, anim.startX, anim.startY, anim.dX, anim.dY);
         if (ok) then
           anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, x, y);
         end
       end
     end
     if(anim.alphaFunc) then
-      local ok, alpha = pcall(anim.alphaFunc, progress, anim.startAlpha, anim.dAlpha);
+      local ok, alpha = xpcall(anim.alphaFunc, geterrorhandler(), progress, anim.startAlpha, anim.dAlpha);
       if (ok) then
         anim.region:SetAlpha(alpha);
       end
     end
     if(anim.scaleFunc) then
-      local ok, scaleX, scaleY = pcall(anim.scaleFunc, progress, 1, 1, anim.scaleX, anim.scaleY);
+      local ok, scaleX, scaleY = xpcall(anim.scaleFunc, geterrorhandler(), progress, 1, 1, anim.scaleX, anim.scaleY);
       if (ok) then
         if(anim.region.Scale) then
           anim.region:Scale(scaleX, scaleY);
@@ -2814,7 +2814,7 @@ function WeakAuras.UpdateAnimations()
       end
     end
     if(anim.rotateFunc and anim.region.Rotate) then
-      local ok, rotate = pcall(anim.rotateFunc, progress, anim.startRotation, anim.rotate);
+      local ok, rotate = xpcall(anim.rotateFunc, geterrorhandler(), progress, anim.startRotation, anim.rotate);
       if (ok) then
         anim.region:Rotate(rotate);
       end
@@ -2822,7 +2822,7 @@ function WeakAuras.UpdateAnimations()
     if(anim.colorFunc and anim.region.ColorAnim) then
       local startR, startG, startB, startA = anim.region:GetColor();
       startR, startG, startB, startA = startR or 1, startG or 1, startB or 1, startA or 1;
-      local ok, r, g, b, a = pcall(anim.colorFunc, progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
+      local ok, r, g, b, a = xpcall(anim.colorFunc, geterrorhandler(), progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
       if (ok) then
         anim.region:ColorAnim(r, g, b, a);
       end
@@ -3826,7 +3826,7 @@ local function evaluateTriggerStateTriggers(id)
     result = true;
   else
     if (triggerState[id].disjunctive == "custom" and triggerState[id].triggerLogicFunc) then
-      local ok, returnValue = pcall(triggerState[id].triggerLogicFunc, triggerState[id].triggers);
+      local ok, returnValue = xpcall(triggerState[id].triggerLogicFunc, geterrorhandler(), triggerState[id].triggers);
       result = ok and returnValue;
     end
   end
@@ -3990,7 +3990,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   if (textStr == "%c" and customFunc) then
     WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
     local _;
-    _, value = pcall(customFunc, region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
+    _, value = xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
     WeakAuras.ActivateAuraEnvironment(nil);
     value = value or "";
   else
