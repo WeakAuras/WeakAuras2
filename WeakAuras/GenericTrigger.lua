@@ -914,7 +914,7 @@ function GenericTrigger.Add(data, region)
                 xpcall(frame.RegisterEvent, trueFunction, frame, event);
                 aceEvents:RegisterMessage(event, HandleEvent, frame)
               end
-              force_events = trigger.custom_type == "status";
+              force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
           end
           if (trigger.custom_type == "stateupdate") then
