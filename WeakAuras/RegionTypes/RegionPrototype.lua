@@ -265,7 +265,7 @@ local function UpateRegionValues(region)
     elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
       remainingStr = remainingStr..floor(remaining);
     else
-      remainingStr = remainingStr..floor(remaining*(10^region.progressPrecision))/(10^region.progressPrecision);
+      remainingStr = remainingStr..floor(remaining*(10^(region.progressPrecision or 0)))/(10^(region.progressPrecision or 0));
     end
   else
     remainingStr     = " ";
