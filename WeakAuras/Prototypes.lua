@@ -1859,7 +1859,7 @@ WeakAuras.event_prototypes = {
           local trackedCharge = %s
           if (charges < trackedCharge) then
             if (state.value ~= 0) then
-              state.value = 0;
+              state.value = duration;
               state.resort = true;
               state.changed = true;
             end
