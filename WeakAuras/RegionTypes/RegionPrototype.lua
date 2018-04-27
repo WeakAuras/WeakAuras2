@@ -259,13 +259,13 @@ local function UpateRegionValues(region)
   elseif remaining > 0 then
     -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
     if region.progressPrecision == 4 and remaining <= 3 then
-      remainingStr = remainingStr..string.format("%.1f", remaining);
+      remainingStr = remainingStr..floor(remaining*10)/10;
     elseif region.progressPrecision == 5 and remaining <= 3 then
-      remainingStr = remainingStr..string.format("%.2f", remaining);
+      remainingStr = remainingStr..floor(remaining*100)/100;
     elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
-      remainingStr = remainingStr..string.format("%d", remaining);
+      remainingStr = remainingStr..floor(remaining);
     else
-      remainingStr = remainingStr..string.format("%."..(region.progressPrecision or 1).."f", remaining);
+      remainingStr = remainingStr..floor(remaining*(10^region.progressPrecision))/(10^region.progressPrecision);
     end
   else
     remainingStr     = " ";
