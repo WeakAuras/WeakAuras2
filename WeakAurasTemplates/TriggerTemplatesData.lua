@@ -1756,12 +1756,14 @@ tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
 
 -- Enrich items from spell, set title
 local function handleItem(item)
+  local waitingForItemInfo = false;
   if (item.spell) then
     local name, icon, _;
     if (item.type == "item") then
       name, _, _, _, _, _, _, _, _, icon = GetItemInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Item"] .. " " .. tostring(item.spell);
+        waitingForItemInfo = true;
       end
     else
       name, _, icon = GetSpellInfo(item.spell);
@@ -1785,6 +1787,8 @@ local function handleItem(item)
       local prefix = GetItemInfo(item.titleItemPrefix);
       if (prefix) then
         item.title = prefix .. "-" .. item.title;
+      else
+        waitingForItemInfo = true;
       end
     end
     if (item.type ~= "item") then
@@ -1813,6 +1817,7 @@ local function handleItem(item)
       multi = {};
     }
   end
+  return waitingForItemInfo;
 end
 
 local function addLoadCondition(item, loadCondition)
@@ -1823,7 +1828,11 @@ local function addLoadCondition(item, loadCondition)
   end
 end
 
+local delayedEnrichDatabase = false;
+local itemInfoReceived = CreateFrame("frame")
+
 local function enrichDatabase()
+  local waitingForItemInfo = false;
   for className, class in pairs(templates.class) do
     for specIndex, spec in pairs(class) do
       for _, section in pairs(spec) do
@@ -1832,7 +1841,9 @@ local function enrichDatabase()
           use_spec = true, spec = { single = specIndex, multi = {}}
         };
         for _, item in pairs(section.args) do
-          handleItem(item);
+          if(handleItem(item)) then
+            waitingForItemInfo = true;
+          end
           addLoadCondition(item, loadCondition);
         end
       end
@@ -1844,27 +1855,36 @@ local function enrichDatabase()
       use_race = true, race = { single = raceName, multi = {} }
     };
     for _, item in pairs(race) do
-      handleItem(item);
+      if (handleItem(item)) then
+        waitingForItemInfo = true;
+      end
       addLoadCondition(item, loadCondition);
     end
   end
 
   for _, item in pairs(templates.general.args) do
-    handleItem(item);
+    if (handleItem(item)) then
+      waitingForItemInfo = true;
+    end
   end
 
   for _, section in pairs(templates.items) do
     for _, item in pairs(section.args) do
-      handleItem(item);
+      if (handleItem(item)) then
+        waitingForItemInfo = true;
+      end
     end
+  end
+
+  if (waitingForItemInfo) then
+    itemInfoReceived:RegisterEvent("GET_ITEM_INFO_RECEIVED");
+  else
+    itemInfoReceived:UnregisterEvent("GET_ITEM_INFO_RECEIVED");
   end
 end
 
 enrichDatabase();
 
-local delayedEnrichDatabase = false;
-local itemInfoReceived = CreateFrame("frame")
-itemInfoReceived:RegisterEvent("GET_ITEM_INFO_RECEIVED");
 itemInfoReceived:SetScript("OnEvent", function()
   if (not delayedEnrichDatabase) then
     delayedEnrichDatabase = true;
@@ -1874,6 +1894,7 @@ itemInfoReceived:SetScript("OnEvent", function()
     end)
   end
 end);
+
 
 -- Enrich Display templates with default values
 for regionType, regionData in pairs(WeakAuras.regionOptions) do

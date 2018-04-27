@@ -63,7 +63,7 @@ function spellCache.GetIcon(name)
       for spellId, icon in pairs(icons) do
         if (not bestMatch) then
           bestMatch = spellId
-        elseif(IsSpellKnown(spellId)) then
+        elseif(type(spellId) == "number" and IsSpellKnown(spellId)) then
           bestMatch = spellId
         end
       end
