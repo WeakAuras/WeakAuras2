@@ -39,7 +39,7 @@ end
 local function getRect(data)
   -- Temp variables
   local blx, bly, trx, try;
-  blx, bly = data.xOffset, data.yOffset;
+  blx, bly = data.xOffset or 0, data.yOffset or 0;
 
   if (data.width == nil or data.height == nil) then
     return blx, bly, blx, bly;
