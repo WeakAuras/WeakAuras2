@@ -1778,8 +1778,10 @@ WeakAuras.event_prototypes = {
     },
     force_events = "WA_UPDATE_OVERLAY_GLOW",
     name = L["Spell Activation Overlay Glow"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
+    end,
+    init = function(trigger)
       return string.format("local spellName = tonumber(%q)", trigger.spellName or "");
     end,
     args = {
@@ -1820,14 +1822,18 @@ WeakAuras.event_prototypes = {
     end,
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Spell)"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
-      trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
       if (trigger.use_showgcd) then
         WeakAuras.WatchGCD();
       end
+    end,
+    init = function(trigger)
+      trigger.spellName = trigger.spellName or 0;
+      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      trigger.realSpellName = spellName; -- Cache
       local ret = [=[
         local spellname = [[%s]]
         local ignoreRuneCD = %s
@@ -2025,10 +2031,13 @@ WeakAuras.event_prototypes = {
       "SPELL_COOLDOWN_READY",
     },
     name = L["Cooldown Ready (Spell)"],
+    loadFunc = function(trigger)
+      trigger.spellName = trigger.spellName or 0;
+      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
+    end,
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
     end,
     args = {
       {
@@ -2059,10 +2068,13 @@ WeakAuras.event_prototypes = {
       "SPELL_CHARGES_CHANGED",
     },
     name = L["Charges Changed (Spell)"],
+    loadFunc = function(trigger)
+      trigger.spellName = trigger.spellName or 0;
+      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
+    end,
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
       return "";
     end,
     statesParameter = "one",
@@ -2121,11 +2133,15 @@ WeakAuras.event_prototypes = {
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Item)"],
+    loadFunc = function(trigger)
+      trigger.itemName = trigger.itemName or 0;
+      local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
+      WeakAuras.WatchItemCooldown(trigger.itemName);
+    end,
     init = function(trigger)
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
-      WeakAuras.WatchItemCooldown(trigger.itemName);
       local ret = [[
         local startTime, duration = WeakAuras.GetItemCooldown(%s);
         local showOn = %s
@@ -2215,8 +2231,10 @@ WeakAuras.event_prototypes = {
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       WeakAuras.WatchItemSlotCooldown(trigger.itemSlot);
+    end,
+    init = function(trigger)
       local ret = [[
         local startTime, duration, enable = WeakAuras.GetItemSlotCooldown(%s);
         local showOn = %s
@@ -2303,10 +2321,13 @@ WeakAuras.event_prototypes = {
       "ITEM_INFO_UPDATED"
     },
     name = L["Cooldown Ready (Item)"],
+    loadFunc = function(trigger)
+      trigger.itemName = trigger.itemName or 0;
+      WeakAuras.WatchItemCooldown(trigger.itemName);
+    end,
     init = function(trigger)
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
-      WeakAuras.WatchItemCooldown(trigger.itemName);
     end,
     args = {
       {
@@ -2337,8 +2358,10 @@ WeakAuras.event_prototypes = {
       "ITEM_SLOT_COOLDOWN_READY"
     },
     name = L["Cooldown Ready (Equipment Slot)"],
-    init = function(trigger)
+    loadFunc  = function(trigger)
       WeakAuras.WatchItemSlotCooldown(trigger.itemSlot);
+    end,
+    init = function(trigger)
     end,
     args = {
       {
@@ -2801,8 +2824,10 @@ WeakAuras.event_prototypes = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     name = L["Global Cooldown"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       WeakAuras.WatchGCD();
+    end,
+    init = function(trigger)
       local ret = [[
         local inverse = %s;
         local onGCD = WeakAuras.GetGCDInfo();
@@ -2846,9 +2871,11 @@ WeakAuras.event_prototypes = {
       "SWING_TIMER_END"
     },
     name = L["Swing Timer"],
+    loadFunc = function(trigger)
+      WeakAuras.InitSwingTimer();
+    end,
     init = function(trigger)
       trigger.hand = trigger.hand or "main";
-      WeakAuras.InitSwingTimer();
       local ret = [=[
         local inverse = %s;
         local hand = [[%s]];
@@ -2904,12 +2931,17 @@ WeakAuras.event_prototypes = {
     },
     force_events = "SPELL_UPDATE_USABLE",
     name = L["Action Usable"],
+    loadFunc = function(trigger)
+      trigger.spellName = trigger.spellName or 0;
+      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      trigger.realSpellName = spellName; -- Cache
+      WeakAuras.WatchSpellCooldown(spellName);
+    end,
     init = function(trigger)
       --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
       local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
       trigger.realSpellName = spellName; -- Cache
-      WeakAuras.WatchSpellCooldown(spellName);
       local ret = [=[
         local spellname = [[%s]]
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
@@ -3157,10 +3189,12 @@ WeakAuras.event_prototypes = {
     },
     force_events = "BAG_UPDATE",
     name = L["Item Count"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       if(trigger.use_includeCharges) then
         WeakAuras.RegisterItemCountWatch();
       end
+    end,
+    init = function(trigger)
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
@@ -3481,7 +3515,7 @@ WeakAuras.event_prototypes = {
     },
     force_events = "RUNE_COOLDOWN_FORCE",
     name = L["Death Knight Rune"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       trigger.rune = trigger.rune or 0;
       if (trigger.use_rune) then
         WeakAuras.WatchRuneCooldown(trigger.rune);
@@ -3490,6 +3524,9 @@ WeakAuras.event_prototypes = {
           WeakAuras.WatchRuneCooldown(i);
         end
       end
+    end,
+    init = function(trigger)
+      trigger.rune = trigger.rune or 0;
       local ret = [[
       local rune = %s;
       local startTime, duration = WeakAuras.GetRuneCooldown(rune);
@@ -4039,7 +4076,7 @@ WeakAuras.event_prototypes = {
     end,
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
-    init = function(trigger)
+    loadFunc = function(trigger)
       if(trigger.use_mounted ~= nil) then
         WeakAuras.WatchForMounts();
       end
@@ -4049,6 +4086,8 @@ WeakAuras.event_prototypes = {
       if (trigger.use_ismoving ~= nil) then
         WeakAuras.WatchForPlayerMoving();
       end
+    end,
+    init = function(trigger)
       return "";
     end,
     args = {

@@ -734,6 +734,9 @@ function LoadEvent(id, triggernum, data)
       loaded_events[event][id][triggernum] = data;
     end
   end
+  if (data.loadFunc) then
+    data.loadFunc(data.trigger);
+  end
 end
 
 function GenericTrigger.LoadDisplay(id)
@@ -779,7 +782,7 @@ function GenericTrigger.Add(data, region)
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
         local force_events = false;
-        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc;
+        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         if(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -804,6 +807,7 @@ function GenericTrigger.Add(data, region)
             iconFunc = event_prototypes[trigger.event].iconFunc;
             textureFunc = event_prototypes[trigger.event].textureFunc;
             stacksFunc = event_prototypes[trigger.event].stacksFunc;
+            loadFunc = event_prototypes[trigger.event].loadFunc;
 
             if (event_prototypes[trigger.event].overlayFuncs) then
               overlayFuncs = {};
@@ -941,6 +945,7 @@ function GenericTrigger.Add(data, region)
           iconFunc = iconFunc,
           textureFunc = textureFunc,
           stacksFunc = stacksFunc,
+          loadFunc = loadFunc,
           duration = duration,
           automaticAutoHide = automaticAutoHide
         };
@@ -1817,6 +1822,11 @@ do
 
     if not id or id == 0 then return end
 
+    if (spells[id]) then
+      return;
+    end
+    spells[id] = true;
+
     if (ignoreRunes) then
       spellsRune[id] = true;
       for i = 1, 6 do
@@ -1824,34 +1834,30 @@ do
       end
     end
 
-    if not(spells[id]) then
-      spells[id] = true;
+    local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
+    spellCharges[id] = charges;
 
-      local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
-      spellCharges[id] = charges;
-
-      if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
-        local time = GetTime();
-        local endTime = startTime + duration;
-        spellCdDurs[id] = duration;
-        spellCdExps[id] = endTime;
-        local runeDuration = -100;
-        for id, _ in pairs(runes) do
-          local startTime, duration = GetRuneCooldown(id);
-          startTime = startTime or 0;
-          duration = duration or 0;
-          runeDuration = duration > 0 and duration or runeDuration
+    if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
+      local time = GetTime();
+      local endTime = startTime + duration;
+      spellCdDurs[id] = duration;
+      spellCdExps[id] = endTime;
+      local runeDuration = -100;
+      for id, _ in pairs(runes) do
+        local startTime, duration = GetRuneCooldown(id);
+        startTime = startTime or 0;
+        duration = duration or 0;
+        runeDuration = duration > 0 and duration or runeDuration
+      end
+      if (duration ~= runeDuration and ignoreRunes) then
+        spellCdDursRune[id] = duration;
+        spellCdExpsRune[id] = endTime;
+        if not(spellCdRuneHandles[id]) then
+          spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
         end
-        if (duration ~= runeDuration and ignoreRunes) then
-          spellCdDursRune[id] = duration;
-          spellCdExpsRune[id] = endTime;
-          if not(spellCdRuneHandles[id]) then
-            spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
-          end
-        end
-        if not(spellCdHandles[id]) then
-          spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
-        end
+      end
+      if not(spellCdHandles[id]) then
+        spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
       end
     end
   end
