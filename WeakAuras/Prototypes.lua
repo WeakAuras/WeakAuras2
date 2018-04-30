@@ -23,7 +23,7 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
 end
 
--- TODO 8.0 local HBD = LibStub("HereBeDragons-1.0")
+-- TODO 8.0 local HBD = LibStub("HereBeDragons-2.0")
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
 function WeakAuras.GetRange(unit)
