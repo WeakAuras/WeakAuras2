@@ -500,11 +500,10 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
 end
 
 -- WORKAROUND Texts don't get the right size by default in WoW 7.3
--- TODO 8.0 check this ticket
 function WeakAuras.regionPrototype.SetTextOnText(text, str)
   text:SetWidth(0); -- This makes the text use its internal text size calculation
   text:SetText(str);
   local w = text:GetWidth();
-  w = w + max(4, w / 40);
+  w = w + max(5, w / 40);
   text:SetWidth(w); -- But that internal text size calculation is wrong, see ticket 1014
 end
