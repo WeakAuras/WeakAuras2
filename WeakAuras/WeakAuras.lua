@@ -788,7 +788,8 @@ local function GetBaseProperty(data, property, start)
     return GetBaseProperty(data[string.sub(property, start, next - 1)], property, next + 1);
   end
 
-  return data[string.sub(property, start)]
+  local key = string.sub(property, start);
+  return data[key] or data[tonumber(key)];
 end
 
 local function CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
