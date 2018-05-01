@@ -1,11 +1,12 @@
 # WeakAuras 2
 
-## [8.0-beta4-12-g61c14cb](https://github.com/WeakAuras/WeakAuras2/tree/61c14cbbaf0432683da9fbc031c00832cf59042b) (2018-05-04)
+## [8.0-beta4-13-g0f89830](https://github.com/WeakAuras/WeakAuras2/tree/0f898308b918657c5390dc660848bbc8642c710d) (2018-05-01)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/8.0-beta4...61c14cbbaf0432683da9fbc031c00832cf59042b)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/8.0-beta4...0f898308b918657c5390dc660848bbc8642c710d)
 
-Benjamin Staneck (4):
+Benjamin Staneck (5):
 
+- update changelog
 - add a prettyPrint function and use it in a few places
 - add names to the profiling keybinds
 - add prints to pstart and pstop
