@@ -96,8 +96,11 @@ function SlashCmdList.WEAKAURAS(msg)
   WeakAuras.OpenOptions(msg);
 end
 
-BINDING_HEADER_WEAKAURAS = "WeakAuras"
-BINDING_NAME_WEAKAURASTOGGLE = "Toggle WeakAuras Options"
+BINDING_HEADER_WEAKAURAS = ADDON_NAME
+BINDING_NAME_WEAKAURASTOGGLE = L["Toggle Options Window"]
+BINDING_NAME_WEAKAURASSTARTPROFILING = L["Start Profiling"]
+BINDING_NAME_WEAKAURASSTOPPROFILING = L["Stop Profiling"]
+BINDING_NAME_WEAKAURASPRINTPROFILING = L["Print Profiling Results"]
 
 -- An alias for WeakAurasSaved, the SavedVariables
 -- Noteable properties:
