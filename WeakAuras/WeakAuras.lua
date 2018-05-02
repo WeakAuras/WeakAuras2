@@ -82,9 +82,11 @@ function SlashCmdList.WEAKAURAS(msg)
   if (msg) then
     if (msg == "pstart") then
       WeakAuras.StartProfile();
+      print("|cff9900FF".."WeakAuras:"..FONT_COLOR_CODE_CLOSE.." Profiling started.")
       return;
     elseif (msg == "pstop") then
       WeakAuras.StopProfile();
+      print("|cff9900FF".."WeakAuras:"..FONT_COLOR_CODE_CLOSE.." Profiling stopped.")
       return;
     elseif(msg == "pprint") then
       WeakAuras.PrintProfile();
