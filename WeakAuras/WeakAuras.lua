@@ -25,6 +25,8 @@ local debugstack, IsSpellKnown = debugstack, IsSpellKnown
 local ADDON_NAME = "WeakAuras"
 local WeakAuras = WeakAuras
 local versionString = WeakAuras.versionString
+local prettyPrint = WeakAuras.prettyPrint
+
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
@@ -56,7 +58,7 @@ function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if InCombatLockdown() then
       -- inform the user and queue ooc
-      print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
+      prettyPrint(L["Options will finish loading after combat ends."])
       queueshowooc = msg or "";
       WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return false;
@@ -82,11 +84,11 @@ function SlashCmdList.WEAKAURAS(msg)
   if (msg) then
     if (msg == "pstart") then
       WeakAuras.StartProfile();
-      print("|cff9900FF".."WeakAuras:"..FONT_COLOR_CODE_CLOSE.." Profiling started.")
+      prettyPrint(L["Profiling started."])
       return;
     elseif (msg == "pstop") then
       WeakAuras.StopProfile();
-      print("|cff9900FF".."WeakAuras:"..FONT_COLOR_CODE_CLOSE.." Profiling stopped.")
+      prettyPrint(L["Profiling stopped."])
       return;
     elseif(msg == "pprint") then
       WeakAuras.PrintProfile();
@@ -4639,7 +4641,7 @@ end
 
 function WeakAuras.StartProfile()
   if (profileData.systems.time and profileData.systems.time.count == 1) then
-    print("Profiling already started");
+    prettyPrint(L["Profiling already started."]);
     return;
   end
 
@@ -4660,7 +4662,7 @@ end
 
 function WeakAuras.StopProfile()
   if (not profileData.systems.time or not profileData.systems.time.count == 1) then
-    print("Profiling not started");
+    prettyPrint(L["Profiling not running."]);
     return;
   end
 
@@ -4707,17 +4709,17 @@ end
 
 function WeakAuras.PrintProfile()
   if (not profileData.systems.time) then
-    print("No Profiling information saved");
+    prettyPrint(L["No Profiling information saved."]);
     return;
   end
 
   if (profileData.systems.time.count == 1) then
-    print("Profiling running");
+    prettyPrint(L["Profiling still running, stop before trying to print."]);
     return;
   end
 
   print("--------------------------------");
-  print("WeakAuras EXPERIMENTAL Profiling Data");
+  prettyPrint(L["EXPERIMENTAL Profiling Data:"]);
   PrintOneProfile("Total Time:    ", profileData.systems.time);
   PrintOneProfile("Time inside WA:", profileData.systems.wa);
   print("% Time spent inside WA:", string.format("%.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed));

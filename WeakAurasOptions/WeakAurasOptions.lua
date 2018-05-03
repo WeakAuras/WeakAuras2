@@ -18,6 +18,7 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
+local prettyPrint = WeakAuras.prettyPrint
 
 local font_close,yellow_font,red_font = FONT_COLOR_CODE_CLOSE,YELLOW_FONT_COLOR_CODE,RED_FONT_COLOR_CODE
 local ValidateNumeric = function(info,val)
@@ -1267,7 +1268,7 @@ function WeakAuras.ToggleOptions(msg)
   if(frame and frame:IsVisible()) then
     WeakAuras.HideOptions();
   elseif (InCombatLockdown()) then
-    print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will open after combat.")
+    prettyPrint(L["Options will open after combat ends."])
     reopenAfterCombat = true;
   else
     WeakAuras.ShowOptions(msg);
