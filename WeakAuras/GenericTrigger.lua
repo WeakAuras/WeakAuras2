@@ -1822,17 +1822,17 @@ do
 
     if not id or id == 0 then return end
 
-    if (spells[id]) then
-      return;
-    end
-    spells[id] = true;
-
     if (ignoreRunes) then
       spellsRune[id] = true;
       for i = 1, 6 do
         WeakAuras.WatchRuneCooldown(i);
       end
     end
+
+    if (spells[id]) then
+      return;
+    end
+    spells[id] = true;
 
     local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
     spellCharges[id] = charges;
