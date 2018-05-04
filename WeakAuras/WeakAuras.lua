@@ -84,11 +84,9 @@ function SlashCmdList.WEAKAURAS(msg)
   if (msg) then
     if (msg == "pstart") then
       WeakAuras.StartProfile();
-      prettyPrint(L["Profiling started."])
       return;
     elseif (msg == "pstop") then
       WeakAuras.StopProfile();
-      prettyPrint(L["Profiling stopped."])
       return;
     elseif(msg == "pprint") then
       WeakAuras.PrintProfile();
@@ -4652,6 +4650,7 @@ function WeakAuras.ProfileRenameAura(oldid, id)
 end
 
 function WeakAuras.StartProfile()
+  prettyPrint(L["Profiling started."])
   if (profileData.systems.time and profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling already started."]);
     return;
@@ -4673,6 +4672,7 @@ local function doNothing()
 end
 
 function WeakAuras.StopProfile()
+  prettyPrint(L["Profiling stopped."])
   if (not profileData.systems.time or not profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling not running."]);
     return;
