@@ -123,10 +123,12 @@ local function SoundPlayHelper(self)
   local options = self.soundOptions;
   self.soundHandle = nil;
   if (options.sound_type == "Stop") then
+    WeakAuras.StopProfileSystem("sound");
     return;
   end
 
   if (WeakAuras.IsOptionsOpen() or WeakAuras.SquelchingActions() or WeakAuras.InLoadingScreen()) then
+    WeakAuras.StopProfileSystem("sound");
     return;
   end
 
