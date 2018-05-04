@@ -25,6 +25,8 @@ local debugstack, IsSpellKnown = debugstack, IsSpellKnown
 local ADDON_NAME = "WeakAuras"
 local WeakAuras = WeakAuras
 local versionString = WeakAuras.versionString
+local prettyPrint = WeakAuras.prettyPrint
+
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
@@ -56,7 +58,7 @@ function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if InCombatLockdown() then
       -- inform the user and queue ooc
-      print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
+      prettyPrint(L["Options will finish loading after combat ends."])
       queueshowooc = msg or "";
       WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return false;
@@ -79,11 +81,28 @@ end
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
+  if (msg) then
+    if (msg == "pstart") then
+      WeakAuras.StartProfile();
+      prettyPrint(L["Profiling started."])
+      return;
+    elseif (msg == "pstop") then
+      WeakAuras.StopProfile();
+      prettyPrint(L["Profiling stopped."])
+      return;
+    elseif(msg == "pprint") then
+      WeakAuras.PrintProfile();
+      return;
+    end
+  end
   WeakAuras.OpenOptions(msg);
 end
 
-BINDING_HEADER_WEAKAURAS = "WeakAuras"
-BINDING_NAME_WEAKAURASTOGGLE = "Toggle WeakAuras Options"
+BINDING_HEADER_WEAKAURAS = ADDON_NAME
+BINDING_NAME_WEAKAURASTOGGLE = L["Toggle Options Window"]
+BINDING_NAME_WEAKAURASSTARTPROFILING = L["Start Profiling"]
+BINDING_NAME_WEAKAURASSTOPPROFILING = L["Stop Profiling"]
+BINDING_NAME_WEAKAURASPRINTPROFILING = L["Print Profiling Results"]
 
 -- An alias for WeakAurasSaved, the SavedVariables
 -- Noteable properties:
@@ -776,7 +795,8 @@ local function GetBaseProperty(data, property, start)
     return GetBaseProperty(data[string.sub(property, start, next - 1)], property, next + 1);
   end
 
-  return data[string.sub(property, start)]
+  local key = string.sub(property, start);
+  return data[key] or data[tonumber(key)];
 end
 
 local function CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
@@ -1224,6 +1244,7 @@ end
 
 -- encounter stuff
 function WeakAuras.StoreBossGUIDs()
+  WeakAuras.StartProfileSystem("boss_guids")
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
     for i = 1, 5 do
       if (UnitExists ("boss" .. i)) then
@@ -1235,6 +1256,7 @@ function WeakAuras.StoreBossGUIDs()
     end
     db.CurrentEncounter = WeakAuras.CurrentEncounter
   end
+  WeakAuras.StopProfileSystem("boss_guids")
 end
 
 function WeakAuras.CheckForPreviousEncounter()
@@ -1528,7 +1550,11 @@ loadFrame:RegisterEvent("GROUP_LEFT");
 loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
 
 function WeakAuras.RegisterLoadEvents()
-  loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
+  loadFrame:SetScript("OnEvent", function()
+    WeakAuras.StartProfileSystem("load");
+    WeakAuras.ScanForLoads()
+    WeakAuras.StopProfileSystem("load");
+  end);
 end
 
 function WeakAuras.ReloadAll()
@@ -1771,6 +1797,8 @@ function WeakAuras.Rename(data, newid)
   if (WeakAuras.mouseFrame) then
     WeakAuras.mouseFrame:rename(oldid, newid);
   end
+
+  WeakAuras.ProfileRenameAura(oldid, newid);
 end
 
 function WeakAuras.Convert(data, newType)
@@ -2731,6 +2759,7 @@ end
 local updatingAnimations;
 local last_update = GetTime();
 function WeakAuras.UpdateAnimations()
+  WeakAuras.StartProfileSystem("animations");
   for groupId, groupRegion in pairs(pending_controls) do
     pending_controls[groupId] = nil;
     groupRegion:DoControlChildren();
@@ -2740,6 +2769,7 @@ function WeakAuras.UpdateAnimations()
   last_update = time;
   local num = 0;
   for id, anim in pairs(animations) do
+    WeakAuras.StartProfileAura(anim.name);
     num = num + 1;
     local finished = false;
     if(anim.duration_type == "seconds") then
@@ -2865,6 +2895,7 @@ function WeakAuras.UpdateAnimations()
         anim.onFinished();
       end
     end
+    WeakAuras.StopProfileAura(anim.name);
   end
   -- XXX: I tried to have animations only update if there are actually animation data to animate upon.
   -- This caused all start animations to break, and I couldn't figure out why.
@@ -2877,6 +2908,8 @@ function WeakAuras.UpdateAnimations()
   updatingAnimations = nil;
   end
   ]]--
+
+  WeakAuras.StopProfileSystem("animations");
 end
 
 function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinished, loop, cloneId)
@@ -3500,15 +3533,19 @@ do
   local updateRegions = {};
 
   local function DoCustomTextUpdates()
+    WeakAuras.StartProfileSystem("custom text - every frame update");
     for region, _ in pairs(updateRegions) do
       if(region.UpdateCustomText) then
         if(region:IsVisible()) then
+          WeakAuras.StartProfileAura(region.id);
           region.UpdateCustomText();
+          WeakAuras.StopProfileAura(region.id);
         end
       else
         updateRegions[region] = nil;
       end
     end
+    WeakAuras.StopProfileSystem("custom text - every frame update");
   end
 
   function WeakAuras.InitCustomTextUpdates()
@@ -4387,6 +4424,7 @@ local function ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.eventHandler = function(self, event, nameplate)
+    WeakAuras.StartProfileSystem("prd");
     if (event == "NAME_PLATE_UNIT_ADDED") then
       if (UnitIsUnit(nameplate, "player")) then
         local frame = C_NamePlate.GetNamePlateForUnit("player");
@@ -4411,6 +4449,7 @@ local function ensurePRDFrame()
         personalRessourceDisplayFrame:Hide();
       end
     end
+    WeakAuras.StopProfileSystem("prd");
   end
 
   personalRessourceDisplayFrame.expand = function(self, id)
@@ -4559,4 +4598,158 @@ function WeakAuras.AnchorFrame(data, region, parent)
   else
     region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
   end
+end
+
+local profileData = {};
+profileData.systems = {};
+profileData.auras = {};
+
+local function StartProfile(map, id)
+  if (not map[id]) then
+    map[id] = {};
+    map[id].count = 1;
+    map[id].start = debugprofilestop();
+    map[id].elapsed = 0;
+    return;
+  end
+
+  if (map[id].count == 0) then
+    map[id].count = 1;
+    map[id].start = debugprofilestop();
+  else
+    map[id].count = map[id].count + 1;
+  end
+end
+
+local function StopProfile(map, id)
+  map[id].count = map[id].count - 1;
+  if (map[id].count == 0) then
+    map[id].elapsed = map[id].elapsed + debugprofilestop() - map[id].start;
+  end
+end
+
+local function StartProfileSystem(system)
+  StartProfile(profileData.systems, "wa");
+  StartProfile(profileData.systems, system);
+end
+
+local function StartProfileAura(id)
+  StartProfile(profileData.auras, id);
+end
+
+local function StopProfileSystem(system)
+  StopProfile(profileData.systems, "wa");
+  StopProfile(profileData.systems, system);
+end
+
+local function StopProfileAura(id)
+  StopProfile(profileData.auras, id);
+end
+
+function WeakAuras.ProfileRenameAura(oldid, id)
+  profileData.auras[id] = profileData.auras[id];
+  profileData.auras[oldid] = nil;
+end
+
+function WeakAuras.StartProfile()
+  if (profileData.systems.time and profileData.systems.time.count == 1) then
+    prettyPrint(L["Profiling already started."]);
+    return;
+  end
+
+  profileData.systems = {};
+  profileData.auras = {};
+  profileData.systems.time = {};
+  profileData.systems.time.start = debugprofilestop();
+  profileData.systems.time.count = 1;
+
+  WeakAuras.StartProfileSystem = StartProfileSystem;
+  WeakAuras.StartProfileAura = StartProfileAura;
+  WeakAuras.StopProfileSystem = StopProfileSystem;
+  WeakAuras.StopProfileAura = StopProfileAura;
+end
+
+local function doNothing()
+end
+
+function WeakAuras.StopProfile()
+  if (not profileData.systems.time or not profileData.systems.time.count == 1) then
+    prettyPrint(L["Profiling not running."]);
+    return;
+  end
+
+  profileData.systems.time.elapsed = debugprofilestop() - profileData.systems.time.start;
+  profileData.systems.time.count = 0;
+
+  WeakAuras.StartProfileSystem = doNothing;
+  WeakAuras.StartProfileAura = doNothing;
+  WeakAuras.StopProfileSystem = doNothing;
+  WeakAuras.StopProfileAura = doNothing;
+end
+
+local function PrintOneProfile(name, map, total)
+  if (map.count ~= 0) then
+    print(name, " ERROR: count is not zero:", map.count);
+  end
+  local percent = "";
+  if (total) then
+    percent = ", " .. string.format("%.2f", 100 * map.elapsed / total) .. "%";
+  end
+  print(name, " ", string.format("%.2f", map.elapsed), " ms", percent);
+end
+
+local function SortProfileMap(map)
+  local result = {};
+  for k, v in pairs(map) do
+    tinsert(result, k);
+  end
+
+  sort(result, function(a, b)
+    return map[a].elapsed > map[b].elapsed;
+  end);
+
+  return result;
+end
+
+local function TotalProfileTime(map)
+  local total = 0;
+  for k, v in pairs(map) do
+    total = total + v.elapsed;
+  end
+  return total;
+end
+
+function WeakAuras.PrintProfile()
+  if (not profileData.systems.time) then
+    prettyPrint(L["No Profiling information saved."]);
+    return;
+  end
+
+  if (profileData.systems.time.count == 1) then
+    prettyPrint(L["Profiling still running, stop before trying to print."]);
+    return;
+  end
+
+  print("--------------------------------");
+  prettyPrint(L["EXPERIMENTAL Profiling Data:"]);
+  PrintOneProfile("Total Time:    ", profileData.systems.time);
+  PrintOneProfile("Time inside WA:", profileData.systems.wa);
+  print("% Time spent inside WA:", string.format("%.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed));
+  print("");
+  print("Systems:");
+
+  for i, k in ipairs(SortProfileMap(profileData.systems)) do
+    if (k ~= "time" and k~= "wa") then
+      PrintOneProfile(k, profileData.systems[k], profileData.systems.wa.elapsed);
+    end
+  end
+
+  print("");
+  print("Auras:");
+  local total = TotalProfileTime(profileData.auras);
+  print("Total Time attributed to auras: ", total);
+  for i, k in ipairs(SortProfileMap(profileData.auras)) do
+    PrintOneProfile(k, profileData.auras[k], total);
+  end
+  print("--------------------------------");
 end

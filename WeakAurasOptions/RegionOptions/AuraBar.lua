@@ -9,7 +9,7 @@ local function createOptions(id, data)
     texture = {
       type = "select",
       dialogControl = "LSM30_Statusbar",
-      order = 0,
+      order = 1,
       width = "double",
       name = L["Bar Texture"],
       values = AceGUIWidgetLSMlists.statusbar
@@ -436,25 +436,6 @@ local function createOptions(id, data)
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
     },
-    border_header = {
-      type = "header",
-      name = L["Border Settings"],
-      order = 46.0
-    },
-    borderInFront  = {
-      type = "toggle",
-      name = L["Border in Front"],
-      order = 46.7,
-      disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
-    },
-    backdropInFront  = {
-      type = "toggle",
-      name = L["Backdrop in Front"],
-      order = 46.8,
-      disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
-    },
     text_header = {
       type = "header",
       name = function()
@@ -630,11 +611,6 @@ local function createOptions(id, data)
       disabled = function() return not data.stacks end,
       hidden = function() return not data.stacks end,
     },
-    spacer = {
-      type = "header",
-      name = "",
-      order = 59
-    },
   };
 
   local function hideCustomTextEditor()
@@ -680,14 +656,11 @@ local function createOptions(id, data)
     end
   end
 
-  -- Positioning options
-  options = WeakAuras.AddPositionOptions(options, id, data);
-
-  -- Border options
-  options = WeakAuras.AddBorderOptions(options, id, data);
-
-  -- Return options
-  return options;
+  return {
+    aurabar = options,
+    position = WeakAuras.PositionOptions(id, data),
+    border = WeakAuras.BorderOptions(id, data, true);
+  };
 end
 
 -- Create preview thumbnail

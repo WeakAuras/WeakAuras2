@@ -6,7 +6,7 @@ local function createOptions(id, data)
       type = "input",
       width = "double",
       name = L["Texture"],
-      order = 0
+      order = 1
     },
     desaturate = {
       type = "toggle",
@@ -76,15 +76,12 @@ local function createOptions(id, data)
       order = 35,
       hidden = function() return data.rotate end
     },
-    spacer = {
-      type = "header",
-      name = "",
-      order = 50
-    }
   };
-  options = WeakAuras.AddPositionOptions(options, id, data);
 
-  return options;
+  return {
+    texture = options,
+    position = WeakAuras.PositionOptions(id, data),
+  };
 end
 
 local function createThumbnail(parent)

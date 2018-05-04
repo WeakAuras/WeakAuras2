@@ -342,7 +342,7 @@ local function modify(parent, region, data)
           scaley = region.previousHeight / newHeight
         };
 
-        WeakAuras.Animate("group", data.id, "start", anim, region, true);
+        WeakAuras.Animate("group", data, "start", anim, region, true);
       end
       region.previousWidth = newWidth;
       region.previousHeight = newHeight;
@@ -356,7 +356,7 @@ local function modify(parent, region, data)
           scaley = 0.1
         };
 
-        WeakAuras.Animate("group", data.id, "finish", anim, region, nil, function()
+        WeakAuras.Animate("group", data, "finish", anim, region, nil, function()
           region:Hide();
         end)
       else
@@ -546,6 +546,8 @@ local function modify(parent, region, data)
   end
 
   function region:DoControlChildren()
+    WeakAuras.StartProfileSystem("dynamicgroup");
+    WeakAuras.StartProfileAura(region.id);
     local previous = {};
     for index, regionData in pairs(region.controlledRegions) do
       local previousX, previousY = region.trays[regionData.key]:GetCenter();
@@ -631,7 +633,7 @@ local function modify(parent, region, data)
           end
 
           WeakAuras.CancelAnimation(region.trays[regionData.key], nil, nil, nil, nil, nil, true);
-          WeakAuras.Animate("tray"..regionData.key, data.id, "tray", anim, region.trays[regionData.key], true, function() end);
+          WeakAuras.Animate("tray"..regionData.key, data, "tray", anim, region.trays[regionData.key], true, function() end);
         elseif (not childRegion.toShow) then
           if(WeakAuras.IsAnimating(childRegion) == "finish") then
           -- childRegion will be hidden by its own animation, so it does not need to be hidden immediately
@@ -641,6 +643,9 @@ local function modify(parent, region, data)
         end
       end
     end
+
+    WeakAuras.StopProfileSystem("dynamicgroup");
+    WeakAuras.StopProfileAura(region.id);
   end
 
   region:PositionChildren();

@@ -588,6 +588,8 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
 end
 
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
+  local orgEvent = event;
+  WeakAuras.StartProfileSystem("generictrigger " .. orgEvent )
   local event_list = loaded_events[event];
   if (not event_list) then
     return
@@ -614,6 +616,7 @@ end
 
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   for id, triggers in pairs(event_list) do
+    WeakAuras.StartProfileAura(id);
     WeakAuras.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
@@ -625,8 +628,10 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     if (updateTriggerState) then
       WeakAuras.UpdatedTriggerState(id);
     end
+    WeakAuras.StopProfileAura(id);
     WeakAuras.ActivateAuraEnvironment(nil);
   end
+  WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
 function GenericTrigger.ScanAll(recentlyLoaded)
@@ -656,6 +661,7 @@ function GenericTrigger.ScanAll(recentlyLoaded)
 end
 
 function HandleEvent(frame, event, arg1, arg2, ...)
+  WeakAuras.StartProfileSystem("generictrigger " .. event);
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
       WeakAuras.ScanEvents(event);
@@ -668,11 +674,14 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   end
   if (event == "PLAYER_ENTERING_WORLD") then
     timer:ScheduleTimer(function()
+      WeakAuras.StartProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
       WeakAuras.CheckCooldownReady();
+      WeakAuras.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
     end,
     0.8);  -- Data not available
   end
+  WeakAuras.StopProfileSystem("generictrigger " .. event);
 end
 
 function GenericTrigger.UnloadAll()
@@ -741,6 +750,10 @@ function LoadEvent(id, triggernum, data)
       loaded_events[event][id][triggernum] = data;
     end
   end
+
+  if (data.loadFunc) then
+    data.loadFunc(data.trigger);
+  end
 end
 
 function GenericTrigger.LoadDisplay(id)
@@ -787,7 +800,7 @@ function GenericTrigger.Add(data, region)
         local trigger_events = {};
         local internal_events = {};
         local force_events = false;
-        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc;
+        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         if(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -812,6 +825,7 @@ function GenericTrigger.Add(data, region)
             iconFunc = event_prototypes[trigger.event].iconFunc;
             textureFunc = event_prototypes[trigger.event].textureFunc;
             stacksFunc = event_prototypes[trigger.event].stacksFunc;
+            loadFunc = event_prototypes[trigger.event].loadFunc;
 
             if (event_prototypes[trigger.event].overlayFuncs) then
               overlayFuncs = {};
@@ -954,6 +968,7 @@ function GenericTrigger.Add(data, region)
           iconFunc = iconFunc,
           textureFunc = textureFunc,
           stacksFunc = stacksFunc,
+          loadFunc = loadFunc,
           duration = duration,
           automaticAutoHide = automaticAutoHide
         };
@@ -1227,6 +1242,7 @@ do
   end
 
   local function swingTimerCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
+    WeakAuras.StartProfileSystem("generictrigger swing");
     if(sourceGUID == selfGUID) then
       if(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
         local isOffHand = select(event == "SWING_DAMAGE" and 10 or 2, ...);
@@ -1280,6 +1296,7 @@ do
         end
       end
     end
+    WeakAuras.StopProfileSystem("generictrigger swing");
   end
 
   function WeakAuras.InitSwingTimer()
@@ -1345,6 +1362,7 @@ do
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
+      WeakAuras.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
         or event == "RUNE_POWER_UPDATE"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
@@ -1363,6 +1381,7 @@ do
       elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
         WeakAuras.CheckItemSlotCooldowns();
       end
+      WeakAuras.StopProfileSystem("generictrigger cd tracking");
     end);
   end
 
@@ -1836,34 +1855,35 @@ do
       end
     end
 
-    if not(spells[id]) then
-      spells[id] = true;
+    if (spells[id]) then
+      return;
+    end
+    spells[id] = true;
 
-      local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
-      spellCharges[id] = charges;
+    local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
+    spellCharges[id] = charges;
 
-      if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
-        local time = GetTime();
-        local endTime = startTime + duration;
-        spellCdDurs[id] = duration;
-        spellCdExps[id] = endTime;
-        local runeDuration = -100;
-        for id, _ in pairs(runes) do
-          local startTime, duration = GetRuneCooldown(id);
-          startTime = startTime or 0;
-          duration = duration or 0;
-          runeDuration = duration > 0 and duration or runeDuration
+    if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
+      local time = GetTime();
+      local endTime = startTime + duration;
+      spellCdDurs[id] = duration;
+      spellCdExps[id] = endTime;
+      local runeDuration = -100;
+      for id, _ in pairs(runes) do
+        local startTime, duration = GetRuneCooldown(id);
+        startTime = startTime or 0;
+        duration = duration or 0;
+        runeDuration = duration > 0 and duration or runeDuration
+      end
+      if (duration ~= runeDuration and ignoreRunes) then
+        spellCdDursRune[id] = duration;
+        spellCdExpsRune[id] = endTime;
+        if not(spellCdRuneHandles[id]) then
+          spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
         end
-        if (duration ~= runeDuration and ignoreRunes) then
-          spellCdDursRune[id] = duration;
-          spellCdExpsRune[id] = endTime;
-          if not(spellCdRuneHandles[id]) then
-            spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
-          end
-        end
-        if not(spellCdHandles[id]) then
-          spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
-        end
+      end
+      if not(spellCdHandles[id]) then
+        spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
       end
     end
   end
@@ -1924,10 +1944,12 @@ do
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     spellActivationFrame:SetScript("OnEvent", function(self, event, spell)
+      WeakAuras.StartProfileSystem("generictrigger");
       if (spellActivationSpells[spell]) then
         spellActivationSpellsCurrent[spell] = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
         WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell);
       end
+      WeakAuras.StopProfileSystem("generictrigger");
     end);
   end
 
@@ -2341,6 +2363,7 @@ do
       end
 
       local function tenchUpdate()
+        WeakAuras.StartProfileSystem("generictrigger");
         local _, mh_rem, _, _, oh_rem = GetWeaponEnchantInfo();
         local time = GetTime();
         local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
@@ -2359,12 +2382,15 @@ do
           oh_icon = GetInventoryItemTexture("player", oh)
           WeakAuras.ScanEvents("OFFHAND_TENCH_UPDATE");
         end
+        WeakAuras.StopProfileSystem("generictrigger");
       end
 
       tenchFrame:SetScript("OnEvent", function(self, event, arg1)
+        WeakAuras.StartProfileSystem("generictrigger");
         if(arg1 == "player") then
           timer:ScheduleTimer(tenchUpdate, 0.1);
         end
+        WeakAuras.StopProfileSystem("generictrigger");
       end);
       tenchUpdate();
     end
@@ -2391,6 +2417,7 @@ do
       local delay = 0.5;
       local isMounted = IsMounted();
       local function checkForMounted(self, elaps)
+        WeakAuras.StartProfileSystem("generictrigger");
         elapsed = elapsed + elaps
         if(isMounted ~= IsMounted()) then
           isMounted = IsMounted();
@@ -2400,10 +2427,13 @@ do
         if(elapsed > delay) then
           mountedFrame:SetScript("OnUpdate", nil);
         end
+        WeakAuras.StopProfileSystem("generictrigger");
       end
       mountedFrame:SetScript("OnEvent", function()
+        WeakAuras.StartProfileSystem("generictrigger");
         elapsed = 0;
         mountedFrame:SetScript("OnUpdate", checkForMounted);
+        WeakAuras.StopProfileSystem("generictrigger");
       end)
     end
   end
@@ -2418,7 +2448,9 @@ do
       petFrame = CreateFrame("frame");
       petFrame:RegisterUnitEvent("UNIT_HEALTH", "pet");
       petFrame:SetScript("OnEvent", function()
+        WeakAuras.StartProfileSystem("generictrigger")
         WeakAuras.ScanEvents("PET_UPDATE");
+        WeakAuras.StopProfileSystem("generictrigger")
       end)
     end
   end
@@ -2435,15 +2467,19 @@ do
       playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
       playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
       playerMovingFrame:SetScript("OnEvent", function(self, event)
+        WeakAuras.StartProfileSystem("generictrigger");
         -- channeling e.g. Mind Flay results in lots of PLAYER_STARTED_MOVING, PLAYER_STOPPED_MOVING
         -- for each frame
         -- So check after 0.01 s if IsPlayerMoving() actually returns something different.
         timer:ScheduleTimer(function()
+          WeakAuras.StartProfileSystem("generictrigger");
           if (moving ~= IsPlayerMoving() or moving == nil) then
             moving = IsPlayerMoving();
             WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE");
           end
+          WeakAuras.StopProfileSystem("generictrigger");
         end, 0.01);
+        WeakAuras.StopProfileSystem("generictrigger");
       end)
     end
   end
@@ -2456,8 +2492,10 @@ function WeakAuras.RegisterItemCountWatch()
     itemCountWatchFrame = CreateFrame("frame");
     itemCountWatchFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
     itemCountWatchFrame:SetScript("OnEvent", function()
+      WeakAuras.StartProfileSystem("generictrigger");
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.5, "ITEM_COUNT_UPDATE");
+      WeakAuras.StopProfileSystem("generictrigger");
     end);
   end
 end

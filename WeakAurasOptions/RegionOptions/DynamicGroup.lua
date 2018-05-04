@@ -156,13 +156,11 @@ local function createOptions(id, data)
       order = 50
     }
   };
-  options = WeakAuras.AddPositionOptions(options, id, data);
 
-  options.width = nil;
-  options.height = nil;
-  options.selfPoint.disabled = true;
-
-  return options;
+  return {
+    dynamicgroup = options,
+    position = WeakAuras.PositionOptions(id, data, true, true),
+  };
 end
 
 local function createThumbnail(parent)
