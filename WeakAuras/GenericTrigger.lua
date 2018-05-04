@@ -615,6 +615,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
 end
 
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
+  local orgEvent = event;
   for id, triggers in pairs(event_list) do
     WeakAuras.StartProfileAura(id);
     WeakAuras.ActivateAuraEnvironment(id);
