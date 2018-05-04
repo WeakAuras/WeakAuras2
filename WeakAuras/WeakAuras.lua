@@ -1790,6 +1790,8 @@ function WeakAuras.Rename(data, newid)
   if (WeakAuras.mouseFrame) then
     WeakAuras.mouseFrame:rename(oldid, newid);
   end
+
+  WeakAuras.ProfileRenameAura(oldid, newid);
 end
 
 function WeakAuras.Convert(data, newType)
@@ -2760,7 +2762,7 @@ function WeakAuras.UpdateAnimations()
   last_update = time;
   local num = 0;
   for id, anim in pairs(animations) do
-    WeakAuras.StartProfileSystem(anim.name);
+    WeakAuras.StartProfileAura(anim.name);
     num = num + 1;
     local finished = false;
     if(anim.duration_type == "seconds") then
@@ -2886,7 +2888,7 @@ function WeakAuras.UpdateAnimations()
         anim.onFinished();
       end
     end
-    WeakAuras.StopProfileSystem(anim.name);
+    WeakAuras.StopProfileAura(anim.name);
   end
   -- XXX: I tried to have animations only update if there are actually animation data to animate upon.
   -- This caused all start animations to break, and I couldn't figure out why.
@@ -4591,8 +4593,6 @@ function WeakAuras.AnchorFrame(data, region, parent)
   end
 end
 
--- Profiling support (TODO into a new file?)
--- TODO support renaming?
 local profileData = {};
 profileData.systems = {};
 profileData.auras = {};
@@ -4637,6 +4637,11 @@ end
 
 local function StopProfileAura(id)
   StopProfile(profileData.auras, id);
+end
+
+function WeakAuras.ProfileRenameAura(oldid, id)
+  profileData.auras[id] = profileData.auras[id];
+  profileData.auras[oldid] = nil;
 end
 
 function WeakAuras.StartProfile()

@@ -24,7 +24,6 @@ end
 function WeakAuras.RegisterRegionOptions()
 end
 
--- TODO remove
 function WeakAuras.StartProfileSystem()
 end
 function WeakAuras.StartProfileAura()
