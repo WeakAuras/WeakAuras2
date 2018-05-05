@@ -1369,7 +1369,7 @@ do
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
         WeakAuras.CheckCooldownReady();
       elseif(event == "UNIT_SPELLCAST_SENT") then
-        local unit, guid, name = ...;
+        local unit, guid, castGUID, name = ...;
         if(unit == "player") then
           name = GetSpellInfo(name);
           if(gcdSpellName ~= name) then
