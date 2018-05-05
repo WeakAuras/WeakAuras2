@@ -1543,9 +1543,9 @@ loadFrame:RegisterEvent("GROUP_LEFT");
 loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
 
 function WeakAuras.RegisterLoadEvents()
-  loadFrame:SetScript("OnEvent", function()
+  loadFrame:SetScript("OnEvent", function(...)
     WeakAuras.StartProfileSystem("load");
-    WeakAuras.ScanForLoads()
+    WeakAuras.ScanForLoads(...)
     WeakAuras.StopProfileSystem("load");
   end);
 end
