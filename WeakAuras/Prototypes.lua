@@ -40,7 +40,14 @@ function WeakAuras.CheckRange(unit, range, operator)
 end
 
 WeakAuras.encounter_table = {
-  -- TODO 8.0 add Uldir
+  [2168] = 2144, -- Taloc the Corrupted
+  [2167] = 2141, -- MOTHER
+  [2146] = 2128, -- Fetid Devourer
+  [2169] = 2136, -- Zek'voz, Herald of N'zoth
+  [2195] = 2145, -- TODO Needs checking-- Zul, Reborn
+  [2194] = 2135, -- Mythrax the Unraveler
+  [2166] = 2134, -- Vectis
+  [2147] = 2122, -- G'huun
 }
 
 local function get_encounters_list()
@@ -70,7 +77,7 @@ local function get_encounters_list()
     encounter_list = encounter_list .. "\n"
   end
 
-  return encounter_list:sub(1, -2)
+  return encounter_list:sub(1, -4)
 end
 
 WeakAuras.function_strings = {
