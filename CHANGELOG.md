@@ -1,19 +1,25 @@
 # WeakAuras 2
 
-## [8.0-beta4-13-g0f89830](https://github.com/WeakAuras/WeakAuras2/tree/0f898308b918657c5390dc660848bbc8642c710d) (2018-05-01)
+## [8.0-beta5](https://github.com/WeakAuras/WeakAuras2/tree/8.0-beta5) (2018-05-07)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/8.0-beta4...0f898308b918657c5390dc660848bbc8642c710d)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/8.0-beta4...8.0-beta5)
 
-Benjamin Staneck (5):
+Benjamin Staneck (9):
 
+- add Uldir encounter ids
+- fix missing orgEvent assignment
+- move prints to their function
+- fix bindings.xml, only need to create header once
 - update changelog
 - add a prettyPrint function and use it in a few places
 - add names to the profiling keybinds
 - add prints to pstart and pstop
 - Update changelog
 
-Infus (7):
+Infus (9):
 
+- Fix Load conditions for encounter ids
+- Fix GCD trigger after UNIT_SPELLCAST_SENT change
 - Fix a few bugs, remove TODOs
 - Don't early return if before potentially enabling rune watching
 - Fix Overlay colors not resetting after Condition
