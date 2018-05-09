@@ -206,7 +206,7 @@ WeakAuras.anim_function_strings = {
   ]],
   straightHSV = [[
     function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-      return WeakAuras.GetHSVTransition(progress, r1, g1, b1, r2, g2, b2)
+      return WeakAuras.GetHSVTransition(progress, r1, g1, b1, a1, r2, g2, b2, a2)
     end
   ]],
   circle = [[
@@ -297,7 +297,7 @@ WeakAuras.anim_function_strings = {
     function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
       local angle = (progress * 2 * math.pi) - (math.pi / 2)
       local newProgress = ((math.sin(angle) + 1)/2);
-      return WeakAuras.GetHSVTransition(newProgress, r1, g1, b1, r2, g2, b2)
+      return WeakAuras.GetHSVTransition(newProgress, r1, g1, b1, a1, r2, g2, b2, a2)
     end
   ]],
   fauxspin = [[
