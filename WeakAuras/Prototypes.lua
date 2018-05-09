@@ -146,7 +146,7 @@ local hsvFrame = CreateFrame("Colorselect")
 
 -- HSV transition, for a much prettier color transition in many cases
 -- see http://www.wowinterface.com/forums/showthread.php?t=48236
-function WeakAuras.GetHSVTransition(perc, r1, g1, b1, r2, g2, b2)
+function WeakAuras.GetHSVTransition(perc, r1, g1, b1, a1, r2, g2, b2, a2)
   --get hsv color for colorA
   hsvFrame:SetColorRGB(r1, g1, b1)
   local h1, s1, v1 = hsvFrame:GetColorHSV() --radius, saturation, luminance
@@ -171,13 +171,15 @@ function WeakAuras.GetHSVTransition(perc, r1, g1, b1, r2, g2, b2)
           end
       end
   end  
-  local s3 = s1 - ( s1 - s2) * perc
-  local v3 = v1 - ( v1 - v2) * perc
+  local s3 = s1 - ( s1 - s2 ) * perc
+  local v3 = v1 - ( v1 - v2 ) * perc
   --get the RGB values of the new color
   hsvFrame:SetColorHSV(h3, s3, v3)
   local r, g, b = hsvFrame:GetColorRGB()
+  --interpolate alpha
+  local a = a1 - ( a1 - a2 ) * perc
   --return the new color
-  return r, g, b
+  return r, g, b, a
 end
 
 
