@@ -142,6 +142,45 @@ WeakAuras.function_strings = {
   ]]
 };
 
+local hsvFrame = CreateFrame("Colorselect")
+
+-- HSV transition, for a much prettier color transition in many cases
+-- see http://www.wowinterface.com/forums/showthread.php?t=48236
+function WeakAuras.GetHSVTransition(perc, r1, g1, b1, r2, g2, b2)
+  --get hsv color for colorA
+  hsvFrame:SetColorRGB(r1,g1,b1)
+  local h1, s1, v1 = hsvFrame:GetColorHSV() --radius, saturation, luminance
+  --get hsv color for colorB
+  hsvFrame:SetColorRGB(r2,g2,b2)
+  local h2, s2, v2 = hsvFrame:GetColorHSV() --radius, saturation, luminance
+  --calculate new HSV values based on HSV values from colorA and colorB and multiply them by the perc
+  local h3 = floor(h1-(h1-h2)*perc)
+  --check if the angle between the two H values is > 180
+  if abs(h1-h2) > 180 then
+      local radius = (360-abs(h1-h2))*perc/100
+      --calculate the 360° breakpoint
+      if h1 < h2 then
+          h3 = floor(h1-radius)
+          if h3 < 0 then
+              h3 = 360+h3
+          end
+      else
+          h3 = floor(h1+radius)
+          if h3 > 360 then
+              h3 = h3-360
+          end
+      end
+  end  
+  local s3 = s1-(s1-s2)*perc
+  local v3 = v1-(v1-v2)*perc
+  --get the RGB values of the new color
+  hsvFrame:SetColorHSV(h3, s3, v3)
+  local r,g,b = hsvFrame:GetColorRGB()
+  --return the new color
+  return r,g,b
+end
+
+
 WeakAuras.anim_function_strings = {
   straight = [[
     function(progress, start, delta)
@@ -161,6 +200,11 @@ WeakAuras.anim_function_strings = {
   straightColor = [[
     function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
       return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
+    end
+  ]],
+  straightHSV = [[
+    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+      return WeakAuras.GetHSVTransition(progress, r1, g1, b1, r2, g2, b2)
     end
   ]],
   circle = [[
@@ -245,6 +289,13 @@ WeakAuras.anim_function_strings = {
            g1 + (newProgress * (g2 - g1)),
            b1 + (newProgress * (b2 - b1)),
            a1 + (newProgress * (a2 - a1))
+    end
+  ]],
+  pulseHSV = [[
+    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+      local angle = (progress * 2 * math.pi) - (math.pi / 2)
+      local newProgress = ((math.sin(angle) + 1)/2);
+      return WeakAuras.GetHSVTransition(newProgress, r1, g1, b1, r2, g2, b2)
     end
   ]],
   fauxspin = [[

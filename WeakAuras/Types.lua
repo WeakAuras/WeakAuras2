@@ -1158,7 +1158,9 @@ WeakAuras.anim_rotate_types = {
 
 WeakAuras.anim_color_types = {
   straightColor = L["Gradient"],
+  straightHSV = L["HSV Gradient"],
   pulseColor = L["Gradient Pulse"],
+  pulseHSV = L["HSV Gradient Pulse"],
   custom = L["Custom Function"]
 }
 
