@@ -148,36 +148,36 @@ local hsvFrame = CreateFrame("Colorselect")
 -- see http://www.wowinterface.com/forums/showthread.php?t=48236
 function WeakAuras.GetHSVTransition(perc, r1, g1, b1, r2, g2, b2)
   --get hsv color for colorA
-  hsvFrame:SetColorRGB(r1,g1,b1)
+  hsvFrame:SetColorRGB(r1, g1, b1)
   local h1, s1, v1 = hsvFrame:GetColorHSV() --radius, saturation, luminance
   --get hsv color for colorB
-  hsvFrame:SetColorRGB(r2,g2,b2)
+  hsvFrame:SetColorRGB(r2, g2, b2)
   local h2, s2, v2 = hsvFrame:GetColorHSV() --radius, saturation, luminance
   --calculate new HSV values based on HSV values from colorA and colorB and multiply them by the perc
-  local h3 = floor(h1-(h1-h2)*perc)
+  local h3 = floor(h1 - (h1 - h2) * perc)
   --check if the angle between the two H values is > 180
-  if abs(h1-h2) > 180 then
-      local radius = (360-abs(h1-h2))*perc/100
+  if abs(h1 - h2) > 180 then
+      local radius = (360 - abs( h1 - h2 )) * perc / 100
       --calculate the 360° breakpoint
       if h1 < h2 then
-          h3 = floor(h1-radius)
+          h3 = floor(h1 - radius)
           if h3 < 0 then
-              h3 = 360+h3
+              h3 = 360 + h3
           end
       else
-          h3 = floor(h1+radius)
+          h3 = floor(h1 + radius)
           if h3 > 360 then
-              h3 = h3-360
+              h3 = h3 - 360
           end
       end
   end  
-  local s3 = s1-(s1-s2)*perc
-  local v3 = v1-(v1-v2)*perc
+  local s3 = s1 - ( s1 - s2) * perc
+  local v3 = v1 - ( v1 - v2) * perc
   --get the RGB values of the new color
   hsvFrame:SetColorHSV(h3, s3, v3)
-  local r,g,b = hsvFrame:GetColorRGB()
+  local r, g, b = hsvFrame:GetColorRGB()
   --return the new color
-  return r,g,b
+  return r, g, b
 end
 
 
