@@ -10,6 +10,7 @@
 ## X-Category: Interface Enhancements
 ## Globe-Post: WeakAurasOptions, WeakAurasModelPaths, WeakAurasTemplates
 ## X-Website: https://www.curseforge.com/wow/addons/weakauras-2
+## X-Curse-Project-ID: 65387
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved

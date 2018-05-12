@@ -12,7 +12,7 @@ else
 fi
 
 date=$( git log -1 --date=short --format="%ad" )
-url=$( git remote get-url github | sed -e 's/^git@\(.*\):/https:\/\/\1\//' -e 's/\.git$//' )
+url=$( git remote get-url origin | sed -e 's/^git@\(.*\):/https:\/\/\1\//' -e 's/\.git$//' )
 #title='# '${url##*/}
 title="# WeakAuras 2"
 
