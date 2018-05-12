@@ -5,22 +5,24 @@ addons:
     packages:
     - luarocks
 
-install:
-  - eval $(luarocks path --bin)
-  - luarocks install --local luacheck
+install: luarocks install --local luacheck
 
 before_script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
 
-script: if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" ]]; then ./wowace_translations.sh; fi
-
-after_script: ./generate_changelog.sh
+script:
+  - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then ./wowace_translations.sh; fi
+  - |
+    if [[ "$TRAVIS_TAG" == "8.0-"* ]]; then
+      ./generate_changelog.sh
+      curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -o -p 65387 -g 8.0.1
+    fi
+  # - |
+  #   if [[ "$TRAVIS_TAG" != "8.0-"* ]]; then
+  #     ./generate_changelog.sh
+  #     curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -o -p 65387
+  #   fi
 
 notifications:
   email:
     on_failure: always
     on_success: never
-
-cache:
-  apt: true
-  directories:
-    - $HOME/.luarocks
