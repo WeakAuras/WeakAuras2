@@ -199,6 +199,8 @@ function WeakAuras.MultipleDisplayTooltipMenu()
           local childData = WeakAuras.GetData(childId);
           tinsert(data.controlledChildren, childId);
           childData.parent = data.id;
+          childData.xOffset = 0;
+          childData.yOffset = 0;
           WeakAuras.Add(data);
           WeakAuras.Add(childData);
         end
