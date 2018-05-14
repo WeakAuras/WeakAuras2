@@ -1622,6 +1622,8 @@ function BuffTrigger.SetToolTip(trigger, state)
     elseif(trigger.name_info == "nonplayers") then
       playerList = WeakAuras.aura_cache:GetUnaffected(state.id, state.triggernum, data);
       name = L["Missing"]..":";
+    else
+      playerList = {};
     end
 
     local numPlayers = 0;
