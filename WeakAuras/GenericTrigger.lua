@@ -903,8 +903,12 @@ function GenericTrigger.Add(data, region)
                 trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
                 frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
               else
-                frame:RegisterEvent(event);
-                aceEvents:RegisterMessage(event, HandleEvent, frame)
+                if (event == "FRAME_UPDATE") then
+                  register_for_frame_updates = true;
+                else
+                  frame:RegisterEvent(event);
+                  aceEvents:RegisterMessage(event, HandleEvent, frame)
+                end
               end
               force_events = trigger.custom_type == "status";
             end
