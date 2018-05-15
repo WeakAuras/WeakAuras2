@@ -76,7 +76,7 @@ local function get_encounters_list()
     encounter_list = encounter_list .. "\n"
   end
 
-  return encounter_list:sub(1, -4)
+  return encounter_list:sub(1, -4) .. L["\nSupports multiple entries, separated by commas\n"]
 end
 
 WeakAuras.function_strings = {
@@ -813,13 +813,13 @@ WeakAuras.load_prototype = {
     },
     {
       name = "zone",
-      display = L["Zone"],
+      display = L["Zone Name"],
       type = "string",
       init = "arg"
     },
     {
       name = "zoneId",
-      display = L["Zone ID"],
+      display = L["Zone ID(s)"],
       type = "string",
       init = "arg",
       desc = function()
@@ -829,7 +829,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "encounterid",
-      display = L["Encounter ID"],
+      display = L["Encounter ID(s)"],
       type = "string",
       init = "arg",
       desc = get_encounters_list,
