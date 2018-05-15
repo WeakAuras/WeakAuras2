@@ -496,7 +496,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
 
   state.changed = state.changed or changed;
 
-  return changed;
+  return state.changed;
 end
 
 local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)
