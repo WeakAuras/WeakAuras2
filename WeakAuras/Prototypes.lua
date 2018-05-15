@@ -16,14 +16,13 @@ local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitC
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
--- luacheck: globals C_SpecializationInfo
+-- luacheck: globals C_SpecializationInfo C_Map
 
 local SpellRange = LibStub("SpellRange-1.0")
 function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
 end
 
--- TODO 8.0 local HBD = LibStub("HereBeDragons-2.0")
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
 function WeakAuras.GetRange(unit)
@@ -820,11 +819,11 @@ WeakAuras.load_prototype = {
     },
     {
       name = "zoneId",
-      display = L["Zone ID (NYI)"],
+      display = L["Zone ID"],
       type = "string",
       init = "arg",
       desc = function()
-         return L["Zone ID List"] .. "\n" .. L["Current Zone ID:"] .. " "; --TODO 8.0.. HBD:GetPlayerZone();
+         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
        end,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
     },

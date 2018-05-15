@@ -38,14 +38,14 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
 end
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
--- TODO 8.0 local HBD = LibStub("HereBeDragons-2.0")
+-- TODO 8.0 - Use for user data upgrades? local HBD = LibStub("HereBeDragons-2.0")
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
 
 local L = WeakAuras.L
 
--- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION
+-- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION C_Map
 -- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO C_SpecializationInfo
 
 local queueshowooc;
@@ -1360,7 +1360,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
 
   local player, realm, spec, zone = UnitName("player"), GetRealmName(), GetSpecialization(), GetRealZoneText();
-  local zoneId = nil; -- TODO 8.0 HBD:GetPlayerZone();
+  local zoneId = C_Map.GetBestMapForUnit("player")
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
