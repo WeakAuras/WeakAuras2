@@ -18,6 +18,7 @@ externals:
  WeakAuras/Libs/LibButtonGlow-1.0: https://repos.wowace.com/wow/libbuttonglow-1-0
  WeakAuras/Libs/LibSpellRange-1.0: https://repos.curseforge.com/wow/libspellrange-1-0/trunk
  WeakAuras/Libs/HereBeDragons: https://repos.wowace.com/wow/herebedragons
+ WeakAuras/Libs/LibRangeCheck-2.0: https://repos.wowace.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
 
 enable-nolib-creation: no
 
