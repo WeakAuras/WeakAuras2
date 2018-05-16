@@ -332,7 +332,7 @@ function WeakAuras.CreateFrame()
       if not(IsAddOnLoaded("WeakAurasTutorials")) then
         local loaded, reason = LoadAddOn("WeakAurasTutorials");
         if not(loaded) then
-          print("|cff9900FF".."WeakAurasTutorials"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
+          print(WeakAuras.printPrefix .. "Tutorials could not be loaded: " .. RED_FONT_COLOR_CODE .. _G["ADDON_" .. reason]);
           return;
         end
       end

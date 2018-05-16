@@ -65,7 +65,7 @@ function WeakAuras.LoadOptions(msg)
     else
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
-        print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
+        print(WeakAuras.printPrefix .. "Options could not be loaded: " .. RED_FONT_COLOR_CODE .. _G["ADDON_" .. reason]);
         return false;
       end
     end
