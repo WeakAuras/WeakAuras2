@@ -496,7 +496,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
 
   state.changed = state.changed or changed;
 
-  return changed;
+  return state.changed;
 end
 
 local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)
@@ -926,8 +926,12 @@ function GenericTrigger.Add(data, region)
                 trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
                 frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
               else
-                xpcall(frame.RegisterEvent, trueFunction, frame, event);
-                aceEvents:RegisterMessage(event, HandleEvent, frame)
+                if (event == "FRAME_UPDATE") then
+                  register_for_frame_updates = true;
+                else
+                  xpcall(frame.RegisterEvent, trueFunction, frame, event);
+                  aceEvents:RegisterMessage(event, HandleEvent, frame)
+                end
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end

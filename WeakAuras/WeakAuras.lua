@@ -2515,9 +2515,26 @@ function WeakAuras.SetRegion(data, cloneId)
       local region;
       if(cloneId) then
         region = clones[id][cloneId];
+        if (not region or region.regionType ~= data.regionType) then
+          if (region) then
+            clonePool[region.regionType] = clonePool[region.regionType] or {};
+            tinsert(clonePool[region.regionType], region);
+            region:Hide();
+          end
+          if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
+            clones[id][cloneId] = tremove(clonePool[data.regionType]);
+          else
+            local clone = regionTypes[data.regionType].create(frame, data);
+            clone.regionType = data.regionType;
+            clone:Hide();
+            clones[id][cloneId] = clone;
+          end
+          region = clones[id][cloneId];
+        end
       else
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
           region = regionTypes[regionType].create(frame, data);
+          region.regionType = regionType;
           region.toShow = true;
           regions[id] = {
             regionType = regionType,
@@ -2526,9 +2543,9 @@ function WeakAuras.SetRegion(data, cloneId)
         else
           region = regions[id].region;
         end
-        region.id = id;
-        region.cloneId = "";
       end
+      region.id = id;
+      region.cloneId = cloneId or "";
       WeakAuras.validate(data, regionTypes[regionType].default);
 
       local parent = frame;
@@ -2578,17 +2595,8 @@ function WeakAuras.EnsureClone(id, cloneId)
   clones[id] = clones[id] or {};
   if not(clones[id][cloneId]) then
     local data = WeakAuras.GetData(id);
-    if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
-      clones[id][cloneId] = tremove(clonePool[data.regionType]);
-    else
-      local clone = regionTypes[data.regionType].create(frame, data);
-      clone:Hide();
-      clones[id][cloneId] = clone;
-    end
     WeakAuras.SetRegion(data, cloneId);
     clones[id][cloneId].justCreated = true;
-    clones[id][cloneId].id = id;
-    clones[id][cloneId].cloneId = cloneId;
   end
   return clones[id][cloneId];
 end
