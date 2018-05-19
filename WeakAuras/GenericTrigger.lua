@@ -325,6 +325,7 @@ local function RunOverlayFuncs(event, state)
     local additionalProgress = state.additionalProgress[i];
     local ok, a, b, c = pcall(overlayFunc, event.trigger, state);
     if (not ok) then
+      geterrorhandler()(a);
       additionalProgress.min = nil;
       additionalProgress.max = nil;
       additionalProgress.direction = nil;
@@ -506,57 +507,77 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     local untriggerCheck = false;
     if (data.statesParameter == "full") then
       local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
-      if (ok and returnValue) then
-        updateTriggerState = true;
+      if (ok) then
+        if (returnValue) then
+          updateTriggerState = true;
+        end
+      else
+        geterrorhandler()(returnValue);
       end
     elseif (data.statesParameter == "all") then
       local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
-      if( (ok and returnValue) or optionsEvent) then
-        for id, state in pairs(allStates) do
-          if (state.changed) then
-            if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-              updateTriggerState = true;
+      if (ok) then
+        if( returnValue or optionsEvent) then
+          for id, state in pairs(allStates) do
+            if (state.changed) then
+              if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+                updateTriggerState = true;
+              end
             end
           end
+        else
+          untriggerCheck = true;
         end
       else
-        untriggerCheck = true;
+        geterrorhandler()(returnValue);
       end
     elseif (data.statesParameter == "one") then
       allStates[""] = allStates[""] or {};
       local state = allStates[""];
       local ok, returnValue = pcall(data.triggerFunc, state, event, arg1, arg2, ...);
-      if( (ok and returnValue) or optionsEvent) then
-        if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-          updateTriggerState = true;
+      if (ok) then
+        if( returnValue or optionsEvent) then
+          if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+            updateTriggerState = true;
+          end
+        else
+          untriggerCheck = true;
         end
       else
-        untriggerCheck = true;
+        geterrorhandler()(returnValue);
       end
     else
       local ok, returnValue = pcall(data.triggerFunc, event, arg1, arg2, ...);
-      if( (ok and returnValue) or optionsEvent) then
-        allStates[""] = allStates[""] or {};
-        local state = allStates[""];
-        if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-          updateTriggerState = true;
+      if (ok) then
+        if( returnValue or optionsEvent) then
+          allStates[""] = allStates[""] or {};
+          local state = allStates[""];
+          if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+            updateTriggerState = true;
+          end
+        else
+          untriggerCheck = true;
         end
       else
-        untriggerCheck = true;
+        geterrorhandler()(returnValue);
       end
     end
     if (untriggerCheck and not optionsEvent) then
       if (data.statesParameter == "all") then
         if(data.untriggerFunc) then
           local ok, returnValue = pcall(data.untriggerFunc, allStates, event, arg1, arg2, ...);
-          if(ok and returnValue) then
-            for id, state in pairs(allStates) do
-              if (state.changed) then
-                if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                  updateTriggerState = true;
+          if(ok) then
+            if (returnValue) then
+              for id, state in pairs(allStates) do
+                if (state.changed) then
+                  if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                    updateTriggerState = true;
+                  end
                 end
               end
             end
+          else
+            geterrorhandler()(returnValue);
           end
         end
       elseif (data.statesParameter == "one") then
@@ -564,21 +585,29 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         local state = allStates[""];
         if(data.untriggerFunc) then
           local ok, returnValue = pcall(data.untriggerFunc, state, event, arg1, arg2, ...);
-          if (ok and returnValue) then
-            if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
-              updateTriggerState = true;
+          if (ok) then
+            if (returnValue) then
+              if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                updateTriggerState = true;
+              end
             end
+          else
+            geterrorhandler()(returnValue);
           end
         end
       else
         if(data.untriggerFunc) then
           local ok, returnValue = pcall(data.untriggerFunc, event, arg1, arg2, ...);
-          if(ok and returnValue) then
-            allStates[""] = allStates[""] or {};
-            local state = allStates[""];
-            if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
-              updateTriggerState = true;
+          if (ok) then
+            if(returnValue) then
+              allStates[""] = allStates[""] or {};
+              local state = allStates[""];
+              if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                updateTriggerState = true;
+              end
             end
+          else
+            geterrorhandler()(returnValue);
           end
         end
       end
@@ -2874,25 +2903,38 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   if (event.nameFunc) then
     local ok, name = pcall(event.nameFunc, data.trigger);
     state.name = ok and name or nil;
+    if (not ok) then
+      geterrorhandler()(name);
+    end
   end
   if (event.iconFunc) then
     local ok, icon = pcall(event.iconFunc, data.trigger);
     state.icon = ok and icon or nil;
+    if (not ok) then
+      geterrorhandler()(icon);
+    end
   end
 
   if (event.textureFunc ) then
     local ok, texture = pcall(event.textureFunc, data.trigger);
     state.texture = ok and texture or nil;
+    if (not ok) then
+      geterrorhandler()(texture);
+    end
   end
 
   if (event.stacksFunc) then
     local ok, stacks = event.stacksFunc(data.trigger);
     state.stacks = ok and stacks or nil;
+    if (not ok) then
+      geterrorhandler()(stacks);
+    end
   end
 
   if (event.durationFunc) then
     local ok, arg1, arg2, arg3, inverse = pcall(event.durationFunc, data.trigger);
     if (not ok) then
+      geterrorhandler()(arg1);
       state.progressType = "timed";
       state.duration = 0;
       state.expirationTime = math.huge;

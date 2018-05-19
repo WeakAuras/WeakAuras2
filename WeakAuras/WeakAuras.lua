@@ -2818,12 +2818,18 @@ function WeakAuras.UpdateAnimations()
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
         local ok, x, y = pcall(anim.translateFunc, progress, 0, 0, anim.dX, anim.dY);
-        anim.region:SetOffsetAnim(x, y);
+        if (ok) then
+          anim.region:SetOffsetAnim(x, y);
+        else
+          geterrorhandler()(x);
+        end
       else
         anim.region:ClearAllPoints();
         local ok, x, y = pcall(anim.translateFunc, progress, anim.startX, anim.startY, anim.dX, anim.dY);
         if (ok) then
           anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, x, y);
+        else
+          geterrorhandler()(x);
         end
       end
     end
@@ -2831,6 +2837,8 @@ function WeakAuras.UpdateAnimations()
       local ok, alpha = pcall(anim.alphaFunc, progress, anim.startAlpha, anim.dAlpha);
       if (ok) then
         anim.region:SetAlpha(alpha);
+      else
+        geterrorhandler()(alpha);
       end
     end
     if(anim.scaleFunc) then
@@ -2842,12 +2850,16 @@ function WeakAuras.UpdateAnimations()
           anim.region:SetWidth(anim.startWidth * scaleX);
           anim.region:SetHeight(anim.startHeight * scaleY);
         end
+      else
+        geterrorhandler()(ok);
       end
     end
     if(anim.rotateFunc and anim.region.Rotate) then
       local ok, rotate = pcall(anim.rotateFunc, progress, anim.startRotation, anim.rotate);
       if (ok) then
         anim.region:Rotate(rotate);
+      else
+        geterrorhandler()(rotate);
       end
     end
     if(anim.colorFunc and anim.region.ColorAnim) then
@@ -2856,6 +2868,8 @@ function WeakAuras.UpdateAnimations()
       local ok, r, g, b, a = pcall(anim.colorFunc, progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
       if (ok) then
         anim.region:ColorAnim(r, g, b, a);
+      else
+        geterrorhandler()(r);
       end
     end
     WeakAuras.ActivateAuraEnvironment(nil);
@@ -3865,7 +3879,11 @@ local function evaluateTriggerStateTriggers(id)
   else
     if (triggerState[id].disjunctive == "custom" and triggerState[id].triggerLogicFunc) then
       local ok, returnValue = pcall(triggerState[id].triggerLogicFunc, triggerState[id].triggers);
-      result = ok and returnValue;
+      if (ok) then
+        result = returnValue;
+      else
+        geterrorhandler()(returnValue);
+      end
     end
   end
 
@@ -4027,8 +4045,11 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local value;
   if (textStr == "%c" and customFunc) then
     WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-    local _;
-    _, value = pcall(customFunc, region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
+    local ok;
+    ok, value = pcall(customFunc, region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
+    if (not ok) then
+      geterrorhandler()(value);
+    end
     WeakAuras.ActivateAuraEnvironment(nil);
     value = value or "";
   else
