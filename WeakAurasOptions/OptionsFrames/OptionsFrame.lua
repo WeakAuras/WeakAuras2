@@ -331,8 +331,9 @@ function WeakAuras.CreateFrame()
     tutorialbutton:SetScript("OnClick", function()
       if not(IsAddOnLoaded("WeakAurasTutorials")) then
         local loaded, reason = LoadAddOn("WeakAurasTutorials");
+        reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
         if not(loaded) then
-          print(WeakAuras.printPrefix .. "Tutorials could not be loaded: " .. RED_FONT_COLOR_CODE .. _G["ADDON_" .. reason]);
+          print(WeakAuras.printPrefix .. "Tutorials could not be loaded, the addon is " .. reason);
           return;
         end
       end
