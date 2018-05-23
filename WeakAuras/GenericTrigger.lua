@@ -1330,6 +1330,7 @@ do
   local spellCdDursRune = {};
   local spellCdExpsRune = {};
   local spellCharges = {};
+  local spellChargesMax = {};
   local spellCdHandles = {};
   local spellCdRuneHandles = {};
 
@@ -1432,7 +1433,7 @@ do
   end
 
   function WeakAuras.GetSpellCharges(id)
-    return spellCharges[id];
+    return spellCharges[id], spellChargesMax[id];
   end
 
   function WeakAuras.GetItemCooldown(id)
@@ -1479,12 +1480,13 @@ do
     spellCdDursRune[id] = nil;
     spellCdExpsRune[id] = nil;
 
-    local charges = WeakAuras.GetSpellCooldownUnified(id);
+    local charges, maxCharges = WeakAuras.GetSpellCooldownUnified(id);
     local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
     spellCharges[id] = charges
+    spellChargesMax[id] = maxCharges;
     WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
 
@@ -1492,12 +1494,13 @@ do
     spellCdHandles[id] = nil;
     spellCdDurs[id] = nil;
     spellCdExps[id] = nil;
-    local charges = WeakAuras.GetSpellCooldownUnified(id);
+    local charges, maxCharges = WeakAuras.GetSpellCooldownUnified(id);
     local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
     spellCharges[id] = charges
+    spellChargesMax[id] = maxCharges;
     WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
 
@@ -1653,6 +1656,7 @@ do
         WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
       end
       spellCharges[id] = charges;
+      spellChargesMax[id] = maxCharges;
 
       if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
         -- On non-GCD cooldown
@@ -1869,6 +1873,7 @@ do
 
     local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
     spellCharges[id] = charges;
+    spellChargesMax[id] = maxCharges;
 
     if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
       local time = GetTime();
