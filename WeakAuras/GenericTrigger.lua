@@ -325,7 +325,7 @@ local function RunOverlayFuncs(event, state)
     local additionalProgress = state.additionalProgress[i];
     local ok, a, b, c = pcall(overlayFunc, event.trigger, state);
     if (not ok) then
-      geterrorhandler()(a);
+      WeakAuras.ReportError(a);
       additionalProgress.min = nil;
       additionalProgress.max = nil;
       additionalProgress.direction = nil;
@@ -512,7 +512,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           updateTriggerState = true;
         end
       else
-        geterrorhandler()(returnValue);
+        WeakAuras.ReportError(returnValue);
       end
     elseif (data.statesParameter == "all") then
       local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
@@ -529,7 +529,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           untriggerCheck = true;
         end
       else
-        geterrorhandler()(returnValue);
+        WeakAuras.ReportError(returnValue);
       end
     elseif (data.statesParameter == "one") then
       allStates[""] = allStates[""] or {};
@@ -544,7 +544,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           untriggerCheck = true;
         end
       else
-        geterrorhandler()(returnValue);
+        WeakAuras.ReportError(returnValue);
       end
     else
       local ok, returnValue = pcall(data.triggerFunc, event, arg1, arg2, ...);
@@ -559,7 +559,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           untriggerCheck = true;
         end
       else
-        geterrorhandler()(returnValue);
+        WeakAuras.ReportError(returnValue);
       end
     end
     if (untriggerCheck and not optionsEvent) then
@@ -577,7 +577,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
               end
             end
           else
-            geterrorhandler()(returnValue);
+            WeakAuras.ReportError(returnValue);
           end
         end
       elseif (data.statesParameter == "one") then
@@ -592,7 +592,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
               end
             end
           else
-            geterrorhandler()(returnValue);
+            WeakAuras.ReportError(returnValue);
           end
         end
       else
@@ -607,7 +607,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
               end
             end
           else
-            geterrorhandler()(returnValue);
+            WeakAuras.ReportError(returnValue);
           end
         end
       end
@@ -1330,6 +1330,7 @@ do
   local spellCdDursRune = {};
   local spellCdExpsRune = {};
   local spellCharges = {};
+  local spellChargesMax = {};
   local spellCdHandles = {};
   local spellCdRuneHandles = {};
 
@@ -1432,7 +1433,7 @@ do
   end
 
   function WeakAuras.GetSpellCharges(id)
-    return spellCharges[id];
+    return spellCharges[id], spellChargesMax[id];
   end
 
   function WeakAuras.GetItemCooldown(id)
@@ -1479,12 +1480,13 @@ do
     spellCdDursRune[id] = nil;
     spellCdExpsRune[id] = nil;
 
-    local charges = WeakAuras.GetSpellCooldownUnified(id);
+    local charges, maxCharges = WeakAuras.GetSpellCooldownUnified(id);
     local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
     spellCharges[id] = charges
+    spellChargesMax[id] = maxCharges;
     WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
 
@@ -1492,12 +1494,13 @@ do
     spellCdHandles[id] = nil;
     spellCdDurs[id] = nil;
     spellCdExps[id] = nil;
-    local charges = WeakAuras.GetSpellCooldownUnified(id);
+    local charges, maxCharges = WeakAuras.GetSpellCooldownUnified(id);
     local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
     if (chargesDifference ~= 0 ) then
       WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
     spellCharges[id] = charges
+    spellChargesMax[id] = maxCharges;
     WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
   end
 
@@ -1653,6 +1656,7 @@ do
         WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
       end
       spellCharges[id] = charges;
+      spellChargesMax[id] = maxCharges;
 
       if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
         -- On non-GCD cooldown
@@ -1869,6 +1873,7 @@ do
 
     local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
     spellCharges[id] = charges;
+    spellChargesMax[id] = maxCharges;
 
     if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
       local time = GetTime();
@@ -2904,14 +2909,14 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     local ok, name = pcall(event.nameFunc, data.trigger);
     state.name = ok and name or nil;
     if (not ok) then
-      geterrorhandler()(name);
+      WeakAuras.ReportError(name);
     end
   end
   if (event.iconFunc) then
     local ok, icon = pcall(event.iconFunc, data.trigger);
     state.icon = ok and icon or nil;
     if (not ok) then
-      geterrorhandler()(icon);
+      WeakAuras.ReportError(icon);
     end
   end
 
@@ -2919,7 +2924,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     local ok, texture = pcall(event.textureFunc, data.trigger);
     state.texture = ok and texture or nil;
     if (not ok) then
-      geterrorhandler()(texture);
+      WeakAuras.ReportError(texture);
     end
   end
 
@@ -2927,14 +2932,14 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     local ok, stacks = event.stacksFunc(data.trigger);
     state.stacks = ok and stacks or nil;
     if (not ok) then
-      geterrorhandler()(stacks);
+      WeakAuras.ReportError(stacks);
     end
   end
 
   if (event.durationFunc) then
     local ok, arg1, arg2, arg3, inverse = pcall(event.durationFunc, data.trigger);
     if (not ok) then
-      geterrorhandler()(arg1);
+      WeakAuras.ReportError(arg1);
       state.progressType = "timed";
       state.duration = 0;
       state.expirationTime = math.huge;

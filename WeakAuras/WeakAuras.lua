@@ -438,7 +438,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
         local func = WeakAuras.customActionsFunctions[id]["init"];
         if func then
           current_aura_env.id = id;
-          xpcall(func, geterrorhandler());
+          xpcall(func, WeakAuras.ReportError);
         end
       end
     end
@@ -2715,7 +2715,7 @@ function WeakAuras.PerformActions(data, type, region)
     local func = WeakAuras.customActionsFunctions[data.id][type]
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      xpcall(func, geterrorhandler());
+      xpcall(func, WeakAuras.ReportError);
       WeakAuras.ActivateAuraEnvironment(nil);
     end
   end
@@ -2821,7 +2821,7 @@ function WeakAuras.UpdateAnimations()
         if (ok) then
           anim.region:SetOffsetAnim(x, y);
         else
-          geterrorhandler()(x);
+          WeakAuras.ReportError(x);
         end
       else
         anim.region:ClearAllPoints();
@@ -2829,7 +2829,7 @@ function WeakAuras.UpdateAnimations()
         if (ok) then
           anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, x, y);
         else
-          geterrorhandler()(x);
+          WeakAuras.ReportError(x);
         end
       end
     end
@@ -2838,7 +2838,7 @@ function WeakAuras.UpdateAnimations()
       if (ok) then
         anim.region:SetAlpha(alpha);
       else
-        geterrorhandler()(alpha);
+        WeakAuras.ReportError(alpha);
       end
     end
     if(anim.scaleFunc) then
@@ -2851,7 +2851,7 @@ function WeakAuras.UpdateAnimations()
           anim.region:SetHeight(anim.startHeight * scaleY);
         end
       else
-        geterrorhandler()(ok);
+        WeakAuras.ReportError(ok);
       end
     end
     if(anim.rotateFunc and anim.region.Rotate) then
@@ -2859,7 +2859,7 @@ function WeakAuras.UpdateAnimations()
       if (ok) then
         anim.region:Rotate(rotate);
       else
-        geterrorhandler()(rotate);
+        WeakAuras.ReportError(rotate);
       end
     end
     if(anim.colorFunc and anim.region.ColorAnim) then
@@ -2869,7 +2869,7 @@ function WeakAuras.UpdateAnimations()
       if (ok) then
         anim.region:ColorAnim(r, g, b, a);
       else
-        geterrorhandler()(r);
+        WeakAuras.ReportError(r);
       end
     end
     WeakAuras.ActivateAuraEnvironment(nil);
@@ -3882,7 +3882,7 @@ local function evaluateTriggerStateTriggers(id)
       if (ok) then
         result = returnValue;
       else
-        geterrorhandler()(returnValue);
+        WeakAuras.ReportError(returnValue);
       end
     end
   end
@@ -4000,7 +4000,7 @@ function WeakAuras.UpdatedTriggerState(id)
   for cloneId, state in pairs(activeTriggerState) do
     local region = WeakAuras.GetRegion(id, cloneId);
     if (checkConditions[id]) then
-      checkConditions[id](region, not state.show);
+      checkConditions[id](region, not show or not state.show);
     end
   end
 
@@ -4048,7 +4048,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
     local ok;
     ok, value = pcall(customFunc, region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
     if (not ok) then
-      geterrorhandler()(value);
+      WeakAuras.ReportError(value);
     end
     WeakAuras.ActivateAuraEnvironment(nil);
     value = value or "";
@@ -4774,4 +4774,10 @@ function WeakAuras.PrintProfile()
     PrintOneProfile(k, profileData.auras[k], total);
   end
   print("--------------------------------");
+end
+
+function WeakAuras.ReportError(error)
+  if (error) then
+    WeakAuras.ReportError(error);
+  end
 end
