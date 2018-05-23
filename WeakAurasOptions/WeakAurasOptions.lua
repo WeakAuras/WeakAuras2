@@ -2372,11 +2372,21 @@ local function addHeadersForRegionOptions(allOptions, output)
   local base = 100;
   for regionType, options in pairs(allOptions) do
     if (regionType ~= "border" and regionType ~= "position") then
+      if (base > 100) then
+        output[regionType .. "_spacer"] = {
+          type = "description",
+          name = " ",
+          width = "double",
+          fontSize = "large",
+          order = base,
+          hidden = false
+        }
+      end
       output[regionType .. "_title"] = {
         type = "description",
         name = regionOptions[regionType].displayName,
         width = "double",
-        order = base,
+        order = base + 0.01,
         fontSize = "large",
         hidden = false
       }
@@ -2384,18 +2394,27 @@ local function addHeadersForRegionOptions(allOptions, output)
         type = "header",
         name = "",
         width = "double",
-        order = base + 0.01,
+        order = base + 0.02,
         hidden = false
       }
       base = base + 100;
     end
   end
 
+  output["common_spacer"] = {
+    type = "description",
+    name = " ",
+    width = "double",
+    fontSize = "large",
+    order = base,
+    hidden = false
+  }
+
   output["common_title"] = {
     type = "description",
     name = L["Common Options"],
     width = "double",
-    order = base,
+    order = base + 0.01,
     fontSize = "large",
     hidden = false
   }
