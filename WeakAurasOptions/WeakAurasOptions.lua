@@ -2675,9 +2675,17 @@ function WeakAuras.ReloadTriggerOptions(data)
       data.trigger = tmp.trigger;
       data.untrigger = tmp.untrigger;
     else
-      local tmp = data.additional_triggers[i +1];
+      local tmp = data.additional_triggers[i + 1];
       tremove(data.additional_triggers, i + 1);
       tinsert(data.additional_triggers, i, tmp);
+    end
+
+    for _, condition in ipairs(data.conditions) do
+      if (condition.check.trigger == i) then
+        condition.check.trigger = i + 1;
+      elseif (condition.check.trigger == i  + 1) then
+        condition.check.trigger = i;
+      end
     end
 
     return true;
