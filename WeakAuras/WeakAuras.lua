@@ -4778,6 +4778,6 @@ end
 
 function WeakAuras.ReportError(error)
   if (error) then
-    WeakAuras.ReportError(error);
+    geterrorhandler()(error);
   end
 end
