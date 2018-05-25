@@ -4190,7 +4190,7 @@ function WeakAuras.OpenModelPicker(data, field)
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
     if not(loaded) then
-      print(WeakAuras.printPrefix .. "ModelPaths could not be loaded, the addon is " .. reason]);
+      print(WeakAuras.printPrefix .. "ModelPaths could not be loaded, the addon is " .. reason);
       WeakAuras.ModelPaths = {};
     end
     frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
