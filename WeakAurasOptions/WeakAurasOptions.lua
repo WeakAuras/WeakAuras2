@@ -4211,7 +4211,7 @@ function WeakAuras.OpenTriggerTemplate(data)
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
     if not(loaded) then
-      print(WeakAuras.printPrefix .. "Templates could not be loaded, the addon is " .. reason]);
+      print(WeakAuras.printPrefix .. "Templates could not be loaded, the addon is " .. reason);
       return;
     end
     frame.newView = WeakAuras.CreateTemplateView(frame);
