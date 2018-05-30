@@ -64,8 +64,8 @@ function WeakAuras.LoadOptions(msg)
       return false;
     else
       local loaded, reason = LoadAddOn("WeakAurasOptions");
-      reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       if not(loaded) then
+        reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
         print(WeakAuras.printPrefix .. "Options could not be loaded, the addon is " .. reason);
         return false;
       end

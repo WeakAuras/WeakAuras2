@@ -4209,8 +4209,8 @@ end
 function WeakAuras.OpenTriggerTemplate(data)
   if not(IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
-    reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
     if not(loaded) then
+      reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       print(WeakAuras.printPrefix .. "Templates could not be loaded, the addon is " .. reason);
       return;
     end
