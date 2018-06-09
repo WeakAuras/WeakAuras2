@@ -89,5 +89,4 @@ function WeakAuras.StopFrameChooser(data)
   end
   ResetCursor();
   WeakAuras.Add(data);
-  WeakAuras.ResetMoverSizer();
 end
