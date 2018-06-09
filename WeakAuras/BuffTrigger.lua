@@ -1553,11 +1553,14 @@ function BuffTrigger.CanHaveDuration(data, triggernum)
   else
     trigger = data.additional_triggers[triggernum].trigger;
   end
-  if (trigger.showOn ~= "showOnMissing") then
-    return "timed";
-  else
-    return false;
+  if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
+    if (trigger.showOn ~= "showOnMissing") then
+      return "timed";
+    else
+      return false;
+    end
   end
+  return "timed";
 end
 
 --- Returns a table containing the names of all overlays
