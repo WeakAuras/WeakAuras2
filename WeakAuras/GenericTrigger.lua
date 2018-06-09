@@ -660,7 +660,7 @@ function GenericTrigger.ScanAll(recentlyLoaded)
             updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event.force_events) or updateTriggerState;
           elseif (type(event.force_events) == "boolean" and event.force_events) then
             for i, eventName in pairs(event.events) do
-              updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName);
+              updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
             end
           end
         end
