@@ -2099,6 +2099,8 @@ WeakAuras.event_prototypes = {
   ["Charges Changed (Spell)"] = {
     type = "event",
     events = {
+    },
+    internal_events = {
       "SPELL_CHARGES_CHANGED",
     },
     name = L["Charges Changed (Spell)"],
