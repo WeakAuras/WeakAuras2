@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasTextureButton", 21
+local Type, Version = "WeakAurasTextureButton", 22
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -28,7 +28,11 @@ local methods = {
     self.texture:SetTexture();
   end,
   ["SetTexture"] = function(self, texturePath, name)
-    self.texture:SetTexture(texturePath);
+    if (GetAtlasInfo(texturePath)) then
+      self.texture:SetAtlas(texturePath);
+    else
+      self.texture:SetTexture(texturePath);
+    end
     self.texture.path = texturePath;
     self.texture.name = name;
   end,

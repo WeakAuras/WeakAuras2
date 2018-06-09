@@ -134,7 +134,7 @@ local spinnerFunctions = {};
 
 function spinnerFunctions.SetTexture(self, texture)
   for i = 1, 3 do
-    self.textures[i]:SetTexture(texture);
+    WeakAuras.SetTextureOrAtlas(self.textures[i], texture)
   end
 end
 
@@ -676,13 +676,17 @@ local function createTexture(region, layer, drawlayer)
   local  OrgSetTexture = texture.SetTexture;
   -- WORKAROUND, setting the same texture with a different wrap mode does not change the wrap mode
   texture.SetTexture = function(self, texture, horWrapMode, verWrapMode)
-    local needToClear = (self.horWrapMode and self.horWrapMode ~= horWrapMode) or (self.verWrapMode and self.verWrapMode ~= verWrapMode);
-    self.horWrapMode = horWrapMode;
-    self.verWrapMode = verWrapMode;
-    if (needToClear) then
-      OrgSetTexture(self, nil);
+    if (GetAtlasInfo(texture)) then
+      self:SetAtlas(texture);
+    else
+      local needToClear = (self.horWrapMode and self.horWrapMode ~= horWrapMode) or (self.verWrapMode and self.verWrapMode ~= verWrapMode);
+      self.horWrapMode = horWrapMode;
+      self.verWrapMode = verWrapMode;
+      if (needToClear) then
+        OrgSetTexture(self, nil);
+      end
+      OrgSetTexture(self, texture, horWrapMode, verWrapMode);
     end
-    OrgSetTexture(self, texture, horWrapMode, verWrapMode);
   end
 
   texture.coord  = createTexCoord(texture);
@@ -747,7 +751,7 @@ end
 local function ensureExtraTextures(region, count)
   for i = #region.extraTextures + 1, count do
     local extraTexture = createTexture(region, "ARTWORK", i);
-    extraTexture:SetTexture(region.foreground:GetTexture(), region.textureWrapMode, region.textureWrapMode)
+    extraTexture:SetTexture(region.currentTexture, region.textureWrapMode, region.textureWrapMode)
     extraTexture:SetBlendMode(region.foreground:GetBlendMode());
     extraTexture:SetOrientation(region.orientation, region.compress, region.slanted, region.slant, region.slantFirst, region.slantMode);
     region.extraTextures[i] = extraTexture;
@@ -758,7 +762,7 @@ local function ensureExtraSpinners(region, count)
   local parent = region:GetParent();
   for i = #region.extraSpinners + 1, count do
     local extraSpinner = createSpinner(region, "OVERLAY", parent:GetFrameLevel() + 3, i);
-    extraSpinner:SetTexture(region.foreground:GetTexture());
+    extraSpinner:SetTexture(region.currentTexture);
     extraSpinner:SetBlendMode(region.foreground:GetBlendMode());
     region.extraSpinners[i] = extraSpinner;
   end
@@ -1015,6 +1019,7 @@ local function modify(parent, region, data)
   backgroundSpinner:Color(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   backgroundSpinner:SetBlendMode(data.blendMode);
 
+  region.currentTexture = data.foregroundTexture;
   foreground:SetTexture(data.foregroundTexture, region.textureWrapMode, region.textureWrapMode);
   foreground:SetDesaturated(data.desaturateForeground)
   foreground:SetBlendMode(data.blendMode);
@@ -1221,6 +1226,7 @@ local function modify(parent, region, data)
   end
 
   function region:SetTexture(texture)
+    region.currentTexture = texture;
     region.foreground:SetTexture(texture, region.textureWrapMode, region.textureWrapMode);
     foregroundSpinner:SetTexture(texture);
     if (data.sameTexture) then
