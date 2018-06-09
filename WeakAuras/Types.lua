@@ -850,7 +850,15 @@ WeakAuras.texture_types = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border"
   },
   ["Sparks"] = {
-    ["Interface\\CastingBar\\UI-CastingBar-Spark"] = "Blizzard Spark"
+    ["Interface\\CastingBar\\UI-CastingBar-Spark"] = "Blizzard Spark",
+    ["Insanity-Spark"] = "Blizzard Insanity Spark",
+    ["XPBarAnim-OrangeSpark"] = "Blizzard XPBar Spark",
+    ["GarrMission_EncounterBar-Spark"] = "Blizzard Garrison Mission Encounter Spark",
+    ["Legionfall_BarSpark"]= "Blizzard Legionfall Spark",
+    ["honorsystem-bar-spark"] = "Blizzard Honor System Spark",
+    ["bonusobjectives-bar-spark"] = "Bonus Objectives Spark",
+    ["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark",
+    ["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
   }
 }
 
