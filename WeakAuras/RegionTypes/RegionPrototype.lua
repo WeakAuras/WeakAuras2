@@ -525,3 +525,11 @@ function WeakAuras.regionPrototype.SetTextOnText(text, str)
   w = w + max(5, w / 40);
   text:SetWidth(w); -- But that internal text size calculation is wrong, see ticket 1014
 end
+
+function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
+  if (GetAtlasInfo(path)) then
+    texture:SetAtlas(path);
+  else
+    texture:SetTexture(path, wrapModeH, wrapModeV);
+  end
+end

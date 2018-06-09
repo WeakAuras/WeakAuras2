@@ -1094,7 +1094,7 @@ local function modify(parent, region, data)
   bar:SetStatusBarTexture(texturePath);
   bar:SetBackgroundColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   -- Update spark settings
-  bar.spark:SetTexture(data.sparkTexture);
+  WeakAuras.SetTextureOrAtlas(bar.spark, data.sparkTexture);
   bar.spark:SetVertexColor(data.sparkColor[1], data.sparkColor[2], data.sparkColor[3], data.sparkColor[4]);
   bar.spark:SetWidth(data.sparkWidth);
   bar.spark:SetHeight(data.sparkHeight);

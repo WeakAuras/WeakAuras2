@@ -2434,6 +2434,10 @@ function WeakAuras.pAdd(data)
   elseif (data.controlledChildren) then
     WeakAuras.SetRegion(data);
   else
+    if (data.activeTriggerMode >= data.numTriggers) then
+      data.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+    end
+
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.Add(data);
     end
@@ -2475,9 +2479,7 @@ function WeakAuras.pAdd(data)
       timers[id] = nil;
     end
 
-    if (data.activeTriggerMode >= data.numTriggers) then
-      data.activeTriggerMode = WeakAuras.trigger_modes.first_active;
-    end
+
     triggerState[id] = {};
     triggerState[id].disjunctive = data.disjunctive or "all";
     triggerState[id].numTriggers = data.numTriggers;
