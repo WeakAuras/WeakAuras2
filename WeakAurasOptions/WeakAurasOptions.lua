@@ -91,6 +91,7 @@ function WeakAuras.DuplicateAura(data)
   WeakAuras.DeepCopy(data, newData);
   newData.id = new_id;
   newData.parent = nil;
+  newData.uid = nil
   WeakAuras.Add(newData);
   WeakAuras.NewDisplayButton(newData);
   if(data.parent) then
@@ -2620,7 +2621,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end
     end
   else
-    optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
+    optionTriggerChoices[id] = min(optionTriggerChoices[id] or 0, (data.numTriggers or 1) - 1);
     if(optionTriggerChoices[id] == 0) then
       trigger = data.trigger;
       untrigger = data.untrigger;
@@ -3187,8 +3188,10 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     data.load.use_class = getAll(data, {"load", "use_class"});
     local single_class = getAll(data, {"load", "class"});
-    data.load.class = {}
-    data.load.class.single = single_class;
+    data.load.class = {
+      single = single_class,
+      multi = {},
+    }
 
     displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
     removeFuncs(displayOptions[id].args.load);

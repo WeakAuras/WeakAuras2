@@ -219,15 +219,16 @@ function WeakAuras.CreateFrame()
   importbutton:SetHitRectInsets(0,0,0,0)
   importbutton:SetChecked(db.import_disabled)
 
-  importbutton:SetScript("PostClick", function(self)
-    if self:GetChecked() then
+  importbutton.SetValue = function(importbutton)
+    if importbutton:GetChecked() then
       PlaySound(856)
       db.import_disabled = true
     else
       PlaySound(857)
       db.import_disabled = nil
     end
-  end)
+    WeakAuras.RefreshTooltipButtons()
+  end
   importbutton:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
     GameTooltip:SetText(L["Disable Import"])
@@ -698,25 +699,10 @@ function WeakAuras.CreateFrame()
         end
         button:SetDescription(regionData.description);
         button:SetClick(function()
-          local new_id = "New";
-          local num = 2;
-          while(db.displays[new_id]) do
-            new_id = "New "..num;
-            num = num + 1;
-          end
-
-          local data = {
-            id = new_id,
-            regionType = regionType,
-            activeTriggerMode = WeakAuras.trigger_modes.first_active,
-            disjunctive = "all",
-            trigger = {
-              type = "aura",
-              unit = "player",
-              debuffType = "HELPFUL"
-            },
-            load = {}
-          };
+          local new_id = WeakAuras.FindUnusedId("New")
+          local data = {id = new_id, regionType = regionType}
+          WeakAuras.DeepCopy(WeakAuras.data_stub, data)
+          WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
           WeakAuras.PickAndEditDisplay(new_id);

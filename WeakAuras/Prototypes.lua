@@ -1931,7 +1931,7 @@ WeakAuras.event_prototypes = {
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
-        local showOn = %s
+        local buffShowOn = %s
         local expirationTime = startTime + duration
       ]=];
       if (not trigger.use_trackcharge or not trigger.trackcharge) then
@@ -2000,7 +2000,7 @@ WeakAuras.event_prototypes = {
         local trackedCharge = tonumber(trigger.trackcharge or 1) or 1;
         ret = ret .. ret2:format(trackedCharge - 1);
       end
-      if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
+      if(trigger.use_remaining and trigger.buffShowOn ~= "showOnReady") then
         local ret2 = [[
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
@@ -2013,7 +2013,7 @@ WeakAuras.event_prototypes = {
       return ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
-        "[[" .. (trigger.showOn or "") .. "]]");
+        "[[" .. (trigger.buffShowOn or "") .. "]]");
     end,
     statesParameter = "one",
     canHaveDuration = "timed",
@@ -2043,7 +2043,7 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return (trigger.showOn ~= "showOnReady") end
+        enable = function(trigger) return (trigger.buffShowOn ~= "showOnReady") end
       },
       {
         name = "charges",
@@ -2072,12 +2072,12 @@ WeakAuras.event_prototypes = {
         name = "trackcharge",
         display = L["Show CD of Charge"],
         type = "number",
-        enable = function(trigger) return (trigger.showOn ~= "showOnReady") end,
+        enable = function(trigger) return (trigger.buffShowOn ~= "showOnReady") end,
         test = "true",
         noOperator = true,
       },
       {
-        name = "showOn",
+        name = "buffShowOn",
         display =  L["Show"],
         type = "select",
         values = "cooldown_progress_behavior_types",
@@ -2101,9 +2101,9 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(showOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " ..
-        "or (showOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " ..
-        "or (showOn == \"showAlways\")"
+        test = "(buffShowOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " ..
+        "or (buffShowOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " ..
+        "or (buffShowOn == \"showAlways\")"
       }
     },
     nameFunc = function(trigger)
@@ -2253,9 +2253,9 @@ WeakAuras.event_prototypes = {
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       local ret = [[
         local startTime, duration, enabled = WeakAuras.GetItemCooldown(%s);
-        local showOn = %s
+        local buffShowOn = %s
       ]];
-      if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
+      if(trigger.use_remaining and trigger.buffShowOn ~= "showOnReady") then
         local ret2 = [[
           local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
@@ -2266,7 +2266,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(itemName,  "[[" .. (trigger.showOn or "") .. "]]");
+      return ret:format(itemName,  "[[" .. (trigger.buffShowOn or "") .. "]]");
     end,
     statesParameter = "one",
     args = {
@@ -2281,11 +2281,11 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return (trigger.showOn ~= "showOnReady") end,
+        enable = function(trigger) return (trigger.buffShowOn ~= "showOnReady") end,
         init = "remaining"
       },
       {
-        name = "showOn",
+        name = "buffShowOn",
         display =  L["Show"],
         type = "select",
         values = "cooldown_progress_behavior_types",
@@ -2309,9 +2309,9 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(showOn == \"showOnReady\" and startTime == 0 and enabled == 1) " ..
-        "or (showOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0)) " ..
-        "or (showOn == \"showAlways\")"
+        test = "(buffShowOn == \"showOnReady\" and startTime == 0 and enabled == 1) " ..
+        "or (buffShowOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0)) " ..
+        "or (buffShowOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)
@@ -2354,10 +2354,10 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       local ret = [[
         local startTime, duration, enable = WeakAuras.GetItemSlotCooldown(%s);
-        local showOn = %s
+        local buffShowOn = %s
         local remaining = startTime + duration - GetTime();
       ]];
-      if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
+      if(trigger.use_remaining and trigger.buffShowOn ~= "showOnReady") then
         local ret2 = [[
           local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
@@ -2368,7 +2368,7 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(trigger.itemSlot or "0",  "[[" .. (trigger.showOn or "") .. "]]");
+      return ret:format(trigger.itemSlot or "0",  "[[" .. (trigger.buffShowOn or "") .. "]]");
     end,
     args = {
       {
@@ -2383,7 +2383,7 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return (trigger.showOn ~= "showOnReady") end,
+        enable = function(trigger) return (trigger.buffShowOn ~= "showOnReady") end,
         init = "remaining"
       },
       {
@@ -2393,7 +2393,7 @@ WeakAuras.event_prototypes = {
         test = "enable == 1"
       },
       {
-        name = "showOn",
+        name = "buffShowOn",
         display =  L["Show"],
         type = "select",
         values = "cooldown_progress_behavior_types",
@@ -2411,9 +2411,9 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(showOn == \"showOnReady\" and startTime == 0) " ..
-        "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
-        "or (showOn == \"showAlways\")"
+        test = "(buffShowOn == \"showOnReady\" and startTime == 0) " ..
+        "or (buffShowOn == \"showOnCooldown\" and startTime > 0) " ..
+        "or (buffShowOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)
@@ -3726,7 +3726,7 @@ WeakAuras.event_prototypes = {
       local ret = [[
       local rune = %s;
       local startTime, duration = WeakAuras.GetRuneCooldown(rune);
-      local showOn = %s
+      local buffShowOn = %s
 
       local numRunes = 0;
       for index = 1, 6 do
@@ -3748,7 +3748,7 @@ WeakAuras.event_prototypes = {
       ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(trigger.rune, "[[" .. (trigger.showOn or "") .. "]]");
+      return ret:format(trigger.rune, "[[" .. (trigger.buffShowOn or "") .. "]]");
     end,
     args = {
       {
@@ -3756,9 +3756,9 @@ WeakAuras.event_prototypes = {
         display = L["Rune"],
         type = "select",
         values = "rune_specific_types",
-        test = "(showOn == \"showOnReady\" and (startTime == 0)) " ..
-        "or (showOn == \"showOnCooldown\" and startTime > 0) "  ..
-        "or (showOn == \"showAlways\")",
+        test = "(buffShowOn == \"showOnReady\" and (startTime == 0)) " ..
+        "or (buffShowOn == \"showOnCooldown\" and startTime > 0) "  ..
+        "or (buffShowOn == \"showAlways\")",
         enable = function(trigger) return not trigger.use_runesCount end,
         reloadOptions = true
       },
@@ -3766,10 +3766,10 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return trigger.use_rune and not(trigger.showOn == "showOnReady") end
+        enable = function(trigger) return trigger.use_rune and not(trigger.buffShowOn == "showOnReady") end
       },
       {
-        name = "showOn",
+        name = "buffShowOn",
         display =  L["Show"],
         type = "select",
         values = "cooldown_progress_behavior_types",
