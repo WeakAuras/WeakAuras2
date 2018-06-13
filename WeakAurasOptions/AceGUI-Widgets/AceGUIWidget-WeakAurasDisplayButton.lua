@@ -18,6 +18,7 @@ local ignoreForCopyingDisplay = {
   trigger = true,
   untrigger = true,
   conditions = true,
+  load = true,
   actions = true,
   animation = true,
   id = true,
