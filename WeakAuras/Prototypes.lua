@@ -127,7 +127,7 @@ function WeakAuras.GetHSVTransition(perc, r1, g1, b1, a1, r2, g2, b2, a2)
     diff = diff - 360
   end
 
-  local h3 = (h1 + perc * diff) % 360
+  h3 = (h1 + perc * diff) % 360
   local s3 = s1 - ( s1 - s2 ) * perc
   local v3 = v1 - ( v1 - v2 ) * perc
   --get the RGB values of the new color
