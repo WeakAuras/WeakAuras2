@@ -4188,8 +4188,8 @@ end
 function WeakAuras.OpenModelPicker(data, field)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
-    reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
     if not(loaded) then
+      reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       print(WeakAuras.printPrefix .. "ModelPaths could not be loaded, the addon is " .. reason);
       WeakAuras.ModelPaths = {};
     end
