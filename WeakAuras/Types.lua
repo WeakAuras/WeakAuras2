@@ -204,7 +204,8 @@ WeakAuras.race_types = {
   HighmountainTauren = LBR("Highmountain Tauren"),
   Nightborne = LBR("Nightborne"),
   DarkIronDwarf = LBR("Dark Iron Dwarf"),
-  ZandalariTroll = LBR("Zandalari Troll")
+  ZandalariTroll = LBR("Zandalari Troll"),
+  MagharOrc = LBR("Mag'har Orc"),
 }
 
 WeakAuras.faction_group = {
