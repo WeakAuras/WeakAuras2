@@ -491,14 +491,18 @@ end
 function WeakAuras.CheckPvpTalentByIndex(index)
   if (index <= 3) then
     local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
+    if not talentSlotInfo then return false end
     local checkTalentId = talentSlotInfo.availableTalentIDs[index];
     return talentSlotInfo.selectedTalentID == checkTalentId;
   else
-    local checkTalentId = C_SpecializationInfo.GetPvpTalentSlotInfo(2).availableTalentIDs[index - 3];
-    for i = 2, 4 do
-      local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i);
-      if (talentSlotInfo.selectedTalentID == checkTalentId) then
-        return true;
+    local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2)
+    if checkTalentSlotInfo then
+      local checkTalentId = talentSlotInfo.availableTalentIDs[index - 3];
+      for i = 2, 4 do
+        local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i);
+        if talentSlotInfo and (talentSlotInfo.selectedTalentID == checkTalentId) then
+          return true;
+        end
       end
     end
     return false;
