@@ -527,8 +527,7 @@ function WeakAuras.regionPrototype.SetTextOnText(text, str)
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  local name, _, _ = GetAtlasInfo(path);
-  if name then
+  if type(path) == "string" and GetAtlasInfo(path) then
     texture:SetAtlas(path);
   else
     texture:SetTexture(path, wrapModeH, wrapModeV);
