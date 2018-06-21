@@ -269,7 +269,9 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
   region:SetOffsetAnim(0, 0);
-  WeakAuras.AnchorFrame(data, region, parent);
+  if not parent or parent.regionType ~= "dynamicgroup" then
+    WeakAuras.AnchorFrame(data, region, parent);
+  end
 end
 
 local function SetProgressValue(region, value, total)
