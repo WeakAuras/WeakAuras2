@@ -688,6 +688,7 @@ end
 function GenericTrigger.UnloadAll()
   wipe(loaded_auras);
   wipe(loaded_events);
+  WeakAuras.UnregisterAllEveryFrameUpdate();
 end
 
 function GenericTrigger.UnloadDisplay(id)
@@ -701,6 +702,7 @@ function GenericTrigger.UnloadDisplay(id)
       events[id] = nil;
     end
   end
+  WeakAuras.UnregisterEveryFrameUpdate(id);
 end
 
 local frame = CreateFrame("FRAME");
@@ -757,19 +759,36 @@ function LoadEvent(id, triggernum, data)
   end
 end
 
+local function trueFunction()
+  return true;
+end
+
 function GenericTrigger.LoadDisplay(id)
+  local register_for_frame_updates = false;
   if(events[id]) then
     loaded_auras[id] = true;
     for triggernum, data in pairs(events[id]) do
-      if(events[id] and events[id][triggernum]) then
-        LoadEvent(id, triggernum, data);
+      for index, event in pairs(data.events) do
+        if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+          frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+        elseif (event == "FRAME_UPDATE") then
+          register_for_frame_updates = true;
+        else
+          xpcall(frame.RegisterEvent, trueFunction, frame, event)
+          aceEvents:RegisterMessage(event, HandleEvent, frame)
+        end
       end
+
+      LoadEvent(id, triggernum, data);
     end
   end
-end
 
-local function trueFunction()
-  return true;
+  if(register_for_frame_updates) then
+    WeakAuras.RegisterEveryFrameUpdate(id);
+  else
+    WeakAuras.UnregisterEveryFrameUpdate(id);
+  end
+
 end
 
 --- Adds a display, creating all internal data structures for all triggers.
@@ -779,8 +798,6 @@ function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
   WeakAuras.forceable_events[id] = {};
-
-  local register_for_frame_updates = false;
 
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
@@ -867,15 +884,6 @@ function GenericTrigger.Add(data, region)
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
               end
-
-              for index, event in ipairs(trigger_events) do
-                if (event == "FRAME_UPDATE") then
-                  register_for_frame_updates = true;
-                else
-                  frame:RegisterEvent(event);
-                  aceEvents:RegisterMessage(event, HandleEvent, frame)
-                end
-              end
             end
           end
         else
@@ -913,7 +921,6 @@ function GenericTrigger.Add(data, region)
           end
 
           if((trigger.custom_type == "status" or trigger.custom_type == "stateupdate") and trigger.check == "update") then
-            register_for_frame_updates = true;
             trigger_events = {"FRAME_UPDATE"};
           else
             trigger_events = WeakAuras.split(trigger.events);
@@ -924,14 +931,6 @@ function GenericTrigger.Add(data, region)
                 -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
                 -- that are already in place. Replacing all those checks would be a pain in the ass.
                 trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
-                frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-              else
-                if (event == "FRAME_UPDATE") then
-                  register_for_frame_updates = true;
-                else
-                  xpcall(frame.RegisterEvent, trueFunction, frame, event);
-                  aceEvents:RegisterMessage(event, HandleEvent, frame)
-                end
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
@@ -998,11 +997,7 @@ function GenericTrigger.Add(data, region)
     end
   end
 
-  if(register_for_frame_updates) then
-    WeakAuras.RegisterEveryFrameUpdate(id);
-  else
-    WeakAuras.UnregisterEveryFrameUpdate(id);
-  end
+
 end
 
 do
@@ -1044,6 +1039,16 @@ do
       update_frame:SetScript("OnUpdate", nil);
       updating = false;
     end
+  end
+
+  function WeakAuras.UnregisterAllEveryFrameUpdate()
+    if (not update_frame) then
+      return;
+    end
+    wipe(update_clients);
+    update_clients_num = 0;
+    update_frame:SetScript("OnUpdate", nil);
+    updating = false;
   end
 end
 

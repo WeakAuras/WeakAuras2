@@ -269,7 +269,9 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
   region:SetOffsetAnim(0, 0);
-  WeakAuras.AnchorFrame(data, region, parent);
+  if not parent or parent.regionType ~= "dynamicgroup" then
+    WeakAuras.AnchorFrame(data, region, parent);
+  end
 end
 
 local function SetProgressValue(region, value, total)
@@ -527,7 +529,7 @@ function WeakAuras.regionPrototype.SetTextOnText(text, str)
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  if (GetAtlasInfo(path)) then
+  if type(path) == "string" and GetAtlasInfo(path) then
     texture:SetAtlas(path);
   else
     texture:SetTexture(path, wrapModeH, wrapModeV);

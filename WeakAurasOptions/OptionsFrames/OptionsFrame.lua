@@ -129,7 +129,8 @@ function WeakAuras.CreateFrame()
   local db = savedVars.db;
   local odb = savedVars.odb;
   -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = CreateFrame("FRAME", nil, UIParent);
+  frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent);
+  tinsert(UISpecialFrames, frame:GetName());
   frame:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
