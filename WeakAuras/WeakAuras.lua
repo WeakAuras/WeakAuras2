@@ -3392,31 +3392,23 @@ end
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltip = WeakAuras.GetHiddenTooltip();
   tooltip:SetUnitAura(unit, index, filter);
-  local debuffTypeLine, tooltipTextLine = select(11, tooltip:GetRegions())
+  local tooltipTextLine = select(5, tooltip:GetRegions())
+
   local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
-  local debuffType = debuffTypeLine and debuffTypeLine:GetObjectType() == "FontString" and debuffTypeLine:GetText() or "";
+  local debuffType = "none";
   local found = false;
-  for i,v in pairs(WeakAuras.debuff_class_types) do
-    if(v == debuffType) then
-      found = true;
-      debuffType = i;
-      break;
-    end
-  end
-  if not(found) then
-    debuffType = "none";
-  end
-  local tooltipSize,_;
+  local tooltipSize = {};
   if(tooltipText) then
-    local n2
-    _, _, tooltipSize, n2 = tooltipText:find("(%d+),(%d%d%d)")  -- Blizzard likes american digit grouping, e.g. "9123="9,123"   /mikk
-    if tooltipSize then
-      tooltipSize = tooltipSize..n2
-    else
-      _, _, tooltipSize = tooltipText:find("(%d+)")
+    for t in tooltipText:gmatch("(%d[%d%.,]*)") do
+      tinsert(tooltipSize, tonumber(t));
     end
   end
-  return tooltipText, debuffType, tonumber(tooltipSize) or 0;
+
+  if (#tooltipSize) then
+    return tooltipText, debuffType, unpack(tooltipSize);
+  else
+    return tooltipText, debuffType, 0;
+  end
 end
 
 local function tooltip_draw()

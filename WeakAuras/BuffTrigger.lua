@@ -496,8 +496,10 @@ function WeakAuras.ScanAuras(unit)
               -- Update scan cache
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
-                name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
-                tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
+                name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+                local tooltipSize1, tooltipSize2, tooltipSize3;
+                tooltip, _, tooltipSize1, tooltipSize2, tooltipSize3 = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
+                tooltipSize = {tooltipSize1, tooltipSize2, tooltipSize3}
                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
 
                 -- Save aura data to cache
@@ -542,7 +544,8 @@ function WeakAuras.ScanAuras(unit)
 
               -- Aura conforms to trigger options?
               if(data.subcount) then
-                count = tooltipSize;
+                local index = data.subcountCount or 1;
+                count = tooltipSize[index];
               end
               if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                 -- Show display and handle clones
@@ -1505,6 +1508,7 @@ function BuffTrigger.Add(data)
           autoclone = trigger.autoclone,
           groupclone = trigger.groupclone,
           subcount = trigger.subcount,
+          subcountCount = trigger.subcountCount,
           scanFunc = scanFunc,
           debuffType = trigger.debuffType,
           names = trigger.names,

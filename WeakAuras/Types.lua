@@ -111,6 +111,12 @@ WeakAuras.debuff_types = {
   HARMFUL = L["Debuff"]
 }
 
+WeakAuras.tooltip_count = {
+  [1] = L["First"],
+  [2] = L["Second"],
+  [3] = L["Third"]
+}
+
 WeakAuras.aura_types = {
   BUFF = L["Buff"],
   DEBUFF = L["Debuff"]
