@@ -2062,6 +2062,9 @@ WeakAuras.event_prototypes = {
       end
       return icon;
     end,
+    stacksFunc = function(trigger)
+      return WeakAuras.GetSpellCharges(trigger.realSpellName);
+    end,
     hasSpellID = true,
     automaticrequired = true,
     automaticAutoHide = false
