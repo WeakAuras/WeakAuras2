@@ -458,6 +458,8 @@ local exec_env = setmetatable({}, { __index =
       return forbidden
     elseif overrideFunctions[k] then
       return overrideFunctions[k]
+    elseif WeakAuras.helperFunctions[k] then
+      return WeakAuras.helperFunctions[k]
     else
       return _G[k]
     end
