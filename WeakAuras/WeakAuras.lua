@@ -4,20 +4,20 @@ local internalVersion = 3;
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
 local fmt, tostring, select, pairs, next, type = string.format, tostring, select, pairs, next, type
 local loadstring, assert, error = loadstring, assert, error
-local setmetatable, getmetatable = setmetatable, getmetatable
+local setmetatable = setmetatable
 local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
-local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-  = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
+local LoadAddOn, setfenv, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
+  = LoadAddOn, setfenv, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
-local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-  = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
-  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
+local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
+  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown = debugstack, IsSpellKnown

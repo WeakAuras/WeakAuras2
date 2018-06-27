@@ -7,17 +7,11 @@ local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
-local L = WeakAuras.L
 
 local moversizer
 local mover
 
-local displayButtons = WeakAuras.displayButtons
-local displayOptions = WeakAuras.displayOptions
-local loaded = WeakAuras.loaded
-local regionOptions = WeakAuras.regionOptions
 local savedVars = WeakAuras.savedVars
-local tempGroup = WeakAuras.tempGroup
 
 local function EnsureTexture(self, texture)
   if(texture) then

@@ -9,11 +9,10 @@ local _G = _G
 -- WoW APIs
 local InCombatLockdown = InCombatLockdown
 local GetSpellInfo, GetItemInfo, GetItemIcon, UnitName = GetSpellInfo, GetItemInfo, GetItemIcon, UnitName
-local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySound, CreateFrame, IsAddOnLoaded, LoadAddOn
-  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySound, CreateFrame, IsAddOnLoaded, LoadAddOn
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, CreateFrame, IsAddOnLoaded, LoadAddOn
+  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, CreateFrame, IsAddOnLoaded, LoadAddOn
 
 local AceGUI = LibStub("AceGUI-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L

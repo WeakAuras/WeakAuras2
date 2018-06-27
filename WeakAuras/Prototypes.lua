@@ -5,7 +5,7 @@ local select, pairs, type = select, pairs, type
 local ceil, min = ceil, min
 
 -- WoW APIs
-local GetPvpTalentInfo, GetTalentInfo = GetPvpTalentInfo, GetTalentInfo
+local GetTalentInfo = GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
 local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
 local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
