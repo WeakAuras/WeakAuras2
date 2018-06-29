@@ -1973,6 +1973,7 @@ local function replaceNameDescFuncs(intable, data)
   local function nameAll(info)
     local combinedName;
     local first = true;
+    local foundNames = {};
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
@@ -1985,11 +1986,15 @@ local function replaceNameDescFuncs(intable, data)
           else
             name = childOption.name;
           end
-          if(first) then
+          if (not name) then
+            -- Do nothing
+          elseif(first) then
             combinedName = name;
             first = false;
-          elseif not(combinedName == name) then
-            return childOption.name("default");
+            foundNames[name] = true;
+          elseif not(foundNames[name]) then
+            combinedName = combinedName .. "/" .. name;
+            foundNames[name] = true;
           end
         end
       end
