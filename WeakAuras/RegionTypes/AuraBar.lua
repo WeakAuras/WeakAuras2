@@ -82,6 +82,11 @@ local properties = {
     setter = "SetIconColor",
     type = "color"
   },
+  desaturate = {
+    display = L["Icon Desaturate"],
+    setter = "SetIconDesaturated",
+    type = "bool",
+  },
   backgroundColor = {
     display = L["Background Color"],
     setter = "SetBackgroundColor",
@@ -1432,6 +1437,10 @@ local function modify(parent, region, data)
 
   function region:SetIconColor(r, g, b, a)
     self.icon:SetVertexColor(r, g, b, a);
+  end
+
+  function region:SetIconDesaturated(b)
+    self.icon:SetDesaturated(b);
   end
 
   function region:SetBackgroundColor(r, g, b, a)
