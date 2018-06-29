@@ -92,6 +92,15 @@ local properties = {
     setter = "SetBackgroundColor",
     type = "color"
   },
+  alpha = {
+    display = L["Bar Alpha"],
+    setter = "SetBarAlpha",
+    type = "number",
+    min = 0,
+    max = 1,
+    bigStep = 0.01,
+    isPercent = true
+  },
   sparkColor = {
     display = L["Spark Color"],
     setter = "SetSparkColor",
@@ -1445,6 +1454,10 @@ local function modify(parent, region, data)
 
   function region:SetBackgroundColor(r, g, b, a)
     self.bar:SetBackgroundColor(r, g, b, a);
+  end
+
+  function region:SetBarAlpha(alpha)
+    self:SetAlpha(alpha);
   end
 
   function region:SetSparkColor(r, g, b, a)
