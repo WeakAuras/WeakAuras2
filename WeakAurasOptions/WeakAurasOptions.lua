@@ -3327,7 +3327,10 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
   end
-
+  local function GetScale()
+    return data.scale or data.parent and db.displays[data.parent] and db.displays[data.parent].scale or 1
+  end
+  
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
     position_header = {
@@ -3481,9 +3484,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return not data.anchorPoint:find("LEFT")
       end,
-      get = function() return data.xOffset end,
+      get = function() return data.xOffset*GetScale() end,
       set = function(info, v)
-        data.xOffset = v;
+        data.xOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3509,9 +3512,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return (data.anchorPoint:find("LEFT") or data.anchorPoint:find("RIGHT"));
       end,
-      get = function() return data.xOffset end,
+      get = function() return data.xOffset*GetScale() end,
       set = function(info, v)
-        data.xOffset = v;
+        data.xOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3537,9 +3540,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return not data.anchorPoint:find("RIGHT");
       end,
-      get = function() return data.xOffset end,
+      get = function() return data.xOffset*GetScale() end,
       set = function(info, v)
-        data.xOffset = v;
+        data.xOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3565,9 +3568,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return true;
       end,
-      get = function() return data.xOffset end,
+      get = function() return data.xOffset*GetScale() end,
       set = function(info, v)
-        data.xOffset = v;
+        data.xOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3593,9 +3596,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return not data.anchorPoint:find("BOTTOM");
       end,
-      get = function() return data.yOffset end,
+      get = function() return data.yOffset*GetScale() end,
       set = function(info, v)
-        data.yOffset = v;
+        data.yOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3621,9 +3624,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return data.anchorPoint:find("BOTTOM") or data.anchorPoint:find("TOP");
       end,
-      get = function() return data.yOffset end,
+      get = function() return data.yOffset*GetScale() end,
       set = function(info, v)
-        data.yOffset = v;
+        data.yOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3649,9 +3652,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return not data.anchorPoint:find("TOP");
       end,
-      get = function() return data.yOffset end,
+      get = function() return data.yOffset*GetScale() end,
       set = function(info, v)
-        data.yOffset = v;
+        data.yOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
@@ -3677,9 +3680,9 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
         end
         return true;
       end,
-      get = function() return data.yOffset end,
+      get = function() return data.yOffset*GetScale() end,
       set = function(info, v)
-        data.yOffset = v;
+        data.yOffset = v*(1/GetScale());
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
