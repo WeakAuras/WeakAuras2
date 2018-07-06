@@ -16,6 +16,7 @@ local default = {
   borderInset            = 11,
   borderSize            = 16,
   borderBackdrop        = "Blizzard Tooltip",
+  scale                 = 1,
 };
 
 -- Called when first creating a new region/display
@@ -75,6 +76,9 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local border = region.border;
+
+  -- Scale
+  region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
 
   -- Get overall bounding box
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;

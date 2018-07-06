@@ -492,6 +492,27 @@ local function createOptions(id, data)
         WeakAuras.ResetMoverSizer();
       end
     },
+    scale = {
+      type = "range",
+      name = L["Group Scale"],
+      order = 45,
+      min = 0.05,
+      softMax = 2,
+      bigStep = 0.05,
+      get = function()
+        return data.scale or 1
+      end,
+      set = function(info, v)
+        data.scale = data.scale or 1
+        local change = 1 - (v/data.scale)
+        data.xOffset = data.xOffset/(1-change)
+        data.yOffset = data.yOffset/(1-change)
+        data.scale = v
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer();
+      end
+    },
   };
 
   return {

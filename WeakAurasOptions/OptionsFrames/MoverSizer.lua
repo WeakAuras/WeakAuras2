@@ -552,8 +552,8 @@ local function ConstructMoverSizer(parent)
       self.interims[i]:SetPoint("CENTER", self.anchorPointIcon, "CENTER", x, y);
       self.interims[i]:Show();
     end
-
-    self.text:SetText(("(%.2f, %.2f)"):format(dX, dY));
+    local regionScale = self.moving.region:GetScale()
+    self.text:SetText(("(%.2f, %.2f)"):format(dX*1/regionScale, dY*1/regionScale));
     local midx = (distance / 2) * cos(angle);
     local midy = (distance / 2) * sin(angle);
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy);
