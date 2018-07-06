@@ -19,7 +19,8 @@ local default = {
   radius = 200,
   rotation = 0,
   constantFactor = "RADIUS",
-  frameStrata = 1
+  frameStrata = 1,
+  scale = 1,
 };
 
 local function create(parent)

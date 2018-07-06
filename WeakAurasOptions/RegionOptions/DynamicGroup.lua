@@ -150,10 +150,55 @@ local function createOptions(id, data)
         data.sortHybridTable[id] = not(cur);
       end,
     },
+    scale = {
+      type = "range",
+      name = L["Scale Auras"],
+      order = 50,
+      softMin = 0.05,
+      softMax = 2,
+      bigStep = 0.05,
+      get = function()
+        return data.scale or 1
+      end,
+      set = function(info, v)
+        data.scale = data.scale or 1
+        local normScale = v / data.scale
+        local keys = WeakAuras.region_scale_elements
+        for index, childId in pairs(data.controlledChildren) do
+          local childData = WeakAuras.GetData(childId)
+          -- General
+          for _,key in ipairs(keys.all) do
+            childData[key] = childData[key] * normScale
+          end
+          -- Specific
+          if keys[childData.regionType] then
+            for _,key in ipairs(keys[childData.regionType]) do
+              childData[key] = childData[key] * normScale
+            end
+          end
+          -- Animations
+          for _,info in pairs(childData.animation) do
+            if info.type == 'custom' then -- Only custom here matters
+              for _,key in ipairs(keys.animation) do
+                if info[key] then 
+                  info[key] = info[key] * normScale 
+                end
+              end
+            end
+          end
+          -- Save
+          WeakAuras.Add(childData)
+        end
+        data.scale = v
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer();
+      end
+    },
     spacer = {
       type = "header",
       name = "",
-      order = 50
+      order = 51
     }
   };
 

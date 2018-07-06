@@ -104,9 +104,6 @@ local function modify(parent, region, data)
     end
   end
 
-  -- Set Group Scale
-  region:SetScale(data.scale or 1)
-
   -- Control children (does not happen with "group")
   function region:UpdateBorder(childRegion)
     local border = region.border;
