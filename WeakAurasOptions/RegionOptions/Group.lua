@@ -503,6 +503,10 @@ local function createOptions(id, data)
         return data.scale or 1
       end,
       set = function(info, v)
+        data.scale = data.scale or 1
+        local change = 1 - (v/data.scale)
+        data.xOffset = data.xOffset/(1-change)
+        data.yOffset = data.yOffset/(1-change)
         data.scale = v
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
