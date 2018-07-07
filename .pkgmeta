@@ -34,7 +34,7 @@ externals:
  WeakAuras/Libs/LibButtonGlow-1.0:
   url: https://repos.wowace.com/wow/libbuttonglow-1-0
  WeakAuras/Libs/LibSpellRange-1.0:
-  url: https://repos.curseforge.com/wow/libspellrange-1-0/trunk
+  url: git://github.com/ascott18/LibSpellRange-1.0.git
  WeakAuras/Libs/HereBeDragons-1.0:
   url: https://repos.wowace.com/wow/herebedragons
  WeakAuras/Libs/LibRangeCheck-2.0:
