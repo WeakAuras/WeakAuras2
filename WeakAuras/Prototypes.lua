@@ -1885,10 +1885,6 @@ WeakAuras.event_prototypes = {
             state.resort = true;
             state.changed = true;
           end
-          if (state.stacks ~= charges) then
-            state.changed = true;
-            state.stacks = charges;
-          end
           state.progressType = 'timed';
         ]=];
       else
@@ -1938,10 +1934,6 @@ WeakAuras.event_prototypes = {
             state.value = nil;
             state.total = nil;
             state.progressType = 'timed';
-          end
-          if (state.stacks ~= charges) then
-            state.changed = true;
-            state.stacks = charges;
           end
         ]=];
         local trackedCharge = tonumber(trigger.trackcharge or 1) or 1;
@@ -1996,6 +1988,15 @@ WeakAuras.event_prototypes = {
         name = "charges",
         display = L["Show if Charges"],
         type = "number",
+      },
+      {
+        name = "stacks",
+        init = "charges",
+        hidden = true,
+        test = "true",
+        store = true,
+        display = L["Stacks"],
+        conditionType = "number"
       },
       {
         hidden  = true,
@@ -2060,9 +2061,6 @@ WeakAuras.event_prototypes = {
         icon = select(3, GetSpellInfo(trigger.spellName or 0));
       end
       return icon;
-    end,
-    stacksFunc = function(trigger)
-      return WeakAuras.GetSpellCharges(trigger.realSpellName);
     end,
     hasSpellID = true,
     automaticrequired = true,
