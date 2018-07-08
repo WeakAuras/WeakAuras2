@@ -1402,6 +1402,12 @@ function WeakAuras.LockUpdateInfo()
   end);
 end
 
+function WeakAuras.UnlockUpdateInfo()
+  if frame then
+    frame:SetScript("OnUpdate", nil);
+  end
+end
+
 function WeakAuras.SetIconNames(data)
   if (not thumbnails[data.id]) then return end;
   WeakAuras.SetIconName(data, WeakAuras.regions[data.id].region);
