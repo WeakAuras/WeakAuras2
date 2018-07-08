@@ -132,7 +132,7 @@ function WeakAuras.CreateFrame()
   frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent);
 
   frame:SetScript("OnHide", function()
-    frame:SetScript("OnUpdate", nil);
+    WeakAuras.UnlockUpdateInfo();
     WeakAuras.SetDragging()
 
     local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame();
