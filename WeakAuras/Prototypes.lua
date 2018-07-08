@@ -20,8 +20,7 @@ local L = WeakAuras.L
 
 local SpellRange = LibStub("SpellRange-1.0")
 function WeakAuras.IsSpellInRange(spellId, unit)
-  -- WORKAROUND https://wow.curseforge.com/projects/libspellrange-1-0/issues/2
-  return SpellRange.IsSpellInRange(spellId, unit) or IsSpellInRange(spellId, unit);
+  return SpellRange.IsSpellInRange(spellId, unit)
 end
 
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
