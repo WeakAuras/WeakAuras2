@@ -494,7 +494,7 @@ local function createOptions(id, data)
     },
     scale = {
       type = "range",
-      name = L["Scale Auras"],
+      name = L["Group Scale"],
       order = 45,
       softMin = 0.05,
       softMax = 2,
@@ -504,33 +504,9 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.scale = data.scale or 1
-        local normScale = v / data.scale
-        local keys = WeakAuras.region_scale_elements
-        for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId)
-          -- General
-          for _,key in ipairs(keys.all) do
-            childData[key] = childData[key] * normScale
-          end
-          -- Specific
-          if keys[childData.regionType] then
-            for _,key in ipairs(keys[childData.regionType]) do
-              childData[key] = childData[key] * normScale
-            end
-          end
-          -- Animations
-          for _,info in pairs(childData.animation) do
-            if info.type == 'custom' then -- Only custom here matters
-              for _,key in ipairs(keys.animation) do
-                if info[key] then 
-                  info[key] = info[key] * normScale 
-                end
-              end
-            end
-          end
-          -- Save
-          WeakAuras.Add(childData)
-        end
+        local change = 1 - (v/data.scale)
+        data.xOffset = data.xOffset/(1-change)
+        data.yOffset = data.yOffset/(1-change)
         data.scale = v
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);

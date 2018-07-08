@@ -77,6 +77,9 @@ local function modify(parent, region, data)
   -- Localize
   local border = region.border;
 
+  -- Scale
+  region:SetScale(data.scale or 1)
+  
   -- Get overall bounding box
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
   for index, childId in ipairs(data.controlledChildren) do

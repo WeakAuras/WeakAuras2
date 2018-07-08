@@ -1477,11 +1477,3 @@ WeakAuras.absorb_modes = {
   OVERLAY_FROM_START = L["Attach to Start"],
   OVERLAY_FROM_END = L["Attach to End"]
 }
-
-WeakAuras.region_scale_elements = {
-  all = {"xOffset","yOffset","width","height"},
-  icon = {"text1FontSize","text2FontSize"},
-  text = {"fontSize"},
-  aurabar = {"stacksSize","textSize","timerSize","borderInset","borderOffset","borderSize"},
-  animation = {"scalex","scaley","x","y"},
-}
