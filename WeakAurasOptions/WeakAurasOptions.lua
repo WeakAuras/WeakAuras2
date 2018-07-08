@@ -1337,35 +1337,8 @@ function WeakAuras.ShowOptions(msg)
 end
 
 function WeakAuras.HideOptions()
-  -- dynFrame:SetScript("OnUpdate", nil);
-  WeakAuras.UnlockUpdateInfo();
-  WeakAuras.SetDragging()
-
   if(frame) then
     frame:Hide();
-  end
-
-  local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame();
-  if(tutFrame and tutFrame:IsVisible()) then
-    tutFrame:Hide();
-  end
-
-  WeakAuras.PauseAllDynamicGroups();
-
-  for id, data in pairs(WeakAuras.regions) do
-    data.region:Collapse();
-  end
-
-  WeakAuras.ResumeAllDynamicGroups();
-
-  WeakAuras.ReloadAll();
-  WeakAuras.Resume();
-
-  if (WeakAuras.mouseFrame) then
-    WeakAuras.mouseFrame:OptionsClosed();
-  end
-  if (WeakAuras.personalRessourceDisplayFrame) then
-    WeakAuras.personalRessourceDisplayFrame:OptionsClosed();
   end
 end
 
@@ -1427,10 +1400,6 @@ function WeakAuras.LockUpdateInfo()
       WeakAuras.DoConfigUpdate();
     end
   end);
-end
-
-function WeakAuras.UnlockUpdateInfo()
-  frame:SetScript("OnUpdate", nil);
 end
 
 function WeakAuras.SetIconNames(data)

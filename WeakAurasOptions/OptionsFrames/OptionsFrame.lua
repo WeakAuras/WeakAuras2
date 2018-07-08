@@ -130,6 +130,35 @@ function WeakAuras.CreateFrame()
   local odb = savedVars.odb;
   -------- Mostly Copied from AceGUIContainer-Frame--------
   frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent);
+
+  frame:SetScript("OnHide", function()
+    frame:SetScript("OnUpdate", nil);
+    WeakAuras.SetDragging()
+
+    local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame();
+    if(tutFrame and tutFrame:IsVisible()) then
+      tutFrame:Hide();
+    end
+
+    WeakAuras.PauseAllDynamicGroups();
+
+    for id, data in pairs(WeakAuras.regions) do
+      data.region:Collapse();
+    end
+
+    WeakAuras.ResumeAllDynamicGroups();
+
+    WeakAuras.ReloadAll();
+    WeakAuras.Resume();
+
+    if (WeakAuras.mouseFrame) then
+      WeakAuras.mouseFrame:OptionsClosed();
+    end
+    if (WeakAuras.personalRessourceDisplayFrame) then
+      WeakAuras.personalRessourceDisplayFrame:OptionsClosed();
+    end
+  end);
+
   tinsert(UISpecialFrames, frame:GetName());
   frame:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
