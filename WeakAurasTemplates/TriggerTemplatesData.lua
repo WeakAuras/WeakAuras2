@@ -64,7 +64,7 @@ templates.class.WARRIOR = {
         { spell = 248622, type = "buff", unit = "player", talent = 16}, -- In For The Kill
         { spell = 197690, type = "buff", unit = "player", talent = 12}, -- Defensive Stance
         { spell = 118038, type = "buff", unit = "player"}, -- Die by the Sword
-        { spell = 6673, type = "buff", unit = "player"}, -- Battle Shout
+        { spell = 6673, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Battle Shout
         { spell = 107574, type = "buff", unit = "player", talent = 17}, -- Avatar
         { spell = 262228, type = "buff", unit = "player", talent = 18}, -- Deadly Calm
         { spell = 32216, type = "buff", unit = "player", talent = 5}, -- Victorious
@@ -160,7 +160,7 @@ templates.class.WARRIOR = {
         { spell = 202225, type = "buff", unit = "player", talent = 10}, -- Furious Charge
         { spell = 184362, type = "buff", unit = "player"}, -- Enrage
         { spell = 184364, type = "buff", unit = "player"}, -- Enraged Regeneration
-        { spell = 6673, type = "buff", unit = "player"}, -- Battle Shout
+        { spell = 6673, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Battle Shout
         { spell = 97463, type = "buff", unit = "player"}, -- Rallying Cry
       },
       icon = 136224
@@ -232,7 +232,7 @@ templates.class.WARRIOR = {
         { spell = 871, type = "buff", unit = "player"}, -- Shield Wall
         { spell = 227744, type = "buff", unit = "player", talent = 21}, -- Ravager
         { spell = 202574, type = "buff", unit = "player", talent = 17}, -- Vengeance: Ignore Pain
-        { spell = 6673, type = "buff", unit = "player"}, -- Battle Shout
+        { spell = 6673, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Battle Shout
         { spell = 132404, type = "buff", unit = "player"}, -- Shield Block
         { spell = 202602, type = "buff", unit = "player", talent = 1}, -- Into the Fray
         { spell = 97463, type = "buff", unit = "player"}, -- Rallying Cry
@@ -1177,7 +1177,7 @@ templates.class.PRIEST = {
         { spell = 265258, type = "buff", unit = "player", talent = 2}, -- Twist of Fate
         { spell = 271466, type = "buff", unit = "player", talent = 20}, -- Luminous Barrier
         { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
-        { spell = 21562, type = "buff", unit = "player"}, -- Power Word: Fortitude
+        { spell = 21562, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Power Word: Fortitude
         { spell = 81782, type = "buff", unit = "target"}, -- Power Word: Barrier
         { spell = 33206, type = "buff", unit = "group"}, -- Pain Suppression
         { spell = 193065, type = "buff", unit = "player", talent = 5}, -- Masochism
@@ -1262,7 +1262,7 @@ templates.class.PRIEST = {
         { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
         { spell = 64843, type = "buff", unit = "player"}, -- Divine Hymn
         { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
-        { spell = 21562, type = "buff", unit = "player"}, -- Power Word: Fortitude
+        { spell = 21562, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Power Word: Fortitude
         { spell = 111759, type = "buff", unit = "player"}, -- Levitate
         { spell = 200183, type = "buff", unit = "player", talent = 20}, -- Apotheosis
         { spell = 27827, type = "buff", unit = "player"}, -- Spirit of Redemption
@@ -1352,7 +1352,7 @@ templates.class.PRIEST = {
         { spell = 194249, type = "buff", unit = "player"}, -- Voidform
         { spell = 47585, type = "buff", unit = "player"}, -- Dispersion
         { spell = 232698, type = "buff", unit = "player"}, -- Shadowform
-        { spell = 21562, type = "buff", unit = "player"}, -- Power Word: Fortitude
+        { spell = 21562, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Power Word: Fortitude
         { spell = 111759, type = "buff", unit = "player"}, -- Levitate
         { spell = 123254, type = "buff", unit = "player", talent = 7 }, -- Twist of Fate
       },
@@ -1717,7 +1717,7 @@ templates.class.MAGE = {
         { spell = 110960, type = "buff", unit = "player"}, -- Greater Invisibility
         { spell = 45438, type = "buff", unit = "player"}, -- Ice Block
         { spell = 116267, type = "buff", unit = "player", talent = 7 }, -- Incanter's Flow
-        { spell = 1459, type = "buff", unit = "player"}, -- Arcane Intellect
+        { spell = 1459, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil}, -- Arcane Intellect
         { spell = 212799, type = "buff", unit = "player"}, -- Displacement Beacon
         { spell = 210126, type = "buff", unit = "player", talent = 3 }, -- Arcane Familiar
         { spell = 236298, type = "buff", unit = "player", talent = 13 }, -- Chrono Shift
@@ -1728,7 +1728,6 @@ templates.class.MAGE = {
         { spell = 12051, type = "buff", unit = "player"}, -- Evocation
         { spell = 205025, type = "buff", unit = "player"}, -- Presence of Mind
         { spell = 264774, type = "buff", unit = "player", talent = 2 }, -- Rule of Threes
-        { spell = 113862, type = "buff", unit = "player"}, -- Greater Invisibility
         { spell = 12042, type = "buff", unit = "player"}, -- Arcane Power
 
       },
@@ -1809,7 +1808,7 @@ templates.class.MAGE = {
         { spell = 157644, type = "buff", unit = "player"}, -- Enhanced Pyrotechnics
         { spell = 190319, type = "buff", unit = "player"}, -- Combustion
         { spell = 66, type = "buff", unit = "player"}, -- Invisibility
-        { spell = 1459, type = "buff", unit = "player"}, -- Arcane Intellect
+        { spell = 1459, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Arcane Intellect
         { spell = 130, type = "buff", unit = "player"}, -- Slow Fall
         { spell = 48108, type = "buff", unit = "player"}, -- Hot Streak!
       },
@@ -1884,8 +1883,7 @@ templates.class.MAGE = {
         { spell = 45438, type = "buff", unit = "player"}, -- Ice Block
         { spell = 66, type = "buff", unit = "player"}, -- Invisibility
         { spell = 116267, type = "buff", unit = "player", talent = 7 }, -- Incanter's Flow
-        { spell = 1459, type = "buff", unit = "player"}, -- Arcane Intellect
-        { spell = 32612, type = "buff", unit = "player"}, -- Invisibility
+        { spell = 1459, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Arcane Intellect
         { spell = 108839, type = "buff", unit = "player", talent = 6 }, -- Ice Floes
         { spell = 278310, type = "buff", unit = "player", talent = 11 }, -- Chain Reaction
         { spell = 12472, type = "buff", unit = "player"}, -- Icy Veins
@@ -3480,9 +3478,12 @@ tinsert(templates.general.args, {
   triggers = {[0] = { trigger = { type = "status", event = "Pet Behavior", unevent = "auto", use_behavior = true, behavior = "assist"}}}
 });
 
-tinsert(templates.general.args, { spell = 2825, type = "buff", unit = "player",
+tinsert(templates.general.args, {
+  spell = 2825, type = "buff", unit = "player",
+  forceOwnOnly = true,
+  ownOnly = nil,
   overideTitle = L["Bloodlust/Heroism"],
-  spellIds = {2825, 32182, 80353, 90355, 160452} } -- TODO 8.0
+  spellIds = {2825, 32182, 80353, 90355, 160452, 264667}}
 );
 
 -- Items section
