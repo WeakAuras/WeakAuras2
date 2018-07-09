@@ -185,7 +185,6 @@ function WeakAuras.CreateFrame()
     yOffset = (492 - GetScreenHeight()) / 2;
   end
   frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
-  frame:Hide();
 
   local width, height;
   if(db.frame) then
