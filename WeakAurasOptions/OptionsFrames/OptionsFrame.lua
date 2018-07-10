@@ -130,6 +130,33 @@ function WeakAuras.CreateFrame()
   local odb = savedVars.odb;
   -------- Mostly Copied from AceGUIContainer-Frame--------
   frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent);
+  tinsert(UISpecialFrames, frame:GetName());
+  frame:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 }
+  });
+  frame:SetBackdropColor(0, 0, 0, 1);
+  frame:EnableMouse(true);
+  frame:SetMovable(true);
+  frame:SetResizable(true);
+  frame:SetMinResize(610, 240);
+  frame:SetFrameStrata("DIALOG");
+  frame.window = "default";
+
+  local xOffset, yOffset;
+  if(db.frame) then
+    xOffset, yOffset = db.frame.xOffset, db.frame.yOffset;
+  end
+  if not(xOffset and yOffset) then
+    xOffset = (610 - GetScreenWidth()) / 2;
+    yOffset = (492 - GetScreenHeight()) / 2;
+  end
+  frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
+  frame:Hide();
 
   frame:SetScript("OnHide", function()
     WeakAuras.UnlockUpdateInfo();
@@ -158,34 +185,6 @@ function WeakAuras.CreateFrame()
       WeakAuras.personalRessourceDisplayFrame:OptionsClosed();
     end
   end);
-
-  tinsert(UISpecialFrames, frame:GetName());
-  frame:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 32,
-    insets = { left = 8, right = 8, top = 8, bottom = 8 }
-  });
-  frame:SetBackdropColor(0, 0, 0, 1);
-  frame:EnableMouse(true);
-  frame:SetMovable(true);
-  frame:SetResizable(true);
-  frame:SetMinResize(610, 240);
-  frame:SetFrameStrata("DIALOG");
-  frame.window = "default";
-
-  local xOffset, yOffset;
-  if(db.frame) then
-    xOffset, yOffset = db.frame.xOffset, db.frame.yOffset;
-  end
-  if not(xOffset and yOffset) then
-    xOffset = (610 - GetScreenWidth()) / 2;
-    yOffset = (492 - GetScreenHeight()) / 2;
-  end
-  frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
-  frame:Hide();
 
   local width, height;
   if(db.frame) then
