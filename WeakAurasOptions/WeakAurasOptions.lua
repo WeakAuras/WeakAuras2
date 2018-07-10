@@ -3302,7 +3302,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
   end
-
+  
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
     position_header = {

@@ -19,7 +19,8 @@ local default = {
   radius = 200,
   rotation = 0,
   constantFactor = "RADIUS",
-  frameStrata = 1
+  frameStrata = 1,
+  scale = 1,
 };
 
 local function create(parent)
@@ -48,6 +49,9 @@ function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
 end
 
 local function modify(parent, region, data)
+  -- Scale
+  region:SetScale(data.scale or 1)
+
   local selfPoint;
   if(data.grow == "RIGHT") then
     selfPoint = "LEFT";
@@ -275,6 +279,9 @@ local function modify(parent, region, data)
     for index, regionData in ipairs(region.controlledRegions) do
       if not(region.trays[regionData.key]) then
         region.trays[regionData.key] = CreateFrame("Frame", nil, region);
+        regionData.region:SetParent(region.trays[regionData.key])
+      else
+        regionData.region:SetParent(region.trays[regionData.key]) -- removing and adding aura back doesnt delete tray, so need to reparent it
       end
       if(regionData.data and regionData.region) then
         local tray = region.trays[regionData.key];
