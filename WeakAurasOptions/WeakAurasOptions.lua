@@ -249,32 +249,16 @@ function WeakAuras.MultipleDisplayTooltipMenu()
       text = L["Delete all"],
       notCheckable = 1,
       func = function()
+        local toDelete = {};
+        local parents = {};
         for index, id in pairs(tempGroup.controlledChildren) do
-          local toDelete = {};
-          local parents = {};
-          for index, id in pairs(tempGroup.controlledChildren) do
-            local childData = WeakAuras.GetData(id);
-            toDelete[index] = childData;
-            if(childData.parent) then
-              parents[childData.parent] = true;
-            end
-          end
-          for index, childData in pairs(toDelete) do
-            WeakAuras.DeleteOption(childData);
-          end
-          for id, _ in pairs(parents) do
-            local parentData = WeakAuras.GetData(id);
-            local parentButton = WeakAuras.GetDisplayButton(id);
-            WeakAuras.UpdateGroupOrders(parentData);
-            if(#parentData.controlledChildren == 0) then
-              parentButton:DisableExpand();
-            else
-              parentButton:EnableExpand();
-            end
-            parentButton:SetNormalTooltip();
+          local childData = WeakAuras.GetData(id);
+          toDelete[index] = childData;
+          if(childData.parent) then
+            parents[childData.parent] = true;
           end
         end
-        WeakAuras.SortDisplayButtons();
+        WeakAuras.ConfirmDelete(toDelete, parents)
       end
     },
     {
@@ -1255,6 +1239,47 @@ function WeakAuras.DeleteOption(data)
     WeakAuras.UpdateDisplayButton(parentData);
   end
 end
+
+StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
+  text = L["Are you sure you want to delete?"],
+  button1 = L["Yes"],
+  button2 = L["No"],
+  OnAccept = function(self)
+    if self.data then
+      for _, auraData in pairs(self.data.toDelete) do
+        WeakAuras.DeleteOption(auraData)
+      end
+      if self.data.parents then
+        for id in pairs(self.data.parents) do
+          local parentData = WeakAuras.GetData(id)
+          local parentButton = WeakAuras.GetDisplayButton(id)
+          WeakAuras.UpdateGroupOrders(parentData)
+          if(#parentData.controlledChildren == 0) then
+            parentButton:DisableExpand()
+          else
+            parentButton:EnableExpand()
+          end
+          parentButton:SetNormalTooltip()
+        end
+      end
+      WeakAuras.SortDisplayButtons()
+    end
+  end,
+  OnCancel = function(self)
+    self.data = nil
+  end,
+  showAlert = true,
+  whileDead = true,
+  preferredindex = STATICPOPUP_NUMDIALOGS,
+}
+
+function WeakAuras.ConfirmDelete(toDelete, parents)
+  if toDelete then
+    StaticPopup_Show("WEAKAURAS_CONFIRM_DELETE", "", "", {toDelete = toDelete, parents = parents})
+  end
+end
+
+
 
 function WeakAuras.OptionsFrame()
   if(frame) then
