@@ -2315,7 +2315,7 @@ WeakAuras.event_prototypes = {
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      return "";
+      return (GetItemInfo(GetInventoryItemID("player", trigger.itemSlot)));
     end,
     iconFunc = function(trigger)
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
