@@ -1241,9 +1241,9 @@ function WeakAuras.DeleteOption(data)
 end
 
 StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
-  text = L["Are you sure you want to delete?"],
-  button1 = L["Yes"],
-  button2 = L["No"],
+  text = "",
+  button1 = L["Delete"],
+  button2 = L["Cancel"],
   OnAccept = function(self)
     if self.data then
       for _, auraData in pairs(self.data.toDelete) do
@@ -1275,6 +1275,8 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
 
 function WeakAuras.ConfirmDelete(toDelete, parents)
   if toDelete then
+    local warningForm = L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"]
+    StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"].text = warningForm:format(#toDelete)
     StaticPopup_Show("WEAKAURAS_CONFIRM_DELETE", "", "", {toDelete = toDelete, parents = parents})
   end
 end
