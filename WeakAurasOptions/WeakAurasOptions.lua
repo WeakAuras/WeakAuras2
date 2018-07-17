@@ -1281,8 +1281,6 @@ function WeakAuras.ConfirmDelete(toDelete, parents)
   end
 end
 
-
-
 function WeakAuras.OptionsFrame()
   if(frame) then
     return frame;
