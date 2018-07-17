@@ -82,10 +82,24 @@ local properties = {
     setter = "SetIconColor",
     type = "color"
   },
+  desaturate = {
+    display = L["Icon Desaturate"],
+    setter = "SetIconDesaturated",
+    type = "bool",
+  },
   backgroundColor = {
     display = L["Background Color"],
     setter = "SetBackgroundColor",
     type = "color"
+  },
+  alpha = {
+    display = L["Bar Alpha"],
+    setter = "SetBarAlpha",
+    type = "number",
+    min = 0,
+    max = 1,
+    bigStep = 0.01,
+    isPercent = true
   },
   sparkColor = {
     display = L["Spark Color"],
@@ -1275,10 +1289,9 @@ local function modify(parent, region, data)
     region.UpdateCustomText = function()
       -- Evaluate and update text
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      local ok, custom = pcall(customTextFunc, region.expirationTime, region.duration,
+      local ok, custom = xpcall(customTextFunc, geterrorhandler(), region.expirationTime, region.duration,
         values.progress, values.duration, values.name, values.icon, values.stacks);
       if (not ok) then
-        WeakAuras.ReportError(custom);
         custom = "";
       end
       WeakAuras.ActivateAuraEnvironment(nil);
@@ -1435,8 +1448,16 @@ local function modify(parent, region, data)
     self.icon:SetVertexColor(r, g, b, a);
   end
 
+  function region:SetIconDesaturated(b)
+    self.icon:SetDesaturated(b);
+  end
+
   function region:SetBackgroundColor(r, g, b, a)
     self.bar:SetBackgroundColor(r, g, b, a);
+  end
+
+  function region:SetBarAlpha(alpha)
+    self:SetAlpha(alpha);
   end
 
   function region:SetSparkColor(r, g, b, a)

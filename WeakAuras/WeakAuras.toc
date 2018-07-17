@@ -1,4 +1,4 @@
-## Interface: 70300
+## Interface: 80000
 ## Title: WeakAuras 2
 ## Author: Mirrored and the WeakAuras Team
 ## Version: @project-version@
@@ -14,7 +14,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibChatAnims, LibBabble-Race-3.0, LibButtonGlow-1.0, LibSpellRange-1.0, HereBeDragons-1.0, LibRangeCheck-2.0
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibBabble-Race-3.0, LibButtonGlow-1.0, LibSpellRange-1.0, HereBeDragons, LibRangeCheck-2.0
 
 embeds.xml
 Init.lua
@@ -27,6 +27,7 @@ WeakAuras.lua
 Transmission.lua
 BuffTrigger.lua
 GenericTrigger.lua
+HelperFunctions.lua
 
 RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua

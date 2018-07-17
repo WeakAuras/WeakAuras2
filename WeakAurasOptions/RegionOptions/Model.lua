@@ -51,7 +51,7 @@ local function createOptions(id, data)
     },
     api = {
       type = "toggle",
-      name = L["Use SetTransform (will change behaviour in 7.3)"],
+      name = L["Use SetTransform"],
       order = 7,
       width = "double"
     },

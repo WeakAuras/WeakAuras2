@@ -5,7 +5,7 @@ local select, pairs, type = select, pairs, type
 local ceil, min = ceil, min
 
 -- WoW APIs
-local GetPvpTalentInfo, GetTalentInfo = GetPvpTalentInfo, GetTalentInfo
+local GetTalentInfo = GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
 local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
 local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
@@ -16,13 +16,13 @@ local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitC
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
+-- luacheck: globals C_SpecializationInfo C_Map
+
 local SpellRange = LibStub("SpellRange-1.0")
 function WeakAuras.IsSpellInRange(spellId, unit)
-  -- WORKAROUND https://wow.curseforge.com/projects/libspellrange-1-0/issues/2
-  return SpellRange.IsSpellInRange(spellId, unit) or IsSpellInRange(spellId, unit);
+  return SpellRange.IsSpellInRange(spellId, unit)
 end
 
-local HBD = LibStub("HereBeDragons-1.0")
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
 function WeakAuras.GetRange(unit)
@@ -39,51 +39,14 @@ function WeakAuras.CheckRange(unit, range, operator)
 end
 
 WeakAuras.encounter_table = {
-  -- The Emerald Nightmare
-  [1703] = 1853, -- Nythendra
-  [1744] = 1876, -- Elerethe Renferal
-  [1738] = 1873, -- Il'gynoth, Heart of Corruption
-  [1667] = 1841, -- Ursoc
-  [1704] = 1854, -- Dragons of Nightmare
-  [1750] = 1877, -- Cenarius
-  [1726] = 1864, -- Xavius
-  -- The Nighthold
-  [1706] = 1849, -- Skorpyron,
-  [1725] = 1865, -- Chronomatic Anomaly
-  [1731] = 1867, -- Trilliax,
-  [1751] = 1871, -- Spellblade Aluriel
-  [1762] = 1862, -- Tichondrius
-  [1713] = 1842, -- Krosus
-  [1761] = 1886, -- High Botanist Tel'arn
-  [1732] = 1863, -- Star Augur Etraeus
-  [1743] = 1872, -- Grand Magistrix Elisande
-  [1737] = 1866, -- Gul'dan
-  -- Trial of Valor
-  [1819] = 1958, -- Odyn
-  [1830] = 1962, -- Guarm
-  [1829] = 2008, -- Helya
-  -- Tomb of Sargeras
-  [1862] = 2032, -- Goroth
-  [1867] = 2048, -- Demonic Inquisition
-  [1856] = 2036, -- Harjatan
-  [1861] = 2037, -- Mistress Sasszine
-  [1903] = 2050, -- Sisters of the Moon
-  [1896] = 2054, -- Desolate Host
-  [1897] = 2052, -- Maiden of Vigilance
-  [1873] = 2038, -- Fallen Avatar
-  [1898] = 2051, -- Kiljaeden
-  -- Antorus, the Burning Throne
-  [1984] = 2063, -- Aggramar
-  [1985] = 2064, -- Portal Keeper Hasabel
-  [1983] = 2069, -- Varimathras
-  [1997] = 2070, -- War Council
-  [1986] = 2073, -- The Coven of Shivarra
-  [1987] = 2074, -- Hounds of Sargeras
-  [2025] = 2075, -- Eonar, the Lifebinder
-  [1992] = 2076, -- Garothi Worldbreaker
-  [2009] = 2082, -- Imonar the Soulhunter
-  [2004] = 2088, -- Kin'garoth
-  [2031] = 2092, -- Argus the Unmaker
+  [2168] = 2144, -- Taloc the Corrupted
+  [2167] = 2141, -- MOTHER
+  [2146] = 2128, -- Fetid Devourer
+  [2169] = 2136, -- Zek'voz, Herald of N'zoth
+  [2195] = 2145, -- TODO Needs checking-- Zul, Reborn
+  [2194] = 2135, -- Mythrax the Unraveler
+  [2166] = 2134, -- Vectis
+  [2147] = 2122, -- G'huun
 }
 
 local function get_encounters_list()
@@ -113,7 +76,7 @@ local function get_encounters_list()
     encounter_list = encounter_list .. "\n"
   end
 
-  return encounter_list:sub(1, -2)
+  return encounter_list:sub(1, -3) .. L["\n\nSupports multiple entries, separated by commas\n"]
 end
 
 WeakAuras.function_strings = {
@@ -143,6 +106,39 @@ WeakAuras.function_strings = {
   ]]
 };
 
+local hsvFrame = CreateFrame("Colorselect")
+
+-- HSV transition, for a much prettier color transition in many cases
+-- see http://www.wowinterface.com/forums/showthread.php?t=48236
+function WeakAuras.GetHSVTransition(perc, r1, g1, b1, a1, r2, g2, b2, a2)
+  --get hsv color for colorA
+  hsvFrame:SetColorRGB(r1, g1, b1)
+  local h1, s1, v1 = hsvFrame:GetColorHSV() -- hue, saturation, value
+  --get hsv color for colorB
+  hsvFrame:SetColorRGB(r2, g2, b2)
+  local h2, s2, v2 = hsvFrame:GetColorHSV() -- hue, saturation, value
+  local h3 = floor(h1 - (h1 - h2) * perc)
+  -- find the shortest arc through the color circle, then interpolate
+  local diff = h2 - h1
+  if diff < -180 then
+    diff = diff + 360
+  elseif diff > 180 then
+    diff = diff - 360
+  end
+
+  h3 = (h1 + perc * diff) % 360
+  local s3 = s1 - ( s1 - s2 ) * perc
+  local v3 = v1 - ( v1 - v2 ) * perc
+  --get the RGB values of the new color
+  hsvFrame:SetColorHSV(h3, s3, v3)
+  local r, g, b = hsvFrame:GetColorRGB()
+  --interpolate alpha
+  local a = a1 - ( a1 - a2 ) * perc
+  --return the new color
+  return r, g, b, a
+end
+
+
 WeakAuras.anim_function_strings = {
   straight = [[
     function(progress, start, delta)
@@ -162,6 +158,11 @@ WeakAuras.anim_function_strings = {
   straightColor = [[
     function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
       return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
+    end
+  ]],
+  straightHSV = [[
+    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+      return WeakAuras.GetHSVTransition(progress, r1, g1, b1, a1, r2, g2, b2, a2)
     end
   ]],
   circle = [[
@@ -246,6 +247,13 @@ WeakAuras.anim_function_strings = {
            g1 + (newProgress * (g2 - g1)),
            b1 + (newProgress * (b2 - b1)),
            a1 + (newProgress * (a2 - a1))
+    end
+  ]],
+  pulseHSV = [[
+    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+      local angle = (progress * 2 * math.pi) - (math.pi / 2)
+      local newProgress = ((math.sin(angle) + 1)/2);
+      return WeakAuras.GetHSVTransition(newProgress, r1, g1, b1, a1, r2, g2, b2, a2)
     end
   ]],
   fauxspin = [[
@@ -480,10 +488,24 @@ function WeakAuras.CheckTalentByIndex(index)
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
-  local tier = ceil(index / 3)
-  local column = (index - 1) % 3 + 1
-  local _, _, _, selected = GetPvpTalentInfo(tier, column, 1)
-  return selected
+  if (index <= 3) then
+    local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
+    if not talentSlotInfo then return false end
+    local checkTalentId = talentSlotInfo.availableTalentIDs[index];
+    return talentSlotInfo.selectedTalentID == checkTalentId;
+  else
+    local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2)
+    if checkTalentSlotInfo then
+      local checkTalentId = checkTalentSlotInfo.availableTalentIDs[index - 3];
+      for i = 2, 4 do
+        local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i);
+        if talentSlotInfo and (talentSlotInfo.selectedTalentID == checkTalentId) then
+          return true;
+        end
+      end
+    end
+    return false;
+  end
 end
 
 function WeakAuras.CheckNumericIds(loadids, currentId)
@@ -761,52 +783,52 @@ WeakAuras.load_prototype = {
           local single_class;
           -- First check to use if the class load is on multi-select with only one class selected
           if(trigger.use_class == false and trigger.class and trigger.class.multi) then
-            local num_classes = 0;
-            for class in pairs(trigger.class.multi) do
-              single_class = class;
-              num_classes = num_classes + 1;
-            end
-            if(num_classes ~= 1) then
-              single_class = nil;
-            end
+           local num_classes = 0;
+           for class in pairs(trigger.class.multi) do
+             single_class = class;
+             num_classes = num_classes + 1;
+           end
+           if(num_classes ~= 1) then
+             single_class = nil;
+           end
           end
           -- If that is not the case, see if it is on single-select
           if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
-            single_class = trigger.class.single
+           single_class = trigger.class.single
           end
 
           if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
+           single_class = select(2, UnitClass("player"));
           end
 
           local single_spec;
           if (single_class) then
-            if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
-              local num_specs = 0;
-              for spec in pairs(trigger.spec.multi) do
-                single_spec = spec;
-                num_specs = num_specs + 1;
-              end
-              if (num_specs ~= 1) then
-                single_spec = nil;
-              end
-            end
+           if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
+             local num_specs = 0;
+             for spec in pairs(trigger.spec.multi) do
+               single_spec = spec;
+               num_specs = num_specs + 1;
+             end
+             if (num_specs ~= 1) then
+               single_spec = nil;
+             end
+           end
           end
           if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
-            single_spec = trigger.spec.single;
+           single_spec = trigger.spec.single;
           end
 
           if (trigger.use_spec == nil) then
-            single_spec = GetSpecialization();
+           single_spec = GetSpecialization();
           end
 
           -- print ("Using talent cache", single_class, single_spec);
           -- If a single specific class was found, load the specific list for it
           if(single_class and WeakAuras.pvp_talent_types_specific[single_class]
-            and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
-            return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
+           and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
+           return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
           else
-            return WeakAuras.pvp_talent_types;
+           return WeakAuras.pvp_talent_types;
           end
         end
       end,
@@ -840,23 +862,23 @@ WeakAuras.load_prototype = {
     },
     {
       name = "zone",
-      display = L["Zone"],
+      display = L["Zone Name"],
       type = "string",
       init = "arg"
     },
     {
       name = "zoneId",
-      display = L["Zone ID"],
+      display = L["Zone ID(s)"],
       type = "string",
       init = "arg",
       desc = function()
-         return L["Zone ID List"] .. "\n" .. L["Current Zone ID:"] .. " " .. HBD:GetPlayerZone();
+         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
        end,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
     },
     {
       name = "encounterid",
-      display = L["Encounter ID"],
+      display = L["Encounter ID(s)"],
       type = "string",
       init = "arg",
       desc = get_encounters_list,
@@ -879,7 +901,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "role",
-      display = L["Player Dungeon Role"],
+      display = L["Spec Role"],
       type = "multiselect",
       values = "role_types",
       init = "arg"
@@ -1015,8 +1037,6 @@ WeakAuras.event_prototypes = {
     events = function(trigger)
       local result = {
         "UNIT_HEALTH_FREQUENT",
-        "WA_UNIT_PET",
-        "WA_DELAYED_PLAYER_ENTERING_WORLD"
       };
       AddUnitChangeEvents(trigger.unit, result);
       if (trigger.use_showAbsorb) then
@@ -1027,6 +1047,7 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
+    internal_events = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Health"],
     init = function(trigger)
@@ -1152,7 +1173,6 @@ WeakAuras.event_prototypes = {
     events = function(trigger)
       local result = {
         "UNIT_POWER_FREQUENT",
-        "WA_DELAYED_PLAYER_ENTERING_WORLD",
         "UNIT_DISPLAYPOWER"
       };
       AddUnitChangeEvents(trigger.unit, result);
@@ -1166,6 +1186,7 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
+    internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD" },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Power"],
     init = function(trigger)
@@ -1188,7 +1209,7 @@ WeakAuras.event_prototypes = {
       if (trigger.use_showCost) then
         ret = ret .. [[
           if (event == "UNIT_SPELLCAST_START" and unit == "player") then
-            local spellID = select(10, UnitCastingInfo("player"));
+            local spellID = select(9, UnitCastingInfo("player"));
             if spellID then
               local costTable = GetSpellPowerCost(spellID);
               for _, costInfo in pairs(costTable) do
@@ -1775,6 +1796,8 @@ WeakAuras.event_prototypes = {
   ["Spell Activation Overlay"] = {
     type = "status",
     events = {
+    },
+    internal_events = {
       "WA_UPDATE_OVERLAY_GLOW"
     },
     force_events = "WA_UPDATE_OVERLAY_GLOW",
@@ -1806,7 +1829,10 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Spell)"] = {
     type = "status",
-    events = function(trigger, untrigger)
+    events = {
+
+    },
+    internal_events = function(trigger, untrigger)
       local events = {
         "SPELL_COOLDOWN_READY",
         "SPELL_COOLDOWN_CHANGED",
@@ -1964,6 +1990,15 @@ WeakAuras.event_prototypes = {
         type = "number",
       },
       {
+        name = "stacks",
+        init = "charges",
+        hidden = true,
+        test = "true",
+        store = true,
+        display = L["Stacks"],
+        conditionType = "number"
+      },
+      {
         hidden  = true,
         name = "maxCharges",
         store = true,
@@ -2027,9 +2062,6 @@ WeakAuras.event_prototypes = {
       end
       return icon;
     end,
-    stacksFunc = function(trigger)
-      return WeakAuras.GetSpellCharges(trigger.realSpellName);
-    end,
     hasSpellID = true,
     automaticrequired = true,
     automaticAutoHide = false
@@ -2037,6 +2069,8 @@ WeakAuras.event_prototypes = {
   ["Cooldown Ready (Spell)"] = {
     type = "event",
     events = {
+    },
+    internal_events = {
       "SPELL_COOLDOWN_READY",
     },
     name = L["Cooldown Ready (Spell)"],
@@ -2074,6 +2108,8 @@ WeakAuras.event_prototypes = {
   ["Charges Changed (Spell)"] = {
     type = "event",
     events = {
+    },
+    internal_events = {
       "SPELL_CHARGES_CHANGED",
     },
     name = L["Charges Changed (Spell)"],
@@ -2134,11 +2170,13 @@ WeakAuras.event_prototypes = {
   ["Cooldown Progress (Item)"] = {
     type = "status",
     events = {
+
+    },
+    internal_events = {
       "ITEM_COOLDOWN_READY",
       "ITEM_COOLDOWN_CHANGED",
       "ITEM_COOLDOWN_STARTED",
       "COOLDOWN_REMAINING_CHECK",
-      "ITEM_INFO_UPDATED"
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Item)"],
@@ -2231,12 +2269,13 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Equipment Slot)"] = {
     type = "status",
-    events = {
-      "ITEM_SLOT_COOLDOWN_READY",
+    events = {},
+    internal_events = {
       "ITEM_SLOT_COOLDOWN_STARTED",
       "ITEM_SLOT_COOLDOWN_CHANGED",
       "COOLDOWN_REMAINING_CHECK",
-      "ITEM_SLOT_COOLDOWN_ITEM_CHANGED"
+      "ITEM_SLOT_COOLDOWN_ITEM_CHANGED",
+      "ITEM_SLOT_COOLDOWN_READY"
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],
@@ -2315,7 +2354,7 @@ WeakAuras.event_prototypes = {
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      return "";
+      return GetItemInfo(GetInventoryItemID("player", trigger.itemSlot));
     end,
     iconFunc = function(trigger)
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
@@ -2326,8 +2365,9 @@ WeakAuras.event_prototypes = {
   ["Cooldown Ready (Item)"] = {
     type = "event",
     events = {
+          },
+    internal_events = {
       "ITEM_COOLDOWN_READY",
-      "ITEM_INFO_UPDATED"
     },
     name = L["Cooldown Ready (Item)"],
     loadFunc = function(trigger)
@@ -2363,7 +2403,8 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Ready (Equipment Slot)"] = {
     type = "event",
-    events = {
+    events = {},
+    internal_events = {
       "ITEM_SLOT_COOLDOWN_READY"
     },
     name = L["Cooldown Ready (Equipment Slot)"],
@@ -2413,6 +2454,8 @@ WeakAuras.event_prototypes = {
   ["DBM Announce"] = {
     type = "event",
     events = {
+    },
+    internal_events = {
       "DBM_Announce"
     },
     name = L["DBM Announce"],
@@ -2458,6 +2501,9 @@ WeakAuras.event_prototypes = {
   ["DBM Timer"] = {
     type = "status",
     events = {
+
+    },
+    internal_events = {
       "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce"
     },
     force_events = "DBM_TimerForce",
@@ -2626,7 +2672,8 @@ WeakAuras.event_prototypes = {
   -- BigWigs
   ["BigWigs Message"] = {
     type = "event",
-    events = {
+    events = {},
+    internal_events = {
       "BigWigs_Message"
     },
     name = L["BigWigs Message"],
@@ -2684,7 +2731,8 @@ WeakAuras.event_prototypes = {
   },
   ["BigWigs Timer"] = {
     type = "status",
-    events = {
+    events = {},
+    internal_events = {
       "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update",
     },
     force_events = "BigWigs_Timer_Force",
@@ -2825,7 +2873,8 @@ WeakAuras.event_prototypes = {
   },
   ["Global Cooldown"] = {
     type = "status",
-    events = {
+    events = {},
+    internal_events = {
       "GCD_START",
       "GCD_CHANGE",
       "GCD_END",
@@ -2875,6 +2924,8 @@ WeakAuras.event_prototypes = {
   ["Swing Timer"] = {
     type = "status",
     events = {
+    },
+    internal_events = {
       "SWING_TIMER_START",
       "SWING_TIMER_CHANGE",
       "SWING_TIMER_END"
@@ -2929,14 +2980,15 @@ WeakAuras.event_prototypes = {
   ["Action Usable"] = {
     type = "status",
     events = {
-      "SPELL_COOLDOWN_READY",
-      "SPELL_COOLDOWN_CHANGED",
-      "SPELL_COOLDOWN_STARTED",
       "SPELL_UPDATE_USABLE",
       "PLAYER_TARGET_CHANGED",
       "UNIT_POWER_FREQUENT",
       "RUNE_POWER_UPDATE",
-      "RUNE_TYPE_UPDATE"
+    },
+    internal_events = {
+      "SPELL_COOLDOWN_READY",
+      "SPELL_COOLDOWN_CHANGED",
+      "SPELL_COOLDOWN_STARTED",
     },
     force_events = "SPELL_UPDATE_USABLE",
     name = L["Action Usable"],
@@ -3032,8 +3084,10 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "PLAYER_TOTEM_UPDATE",
-      "COOLDOWN_REMAINING_CHECK",
       "PLAYER_ENTERING_WORLD"
+    },
+    internal_events = {
+      "COOLDOWN_REMAINING_CHECK",
     },
     force_events = "PLAYER_ENTERING_WORLD",
     name = L["Totem"],
@@ -3193,8 +3247,10 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "BAG_UPDATE",
-      "ITEM_COUNT_UPDATE",
       "PLAYER_ENTERING_WORLD"
+    },
+    internal_events = {
+      "ITEM_COUNT_UPDATE",
     },
     force_events = "BAG_UPDATE",
     name = L["Item Count"],
@@ -3255,8 +3311,8 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "UPDATE_SHAPESHIFT_FORM",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
+    internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD" },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Stance/Form/Aura"],
     init = function(trigger)
@@ -3318,7 +3374,8 @@ WeakAuras.event_prototypes = {
   },
   ["Weapon Enchant"] = {
     type = "status",
-    events = {
+    events = { },
+    internal_events = {
       "MAINHAND_TENCH_UPDATE",
       "OFFHAND_TENCH_UPDATE"
     },
@@ -3515,7 +3572,8 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "RUNE_POWER_UPDATE",
-      "RUNE_TYPE_UPDATE",
+    },
+    internal_events = {
       "RUNE_COOLDOWN_READY",
       "RUNE_COOLDOWN_CHANGED",
       "RUNE_COOLDOWN_STARTED",
@@ -3649,9 +3707,8 @@ WeakAuras.event_prototypes = {
     events = {
       "UNIT_INVENTORY_CHANGED",
       "PLAYER_EQUIPMENT_CHANGED",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD",
-      "ITEM_INFO_UPDATED"
     },
+    internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
     force_events = "UNIT_INVENTORY_CHANGED",
     name = L["Item Equipped"],
     init = function(trigger)
@@ -3730,6 +3787,7 @@ WeakAuras.event_prototypes = {
           local currentClass = select(3, UnitClass("player"));
           local specID = GetSpecializationInfo(GetSpecialization());
 
+          C_LootJournal.SetClassAndSpecFilters(currentClass, specID);
           local sets = C_LootJournal.GetFilteredItemSets();
           C_LootJournal.SetClassAndSpecFilters(classFilter, specFilter);
 
@@ -3767,8 +3825,8 @@ WeakAuras.event_prototypes = {
       "WEAR_EQUIPMENT_SET",
       "EQUIPMENT_SETS_CHANGED",
       "EQUIPMENT_SWAP_FINISHED",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
+    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "PLAYER_EQUIPMENT_CHANGED",
     name = L["Equipment Set Equipped"],
     init = function(trigger)
@@ -3903,11 +3961,13 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_DELAYED",
         "UNIT_SPELLCAST_INTERRUPTIBLE",
         "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-        "CAST_REMAINING_CHECK"
       };
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
+    internal_events = {
+      "CAST_REMAINING_CHECK"
+    },
     force_events = "CAST_REMAINING_CHECK",
     name = L["Cast"],
     init = function(trigger)
@@ -3918,11 +3978,11 @@ WeakAuras.event_prototypes = {
         local spell, interruptible, _;
         local castType;
         local endTime;
-        spell, _, _, _, _, endTime, _, _, interruptible = UnitCastingInfo(unit)
+        spell, _, _, _, endTime, _, _, interruptible = UnitCastingInfo(unit)
         if(spell) then
           castType = "cast"
         else
-          spell, _, _, _, _, endTime, _, interruptible = UnitChannelInfo(unit)
+          spell, _, _, _, endTime, _, interruptible = UnitChannelInfo(unit)
           if(spell) then
             castType = "channel"
           end
@@ -3999,9 +4059,9 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local _, _, _, _, startTime, endTime = UnitCastingInfo(trigger.unit);
+      local _, _, _, startTime, endTime = UnitCastingInfo(trigger.unit);
       if not(startTime) then
-        local _, _, _, _, startTime, endTime = UnitChannelInfo(trigger.unit);
+        local _, _, _, startTime, endTime = UnitChannelInfo(trigger.unit);
         if not(startTime) then
           return 0, math.huge;
         else
@@ -4025,9 +4085,9 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, icon = UnitCastingInfo(trigger.unit);
+      local _, _, icon = UnitCastingInfo(trigger.unit);
       if not(icon) then
-        local _, _, _, icon = UnitChannelInfo(trigger.unit);
+        local _, _, icon = UnitChannelInfo(trigger.unit);
         if not(icon) then
           return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon";
         else
@@ -4044,7 +4104,6 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger, untrigger)
       local events = {};
-      tinsert(events,  "CONDITIONS_CHECK");
       if (trigger.use_incombat ~= nil) then
         tinsert(events, "PLAYER_REGEN_ENABLED");
         tinsert(events, "PLAYER_REGEN_DISABLED");
@@ -4068,19 +4127,25 @@ WeakAuras.event_prototypes = {
         tinsert(events, "PLAYER_UPDATE_RESTING");
       end
 
+      if (trigger.use_HasPet ~= nil) then
+        tinsert(events, "UNIT_PET");
+      end
+
+      return events;
+    end,
+    internal_events = function(trigger, untrigger)
+      local events = { "CONDITIONS_CHECK"};
       if (trigger.use_mounted ~= nil) then
         tinsert(events, "MOUNTED_UPDATE");
       end
 
       if (trigger.use_HasPet ~= nil) then
         tinsert(events, "PET_UPDATE");
-        tinsert(events, "UNIT_PET");
       end
 
       if (trigger.use_ismoving ~= nil) then
         tinsert(events, "PLAYER_MOVING_UPDATE");
       end
-
       return events;
     end,
     force_events = "CONDITIONS_CHECK",
@@ -4161,9 +4226,11 @@ WeakAuras.event_prototypes = {
   ["Spell Known"] = {
     type = "status",
     events = {
-      "WA_DELAYED_PLAYER_ENTERING_WORLD",
       "SPELLS_CHANGED",
       "UNIT_PET",
+    },
+    internal_events = {
+      "WA_DELAYED_PLAYER_ENTERING_WORLD",
       "WA_SPELL_CHECK"
     },
     force_events = "WA_SPELL_CHECK",
@@ -4206,6 +4273,8 @@ WeakAuras.event_prototypes = {
     events = {
       "PET_BAR_UPDATE",
       "UNIT_PET",
+    },
+    internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
@@ -4214,12 +4283,12 @@ WeakAuras.event_prototypes = {
       local ret = [[
           local inverse = %s
           local check_behavior = %s
-          local name, i, active, exists
+          local name, i, active
           local activeIcon
           local behavior
           local index = 1
           repeat
-            name,_,i,_,active,_,_,exists = GetPetActionInfo(index);
+            name,i, _,active = GetPetActionInfo(index);
             if (active) then
               activeIcon = _G[i];
             end

@@ -167,12 +167,9 @@ local function modify(parent, region, data)
     local values = region.values;
     region.UpdateCustomText = function()
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      local ok, custom = pcall(customTextFunc, region.expirationTime, region.duration,
+      local ok, custom = xpcall(customTextFunc, geterrorhandler(), region.expirationTime, region.duration,
         values.progress, values.duration, values.name, values.icon, values.stacks);
-      if (not ok) then
-        WeakAuras.ReportError(custom)
-        custom = "";
-      end
+      if (not ok) then custom = ""; end
       WeakAuras.ActivateAuraEnvironment(nil);
       custom = WeakAuras.EnsureString(custom);
       if(custom ~= values.custom) then

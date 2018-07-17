@@ -4,20 +4,20 @@ local internalVersion = 3;
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
 local fmt, tostring, select, pairs, next, type = string.format, tostring, select, pairs, next, type
 local loadstring, assert, error = loadstring, assert, error
-local setmetatable, getmetatable = setmetatable, getmetatable
+local setmetatable = setmetatable
 local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
-local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-  = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
+local LoadAddOn, setfenv, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
+  = LoadAddOn, setfenv, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
-local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-  = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
-  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
+local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
+  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown = debugstack, IsSpellKnown
@@ -38,15 +38,15 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
 end
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
-local HBD = LibStub("HereBeDragons-1.0")
+-- TODO 8.0 - Use for user data upgrades? local HBD = LibStub("HereBeDragons-2.0")
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
 
 local L = WeakAuras.L
 
--- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION
--- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO
+-- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION C_Map
+-- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO C_SpecializationInfo
 
 local queueshowooc;
 
@@ -65,7 +65,8 @@ function WeakAuras.LoadOptions(msg)
     else
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
-        print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
+        reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
+        print(WeakAuras.printPrefix .. "Options could not be loaded, the addon is " .. reason);
         return false;
       end
     end
@@ -84,11 +85,9 @@ function SlashCmdList.WEAKAURAS(msg)
   if (msg) then
     if (msg == "pstart") then
       WeakAuras.StartProfile();
-      prettyPrint(L["Profiling started."])
       return;
     elseif (msg == "pstop") then
       WeakAuras.StopProfile();
-      prettyPrint(L["Profiling stopped."])
       return;
     elseif(msg == "pprint") then
       WeakAuras.PrintProfile();
@@ -438,7 +437,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
         local func = WeakAuras.customActionsFunctions[id]["init"];
         if func then
           current_aura_env.id = id;
-          xpcall(func, WeakAuras.ReportError);
+          xpcall(func, geterrorhandler());
         end
       end
     end
@@ -459,6 +458,8 @@ local exec_env = setmetatable({}, { __index =
       return forbidden
     elseif overrideFunctions[k] then
       return overrideFunctions[k]
+    elseif WeakAuras.helperFunctions[k] then
+      return WeakAuras.helperFunctions[k]
     else
       return _G[k]
     end
@@ -1025,11 +1026,10 @@ WeakAuras.talent_types_specific = {}
 WeakAuras.pvp_talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
+
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
-  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
   local spec = GetSpecialization()
   WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
-  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
 
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
@@ -1042,15 +1042,38 @@ function WeakAuras.CreateTalentCache()
       end
     end
   end
+end
 
-  for tier = 1, MAX_PVP_TALENT_TIERS do
-    for column = 1, MAX_PVP_TALENT_COLUMNS do
-      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, 1);
-      local talentId = (tier-1)*3+column
-      if (talentName and talentIcon) then
-        WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
-      end
+local pvpTalentsInitialized = false;
+function WeakAuras.CreatePvPTalentCache()
+  if (pvpTalentsInitialized) then return end;
+  local _, player_class = UnitClass("player")
+  local spec = GetSpecialization()
+
+  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
+  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
+
+  local function formatTalent(talentId)
+    local _, name, icon = GetPvpTalentInfoByID(talentId);
+    return "|T"..icon..":0|t "..name
+  end
+
+  local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2);
+  if (slotInfo) then
+
+    WeakAuras.pvp_talent_types_specific[player_class][spec] = {
+      formatTalent(3589),
+      formatTalent(3588),
+      formatTalent(3587),
+      nil
+    };
+
+    local pvpSpecTalents = slotInfo.availableTalentIDs;
+    for i, talentId in ipairs(pvpSpecTalents) do
+      WeakAuras.pvp_talent_types_specific[player_class][spec][i + 3] = formatTalent(talentId);
     end
+
+    pvpTalentsInitialized = true;
   end
 end
 
@@ -1065,6 +1088,7 @@ loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
 loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
     if(addon == ADDON_NAME) then
@@ -1120,6 +1144,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
     WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
     WeakAuras.UpdateCurrentInstanceType();
+  elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
+    WeakAuras.CreatePvPTalentCache();
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
   elseif(event == "LOADING_SCREEN_DISABLED") then
@@ -1336,30 +1362,12 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, spec, role, zone = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player"), GetRealZoneText();
-  local zoneId = HBD:GetPlayerZone();
+  local player, realm, spec, zone = UnitName("player"), GetRealmName(), GetSpecialization(), GetRealZoneText();
+  local zoneId = C_Map.GetBestMapForUnit("player")
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
-  if role == "NONE" then
-    if IsInRaid() then
-      for i=1,GetNumGroupMembers() do
-        if UnitIsUnit(WeakAuras.raidUnits[i],"player") then
-          local _, _, _, _, _, _, _, _, _, raid_role, _, spec_role = GetRaidRosterInfo(i)
-          if raid_role and raid_role == "MAINTANK" then role = "TANK" end
-          if role == "NONE" then
-            if spec and spec > 0 then
-              local tmprole = GetSpecializationRole(spec)
-              if type(tmprole) == "string" then
-                role = tmprole
-              end
-            end
-          end
-          break;
-        end
-      end
-    end
-  end
+  local role = select(5, GetSpecializationInfo(GetSpecialization()));
 
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
@@ -2717,7 +2725,7 @@ function WeakAuras.PerformActions(data, type, region)
     local func = WeakAuras.customActionsFunctions[data.id][type]
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      xpcall(func, WeakAuras.ReportError);
+      xpcall(func, geterrorhandler());
       WeakAuras.ActivateAuraEnvironment(nil);
     end
   end
@@ -2819,32 +2827,24 @@ function WeakAuras.UpdateAnimations()
     WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
-        local ok, x, y = pcall(anim.translateFunc, progress, 0, 0, anim.dX, anim.dY);
-        if (ok) then
-          anim.region:SetOffsetAnim(x, y);
-        else
-          WeakAuras.ReportError(x);
-        end
+        local ok, x, y = xpcall(anim.translateFunc, geterrorhandler(), progress, 0, 0, anim.dX, anim.dY);
+        anim.region:SetOffsetAnim(x, y);
       else
         anim.region:ClearAllPoints();
-        local ok, x, y = pcall(anim.translateFunc, progress, anim.startX, anim.startY, anim.dX, anim.dY);
+        local ok, x, y = xpcall(anim.translateFunc, geterrorhandler(), progress, anim.startX, anim.startY, anim.dX, anim.dY);
         if (ok) then
           anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, x, y);
-        else
-          WeakAuras.ReportError(x);
         end
       end
     end
     if(anim.alphaFunc) then
-      local ok, alpha = pcall(anim.alphaFunc, progress, anim.startAlpha, anim.dAlpha);
+      local ok, alpha = xpcall(anim.alphaFunc, geterrorhandler(), progress, anim.startAlpha, anim.dAlpha);
       if (ok) then
         anim.region:SetAlpha(alpha);
-      else
-        WeakAuras.ReportError(alpha);
       end
     end
     if(anim.scaleFunc) then
-      local ok, scaleX, scaleY = pcall(anim.scaleFunc, progress, 1, 1, anim.scaleX, anim.scaleY);
+      local ok, scaleX, scaleY = xpcall(anim.scaleFunc, geterrorhandler(), progress, 1, 1, anim.scaleX, anim.scaleY);
       if (ok) then
         if(anim.region.Scale) then
           anim.region:Scale(scaleX, scaleY);
@@ -2852,26 +2852,20 @@ function WeakAuras.UpdateAnimations()
           anim.region:SetWidth(anim.startWidth * scaleX);
           anim.region:SetHeight(anim.startHeight * scaleY);
         end
-      else
-        WeakAuras.ReportError(ok);
       end
     end
     if(anim.rotateFunc and anim.region.Rotate) then
-      local ok, rotate = pcall(anim.rotateFunc, progress, anim.startRotation, anim.rotate);
+      local ok, rotate = xpcall(anim.rotateFunc, geterrorhandler(), progress, anim.startRotation, anim.rotate);
       if (ok) then
         anim.region:Rotate(rotate);
-      else
-        WeakAuras.ReportError(rotate);
       end
     end
     if(anim.colorFunc and anim.region.ColorAnim) then
       local startR, startG, startB, startA = anim.region:GetColor();
       startR, startG, startB, startA = startR or 1, startG or 1, startB or 1, startA or 1;
-      local ok, r, g, b, a = pcall(anim.colorFunc, progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
+      local ok, r, g, b, a = xpcall(anim.colorFunc, geterrorhandler(), progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
       if (ok) then
         anim.region:ColorAnim(r, g, b, a);
-      else
-        WeakAuras.ReportError(r);
       end
     end
     WeakAuras.ActivateAuraEnvironment(nil);
@@ -3400,31 +3394,23 @@ end
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltip = WeakAuras.GetHiddenTooltip();
   tooltip:SetUnitAura(unit, index, filter);
-  local debuffTypeLine, tooltipTextLine = select(11, tooltip:GetRegions())
+  local tooltipTextLine = select(5, tooltip:GetRegions())
+
   local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
-  local debuffType = debuffTypeLine and debuffTypeLine:GetObjectType() == "FontString" and debuffTypeLine:GetText() or "";
+  local debuffType = "none";
   local found = false;
-  for i,v in pairs(WeakAuras.debuff_class_types) do
-    if(v == debuffType) then
-      found = true;
-      debuffType = i;
-      break;
-    end
-  end
-  if not(found) then
-    debuffType = "none";
-  end
-  local tooltipSize,_;
+  local tooltipSize = {};
   if(tooltipText) then
-    local n2
-    _, _, tooltipSize, n2 = tooltipText:find("(%d+),(%d%d%d)")  -- Blizzard likes american digit grouping, e.g. "9123="9,123"   /mikk
-    if tooltipSize then
-      tooltipSize = tooltipSize..n2
-    else
-      _, _, tooltipSize = tooltipText:find("(%d+)")
+    for t in tooltipText:gmatch("(%d[%d%.,]*)") do
+      tinsert(tooltipSize, tonumber(t));
     end
   end
-  return tooltipText, debuffType, tonumber(tooltipSize) or 0;
+
+  if (#tooltipSize) then
+    return tooltipText, debuffType, unpack(tooltipSize);
+  else
+    return tooltipText, debuffType, 0;
+  end
 end
 
 local function tooltip_draw()
@@ -3880,12 +3866,8 @@ local function evaluateTriggerStateTriggers(id)
     result = true;
   else
     if (triggerState[id].disjunctive == "custom" and triggerState[id].triggerLogicFunc) then
-      local ok, returnValue = pcall(triggerState[id].triggerLogicFunc, triggerState[id].triggers);
-      if (ok) then
-        result = returnValue;
-      else
-        WeakAuras.ReportError(returnValue);
-      end
+      local ok, returnValue = xpcall(triggerState[id].triggerLogicFunc, geterrorhandler(), triggerState[id].triggers);
+      result = ok and returnValue;
     end
   end
 
@@ -4047,11 +4029,8 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local value;
   if (textStr == "%c" and customFunc) then
     WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-    local ok;
-    ok, value = pcall(customFunc, region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
-    if (not ok) then
-      WeakAuras.ReportError(value);
-    end
+    local _;
+    _, value = xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
     WeakAuras.ActivateAuraEnvironment(nil);
     value = value or "";
   else
@@ -4676,6 +4655,7 @@ function WeakAuras.ProfileRenameAura(oldid, id)
 end
 
 function WeakAuras.StartProfile()
+  prettyPrint(L["Profiling started."])
   if (profileData.systems.time and profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling already started."]);
     return;
@@ -4697,6 +4677,7 @@ local function doNothing()
 end
 
 function WeakAuras.StopProfile()
+  prettyPrint(L["Profiling stopped."])
   if (not profileData.systems.time or not profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling not running."]);
     return;
@@ -4776,10 +4757,4 @@ function WeakAuras.PrintProfile()
     PrintOneProfile(k, profileData.auras[k], total);
   end
   print("--------------------------------");
-end
-
-function WeakAuras.ReportError(error)
-  if (error) then
-    geterrorhandler()(error);
-  end
 end

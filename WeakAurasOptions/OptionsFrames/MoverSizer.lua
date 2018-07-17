@@ -7,17 +7,11 @@ local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
-local L = WeakAuras.L
 
 local moversizer
 local mover
 
-local displayButtons = WeakAuras.displayButtons
-local displayOptions = WeakAuras.displayOptions
-local loaded = WeakAuras.loaded
-local regionOptions = WeakAuras.regionOptions
 local savedVars = WeakAuras.savedVars
-local tempGroup = WeakAuras.tempGroup
 
 local function EnsureTexture(self, texture)
   if(texture) then
@@ -558,8 +552,8 @@ local function ConstructMoverSizer(parent)
       self.interims[i]:SetPoint("CENTER", self.anchorPointIcon, "CENTER", x, y);
       self.interims[i]:Show();
     end
-
-    self.text:SetText(("(%.2f, %.2f)"):format(dX, dY));
+    local regionScale = self.moving.region:GetScale()
+    self.text:SetText(("(%.2f, %.2f)"):format(dX*1/regionScale, dY*1/regionScale));
     local midx = (distance / 2) * cos(angle);
     local midy = (distance / 2) * sin(angle);
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy);

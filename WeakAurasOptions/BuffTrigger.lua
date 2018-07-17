@@ -2,6 +2,7 @@ local L = WeakAuras.L;
 
 local operator_types = WeakAuras.operator_types;
 local debuff_types = WeakAuras.debuff_types;
+local tooltip_count = WeakAuras.tooltip_count;
 local unit_types = WeakAuras.unit_types;
 local actual_unit_types_with_specific = WeakAuras.actual_unit_types_with_specific;
 local group_aura_name_info_types = WeakAuras.group_aura_name_info_types;
@@ -783,6 +784,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       name = L["Use tooltip \"size\" instead of stacks"],
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan) end,
       order = 55
+    },
+    subcountCount = {
+      type = "select",
+      values = tooltip_count,
+      width = "double",
+      name = L["Use nth value from tooltip:"],
+      hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.subcount) end,
+      order = 55.5
     },
     useRem = {
       type = "toggle",

@@ -60,10 +60,13 @@ GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]]--
 
+-- luacheck: globals CombatLogGetCurrentEventInfo
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
+local BUFF_MAX_DISPLAY = _G.BUFF_MAX_DISPLAY
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -493,8 +496,10 @@ function WeakAuras.ScanAuras(unit)
               -- Update scan cache
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
-                name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
-                tooltip, debuffClass, tooltipSize = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
+                name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+                local tooltipSize1, tooltipSize2, tooltipSize3;
+                tooltip, _, tooltipSize1, tooltipSize2, tooltipSize3 = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
+                tooltipSize = {tooltipSize1, tooltipSize2, tooltipSize3}
                 aura_scan_cache[unit][filter][index] = aura_scan_cache[unit][filter][index] or {};
 
                 -- Save aura data to cache
@@ -539,7 +544,8 @@ function WeakAuras.ScanAuras(unit)
 
               -- Aura conforms to trigger options?
               if(data.subcount) then
-                count = tooltipSize;
+                local index = data.subcountCount or 1;
+                count = tooltipSize[index];
               end
               if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                 -- Show display and handle clones
@@ -589,8 +595,18 @@ function WeakAuras.ScanAuras(unit)
 
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
-              name, _, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, checkname, nil, filter);
-              if (name) then
+              -- TODO 8.0: Check if there is a better way than iterating all auras
+              local detected
+              for i = 1, BUFF_MAX_DISPLAY do
+                name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, i, filter);
+                if not name then break end
+                if name == checkname then
+                  detected = true
+                  break
+                end
+              end
+
+              if (detected) then
                 WeakAuras.SetDynamicIconCache(name, spellId, icon);
               end
               checkPassed = false;
@@ -965,8 +981,20 @@ do
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(unit, spellName, nil, filter);
-        if(name and (data.spellId == nil or data.spellId == spellId)) then
+
+        -- TODO 8.0: Check if there is a better way than iterating all auras
+        local detected
+        local name, icon, count, duration, expirationTime, unitCaster, spellId, _
+        for i = 1, BUFF_MAX_DISPLAY do
+          name, icon, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitAura(unit, i, filter);
+          if not name then break end
+          if name == spellName then
+            detected = true
+            break
+          end
+        end
+
+        if(detected and (data.spellId == nil or data.spellId == spellId)) then
           data.GUIDs = data.GUIDs or {};
           data.GUIDs[destGUID] = data.GUIDs[destGUID] or {};
           data.GUIDs[destGUID].name = spellName;
@@ -1108,7 +1136,7 @@ do
   local function handleEvent(frame, event, ...)
     WeakAuras.StartProfileSystem("bufftrigger - multi");
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-      combatLog(...);
+      combatLog(CombatLogGetCurrentEventInfo());
     elseif(event == "UNIT_TARGET") then
       uidTrack(...);
     elseif(event == "PLAYER_FOCUS_CHANGED") then
@@ -1133,8 +1161,20 @@ do
             local updateTriggerState = false;
             for triggernum, data in pairs(triggers) do
               local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-              local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId = UnitAura(uid, spellName, nil, filter);
-              if(name) then
+
+              -- TODO 8.0: Check if there is a better way than iterating all auras
+              local detected
+              local name, icon, count, duration, expirationTime, unitCaster, _
+              for i = 1, BUFF_MAX_DISPLAY do
+                name, icon, count, _, duration, expirationTime, unitCaster = UnitAura(uid, i, filter);
+                if not name then break end
+                if name == spellName then
+                  detected = true
+                  break
+                end
+              end
+
+              if(detected) then
                 data.GUIDs = data.GUIDs or {};
                 data.GUIDs[guid] = data.GUIDs[guid] or {};
                 data.GUIDs[guid].name = spellName;
@@ -1468,6 +1508,7 @@ function BuffTrigger.Add(data)
           autoclone = trigger.autoclone,
           groupclone = trigger.groupclone,
           subcount = trigger.subcount,
+          subcountCount = trigger.subcountCount,
           scanFunc = scanFunc,
           debuffType = trigger.debuffType,
           names = trigger.names,

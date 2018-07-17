@@ -9,18 +9,16 @@ local _G = _G
 -- WoW APIs
 local InCombatLockdown = InCombatLockdown
 local GetSpellInfo, GetItemInfo, GetItemIcon, UnitName = GetSpellInfo, GetItemInfo, GetItemIcon, UnitName
-local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySound, CreateFrame, IsAddOnLoaded, LoadAddOn
-  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySound, CreateFrame, IsAddOnLoaded, LoadAddOn
+local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, CreateFrame, IsAddOnLoaded, LoadAddOn
+  = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, CreateFrame, IsAddOnLoaded, LoadAddOn
 
 local AceGUI = LibStub("AceGUI-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 local prettyPrint = WeakAuras.prettyPrint
 
-local font_close,yellow_font,red_font = FONT_COLOR_CODE_CLOSE,YELLOW_FONT_COLOR_CODE,RED_FONT_COLOR_CODE
 local ValidateNumeric = function(info,val)
   if not tonumber(val) then
     return false;
@@ -1339,35 +1337,8 @@ function WeakAuras.ShowOptions(msg)
 end
 
 function WeakAuras.HideOptions()
-  -- dynFrame:SetScript("OnUpdate", nil);
-  WeakAuras.UnlockUpdateInfo();
-  WeakAuras.SetDragging()
-
   if(frame) then
     frame:Hide();
-  end
-
-  local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame();
-  if(tutFrame and tutFrame:IsVisible()) then
-    tutFrame:Hide();
-  end
-
-  WeakAuras.PauseAllDynamicGroups();
-
-  for id, data in pairs(WeakAuras.regions) do
-    data.region:Collapse();
-  end
-
-  WeakAuras.ResumeAllDynamicGroups();
-
-  WeakAuras.ReloadAll();
-  WeakAuras.Resume();
-
-  if (WeakAuras.mouseFrame) then
-    WeakAuras.mouseFrame:OptionsClosed();
-  end
-  if (WeakAuras.personalRessourceDisplayFrame) then
-    WeakAuras.personalRessourceDisplayFrame:OptionsClosed();
   end
 end
 
@@ -1432,7 +1403,9 @@ function WeakAuras.LockUpdateInfo()
 end
 
 function WeakAuras.UnlockUpdateInfo()
-  frame:SetScript("OnUpdate", nil);
+  if frame then
+    frame:SetScript("OnUpdate", nil);
+  end
 end
 
 function WeakAuras.SetIconNames(data)
@@ -1975,6 +1948,7 @@ local function replaceNameDescFuncs(intable, data)
   local function nameAll(info)
     local combinedName;
     local first = true;
+    local foundNames = {};
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
@@ -1987,11 +1961,15 @@ local function replaceNameDescFuncs(intable, data)
           else
             name = childOption.name;
           end
-          if(first) then
+          if (not name) then
+            -- Do nothing
+          elseif(first) then
             combinedName = name;
             first = false;
-          elseif not(combinedName == name) then
-            return childOption.name("default");
+            foundNames[name] = true;
+          elseif not(foundNames[name]) then
+            combinedName = combinedName .. "/" .. name;
+            foundNames[name] = true;
           end
         end
       end
@@ -4190,7 +4168,8 @@ function WeakAuras.OpenModelPicker(data, field)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
-      print("|cff9900FF".."WeakAurasModelPaths"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
+      reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
+      print(WeakAuras.printPrefix .. "ModelPaths could not be loaded, the addon is " .. reason);
       WeakAuras.ModelPaths = {};
     end
     frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
@@ -4210,7 +4189,8 @@ function WeakAuras.OpenTriggerTemplate(data)
   if not(IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
-      print("|cff9900FF".."WeakAurasTemplates"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
+      reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
+      print(WeakAuras.printPrefix .. "Templates could not be loaded, the addon is " .. reason);
       return;
     end
     frame.newView = WeakAuras.CreateTemplateView(frame);

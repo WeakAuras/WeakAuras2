@@ -1136,7 +1136,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       LoadAddOn('WeakAurasOptions')
     end
 
-    local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail,thumbnail_frame, regionTypes[regionType].create);
+    local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail, thumbnail_frame, regionTypes[regionType].create);
     if not ok then
       error("Error creating thumbnail", 2)
     end

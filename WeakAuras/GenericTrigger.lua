@@ -60,11 +60,13 @@ GetTriggerConditions(data, triggernum)
 Returns potential conditions that this trigger provides.
 ]]--
 
+-- luacheck: globals GTFO DBM BigWigsLoader CombatLogGetCurrentEventInfo
 
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type
 local error, setmetatable = error, setmetatable
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
 
 -- WoW APIs
 local IsPlayerMoving = IsPlayerMoving
@@ -91,8 +93,6 @@ local specificBosses = WeakAuras.specificBosses;
 -- Local functions
 local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
-
--- luacheck: globals GTFO DBM BigWigsLoader
 
 function WeakAuras.split(input)
   input = input or "";
@@ -323,9 +323,8 @@ local function RunOverlayFuncs(event, state)
   for i, overlayFunc in ipairs(event.overlayFuncs) do
     state.additionalProgress[i] = state.additionalProgress[i] or {};
     local additionalProgress = state.additionalProgress[i];
-    local ok, a, b, c = pcall(overlayFunc, event.trigger, state);
+    local ok, a, b, c = xpcall(overlayFunc, geterrorhandler(), event.trigger, state);
     if (not ok) then
-      WeakAuras.ReportError(a);
       additionalProgress.min = nil;
       additionalProgress.max = nil;
       additionalProgress.direction = nil;
@@ -506,108 +505,80 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
   if(data.triggerFunc) then
     local untriggerCheck = false;
     if (data.statesParameter == "full") then
-      local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
-      if (ok) then
-        if (returnValue) then
-          updateTriggerState = true;
-        end
-      else
-        WeakAuras.ReportError(returnValue);
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), allStates, event, arg1, arg2, ...);
+      if (ok and returnValue) then
+        updateTriggerState = true;
       end
     elseif (data.statesParameter == "all") then
-      local ok, returnValue = pcall(data.triggerFunc, allStates, event, arg1, arg2, ...);
-      if (ok) then
-        if( returnValue or optionsEvent) then
-          for id, state in pairs(allStates) do
-            if (state.changed) then
-              if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-                updateTriggerState = true;
-              end
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), allStates, event, arg1, arg2, ...);
+      if( (ok and returnValue) or optionsEvent) then
+        for id, state in pairs(allStates) do
+          if (state.changed) then
+            if (WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+              updateTriggerState = true;
             end
           end
-        else
-          untriggerCheck = true;
         end
       else
-        WeakAuras.ReportError(returnValue);
+        untriggerCheck = true;
       end
     elseif (data.statesParameter == "one") then
       allStates[""] = allStates[""] or {};
       local state = allStates[""];
-      local ok, returnValue = pcall(data.triggerFunc, state, event, arg1, arg2, ...);
-      if (ok) then
-        if( returnValue or optionsEvent) then
-          if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-            updateTriggerState = true;
-          end
-        else
-          untriggerCheck = true;
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), state, event, arg1, arg2, ...);
+      if( (ok and returnValue) or optionsEvent) then
+        if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+          updateTriggerState = true;
         end
       else
-        WeakAuras.ReportError(returnValue);
+        untriggerCheck = true;
       end
     else
-      local ok, returnValue = pcall(data.triggerFunc, event, arg1, arg2, ...);
-      if (ok) then
-        if( returnValue or optionsEvent) then
-          allStates[""] = allStates[""] or {};
-          local state = allStates[""];
-          if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
-            updateTriggerState = true;
-          end
-        else
-          untriggerCheck = true;
+      local ok, returnValue = xpcall(data.triggerFunc, geterrorhandler(), event, arg1, arg2, ...);
+      if( (ok and returnValue) or optionsEvent) then
+        allStates[""] = allStates[""] or {};
+        local state = allStates[""];
+        if(WeakAuras.ActivateEvent(id, triggernum, data, state)) then
+          updateTriggerState = true;
         end
       else
-        WeakAuras.ReportError(returnValue);
+        untriggerCheck = true;
       end
     end
     if (untriggerCheck and not optionsEvent) then
       if (data.statesParameter == "all") then
         if(data.untriggerFunc) then
-          local ok, returnValue = pcall(data.untriggerFunc, allStates, event, arg1, arg2, ...);
-          if(ok) then
-            if (returnValue) then
-              for id, state in pairs(allStates) do
-                if (state.changed) then
-                  if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                    updateTriggerState = true;
-                  end
+          local ok, returnValue = xpcall(data.untriggerFunc, geterrorhandler(), allStates, event, arg1, arg2, ...);
+          if(ok and returnValue) then
+            for id, state in pairs(allStates) do
+              if (state.changed) then
+                if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+                  updateTriggerState = true;
                 end
               end
             end
-          else
-            WeakAuras.ReportError(returnValue);
           end
         end
       elseif (data.statesParameter == "one") then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
         if(data.untriggerFunc) then
-          local ok, returnValue = pcall(data.untriggerFunc, state, event, arg1, arg2, ...);
-          if (ok) then
-            if (returnValue) then
-              if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                updateTriggerState = true;
-              end
+          local ok, returnValue = xpcall(data.untriggerFunc, geterrorhandler(), state, event, arg1, arg2, ...);
+          if (ok and returnValue) then
+            if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
+              updateTriggerState = true;
             end
-          else
-            WeakAuras.ReportError(returnValue);
           end
         end
       else
         if(data.untriggerFunc) then
-          local ok, returnValue = pcall(data.untriggerFunc, event, arg1, arg2, ...);
-          if (ok) then
-            if(returnValue) then
-              allStates[""] = allStates[""] or {};
-              local state = allStates[""];
-              if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
-                updateTriggerState = true;
-              end
+          local ok, returnValue = xpcall(data.untriggerFunc, geterrorhandler(), event, arg1, arg2, ...);
+          if(ok and returnValue) then
+            allStates[""] = allStates[""] or {};
+            local state = allStates[""];
+            if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
+              updateTriggerState = true;
             end
-          else
-            WeakAuras.ReportError(returnValue);
           end
         end
       end
@@ -620,30 +591,46 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   local orgEvent = event;
   WeakAuras.StartProfileSystem("generictrigger " .. orgEvent )
   local event_list = loaded_events[event];
-  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-    event_list = event_list and event_list[arg2];
+  if (not event_list) then
+    return
   end
-  if(event_list) then
+  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+    local arg1, arg2 = CombatLogGetCurrentEventInfo();
+
+    event_list = event_list[arg2];
+    if (not event_list) then
+      return;
+    end
+    WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+
+  elseif (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
     -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
     if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
       event = "COMBAT_LOG_EVENT_UNFILTERED";
     end
-    for id, triggers in pairs(event_list) do
-      WeakAuras.StartProfileAura(id);
-      WeakAuras.ActivateAuraEnvironment(id);
-      local updateTriggerState = false;
-      for triggernum, data in pairs(triggers) do
-        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-        if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
-          updateTriggerState = true;
-        end
+    WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+  else
+    WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
+  end
+end
+
+function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
+  local orgEvent = event;
+  for id, triggers in pairs(event_list) do
+    WeakAuras.StartProfileAura(id);
+    WeakAuras.ActivateAuraEnvironment(id);
+    local updateTriggerState = false;
+    for triggernum, data in pairs(triggers) do
+      local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+      if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
+        updateTriggerState = true;
       end
-      if (updateTriggerState) then
-        WeakAuras.UpdatedTriggerState(id);
-      end
-      WeakAuras.ActivateAuraEnvironment(nil);
-      WeakAuras.StopProfileAura(id);
     end
+    if (updateTriggerState) then
+      WeakAuras.UpdatedTriggerState(id);
+    end
+    WeakAuras.StopProfileAura(id);
+    WeakAuras.ActivateAuraEnvironment(nil);
   end
   WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
 end
@@ -678,18 +665,12 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("generictrigger " .. event);
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-      if(loaded_events[event] and loaded_events[event][arg2]) then
-        WeakAuras.ScanEvents(event, arg1, arg2, ...);
-      end
+      WeakAuras.ScanEvents(event);
       -- This triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
       -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
-      if(loaded_events["COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"]) then
-        WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM", arg1, arg2, ...);
-      end
+      WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM");
     else
-      if(loaded_events[event]) then
-        WeakAuras.ScanEvents(event, arg1, arg2, ...);
-      end
+      WeakAuras.ScanEvents(event, arg1, arg2, ...);
     end
   end
   if (event == "PLAYER_ENTERING_WORLD") then
@@ -765,9 +746,21 @@ function LoadEvent(id, triggernum, data)
       loaded_events[event][id][triggernum] = data;
     end
   end
+  if (data.internal_events) then
+    for index, event in pairs(data.internal_events) do
+      loaded_events[event] = loaded_events[event] or {};
+      loaded_events[event][id] = loaded_events[event][id] or {};
+      loaded_events[event][id][triggernum] = data;
+    end
+  end
+
   if (data.loadFunc) then
     data.loadFunc(data.trigger);
   end
+end
+
+local function trueFunction()
+  return true;
 end
 
 function GenericTrigger.LoadDisplay(id)
@@ -781,7 +774,7 @@ function GenericTrigger.LoadDisplay(id)
         elseif (event == "FRAME_UPDATE") then
           register_for_frame_updates = true;
         else
-          frame:RegisterEvent(event);
+          xpcall(frame.RegisterEvent, trueFunction, frame, event)
           aceEvents:RegisterMessage(event, HandleEvent, frame)
         end
       end
@@ -796,10 +789,6 @@ function GenericTrigger.LoadDisplay(id)
     WeakAuras.UnregisterEveryFrameUpdate(id);
   end
 
-end
-
-local function trueFunction()
-  return true;
 end
 
 --- Adds a display, creating all internal data structures for all triggers.
@@ -827,6 +816,7 @@ function GenericTrigger.Add(data, region)
       if(triggerType == "status" or triggerType == "event" or triggerType == "custom") then
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
+        local internal_events = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         if(triggerType == "status" or triggerType == "event") then
@@ -886,9 +876,13 @@ function GenericTrigger.Add(data, region)
             local prototype = event_prototypes[trigger.event];
             if(prototype) then
               trigger_events = prototype.events;
+              internal_events = prototype.internal_events;
               force_events = prototype.force_events;
               if (type(trigger_events) == "function") then
                 trigger_events = trigger_events(trigger, untrigger);
+              end
+              if (type(internal_events) == "function") then
+                internal_events = internal_events(trigger, untrigger);
               end
             end
           end
@@ -938,7 +932,7 @@ function GenericTrigger.Add(data, region)
                 -- that are already in place. Replacing all those checks would be a pain in the ass.
                 trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
               end
-              force_events = trigger.custom_type == "status";
+              force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
           end
           if (trigger.custom_type == "stateupdate") then
@@ -967,6 +961,7 @@ function GenericTrigger.Add(data, region)
           statesParameter = statesParameter,
           event = trigger.event,
           events = trigger_events,
+          internal_events = internal_events,
           force_events = force_events,
           inverse = trigger.use_inverse,
           subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
@@ -1256,11 +1251,11 @@ do
     WeakAuras.ScanEvents("SWING_TIMER_END");
   end
 
-  local function swingTimerCheck(frame, event, _, message, _, sourceGUID, _, _, _, destGUID, ...)
+  local function swingTimerCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
     WeakAuras.StartProfileSystem("generictrigger swing");
     if(sourceGUID == selfGUID) then
-      if(message == "SWING_DAMAGE" or message == "SWING_MISSED") then
-        local isOffHand = select(message == "SWING_DAMAGE" and 13 or 5, ...);
+      if(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
+        local isOffHand = select(event == "SWING_DAMAGE" and 10 or 2, ...);
 
         local event;
         local currentTime = GetTime();
@@ -1281,7 +1276,7 @@ do
         end
 
         WeakAuras.ScanEvents(event);
-      elseif(message == "RANGE_DAMAGE" or message == "RANGE_MISSED") then
+      elseif(event == "RANGE_DAMAGE" or event == "RANGE_MISSED") then
         local event;
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
@@ -1297,7 +1292,7 @@ do
 
         WeakAuras.ScanEvents(event);
       end
-    elseif (destGUID == selfGUID and (select(4, ...) == "PARRY" or select(7, ...) == "PARRY")) then
+    elseif (destGUID == selfGUID and (select(1, ...) == "PARRY" or select(4, ...) == "PARRY")) then
       if (lastSwingMain) then
         local timeLeft = lastSwingMain + swingDurationMain - GetTime();
         if (timeLeft > 0.6 * swingDurationMain) then
@@ -1318,7 +1313,10 @@ do
     if not(swingTimerFrame) then
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-      swingTimerFrame:SetScript("OnEvent", swingTimerCheck);
+      swingTimerFrame:SetScript("OnEvent",
+        function()
+          swingTimerCheck(CombatLogGetCurrentEventInfo())
+        end);
       selfGUID = UnitGUID("player");
     end
   end
@@ -1368,7 +1366,6 @@ do
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
     cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
-    cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
     cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
     cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
@@ -1378,12 +1375,13 @@ do
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
       WeakAuras.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
-        or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE"
+        or event == "RUNE_POWER_UPDATE"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
         WeakAuras.CheckCooldownReady();
       elseif(event == "UNIT_SPELLCAST_SENT") then
-        local unit, name = ...;
+        local unit, guid, castGUID, name = ...;
         if(unit == "player") then
+          name = GetSpellInfo(name);
           if(gcdSpellName ~= name) then
             local icon = GetSpellTexture(name);
             gcdSpellName = name;
@@ -2911,40 +2909,27 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
 
   WeakAuras.ActivateAuraEnvironment(data.id, "", state);
   if (event.nameFunc) then
-    local ok, name = pcall(event.nameFunc, data.trigger);
+    local ok, name = xpcall(event.nameFunc, geterrorhandler(), data.trigger);
     state.name = ok and name or nil;
-    if (not ok) then
-      WeakAuras.ReportError(name);
-    end
   end
   if (event.iconFunc) then
-    local ok, icon = pcall(event.iconFunc, data.trigger);
+    local ok, icon = xpcall(event.iconFunc, geterrorhandler(), data.trigger);
     state.icon = ok and icon or nil;
-    if (not ok) then
-      WeakAuras.ReportError(icon);
-    end
   end
 
   if (event.textureFunc ) then
-    local ok, texture = pcall(event.textureFunc, data.trigger);
+    local ok, texture = xpcall(event.textureFunc, geterrorhandler(), data.trigger);
     state.texture = ok and texture or nil;
-    if (not ok) then
-      WeakAuras.ReportError(texture);
-    end
   end
 
   if (event.stacksFunc) then
     local ok, stacks = event.stacksFunc(data.trigger);
     state.stacks = ok and stacks or nil;
-    if (not ok) then
-      WeakAuras.ReportError(stacks);
-    end
   end
 
   if (event.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = pcall(event.durationFunc, data.trigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, geterrorhandler(), data.trigger);
     if (not ok) then
-      WeakAuras.ReportError(arg1);
       state.progressType = "timed";
       state.duration = 0;
       state.expirationTime = math.huge;

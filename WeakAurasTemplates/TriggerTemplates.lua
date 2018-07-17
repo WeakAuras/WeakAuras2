@@ -57,7 +57,7 @@ function WeakAuras.CreateTemplateView(frame)
               item.spell
             },
             debuffType = item.type == "buff" and "HELPFUL" or "HARMFUL",
-            ownOnly = true,
+            ownOnly = not item.forceOwnOnly and true or item.ownOnly,
           }
         },
       };

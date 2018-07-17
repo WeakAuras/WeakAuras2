@@ -171,7 +171,7 @@ end
 local function RunCode(self, func)
   if func then
     WeakAuras.ActivateAuraEnvironment(self.id, self.cloneId, self.state);
-    xpcall(func, WeakAuras.ReportError);
+    xpcall(func, geterrorhandler());
     WeakAuras.ActivateAuraEnvironment(nil);
   end
 end
@@ -524,7 +524,7 @@ function WeakAuras.regionPrototype.SetTextOnText(text, str)
   text:SetWidth(0); -- This makes the text use its internal text size calculation
   text:SetText(str);
   local w = text:GetWidth();
-  w = w + max(4, w / 40);
+  w = w + max(5, w / 40);
   text:SetWidth(w); -- But that internal text size calculation is wrong, see ticket 1014
 end
 
