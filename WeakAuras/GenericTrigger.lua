@@ -2123,7 +2123,9 @@ do
     return bar;
   end
 
-  function WeakAuras.CopyBarToState(bar, states, id)
+  function WeakAuras.CopyBarToState(bar, states, id, extendTimer)
+    extendTimer = extendTimer or 0;
+    if extendTimer + bar.duration < 0 then return end
     states[id] = states[id] or {};
     local state = states[id];
     state.show = true;
@@ -2131,13 +2133,17 @@ do
     state.icon = bar.icon;
     state.message = bar.message;
     state.name = bar.message;
-    state.expirationTime = bar.expirationTime;
+    state.expirationTime = bar.expirationTime + extendTimer;
     state.progressType = 'timed';
     state.resort = true;
-    state.duration = bar.duration;
+    state.duration = bar.duration + extendTimer;
     state.timerType = bar.timerType;
     state.spellId = bar.spellId;
     state.colorId = bar.colorId;
+    state.extend = extendTimer;
+    if extendTimer ~= 0 then
+        state.autoHide = true
+    end
   end
 
   function WeakAuras.RegisterDBMCallback(event)
@@ -2257,7 +2263,9 @@ do
     WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable");
   end
 
-  function WeakAuras.CopyBigWigsTimerToState(bar, states, id)
+  function WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer)
+    extendTimer = extendTimer or 0;
+    if extendTimer + bar.duration < 0 then return end
     states[id] = states[id] or {};
     local state = states[id];
     state.show = true;
@@ -2266,11 +2274,15 @@ do
     state.spellId = bar.spellId;
     state.text = bar.text;
     state.name = bar.text;
-    state.duration = bar.duration;
-    state.expirationTime = bar.expirationTime;
+    state.duration = bar.duration + extendTimer;
+    state.expirationTime = bar.expirationTime + extendTimer;
     state.resort = true;
     state.progressType = "timed";
     state.icon = bar.icon;
+    state.extend = extendTimer;
+    if extendTimer ~= 0 then
+      state.autoHide = true
+    end
   end
 
   function WeakAuras.BigWigsTimerMatches(id, addon, spellId, textOperator, text)
