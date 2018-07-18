@@ -2595,6 +2595,12 @@ WeakAuras.event_prototypes = {
           local triggerSpellId = nil;
         ]];
       end
+
+      local ret2 = [[
+        local extendTimer = %s;
+      ]]
+      ret = ret .. ret2:format(trigger.use_extend and tonumber(trigger.extend or 0) or 0)
+      
       local copyOrSchedule;
       if (trigger.use_remaining) then
         local ret2 = [[
@@ -2602,21 +2608,21 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret .. ret2:format(trigger.remaining or 0);
         copyOrSchedule = [[
-          local remainingTime = bar.expirationTime - GetTime()
+          local remainingTime = bar.expirationTime - GetTime() + extendTimer;
           if (remainingTime %s %s) then
-            WeakAuras.CopyBarToState(bar, states, id);
+            WeakAuras.CopyBarToState(bar, states, id, extendTimer);
           elseif (states[id] and states[id].show) then
               states[id].show = false;
               states[id].changed = true;
           end
           if (remainingTime >= remainingCheck) then
-            WeakAuras.ScheduleDbmCheck(bar.expirationTime - remainingCheck);
+            WeakAuras.ScheduleDbmCheck(bar.expirationTime - remainingCheck + extendTimer);
           end
         ]]
         copyOrSchedule = copyOrSchedule:format(trigger.remaining_operator or "<", trigger.remaining or 0);
       else
         copyOrSchedule = [[
-          WeakAuras.CopyBarToState(bar, states, id);
+          WeakAuras.CopyBarToState(bar, states, id, extendTimer);
           ]];
       end
       if (trigger.use_cloneId) then
@@ -2638,7 +2644,7 @@ WeakAuras.event_prototypes = {
             end
 
           elseif (event == "DBM_TimerStop") then
-            if (states[id]) then
+            if (states[id] and states[id].extend == 0) then
               states[id].show = false;
               states[id].changed = true;
             end
@@ -2671,7 +2677,7 @@ WeakAuras.event_prototypes = {
       ret = ret .. copyOrSchedule;
       ret = ret .. [[
           else
-            if (states[""] and states[""].show) then
+            if (states[""] and states[""].show and states[""].extend == 0) then
               states[""].show = false;
               states[""].changed = true;
             end
@@ -2707,6 +2713,11 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
+      },
+      {
+        name = "extend",
+        display = L["Adjust Timer"],
+        type = "string",
       },
       {
         name = "cloneId",
@@ -2802,6 +2813,11 @@ WeakAuras.event_prototypes = {
         trigger.use_text and ('[[' .. (trigger.text or '') .. ']]') or "nil",
         trigger.use_text and trigger.text_operator or ""
       );
+     
+      local ret2 = [[
+        local extendTimer = %s;
+      ]]
+      ret = ret .. ret2:format(trigger.use_extend and tonumber(trigger.extend or 0) or 0)
 
       local copyOrSchedule;
       if (trigger.use_remaining) then
@@ -2810,21 +2826,21 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret .. ret2:format(trigger.remaining or 0);
         copyOrSchedule = [[
-          local remainingTime = bar.expirationTime - GetTime()
+          local remainingTime = bar.expirationTime - GetTime() + extendTimer;
           if (remainingTime %s %s) then
-            WeakAuras.CopyBigWigsTimerToState(bar, states, id);
+            WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer);
           elseif (states[id] and states[id].show) then
               states[id].show = false;
               states[id].changed = true;
           end
           if (remainingTime >= remainingCheck) then
-            WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - remainingCheck);
+            WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - remainingCheck + extendTimer);
           end
           ]]
         copyOrSchedule = copyOrSchedule:format(trigger.remaining_operator or "", trigger.remaining or 0);
       else
         copyOrSchedule = [[
-          WeakAuras.CopyBigWigsTimerToState(bar, states, id);
+          WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer);
           ]];
       end
 
@@ -2838,9 +2854,9 @@ WeakAuras.event_prototypes = {
         ret = ret .. [[
             end
           elseif (event == "BigWigs_StopBar") then
-            if (states[id]) then
-              states[id].show = false;
-              states[id].changed = true;
+            if (states[id] and states[id].extend == 0) then
+                states[id].show = false;
+                states[id].changed = true;
             end
           elseif (event == "BigWigs_Timer_Update") then
             for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
@@ -2873,7 +2889,7 @@ WeakAuras.event_prototypes = {
         ret = ret .. copyOrSchedule;
         ret = ret .. [[
           else
-            if (states[""] and states[""].show) then
+            if (states[""] and states[""].show and states[""].extend == 0) then 
               states[""].show = false;
               states[""].changed = true;
             end
@@ -2907,6 +2923,11 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
+      },
+      {
+        name = "extend",
+        display = L["Adjust Timer"],
+        type = "string",
       },
       {
         name = "cloneId",
