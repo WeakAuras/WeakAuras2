@@ -1363,7 +1363,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   end
 
   local player, realm, spec, zone = UnitName("player"), GetRealmName(), GetSpecialization(), GetRealZoneText();
-  local zoneId = C_Map.GetBestMapForUnit("player")
+  local zoneId = C_Map.GetMapGroupID(C_Map.GetBestMapForUnit("player"))
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
