@@ -2482,15 +2482,15 @@ function WeakAuras.pAdd(data)
       timers[id] = nil;
     end
 
-
-    triggerState[id] = {};
-    triggerState[id].disjunctive = data.disjunctive or "all";
-    triggerState[id].numTriggers = data.numTriggers;
-    triggerState[id].activeTriggerMode = data.activeTriggerMode or 0;
-    triggerState[id].triggerLogicFunc = triggerLogicFunc;
-    triggerState[id].triggers = {};
-    triggerState[id].triggerCount = 0;
-    triggerState[id].activatedConditions = {};
+    triggerState[id] = {
+      disjunctive = data.disjunctive or "all",
+      numTriggers = data.numTriggers,
+      activeTriggerMode = data.activeTriggerMode or 0,
+      triggerLogicFunc = triggerLogicFunc,
+      triggers = {},
+      triggerCount = 0,
+      activatedConditions = {},
+    };
 
     WeakAuras.LoadEncounterInitScripts(id);
 
