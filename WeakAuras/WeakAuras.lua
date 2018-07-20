@@ -2399,15 +2399,6 @@ end
 function WeakAuras.Add(data)
   WeakAuras.Modernize(data);
   WeakAuras.pAdd(data);
--- local status, err = pcall(WeakAuras.pAdd, data);
--- if not(status) then
--- local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
--- print("|cFFFF0000WeakAuras "..id..": "..err);
--- debug(id..": "..err, 3);
--- debug(debugstack(1, 6));
--- WeakAurasFrame:Hide();
--- error(err);
--- end
 end
 
 local function removeSpellNames(data)
