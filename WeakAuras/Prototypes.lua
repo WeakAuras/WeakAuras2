@@ -877,6 +877,16 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
     },
     {
+      name = "zonegroupId",
+      display = L["Zone Group ID(s)"],
+      type = "string",
+      init = "arg",
+      desc = function()
+         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone Group ID: "] .. (C_Map.GetMapGroupID(C_Map.GetBestMapForUnit("player")) or "none")
+       end,
+      test = "WeakAuras.CheckNumericIds([[%s]], zonegroupId)"
+    },
+    {
       name = "encounterid",
       display = L["Encounter ID(s)"],
       type = "string",
