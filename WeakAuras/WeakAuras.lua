@@ -2383,14 +2383,15 @@ function WeakAuras.AddMany(table)
       loaded[id] = true;
     end
   end
+  local dynGroups = {}
   for id, data in pairs(idtable) do
     load(id, {});
-  end
-  for id, data in pairs(idtable) do
-    if(data.regionType == "dynamicgroup") then
-      WeakAuras.Add(data);
-      regions[id].region:ControlChildren();
+    if data.regionType == "dynamicgroup" then
+      dynGroups[id] = true
     end
+  end
+  for id in pairs(dynGroups) do
+    regions[id].region:ControlChildren()
   end
 end
 
