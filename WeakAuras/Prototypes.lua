@@ -882,7 +882,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = function()
-         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. (C_Map.GetMapGroupID(C_Map.GetBestMapForUnit("player")) or "none")
+         return L["Supports multiple entries, separated by commas\n"] .. L["Current Group Zone ID: "] .. (C_Map.GetMapGroupID(C_Map.GetBestMapForUnit("player")) or "none")
        end,
       test = "WeakAuras.CheckNumericIds([[%s]], groupzoneId)"
     },
