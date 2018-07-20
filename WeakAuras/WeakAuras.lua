@@ -2456,8 +2456,8 @@ function WeakAuras.pAdd(data)
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
     local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr);
-    WeakAuras.debug(id.." - Load", 1);
-    WeakAuras.debug(loadFuncStr);
+    debug(id.." - Load", 1);
+    debug(loadFuncStr);
 
     loadFuncs[id] = loadFunc;
     checkConditions[id] = checkCondtionsFunc;
@@ -3664,7 +3664,7 @@ do
         if coroutine.status(func) ~= "dead" then
           local err,ret1,ret2 = assert(coroutine.resume(func))
           if err then
-            WeakAuras.debug(debugstack(func))
+            debug(debugstack(func))
           end
         else
           dynFrame:RemoveAction(name);
