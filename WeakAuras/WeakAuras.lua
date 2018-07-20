@@ -3033,44 +3033,46 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       end
     end
 
-    animations[key] = animations[key] or {};
-    animations[key].progress = progress
-    animations[key].startX = startX
-    animations[key].startY = startY
-    animations[key].startAlpha = startAlpha
-    animations[key].startWidth = startWidth
-    animations[key].startHeight = startHeight
-    animations[key].startRotation = startRotation
-    animations[key].dX = (anim.use_translate and anim.x)
-    animations[key].dY = (anim.use_translate and anim.y)
-    animations[key].dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
-    animations[key].scaleX = (anim.use_scale and anim.scalex)
-    animations[key].scaleY = (anim.use_scale and anim.scaley)
-    animations[key].rotate = anim.rotate
-    animations[key].colorR = (anim.use_color and anim.colorR)
-    animations[key].colorG = (anim.use_color and anim.colorG)
-    animations[key].colorB = (anim.use_color and anim.colorB)
-    animations[key].colorA = (anim.use_color and anim.colorA)
-    animations[key].translateFunc = translateFunc
-    animations[key].alphaFunc = alphaFunc
-    animations[key].scaleFunc = scaleFunc
-    animations[key].rotateFunc = rotateFunc
-    animations[key].colorFunc = colorFunc
-    animations[key].region = region
-    animations[key].selfPoint = selfPoint
-    animations[key].anchor = anchor
-    animations[key].anchorPoint = anchorPoint
-    animations[key].duration = duration
-    animations[key].duration_type = anim.duration_type or "seconds"
-    animations[key].inverse = inverse
-    animations[key].type = type
-    animations[key].loop = loop
-    animations[key].onFinished = onFinished
-    animations[key].name = id
-    animations[key].cloneId = cloneId or ""
-    animations[key].namespace = namespace;
-    animations[key].data = data;
-    animations[key].anim = anim;
+    local animation = animations[key] or {}
+    animations[key] = animation
+
+    animation.progress = progress
+    animation.startX = startX
+    animation.startY = startY
+    animation.startAlpha = startAlpha
+    animation.startWidth = startWidth
+    animation.startHeight = startHeight
+    animation.startRotation = startRotation
+    animation.dX = (anim.use_translate and anim.x)
+    animation.dY = (anim.use_translate and anim.y)
+    animation.dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
+    animation.scaleX = (anim.use_scale and anim.scalex)
+    animation.scaleY = (anim.use_scale and anim.scaley)
+    animation.rotate = anim.rotate
+    animation.colorR = (anim.use_color and anim.colorR)
+    animation.colorG = (anim.use_color and anim.colorG)
+    animation.colorB = (anim.use_color and anim.colorB)
+    animation.colorA = (anim.use_color and anim.colorA)
+    animation.translateFunc = translateFunc
+    animation.alphaFunc = alphaFunc
+    animation.scaleFunc = scaleFunc
+    animation.rotateFunc = rotateFunc
+    animation.colorFunc = colorFunc
+    animation.region = region
+    animation.selfPoint = selfPoint
+    animation.anchor = anchor
+    animation.anchorPoint = anchorPoint
+    animation.duration = duration
+    animation.duration_type = anim.duration_type or "seconds"
+    animation.inverse = inverse
+    animation.type = type
+    animation.loop = loop
+    animation.onFinished = onFinished
+    animation.name = id
+    animation.cloneId = cloneId or ""
+    animation.namespace = namespace;
+    animation.data = data;
+    animation.anim = anim;
 
     if not(updatingAnimations) then
       frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
