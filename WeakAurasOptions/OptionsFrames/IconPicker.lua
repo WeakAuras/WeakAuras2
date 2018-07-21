@@ -33,7 +33,13 @@ local function ConstructIconPicker(frame)
     local distances = {};
     local names = {};
 
-    subname = tonumber(subname) and GetSpellInfo(tonumber(subname)) or subname;
+    -- Work around special numbers such as inf and nan
+    if (tonumber(subname)) then
+      local spellId = tonumber(subname);
+      if (abs(spellId) < math.huge and tostring(spellId) ~= "nan") then
+        subname = GetSpellInfo(spellId)
+      end
+    end
     subname = subname:lower();
 
     local usedIcons = {};
