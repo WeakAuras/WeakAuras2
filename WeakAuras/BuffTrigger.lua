@@ -65,7 +65,7 @@ Returns the potential conditions for a trigger
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
-local BUFF_MAX_DISPLAY = 40
+local BUFF_MAX_DISPLAY = 255 -- Do tell when you find the real value.
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local WeakAuras = WeakAuras;
