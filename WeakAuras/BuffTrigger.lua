@@ -497,6 +497,13 @@ function WeakAuras.ScanAuras(unit)
               if(aura_scan_cache[unit][filter].up_to_date < index) then
                 -- Query aura data
                 name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+                if (debuffClass == nil) then
+                  debuffClass = "none";
+                elseif (debuffClass == "") then
+                  debuffClass = "enrage"
+                else
+                  debuffClass = string.lower(debuffClass);
+                end
                 local tooltipSize1, tooltipSize2, tooltipSize3;
                 tooltip, _, tooltipSize1, tooltipSize2, tooltipSize3 = WeakAuras.GetAuraTooltipInfo(unit, index, filter);
                 tooltipSize = {tooltipSize1, tooltipSize2, tooltipSize3}
