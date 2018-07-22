@@ -4019,11 +4019,12 @@ WeakAuras.event_prototypes = {
         local spell, interruptible, _;
         local castType;
         local endTime;
-        spell, _, _, _, endTime, _, _, interruptible = UnitCastingInfo(unit)
+        local spellId;
+        spell, _, _, _, endTime, _, _, interruptible, spellId = UnitCastingInfo(unit)
         if(spell) then
           castType = "cast"
         else
-          spell, _, _, _, endTime, _, interruptible = UnitChannelInfo(unit)
+          spell, _, _, _, endTime, _, interruptible, spellId = UnitChannelInfo(unit)
           if(spell) then
             castType = "channel"
           end
@@ -4063,6 +4064,13 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return not(trigger.use_inverse) end,
         store = true,
         conditionType = "string",
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        type = "spell" ,
+        enable = function(trigger) return not(trigger.use_inverse) end,
+        test = "GetSpellInfo([[%s]]) == spell"
       },
       {
         name = "castType",
