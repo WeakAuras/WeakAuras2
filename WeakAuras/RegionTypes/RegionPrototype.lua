@@ -524,7 +524,7 @@ function WeakAuras.regionPrototype.SetTextOnText(text, str)
   text:SetWidth(0); -- This makes the text use its internal text size calculation
   text:SetText(str);
   local w = text:GetWidth();
-  w = w + max(5, w / 40);
+  w = w + max(15, w / 20);
   text:SetWidth(w); -- But that internal text size calculation is wrong, see ticket 1014
 end
 
