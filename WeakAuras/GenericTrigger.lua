@@ -1724,7 +1724,10 @@ do
 
   function WeakAuras.CheckItemCooldowns()
     for id, _ in pairs(items) do
-      local startTime, duration = GetItemCooldown(id);
+      local startTime, duration, enabled = GetItemCooldown(id);
+      if (enabled == 0) then
+        startTime, duration = 0, 0
+      end
       startTime = startTime or 0;
       duration = duration or 0;
       local time = GetTime();
