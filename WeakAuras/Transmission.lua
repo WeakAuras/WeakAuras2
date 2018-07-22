@@ -151,11 +151,7 @@ function tableSubtract(minuend, subtrahend)
         end
       end
     end
-    local num = 0;
-    for i,v in pairs(minuend) do
-      num = num + 1;
-    end
-    return num == 0;
+    return next(minuend)
   end
   recurse(minuend, subtrahend);
 end
