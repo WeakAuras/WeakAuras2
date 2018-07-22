@@ -133,6 +133,8 @@ local in_loading_screen = false;
 
 -- Load functions, keyed on id
 local loadFuncs = {};
+-- Load functions for the Options window that ignore various load options
+local loadFuncsForOptions = {};
 
 -- Check Conditions Functions, keyed on id
 local checkConditions = {};
@@ -531,7 +533,7 @@ end
 
 -- Used for the load function, could be simplified a bit
 -- It used to be also used for the generic trigger system
-function WeakAuras.ConstructFunction(prototype, trigger)
+function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
   local input = {"event"};
   local required = {};
   local tests = {};
@@ -555,7 +557,9 @@ function WeakAuras.ConstructFunction(prototype, trigger)
         if(arg.init == "arg") then
           tinsert(input, name);
         end
-        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
+        if (arg.optional and skipOptional) then
+          -- Do nothing
+        elseif(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
           end
@@ -1375,6 +1379,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local inInstance, Type = IsInInstance()
   local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
+  local inencounter = encounter_id ~= 0;
   local inpetbattle = C_PetBattles.IsInBattle()
   local vehicle = UnitInVehicle('player')
   local vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
@@ -1470,8 +1475,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
+      local loadOpt = loadFuncsForOptions[id];
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
+      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   nil,      nil,         nil,         nil,     nil,       nil,   player, realm, class, spec, race, faction, playerLevel, nil,  nil,    nil,         nil,          nil,  nil,        role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1696,6 +1702,7 @@ function WeakAuras.Delete(data)
   regions[id] = nil;
   loaded[id] = nil;
   loadFuncs[id] = nil;
+  loadFuncsForOptions[id] = nil;
   checkConditions[id] = nil;
   conditionChecksTimers.recheckTime[id] = nil;
   if (conditionChecksTimers.recheckHandle[id]) then
@@ -1744,6 +1751,9 @@ function WeakAuras.Rename(data, newid)
   loaded[oldid] = nil;
   loadFuncs[newid] = loadFuncs[oldid];
   loadFuncs[oldid] = nil;
+
+  loadFuncsForOptions[newid] = loadFuncsForOptions[oldid]
+  loadFuncsForOptions[oldid] = nil;
 
   checkConditions[newid] = checkConditions[oldid];
   checkConditions[oldid] = nil;
@@ -2450,7 +2460,9 @@ function WeakAuras.pAdd(data)
     data.actions.start = data.actions.start or {};
     data.actions.finish = data.actions.finish or {};
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
+    local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
+    local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
     local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""), id);
     WeakAuras.LoadCustomActionFunctions(data);
     WeakAuras.LoadConditionPropertyFunctions(data);
@@ -2460,6 +2472,7 @@ function WeakAuras.pAdd(data)
     debug(loadFuncStr);
 
     loadFuncs[id] = loadFunc;
+    loadFuncsForOptions[id] = loadForOptionsFunc;
     checkConditions[id] = checkCondtionsFunc;
     clones[id] = clones[id] or {};
 
