@@ -43,10 +43,40 @@ local WA_ClassColorName = function(unit)
   return RAID_CLASS_COLORS[class]:WrapTextInColorCode(UnitName(unit))
 end
 
+local function makeIterator(api, unit, filter, offset)
+  local i = 0
+  if offset then
+    return function()
+      i = i + 1
+      return select(offset, api(unit, i, filter))
+    end
+  else
+    return function()
+      i = i + 1
+      return api(unit, i, filter)
+    end
+  end
+end
+
+local WA_IterateAuras = function(unit, filter, offset)
+  return makeIterator(UnitAura, unit, filter, offset)
+end
+
+local WA_IterateBuffs = function(unit, filter, offset)
+  return makeIterator(UnitBuff, unit, filter, offset)
+end
+
+local WA_IterateAuras = function(unit, filter, offset)
+  return makeIterator(UnitDebuff, unit, filter, offset)
+end
+
 WeakAuras.helperFunctions = {
   WA_GetUnitAura = WA_GetUnitAura,
   WA_GetUnitBuff = WA_GetUnitBuff,
   WA_GetUnitDebuff = WA_GetUnitDebuff,
   WA_IterateGroupMembers = WA_IterateGroupMembers,
   WA_ClassColorName = WA_ClassColorName,
+  WA_IterateAuras = WA_IterateAuras,
+  WA_IterateBuffs = WA_IterateBuffs,
+  WA_IterateDebuffs = WA_IterateDebuffs,
 }
