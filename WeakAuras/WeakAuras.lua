@@ -2967,7 +2967,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_translate) then
       if not(anim.translateType == "custom" and anim.translateFunc) then
         anim.translateType = anim.translateType or "straightTranslate";
-        anim.translateFunc = anim_function_strings[anim.translateType] or anim_function_strings.straightTranslate;
+        anim.translateFunc = anim_function_strings[anim.translateType]
       end
       translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
     else
@@ -2980,7 +2980,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_alpha) then
       if not(anim.alphaType == "custom" and anim.alphaFunc) then
         anim.alphaType = anim.alphaType or "straight";
-        anim.alphaFunc = anim_function_strings[anim.alphaType] or anim_function_strings.straight;
+        anim.alphaFunc = anim_function_strings[anim.alphaType]
       end
       alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
     else
@@ -2989,7 +2989,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_scale) then
       if not(anim.scaleType == "custom" and anim.scaleFunc) then
         anim.scaleType = anim.scaleType or "straightScale";
-        anim.scaleFunc = anim_function_strings[anim.scaleType] or anim_function_strings.straightScale;
+        anim.scaleFunc = anim_function_strings[anim.scaleType]
       end
       scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id);
     elseif(region.Scale) then
@@ -2998,7 +2998,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_rotate) then
       if not(anim.rotateType == "custom" and anim.rotateFunc) then
         anim.rotateType = anim.rotateType or "straight";
-        anim.rotateFunc = anim_function_strings[anim.rotateType] or anim_function_strings.straight;
+        anim.rotateFunc = anim_function_strings[anim.rotateType]
       end
       rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id);
     elseif(region.Rotate) then
@@ -3007,7 +3007,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_color) then
       if not(anim.colorType == "custom" and anim.colorFunc) then
         anim.colorType = anim.colorType or "straightColor";
-        anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
+        anim.colorFunc = anim_function_strings[anim.colorType]
       end
       colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
     elseif(region.ColorAnim) then
