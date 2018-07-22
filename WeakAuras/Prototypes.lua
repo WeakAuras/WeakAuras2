@@ -651,7 +651,24 @@ WeakAuras.load_prototype = {
       display = L["In Combat"],
       type = "tristate",
       width = "normal",
-      init = "arg"
+      init = "arg",
+      optional = true
+    },
+    {
+      name = "encounter",
+      display = L["In Encounter"],
+      type = "tristate",
+      width = "normal",
+      init = "arg",
+      optional = true
+    },
+    {
+      name = "petbattle",
+      display = L["In Pet Battle"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
+      optional = true
     },
     {
       name = "never",
@@ -666,6 +683,7 @@ WeakAuras.load_prototype = {
       type = "tristate",
       init = "arg",
       width = "normal",
+      optional = true
     },
     {
       name = "vehicleUi",
@@ -673,13 +691,7 @@ WeakAuras.load_prototype = {
       type = "tristate",
       init = "arg",
       width = "normal",
-    },
-    {
-      name = "petbattle",
-      display = L["In Pet Battle"],
-      type = "tristate",
-      init = "arg",
-      width = "normal",
+      optional = true
     },
     {
       name = "ingroup",
@@ -687,7 +699,8 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       width = "normal",
       init = "arg",
-      values = "group_types"
+      values = "group_types",
+      optional = true
     },
     {
       name = "name",
@@ -755,14 +768,16 @@ WeakAuras.load_prototype = {
           end
         end
       end,
-      init = "arg"
+      init = "arg",
+      optional = true
     },
     {
       name = "talent",
       display = L["Talent selected"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d)"
+      test = "WeakAuras.CheckTalentByIndex(%d)",
+      optional = true
     },
     {
       name = "talent2",
@@ -772,7 +787,8 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckTalentByIndex(%d)",
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
-      end
+      end,
+      optional = true
     },
     {
       name = "pvptalent",
@@ -832,13 +848,15 @@ WeakAuras.load_prototype = {
           end
         end
       end,
-      test = "WeakAuras.CheckPvpTalentByIndex(%d)"
+      test = "WeakAuras.CheckPvpTalentByIndex(%d)",
+      optional = true
     },
     {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
-      test = "WeakAuras.IsSpellKnown(%s)"
+      test = "WeakAuras.IsSpellKnown(%s)",
+      optional = true
     },
     {
       name = "race",
@@ -858,13 +876,15 @@ WeakAuras.load_prototype = {
       name = "level",
       display = L["Player Level"],
       type = "number",
-      init = "arg"
+      init = "arg",
+      optional = true
     },
     {
       name = "zone",
       display = L["Zone Name"],
       type = "string",
-      init = "arg"
+      init = "arg",
+      optional = true
     },
     {
       name = "zoneId",
@@ -874,7 +894,8 @@ WeakAuras.load_prototype = {
       desc = function()
          return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
        end,
-      test = "WeakAuras.CheckNumericIds([[%s]], zoneId)"
+      test = "WeakAuras.CheckNumericIds([[%s]], zoneId)",
+      optional = true
     },
     {
       name = "zonegroupId",
@@ -885,7 +906,8 @@ WeakAuras.load_prototype = {
         local zoneId = C_Map.GetBestMapForUnit("player");
         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone Group ID: "] .. (zoneId and C_Map.GetMapGroupID(zoneId) or L["none"])
       end,
-      test = "WeakAuras.CheckNumericIds([[%s]], zonegroupId)"
+      test = "WeakAuras.CheckNumericIds([[%s]], zonegroupId)",
+      optional = true
     },
     {
       name = "encounterid",
@@ -893,7 +915,8 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_encounters_list,
-      test = "WeakAuras.CheckNumericIds([[%s]], encounterid)"
+      test = "WeakAuras.CheckNumericIds([[%s]], encounterid)",
+      optional = true
     },
     {
       name = "size",
@@ -901,14 +924,16 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = "instance_types",
       init = "arg",
-      control = "WeakAurasSortedDropdown"
+      control = "WeakAurasSortedDropdown",
+      optional = true
     },
     {
       name = "difficulty",
       display = L["Instance Difficulty"],
       type = "multiselect",
       values = "difficulty_types",
-      init = "arg"
+      init = "arg",
+      optional = true
     },
     {
       name = "role",
