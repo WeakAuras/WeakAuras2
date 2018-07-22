@@ -1422,6 +1422,12 @@ WeakAuras.pet_behavior_types = {
   assist = L["Assist"]
 }
 
+WeakAuras.pet_spec_types = {
+  [1] = L["Ferocity"],
+  [2] = L["Tenacity"],
+  [3] = L["Cunning"]
+}
+
 WeakAuras.cooldown_progress_behavior_types = {
   showOnCooldown = L["On Cooldown"],
   showOnReady = L["Not on Cooldown"],
