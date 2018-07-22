@@ -4319,39 +4319,56 @@ WeakAuras.event_prototypes = {
 
   ["Pet Behavior"] = {
     type = "status",
-    events = {
-      "PET_BAR_UPDATE",
-      "UNIT_PET",
-    },
+    events = function(trigger)
+      local result = {"UNIT_PET"};
+      if (trigger.use_behavior) then
+        tinsert(result, "PET_BAR_UPDATE");
+      end
+      if (trigger.use_petspec) then
+        tinsert(result, "PET_SPECIALIZATION_CHANGED ");
+      end
+      return result;
+    end,
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
-    name = L["Pet Behavior"],
+    name = L["Pet"],
     init = function(trigger)
-      local ret = [[
-          local inverse = %s
-          local check_behavior = %s
-          local name, i, active
-          local activeIcon
-          local behavior
-          local index = 1
-          repeat
-            name,i, _,active = GetPetActionInfo(index);
-            if (active) then
-              activeIcon = _G[i];
-            end
-            index = index + 1
-            if(name == "PET_MODE_ASSIST" and active == true) then
-              behavior = "assist"
-            elseif(name == "PET_MODE_DEFENSIVE" and active == true) then
-              behavior = "defensive"
-            elseif(name == "PET_MODE_PASSIVE" and active == true) then
-              behavior = "passive"
-            end
-          until index == 12
-      ]]
-      return ret:format(trigger.use_inverse and "true" or "false", trigger.use_behavior and ('"' .. (trigger.behavior or "") .. '"') or "nil");
+      local ret = "local activeIcon\n";
+      if (trigger.use_behavior) then
+        ret = [[
+            local inverse = %s
+            local check_behavior = %s
+            local name, i, active
+            local behavior
+            local index = 1
+            repeat
+              name,i, _,active = GetPetActionInfo(index);
+              if (active) then
+                activeIcon = _G[i];
+              end
+              index = index + 1
+              if(name == "PET_MODE_ASSIST" and active == true) then
+                behavior = "assist"
+              elseif(name == "PET_MODE_DEFENSIVE" and active == true) then
+                behavior = "defensive"
+              elseif(name == "PET_MODE_PASSIVE" and active == true) then
+                behavior = "passive"
+              end
+            until index == 12
+        ]]
+        ret = ret:format(trigger.use_inverse and "true" or "false", trigger.use_behavior and ('"' .. (trigger.behavior or "") .. '"') or "nil");
+      end
+      if (trigger.use_petspec) then
+        ret = ret .. [[
+          local petspec = GetSpecialization(false, true)
+          if (petspec) then
+            activeIcon = select(4, GetSpecializationInfo(petspec, false, true));
+          end
+        ]]
+      end
+      return ret;
     end,
     statesParameter = "one",
     canHaveAuto = true,
@@ -4361,14 +4378,20 @@ WeakAuras.event_prototypes = {
         display = L["Pet Behavior"],
         type = "select",
         values = "pet_behavior_types",
-        test = "true",
+        test = "UnitExists('pet') and (not check_behavior or (inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))",
       },
       {
         name = "inverse",
-        display = L["Inverse"],
+        display = L["Inverse Pet Behavior"],
         type = "toggle",
         test = "true",
         enable = function(trigger) return trigger.use_behavior end
+      },
+      {
+        name = "petspec",
+        display = L["Pet Specialization"],
+        type = "select",
+        values = "pet_spec_types",
       },
       {
         hidden = true,
@@ -4377,10 +4400,6 @@ WeakAuras.event_prototypes = {
         store = "true",
         test = "true"
       },
-      {
-        hidden = true,
-        test = "UnitExists('pet') and (not check_behavior or (inverse and check_behavior ~= behavior) or (not inverse and check_behavior == behavior))"
-      }
     },
     automaticrequired = true
   },
