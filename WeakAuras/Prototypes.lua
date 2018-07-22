@@ -1878,6 +1878,7 @@ WeakAuras.event_prototypes = {
         local showgcd = %s;
         local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
         local charges, maxCharges = WeakAuras.GetSpellCharges(spellname);
+        local stacks = maxCharges ~= 1 and charges or nil;
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
@@ -1999,15 +2000,16 @@ WeakAuras.event_prototypes = {
         name = "charges",
         display = L["Show if Charges"],
         type = "number",
-      },
-      {
-        name = "stacks",
-        init = "charges",
-        hidden = true,
-        test = "true",
         store = true,
         display = L["Stacks"],
         conditionType = "number"
+      },
+      {
+        name = "stacks",
+        init = "stacks",
+        hidden = true,
+        test = "true",
+        store = true
       },
       {
         hidden  = true,
