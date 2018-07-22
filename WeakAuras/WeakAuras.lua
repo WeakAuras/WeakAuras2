@@ -1368,7 +1368,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
-  local role = select(5, GetSpecializationInfo(GetSpecialization()));
+  local role = select(5, GetSpecializationInfo(spec));
 
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
