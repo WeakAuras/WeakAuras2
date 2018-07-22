@@ -27,7 +27,8 @@ local ignoreForCopyingDisplay = {
   numTriggers = true,
   controlledChildren = true,
   customTriggerLogic = true,
-  disjunctive = true
+  disjunctive = true,
+  additional_triggers = true,
 }
 
 local function copyAuraPart(source, destination, part)
