@@ -1,4 +1,4 @@
-local internalVersion = 3;
+local internalVersion = 4;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -2302,9 +2302,31 @@ function WeakAuras.Modernize(data)
         data.yOffset = 0;
       end
     end
-
   end
 
+  -- Version 4 was introduced July 2018 in BfA
+  if (data.internalVersion < 4) then
+    if (data.conditions) then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if (condition.check) then
+          local triggernum = condition.check.trigger;
+          if (triggernum) then
+            local trigger;
+            if (triggernum == 0) then
+              trigger = data.trigger;
+            elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+              trigger = data.additional_triggers[triggernum].trigger;
+            end
+            if (trigger and trigger.event == "Cooldown Progress (Spell)") then
+              if (condition.check.variable == "stacks") then
+                condition.check.variable = "charges";
+              end
+            end
+          end
+        end
+      end
+    end
+  end
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
