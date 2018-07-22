@@ -2367,8 +2367,9 @@ WeakAuras.event_prototypes = {
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      if IsEquippedItem(GetInventoryItemID("player", trigger.itemSlot or 0)) then
-        return GetItemInfo(GetInventoryItemID("player", trigger.itemSlot or 0))
+      local item = GetInventoryItemID("player", trigger.itemSlot or 0);
+      if (item) then
+        return GetItemInfo(item);
       end
     end,
     iconFunc = function(trigger)
