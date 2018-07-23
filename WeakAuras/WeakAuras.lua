@@ -1477,7 +1477,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
-      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   nil,      nil,         nil,         nil,     nil,       nil,   player, realm, class, spec, race, faction, playerLevel, nil,  nil,    nil,         nil,          nil,  nil,        role);
+      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);

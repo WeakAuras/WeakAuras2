@@ -700,7 +700,6 @@ WeakAuras.load_prototype = {
       width = "normal",
       init = "arg",
       values = "group_types",
-      optional = true
     },
     {
       name = "name",
@@ -769,7 +768,6 @@ WeakAuras.load_prototype = {
         end
       end,
       init = "arg",
-      optional = true
     },
     {
       name = "talent",
@@ -777,7 +775,6 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d)",
-      optional = true
     },
     {
       name = "talent2",
@@ -788,7 +785,6 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
       end,
-      optional = true
     },
     {
       name = "pvptalent",
@@ -849,14 +845,12 @@ WeakAuras.load_prototype = {
         end
       end,
       test = "WeakAuras.CheckPvpTalentByIndex(%d)",
-      optional = true
     },
     {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
       test = "WeakAuras.IsSpellKnown(%s)",
-      optional = true
     },
     {
       name = "race",
@@ -877,14 +871,12 @@ WeakAuras.load_prototype = {
       display = L["Player Level"],
       type = "number",
       init = "arg",
-      optional = true
     },
     {
       name = "zone",
       display = L["Zone Name"],
       type = "string",
       init = "arg",
-      optional = true
     },
     {
       name = "zoneId",
@@ -895,7 +887,6 @@ WeakAuras.load_prototype = {
          return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
        end,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)",
-      optional = true
     },
     {
       name = "zonegroupId",
@@ -907,7 +898,6 @@ WeakAuras.load_prototype = {
         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone Group ID: "] .. (zoneId and C_Map.GetMapGroupID(zoneId) or L["none"])
       end,
       test = "WeakAuras.CheckNumericIds([[%s]], zonegroupId)",
-      optional = true
     },
     {
       name = "encounterid",
@@ -916,7 +906,6 @@ WeakAuras.load_prototype = {
       init = "arg",
       desc = get_encounters_list,
       test = "WeakAuras.CheckNumericIds([[%s]], encounterid)",
-      optional = true
     },
     {
       name = "size",
@@ -925,7 +914,6 @@ WeakAuras.load_prototype = {
       values = "instance_types",
       init = "arg",
       control = "WeakAurasSortedDropdown",
-      optional = true
     },
     {
       name = "difficulty",
@@ -933,7 +921,6 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = "difficulty_types",
       init = "arg",
-      optional = true
     },
     {
       name = "role",
