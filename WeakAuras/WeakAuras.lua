@@ -2343,7 +2343,9 @@ function WeakAuras.Modernize(data)
         local newSortTable = {}
         for index, isHybrid in pairs(data.sortHybridTable) do
           local childID = data.controlledChildren[index]
-          newSortTable[childID] = isHybrid
+          if childID then
+            newSortTable[childID] = isHybrid
+          end
         end
         data.sortHybridTable = newSortTable
       end
