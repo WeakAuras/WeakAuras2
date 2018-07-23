@@ -230,16 +230,20 @@ local function configureText(fontString, icon, enabled, point, width, height, co
     return;
   end
 
-  local sxo, syo = 0, 0;
+  local sxo, syo, h, v = 0, 0, "CENTER", "MIDDLE";
   if(point:find("LEFT")) then
     sxo = width / 10;
+    h = containment == "INSIDE" and "LEFT" or "RIGHT";
   elseif(point:find("RIGHT")) then
     sxo = width / -10;
+    h = containment == "INSIDE" and "RIGHT" or "LEFT";
   end
   if(point:find("BOTTOM")) then
     syo = height / 10;
+    v = containment == "INSIDE" and "BOTTOM" or "TOP";
   elseif(point:find("TOP")) then
     syo = height / -10;
+    v = containment == "INSIDE" and "TOP" or "BOTTOM";
   end
   fontString:ClearAllPoints();
   if(containment == "INSIDE") then
@@ -248,6 +252,8 @@ local function configureText(fontString, icon, enabled, point, width, height, co
     local selfPoint = WeakAuras.inverse_point_types[point];
     fontString:SetPoint(selfPoint, icon, point, -0.5 * sxo, -0.5 * syo);
   end
+  fontString:SetJustifyH(h);
+  fontString:SetJustifyV(v);
   local fontPath = SharedMedia:Fetch("font", font);
   fontString:SetFont(fontPath, fontSize, fontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or fontFlags);
   fontString:SetTextHeight(fontSize);
