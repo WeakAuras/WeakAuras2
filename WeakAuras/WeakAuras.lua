@@ -4642,7 +4642,8 @@ end
 
 function WeakAuras.AnchorFrame(data, region, parent)
   local anchorParent = GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
-  if (data.anchorFrameParent or data.anchorFrameParent == nil) then
+  if (data.anchorFrameParent or data.anchorFrameParent == nil
+      or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
     region:SetParent(anchorParent);
   else
     region:SetParent(frame);
