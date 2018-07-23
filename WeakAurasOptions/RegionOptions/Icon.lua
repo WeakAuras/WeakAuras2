@@ -309,8 +309,8 @@ local function createOptions(id, data)
   };
 
   local function hideCustomTextEditor()
-    return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
-      or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
+    return not ((data.text1Enabled and data.text1:find("%%c"))
+             or (data.text2Enabled and data.text2:find("%%c")))
   end
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 43.2,  hideCustomTextEditor, {"customText"}, false);
