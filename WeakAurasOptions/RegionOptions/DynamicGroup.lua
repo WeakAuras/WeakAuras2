@@ -141,11 +141,13 @@ local function createOptions(id, data)
       values = function()
         return data.controlledChildren
       end,
-      get = function(info, id)
-        return data.sortHybridTable and data.sortHybridTable [id] or false;
+      get = function(info, index)
+        local id = data.controlledChildren[index]
+        return data.sortHybridTable and data.sortHybridTable[id] or false;
       end,
-      set = function(info, id)
+      set = function(info, index)
         if not data.sortHybridTable then data.sortHybridTable = {}; end
+        local id = data.controlledChildren[index]
         local cur = data.sortHybridTable and data.sortHybridTable[id] or false;
         data.sortHybridTable[id] = not(cur);
       end,

@@ -225,11 +225,11 @@ local function modify(parent, region, data)
         if (not a) then return false; end;
         local aIndex;
         local bIndex;
-        if (data.sortHybridTable and data.sortHybridTable[a.dataIndex]) then
+        if (data.sortHybridTable and data.sortHybridTable[a.id]) then
           aIndex = a.dataIndex;
         end
 
-        if (data.sortHybridTable and data.sortHybridTable[b.dataIndex]) then
+        if (data.sortHybridTable and data.sortHybridTable[b.id]) then
           bIndex = b.dataIndex;
         end
 

@@ -1,4 +1,4 @@
-local internalVersion = 4;
+local internalVersion = 5;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -1662,6 +1662,9 @@ function WeakAuras.Delete(data)
           tremove(parentData.controlledChildren, index);
         end
       end
+      if parentData.sortHybridTable then
+        parentData.sortHybridTable[id] = nil
+      end
     end
   end
 
@@ -1735,6 +1738,10 @@ function WeakAuras.Rename(data, newid)
         if(childId == data.id) then
           parentData.controlledChildren[index] = newid;
         end
+      end
+      if parentData.sortHybridTable then
+        parentData.sortHybridTable[newid] = true
+        parentData.sortHybridTable[oldid] = nil
       end
     end
   end
@@ -2324,6 +2331,21 @@ function WeakAuras.Modernize(data)
             end
           end
         end
+      end
+    end
+  end
+
+  -- Version 5 was introduced July 2018 in BFA
+  if data.internalVersion < 5 then
+    -- this is to fix hybrid sorting
+    if data.sortHybridTable then
+      if data.controlledChildren then
+        local newSortTable = {}
+        for index, isHybrid in pairs(data.sortHybridTable) do
+          local childID = data.controlledChildren[index]
+          newSortTable[childID] = isHybrid
+        end
+        data.sortHybridTable = newSortTable
       end
     end
   end
