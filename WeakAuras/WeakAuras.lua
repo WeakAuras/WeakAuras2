@@ -558,7 +558,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
           tinsert(input, name);
         end
         if (arg.optional and skipOptional) then
-          -- Do nothing
+        -- Do nothing
         elseif(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
@@ -840,9 +840,9 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
             if (WeakAuras.customConditionsFunctions[id]
-                and WeakAuras.customConditionsFunctions[id][conditionNumber]
-                and  WeakAuras.customConditionsFunctions[id][conditionNumber].changes
-                and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
+              and WeakAuras.customConditionsFunctions[id][conditionNumber]
+              and  WeakAuras.customConditionsFunctions[id][conditionNumber].changes
+              and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
               pathToCustomFunction = string.format("WeakAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
             end
             ret = ret .. "     if (not skipActions) then\n";
@@ -2062,7 +2062,7 @@ function WeakAuras.Modernize(data)
         };
         load.use_ingroup = false;
       elseif (load.use_ingroup == false) then
-          load.ingroup.single = "solo";
+        load.ingroup.single = "solo";
         load.ingroup.multi = {};
         load.use_ingroup = true;
       end
@@ -4030,9 +4030,9 @@ function WeakAuras.UpdatedTriggerState(id)
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
         clone:Collapse();
       end
-    end
-    -- Show new states
-    ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
+  end
+  -- Show new states
+  ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   end
 
   for cloneId, state in pairs(activeTriggerState) do
@@ -4136,20 +4136,20 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         if (value) then
           textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
         end
-      elseif (endPos > currentPos and regionState) then
-        local symbol = string.sub(textStr, currentPos + 1, endPos);
-        local value = regionState[symbol] and tostring(regionState[symbol]);
-        if (value) then
-          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-        else
-          value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
-          value = value or "";
-          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
-        end
+    elseif (endPos > currentPos and regionState) then
+      local symbol = string.sub(textStr, currentPos + 1, endPos);
+      local value = regionState[symbol] and tostring(regionState[symbol]);
+      if (value) then
+        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+      else
+        value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
+        value = value or "";
+        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
       end
-      endPos = currentPos - 1;
+    end
+    endPos = currentPos - 1;
     elseif (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-      -- a-zA-Z character
+    -- a-zA-Z character
     else
       endPos = currentPos - 1;
     end

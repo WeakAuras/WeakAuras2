@@ -220,7 +220,7 @@ local function createOptions(id, data)
       name = L["General Text Settings"],
       hidden = function()
         return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "cpt"))
-                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "cpt")))
+          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "cpt")))
       end,
     },
     customTextUpdate = {
@@ -228,7 +228,7 @@ local function createOptions(id, data)
       width = "double",
       hidden = function()
         return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
-                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
+          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
       end,
       name = L["Update Custom Text On..."],
       values = WeakAuras.text_check_types,
@@ -243,7 +243,7 @@ local function createOptions(id, data)
       get = function() return data.progressPrecision or 1 end,
       hidden = function()
         return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "pt"))
-                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
+          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
       end,
       disabled = function()
         return not (WeakAuras.ContainsPlaceHolders(data.text1, "p") or WeakAuras.ContainsPlaceHolders(data.text2, "p"));
@@ -257,7 +257,7 @@ local function createOptions(id, data)
       get = function() return data.totalPrecision or 1 end,
       hidden = function()
         return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "pt"))
-                    or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
+          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
       end,
       disabled = function()
         return not (WeakAuras.ContainsPlaceHolders(data.text1, "t") or WeakAuras.ContainsPlaceHolders(data.text2, "t"));
@@ -310,7 +310,7 @@ local function createOptions(id, data)
 
   local function hideCustomTextEditor()
     return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
-                or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
+      or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
   end
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 43.2,  hideCustomTextEditor, {"customText"}, false);

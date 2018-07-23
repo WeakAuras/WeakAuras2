@@ -489,179 +489,179 @@ local orientationToAnchorPoint = {
 }
 
 local textureFunctions = {
-    SetValueFunctions = {
-      ["HORIZONTAL"] = function(self, startProgress, endProgress)
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", startProgress, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", startProgress, 1 );
+  SetValueFunctions = {
+    ["HORIZONTAL"] = function(self, startProgress, endProgress)
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", startProgress, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", startProgress, 1 );
 
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", endProgress, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", endProgress, 1 );
-      end,
-      ["HORIZONTAL_INVERSE"] = function(self, startProgress, endProgress)
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 1 - endProgress, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 1 - endProgress, 1 );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1 - startProgress, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1 - startProgress, 1 );
-      end,
-      ["VERTICAL"] = function(self, startProgress, endProgress)
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, 1 - endProgress );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, 1 - endProgress );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, 1 - startProgress );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, 1 - startProgress );
-      end,
-      ["VERTICAL_INVERSE"] = function(self, startProgress, endProgress)
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, startProgress );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, startProgress );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, endProgress );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, endProgress );
-      end,
-    },
-
-    SetValueFunctionsSlanted = {
-      ["HORIZONTAL"] = function(self, startProgress, endProgress)
-        local slant = self.slant or 0;
-        if (self.slantMode == "EXTEND") then
-          startProgress = startProgress * (1 + slant) - slant;
-          endProgress = endProgress * (1 + slant) - slant;
-        else
-          startProgress = startProgress * (1 - slant);
-          endProgress = endProgress * (1 -  slant);
-        end
-
-        local slant1 = self.slantFirst and 0 or slant;
-        local slant2 = self.slantFirst and slant or 0;
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", startProgress + slant1, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", startProgress + slant2, 1 );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", endProgress + slant1, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", endProgress + slant2, 1 );
-      end,
-      ["HORIZONTAL_INVERSE"] = function(self, startProgress, endProgress)
-        local slant = self.slant or 0;
-        if (self.slantMode == "EXTEND") then
-          startProgress = startProgress * (1 + slant) - slant;
-          endProgress = endProgress * (1 + slant) - slant;
-        else
-          startProgress = startProgress * (1 - slant);
-          endProgress = endProgress * (1 -  slant);
-        end
-
-        local slant1 = self.slantFirst and slant or 0;
-        local slant2 = self.slantFirst and 0 or slant;
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 1 - endProgress - slant1, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 1 - endProgress - slant2, 1 );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1 - startProgress - slant1, 0 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1 - startProgress - slant2, 1 );
-      end,
-      ["VERTICAL"] = function(self, startProgress, endProgress)
-        local slant = self.slant or 0;
-        if (self.slantMode == "EXTEND") then
-          startProgress = startProgress * (1 + slant) - slant;
-          endProgress = endProgress * (1 + slant) - slant;
-        else
-          startProgress = startProgress * (1 - slant);
-          endProgress = endProgress * (1 -  slant);
-        end
-
-        local slant1 = self.slantFirst and slant or 0;
-        local slant2 = self.slantFirst and 0 or slant;
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, 1 - endProgress - slant1 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, 1 - endProgress - slant2 );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, 1 - startProgress - slant1 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, 1 - startProgress - slant2 );
-      end,
-      ["VERTICAL_INVERSE"] = function(self, startProgress, endProgress)
-        local slant = self.slant or 0;
-        if (self.slantMode == "EXTEND") then
-          startProgress = startProgress * (1 + slant) - slant;
-          endProgress = endProgress * (1 + slant) - slant;
-        else
-          startProgress = startProgress * (1 - slant);
-          endProgress = endProgress * (1 -  slant);
-        end
-
-        local slant1 = self.slantFirst and 0 or slant;
-        local slant2 = self.slantFirst and slant or 0;
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, startProgress + slant1 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, startProgress + slant2 );
-
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, endProgress + slant1 );
-        self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, endProgress + slant2 );
-      end,
-    },
-
-    SetBackgroundOffset = function(self, backgroundOffset)
-      self.backgroundOffset = backgroundOffset;
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", endProgress, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", endProgress, 1 );
     end,
+    ["HORIZONTAL_INVERSE"] = function(self, startProgress, endProgress)
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 1 - endProgress, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 1 - endProgress, 1 );
 
-    SetOrientation = function(self, orientation, compress, slanted, slant, slantFirst, slantMode)
-      self.SetValueFunction = slanted and self.SetValueFunctionsSlanted[orientation] or self.SetValueFunctions[orientation];
-      self.compress = compress;
-      self.slanted = slanted;
-      self.slant = slant;
-      self.slantFirst = slantFirst;
-      self.slantMode = slantMode;
-      if (self.compress) then
-        self:ClearAllPoints();
-        local anchor = orientationToAnchorPoint[orientation];
-        self:SetPoint(anchor, self.region, anchor);
-        self.horizontal = orientation == "HORIZONTAL" or orientation == "HORIZONTAL_INVERSE";
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1 - startProgress, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1 - startProgress, 1 );
+    end,
+    ["VERTICAL"] = function(self, startProgress, endProgress)
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, 1 - endProgress );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, 1 - endProgress );
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, 1 - startProgress );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, 1 - startProgress );
+    end,
+    ["VERTICAL_INVERSE"] = function(self, startProgress, endProgress)
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, startProgress );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, startProgress );
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, endProgress );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, endProgress );
+    end,
+  },
+
+  SetValueFunctionsSlanted = {
+    ["HORIZONTAL"] = function(self, startProgress, endProgress)
+      local slant = self.slant or 0;
+      if (self.slantMode == "EXTEND") then
+        startProgress = startProgress * (1 + slant) - slant;
+        endProgress = endProgress * (1 + slant) - slant;
       else
-        local offset = self.backgroundOffset or 0;
-        self:ClearAllPoints();
-        self:SetPoint("BOTTOMLEFT", self.region, "BOTTOMLEFT", -1 * offset, -1 * offset);
-        self:SetPoint("TOPRIGHT", self.region, "TOPRIGHT", offset, offset);
-      end
-      self:Update();
-    end,
-
-    SetValue = function(self, startProgress, endProgress)
-      self.startProgress = startProgress;
-      self.endProgress = endProgress;
-
-      if (self.compress) then
-        local progress = self.region.progress or 1;
-        local horScale = self.horizontal and progress or 1;
-        local verScale = self.horizontal and 1 or progress;
-        self:SetWidth(self.region:GetWidth() * horScale);
-        self:SetHeight(self.region:GetHeight() * verScale);
-
-        if (progress > 0.1) then
-          startProgress = startProgress / progress;
-          endProgress = endProgress / progress;
-        else
-          startProgress, endProgress = 0, 0;
-        end
+        startProgress = startProgress * (1 - slant);
+        endProgress = endProgress * (1 -  slant);
       end
 
-      self.coord:SetFull();
-      self:SetValueFunction(startProgress, endProgress);
+      local slant1 = self.slantFirst and 0 or slant;
+      local slant2 = self.slantFirst and slant or 0;
 
-      local region = self.region;
-      local scalex = region.scale_x or 1;
-      local scaley = region.scale_y or 1;
-      local rotation = region.rotation or 0;
-      local mirror_h = region.mirror_h or false;
-      local mirror_v = region.mirror_v or false;
-      local user_x = region.user_x;
-      local user_y = region.user_y;
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", startProgress + slant1, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", startProgress + slant2, 1 );
 
-      self.coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
-      self.coord:Apply();
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", endProgress + slant1, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", endProgress + slant2, 1 );
     end,
+    ["HORIZONTAL_INVERSE"] = function(self, startProgress, endProgress)
+      local slant = self.slant or 0;
+      if (self.slantMode == "EXTEND") then
+        startProgress = startProgress * (1 + slant) - slant;
+        endProgress = endProgress * (1 + slant) - slant;
+      else
+        startProgress = startProgress * (1 - slant);
+        endProgress = endProgress * (1 -  slant);
+      end
 
-    Update = function(self)
-      self:SetValue(self.startProgress, self.endProgress);
+      local slant1 = self.slantFirst and slant or 0;
+      local slant2 = self.slantFirst and 0 or slant;
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 1 - endProgress - slant1, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 1 - endProgress - slant2, 1 );
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1 - startProgress - slant1, 0 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1 - startProgress - slant2, 1 );
     end,
+    ["VERTICAL"] = function(self, startProgress, endProgress)
+      local slant = self.slant or 0;
+      if (self.slantMode == "EXTEND") then
+        startProgress = startProgress * (1 + slant) - slant;
+        endProgress = endProgress * (1 + slant) - slant;
+      else
+        startProgress = startProgress * (1 - slant);
+        endProgress = endProgress * (1 -  slant);
+      end
+
+      local slant1 = self.slantFirst and slant or 0;
+      local slant2 = self.slantFirst and 0 or slant;
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, 1 - endProgress - slant1 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, 1 - endProgress - slant2 );
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, 1 - startProgress - slant1 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, 1 - startProgress - slant2 );
+    end,
+    ["VERTICAL_INVERSE"] = function(self, startProgress, endProgress)
+      local slant = self.slant or 0;
+      if (self.slantMode == "EXTEND") then
+        startProgress = startProgress * (1 + slant) - slant;
+        endProgress = endProgress * (1 + slant) - slant;
+      else
+        startProgress = startProgress * (1 - slant);
+        endProgress = endProgress * (1 -  slant);
+      end
+
+      local slant1 = self.slantFirst and 0 or slant;
+      local slant2 = self.slantFirst and slant or 0;
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", 0, startProgress + slant1 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UR", 1, startProgress + slant2 );
+
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", 0, endProgress + slant1 );
+      self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LR", 1, endProgress + slant2 );
+    end,
+  },
+
+  SetBackgroundOffset = function(self, backgroundOffset)
+    self.backgroundOffset = backgroundOffset;
+  end,
+
+  SetOrientation = function(self, orientation, compress, slanted, slant, slantFirst, slantMode)
+    self.SetValueFunction = slanted and self.SetValueFunctionsSlanted[orientation] or self.SetValueFunctions[orientation];
+    self.compress = compress;
+    self.slanted = slanted;
+    self.slant = slant;
+    self.slantFirst = slantFirst;
+    self.slantMode = slantMode;
+    if (self.compress) then
+      self:ClearAllPoints();
+      local anchor = orientationToAnchorPoint[orientation];
+      self:SetPoint(anchor, self.region, anchor);
+      self.horizontal = orientation == "HORIZONTAL" or orientation == "HORIZONTAL_INVERSE";
+    else
+      local offset = self.backgroundOffset or 0;
+      self:ClearAllPoints();
+      self:SetPoint("BOTTOMLEFT", self.region, "BOTTOMLEFT", -1 * offset, -1 * offset);
+      self:SetPoint("TOPRIGHT", self.region, "TOPRIGHT", offset, offset);
+    end
+    self:Update();
+  end,
+
+  SetValue = function(self, startProgress, endProgress)
+    self.startProgress = startProgress;
+    self.endProgress = endProgress;
+
+    if (self.compress) then
+      local progress = self.region.progress or 1;
+      local horScale = self.horizontal and progress or 1;
+      local verScale = self.horizontal and 1 or progress;
+      self:SetWidth(self.region:GetWidth() * horScale);
+      self:SetHeight(self.region:GetHeight() * verScale);
+
+      if (progress > 0.1) then
+        startProgress = startProgress / progress;
+        endProgress = endProgress / progress;
+      else
+        startProgress, endProgress = 0, 0;
+      end
+    end
+
+    self.coord:SetFull();
+    self:SetValueFunction(startProgress, endProgress);
+
+    local region = self.region;
+    local scalex = region.scale_x or 1;
+    local scaley = region.scale_y or 1;
+    local rotation = region.rotation or 0;
+    local mirror_h = region.mirror_h or false;
+    local mirror_v = region.mirror_v or false;
+    local user_x = region.user_x;
+    local user_y = region.user_y;
+
+    self.coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
+    self.coord:Apply();
+  end,
+
+  Update = function(self)
+    self:SetValue(self.startProgress, self.endProgress);
+  end,
 }
 
 

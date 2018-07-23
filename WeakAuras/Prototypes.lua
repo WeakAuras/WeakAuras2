@@ -795,52 +795,52 @@ WeakAuras.load_prototype = {
           local single_class;
           -- First check to use if the class load is on multi-select with only one class selected
           if(trigger.use_class == false and trigger.class and trigger.class.multi) then
-           local num_classes = 0;
-           for class in pairs(trigger.class.multi) do
-             single_class = class;
-             num_classes = num_classes + 1;
-           end
-           if(num_classes ~= 1) then
-             single_class = nil;
-           end
+            local num_classes = 0;
+            for class in pairs(trigger.class.multi) do
+              single_class = class;
+              num_classes = num_classes + 1;
+            end
+            if(num_classes ~= 1) then
+              single_class = nil;
+            end
           end
           -- If that is not the case, see if it is on single-select
           if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
-           single_class = trigger.class.single
+            single_class = trigger.class.single
           end
 
           if (trigger.use_class == nil) then -- no class selected, fallback to current class
-           single_class = select(2, UnitClass("player"));
+            single_class = select(2, UnitClass("player"));
           end
 
           local single_spec;
           if (single_class) then
-           if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
-             local num_specs = 0;
-             for spec in pairs(trigger.spec.multi) do
-               single_spec = spec;
-               num_specs = num_specs + 1;
-             end
-             if (num_specs ~= 1) then
-               single_spec = nil;
-             end
-           end
+            if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
+              local num_specs = 0;
+              for spec in pairs(trigger.spec.multi) do
+                single_spec = spec;
+                num_specs = num_specs + 1;
+              end
+              if (num_specs ~= 1) then
+                single_spec = nil;
+              end
+            end
           end
           if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
-           single_spec = trigger.spec.single;
+            single_spec = trigger.spec.single;
           end
 
           if (trigger.use_spec == nil) then
-           single_spec = GetSpecialization();
+            single_spec = GetSpecialization();
           end
 
           -- print ("Using talent cache", single_class, single_spec);
           -- If a single specific class was found, load the specific list for it
           if(single_class and WeakAuras.pvp_talent_types_specific[single_class]
-           and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
-           return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
+            and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
+            return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
           else
-           return WeakAuras.pvp_talent_types;
+            return WeakAuras.pvp_talent_types;
           end
         end
       end,
@@ -884,8 +884,8 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = function()
-         return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
-       end,
+        return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
+      end,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)",
     },
     {
@@ -2393,7 +2393,7 @@ WeakAuras.event_prototypes = {
   ["Cooldown Ready (Item)"] = {
     type = "event",
     events = {
-          },
+    },
     internal_events = {
       "ITEM_COOLDOWN_READY",
     },
@@ -3656,8 +3656,8 @@ WeakAuras.event_prototypes = {
         type = "select",
         values = "rune_specific_types",
         test = "(showOn == \"showOnReady\" and (startTime == 0)) " ..
-               "or (showOn == \"showOnCooldown\" and startTime > 0) "  ..
-               "or (showOn == \"showAlways\")",
+        "or (showOn == \"showOnCooldown\" and startTime > 0) "  ..
+        "or (showOn == \"showAlways\")",
         enable = function(trigger) return not trigger.use_runesCount end,
         reloadOptions = true
       },

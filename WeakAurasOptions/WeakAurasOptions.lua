@@ -1987,7 +1987,7 @@ local function replaceNameDescFuncs(intable, data)
             name = childOption.name;
           end
           if (not name) then
-            -- Do nothing
+          -- Do nothing
           elseif(first) then
             combinedName = name;
             first = false;

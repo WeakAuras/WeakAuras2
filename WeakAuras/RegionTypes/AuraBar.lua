@@ -251,36 +251,36 @@ local GetTexCoordSpark = function(degree, mirror)
 end
 
 local GetTexCoordFunctions =
-{
-  ["HORIZONTAL"] = function(startProgress, endProgress)
-    local TLx,  TLy = startProgress, 0;
-    local TRx,  TRy = endProgress, 0;
-    local BLx,  BLy = startProgress, 1;
-    local BRx,  BRy = endProgress, 1;
-    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
-  end,
-  ["HORIZONTAL_INVERSE"] = function(startProgress, endProgress)
-    local TLx,  TLy = endProgress, 0;
-    local TRx,  TRy = startProgress, 0;
-    local BLx,  BLy = endProgress, 1;
-    local BRx,  BRy = startProgress, 1;
-    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
-  end,
-  ["VERTICAL"] = function(startProgress, endProgress)
-    local TLx,  TLy = startProgress, 1;
-    local TRx,  TRy = startProgress, 0;
-    local BLx,  BLy = endProgress, 1;
-    local BRx,  BRy = endProgress, 0;
-    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
-  end,
-  ["VERTICAL_INVERSE"] = function(startProgress, endProgress)
-    local TLx,  TLy = endProgress, 0;
-    local TRx,  TRy = endProgress, 1;
-    local BLx,  BLy = startProgress, 0;
-    local BRx,  BRy = startProgress, 1;
-    return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
-  end
-}
+  {
+    ["HORIZONTAL"] = function(startProgress, endProgress)
+      local TLx,  TLy = startProgress, 0;
+      local TRx,  TRy = endProgress, 0;
+      local BLx,  BLy = startProgress, 1;
+      local BRx,  BRy = endProgress, 1;
+      return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+    end,
+    ["HORIZONTAL_INVERSE"] = function(startProgress, endProgress)
+      local TLx,  TLy = endProgress, 0;
+      local TRx,  TRy = startProgress, 0;
+      local BLx,  BLy = endProgress, 1;
+      local BRx,  BRy = startProgress, 1;
+      return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+    end,
+    ["VERTICAL"] = function(startProgress, endProgress)
+      local TLx,  TLy = startProgress, 1;
+      local TRx,  TRy = startProgress, 0;
+      local BLx,  BLy = endProgress, 1;
+      local BRx,  BRy = endProgress, 0;
+      return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+    end,
+    ["VERTICAL_INVERSE"] = function(startProgress, endProgress)
+      local TLx,  TLy = endProgress, 0;
+      local TRx,  TRy = endProgress, 1;
+      local BLx,  BLy = startProgress, 0;
+      local BRx,  BRy = startProgress, 1;
+      return TLx, TLy, BLx, BLy, TRx, TRy, BRx, BRy;
+    end
+  }
 
 local anchorAlignment = {
   ["HORIZONTAL"] = { "TOPLEFT", "BOTTOMLEFT", "RIGHT" },

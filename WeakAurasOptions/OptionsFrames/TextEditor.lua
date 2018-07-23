@@ -375,7 +375,7 @@ local function ConstructTextEditor(frame)
     if (self.reloadOptions) then
       if(self.data.controlledChildren) then
         for index, childId in pairs(self.data.controlledChildren) do
-           WeakAuras.ScheduleReloadOptions(WeakAuras.GetData(childId));
+          WeakAuras.ScheduleReloadOptions(WeakAuras.GetData(childId));
         end
         WeakAuras.ScheduleReloadOptions(self.data);
       else

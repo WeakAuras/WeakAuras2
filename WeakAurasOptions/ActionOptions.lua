@@ -312,43 +312,43 @@ function WeakAuras.AddActionOption(id, data)
         hidden = function() return data.actions.finish.sound ~= " KitID" end,
         disabled = function() return not data.actions.finish.do_sound end
       },
-    finish_stop_sound = {
-      type = "toggle",
-      name = L["Stop Sound"],
-      order = 29.1,
-      width = "double"
-    },
-    finish_do_glow = {
-      type = "toggle",
-      name = L["Button Glow"],
-      order = 30.1
-    },
-    finish_glow_action = {
-      type = "select",
-      name = L["Glow Action"],
-      order = 30.2,
-      values = WeakAuras.glow_action_types,
-      disabled = function() return not data.actions.finish.do_glow end
-    },
-    finish_glow_frame = {
-      type = "input",
-      name = L["Frame"],
-      order = 30.3,
-      hidden = function() return not data.actions.finish.do_glow end
-    },
-    finish_choose_glow_frame = {
-      type = "execute",
-      name = L["Choose"],
-      order = 30.4,
-      hidden = function() return not data.actions.finish.do_glow end,
-      func = function()
-        if(data.controlledChildren and data.controlledChildren[1]) then
-          WeakAuras.PickDisplay(data.controlledChildren[1]);
-          WeakAuras.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "finish", "glow_frame"});
-        else
-          WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
+      finish_stop_sound = {
+        type = "toggle",
+        name = L["Stop Sound"],
+        order = 29.1,
+        width = "double"
+      },
+      finish_do_glow = {
+        type = "toggle",
+        name = L["Button Glow"],
+        order = 30.1
+      },
+      finish_glow_action = {
+        type = "select",
+        name = L["Glow Action"],
+        order = 30.2,
+        values = WeakAuras.glow_action_types,
+        disabled = function() return not data.actions.finish.do_glow end
+      },
+      finish_glow_frame = {
+        type = "input",
+        name = L["Frame"],
+        order = 30.3,
+        hidden = function() return not data.actions.finish.do_glow end
+      },
+      finish_choose_glow_frame = {
+        type = "execute",
+        name = L["Choose"],
+        order = 30.4,
+        hidden = function() return not data.actions.finish.do_glow end,
+        func = function()
+          if(data.controlledChildren and data.controlledChildren[1]) then
+            WeakAuras.PickDisplay(data.controlledChildren[1]);
+            WeakAuras.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "finish", "glow_frame"});
+          else
+            WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
+          end
         end
-      end
       },
       finish_do_custom = {
         type = "toggle",
@@ -356,7 +356,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 31,
         width = "double"
       },
-      -- Text editor added below
+    -- Text editor added below
     },
   }
 

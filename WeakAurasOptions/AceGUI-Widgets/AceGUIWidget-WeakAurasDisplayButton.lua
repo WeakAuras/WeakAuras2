@@ -36,11 +36,11 @@ local function copyAuraPart(source, destination, part)
   if (part == "display" or all) then
     for k, v in pairs(source) do
       if (not ignoreForCopyingDisplay[k]) then
-           if (type(v) == "table") then
-             destination[k] = CopyTable(v);
-           else
-             destination[k] = v;
-           end
+        if (type(v) == "table") then
+          destination[k] = CopyTable(v);
+        else
+          destination[k] = v;
+        end
       end
     end
   end

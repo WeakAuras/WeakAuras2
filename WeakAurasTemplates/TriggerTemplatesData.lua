@@ -619,7 +619,7 @@ templates.class.HUNTER = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-      { spell = 781, type = "ability"}, -- Disengage
+        { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
         { spell = 2649, type = "ability"}, -- Growl
         { spell = 5116, type = "ability"}, -- Concussive Shot
@@ -3546,9 +3546,9 @@ end
 
 for _, class in pairs(templates.class) do
   for _, spec in pairs(class) do
-    -- TODO 8.0
-    -- tinsert(spec[5].args, { spell = 195710, type = "ability"}) -- Honorable Medallion
-    -- tinsert(spec[5].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
+  -- TODO 8.0
+  -- tinsert(spec[5].args, { spell = 195710, type = "ability"}) -- Honorable Medallion
+  -- tinsert(spec[5].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
   end
 end
 

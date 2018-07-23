@@ -1501,7 +1501,7 @@ function BuffTrigger.Add(data)
         end
 
         if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone)
-            and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
+          and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
           showOn = trigger.showOn;
         end
 
