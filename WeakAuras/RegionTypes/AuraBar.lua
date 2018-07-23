@@ -39,7 +39,6 @@ local default = {
   sparkColor = {1.0, 1.0, 1.0, 1.0},
   sparkTexture = "Interface\\CastingBar\\UI-CastingBar-Spark",
   sparkBlendMode = "ADD",
-  sparkDesature = false,
   sparkOffsetX = 0,
   sparkOffsetY = 0,
   sparkRotationMode = "AUTO",
