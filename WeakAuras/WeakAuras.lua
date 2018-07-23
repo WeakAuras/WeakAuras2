@@ -4088,12 +4088,18 @@ end
 local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local regionValues = region.values;
   local value;
-  if (textStr == "%c" and customFunc) then
-    WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-    local _;
-    _, value = xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
-    WeakAuras.ActivateAuraEnvironment(nil);
-    value = value or "";
+  if textStr:find("%%?c") then
+    if customFunc then
+      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+      regionValues.custom = {select(2, xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration,
+            regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks))}
+      WeakAuras.ActivateAuraEnvironment(nil)
+    end
+    if not regionValues.custom then
+      return ""
+    end
+    local index = tonumber(textStr:match("%d+") or 1)
+    value = WeakAuras.EnsureString(regionValues.custom[index])
   else
     local variable = WeakAuras.dynamic_texts[textStr];
     if (not variable) then
@@ -4111,12 +4117,11 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   if (not regionState and not regionValues) then
     return;
   end
-
   -- We look backwards through the string
   -- Invariant currentPos - endPos is a ascii "alphabetic" string
   -- So on finding a "%" we extract  currentPos - endPos and depending
   -- on how long the string is look it up in regionState or in regionValues
-  -- textStr is in UTF-8 encoding. We assume all state variables are pure alphabetic strings
+  -- textStr is in UTF-8 encoding. We assume all state variables are pure alphanumeric strings
   local endPos = textStr:len();
   if (endPos < 2) then
     textStr = textStr:gsub("\\n", "\n");
@@ -4143,20 +4148,28 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         if (value) then
           textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
         end
-    elseif (endPos > currentPos and regionState) then
-      local symbol = string.sub(textStr, currentPos + 1, endPos);
-      local value = regionState[symbol] and tostring(regionState[symbol]);
-      if (value) then
-        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-      else
-        value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
-        value = value or "";
-        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
+      elseif (endPos > currentPos) then
+        local symbol = string.sub(textStr, currentPos + 1, endPos);
+        local value
+        if symbol:find("^c%d*$") and regionValues then -- custom value
+          value = ReplaceValuePlaceHolders(symbol, region, customFunc)
+          if value then
+            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+          end
+        elseif regionState then -- state value
+          value = regionState[symbol] and tostring(regionState[symbol]);
+          if (value) then
+            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+          else
+            value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
+            value = value or "";
+            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
+          end
+        end
       end
-    end
-    endPos = currentPos - 1;
-    elseif (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-    -- a-zA-Z character
+      endPos = currentPos - 1;
+    elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+      -- 0-9a-zA-Z character
     else
       endPos = currentPos - 1;
     end

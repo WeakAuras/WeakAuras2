@@ -159,7 +159,7 @@ There are several special codes available to make this text dynamic:
 |cFFFF0000%n|r - Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name
 |cFFFF0000%i|r - Icon - The icon associated with the display
 |cFFFF0000%s|r - Stacks - The number of stacks of an aura (usually)
-|cFFFF0000%c|r - Custom - Allows you to define a custom Lua function that returns a string value to be displayed]=]
+|cFFFF0000%c|r - Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc.]=]
 L["Enabled"] = "Enabled"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Event Type"] = "Event Type"

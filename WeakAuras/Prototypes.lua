@@ -4541,7 +4541,7 @@ WeakAuras.dynamic_texts = {
     value = "stacks",
     static = 1
   },
-  ["%c"] = {
+  ["%c%d*"] = {
     unescaped = "%c",
     name = L["Custom"],
     value = "custom",
