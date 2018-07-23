@@ -1897,7 +1897,7 @@ WeakAuras.event_prototypes = {
         local showOn = %s
         local expirationTime = startTime + duration
       ]=];
-      if (not trigger.trackcharge) then
+      if (not trigger.use_trackcharge or not trigger.trackcharge) then
         ret = ret .. [=[
           if (state.expirationTime ~= expirationTime) then
             state.expirationTime = expirationTime;
