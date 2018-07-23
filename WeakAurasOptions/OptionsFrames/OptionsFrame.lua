@@ -528,6 +528,7 @@ function WeakAuras.CreateFrame()
   loadedButton:SetExpandDescription(L["Expand all loaded displays"]);
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"]);
   loadedButton:SetViewClick(function()
+    WeakAuras.PauseAllDynamicGroups();
     if(loadedButton.view.func() == 2) then
       for id, child in pairs(displayButtons) do
         if(loaded[id] ~= nil) then
@@ -541,6 +542,7 @@ function WeakAuras.CreateFrame()
         end
       end
     end
+    WeakAuras.ResumeAllDynamicGroups();
   end);
   loadedButton:SetViewTest(function()
     local none, all = true, true;
