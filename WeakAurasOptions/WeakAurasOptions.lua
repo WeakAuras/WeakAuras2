@@ -483,6 +483,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               else
                 trigger["use_"..realname] = false
                 if(trigger[realname].single) then
+                  trigger[realname].multi = trigger[realname].multi or {};
                   trigger[realname].multi[trigger[realname].single] = true;
                 end
               end
@@ -990,6 +991,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
           set = function(info, v)
+            trigger[realname] = trigger[realname] or {};
             trigger[realname].single = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
@@ -1031,6 +1033,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             end
           end,
           set = function(info, v, calledFromSetAll)
+            trigger[realname].multi = trigger[realname].multi or {};
             if (calledFromSetAll) then
               trigger[realname].multi[v] = calledFromSetAll;
             elseif(trigger[realname].multi[v]) then

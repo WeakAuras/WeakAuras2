@@ -528,6 +528,18 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
+function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
+  if (not loadids or not currentId) or type(currentId) ~= "table" then
+    return false
+  end
+  for i=1, #currentId do
+    if loadids == currentId[i] then
+      return true
+    end
+  end
+  return false
+end
+
 function WeakAuras.CheckChargesDirection(direction, triggerDirection)
   return triggerDirection == "CHANGED"
     or (triggerDirection == "GAINED" and direction > 0)
@@ -928,6 +940,14 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = "role_types",
       init = "arg"
+    },
+    {
+      name = "affixes",
+      display = L["Mythic+ Affix"],
+      type = "multiselect",
+      values = "mythic_plus_affixes",
+      init = "arg",
+      test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
     },
   }
 };
