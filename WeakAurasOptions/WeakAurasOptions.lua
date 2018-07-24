@@ -2531,9 +2531,11 @@ end
 -- which AceConfig doesn't like.
 -- Thus Reload the options after a very small delay.
 function WeakAuras.ScheduleReloadOptions(data)
-  C_Timer.After(0.1, function()
-    WeakAuras.ReloadOptions(data.id)
-  end );
+  if (type(data.id) ~= "table") then
+    C_Timer.After(0.1, function()
+      WeakAuras.ReloadOptions(data.id)
+    end );
+  end
 end
 
 function WeakAuras.ReloadOptions(id)
