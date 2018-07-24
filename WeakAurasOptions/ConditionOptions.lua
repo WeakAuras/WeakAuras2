@@ -640,7 +640,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     }
     order = order + 1;
 
-    local function customHiden()
+    local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
       if (not message) then return true; end
       return not WeakAuras.ContainsPlaceHolders(message, "c");
@@ -653,7 +653,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "custom", propertyType),
       order = order,
       multiline = true,
-      hidden = customHiden,
+      hidden = customHidden,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
       end,
