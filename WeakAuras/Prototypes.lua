@@ -79,6 +79,56 @@ local function get_encounters_list()
   return encounter_list:sub(1, -3) .. L["\n\nSupports multiple entries, separated by commas\n"]
 end
 
+WeakAuras.mythic_plus_affixes = {
+  {
+    level = 2,
+    ids = {
+      9,  -- Tyrannical
+      10, -- Fortified
+    }
+  },
+  {
+    level = 4,
+    ids = {
+      5,  -- Teeming
+      6,  -- Raging
+      7,  -- Bolstering
+      8,  -- Sanguine
+      11, -- Bursting
+    }
+  },
+  {
+    level = 7,
+    ids = {
+      2,  -- Skittish
+      3,  -- Volcanic
+      4,  -- Necrotic
+      12, -- Grievous
+      13, -- Explosive
+      14, -- Quaking
+    }
+  },
+  { -- Seasonal
+    level = 10,
+    ids = {
+      16, -- Infested
+    }
+  }
+}
+
+local function get_affix_list()
+  local affix_list = ""
+  for _,info in ipairs(WeakAuras.mythic_plus_affixes) do
+    affix_list = string.format("%s\124cffffce00%s %i+\124r\n",affix_list,L["Level"],info.level)
+    for _,id in ipairs(info.ids) do
+      local name = C_ChallengeMode.GetAffixInfo(id)
+      affix_list = string.format("%s%s: %i\n",affix_list,name,id)
+    end
+  end
+
+  return affix_list:sub(1, -2) .. L["\n\nSupports multiple entries, separated by commas\n"]
+end
+
 WeakAuras.function_strings = {
   count = [[
     return function(count)
@@ -528,6 +578,18 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
+function WeakAuras.CheckMPlusAffixIds(loadids,currentId)
+  if (not loadids or not currentId) or type(currentId) ~= "table" then
+    return false
+  end
+  for i=1,#currentId do
+    if WeakAuras.CheckNumericIds(loadids,currentId[i]) then
+      return true
+    end
+  end
+  return false
+end
+
 function WeakAuras.CheckChargesDirection(direction, triggerDirection)
   return triggerDirection == "CHANGED"
     or (triggerDirection == "GAINED" and direction > 0)
@@ -928,6 +990,14 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = "role_types",
       init = "arg"
+    },
+    {
+      name = "affixes",
+      display = L["Mythic+ Affix ID(s)"],
+      type = "string",
+      init = "arg",
+      desc = get_affix_list,
+      test = "WeakAuras.CheckMPlusAffixIds([[%s]], affixes)",
     },
   }
 };

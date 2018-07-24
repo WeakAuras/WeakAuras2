@@ -1469,6 +1469,11 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     group = "solo";
   end
 
+  local affixes
+  if C_ChallengeMode.IsChallengeModeActive() then
+    _,affixes = C_ChallengeMode.GetActiveKeystoneInfo()
+  end
+
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   wipe(recentlyLoaded);
@@ -1476,8 +1481,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
-      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role,affixes);
+      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role,affixes);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1556,6 +1561,9 @@ loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
 loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+
+loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+loadFrame:RegisterEvent("CHALLENGE_MODE_START")
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(...)
