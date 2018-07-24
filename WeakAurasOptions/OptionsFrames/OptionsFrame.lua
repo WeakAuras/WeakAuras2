@@ -460,7 +460,7 @@ function WeakAuras.CreateFrame()
   buttonsScroll.SetScroll = function(self, value)
     if (self:GetScrollPos() ~= value) then
       oldSetScroll(self, value);
-      self:DoLayout();
+      self.LayoutFunc(self.content, self.children, true);
     end
   end
 
@@ -487,8 +487,6 @@ function WeakAuras.CreateFrame()
     self.content:SetPoint("TOPRIGHT", 0, status.offset);
 
     status.scrollvalue = status.offset / ((height - viewheight) / 1000.0);
-
-    self:FixScroll();
   end
 
   local newButton = AceGUI:Create("WeakAurasNewHeaderButton");
