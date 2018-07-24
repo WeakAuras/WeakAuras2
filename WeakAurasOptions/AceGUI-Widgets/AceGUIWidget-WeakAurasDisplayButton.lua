@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 37
+local Type, Version = "WeakAurasDisplayButton", 38
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1504,6 +1504,9 @@ local function Constructor()
   view:SetScript("OnLeave", Hide_Tooltip);
   view.visibility = 0;
   view.PriorityShow = function(self, priority)
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
     if(priority >= self.visibility) then
       self.visibility = priority;
       if(self.region and self.region.Expand) then
@@ -1519,6 +1522,9 @@ local function Constructor()
     end
   end
   view.PriorityHide = function(self, priority)
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
     if(priority >= self.visibility) then
       self.visibility = 0;
       if(self.region and self.region.Collapse) then
