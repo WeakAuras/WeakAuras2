@@ -17,7 +17,9 @@ If you want to help, here's what you need to do:
     > git config core.autocrlf true
     ```
 
-1. Take a look at our [Wiki](https://github.com/WeakAuras/WeakAuras2/wiki/Developing-WeakAuras) page on how to setup a Lua dev environment.
+1. Take a look at our [Wiki](https://github.com/WeakAuras/WeakAuras2/wiki/Lua-Dev-Environment) page on how to setup a Lua dev environment.
+
+1. Install an [EditorConfig](https://editorconfig.org/) plugin for your text editor to automatically follow our indenting rules.
 
 1. Commit and push your changes to your new branch.
     ```bash
