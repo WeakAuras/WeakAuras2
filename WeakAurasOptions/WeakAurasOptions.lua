@@ -334,7 +334,7 @@ AceGUI:RegisterLayout("AbsoluteList", function(content, children)
   end
 end);
 
-AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
+AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children, skipLayoutFinished)
   local yOffset = 0
   local scrollTop, scrollBottom = content.obj:GetScrollPos()
   for i = 1, #children do
@@ -361,7 +361,7 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
     end
 
   end
-  if(content.obj.LayoutFinished) then
+  if(content.obj.LayoutFinished and not skipLayoutFinished) then
     content.obj:LayoutFinished(nil, yOffset * -1)
   end
 end)
