@@ -579,26 +579,28 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
             if(trigger["use_"..name] == false) then -- multi selection
               test = "(";
               local any = false;
-              for value, _ in pairs(trigger[name].multi) do
-                if not arg.test then
-                  test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
-                else
-                  test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+              if (trigger[name].multi) then
+                for value, _ in pairs(trigger[name].multi) do
+                  if not arg.test then
+                    test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
+                  else
+                    test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+                  end
+                  any = true;
                 end
-                any = true;
+                if(any) then
+                  test = test:sub(0, -5);
+                else
+                  test = "(false";
+                end
+                test = test..")";
               end
-              if(any) then
-                test = test:sub(0, -5);
-              else
-                test = "(false";
-              end
-              test = test..")";
             elseif(trigger["use_"..name]) then -- single selection
-              local value = trigger[name].single;
+              local value = trigger[name] and trigger[name].single;
               if not arg.test then
-                test = trigger[name].single and "("..name.."=="..(tonumber(value) or "[["..value.."]]")..")";
+                test = trigger[name] and trigger[name].single and "("..name.."=="..(tonumber(value) or "[["..value.."]]")..")";
               else
-                test = trigger[name].single and "("..arg.test:format(tonumber(value) or "[["..value.."]]")..")";
+                test = trigger[name] and trigger[name].single and "("..arg.test:format(tonumber(value) or "[["..value.."]]")..")";
               end
             end
           elseif(arg.type == "toggle") then
@@ -1469,6 +1471,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     group = "solo";
   end
 
+  local affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
+
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   wipe(recentlyLoaded);
@@ -1476,8 +1480,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
-      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1556,6 +1560,9 @@ loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
 loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+
+loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+loadFrame:RegisterEvent("CHALLENGE_MODE_START")
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(...)
