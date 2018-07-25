@@ -3494,27 +3494,109 @@ templates.items[1] = {
 }
 
 templates.items[2] = {
-  title = L["Tank Trinkets"],
+  title = L["On Use Trinkets (Buff)"],
   args = {
+  { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
+  { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
+  { spell = 278227, type = "buff", unit = "player", titleItemPrefix = 161411},
+  { spell = 278086, type = "buff", unit = "player", titleItemPrefix = 160649}, --heal
+  { spell = 278317, type = "buff", unit = "player", titleItemPrefix = 161462},
+  { spell = 278364, type = "buff", unit = "player", titleItemPrefix = 161463},
+  { spell = 281543, type = "buff", unit = "player", titleItemPrefix = 163936},
+  { spell = 265954, type = "buff", unit = "player", titleItemPrefix = 158319},
+  { spell = 266018, type = "buff", unit = "target", titleItemPrefix = 158320}, --heal
+  { spell = 271054, type = "buff", unit = "player", titleItemPrefix = 158368}, --heal
+  { spell = 268311, type = "buff", unit = "player", titleItemPrefix = 159614}, --heal
+  { spell = 271115, type = "buff", unit = "player", titleItemPrefix = 159615},
+  { spell = 271107, type = "buff", unit = "player", titleItemPrefix = 159617},
+  { spell = 265946, type = "buff", unit = "player", titleItemPrefix = 159618}, --tank
+  { spell = 271465, type = "debuff", unit = "target", titleItemPrefix = 159624},
+  { spell = 268836, type = "buff", unit = "player", titleItemPrefix = 159625},
+  { spell = 266047, type = "buff", unit = "player", titleItemPrefix = 159627},
+  { spell = 268998, type = "buff", unit = "player", titleItemPrefix = 159630},
   }
 }
 
 templates.items[3] = {
-  title = L["Damage Trinkets"],
+  title = L["On Use Trinkets (CD)"],
   args = {
+  { spell = 161377, type = "item"},
+  { spell = 161379, type = "item"},
+  { spell = 161411, type = "item"},
+  { spell = 160649, type = "item"}, --heal
+  { spell = 161462, type = "item"},
+  { spell = 161463, type = "item"},
+  { spell = 163936, type = "item"},
+  { spell = 158319, type = "item"},
+  { spell = 158320, type = "item"}, --heal
+  { spell = 158368, type = "item"}, --heal
+  { spell = 159614, type = "item"}, --heal
+  { spell = 159615, type = "item"},
+  { spell = 159617, type = "item"},
+  { spell = 159618, type = "item"}, --tank
+  { spell = 159624, type = "item"},
+  { spell = 159625, type = "item"},
+  { spell = 159627, type = "item"},
+  { spell = 159630, type = "item"},
+  { spell = 159611, type = "item"}, -- no buff
+  { spell = 158367, type = "item"}, --no buff
   }
 }
 
 templates.items[4] = {
-  title = L["Healer Trinkets"],
+  title = L["On Procc Trinkets (Buff)"],
   args = {
+  { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
+  { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
+  { spell = 278110, type = "debuff", unit = "multi", titleItemPrefix = 160655}, --debuff?
+  { spell = 278155, type = "buff", unit = "player", titleItemPrefix = 160656},
+  { spell = 278377, type = "buff", unit = "player", titleItemPrefix = 161374},
+  { spell = 278379, type = "buff", unit = "player", titleItemPrefix = 161376},
+  { spell = 278381, type = "buff", unit = "player", titleItemPrefix = 161378},
+  { spell = 278862, type = "buff", unit = "player", titleItemPrefix = 161380},
+  { spell = 278388, type = "buff", unit = "player", titleItemPrefix = 161381},
+  { spell = 278225, type = "buff", unit = "player", titleItemPrefix = 161412},
+  { spell = 278253, type = "buff", unit = "player", titleItemPrefix = 161414},
+  { spell = 278249, type = "buff", unit = "player", titleItemPrefix = 161415},
+  { spell = 278865, type = "buff", unit = "player", titleItemPrefix = 161416},
+  { spell = 278288, type = "buff", unit = "player", titleItemPrefix = 161419},
+  { spell = 278359, type = "buff", unit = "player", titleItemPrefix = 161461},
+  { spell = 281546, type = "buff", unit = "player", titleItemPrefix = 163935},
+  { spell = 276132, type = "debuff", unit = "target", titleItemPrefix = 159126}, --debuff?
+  { spell = 267325, type = "buff", unit = "player", titleItemPrefix = 155881},
+  { spell = 267327, type = "buff", unit = "player", titleItemPrefix = 155881},
+  { spell = 267330, type = "buff", unit = "player", titleItemPrefix = 155881},
+  { spell = 267179, type = "buff", unit = "player", titleItemPrefix = 158374},
+  { spell = 271103, type = "buff", unit = "player", titleItemPrefix = 158712},
+  { spell = 268439, type = "buff", unit = "player", titleItemPrefix = 159612},
+  { spell = 271105, type = "buff", unit = "player", titleItemPrefix = 159616},
+  { spell = 268194, type = "debuff", unit = "multi", titleItemPrefix = 159619}, --debuff?
+  { spell = 271071, type = "buff", unit = "player", titleItemPrefix = 159620},
+  { spell = 268756, type = "debuff", unit = "multi", titleItemPrefix = 159623}, --debuff?
+  { spell = 268062, type = "buff", unit = "multi", titleItemPrefix = 159626}, --buff on spawned spores?
+  { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
+  { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
   }
 }
 
-
 templates.items[5] = {
-  title = L["PVP Trinkets"],
+  title = L["PVP Trinkets (Buff)"],
   args = {
+  { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
+  { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
+  { spell = 278819, type = "buff", unit = "player", titleItemPrefix = 161474}, -- on use
+  { spell = 277179, type = "buff", unit = "player", titleItemPrefix = 161674}, -- on use
+  { spell = 277181, type = "buff", unit = "player", titleItemPrefix = 161676},
+  { spell = 277187, type = "buff", unit = "player", titleItemPrefix = 161675},-- on use
+  }
+}
+
+templates.items[6] = {
+  title = L["PVP Trinkets (CD)"],
+  args = {
+  { spell = 161474, type = "item"}, --on use
+  { spell = 161674, type = "item"}, --on use
+  { spell = 161675, type = "item"}, --on use
   }
 }
 
