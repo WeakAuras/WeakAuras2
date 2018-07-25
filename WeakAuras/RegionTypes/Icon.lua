@@ -473,7 +473,12 @@ local function modify(parent, region, data)
     icon:SetAllPoints();
 
     local texWidth = 1 - 0.5 * data.zoom;
-    local aspectRatio = region.keepAspectRatio and width / height or 1;
+    local aspectRatio
+    if not region.keepAspectRatio or (width == 0 and height == 0) then
+      aspectRatio = 1
+    else
+      aspectRatio = width / height;
+    end
 
     local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
 
