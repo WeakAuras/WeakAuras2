@@ -3488,8 +3488,20 @@ tinsert(templates.general.args, {
 
 -- Items section
 templates.items[1] = {
-  title = L["Enchants"], -- TODO
+  title = L["Enchants"],
   args = {
+  { spell = 268905, type = "buff", unit = "player"}, --Deadly Navigation (Stacks)
+  { spell = 268904, type = "buff", unit = "player"}, --Deadly Navigation (Stacks consumed)
+  { spell = 267612, type = "buff", unit = "player"}, --Gale-Force Striking
+  { spell = 268899, type = "buff", unit = "player"}, --Masterful Navigation (Stacks)
+  { spell = 268898, type = "buff", unit = "player"}, --Masterful Navigation (Stacks consumed)
+  { spell = 268887, type = "buff", unit = "player"}, --Quick Navigation (Stacks)
+  { spell = 268893, type = "buff", unit = "player"}, --Quick Navigation (Stacks consumed)
+  { spell = 268911, type = "buff", unit = "player"}, --Stalwart Navigation (Stacks)
+  { spell = 268910, type = "buff", unit = "player"}, --Stalwart Navigation (Stacks consumed)
+  { spell = 267685, type = "buff", unit = "player"}, --Torrent of Elements
+  { spell = 268854, type = "buff", unit = "player"}, --Versatile Navigation (Stacks)
+  { spell = 268856, type = "buff", unit = "player"}, --Versatile Navigation (Stacks consumed)
   }
 }
 
