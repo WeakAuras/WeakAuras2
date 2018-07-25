@@ -587,13 +587,13 @@ function WeakAuras.CreateFrame()
   unloadedButton:SetViewClick(function()
     if(unloadedButton.view.func() == 2) then
       for id, child in pairs(displayButtons) do
-        if(loaded[id] == nil) then
+        if (loaded[id] == nil) then
           child:PriorityHide(2);
         end
       end
     else
       for id, child in pairs(displayButtons) do
-        if not(loaded[id] == nil) then
+        if (loaded[id] == nil) then
           child:PriorityShow(2);
         end
       end
