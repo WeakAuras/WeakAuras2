@@ -126,20 +126,13 @@ local function Lev(str1, str2)
 end
 
 function spellCache.BestKeyMatch(nearkey)
-  for key, value in pairs(cache) do
-    if(nearkey == key) then
-      return key;
-    end
-  end
-  for key, value in pairs(cache) do
-    if(nearkey:lower() == key:lower()) then
-      return key;
-    end
-  end
   local bestKey = "";
   local bestDistance = math.huge;
   local partialMatches = {};
   for key, value in pairs(cache) do
+    if(nearkey:lower() == key:lower()) then
+      return key;
+    end
     if(key:lower():find(nearkey:lower(), 1, true)) then
       partialMatches[key] = value;
     end
