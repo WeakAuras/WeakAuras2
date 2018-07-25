@@ -17,6 +17,13 @@ If you want to help, here's what you need to do:
     > git config core.autocrlf true
     ```
 
+1. Set `pull.rebase`to true.
+    ```bash
+    > git config pull.rebase true
+    ```
+
+1. Set up your [Git identity](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup) so your commits are attributed to your name and email address properly.
+
 1. Take a look at our [Wiki](https://github.com/WeakAuras/WeakAuras2/wiki/Lua-Dev-Environment) page on how to setup a Lua dev environment.
 
 1. Install an [EditorConfig](https://editorconfig.org/) plugin for your text editor to automatically follow our indenting rules.
@@ -48,7 +55,7 @@ If you want to help, here's what you need to do:
 * In order to sync your pull request with the upstream WeakAuras 2 repository in case there are any conflicts you would do
   ```bash
   > git fetch upstream
-  > git checkout master
+  > git checkout my-topic-branch
   > git rebase upstream/master
   ```
 * In case there are any conflicts, you will now have to [fix them manually](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase/).
@@ -66,6 +73,6 @@ If you want to help, here's what you need to do:
 1. If you find a match, please try to provide as much info as you can,
    so that we have a better picture about what the real problem is and how to fix it ASAP.
 1. If you didn't find any tickets with a problem similar to yours then please open a
-   [new ticket](https://trac.mpc-hc.org/ticket/newticket).
+   [new ticket](https://github.com/WeakAuras/WeakAuras2/issues/new/choose).
     * Be descriptive as much as you can.
     * Provide everything the template text asks you for.
