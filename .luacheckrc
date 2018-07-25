@@ -5,7 +5,8 @@ exclude_files = {
 	"WeakAuras_Main.lua",
 	"WeakAuras_Options.lua",
 	"WeakAuras_Templates.lua",
-	"WeakAuras/Libs/"
+	"WeakAuras/Libs/",
+	".luacheckrc"
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
@@ -59,6 +60,7 @@ globals = {
 	"ChatFrame_AddMessageEventFilter",
 	"UIDropDownMenu_AddButton",
 	"UIDropDownMenu_Initialize",
+	"UISpecialFrames",
 	"Mixin",
 	"SmoothStatusBarMixin",
 
