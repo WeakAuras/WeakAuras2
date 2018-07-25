@@ -64,6 +64,7 @@ If you want to help, here's what you need to do:
   > git push --force
   ```
 * Note: Force-pushing is a destructive operation, so make sure you don't lose something in the progress.
+* If you want to know more about force-pushing and why we do it, there are a two good posts about it: one by [Atlassian](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing) and one on [Reddit](https://www.reddit.com/r/git/comments/6jzogp/why_am_i_force_pushing_after_a_rebase/).
 * Your pull request should now have no conflicts and be ready for review and merging.
 
 ## Reporting Issues and Requesting Features
