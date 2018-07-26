@@ -3901,7 +3901,13 @@ end
 local delayedEnrichDatabase = false;
 local itemInfoReceived = CreateFrame("frame")
 
+local enrichTries = 0;
 local function enrichDatabase()
+  if (enrichTries > 3) then
+    return;
+  end
+  enrichTries = enrichTries + 1;
+
   local waitingForItemInfo = false;
   for className, class in pairs(templates.class) do
     for specIndex, spec in pairs(class) do
