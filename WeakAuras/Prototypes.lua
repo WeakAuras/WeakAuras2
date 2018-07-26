@@ -2673,12 +2673,23 @@ WeakAuras.event_prototypes = {
         return ret
       else -- no clones
         ret = ret .. [[
-          local bar = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator, triggerSpellId);
+          if (event == "DBM_TimerStart") then
+            if extendTimer ~= 0 then
+              if (WeakAuras.DBMTimerMatches(id, triggerId, triggerMessage, triggerOperator, triggerSpellId)) then
+                local bar = WeakAuras.GetDBMTimerById(id);
+                WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer);
+              end
+            end
+          end
+          local bar = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator, triggerSpellId, extendTimer);
           local id = "";
           if (bar) then
+            if (not (states[""] and states[""].show)
+              or (states[""] and states[""].show and states[""].expirationTime > (bar.expirationTime + extendTimer))) then
         ]]
       ret = ret .. copyOrSchedule;
       ret = ret .. [[
+            end
           else
             if (states[""] and states[""].show) then
               local bar_remainingTime = GetTime() - states[""].expirationTime + states[""].extend;
@@ -2891,12 +2902,23 @@ WeakAuras.event_prototypes = {
         return ret;
       else
         ret = ret .. [[
-          local bar = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerTextOperator, triggerText);
+          if (event == "BigWigs_StartBar") then
+            if extendTimer ~= 0 then
+              if (WeakAuras.BigWigsTimerMatches(id, triggerAddon, triggerSpellId, triggerTextOperator, triggerText)) then
+                local bar = WeakAuras.GetBigWigsTimerById(id);
+                WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer);
+              end
+            end
+          end
+          local bar = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerTextOperator, triggerText, extendTimer);
           local id = "";
           if (bar) then
+            if (not (states[""] and states[""].show)
+              or (states[""] and states[""].show and states[""].expirationTime > (bar.expirationTime + extendTimer))) then
         ]]
         ret = ret .. copyOrSchedule;
         ret = ret .. [[
+            end
           else
             if (states[""] and states[""].show) then
               local bar_remainingTime = GetTime() - states[""].expirationTime + states[""].extend;
