@@ -467,7 +467,7 @@ local function modify(parent, region, data)
 
     local texWidth = 1 - 0.5 * data.zoom;
     local aspectRatio
-    if not region.keepAspectRatio or (width == 0 and height == 0) then
+    if (not region.keepAspectRatio or width == 0 or height == 0) then
       aspectRatio = 1
     else
       aspectRatio = width / height;
