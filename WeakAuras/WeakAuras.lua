@@ -662,8 +662,10 @@ local function formatValueForAssignment(vtype, value, pathToCustomFunction)
   if (value == nil) then
     value = false;
   end
-  if (vtype == "bool" or vtype == "number") then
-    return tostring(value);
+  if (vtype == "bool") then
+    return value and tostring(value) or "false";
+  elseif(vtype == "number") then
+    return value and tostring(value) or "0";
   elseif (vtype == "list") then
     return type(value) == "string" and string.format("%q", value) or "nil";
   elseif(vtype == "color") then
