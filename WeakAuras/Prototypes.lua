@@ -2600,7 +2600,7 @@ WeakAuras.event_prototypes = {
         local extendTimer = %s;
       ]]
       ret = ret .. ret2:format(trigger.use_extend and tonumber(trigger.extend or 0) or 0)
-      
+
       local copyOrSchedule;
       if (trigger.use_remaining) then
         local ret2 = [[
@@ -2644,9 +2644,12 @@ WeakAuras.event_prototypes = {
             end
 
           elseif (event == "DBM_TimerStop") then
-            if (states[id] and states[id].extend == 0) then
-              states[id].show = false;
-              states[id].changed = true;
+            if (states[id]) then
+              local bar_remainingTime = GetTime() - states[id].expirationTime + states[id].extend;
+              if (states[id].extend == 0 or bar_remainingTime > 0.2) then
+                states[id].show = false;
+                states[id].changed = true;
+              end
             end
           elseif (event == "DBM_TimerStopAll") then
             for _, state in pairs(states) do
@@ -2677,9 +2680,12 @@ WeakAuras.event_prototypes = {
       ret = ret .. copyOrSchedule;
       ret = ret .. [[
           else
-            if (states[""] and states[""].show and states[""].extend == 0) then
-              states[""].show = false;
-              states[""].changed = true;
+            if (states[""] and states[""].show) then
+              local bar_remainingTime = GetTime() - states[""].expirationTime + states[""].extend;
+              if (states[""].extend == 0 or bar_remainingTime > 0.2) then
+                states[""].show = false;
+                states[""].changed = true;
+              end
             end
           end
           return true;
@@ -2813,7 +2819,7 @@ WeakAuras.event_prototypes = {
         trigger.use_text and ('[[' .. (trigger.text or '') .. ']]') or "nil",
         trigger.use_text and trigger.text_operator or ""
       );
-     
+
       local ret2 = [[
         local extendTimer = %s;
       ]]
@@ -2854,9 +2860,12 @@ WeakAuras.event_prototypes = {
         ret = ret .. [[
             end
           elseif (event == "BigWigs_StopBar") then
-            if (states[id] and states[id].extend == 0) then
+            if (states[id]) then
+              local bar_remainingTime = GetTime() - states[id].expirationTime + states[id].extend;
+              if (states[id].extend == 0 or bar_remainingTime > 0.2) then
                 states[id].show = false;
                 states[id].changed = true;
+              end
             end
           elseif (event == "BigWigs_Timer_Update") then
             for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
@@ -2889,9 +2898,12 @@ WeakAuras.event_prototypes = {
         ret = ret .. copyOrSchedule;
         ret = ret .. [[
           else
-            if (states[""] and states[""].show and states[""].extend == 0) then 
-              states[""].show = false;
-              states[""].changed = true;
+            if (states[""] and states[""].show) then
+              local bar_remainingTime = GetTime() - states[""].expirationTime + states[""].extend;
+              if (states[""].extend == 0 or bar_remainingTime > 0.2) then
+                states[""].show = false;
+                states[""].changed = true;
+              end
             end
           end
           return true;
