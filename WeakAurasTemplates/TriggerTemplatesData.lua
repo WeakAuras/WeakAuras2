@@ -54,6 +54,65 @@ local powerTypes =
     [99] = {name = L["Stagger"], icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
+local generalAzeriteTraits = {
+  { spell = 279928, type = "buff", unit = "player"}, --Earthlink
+  { spell = 271543, type = "buff", unit = "player"}, --Ablative Shielding
+  { spell = 268435, type = "buff", unit = "player"}, --Azerite Fortification
+  { spell = 264108, type = "buff", unit = "player"}, --Blood Siphon
+  { spell = 270657, type = "buff", unit = "player"}, --Bulwark of the Masses
+  { spell = 270586, type = "buff", unit = "player"}, --Champion of Azeroth
+  { spell = 271538, type = "buff", unit = "player"}, --Crystalline Carapace
+  { spell = 272572, type = "buff", unit = "player"}, --Ephemeral Recovery
+  { spell = 270576, type = "buff", unit = "player"}, --Gemhide
+  { spell = 268437, type = "buff", unit = "player"}, --Impassive Visage
+  { spell = 270621, type = "buff", unit = "player"}, --Lifespeed
+  { spell = 267879, type = "buff", unit = "player"}, --On My Way
+  { spell = 270568, type = "buff", unit = "player"}, --Resounding Protection
+  { spell = 270661, type = "buff", unit = "player"}, --Self Reliance
+  { spell = 272090, type = "buff", unit = "player"}, --Synergistic Growth
+  { spell = 269239, type = "buff", unit = "player"}, --Vampiric Speed
+  { spell = 269214, type = "buff", unit = "player"}, --Winds of War
+  { spell = 281516, type = "buff", unit = "player"}, --Unstable Catalyst
+  { spell = 279902, type = "buff", unit = "player"}, --Unstable Flames
+  { spell = 279956, type = "debuff", unit = "multi"}, --Azerite Globules
+  { spell = 270674, type = "buff", unit = "player"}, --Azerite Veins
+  { spell = 271843, type = "buff", unit = "player"}, --Blessed Portents
+  { spell = 272276, type = "buff", unit = "target"}, --Bracing Chill
+  { spell = 272260, type = "buff", unit = "target"}, --Concentrated Mending
+  { spell = 268955, type = "buff", unit = "player"}, --Elemental Whirl
+  { spell = 263987, type = "buff", unit = "player"}, --Heed My Call
+  { spell = 271711, type = "buff", unit = "player"}, --Overwhelming Power
+  { spell = 271550, type = "buff", unit = "player"}, --Strength in Numbers
+  { spell = 271559, type = "buff", unit = "player"}, --Shimmering Haven
+  { spell = 269085, type = "buff", unit = "player"}, --Woundbinder
+  { spell = 273685, type = "buff", unit = "player"}, --Meticulous Scheming
+  { spell = 273714, type = "buff", unit = "player"}, --Seize the Moment!
+  { spell = 273870, type = "buff", unit = "player"}, --Sandstorm
+  { spell = 280204, type = "buff", unit = "player"}, --Wandering Soul
+  { spell = 280409, type = "buff", unit = "player"}, --Blood Rite
+  { spell = 273836, type = "buff", unit = "player"}, --Filthy Transfusion
+  { spell = 280413, type = "buff", unit = "player"}, --Incite the Pack
+  { spell = 273794, type = "debuff", unit = "multi"}, --Rezan's Fury
+  { spell = 280433, type = "buff", unit = "player"}, --Swirling Sands
+  { spell = 280385, type = "debuff", unit = "multi"}, --Thunderous Blast
+  { spell = 280404, type = "buff", unit = "target"}, --Tidal Surge
+  { spell = 273842, type = "buff", unit = "player"}, --Secrets of the Deep
+  { spell = 280286, type = "debuff", unit = "target"}, --Dagger in the Back
+  { spell = 281843, type = "buff", unit = "player"}, --Tradewinds
+}
+
+local pvpAzeriteTraits = {
+  { spell = 280876, type = "buff", unit = "player"}, --Anduin's Dedication
+  { spell = 280809, type = "buff", unit = "player"}, --Sylvanas' Resolve
+  { spell = 280855, type = "debuff", unit = "target"}, --Battlefield Precision
+  { spell = 280817, type = "debuff", unit = "target"}, --Battlefield Focus
+  { spell = 280858, type = "buff", unit = "player"}, --Stand As One
+  { spell = 280830, type = "buff", unit = "player"}, --Liberator's Might
+  { spell = 280780, type = "buff", unit = "player"}, --Glory in Battle
+  { spell = 280861, type = "buff", unit = "player"}, --Last Gift
+  { spell = 280787, type = "buff", unit = "player"}, --Retaliatory Fury
+}
+
 -- Collected by WeakAurasTemplateCollector:
 
 templates.class.WARRIOR = {
@@ -124,25 +183,25 @@ templates.class.WARRIOR = {
       },
       icon = 132355
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-	      { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
-	      { spell = 278826, type = "buff", unit = "player"}, --Crushing Assault
-	      { spell = 272870, type = "buff", unit = "player"}, --Executioner's Precision
-	      { spell = 273415, type = "buff", unit = "player"}, --Gathering Storm
-	      { spell = 275540, type = "buff", unit = "player"}, --Test of Might
+        { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
+        { spell = 278826, type = "buff", unit = "player"}, --Crushing Assault
+        { spell = 272870, type = "buff", unit = "player"}, --Executioner's Precision
+        { spell = 273415, type = "buff", unit = "player"}, --Gathering Storm
+        { spell = 275540, type = "buff", unit = "player"}, --Test of Might
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -208,25 +267,25 @@ templates.class.WARRIOR = {
       },
       icon = 136012
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-	      { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
-	      { spell = 273428, type = "buff", unit = "player"}, --Bloodcraze
-	      { spell = 278134, type = "buff", unit = "player"}, --Infinite Fury
-	      { spell = 275672, type = "buff", unit = "player"}, --Pulverizing Blows
-	      { spell = 272838, type = "buff", unit = "player"}, --Trample the Weak
+        { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
+        { spell = 273428, type = "buff", unit = "player"}, --Bloodcraze
+        { spell = 278134, type = "buff", unit = "player"}, --Infinite Fury
+        { spell = 275672, type = "buff", unit = "player"}, --Pulverizing Blows
+        { spell = 272838, type = "buff", unit = "player"}, --Trample the Weak
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -302,26 +361,26 @@ templates.class.WARRIOR = {
       },
       icon = 134951
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-	      { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
-	      { spell = 279194, type = "buff", unit = "player"}, --Bloodsport
-	      { spell = 278124, type = "buff", unit = "player"}, --Brace for Impact
-	      { spell = 278999, type = "buff", unit = "player"}, --Callous Reprisal
-	      { spell = 275867, type = "buff", unit = "player"}, --Reinforced Plating
-	      { spell = 273445, type = "buff", unit = "player"}, --Sword and Board
+        { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
+        { spell = 279194, type = "buff", unit = "player"}, --Bloodsport
+        { spell = 278124, type = "buff", unit = "player"}, --Brace for Impact
+        { spell = 278999, type = "buff", unit = "player"}, --Callous Reprisal
+        { spell = 275867, type = "buff", unit = "player"}, --Reinforced Plating
+        { spell = 273445, type = "buff", unit = "player"}, --Sword and Board
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -399,25 +458,25 @@ templates.class.PALADIN = {
       },
       icon = 135972
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 275468, type = "buff", unit = "player"}, --Divine Revelations
-	      { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
-	      { spell = 278785, type = "buff", unit = "player"}, --Grace of the Justicar
-	      { spell = 273034, type = "buff", unit = "player"}, --Martyr's Breath
-	      { spell = 278145, type = "debuff", unit = "target"}, --Radiant Incandescence
-	      { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
+        { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
+        { spell = 278785, type = "buff", unit = "player"}, --Grace of the Justicar
+        { spell = 273034, type = "buff", unit = "player"}, --Martyr's Breath
+        { spell = 278145, type = "debuff", unit = "target"}, --Radiant Incandescence
+        { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -494,27 +553,27 @@ templates.class.PALADIN = {
       },
       icon = 135874
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272979, type = "buff", unit = "player"}, --Bulwark of Light
-	      { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
-	      { spell = 278785, type = "buff", unit = "group"}, --Grace of the Justicar
-	      { spell = 275481, type = "buff", unit = "player"}, --Inner Light
-	      { spell = 279397, type = "buff", unit = "player"}, --Inspiring Vanguard
-	      { spell = 278574, type = "buff", unit = "player"}, --Judicious Defense
-	      { spell = 278954, type = "buff", unit = "player"}, --Soaring Shield
-	      { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
+        { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
+        { spell = 278785, type = "buff", unit = "group"}, --Grace of the Justicar
+        { spell = 275481, type = "buff", unit = "player"}, --Inner Light
+        { spell = 279397, type = "buff", unit = "player"}, --Inspiring Vanguard
+        { spell = 278574, type = "buff", unit = "player"}, --Judicious Defense
+        { spell = 278954, type = "buff", unit = "player"}, --Soaring Shield
+        { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -587,27 +646,27 @@ templates.class.PALADIN = {
       },
       icon = 135891
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272903, type = "buff", unit = "player"}, --Avenger's Might
-	      { spell = 278523, type = "buff", unit = "player"}, --Divine Right
-	      { spell = 273481, type = "buff", unit = "player"}, --Expurgation
-	      { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
-	      { spell = 278785, type = "buff", unit = "group"}, --Grace of the Justicar
-	      { spell = 279204, type = "buff", unit = "player"}, --Relentless Inquisitor
-	      { spell = 278989, type = "buff", unit = "player"}, --Zealotry
-	      { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
+        { spell = 278523, type = "buff", unit = "player"}, --Divine Right
+        { spell = 273481, type = "buff", unit = "player"}, --Expurgation
+        { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
+        { spell = 278785, type = "buff", unit = "group"}, --Grace of the Justicar
+        { spell = 279204, type = "buff", unit = "player"}, --Relentless Inquisitor
+        { spell = 278989, type = "buff", unit = "player"}, --Zealotry
+        { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -690,29 +749,29 @@ templates.class.HUNTER = {
       },
       icon = 132176
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 277916, type = "debuff", unit = "target"}, --Cobra's Bite
-	      { spell = 274443, type = "buff", unit = "player"}, --Dance of Death
-	      { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
-	      { spell = 269625, type = "buff", unit = "player"}, --Flashing Fangs
-	      { spell = 273264, type = "buff", unit = "player"}, --Haze of Rage
-	      { spell = 279810, type = "buff", unit = "player"}, --Primal Instincts
-	      { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
-	      { spell = 264195, type = "buff", unit = "player"}, --Rotting Jaws
-	      { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-	      { spell = 274598, type = "buff", unit = "player"}, --PH
+        { spell = 274443, type = "buff", unit = "player"}, --Dance of Death
+        { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
+        { spell = 269625, type = "buff", unit = "player"}, --Flashing Fangs
+        { spell = 273264, type = "buff", unit = "player"}, --Haze of Rage
+        { spell = 279810, type = "buff", unit = "player"}, --Primal Instincts
+        { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
+        { spell = 264195, type = "buff", unit = "player"}, --Rotting Jaws
+        { spell = 274357, type = "buff", unit = "player"}, --Shellshock
+        { spell = 274598, type = "buff", unit = "player"}, --PH
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -794,27 +853,27 @@ templates.class.HUNTER = {
       },
       icon = 132329
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 273267, type = "buff", unit = "player"}, --Arcane Flurry
-	      { spell = 263814, type = "buff", unit = "player"}, --Arrowstorm
-	      { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
-	      { spell = 272733, type = "buff", unit = "player"}, --In The Rhythm
-	      { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
-	      { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-	      { spell = 277959, type = "buff", unit = "player"}, --Steady Aim
-	      { spell = 274447, type = "buff", unit = "player"}, --Unerring Vision
+        { spell = 263814, type = "buff", unit = "player"}, --Arrowstorm
+        { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
+        { spell = 272733, type = "buff", unit = "player"}, --In The Rhythm
+        { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
+        { spell = 274357, type = "buff", unit = "player"}, --Shellshock
+        { spell = 277959, type = "buff", unit = "player"}, --Steady Aim
+        { spell = 274447, type = "buff", unit = "player"}, --Unerring Vision
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -920,27 +979,27 @@ templates.class.HUNTER = {
       },
       icon = 236184
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 277969, type = "buff", unit = "player"}, --Blur of Talons
-	      { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
-	      { spell = 273286, type = "buff", unit = "player"}, --Latent Poison
-	      { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
-	      { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-	      { spell = 279593, type = "buff", unit = "player"}, --Up Close And Personal
-	      { spell = 263818, type = "buff", unit = "player"}, --Vigorous Wings
-	      { spell = 264199, type = "buff", unit = "player"}, --Whirling Rebound
+        { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
+        { spell = 273286, type = "buff", unit = "player"}, --Latent Poison
+        { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
+        { spell = 274357, type = "buff", unit = "player"}, --Shellshock
+        { spell = 279593, type = "buff", unit = "player"}, --Up Close And Personal
+        { spell = 263818, type = "buff", unit = "player"}, --Vigorous Wings
+        { spell = 264199, type = "buff", unit = "player"}, --Whirling Rebound
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1028,24 +1087,24 @@ templates.class.ROGUE = {
       },
       icon = 458726
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 274695, type = "buff", unit = "group"}, --Footpad
-	      { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
-	      { spell = 276083, type = "buff", unit = "player"}, --Poisoned Wire
-	      { spell = 277731, type = "buff", unit = "player"}, --Scent of Blood
-	      { spell = 279703, type = "buff", unit = "player"}, --Shrouded Suffocation
+        { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
+        { spell = 276083, type = "buff", unit = "player"}, --Poisoned Wire
+        { spell = 277731, type = "buff", unit = "player"}, --Scent of Blood
+        { spell = 279703, type = "buff", unit = "player"}, --Shrouded Suffocation
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1126,26 +1185,26 @@ templates.class.ROGUE = {
       },
       icon = 135610
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 277725, type = "buff", unit = "player"}, --Brigand's Blitz
-	      { spell = 272940, type = "buff", unit = "player"}, --Deadshot
-	      { spell = 274695, type = "buff", unit = "group"}, --Footpad
-	      { spell = 278962, type = "buff", unit = "player"}, --Paradise Lost
-	      { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
-	      { spell = 275863, type = "buff", unit = "player"}, --Snake Eyes
-	      { spell = 273455, type = "buff", unit = "player"}, --Storm of Steel
+        { spell = 272940, type = "buff", unit = "player"}, --Deadshot
+        { spell = 274695, type = "buff", unit = "group"}, --Footpad
+        { spell = 278962, type = "buff", unit = "player"}, --Paradise Lost
+        { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
+        { spell = 275863, type = "buff", unit = "player"}, --Snake Eyes
+        { spell = 273455, type = "buff", unit = "player"}, --Storm of Steel
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1223,26 +1282,26 @@ templates.class.ROGUE = {
       },
       icon = 236279
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 279754, type = "buff", unit = "player"}, --Blade In The Shadows
-	      { spell = 272940, type = "buff", unit = "player"}, --Deadshot
-	      { spell = 273424, type = "buff", unit = "player"}, --Night's Vengeance
-	      { spell = 277720, type = "buff", unit = "player"}, --Perforate
-	      { spell = 272916, type = "buff", unit = "player"}, --Sharpened Blades
-	      { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
-	      { spell = 278981, type = "buff", unit = "player"}, --The First Dance
+        { spell = 272940, type = "buff", unit = "player"}, --Deadshot
+        { spell = 273424, type = "buff", unit = "player"}, --Night's Vengeance
+        { spell = 277720, type = "buff", unit = "player"}, --Perforate
+        { spell = 272916, type = "buff", unit = "player"}, --Sharpened Blades
+        { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
+        { spell = 278981, type = "buff", unit = "player"}, --The First Dance
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1319,21 +1378,21 @@ templates.class.PRIEST = {
       },
       icon = 253400
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 275544, type = "buff", unit = "player"}, --Depth of the Shadows
-	      { spell = 274369, type = "buff", unit = "player"}, --Sanctum
+        { spell = 274369, type = "buff", unit = "player"}, --Sanctum
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1405,21 +1464,21 @@ templates.class.PRIEST = {
       },
       icon = 135937
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272783, type = "buff", unit = "target"}, --Permeating Glow
-	      { spell = 274369, type = "buff", unit = "player"}, --Sanctum
+        { spell = 274369, type = "buff", unit = "player"}, --Sanctum
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1495,24 +1554,24 @@ templates.class.PRIEST = {
       },
       icon = 136230
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 279572, type = "buff", unit = "player"}, --Chorus of Insanity
-	      { spell = 275544, type = "buff", unit = "player"}, --Depth of the Shadows
-	      { spell = 273321, type = "buff", unit = "player"}, --Harvested Thoughts
-	      { spell = 274369, type = "buff", unit = "player"}, --Sanctum
-	      { spell = 275726, type = "buff", unit = "player"}, --Whispers of the Damned
+        { spell = 275544, type = "buff", unit = "player"}, --Depth of the Shadows
+        { spell = 273321, type = "buff", unit = "player"}, --Harvested Thoughts
+        { spell = 274369, type = "buff", unit = "player"}, --Sanctum
+        { spell = 275726, type = "buff", unit = "player"}, --Whispers of the Damned
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1599,30 +1658,30 @@ templates.class.SHAMAN = {
       },
       icon = 135790
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
-	      { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
-	      { spell = 264113, type = "buff", unit = "player"}, --Flames of the Forefathers
-	      { spell = 263792, type = "buff", unit = "player"}, --Lightningburn
-	      { spell = 279028, type = "buff", unit = "player"}, --Natural Harmony (Fire)
-	      { spell = 279029, type = "buff", unit = "player"}, --Natural Harmony (Frost)
-	      { spell = 279033, type = "buff", unit = "player"}, --Natural Harmony (Nature)
-	      { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
-	      { spell = 279523, type = "buff", unit = "player"}, --Rumbling Tremors
-	      { spell = 277960, type = "buff", unit = "player"}, --Synapse Shock
-	      { spell = 272981, type = "buff", unit = "player"}, --Volcanic Lightning
+        { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
+        { spell = 264113, type = "buff", unit = "player"}, --Flames of the Forefathers
+        { spell = 263792, type = "buff", unit = "player"}, --Lightningburn
+        { spell = 279028, type = "buff", unit = "player"}, --Natural Harmony (Fire)
+        { spell = 279029, type = "buff", unit = "player"}, --Natural Harmony (Frost)
+        { spell = 279033, type = "buff", unit = "player"}, --Natural Harmony (Nature)
+        { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
+        { spell = 279523, type = "buff", unit = "player"}, --Rumbling Tremors
+        { spell = 277960, type = "buff", unit = "player"}, --Synapse Shock
+        { spell = 272981, type = "buff", unit = "player"}, --Volcanic Lightning
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1706,29 +1765,29 @@ templates.class.SHAMAN = {
       },
       icon = 1370984
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
-	      { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
-	      { spell = 264121, type = "buff", unit = "player"}, --Electropotence
-	      { spell = 275391, type = "buff", unit = "target"}, --Lightning Conduit
-	      { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
-	      { spell = 273006, type = "buff", unit = "player"}, --Primal Primer
-	      { spell = 279515, type = "buff", unit = "player"}, --Roiling Storm
-	      { spell = 263795, type = "buff", unit = "player"}, --Storm's Eye
-	      { spell = 273465, type = "buff", unit = "player"}, --Strength of Earth
-	      { spell = 277960, type = "buff", unit = "player"}, --Synapse Shock
+        { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
+        { spell = 264121, type = "buff", unit = "player"}, --Electropotence
+        { spell = 275391, type = "buff", unit = "target"}, --Lightning Conduit
+        { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
+        { spell = 273006, type = "buff", unit = "player"}, --Primal Primer
+        { spell = 279515, type = "buff", unit = "player"}, --Roiling Storm
+        { spell = 263795, type = "buff", unit = "player"}, --Storm's Eye
+        { spell = 273465, type = "buff", unit = "player"}, --Strength of Earth
+        { spell = 277960, type = "buff", unit = "player"}, --Synapse Shock
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1804,29 +1863,29 @@ templates.class.SHAMAN = {
       },
       icon = 135127
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
-	      { spell = 263790, type = "buff", unit = "player"}, --Ancestral Reach
-	      { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
-	      { spell = 264113, type = "buff", unit = "player"}, --Flames of the Forefathers
-	      { spell = 278095, type = "buff", unit = "group"}, --Overflowing Shores
-	      { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
-	      { spell = 279505, type = "buff", unit = "group"}, --Spouting Spirits
-	      { spell = 279187, type = "buff", unit = "target"}, --Surging Tides
-	      { spell = 272981, type = "debuff", unit = "target"}, --Volcanic Lightning
-	      { spell = 273019, type = "buff", unit = "player"}, --Soothing Waters
+        { spell = 263790, type = "buff", unit = "player"}, --Ancestral Reach
+        { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
+        { spell = 264113, type = "buff", unit = "player"}, --Flames of the Forefathers
+        { spell = 278095, type = "buff", unit = "group"}, --Overflowing Shores
+        { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
+        { spell = 279505, type = "buff", unit = "group"}, --Spouting Spirits
+        { spell = 279187, type = "buff", unit = "target"}, --Surging Tides
+        { spell = 272981, type = "debuff", unit = "target"}, --Volcanic Lightning
+        { spell = 273019, type = "buff", unit = "player"}, --Soothing Waters
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1900,22 +1959,22 @@ templates.class.MAGE = {
       },
       icon = 136075
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 270670, type = "buff", unit = "player"}, --Arcane Pumeling
-	      { spell = 273330, type = "buff", unit = "player"}, --Brain Storm
-	      { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
+        { spell = 273330, type = "buff", unit = "player"}, --Brain Storm
+        { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -1985,24 +2044,24 @@ templates.class.MAGE = {
       },
       icon = 610633
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 274598, type = "buff", unit = "player"}, --Blaster Master
-	      { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
-	      { spell = 279715, type = "buff", unit = "player"}, --Firemind
-	      { spell = 273333, type = "debuff", unit = "target"}, --Preheat
-	      { spell = 277703, type = "debuff", unit = "multi"}, --Trailing Embers
+        { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
+        { spell = 279715, type = "buff", unit = "player"}, --Firemind
+        { spell = 273333, type = "debuff", unit = "target"}, --Preheat
+        { spell = 277703, type = "debuff", unit = "multi"}, --Trailing Embers
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2080,24 +2139,24 @@ templates.class.MAGE = {
       },
       icon = 629077
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
-	      { spell = 279684, type = "buff", unit = "player"}, --Frigid Grasp
-	      { spell = 275517, type = "buff", unit = "player"}, --Orbital Precision
-	      { spell = 277904, type = "buff", unit = "player"}, --Tunnel of Ice
-	      { spell = 273347, type = "buff", unit = "player"}, --Winter's Reach
+        { spell = 279684, type = "buff", unit = "player"}, --Frigid Grasp
+        { spell = 275517, type = "buff", unit = "player"}, --Orbital Precision
+        { spell = 277904, type = "buff", unit = "player"}, --Tunnel of Ice
+        { spell = 273347, type = "buff", unit = "player"}, --Winter's Reach
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2194,25 +2253,25 @@ templates.class.WARLOCK = {
       },
       icon = 615103
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 275378, type = "buff", unit = "player"}, --Cascading Calamity
-	      { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
-	      { spell = 273525, type = "buff", unit = "player"}, --Inevitable Demise
-	      { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
-	      { spell = 272893, type = "buff", unit = "player"}, --Wracking Brilliance
-	      { spell = 277695, type = "debuff", unit = "multi"}, --Deathbloom
+        { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
+        { spell = 273525, type = "buff", unit = "player"}, --Inevitable Demise
+        { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
+        { spell = 272893, type = "buff", unit = "player"}, --Wracking Brilliance
+        { spell = 277695, type = "debuff", unit = "multi"}, --Deathbloom
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2308,26 +2367,26 @@ templates.class.WARLOCK = {
       },
       icon = 1378282
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
-	      { spell = 276027, type = "buff", unit = "player"}, --Excoriate
-	      { spell = 275398, type = "buff", unit = "player"}, --Explosive Potential
-	      { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
-	      { spell = 272945, type = "buff", unit = "player"}, --Shadow's Bite
-	      { spell = 279885, type = "buff", unit = "player"}, --Supreme Commander
-	      { spell = 273526, type = "debuff", unit = "target"}, --Umbral Blaze
+        { spell = 276027, type = "buff", unit = "player"}, --Excoriate
+        { spell = 275398, type = "buff", unit = "player"}, --Explosive Potential
+        { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
+        { spell = 272945, type = "buff", unit = "player"}, --Shadow's Bite
+        { spell = 279885, type = "buff", unit = "player"}, --Supreme Commander
+        { spell = 273526, type = "debuff", unit = "target"}, --Umbral Blaze
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2420,27 +2479,27 @@ templates.class.WARLOCK = {
       },
       icon = 135807
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272957, type = "buff", unit = "player"}, --Accelerant
-	      { spell = 279913, type = "buff", unit = "player"}, --Bursting Flare
-	      { spell = 279673, type = "buff", unit = "player"}, --Chaotic Inferno
-	      { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
-	      { spell = 275429, type = "buff", unit = "player"}, --Flashpoint
-	      { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
-	      { spell = 278931, type = "buff", unit = "player"}, --Rolling Havoc
-	      { spell = 277706, type = "buff", unit = "player"}, --Crashing Chaos
+        { spell = 279913, type = "buff", unit = "player"}, --Bursting Flare
+        { spell = 279673, type = "buff", unit = "player"}, --Chaotic Inferno
+        { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
+        { spell = 275429, type = "buff", unit = "player"}, --Flashpoint
+        { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
+        { spell = 278931, type = "buff", unit = "player"}, --Rolling Havoc
+        { spell = 277706, type = "buff", unit = "player"}, --Crashing Chaos
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2522,25 +2581,25 @@ templates.class.MONK = {
       },
       icon = 133701
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 275893, type = "buff", unit = "player"}, --Fit to Burst
-	      { spell = 278535, type = "buff", unit = "player"}, --Niuzao's Blessing
-	      { spell = 273469, type = "buff", unit = "player"}, --Staggering Strikes
-	      { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
-	      { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
-	      { spell = 278767, type = "buff", unit = "player"}, --Training of Niuzao
+        { spell = 278535, type = "buff", unit = "player"}, --Niuzao's Blessing
+        { spell = 273469, type = "buff", unit = "player"}, --Staggering Strikes
+        { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
+        { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
+        { spell = 278767, type = "buff", unit = "player"}, --Training of Niuzao
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2618,24 +2677,24 @@ templates.class.MONK = {
       },
       icon = 627485
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 276025, type = "buff", unit = "player"}, --Misty Peaks
-	      { spell = 273348, type = "buff", unit = "target"}, --Overflowing Mists
-	      { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
-	      { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
-	      { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
+        { spell = 273348, type = "buff", unit = "target"}, --Overflowing Mists
+        { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
+        { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
+        { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2717,23 +2776,23 @@ templates.class.MONK = {
       },
       icon = 627606
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272806, type = "buff", unit = "player"}, --Iron Fists
-	      { spell = 279922, type = "buff", unit = "player"}, --Open Palm Strikes
-	      { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
-	      { spell = 278710, type = "buff", unit = "player"}, --Swift Roundhouse
+        { spell = 279922, type = "buff", unit = "player"}, --Open Palm Strikes
+        { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
+        { spell = 278710, type = "buff", unit = "player"}, --Swift Roundhouse
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -2835,26 +2894,26 @@ templates.class.DRUID = {
       },
       icon = 136060
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 276154, type = "buff", unit = "player"}, --Dawning Sun
-	      { spell = 279648, type = "buff", unit = "player"}, --Lively Spirit
-	      { spell = 269380, type = "buff", unit = "player"}, --Long Night
-	      { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-	      { spell = 272871, type = "buff", unit = "player"}, --Streaking Stars
-	      { spell = 274399, type = "buff", unit = "player"}, --Sunblaze
-	      { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
+        { spell = 279648, type = "buff", unit = "player"}, --Lively Spirit
+        { spell = 269380, type = "buff", unit = "player"}, --Long Night
+        { spell = 274814, type = "buff", unit = "player"}, --Reawakening
+        { spell = 272871, type = "buff", unit = "player"}, --Streaking Stars
+        { spell = 274399, type = "buff", unit = "player"}, --Sunblaze
+        { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
@@ -2953,25 +3012,25 @@ templates.class.DRUID = {
       },
       icon = 236149
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 276026, type = "buff", unit = "player"}, --Iron Jaws
-	      { spell = 272753, type = "buff", unit = "player"}, --Primordial Rage
-	      { spell = 273340, type = "buff", unit = "player"}, --Raking Ferocity
-	      { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-	      { spell = 274426, type = "buff", unit = "player"}, --Shredding Fury
-	      { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
+        { spell = 272753, type = "buff", unit = "player"}, --Primordial Rage
+        { spell = 273340, type = "buff", unit = "player"}, --Raking Ferocity
+        { spell = 274814, type = "buff", unit = "player"}, --Reawakening
+        { spell = 274426, type = "buff", unit = "player"}, --Shredding Fury
+        { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
@@ -3067,28 +3126,28 @@ templates.class.DRUID = {
       },
       icon = 236169
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 276157, type = "buff", unit = "player"}, --Craggy Bark
-	      { spell = 279793, type = "buff", unit = "player"}, --Grove Tending
-	      { spell = 279541, type = "buff", unit = "player"}, --Guardian's Wrath
-	      { spell = 272764, type = "buff", unit = "player"}, --Heartblood
-	      { spell = 279555, type = "buff", unit = "player"}, --Layered Mane
-	      { spell = 273349, type = "buff", unit = "player"}, --Masterful Instincts
-	      { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-	      { spell = 275909, type = "buff", unit = "player"}, --Twisted Claws
-	      { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
+        { spell = 279793, type = "buff", unit = "player"}, --Grove Tending
+        { spell = 279541, type = "buff", unit = "player"}, --Guardian's Wrath
+        { spell = 272764, type = "buff", unit = "player"}, --Heartblood
+        { spell = 279555, type = "buff", unit = "player"}, --Layered Mane
+        { spell = 273349, type = "buff", unit = "player"}, --Masterful Instincts
+        { spell = 274814, type = "buff", unit = "player"}, --Reawakening
+        { spell = 275909, type = "buff", unit = "player"}, --Twisted Claws
+        { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
@@ -3187,24 +3246,24 @@ templates.class.DRUID = {
       },
       icon = 236153
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 279793, type = "buff", unit = "target"}, --Grove Tending
-		    { spell = 279648, type = "buff", unit = "player"}, --Lively Spirit
-		    { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-		    { spell = 269498, type = "buff", unit = "player"}, --Rejuvenating Breath
-		    { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
+        { spell = 279648, type = "buff", unit = "player"}, --Lively Spirit
+        { spell = 274814, type = "buff", unit = "player"}, --Reawakening
+        { spell = 269498, type = "buff", unit = "player"}, --Rejuvenating Breath
+        { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources and Shapeshift Form"],
       args = {
       },
@@ -3277,25 +3336,25 @@ templates.class.DEMONHUNTER = {
       },
       icon = 1305156
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272794, type = "buff", unit = "player"}, --Devour
-	      { spell = 273232, type = "buff", unit = "player"}, --Furious Gaze
-	      { spell = 279584, type = "buff", unit = "player"}, --Revolving Blades
-	      { spell = 274346, type = "buff", unit = "player"}, --Soulmonger
-	      { spell = 278736, type = "buff", unit = "player"}, --Thirsting Blades
-	      { spell = 275936, type = "buff", unit = "player"}, --Seething Power
+        { spell = 273232, type = "buff", unit = "player"}, --Furious Gaze
+        { spell = 279584, type = "buff", unit = "player"}, --Revolving Blades
+        { spell = 274346, type = "buff", unit = "player"}, --Soulmonger
+        { spell = 278736, type = "buff", unit = "player"}, --Thirsting Blades
+        { spell = 275936, type = "buff", unit = "player"}, --Seething Power
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -3365,27 +3424,27 @@ templates.class.DEMONHUNTER = {
       },
       icon = 1344650
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 278769, type = "buff", unit = "player"}, --Cycle of Binding
-	      { spell = 272794, type = "buff", unit = "player"}, --Devour
-	      { spell = 275972, type = "buff", unit = "player"}, --Gaping Maw
-	      { spell = 273238, type = "buff", unit = "player"}, --Infernal Armor
-	      { spell = 272987, type = "buff", unit = "player"}, --Revel in Pain
-	      { spell = 275351, type = "buff", unit = "player"}, --Rigid Carapace
-	      { spell = 275936, type = "buff", unit = "player"}, --Seething Power
-	      { spell = 274346, type = "buff", unit = "player"}, --Soulmonger
+        { spell = 272794, type = "buff", unit = "player"}, --Devour
+        { spell = 275972, type = "buff", unit = "player"}, --Gaping Maw
+        { spell = 273238, type = "buff", unit = "player"}, --Infernal Armor
+        { spell = 272987, type = "buff", unit = "player"}, --Revel in Pain
+        { spell = 275351, type = "buff", unit = "player"}, --Rigid Carapace
+        { spell = 275936, type = "buff", unit = "player"}, --Seething Power
+        { spell = 274346, type = "buff", unit = "player"}, --Soulmonger
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -3466,22 +3525,22 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 136120
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 275926, type = "buff", unit = "player"}, -- Embrace of the Darkfallen
-	      { spell = 279503, type = "buff", unit = "player"}, -- Bones of the Damned
-	      { spell = 278543, type = "buff", unit = "player"}, -- Eternal Rune Weapon
+        { spell = 279503, type = "buff", unit = "player"}, -- Bones of the Damned
+        { spell = 278543, type = "buff", unit = "player"}, -- Eternal Rune Weapon
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -3555,21 +3614,21 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135372
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272723, type = "buff", unit = "player"}, -- Icy Citadel
-	      { spell = 274074, type = "debuff", unit = "target"}, -- Glacial Contagion
+        { spell = 274074, type = "debuff", unit = "target"}, -- Glacial Contagion
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -3649,22 +3708,22 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 136144
     },
-    [4] = {
-      title = L["Azerite Traits"],
+    [5] = {
+      title = L["Specific Azerite Traits"],
       args = {
         { spell = 272738, type = "buff", unit = "player"}, -- Festering Doom
-	      { spell = 274373, type = "buff", unit = "player"}, -- Festermight
-	      { spell = 275931, type = "debuff", unit = "target"}, -- Harrowing Decay
+        { spell = 274373, type = "buff", unit = "player"}, -- Festermight
+        { spell = 275931, type = "debuff", unit = "target"}, -- Harrowing Decay
       },
       icon = 135349
     },
-    [5] = {
+    [7] = {
       title = L["PvP Talents"],
       args = {
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
-    [6] = {
+    [8] = {
       title = L["Resources"],
       args = {
       },
@@ -3714,116 +3773,116 @@ tinsert(templates.general.args, {
 templates.items[1] = {
   title = L["Enchants"],
   args = {
-  { spell = 268905, type = "buff", unit = "player"}, --Deadly Navigation
-  { spell = 267612, type = "buff", unit = "player"}, --Gale-Force Striking
-  { spell = 268899, type = "buff", unit = "player"}, --Masterful Navigation
-  { spell = 268887, type = "buff", unit = "player"}, --Quick Navigation
-  { spell = 268911, type = "buff", unit = "player"}, --Stalwart Navigation
-  { spell = 267685, type = "buff", unit = "player"}, --Torrent of Elements
-  { spell = 268854, type = "buff", unit = "player"}, --Versatile Navigation
+    { spell = 268905, type = "buff", unit = "player"}, --Deadly Navigation
+    { spell = 267612, type = "buff", unit = "player"}, --Gale-Force Striking
+    { spell = 268899, type = "buff", unit = "player"}, --Masterful Navigation
+    { spell = 268887, type = "buff", unit = "player"}, --Quick Navigation
+    { spell = 268911, type = "buff", unit = "player"}, --Stalwart Navigation
+    { spell = 267685, type = "buff", unit = "player"}, --Torrent of Elements
+    { spell = 268854, type = "buff", unit = "player"}, --Versatile Navigation
   }
 }
 
 templates.items[2] = {
   title = L["On Use Trinkets (Buff)"],
   args = {
-  { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
-  { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
-  { spell = 278227, type = "buff", unit = "player", titleItemPrefix = 161411},
-  { spell = 278086, type = "buff", unit = "player", titleItemPrefix = 160649}, --heal
-  { spell = 278317, type = "buff", unit = "player", titleItemPrefix = 161462},
-  { spell = 278364, type = "buff", unit = "player", titleItemPrefix = 161463},
-  { spell = 281543, type = "buff", unit = "player", titleItemPrefix = 163936},
-  { spell = 265954, type = "buff", unit = "player", titleItemPrefix = 158319},
-  { spell = 266018, type = "buff", unit = "target", titleItemPrefix = 158320}, --heal
-  { spell = 271054, type = "buff", unit = "player", titleItemPrefix = 158368}, --heal
-  { spell = 268311, type = "buff", unit = "player", titleItemPrefix = 159614}, --heal
-  { spell = 271115, type = "buff", unit = "player", titleItemPrefix = 159615},
-  { spell = 271107, type = "buff", unit = "player", titleItemPrefix = 159617},
-  { spell = 265946, type = "buff", unit = "player", titleItemPrefix = 159618}, --tank
-  { spell = 271465, type = "debuff", unit = "target", titleItemPrefix = 159624},
-  { spell = 268836, type = "buff", unit = "player", titleItemPrefix = 159625},
-  { spell = 266047, type = "buff", unit = "player", titleItemPrefix = 159627},
-  { spell = 268998, type = "buff", unit = "player", titleItemPrefix = 159630},
+    { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
+    { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
+    { spell = 278227, type = "buff", unit = "player", titleItemPrefix = 161411},
+    { spell = 278086, type = "buff", unit = "player", titleItemPrefix = 160649}, --heal
+    { spell = 278317, type = "buff", unit = "player", titleItemPrefix = 161462},
+    { spell = 278364, type = "buff", unit = "player", titleItemPrefix = 161463},
+    { spell = 281543, type = "buff", unit = "player", titleItemPrefix = 163936},
+    { spell = 265954, type = "buff", unit = "player", titleItemPrefix = 158319},
+    { spell = 266018, type = "buff", unit = "target", titleItemPrefix = 158320}, --heal
+    { spell = 271054, type = "buff", unit = "player", titleItemPrefix = 158368}, --heal
+    { spell = 268311, type = "buff", unit = "player", titleItemPrefix = 159614}, --heal
+    { spell = 271115, type = "buff", unit = "player", titleItemPrefix = 159615},
+    { spell = 271107, type = "buff", unit = "player", titleItemPrefix = 159617},
+    { spell = 265946, type = "buff", unit = "player", titleItemPrefix = 159618}, --tank
+    { spell = 271465, type = "debuff", unit = "target", titleItemPrefix = 159624},
+    { spell = 268836, type = "buff", unit = "player", titleItemPrefix = 159625},
+    { spell = 266047, type = "buff", unit = "player", titleItemPrefix = 159627},
+    { spell = 268998, type = "buff", unit = "player", titleItemPrefix = 159630},
   }
 }
 
 templates.items[3] = {
   title = L["On Use Trinkets (CD)"],
   args = {
-  { spell = 161377, type = "item"},
-  { spell = 161379, type = "item"},
-  { spell = 161411, type = "item"},
-  { spell = 160649, type = "item"}, --heal
-  { spell = 161462, type = "item"},
-  { spell = 161463, type = "item"},
-  { spell = 163936, type = "item"},
-  { spell = 158319, type = "item"},
-  { spell = 158320, type = "item"}, --heal
-  { spell = 158368, type = "item"}, --heal
-  { spell = 159614, type = "item"}, --heal
-  { spell = 159615, type = "item"},
-  { spell = 159617, type = "item"},
-  { spell = 159618, type = "item"}, --tank
-  { spell = 159624, type = "item"},
-  { spell = 159625, type = "item"},
-  { spell = 159627, type = "item"},
-  { spell = 159630, type = "item"},
-  { spell = 159611, type = "item"}, -- no buff
-  { spell = 158367, type = "item"}, --no buff
+    { spell = 161377, type = "item"},
+    { spell = 161379, type = "item"},
+    { spell = 161411, type = "item"},
+    { spell = 160649, type = "item"}, --heal
+    { spell = 161462, type = "item"},
+    { spell = 161463, type = "item"},
+    { spell = 163936, type = "item"},
+    { spell = 158319, type = "item"},
+    { spell = 158320, type = "item"}, --heal
+    { spell = 158368, type = "item"}, --heal
+    { spell = 159614, type = "item"}, --heal
+    { spell = 159615, type = "item"},
+    { spell = 159617, type = "item"},
+    { spell = 159618, type = "item"}, --tank
+    { spell = 159624, type = "item"},
+    { spell = 159625, type = "item"},
+    { spell = 159627, type = "item"},
+    { spell = 159630, type = "item"},
+    { spell = 159611, type = "item"}, -- no buff
+    { spell = 158367, type = "item"}, --no buff
   }
 }
 
 templates.items[4] = {
   title = L["On Procc Trinkets (Buff)"],
   args = {
-  { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
-  { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
-  { spell = 278110, type = "debuff", unit = "multi", titleItemPrefix = 160655}, --debuff?
-  { spell = 278155, type = "buff", unit = "player", titleItemPrefix = 160656},
-  { spell = 278379, type = "buff", unit = "player", titleItemPrefix = 161376},
-  { spell = 278381, type = "buff", unit = "player", titleItemPrefix = 161378},
-  { spell = 278862, type = "buff", unit = "player", titleItemPrefix = 161380},
-  { spell = 278388, type = "buff", unit = "player", titleItemPrefix = 161381},
-  { spell = 278225, type = "buff", unit = "player", titleItemPrefix = 161412},
-  { spell = 278288, type = "buff", unit = "player", titleItemPrefix = 161419},
-  { spell = 278359, type = "buff", unit = "player", titleItemPrefix = 161461},
-  { spell = 281546, type = "buff", unit = "player", titleItemPrefix = 163935},
-  { spell = 276132, type = "debuff", unit = "target", titleItemPrefix = 159126}, --debuff?
-  { spell = 267325, type = "buff", unit = "player", titleItemPrefix = 155881},
-  { spell = 267327, type = "buff", unit = "player", titleItemPrefix = 155881},
-  { spell = 267330, type = "buff", unit = "player", titleItemPrefix = 155881},
-  { spell = 267179, type = "buff", unit = "player", titleItemPrefix = 158374},
-  { spell = 271103, type = "buff", unit = "player", titleItemPrefix = 158712},
-  { spell = 268439, type = "buff", unit = "player", titleItemPrefix = 159612},
-  { spell = 271105, type = "buff", unit = "player", titleItemPrefix = 159616},
-  { spell = 268194, type = "debuff", unit = "multi", titleItemPrefix = 159619}, --debuff?
-  { spell = 271071, type = "buff", unit = "player", titleItemPrefix = 159620},
-  { spell = 268756, type = "debuff", unit = "multi", titleItemPrefix = 159623}, --debuff?
-  { spell = 268062, type = "buff", unit = "multi", titleItemPrefix = 159626}, --buff on spawned spores?
-  { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
-  { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
+    { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
+    { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
+    { spell = 278110, type = "debuff", unit = "multi", titleItemPrefix = 160655}, --debuff?
+    { spell = 278155, type = "buff", unit = "player", titleItemPrefix = 160656},
+    { spell = 278379, type = "buff", unit = "player", titleItemPrefix = 161376},
+    { spell = 278381, type = "buff", unit = "player", titleItemPrefix = 161378},
+    { spell = 278862, type = "buff", unit = "player", titleItemPrefix = 161380},
+    { spell = 278388, type = "buff", unit = "player", titleItemPrefix = 161381},
+    { spell = 278225, type = "buff", unit = "player", titleItemPrefix = 161412},
+    { spell = 278288, type = "buff", unit = "player", titleItemPrefix = 161419},
+    { spell = 278359, type = "buff", unit = "player", titleItemPrefix = 161461},
+    { spell = 281546, type = "buff", unit = "player", titleItemPrefix = 163935},
+    { spell = 276132, type = "debuff", unit = "target", titleItemPrefix = 159126}, --debuff?
+    { spell = 267325, type = "buff", unit = "player", titleItemPrefix = 155881},
+    { spell = 267327, type = "buff", unit = "player", titleItemPrefix = 155881},
+    { spell = 267330, type = "buff", unit = "player", titleItemPrefix = 155881},
+    { spell = 267179, type = "buff", unit = "player", titleItemPrefix = 158374},
+    { spell = 271103, type = "buff", unit = "player", titleItemPrefix = 158712},
+    { spell = 268439, type = "buff", unit = "player", titleItemPrefix = 159612},
+    { spell = 271105, type = "buff", unit = "player", titleItemPrefix = 159616},
+    { spell = 268194, type = "debuff", unit = "multi", titleItemPrefix = 159619}, --debuff?
+    { spell = 271071, type = "buff", unit = "player", titleItemPrefix = 159620},
+    { spell = 268756, type = "debuff", unit = "multi", titleItemPrefix = 159623}, --debuff?
+    { spell = 268062, type = "buff", unit = "multi", titleItemPrefix = 159626}, --buff on spawned spores?
+    { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
+    { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
   }
 }
 
 templates.items[5] = {
   title = L["PVP Trinkets (Buff)"],
   args = {
-  { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
-  { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
-  { spell = 278819, type = "buff", unit = "player", titleItemPrefix = 161474}, -- on use
-  { spell = 277179, type = "buff", unit = "player", titleItemPrefix = 161674}, -- on use
-  { spell = 277181, type = "buff", unit = "player", titleItemPrefix = 161676},
-  { spell = 277187, type = "buff", unit = "player", titleItemPrefix = 161675},-- on use
+    { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
+    { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
+    { spell = 278819, type = "buff", unit = "player", titleItemPrefix = 161474}, -- on use
+    { spell = 277179, type = "buff", unit = "player", titleItemPrefix = 161674}, -- on use
+    { spell = 277181, type = "buff", unit = "player", titleItemPrefix = 161676},
+    { spell = 277187, type = "buff", unit = "player", titleItemPrefix = 161675},-- on use
   }
 }
 
 templates.items[6] = {
   title = L["PVP Trinkets (CD)"],
   args = {
-  { spell = 161474, type = "item"}, --on use
-  { spell = 161674, type = "item"}, --on use
-  { spell = 161675, type = "item"}, --on use
+    { spell = 161474, type = "item"}, --on use
+    { spell = 161674, type = "item"}, --on use
+    { spell = 161675, type = "item"}, --on use
   }
 }
 
@@ -3861,42 +3920,56 @@ for _, class in pairs(templates.class) do
   end
 end
 
+for _, class in pairs(templates.class) do
+  for _, spec in pairs(class) do
+    spec[4] = {
+      title = L["General Azerite Traits"],
+      args = generalAzeriteTraits,
+      icon = 2065624
+    }
+    spec[6] = {
+      title = L["PvP Azerite Traits"],
+      args = pvpAzeriteTraits,
+      icon = 236396
+    }
+  end
+end
 
-------------------------------
+-------------------------------
 -- Hardcoded trigger templates
 -------------------------------
 
 -- Warrior
 for i = 1, 3 do
-  tinsert(templates.class.WARRIOR[i][6].args, createSimplePowerTemplate(1));
+  tinsert(templates.class.WARRIOR[i][8].args, createSimplePowerTemplate(1));
 end
 
 -- Paladin
-tinsert(templates.class.PALADIN[3][6].args, createSimplePowerTemplate(9));
+tinsert(templates.class.PALADIN[3][8].args, createSimplePowerTemplate(9));
 for i = 1, 3 do
-  tinsert(templates.class.PALADIN[i][6].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.PALADIN[i][8].args, createSimplePowerTemplate(0));
 end
 
 -- Hunter
 for i = 1, 3 do
-  tinsert(templates.class.HUNTER[i][6].args, createSimplePowerTemplate(2));
+  tinsert(templates.class.HUNTER[i][8].args, createSimplePowerTemplate(2));
 end
 
 -- Rogue
 for i = 1, 3 do
-  tinsert(templates.class.ROGUE[i][6].args, createSimplePowerTemplate(3));
-  tinsert(templates.class.ROGUE[i][6].args, createSimplePowerTemplate(4));
+  tinsert(templates.class.ROGUE[i][8].args, createSimplePowerTemplate(3));
+  tinsert(templates.class.ROGUE[i][8].args, createSimplePowerTemplate(4));
 end
 
 -- Priest
 for i = 1, 3 do
-  tinsert(templates.class.PRIEST[i][6].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.PRIEST[i][8].args, createSimplePowerTemplate(0));
 end
-tinsert(templates.class.PRIEST[3][6].args, createSimplePowerTemplate(13));
+tinsert(templates.class.PRIEST[3][8].args, createSimplePowerTemplate(13));
 
 -- Shaman
 for i = 1, 3 do
-  tinsert(templates.class.SHAMAN[i][6].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(0));
 
   templates.class.SHAMAN[i][7] = {
     title = L["Totems"],
@@ -3907,28 +3980,28 @@ for i = 1, 3 do
 end
 
 for i = 1, 2 do
-  tinsert(templates.class.SHAMAN[i][6].args, createSimplePowerTemplate(11));
+  tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(11));
 end
 
 -- Mage
-tinsert(templates.class.MAGE[1][6].args, createSimplePowerTemplate(16));
+tinsert(templates.class.MAGE[1][8].args, createSimplePowerTemplate(16));
 for i = 1, 3 do
-  tinsert(templates.class.MAGE[i][6].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.MAGE[i][8].args, createSimplePowerTemplate(0));
 end
 
 -- Warlock
 for i = 1, 3 do
-  tinsert(templates.class.WARLOCK[i][6].args, createSimplePowerTemplate(0));
-  tinsert(templates.class.WARLOCK[i][6].args, createSimplePowerTemplate(7));
+  tinsert(templates.class.WARLOCK[i][8].args, createSimplePowerTemplate(0));
+  tinsert(templates.class.WARLOCK[i][8].args, createSimplePowerTemplate(7));
 end
 
 -- Monk
-tinsert(templates.class.MONK[1][6].args, createSimplePowerTemplate(3));
-tinsert(templates.class.MONK[2][6].args, createSimplePowerTemplate(0));
-tinsert(templates.class.MONK[3][6].args, createSimplePowerTemplate(3));
-tinsert(templates.class.MONK[3][6].args, createSimplePowerTemplate(12));
+tinsert(templates.class.MONK[1][8].args, createSimplePowerTemplate(3));
+tinsert(templates.class.MONK[2][8].args, createSimplePowerTemplate(0));
+tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(3));
+tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(12));
 
-templates.class.MONK[1][7] = {
+templates.class.MONK[1][9] = {
   title = L["Ability Charges"],
   args = {
     { spell = 115072, type = "ability", showOn = "showAlways"}, -- Expel Harm
@@ -3936,14 +4009,14 @@ templates.class.MONK[1][7] = {
   icon = 627486,
 };
 
-templates.class.MONK[2][7] = {
+templates.class.MONK[2][9] = {
   title = L["Ability Charges"],
   args = {
   },
   icon = 1242282,
 };
 
-templates.class.MONK[3][7] = {
+templates.class.MONK[3][9] = {
   title = L["Ability Charges"],
   args = {
   },
@@ -3953,7 +4026,7 @@ templates.class.MONK[3][7] = {
 -- Druid
 for i = 1, 4 do
   -- Shapeshift Form
-  tinsert(templates.class.DRUID[i][6].args, {
+  tinsert(templates.class.DRUID[i][8].args, {
     title = L["Shapeshift Form"],
     icon = 132276,
     triggers = {[0] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
@@ -3961,27 +4034,27 @@ for i = 1, 4 do
 end
 
 -- Astral Power
-tinsert(templates.class.DRUID[1][6].args, createSimplePowerTemplate(8));
+tinsert(templates.class.DRUID[1][8].args, createSimplePowerTemplate(8));
 
 for i = 1, 4 do
-  tinsert(templates.class.DRUID[i][6].args, createSimplePowerTemplate(0)); -- Mana
-  tinsert(templates.class.DRUID[i][6].args, createSimplePowerTemplate(1)); -- Rage
-  tinsert(templates.class.DRUID[i][6].args, createSimplePowerTemplate(3)); -- Energy
-  tinsert(templates.class.DRUID[i][6].args, createSimplePowerTemplate(4)); -- Combo Points
+  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(0)); -- Mana
+  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(1)); -- Rage
+  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(3)); -- Energy
+  tinsert(templates.class.DRUID[i][8].args, createSimplePowerTemplate(4)); -- Combo Points
 end
 
 -- Efflorescence aka Mushroom
 tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem"});
 
 -- Demon Hunter
-tinsert(templates.class.DEMONHUNTER[1][6].args, createSimplePowerTemplate(17));
-tinsert(templates.class.DEMONHUNTER[2][6].args, createSimplePowerTemplate(18));
+tinsert(templates.class.DEMONHUNTER[1][8].args, createSimplePowerTemplate(17));
+tinsert(templates.class.DEMONHUNTER[2][8].args, createSimplePowerTemplate(18));
 
 -- Death Knight
 for i = 1, 3 do
-  tinsert(templates.class.DEATHKNIGHT[i][6].args, createSimplePowerTemplate(6));
+  tinsert(templates.class.DEATHKNIGHT[i][8].args, createSimplePowerTemplate(6));
 
-  tinsert(templates.class.DEATHKNIGHT[i][6].args, {
+  tinsert(templates.class.DEATHKNIGHT[i][8].args, {
     title = L["Runes"],
     icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
     triggers = {[0] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
