@@ -1736,6 +1736,8 @@ function WeakAuras.Delete(data)
   if (WeakAuras.mouseFrame) then
     WeakAuras.mouseFrame:delete(id);
   end
+
+  WeakAuras.customActionsFunctions[id] = nil;
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1825,6 +1827,9 @@ function WeakAuras.Rename(data, newid)
   if (WeakAuras.mouseFrame) then
     WeakAuras.mouseFrame:rename(oldid, newid);
   end
+
+  WeakAuras.customActionsFunctions[newid] = WeakAuras.customActionsFunctions[oldid];
+  WeakAuras.customActionsFunctions[oldid] = nil;
 
   WeakAuras.ProfileRenameAura(oldid, newid);
 end
