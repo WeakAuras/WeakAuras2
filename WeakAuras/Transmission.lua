@@ -1342,29 +1342,28 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       tinsert(tooltip, {1, " "})
       if type(match) ~= "table" then
         -- there is no difference whatsoever
-        tinsert(tooltip, {1, L["You already have this group/aura imported, and there are no modifications available."], 1, 0.82, 0,})
-        tinsert(tooltip, {1, L["Would you like to import a duplicate?"], 1, 0.82, 0,})
+        tinsert(tooltip, {1, L["You already have this group/aura, importing will create a duplicate."], 1, 0.82, 0,})
       else
         for k,v in pairs(match) do
           pendingData[k] = v
         end
         -- tally up changes
         if children and #children > 0 then
-          tinsert(tooltip, {2, L["This import is a modification to a group of your auras:"], data.id, 1, 0.82, 0, 1, 0.82, 0,})
+          tinsert(tooltip, {1, L["This import is a modification to a group of your auras:"], 1, 0.82, 0,})
           if match.added ~= 0 then
-            tinsert(tooltip, {1,L["    %d members added"]:format(match.added), 1, 0.82, 0})
+            tinsert(tooltip, {1, L["    %d auras added"]:format(match.added), 1, 0.82, 0})
           end
           if match.modified ~= 0 then
-            tinsert(tooltip, {1, L["    %d members modified"]:format(match.modified), 1, 0.82, 0})
+            tinsert(tooltip, {1, L["    %d auras modified"]:format(match.modified), 1, 0.82, 0})
           end
           if match.deleted ~= 0 then
-            tinsert(tooltip, {1, L["    %d members deleted"]:format(match.deleted), 1, 0.82, 0})
+            tinsert(tooltip, {1, L["    %d auras deleted"]:format(match.deleted), 1, 0.82, 0})
           end
-          tinsert(tooltip, {1, L["You can choose which settings you would like to update, please choose which:"], 1, 0.82, 0})
+          tinsert(tooltip, {1, L["You can choose which settings you would like to update:"], 1, 0.82, 0})
         else
           local oldID = type(match.oldData[0]) == "table" and match.oldData[0].id or "unknown"
           tinsert(tooltip, {2, L["This import is a modification to an existing aura:"], oldID, 1, 0.82, 0})
-          tinsert(tooltip, {1, L["You can choose which settings you would like to update, please choose which:"], 1, 0.82, 0})
+          tinsert(tooltip, {1, L["You can choose which settings you would like to update:"], 1, 0.82, 0})
         end
         linesFromTop = #tooltip
         for _, button in ipairs(checkButtons) do
