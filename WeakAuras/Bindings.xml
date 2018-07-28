@@ -1,14 +1,14 @@
 <Bindings>
-	<Binding name="WEAKAURASTOGGLE" header="WEAKAURAS" Category="ADDONS">
-		WeakAuras.OpenOptions()
-	</Binding>
-	<Binding name="WEAKAURASSTARTPROFILING" Category="ADDONS">
-		WeakAuras.StartProfile()
-	</Binding>
-	<Binding name="WEAKAURASSTOPPROFILING" Category="ADDONS">
-		WeakAuras.StopProfile()
-	</Binding>
-	<Binding name="WEAKAURASPRINTPROFILING" Category="ADDONS">
-		WeakAuras.PrintProfile()
-	</Binding>
+  <Binding name="WEAKAURASTOGGLE" header="WEAKAURAS" Category="ADDONS">
+    WeakAuras.OpenOptions()
+  </Binding>
+  <Binding name="WEAKAURASSTARTPROFILING" Category="ADDONS">
+    WeakAuras.StartProfile()
+  </Binding>
+  <Binding name="WEAKAURASSTOPPROFILING" Category="ADDONS">
+    WeakAuras.StopProfile()
+  </Binding>
+  <Binding name="WEAKAURASPRINTPROFILING" Category="ADDONS">
+    WeakAuras.PrintProfile()
+  </Binding>
 </Bindings>

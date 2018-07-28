@@ -1,23 +1,23 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<!--@no-lib-strip@-->
-	<Script file="Libs\LibStub\LibStub.lua"/>
-	<Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
-	<Include file="Libs\AceGUI-3.0\AceGUI-3.0.xml"/>
-	<Include file="Libs\AceConsole-3.0\AceConsole-3.0.xml"/>
-	<Include file="Libs\AceConfig-3.0\AceConfig-3.0.xml"/>
-	<Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml"/>
-	<Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
-	<Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
-	<Include file="Libs\AceEvent-3.0\AceEvent-3.0.xml"/>
-	<Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
-	<Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
-	<Include file="Libs\LibBabble-Race-3.0\lib.xml"/>
-	<Script file="Libs\LibCompress\LibCompress.lua"/>
-	<Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
-	<Script file="Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua"/>
-	<Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
-	<!-- TODO 8.0 <Script file="Libs\HereBeDragons\HereBeDragons-2.0.lua"/>-->
-	<Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
-	<!--@end-no-lib-strip@-->
+  <!--@no-lib-strip@-->
+  <Script file="Libs\LibStub\LibStub.lua"/>
+  <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+  <Include file="Libs\AceGUI-3.0\AceGUI-3.0.xml"/>
+  <Include file="Libs\AceConsole-3.0\AceConsole-3.0.xml"/>
+  <Include file="Libs\AceConfig-3.0\AceConfig-3.0.xml"/>
+  <Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml"/>
+  <Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
+  <Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
+  <Include file="Libs\AceEvent-3.0\AceEvent-3.0.xml"/>
+  <Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
+  <Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
+  <Include file="Libs\LibBabble-Race-3.0\lib.xml"/>
+  <Script file="Libs\LibCompress\LibCompress.lua"/>
+  <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+  <Script file="Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua"/>
+  <Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
+  <!-- TODO 8.0 <Script file="Libs\HereBeDragons\HereBeDragons-2.0.lua"/>-->
+  <Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
+  <!--@end-no-lib-strip@-->
 </Ui>
