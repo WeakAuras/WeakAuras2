@@ -3470,6 +3470,8 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltipSize = {};
   if(tooltipText) then
     for t in tooltipText:gmatch("(%d[%d%.,]*)") do
+      t = t:gsub(",", "");
+      t = t:gsub("%.", "");
       tinsert(tooltipSize, tonumber(t));
     end
   end
