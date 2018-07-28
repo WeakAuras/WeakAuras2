@@ -139,6 +139,12 @@ local loadFuncsForOptions = {};
 -- Check Conditions Functions, keyed on id
 local checkConditions = {};
 
+-- Dynamic Condition functions to run. keyed on event and id
+local dynamicConditions = {};
+
+-- Global Dynamic Condition Funcs, keyed on the event
+local globalDynamicConditionFuncs = {};
+
 -- All regions keyed on id, has properties: region, regionType, also see clones
 WeakAuras.regions = {};
 local regions = WeakAuras.regions;
@@ -963,6 +969,7 @@ function WeakAuras.ConstructConditionFunction(data)
   local usedProperties = {};
 
   local allConditionsTemplate = WeakAuras.GetTriggerConditions(data);
+  allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
 
   local ret = "";
   ret = ret .. "local newActiveConditions = {};\n"
@@ -1028,6 +1035,94 @@ function WeakAuras.ConstructConditionFunction(data)
   ret = ret .. "end\n";
 
   return ret;
+end
+
+
+local dynamicConditionsFrame = nil;
+
+local globalConditionAllState = {
+  [""] = {
+    show = true;
+  }
+};
+
+local globalConditionState = globalConditionAllState[""];
+
+function WeakAuras.GetGlobalConditionState()
+  return globalConditionAllState;
+end
+
+local function runDynamicConditionFunctions(funcs)
+  for id in pairs(funcs) do
+    if (checkConditions[id]) then
+      local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, triggerState[id].activeTrigger);
+      for cloneId, state in pairs(activeTriggerState) do
+        local region = WeakAuras.GetRegion(id, cloneId);
+        checkConditions[id](region, false);
+      end
+    end
+  end
+end
+
+local function handleRedynamicConditions(self, event)
+  if (globalDynamicConditionFuncs[event]) then
+    for i, func in ipairs(globalDynamicConditionFuncs[event]) do
+      func(globalConditionState);
+    end
+  end
+
+  runDynamicConditionFunctions(dynamicConditions[event]);
+end
+
+local registeredGlobalFunctions = {};
+function WeakAuras.RegisterForGlobalConditions(data)
+  local id = data.id;
+  for event, conditonFunctions in pairs(dynamicConditions) do
+    conditonFunctions.id = nil;
+  end
+
+  local register = {};
+  if (data.conditions) then
+    local allConditionsTemplate = WeakAuras.GetTriggerConditions(data);
+    allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
+
+    for conditionNumber, condition in ipairs(data.conditions) do
+      local trigger = condition.check and condition.check.trigger;
+      local variable = condition.check and condition.check.variable;
+
+      if (trigger and variable) then
+        local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
+        if (conditionTemplate and conditionTemplate.events) then
+          for _, event in ipairs(conditionTemplate.events) do
+            if (not dynamicConditions[event]) then
+              register[event] = true;
+              dynamicConditions[event] = {};
+            end
+            dynamicConditions[event][id] = true;
+          end
+
+          if (conditionTemplate.globalStateUpdate and not registeredGlobalFunctions[variable]) then
+            registeredGlobalFunctions[variable] = true;
+            for _, event in ipairs(conditionTemplate.events) do
+              globalDynamicConditionFuncs[event] = globalDynamicConditionFuncs[event] or {};
+              tinsert(globalDynamicConditionFuncs[event], conditionTemplate.globalStateUpdate);
+            end
+            conditionTemplate.globalStateUpdate(globalConditionState);
+          end
+        end
+      end
+    end
+  end
+
+  if (next(register) and not dynamicConditionsFrame) then
+    dynamicConditionsFrame = CreateFrame("FRAME");
+    dynamicConditionsFrame:SetScript("OnEvent", handleRedynamicConditions);
+    WeakAuras.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
+  end
+
+  for event in pairs(register) do
+    dynamicConditionsFrame:RegisterEvent(event);
+  end
 end
 
 WeakAuras.talent_types_specific = {}
@@ -1739,6 +1834,10 @@ function WeakAuras.Delete(data)
 
   WeakAuras.customActionsFunctions[id] = nil;
   WeakAuras.customConditionsFunctions[id] = nil;
+
+  for event, funcs in pairs(dynamicConditions) do
+    funcs[id] = nil;
+  end
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1834,6 +1933,11 @@ function WeakAuras.Rename(data, newid)
 
   WeakAuras.customConditionsFunctions[newid] = WeakAuras.customConditionsFunctions[oldid];
   WeakAuras.customConditionsFunctions[oldid] = nil;
+
+  for event, funcs in pairs(dynamicConditions) do
+    funcs[newid] = funcs[oldid]
+    funcs[oldid] = nil;
+  end
 
   WeakAuras.ProfileRenameAura(oldid, newid);
 end
@@ -2532,6 +2636,7 @@ function WeakAuras.pAdd(data)
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
     local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id);
+    WeakAuras.RegisterForGlobalConditions(data);
     debug(id.." - Load", 1);
     debug(loadFuncStr);
 
@@ -3795,6 +3900,9 @@ function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
 end
 
 function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+  if (triggernum == -1) then
+    return WeakAuras.GetGlobalConditionState();
+  end
   triggerState[id][triggernum] = triggerState[id][triggernum] or {}
   return triggerState[id][triggernum];
 end
