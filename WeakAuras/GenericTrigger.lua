@@ -2112,11 +2112,12 @@ do
     return bars;
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator, spellId)
+  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer)
     local bar;
     for k, v in pairs(bars) do
       if (WeakAuras.DBMTimerMatches(k, id, message, operator, spellId)
-        and (bar == nil or bars[k].expirationTime < bar.expirationTime)) then
+        and (bar == nil or bars[k].expirationTime < bar.expirationTime)
+        and (bars[k].expirationTime + extendTimer > GetTime() )) then
         bar = bars[k];
       end
     end
@@ -2324,12 +2325,14 @@ do
     return bars[id];
   end
 
-  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text)
+  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text, extendTimer)
     local bestMatch
     for id, bar in pairs(bars) do
       if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, operator, text)) then
         if (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime) then
-          bestMatch = bar;
+          if (bar.expirationTime + extendTimer > GetTime()) then
+            bestMatch = bar;
+          end
         end
       end
     end
