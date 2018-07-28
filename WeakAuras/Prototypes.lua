@@ -1263,6 +1263,23 @@ WeakAuras.event_prototypes = {
               end
             end
             state.changed = true;
+          elseif (event == "UNIT_DISPLAYPOWER") then
+            local spellID = select(9, UnitCastingInfo("player"));
+            if spellID then
+              local costTable = GetSpellPowerCost(spellID);
+              local cost;
+              for _, costInfo in pairs(costTable) do
+                if costInfo.type == powerTypeToCheck then
+                  cost = costInfo.cost;
+                  break;
+                end
+              end
+              if (state.cost ~= cost) then
+                state.cost = cost;
+                state.changed = true;
+              end
+            end
+            state.changed = true;
           elseif ( (event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED") and unit == "player") then
             state.cost = nil;
             state.changed = true;
