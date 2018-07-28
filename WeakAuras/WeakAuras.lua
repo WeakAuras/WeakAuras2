@@ -4742,9 +4742,9 @@ function WeakAuras.StartProfile()
   if (profileData.systems.time and profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling already started."]);
     return;
-  else
-    prettyPrint(L["Profiling started."])
   end
+
+  prettyPrint(L["Profiling started."])
 
   profileData.systems = {};
   profileData.auras = {};
@@ -4762,15 +4762,12 @@ local function doNothing()
 end
 
 function WeakAuras.StopProfile()
-  if (not profileData.systems.time or not profileData.systems.time.count == 1) then
+  if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
     prettyPrint(L["Profiling not running."]);
     return;
-  elseif (profileData.systems.time.count == 1) then
-    profileData.systems.time.count = 0;
-    prettyPrint(L["Profiling stopped."])
-  else
-    prettyPrint(L["Profiling not running."]);
   end
+
+  prettyPrint(L["Profiling stopped."])
 
   profileData.systems.time.elapsed = debugprofilestop() - profileData.systems.time.start;
   profileData.systems.time.count = 0;
