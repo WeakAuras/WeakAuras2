@@ -1738,6 +1738,7 @@ function WeakAuras.Delete(data)
   end
 
   WeakAuras.customActionsFunctions[id] = nil;
+  WeakAuras.customConditionsFunctions[id] = nil;
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1830,6 +1831,9 @@ function WeakAuras.Rename(data, newid)
 
   WeakAuras.customActionsFunctions[newid] = WeakAuras.customActionsFunctions[oldid];
   WeakAuras.customActionsFunctions[oldid] = nil;
+
+  WeakAuras.customConditionsFunctions[newid] = WeakAuras.customConditionsFunctions[oldid];
+  WeakAuras.customConditionsFunctions[oldid] = nil;
 
   WeakAuras.ProfileRenameAura(oldid, newid);
 end
