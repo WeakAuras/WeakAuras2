@@ -3924,12 +3924,12 @@ for _, class in pairs(templates.class) do
   for _, spec in pairs(class) do
     spec[4] = {
       title = L["General Azerite Traits"],
-      args = generalAzeriteTraits,
+      args = CopyTable(generalAzeriteTraits),
       icon = 2065624
     }
     spec[6] = {
       title = L["PvP Azerite Traits"],
-      args = pvpAzeriteTraits,
+      args = CopyTable(pvpAzeriteTraits),
       icon = 236396
     }
   end
