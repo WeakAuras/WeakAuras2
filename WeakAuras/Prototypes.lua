@@ -2235,7 +2235,7 @@ WeakAuras.event_prototypes = {
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       local ret = [[
-        local startTime, duration = WeakAuras.GetItemCooldown(%s);
+        local startTime, duration, enabled = WeakAuras.GetItemCooldown(%s);
         local showOn = %s
       ]];
       if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
@@ -2251,6 +2251,7 @@ WeakAuras.event_prototypes = {
       end
       return ret:format(itemName,  "[[" .. (trigger.showOn or "") .. "]]");
     end,
+    statesParameter = "one",
     args = {
       {
         name = "itemName",
@@ -2277,11 +2278,17 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
+        name = "enabled",
+        store = true,
+        test = "true",
+      },
+      {
+        hidden = true,
         name = "onCooldown",
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "(state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0)) == (%s == 1)",
       },
       {
         hidden = true,

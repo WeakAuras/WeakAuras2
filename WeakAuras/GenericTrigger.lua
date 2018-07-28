@@ -1341,6 +1341,7 @@ do
   local itemCdDurs = {};
   local itemCdExps = {};
   local itemCdHandles = {};
+  local itemCdEnabled = {};
 
   local itemSlots = {};
   local itemSlotsCdDurs = {};
@@ -1441,9 +1442,9 @@ do
 
   function WeakAuras.GetItemCooldown(id)
     if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
-      return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id];
+      return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id], itemCdEnabled[id];
     else
-      return 0, 0;
+      return 0, 0, itemCdEnabled[id] or 1;
     end
   end
 
@@ -1511,6 +1512,7 @@ do
     itemCdHandles[id] = nil;
     itemCdDurs[id] = nil;
     itemCdExps[id] = nil;
+    itemCdEnabled[id] = 1;
     WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
   end
 
@@ -1725,9 +1727,15 @@ do
   function WeakAuras.CheckItemCooldowns()
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
+      if (duration == 0) then
+        enabled = 1;
+      end
       if (enabled == 0) then
         startTime, duration = 0, 0
       end
+
+      local itemCdEnabledChanged = (itemCdEnabled[id] ~= enabled);
+      itemCdEnabled[id] = enabled;
       startTime = startTime or 0;
       duration = duration or 0;
       local time = GetTime();
@@ -1742,6 +1750,7 @@ do
           itemCdExps[id] = endTime;
           itemCdHandles[id] = timer:ScheduleTimerFixed(ItemCooldownFinished, endTime - time, id);
           WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
+          itemCdEnabledChanged = false;
         elseif(itemCdExps[id] ~= endTime) then
           -- Cooldown is now different
           if(itemCdHandles[id]) then
@@ -1751,6 +1760,7 @@ do
           itemCdExps[id] = endTime;
           itemCdHandles[id] = timer:ScheduleTimerFixed(ItemCooldownFinished, endTime - time, id);
           WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+          itemCdEnabledChanged = false;
         end
       elseif(duration > 0) then
       -- GCD, do nothing
@@ -1762,7 +1772,11 @@ do
             timer:CancelTimer(itemCdHandles[id]);
           end
           ItemCooldownFinished(id);
+          itemCdEnabledChanged = false;
         end
+      end
+      if (itemCdEnabledChanged) then
+        WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
       end
     end
   end
@@ -1915,7 +1929,14 @@ do
 
     if not(items[id]) then
       items[id] = true;
-      local startTime, duration = GetItemCooldown(id);
+      local startTime, duration, enabled = GetItemCooldown(id);
+      if (duration == 0) then
+        enabled = 1;
+      end
+      if (enabled == 0) then
+        startTime, duration = 0, 0
+      end
+      itemCdEnabled[id] = enabled;
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
