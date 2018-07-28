@@ -2309,8 +2309,8 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(showOn == \"showOnReady\" and startTime == 0) " ..
-        "or (showOn == \"showOnCooldown\" and startTime > 0) " ..
+        test = "(showOn == \"showOnReady\" and startTime == 0 and enabled == 1) " ..
+        "or (showOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0)) " ..
         "or (showOn == \"showAlways\")"
       }
     },
