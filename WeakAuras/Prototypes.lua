@@ -2674,7 +2674,7 @@ WeakAuras.event_prototypes = {
       else -- no clones
         ret = ret .. [[
           if (event == "DBM_TimerStart") then
-            if extendTimer ~= 0 then
+            if (extendTimer ~= 0) then
               if (WeakAuras.DBMTimerMatches(id, triggerId, triggerMessage, triggerOperator, triggerSpellId)) then
                 local bar = WeakAuras.GetDBMTimerById(id);
                 WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer);
@@ -2684,7 +2684,8 @@ WeakAuras.event_prototypes = {
           local bar = WeakAuras.GetDBMTimer(triggerId, triggerMessage, triggerOperator, triggerSpellId, extendTimer);
           local id = "";
           if (bar) then
-            if (not (states[""] and states[""].show)
+            if (extendTimer == 0)
+              or (not (states[""] and states[""].show)
               or (states[""] and states[""].show and states[""].expirationTime > (bar.expirationTime + extendTimer))) then
         ]]
       ret = ret .. copyOrSchedule;
@@ -2903,7 +2904,7 @@ WeakAuras.event_prototypes = {
       else
         ret = ret .. [[
           if (event == "BigWigs_StartBar") then
-            if extendTimer ~= 0 then
+            if (extendTimer ~= 0) then
               if (WeakAuras.BigWigsTimerMatches(id, triggerAddon, triggerSpellId, triggerTextOperator, triggerText)) then
                 local bar = WeakAuras.GetBigWigsTimerById(id);
                 WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer);
@@ -2913,7 +2914,8 @@ WeakAuras.event_prototypes = {
           local bar = WeakAuras.GetBigWigsTimer(triggerAddon, triggerSpellId, triggerTextOperator, triggerText, extendTimer);
           local id = "";
           if (bar) then
-            if (not (states[""] and states[""].show)
+            if (extendTimer == 0)
+              or (not (states[""] and states[""].show)
               or (states[""] and states[""].show and states[""].expirationTime > (bar.expirationTime + extendTimer))) then
         ]]
         ret = ret .. copyOrSchedule;
