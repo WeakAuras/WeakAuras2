@@ -1279,6 +1279,30 @@ local function mergeConditionTemplates(allConditionTemplates, auraConditionsTemp
   end
 end
 
+local globalConditions =
+{
+  ["incombat"] = {
+    display = L["In Combat"],
+    type = "bool",
+    events = {"PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED"},
+    globalStateUpdate = function(state)
+      state.incombat = UnitAffectingCombat("player");
+    end
+  },
+  ["hastarget"] = {
+    display = L["Has Target"],
+    type = "bool",
+    events = {"PLAYER_TARGET_CHANGED"},
+    globalStateUpdate = function(state)
+      state.hastarget = UnitExists("target");
+    end
+  },
+}
+
+function WeakAuras.GetGlobalConditions()
+  return globalConditions;
+end
+
 local function createConditionTemplates(data)
   -- The allConditionTemplates contains a table per trigger.
   -- Each table contains a entry per condition variable
@@ -1303,6 +1327,8 @@ local function createConditionTemplates(data)
     numTriggers = data.numTriggers;
   end
 
+  allConditionTemplates[-1] = globalConditions;
+
   local conditionTemplates = {};
   conditionTemplates.all = allConditionTemplates;
   conditionTemplates.indexToTrigger = {};
@@ -1311,7 +1337,7 @@ local function createConditionTemplates(data)
   conditionTemplates.display = {};
 
   local index = 1;
-  for triggernum = 0, numTriggers - 1 do
+  for triggernum = -1, numTriggers - 1 do
     local templatesForTrigger = allConditionTemplates[triggernum];
 
     -- Sort Conditions for one trigger
@@ -1325,7 +1351,11 @@ local function createConditionTemplates(data)
       end);
 
       if (#sorted > 0) then
-        conditionTemplates.display[index]  = string.format(L["Trigger %d"], triggernum + 1);
+        if (triggernum == -1) then
+          conditionTemplates.display[index]  = string.format(L["Global Conditions"]);
+        else
+          conditionTemplates.display[index]  = string.format(L["Trigger %d"], triggernum + 1);
+        end
         index = index + 1;
       end
 
