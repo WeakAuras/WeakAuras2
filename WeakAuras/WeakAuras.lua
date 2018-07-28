@@ -4732,10 +4732,11 @@ function WeakAuras.ProfileRenameAura(oldid, id)
 end
 
 function WeakAuras.StartProfile()
-  prettyPrint(L["Profiling started."])
   if (profileData.systems.time and profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling already started."]);
     return;
+  else
+    prettyPrint(L["Profiling started."])
   end
 
   profileData.systems = {};
@@ -4754,10 +4755,14 @@ local function doNothing()
 end
 
 function WeakAuras.StopProfile()
-  prettyPrint(L["Profiling stopped."])
   if (not profileData.systems.time or not profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling not running."]);
     return;
+  elseif (profileData.systems.time.count == 1) then
+    profileData.systems.time.count = 0;
+    prettyPrint(L["Profiling stopped."])
+  else
+    prettyPrint(L["Profiling not running."]);
   end
 
   profileData.systems.time.elapsed = debugprofilestop() - profileData.systems.time.start;
