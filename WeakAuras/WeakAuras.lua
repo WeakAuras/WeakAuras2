@@ -1150,7 +1150,7 @@ function WeakAuras.RegisterForGlobalConditions(id)
 end
 
 function WeakAuras.UnregisterForGlobalConditions(id)
-  for event, condFuncs in dynamicConditions do
+  for event, condFuncs in pairs(dynamicConditions) do
     condFuncs[id] = nil;
   end
 end
