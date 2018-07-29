@@ -1088,14 +1088,24 @@ local function runDynamicConditionFunctions(funcs)
   end
 end
 
-local function handleRedynamicConditions(self, event)
+local function handleDynamicConditions(self, event)
   if (globalDynamicConditionFuncs[event]) then
     for i, func in ipairs(globalDynamicConditionFuncs[event]) do
       func(globalConditionState);
     end
   end
+  if (dynamicConditions[event]) then
+    runDynamicConditionFunctions(dynamicConditions[event]);
+  end
+end
 
-  runDynamicConditionFunctions(dynamicConditions[event]);
+local lastDynamicConditionsUpdateCheck;
+local function handleDynamicConditionsOnUpdate(self)
+  handleDynamicConditions(self, "FRAME_UPDATE");
+  if (not lastDynamicConditionsUpdateCheck or GetTime() - lastDynamicConditionsUpdateCheck > 0.2) then
+    lastDynamicConditionsUpdateCheck = GetTime();
+    handleDynamicConditions(self, "WA_SPELL_RANGECHECK");
+  end
 end
 
 local registeredGlobalFunctions = {};
@@ -1140,12 +1150,19 @@ function WeakAuras.RegisterForGlobalConditions(id)
 
   if (next(register) and not dynamicConditionsFrame) then
     dynamicConditionsFrame = CreateFrame("FRAME");
-    dynamicConditionsFrame:SetScript("OnEvent", handleRedynamicConditions);
+    dynamicConditionsFrame:SetScript("OnEvent", handleDynamicConditions);
     WeakAuras.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
   end
 
   for event in pairs(register) do
-    dynamicConditionsFrame:RegisterEvent(event);
+    if (event == "FRAME_UPDATE" or event == "WA_SPELL_RANGECHECK") then
+      if (not dynamicConditionsFrame.onUpdate) then
+        dynamicConditionsFrame:SetScript("OnUpdate", handleDynamicConditionsOnUpdate);
+        dynamicConditionsFrame.onUpdate = true;
+      end
+    else
+      dynamicConditionsFrame:RegisterEvent(event);
+    end
   end
 end
 
