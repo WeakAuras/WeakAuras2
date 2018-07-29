@@ -1283,30 +1283,6 @@ local function mergeConditionTemplates(allConditionTemplates, auraConditionsTemp
   end
 end
 
-local globalConditions =
-{
-  ["incombat"] = {
-    display = L["In Combat"],
-    type = "bool",
-    events = {"PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED"},
-    globalStateUpdate = function(state)
-      state.incombat = UnitAffectingCombat("player");
-    end
-  },
-  ["hastarget"] = {
-    display = L["Has Target"],
-    type = "bool",
-    events = {"PLAYER_TARGET_CHANGED"},
-    globalStateUpdate = function(state)
-      state.hastarget = UnitExists("target");
-    end
-  },
-}
-
-function WeakAuras.GetGlobalConditions()
-  return globalConditions;
-end
-
 local function createConditionTemplates(data)
   -- The allConditionTemplates contains a table per trigger.
   -- Each table contains a entry per condition variable
@@ -1331,7 +1307,7 @@ local function createConditionTemplates(data)
     numTriggers = data.numTriggers;
   end
 
-  allConditionTemplates[-1] = globalConditions;
+  allConditionTemplates[-1] = WeakAuras.GetGlobalConditions();
 
   local conditionTemplates = {};
   conditionTemplates.all = allConditionTemplates;
