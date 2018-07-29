@@ -289,7 +289,8 @@ showCodeButton:SetPoint("BOTTOMLEFT", 8, 8)
 showCodeButton:SetText(L["Show Code"])
 showCodeButton:SetWidth(90)
 
-local checkButtons, keyToButton, pendingData = {}, {}, {}
+local checkButtons, radioButtons, keyToButton, pendingData = {}, {}, {}, {}
+
 for _, key in pairs(WeakAuras.internal_fields) do
   keyToButton[key] = false
 end
@@ -299,7 +300,8 @@ for index,category in pairs(WeakAuras.update_categories) do
   for k, v in pairs(category) do
     button[k] = v
   end
-  _G[button:GetName().."Text"]:SetText(button.label)
+  button.text = _G[button:GetName().."Text"]
+  button.text:SetText(button.label)
   button.func = function()
     if button:GetChecked() then
       pendingData.buttonsChecked = min(pendingData.buttonsChecked + 1, #checkButtons)
@@ -314,6 +316,33 @@ for index,category in pairs(WeakAuras.update_categories) do
     keyToButton[key] = button
   end
 end
+
+local radioButtons= {
+  CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonCopy", buttonAnchor, "UIRadioButtonTemplate"),
+  -- CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonReplace", buttonAnchor, "UIRadioButtonTemplate"),
+  CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonUpdate", buttonAnchor, "UIRadioButtonTemplate"),
+}
+
+for index, button in ipairs(radioButtons) do
+  button:SetScript("OnClick", function(self)
+    for _, button in ipairs(radioButtons) do
+      button:SetChecked(button == self)
+    end
+    pendingData.mode = index
+    for _, button in ipairs(checkButtons) do
+      if index ~= #radioButtons then
+        button.text:SetTextColor(.5, .5, .5)
+      else
+        button.text:SetTextColor(1, 1, 1)
+      end
+    end
+    WeakAuras.RefreshTooltipButtons()
+  end)
+end
+
+_G[radioButtons[1]:GetName().."Text"]:SetText(L["Import As Copy"])
+-- _G[radioButtons[2]:GetName().."Text"]:SetText(L["Replace"])
+_G[radioButtons[2]:GetName().."Text"]:SetText(L["Update"])
 
 -- Ideally, we would not add an __index method to this
 -- But that would greatly bloat the update_category for display
@@ -366,7 +395,7 @@ local function importPendingData()
   -- get necessary info
   local imports, old, diffs = pendingData.newData, pendingData.oldData or {}, pendingData.diffs or {}
   local addedChildren, deletedChildren = pendingData.added or 0, pendingData.deleted or 0
-  local forceCopy = not diffs or pendingData.buttonsChecked == 0
+  local forceCopy = not pendingData.mode or pendingData.mode == 1
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
@@ -752,9 +781,15 @@ function WeakAuras.RefreshTooltipButtons()
   elseif WeakAurasSaved.import_disabled then
     importButton:SetText(L["Import in progress"])
   elseif pendingData.newData then
+    if not pendingData.mode and pendingData.diffs then
+      importButton:SetText(L["Choose a mode"])
+    else
+      if pendingData.mode == #radioButtons and pendingData.buttonsChecked == 0 then
+        importButton:SetText(L["Choose a category"])
+      else
     importButton:Enable()
     if pendingData.diffs then
-      if pendingData.buttonsChecked > 0 then
+      if pendingData.mode ~= 1 then
         if #pendingData.newData > 0 then
           importButton:SetText(L["Update Group"])
         else
@@ -771,24 +806,32 @@ function WeakAuras.RefreshTooltipButtons()
       end
     end
   end
+    end
+  end
   local importWidth = importButton.Text:GetStringWidth()
   importButton:SetWidth(importWidth + 30)
 end
 buttonAnchor:SetScript("OnEvent", WeakAuras.RefreshTooltipButtons)
 
-local function SetCheckButtonStates(checkButtonAnchor, activeCategories)
+local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
   if activeCategories then
+    for i, button in ipairs(radioButtons) do
+      button:Show()
+      button:Enable()
+      button:SetChecked(false)
+      button:SetPoint("TOPLEFT", radioButtonAnchor, "TOPLEFT", 0, -20 * (i - 0.2))
+    end
+    local checkButtonAnchor = radioButtons[#radioButtons]
     local buttonsChecked, buttonsShown = 0, 0
     for i, button in ipairs(checkButtons) do
       if activeCategories[button] then
         button:Show()
         button:Enable()
-        button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 0, -30*(.6 + buttonsShown))
-        button:SetChecked(false)
+        button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 15, -27*(0.6 + buttonsShown))
+        button:SetChecked(button ~= checkButtons["anchor"])
+        button.text:SetTextColor(.5, .5, .5)
         buttonsShown = buttonsShown + 1
-        if button:GetChecked() then
-          buttonsChecked = buttonsChecked + 1
-        end
+        buttonsChecked = buttonsChecked + (button:GetChecked() and 1 or 0)
       else
         button:Hide()
         button:Disable()
@@ -1366,6 +1409,9 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
           tinsert(tooltip, {1, L["You can choose which settings you would like to update:"], 1, 0.82, 0})
         end
         linesFromTop = #tooltip
+        for _ in ipairs(radioButtons) do
+          tinsert(tooltip, {1, " "})
+        end
         for _, button in ipairs(checkButtons) do
           if pendingData.activeCategories[button] then
             tinsert(tooltip, {1, " "})
