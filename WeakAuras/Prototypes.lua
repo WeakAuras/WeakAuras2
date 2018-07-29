@@ -2113,7 +2113,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.show and not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
       },
       {
         hidden = true,
@@ -2127,7 +2127,7 @@ WeakAuras.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "bool",
-        conditionTest = "(state and state.show and (IsUsableSpell(state.spellname) == (%s == 1)))",
+        conditionTest = "state and state.show and (IsUsableSpell(state.spellname) == (%s == 1))",
         conditionEvents = {
           "SPELL_UPDATE_USABLE",
           "PLAYER_TARGET_CHANGED",
@@ -2390,7 +2390,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0)) == (%s == 1)",
+        conditionTest = "state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0) == (%s == 1)",
       },
       {
         name = "itemInRange",
@@ -2504,7 +2504,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
       },
       {
         hidden = true,
@@ -3899,7 +3899,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "(state and state.show and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = "state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
         enable = function(trigger) return trigger.use_rune end
       },
     },
