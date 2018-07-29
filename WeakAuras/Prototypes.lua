@@ -1933,6 +1933,7 @@ WeakAuras.event_prototypes = {
         end
         local showOn = %s
         local expirationTime = startTime + duration
+        state.spellname = spellname;
       ]=];
       if (not trigger.use_trackcharge or not trigger.trackcharge) then
         ret = ret .. [=[
@@ -2098,6 +2099,19 @@ WeakAuras.event_prototypes = {
         name = "gcdCooldown",
         store = true,
         test = "true"
+      },
+      {
+        name = "spellUsable",
+        display = L["Spell Usable"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = "(state and state.show and (IsUsableSpell(state.spellname) == (%s == 1)))",
+        conditionEvents = {
+          "SPELL_UPDATE_USABLE",
+          "PLAYER_TARGET_CHANGED",
+          "UNIT_POWER_FREQUENT",
+        }
       },
       {
         hidden = true,
