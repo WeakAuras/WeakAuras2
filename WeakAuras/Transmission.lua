@@ -289,7 +289,7 @@ showCodeButton:SetPoint("BOTTOMLEFT", 8, 8)
 showCodeButton:SetText(L["Show Code"])
 showCodeButton:SetWidth(90)
 
-local checkButtons, radioButtons, keyToButton, pendingData = {}, {}, {}, {}
+local checkButtons,  keyToButton, pendingData = {}, {}, {}
 
 for _, key in pairs(WeakAuras.internal_fields) do
   keyToButton[key] = false
@@ -302,6 +302,7 @@ for index,category in pairs(WeakAuras.update_categories) do
   end
   button.text = _G[button:GetName().."Text"]
   button.text:SetText(button.label)
+  button.text:SetTextColor(1, 0.82, 0)
   button.func = function()
     if button:GetChecked() then
       pendingData.buttonsChecked = min(pendingData.buttonsChecked + 1, #checkButtons)
@@ -323,26 +324,24 @@ local radioButtons= {
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonUpdate", buttonAnchor, "UIRadioButtonTemplate"),
 }
 
+local radioButtonLabels = {
+  L["Import as Copy"],
+  -- L["Replace"],
+  L["Update"]
+}
+
 for index, button in ipairs(radioButtons) do
+  button.text = _G[button:GetName().."Text"]
+  button.text:SetFontObject("GameFontNormal")
+  button.text:SetText(radioButtonLabels[index])
   button:SetScript("OnClick", function(self)
     for _, button in ipairs(radioButtons) do
       button:SetChecked(button == self)
     end
     pendingData.mode = index
-    for _, button in ipairs(checkButtons) do
-      if index ~= #radioButtons then
-        button.text:SetTextColor(.5, .5, .5)
-      else
-        button.text:SetTextColor(1, 1, 1)
-      end
-    end
     WeakAuras.RefreshTooltipButtons()
   end)
 end
-
-_G[radioButtons[1]:GetName().."Text"]:SetText(L["Import As Copy"])
--- _G[radioButtons[2]:GetName().."Text"]:SetText(L["Replace"])
-_G[radioButtons[2]:GetName().."Text"]:SetText(L["Update"])
 
 -- Ideally, we would not add an __index method to this
 -- But that would greatly bloat the update_category for display
@@ -350,10 +349,10 @@ _G[radioButtons[2]:GetName().."Text"]:SetText(L["Update"])
 -- Such that all of the display tab settings are in their own subtable
 setmetatable(keyToButton,{__index = function(_, key) return key and checkButtons["display"] end,})
 
-local function install(data, oldData, patch, forceCopy, isParent)
+local function install(data, oldData, patch, mode)
   -- install munches the provided data and adds, updates, or deletes as appropriate
   -- returns the data which the SV knows about after it's done (if there is any)
-  if forceCopy then
+  if mode == 1 then
     if data then
       data.id = WeakAuras.FindUnusedId(data.id)
       WeakAuras.Add(data)
@@ -361,13 +360,13 @@ local function install(data, oldData, patch, forceCopy, isParent)
       return
     end
   elseif not oldData then
-    if not isParent and checkButtons["newchildren"]:IsEnabled() and not checkButtons["newchildren"]:GetChecked() then
+    if not checkButtons["newchildren"]:GetChecked() then
       return
     end
     data.id = WeakAuras.FindUnusedId(data.id)
     WeakAuras.Add(data)
   elseif not data then
-    if checkButtons["oldchildren"]:IsEnabled() and checkButtons["oldchildren"]:GetChecked() then
+    if checkButtons["oldchildren"]:GetChecked() then
       WeakAuras.DeleteOption(oldData)
       return
     else
@@ -395,7 +394,7 @@ local function importPendingData()
   -- get necessary info
   local imports, old, diffs = pendingData.newData, pendingData.oldData or {}, pendingData.diffs or {}
   local addedChildren, deletedChildren = pendingData.added or 0, pendingData.deleted or 0
-  local forceCopy = not pendingData.mode or pendingData.mode == 1
+  local mode = pendingData.mode or 1
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
@@ -418,14 +417,14 @@ local function importPendingData()
       merged = {},
     }
   end
-  local installedData = {[0] = install(data, oldData, patch, forceCopy, true)}
+  local installedData = {[0] = install(data, oldData, patch, mode)}
   WeakAuras.NewDisplayButton(installedData[0])
   coroutine.yield()
 
   -- handle children, if there are any
   if #imports > 0 then
     local parentData = installedData[0]
-    local preserveOldOrder = not forceCopy and checkButtons["childorder"]:GetChecked()
+    local preserveOldOrder = mode ~= 1 and checkButtons["childorder"]:GetChecked()
 
     local i = 1
     local map
@@ -452,7 +451,7 @@ local function importPendingData()
         end
       end
       local oldID, newID = oldData and oldData.id, data and data.id
-      local childData = install(data, oldData, patch, forceCopy)
+      local childData = install(data, oldData, patch, mode)
       if childData then
         tinsert(installedData, childData)
         childData.parent = parentData.id
@@ -464,7 +463,7 @@ local function importPendingData()
     end
 
     -- now, the other side of the data may have some children which need to be handled
-    if not forceCopy then
+    if mode ~= 1 then
       if preserveOldOrder and checkButtons["newchildren"]:GetChecked() and addedChildren > 0 then
         -- we have children which need to be added
         local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
@@ -784,28 +783,39 @@ function WeakAuras.RefreshTooltipButtons()
     if not pendingData.mode and pendingData.diffs then
       importButton:SetText(L["Choose a mode"])
     else
+      if pendingData.mode == 1 then
+        for button in pairs(pendingData.activeCategories) do
+          button:Disable()
+          button.text:SetTextColor(.5, .5, .5)
+        end
+      else
+        for button in pairs(pendingData.activeCategories) do
+          button:Enable()
+          button.text:SetTextColor(1, 0.82, 0)
+        end
+      end
       if pendingData.mode == #radioButtons and pendingData.buttonsChecked == 0 then
         importButton:SetText(L["Choose a category"])
       else
-    importButton:Enable()
-    if pendingData.diffs then
-      if pendingData.mode ~= 1 then
-        if #pendingData.newData > 0 then
-          importButton:SetText(L["Update Group"])
+        importButton:Enable()
+        if pendingData.diffs then
+          if pendingData.mode ~= 1 then
+            if #pendingData.newData > 0 then
+              importButton:SetText(L["Update Group"])
+            else
+              importButton:SetText(L["Update"])
+            end
+          else
+            importButton:SetText(L["Import as Copy"])
+          end
         else
-          importButton:SetText(L["Update"])
+          if #pendingData.newData > 0 then
+            importButton:SetText(L["Import Group"])
+          else
+            importButton:SetText(L["Import"])
+          end
         end
-      else
-        importButton:SetText(L["Import as Copy"])
       end
-    else
-      if #pendingData.newData > 0 then
-        importButton:SetText(L["Import Group"])
-      else
-        importButton:SetText(L["Import"])
-      end
-    end
-  end
     end
   end
   local importWidth = importButton.Text:GetStringWidth()
@@ -827,9 +837,8 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
       if activeCategories[button] then
         button:Show()
         button:Enable()
-        button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 15, -27*(0.6 + buttonsShown))
+        button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 25, -27*(0.6 + buttonsShown))
         button:SetChecked(button ~= checkButtons["anchor"])
-        button.text:SetTextColor(.5, .5, .5)
         buttonsShown = buttonsShown + 1
         buttonsChecked = buttonsChecked + (button:GetChecked() and 1 or 0)
       else
