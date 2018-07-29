@@ -2114,6 +2114,19 @@ WeakAuras.event_prototypes = {
         }
       },
       {
+        name = "spellInRange",
+        display = L["Spell in Range"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = "(state and state.show and UnitExists('target') and IsSpellInRange(state.spellname, 'target') == 1) == (%s == 1)",
+        conditionEvents = {
+          "PLAYER_TARGET_CHANGED",
+          -- "FRAME_UPDATE",
+          -- "WA_DUMMY_RANGECHECK_LOOP",
+        }
+      },
+      {
         hidden = true,
         test = "(showOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " ..
         "or (showOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " ..
@@ -2265,10 +2278,12 @@ WeakAuras.event_prototypes = {
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
-      local ret = [[
-        local startTime, duration, enabled = WeakAuras.GetItemCooldown(%s);
-        local showOn = %s
-      ]];
+      local ret = [=[
+        local itemname = [[%s]];
+        local startTime, duration, enabled = WeakAuras.GetItemCooldown(itemname);
+        local showOn = %s;
+        state.itemname = itemname;
+      ]=];
       if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
         local ret2 = [[
           local expirationTime = startTime + duration
@@ -2320,6 +2335,19 @@ WeakAuras.event_prototypes = {
         display = L["On Cooldown"],
         conditionType = "bool",
         conditionTest = "(state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0)) == (%s == 1)",
+      },
+      {
+        name = "itemInRange",
+        display = L["Item in Range"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = "(state and state.show and UnitExists('target') and IsItemInRange(state.itemname, 'target')) == (%s == 1)",
+        conditionEvents = {
+          "PLAYER_TARGET_CHANGED",
+          -- "FRAME_UPDATE",
+          -- "WA_DUMMY_RANGECHECK_LOOP",
+        }
       },
       {
         hidden = true,
