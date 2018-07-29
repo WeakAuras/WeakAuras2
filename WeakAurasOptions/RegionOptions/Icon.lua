@@ -306,6 +306,15 @@ local function createOptions(id, data)
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
       order = 49.5
     },
+    alpha = {
+      type = "range",
+      name = L["Icon Alpha"],
+      order = 49.6,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
+    },
   };
 
   local function hideCustomTextEditor()

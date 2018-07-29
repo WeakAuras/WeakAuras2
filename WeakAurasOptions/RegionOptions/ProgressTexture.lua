@@ -464,7 +464,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
 
   region:ClearAllPoints();
   region:SetPoint("CENTER", borderframe, "CENTER");
-  region:SetAlpha(data.alpha);
 
   background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
   background:SetDesaturated(data.desaturateBackground)

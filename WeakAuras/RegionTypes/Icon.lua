@@ -40,8 +40,10 @@ local default = {
   frameStrata = 1,
   customTextUpdate = "update",
   glow = false,
-  cooldownTextEnabled = true
+  cooldownTextEnabled = true,
 };
+
+WeakAuras.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -107,10 +109,10 @@ local properties = {
     display = L["Inverse"],
     setter = "SetInverse",
     type = "bool"
-  }
+  },
 };
 
-WeakAuras.regionPrototype.AddProperties(properties);
+WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   return properties;
