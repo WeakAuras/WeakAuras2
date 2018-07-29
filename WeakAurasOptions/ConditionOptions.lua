@@ -949,7 +949,11 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
 
   local optionsName = blueIfSubset (data, conditions[i].check);
   if (conditions[i].check.trigger) then
-    optionsName = optionsName .. string.format(L["If Trigger %s"], conditions[i].check.trigger + 1);
+    if (conditions[i].check.trigger == -1) then
+      optionsName = optionsName .. L["If"];
+    else
+      optionsName = optionsName .. string.format(L["If Trigger %s"], conditions[i].check.trigger + 1);
+    end
   else
     optionsName = optionsName .. L["If"];
   end
