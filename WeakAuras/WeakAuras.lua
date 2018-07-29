@@ -1078,7 +1078,7 @@ end
 
 local function runDynamicConditionFunctions(funcs)
   for id in pairs(funcs) do
-    if (checkConditions[id]) then
+    if (triggerState[id] and triggerState[id].show and checkConditions[id]) then
       local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, triggerState[id].activeTrigger);
       for cloneId, state in pairs(activeTriggerState) do
         local region = WeakAuras.GetRegion(id, cloneId);
@@ -1099,8 +1099,8 @@ local function handleRedynamicConditions(self, event)
 end
 
 local registeredGlobalFunctions = {};
-function WeakAuras.RegisterForGlobalConditions(data)
-  local id = data.id;
+function WeakAuras.RegisterForGlobalConditions(id)
+  local data = WeakAuras.GetData(id);
   for event, conditonFunctions in pairs(dynamicConditions) do
     conditonFunctions.id = nil;
   end
@@ -1146,6 +1146,12 @@ function WeakAuras.RegisterForGlobalConditions(data)
 
   for event in pairs(register) do
     dynamicConditionsFrame:RegisterEvent(event);
+  end
+end
+
+function WeakAuras.UnregisterForGlobalConditions(id)
+  for event, condFuncs in dynamicConditions do
+    condFuncs[id] = nil;
   end
 end
 
@@ -1736,6 +1742,7 @@ end
 
 do
   function WeakAuras.LoadDisplay(id)
+    WeakAuras.RegisterForGlobalConditions(id);
     triggerState[id].triggers = {};
     triggerState[id].triggerCount = 0;
     triggerState[id].show = false;
@@ -1772,6 +1779,7 @@ do
       end
     end
     conditionChecksTimers.recheckHandle[id] = nil;
+    WeakAuras.UnregisterForGlobalConditions(id);
 
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.UnloadDisplay(id);
@@ -2660,7 +2668,6 @@ function WeakAuras.pAdd(data)
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
     local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id);
-    WeakAuras.RegisterForGlobalConditions(data);
     debug(id.." - Load", 1);
     debug(loadFuncStr);
 

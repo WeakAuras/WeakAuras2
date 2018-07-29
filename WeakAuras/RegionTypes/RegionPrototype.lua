@@ -108,7 +108,7 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
 
   if (defaultsForRegion and defaultsForRegion.alpha) then
     properties["alpha"] = {
-      display = L["Icon Alpha"],
+      display = L["Alpha"],
       setter = "SetAlpha",
       type = "number",
       min = 0,
