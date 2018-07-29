@@ -325,9 +325,9 @@ local radioButtons= {
 }
 
 local radioButtonLabels = {
-  L["Import as Copy"],
-  -- L["Replace"],
-  L["Update"]
+  L["Create a Copy"],
+  -- L["Replace Aura"],
+  L["Update Aura"]
 }
 
 for index, button in ipairs(radioButtons) do
@@ -800,11 +800,7 @@ function WeakAuras.RefreshTooltipButtons()
         importButton:Enable()
         if pendingData.diffs then
           if pendingData.mode ~= 1 then
-            if #pendingData.newData > 0 then
-              importButton:SetText(L["Update Group"])
-            else
-              importButton:SetText(L["Update"])
-            end
+            importButton:SetText(L["Import as Update"])
           else
             importButton:SetText(L["Import as Copy"])
           end
@@ -829,7 +825,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
       button:Show()
       button:Enable()
       button:SetChecked(false)
-      button:SetPoint("TOPLEFT", radioButtonAnchor, "TOPLEFT", 0, -20 * (i - 0.2))
+      button:SetPoint("TOPLEFT", radioButtonAnchor, "TOPLEFT", 0, -20 * (i - .7))
     end
     local checkButtonAnchor = radioButtons[#radioButtons]
     local buttonsChecked, buttonsShown = 0, 0
@@ -1402,20 +1398,24 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         -- tally up changes
         if children and #children > 0 then
           tinsert(tooltip, {1, L["This import is a modification to a group of your auras:"], 1, 0.82, 0,})
+          tinsert(tooltip, {1, " "})
           if match.added ~= 0 then
-            tinsert(tooltip, {1, L["    %d auras added"]:format(match.added), 1, 0.82, 0})
+            tinsert(tooltip, {1, L["   • %d auras added"]:format(match.added), 1, 0.82, 0})
           end
           if match.modified ~= 0 then
-            tinsert(tooltip, {1, L["    %d auras modified"]:format(match.modified), 1, 0.82, 0})
+            tinsert(tooltip, {1, L["   • %d auras modified"]:format(match.modified), 1, 0.82, 0})
           end
           if match.deleted ~= 0 then
-            tinsert(tooltip, {1, L["    %d auras deleted"]:format(match.deleted), 1, 0.82, 0})
+            tinsert(tooltip, {1, L["   • %d auras deleted"]:format(match.deleted), 1, 0.82, 0})
           end
-          tinsert(tooltip, {1, L["You can choose which settings you would like to update:"], 1, 0.82, 0})
+          tinsert(tooltip, {1, " "})
+          tinsert(tooltip, {1, L["What do you want to do?"], 1, 0.82, 0})
+          tinsert(tooltip, {1, " "})
         else
           local oldID = type(match.oldData[0]) == "table" and match.oldData[0].id or "unknown"
           tinsert(tooltip, {2, L["This import is a modification to an existing aura:"], oldID, 1, 0.82, 0})
-          tinsert(tooltip, {1, L["You can choose which settings you would like to update:"], 1, 0.82, 0})
+          tinsert(tooltip, {1, L["What do you want to do?"], 1, 0.82, 0})
+          tinsert(tooltip, {1, " "})
         end
         linesFromTop = #tooltip
         for _ in ipairs(radioButtons) do

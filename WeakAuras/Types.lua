@@ -1554,7 +1554,7 @@ WeakAuras.update_categories = {
   {
     name = "load",
     fields = {"load"},
-    label = L["Load"],
+    label = L["Load Conditions"],
   },
   {
     name = "action",
@@ -1569,7 +1569,7 @@ WeakAuras.update_categories = {
   {
     name = "childorder",
     fields = {},
-    label = L["Child Order"],
+    label = L["Group Order"],
   },
   {
     name = "oldchildren",
