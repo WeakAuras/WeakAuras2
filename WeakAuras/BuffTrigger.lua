@@ -298,7 +298,7 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, buffShowOn, unitEx
   local show;
   if (not UnitExists(unit)) then
     show = unitExists;
-  elseif (buffShowOn == "showActiveOrMissing") then
+  elseif (buffShowOn == "showAlways") then
     show = true;
   elseif(buffShowOn == "showOnMissing") then
     show = not active;
