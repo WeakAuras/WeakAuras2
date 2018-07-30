@@ -778,15 +778,17 @@ function WeakAuras.RefreshTooltipButtons()
     if not pendingData.mode and pendingData.diffs then
       importButton:SetText(L["Choose a mode"])
     else
-      if pendingData.mode == 1 then
-        for button in pairs(pendingData.activeCategories) do
-          button:Disable()
-          button.text:SetTextColor(.5, .5, .5)
-        end
-      else
-        for button in pairs(pendingData.activeCategories) do
-          button:Enable()
-          button.text:SetTextColor(1, 0.82, 0)
+      if pendingData.activeCategories then
+        if pendingData.mode == 1 then
+          for button in pairs(pendingData.activeCategories) do
+            button:Disable()
+            button.text:SetTextColor(.5, .5, .5)
+          end
+        else
+          for button in pairs(pendingData.activeCategories) do
+            button:Enable()
+            button.text:SetTextColor(1, 0.82, 0)
+          end
         end
       end
       if pendingData.mode == #radioButtons and pendingData.buttonsChecked == 0 then
