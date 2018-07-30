@@ -1437,7 +1437,7 @@ WeakAuras.cooldown_progress_behavior_types = {
 WeakAuras.bufftrigger_progress_behavior_types = {
   showOnActive = L["Buffed/Debuffed"],
   showOnMissing = L["Missing"],
-  showActiveOrMissing = L["Always"]
+  showAlways= L["Always"]
 }
 
 WeakAuras.item_slot_types = {
@@ -1504,3 +1504,147 @@ WeakAuras.mythic_plus_affixes = {
 for k in pairs(WeakAuras.mythic_plus_affixes) do
   WeakAuras.mythic_plus_affixes[k] = C_ChallengeMode.GetAffixInfo(k);
 end
+
+WeakAuras.update_categories = {
+  {
+    name = "name",
+    fields = {"id"},
+    label = L["Aura Names"],
+  },
+  {
+    name = "anchor",
+    fields = {
+      "xOffset",
+      "yOffset",
+      "selfPoint",
+      "anchorPoint",
+      "anchorFrameType",
+      "anchorFrameFrame",
+      "frameStrata",
+      "height",
+      "width",
+      "fontSize",
+      "scale",
+    },
+    label = L["Size & Position"],
+  },
+  {
+    name = "display",
+    fields = {},
+    label = L["Display"],
+  },
+  {
+    name = "trigger",
+    fields = {
+      "trigger",
+      "untrigger",
+      "disjunctive",
+      "additional_triggers",
+      "activeTriggerMode",
+      "numTriggers",
+      "customTriggerLogic"
+    },
+    label = L["Trigger"],
+  },
+  {
+    name = "conditions",
+    fields = {"conditions"},
+    label = L["Conditions"],
+  },
+  {
+    name = "load",
+    fields = {"load"},
+    label = L["Load Conditions"],
+  },
+  {
+    name = "action",
+    fields = {"actions"},
+    label = L["Actions"],
+  },
+  {
+    name = "animation",
+    fields = {"animation"},
+    label = L["Animations"],
+  },
+  {
+    name = "childorder",
+    fields = {},
+    label = L["Group Order"],
+  },
+  {
+    name = "oldchildren",
+    fields = {},
+    label = L["Remove Obsolete Auras"],
+  },
+  {
+    name = "newchildren",
+    fields = {},
+    label = L["Add Missing Auras"],
+  },
+}
+
+WeakAuras.internal_fields = {
+  id = true,
+  uid = true,
+  controlledChildren = true,
+  parent = true,
+  internalVersion = true,
+  regionType = true,
+  url = true,
+  desc = true,
+  sortHybridTable = true,
+  expanded = true,
+  parent = true,
+  init_started = true,
+}
+
+WeakAuras.data_stub = {
+  -- note: this is the minimal data stub which prevents false positives in WeakAuras.diff upon reimporting an aura.
+  -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
+  trigger = {
+    type = "aura",
+    names = {},
+    event = "Health",
+    subeventPrefix = "SPELL",
+    subeventSuffix = "_CAST_START",
+    spellIds = {},
+    unit = "player",
+    debuffType = "HELPFUL",
+  },
+  untrigger = {},
+  load = {
+    size = {
+      multi = {},
+    },
+    spec = {
+      multi = {},
+    },
+    class = {
+      multi = {},
+    },
+    ingroup = {
+      multi = {},
+    },
+  },
+  actions = {
+    init = {},
+    start = {},
+    finish = {},
+  },
+  animation = {
+    start = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    main = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    finish = {
+      type = "none",
+      duration_type = "seconds",
+    },
+  },
+  conditions = {},
+}
+

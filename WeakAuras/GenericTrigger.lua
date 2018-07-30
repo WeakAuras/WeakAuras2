@@ -1166,6 +1166,13 @@ function GenericTrigger.Modernize(data)
         trigger.unit = "player";
       end
     end
+
+    if data.internalVersion < 6 then
+      if trigger and trigger.type ~= "aura" then
+        trigger.genericShowOn = trigger.showOn or "showOnActive"
+        trigger.showOn = nil
+      end
+    end
   end
 end
 

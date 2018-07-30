@@ -878,17 +878,12 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       order = 70,
       hidden = function() return not (trigger.type == "aura"); end
     },
-    showOn = {
+    buffShowOn = {
       type = "select",
       name = L["Show On"],
       values = WeakAuras.bufftrigger_progress_behavior_types,
       order = 71,
-      get = function()
-        if (not trigger.showOn or not WeakAuras.bufftrigger_progress_behavior_types[trigger.showOn]) then
-          trigger.showOn = "showOnActive";
-        end
-        return trigger.showOn or "showOnActive";
-      end,
+      get = function() return trigger.buffShowOn end,
       hidden = function() return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
     },
     unitExists = {

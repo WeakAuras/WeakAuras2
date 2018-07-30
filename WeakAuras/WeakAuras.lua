@@ -1,4 +1,4 @@
-local internalVersion = 5;
+local internalVersion = 6;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -1296,6 +1296,7 @@ end);
 
 function WeakAuras.SetImporting(b)
   importing = b;
+  WeakAuras.RefreshTooltipButtons()
 end
 
 function WeakAuras.IsImporting()
@@ -1789,7 +1790,6 @@ end
 
 function WeakAuras.Delete(data)
   local id = data.id;
-
   if(data.parent) then
     local parentData = db.displays[data.parent];
     if(parentData and parentData.controlledChildren) then
@@ -1823,7 +1823,6 @@ function WeakAuras.Delete(data)
   regions[id].region:Hide();
 
   WeakAuras.CollapseAllClones(id);
-
   db.registered[id] = nil;
   if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
     local button = WeakAuras.importDisplayButtons[id];
@@ -2607,6 +2606,10 @@ end
 
 -- Dummy add function to protect errors from propagating out of the real add function
 function WeakAuras.Add(data)
+  WeakAuras.validate(data, WeakAuras.data_stub)
+  local default = data.regionType and WeakAuras.regionTypes[data.regionType].default
+  if not default then return end
+  WeakAuras.validate(data, default)
   WeakAuras.Modernize(data);
   WeakAuras.pAdd(data);
 end
@@ -4986,4 +4989,15 @@ function WeakAuras.PrintProfile()
     PrintOneProfile(k, profileData.auras[k], total);
   end
   print("--------------------------------");
+end
+
+function WeakAuras.FindUnusedId(prefix)
+  prefix = prefix or "New"
+  local num = 2;
+  local id = prefix
+  while(db.displays[id]) do
+    id = prefix .. " " .. num;
+    num = num + 1;
+  end
+  return id
 end

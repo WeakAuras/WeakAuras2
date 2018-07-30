@@ -4004,7 +4004,7 @@ tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(12));
 templates.class.MONK[1][9] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 115072, type = "ability", showOn = "showAlways"}, -- Expel Harm
+    { spell = 115072, type = "ability", buffShowOn = "showAlways"}, -- Expel Harm
   },
   icon = 627486,
 };
