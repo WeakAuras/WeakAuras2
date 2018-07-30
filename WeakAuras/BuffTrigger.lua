@@ -1792,6 +1792,13 @@ end
 
 function BuffTrigger.GetTriggerConditions(data, triggernum)
   local result = {};
+  local trigger;
+  if (triggernum == 0) then
+    trigger = data.trigger;
+  else
+    trigger = data.additional_triggers[triggernum].trigger;
+  end
+
   result["unitCaster"] = {
     display = L["Caster"],
     type = "string",
@@ -1815,6 +1822,14 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     display = L["Name"],
     type = "string"
   }
+
+  if trigger.showOn == "showActiveOrMissing" then
+    result["buffed"] = {
+      display = L["Buffed/Debuffed"],
+      type = "bool",
+      test = "(state and state.show and state.duration > 0) == (%s == 1)"
+    }
+  end
 
   return result;
 end
