@@ -1783,17 +1783,6 @@ WeakAuras.event_prototypes = {
         conditionType = "bool"
       },
       {
-        name = "multistrike",
-        display = L["Multistrike"],
-        type = "tristate",
-        init = "arg",
-        enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
-        end,
-        store = true,
-        conditionType = "bool"
-      },
-      {
         name = "number",
         display = L["Number"],
         type = "number",
