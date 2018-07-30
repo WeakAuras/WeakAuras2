@@ -314,6 +314,10 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, showOn, unitExists
 
   triggerState[cloneId] = triggerState[cloneId] or {};
   local state = triggerState[cloneId];
+  if (state.active ~= active) then
+    state.active = active;
+    state.changed = true;
+  end
   if (state.index ~= index) then
     state.index = index;
     state.changed = true;
@@ -1792,6 +1796,13 @@ end
 
 function BuffTrigger.GetTriggerConditions(data, triggernum)
   local result = {};
+  local trigger;
+  if (triggernum == 0) then
+    trigger = data.trigger;
+  else
+    trigger = data.additional_triggers[triggernum].trigger;
+  end
+
   result["unitCaster"] = {
     display = L["Caster"],
     type = "string",
@@ -1815,6 +1826,14 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     display = L["Name"],
     type = "string"
   }
+
+  if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
+    result["buffed"] = {
+      display = L["Buffed/Debuffed"],
+      type = "bool",
+      test = "state and state.show and ((state.active and true or false) == (%s == 1))"
+    }
+  end
 
   return result;
 end
