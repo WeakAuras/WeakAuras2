@@ -569,7 +569,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
           end
-          local number = tonumber(trigger[name]);
+          local number = trigger[name] and tonumber(trigger[name]);
           local test;
           if(arg.type == "tristate") then
             if(trigger["use_"..name] == false) then
@@ -585,7 +585,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
             if(trigger["use_"..name] == false) then -- multi selection
               test = "(";
               local any = false;
-              if (trigger[name].multi) then
+              if (trigger[name] and trigger[name].multi) then
                 for value, _ in pairs(trigger[name].multi) do
                   if not arg.test then
                     test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
