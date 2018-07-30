@@ -36,21 +36,21 @@ local templates =
 
 local powerTypes =
   {
-    [0] = { name = MANA, icon = "Interface\\Icons\\inv_elemental_mote_mana" },
-    [1] = { name = RAGE, icon = "Interface\\Icons\\spell_misc_emotionangry"},
-    [2] = { name = FOCUS, icon = "Interface\\Icons\\ability_hunter_focusfire"},
-    [3] = { name = ENERGY, icon = "Interface\\Icons\\spell_shadow_shadowworddominate"},
+    [0] = { name = POWER_TYPE_MANA, icon = "Interface\\Icons\\inv_elemental_mote_mana" },
+    [1] = { name = POWER_TYPE_RED_POWER, icon = "Interface\\Icons\\spell_misc_emotionangry"},
+    [2] = { name = POWER_TYPE_FOCUS, icon = "Interface\\Icons\\ability_hunter_focusfire"},
+    [3] = { name = POWER_TYPE_ENERGY, icon = "Interface\\Icons\\spell_shadow_shadowworddominate"},
     [4] = { name = COMBO_POINTS, icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01"},
     [6] = { name = RUNIC_POWER, icon = "Interface\\Icons\\inv_sword_62"},
-    [7] = { name = SOUL_SHARDS, icon = "Interface\\Icons\\inv_misc_gem_amethyst_02"},
-    [8] = { name = LUNAR_POWER, icon = "Interface\\Icons\\ability_druid_eclipseorange"},
+    [7] = { name = SOUL_SHARDS_POWER, icon = "Interface\\Icons\\inv_misc_gem_amethyst_02"},
+    [8] = { name = POWER_TYPE_LUNAR_POWER, icon = "Interface\\Icons\\ability_druid_eclipseorange"},
     [9] = { name = HOLY_POWER, icon = "Interface\\Icons\\achievement_bg_winsoa"},
-    [11] = {name = MAELSTROM, icon = 135990},
+    [11] = {name = POWER_TYPE_MAELSTROM, icon = 135990},
     [12] = {name = CHI, icon = "Interface\\Icons\\ability_monk_healthsphere"},
-    [13] = {name = INSANITY, icon = "Interface\\Icons\\spell_priest_shadoworbs"},
-    [16] = {name = ARCANE_CHARGES, icon = "Interface\\Icons\\spell_arcane_arcane01"},
-    [17] = {name = FURY, icon = 1344651},
-    [18] = {name = PAIN, icon = 1247265},
+    [13] = {name = POWER_TYPE_INSANITY, icon = "Interface\\Icons\\spell_priest_shadoworbs"},
+    [16] = {name = POWER_TYPE_ARCANE_CHARGES, icon = "Interface\\Icons\\spell_arcane_arcane01"},
+    [17] = {name = POWER_TYPE_FURY_DEMONHUNTER, icon = 1344651},
+    [18] = {name = POWER_TYPE_PAIN, icon = 1247265},
     [99] = {name = L["Stagger"], icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
