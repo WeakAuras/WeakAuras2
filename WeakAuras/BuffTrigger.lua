@@ -1565,7 +1565,7 @@ function BuffTrigger.Modernize(data)
 
     if data.internalVersion < 6 then
       if trigger and trigger.type == "aura" then
-        if trigger.buffShowOn == "showOnMissing" then
+        if trigger.showOn == "showOnMissing" then
           trigger.buffShowOn = "showOnMissing"
         elseif trigger.showOn == "showActiveOrMissing" then
           trigger.buffShowOn = "showAlways"
