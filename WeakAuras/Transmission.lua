@@ -151,7 +151,7 @@ function tableSubtract(minuend, subtrahend)
         end
       end
     end
-    return next(minuend)
+    return next(minuend) == nil
   end
   recurse(minuend, subtrahend);
 end
