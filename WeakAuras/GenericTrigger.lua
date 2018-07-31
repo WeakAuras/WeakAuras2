@@ -1134,7 +1134,7 @@ function GenericTrigger.Modernize(data)
           end
 
           if (trigger.event == "Death Knight Rune") then
-            trigger.use_showOn = true;
+            trigger.use_genericShowOn = true;
           end
           trigger.use_inverse = nil
         end
@@ -1171,6 +1171,7 @@ function GenericTrigger.Modernize(data)
       if trigger and trigger.type ~= "aura" then
         trigger.genericShowOn = trigger.showOn or "showOnActive"
         trigger.showOn = nil
+        trigger.use_genericShowOn = trigger.use_showOn
       end
     end
   end
