@@ -2604,16 +2604,6 @@ function WeakAuras.AddMany(table)
   end
 end
 
--- Dummy add function to protect errors from propagating out of the real add function
-function WeakAuras.Add(data)
-  WeakAuras.validate(data, WeakAuras.data_stub)
-  local default = data.regionType and WeakAuras.regionTypes[data.regionType].default
-  if not default then return end
-  WeakAuras.validate(data, default)
-  WeakAuras.Modernize(data);
-  WeakAuras.pAdd(data);
-end
-
 local function removeSpellNames(data)
   local trigger
   for triggernum=0,(data.numTriggers or 9) do
@@ -2621,6 +2611,9 @@ local function removeSpellNames(data)
       trigger = data.trigger;
     elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
       trigger = data.additional_triggers[triggernum].trigger;
+    end
+    if type(trigger.spellName) == "number" then
+      trigger.realSpellName = GetSpellInfo(trigger.spellName) or trigger.realSpellName
     end
     if (trigger.spellId) then
       trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
@@ -2635,7 +2628,16 @@ local function removeSpellNames(data)
   end
 end
 
-function WeakAuras.pAdd(data)
+function WeakAuras.PreAdd(data)
+  WeakAuras.validate(data, WeakAuras.data_stub)
+  local default = data.regionType and WeakAuras.regionTypes[data.regionType].default
+  if not default then error('no default regionType') end
+  WeakAuras.validate(data, default)
+  WeakAuras.Modernize(data);
+  removeSpellNames(data)
+end
+
+local function pAdd(data)
   local id = data.id;
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
@@ -2710,6 +2712,12 @@ function WeakAuras.pAdd(data)
 
   removeSpellNames(data);
   db.displays[id] = data;
+end
+
+-- Dummy add function to protect errors from propagating out of the real add function
+function WeakAuras.Add(data)
+  WeakAuras.PreAdd(data)
+  pAdd(data);
 end
 
 function WeakAuras.SetRegion(data, cloneId)
