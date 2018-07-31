@@ -844,6 +844,10 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
     end
     pendingData.buttonsChecked = buttonsChecked
   else
+    for _, button in ipairs(radioButtons) do
+      button:Hide()
+      button:Disable()
+    end
     for _, button in ipairs(checkButtons) do
       button:Disable()
       button:Hide()
