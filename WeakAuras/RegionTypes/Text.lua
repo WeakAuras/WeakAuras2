@@ -82,10 +82,10 @@ local function modify(parent, region, data)
   text:ClearAllPoints();
   text:SetPoint("CENTER", UIParent, "CENTER");
 
-  data.width = text:GetWidth();
-  data.height = text:GetHeight();
-  region:SetWidth(data.width);
-  region:SetHeight(data.height);
+  region.width = text:GetWidth();
+  region.height = text:GetHeight();
+  region:SetWidth(region.width);
+  region:SetHeight(region.height);
 
   text:SetTextHeight(data.fontSize);
 
@@ -112,9 +112,9 @@ local function modify(parent, region, data)
 
       local height = text:GetHeight();
 
-      if(data.height ~= height) then
-        data.height = text:GetHeight();
-        region:SetHeight(data.height);
+      if(region.height ~= height) then
+        region.height = text:GetHeight();
+        region:SetHeight(region.height);
         if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
           WeakAuras.regions[data.parent].region:ControlChildren();
         end
@@ -132,11 +132,11 @@ local function modify(parent, region, data)
       end
       local width = text:GetWidth();
       local height = text:GetHeight();
-      if(width ~= data.width or height ~= data.height ) then
-        data.width = width;
-        data.height = height;
-        region:SetWidth(data.width);
-        region:SetHeight(data.height);
+      if(width ~= region.width or height ~= region.height ) then
+        region.width = width;
+        region.height = height;
+        region:SetWidth(region.width);
+        region:SetHeight(region.height);
         if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
           WeakAuras.regions[data.parent].region:ControlChildren();
         end

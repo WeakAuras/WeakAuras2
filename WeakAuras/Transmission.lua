@@ -1092,7 +1092,8 @@ local function recurseDiff(ours, theirs)
           diff[key] = diffVal
           same = false
         end
-      elseif ourVal ~= theirVal then
+      elseif ourVal ~= theirVal and -- of course, floating points can be nonequal by less than we could possibly care
+      not(type(ourVal) == "number" and type(theirVal) == "number" and math.abs(ourVal - theirVal) < 1e-6) then
         diff[key] = theirVal ~= nil and theirVal or deleted
         same = false
       end
@@ -1652,13 +1653,11 @@ function WeakAuras.ImportString(str)
       tooltipLoading = nil;
       local data, children, icon, icons = received.d, received.c, received.i, received.a
       DecompressDisplay(data)
-      WeakAuras.validate(data, regionTypes[data.regionType].default)
-      WeakAuras.Modernize(data)
+      WeakAuras.PreAdd(data)
       if children then
         for _, child in ipairs(children) do
           DecompressDisplay(child)
-          WeakAuras.validate(child, regionTypes[child.regionType].default)
-          WeakAuras.Modernize(child)
+          WeakAuras.PreAdd(child)
         end
       end
       WeakAuras.ShowDisplayTooltip(data, children, icon, icons, "unknown")
