@@ -1567,9 +1567,9 @@ WeakAuras.update_categories = {
     label = L["Animations"],
   },
   {
-    name = "childorder",
+    name = "arrangement",
     fields = {},
-    label = L["Group Order"],
+    label = L["Group Arrangement"],
   },
   {
     name = "oldchildren",

@@ -343,9 +343,9 @@ end
 -- But that would greatly bloat the update_category for display
 -- A better solution would be to refactor the data
 -- Such that all of the display tab settings are in their own subtable
-setmetatable(keyToButton,{__index = function(_, key) return key and checkButtons["display"] end,})
+setmetatable(keyToButton,{__index = function(_, key) return key and checkButtons.display end,})
 
-local function install(data, oldData, patch, mode)
+local function install(data, oldData, patch, mode, isParent)
   -- install munches the provided data and adds, updates, or deletes as appropriate
   -- returns the data which the SV knows about after it's done (if there is any)
   if mode == 1 then
@@ -356,13 +356,13 @@ local function install(data, oldData, patch, mode)
       return
     end
   elseif not oldData then
-    if not checkButtons["newchildren"]:GetChecked() then
+    if not checkButtons.newchildren:GetChecked() then
       return
     end
     data.id = WeakAuras.FindUnusedId(data.id)
     WeakAuras.Add(data)
   elseif not data then
-    if checkButtons["oldchildren"]:GetChecked() then
+    if checkButtons.oldchildren:GetChecked() then
       WeakAuras.DeleteOption(oldData)
       return
     else
@@ -372,6 +372,7 @@ local function install(data, oldData, patch, mode)
     if patch then -- if there's no result from Diff, then there's nothing to do
       for key in pairs(patch) do
         local checkButton = keyToButton[key]
+        checkButton = (not isParent and checkButton == checkButtons.anchor) and checkButtons.arrangement or checkButton
         if checkButton and not checkButton:GetChecked() then
           patch[key] = nil
         end
@@ -414,14 +415,14 @@ local function importPendingData()
       merged = {},
     }
   end
-  local installedData = {[0] = install(data, oldData, patch, mode)}
+  local installedData = {[0] = install(data, oldData, patch, mode, true)}
   WeakAuras.NewDisplayButton(installedData[0])
   coroutine.yield()
 
   -- handle children, if there are any
   if #imports > 0 then
     local parentData = installedData[0]
-    local preserveOldOrder = mode ~= 1 and checkButtons["childorder"]:GetChecked()
+    local preserveOldOrder = mode ~= 1 and checkButtons.arrangement:GetChecked()
 
     local i = 1
     local map
@@ -466,7 +467,7 @@ local function importPendingData()
 
     -- now, the other side of the data may have some children which need to be handled
     if mode ~= 1 then
-      if preserveOldOrder and checkButtons["newchildren"]:GetChecked() and addedChildren > 0 then
+      if preserveOldOrder and checkButtons.newchildren:GetChecked() and addedChildren > 0 then
         -- we have children which need to be added
         local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
         for newIndex, data in ipairs(imports) do
@@ -498,7 +499,7 @@ local function importPendingData()
           end
         end
       end
-      if not preserveOldOrder and not checkButtons["oldchildren"]:GetChecked() and deletedChildren > 0 then
+      if not preserveOldOrder and not checkButtons.oldchildren:GetChecked() and deletedChildren > 0 then
         -- we have existing children which need migrating
         -- same algorithm as before, but mirror image
         local nextInsert, highestInsert, toInsert, oldToNew = 1, 0, {}, indexMap.oldToNew
@@ -839,7 +840,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
         button:Show()
         button:Enable()
         button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 25, -27*(0.6 + buttonsShown))
-        button:SetChecked(button ~= checkButtons["anchor"])
+        button:SetChecked(button ~= checkButtons.anchor)
         buttonsShown = buttonsShown + 1
         buttonsChecked = buttonsChecked + (button:GetChecked() and 1 or 0)
       else
@@ -1267,7 +1268,7 @@ function WeakAuras.MatchData(data, children)
         local oldChild = info.oldData[oldIndex]
         if lastMatch and lastMatch > oldIndex then
           lastMatch = nil
-          info.activeCategories[checkButtons["childorder"]] = true
+          info.activeCategories[checkButtons.arrangement] = true
         else
           lastMatch = oldIndex
         end
@@ -1282,11 +1283,11 @@ function WeakAuras.MatchData(data, children)
   end
 
   if info.added ~= 0 then
-    info.activeCategories[checkButtons["newchildren"]] = true
+    info.activeCategories[checkButtons.newchildren] = true
   end
 
   if info.deleted ~= 0 then
-    info.activeCategories[checkButtons["oldchildren"]] = true
+    info.activeCategories[checkButtons.oldchildren] = true
   end
 
   if info.modified ~= 0 then
@@ -1294,6 +1295,7 @@ function WeakAuras.MatchData(data, children)
       for key in pairs(diff) do
         local button = keyToButton[key]
         if button then
+          button = (i ~= 0 and button == checkButtons.anchor) and checkButtons.arrangement or button
           info.activeCategories[button] = true
         end
       end
