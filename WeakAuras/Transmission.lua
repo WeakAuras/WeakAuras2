@@ -394,6 +394,7 @@ local function importPendingData()
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
+  WeakAuras.CloseImportExport()
   HideUIPanel(ItemRefTooltip) -- this also wipes pendingData as a side effect
   buttonAnchor:Hide()
   thumbnailAnchor.currentThumbnail:Hide()
@@ -447,10 +448,15 @@ local function importPendingData()
         end
       end
       local oldID, newID = oldData and oldData.id, data and data.id
+      if oldData then
+        oldData.parent = parentData.id
+      end
+      if data then
+        data.parent = parentData.id
+      end
       local childData = install(data, oldData, patch, mode)
       if childData then
         tinsert(installedData, childData)
-        childData.parent = parentData.id
         if hybridTables and ((newID and hybridTables.new[newID]) or (oldID and hybridTables.old[oldID])) then
           hybridTables.merged[childData.id] = true
         end
@@ -556,9 +562,8 @@ local function importPendingData()
   if not WeakAuras.IsOptionsOpen() then
     WeakAuras.ShowOptions()
   end
-  WeakAuras.PickDisplay(installedData[0].id)
-  WeakAuras.CloseImportExport()
   WeakAuras.SetImporting(false)
+  WeakAuras.PickDisplay(installedData[0].id)
 end
 
 ItemRefTooltip:HookScript("OnHide", function(self)
