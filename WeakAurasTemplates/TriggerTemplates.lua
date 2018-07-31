@@ -84,7 +84,7 @@ function WeakAuras.CreateTemplateView(frame)
             spellName = item.spell,
             type = "status",
             unevent = "auto",
-            use_showOn = true,
+            use_genericShowOn = true,
             buffShowOn = item.buffShowOn or "showOnCooldown",
           }
         }
@@ -97,7 +97,7 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             event = "Cooldown Progress (Item)",
             unevent = "auto",
-            use_showOn = true,
+            use_genericShowOn = true,
             buffShowOn = "showOnCooldown",
             itemName = item.spell
           }
