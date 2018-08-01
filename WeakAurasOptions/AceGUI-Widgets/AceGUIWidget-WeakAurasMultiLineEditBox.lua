@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasMultiLineEditBox", 32
+local Type, Version = "WeakAurasMultiLineEditBox", 33
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -58,7 +58,7 @@ Scripts
 local function OnClick(self)                                                     -- Button
   self = self.obj
   self.editBox:ClearFocus()
-  if not self:Fire("OnEnterPressed", self.editBox:GetText()) then
+  if not self:Fire("OnEnterPressed", IndentationLib.decode(self.editBox:GetText())) then
     self.button:Disable()
   end
 end
@@ -129,7 +129,7 @@ end
 local function OnTextChanged(self, userInput)                                    -- EditBox
   if userInput then
     self = self.obj
-    self:Fire("OnTextChanged", self.editBox:GetText())
+    self:Fire("OnTextChanged", IndentationLib.decode(self.editBox:GetText()))
     self.button:Enable()
 end
 end
