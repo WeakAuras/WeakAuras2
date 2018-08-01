@@ -445,6 +445,9 @@ local function modify(parent, region, data)
   end
 
   function region:Scale(scalex, scaley)
+    if region.scalex == scalex and region.scaley == scaley then
+      return
+    end
     region.scalex = scalex;
     region.scaley = scaley;
     local mirror_h, mirror_v, width, height;
