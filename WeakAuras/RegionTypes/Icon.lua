@@ -445,6 +445,10 @@ local function modify(parent, region, data)
   end
 
   function region:Scale(scalex, scaley)
+    -- Do not attempt to re-scale the region if it's not strictly necessary, as doing so causes text positioning issues.
+    if region.scalex == scalex and region.scaley == scaley then
+      return
+    end
     region.scalex = scalex;
     region.scaley = scaley;
     local mirror_h, mirror_v, width, height;
