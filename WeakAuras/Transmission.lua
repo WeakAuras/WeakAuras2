@@ -1731,8 +1731,16 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
   if(received and type(received) == "table" and received.m) then
     if(received.m == "d") and safeSenders[sender] then
       tooltipLoading = nil;
-      local data = received.d;
-      WeakAuras.ShowDisplayTooltip(data, received.c, received.i, received.a, sender, true)
+      local data, children, icon, icons = received.d, received.c, received.i, received.a
+      DecompressDisplay(data)
+      WeakAuras.PreAdd(data)
+      if children then
+        for _, child in ipairs(children) do
+          DecompressDisplay(child)
+          WeakAuras.PreAdd(child)
+        end
+      end
+      WeakAuras.ShowDisplayTooltip(data, children, icon, icons, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
       TransmitDisplay(received.d, sender);
