@@ -796,7 +796,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     useRem = {
       type = "toggle",
       name = L["Remaining Time"],
-      hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       order = 56
     },
     remOperator = {
@@ -806,7 +806,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useRem; end,
-      hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       get = function() return trigger.useRem and trigger.remOperator or nil end
     },
     rem = {
@@ -816,7 +816,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       order = 58,
       width = "half",
       disabled = function() return not trigger.useRem; end,
-      hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       get = function() return trigger.useRem and trigger.rem or nil end
     },
     useCount = {

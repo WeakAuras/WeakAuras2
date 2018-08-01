@@ -561,22 +561,37 @@ function WeakAuras.ScanAuras(unit)
                 count = tooltipSize[index];
               end
               if(name and ((not data.count) or count and data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
-                -- Show display and handle clones
-                WeakAuras.SetDynamicIconCache(name, spellId, icon);
-                if(data.autoclone) then
-                  local cloneId = name .. spellId .."-"..(casGUID or "unknown");
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
-                    updateTriggerState = true;
+                remaining = expirationTime - time;
+                checkPassed = true;
+                if(data.remFunc) then
+                  if not(data.remFunc(remaining)) then
+                    checkPassed = false;
                   end
-                  active = true;
-                  cloneIdList[cloneId] = true;
-                -- Simply show display (show)
-                else
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
-                    updateTriggerState = true;
+
+                  -- Schedule remaining time, re-scan later
+                  if(remaining > data.rem) then
+                    WeakAuras.ScheduleAuraScan(unit, time + (remaining - data.rem));
                   end
-                  active = true;
-                  break;
+                end
+
+                if checkPassed then
+                  -- Show display and handle clones
+                  WeakAuras.SetDynamicIconCache(name, spellId, icon);
+                  if(data.autoclone) then
+                    local cloneId = name .. spellId .."-"..(casGUID or "unknown");
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
+                      updateTriggerState = true;
+                    end
+                    active = true;
+                    cloneIdList[cloneId] = true;
+                  -- Simply show display (show)
+                  else
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
+                      updateTriggerState = true;
+                    end
+                    active = true;
+                    break;
+                  end
                 end
               end
             end
