@@ -372,7 +372,9 @@ local function install(data, oldData, patch, mode, isParent)
     if patch then -- if there's no result from Diff, then there's nothing to do
       for key in pairs(patch) do
         local checkButton = keyToButton[key]
-        checkButton = (not isParent and checkButton == checkButtons.anchor) and checkButtons.arrangement or checkButton
+        if not isParent and checkButton == checkButtons.anchor then
+          checkButton = checkButton.arrangement
+        end
         if checkButton and not checkButton:GetChecked() then
           patch[key] = nil
         end
@@ -1295,7 +1297,9 @@ function WeakAuras.MatchData(data, children)
       for key in pairs(diff) do
         local button = keyToButton[key]
         if button then
-          button = (i ~= 0 and button == checkButtons.anchor) and checkButtons.arrangement or button
+          if i > 0 and button == checkButtons.anchor then
+            button = checkButtons.arrangement
+          end
           info.activeCategories[button] = true
         end
       end
