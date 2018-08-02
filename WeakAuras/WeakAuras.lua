@@ -3074,7 +3074,11 @@ function WeakAuras.UpdateAnimations()
     if(anim.alphaFunc) then
       local ok, alpha = xpcall(anim.alphaFunc, geterrorhandler(), progress, anim.startAlpha, anim.dAlpha);
       if (ok) then
-        anim.region:SetAlpha(alpha);
+        if (anim.region.SetAnimAlpha) then
+          anim.region:SetAnimAlpha(alpha);
+        else
+          anim.region:SetAlpha(alpha);
+        end
       end
     end
     if(anim.scaleFunc) then
@@ -3112,7 +3116,9 @@ function WeakAuras.UpdateAnimations()
             anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, anim.startX, anim.startY);
           end
         end
-        if(anim.startAlpha) then
+        if (anim.region.SetAnimAlpha) then
+          anim.region:SetAnimAlpha(nil);
+        elseif(anim.startAlpha) then
           anim.region:SetAlpha(anim.startAlpha);
         end
         if(anim.startWidth) then
@@ -3225,7 +3231,11 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       end
       alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
     else
-      region:SetAlpha(startAlpha);
+      if (region.SetAnimAlpha) then
+        region:SetAnimAlpha(nil);
+      else
+        region:SetAlpha(startAlpha);
+      end
     end
     if(anim.use_scale) then
       if not(anim.scaleType == "custom" and anim.scaleFunc) then
@@ -3354,7 +3364,11 @@ function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, res
       end
     end
     if(resetAlpha) then
-      anim.region:SetAlpha(anim.startAlpha);
+      if (anim.region.SetAnimAlpha) then
+        anim.region:SetAnimAlpha(nil);
+      else
+        anim.region:SetAlpha(anim.startAlpha);
+      end
     end
     if(resetScale) then
       if(anim.region.Scale) then
