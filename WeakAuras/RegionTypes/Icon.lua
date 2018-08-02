@@ -324,9 +324,9 @@ local function modify(parent, region, data)
     if (r or g or b) then
       a = a or 1;
     end
-    icon:SetVertexColor(region.color_anim_r or r, region.color_anim_r or g, region.color_anim_r or b, region.color_anim_r or a);
+    icon:SetVertexColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a);
     if region.button then
-      region.button:SetAlpha(region.color_anim_r or a or 1);
+      region.button:SetAlpha(region.color_anim_a or a or 1);
     end
   end
 
