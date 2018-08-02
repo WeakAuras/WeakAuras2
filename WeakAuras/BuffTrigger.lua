@@ -314,71 +314,73 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, buffShowOn, unitEx
 
   triggerState[cloneId] = triggerState[cloneId] or {};
   local state = triggerState[cloneId];
-  if (state.active ~= active) then
-    state.active = active;
-    state.changed = true;
-  end
-  if (state.index ~= index) then
-    state.index = index;
-    state.changed = true;
-  end
-
-  if (state.spellId ~= spellId) then
-    state.spellId = spellId;
-    state.changed = true;
-  end
-
   if (state.show ~= show) then
     state.show = show;
     state.changed = true;
   end
 
-  if (state.progressType ~= "timed") then
-    state.progressType = "timed";
-    state.changed = true;
-  end
+  if (state.show) then
+    if (state.active ~= active) then
+      state.active = active;
+      state.changed = true;
+    end
+    if (state.index ~= index) then
+      state.index = index;
+      state.changed = true;
+    end
 
-  if (state.expirationTime ~= expirationTime) then
-    state.resort = true;
-    state.expirationTime = expirationTime;
-    state.changed = true;
-  end
+    if (state.spellId ~= spellId) then
+      state.spellId = spellId;
+      state.changed = true;
+    end
 
-  if (state.duration ~= duration) then
-    state.duration = duration;
-    state.changed = true;
-  end
+    if (state.progressType ~= "timed") then
+      state.progressType = "timed";
+      state.changed = true;
+    end
 
-  local autoHide = false;
-  if (state.autoHide ~= autoHide) then
-    state.autoHide = autoHide;
-    state.changed = true;
-  end
+    if (state.expirationTime ~= expirationTime) then
+      state.resort = true;
+      state.expirationTime = expirationTime;
+      state.changed = true;
+    end
 
-  if (state.name ~= name) then
-    state.name = name;
-    state.changed = true;
-  end
+    if (state.duration ~= duration) then
+      state.duration = duration;
+      state.changed = true;
+    end
 
-  if (state.icon ~= icon) then
-    state.icon = icon;
-    state.changed = true;
-  end
+    local autoHide = false;
+    if (state.autoHide ~= autoHide) then
+      state.autoHide = autoHide;
+      state.changed = true;
+    end
 
-  if (state.stacks ~= count) then
-    state.stacks = count;
-    state.changed = true;
-  end
+    if (state.name ~= name) then
+      state.name = name;
+      state.changed = true;
+    end
 
-  unitCaster = unitCaster and UnitName(unitCaster);
-  if (state.unitCaster ~= unitCaster) then
-    state.unitCaster = unitCaster;
-    state.changed = true;
-  end
+    if (state.icon ~= icon) then
+      state.icon = icon;
+      state.changed = true;
+    end
 
-  if (state.GUID ~= UnitGUID(unit)) then
-    state.GUID = UnitGUID(unit);
-    state.changed = true;
+    if (state.stacks ~= count) then
+      state.stacks = count;
+      state.changed = true;
+    end
+
+    unitCaster = unitCaster and UnitName(unitCaster);
+    if (state.unitCaster ~= unitCaster) then
+      state.unitCaster = unitCaster;
+      state.changed = true;
+    end
+
+    if (state.GUID ~= UnitGUID(unit)) then
+      state.GUID = UnitGUID(unit);
+      state.changed = true;
+    end
   end
 
   if (state.changed) then
