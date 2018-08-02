@@ -756,6 +756,20 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       end,
       values = group_aura_stack_info_types
     },
+    ignoreSelf = { 
+      type = "toggle", 
+      name = "Ignore player", 
+      order = 47.7, 
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end, 
+    }, 
+    group_role = { 
+      type = "select", 
+      name = "Group Member Role", 
+      values = WeakAuras.group_roles, 
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end, 
+      get = function() return trigger.group_role; end, 
+      order = 47.8 
+    }, 
     hideAlone = {
       type = "toggle",
       name = L["Hide When Not In Group"],
