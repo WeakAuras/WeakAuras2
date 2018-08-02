@@ -1558,7 +1558,9 @@ function BuffTrigger.Add(data)
           numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
           hideAlone = trigger.hideAlone,
           stack_info = trigger.stack_info,
-          name_info = trigger.name_info
+          name_info = trigger.name_info,
+          group_role = trigger.group_role,
+          ignoreSelf = trigger.ignoreSelf
         };
       end
     end
