@@ -1429,7 +1429,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
           tinsert(tooltip, {1, " "})
         else
           local oldID = type(match.oldData[0]) == "table" and match.oldData[0].id or "unknown"
-          tinsert(tooltip, {2, L["This import is a modification to an existing aura:"], oldID, 1, 0.82, 0})
+          tinsert(tooltip, {1, L["This import is a modification to an existing aura:"], 1, 0.82, 0})
           tinsert(tooltip, {1, L["What do you want to do?"], 1, 0.82, 0})
           tinsert(tooltip, {1, " "})
         end
