@@ -109,7 +109,7 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
   if (defaultsForRegion and defaultsForRegion.alpha) then
     properties["alpha"] = {
       display = L["Alpha"],
-      setter = "SetAlpha",
+      setter = "SetRegionAlpha",
       type = "number",
       min = 0,
       max = 1,
@@ -257,6 +257,23 @@ local function SetOffsetAnim(self, xOffset, yOffset)
   UpdatePosition(self);
 end
 
+local function SetRegionAlpha(self, alpha)
+  if (self.alpha == alpha) then
+    return;
+  end
+
+  self.alpha = alpha;
+  self:SetAlpha(self.animAlpha or self.alpha or 1);
+end
+
+local function SetAnimAlpha(self, alpha)
+  if (self.animAlpha == alpha) then
+    return;
+  end
+  self.animAlpha = alpha;
+  self:SetAlpha(self.animAlpha or self.alpha or 1);
+end
+
 function WeakAuras.regionPrototype.create(region)
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
@@ -272,6 +289,8 @@ function WeakAuras.regionPrototype.create(region)
   region.GetXOffset = GetXOffset;
   region.GetYOffset = GetYOffset;
   region.ResetPosition = ResetPosition;
+  region.SetRegionAlpha = SetRegionAlpha;
+  region.SetAnimAlpha = SetAnimAlpha;
 end
 
 -- SetDurationInfo
@@ -280,7 +299,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
 
   local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
   if (defaultsForRegion and defaultsForRegion.alpha) then
-    region:SetAlpha(data.alpha);
+    region:SetRegionAlpha(data.alpha);
   end
   local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin;
   local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax;

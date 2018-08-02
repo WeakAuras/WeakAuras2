@@ -729,9 +729,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
     end
   end
 
-  -- Fake bar alpha
-  region:SetAlpha(data.alpha);
-
   -- Fake status-bar style
   texture:SetTexture(SharedMedia:Fetch("statusbar", data.texture));
   texture:SetVertexColor(data.barColor[1], data.barColor[2], data.barColor[3], data.barColor[4]);
