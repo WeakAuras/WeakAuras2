@@ -718,8 +718,8 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   conditionChecksTimers.recheckHandle[id] = conditionChecksTimers.recheckHandle[id] or {};
 
   if (conditionChecksTimers.recheckTime[id][cloneId] and conditionChecksTimers.recheckTime[id][cloneId] > time) then
-    timer:CancelTimer(conditionChecksTimers.recheckHandle);
-    conditionChecksTimers.recheckHandle = nil;
+    timer:CancelTimer(conditionChecksTimers.recheckHandle[id][cloneId]);
+    conditionChecksTimers.recheckHandle[id][cloneId] = nil;
   end
 
   if (conditionChecksTimers.recheckTime[id][cloneId] == nil) then
@@ -734,6 +734,7 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
         checkConditions[id](region);
       end
     end, time - GetTime())
+    conditionChecksTimers.recheckTime[id][cloneId] = time;
   end
 end
 
@@ -1742,7 +1743,7 @@ function WeakAuras.UnloadAll()
   end
   wipe(timers);
 
-  for _, id in pairs(conditionChecksTimers.recheckTime) do
+  for id in pairs(conditionChecksTimers.recheckTime) do
     if (conditionChecksTimers.recheckHandle[id]) then
       for _, v in pairs(conditionChecksTimers.recheckHandle[id]) do
         timer:CancelTimer(v);
@@ -1861,7 +1862,7 @@ function WeakAuras.Delete(data)
   checkConditions[id] = nil;
   conditionChecksTimers.recheckTime[id] = nil;
   if (conditionChecksTimers.recheckHandle[id]) then
-    for _, v in pairs(conditionChecksTimers.recheckHandle[id]) do
+    for cloneId, v in pairs(conditionChecksTimers.recheckHandle[id]) do
       timer:CancelTimer(v);
     end
   end
