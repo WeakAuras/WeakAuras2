@@ -2669,12 +2669,7 @@ local function pAdd(data)
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.Add(data);
     end
-    local region = WeakAuras.SetRegion(data);
-    if (WeakAuras.clones[id]) then
-      for cloneId, _ in pairs(WeakAuras.clones[id]) do
-        WeakAuras.SetRegion(data, cloneId);
-      end
-    end
+
 
     data.init_started = nil;
     data.load = data.load or {};
@@ -2719,6 +2714,13 @@ local function pAdd(data)
       triggerCount = 0,
       activatedConditions = {},
     };
+
+    local region = WeakAuras.SetRegion(data);
+    if (WeakAuras.clones[id]) then
+      for cloneId, _ in pairs(WeakAuras.clones[id]) do
+        WeakAuras.SetRegion(data, cloneId);
+      end
+    end
 
     WeakAuras.LoadEncounterInitScripts(id);
 
