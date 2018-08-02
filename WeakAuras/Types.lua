@@ -1306,7 +1306,7 @@ WeakAuras.group_roles = {
   ANY = "Any", 
   TANK = "TANK", 
   HEALER = "HEALER", 
-  DAMAGER = "DAMAGER" 
+  DAMAGER = "DPS" 
 } 
   
 WeakAuras.cast_types = {
