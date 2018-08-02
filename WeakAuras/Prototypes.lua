@@ -2100,6 +2100,19 @@ WeakAuras.event_prototypes = {
           "SPELL_UPDATE_USABLE",
           "PLAYER_TARGET_CHANGED",
           "UNIT_POWER_FREQUENT",
+        },
+      },
+      {
+        name = "insufficientResources",
+        display = L["Insufficient Resources"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = "state and state.show and (select(2, IsUsableSpell(state.spellname)) == (%s == 1))",
+        conditionEvents = {
+          "SPELL_UPDATE_USABLE",
+          "PLAYER_TARGET_CHANGED",
+          "UNIT_POWER_FREQUENT",
         }
       },
       {
