@@ -1302,6 +1302,13 @@ WeakAuras.group_aura_stack_info_types = {
   stack = L["Aura Stack"]
 }
 
+WeakAuras.group_roles = { 
+  ANY = "Any", 
+  TANK = "TANK", 
+  HEALER = "HEALER", 
+  DAMAGER = "DAMAGER" 
+} 
+  
 WeakAuras.cast_types = {
   cast = L["Cast"],
   channel = L["Channel (Spell)"]
