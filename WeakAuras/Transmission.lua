@@ -784,7 +784,7 @@ function WeakAuras.RefreshTooltipButtons()
   elseif WeakAuras.IsImporting() then
     importButton:SetText(L["Import in progress"])
   elseif WeakAurasSaved.import_disabled then
-    importButton:SetText(L["Import in progress"])
+    importButton:SetText(L["Import disabled"])
   elseif pendingData.newData then
     if not pendingData.mode and pendingData.diffs then
       importButton:SetText(L["Choose a mode"])
