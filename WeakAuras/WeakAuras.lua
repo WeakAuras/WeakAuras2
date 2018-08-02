@@ -1899,7 +1899,7 @@ function WeakAuras.Rename(data, newid)
           parentData.controlledChildren[index] = newid;
         end
       end
-      if parentData.sortHybridTable then
+      if parentData.sortHybridTable and parentData.sortHybridTable[oldid] then
         parentData.sortHybridTable[newid] = true
         parentData.sortHybridTable[oldid] = nil
       end
