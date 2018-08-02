@@ -2822,10 +2822,36 @@ function GenericTrigger.CanHaveTooltip(data, triggernum)
     end
   end
 
+  if (trigger.type == "custom") then
+    if (trigger.custom_type == "stateupdate") then
+      local allStates = {};
+      WeakAuras.ActivateAuraEnvironment(data.id);
+      RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
+      WeakAuras.ActivateAuraEnvironment(nil);
+      for id, state in pairs(allStates) do
+        if (state.spellId or state.itemId or (state.unit and (state.unitBuffIndex or state.unitDebuffIndex))) then
+          return "custom";
+        end
+      end
+    end
+  end
+
   return false;
 end
 
 function GenericTrigger.SetToolTip(trigger, state)
+  if (trigger.type == "custom" and trigger.custom_type == "stateupdate") then
+    if (state.spellId) then
+      GameTooltip:SetSpellByID(state.spellId);
+    elseif (state.itemId) then
+      GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
+    elseif (state.unit and state.unitBuffIndex) then
+      GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex);
+    elseif (state.unit and state.unitDebuffIndex) then
+      GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex);
+    end
+  end
+
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
       if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
