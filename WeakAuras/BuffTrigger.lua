@@ -688,13 +688,19 @@ function WeakAuras.ScanAuras(unit)
                 -- Query count from aura cache
                 local aura_count, max = aura_object:GetNumber(id, triggernum, data), aura_object:GetMaxNumber();
                 local satisfies_count = data.group_count(aura_count, max);
+                
+                local satisfies_role = true 
+                if data.group_role then 
+                  satisfies_role = data.group_role == "ANY" or UnitGroupRolesAssigned(unit) == data.group_role
+                end
+                local satisfies_ignoreSelf = not data.ignoreSelf or not UnitIsUnit(unit, "player")
 
                 if(data.hideAlone and not IsInGroup()) then
                   satisfies_count = false;
                 end
 
-                -- Satisfying count condition
-                if(satisfies_count) then
+                -- Satisfying count condition and role condition and ignoreSelf
+                if(satisfies_count and satisfies_role and satisfies_ignoreSelf) then
                   -- Update clones (show)
                   if(data.groupclone) then
                     for guid, playerName in pairs(groupcloneToUpdate) do
