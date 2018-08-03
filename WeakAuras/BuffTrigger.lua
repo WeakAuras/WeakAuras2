@@ -697,7 +697,7 @@ function WeakAuras.ScanAuras(unit)
                 -- Query count from aura cache
                 local aura_count, max = aura_object:GetNumber(id, triggernum, data), aura_object:GetMaxNumber();
                 local satisfies_count = data.group_count(aura_count, max);
-                
+
                 if(data.hideAlone and not IsInGroup()) then
                   satisfies_count = false;
                 end
