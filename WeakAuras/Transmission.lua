@@ -264,7 +264,7 @@ showCodeButton:SetPoint("BOTTOMLEFT", 8, 8)
 showCodeButton:SetText(L["Show Code"])
 showCodeButton:SetWidth(90)
 
-local checkButtons,  keyToButton, pendingData = {}, {}, {}
+local checkButtons, radioButtons, keyToButton, pendingData = {}, {}, {}, {}
 
 for _, key in pairs(WeakAuras.internal_fields) do
   keyToButton[key] = false
@@ -276,6 +276,10 @@ for index,category in pairs(WeakAuras.update_categories) do
     button[k] = v
   end
   button.text = _G[button:GetName().."Text"]
+  local point, relativeFrame, relativePoint, xOff, yOff = button.text:GetPoint(1)
+  xOff = xOff + 4
+  yOff = yOff - 2
+  button.text:SetPoint(point, relativeFrame, relativePoint, xOff, yOff)
   button.text:SetText(button.label)
   button.text:SetTextColor(1, 0.82, 0)
   button.func = function()
@@ -284,7 +288,7 @@ for index,category in pairs(WeakAuras.update_categories) do
     else
       pendingData.buttonsChecked = max(pendingData.buttonsChecked - 1, 0)
     end
-    WeakAuras.RefreshTooltipButtons()
+    radioButtons[#radioButtons]:Click()
   end
   checkButtons[index] = button
   checkButtons[button.name] = button
@@ -293,7 +297,7 @@ for index,category in pairs(WeakAuras.update_categories) do
   end
 end
 
-local radioButtons= {
+radioButtons = {
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonCopy", buttonAnchor, "UIRadioButtonTemplate"),
   -- CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonReplace", buttonAnchor, "UIRadioButtonTemplate"),
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonUpdate", buttonAnchor, "UIRadioButtonTemplate"),
@@ -771,38 +775,32 @@ function WeakAuras.RefreshTooltipButtons()
   elseif WeakAurasSaved.import_disabled then
     importButton:SetText(L["Import disabled"])
   elseif pendingData.newData then
-    if not pendingData.mode and pendingData.diffs then
-      importButton:SetText(L["Choose a mode"])
-    else
-      if pendingData.activeCategories then
-        if pendingData.mode == 1 then
-          for button in pairs(pendingData.activeCategories) do
-            button:Disable()
-            button.text:SetTextColor(.5, .5, .5)
-          end
-        else
-          for button in pairs(pendingData.activeCategories) do
-            button:Enable()
-            button.text:SetTextColor(1, 0.82, 0)
-          end
+    if pendingData.activeCategories then
+      if pendingData.mode == 1 then
+        for button in pairs(pendingData.activeCategories) do
+          button.text:SetTextColor(.5, .5, .5)
+        end
+      else
+        for button in pairs(pendingData.activeCategories) do
+          button.text:SetTextColor(1, 0.82, 0)
         end
       end
-      if pendingData.mode == #radioButtons and pendingData.buttonsChecked == 0 then
-        importButton:SetText(L["Choose a category"])
-      else
-        importButton:Enable()
-        if pendingData.diffs then
-          if pendingData.mode ~= 1 then
-            importButton:SetText(L["Import as Update"])
-          else
-            importButton:SetText(L["Import as Copy"])
-          end
+    end
+    if pendingData.mode == #radioButtons and pendingData.buttonsChecked == 0 then
+      importButton:SetText(L["Choose a category"])
+    else
+      importButton:Enable()
+      if pendingData.diffs then
+        if pendingData.mode ~= 1 then
+          importButton:SetText(L["Import as Update"])
         else
-          if #pendingData.newData > 0 then
-            importButton:SetText(L["Import Group"])
-          else
-            importButton:SetText(L["Import"])
-          end
+          importButton:SetText(L["Import as Copy"])
+        end
+      else
+        if #pendingData.newData > 0 then
+          importButton:SetText(L["Import Group"])
+        else
+          importButton:SetText(L["Import"])
         end
       end
     end
@@ -817,7 +815,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
     for i, button in ipairs(radioButtons) do
       button:Show()
       button:Enable()
-      button:SetChecked(false)
+      button:SetChecked(i == 1)
       button:SetPoint("TOPLEFT", radioButtonAnchor, "TOPLEFT", 0, -20 * (i - .7))
     end
     local checkButtonAnchor = radioButtons[#radioButtons]
@@ -826,7 +824,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
       if activeCategories[button] then
         button:Show()
         button:Enable()
-        button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 25, -27*(0.6 + buttonsShown))
+        button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 17, -27*(0.6 + buttonsShown))
         button:SetChecked(button ~= checkButtons.anchor)
         buttonsShown = buttonsShown + 1
         buttonsChecked = buttonsChecked + (button:GetChecked() and 1 or 0)
@@ -1387,8 +1385,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
 
   pendingData.codes = {};
   local highestVersion = data.internalVersion or 1;
-  scamCheck(pendingData.codes, data);
-
   local match = WeakAuras.MatchData(data, children)
   local hasDescription = data.desc and data.desc ~= "";
   local hasUrl = data.url and data.url ~= "";
@@ -1403,7 +1399,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
   end
 
   if hasUrl then
-    tinsert(tooltip, {1, data.url, 1, 0.82, 0, 1});
+    tinsert(tooltip, {1, L["Source: "] .. data.url, 1, 0.82, 0, 1});
   end
 
   if hasVersion then
@@ -1435,6 +1431,11 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         pendingData.newData[index] = child
       end
     end
+    pendingData.mode = 1
+    --TODO: only scamCheck codes that have actually changed
+    for i = 0, #pendingData.newData do
+      scamCheck(pendingData.codes, pendingData.newData[i])
+    end
     if match ~= nil then
       -- MatchData found at least one match
       tinsert(tooltip, {1, " "})
@@ -1442,6 +1443,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         -- there is no difference whatsoever
         tinsert(tooltip, {1, L["You already have this group/aura, importing will create a duplicate."], 1, 0.82, 0,})
       else
+        -- load pendingData
         for k,v in pairs(match) do
           pendingData[k] = v
         end
