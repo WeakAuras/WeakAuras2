@@ -1584,7 +1584,6 @@ WeakAuras.update_categories = {
 }
 
 WeakAuras.internal_fields = {
-  id = true,
   uid = true,
   controlledChildren = true,
   parent = true,

@@ -426,7 +426,6 @@ local function importPendingData()
     local parentData = installedData[0]
     local preserveOldOrder = mode ~= 1 and checkButtons.arrangement:GetChecked()
 
-    local i = 1
     local map
     if not indexMap then
       map = {}
@@ -451,7 +450,7 @@ local function importPendingData()
         end
       end
       local oldID, newID = oldData and oldData.id, data and data.id
-      if oldData then
+      if oldData and mode ~= 1 then
         oldData.parent = parentData.id
       end
       if data then
