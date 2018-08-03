@@ -166,6 +166,36 @@ function WeakAuras.CreateTemplateView(frame)
         }
       };
       return conditions;
+    elseif (item.type == "abilitycharge") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            variable = "show",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              property = "desaturate",
+            },
+          },
+        },
+        [2] = {
+          check = {
+            trigger = 0,
+            op = "==",
+            variable = "charges",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        }
+      };
+      return conditions;
     elseif (item.type == "abilitytarget") then
       local conditions = {
         [1] = {
@@ -277,7 +307,7 @@ function WeakAuras.CreateTemplateView(frame)
       local triggers = {
         [0] = {
           trigger = {
-            unit = item.unit,
+            unit = item.unit or item.type == "abilitybuff" and "player" or "target",
             type = "aura",
             spellIds = {
               item.spell
@@ -298,7 +328,7 @@ function WeakAuras.CreateTemplateView(frame)
         }
       }
       return triggers;
-    elseif (item.type == "ability" or item.type == "abilitytarget") then
+    elseif (item.type == "ability" or item.type == "abilitytarget" or item.type == "abilitycharge") then
       local triggers = {
         [0] = {
           trigger = {

@@ -431,9 +431,9 @@ templates.class.PALADIN = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 498, type = "ability"}, -- Divine Protection
+        { spell = 498, type = "abilitybuff"}, -- Divine Protection
         { spell = 633, type = "ability"}, -- Lay on Hands
-        { spell = 642, type = "ability"}, -- Divine Shield
+        { spell = 642, type = "abilitybuff"}, -- Divine Shield
         { spell = 853, type = "ability"}, -- Hammer of Justice
         { spell = 1022, type = "ability"}, -- Blessing of Protection
         { spell = 1044, type = "ability"}, -- Blessing of Freedom
@@ -441,20 +441,20 @@ templates.class.PALADIN = {
         { spell = 20066, type = "ability", talent = 8}, -- Repentance
         { spell = 20473, type = "ability"}, -- Holy Shock
         { spell = 26573, type = "ability"}, -- Consecration
-        { spell = 31821, type = "ability"}, -- Aura Mastery
+        { spell = 31821, type = "abilitybuff"}, -- Aura Mastery
         { spell = 31884, type = "ability"}, -- Avenging Wrath
         { spell = 35395, type = "ability"}, -- Crusader Strike
         { spell = 85222, type = "ability"}, -- Light of Dawn
-        { spell = 105809, type = "ability", talent = 15}, -- Holy Avenger
+        { spell = 105809, type = "abilitybuff", talent = 15}, -- Holy Avenger
         { spell = 114158, type = "ability", talent = 3}, -- Light's Hammer
         { spell = 114165, type = "ability", talent = 14}, -- Holy Prism
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
         { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 200025, type = "ability", talent = 21}, -- Beacon of Virtue
-        { spell = 214202, type = "ability"}, -- Rule of Law
-        { spell = 216331, type = "ability"}, -- Avenging Crusader
+        { spell = 214202, type = "abilitybuff"}, -- Rule of Law
+        { spell = 216331, type = "abilitybuff"}, -- Avenging Crusader
         { spell = 223306, type = "ability", talent = 2}, -- Bestow Faith
-        { spell = 275773, type = "ability"}, -- Judgment
+        { spell = 275773, type = "abilitydebuff"}, -- Judgment
       },
       icon = 135972
     },
@@ -525,20 +525,20 @@ templates.class.PALADIN = {
       title = L["Cooldowns"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
-        { spell = 642, type = "ability"}, -- Divine Shield
+        { spell = 642, type = "abilitybuff"}, -- Divine Shield
         { spell = 853, type = "ability"}, -- Hammer of Justice
         { spell = 1022, type = "ability"}, -- Blessing of Protection
         { spell = 1044, type = "ability"}, -- Blessing of Freedom
         { spell = 6940, type = "ability"}, -- Blessing of Sacrifice
         { spell = 20066, type = "ability", talent = 8}, -- Repentance
-        { spell = 26573, type = "ability"}, -- Consecration
-        { spell = 31850, type = "ability"}, -- Ardent Defender
-        { spell = 31884, type = "ability"}, -- Avenging Wrath
+        { spell = 26573, type = "abilitydebuff"}, -- Consecration
+        { spell = 31850, type = "abilitybuff"}, -- Ardent Defender
+        { spell = 31884, type = "abilitybuff"}, -- Avenging Wrath
         { spell = 31935, type = "ability"}, -- Avenger's Shield
         { spell = 53595, type = "ability"}, -- Hammer of the Righteous
-        { spell = 53600, type = "ability"}, -- Shield of the Righteous
+        { spell = 53600, type = "abilitycharge"}, -- Shield of the Righteous
         { spell = 62124, type = "ability"}, -- Hand of Reckoning
-        { spell = 86659, type = "ability"}, -- Guardian of Ancient Kings
+        { spell = 86659, type = "abilitybuff"}, -- Guardian of Ancient Kings
         { spell = 96231, type = "ability"}, -- Rebuke
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
         { spell = 152262, type = "ability", talent = 21}, -- Seraphim
@@ -549,7 +549,7 @@ templates.class.PALADIN = {
         { spell = 204035, type = "ability"}, -- Bastion of Light
         { spell = 204150, type = "ability"}, -- Aegis of Light
         { spell = 213652, type = "ability"}, -- Hand of the Protector
-        { spell = 275779, type = "ability"}, -- Judgment
+        { spell = 275779, type = "abilitydebuff"}, -- Judgment
       },
       icon = 135874
     },
@@ -1353,22 +1353,22 @@ templates.class.PRIEST = {
       title = L["Cooldowns"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
-        { spell = 586, type = "ability"}, -- Fade
+        { spell = 586, type = "abilitybuff"}, -- Fade
         { spell = 8122, type = "ability"}, -- Psychic Scream
-        { spell = 19236, type = "ability"}, -- Desperate Prayer
+        { spell = 19236, type = "abilitybuff"}, -- Desperate Prayer
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 33206, type = "ability"}, -- Pain Suppression
         { spell = 34433, type = "ability"}, -- Shadowfiend
-        { spell = 47536, type = "abilitybuff", unit = "player"}, -- Rapture
+        { spell = 47536, type = "abilitybuff"}, -- Rapture
         { spell = 47540, type = "abilitytarget"}, -- Penance
         { spell = 62618, type = "ability"}, -- Power Word: Barrier
         { spell = 73325, type = "ability" }, -- Leap of Faith
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
-        { spell = 121536, type = "ability", talent = 6}, -- Angelic Feather
+        { spell = 121536, type = "abilitycharge", talent = 6}, -- Angelic Feather
         { spell = 123040, type = "abilitytarget", talent = 8}, -- Mindbender
         { spell = 129250, type = "abilitytarget", talent = 9}, -- Power Word: Solace
-        { spell = 194509, type = "ability"}, -- Power Word: Radiance
+        { spell = 194509, type = "abilitycharge"}, -- Power Word: Radiance
         { spell = 204065, type = "ability", talent = 15}, -- Shadow Covenant
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
         { spell = 214621, type = "abilitytarget", talent = 3}, -- Schism
@@ -1439,24 +1439,24 @@ templates.class.PRIEST = {
       title = L["Cooldowns"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
-        { spell = 586, type = "ability"}, -- Fade
+        { spell = 586, type = "abilitybuff"}, -- Fade
         { spell = 2050, type = "ability"}, -- Holy Word: Serenity
         { spell = 2061, type = "ability"}, -- Flash Heal
         { spell = 8122, type = "ability"}, -- Psychic Scream
         { spell = 14914, type = "ability"}, -- Holy Fire
-        { spell = 19236, type = "ability"}, -- Desperate Prayer
+        { spell = 19236, type = "abilitybuff"}, -- Desperate Prayer
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 33076, type = "ability"}, -- Prayer of Mending
         { spell = 34861, type = "ability"}, -- Holy Word: Sanctify
         { spell = 47788, type = "ability"}, -- Guardian Spirit
-        { spell = 64843, type = "ability"}, -- Divine Hymn
-        { spell = 64901, type = "ability"}, -- Symbol of Hope
+        { spell = 64843, type = "abilitybuff"}, -- Divine Hymn
+        { spell = 64901, type = "abilitybuff"}, -- Symbol of Hope
         { spell = 73325, type = "ability" }, -- Leap of Faith
         { spell = 88625, type = "ability"}, -- Holy Word: Chastise
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
-        { spell = 121536, type = "ability", talent = 6}, -- Angelic Feather
-        { spell = 200183, type = "ability", talent = 20}, -- Apotheosis
+        { spell = 121536, type = "abilitycharge", talent = 6}, -- Angelic Feather
+        { spell = 200183, type = "abilitybuff", talent = 20}, -- Apotheosis
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
         { spell = 204883, type = "ability", talent = 15}, -- Circle of Healing
         { spell = 265202, type = "ability", talent = 21}, -- Holy Word: Salvation
@@ -1528,26 +1528,26 @@ templates.class.PRIEST = {
       title = L["Cooldowns"],
       args = {
         { spell = 17, type = "ability"}, -- Power Word: Shield
-        { spell = 586, type = "ability"}, -- Fade
-        { spell = 8092, type = "ability"}, -- Mind Blast
+        { spell = 586, type = "abilitybuff"}, -- Fade
+        { spell = 8092, type = "abilitytarget"}, -- Mind Blast
         { spell = 8122, type = "ability"}, -- Psychic Scream
         { spell = 15286, type = "ability"}, -- Vampiric Embrace
-        { spell = 15487, type = "ability"}, -- Silence
+        { spell = 15487, type = "abilitytarget"}, -- Silence
         { spell = 32375, type = "ability"}, -- Mass Dispel
-        { spell = 32379, type = "ability", talent = 14}, -- Shadow Word: Death
-        { spell = 34433, type = "ability"}, -- Shadowfiend
-        { spell = 47585, type = "ability"}, -- Dispersion
-        { spell = 64044, type = "ability", talent = 12}, -- Psychic Horror
-        { spell = 73325, type = "ability" }, -- Leap of Faith
+        { spell = 32379, type = "abilitytarget", talent = 14}, -- Shadow Word: Death
+        { spell = 34433, type = "abilitytarget"}, -- Shadowfiend
+        { spell = 47585, type = "abilitybuff"}, -- Dispersion
+        { spell = 64044, type = "abilitytarget", talent = 12}, -- Psychic Horror
+        { spell = 73325, type = "ability"}, -- Leap of Faith
         { spell = 193223, type = "ability", talent = 21}, -- Surrender to Madness
-        { spell = 200174, type = "ability", talent = 17}, -- Mindbender
-        { spell = 205351, type = "ability", talent = 3}, -- Shadow Word: Void
-        { spell = 205369, type = "ability", talent = 11}, -- Mind Bomb
+        { spell = 200174, type = "abilitytarget", talent = 17}, -- Mindbender
+        { spell = 205351, type = "abilitytarget", talent = 3}, -- Shadow Word: Void
+        { spell = 205369, type = "abilitytarget", talent = 11}, -- Mind Bomb
         { spell = 205385, type = "ability", talent = 15}, -- Shadow Crash
-        { spell = 205448, type = "ability"}, -- Void Bolt
+        { spell = 205448, type = "abilitytarget"}, -- Void Bolt
         { spell = 213634, type = "ability"}, -- Purify Disease
         { spell = 228260, type = "ability"}, -- Void Eruption
-        { spell = 263165, type = "ability", talent = 18}, -- Void Torrent
+        { spell = 263165, type = "abilitytarget", talent = 18}, -- Void Torrent
         { spell = 263346, type = "ability", talent = 9}, -- Dark Void
         { spell = 280711, type = "ability", talent = 20}, -- Dark Ascension
 
