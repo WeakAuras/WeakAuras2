@@ -46,6 +46,202 @@ function WeakAuras.CreateTemplateView(frame)
     return new_id;
   end
 
+  local function createConditionsFor(item)
+    if (item.type == "debuff") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            variable = "buffed",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+      };
+      return conditions;
+    elseif (item.type == "abilitybuff" or item.type == "abilitydebuff") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            variable = "show",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "inverse",
+            },
+          },
+        },
+        [2] = {
+          check = {
+            trigger = 0,
+            variable = "show",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+        [3] = {
+          check = {
+            trigger = 1,
+            variable = "onCooldown",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              property = "desaturate",
+            },
+          },
+        },
+        [4] = {
+          check = {
+            trigger = 1,
+            variable = "insufficientResources",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        }
+      };
+      return conditions;
+    elseif (item.type == "item") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            variable = "onCooldown",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+      };
+      return conditions;
+    elseif (item.type == "ability") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            variable = "onCooldown",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+        [2] = {
+          check = {
+            trigger = 0,
+            variable = "insufficientResources",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        }
+      };
+      return conditions;
+    elseif (item.type == "abilitytarget") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            variable = "onCooldown",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+        [2] = {
+          check = {
+            trigger = 0,
+            variable = "spellInRange",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = {
+                [1] = 0.96078431372549,
+                [2] = 0.48627450980392,
+                [3] = 0.48627450980392,
+                [4] = 1,
+              },
+              property = "color",
+            },
+          },
+        },
+        [3] = {
+          check = {
+            trigger = -1,
+            variable = "hastarget",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              property = "color",
+            },
+          },
+        },
+        [4] = {
+          check = {
+            trigger = 0,
+            variable = "insufficientResources",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+      };
+      return conditions;
+    end
+  end
+
+  local function replaceCondition(data, item)
+    local conditions;
+    if (item.conditions) then
+      conditions = item.conditions;
+    else
+      conditions = createConditionsFor(item);
+    end
+    if conditions then
+      data.conditions = {}
+      WeakAuras.DeepCopy(conditions, data.conditions);
+    end
+  end
+
   local function createTriggersFor(item)
     if (item.type == "buff" or item.type == "debuff") then
       local triggers = {
@@ -56,6 +252,7 @@ function WeakAuras.CreateTemplateView(frame)
             spellIds = {
               item.spell
             },
+            buffShowOn = item.type == "buff" and "showOnActive" or "showAlways",
             debuffType = item.type == "buff" and "HELPFUL" or "HARMFUL",
             ownOnly = not item.forceOwnOnly and true or item.ownOnly,
           }
@@ -76,7 +273,32 @@ function WeakAuras.CreateTemplateView(frame)
         triggers[0].trigger.spellId = item.spell;
       end
       return triggers
-    elseif (item.type == "ability") then
+    elseif (item.type == "abilitybuff" or item.type == "abilitydebuff") then
+      local triggers = {
+        [0] = {
+          trigger = {
+            unit = item.unit,
+            type = "aura",
+            spellIds = {
+              item.spell
+            },
+            debuffType = item.type == "abilitybuff" and "HELPFUL" or "HARMFUL",
+            ownOnly = not item.forceOwnOnly and true or item.ownOnly,
+          }
+        },
+        [1] = {
+          trigger = {
+            event = "Cooldown Progress (Spell)",
+            spellName = item.spell,
+            type = "status",
+            unevent = "auto",
+            genericShowOn = item.showOn or "showAlways",
+            use_genericShowOn = true,
+          },
+        }
+      }
+      return triggers;
+    elseif (item.type == "ability" or item.type == "abilitytarget") then
       local triggers = {
         [0] = {
           trigger = {
@@ -85,7 +307,7 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             unevent = "auto",
             use_genericShowOn = true,
-            buffShowOn = item.buffShowOn or "showOnCooldown",
+            genericShowOn = item.showOn or "showAlways",
           }
         }
       }
@@ -98,7 +320,7 @@ function WeakAuras.CreateTemplateView(frame)
             event = "Cooldown Progress (Item)",
             unevent = "auto",
             use_genericShowOn = true,
-            buffShowOn = "showOnCooldown",
+            genericShowOn = item.showOn or "showAlways",
             itemName = item.spell
           }
         }
@@ -174,14 +396,16 @@ function WeakAuras.CreateTemplateView(frame)
       end
     end
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
-    if (item.disjunctive) then
+    if (item.type == "abilitybuff" or item.type == "abilitydebuff") then
+      data.disjunctive = "any";
+      data.activeTriggerMode = -10;
+    elseif (item.disjunctive) then
       data.disjunctive = item.disjunctive;
     end
   end
 
   local function addTrigger(data, item)
     data.additional_triggers = data.additional_triggers or {};
-
     local triggers;
     if (item.triggers) then
       triggers = item.triggers;
@@ -200,7 +424,10 @@ function WeakAuras.CreateTemplateView(frame)
       end
     end
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
-    if (item.disjunctive) then
+    if (item.type == "abilitybuff" or item.type == "abilitydebuff") then -- good place for that??
+      data.disjunctive = "any";
+      data.activeTriggerMode = -10;
+    elseif (item.disjunctive) then
       data.disjunctive = item.disjunctive;
     end
   end
@@ -244,9 +471,17 @@ function WeakAuras.CreateTemplateView(frame)
       templateButton:SetDescription(item.description);
       templateButton:SetClick(function()
         newView.data = {};
+<<<<<<< HEAD
         WeakAuras.DeepCopy(item.data, newView.data);
         WeakAuras.validate(newView.data, WeakAuras.data_stub);
+<<<<<<< HEAD
         newView.data.internalVersion = WeakAuras.InternalVersion();
+=======
+=======
+        WeakAuras.DeepCopy(WeakAuras.data_stub, newView.data);
+        WeakAuras.tableAdd(newView.data, item.data);
+>>>>>>> add conditions to templates
+>>>>>>> add conditions to templates
         newView.data.regionType = regionType;
         createButtons();
       end);
@@ -299,6 +534,7 @@ function WeakAuras.CreateTemplateView(frame)
             createButtons();
           else
             replaceTrigger(newView.data, item);
+            replaceCondition(newView.data, item);
             newView.data.id = WeakAuras.FindUnusedId(item.title);
             newView.data.load = {};
             if (item.load) then

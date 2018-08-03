@@ -1359,19 +1359,19 @@ templates.class.PRIEST = {
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 33206, type = "ability"}, -- Pain Suppression
         { spell = 34433, type = "ability"}, -- Shadowfiend
-        { spell = 47536, type = "ability"}, -- Rapture
-        { spell = 47540, type = "ability"}, -- Penance
+        { spell = 47536, type = "abilitybuff", unit = "player"}, -- Rapture
+        { spell = 47540, type = "abilitytarget"}, -- Penance
         { spell = 62618, type = "ability"}, -- Power Word: Barrier
         { spell = 73325, type = "ability" }, -- Leap of Faith
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
         { spell = 121536, type = "ability", talent = 6}, -- Angelic Feather
-        { spell = 123040, type = "ability", talent = 8}, -- Mindbender
-        { spell = 129250, type = "ability", talent = 9}, -- Power Word: Solace
+        { spell = 123040, type = "abilitytarget", talent = 8}, -- Mindbender
+        { spell = 129250, type = "abilitytarget", talent = 9}, -- Power Word: Solace
         { spell = 194509, type = "ability"}, -- Power Word: Radiance
         { spell = 204065, type = "ability", talent = 15}, -- Shadow Covenant
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
-        { spell = 214621, type = "ability", talent = 3}, -- Schism
+        { spell = 214621, type = "abilitytarget", talent = 3}, -- Schism
         { spell = 246287, type = "ability"}, -- Evangelism
         { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
