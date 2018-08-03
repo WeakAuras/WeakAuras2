@@ -1303,10 +1303,10 @@ WeakAuras.group_aura_stack_info_types = {
 }
 
 WeakAuras.group_roles = { 
-  ANY = "Any", 
-  TANK = "TANK", 
-  HEALER = "HEALER", 
-  DAMAGER = "DPS" 
+  ANY = L["Any"], 
+  TANK = L["Tanks"], 
+  HEALER = L["Healers"], 
+  DAMAGER = L["DPS"] 
 } 
   
 WeakAuras.cast_types = {
