@@ -245,6 +245,7 @@ function WeakAuras.CreateTemplateView(frame)
       templateButton:SetClick(function()
         newView.data = {};
         WeakAuras.DeepCopy(item.data, newView.data);
+        WeakAuras.validate(newView.data, WeakAuras.data_stub);
         newView.data.regionType = regionType;
         createButtons();
       end);

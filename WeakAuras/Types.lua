@@ -1610,6 +1610,7 @@ WeakAuras.data_stub = {
     unit = "player",
     debuffType = "HELPFUL",
   },
+  numTriggers = 1,
   untrigger = {},
   load = {
     size = {

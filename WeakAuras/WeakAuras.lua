@@ -1,4 +1,5 @@
 local internalVersion = 6;
+WeakAuras.data_stub.internalVersion = internalVersion;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -2662,7 +2663,7 @@ local function pAdd(data)
   elseif (data.controlledChildren) then
     WeakAuras.SetRegion(data);
   else
-    if (data.activeTriggerMode >= data.numTriggers) then
+    if (not data.activeTriggerMode or data.activeTriggerMode >= data.numTriggers) then
       data.activeTriggerMode = WeakAuras.trigger_modes.first_active;
     end
 
