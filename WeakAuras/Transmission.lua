@@ -424,7 +424,7 @@ local function importPendingData()
   -- handle children, if there are any
   if #imports > 0 then
     local parentData = installedData[0]
-    local preserveOldOrder = mode ~= 1 and checkButtons.arrangement:GetChecked()
+    local preserveOldOrder = mode ~= 1 and not checkButtons.arrangement:GetChecked()
 
     local map
     if not indexMap then
