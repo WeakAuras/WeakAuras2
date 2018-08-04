@@ -112,10 +112,15 @@ function WeakAuras.CreateTemplateView(frame)
           },
           changes = {
             [1] = {
-              value = true,
-              property = "desaturate",
+              value = {
+                [1] = 0.5,
+                [2] = 0.5,
+                [3] = 1,
+                [4] = 1,
+              },
+              property = "color",
             },
-          },
+          }
         }
       };
       return conditions;
@@ -159,10 +164,15 @@ function WeakAuras.CreateTemplateView(frame)
           },
           changes = {
             [1] = {
-              value = true,
-              property = "desaturate",
+              value = {
+                [1] = 0.5,
+                [2] = 0.5,
+                [3] = 1,
+                [4] = 1,
+              },
+              property = "color",
             },
-          },
+          }
         }
       };
       return conditions;
@@ -220,9 +230,9 @@ function WeakAuras.CreateTemplateView(frame)
           changes = {
             [1] = {
               value = {
-                [1] = 0.96078431372549,
-                [2] = 0.48627450980392,
-                [3] = 0.48627450980392,
+                [1] = 0.8,
+                [2] = 0.1,
+                [3] = 0.1,
                 [4] = 1,
               },
               property = "color",
@@ -249,8 +259,13 @@ function WeakAuras.CreateTemplateView(frame)
           },
           changes = {
             [1] = {
-              value = true,
-              property = "desaturate",
+              value = {
+                [1] = 0.5,
+                [2] = 0.5,
+                [3] = 1,
+                [4] = 1,
+              },
+              property = "color",
             },
           },
         },
@@ -501,9 +516,9 @@ function WeakAuras.CreateTemplateView(frame)
       templateButton:SetDescription(item.description);
       templateButton:SetClick(function()
         newView.data = {};
-<<<<<<< HEAD
         WeakAuras.DeepCopy(item.data, newView.data);
         WeakAuras.validate(newView.data, WeakAuras.data_stub);
+<<<<<<< HEAD
 <<<<<<< HEAD
         newView.data.internalVersion = WeakAuras.InternalVersion();
 =======
@@ -512,6 +527,8 @@ function WeakAuras.CreateTemplateView(frame)
         WeakAuras.tableAdd(newView.data, item.data);
 >>>>>>> add conditions to templates
 >>>>>>> add conditions to templates
+=======
+>>>>>>> minor adjustments on templates conditions
         newView.data.regionType = regionType;
         createButtons();
       end);
