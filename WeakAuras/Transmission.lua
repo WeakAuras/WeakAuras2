@@ -555,6 +555,7 @@ local function importPendingData()
       coroutine.yield()
     end
 
+    WeakAuras.Add(parentData);
     local button = WeakAuras.GetDisplayButton(parentData.id)
     button.callbacks.UpdateExpandButton()
     WeakAuras.UpdateDisplayButton(parentData)
