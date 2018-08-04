@@ -46,8 +46,9 @@ function WeakAuras.CreateTemplateView(frame)
     return new_id;
   end
 
-  local function createConditionsFor(item)
-    if (item.type == "debuff") then
+  local function createConditionsFor(item, typePos)
+    local itemType = item.types[typePos]
+    if (itemType == "buffShowAlways" or itemType == "debuffShowAlways") then
       local conditions = {
         [1] = {
           check = {
@@ -64,7 +65,7 @@ function WeakAuras.CreateTemplateView(frame)
         },
       };
       return conditions;
-    elseif (item.type == "abilitybuff" or item.type == "abilitydebuff") then
+    elseif (itemType == "abilityBuff" or itemType == "abilityDebuff") then
       local conditions = {
         [1] = {
           check = {
@@ -124,7 +125,7 @@ function WeakAuras.CreateTemplateView(frame)
         }
       };
       return conditions;
-    elseif (item.type == "item") then
+    elseif (itemType == "itemShowAlways") then
       local conditions = {
         [1] = {
           check = {
@@ -141,7 +142,7 @@ function WeakAuras.CreateTemplateView(frame)
         },
       };
       return conditions;
-    elseif (item.type == "ability") then
+    elseif (itemType == "abilityShowAlways") then
       local conditions = {
         [1] = {
           check = {
@@ -176,7 +177,7 @@ function WeakAuras.CreateTemplateView(frame)
         }
       };
       return conditions;
-    elseif (item.type == "abilitycharge") then
+    elseif (itemType == "abilityCharge") then
       local conditions = {
         [1] = {
           check = {
@@ -206,7 +207,7 @@ function WeakAuras.CreateTemplateView(frame)
         }
       };
       return conditions;
-    elseif (item.type == "abilitytarget") then
+    elseif (itemType == "abilityTarget") then
       local conditions = {
         [1] = {
           check = {
@@ -274,12 +275,12 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  local function replaceCondition(data, item)
+  local function replaceCondition(data, item, typePos)
     local conditions;
     if (item.conditions) then
       conditions = item.conditions;
     else
-      conditions = createConditionsFor(item);
+      conditions = createConditionsFor(item, typePos);
     end
     if conditions then
       data.conditions = {}
@@ -287,8 +288,9 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  local function createTriggersFor(item)
-    if (item.type == "buff" or item.type == "debuff") then
+  local function createTriggersFor(item, typePos)
+    local itemType = item.types[typePos];
+    if (itemType == "buff" or itemType == "debuff" or itemType == "buffShowAlways" or itemType == "debuffShowAlways") then
       local triggers = {
         [0] = {
           trigger = {
@@ -297,8 +299,8 @@ function WeakAuras.CreateTemplateView(frame)
             spellIds = {
               item.spell
             },
-            buffShowOn = item.type == "buff" and "showOnActive" or "showAlways",
-            debuffType = item.type == "buff" and "HELPFUL" or "HARMFUL",
+            buffShowOn = item.buffShowOn or (itemType == "buff" or itemType == "debuff") and "showOnActive" or "showAlways",
+            debuffType = item.debuffType or (itemType == "buff" or itemType == "buffShowAlways") and "HELPFUL" or "HARMFUL",
             ownOnly = not item.forceOwnOnly and true or item.ownOnly,
           }
         },
@@ -318,16 +320,16 @@ function WeakAuras.CreateTemplateView(frame)
         triggers[0].trigger.spellId = item.spell;
       end
       return triggers
-    elseif (item.type == "abilitybuff" or item.type == "abilitydebuff") then
+    elseif (itemType == "abilityBuff" or itemType == "abilityDebuff") then
       local triggers = {
         [0] = {
           trigger = {
-            unit = item.unit or item.type == "abilitybuff" and "player" or "target",
+            unit = item.unit or itemType == "abilityBuff" and "player" or "target",
             type = "aura",
             spellIds = {
               item.spell
             },
-            debuffType = item.type == "abilitybuff" and "HELPFUL" or "HARMFUL",
+            debuffType = itemType == "abilityBuff" and "HELPFUL" or "HARMFUL",
             ownOnly = not item.forceOwnOnly and true or item.ownOnly,
           }
         },
@@ -343,7 +345,7 @@ function WeakAuras.CreateTemplateView(frame)
         }
       }
       return triggers;
-    elseif (item.type == "ability" or item.type == "abilitytarget" or item.type == "abilitycharge") then
+    elseif (itemType == "ability" or itemType == "abilityShowAlways" or itemType == "abilityTarget" or itemType == "abilityCharge") then
       local triggers = {
         [0] = {
           trigger = {
@@ -352,12 +354,12 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             unevent = "auto",
             use_genericShowOn = true,
-            genericShowOn = item.showOn or "showAlways",
+            genericShowOn = item.showOn or itemType == "ability" and "showOnCooldown" or "showAlways",
           }
         }
       }
       return triggers;
-    elseif (item.type == "item") then
+    elseif (itemType == "item" or itemType == "itemShowAlways") then
       local triggers = {
         [0] = {
           trigger = {
@@ -365,13 +367,13 @@ function WeakAuras.CreateTemplateView(frame)
             event = "Cooldown Progress (Item)",
             unevent = "auto",
             use_genericShowOn = true,
-            genericShowOn = item.showOn or "showAlways",
+            genericShowOn = item.showOn or itemType == "item" and "showOnCooldown" or "showAlways",
             itemName = item.spell
           }
         }
       };
       return triggers;
-    elseif (item.type == "totem") then
+    elseif (itemType == "totem") then
       local triggers = {
         [0] = {
           trigger = {
@@ -412,13 +414,13 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  local function replaceTrigger(data, item)
+  local function replaceTrigger(data, item, typePos)
     data.additional_triggers = nil;
     local triggers;
     if (item.triggers) then
       triggers = item.triggers;
     else
-      triggers = createTriggersFor(item);
+      triggers = createTriggersFor(item, typePos);
     end
 
     for i, v in pairs(triggers) do
@@ -441,7 +443,8 @@ function WeakAuras.CreateTemplateView(frame)
       end
     end
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
-    if (item.type == "abilitybuff" or item.type == "abilitydebuff") then
+    -- add here template types with more than one trigger
+    if (item.types[typePos] == "abilityBuff" or item.types[typePos] == "abilityDebuff") then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
     elseif (item.disjunctive) then
@@ -449,13 +452,13 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  local function addTrigger(data, item)
+  local function addTrigger(data, item, typePos)
     data.additional_triggers = data.additional_triggers or {};
     local triggers;
     if (item.triggers) then
       triggers = item.triggers;
     else
-      triggers = createTriggersFor(item);
+      triggers = createTriggersFor(item, typePos);
     end
 
     for i, v in pairs(triggers) do
@@ -469,7 +472,8 @@ function WeakAuras.CreateTemplateView(frame)
       end
     end
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
-    if (item.type == "abilitybuff" or item.type == "abilitydebuff") then -- good place for that??
+    -- add here template types with more than one trigger
+    if (itemType == "abilityBuff" or itemType == "abilityDebuff") then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
     elseif (item.disjunctive) then
@@ -580,17 +584,22 @@ function WeakAuras.CreateTemplateView(frame)
             newView.choosenItem = item;
             createButtons();
           else
-            replaceTrigger(newView.data, item);
-            replaceCondition(newView.data, item);
-            newView.data.id = WeakAuras.FindUnusedId(item.title);
-            newView.data.load = {};
-            if (item.load) then
-              WeakAuras.DeepCopy(item.load, newView.data.load);
+            if #item.types == 1 then
+              replaceTrigger(newView.data, item, 1);
+              replaceCondition(newView.data, item, 1);
+              newView.data.id = WeakAuras.FindUnusedId(item.title);
+              newView.data.load = {};
+              if (item.load) then
+                WeakAuras.DeepCopy(item.load, newView.data.load);
+              end
+              newView:CancelClose();
+              WeakAuras.Add(newView.data);
+              WeakAuras.NewDisplayButton(newView.data);
+              WeakAuras.PickDisplay(newView.data.id);
+            else
+              -- TODO
+              print("make 3rd page")
             end
-            newView:CancelClose();
-            WeakAuras.Add(newView.data);
-            WeakAuras.NewDisplayButton(newView.data);
-            WeakAuras.PickDisplay(newView.data.id);
           end
         end);
         group:AddChild(button);
@@ -624,9 +633,9 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  local function replaceTriggers(data, item)
-    local function handle(data, item)
-      replaceTrigger(data, item);
+  local function replaceTriggers(data, item, typePos)
+    local function handle(data, item, typePos)
+      replaceTrigger(data, item, typePos);
       WeakAuras.optionTriggerChoices[data.id] = 0;
       newView:CancelClose();
       WeakAuras.Add(data);
@@ -648,9 +657,9 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  local function addTriggers(data, item)
-    local function handle(data, item)
-      addTrigger(data, item);
+  local function addTriggers(data, item, typePos)
+    local function handle(data, item, typePos)
+      addTrigger(data, item, typePos);
       WeakAuras.optionTriggerChoices[data.id] = data.numTriggers - 1;
       newView:CancelClose();
       WeakAuras.Add(data);
@@ -667,7 +676,7 @@ function WeakAuras.CreateTemplateView(frame)
         end
       end
     else
-      handle(data, item);
+      handle(data, item, typePos);
       WeakAuras.PickDisplay(data.id);
     end
   end
@@ -689,7 +698,7 @@ function WeakAuras.CreateTemplateView(frame)
     addButton:SetIcon("Interface\\Icons\\Spell_ChargePositive");
     addButton:SetFullWidth(true);
     addButton:SetClick(function()
-      addTriggers(newView.data, newView.choosenItem);
+      addTriggers(newView.data, newView.choosenItem, 1); -- !!!!!! check if typePos = 1 ok
     end);
     newViewScroll:AddChild(addButton);
   end
