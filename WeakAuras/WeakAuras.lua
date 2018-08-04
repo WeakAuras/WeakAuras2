@@ -1202,6 +1202,10 @@ function WeakAuras.CreatePvPTalentCache()
   local _, player_class = UnitClass("player")
   local spec = GetSpecialization()
 
+  if (not player_class or not spec) then
+    return;
+  end
+
   WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
   WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
 
