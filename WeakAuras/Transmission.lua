@@ -543,12 +543,9 @@ local function importPendingData()
 
     parentData.controlledChildren = {}
     parentData.sortHybridTable = hybridTables and hybridTables.merged
-    -- TODO: make this more elegant
-    for index, installedChild in ipairs(installedData) do
-      tinsert(parentData.controlledChildren, installedChild.id)
-    end
     for index, installedChild in ipairs(installedData) do
       installedChild.parent = parentData.id
+      tinsert(parentData.controlledChildren, installedChild.id)
       WeakAuras.NewDisplayButton(installedChild)
       local childButton = WeakAuras.GetDisplayButton(installedChild.id)
       childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup")
@@ -559,6 +556,7 @@ local function importPendingData()
     WeakAuras.Add(parentData);
     local button = WeakAuras.GetDisplayButton(parentData.id)
     button.callbacks.UpdateExpandButton()
+    WeakAuras.UpdateGroupOrders(parentData)
     WeakAuras.UpdateDisplayButton(parentData)
     WeakAuras.ReloadGroupRegionOptions(parentData)
     WeakAuras.SortDisplayButtons()
