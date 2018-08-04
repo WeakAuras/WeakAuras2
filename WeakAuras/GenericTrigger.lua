@@ -1381,10 +1381,11 @@ do
     cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+    cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
       WeakAuras.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
-        or event == "RUNE_POWER_UPDATE"
+        or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
         WeakAuras.CheckCooldownReady();
       elseif(event == "UNIT_SPELLCAST_SENT") then
