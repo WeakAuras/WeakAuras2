@@ -4256,6 +4256,27 @@ local function enrichDatabase()
   end
 end
 
+local function fixupIcons()
+  for className, class in pairs(templates.class) do
+    for specIndex, spec in pairs(class) do
+      for _, section in pairs(spec) do
+        for _, item in pairs(section.args) do
+          if (item.spell and item.type ~= "item") then
+            local icon = select(3, GetSpellInfo(item.spell));
+            if (icon) then
+              item.icon = icon;
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+local fixupIconsFrame = CreateFrame("frame");
+fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+fixupIconsFrame:SetScript("OnEvent", fixupIcons);
+
 enrichDatabase();
 
 itemInfoReceived:SetScript("OnEvent", function()
