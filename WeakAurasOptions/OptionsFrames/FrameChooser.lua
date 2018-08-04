@@ -51,10 +51,15 @@ function WeakAuras.StartFrameChooser(data, path)
         focusName = focus:GetName();
         if(focusName == "WorldFrame" or not focusName) then
           focusName = nil;
+          local focusIsGroup = false;
           for id, regionData in pairs(WeakAuras.regions) do
             if(regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
-              focus = regionData.region;
-              focusName = "WeakAuras:"..id;
+              local isGroup = regionData.regionType == "group" or regionData.regionType == "dynamicgroup";
+              if (not focusName or (not isGroup and focusIsGroup)) then
+                focus = regionData.region;
+                focusName = "WeakAuras:"..id;
+                focusIsGroup = focusIsGroup;
+              end
             end
           end
         end
