@@ -411,10 +411,10 @@ local function importPendingData()
   data.parent = nil
   -- handle sortHybridTable
   local hybridTables
-  if (data and data.sortHybridTable) or (oldData and oldData.sortHybridTable) then
+  if (data and data.sortHybridTable) or (mode ~= 1 and oldData and oldData.sortHybridTable) then
     hybridTables = {
       new = data and data.sortHybridTable or {},
-      old = oldData and oldData.sortHybridTable or {},
+      old = mode ~= 1 and oldData and oldData.sortHybridTable or {},
       merged = {},
     }
   end
