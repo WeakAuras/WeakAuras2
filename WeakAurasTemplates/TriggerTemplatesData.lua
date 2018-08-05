@@ -71,7 +71,7 @@ templates.typesDescription = {
     title = L["Spell"],
     description = L["Show if on Cooldown or Usable"],
   },
-  abilityTargeted = {
+  abilityTarget = {
     title = L["Spell"],
     description = L["Show the Cooldown, Range and Resource status"],
   },

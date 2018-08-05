@@ -597,13 +597,41 @@ function WeakAuras.CreateTemplateView(frame)
               WeakAuras.NewDisplayButton(newView.data);
               WeakAuras.PickDisplay(newView.data.id);
             else
-              -- TODO
-              print("make 3rd page")
+              -- create trigger type selection
+              newView.choosenItem = item;
+              createButtons();
             end
           end
         end);
         group:AddChild(button);
       end
+    end
+    return group;
+  end
+
+  local function createTriggerTypeButtons()
+    local item = newView.choosenItem;
+    local group = AceGUI:Create("WeakAurasTemplateGroup");
+    group:SetFullWidth(true);
+    for typePos,type in pairs(item.types) do
+      local button = AceGUI:Create("WeakAurasNewButton");
+      button:SetTitle(WeakAuras.triggerTemplates.typesDescription[type].title);
+      button:SetDescription(WeakAuras.triggerTemplates.typesDescription[type].description);
+      button:SetFullWidth(true);
+      button:SetClick(function()
+        replaceTrigger(newView.data, item, typePos);
+        replaceCondition(newView.data, item, typePos);
+        newView.data.id = WeakAuras.FindUnusedId(item.title);
+        newView.data.load = {};
+        if (item.load) then
+          WeakAuras.DeepCopy(item.load, newView.data.load);
+        end
+        newView:CancelClose();
+        WeakAuras.Add(newView.data);
+        WeakAuras.NewDisplayButton(newView.data);
+        WeakAuras.PickDisplay(newView.data.id);
+      end);
+      group:AddChild(button);
     end
     return group;
   end
@@ -773,6 +801,13 @@ function WeakAuras.CreateTemplateView(frame)
       else
         newView.backButton:Show();
       end
+    elseif (newView.data and newView.choosenItem) then
+      -- Multi-Type template
+      local typeHeader = AceGUI:Create("Heading");
+      typeHeader:SetFullWidth(true);
+      newViewScroll:AddChild(typeHeader);
+      local group = createTriggerTypeButtons();
+      newViewScroll:AddChild(group);
     else
       --Third Step: (only for existing auras): replace or add triggers?
       createLastPage();
