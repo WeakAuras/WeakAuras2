@@ -65,7 +65,11 @@ function WeakAuras.CreateTemplateView(frame)
         },
       };
       return conditions;
-    elseif (itemType == "abilityBuff" or itemType == "abilityDebuff") then
+    elseif (itemType == "abilityBuff"
+      or itemType == "abilityDebuff"
+      or itemType == "abilityChargeBuff"
+      or itemType == "abilityChargeDebuff")
+    then
       local conditions = {
         [1] = {
           check = {
@@ -96,7 +100,7 @@ function WeakAuras.CreateTemplateView(frame)
         [3] = {
           check = {
             trigger = 1,
-            variable = "onCooldown",
+            variable = (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") and "charges" or "onCooldown",
             value = 0,
           },
           changes = {
@@ -124,6 +128,29 @@ function WeakAuras.CreateTemplateView(frame)
           }
         }
       };
+      if (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
+        conditions[3].check.op = ">";
+      end
+      if (itemType == "abilityDebuff" or itemType == "abilityChargeDebuff") then
+        conditions[5] = {
+          check = {
+            trigger = 1,
+            variable = "spellInRange",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = {
+                [1] = 0.8,
+                [2] = 0.1,
+                [3] = 0.1,
+                [4] = 1,
+              },
+              property = "color",
+            }
+          }
+        };
+      end
       return conditions;
     elseif (itemType == "itemShowAlways") then
       local conditions = {
@@ -272,6 +299,72 @@ function WeakAuras.CreateTemplateView(frame)
         },
       };
       return conditions;
+    elseif (itemType == "abilityChargeTarget") then
+      local conditions = {
+        [1] = {
+          check = {
+            trigger = 0,
+            op = "==",
+            variable = "charges",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = true,
+              property = "desaturate",
+            },
+          },
+        },
+        [2] = {
+          check = {
+            trigger = 0,
+            variable = "spellInRange",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              value = {
+                [1] = 0.8,
+                [2] = 0.1,
+                [3] = 0.1,
+                [4] = 1,
+              },
+              property = "color",
+            },
+          },
+        },
+        [3] = {
+          check = {
+            trigger = -1,
+            variable = "hastarget",
+            value = 0,
+          },
+          changes = {
+            [1] = {
+              property = "color",
+            },
+          },
+        },
+        [4] = {
+          check = {
+            trigger = 0,
+            variable = "insufficientResources",
+            value = 1,
+          },
+          changes = {
+            [1] = {
+              value = {
+                [1] = 0.5,
+                [2] = 0.5,
+                [3] = 1,
+                [4] = 1,
+              },
+              property = "color",
+            },
+          },
+        },
+      };
+      return conditions;
     end
   end
 
@@ -320,16 +413,20 @@ function WeakAuras.CreateTemplateView(frame)
         triggers[0].trigger.spellId = item.spell;
       end
       return triggers
-    elseif (itemType == "abilityBuff" or itemType == "abilityDebuff") then
+    elseif (itemType == "abilityBuff"
+      or itemType == "abilityDebuff"
+      or itemType == "abilityChargeBuff"
+      or itemType == "abilityChargeDebuff")
+    then
       local triggers = {
         [0] = {
           trigger = {
-            unit = item.unit or itemType == "abilityBuff" and "player" or "target",
+            unit = item.unit or (itemType == "abilityBuff" or itemType == "abilityChargeBuff") and "player" or "target",
             type = "aura",
             spellIds = {
               item.spell
             },
-            debuffType = itemType == "abilityBuff" and "HELPFUL" or "HARMFUL",
+            debuffType = item.debuffType or (itemType == "abilityBuff" or itemType == "abilityChargeBuff") and "HELPFUL" or "HARMFUL",
             ownOnly = not item.forceOwnOnly and true or item.ownOnly,
           }
         },
@@ -345,7 +442,12 @@ function WeakAuras.CreateTemplateView(frame)
         }
       }
       return triggers;
-    elseif (itemType == "ability" or itemType == "abilityShowAlways" or itemType == "abilityTarget" or itemType == "abilityCharge") then
+    elseif (itemType == "ability"
+      or itemType == "abilityShowAlways"
+      or itemType == "abilityTarget"
+      or itemType == "abilityCharge"
+      or itemType == "abilityChargeTarget")
+    then
       local triggers = {
         [0] = {
           trigger = {
@@ -444,7 +546,12 @@ function WeakAuras.CreateTemplateView(frame)
     end
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
     -- add here template types with more than one trigger
-    if (item.types[typePos] == "abilityBuff" or item.types[typePos] == "abilityDebuff") then
+    local itemType = item.types[typePos];
+    if (itemType == "abilityBuff"
+      or itemType == "abilityDebuff"
+      or itemType == "abilityChargeBuff"
+      or itemType == "abilityChargeDebuff")
+    then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
     elseif (item.disjunctive) then
@@ -473,7 +580,12 @@ function WeakAuras.CreateTemplateView(frame)
     end
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
     -- add here template types with more than one trigger
-    if (itemType == "abilityBuff" or itemType == "abilityDebuff") then
+    local itemType = item.types[typePos];
+    if (itemType == "abilityBuff"
+      or itemType == "abilityDebuff"
+      or itemType == "abilityChargeBuff"
+      or itemType == "abilityChargeDebuff")
+    then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
     elseif (item.disjunctive) then
@@ -820,7 +932,11 @@ function WeakAuras.CreateTemplateView(frame)
     if (newView.existingAura) then
       newView.choosenItem = nil;
     else
-      newView.data = nil;
+      if newView.choosenItem then
+        newView.choosenItem = nil;
+      else
+        newView.data = nil;
+      end
     end
     createButtons();
   end);
