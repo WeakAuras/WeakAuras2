@@ -767,16 +767,15 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "toggle",
       name = L["Filter by Group Role"],
       order = 47.9,
-      disabled = true,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
-      get = function() return true end
     },
     group_role = {
       type = "select",
       name = L["Group Role"],
-      values = WeakAuras.group_roles,
+      values = WeakAuras.role_types,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
-      get = function() return trigger.group_role or "ANY"; end,
+      disabled = function() return not trigger.useGroupRole; end,
+      get = function() return trigger.group_role; end,
       order = 48
     },
     ignoreSelf = {

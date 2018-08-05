@@ -1565,7 +1565,7 @@ function BuffTrigger.Add(data)
           hideAlone = trigger.hideAlone,
           stack_info = trigger.stack_info,
           name_info = trigger.name_info,
-          group_role = trigger.group_role,
+          group_role =  trigger.useGroupRole and trigger.group_role,
           ignoreSelf = trigger.ignoreSelf
         };
       end
