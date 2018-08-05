@@ -64,6 +64,20 @@ function WeakAuras.CreateTemplateView(frame)
           },
         },
       };
+      if (itemType == "debuffShowAlways" and (not item.unit or item.unit == "target")) then
+        conditions[2] = {
+          ["check"] = {
+              ["trigger"] = -1,
+              ["variable"] = "hastarget",
+              ["value"] = 0,
+          },
+          ["changes"] = {
+              [1] = {
+                  ["property"] = "alpha",
+              }
+          }
+        };
+      end
       return conditions;
     elseif (itemType == "abilityBuff"
       or itemType == "abilityDebuff"
@@ -646,6 +660,9 @@ function WeakAuras.CreateTemplateView(frame)
 =======
 >>>>>>> minor adjustments on templates conditions
         newView.data.regionType = regionType;
+        if regionType == "icon" then
+          newView.data.cooldown = true;
+        end
         createButtons();
       end);
       group:AddChild(templateButton);
