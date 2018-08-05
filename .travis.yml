@@ -5,6 +5,9 @@ addons:
     packages:
     - luarocks
 
+git:
+  depth: 150
+
 install: luarocks install --local luacheck
 
 before_script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
