@@ -1302,13 +1302,13 @@ WeakAuras.group_aura_stack_info_types = {
   stack = L["Aura Stack"]
 }
 
-WeakAuras.group_roles = { 
-  ANY = L["Any"], 
-  TANK = L["Tanks"], 
-  HEALER = L["Healers"], 
-  DAMAGER = L["DPS"] 
-} 
-  
+WeakAuras.group_roles = {
+  ANY = L["Any"],
+  TANK = L["Tanks"],
+  HEALER = L["Healers"],
+  DAMAGER = L["DPS"]
+}
+
 WeakAuras.cast_types = {
   cast = L["Cast"],
   channel = L["Channel (Spell)"]

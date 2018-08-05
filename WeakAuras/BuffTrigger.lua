@@ -652,7 +652,7 @@ function WeakAuras.ScanAuras(unit)
                 end
               end
             end
-            
+
             local satisfies_role = true
             if data.group_role then
               satisfies_role = data.group_role == "ANY" or UnitGroupRolesAssigned(unit) == data.group_role
@@ -696,6 +696,9 @@ function WeakAuras.ScanAuras(unit)
               if(data.group_count) then
                 -- Query count from aura cache
                 local aura_count, max = aura_object:GetNumber(id, triggernum, data), aura_object:GetMaxNumber();
+                if (data.ignoreSelf) then
+                  max = max - 1;
+                end
                 local satisfies_count = data.group_count(aura_count, max);
 
                 if(data.hideAlone and not IsInGroup()) then
