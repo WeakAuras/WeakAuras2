@@ -47,305 +47,187 @@ function WeakAuras.CreateTemplateView(frame)
   end
 
   local function createConditionsFor(item, typePos)
-    local itemType = item.types[typePos]
-    if (itemType == "buffShowAlways" or itemType == "debuffShowAlways") then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            variable = "buffed",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = true,
-              property = "desaturate",
-            },
-          },
+    -- changes
+    local grey = {
+      value = {
+          0.5,
+          0.5,
+          0.5,
+          1,
+      },
+      property = "color",
+    };
+    local blue = {
+      value = {
+        0.5,
+        0.5,
+        1,
+        1,
+      },
+      property = "color",
+    };
+    local red = {
+      value = {
+        0.8,
+        0.1,
+        0.1,
+        1,
+      },
+      property = "color",
+    };
+    local white = {
+      value = {
+        1,
+        1,
+        1,
+        1,
+      },
+      property = "color",
+    };
+    local alpha = { property = "alpha" };
+    local inverse = {
+      value = false,
+      property = "inverse",
+    };
+    local glow = {
+      value = true,
+      property = "glow",
+    };
+
+    -- conditions
+    local spellInRange = function(t) return {
+        check = {
+          trigger = t,
+          variable = "spellInRange",
+          value = 0,
         },
+        changes = { red }
       };
-      if (itemType == "debuffShowAlways" and (not item.unit or item.unit == "target")) then
-        conditions[2] = {
-          ["check"] = {
-              ["trigger"] = -1,
-              ["variable"] = "hastarget",
-              ["value"] = 0,
-          },
-          ["changes"] = {
-              [1] = {
-                  ["property"] = "alpha",
-              }
-          }
-        };
-      end
-      return conditions;
-    elseif (itemType == "abilityBuff"
-      or itemType == "abilityDebuff"
-      or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff")
-    then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            variable = "buffed",
-            value = 1,
-          },
-          changes = {
-            [1] = {
-              value = false,
-              property = "inverse",
-            },
-          },
-        },
-        [2] = {
-          check = {
-            trigger = 1,
-            variable = "insufficientResources",
-            value = 1,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          }
-        },
-      };
-      --[[
-      if (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
-        conditions[#conditions+1] = {
-          check = {
-            trigger = 1,
-            variable = (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") and "charges" or "onCooldown",
-            op = "==",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        };
-      end
-      ]]--
-      if (itemType == "abilityDebuff" or itemType == "abilityChargeDebuff") then
-        conditions[#conditions+1] = {
-          check = {
-            trigger = 1,
-            variable = "spellInRange",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.8,
-                [2] = 0.1,
-                [3] = 0.1,
-                [4] = 1,
-              },
-              property = "color",
-            }
-          }
-        };
-      end
-      return conditions;
-    elseif (itemType == "abilityShowAlways") then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            variable = "insufficientResources",
-            value = 1,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          }
-        }
-      };
-      return conditions;
-    elseif (itemType == "abilityCharge") then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            op = "==",
-            variable = "charges",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        }
-      };
-      return conditions;
-    elseif (itemType == "abilityUsable") then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            variable = "spellInRange",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.8,
-                [2] = 0.1,
-                [3] = 0.1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        },
-        [2] = {
-          check = {
-            trigger = 1,
-            variable = "show",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value ={
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            }
-          }
-        }
-      };
-      return conditions;
-    elseif (itemType == "abilityTarget") then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            variable = "spellInRange",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.8,
-                [2] = 0.1,
-                [3] = 0.1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        },
-        [2] = {
-          check = {
-            trigger = 0,
-            variable = "insufficientResources",
-            value = 1,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        },
-      };
-      return conditions;
-    elseif (itemType == "abilityChargeTarget") then
-      local conditions = {
-        [1] = {
-          check = {
-            trigger = 0,
-            op = "==",
-            variable = "charges",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        },
-        [2] = {
-          check = {
-            trigger = 0,
-            variable = "spellInRange",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.8,
-                [2] = 0.1,
-                [3] = 0.1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        },
-        [3] = {
-          check = {
-            trigger = 0,
-            variable = "insufficientResources",
-            value = 1,
-          },
-          changes = {
-            [1] = {
-              value = {
-                [1] = 0.5,
-                [2] = 0.5,
-                [3] = 1,
-                [4] = 1,
-              },
-              property = "color",
-            },
-          },
-        },
-      };
-      return conditions;
     end
+    local hasTarget = {
+      check = {
+          trigger = -1,
+          variable = "hastarget",
+          value = 0,
+      },
+      changes = { alpha }
+    };
+    local insufficientResources = function(t) return {
+        check = {
+          trigger = t,
+          variable = "insufficientResources",
+          value = 1,
+        },
+        changes = { blue }
+      };
+    end
+    local buffed = function(t) return {
+        check = {
+          trigger = t,
+          variable = "buffed",
+          value = 1,
+        },
+        changes = {
+          inverse,
+          glow,
+          white
+        }
+      };
+    end
+    local buffedFalse = function(t) return {
+        check = {
+          trigger = t,
+          variable = "buffed",
+          value = 0,
+        },
+        changes = { grey }
+      };
+    end
+    local onCooldown = function(t) return {
+        check = {
+          trigger = t,
+          variable = "onCooldown",
+          value = 1,
+        },
+        changes = { grey }
+      };
+    end
+    local charges = function(t) return {
+        check = {
+          trigger = t,
+          op = "==",
+          variable = "charges",
+          value = 0,
+        },
+        changes = { grey }
+      };
+    end
+    local actionUsable = function(t) return {  -- Action Usable trigger needs to be the second
+        check = {
+          trigger = t,
+          variable = "show",
+          value = 0,
+        },
+        changes = { blue }
+      };
+    end
+
+    local itemType = item.types[typePos]
+    local conditions = {};
+
+    -- auras
+    if (itemType == "buffShowAlways" or itemType == "debuffShowAlways") then
+      conditions = { buffedFalse(0) };
+      if (itemType == "debuffShowAlways" and (not item.unit or item.unit == "target")) then
+        conditions[#conditions+1] = hasTarget;
+      end
+    -- abilitys with auras
+    elseif (itemType == "abilityBuff" or itemType == "abilityDebuff" or itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
+      conditions = { insufficientResources(1) };
+      if (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
+        conditions[#conditions+1] = charges(1);
+      else
+        conditions[#conditions+1] = onCooldown(1);
+      end
+      conditions[#conditions+1] = buffed(0);
+      if (itemType == "abilityDebuff" or itemType == "abilityChargeDebuff") then
+        conditions[#conditions+1] = spellInRange(1);
+      end
+    -- items
+    elseif (itemType == "itemShowAlways" ) then
+      conditions = { onCooldown(0) };
+    -- !!TODO (or not to do?) add itemBuff, itemDebuff, itemChargeBuff, itemChargeDebuff, itemCharge etc..
+    -- abilitys
+    elseif (itemType == "abilityShowAlways") then
+      conditions = {
+        insufficientResources(0),
+        onCooldown(0)
+      };
+    elseif (itemType == "abilityUsable") then
+      conditions = {
+        actionUsable(1),
+        onCooldown(0),
+        spellInRange(0)
+      };
+    elseif (itemType == "abilityTarget") then
+      conditions = {
+        insufficientResources(0),
+        onCooldown(0),
+        spellInRange(0)
+      };
+    elseif (itemType == "abilityCharge") then
+      conditions = {
+        insufficientResources(0),
+        charges(0)
+      };
+    elseif (itemType == "abilityChargeTarget") then
+      conditions = {
+        insufficientResources(0),
+        charges(0),
+        spellInRange(0)
+      };
+    end
+    return conditions;
   end
 
   local function replaceCondition(data, item, typePos)

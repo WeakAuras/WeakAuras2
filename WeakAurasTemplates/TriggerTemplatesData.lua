@@ -76,16 +76,16 @@ templates.typesDescription = {
     description = L["Show if on Cooldown or Usable"],
   },
   abilityTarget = {
-    title = L["Spell"],
-    description = L["Show the Cooldown, Range and Resource status"],
+    title = L["Spell + RangeCheck"],
+    description = L["Show the Cooldown or Usable, with Range Check"],
   },
   abilityCharge = {
     title = L["Spell"],
     description = L["Show if on Cooldown or Usable"],
   },
   abilityChargeTarget  = {
-    title = L["Spell"],
-    description = L["Show the Cooldown, Range and Resource status"],
+    title = L["Spell + RangeCheck"],
+    description = L["Show the Cooldown or Usable, with Range Check"],
   },
   abilityBuff = {
     title = L["Spell + Buff"],
@@ -2830,7 +2830,7 @@ templates.class.MONK = {
         { spell = 119381, types = {"ability","abilityShowAlways"}}, -- Leg Sweep
         { spell = 119996, types = {"ability","abilityShowAlways"}}, -- Transcendence: Transfer
         { spell = 122278, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Dampen Harm
-        { spell = 122470, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Touch of Karma
+        { spell = 122470, types = {"ability","abilityShowAlways","abilityDebuff"}}, -- Touch of Karma
         { spell = 122783, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 14 }, -- Diffuse Magic
         { spell = 123904, types = {"ability","abilityShowAlways"}, talent = 18 }, -- Invoke Xuen, the White Tiger
         { spell = 123986, types = {"ability","abilityShowAlways"}, talent = 3 }, -- Chi Burst
