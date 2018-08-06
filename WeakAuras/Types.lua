@@ -1596,7 +1596,6 @@ WeakAuras.internal_fields = {
   controlledChildren = true,
   parent = true,
   internalVersion = true,
-  regionType = true,
   sortHybridTable = true,
   expanded = true,
   parent = true,
