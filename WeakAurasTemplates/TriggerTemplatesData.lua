@@ -2923,41 +2923,42 @@ templates.class.DRUID = {
       args = {
         { spell = 768, types = {"ability","abilityShowAlways"}}, -- Cat Form
         { spell = 783, types = {"ability","abilityShowAlways"}}, -- Travel Form
-        { spell = 1850, types = {"ability","abilityShowAlways"}}, -- Dash
+        { spell = 1850, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Dash
         { spell = 2782, types = {"ability","abilityShowAlways"}}, -- Remove Corruption
-        { spell = 2908, types = {"ability","abilityShowAlways"}}, -- Soothe
+        { spell = 2908, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Soothe
         { spell = 5211, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Mighty Bash
         { spell = 5215, types = {"ability","abilityShowAlways"}}, -- Prowl
         { spell = 5487, types = {"ability","abilityShowAlways"}}, -- Bear Form
-        { spell = 6795, types = {"ability","abilityShowAlways"}}, -- Growl
+        { spell = 6795, types = {"ability","abilityShowAlways","abilityDebuff"}}, -- Growl
         { spell = 16979, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 18562, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Swiftmend
-        { spell = 20484, types = {"ability","abilityShowAlways"}}, -- Rebirth
-        { spell = 22812, types = {"ability","abilityShowAlways"}}, -- Barkskin
-        { spell = 22842, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Frenzied Regeneration
+        { spell = 20484, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Rebirth
+        { spell = 22812, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Barkskin
+        { spell = 22842, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 8 }, -- Frenzied Regeneration
         { spell = 24858, types = {"ability","abilityShowAlways"}}, -- Moonkin Form
         { spell = 29166, types = {"ability","abilityShowAlways"}}, -- Innervate
-        { spell = 33917, types = {"ability","abilityShowAlways"}}, -- Mangle
+        { spell = 33917, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Mangle
         { spell = 48438, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Wild Growth
         { spell = 49376, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 77758, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Thrash
-        { spell = 78675, types = {"ability","abilityShowAlways"}}, -- Solar Beam
+        { spell = 78675, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Solar Beam
         { spell = 102359, types = {"ability","abilityShowAlways"}, talent = 11 }, -- Mass Entanglement
         { spell = 102383, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 102401, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
-        { spell = 102560, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Incarnation: Chosen of Elune
+        { spell = 102560, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 15 }, -- Incarnation: Chosen of Elune
         { spell = 108238, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Renewal
         { spell = 132469, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Typhoon
-        { spell = 192081, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Ironfur
-        { spell = 194153, types = {"ability","abilityShowAlways"}}, -- Lunar Strike
+        { spell = 192081, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 8 }, -- Ironfur
+        { spell = 190984, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Solar Wrath                -- these two
+        { spell = 194153, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Lunar Strike               -- doesn't have a cooldown
         { spell = 194223, types = {"ability","abilityShowAlways"}}, -- Celestial Alignment
-        { spell = 202425, types = {"ability","abilityShowAlways"}, talent = 2 }, -- Warrior of Elune
-        { spell = 202770, types = {"ability","abilityShowAlways"}, talent = 20 }, -- Fury of Elune
+        { spell = 202425, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 2 }, -- Warrior of Elune
+        { spell = 202770, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 20 }, -- Fury of Elune
         { spell = 205636, types = {"ability","abilityShowAlways"}, talent = 3 }, -- Force of Nature
-        { spell = 252216, types = {"ability","abilityShowAlways"}, talent = 4 }, -- Tiger Dash
-        { spell = 274281, types = {"ability","abilityShowAlways"}, talent = 21 }, -- New Moon
-        { spell = 274282, types = {"ability","abilityShowAlways"}, talent = 21 }, -- Half Moon
-        { spell = 274283, types = {"ability","abilityShowAlways"}, talent = 21 }, -- Full Moon
+        { spell = 252216, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 4 }, -- Tiger Dash
+        { spell = 274281, types = {"ability","abilityChargeTarget"}, talent = 21 }, -- New Moon
+        { spell = 274282, types = {"ability","abilityChargeTarget"}, talent = 21 }, -- Half Moon
+        { spell = 274283, types = {"ability","abilityChargeTarget"}, talent = 21 }, -- Full Moon
       },
       icon = 136060
     },
@@ -3044,38 +3045,38 @@ templates.class.DRUID = {
       args = {
         { spell = 768, types = {"ability","abilityShowAlways"}}, -- Cat Form
         { spell = 783, types = {"ability","abilityShowAlways"}}, -- Travel Form
-        { spell = 1850, types = {"ability","abilityShowAlways"}}, -- Dash
+        { spell = 1850, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Dash
         { spell = 2782, types = {"ability","abilityShowAlways"}}, -- Remove Corruption
-        { spell = 2908, types = {"ability","abilityShowAlways"}}, -- Soothe
+        { spell = 2908, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Soothe
         { spell = 5211, types = {"ability","abilityShowAlways"}, talent = 10 }, -- Mighty Bash
         { spell = 5215, types = {"ability","abilityShowAlways"}}, -- Prowl
-        { spell = 5217, types = {"ability","abilityShowAlways"}}, -- Tiger's Fury
+        { spell = 5217, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Tiger's Fury
         { spell = 5487, types = {"ability","abilityShowAlways"}}, -- Bear Form
-        { spell = 6795, types = {"ability","abilityShowAlways"}}, -- Growl
+        { spell = 6795, types = {"ability","abilityShowAlways","abilityDebuff"}}, -- Growl
         { spell = 16979, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 18562, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Swiftmend
         { spell = 20484, types = {"ability","abilityShowAlways"}}, -- Rebirth
-        { spell = 22570, types = {"ability","abilityShowAlways"}}, -- Maim
-        { spell = 22842, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Frenzied Regeneration
-        { spell = 33917, types = {"ability","abilityShowAlways"}}, -- Mangle
+        { spell = 22570, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Maim
+        { spell = 22842, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 8 }, -- Frenzied Regeneration
+        { spell = 33917, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Mangle
         { spell = 48438, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Wild Growth
         { spell = 49376, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
-        { spell = 61336, types = {"ability","abilityShowAlways"}}, -- Survival Instincts
+        { spell = 61336, types = {"ability","abilityCharge","abilityChargeBuff"}}, -- Survival Instincts
         { spell = 77758, types = {"ability","abilityShowAlways"}}, -- Thrash
-        { spell = 102359, types = {"ability","abilityShowAlways"}, talent = 11 }, -- Mass Entanglement
+        { spell = 102359, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 11 }, -- Mass Entanglement
         { spell = 102401, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
-        { spell = 102543, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Incarnation: King of the Jungle
-        { spell = 106839, types = {"ability","abilityShowAlways"}}, -- Skull Bash
-        { spell = 106898, types = {"ability","abilityShowAlways"}}, -- Stampeding Roar
+        { spell = 102543, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 15 }, -- Incarnation: King of the Jungle
+        { spell = 106839, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Skull Bash
+        { spell = 106898, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Stampeding Roar
         { spell = 106951, types = {"ability","abilityShowAlways"}}, -- Berserk
         { spell = 108238, types = {"ability","abilityShowAlways"}, talent = 5 }, -- Renewal
         { spell = 132469, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Typhoon
-        { spell = 192081, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Ironfur
+        { spell = 192081, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 8 }, -- Ironfur
         { spell = 197625, types = {"ability","abilityShowAlways"}, talent = 7 }, -- Moonkin Form
-        { spell = 197626, types = {"ability","abilityShowAlways"}, talent = 7 }, -- Starsurge
-        { spell = 202028, types = {"ability","abilityShowAlways"}, talent = 17 }, -- Brutal Slash
-        { spell = 252216, types = {"ability","abilityShowAlways"}, talent = 4 }, -- Tiger Dash
-        { spell = 274837, types = {"ability","abilityShowAlways"}, talent = 21 }, -- Feral Frenzy
+        { spell = 197626, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 7 }, -- Starsurge
+        { spell = 202028, types = {"ability","abilityCharge"}, talent = 17 }, -- Brutal Slash
+        { spell = 252216, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 4 }, -- Tiger Dash
+        { spell = 274837, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 21 }, -- Feral Frenzy
       },
       icon = 236149
     },
@@ -3160,36 +3161,36 @@ templates.class.DRUID = {
         { spell = 99, types = {"ability","abilityShowAlways"}}, -- Incapacitating Roar
         { spell = 768, types = {"ability","abilityShowAlways"}}, -- Cat Form
         { spell = 783, types = {"ability","abilityShowAlways"}}, -- Travel Form
-        { spell = 1850, types = {"ability","abilityShowAlways"}}, -- Dash
+        { spell = 1850, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Dash
         { spell = 2782, types = {"ability","abilityShowAlways"}}, -- Remove Corruption
-        { spell = 5211, types = {"ability","abilityShowAlways"}, talent = 10 }, -- Mighty Bash
+        { spell = 5211, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 10 }, -- Mighty Bash
         { spell = 5215, types = {"ability","abilityShowAlways"}}, -- Prowl
         { spell = 5487, types = {"ability","abilityShowAlways"}}, -- Bear Form
-        { spell = 6795, types = {"ability","abilityShowAlways"}}, -- Growl
+        { spell = 6795, types = {"ability","abilityShowAlways","abilityDebuff"}}, -- Growl
         { spell = 16979, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 18562, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Swiftmend
-        { spell = 20484, types = {"ability","abilityShowAlways"}}, -- Rebirth
-        { spell = 22812, types = {"ability","abilityShowAlways"}}, -- Barkskin
-        { spell = 22842, types = {"ability","abilityShowAlways"}}, -- Frenzied Regeneration
-        { spell = 33917, types = {"ability","abilityShowAlways"}}, -- Mangle
+        { spell = 20484, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Rebirth
+        { spell = 22812, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Barkskin
+        { spell = 22842, types = {"ability","abilityCharge","abilityChargeBuff"}}, -- Frenzied Regeneration
+        { spell = 33917, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Mangle
         { spell = 48438, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Wild Growth
         { spell = 49376, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
-        { spell = 61336, types = {"ability","abilityShowAlways"}}, -- Survival Instincts
+        { spell = 61336, types = {"ability","abilityCharge","abilityChargeBuff"}}, -- Survival Instincts
         { spell = 77758, types = {"ability","abilityShowAlways"}}, -- Thrash
-        { spell = 102359, types = {"ability","abilityShowAlways"}, talent = 11 }, -- Mass Entanglement
+        { spell = 102359, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 11 }, -- Mass Entanglement
         { spell = 102383, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 102401, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
-        { spell = 102558, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Incarnation: Guardian of Ursoc
-        { spell = 106839, types = {"ability","abilityShowAlways"}}, -- Skull Bash
+        { spell = 102558, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 15 }, -- Incarnation: Guardian of Ursoc
+        { spell = 106839, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Skull Bash
         { spell = 106898, types = {"ability","abilityShowAlways"}}, -- Stampeding Roar
         { spell = 132469, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Typhoon
-        { spell = 155835, types = {"ability","abilityShowAlways"}, talent = 3 }, -- Bristling Fur
-        { spell = 192081, types = {"ability","abilityShowAlways"}}, -- Ironfur
+        { spell = 155835, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 3 }, -- Bristling Fur
+        { spell = 192081, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Ironfur
         { spell = 197625, types = {"ability","abilityShowAlways"}, talent = 7 }, -- Moonkin Form
         { spell = 197626, types = {"ability","abilityShowAlways"}, talent = 7 }, -- Starsurge
         { spell = 204066, types = {"ability","abilityShowAlways"}, talent = 20 }, -- Lunar Beam
         { spell = 236748, types = {"ability","abilityShowAlways"}, talent = 5 }, -- Intimidating Roar
-        { spell = 252216, types = {"ability","abilityShowAlways"}, talent = 4 }, -- Tiger Dash
+        { spell = 252216, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 4 }, -- Tiger Dash
       },
       icon = 236169
     },
@@ -3283,33 +3284,33 @@ templates.class.DRUID = {
         { spell = 740, types = {"ability","abilityShowAlways"}}, -- Tranquility
         { spell = 768, types = {"ability","abilityShowAlways"}}, -- Cat Form
         { spell = 783, types = {"ability","abilityShowAlways"}}, -- Travel Form
-        { spell = 1850, types = {"ability","abilityShowAlways"}}, -- Dash
-        { spell = 2908, types = {"ability","abilityShowAlways"}}, -- Soothe
+        { spell = 1850, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Dash
+        { spell = 2908, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Soothe
         { spell = 5211, types = {"ability","abilityShowAlways"}, talent = 10 }, -- Mighty Bash
         { spell = 5215, types = {"ability","abilityShowAlways"}}, -- Prowl
         { spell = 5487, types = {"ability","abilityShowAlways"}}, -- Bear Form
-        { spell = 6795, types = {"ability","abilityShowAlways"}}, -- Growl
+        { spell = 6795, types = {"ability","abilityShowAlways","abilityDebuff"}}, -- Growl
         { spell = 18562, types = {"ability","abilityShowAlways"}}, -- Swiftmend
         { spell = 20484, types = {"ability","abilityShowAlways"}}, -- Rebirth
-        { spell = 22812, types = {"ability","abilityShowAlways"}}, -- Barkskin
-        { spell = 22842, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Frenzied Regeneration
-        { spell = 29166, types = {"ability","abilityShowAlways"}}, -- Innervate
-        { spell = 33891, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Incarnation: Tree of Life
-        { spell = 33917, types = {"ability","abilityShowAlways"}}, -- Mangle
+        { spell = 22812, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Barkskin
+        { spell = 22842, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 9 }, -- Frenzied Regeneration
+        { spell = 29166, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Innervate
+        { spell = 33891, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 15 }, -- Incarnation: Tree of Life
+        { spell = 33917, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Mangle
         { spell = 48438, types = {"ability","abilityShowAlways"}}, -- Wild Growth
         { spell = 77758, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Thrash
         { spell = 102342, types = {"ability","abilityShowAlways"}}, -- Ironbark
         { spell = 102351, types = {"ability","abilityShowAlways"}, talent = 3 }, -- Cenarion Ward
-        { spell = 102359, types = {"ability","abilityShowAlways"}, talent = 11 }, -- Mass Entanglement
+        { spell = 102359, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 11 }, -- Mass Entanglement
         { spell = 102401, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Wild Charge
         { spell = 102793, types = {"ability","abilityShowAlways"}}, -- Ursol's Vortex
         { spell = 108238, types = {"ability","abilityShowAlways"}, talent = 5 }, -- Renewal
         { spell = 132469, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Typhoon
-        { spell = 192081, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Ironfur
+        { spell = 192081, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 9 }, -- Ironfur
         { spell = 197625, types = {"ability","abilityShowAlways"}, talent = 7 }, -- Moonkin Form
         { spell = 197626, types = {"ability","abilityShowAlways"}, talent = 7 }, -- Starsurge
         { spell = 197721, types = {"ability","abilityShowAlways"}, talent = 21 }, -- Flourish
-        { spell = 252216, types = {"ability","abilityShowAlways"}, talent = 4 }, -- Tiger Dash
+        { spell = 252216, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 4 }, -- Tiger Dash
       },
       icon = 236153
     },
