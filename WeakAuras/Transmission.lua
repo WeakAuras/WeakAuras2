@@ -469,73 +469,76 @@ local function importPendingData()
 
     -- now, the other side of the data may have some children which need to be handled
     if mode ~= 1 then
-      if preserveOldOrder and checkButtons.newchildren:GetChecked() and addedChildren > 0 then
-        -- we have children which need to be added
-        local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
-        for newIndex, data in ipairs(imports) do
-          local oldIndex = newToOld[newIndex]
-          if oldIndex then
-            nextInsert = oldIndex + 1
-          else
-            if nextInsert > highestInsert then
-              highestInsert = nextInsert
+      if preserveOldOrder then
+        if checkButtons.newchildren:GetChecked() and addedChildren > 0 then
+          -- we have children which need to be added
+          local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
+          for newIndex, data in ipairs(imports) do
+            local oldIndex = newToOld[newIndex]
+            if oldIndex then
+              nextInsert = oldIndex + 1
+            else
+              if nextInsert > highestInsert then
+                highestInsert = nextInsert
+              end
+              toInsert[nextInsert] = toInsert[nextInsert] or {}
+              tinsert(toInsert[nextInsert], data)
             end
-            toInsert[nextInsert] = toInsert[nextInsert] or {}
-            tinsert(toInsert[nextInsert], data)
+            coroutine.yield()
+          end
+          for index = highestInsert, 1, -1 do -- go backwards so that tinsert doesn't screw things up
+            if toInsert[index] then
+              for i = #toInsert[index], 1, -1 do
+                local data = toInsert[index][i]
+                local id = data.id
+                data.id = WeakAuras.FindUnusedId(id)
+                WeakAuras.Add(data)
+                tinsert(installedData, index, data)
+                if hybridTables and hybridTables.new[id] then
+                  hybridTables.merged[data.id] = true
+                end
+                coroutine.yield()
+              end
+            end
+          end
+        end
+      elseif deletedChildren > 0 then
+        if not checkButtons.oldchildren:GetChecked() then
+          -- we have existing children which need migrating
+          -- same algorithm as before, but mirror image
+          local nextInsert, highestInsert, toInsert, oldToNew = 1, 0, {}, indexMap.oldToNew
+          for oldIndex, data in ipairs(old) do
+            local newIndex = oldToNew[oldIndex]
+            if newIndex then
+              nextInsert = newIndex + 1
+            else
+              if nextInsert > highestInsert then
+                highestInsert = nextInsert
+              end
+              toInsert[nextInsert] = toInsert[nextInsert] or {}
+              tinsert(toInsert[nextInsert], data)
+            end
           end
           coroutine.yield()
-        end
-        for index = highestInsert, 1, -1 do -- go backwards so that tinsert doesn't screw things up
-          if toInsert[index] then
-            for i = #toInsert[index], 1, -1 do
-              local data = toInsert[index][i]
-              local id = data.id
-              data.id = WeakAuras.FindUnusedId(id)
-              WeakAuras.Add(data)
-              tinsert(installedData, index, data)
-              if hybridTables and hybridTables.new[id] then
-                hybridTables.merged[data.id] = true
+          for index = highestInsert, 1, -1 do -- go backwards so that tinsert doesn't screw things up
+            if toInsert[index] then
+              for i = #toInsert[index], 1, -1 do
+                local data = toInsert[index][i]
+                if hybridTables and hybridTables.old[data.id] then
+                  hybridTables.merged[data.id] = true
+                end
+                tinsert(installedData, index, data)
               end
+            end
+          end
+          coroutine.yield()
+        else-- we have children which need deleting
+          local oldToNew = indexMap.oldToNew
+          for oldIndex, oldData in ipairs(old) do
+            if not oldToNew[oldIndex] and WeakAuras.GetData(oldData.id) then
+              WeakAuras.DeleteOption(oldData)
               coroutine.yield()
             end
-          end
-        end
-      end
-      if not preserveOldOrder and not checkButtons.oldchildren:GetChecked() and deletedChildren > 0 then
-        -- we have existing children which need migrating
-        -- same algorithm as before, but mirror image
-        local nextInsert, highestInsert, toInsert, oldToNew = 1, 0, {}, indexMap.oldToNew
-        for oldIndex, data in ipairs(old) do
-          local newIndex = oldToNew[oldIndex]
-          if newIndex then
-            nextInsert = newIndex + 1
-          else
-            if nextInsert > highestInsert then
-              highestInsert = nextInsert
-            end
-            toInsert[nextInsert] = toInsert[nextInsert] or {}
-            tinsert(toInsert[nextInsert], data)
-          end
-        end
-        coroutine.yield()
-        for index = highestInsert, 1, -1 do -- go backwards so that tinsert doesn't screw things up
-          if toInsert[index] then
-            for i = #toInsert[index], 1, -1 do
-              local data = toInsert[index][i]
-              if hybridTables and hybridTables.old[data.id] then
-                hybridTables.merged[data.id] = true
-              end
-              tinsert(installedData, index, data)
-            end
-          end
-        end
-        coroutine.yield()
-      elseif deletedChildren > 0 then -- we have children which need deleting
-        local oldToNew = indexMap.oldToNew
-        for oldIndex, oldData in ipairs(old) do
-          if not oldToNew[oldIndex] then
-            WeakAuras.DeleteOption(oldData)
-            coroutine.yield()
           end
         end
       end
