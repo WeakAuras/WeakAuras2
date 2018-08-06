@@ -1507,11 +1507,6 @@ end
 
 WeakAuras.update_categories = {
   {
-    name = "name",
-    fields = {"id"},
-    label = L["Aura Names"],
-  },
-  {
     name = "anchor",
     fields = {
       "xOffset",
@@ -1527,6 +1522,19 @@ WeakAuras.update_categories = {
       "scale",
     },
     label = L["Size & Position"],
+  },
+  {
+    name = "name",
+    fields = {"id"},
+    label = L["Aura Names"],
+  },
+  {
+    name = "metadata",
+    fields = {
+      "url",
+      "desc",
+    },
+    label = L["Meta Data"],
   },
   {
     name = "display",
@@ -1589,8 +1597,6 @@ WeakAuras.internal_fields = {
   parent = true,
   internalVersion = true,
   regionType = true,
-  url = true,
-  desc = true,
   sortHybridTable = true,
   expanded = true,
   parent = true,
