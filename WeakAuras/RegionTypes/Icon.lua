@@ -254,6 +254,9 @@ local function configureText(fontString, icon, enabled, point, width, height, co
     local selfPoint = WeakAuras.inverse_point_types[point];
     fontString:SetPoint(selfPoint, icon, point, -0.5 * sxo, -0.5 * syo);
   end
+  -- WORKAROUND even more Blizzard stupidity. SetJustifyH doesn't seem to work with the hack from SetTextOnText
+  -- So reset here to automatic width
+  fontString:SetWidth(0);
   fontString:SetJustifyH(h);
   fontString:SetJustifyV(v);
   local fontPath = SharedMedia:Fetch("font", font);
