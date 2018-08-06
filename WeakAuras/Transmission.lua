@@ -1101,7 +1101,11 @@ local function recurseDiff(ours, theirs)
         end
       elseif ourVal ~= theirVal and -- of course, floating points can be nonequal by less than we could possibly care
       not(type(ourVal) == "number" and type(theirVal) == "number" and math.abs(ourVal - theirVal) < 1e-6) then
-        diff[key] = theirVal ~= nil and theirVal or deleted
+        if (theirVal == nil) then
+          diff[key] = deleted
+        else
+          diff[key] = theirVal;
+        end
         same = false
       end
     end
