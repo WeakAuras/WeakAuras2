@@ -1373,7 +1373,7 @@ templates.class.PRIEST = {
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
         { spell = 214621, type = "ability", talent = 3}, -- Schism
         { spell = 246287, type = "ability"}, -- Evangelism
-        { spell = 271466, type = "ability", talent = 21}, -- Luminous Barrier
+        { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
       },
       icon = 253400
