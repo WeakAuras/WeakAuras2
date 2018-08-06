@@ -2645,6 +2645,7 @@ local function removeSpellNames(data)
     if (trigger.spellIds) then
       for i = 1, 10 do
         if (trigger.spellIds[i]) then
+          trigger.names = trigger.names or {};
           trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
         end
       end
