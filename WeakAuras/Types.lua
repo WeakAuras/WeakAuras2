@@ -1576,7 +1576,18 @@ WeakAuras.update_categories = {
   },
   {
     name = "arrangement",
-    fields = {},
+    fields = {
+      "grow",
+      "space",
+      "stagger",
+      "sort",
+      "hybridPosition",
+      "radius",
+      "align",
+      "rotation",
+      "constantFactor",
+      "hybridSortMode",
+    },
     label = L["Group Arrangement"],
   },
   {
