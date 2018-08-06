@@ -37,8 +37,8 @@ local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
 
 -- Local functions
-local encodeB64, decodeB64, tableAdd, tableSubtract, GenerateUniqueID
-local CompressDisplay, DecompressDisplay, ShowTooltip, TableToString, StringToTable
+local encodeB64, decodeB64, tableSubtract, GenerateUniqueID
+local CompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
 local bytetoB64 = {
@@ -120,22 +120,6 @@ function decodeB64(str)
   return table.concat(bit8, "", 1, decoded_size)
 end
 
-function tableAdd(augend, addend)
-  local function recurse(augend, addend)
-    for i,v in pairs(addend) do
-      if(type(v) == "table") then
-        augend[i] = augend[i] or {};
-        recurse(augend[i], addend[i]);
-      else
-        if(augend[i] == nil) then
-          augend[i] = v;
-        end
-      end
-    end
-  end
-  recurse(augend, addend);
-end
-
 function tableSubtract(minuend, subtrahend)
   local function recurse(minuend, subtrahend)
     for i,v in pairs(subtrahend) do
@@ -203,11 +187,6 @@ function CompressDisplay(data)
   copiedData.regionType = regionType
 
   return copiedData;
-end
-
-function DecompressDisplay(data)
-  tableAdd(data, WeakAuras.data_stub)
-  tableAdd(data, WeakAuras.regionTypes[data.regionType].default)
 end
 
 local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
@@ -1672,11 +1651,9 @@ function WeakAuras.ImportString(str)
       -- prepare data to be shown as a tooltip and slotted into pendingData
       tooltipLoading = nil;
       local data, children, icon, icons = received.d, received.c, received.i, received.a
-      DecompressDisplay(data)
       WeakAuras.PreAdd(data)
       if children then
         for _, child in ipairs(children) do
-          DecompressDisplay(child)
           WeakAuras.PreAdd(child)
         end
       end
@@ -1745,11 +1722,9 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
     if(received.m == "d") and safeSenders[sender] then
       tooltipLoading = nil;
       local data, children, icon, icons = received.d, received.c, received.i, received.a
-      DecompressDisplay(data)
       WeakAuras.PreAdd(data)
       if children then
         for _, child in ipairs(children) do
-          DecompressDisplay(child)
           WeakAuras.PreAdd(child)
         end
       end
