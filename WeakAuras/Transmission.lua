@@ -181,10 +181,10 @@ function CompressDisplay(data)
   WeakAuras.DeepCopy(data, copiedData);
   copiedData.controlledChildren = nil;
   copiedData.parent = nil;
-  local regionType = copiedData.regionType
+  local regionType, internalVersion = copiedData.regionType, copiedData.internalVersion
   tableSubtract(copiedData, WeakAuras.regionTypes[regionType].default)
   tableSubtract(copiedData, WeakAuras.data_stub);
-  copiedData.regionType = regionType
+  copiedData.regionType, copiedData.internalVersion = regionType, internalVersion
 
   return copiedData;
 end
