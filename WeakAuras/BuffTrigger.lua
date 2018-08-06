@@ -87,6 +87,10 @@ do
   aura_cache.max = 0;
   aura_cache.watched = {};
   aura_cache.players = {};
+  aura_cache.TANK = 0;
+  aura_cache.HEALER = 0;
+  aura_cache.DAMAGER = 0;
+  aura_cache.playerRole = "NONE";
 
   --- Tests if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount.
   -- Extra check needed because aura_cache can potentially contain data of two different triggers with different settings!
@@ -716,9 +720,18 @@ function WeakAuras.ScanAuras(unit)
               -- unit=group require valid count function
               if(data.group_count) then
                 -- Query count from aura cache
-                local aura_count, max = aura_object:GetNumber(id, triggernum, data), aura_object:GetMaxNumber();
-                if (data.ignoreSelf) then
-                  max = max - 1;
+                local aura_count = aura_object:GetNumber(id, triggernum, data)
+                local max
+                if (data.group_role) then
+                  max = aura_cache[data.group_role]
+                  if (data.ignoreSelf and aura_cache.playerRole == data.group_role) then
+                    max = max - 1;
+                  end
+                else
+                  max = aura_object:GetMaxNumber();
+                  if (data.ignoreSelf) then
+                    max = max - 1;
+                  end
                 end
                 local satisfies_count = data.group_count(aura_count, max);
 
@@ -839,11 +852,19 @@ end
 
 local function GroupRosterUpdate(event)
   WeakAuras.StartProfileSystem("bufftrigger");
+  aura_cache.TANK = 0;
+  aura_cache.HEALER = 0;
+  aura_cache.DAMAGER = 0;
+  aura_cache.playerRole = "NONE";
   local recheck = false;
-  local groupMembers,playerName,uid,guid = {};
+  local groupMembers,playerName,uid,guid, role = {};
   if IsInRaid() then
     for i=1, GetNumGroupMembers() do
       uid = WeakAuras.raidUnits[i];
+      role = UnitGroupRolesAssigned(uid)
+      if aura_cache[role] then
+        aura_cache[role] = aura_cache[role] + 1;
+      end
       playerName = GetUnitName(uid,true);
       playerName = playerName:gsub("-", " - ");
       if (playerName == UNKNOWNOBJECT) then
@@ -854,9 +875,15 @@ local function GroupRosterUpdate(event)
         groupMembers[guid] = playerName;
       end
     end
+    role = UnitGroupRolesAssigned("player")
+    aura_cache.playerRole = role;
   elseif IsInGroup() then
     for i=1, GetNumSubgroupMembers() do
       uid = WeakAuras.partyUnits[i];
+      role = UnitGroupRolesAssigned(uid)
+      if (aura_cache[role]) then
+        aura_cache[role] = aura_cache[role] + 1;
+      end
       guid = UnitGUID(uid);
       local playerName = GetUnitName(uid,true);
       if (playerName == UNKNOWNOBJECT) then
@@ -865,6 +892,11 @@ local function GroupRosterUpdate(event)
       if (guid) then
         groupMembers[guid] = playerName;
       end
+    end
+    role = UnitGroupRolesAssigned("player")
+    if (aura_cache[role]) then
+      aura_cache[role] = aura_cache[role] + 1;
+      aura_cache.playerRole = role;
     end
   end
 
