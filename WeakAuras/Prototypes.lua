@@ -2121,7 +2121,7 @@ WeakAuras.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "bool",
-        conditionTest = "state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellname, 'target') == 1) == (%s == 1)",
+        conditionTest = "state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellname, 'target') == %s)",
         conditionEvents = {
           "PLAYER_TARGET_CHANGED",
           "WA_SPELL_RANGECHECK",
