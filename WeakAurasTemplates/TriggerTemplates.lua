@@ -268,18 +268,6 @@ function WeakAuras.CreateTemplateView(frame)
         },
         [2] = {
           check = {
-            trigger = -1,
-            variable = "hastarget",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              property = "color",
-            },
-          },
-        },
-        [3] = {
-          check = {
             trigger = 0,
             variable = "insufficientResources",
             value = 1,
@@ -338,18 +326,6 @@ function WeakAuras.CreateTemplateView(frame)
           },
         },
         [3] = {
-          check = {
-            trigger = -1,
-            variable = "hastarget",
-            value = 0,
-          },
-          changes = {
-            [1] = {
-              property = "color",
-            },
-          },
-        },
-        [4] = {
           check = {
             trigger = 0,
             variable = "insufficientResources",
