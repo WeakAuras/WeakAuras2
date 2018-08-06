@@ -720,7 +720,7 @@ function WeakAuras.ScanAuras(unit)
               -- unit=group require valid count function
               if(data.group_count) then
                 -- Query count from aura cache
-                llocal aura_count = aura_object:GetNumber(id, triggernum, data)
+                local aura_count = aura_object:GetNumber(id, triggernum, data)
                 local max
                 if (data.group_role) then
                   max = aura_cache[data.group_role]
