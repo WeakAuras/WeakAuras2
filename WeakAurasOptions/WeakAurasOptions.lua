@@ -439,8 +439,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               trigger["use_"..realname] = true;
             else
               local value = trigger["use_"..realname];
-              if(value == false) then trigger["use_"..realname] = nil;
-              else trigger["use_"..realname] = false end
+              if(value == false) then
+                trigger["use_"..realname] = nil;
+              else
+                trigger["use_"..realname] = false
+              end
             end
             WeakAuras.Add(data);
             if (reloadOptions) then
@@ -480,9 +483,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               trigger["use_"..realname] = true;
             else
               local value = trigger["use_"..realname];
-              if(value == false) then trigger["use_"..realname] = nil;
+              if(value == false) then
+                trigger["use_"..realname] = nil;
               else
                 trigger["use_"..realname] = false
+                trigger[realname] = trigger[realname] or {};
                 if(trigger[realname].single) then
                   trigger[realname].multi = trigger[realname].multi or {};
                   trigger[realname].multi[trigger[realname].single] = true;

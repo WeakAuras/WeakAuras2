@@ -584,9 +584,9 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
             end
           elseif(arg.type == "multiselect") then
             if(trigger["use_"..name] == false) then -- multi selection
-              test = "(";
               local any = false;
               if (trigger[name] and trigger[name].multi) then
+                test = "(";
                 for value, _ in pairs(trigger[name].multi) do
                   if not arg.test then
                     test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";

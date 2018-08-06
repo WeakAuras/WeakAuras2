@@ -799,6 +799,16 @@ WeakAuras.load_prototype = {
       end,
     },
     {
+      name = "talent3",
+      display = L["And Talent selected"],
+      type = "multiselect",
+      values = valuesForTalentFunction,
+      test = "WeakAuras.CheckTalentByIndex(%d)",
+      enable = function(trigger)
+        return (trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil;
+      end,
+    },
+    {
       name = "pvptalent",
       display = L["PvP Talent selected"],
       type = "multiselect",
