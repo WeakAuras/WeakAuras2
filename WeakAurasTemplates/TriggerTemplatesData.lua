@@ -231,30 +231,32 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, types = {"ability","abilityShowAlways"}}, -- Charge
-        { spell = 355, types = {"ability","abilityShowAlways"}}, -- Taunt
+        { spell = 100, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
+        { spell = 100, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 4}, -- Charge
+        { spell = 355, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Taunt
         { spell = 845, types = {"ability","abilityShowAlways"}, talent = 15}, -- Cleave
-        { spell = 5246, types = {"ability","abilityShowAlways"}}, -- Intimidating Shout
+        { spell = 5246, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Intimidating Shout
         { spell = 6544, types = {"ability","abilityShowAlways"}}, -- Heroic Leap
-        { spell = 6552, types = {"ability","abilityShowAlways"}}, -- Pummel
+        { spell = 6552, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Pummel
         { spell = 6673, types = {"ability","abilityShowAlways"}}, -- Battle Shout
-        { spell = 7384, types = {"ability","abilityShowAlways"}}, -- Overpower
-        { spell = 12294, types = {"ability","abilityShowAlways"}}, -- Mortal Strike
-        { spell = 18499, types = {"ability","abilityShowAlways"}}, -- Berserker Rage
-        { spell = 57755, types = {"ability","abilityShowAlways"}}, -- Heroic Throw
-        { spell = 97462, types = {"ability","abilityShowAlways"}}, -- Rallying Cry
-        { spell = 107570, types = {"ability","abilityShowAlways"}, talent = 6}, -- Storm Bolt
-        { spell = 107574, types = {"ability","abilityShowAlways"}, talent = 17}, -- Avatar
-        { spell = 118038, types = {"ability","abilityShowAlways"}}, -- Die by the Sword
+        { spell = 7384, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {19,21}}, -- Overpower      !!TODO: add prefix or name or something when 2 times same talent
+        { spell = 7384, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 20}, -- Overpower
+        { spell = 12294, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Mortal Strike
+        { spell = 18499, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Berserker Rage
+        { spell = 57755, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Heroic Throw
+        { spell = 97462, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Rallying Cry
+        { spell = 107570, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}, talent = 6}, -- Storm Bolt
+        { spell = 107574, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 17}, -- Avatar
+        { spell = 118038, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Die by the Sword
         { spell = 152277, types = {"ability","abilityShowAlways"}, talent = 21}, -- Ravager
-        { spell = 167105, types = {"ability","abilityShowAlways"}}, -- Colossus Smash
-        { spell = 202168, types = {"ability","abilityShowAlways"}}, -- Impending Victory
+        { spell = 167105, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Colossus Smash
+        { spell = 202168, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Impending Victory
         { spell = 212520, types = {"ability","abilityShowAlways"}, talent = 12}, -- Defensive Stance
         { spell = 227847, types = {"ability","abilityShowAlways"}}, -- Bladestorm
-        { spell = 260643, types = {"ability","abilityShowAlways"}, talent = 3}, -- Skullsplitter
-        { spell = 260708, types = {"ability","abilityShowAlways"}}, -- Sweeping Strikes
-        { spell = 262161, types = {"ability","abilityShowAlways"}, talent = 14}, -- Warbreaker
-        { spell = 262228, types = {"ability","abilityShowAlways"}, talent = 18}, -- Deadly Calm
+        { spell = 260643, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 3}, -- Skullsplitter
+        { spell = 260708, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Sweeping Strikes
+        { spell = 262161, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}, talent = 14}, -- Warbreaker
+        { spell = 262228, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 18}, -- Deadly Calm
       },
       icon = 132355
     },
@@ -319,25 +321,26 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, types = {"ability","abilityShowAlways"}}, -- Charge
-        { spell = 355, types = {"ability","abilityShowAlways"}}, -- Taunt
-        { spell = 1719, types = {"ability","abilityShowAlways"}}, -- Recklessness
+        { spell = 100, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
+        { spell = 100, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 4}, -- Charge
+        { spell = 355, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Taunt
+        { spell = 1719, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Recklessness
         { spell = 5246, types = {"ability","abilityShowAlways"}}, -- Intimidating Shout
-        { spell = 5308, types = {"ability","abilityShowAlways"}}, -- Execute
+        { spell = 5308, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Execute
         { spell = 6544, types = {"ability","abilityShowAlways"}}, -- Heroic Leap
-        { spell = 6552, types = {"ability","abilityShowAlways"}}, -- Pummel
+        { spell = 6552, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Pummel
         { spell = 6673, types = {"ability","abilityShowAlways"}}, -- Battle Shout
-        { spell = 18499, types = {"ability","abilityShowAlways"}}, -- Berserker Rage
-        { spell = 23881, types = {"ability","abilityShowAlways"}}, -- Bloodthirst
+        { spell = 18499, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Berserker Rage
+        { spell = 23881, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Bloodthirst
         { spell = 46924, types = {"ability","abilityShowAlways"}, talent = 18}, -- Bladestorm
-        { spell = 57755, types = {"ability","abilityShowAlways"}}, -- Heroic Throw
-        { spell = 85288, types = {"ability","abilityShowAlways"}}, -- Raging Blow
-        { spell = 97462, types = {"ability","abilityShowAlways"}}, -- Rallying Cry
-        { spell = 107570, types = {"ability","abilityShowAlways"}, talent = 6}, -- Storm Bolt
+        { spell = 57755, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Heroic Throw
+        { spell = 85288, types = {"ability","abilityCharge","abilityChargeTarget"}}, -- Raging Blow
+        { spell = 97462, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Rallying Cry
+        { spell = 107570, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}, talent = 6}, -- Storm Bolt
         { spell = 118000, types = {"ability","abilityShowAlways"}, talent = 17}, -- Dragon Roar
-        { spell = 184364, types = {"ability","abilityShowAlways"}}, -- Enraged Regeneration
-        { spell = 202168, types = {"ability","abilityShowAlways"}, talent = 5}, -- Impending Victory
-        { spell = 280772, types = {"ability","abilityShowAlways"}, talent = 21}, -- Siegebreaker
+        { spell = 184364, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Enraged Regeneration
+        { spell = 202168, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 5}, -- Impending Victory
+        { spell = 280772, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}, talent = 21}, -- Siegebreaker
 
       },
       icon = 136012
@@ -409,28 +412,28 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 355, types = {"ability","abilityShowAlways"}}, -- Taunt
-        { spell = 871, types = {"ability","abilityShowAlways"}}, -- Shield Wall
-        { spell = 1160, types = {"ability","abilityShowAlways"}}, -- Demoralizing Shout
-        { spell = 2565, types = {"ability","abilityShowAlways"}}, -- Shield Block
-        { spell = 5246, types = {"ability","abilityShowAlways"}}, -- Intimidating Shout
+        { spell = 355, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Taunt
+        { spell = 871, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Shield Wall
+        { spell = 1160, types = {"ability","abilityShowAlways","abilityDebuff"}}, -- Demoralizing Shout
+        { spell = 2565, types = {"ability","abilityCharge","abilityChargeBuff"}}, -- Shield Block
+        { spell = 5246, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Intimidating Shout
         { spell = 6343, types = {"ability","abilityShowAlways"}}, -- Thunder Clap
         { spell = 6544, types = {"ability","abilityShowAlways"}}, -- Heroic Leap
-        { spell = 6552, types = {"ability","abilityShowAlways"}}, -- Pummel
+        { spell = 6552, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Pummel
         { spell = 6572, types = {"ability","abilityShowAlways"}}, -- Revenge
         { spell = 6673, types = {"ability","abilityShowAlways"}}, -- Battle Shout
-        { spell = 12975, types = {"ability","abilityShowAlways"}}, -- Last Stand
-        { spell = 18499, types = {"ability","abilityShowAlways"}}, -- Berserker Rage
-        { spell = 23920, types = {"ability","abilityShowAlways"}}, -- Spell Reflection
-        { spell = 23922, types = {"ability","abilityShowAlways"}}, -- Shield Slam
+        { spell = 12975, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Last Stand
+        { spell = 18499, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Berserker Rage
+        { spell = 23920, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Spell Reflection
+        { spell = 23922, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Shield Slam
         { spell = 46968, types = {"ability","abilityShowAlways"}}, -- Shockwave
-        { spell = 57755, types = {"ability","abilityShowAlways"}}, -- Heroic Throw
+        { spell = 57755, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Heroic Throw
         { spell = 97462, types = {"ability","abilityShowAlways"}}, -- Rallying Cry
-        { spell = 107570, types = {"ability","abilityShowAlways"}, talent = 15}, -- Storm Bolt
-        { spell = 107574, types = {"ability","abilityShowAlways"}}, -- Avatar
+        { spell = 107570, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}, talent = 15}, -- Storm Bolt
+        { spell = 107574, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Avatar
         { spell = 118000, types = {"ability","abilityShowAlways"}, talent = 9}, -- Dragon Roar
-        { spell = 198304, types = {"ability","abilityShowAlways"}}, -- Intercept
-        { spell = 202168, types = {"ability","abilityShowAlways"}, talent = 3}, -- Impending Victory
+        { spell = 198304, types = {"ability","abilityCharge","abilityChargeTarget"}}, -- Intercept
+        { spell = 202168, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 3}, -- Impending Victory
         { spell = 228920, types = {"ability","abilityShowAlways"}, talent = 21}, -- Ravager
 
       },
@@ -4249,11 +4252,19 @@ local function handleItem(item)
   end
   if (item.talent) then
     item.load = item.load or {};
-    item.load.use_talent = true;
-    item.load.talent = {
-      single = item.talent;
-      multi = {};
-    }
+    if type(item.talent) == "table" then
+      item.load.talent = { multi = {} };
+      for _,v in pairs(item.talent) do
+        item.load.talent.multi[v] = true;
+      end
+      item.load.use_talent = false;
+    else
+      item.load.talent = {
+        single = item.talent;
+        multi = {};
+      };
+      item.load.use_talent = true;
+    end
   end
   if (item.pvptalent) then
     item.load = item.load or {};
