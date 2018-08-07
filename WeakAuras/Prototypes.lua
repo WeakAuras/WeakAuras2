@@ -675,11 +675,11 @@ WeakAuras.load_prototype = {
       optional = true
     },
     {
-      name = "petbattle",
-      display = L["In Pet Battle"],
+      name = "warmode",
+      display = L["War Mode Active"],
       type = "tristate",
       init = "arg",
-      width = "normal",
+      width = "double",
       optional = true
     },
     {
@@ -688,6 +688,14 @@ WeakAuras.load_prototype = {
       type = "toggle",
       width = "normal",
       init = "false"
+    },
+    {
+      name = "petbattle",
+      display = L["In Pet Battle"],
+      type = "tristate",
+      init = "arg",
+      width = "normal",
+      optional = true
     },
     {
       name = "vehicle",
