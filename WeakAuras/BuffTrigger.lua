@@ -743,7 +743,7 @@ function WeakAuras.ScanAuras(unit)
                 if(satisfies_count) then
                   -- Update clones (show)
                   if(data.groupclone) then
-                    for guid, playerName in pairs(groupcloneToUpdate) do
+                    for guid, playerName in pairs(aura_cache.players) do
                       local duration, expirationTime, name, icon, count, spellId, unitCaster = aura_object:GetPlayerDynamicInfo(id, triggernum, guid, data);
                       if(name ~= "") then
                         if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
