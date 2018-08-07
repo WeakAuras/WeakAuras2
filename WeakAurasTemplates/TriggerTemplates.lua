@@ -127,11 +127,7 @@ function WeakAuras.CreateTemplateView(frame)
           variable = "buffed",
           value = 1,
         },
-        changes = {
-          inverse,
-          glow,
-          white
-        }
+        changes = { inverse, glow, white }
       };
     end
     local buffedFalse = function(t) return {
@@ -162,7 +158,7 @@ function WeakAuras.CreateTemplateView(frame)
         changes = { grey }
       };
     end
-    local actionUsable = function(t) return {  -- Action Usable trigger needs to be the second
+    local actionUsable = function(t) return {
         check = {
           trigger = t,
           variable = "show",
@@ -171,8 +167,17 @@ function WeakAuras.CreateTemplateView(frame)
         changes = { blue }
       };
     end
+    local totem = function(t) return {
+        check = {
+          trigger = t,
+          variable = "show",
+          value = 1,
+        },
+        changes = { inverse, glow, white }
+      };
+    end
 
-    local itemType = item.types[typePos]
+    local itemType = item.types[typePos];
     local conditions = {};
 
     -- auras
@@ -181,7 +186,7 @@ function WeakAuras.CreateTemplateView(frame)
       if (itemType == "debuffShowAlways" and (not item.unit or item.unit == "target")) then
         conditions[#conditions+1] = hasTarget;
       end
-    -- abilitys with auras
+    -- abilities with auras
     elseif (itemType == "abilityBuff" or itemType == "abilityDebuff" or itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
       conditions = { insufficientResources(1) };
       if (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
@@ -190,14 +195,14 @@ function WeakAuras.CreateTemplateView(frame)
         conditions[#conditions+1] = onCooldown(1);
       end
       conditions[#conditions+1] = buffed(0);
-      if (itemType == "abilityDebuff" or itemType == "abilityChargeDebuff") then
+      if (itemType == "abilityDebuff" or itemType == "abilityChargeDebuff" or (itemType == "abilityBuff" and item.unit and item.unit=="target")) then
         conditions[#conditions+1] = spellInRange(1);
       end
     -- items
     elseif (itemType == "itemShowAlways" ) then
       conditions = { onCooldown(0) };
     -- !!TODO (or not to do?) add itemBuff, itemDebuff, itemChargeBuff, itemChargeDebuff, itemCharge etc..
-    -- abilitys
+    -- abilities
     elseif (itemType == "abilityShowAlways") then
       conditions = {
         insufficientResources(0),
@@ -225,6 +230,16 @@ function WeakAuras.CreateTemplateView(frame)
         insufficientResources(0),
         charges(0),
         spellInRange(0)
+      };
+    elseif (itemType == "abilityTotem") then
+      conditions = {
+        onCooldown(1),
+        totem(0),
+      };
+    elseif (itemType == "abilityChargeTotem") then
+      conditions = {
+        charges(1),
+        totem(0),
       };
     end
     return conditions;
@@ -359,6 +374,29 @@ function WeakAuras.CreateTemplateView(frame)
         }
       };
       return triggers;
+    elseif (itemType == "abilityTotem" or itemType == "abilityChargeTotem") then
+      local triggers = {
+        [0] = {
+          trigger = {
+            type = "status",
+            event = "Totem",
+            use_totemName = true,
+            totemName = GetSpellInfo(item.spell),
+            unevent = "auto"
+          }
+        },
+        [1] = {
+          trigger = {
+            event = "Cooldown Progress (Spell)",
+            spellName = item.spell,
+            type = "status",
+            unevent = "auto",
+            genericShowOn = item.showOn or "showAlways",
+            use_genericShowOn = true,
+          },
+        }
+      };
+      return triggers;
     elseif (itemType == "totem") then
       local triggers = {
         [0] = {
@@ -366,7 +404,7 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             event = "Totem",
             use_totemName = true,
-            totemName = item.spell,
+            totemName = GetSpellInfo(item.spell),
             unevent = "auto"
           }
         }
@@ -434,7 +472,9 @@ function WeakAuras.CreateTemplateView(frame)
     if (itemType == "abilityBuff"
       or itemType == "abilityDebuff"
       or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff")
+      or itemType == "abilityChargeDebuff"
+      or itemType == "abilityTotem"
+      or itemType == "abilityChargeTotem")
     then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
@@ -471,7 +511,9 @@ function WeakAuras.CreateTemplateView(frame)
     if (itemType == "abilityBuff"
       or itemType == "abilityDebuff"
       or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff")
+      or itemType == "abilityChargeDebuff"
+      or itemType == "abilityTotem"
+      or itemType == "abilityChargeTotem")
     then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
