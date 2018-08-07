@@ -42,8 +42,8 @@ local function getRect(data, region)
   local blx, bly, trx, try;
   blx, bly = data.xOffset or 0, data.yOffset or 0;
 
-  local width = data.width or region.width
-  local height = data.height or region.height
+  local width = data.width or (region and  region.width)
+  local height = data.height or (region and  region.height)
 
   if width == nil or height == nil then
     return blx, bly, blx, bly;
