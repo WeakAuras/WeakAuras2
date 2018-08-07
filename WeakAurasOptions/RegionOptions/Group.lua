@@ -389,7 +389,7 @@ local function createOptions(id, data)
         local xOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
-          local chlidRegion = WeakAuras.GetRegion(childRegion)
+          local childRegion = WeakAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v > 0) then
               if(childData.selfPoint:find("LEFT")) then
