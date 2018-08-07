@@ -231,16 +231,16 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
-        { spell = 100, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 4}, -- Charge
+        { spell = 100, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {5,6}}, -- Charge
+        { spell = 100, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
         { spell = 355, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Taunt
         { spell = 845, types = {"ability","abilityShowAlways"}, talent = 15}, -- Cleave
         { spell = 5246, types = {"ability","abilityShowAlways","abilityTarget","abilityDebuff"}}, -- Intimidating Shout
         { spell = 6544, types = {"ability","abilityShowAlways"}}, -- Heroic Leap
         { spell = 6552, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Pummel
         { spell = 6673, types = {"ability","abilityShowAlways"}}, -- Battle Shout
-        { spell = 7384, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {19,21}}, -- Overpower      !!TODO: add prefix or name or something when 2 times same talent
-        { spell = 7384, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 20}, -- Overpower
+        { spell = 7384, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {19,21}}, -- Overpower
+        { spell = 7384, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 20, titleSuffix=" (2 Charges)"}, -- Overpower
         { spell = 12294, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Mortal Strike
         { spell = 18499, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Berserker Rage
         { spell = 57755, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Heroic Throw
@@ -1717,7 +1717,8 @@ templates.class.SHAMAN = {
         { spell = 32182, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Heroism
         { spell = 2825, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Bloodlust
         { spell = 51490, types = {"ability","abilityShowAlways"}}, -- Thunderstorm
-        { spell = 51505, types = {"ability","abilityCharge","abilityChargeTarget"}}, -- Lava Burst
+        { spell = 51505, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {1,3}}, -- Lava Burst
+        { spell = 51505, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 2, titleSuffix = " (2 Charges)"}, -- Lava Burst
         { spell = 51514, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Hex
         { spell = 51886, types = {"ability","abilityShowAlways"}}, -- Cleanse Spirit
         { spell = 57994, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Wind Shear
@@ -1916,15 +1917,18 @@ templates.class.SHAMAN = {
       args = {
         { spell = 556, types = {"ability","abilityShowAlways"}}, -- Astral Recall
         { spell = 2484, types = {"ability","abilityShowAlways","abilityTotem"}}, -- Earthbind Totem
-        { spell = 5394, types = {"ability","abilityShowAlways","abilityTotem"}}, -- Healing Stream Totem
+        { spell = 5394, types = {"ability","abilityShowAlways","abilityTotem"}, talent = {5,6}}, -- Healing Stream Totem
+        { spell = 5394, types = {"ability","abilityCharge","abilityChargeTotem"}, talent = 4, titleSuffix = " (2 Charges)"}, -- Healing Stream Totem
         { spell = 8143, types = {"ability","abilityShowAlways","abilityTotem"}}, -- Tremor Totem
         { spell = 32182, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Heroism
         { spell = 2825, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Bloodlust
         { spell = 51485, types = {"ability","abilityShowAlways","abilityTotem"}, talent = 8 }, -- Earthgrab Totem
-        { spell = 51505, types = {"ability","abilityCharge","abilityChargeTarget"}}, -- Lava Burst
+        { spell = 51505, types = {"ability","abilityShowAlways","abilityTarget"}, talent = {5,6}}, -- Lava Burst
+        { spell = 51505, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 4, titleSuffix = " (2 Charges)"}, -- Lava Burst
         { spell = 51514, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Hex
         { spell = 57994, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Wind Shear
-        { spell = 61295, types = {"ability","abilityCharge"}}, -- Riptide
+        { spell = 61295, types = {"ability","abilityShowAlways"}, talent = {5,6}}, -- Riptide
+        { spell = 61295, types = {"ability","abilityCharge"}, talent = 4, titleSuffix = " (2 Charges)"}, -- Riptide
         { spell = 73685, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 3 }, -- Unleash Life
         { spell = 73920, types = {"ability","abilityShowAlways"}}, -- Healing Rain
         { spell = 79206, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Spiritwalker's Grace
