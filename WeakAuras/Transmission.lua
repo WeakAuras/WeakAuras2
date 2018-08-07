@@ -404,17 +404,17 @@ local function importPendingData()
   -- handle children, if there are any
   if #imports > 0 then
     local parentData = installedData[0]
-    local preserveOldOrder = mode ~= 1 and not checkButtons.arrangement:GetChecked()
+    local preserveOldArrangement = mode ~= 1 and not checkButtons.arrangement:GetChecked()
 
     local map
     if not indexMap then
       map = {}
     else
-      map = preserveOldOrder and indexMap.oldToNew or indexMap.newToOld
+      map = preserveOldArrangement and indexMap.oldToNew or indexMap.newToOld
     end
-    for i = 1, preserveOldOrder and #old or #imports do
+    for i = 1, preserveOldArrangement and #old or #imports do
       local j = map[i]
-      if preserveOldOrder then
+      if preserveOldArrangement then
         oldData = old[i]
         if j then
           data, patch = imports[j], diffs[j]
@@ -439,8 +439,12 @@ local function importPendingData()
       local childData = install(data, oldData, patch, mode)
       if childData then
         tinsert(installedData, childData)
-        if hybridTables and ((newID and hybridTables.new[newID]) or (oldID and hybridTables.old[oldID])) then
-          hybridTables.merged[childData.id] = true
+        if hybridTables then
+          if preserveOldArrangement then
+            hybridTables.merged[childData.id] = oldID and hybridTables.old[oldID]
+          else
+            hybridTables.merged[childData.id] = newID and hybridTables.new[newID]
+          end
         end
       end
       coroutine.yield()
@@ -448,7 +452,7 @@ local function importPendingData()
 
     -- now, the other side of the data may have some children which need to be handled
     if mode ~= 1 then
-      if preserveOldOrder then
+      if preserveOldArrangement then
         if checkButtons.newchildren:GetChecked() and addedChildren > 0 then
           -- we have children which need to be added
           local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
@@ -1202,6 +1206,23 @@ function WeakAuras.MatchData(data, children)
   if info.diffs[0] then
     info.modified = info.modified + 1
   end
+  local hybridTables
+  if oldParent.sortHybridTable or data.sortHybridTable then
+    hybridTables = {
+      old = {},
+      new = {},
+    }
+    if oldParent.sortHybridTable then
+      for id, isHybrid in pairs(oldParent.sortHybridTable) do
+        hybridTables.old[id] = isHybrid
+      end
+    end
+    if data.sortHybridTable then
+      for id, isHybrid in pairs(data.sortHybridTable) do
+        hybridTables.new[id] = isHybrid
+      end
+    end
+  end
 
   if children then
     -- setup
@@ -1229,6 +1250,16 @@ function WeakAuras.MatchData(data, children)
         info.indexMap.newToOld[newIndex] = oldIndex
         info.deleted = info.deleted - 1
         info.added = info.added - 1
+        if hybridTables then
+          if (hybridTables.new[newChild.id] and not hybridTables.old[matchedID])
+          or (not hybridTables.new[newChild.id] and hybridTables.old[matchedID]) then
+            info.activeCategories[checkButtons.arrangement] = true
+            hybridTables = nil
+          else
+            hybridTables.new[newChild.id] = nil
+            hybridTables.old[matchedID] = nil
+          end
+        end
         UIDtoID[newChild.uid] = nil
         tentativeMatches[oldIndex] = nil
       elseif oldIndex then
@@ -1240,6 +1271,16 @@ function WeakAuras.MatchData(data, children)
     for oldIndex, newIndex in pairs(tentativeMatches) do
       local newChild, oldChild = info.newData[newIndex], info.oldData[oldIndex]
       if not newChild.uid or not oldChild.uid or newChild.uid == oldChild.uid then
+        if hybridTables then
+          if (hybridTables.new[newChild.id] and not hybridTables.old[oldChild.id])
+          or (not hybridTables.new[newChild.id] and hybridTables.old[oldChild.id]) then
+            info.activeCategories[checkButtons.arrangement] = true
+            hybridTables = nil
+          else
+            hybridTables.new[newChild.id] = nil
+            hybridTables.old[oldChild.id] = nil
+          end
+        end
         info.indexMap.oldToNew[oldIndex] = newIndex
         info.indexMap.newToOld[newIndex] = oldIndex
         info.deleted = info.deleted - 1
@@ -1247,6 +1288,11 @@ function WeakAuras.MatchData(data, children)
       end
     end
 
+    if hybridTables then
+      if next(hybridTables.new) ~= nil or next(hybridTables.old) ~= nil then
+        info.activeCategories[checkButtons.arrangement] = true
+      end
+    end
     -- detect order mismatch and find diffs
     local lastMatch = 0
     for newIndex, newChild in ipairs(info.newData) do
