@@ -1282,7 +1282,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
 
     WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-    WeakAuras.FixGroupChildrenOrder();
 
     for _, triggerSystem in pairs(triggerSystems) do
       if (triggerSystem.AllAdded) then
@@ -1894,6 +1893,8 @@ function WeakAuras.Delete(data)
   for event, funcs in pairs(dynamicConditions) do
     funcs[id] = nil;
   end
+
+  WeakAuras.frameLevels[id] = nil;
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1994,6 +1995,9 @@ function WeakAuras.Rename(data, newid)
     funcs[newid] = funcs[oldid]
     funcs[oldid] = nil;
   end
+
+  WeakAuras.frameLevels[newid] = WeakAuras.frameLevels[oldid];
+  WeakAuras.frameLevels[oldid] = nil;
 
   WeakAuras.ProfileRenameAura(oldid, newid);
 end
@@ -3863,19 +3867,32 @@ function WeakAuras.ValueToPath(data, path, value)
   end
 end
 
-function WeakAuras.FixGroupChildrenOrder()
-  for id, data in pairs(db.displays) do
-    if(data.controlledChildren) then
-      local frameLevel = 1;
-      for i=1, #data.controlledChildren do
-        local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
-        if(childRegion) then
-          frameLevel = frameLevel + 4
-          childRegion:SetFrameLevel(frameLevel);
-        end
-      end
+function WeakAuras.FixGroupChildrenOrderForGroup(data)
+  local frameLevel = 1;
+  for i=1, #data.controlledChildren do
+    WeakAuras.SetFrameLevel(data.controlledChildren[i], frameLevel);
+    frameLevel = frameLevel + 4;
+  end
+end
+
+WeakAuras.frameLevels = {};
+function WeakAuras.SetFrameLevel(id, frameLevel)
+  if (WeakAuras.frameLevels[id] == frameLevel) then
+    return;
+  end
+  if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
+    WeakAuras.regions[id].region:SetFrameLevel(frameLevel);
+  end
+  if (clones[id]) then
+    for i,v in pairs(clones[id]) do
+      v:SetFrameLevel(frameLevel);
     end
   end
+  WeakAuras.frameLevels[id] = frameLevel;
+end
+
+function WeakAuras.GetFrameLevelFor(id)
+  return WeakAuras.frameLevels[id] or 0;
 end
 
 function WeakAuras.EnsureString(input)
