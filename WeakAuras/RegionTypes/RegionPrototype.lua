@@ -500,6 +500,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
 
       parent:EnsureTrays();
       region.justCreated = nil;
+      region:SetFrameLevel(WeakAuras.GetFrameLevelFor(id));
       WeakAuras.PerformActions(data, "start", region);
       if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
@@ -540,6 +541,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if(region.PreShow) then
         region:PreShow();
       end
+      region:SetFrameLevel(WeakAuras.GetFrameLevelFor(id));
       region:Show();
       WeakAuras.PerformActions(data, "start", region);
       if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then

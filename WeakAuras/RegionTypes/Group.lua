@@ -102,14 +102,7 @@ local function modify(parent, region, data)
   region.try = highest;
 
   -- Adjust frame-level sorting
-  local frameLevel = 1
-  for i=1,#data.controlledChildren do
-    local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region
-    if(childRegion) then
-      frameLevel = frameLevel + 4
-      childRegion:SetFrameLevel(frameLevel)
-    end
-  end
+  WeakAuras.FixGroupChildrenOrderForGroup(data);
 
   -- Control children (does not happen with "group")
   function region:UpdateBorder(childRegion)

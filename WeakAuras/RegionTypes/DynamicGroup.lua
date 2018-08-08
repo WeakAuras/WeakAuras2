@@ -49,6 +49,7 @@ function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
 end
 
 local function modify(parent, region, data)
+  WeakAuras.FixGroupChildrenOrderForGroup(data);
   -- Scale
   region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
 
@@ -657,16 +658,6 @@ local function modify(parent, region, data)
   end
 
   region:PositionChildren();
-
-  -- Adjust frame-level sorting
-  local frameLevel = 1;
-  for i=1,#region.controlledRegions do
-    local childRegion = region.controlledRegions[i].region
-    if(childRegion) then
-      frameLevel = frameLevel + 4
-      childRegion:SetFrameLevel(frameLevel)
-    end
-  end
 
   function region:Scale(scalex, scaley)
     region:SetWidth((region.currentWidth or 16) * scalex);
