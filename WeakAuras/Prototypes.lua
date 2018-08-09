@@ -2172,7 +2172,6 @@ WeakAuras.event_prototypes = {
     end,
     hasSpellID = true,
     automaticrequired = true,
-    automaticAutoHide = false
   },
   ["Cooldown Ready (Spell)"] = {
     type = "event",
@@ -2492,7 +2491,6 @@ WeakAuras.event_prototypes = {
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
     end,
     automaticrequired = true,
-    automaticAutoHide = false
   },
   ["Cooldown Ready (Item)"] = {
     type = "event",
@@ -3058,7 +3056,6 @@ WeakAuras.event_prototypes = {
       }
     },
     automaticrequired = true,
-    automaticAutoHide = false
   },
   ["Global Cooldown"] = {
     type = "status",
@@ -3889,7 +3886,6 @@ WeakAuras.event_prototypes = {
       return "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune";
     end,
     automaticrequired = true,
-    automaticAutoHide = false
   },
   ["Item Equipped"] = {
     type = "status",

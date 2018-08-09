@@ -246,11 +246,17 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
         WeakAuras.UpdateDisplayButton(data);
       end
     },
+    dynamicDuration = {
+      type = "toggle",
+      name = L["Dynamic Duration"],
+      order = 12.5,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+    },
     duration = {
       type = "input",
       name = L["Duration (s)"],
       order = 13,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom" and not trigger.dynamicDuration) end,
     },
     addOverlayFunction = {
       type = "execute",
@@ -315,7 +321,8 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
 
   local function hideCustomDuration()
     return not (trigger.type == "custom"
-      and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide ~= "timed")))
+      and (trigger.custom_type == "status"
+           or (trigger.custom_type == "event" and (trigger.custom_hide ~= "timed" or trigger.dynamicDuration))))
   end
   WeakAuras.AddCodeOption(options, data, L["Duration Info"], "custom_duration", 16, hideCustomDuration, appendToTriggerPath("customDuration"), false, true, extraSetFunction);
 
