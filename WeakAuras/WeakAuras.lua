@@ -3248,7 +3248,15 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.alphaType = anim.alphaType or "straight";
         anim.alphaFunc = anim_function_strings[anim.alphaType]
       end
-      alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
+      if (anim.alphaFunc) then
+        alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
+      else
+        if (region.SetAnimAlpha) then
+          region:SetAnimAlpha(nil);
+        else
+          region:SetAlpha(startAlpha);
+        end
+      end
     else
       if (region.SetAnimAlpha) then
         region:SetAnimAlpha(nil);
@@ -3261,7 +3269,11 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.scaleType = anim.scaleType or "straightScale";
         anim.scaleFunc = anim_function_strings[anim.scaleType]
       end
-      scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id);
+      if (anim.scaleFunc) then
+        scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id);
+      else
+        region:Scale(1, 1);
+      end
     elseif(region.Scale) then
       region:Scale(1, 1);
     end
@@ -3270,7 +3282,11 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.rotateType = anim.rotateType or "straight";
         anim.rotateFunc = anim_function_strings[anim.rotateType]
       end
-      rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id);
+      if (anim.rotateFunc) then
+        rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id);
+      else
+        region:Rotate(startRotation);
+      end
     elseif(region.Rotate) then
       region:Rotate(startRotation);
     end
@@ -3279,7 +3295,11 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.colorType = anim.colorType or "straightColor";
         anim.colorFunc = anim_function_strings[anim.colorType]
       end
-      colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
+      if (anim.colorFunc) then
+        colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
+      else
+        region:ColorAnim(nil);
+      end
     elseif(region.ColorAnim) then
       region:ColorAnim(nil);
     end
