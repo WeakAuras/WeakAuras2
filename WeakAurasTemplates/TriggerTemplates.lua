@@ -258,6 +258,31 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
+  local function addCondition(data, item, typePos, prevNumTriggers)
+    local conditions;
+    if (item.conditions) then
+      conditions = item.conditions;
+    else
+      conditions = createConditionsFor(item, typePos);
+    end
+    if conditions then
+      if data.conditions then
+        local position = #data.conditions + 1;
+        for i,v in pairs(conditions) do
+          data.conditions[position] = data.conditions[position] or {};
+          if v.check.trigger ~= -1 then
+            v.check.trigger = v.check.trigger + prevNumTriggers;
+          end
+          WeakAuras.DeepCopy(v, data.conditions[position]);
+          position = position + 1;
+        end
+      else
+        data.conditions = {};
+        WeakAuras.DeepCopy(conditions, data.conditions);
+      end
+    end
+  end
+
   local function createTriggersFor(item, typePos)
     local itemType = item.types[typePos];
     if (itemType == "buff" or itemType == "debuff" or itemType == "buffShowAlways" or itemType == "debuffShowAlways") then
@@ -614,11 +639,12 @@ function WeakAuras.CreateTemplateView(frame)
           button:SetIcon(item.icon);
         end
         button:SetClick(function()
-          if (newView.existingAura) then
-            newView.choosenItem = item;
-            createButtons();
-          else
-            if #item.types == 1 then
+          if #item.types == 1 then
+            if (newView.existingAura) then
+              newView.choosenItem = item;
+              newView.choosenItemTypePos = 1;
+              createButtons();
+            else
               replaceTrigger(newView.data, item, 1);
               replaceCondition(newView.data, item, 1);
               newView.data.id = WeakAuras.FindUnusedId(item.title);
@@ -630,11 +656,11 @@ function WeakAuras.CreateTemplateView(frame)
               WeakAuras.Add(newView.data);
               WeakAuras.NewDisplayButton(newView.data);
               WeakAuras.PickDisplay(newView.data.id);
-            else
-              -- create trigger type selection
-              newView.choosenItem = item;
-              createButtons();
             end
+          else
+            -- create trigger type selection
+            newView.choosenItem = item;
+            createButtons();
           end
         end);
         group:AddChild(button);
@@ -653,17 +679,23 @@ function WeakAuras.CreateTemplateView(frame)
       button:SetDescription(WeakAuras.triggerTemplates.typesDescription[type].description);
       button:SetFullWidth(true);
       button:SetClick(function()
-        replaceTrigger(newView.data, item, typePos);
-        replaceCondition(newView.data, item, typePos);
-        newView.data.id = WeakAuras.FindUnusedId(item.title);
-        newView.data.load = {};
-        if (item.load) then
-          WeakAuras.DeepCopy(item.load, newView.data.load);
+        if (newView.existingAura) then
+          newView.choosenItem = item;
+          newView.choosenItemTypePos = typePos;
+          createButtons();
+        else
+          replaceTrigger(newView.data, item, typePos);
+          replaceCondition(newView.data, item, typePos);
+          newView.data.id = WeakAuras.FindUnusedId(item.title);
+          newView.data.load = {};
+          if (item.load) then
+            WeakAuras.DeepCopy(item.load, newView.data.load);
+          end
+          newView:CancelClose();
+          WeakAuras.Add(newView.data);
+          WeakAuras.NewDisplayButton(newView.data);
+          WeakAuras.PickDisplay(newView.data.id);
         end
-        newView:CancelClose();
-        WeakAuras.Add(newView.data);
-        WeakAuras.NewDisplayButton(newView.data);
-        WeakAuras.PickDisplay(newView.data.id);
       end);
       group:AddChild(button);
     end
@@ -698,6 +730,7 @@ function WeakAuras.CreateTemplateView(frame)
   local function replaceTriggers(data, item, typePos)
     local function handle(data, item, typePos)
       replaceTrigger(data, item, typePos);
+      replaceCondition(data, item, typePos);
       WeakAuras.optionTriggerChoices[data.id] = 0;
       newView:CancelClose();
       WeakAuras.Add(data);
@@ -710,18 +743,20 @@ function WeakAuras.CreateTemplateView(frame)
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          handle(childData, item);
+          handle(childData, item, typePos);
         end
       end
     else
-      handle(data, item);
+      handle(data, item, typePos);
       WeakAuras.PickDisplay(data.id);
     end
   end
 
   local function addTriggers(data, item, typePos)
     local function handle(data, item, typePos)
+      local prevNumTriggers = data.numTriggers;
       addTrigger(data, item, typePos);
+      addCondition(data, item, typePos, prevNumTriggers);
       WeakAuras.optionTriggerChoices[data.id] = data.numTriggers - 1;
       newView:CancelClose();
       WeakAuras.Add(data);
@@ -734,7 +769,7 @@ function WeakAuras.CreateTemplateView(frame)
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          handle(childData, item);
+          handle(childData, item, typePos);
         end
       end
     else
@@ -750,7 +785,7 @@ function WeakAuras.CreateTemplateView(frame)
     replaceButton:SetIcon("Interface\\Icons\\Spell_ChargeNegative");
     replaceButton:SetFullWidth(true);
     replaceButton:SetClick(function()
-      replaceTriggers(newView.data, newView.choosenItem);
+      replaceTriggers(newView.data, newView.choosenItem, newView.choosenItemTypePos);
     end);
     newViewScroll:AddChild(replaceButton);
 
@@ -760,7 +795,7 @@ function WeakAuras.CreateTemplateView(frame)
     addButton:SetIcon("Interface\\Icons\\Spell_ChargePositive");
     addButton:SetFullWidth(true);
     addButton:SetClick(function()
-      addTriggers(newView.data, newView.choosenItem, 1); -- !!!!!! check if typePos = 1 ok
+      addTriggers(newView.data, newView.choosenItem, newView.choosenItemTypePos);
     end);
     newViewScroll:AddChild(addButton);
   end
@@ -835,13 +870,14 @@ function WeakAuras.CreateTemplateView(frame)
       else
         newView.backButton:Show();
       end
-    elseif (newView.data and newView.choosenItem) then
+    elseif (newView.data and newView.choosenItem and not newView.choosenItemTypePos) then
       -- Multi-Type template
       local typeHeader = AceGUI:Create("Heading");
       typeHeader:SetFullWidth(true);
       newViewScroll:AddChild(typeHeader);
       local group = createTriggerTypeButtons();
       newViewScroll:AddChild(group);
+      newView.backButton:Show();
     else
       --Third Step: (only for existing auras): replace or add triggers?
       createLastPage();
@@ -852,12 +888,20 @@ function WeakAuras.CreateTemplateView(frame)
   local newViewBack = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
   newViewBack:SetScript("OnClick", function()
     if (newView.existingAura) then
-      newView.choosenItem = nil;
-    else
-      if newView.choosenItem then
-        newView.choosenItem = nil;
+      if newView.choosenItemTypePos then
+        newView.choosenItemTypePos = nil;
       else
-        newView.data = nil;
+        newView.choosenItem = nil;
+      end
+    else
+      if newView.choosenItemTypePos then
+        newView.choosenItemTypePos = nil;
+      else
+        if newView.choosenItem then
+          newView.choosenItem = nil;
+        else
+          newView.data = nil;
+        end
       end
     end
     createButtons();
@@ -884,10 +928,12 @@ function WeakAuras.CreateTemplateView(frame)
       self.data = data;
       newView.existingAura = true;
       newView.choosenItem = nil;
+      newView.choosenItemTypePos = nil;
     else
       self.data = nil; -- Data is cloned from display template
       newView.existingAura = false;
       newView.choosenItem = nil;
+      newView.choosenItemTypePos = nil;
     end
     newView.class = select(2, UnitClass("player"));
     newView.spec = GetSpecialization() or 1;
