@@ -435,10 +435,12 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         changed = true;
       end
 
-      if (state.autoHide or state.inverse) then
+      local autoHide = data.automaticAutoHide and arg1 > 0.01;
+      if (state.autoHide ~= autoHide) then
         changed = true;
+        state.autoHide = autoHide;
       end
-      state.autoHide = nil;
+
       if (state.value ~= arg1) then
         state.value = arg1;
         changed = true;
@@ -940,17 +942,20 @@ function GenericTrigger.Add(data, region)
           end
         end
 
-        local duration = nil;
+        local automaticAutoHide;
+        local duration;
         if(triggerType == "custom"
           and trigger.custom_type == "event"
           and trigger.custom_hide == "timed") then
-          duration = tonumber(trigger.duration);
+            automaticAutoHide = true;
+            if (not trigger.dynamicDuration) then
+              duration = tonumber(trigger.duration);
+            end
         end
 
-        local automaticAutoHide = true;
-        if ((triggerType == "status" or triggerType == "event")
-          and event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide ~= nil) then
-          automaticAutoHide = event_prototypes[trigger.event].automaticAutoHide;
+        if (triggerType == "event" and trigger.unevent == "timed") then
+          duration = tonumber(trigger.duration);
+          automaticAutoHide = true;
         end
 
         events[id] = events[id] or {};
@@ -976,23 +981,6 @@ function GenericTrigger.Add(data, region)
           duration = duration,
           automaticAutoHide = automaticAutoHide
         };
-
-        if(
-          (
-          (
-          triggerType == "status"
-          or triggerType == "event"
-          )
-          and trigger.unevent == "timed"
-          )
-          or (
-          triggerType == "custom"
-          and trigger.custom_type == "event"
-          and trigger.custom_hide == "timed"
-          )
-          ) then
-          events[id][triggernum].duration = tonumber(trigger.duration);
-        end
       end
     end
   end
