@@ -2297,7 +2297,7 @@ WeakAuras.event_prototypes = {
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       local ret = [=[
-        local itemname = [[%s]];
+        local itemname = %s;
         local startTime, duration, enabled = WeakAuras.GetItemCooldown(itemname);
         local genericShowOn = %s
         state.itemname = itemname;
