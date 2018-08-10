@@ -462,6 +462,20 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         state.expirationTime = arg2;
         changed = true;
       end
+      local autoHide
+      if data.trigger.custom_type then
+        if data.trigger.custom_type == "event" then
+          autoHide = true
+        elseif data.trigger.custom_type == "status" then
+          autoHide = false
+        end
+      else
+        autoHide = data.automaticAutoHide
+      end
+      if (state.autoHide ~= autoHide) then
+          state.autoHide = autoHide
+          state.changed = true
+      end
       if (state.value or state.total) then
         changed = true;
       end
