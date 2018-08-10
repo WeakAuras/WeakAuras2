@@ -3234,7 +3234,15 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.translateType = anim.translateType or "straightTranslate";
         anim.translateFunc = anim_function_strings[anim.translateType]
       end
-      translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
+      if (anim.translateFunc) then
+        translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
+      else
+        if (region.SetOffsetAnim) then
+          region:SetOffsetAnim(0, 0);
+        else
+          region:SetPoint(selfPoint, anchor, anchorPoint, startX, startY);
+        end
+      end
     else
       if (region.SetOffsetAnim) then
         region:SetOffsetAnim(0, 0);
