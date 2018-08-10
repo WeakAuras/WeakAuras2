@@ -3945,7 +3945,7 @@ templates.items[4] = {
     { spell = 268194, types = {"debuff","debuffShowAlways"}, unit = "multi", titleItemPrefix = 159619}, --debuff?
     { spell = 271071, types = {"buff","buffShowAlways"}, unit = "player", titleItemPrefix = 159620},
     { spell = 268756, types = {"debuff","debuffShowAlways"}, unit = "multi", titleItemPrefix = 159623}, --debuff?
-    { spell = 268062, types = {"buff","buffShowAlways"}, unit = "multi", titleItemPrefix = 159626}, --buff on spawned spores?
+    { spell = 268062, types = {"buff","buffShowAlways"}, unit = "player", titleItemPrefix = 159626},
     { spell = 271194, types = {"buff","buffShowAlways"}, unit = "player", titleItemPrefix = 159628},
     { spell = 278159, types = {"buff","buffShowAlways"}, unit = "player", titleItemPrefix = 160653}, --tank
   }
