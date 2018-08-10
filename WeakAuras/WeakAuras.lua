@@ -1,5 +1,4 @@
 local internalVersion = 6;
-WeakAuras.data_stub.internalVersion = internalVersion;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe

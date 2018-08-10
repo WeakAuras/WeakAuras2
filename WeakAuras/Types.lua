@@ -1638,9 +1638,6 @@ WeakAuras.data_stub = {
     class = {
       multi = {},
     },
-    ingroup = {
-      multi = {},
-    },
   },
   actions = {
     init = {},

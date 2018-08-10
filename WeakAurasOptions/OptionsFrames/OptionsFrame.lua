@@ -702,6 +702,7 @@ function WeakAuras.CreateFrame()
           local new_id = WeakAuras.FindUnusedId("New")
           local data = {id = new_id, regionType = regionType}
           WeakAuras.DeepCopy(WeakAuras.data_stub, data)
+          data.internalVersion = WeakAuras.InternalVersion();
           WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
