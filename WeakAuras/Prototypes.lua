@@ -3678,7 +3678,8 @@ WeakAuras.event_prototypes = {
       "CHAT_MSG_SAY",
       "CHAT_MSG_WHISPER",
       "CHAT_MSG_YELL",
-      "CHAT_MSG_SYSTEM"
+      "CHAT_MSG_SYSTEM",
+      "CHAT_MSG_TEXT_EMOTE"
     },
     name = L["Chat Message"],
     init = function(trigger)
