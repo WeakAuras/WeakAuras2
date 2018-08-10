@@ -1531,7 +1531,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
           excessChildren = excessChildren + 1
           if children then
             highestVersion = max(highestVersion, child.internalVersion or 1)
-            scamCheck(pendingData.codes, child)
           end
           if excessChildren <= 0 then
             tinsert(tooltip, {2, " ", child.id, 1, 1, 1, 1, 1, 1})
