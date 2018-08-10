@@ -709,6 +709,28 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
         WeakAuras.UpdateDisplayButton(data);
       end
     },
+    useGroupRole = {
+      type = "toggle",
+      name = L["Filter by Group Role"],
+      order = 47.1,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+    },
+    group_role = {
+      type = "select",
+      name = L["Group Role"],
+      values = WeakAuras.role_types,
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+      disabled = function() return not trigger.useGroupRole; end,
+      get = function() return trigger.group_role; end,
+      order = 47.2
+    },
+    ignoreSelf = {
+      type = "toggle",
+      name = L["Ignore self"],
+      order = 47.3,
+      width = "double",
+      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
+    },
     groupclone = {
       type = "toggle",
       name = L["Show all matches (Auto-clone)"],
@@ -724,12 +746,12 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
         end
         WeakAuras.Add(data);
       end,
-      order = 47.1
+      order = 47.4
     },
     name_info = {
       type = "select",
       name = L["Name Info"],
-      order = 47.3,
+      order = 47.5,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
       disabled = function() return not WeakAuras.CanShowNameInfo(data); end,
       get = function()
@@ -760,28 +782,6 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "toggle",
       name = L["Hide When Not In Group"],
       order = 47.7,
-      width = "double",
-      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
-    },
-    useGroupRole = {
-      type = "toggle",
-      name = L["Filter by Group Role"],
-      order = 47.9,
-      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
-    },
-    group_role = {
-      type = "select",
-      name = L["Group Role"],
-      values = WeakAuras.role_types,
-      hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
-      disabled = function() return not trigger.useGroupRole; end,
-      get = function() return trigger.group_role; end,
-      order = 48
-    },
-    ignoreSelf = {
-      type = "toggle",
-      name = L["Ignore self"],
-      order = 48.1,
       width = "double",
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },
