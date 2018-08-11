@@ -435,7 +435,7 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         changed = true;
       end
 
-      local autoHide = data.automaticAutoHide and arg1 > 0.01;
+      local autoHide = nil;
       if (state.autoHide ~= autoHide) then
         changed = true;
         state.autoHide = autoHide;
@@ -461,6 +461,11 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         state.resort = state.expirationTime ~= arg2;
         state.expirationTime = arg2;
         changed = true;
+      end
+      local autoHide = data.automaticAutoHide and arg1 > 0.01;
+      if (state.autoHide ~= autoHide) then
+        changed = true;
+        state.autoHide = autoHide;
       end
       if (state.value or state.total) then
         changed = true;
