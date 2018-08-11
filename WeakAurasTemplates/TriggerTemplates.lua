@@ -487,10 +487,6 @@ function WeakAuras.CreateTemplateView(frame)
         WeakAuras.validate(newView.data, WeakAuras.data_stub);
         newView.data.internalVersion = WeakAuras.InternalVersion();
         newView.data.regionType = regionType;
-        if regionType == "icon" then
-          newView.data.cooldown = true;
-          newView.data.inverse = true;
-        end
         createButtons();
       end);
       group:AddChild(templateButton);
