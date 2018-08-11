@@ -722,7 +722,7 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
     conditionChecksTimers.recheckHandle[id][cloneId] = nil;
   end
 
-  if (conditionChecksTimers.recheckHandle[id][cloneId] == nil or true) then
+  if (conditionChecksTimers.recheckHandle[id][cloneId] == nil) then
     conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimerFixed(function()
       conditionChecksTimers.recheckHandle[id][cloneId] = nil;
       local region;
