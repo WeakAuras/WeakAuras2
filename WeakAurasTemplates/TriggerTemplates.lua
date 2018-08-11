@@ -291,6 +291,7 @@ function WeakAuras.CreateTemplateView(frame)
           buffShowOn = item.buffShowOn or (itemType == "buff" or itemType == "debuff") and "showOnActive" or "showAlways",
           debuffType = item.debuffType or isBuff and "HELPFUL" or "HARMFUL",
           ownOnly = not item.forceOwnOnly and true or item.ownOnly,
+          unitExists = true,
         }
       };
       if (item.spellIds) then
