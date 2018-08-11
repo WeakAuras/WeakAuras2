@@ -797,7 +797,9 @@ function WeakAuras.RefreshTooltipButtons()
           importButton:SetText(L["Import as Copy"])
         end
       else
-        if #pendingData.newData > 0 then
+        if pendingData.mode == 1 then
+          importButton:SetText(L["Import as Copy"])
+        elseif #pendingData.newData > 0 then
           importButton:SetText(L["Import Group"])
         else
           importButton:SetText(L["Import"])
@@ -1441,6 +1443,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       tinsert(tooltip, {1, " "})
       if type(match) ~= "table" then
         -- there is no difference whatsoever
+        pendingData.mode = 1
         tinsert(tooltip, {1, L["You already have this group/aura, importing will create a duplicate."], 1, 0.82, 0,})
       else
         -- load pendingData
