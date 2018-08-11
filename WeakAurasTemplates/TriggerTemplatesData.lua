@@ -4191,7 +4191,7 @@ local function handleItem(item)
   local waitingForItemInfo = false;
   if (item.spell) then
     local name, icon, _;
-    if (item.types[1] == "item") then
+    if (tContains(item.types, "item")) then
       name, _, _, _, _, _, _, _, _, icon = GetItemInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Item"] .. " " .. tostring(item.spell);
@@ -4223,7 +4223,7 @@ local function handleItem(item)
         waitingForItemInfo = true;
       end
     end
-    if (item.types[1] ~= "item") then
+    if (not (tContains(item.types, "item"))) then
       local spell = Spell:CreateFromSpellID(item.spell);
       if (not spell:IsSpellEmpty()) then
         spell:ContinueOnSpellLoad(function()
@@ -4334,7 +4334,7 @@ local function fixupIcons()
     for specIndex, spec in pairs(class) do
       for _, section in pairs(spec) do
         for _, item in pairs(section.args) do
-          if (item.spell and item.types[1] ~= "item") then
+          if (item.spell and (not (tContains(item.types, "item")))) then
             local icon = select(3, GetSpellInfo(item.spell));
             if (icon) then
               item.icon = icon;
