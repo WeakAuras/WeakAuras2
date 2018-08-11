@@ -652,7 +652,7 @@ function WeakAuras.CreateTemplateView(frame)
       local prevNumTriggers = data.numTriggers;
       addTrigger(data, item, typePos);
       addCondition(data, item, typePos, prevNumTriggers);
-      WeakAuras.optionTriggerChoices[data.id] = data.numTriggers - 1;
+      WeakAuras.optionTriggerChoices[data.id] = prevNumTriggers;
       newView:CancelClose();
       WeakAuras.Add(data);
       WeakAuras.NewDisplayButton(data);
