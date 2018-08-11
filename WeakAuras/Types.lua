@@ -1529,14 +1529,6 @@ WeakAuras.update_categories = {
     label = L["Aura Names"],
   },
   {
-    name = "metadata",
-    fields = {
-      "url",
-      "desc",
-    },
-    label = L["Meta Data"],
-  },
-  {
     name = "display",
     fields = {},
     label = L["Display"],
@@ -1599,6 +1591,14 @@ WeakAuras.update_categories = {
     name = "newchildren",
     fields = {},
     label = L["Add Missing Auras"],
+  },
+  {
+    name = "metadata",
+    fields = {
+      "url",
+      "desc",
+    },
+    label = L["Meta Data"],
   },
 }
 
