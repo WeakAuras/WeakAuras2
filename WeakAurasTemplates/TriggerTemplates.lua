@@ -269,145 +269,83 @@ function WeakAuras.CreateTemplateView(frame)
 
   local function createTriggersFor(item, typePos)
     local itemType = item.types[typePos];
-    if (itemType == "buff" or itemType == "debuff" or itemType == "buffShowAlways" or itemType == "debuffShowAlways") then
-      local triggers = {
-        [0] = {
-          trigger = {
-            unit = item.unit,
-            type = "aura",
-            spellIds = {
-              item.spell
-            },
-            buffShowOn = item.buffShowOn or (itemType == "buff" or itemType == "debuff") and "showOnActive" or "showAlways",
-            debuffType = item.debuffType or (itemType == "buff" or itemType == "buffShowAlways") and "HELPFUL" or "HARMFUL",
-            ownOnly = not item.forceOwnOnly and true or item.ownOnly,
-          }
-        },
+    local triggers = {};
+    local trigger_pos = 0;
+    local isBuff = itemType:match("buff") or itemType:match("Buff");
+    local isDebuff = itemType:match("debuff") or itemType:match("Debuff");
+    local isAbility = itemType:match("ability");
+    local isItem = itemType:match("item");
+    local isTotem = itemType:match("totem") or itemType:match("Totem");
+
+    if (isBuff or isDebuff) then
+      triggers[trigger_pos] = {
+        trigger = {
+          unit = item.unit or isBuff and "player" or "target",
+          type = "aura",
+          spellIds = {
+            item.spell
+          },
+          buffShowOn = item.buffShowOn or (itemType == "buff" or itemType == "debuff") and "showOnActive" or "showAlways",
+          debuffType = item.debuffType or isBuff and "HELPFUL" or "HARMFUL",
+          ownOnly = not item.forceOwnOnly and true or item.ownOnly,
+        }
       };
       if (item.spellIds) then
-        WeakAuras.DeepCopy(item.spellIds, triggers[0].trigger.spellIds);
+        WeakAuras.DeepCopy(item.spellIds, triggers[trigger_pos].trigger.spellIds);
       end
       if (item.fullscan) then
-        triggers[0].trigger.use_spellId = true;
-        triggers[0].trigger.fullscan = true;
-        triggers[0].trigger.spellId = tostring(item.spell);
+        triggers[trigger_pos].trigger.use_spellId = true;
+        triggers[trigger_pos].trigger.fullscan = true;
+        triggers[trigger_pos].trigger.spellId = tostring(item.spell);
       end
       if (item.unit == "group") then
-        triggers[0].trigger.name_info = "players";
+        triggers[trigger_pos].trigger.name_info = "players";
       end
       if (item.unit == "multi") then
-        triggers[0].trigger.spellId = item.spell;
+        triggers[trigger_pos].trigger.spellId = item.spell;
       end
-      return triggers
-    elseif (itemType == "abilityBuff"
-      or itemType == "abilityDebuff"
-      or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff"
-      or itemType == "abilityUsableBuff"
-      or itemType == "abilityUsableDebuff")
-    then
-      local triggers = {
-        [0] = {
-          trigger = {
-            unit = item.unit or (itemType == "abilityBuff" or itemType == "abilityChargeBuff") and "player" or "target",
-            type = "aura",
-            spellIds = {
-              item.spell
-            },
-            debuffType = item.debuffType or (itemType == "abilityBuff" or itemType == "abilityChargeBuff") and "HELPFUL" or "HARMFUL",
-            ownOnly = not item.forceOwnOnly and true or item.ownOnly,
-          }
-        },
-        [1] = {
-          trigger = {
-            event = "Cooldown Progress (Spell)",
-            spellName = item.spell,
-            type = "status",
-            unevent = "auto",
-            genericShowOn = item.showOn or "showAlways",
-            use_genericShowOn = true,
-          },
-        }
-      }
-      return triggers;
-    elseif (itemType == "ability"
-      or itemType == "abilityShowAlways"
-      or itemType == "abilityTarget"
-      or itemType == "abilityCharge"
-      or itemType == "abilityChargeTarget"
-      or itemType == "abilityUsable"
-      or itemType == "abilityUsableTarget"
-      or itemType == "abilityUsableCharge"
-      or itemType == "abilityUsableChargeTarget")
-    then
-      local triggers = {
-        [0] = {
-          trigger = {
-            event = "Cooldown Progress (Spell)",
-            spellName = item.spell,
-            type = "status",
-            unevent = "auto",
-            use_genericShowOn = true,
-            genericShowOn = item.showOn or itemType == "ability" and "showOnCooldown" or "showAlways",
-          }
-        }
-      }
-      return triggers;
-    elseif (itemType == "item" or itemType == "itemShowAlways") then
-      local triggers = {
-        [0] = {
-          trigger = {
-            type = "status",
-            event = "Cooldown Progress (Item)",
-            unevent = "auto",
-            use_genericShowOn = true,
-            genericShowOn = item.showOn or itemType == "item" and "showOnCooldown" or "showAlways",
-            itemName = item.spell
-          }
-        }
-      };
-      return triggers;
-    elseif (itemType == "abilityTotem" or itemType == "abilityChargeTotem") then
-      local triggers = {
-        [0] = {
-          trigger = {
-            type = "status",
-            event = "Totem",
-            use_totemName = true,
-            totemName = GetSpellInfo(item.spell),
-            unevent = "auto"
-          }
-        },
-        [1] = {
-          trigger = {
-            event = "Cooldown Progress (Spell)",
-            spellName = item.spell,
-            type = "status",
-            unevent = "auto",
-            genericShowOn = item.showOn or "showAlways",
-            use_genericShowOn = true,
-          },
-        }
-      };
-      return triggers;
-    elseif (itemType == "totem") then
-      local triggers = {
-        [0] = {
-          trigger = {
-            type = "status",
-            event = "Totem",
-            use_totemName = true,
-            totemName = GetSpellInfo(item.spell),
-            unevent = "auto"
-          }
+      trigger_pos = trigger_pos + 1;
+    end
+    if (isTotem) then
+      triggers[trigger_pos] = {
+        trigger = {
+          type = "status",
+          event = "Totem",
+          use_totemName = true,
+          totemName = GetSpellInfo(item.spell),
+          unevent = "auto"
         }
       };
       if (item.totemNumber) then
-        triggers[0].trigger.use_totemType = true;
-        triggers[0].trigger.totemType = item.totemNumber;
+        triggers[trigger_pos].trigger.use_totemType = true;
+        triggers[trigger_pos].trigger.totemType = item.totemNumber;
       end
-      return triggers;
+      trigger_pos = trigger_pos + 1;
     end
+    if (isAbility) then
+      triggers[trigger_pos] = {
+        trigger = {
+          event = "Cooldown Progress (Spell)",
+          spellName = item.spell,
+          type = "status",
+          unevent = "auto",
+          use_genericShowOn = true,
+          genericShowOn = item.showOn or itemType == "ability" and "showOnCooldown" or "showAlways",
+        }
+      };
+    elseif (isItem) then
+      triggers[trigger_pos] = {
+        trigger = {
+          type = "status",
+          event = "Cooldown Progress (Item)",
+          unevent = "auto",
+          use_genericShowOn = true,
+          genericShowOn = item.showOn or itemType == "item" and "showOnCooldown" or "showAlways",
+          itemName = item.spell
+        }
+      };
+    end
+    return triggers;
   end
 
   -- Trigger Template
@@ -462,18 +400,12 @@ function WeakAuras.CreateTemplateView(frame)
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
     -- add here template types with more than one trigger
     local itemType = item.types[typePos];
-    if (itemType == "abilityBuff"
-      or itemType == "abilityDebuff"
-      or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff"
-      or itemType == "abilityTotem"
-      or itemType == "abilityChargeTotem")
+    if (itemType:match("^.+Buff")
+      or itemType:match("^.+Debuff")
+      or itemType:match("^.+Totem"))
     then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
-    elseif (itemType == "abilityUsable") then
-      data.disjunctive = "any";
-      data.activeTriggerMode = 0;
     elseif (item.disjunctive) then
       data.disjunctive = item.disjunctive;
     end
@@ -501,12 +433,9 @@ function WeakAuras.CreateTemplateView(frame)
     data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
     -- add here template types with more than one trigger
     local itemType = item.types[typePos];
-    if (itemType == "abilityBuff"
-      or itemType == "abilityDebuff"
-      or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff"
-      or itemType == "abilityTotem"
-      or itemType == "abilityChargeTotem")
+    if (itemType:match("^.+Buff")
+      or itemType:match("^.+Debuff")
+      or itemType:match("^.+Totem"))
     then
       data.disjunctive = "any";
       data.activeTriggerMode = -10;
