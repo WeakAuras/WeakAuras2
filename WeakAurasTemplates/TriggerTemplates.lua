@@ -271,8 +271,8 @@ function WeakAuras.CreateTemplateView(frame)
     local itemType = item.types[typePos];
     local triggers = {};
     local trigger_pos = 0;
-    local isBuff = itemType:match("buff") or itemType:match("Buff");
     local isDebuff = itemType:match("debuff") or itemType:match("Debuff");
+    local isBuff = (itemType:match("buff") or itemType:match("Buff")) and not isDebuff;
     local isAbility = itemType:match("ability");
     local isItem = itemType:match("item");
     local isTotem = itemType:match("totem") or itemType:match("Totem");
