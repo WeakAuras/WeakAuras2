@@ -54,96 +54,59 @@ local powerTypes =
     [99] = {name = L["Stagger"], icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
-templates.typesDescription = {
-  item = {
-    title = L["Item on Cooldown"],
-    description = L["Show only on Cooldown"],
-  },
-  itemShowAlways = {
-    title = L["Item"],
-    description = L["Show if on Cooldown or Usable"],
-  },
-  ability = {
-    title = L["Spell on Cooldown"],
-    description = L["Show only on Cooldown"],
-  },
-  abilityShowAlways = {
-    title = L["Spell"],
-    description = L["Show if on Cooldown or Usable"],
-  },
-  abilityUsable = {
-    title = L["Spell"],
-    description = L["Show if on Cooldown or Usable"],
-  },
-  abilityUsableTarget = {
-    title = L["Spell + Range Check"],
-    description = L["Show if on Cooldown or Usable, with Range Check"],
-  },
-  abilityUsableCharge = {
-    title = L["Spell"],
-    description = L["Show if on Cooldown or Usable"],
-  },
-  abilityUsableChargeTarget = {
-    title = L["Spell + Range Check"],
-    description = L["Show if on Cooldown or Usable, with Range Check"],
-  },
-  abilityTarget = {
-    title = L["Spell + Range Check"],
-    description = L["Show the Cooldown or Usable, with Range Check"],
-  },
-  abilityCharge = {
-    title = L["Spell"],
-    description = L["Show if on Cooldown or Usable"],
-  },
-  abilityChargeTarget  = {
-    title = L["Spell + Range Check"],
-    description = L["Show the Cooldown or Usable, with Range Check"],
-  },
-  abilityBuff = {
-    title = L["Spell + Buff"],
-    description = L["Show if on Cooldown or Usable, and show Buff duration on activation"],
-  },
-  abilityUsableBuff = {
-    title = L["Spell + Buff"],
-    description = L["Show if on Cooldown or Usable, and show Buff duration on activation"],
-  },
-  abilityChargeBuff = {
-    title = L["Spell + Buff"],
-    description = L["Show if on Cooldown or Usable, and show Buff duration on activation"],
-  },
-  abilityDebuff = {
-    title = L["Spell + Debuff + Range Check"],
-    description = L["Show if on Cooldown or Usable, and show Debuff duration on activation"],
-  },
-  abilityChargeDebuff = {
-    title = L["Spell + Debuff + Range Check"],
-    description = L["Show if on Cooldown or Usable, and show Debuff duration on activation"],
-  },
-  abilityTotem = {
-    title = L["Spell + Totem"],
-    description = L["Show if on Cooldown or Usable, and show Totem duration on activation"]
-  },
-  abilityChargeTotem = {
-    title = L["Spell + Totem"],
-    description = L["Show if on Cooldown or Usable, and show Totem duration on activation"]
-  },
-  debuff = {
-    title = L["Debuff Active"],
-    description = L["Show if unit have Debuff"],
-  },
-  debuffShowAlways = {
-    title = L["Debuff"],
-    description = L["Show if unit have or is missing Debuff"],
-  },
-  buff = {
-    title = L["Buff Active"],
-    description = L["Show if unit have Buff "],
-  },
-  buffShowAlways = {
-    title = L["Buff"],
-    description = L["Show if unit have or is missing Buff"],
-  },
-}
+  templates.typesDescription = function(itemType)
+    local isItem = itemType:match("item");
+    local isAbility = itemType:match("ability");
+    local isBuff = itemType:match("Buff");
+    local isDebuff = itemType:match("Debuff");
+    local isTotem = itemType:match("Totem");
+    local isTarget = itemType:match("Target") or isDebuff;
+
+    title = ""
+    description = ""
+
+    if itemType == "buff" then
+        title = L["Buff Active"];
+    elseif itemType == "buffShowAlways" then
+        title = L["Buff"];
+        description = L["Show if unit have or is missing Buff"];
+    elseif itemType == "debuff" then
+        title = L["Debuff Active"];
+        description = L["Show if unit have Debuff"]
+    elseif itemType == "debuffShowAlways" then
+        title = L["Debuff"];
+        description = L["Show if unit have or is missing Debuff"];
+    elseif (itemType == item) then
+        title = L["Item on Cooldown"];
+        description = L["Show only on Cooldown"];
+    elseif (isItem) then
+        title = L["Item"];
+        description = L["Show if on Cooldown or Usable"];
+    elseif (isAbility) then
+        if itemType == "ability" then
+            title = L["Spell on Cooldown"];
+            description = L["Show only on Cooldown"];
+        else
+            title = L["Spell"];
+            description = L["Show if on Cooldown or Usable"];
+        end
+    end
+    if (isTotem) then
+        title = title .. L[" + Totem"];
+        description = description .. L[", and show Totem duration on activation"];
+    elseif (isBuff) then
+        title = title .. L[" + Buff"];
+        description = description .. L[", and show Buff duration on activation"];
+    elseif (isDebuff) then
+        title = title .. L[" + Debuff"];
+        description = description .. L[", and show Debuff duration on activation"];
+    end
+    if (isTarget) then
+        title = title .. L[" + Range Check"];
+        description = description .. L[", with Range Check"];
+    end
+    return title, description
+end
 
 local generalAzeriteTraits = {
   { spell = 279928, types = {"buff","buffShowAlways"}, unit = "player"}, --Earthlink

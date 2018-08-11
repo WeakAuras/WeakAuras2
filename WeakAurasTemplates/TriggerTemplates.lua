@@ -573,8 +573,9 @@ function WeakAuras.CreateTemplateView(frame)
     group:SetFullWidth(true);
     for typePos,type in pairs(item.types) do
       local button = AceGUI:Create("WeakAurasNewButton");
-      button:SetTitle(WeakAuras.triggerTemplates.typesDescription[type].title);
-      button:SetDescription(WeakAuras.triggerTemplates.typesDescription[type].description);
+      local title, description = WeakAuras.triggerTemplates.typesDescription(type)
+      button:SetTitle(title);
+      button:SetDescription(description);
       button:SetFullWidth(true);
       button:SetClick(function()
         if (newView.existingAura) then
