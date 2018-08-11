@@ -84,7 +84,10 @@ function WeakAuras.CreateTemplateView(frame)
       },
       property = "color",
     };
-    local alpha = { property = "alpha" };
+    local alpha = {
+      value = 0.5,
+      property = "alpha"
+    };
     local inverse = {
       value = false,
       property = "inverse",
