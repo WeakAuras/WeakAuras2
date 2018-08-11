@@ -2001,25 +2001,25 @@ templates.class.MAGE = {
         { spell = 122, types = {"ability","abilityShowAlways"}}, -- Frost Nova
         { spell = 475, types = {"ability","abilityShowAlways"}}, -- Remove Curse
         { spell = 1953, types = {"ability","abilityShowAlways"}}, -- Blink
-        { spell = 2139, types = {"ability","abilityShowAlways"}}, -- Counterspell
+        { spell = 2139, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Counterspell
         { spell = 12042, types = {"ability","abilityShowAlways"}}, -- Arcane Power
-        { spell = 12051, types = {"ability","abilityShowAlways"}}, -- Evocation
-        { spell = 44425, types = {"ability","abilityShowAlways"}}, -- Arcane Barrage
-        { spell = 45438, types = {"ability","abilityShowAlways"}}, -- Ice Block
+        { spell = 12051, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Evocation
+        { spell = 44425, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Arcane Barrage
+        { spell = 45438, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Ice Block
         { spell = 55342, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Mirror Image
-        { spell = 80353, types = {"ability","abilityShowAlways"}}, -- Time Warp
-        { spell = 110959, types = {"ability","abilityShowAlways"}}, -- Greater Invisibility
+        { spell = 80353, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Time Warp
+        { spell = 110959, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Greater Invisibility
         { spell = 113724, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Ring of Frost
-        { spell = 116011, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Rune of Power
+        { spell = 116011, types = {"ability","abilityCharge","abilityChargeBuff"}, talent = 9 }, -- Rune of Power
         { spell = 153626, types = {"ability","abilityShowAlways"}, talent = 21 }, -- Arcane Orb
-        { spell = 157980, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Supernova
+        { spell = 157980, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 12 }, -- Supernova
         { spell = 190336, types = {"ability","abilityShowAlways"}}, -- Conjure Refreshment
-        { spell = 195676, types = {"ability","abilityShowAlways"}}, -- Displacement
+        { spell = 195676, types = {"ability","abilityUsable"}}, -- Displacement
         { spell = 205022, types = {"ability","abilityShowAlways"}, talent = 3 }, -- Arcane Familiar
-        { spell = 205025, types = {"ability","abilityShowAlways"}}, -- Presence of Mind
+        { spell = 205025, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Presence of Mind
         { spell = 205032, types = {"ability","abilityShowAlways"}, talent = 11 }, -- Charged Up
-        { spell = 212653, types = {"ability","abilityShowAlways"}, talent = 5 }, -- Shimmer
-        { spell = 235450, types = {"ability","abilityShowAlways"}}, -- Prismatic Barrier
+        { spell = 212653, types = {"ability","abilityCharge"}, talent = 5 }, -- Shimmer
+        { spell = 235450, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Prismatic Barrier
       },
       icon = 136075
     },
@@ -2086,25 +2086,25 @@ templates.class.MAGE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, types = {"ability","abilityShowAlways"}}, -- Invisibility
+        { spell = 66, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Invisibility
         { spell = 475, types = {"ability","abilityShowAlways"}}, -- Remove Curse
         { spell = 1953, types = {"ability","abilityShowAlways"}}, -- Blink
-        { spell = 2139, types = {"ability","abilityShowAlways"}}, -- Counterspell
+        { spell = 2139, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Counterspell
         { spell = 31661, types = {"ability","abilityShowAlways"}}, -- Dragon's Breath
-        { spell = 44457, types = {"ability","abilityShowAlways"}, talent = 18 }, -- Living Bomb
-        { spell = 45438, types = {"ability","abilityShowAlways"}}, -- Ice Block
+        { spell = 44457, types = {"ability","abilityShowAlways","abilityTarget","abilityTargetDebuff"}, talent = 18 }, -- Living Bomb
+        { spell = 45438, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Ice Block
         { spell = 55342, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Mirror Image
-        { spell = 80353, types = {"ability","abilityShowAlways"}}, -- Time Warp
-        { spell = 108853, types = {"ability","abilityShowAlways"}}, -- Fire Blast
+        { spell = 80353, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Time Warp
+        { spell = 108853, types = {"ability","abilityCharge"}}, -- Fire Blast
         { spell = 113724, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Ring of Frost
-        { spell = 116011, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Rune of Power
+        { spell = 116011, types = {"ability","abilityCharge","abilityChargeBuff"}, talent = 9 }, -- Rune of Power
         { spell = 153561, types = {"ability","abilityShowAlways"}, talent = 21 }, -- Meteor
         { spell = 157981, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Blast Wave
-        { spell = 190319, types = {"ability","abilityShowAlways"}}, -- Combustion
+        { spell = 190319, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Combustion
         { spell = 190336, types = {"ability","abilityShowAlways"}}, -- Conjure Refreshment
-        { spell = 212653, types = {"ability","abilityShowAlways"}, talent = 5 }, -- Shimmer
-        { spell = 235313, types = {"ability","abilityShowAlways"}}, -- Blazing Barrier
-        { spell = 257541, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Phoenix Flames
+        { spell = 212653, types = {"ability","abilityCharge"}, talent = 5 }, -- Shimmer
+        { spell = 235313, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Blazing Barrier
+        { spell = 257541, types = {"ability","abilityCharge"}, talent = 12 }, -- Phoenix Flames
       },
       icon = 610633
     },
@@ -2174,32 +2174,32 @@ templates.class.MAGE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, types = {"ability","abilityShowAlways"}}, -- Invisibility
+        { spell = 66, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Invisibility
         { spell = 120, types = {"ability","abilityShowAlways"}}, -- Cone of Cold
         { spell = 122, types = {"ability","abilityShowAlways"}}, -- Frost Nova
         { spell = 475, types = {"ability","abilityShowAlways"}}, -- Remove Curse
         { spell = 1953, types = {"ability","abilityShowAlways"}}, -- Blink
-        { spell = 2139, types = {"ability","abilityShowAlways"}}, -- Counterspell
-        { spell = 11426, types = {"ability","abilityShowAlways"}}, -- Ice Barrier
-        { spell = 12472, types = {"ability","abilityShowAlways"}}, -- Icy Veins
-        { spell = 30455, types = {"ability","abilityShowAlways"}}, -- Ice Lance
+        { spell = 2139, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Counterspell
+        { spell = 11426, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Ice Barrier
+        { spell = 12472, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Icy Veins
+        { spell = 30455, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Ice Lance
         { spell = 31687, types = {"ability","abilityShowAlways"}}, -- Summon Water Elemental
         { spell = 31707, types = {"ability","abilityShowAlways"}}, -- Waterbolt
-        { spell = 45438, types = {"ability","abilityShowAlways"}}, -- Ice Block
+        { spell = 45438, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Ice Block
         { spell = 55342, types = {"ability","abilityShowAlways"}, talent = 8 }, -- Mirror Image
-        { spell = 80353, types = {"ability","abilityShowAlways"}}, -- Time Warp
+        { spell = 80353, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Time Warp
         { spell = 84714, types = {"ability","abilityShowAlways"}}, -- Frozen Orb
-        { spell = 108839, types = {"ability","abilityShowAlways"}, talent = 6 }, -- Ice Floes
+        { spell = 108839, types = {"ability","abilityCharge","abilityChargeBuff"}, talent = 6 }, -- Ice Floes
         { spell = 113724, types = {"ability","abilityShowAlways"}, talent = 15 }, -- Ring of Frost
-        { spell = 116011, types = {"ability","abilityShowAlways"}, talent = 9 }, -- Rune of Power
-        { spell = 153595, types = {"ability","abilityShowAlways"}, talent = 18 }, -- Comet Storm
+        { spell = 116011, types = {"ability","abilityCharge","abilityChargeBuff"}, talent = 9 }, -- Rune of Power
+        { spell = 153595, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 18 }, -- Comet Storm
         { spell = 157997, types = {"ability","abilityShowAlways"}, talent = 3 }, -- Ice Nova
         { spell = 190336, types = {"ability","abilityShowAlways"}}, -- Conjure Refreshment
         { spell = 190356, types = {"ability","abilityShowAlways"}}, -- Blizzard
-        { spell = 205021, types = {"ability","abilityShowAlways"}, talent = 20 }, -- Ray of Frost
-        { spell = 212653, types = {"ability","abilityShowAlways"}, talent = 5 }, -- Shimmer
+        { spell = 205021, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 20 }, -- Ray of Frost
+        { spell = 212653, types = {"ability","abilityCharge"}, talent = 5 }, -- Shimmer
         { spell = 235219, types = {"ability","abilityShowAlways"}}, -- Cold Snap
-        { spell = 257537, types = {"ability","abilityShowAlways"}, talent = 12 }, -- Ebonbolt
+        { spell = 257537, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 12 }, -- Ebonbolt
       },
       icon = 629077
     },
