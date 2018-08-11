@@ -76,7 +76,7 @@ templates.typesDescription = {
     description = L["Show if on Cooldown or Usable"],
   },
   abilityUsableTarget = {
-    title = L["Spell"],
+    title = L["Spell + Range Check"],
     description = L["Show if on Cooldown or Usable, with Range Check"],
   },
   abilityUsableCharge = {
@@ -100,6 +100,10 @@ templates.typesDescription = {
     description = L["Show the Cooldown or Usable, with Range Check"],
   },
   abilityBuff = {
+    title = L["Spell + Buff"],
+    description = L["Show if on Cooldown or Usable, and show Buff duration on activation"],
+  },
+  abilityUsableBuff = {
     title = L["Spell + Buff"],
     description = L["Show if on Cooldown or Usable, and show Buff duration on activation"],
   },
@@ -1629,7 +1633,7 @@ templates.class.PRIEST = {
         { spell = 47585, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Dispersion
         { spell = 64044, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 12}, -- Psychic Horror
         { spell = 73325, types = {"ability","abilityShowAlways"}}, -- Leap of Faith
-        { spell = 193223, types = {"ability","abilityUsable","abilityBuff"}, talent = 21}, -- Surrender to Madness
+        { spell = 193223, types = {"ability","abilityUsable","abilityUsableBuff"}, talent = 21}, -- Surrender to Madness
         { spell = 200174, types = {"ability","abilityShowAlways","abilityTotem"}, talent = 17}, -- Mindbender
         { spell = 205351, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 3}, -- Shadow Word: Void
         { spell = 205369, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 11}, -- Mind Bomb

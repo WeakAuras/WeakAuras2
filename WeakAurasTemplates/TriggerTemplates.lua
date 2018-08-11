@@ -178,6 +178,14 @@ function WeakAuras.CreateTemplateView(frame)
     end
 
     local itemType = item.types[typePos];
+    local isItem = itemType:match("item");
+    local isAbility = itemType:match("ability");
+    local isBuff = itemType:match("Buff");
+    local isDebuff = itemType:match("Debuff");
+    local isUsable = itemType:match("Usable");
+    local isTotem = itemType:match("Totem");
+    local isCharge = itemType:match("Charge");
+    local isTarget = itemType:match("Target") or isDebuff or (isBuff and item.unit and item.unit=="target");
     local conditions = {};
 
     -- auras
@@ -186,77 +194,37 @@ function WeakAuras.CreateTemplateView(frame)
       if (itemType == "debuffShowAlways" and (not item.unit or item.unit == "target")) then
         conditions[#conditions+1] = hasTarget;
       end
-    -- abilities with auras
-    elseif (itemType == "abilityBuff" or itemType == "abilityDebuff" or itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
-      conditions = { insufficientResources(1) };
-      if (itemType == "abilityChargeBuff" or itemType == "abilityChargeDebuff") then
-        conditions[#conditions+1] = charges(1);
+    -- abilities and items
+    elseif (itemType == "ability" or itemType == "item") then
+      -- no condition
+    elseif (isAbility or isItem) then
+      local cd_trigger = 0;
+      if (isBuff or isDebuff or isTotem) then
+        cd_trigger = 1;
+      end
+      if (isUsable) then
+        conditions[#conditions+1] = usable(cd_trigger);
+      elseif (isAbility) then
+        conditions[#conditions+1] = insufficientResources(cd_trigger);
+      end
+      if (isCharge) then
+        conditions[#conditions+1] = charges(cd_trigger);
       else
-        conditions[#conditions+1] = onCooldown(1);
+        conditions[#conditions+1] = onCooldown(cd_trigger);
       end
-      conditions[#conditions+1] = buffed(0);
-      if (itemType == "abilityDebuff" or itemType == "abilityChargeDebuff" or (itemType == "abilityBuff" and item.unit and item.unit=="target")) then
-        conditions[#conditions+1] = spellInRange(1);
+      if (isBuff or isDebuff) then
+        conditions[#conditions+1] = buffed(0);
       end
-    -- items
-    elseif (itemType == "itemShowAlways" ) then
-      conditions = { onCooldown(0) };
-    -- !!TODO (or not to do?) add itemBuff, itemDebuff, itemChargeBuff, itemChargeDebuff, itemCharge etc..
-    -- abilities
-    elseif (itemType == "abilityShowAlways") then
-      conditions = {
-        insufficientResources(0),
-        onCooldown(0)
-      };
-    elseif (itemType == "abilityUsable") then
-      conditions = {
-        usable(0),
-        onCooldown(0)
-      };
-    elseif (itemType == "abilityUsableTarget") then
-      conditions = {
-        usable(0),
-        onCooldown(0),
-        spellInRange(0)
-      };
-    elseif (itemType == "abilityUsableCharge") then
-      conditions = {
-        usable(0),
-        charges(0),
-      };
-    elseif (itemType == "abilityUsableChargeTarget") then
-      conditions = {
-        usable(0),
-        charges(0),
-        spellInRange(0)
-      };
-    elseif (itemType == "abilityTarget") then
-      conditions = {
-        insufficientResources(0),
-        onCooldown(0),
-        spellInRange(0)
-      };
-    elseif (itemType == "abilityCharge") then
-      conditions = {
-        insufficientResources(0),
-        charges(0)
-      };
-    elseif (itemType == "abilityChargeTarget") then
-      conditions = {
-        insufficientResources(0),
-        charges(0),
-        spellInRange(0)
-      };
-    elseif (itemType == "abilityTotem") then
-      conditions = {
-        onCooldown(1),
-        totem(0),
-      };
-    elseif (itemType == "abilityChargeTotem") then
-      conditions = {
-        charges(1),
-        totem(0),
-      };
+      if (isTotem) then
+        conditions[#conditions+1] = totem(0);
+      end
+      if (isTarget) then
+        if (isAbility) then
+          conditions[#conditions+1] = spellInRange(cd_trigger);
+        elseif (isItem) then
+          conditions[#conditions+1] = itemInRange(cd_trigger);
+        end
+      end
     end
     return conditions;
   end
@@ -334,7 +302,9 @@ function WeakAuras.CreateTemplateView(frame)
     elseif (itemType == "abilityBuff"
       or itemType == "abilityDebuff"
       or itemType == "abilityChargeBuff"
-      or itemType == "abilityChargeDebuff")
+      or itemType == "abilityChargeDebuff"
+      or itemType == "abilityUsableBuff"
+      or itemType == "abilityUsableDebuff")
     then
       local triggers = {
         [0] = {
