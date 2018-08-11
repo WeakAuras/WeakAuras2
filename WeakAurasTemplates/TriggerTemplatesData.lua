@@ -75,6 +75,18 @@ templates.typesDescription = {
     title = L["Spell"],
     description = L["Show if on Cooldown or Usable"],
   },
+  abilityUsableTarget = {
+    title = L["Spell"],
+    description = L["Show if on Cooldown or Usable, with Range Check"],
+  },
+  abilityUsableCharge = {
+    title = L["Spell"],
+    description = L["Show if on Cooldown or Usable"],
+  },
+  abilityUsableChargeTarget = {
+    title = L["Spell + Range Check"],
+    description = L["Show if on Cooldown or Usable, with Range Check"],
+  },
   abilityTarget = {
     title = L["Spell + Range Check"],
     description = L["Show the Cooldown or Usable, with Range Check"],
@@ -1612,21 +1624,21 @@ templates.class.PRIEST = {
         { spell = 15286, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Vampiric Embrace
         { spell = 15487, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Silence
         { spell = 32375, types = {"ability","abilityShowAlways"}}, -- Mass Dispel
-        { spell = 32379, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 14}, -- Shadow Word: Death
+        { spell = 32379, types = {"ability","abilityUsableCharge","abilityUsableChargeTarget"}, talent = 14}, -- Shadow Word: Death
         { spell = 34433, types = {"ability","abilityShowAlways","abilityTotem"}}, -- Shadowfiend
         { spell = 47585, types = {"ability","abilityShowAlways","abilityBuff"}}, -- Dispersion
         { spell = 64044, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 12}, -- Psychic Horror
         { spell = 73325, types = {"ability","abilityShowAlways"}}, -- Leap of Faith
-        { spell = 193223, types = {"ability","abilityShowAlways","abilityBuff"}, talent = 21}, -- Surrender to Madness
+        { spell = 193223, types = {"ability","abilityUsable","abilityBuff"}, talent = 21}, -- Surrender to Madness
         { spell = 200174, types = {"ability","abilityShowAlways","abilityTotem"}, talent = 17}, -- Mindbender
         { spell = 205351, types = {"ability","abilityCharge","abilityChargeTarget"}, talent = 3}, -- Shadow Word: Void
         { spell = 205369, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 11}, -- Mind Bomb
         { spell = 205385, types = {"ability","abilityShowAlways"}, talent = 15}, -- Shadow Crash
         { spell = 205448, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Void Bolt
         { spell = 213634, types = {"ability","abilityShowAlways"}}, -- Purify Disease
-        { spell = 228260, types = {"ability","abilityShowAlways","abilityTarget"}}, -- Void Eruption
-        { spell = 263165, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 18}, -- Void Torrent
-        { spell = 263346, types = {"ability","abilityShowAlways"}, talent = 9}, -- Dark Void
+        { spell = 228260, types = {"ability","abilityUsable","abilityUsableTarget"}}, -- Void Eruption
+        { spell = 263165, types = {"ability","abilityUsable","abilityUsableTarget"}, talent = 18}, -- Void Torrent
+        { spell = 263346, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 9}, -- Dark Void
         { spell = 280711, types = {"ability","abilityShowAlways","abilityTarget"}, talent = 20}, -- Dark Ascension
 
       },

@@ -158,10 +158,10 @@ function WeakAuras.CreateTemplateView(frame)
         changes = { grey }
       };
     end
-    local actionUsable = function(t) return {
+    local usable = function(t) return {
         check = {
           trigger = t,
-          variable = "show",
+          variable = "spellUsable",
           value = 0,
         },
         changes = { blue }
@@ -210,8 +210,24 @@ function WeakAuras.CreateTemplateView(frame)
       };
     elseif (itemType == "abilityUsable") then
       conditions = {
-        actionUsable(1),
+        usable(0),
+        onCooldown(0)
+      };
+    elseif (itemType == "abilityUsableTarget") then
+      conditions = {
+        usable(0),
         onCooldown(0),
+        spellInRange(0)
+      };
+    elseif (itemType == "abilityUsableCharge") then
+      conditions = {
+        usable(0),
+        charges(0),
+      };
+    elseif (itemType == "abilityUsableChargeTarget") then
+      conditions = {
+        usable(0),
+        charges(0),
         spellInRange(0)
       };
     elseif (itemType == "abilityTarget") then
@@ -348,7 +364,11 @@ function WeakAuras.CreateTemplateView(frame)
       or itemType == "abilityShowAlways"
       or itemType == "abilityTarget"
       or itemType == "abilityCharge"
-      or itemType == "abilityChargeTarget")
+      or itemType == "abilityChargeTarget"
+      or itemType == "abilityUsable"
+      or itemType == "abilityUsableTarget"
+      or itemType == "abilityUsableCharge"
+      or itemType == "abilityUsableChargeTarget")
     then
       local triggers = {
         [0] = {
@@ -361,28 +381,6 @@ function WeakAuras.CreateTemplateView(frame)
             genericShowOn = item.showOn or itemType == "ability" and "showOnCooldown" or "showAlways",
           }
         }
-      }
-      return triggers;
-    elseif (itemType == "abilityUsable") then
-      local triggers = {
-        [0] = {
-          trigger = {
-            event = "Cooldown Progress (Spell)",
-            spellName = item.spell,
-            type = "status",
-            unevent = "auto",
-            genericShowOn = item.showOn or "showAlways",
-            use_genericShowOn = true,
-          },
-        },
-        [1] = {
-          trigger = {
-            event = "Action Usable",
-            type = "status",
-            spellName = item.spell,
-            unevent = "auto",
-          }
-        },
       }
       return triggers;
     elseif (itemType == "item" or itemType == "itemShowAlways") then
