@@ -62,8 +62,8 @@ local powerTypes =
     local isTotem = itemType:match("Totem");
     local isTarget = itemType:match("Target") or isDebuff;
 
-    title = ""
-    description = ""
+    local title = ""
+    local description = ""
 
     if itemType == "buff" then
         title = L["Buff Active"];
