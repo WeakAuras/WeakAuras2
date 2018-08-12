@@ -38,7 +38,6 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
 end
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
--- TODO 8.0 - Use for user data upgrades? local HBD = LibStub("HereBeDragons-2.0")
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
