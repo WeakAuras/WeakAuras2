@@ -2674,6 +2674,7 @@ local function pAdd(data)
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
   elseif (data.controlledChildren) then
+    db.displays[id] = data;
     WeakAuras.SetRegion(data);
   else
     if (not data.activeTriggerMode or data.activeTriggerMode >= data.numTriggers) then
@@ -2729,6 +2730,8 @@ local function pAdd(data)
       activatedConditions = {},
     };
 
+    db.displays[id] = data;
+
     local region = WeakAuras.SetRegion(data);
     if (WeakAuras.clones[id]) then
       for cloneId, _ in pairs(WeakAuras.clones[id]) do
@@ -2745,7 +2748,6 @@ local function pAdd(data)
   end
 
   removeSpellNames(data);
-  db.displays[id] = data;
 end
 
 -- Dummy add function to protect errors from propagating out of the real add function
