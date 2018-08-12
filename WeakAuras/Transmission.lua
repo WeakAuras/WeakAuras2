@@ -306,7 +306,7 @@ radioButtons = {
 local radioButtonLabels = {
   L["Create a Copy"],
   -- L["Replace Aura"],
-  L["Update Aura"]
+  L["Update Auras"]
 }
 
 for index, button in ipairs(radioButtons) do
@@ -1433,7 +1433,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         pendingData.newData[index] = child
       end
     end
-    pendingData.mode = 1
     --TODO: only scamCheck codes that have actually changed
     for i = 0, #pendingData.newData do
       scamCheck(pendingData.codes, pendingData.newData[i])
@@ -1441,10 +1440,10 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     if match ~= nil then
       -- MatchData found at least one match
       tinsert(tooltip, {1, " "})
+      pendingData.mode = 1
       if type(match) ~= "table" then
         -- there is no difference whatsoever
-        pendingData.mode = 1
-        tinsert(tooltip, {1, L["You already have this group/aura, importing will create a duplicate."], 1, 0.82, 0,})
+        tinsert(tooltip, {1, L["You already have this group/aura. Importing will create a duplicate."], 1, 0.82, 0,})
       else
         -- load pendingData
         for k,v in pairs(match) do
@@ -1452,7 +1451,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
         end
         -- tally up changes
         if children and #children > 0 then
-          tinsert(tooltip, {1, L["This import is a modification to a group of your auras:"], 1, 0.82, 0,})
+          tinsert(tooltip, {1, L["This is a modified version of your group, |cff9900FF%s.|r"]:format(pendingData.oldData[0].id), 1, 0.82, 0,})
           tinsert(tooltip, {1, " "})
           if match.added ~= 0 then
             tinsert(tooltip, {1, L["   • %d auras added"]:format(match.added), 1, 0.82, 0})
@@ -1468,7 +1467,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
           tinsert(tooltip, {1, " "})
         else
           local oldID = type(match.oldData[0]) == "table" and match.oldData[0].id or "unknown"
-          tinsert(tooltip, {1, L["This import is a modification to an existing aura:"], 1, 0.82, 0})
+          tinsert(tooltip, {1, L["This is a modified version of your aura, |cff9900FF%s.|r"]:format(pendingData.oldData[0].id), 1, 0.82, 0})
           tinsert(tooltip, {1, L["What do you want to do?"], 1, 0.82, 0})
           tinsert(tooltip, {1, " "})
         end
