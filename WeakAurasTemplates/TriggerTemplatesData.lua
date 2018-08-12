@@ -3507,32 +3507,32 @@ templates.class.DEATHKNIGHT = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 3714, type = "ability"}, -- Path of Frost
-        { spell = 43265, type = "ability"}, -- Death and Decay
-        { spell = 47528, type = "ability"}, -- Mind Freeze
-        { spell = 48265, type = "ability"}, -- Death's Advance
-        { spell = 48707, type = "ability"}, -- Anti-Magic Shell
-        { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49028, type = "ability"}, -- Dancing Rune Weapon
-        { spell = 49576, type = "ability"}, -- Death Grip
-        { spell = 50842, type = "ability"}, -- Blood Boil
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
+        { spell = 43265, type = "ability", buff = true}, -- Death and Decay
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 48265, type = "ability", buff = true}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 49028, type = "ability", buff = true}, -- Dancing Rune Weapon
+        { spell = 49576, type = "ability", requiresTarget = true}, -- Death Grip
+        { spell = 50842, type = "ability", charges = true}, -- Blood Boil
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 55233, type = "ability"}, -- Vampiric Blood
-        { spell = 56222, type = "ability"}, -- Dark Command
+        { spell = 55233, type = "ability", buff = true}, -- Vampiric Blood
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 61999, type = "ability"}, -- Raise Ally
-        { spell = 108199, type = "ability"}, -- Gorefiend's Grasp
-        { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 194679, type = "ability", talent = 12}, -- Rune Tap
+        { spell = 108199, type = "ability", requiresTarget = true}, -- Gorefiend's Grasp
+        { spell = 111673, type = "ability", requiresTarget = true}, -- Control Undead
+        { spell = 194679, type = "ability", charges = true, buff = true, talent = 12}, -- Rune Tap
         { spell = 194844, type = "ability", talent = 21}, -- Bonestorm
-        { spell = 195182, type = "ability"}, -- Marrowrend
-        { spell = 195292, type = "ability"}, -- Death's Caress
-        { spell = 206930, type = "ability"}, -- Heart Strike
-        { spell = 206931, type = "ability", talent = 2}, -- Blooddrinker
-        { spell = 206940, type = "ability", talent = 18}, -- Mark of Blood
-        { spell = 210764, type = "ability", talent = 3}, -- Rune Strike
-        { spell = 212552, type = "ability", talent = 15}, -- Wraith Walk
-        { spell = 219809, type = "ability", talent = 9}, -- Tombstone
-        { spell = 221562, type = "ability"}, -- Asphyxiate
+        { spell = 195182, type = "ability", requiresTarget = true, charges = true}, -- Marrowrend
+        { spell = 195292, type = "ability", requiresTarget = true}, -- Death's Caress
+        { spell = 206930, type = "ability", requiresTarget = true}, -- Heart Strike
+        { spell = 206931, type = "ability", requiresTarget = true, debuff = true, talent = 2}, -- Blooddrinker
+        { spell = 206940, type = "ability", requiresTarget = true, debuff = true, talent = 18}, -- Mark of Blood
+        { spell = 210764, type = "ability", requiresTarget = true, charges = true, talent = 3}, -- Rune Strike
+        { spell = 212552, type = "ability", buff = true, talent = 15}, -- Wraith Walk
+        { spell = 219809, type = "ability", usable = true, buff = true, talent = 9}, -- Tombstone
+        { spell = 221562, type = "ability", requiresTarget = true}, -- Asphyxiate
         { spell = 274156, type = "ability", talent = 6}, -- Consumption
       },
       icon = 136120
@@ -3600,28 +3600,28 @@ templates.class.DEATHKNIGHT = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 3714, type = "ability"}, -- Path of Frost
-        { spell = 45524, type = "ability"}, -- Chains of Ice
-        { spell = 47528, type = "ability"}, -- Mind Freeze
-        { spell = 47568, type = "ability"}, -- Empower Rune Weapon
-        { spell = 48265, type = "ability", talent = 15}, -- Death's Advance
-        { spell = 48707, type = "ability"}, -- Anti-Magic Shell
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
+        { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 47568, type = "ability", buff = true}, -- Empower Rune Weapon
+        { spell = 48265, type = "ability", buff = true, talent = 15}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
         { spell = 48743, type = "ability"}, -- Death Pact
-        { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49020, type = "ability"}, -- Obliterate
-        { spell = 49184, type = "ability"}, -- Howling Blast
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 49020, type = "ability", requiresTarget = true}, -- Obliterate
+        { spell = 49184, type = "ability", requiresTarget = true}, -- Howling Blast
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 51271, type = "ability"}, -- Pillar of Frost
-        { spell = 56222, type = "ability"}, -- Dark Command
+        { spell = 51271, type = "ability", buff = true}, -- Pillar of Frost
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 57330, type = "ability", talent = 6}, -- Horn of Winter
         { spell = 61999, type = "ability"}, -- Raise Ally
-        { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 152279, type = "ability", talent = 21}, -- Breath of Sindragosa
+        { spell = 111673, type = "ability", requiresTarget = true}, -- Control Undead
+        { spell = 152279, type = "ability", buff = true, talent = 21}, -- Breath of Sindragosa
         { spell = 194913, type = "ability"}, -- Glacial Advance
-        { spell = 196770, type = "ability"}, -- Remorseless Winter
+        { spell = 196770, type = "ability", buff = true}, -- Remorseless Winter
         { spell = 207167, type = "ability", talent = 9}, -- Blinding Sleet
         { spell = 207230, type = "ability", talent = 12}, -- Frostscythe
-        { spell = 212552, type = "ability", talent = 14}, -- Wraith Walk
+        { spell = 212552, type = "ability", buff = true, talent = 14}, -- Wraith Walk
         { spell = 279302, type = "ability", talent = 18}, -- Frostwyrm's Fury
       },
       icon = 135372
@@ -3687,36 +3687,36 @@ templates.class.DEATHKNIGHT = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 3714, type = "ability"}, -- Path of Frost
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
         { spell = 42650, type = "ability"}, -- Army of the Dead
-        { spell = 43265, type = "ability"}, -- Death and Decay
-        { spell = 45524, type = "ability"}, -- Chains of Ice
+        { spell = 43265, type = "ability", buff = true}, -- Death and Decay
+        { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
         { spell = 46584, type = "ability"}, -- Raise Dead
-        { spell = 47468, type = "ability"}, -- Claw
-        { spell = 47481, type = "ability"}, -- Gnaw
-        { spell = 47484, type = "ability"}, -- Huddle
-        { spell = 47528, type = "ability"}, -- Mind Freeze
-        { spell = 48265, type = "ability"}, -- Death's Advance
-        { spell = 48707, type = "ability"}, -- Anti-Magic Shell
+        { spell = 47468, type = "ability", requiresTarget = true}, -- Claw
+        { spell = 47481, type = "ability", requiresTarget = true}, -- Gnaw
+        { spell = 47484, type = "ability", requiresTarget = true}, -- Huddle
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 48265, type = "ability", buff = true}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
         { spell = 48743, type = "ability"}, -- Death Pact
-        { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49206, type = "ability", talent = 21}, -- Summon Gargoyle
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 49206, type = "ability", requiresTarget = true, talent = 21}, -- Summon Gargoyle
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 55090, type = "ability"}, -- Scourge Strike
-        { spell = 56222, type = "ability"}, -- Dark Command
+        { spell = 55090, type = "ability", requiresTarget = true}, -- Scourge Strike
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 61999, type = "ability"}, -- Raise Ally
         { spell = 63560, type = "ability"}, -- Dark Transformation
-        { spell = 77575, type = "ability"}, -- Outbreak
-        { spell = 85948, type = "ability"}, -- Festering Strike
-        { spell = 108194, type = "ability", talent = 9}, -- Asphyxiate
+        { spell = 77575, type = "ability", requiresTarget = true}, -- Outbreak
+        { spell = 85948, type = "ability", requiresTarget = true}, -- Festering Strike
+        { spell = 108194, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Asphyxiate
         { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 115989, type = "ability", talent = 6}, -- Unholy Blight
-        { spell = 130736, type = "ability", talent = 12}, -- Soul Reaper
+        { spell = 115989, type = "ability", buff = true, talent = 6}, -- Unholy Blight
+        { spell = 130736, type = "ability", requiresTarget = true, buff = true, talent = 12}, -- Soul Reaper
         { spell = 152280, type = "ability", talent = 17}, -- Defile
-        { spell = 207289, type = "ability", talent = 20}, -- Unholy Frenzy
-        { spell = 207311, type = "ability"}, -- Clawing Shadows
-        { spell = 212552, type = "ability", talent = 14}, -- Wraith Walk
-        { spell = 275699, type = "ability"}, -- Apocalypse
+        { spell = 207289, type = "ability", buff = true, talent = 20}, -- Unholy Frenzy
+        { spell = 207311, type = "ability", requiresTarget = true}, -- Clawing Shadows
+        { spell = 212552, type = "ability", buff = true, talent = 14}, -- Wraith Walk
+        { spell = 275699, type = "ability", usable = true, requiresTarget = true}, -- Apocalypse
       },
       icon = 136144
     },
