@@ -275,6 +275,7 @@ local function subTypesFor(item)
           createAbilityTrigger(triggers, 0, item, "showAlways");
         end,
         createConditions = function(conditions, item)
+          insufficientResourcesBlue(conditions, 0);
           hasChargesGrey(conditions, 0);
         end,
       });
@@ -284,6 +285,7 @@ local function subTypesFor(item)
           description = L["Tracks the charge and the buff. Glows while the buff is active."],
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 1);
             hasChargesGrey(conditions, 1);
             isBuffedGlow(conditions, 0);
           end,
@@ -294,6 +296,7 @@ local function subTypesFor(item)
           description = L["Tracks the charge and the debuff. Glows while the debuff is active."],
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 1);
             hasChargesGrey(conditions, 1);
             isBuffedGlow(conditions, 0);
           end,
@@ -307,20 +310,24 @@ local function subTypesFor(item)
             createAbilityTrigger(triggers, 0, item, "showAlways");
           end,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 0);
             hasChargesGrey(conditions, 0);
+            spellInRangeRed(conditions, 0);
             hasTargetAlpha(conditions);
           end,
         });
         if (item.usable) then
           tinsert(types,  {
             title = L["Show Charges with Usable Check"],
-            description = L["And a Fade Out if without a targt"],
+            description = L["And a Fade Out if without a target"],
             createTriggers = function(triggers, item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
             createConditions = function(conditions, item)
-              hasChargesGrey(conditions, 0);
               isUsableBlue(conditions, 0);
+              hasChargesGrey(conditions, 0);
+              spellInRangeRed(conditions, 0);
+              hasTargetAlpha(conditions);
             end,
           });
         end
@@ -330,9 +337,10 @@ local function subTypesFor(item)
           description = L[""],
           createTriggers = function(triggers, item)
             createTotemTrigger(triggers, 0, item);
-            createAbilityTrigger(triggers, 0, item, "showAlways");
+            createAbilityTrigger(triggers, 1, item, "showAlways");
           end,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 1);
             hasChargesGrey(conditions, 1);
             totemActiveGlow(conditions, 0);
           end,
@@ -345,8 +353,8 @@ local function subTypesFor(item)
             createAbilityTrigger(triggers, 0, item, "showAlways");
           end,
           createConditions = function(conditions, item)
-            hasChargesGrey(conditions, 0);
             isUsableBlue(conditions, 0);
+            hasChargesGrey(conditions, 0);
           end,
         });
       end
@@ -358,6 +366,7 @@ local function subTypesFor(item)
           createAbilityTrigger(triggers, 0, item, "showAlways");
         end,
         createConditions = function(conditions, item)
+          insufficientResourcesBlue(conditions, 0);
           onCdCheckGrey(conditions, 0);
         end,
       });
@@ -367,6 +376,7 @@ local function subTypesFor(item)
           description = L["Glows while Buffed"],
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 1);
             onCdCheckGrey(conditions, 1);
             isBuffedGlow(conditions, 0);
           end,
@@ -377,9 +387,9 @@ local function subTypesFor(item)
             description = L["Glows while Buffed"],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item)
+              isUsableBlue(conditions, 1);
               onCdCheckGrey(conditions, 1);
               isBuffedGlow(conditions, 0);
-              isUsableBlue(conditions, 1);
             end,
           });
         end
@@ -389,9 +399,11 @@ local function subTypesFor(item)
             description = L["Glows while Buffed, fades out without a target"],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item)
+              insufficientResourcesBlue(conditions, 1);
               onCdCheckGrey(conditions, 1);
-              isBuffedGlow(conditions, 0);
+              spellInRangeRed(conditions, 1);
               hasTargetAlpha(conditions);
+              isBuffedGlow(conditions, 0);
             end,
           });
         end
@@ -401,6 +413,7 @@ local function subTypesFor(item)
           description = L["Glows while Debuffed"],
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 1);
             onCdCheckGrey(conditions, 1);
             isBuffedGlow(conditions, 0);
           end,
@@ -411,9 +424,11 @@ local function subTypesFor(item)
             description = L["Glows while Debuffed"],
             createTriggers = createAbilityAndDebuffTrigger,
             createConditions = function(conditions, item)
+              insufficientResourcesBlue(conditions, 1);
               onCdCheckGrey(conditions, 1);
-              isBuffedGlow(conditions, 0);
+              spellInRangeRed(conditions, 1);
               hasTargetAlpha(conditions);
+              isBuffedGlow(conditions, 0);
             end,
           });
         end
@@ -426,6 +441,7 @@ local function subTypesFor(item)
             createAbilityTrigger(triggers, 1, item, "showAlways");
           end,
           createConditions = function(conditions, item)
+            insufficientResourcesBlue(conditions, 1);
             onCdCheckGrey(conditions, 1);
             totemActiveGlow(conditions, 0);
           end,
@@ -439,8 +455,8 @@ local function subTypesFor(item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
             createConditions = function(conditions, item)
-              onCdCheckGrey(conditions, 0);
               isUsableBlue(conditions, 0);
+              onCdCheckGrey(conditions, 0);
             end,
           });
           if (item.requiresTarget) then
@@ -451,8 +467,9 @@ local function subTypesFor(item)
                 createAbilityTrigger(triggers, 0, item, "showAlways");
               end,
               createConditions = function(conditions, item)
-                onCdCheckGrey(conditions, 0);
                 isUsableBlue(conditions, 0);
+                onCdCheckGrey(conditions, 0);
+                spellInRangeRed(conditions, 0);
                 hasTargetAlpha(conditions);
               end,
             });
@@ -466,7 +483,9 @@ local function subTypesFor(item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
             createConditions = function(conditions, item)
+              insufficientResourcesBlue(conditions, 0);
               onCdCheckGrey(conditions, 0);
+              spellInRangeRed(conditions, 0);
               hasTargetAlpha(conditions);
             end,
           });
@@ -492,6 +511,16 @@ local function subTypesFor(item)
         isBuffedGlow(conditions, 0);
       end,
     });
+    tinsert(types, {
+      title = L["Always show"],
+      description = L["Greyed if Buff not active"],
+      createTriggers = function(triggers, item)
+        createBuffTrigger(triggers, 0, item, "showAlways", true);
+      end,
+      createConditions = function(conditions, item)
+        buffGreyed(conditions, 0);
+      end,
+    });
   elseif(item.type == "debuff") then
     tinsert(types, {
       title = L["Show Only if Debuffed"],
@@ -508,6 +537,16 @@ local function subTypesFor(item)
       end,
       createConditions = function(conditions, item)
         isBuffedGlow(conditions, 0);
+      end,
+    });
+    tinsert(types, {
+      title = L["Always show"],
+      description = L["Greyed if Debuff not active"],
+      createTriggers = function(triggers, item)
+        createBuffTrigger(triggers, 0, item, "showAlways", false);
+      end,
+      createConditions = function(conditions, item)
+        buffGreyed(conditions, 0);
       end,
     });
   elseif(item.type == "item") then
@@ -578,7 +617,8 @@ function WeakAuras.CreateTemplateView(frame)
   local function replaceCondition(data, item, subType)
     local conditions = createConditionsFor(item, subType);
     if conditions then
-      data.conditions = conditions;
+      data.conditions = {}
+      WeakAuras.DeepCopy(conditions, data.conditions);
     end
   end
 
