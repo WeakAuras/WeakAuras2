@@ -1068,26 +1068,26 @@ templates.class.ROGUE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 408, type = "ability"}, -- Kidney Shot
-        { spell = 703, type = "ability"}, -- Garrote
+        { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
+        { spell = 703, type = "ability", requiresTarget = true}, -- Garrote
         { spell = 1725, type = "ability"}, -- Distract
-        { spell = 1766, type = "ability"}, -- Kick
-        { spell = 1784, type = "ability"}, -- Stealth
-        { spell = 1856, type = "ability"}, -- Vanish
-        { spell = 1966, type = "ability"}, -- Feint
-        { spell = 2094, type = "ability"}, -- Blind
-        { spell = 2983, type = "ability"}, -- Sprint
-        { spell = 5277, type = "ability"}, -- Evasion
-        { spell = 31224, type = "ability"}, -- Cloak of Shadows
-        { spell = 36554, type = "ability"}, -- Shadowstep
-        { spell = 79140, type = "ability"}, -- Vendetta
-        { spell = 114018, type = "ability"}, -- Shroud of Concealment
-        { spell = 115191, type = "ability"}, -- Stealth
-        { spell = 137619, type = "ability", talent = 9}, -- Marked for Death
-        { spell = 185311, type = "ability"}, -- Crimson Vial
-        { spell = 200806, type = "ability", talent = 18}, -- Exsanguinate
-        { spell = 245388, type = "ability", talent = 17}, -- Toxic Blade
-        { spell = 57934, type = "ability"}, -- Tricks of the Trade
+        { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
+        { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1966, type = "ability", buff = true}, -- Feint
+        { spell = 2094, type = "ability", requiresTarget = true}, -- Blind
+        { spell = 2983, type = "ability", buff = true}, -- Sprint
+        { spell = 5277, type = "ability", buff = true}, -- Evasion
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 36554, type = "ability", requiresTarget = true}, -- Shadowstep
+        { spell = 79140, type = "ability", requiresTarget = true, debuff = true}, -- Vendetta
+        { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
+        { spell = 115191, type = "ability", buff = true}, -- Stealth
+        { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
+        { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 200806, type = "ability", requiresTarget = true, usable = true, talent = 18}, -- Exsanguinate
+        { spell = 245388, type = "ability", requiresTarget = true, talent = 17}, -- Toxic Blade
+        { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
       },
       icon = 458726
     },
@@ -1165,27 +1165,27 @@ templates.class.ROGUE = {
       title = L["Cooldowns"],
       args = {
         { spell = 1725, type = "ability"}, -- Distract
-        { spell = 1766, type = "ability"}, -- Kick
-        { spell = 1776, type = "ability"}, -- Gouge
-        { spell = 1784, type = "ability"}, -- Stealth
-        { spell = 1856, type = "ability"}, -- Vanish
-        { spell = 1966, type = "ability"}, -- Feint
-        { spell = 2094, type = "ability"}, -- Blind
-        { spell = 2983, type = "ability"}, -- Sprint
-        { spell = 13750, type = "ability"}, -- Adrenaline Rush
-        { spell = 13877, type = "ability"}, -- Blade Flurry
-        { spell = 31224, type = "ability"}, -- Cloak of Shadows
-        { spell = 51690, type = "ability", talent = 21}, -- Killing Spree
+        { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
+        { spell = 1776, type = "ability", requiresTarget = true, debuff = true}, -- Gouge
+        { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1966, type = "ability", buff = true}, -- Feint
+        { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
+        { spell = 2983, type = "ability", buff = true }, -- Sprint
+        { spell = 13750, type = "ability", buff = true}, -- Adrenaline Rush
+        { spell = 13877, type = "ability", buff = true, charges = true}, -- Blade Flurry
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 51690, type = "ability", requiresTarget = true, talent = 21}, -- Killing Spree
         { spell = 79096, type = "ability"}, -- Restless Blades
-        { spell = 114018, type = "ability"}, -- Shroud of Concealment
-        { spell = 137619, type = "ability", talent = 9}, -- Marked for Death
-        { spell = 185311, type = "ability"}, -- Crimson Vial
-        { spell = 195457, type = "ability"}, -- Grappling Hook
-        { spell = 196937, type = "ability", talent = 3}, -- Ghostly Strike
-        { spell = 199754, type = "ability"}, -- Riposte
-        { spell = 199804, type = "ability"}, -- Between the Eyes
-        { spell = 271877, type = "ability", talent = 20}, -- Blade Rush
-        { spell = 57934, type = "ability"}, -- Tricks of the Trade
+        { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
+        { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
+        { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 195457, type = "ability", requiresTarget = true}, -- Grappling Hook
+        { spell = 196937, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Ghostly Strike
+        { spell = 199754, type = "ability", buff = true}, -- Riposte
+        { spell = 199804, type = "ability", usable = true, requiresTarget = true}, -- Between the Eyes
+        { spell = 271877, type = "ability", buff = true, talent = 20}, -- Blade Rush
+        { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
       },
       icon = 135610
     },
@@ -1261,27 +1261,27 @@ templates.class.ROGUE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 408, type = "ability"}, -- Kidney Shot
+        { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
         { spell = 1725, type = "ability"}, -- Distract
-        { spell = 1766, type = "ability"}, -- Kick
-        { spell = 1784, type = "ability"}, -- Stealth
-        { spell = 1856, type = "ability"}, -- Vanish
-        { spell = 1966, type = "ability"}, -- Feint
-        { spell = 2094, type = "ability"}, -- Blind
-        { spell = 2983, type = "ability"}, -- Sprint
-        { spell = 5277, type = "ability"}, -- Evasion
-        { spell = 31224, type = "ability"}, -- Cloak of Shadows
-        { spell = 36554, type = "ability"}, -- Shadowstep
-        { spell = 114018, type = "ability"}, -- Shroud of Concealment
-        { spell = 115191, type = "ability"}, -- Stealth
-        { spell = 121471, type = "ability"}, -- Shadow Blades
-        { spell = 137619, type = "ability", talent = 9}, -- Marked for Death
-        { spell = 185311, type = "ability"}, -- Crimson Vial
-        { spell = 185313, type = "ability"}, -- Shadow Dance
-        { spell = 212283, type = "ability"}, -- Symbols of Death
-        { spell = 277925, type = "ability", talent = 21}, -- Shuriken Tornado
-        { spell = 280719, type = "ability", talent = 20}, -- Secret Technique
-        { spell = 57934, type = "ability"}, -- Tricks of the Trade
+        { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
+        { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1966, type = "ability", buff = true}, -- Feint
+        { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
+        { spell = 2983, type = "ability", buff = true}, -- Sprint
+        { spell = 5277, type = "ability", buff = true}, -- Evasion
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 36554, type = "ability", charges = true, requiresTarget = true}, -- Shadowstep
+        { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
+        { spell = 115191, type = "ability", buff = true}, -- Stealth
+        { spell = 121471, type = "ability", buff = true}, -- Shadow Blades
+        { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
+        { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 185313, type = "ability", charges = true, buff = true}, -- Shadow Dance
+        { spell = 212283, type = "ability", buff = true}, -- Symbols of Death
+        { spell = 277925, type = "ability", buff = true, talent = 21}, -- Shuriken Tornado
+        { spell = 280719, type = "ability", requiresTarget = true, usable = true, debuff = true, talent = 20}, -- Secret Technique
+        { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
 
       },
       icon = 236279
@@ -1362,7 +1362,7 @@ templates.class.PRIEST = {
         { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 33206, type = "ability"}, -- Pain Suppression
-        { spell = 34433, type = "ability", totem = true}, -- Shadowfiend
+        { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
         { spell = 47536, type = "ability", buff = true}, -- Rapture
         { spell = 47540, type = "ability", requiresTarget = true}, -- Penance
         { spell = 62618, type = "ability"}, -- Power Word: Barrier
@@ -1370,12 +1370,12 @@ templates.class.PRIEST = {
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
         { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
-        { spell = 123040, type = "ability", totem = true, talent = 8}, -- Mindbender
+        { spell = 123040, type = "ability", totem = true, requiresTarget = true, talent = 8}, -- Mindbender
         { spell = 129250, type = "ability", requiresTarget = true, talent = 9}, -- Power Word: Solace
         { spell = 194509, type = "ability", charges = true}, -- Power Word: Radiance
         { spell = 204065, type = "ability", talent = 15}, -- Shadow Covenant
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
-        { spell = 214621, type = "ability", requiresTarget = true, talent = 3}, -- Schism
+        { spell = 214621, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Schism
         { spell = 246287, type = "ability"}, -- Evangelism
         { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
@@ -1456,7 +1456,7 @@ templates.class.PRIEST = {
         { spell = 64843, type = "ability", buff = true}, -- Divine Hymn
         { spell = 64901, type = "ability", buff = true}, -- Symbol of Hope
         { spell = 73325, type = "ability"}, -- Leap of Faith
-        { spell = 88625, type = "ability", requiresTarget = true}, -- Holy Word: Chastise
+        { spell = 88625, type = "ability", requiresTarget = true, debuff = true}, -- Holy Word: Chastise
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
         { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
@@ -1539,16 +1539,16 @@ templates.class.PRIEST = {
         { spell = 15487, type = "ability", requiresTarget = true}, -- Silence
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true, talent = 14}, -- Shadow Word: Death
-        { spell = 34433, type = "ability", totem = true}, -- Shadowfiend
+        { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
         { spell = 47585, type = "ability", buff = true}, -- Dispersion
         { spell = 64044, type = "ability", requiresTarget = true, talent = 12}, -- Psychic Horror
         { spell = 73325, type = "ability"}, -- Leap of Faith
-        { spell = 193223, type = "ability", buff = true, talent = 21}, -- Surrender to Madness
-        { spell = 200174, type = "ability", totem = true, talent = 17}, -- Mindbender
+        { spell = 193223, type = "ability", usable = true, buff = true, talent = 21}, -- Surrender to Madness
+        { spell = 200174, type = "ability", totem = true, requiresTarget = true, talent = 17}, -- Mindbender
         { spell = 205351, type = "ability", charges = true, requiresTarget = true, talent = 3}, -- Shadow Word: Void
         { spell = 205369, type = "ability", requiresTarget = true, talent = 11}, -- Mind Bomb
         { spell = 205385, type = "ability", talent = 15}, -- Shadow Crash
-        { spell = 205448, type = "ability", requiresTarget = true}, -- Void Bolt
+        { spell = 205448, type = "ability", usable = true, requiresTarget = true}, -- Void Bolt
         { spell = 213634, type = "ability"}, -- Purify Disease
         { spell = 228260, type = "ability", usable = true, requiresTarget = true}, -- Void Eruption
         { spell = 263165, type = "ability", usable = true, requiresTarget = true, talent = 18}, -- Void Torrent
@@ -1650,7 +1650,7 @@ templates.class.SHAMAN = {
         { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
         { spell = 108271, type = "ability", buff = true}, -- Astral Shift
         { spell = 108281, type = "ability", buff = true}, -- Ancestral Guidance
-        { spell = 114050, type = "ability", talent = 21}, -- Ascendance
+        { spell = 114050, type = "ability", buff = true, talent = 21}, -- Ascendance
         { spell = 117014, type = "ability", requiresTarget = true, talent = 3}, -- Elemental Blast
         { spell = 188389, type = "ability", debuff = true, requiresTarget = true}, -- Flame Shock
         { spell = 191634, type = "ability", buff = true, talent = 20}, -- Stormkeeper
