@@ -390,6 +390,7 @@ globals = {
 	"C_Commentator.UpdatePlayerInfo",
 	"C_Commentator.ZoomIn",
 	"C_Commentator.ZoomOut",
+	"C_EquipmentSet",
 	"C_Garrison",
 	"C_Garrison.AddFollowerToMission",
 	"C_Garrison.AllowMissionStartAboveSoftCap",
@@ -887,6 +888,7 @@ globals = {
 	"C_PurchaseAPI.PurchaseVASProduct",
 	"C_PurchaseAPI.SetDisconnectOnLogout",
 	"C_PurchaseAPI.SetVASProductReady",
+	"C_PvP",
 	"C_Questline",
 	"C_Questline.GetNumAvailableQuestlines",
 	"C_Questline.GetQuestlineInfoByIndex",
@@ -3389,6 +3391,7 @@ globals = {
 	"Sound_GameSystem_GetNumOutputDrivers",
 	"Sound_GameSystem_GetOutputDriverNameByIndex",
 	"Sound_GameSystem_RestartSoundSystem",
+	"Spell", -- mixin
 	"SpellCanTargetGarrisonFollower",
 	"SpellCanTargetGarrisonFollowerAbility",
 	"SpellCanTargetGarrisonMission",
