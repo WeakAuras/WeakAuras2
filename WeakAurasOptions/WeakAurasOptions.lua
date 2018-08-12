@@ -2642,12 +2642,16 @@ function WeakAuras.ReloadTriggerOptions(data)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           if (optionTriggerChoices[childId] == 0) then
-            childData.trigger = childData.additional_triggers[1].trigger;
-            childData.untrigger = childData.additional_triggers[1].untrigger;
-            tremove(childData.additional_triggers, 1);
+            if (childData.additional_triggers and childData.additional_triggers[1] and childData.additional_triggers[1].trigger) then
+              childData.trigger = childData.additional_triggers[1].trigger;
+              childData.untrigger = childData.additional_triggers[1].untrigger;
+              tremove(childData.additional_triggers, 1);
+            end
           else
-            tremove(childData.additional_triggers, optionTriggerChoices[childId]);
-            optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
+            if (childData.additional_triggers) then
+              tremove(childData.additional_triggers, optionTriggerChoices[childId]);
+              optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
+            end
           end
 
           WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
