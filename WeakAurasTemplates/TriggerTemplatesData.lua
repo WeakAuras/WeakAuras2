@@ -724,31 +724,31 @@ templates.class.HUNTER = {
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
-        { spell = 2649, type = "ability"}, -- Growl
-        { spell = 5116, type = "ability"}, -- Concussive Shot
-        { spell = 5384, type = "ability"}, -- Feign Death
-        { spell = 16827, type = "ability"}, -- Claw
-        { spell = 19574, type = "ability"}, -- Bestial Wrath
-        { spell = 19577, type = "ability"}, -- Intimidation
+        { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
+        { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true}, -- Feign Death
+        { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
+        { spell = 19574, type = "ability", buff = true}, -- Bestial Wrath
+        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
         { spell = 24450, type = "ability"}, -- Prowl
         { spell = 34026, type = "ability"}, -- Kill Command
-        { spell = 34477, type = "ability"}, -- Misdirection
-        { spell = 53209, type = "ability", talent = 6}, -- Chimaera Shot
-        { spell = 109248, type = "ability", talent = 15}, -- Binding Shot
+        { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
+        { spell = 53209, type = "ability", requiresTarget = true, talent = 6}, -- Chimaera Shot
+        { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
-        { spell = 120679, type = "ability", talent = 3}, -- Dire Beast
-        { spell = 131894, type = "ability", talent = 12}, -- A Murder of Crows
-        { spell = 147362, type = "ability"}, -- Counter Shot
-        { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
-        { spell = 186265, type = "ability"}, -- Aspect of the Turtle
+        { spell = 120679, type = "ability", requiresTarget = true, buff = true, talent = 3}, -- Dire Beast
+        { spell = 131894, type = "ability", requiresTarget = true, talent = 12}, -- A Murder of Crows
+        { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
+        { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
         { spell = 187650, type = "ability"}, -- Freezing Trap
         { spell = 187698, type = "ability"}, -- Tar Trap
-        { spell = 193530, type = "ability"}, -- Aspect of the Wild
+        { spell = 193530, type = "ability", buff = true}, -- Aspect of the Wild
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 201430, type = "ability", talent = 18}, -- Stampede
-        { spell = 217200, type = "ability"}, -- Barbed Shot
-        { spell = 264667, type = "ability"}, -- Primal Rage
+        { spell = 217200, type = "ability", charges = true, requiresTarget = true}, -- Barbed Shot
+        { spell = 264667, type = "ability", buff = true}, -- Primal Rage
       },
       icon = 132176
     },
@@ -829,29 +829,30 @@ templates.class.HUNTER = {
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
-        { spell = 5116, type = "ability"}, -- Concussive Shot
-        { spell = 5384, type = "ability"}, -- Feign Death
-        { spell = 19434, type = "ability"}, -- Aimed Shot
-        { spell = 34477, type = "ability"}, -- Misdirection
-        { spell = 109248, type = "ability", talent = 15}, -- Binding Shot
+        { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true}, -- Feign Death
+        { spell = 19434, type = "ability", requiresTarget = true, charges = true}, -- Aimed Shot
+        { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
+        { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
         { spell = 131894, type = "ability", talent = 3}, -- A Murder of Crows
-        { spell = 147362, type = "ability"}, -- Counter Shot
-        { spell = 185358, type = "ability"}, -- Arcane Shot
-        { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
-        { spell = 186265, type = "ability"}, -- Aspect of the Turtle
+        { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
+        { spell = 185358, type = "ability", requiresTarget = true}, -- Arcane Shot
+        { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
         { spell = 186387, type = "ability"}, -- Bursting Shot
         { spell = 187650, type = "ability"}, -- Freezing Trap
         { spell = 187698, type = "ability"}, -- Tar Trap
-        { spell = 193526, type = "ability"}, -- Trueshot
+        { spell = 193526, type = "ability", buff = true}, -- Trueshot
         { spell = 198670, type = "ability", talent = 21}, -- Piercing Shot
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 212431, type = "ability", talent = 6}, -- Explosive Shot
-        { spell = 257044, type = "ability"}, -- Rapid Fire
-        { spell = 257620, type = "ability"}, -- Multi-Shot
-        { spell = 260402, type = "ability", talent = 18}, -- Double Tap
-        { spell = 264667, type = "ability"}, -- Primal Rage
+        { spell = 257044, type = "ability", requiresTarget = true}, -- Rapid Fire
+        { spell = 257620, type = "ability", requiresTarget = true}, -- Multi-Shot
+        { spell = 260402, type = "ability", buff = true, talent = 18}, -- Double Tap
+        { spell = 264667, type = "ability", buff = true}, -- Primal Rage
+        { spell = 281195, type = "ability", buff = true}, -- Survival of the Fittest
 
       },
       icon = 132329
@@ -945,39 +946,39 @@ templates.class.HUNTER = {
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
-        { spell = 2649, type = "ability"}, -- Growl
-        { spell = 5384, type = "ability"}, -- Feign Death
-        { spell = 16827, type = "ability"}, -- Claw
-        { spell = 19434, type = "ability"}, -- Aimed Shot
-        { spell = 19577, type = "ability"}, -- Intimidation
+        { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
+        { spell = 5384, type = "ability", buff = true}, -- Feign Death
+        { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
+        { spell = 19434, type = "ability", requiresTarget = true}, -- Aimed Shot
+        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
         { spell = 24450, type = "ability"}, -- Prowl
-        { spell = 34477, type = "ability"}, -- Misdirection
+        { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
         { spell = 61684, type = "ability"}, -- Dash
-        { spell = 109248, type = "ability"}, -- Binding Shot
+        { spell = 109248, type = "ability", requiresTarget = true}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 131894, type = "ability", talent = 12}, -- A Murder of Crows
         { spell = 162488, type = "ability", talent = 11}, -- Steel Trap
-        { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
-        { spell = 186265, type = "ability"}, -- Aspect of the Turtle
-        { spell = 186289, type = "ability"}, -- Aspect of the Eagle
+        { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
+        { spell = 186289, type = "ability", buff = true}, -- Aspect of the Eagle
         { spell = 187650, type = "ability"}, -- Freezing Trap
         { spell = 187698, type = "ability"}, -- Tar Trap
-        { spell = 187707, type = "ability"}, -- Muzzle
+        { spell = 187707, type = "ability", requiresTarget = true}, -- Muzzle
         { spell = 187708, type = "ability"}, -- Carve
-        { spell = 190925, type = "ability"}, -- Harpoon
+        { spell = 190925, type = "ability", requiresTarget = true}, -- Harpoon
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
-        { spell = 212436, type = "ability", talent = 6 }, -- Butchery
-        { spell = 259391, type = "ability", talent = 21 }, -- Chakrams
-        { spell = 259489, type = "ability"}, -- Kill Command
-        { spell = 259495, type = "ability"}, -- Wildfire Bomb
+        { spell = 212436, type = "ability", charges = true, talent = 6 }, -- Butchery
+        { spell = 259391, type = "ability", requiresTarget = true, talent = 21 }, -- Chakrams
+        { spell = 259489, type = "ability", requiresTarget = true}, -- Kill Command
+        { spell = 259495, type = "ability", requiresTarget = true}, -- Wildfire Bomb
         { spell = 263892, type = "ability"}, -- Catlike Reflexes
-        { spell = 264667, type = "ability"}, -- Primal Rage
-        { spell = 266779, type = "ability"}, -- Coordinated Assault
-        { spell = 269751, type = "ability", talent = 18 }, -- Flanking Strike
+        { spell = 264667, type = "ability", buff = true}, -- Primal Rage
+        { spell = 266779, type = "ability", buff = true}, -- Coordinated Assault
+        { spell = 269751, type = "ability", requiresTarget = true, talent = 18 }, -- Flanking Strike
         { spell = 270323, type = "ability", talent = 20 }, -- Pheromone Bomb
         { spell = 270335, type = "ability", talent = 20}, -- Shrapnel Bomb
         { spell = 271045, type = "ability", talent = 20}, -- Volatile Bomb
-        { spell = 272678, type = "ability"}, -- Primal Rage
+        { spell = 272678, type = "ability", buff = true}, -- Primal Rage
 
       },
       icon = 236184
