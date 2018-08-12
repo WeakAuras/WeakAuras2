@@ -208,6 +208,9 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   local region = borderframe.region;
   size = size or 24;
 
+  for _, child in pairs(region.children) do
+    child:Hide()
+  end
   local selfPoint;
   if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
     selfPoint = "LEFT";
@@ -353,6 +356,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
         region.children[index].texture:SetAllPoints(region.children[index]);
       end
       local childRegion = region.children[index]
+      childRegion:Show()
       local r, g, b;
       if(childData.color) then
         r, g, b = childData.color[1], childData.color[2], childData.color[3];
@@ -393,6 +397,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   end
   region.children[index].texture:SetColorTexture(1, 1, 1);
   region.children[index]:ClearAllPoints();
+  region.children[index]:Show()
   if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
     region.children[index]:SetWidth(size);
     region.children[index]:SetHeight(1);
