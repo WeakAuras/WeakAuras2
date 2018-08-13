@@ -539,19 +539,18 @@ local function modify(parent, region, data)
 
   function region:SetGlow(showGlow)
     if MSQ then
-        if (showGlow) then
-            WeakAuras.ShowOverlayGlow(region.button);
-        else
-            WeakAuras.HideOverlayGlow(region.button);
-        end
-
+      if (showGlow) then
+        WeakAuras.ShowOverlayGlow(region.button);
+      else
+        WeakAuras.HideOverlayGlow(region.button);
+      end
     elseif (showGlow) then
-        if (not region.__WAGlowFrame) then
-            region.__WAGlowFrame = CreateFrame("Frame", nil, region);
-            region.__WAGlowFrame:SetAllPoints();
-            region.__WAGlowFrame:SetSize(region.width, region.height);
-        end
-        WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
+      if (not region.__WAGlowFrame) then
+        region.__WAGlowFrame = CreateFrame("Frame", nil, region);
+        region.__WAGlowFrame:SetAllPoints();
+        region.__WAGlowFrame:SetSize(region.width, region.height);
+      end
+      WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
     else
       if (region.__WAGlowFrame) then
         WeakAuras.HideOverlayGlow(region.__WAGlowFrame);
