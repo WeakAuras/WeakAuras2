@@ -2818,15 +2818,7 @@ function GenericTrigger.CanHaveTooltip(data, triggernum)
 
   if (trigger.type == "custom") then
     if (trigger.custom_type == "stateupdate") then
-      local allStates = {};
-      WeakAuras.ActivateAuraEnvironment(data.id);
-      RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
-      WeakAuras.ActivateAuraEnvironment(nil);
-      for id, state in pairs(allStates) do
-        if (state.spellId or state.itemId or (state.unit and (state.unitBuffIndex or state.unitDebuffIndex))) then
-          return "custom";
-        end
-      end
+      return true;
     end
   end
 
