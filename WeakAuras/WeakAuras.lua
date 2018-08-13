@@ -2662,9 +2662,10 @@ end
 
 function WeakAuras.PreAdd(data)
   WeakAuras.validate(data, WeakAuras.data_stub)
-  local default = data.regionType and WeakAuras.regionTypes[data.regionType].default
-  if not default then error('no default regionType') end
-  WeakAuras.validate(data, default)
+  local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
+  if default then
+    WeakAuras.validate(data, default)
+  end
   WeakAuras.Modernize(data);
   removeSpellNames(data)
 end

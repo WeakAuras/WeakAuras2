@@ -2449,7 +2449,8 @@ function WeakAuras.AddOption(id, data)
       [data.regionType] = {
         unsupported = {
           type = "description",
-          name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
+          name = L["This region of type \"%s\" is not supported."]:format(data.regionType),
+          order = 2,
         }
       }
     };
