@@ -3920,7 +3920,7 @@ function WeakAuras.SetFrameLevel(id, frameLevel)
 end
 
 function WeakAuras.GetFrameLevelFor(id)
-  return WeakAuras.frameLevels[id] or 0;
+  return WeakAuras.frameLevels[id] or 5;
 end
 
 function WeakAuras.EnsureString(input)
