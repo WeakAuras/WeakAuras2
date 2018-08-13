@@ -3896,7 +3896,7 @@ function WeakAuras.ValueToPath(data, path, value)
 end
 
 function WeakAuras.FixGroupChildrenOrderForGroup(data)
-  local frameLevel = 1;
+  local frameLevel = 5;
   for i=1, #data.controlledChildren do
     WeakAuras.SetFrameLevel(data.controlledChildren[i], frameLevel);
     frameLevel = frameLevel + 4;
