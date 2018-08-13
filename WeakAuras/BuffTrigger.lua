@@ -1620,7 +1620,7 @@ function BuffTrigger.Modernize(data)
     if (data.internalVersion < 2) then
       if (trigger and trigger.type == "aura") then
         if (trigger.showOn == nil or trigger.showOn == "showOnCooldown" or trigger.showOn == "showOnReady" or trigger.showOn == "showAlways") then
-          trigger.buffShowOn = trigger.inverse and "showOnMissing" or "showOnActive";
+          trigger.showOn = trigger.inverse and "showOnMissing" or "showOnActive";
           trigger.inverse = nil;
         end
       end
