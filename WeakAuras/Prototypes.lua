@@ -1918,7 +1918,12 @@ WeakAuras.event_prototypes = {
     name = L["Cooldown Progress (Spell)"],
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
       if (trigger.use_showgcd) then
         WeakAuras.WatchGCD();
@@ -1926,10 +1931,15 @@ WeakAuras.event_prototypes = {
     end,
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
-        local spellname = [[%s]]
+        local spellname = %s
         local ignoreRuneCD = %s
         local showgcd = %s;
         local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
@@ -2018,6 +2028,9 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
+      if (type(spellName) == "string") then
+        spellName = "[[" .. spellName .. "]]";
+      end
       return ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
@@ -2045,7 +2058,8 @@ WeakAuras.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        test = "true"
+        test = "true",
+        showExactOption = true,
       },
       {
         name = "remaining",
@@ -2183,11 +2197,16 @@ WeakAuras.event_prototypes = {
     name = L["Cooldown Ready (Spell)"],
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
+      trigger.realSpellName = spellName; -- Cache
+      WeakAuras.WatchSpellCooldown(spellName);
     end,
     init = function(trigger)
-      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
-      trigger.spellName = trigger.spellName or 0;
     end,
     args = {
       {
@@ -2195,19 +2214,26 @@ WeakAuras.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        init = "arg"
+        init = "arg",
+        showExactOption = true,
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.spellName or 0);
+      local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
-      else
-        return "Invalid";
       end
+      name = GetSpellInfo(trigger.spellName or 0);
+      if (name) then
+        return name;
+      end
+      return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      if (not icon) then
+        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+      end
       return icon;
     end,
     hasSpellID = true
@@ -2222,11 +2248,16 @@ WeakAuras.event_prototypes = {
     name = L["Charges Changed (Spell)"],
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      WeakAuras.WatchSpellCooldown(trigger.spellName or 0);
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
+      trigger.realSpellName = spellName; -- Cache
+      WeakAuras.WatchSpellCooldown(spellName);
     end,
     init = function(trigger)
-      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
-      trigger.spellName = trigger.spellName or 0;
       return "";
     end,
     statesParameter = "one",
@@ -2236,7 +2267,8 @@ WeakAuras.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        init = "arg"
+        init = "arg",
+        showExactOption = true
       },
       {
         name = "direction",
@@ -2261,15 +2293,21 @@ WeakAuras.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.spellName or 0);
+      local name = GetSpellInfo(trigger.realSpellName or 0);
       if(name) then
         return name;
-      else
-        return "Invalid";
       end
+      name = GetSpellInfo(trigger.spellName or 0);
+      if (name) then
+        return name;
+      end
+      return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      if (not icon) then
+        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+      end
       return icon;
     end,
     hasSpellID = true
@@ -3180,17 +3218,26 @@ WeakAuras.event_prototypes = {
     name = L["Action Usable"],
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
     end,
     init = function(trigger)
-      --trigger.spellName = WeakAuras.CorrectSpellName(trigger.spellName) or 0;
       trigger.spellName = trigger.spellName or 0;
-      local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
-        local spellname = [[%s]]
+        local spellname = %s
         local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
         local charges = WeakAuras.GetSpellCharges(spellname);
         if (charges == nil) then
@@ -3206,6 +3253,10 @@ WeakAuras.event_prototypes = {
         ret = ret.."active = not active\n";
       end
 
+      if (type(spellName) == "string") then
+        spellName = "[[" .. spellName .. "]]";
+      end
+
       return ret:format(spellName)
     end,
     args = {
@@ -3214,7 +3265,8 @@ WeakAuras.event_prototypes = {
         display = L["Spell"],
         required = true,
         type = "spell",
-        test = "true"
+        test = "true",
+        showExactOption = true,
       },
       -- This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       -- IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
