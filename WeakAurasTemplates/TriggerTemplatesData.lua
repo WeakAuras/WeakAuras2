@@ -2776,7 +2776,7 @@ templates.class.MONK = {
         { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
         { spell = 122470, type = "ability", debuff = true, requiresTarget = true}, -- Touch of Karma
         { spell = 122783, type = "ability", buff = true, talent = 14 }, -- Diffuse Magic
-        { spell = 123904, type = "ability", talent = 18 }, -- Invoke Xuen, the White Tiger
+        { spell = 123904, type = "ability", requiresTarget = true, talent = 18 }, -- Invoke Xuen, the White Tiger
         { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
         { spell = 126892, type = "ability"}, -- Zen Pilgrimage
         { spell = 137639, type = "ability", charges = true, buff = true}, -- Storm, Earth, and Fire
