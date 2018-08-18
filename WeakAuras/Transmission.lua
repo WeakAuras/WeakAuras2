@@ -561,6 +561,9 @@ end
 ItemRefTooltip:HookScript("OnHide", function(self)
   buttonAnchor:Hide()
   wipe(pendingData)
+  if (ItemRefTooltip.WeakAuras_Desc_Box) then
+    ItemRefTooltip.WeakAuras_Desc_Box:Hide();
+  end
 end)
 
 importButton:SetScript("OnClick", function()
