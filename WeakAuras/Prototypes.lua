@@ -4205,7 +4205,7 @@ WeakAuras.event_prototypes = {
       {
         name = "spell",
         display = L["Spell Name"],
-        type = "string" ,
+        type = "string",
         enable = function(trigger) return not(trigger.use_inverse) end,
         store = true,
         conditionType = "string",
@@ -4213,7 +4213,7 @@ WeakAuras.event_prototypes = {
       {
         name = "spellId",
         display = L["Spell Id"],
-        type = "spell" ,
+        type = "spell",
         enable = function(trigger) return not(trigger.use_inverse) end,
         test = "GetSpellInfo([[%s]]) == spell"
       },
