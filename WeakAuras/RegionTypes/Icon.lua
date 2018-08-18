@@ -197,7 +197,7 @@ local function create(parent, data)
   region.stacks = stacks;
 
   local text2Frame = CreateFrame("frame", nil, region);
-  local text2 = stacksFrame:CreateFontString(nil, "OVERLAY");
+  local text2 = text2Frame:CreateFontString(nil, "OVERLAY");
   text2Frame:SetFrameLevel(cooldownFrameLevel)
   region.text2 = text2;
 
