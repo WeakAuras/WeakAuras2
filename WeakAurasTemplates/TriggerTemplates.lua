@@ -303,7 +303,7 @@ local function subTypesFor(item)
         })
       elseif(item.requiresTarget) then
         tinsert(types,  {
-          title = L["Show Charges, Greys out on 0 Charges, Fade Out without a target"],
+          title = L["Show Charges, Greys out on 0 Charges, Red when out of range."],
           description = L[""],
           genericShowOn = "showAlways",
           createTriggers = function(triggers, item)
@@ -313,13 +313,12 @@ local function subTypesFor(item)
             insufficientResourcesBlue(conditions, 0);
             hasChargesGrey(conditions, 0);
             spellInRangeRed(conditions, 0);
-            hasTargetAlpha(conditions);
           end,
         });
         if (item.usable) then
           tinsert(types,  {
             title = L["Show Charges with Usable Check"],
-            description = L["And a Fade Out if without a target"],
+            description = L["And Red when out of range."],
             createTriggers = function(triggers, item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
@@ -327,7 +326,6 @@ local function subTypesFor(item)
               isUsableBlue(conditions, 0);
               hasChargesGrey(conditions, 0);
               spellInRangeRed(conditions, 0);
-              hasTargetAlpha(conditions);
             end,
           });
         end
@@ -396,13 +394,12 @@ local function subTypesFor(item)
         if (item.requiresTarget) then
           tinsert(types, {
             title = L["Show Cooldown and Buff and check for target"],
-            description = L["Glows while Buffed, fades out without a target"],
+            description = L["Glows while Buffed, Red when out of range."],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item)
               insufficientResourcesBlue(conditions, 1);
               onCdCheckGrey(conditions, 1);
               spellInRangeRed(conditions, 1);
-              hasTargetAlpha(conditions);
               isBuffedGlow(conditions, 0);
             end,
           });
@@ -421,13 +418,12 @@ local function subTypesFor(item)
         if (item.requiresTarget) then
           tinsert(types, {
             title = L["Show Cooldown and Debuff, check for target"],
-            description = L["Glows while Debuffed"],
+            description = L["Glows while Debuffed, Red when out of range."],
             createTriggers = createAbilityAndDebuffTrigger,
             createConditions = function(conditions, item)
               insufficientResourcesBlue(conditions, 1);
               onCdCheckGrey(conditions, 1);
               spellInRangeRed(conditions, 1);
-              hasTargetAlpha(conditions);
               isBuffedGlow(conditions, 0);
             end,
           });
@@ -462,7 +458,7 @@ local function subTypesFor(item)
           if (item.requiresTarget) then
             tinsert(types, {
               title = L["Show Cooldown and check usable/target"],
-              description = L["Always active, grey if the ability is not uable."],
+              description = L["Always active, grey if the ability is not uable, and Red when out of range."],
               createTriggers = function(triggers, item)
                 createAbilityTrigger(triggers, 0, item, "showAlways");
               end,
@@ -470,7 +466,6 @@ local function subTypesFor(item)
                 isUsableBlue(conditions, 0);
                 onCdCheckGrey(conditions, 0);
                 spellInRangeRed(conditions, 0);
-                hasTargetAlpha(conditions);
               end,
             });
           end
@@ -478,7 +473,7 @@ local function subTypesFor(item)
         if (item.requiresTarget) then
           tinsert(types, {
             title = L["Show Cooldown and check for target"],
-            description = L["Always active, faded out if no target."],
+            description = L["Always active, Red when out of range."],
             createTriggers = function(triggers, item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
@@ -486,7 +481,6 @@ local function subTypesFor(item)
               insufficientResourcesBlue(conditions, 0);
               onCdCheckGrey(conditions, 0);
               spellInRangeRed(conditions, 0);
-              hasTargetAlpha(conditions);
             end,
           });
         end
