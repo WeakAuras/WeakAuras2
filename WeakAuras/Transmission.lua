@@ -1659,10 +1659,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       descbox:SetScript("OnMouseUp", nil);
     end
 
-    descbox:SetFocus();
-    if (alterdesc == "url") then
-      descbox:HighlightText();
-    end
     descbox:Show();
   elseif ItemRefTooltip.WeakAuras_Desc_Box then
     ItemRefTooltip.WeakAuras_Desc_Box:Hide()
@@ -1691,6 +1687,13 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
   end
   WeakAuras.GetData = RegularGetData or WeakAuras.GetData
   ShowTooltip(tooltip, linesFromTop, match and match.activeCategories)
+
+  if alterdesc then
+    ItemRefTooltip.WeakAuras_Desc_Box.descbox:SetFocus();
+    if (alterdesc == "url") then
+      ItemRefTooltip.WeakAuras_Desc_Box.descbox:HighlightText();
+    end
+  end
 end
 
 function WeakAuras.ImportString(str)
