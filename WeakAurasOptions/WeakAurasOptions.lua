@@ -758,12 +758,34 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         order = order + 1;
       elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
         if(not arg.required or triggertype ~= "untrigger") then
+          if (arg.showExactOption) then
+            options["exact"..name] = {
+              type = "toggle",
+              name = L["Exact Spell Match"],
+              order = order,
+              hidden = hidden,
+              width = 0.9,
+              get = function()
+                return trigger["use_exact_"..realname];
+              end,
+              set = function(info, v)
+                trigger["use_exact_"..realname] = v;
+                WeakAuras.Add(data);
+                WeakAuras.ScanForLoads();
+                WeakAuras.SetThumbnail(data);
+                WeakAuras.SetIconNames(data);
+                WeakAuras.UpdateDisplayButton(data);
+                WeakAuras.SortDisplayButtons();
+              end,
+            };
+            order = order + 1;
+          end
           options["icon"..name] = {
             type = "execute",
             name = "",
             order = order,
             hidden = hidden,
-            width = "normal",
+            width = 0.1,
             image = function()
               if(trigger["use_"..realname] and trigger[realname]) then
                 if(arg.type == "aura") then
@@ -797,18 +819,27 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                   if(name) then
                     return name;
                   else
-                    return "Invalid Item Name/ID/Link";
+                    return L["Invalid Item Name/ID/Link"];
                   end
                 else
                   return nil;
                 end
               elseif(arg.type == "spell") then
                 if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                  local name = GetSpellInfo(trigger[realname]);
-                  if(name) then
-                    return name;
+                  if (arg.showExactOption and trigger["use_exact_"..realname]) then
+                    local spellId = tonumber(trigger[realname])
+                    if (spellId) then
+                      return tostring(spellId);
+                    else
+                      return L["Invalid Spell ID"];
+                    end
                   else
-                    return "Invalid Spell Name/ID/Link";
+                    local name = GetSpellInfo(trigger[realname]);
+                    if(name) then
+                      return name;
+                    else
+                      return L["Invalid Spell Name/ID/Link"];
+                    end
                   end
                 else
                   return nil;
