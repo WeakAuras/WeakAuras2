@@ -757,114 +757,89 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
         end
         order = order + 1;
       elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
-        options["icon"..name] = {
-          type = "execute",
-          name = "",
-          order = order,
-          hidden = hidden,
-          width = "normal",
-          image = function()
-            if(trigger["use_"..realname] and trigger[realname]) then
-              if(arg.type == "aura") then
-                local icon = spellCache.GetIcon(trigger[realname]);
-                return icon and tostring(icon) or "", 18, 18;
+        if(not arg.required or triggertype ~= "untrigger") then
+          options["icon"..name] = {
+            type = "execute",
+            name = "",
+            order = order,
+            hidden = hidden,
+            width = "normal",
+            image = function()
+              if(trigger["use_"..realname] and trigger[realname]) then
+                if(arg.type == "aura") then
+                  local icon = spellCache.GetIcon(trigger[realname]);
+                  return icon and tostring(icon) or "", 18, 18;
+                elseif(arg.type == "spell") then
+                  local _, _, icon = GetSpellInfo(trigger[realname]);
+                  return icon and tostring(icon) or "", 18, 18;
+                elseif(arg.type == "item") then
+                  local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
+                  return icon and tostring(icon) or "", 18, 18;
+                end
+              else
+                return "", 18, 18;
+              end
+            end,
+            disabled = function() return not ((arg.type == "aura" and trigger[realname] and spellCache.GetIcon(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
+          };
+          order = order + 1;
+          options[name] = {
+            type = "input",
+            name = arg.display,
+            order = order,
+            hidden = hidden,
+            width = "double",
+            disabled = function() return not trigger["use_"..realname]; end,
+            get = function()
+              if(arg.type == "item") then
+                if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
+                  local name = GetItemInfo(trigger[realname]);
+                  if(name) then
+                    return name;
+                  else
+                    return "Invalid Item Name/ID/Link";
+                  end
+                else
+                  return nil;
+                end
               elseif(arg.type == "spell") then
-                local _, _, icon = GetSpellInfo(trigger[realname]);
-                return icon and tostring(icon) or "", 18, 18;
+                if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
+                  local name = GetSpellInfo(trigger[realname]);
+                  if(name) then
+                    return name;
+                  else
+                    return "Invalid Spell Name/ID/Link";
+                  end
+                else
+                  return nil;
+                end
+              else
+                return trigger["use_"..realname] and trigger[realname] or nil;
+              end
+            end,
+            set = function(info, v)
+              local fixedInput = v;
+              if(arg.type == "aura") then
+                fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
+              elseif(arg.type == "spell") then
+                fixedInput = WeakAuras.CorrectSpellName(v);
               elseif(arg.type == "item") then
-                local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
-                return icon and tostring(icon) or "", 18, 18;
+                fixedInput = WeakAuras.CorrectItemName(v);
               end
-            else
-              return "", 18, 18;
-            end
-          end,
-          disabled = function() return not ((arg.type == "aura" and trigger[realname] and spellCache.GetIcon(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
-        };
-        order = order + 1;
-        options[name] = {
-          type = "input",
-          name = arg.display,
-          order = order,
-          hidden = hidden,
-          width = "double",
-          disabled = function() return not trigger["use_"..realname]; end,
-          get = function()
-            if(arg.type == "item") then
-              if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                local name = GetItemInfo(trigger[realname]);
-                if(name) then
-                  return name;
-                else
-                  return "Invalid Item Name/ID/Link";
-                end
-              else
-                return nil;
+              trigger[realname] = fixedInput;
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ScheduleReloadOptions(data);
               end
-            elseif(arg.type == "spell") then
-              if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                local name = GetSpellInfo(trigger[realname]);
-                if(name) then
-                  return name;
-                else
-                  return "Invalid Spell Name/ID/Link";
-                end
-              else
-                return nil;
-              end
-            else
-              return trigger["use_"..realname] and trigger[realname] or nil;
+              WeakAuras.ScanForLoads();
+              WeakAuras.SetThumbnail(data);
+              WeakAuras.SetIconNames(data);
+              WeakAuras.UpdateDisplayButton(data);
+              WeakAuras.SortDisplayButtons();
             end
-          end,
-          set = function(info, v)
-            local fixedInput = v;
-            if(arg.type == "aura") then
-              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
-            elseif(arg.type == "spell") then
-              fixedInput = WeakAuras.CorrectSpellName(v);
-            elseif(arg.type == "item") then
-              fixedInput = WeakAuras.CorrectItemName(v);
-            end
-            trigger[realname] = fixedInput;
-            WeakAuras.Add(data);
-            if (reloadOptions) then
-              WeakAuras.ScheduleReloadOptions(data);
-            end
-            WeakAuras.ScanForLoads();
-            WeakAuras.SetThumbnail(data);
-            WeakAuras.SetIconNames(data);
-            WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
-          end
-        };
-        if(arg.required and not triggertype) then
-          options[name].set = function(info, v)
-            local fixedInput = v;
-            if(arg.type == "aura") then
-              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
-            elseif(arg.type == "spell") then
-              fixedInput = WeakAuras.CorrectSpellName(v);
-            elseif(arg.type == "item") then
-              fixedInput = WeakAuras.CorrectItemName(v);
-            end
-            trigger[realname] = fixedInput;
-            untrigger[realname] = fixedInput;
-            WeakAuras.Add(data);
-            if (reloadOptions) then
-              WeakAuras.ScheduleReloadOptions(data);
-            end
-            WeakAuras.ScanForLoads();
-            WeakAuras.SetThumbnail(data);
-            WeakAuras.SetIconNames(data);
-            WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
-          end
-        elseif(arg.required and triggertype == "untrigger") then
-          options["icon"..name] = nil;
-          options[name] = nil;
-          order = order - 2;
+          };
+          order = order + 1;
         end
-        order = order + 1;
       elseif(arg.type == "select" or arg.type == "unit") then
         local values;
         if(type(arg.values) == "function") then
