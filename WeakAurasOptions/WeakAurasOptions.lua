@@ -3463,6 +3463,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     anchorFrameParent = {
       type = "toggle",
       name = L["Set Parent to Anchor"],
+      desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visiblility and scale."],
       order = 77,
       get = function()
         return data.anchorFrameParent or data.anchorFrameParent == nil;
