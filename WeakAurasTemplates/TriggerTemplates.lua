@@ -210,8 +210,9 @@ local function createTotemTrigger(triggers, position, item)
     trigger = {
       type = "status",
       event = "Totem",
-      use_totemName = true,
-      totemName = GetSpellInfo(item.spell),
+      use_totemName = not item.totemType,
+      totemName = not item.totemType and GetSpellInfo(item.spell),
+      totemType = item.totemType,
       unevent = "auto"
     }
   };

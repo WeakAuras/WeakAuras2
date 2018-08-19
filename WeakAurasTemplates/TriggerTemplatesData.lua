@@ -2571,13 +2571,13 @@ templates.class.MONK = {
         { spell = 115203, type = "ability", buff = true}, -- Fortifying Brew
         { spell = 115295, type = "ability", talent = 20 }, -- Guard
         { spell = 115308, type = "ability", charges = true, buff = true}, -- Ironskin Brew
-        { spell = 115315, type = "ability", talent = 11 }, -- Summon Black Ox Statue
+        { spell = 115315, type = "ability", totem = true, totemType = 1, talent = 11 }, -- Summon Black Ox Statue
         { spell = 115399, type = "ability", talent = 9 }, -- Black Ox Brew
         { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
         { spell = 116705, type = "ability"}, -- Spear Hand Strike
         { spell = 116841, type = "ability", talent = 3 }, -- Tiger's Lust
         { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
-        { spell = 116847, type = "ability", talent = 17 }, -- Rushing Jade Wind
+        { spell = 116847, type = "ability", buff = true, talent = 17 }, -- Rushing Jade Wind
         { spell = 119381, type = "ability"}, -- Leg Sweep
         { spell = 119582, type = "ability", charges = true}, -- Purifying Brew
         { spell = 119996, type = "ability"}, -- Transcendence: Transfer
@@ -2586,7 +2586,7 @@ templates.class.MONK = {
         { spell = 122281, type = "ability", charges = true, buff = true, talent = 14 }, -- Healing Elixir
         { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
         { spell = 126892, type = "ability"}, -- Zen Pilgrimage
-        { spell = 132578, type = "ability", talent = 18 }, -- Invoke Niuzao, the Black Ox
+        { spell = 132578, type = "ability", requiresTarget = true, talent = 18 }, -- Invoke Niuzao, the Black Ox
         { spell = 205523, type = "ability", requiresTarget = true}, -- Blackout Strike
 
       },
@@ -2666,7 +2666,7 @@ templates.class.MONK = {
         { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
         { spell = 115151, type = "ability", charges = true}, -- Renewing Mist
         { spell = 115310, type = "ability"}, -- Revival
-        { spell = 115313, type = "ability", totem = true, talent = 16 }, -- Summon Jade Serpent Statue
+        { spell = 115313, type = "ability", totem = true, totemType = 1, talent = 16 }, -- Summon Jade Serpent Statue
         { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
         { spell = 116680, type = "ability", buff = true}, -- Thunder Focus Tea                    -- add talent = 19 abilityChargeBuff
         { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
@@ -2680,7 +2680,7 @@ templates.class.MONK = {
         { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
         { spell = 126892, type = "ability"}, -- Zen Pilgrimage
         { spell = 191837, type = "ability"}, -- Essence Font
-        { spell = 196725, type = "ability", talent = 17 }, -- Refreshing Jade Wind
+        { spell = 196725, type = "ability", buff = true, talent = 17 }, -- Refreshing Jade Wind
         { spell = 197908, type = "ability", buff = true, talent = 9 }, -- Mana Tea
         { spell = 198664, type = "ability", talent = 18 }, -- Invoke Chi-Ji, the Red Crane
         { spell = 198898, type = "ability", talent = 11 }, -- Song of Chi-Ji
@@ -2782,7 +2782,7 @@ templates.class.MONK = {
         { spell = 137639, type = "ability", charges = true, buff = true}, -- Storm, Earth, and Fire
         { spell = 152173, type = "ability", buff = true, talent = 21 }, -- Serenity
         { spell = 152175, type = "ability", usable = true, talent = 20 }, -- Whirling Dragon Punch
-        { spell = 261715, type = "ability", talent = 17 }, -- Rushing Jade Wind
+        { spell = 261715, type = "ability", buff = true, talent = 17 }, -- Rushing Jade Wind
         { spell = 261947, type = "ability", talent = 8 }, -- Fist of the White Tiger
       },
       icon = 627606
