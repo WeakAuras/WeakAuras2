@@ -2571,7 +2571,7 @@ templates.class.MONK = {
         { spell = 115203, type = "ability", buff = true}, -- Fortifying Brew
         { spell = 115295, type = "ability", talent = 20 }, -- Guard
         { spell = 115308, type = "ability", charges = true, buff = true}, -- Ironskin Brew
-        { spell = 115315, type = "ability", totem = true, totemType = 1, talent = 11 }, -- Summon Black Ox Statue
+        { spell = 115315, type = "ability", totem = true, totemNumber = 1, talent = 11 }, -- Summon Black Ox Statue
         { spell = 115399, type = "ability", talent = 9 }, -- Black Ox Brew
         { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
         { spell = 116705, type = "ability"}, -- Spear Hand Strike
@@ -2666,7 +2666,7 @@ templates.class.MONK = {
         { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
         { spell = 115151, type = "ability", charges = true}, -- Renewing Mist
         { spell = 115310, type = "ability"}, -- Revival
-        { spell = 115313, type = "ability", totem = true, totemType = 1, talent = 16 }, -- Summon Jade Serpent Statue
+        { spell = 115313, type = "ability", totem = true, totemNumber = 1, talent = 16 }, -- Summon Jade Serpent Statue
         { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
         { spell = 116680, type = "ability", buff = true}, -- Thunder Focus Tea                    -- add talent = 19 abilityChargeBuff
         { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
