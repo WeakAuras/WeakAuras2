@@ -3608,11 +3608,19 @@ function WeakAuras.CorrectSpellName(input)
     else
       link = GetSpellLink(input);
     end
-    if(link) then
+    if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
       return tonumber(itemId);
     else
-      return nil;
+      for tier = 1, MAX_TALENT_TIERS do
+        for column = 1, NUM_TALENT_COLUMNS do
+          local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
+          local name = GetSpellInfo(spellId);
+          if name == input then
+            return spellId;
+          end
+        end
+      end
     end
   end
 end
