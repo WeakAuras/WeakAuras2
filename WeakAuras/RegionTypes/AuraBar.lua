@@ -1409,7 +1409,11 @@ local function modify(parent, region, data)
     then
       progress = 1 - progress;
     end
-    region.bar:SetValue(progress);
+    if (data.smoothProgress) then
+      region.bar:SetSmoothedValue(progress);
+    else
+      region.bar:SetValue(progress);
+    end
     UpdateText(region, data);
   end
 
