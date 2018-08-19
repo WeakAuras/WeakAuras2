@@ -40,11 +40,14 @@ local function ConstructIconPicker(frame)
         subname = GetSpellInfo(spellId)
       end
     end
-    subname = subname:lower();
+
+    if subname then
+      subname = subname:lower();
+    end
 
     local usedIcons = {};
     local num = 0;
-    if(subname ~= "") then
+    if(subname and subname ~= "") then
       for name, icons in pairs(spellCache.Get()) do
         local bestDistance = math.huge;
         local bestName;
