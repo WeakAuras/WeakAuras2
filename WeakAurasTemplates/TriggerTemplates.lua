@@ -260,7 +260,7 @@ local function subTypesFor(item)
   if (item.type == "ability") then
     tinsert(types, {
       title = L["Basic Show On Cooldown"],
-      description = L["The plain type"],
+      description = L["The plain type."],
       createTriggers = function(triggers, item)
         createAbilityTrigger(triggers, 0, item, "showOnCooldown");
       end,
@@ -268,7 +268,7 @@ local function subTypesFor(item)
     if (item.charges) then
       tinsert(types, {
         title = L["Charge Tracking"],
-        description = L["Always Show, Greys out on Zero charges"],
+        description = L["Always shows, greys out on zero charges."],
         createTriggers = function(triggers, item)
           createAbilityTrigger(triggers, 0, item, "showAlways");
         end,
@@ -279,8 +279,8 @@ local function subTypesFor(item)
       });
       if (item.buff) then
         tinsert(types, {
-          title = L["Charge and Buff tracking"],
-          description = L["Tracks the charge and the buff. Glows while the buff is active."],
+          title = L["Charge and Buff Tracking"],
+          description = L["Tracks the charge and the buff, glows while the buff is active."],
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item)
             insufficientResourcesBlue(conditions, 1);
@@ -290,8 +290,8 @@ local function subTypesFor(item)
         });
       elseif(item.debuff) then
         tinsert(types, {
-          title = L["Charge and Debuff tracking"],
-          description = L["Tracks the charge and the debuff. Glows while the debuff is active."],
+          title = L["Charge and Debuff Tracking"],
+          description = L["Tracks the charge and the debuff, glows while the debuff is active."],
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item)
             insufficientResourcesBlue(conditions, 1);
@@ -301,8 +301,8 @@ local function subTypesFor(item)
         })
       elseif(item.requiresTarget) then
         tinsert(types,  {
-          title = L["Show Charges, Greys out on 0 Charges, Red when out of range."],
-          description = L[""],
+          title = L["Show Charges with Range Tracking"],
+          description = L["Grey when out on zero charges, red when out of range."],
           genericShowOn = "showAlways",
           createTriggers = function(triggers, item)
             createAbilityTrigger(triggers, 0, item, "showAlways");
@@ -316,7 +316,7 @@ local function subTypesFor(item)
         if (item.usable) then
           tinsert(types,  {
             title = L["Show Charges with Usable Check"],
-            description = L["And Red when out of range."],
+            description = L["Turns red when out of range."],
             createTriggers = function(triggers, item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
@@ -356,8 +356,8 @@ local function subTypesFor(item)
       end
     else -- Ability without charges
       tinsert(types, {
-        title = L["Show only on Cooldown"],
-        description = L["Greys on Cooldown"],
+        title = L["Show Only On Cooldown"],
+        description = L["Turns grey when on cooldown."],
         createTriggers = function(triggers, item)
           createAbilityTrigger(triggers, 0, item, "showAlways");
         end,
@@ -369,7 +369,7 @@ local function subTypesFor(item)
       if (item.buff) then
         tinsert(types, {
           title = L["Show Cooldown and Buff"],
-          description = L["Glows while Buffed"],
+          description = L["Glows while buffed."],
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item)
             insufficientResourcesBlue(conditions, 1);
@@ -380,7 +380,7 @@ local function subTypesFor(item)
         if (item.usable) then
           tinsert(types, {
             title = L["Show Cooldown and Buff and Check Usable"],
-            description = L["Glows while Buffed"],
+            description = L["Glows while buffed."],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item)
               isUsableBlue(conditions, 1);
@@ -391,8 +391,8 @@ local function subTypesFor(item)
         end
         if (item.requiresTarget) then
           tinsert(types, {
-            title = L["Show Cooldown and Buff and check for target"],
-            description = L["Glows while Buffed, Red when out of range."],
+            title = L["Show Cooldown and Buff and Check for Target"],
+            description = L["Glows while buffed, red when out of range."],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item)
               insufficientResourcesBlue(conditions, 1);
@@ -405,7 +405,7 @@ local function subTypesFor(item)
       elseif(item.debuff) then
         tinsert(types, {
           title = L["Show Cooldown and Debuff"],
-          description = L["Glows while Debuffed"],
+          description = L["Glows while debuffed."],
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item)
             insufficientResourcesBlue(conditions, 1);
@@ -415,8 +415,8 @@ local function subTypesFor(item)
         });
         if (item.requiresTarget) then
           tinsert(types, {
-            title = L["Show Cooldown and Debuff, check for target"],
-            description = L["Glows while Debuffed, Red when out of range."],
+            title = L["Show Cooldown and Debuff and Check for Target"],
+            description = L["Glows while debuffed, red when out of range."],
             createTriggers = createAbilityAndDebuffTrigger,
             createConditions = function(conditions, item)
               insufficientResourcesBlue(conditions, 1);
@@ -443,8 +443,8 @@ local function subTypesFor(item)
       else
         if (item.usable) then
           tinsert(types, {
-            title = L["Show Cooldown and check usable"],
-            description = L["Always active, grey if the ability is not uable."],
+            title = L["Show Cooldown and Check Usable"],
+            description = L["Always active, grey if the ability is not usable."],
             createTriggers = function(triggers, item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
@@ -455,8 +455,8 @@ local function subTypesFor(item)
           });
           if (item.requiresTarget) then
             tinsert(types, {
-              title = L["Show Cooldown and check usable/target"],
-              description = L["Always active, grey if the ability is not uable, and Red when out of range."],
+              title = L["Show Cooldown and Check Usable & Target"],
+              description = L["Always active, grey if the ability is not usable, and red when out of range."],
               createTriggers = function(triggers, item)
                 createAbilityTrigger(triggers, 0, item, "showAlways");
               end,
@@ -470,8 +470,8 @@ local function subTypesFor(item)
         end
         if (item.requiresTarget) then
           tinsert(types, {
-            title = L["Show Cooldown and check for target"],
-            description = L["Always active, Red when out of range."],
+            title = L["Show Cooldown and Check for Target"],
+            description = L["Always active, red when out of range."],
             createTriggers = function(triggers, item)
               createAbilityTrigger(triggers, 0, item, "showAlways");
             end,
@@ -493,8 +493,8 @@ local function subTypesFor(item)
       end
     });
     tinsert(types, {
-      title = L["Always show"],
-      description = L["Glows if Buffed"],
+      title = L["Always Show"],
+      description = L["Glows if buffed"],
       buffShowOn = "showAlways",
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 0, item, "showAlways", true);
@@ -504,8 +504,8 @@ local function subTypesFor(item)
       end,
     });
     tinsert(types, {
-      title = L["Always show"],
-      description = L["Greyed if Buff not active"],
+      title = L["Always Show"],
+      description = L["Grey if buff not active."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 0, item, "showAlways", true);
       end,
@@ -522,8 +522,8 @@ local function subTypesFor(item)
       end
     });
     tinsert(types, {
-      title = L["Always show"],
-      description = L["Glow if Debuffed"],
+      title = L["Always Show"],
+      description = L["Glow if debuffed."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 0, item, "showAlways", false);
       end,
@@ -532,8 +532,8 @@ local function subTypesFor(item)
       end,
     });
     tinsert(types, {
-      title = L["Always show"],
-      description = L["Greyed if Debuff not active"],
+      title = L["Always Show"],
+      description = L["Grey if debuff not active."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 0, item, "showAlways", false);
       end,
@@ -550,8 +550,8 @@ local function subTypesFor(item)
       end
     });
     tinsert(types, {
-      title = L["Always show"],
-      description = L["Greyed if on cd"],
+      title = L["Always Show"],
+      description = L["Grey if on cooldown."],
       createTriggers = function(triggers, item)
         createItemTrigger(triggers, 0, item, "showAlways");
       end,
@@ -561,8 +561,8 @@ local function subTypesFor(item)
     });
   elseif(item.type == "totem") then
     tinsert(types, {
-      title = L["Always show"],
-      description = L["Greyed if on cd"],
+      title = L["Always Show"],
+      description = L["Grey if on cooldown."],
       createTriggers = function(triggers, item)
         createTotemTrigger(triggers, 0, item);
       end,
