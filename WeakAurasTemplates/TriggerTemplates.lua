@@ -964,6 +964,17 @@ function WeakAuras.CreateTemplateView(frame)
     replaceButton:SetFullWidth(true);
     replaceButton:SetClick(function()
       replaceTriggers(newView.data, newView.choosenItem, newView.choosenSubType);
+      for _,v in pairs({"class","spec","talent","pvptalent","race"}) do
+        newView.data.load[v] = nil;
+        newView.data.load["use_"..v] = nil;
+      end
+      newView.data.load.class = {};
+      newView.data.load.spec = {};
+      WeakAuras.DeepCopy(WeakAuras.data_stub.load.class, newView.data.load.class);
+      WeakAuras.DeepCopy(WeakAuras.data_stub.load.spec, newView.data.load.spec);
+      if (newView.choosenItem.load) then
+        WeakAuras.DeepCopy(newView.choosenItem.load, newView.data.load);
+      end
     end);
     newViewScroll:AddChild(replaceButton);
 
