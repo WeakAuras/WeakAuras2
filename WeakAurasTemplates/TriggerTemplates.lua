@@ -23,8 +23,7 @@ AceGUI:RegisterLayout("WATemplateTriggerLayoutFlyout", function(content, childre
   flowLayout(content, children);
 end);
 
-local changes =
-{
+local changes = {
   grey = {
     value = {
         0.5,
@@ -75,8 +74,7 @@ local changes =
   }
 }
 
-local checks =
-{
+local checks = {
   spellInRange = {
     variable = "spellInRange",
     value = 0,
