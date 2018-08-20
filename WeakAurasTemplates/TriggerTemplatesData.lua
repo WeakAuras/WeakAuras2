@@ -156,30 +156,32 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, type = "ability"}, -- Charge
-        { spell = 355, type = "ability"}, -- Taunt
+        { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
+        { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 845, type = "ability", talent = 15}, -- Cleave
-        { spell = 5246, type = "ability"}, -- Intimidating Shout
+        { spell = 5246, type = "ability", debuff = true, requiresTarget = true}, -- Intimidating Shout
         { spell = 6544, type = "ability"}, -- Heroic Leap
-        { spell = 6552, type = "ability"}, -- Pummel
+        { spell = 6552, type = "ability", requiresTarget = true}, -- Pummel
         { spell = 6673, type = "ability"}, -- Battle Shout
-        { spell = 7384, type = "ability"}, -- Overpower
-        { spell = 12294, type = "ability"}, -- Mortal Strike
-        { spell = 18499, type = "ability"}, -- Berserker Rage
-        { spell = 57755, type = "ability"}, -- Heroic Throw
-        { spell = 97462, type = "ability"}, -- Rallying Cry
-        { spell = 107570, type = "ability", talent = 6}, -- Storm Bolt
-        { spell = 107574, type = "ability", talent = 17}, -- Avatar
-        { spell = 118038, type = "ability"}, -- Die by the Sword
+        { spell = 7384, type = "ability", requiresTarget = true, talent = {19,21}}, -- Overpower
+        { spell = 7384, type = "ability", charges = true, requiresTarget = true, talent = 20, titleSuffix=" (2 Charges)"}, -- Overpower
+        { spell = 12294, type = "ability", requiresTarget = true}, -- Mortal Strike
+        { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
+        { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
+        { spell = 97462, type = "ability", buff = true}, -- Rallying Cry
+        { spell = 107570, type = "ability", debuff = true, requiresTarget = true, talent = 6}, -- Storm Bolt
+        { spell = 107574, type = "ability", buff = true, talent = 17}, -- Avatar
+        { spell = 118038, type = "ability", buff = true}, -- Die by the Sword
         { spell = 152277, type = "ability", talent = 21}, -- Ravager
-        { spell = 167105, type = "ability"}, -- Colossus Smash
-        { spell = 202168, type = "ability"}, -- Impending Victory
+        { spell = 167105, type = "ability", debuff = true, requiresTarget = true}, -- Colossus Smash
+        { spell = 202168, type = "ability", requiresTarget = true}, -- Impending Victory
         { spell = 212520, type = "ability", talent = 12}, -- Defensive Stance
         { spell = 227847, type = "ability"}, -- Bladestorm
-        { spell = 260643, type = "ability", talent = 3}, -- Skullsplitter
-        { spell = 260708, type = "ability"}, -- Sweeping Strikes
-        { spell = 262161, type = "ability", talent = 14}, -- Warbreaker
-        { spell = 262228, type = "ability", talent = 18}, -- Deadly Calm
+        { spell = 260643, type = "ability", requiresTarget = true, talent = 3}, -- Skullsplitter
+        { spell = 260708, type = "ability", buff = true}, -- Sweeping Strikes
+        { spell = 262161, type = "ability", debuff = true, requiresTarget = true, talent = 14}, -- Warbreaker
+        { spell = 262228, type = "ability", buff = true, talent = 18}, -- Deadly Calm
       },
       icon = 132355
     },
@@ -244,25 +246,26 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, type = "ability"}, -- Charge
-        { spell = 355, type = "ability"}, -- Taunt
-        { spell = 1719, type = "ability"}, -- Recklessness
+        { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4}, -- Charge
+        { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
+        { spell = 1719, type = "ability", buff = true}, -- Recklessness
         { spell = 5246, type = "ability"}, -- Intimidating Shout
-        { spell = 5308, type = "ability"}, -- Execute
+        { spell = 5308, type = "ability", requiresTarget = true}, -- Execute
         { spell = 6544, type = "ability"}, -- Heroic Leap
-        { spell = 6552, type = "ability"}, -- Pummel
+        { spell = 6552, type = "ability", requiresTarget = true}, -- Pummel
         { spell = 6673, type = "ability"}, -- Battle Shout
-        { spell = 18499, type = "ability"}, -- Berserker Rage
-        { spell = 23881, type = "ability"}, -- Bloodthirst
+        { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
+        { spell = 23881, type = "ability", requiresTarget = true}, -- Bloodthirst
         { spell = 46924, type = "ability", talent = 18}, -- Bladestorm
-        { spell = 57755, type = "ability"}, -- Heroic Throw
-        { spell = 85288, type = "ability"}, -- Raging Blow
-        { spell = 97462, type = "ability"}, -- Rallying Cry
-        { spell = 107570, type = "ability", talent = 6}, -- Storm Bolt
+        { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
+        { spell = 85288, type = "ability", charges = true, requiresTarget = true}, -- Raging Blow
+        { spell = 97462, type = "ability", buff = true}, -- Rallying Cry
+        { spell = 107570, type = "ability", debuff = true, requiresTarget = true, talent = 6}, -- Storm Bolt
         { spell = 118000, type = "ability", talent = 17}, -- Dragon Roar
-        { spell = 184364, type = "ability"}, -- Enraged Regeneration
-        { spell = 202168, type = "ability", talent = 5}, -- Impending Victory
-        { spell = 280772, type = "ability", talent = 21}, -- Siegebreaker
+        { spell = 184364, type = "ability", buff = true}, -- Enraged Regeneration
+        { spell = 202168, type = "ability", requiresTarget = true, talent = 5}, -- Impending Victory
+        { spell = 280772, type = "ability", debuff = true, requiresTarget = true, talent = 21}, -- Siegebreaker
 
       },
       icon = 136012
@@ -334,28 +337,28 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 355, type = "ability"}, -- Taunt
-        { spell = 871, type = "ability"}, -- Shield Wall
-        { spell = 1160, type = "ability"}, -- Demoralizing Shout
-        { spell = 2565, type = "ability"}, -- Shield Block
-        { spell = 5246, type = "ability"}, -- Intimidating Shout
+        { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
+        { spell = 871, type = "ability", buff = true}, -- Shield Wall
+        { spell = 1160, type = "ability", debuff = true}, -- Demoralizing Shout
+        { spell = 2565, type = "ability", charges = true, buff = true}, -- Shield Block
+        { spell = 5246, type = "ability", debuff = true, requiresTarget = true}, -- Intimidating Shout
         { spell = 6343, type = "ability"}, -- Thunder Clap
         { spell = 6544, type = "ability"}, -- Heroic Leap
-        { spell = 6552, type = "ability"}, -- Pummel
+        { spell = 6552, type = "ability", requiresTarget = true}, -- Pummel
         { spell = 6572, type = "ability"}, -- Revenge
         { spell = 6673, type = "ability"}, -- Battle Shout
-        { spell = 12975, type = "ability"}, -- Last Stand
-        { spell = 18499, type = "ability"}, -- Berserker Rage
-        { spell = 23920, type = "ability"}, -- Spell Reflection
-        { spell = 23922, type = "ability"}, -- Shield Slam
+        { spell = 12975, type = "ability", buff = true}, -- Last Stand
+        { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
+        { spell = 23920, type = "ability", buff = true}, -- Spell Reflection
+        { spell = 23922, type = "ability", requiresTarget = true}, -- Shield Slam
         { spell = 46968, type = "ability"}, -- Shockwave
-        { spell = 57755, type = "ability"}, -- Heroic Throw
+        { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
         { spell = 97462, type = "ability"}, -- Rallying Cry
-        { spell = 107570, type = "ability", talent = 15}, -- Storm Bolt
-        { spell = 107574, type = "ability"}, -- Avatar
+        { spell = 107570, type = "ability", debuff = true, requiresTarget = true, talent = 15}, -- Storm Bolt
+        { spell = 107574, type = "ability", buff = true}, -- Avatar
         { spell = 118000, type = "ability", talent = 9}, -- Dragon Roar
-        { spell = 198304, type = "ability"}, -- Intercept
-        { spell = 202168, type = "ability", talent = 3}, -- Impending Victory
+        { spell = 198304, type = "ability", charges = true, requiresTarget = true}, -- Intercept
+        { spell = 202168, type = "ability", requiresTarget = true, talent = 3}, -- Impending Victory
         { spell = 228920, type = "ability", talent = 21}, -- Ravager
 
       },
@@ -431,30 +434,30 @@ templates.class.PALADIN = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 498, type = "ability"}, -- Divine Protection
+        { spell = 498, type = "ability", buff = true}, -- Divine Protection
         { spell = 633, type = "ability"}, -- Lay on Hands
-        { spell = 642, type = "ability"}, -- Divine Shield
-        { spell = 853, type = "ability"}, -- Hammer of Justice
+        { spell = 642, type = "ability", buff = true}, -- Divine Shield
+        { spell = 853, type = "ability", requiresTarget = true}, -- Hammer of Justice
         { spell = 1022, type = "ability"}, -- Blessing of Protection
         { spell = 1044, type = "ability"}, -- Blessing of Freedom
         { spell = 6940, type = "ability"}, -- Blessing of Sacrifice
-        { spell = 20066, type = "ability", talent = 8}, -- Repentance
+        { spell = 20066, type = "ability", requiresTarget = true, talent = 8}, -- Repentance
         { spell = 20473, type = "ability"}, -- Holy Shock
-        { spell = 26573, type = "ability"}, -- Consecration
-        { spell = 31821, type = "ability"}, -- Aura Mastery
-        { spell = 31884, type = "ability"}, -- Avenging Wrath
-        { spell = 35395, type = "ability"}, -- Crusader Strike
+        { spell = 26573, type = "ability", totem = true}, -- Consecration
+        { spell = 31821, type = "ability", buff = true}, -- Aura Mastery
+        { spell = 31884, type = "ability", buff = true}, -- Avenging Wrath
+        { spell = 35395, type = "ability", charges = true, requiresTarget = true}, -- Crusader Strike
         { spell = 85222, type = "ability"}, -- Light of Dawn
-        { spell = 105809, type = "ability", talent = 15}, -- Holy Avenger
+        { spell = 105809, type = "ability", buff = true, talent = 15}, -- Holy Avenger
         { spell = 114158, type = "ability", talent = 3}, -- Light's Hammer
         { spell = 114165, type = "ability", talent = 14}, -- Holy Prism
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
         { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 200025, type = "ability", talent = 21}, -- Beacon of Virtue
-        { spell = 214202, type = "ability"}, -- Rule of Law
-        { spell = 216331, type = "ability"}, -- Avenging Crusader
+        { spell = 214202, type = "ability", charges = true, buff = true}, -- Rule of Law
+        { spell = 216331, type = "ability", buff = true}, -- Avenging Crusader
         { spell = 223306, type = "ability", talent = 2}, -- Bestow Faith
-        { spell = 275773, type = "ability"}, -- Judgment
+        { spell = 275773, type = "ability", debuff = true, requiresTarget = true}, -- Judgment
       },
       icon = 135972
     },
@@ -525,31 +528,31 @@ templates.class.PALADIN = {
       title = L["Cooldowns"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
-        { spell = 642, type = "ability"}, -- Divine Shield
-        { spell = 853, type = "ability"}, -- Hammer of Justice
-        { spell = 1022, type = "ability"}, -- Blessing of Protection
-        { spell = 1044, type = "ability"}, -- Blessing of Freedom
-        { spell = 6940, type = "ability"}, -- Blessing of Sacrifice
-        { spell = 20066, type = "ability", talent = 8}, -- Repentance
-        { spell = 26573, type = "ability"}, -- Consecration
-        { spell = 31850, type = "ability"}, -- Ardent Defender
-        { spell = 31884, type = "ability"}, -- Avenging Wrath
-        { spell = 31935, type = "ability"}, -- Avenger's Shield
-        { spell = 53595, type = "ability"}, -- Hammer of the Righteous
-        { spell = 53600, type = "ability"}, -- Shield of the Righteous
-        { spell = 62124, type = "ability"}, -- Hand of Reckoning
-        { spell = 86659, type = "ability"}, -- Guardian of Ancient Kings
+        { spell = 642, type = "ability", buff = true}, -- Divine Shield
+        { spell = 853, type = "ability", requiresTarget = true}, -- Hammer of Justice
+        { spell = 1022, type = "ability", buff = true}, -- Blessing of Protection
+        { spell = 1044, type = "ability", buff = true}, -- Blessing of Freedom
+        { spell = 6940, type = "ability", debuff = true, requiresTarget = true, unit="player"}, -- Blessing of Sacrifice
+        { spell = 20066, type = "ability", requiresTarget = true, talent = 8}, -- Repentance
+        { spell = 26573, type = "ability", buff = true}, -- Consecration
+        { spell = 31850, type = "ability", buff = true}, -- Ardent Defender
+        { spell = 31884, type = "ability", buff = true}, -- Avenging Wrath
+        { spell = 31935, type = "ability", requiresTarget = true}, -- Avenger's Shield
+        { spell = 53595, type = "ability"}, -- Hammer of the Righteous                  Couldn't find this spell
+        { spell = 53600, type = "ability", charges = true, buff = true}, -- Shield of the Righteous
+        { spell = 62124, type = "ability", debuff = true, requiresTarget = true}, -- Hand of Reckoning
+        { spell = 86659, type = "ability", buff = true}, -- Guardian of Ancient Kings
         { spell = 96231, type = "ability"}, -- Rebuke
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
-        { spell = 152262, type = "ability", talent = 21}, -- Seraphim
+        { spell = 152262, type = "ability", buff = true, talent = 21}, -- Seraphim
         { spell = 184092, type = "ability"}, -- Light of the Protector
         { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 204018, type = "ability", talent = 12}, -- Blessing of Spellwarding
-        { spell = 204019, type = "ability"}, -- Blessed Hammer
+        { spell = 204019, type = "ability", charges = true, debuff = true}, -- Blessed Hammer
         { spell = 204035, type = "ability"}, -- Bastion of Light
-        { spell = 204150, type = "ability"}, -- Aegis of Light
+        { spell = 204150, type = "ability", buff = true}, -- Aegis of Light
         { spell = 213652, type = "ability"}, -- Hand of the Protector
-        { spell = 275779, type = "ability"}, -- Judgment
+        { spell = 275779, type = "ability", debuff = true, requiresTarget = true}, -- Judgment
       },
       icon = 135874
     },
@@ -622,27 +625,27 @@ templates.class.PALADIN = {
       title = L["Cooldowns"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
-        { spell = 642, type = "ability"}, -- Divine Shield
-        { spell = 853, type = "ability"}, -- Hammer of Justice
-        { spell = 1022, type = "ability"}, -- Blessing of Protection
-        { spell = 1044, type = "ability"}, -- Blessing of Freedom
-        { spell = 20066, type = "ability", talent = 8}, -- Repentance
-        { spell = 20271, type = "ability"}, -- Judgment
+        { spell = 642, type = "ability", buff = true}, -- Divine Shield
+        { spell = 853, type = "ability", requiresTarget = true}, -- Hammer of Justice
+        { spell = 1022, type = "ability", buff = true}, -- Blessing of Protection
+        { spell = 1044, type = "ability", buff = true}, -- Blessing of Freedom
+        { spell = 20066, type = "ability", requiresTarget = true, talent = 8}, -- Repentance
+        { spell = 20271, type = "ability", debuff = true, requiresTarget = true}, -- Judgment
         { spell = 24275, type = "ability", talent = 6}, -- Hammer of Wrath
-        { spell = 31884, type = "ability"}, -- Avenging Wrath
-        { spell = 35395, type = "ability"}, -- Crusader Strike
-        { spell = 62124, type = "ability"}, -- Hand of Reckoning
+        { spell = 31884, type = "ability", buff = true}, -- Avenging Wrath
+        { spell = 35395, type = "ability", charges = true}, -- Crusader Strike
+        { spell = 62124, type = "ability", debuff = true, requiresTarget = true}, -- Hand of Reckoning
         { spell = 96231, type = "ability"}, -- Rebuke
         { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
-        { spell = 183218, type = "ability"}, -- Hand of Hindrance
-        { spell = 184575, type = "ability"}, -- Blade of Justice
-        { spell = 184662, type = "ability"}, -- Shield of Vengeance
+        { spell = 183218, type = "ability", debuff = true, requiresTarget = true}, -- Hand of Hindrance
+        { spell = 184575, type = "ability", requiresTarget = true}, -- Blade of Justice
+        { spell = 184662, type = "ability", buff = true}, -- Shield of Vengeance
         { spell = 190784, type = "ability"}, -- Divine Steed
         { spell = 205191, type = "ability", talent = 15}, -- Eye for an Eye
-        { spell = 205228, type = "ability", talent = 11}, -- Consecration
-        { spell = 210191, type = "ability", talent = 18}, -- Word of Glory
-        { spell = 255937, type = "ability", talent = 11}, -- Wake of Ashes
-        { spell = 267798, type = "ability", talent = 3}, -- Execution Sentence
+        { spell = 205228, type = "ability", totem = true, talent = 11}, -- Consecration
+        { spell = 210191, type = "ability", charges = true, talent = 18}, -- Word of Glory
+        { spell = 255937, type = "ability", debuff = true, requiresTarget = true, talent = 11}, -- Wake of Ashes
+        { spell = 267798, type = "ability", debuff = true, requiresTarget = true, talent = 3}, -- Execution Sentence
       },
       icon = 135891
     },
@@ -721,31 +724,31 @@ templates.class.HUNTER = {
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
-        { spell = 2649, type = "ability"}, -- Growl
-        { spell = 5116, type = "ability"}, -- Concussive Shot
-        { spell = 5384, type = "ability"}, -- Feign Death
-        { spell = 16827, type = "ability"}, -- Claw
-        { spell = 19574, type = "ability"}, -- Bestial Wrath
-        { spell = 19577, type = "ability"}, -- Intimidation
+        { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
+        { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true}, -- Feign Death
+        { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
+        { spell = 19574, type = "ability", buff = true}, -- Bestial Wrath
+        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
         { spell = 24450, type = "ability"}, -- Prowl
         { spell = 34026, type = "ability"}, -- Kill Command
-        { spell = 34477, type = "ability"}, -- Misdirection
-        { spell = 53209, type = "ability", talent = 6}, -- Chimaera Shot
-        { spell = 109248, type = "ability", talent = 15}, -- Binding Shot
+        { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
+        { spell = 53209, type = "ability", requiresTarget = true, talent = 6}, -- Chimaera Shot
+        { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
-        { spell = 120679, type = "ability", talent = 3}, -- Dire Beast
-        { spell = 131894, type = "ability", talent = 12}, -- A Murder of Crows
-        { spell = 147362, type = "ability"}, -- Counter Shot
-        { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
-        { spell = 186265, type = "ability"}, -- Aspect of the Turtle
+        { spell = 120679, type = "ability", requiresTarget = true, buff = true, talent = 3}, -- Dire Beast
+        { spell = 131894, type = "ability", requiresTarget = true, talent = 12}, -- A Murder of Crows
+        { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
+        { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
         { spell = 187650, type = "ability"}, -- Freezing Trap
         { spell = 187698, type = "ability"}, -- Tar Trap
-        { spell = 193530, type = "ability"}, -- Aspect of the Wild
+        { spell = 193530, type = "ability", buff = true}, -- Aspect of the Wild
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 201430, type = "ability", talent = 18}, -- Stampede
-        { spell = 217200, type = "ability"}, -- Barbed Shot
-        { spell = 264667, type = "ability"}, -- Primal Rage
+        { spell = 217200, type = "ability", charges = true, requiresTarget = true}, -- Barbed Shot
+        { spell = 264667, type = "ability", buff = true}, -- Primal Rage
       },
       icon = 132176
     },
@@ -826,29 +829,30 @@ templates.class.HUNTER = {
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
-        { spell = 5116, type = "ability"}, -- Concussive Shot
-        { spell = 5384, type = "ability"}, -- Feign Death
-        { spell = 19434, type = "ability"}, -- Aimed Shot
-        { spell = 34477, type = "ability"}, -- Misdirection
-        { spell = 109248, type = "ability", talent = 15}, -- Binding Shot
+        { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true}, -- Feign Death
+        { spell = 19434, type = "ability", requiresTarget = true, charges = true}, -- Aimed Shot
+        { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
+        { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
         { spell = 131894, type = "ability", talent = 3}, -- A Murder of Crows
-        { spell = 147362, type = "ability"}, -- Counter Shot
-        { spell = 185358, type = "ability"}, -- Arcane Shot
-        { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
-        { spell = 186265, type = "ability"}, -- Aspect of the Turtle
+        { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
+        { spell = 185358, type = "ability", requiresTarget = true}, -- Arcane Shot
+        { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
         { spell = 186387, type = "ability"}, -- Bursting Shot
         { spell = 187650, type = "ability"}, -- Freezing Trap
         { spell = 187698, type = "ability"}, -- Tar Trap
-        { spell = 193526, type = "ability"}, -- Trueshot
+        { spell = 193526, type = "ability", buff = true}, -- Trueshot
         { spell = 198670, type = "ability", talent = 21}, -- Piercing Shot
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 212431, type = "ability", talent = 6}, -- Explosive Shot
-        { spell = 257044, type = "ability"}, -- Rapid Fire
-        { spell = 257620, type = "ability"}, -- Multi-Shot
-        { spell = 260402, type = "ability", talent = 18}, -- Double Tap
-        { spell = 264667, type = "ability"}, -- Primal Rage
+        { spell = 257044, type = "ability", requiresTarget = true}, -- Rapid Fire
+        { spell = 257620, type = "ability", requiresTarget = true}, -- Multi-Shot
+        { spell = 260402, type = "ability", buff = true, talent = 18}, -- Double Tap
+        { spell = 264667, type = "ability", buff = true}, -- Primal Rage
+        { spell = 281195, type = "ability", buff = true}, -- Survival of the Fittest
 
       },
       icon = 132329
@@ -942,39 +946,39 @@ templates.class.HUNTER = {
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
-        { spell = 2649, type = "ability"}, -- Growl
-        { spell = 5384, type = "ability"}, -- Feign Death
-        { spell = 16827, type = "ability"}, -- Claw
-        { spell = 19434, type = "ability"}, -- Aimed Shot
-        { spell = 19577, type = "ability"}, -- Intimidation
+        { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
+        { spell = 5384, type = "ability", buff = true}, -- Feign Death
+        { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
+        { spell = 19434, type = "ability", requiresTarget = true}, -- Aimed Shot
+        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
         { spell = 24450, type = "ability"}, -- Prowl
-        { spell = 34477, type = "ability"}, -- Misdirection
+        { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
         { spell = 61684, type = "ability"}, -- Dash
-        { spell = 109248, type = "ability"}, -- Binding Shot
+        { spell = 109248, type = "ability", requiresTarget = true}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 131894, type = "ability", talent = 12}, -- A Murder of Crows
         { spell = 162488, type = "ability", talent = 11}, -- Steel Trap
-        { spell = 186257, type = "ability"}, -- Aspect of the Cheetah
-        { spell = 186265, type = "ability"}, -- Aspect of the Turtle
-        { spell = 186289, type = "ability"}, -- Aspect of the Eagle
+        { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
+        { spell = 186289, type = "ability", buff = true}, -- Aspect of the Eagle
         { spell = 187650, type = "ability"}, -- Freezing Trap
         { spell = 187698, type = "ability"}, -- Tar Trap
-        { spell = 187707, type = "ability"}, -- Muzzle
+        { spell = 187707, type = "ability", requiresTarget = true}, -- Muzzle
         { spell = 187708, type = "ability"}, -- Carve
-        { spell = 190925, type = "ability"}, -- Harpoon
+        { spell = 190925, type = "ability", requiresTarget = true}, -- Harpoon
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
-        { spell = 212436, type = "ability", talent = 6 }, -- Butchery
-        { spell = 259391, type = "ability", talent = 21 }, -- Chakrams
-        { spell = 259489, type = "ability"}, -- Kill Command
-        { spell = 259495, type = "ability"}, -- Wildfire Bomb
+        { spell = 212436, type = "ability", charges = true, talent = 6 }, -- Butchery
+        { spell = 259391, type = "ability", requiresTarget = true, talent = 21 }, -- Chakrams
+        { spell = 259489, type = "ability", requiresTarget = true}, -- Kill Command
+        { spell = 259495, type = "ability", requiresTarget = true}, -- Wildfire Bomb
         { spell = 263892, type = "ability"}, -- Catlike Reflexes
-        { spell = 264667, type = "ability"}, -- Primal Rage
-        { spell = 266779, type = "ability"}, -- Coordinated Assault
-        { spell = 269751, type = "ability", talent = 18 }, -- Flanking Strike
+        { spell = 264667, type = "ability", buff = true}, -- Primal Rage
+        { spell = 266779, type = "ability", buff = true}, -- Coordinated Assault
+        { spell = 269751, type = "ability", requiresTarget = true, talent = 18 }, -- Flanking Strike
         { spell = 270323, type = "ability", talent = 20 }, -- Pheromone Bomb
         { spell = 270335, type = "ability", talent = 20}, -- Shrapnel Bomb
         { spell = 271045, type = "ability", talent = 20}, -- Volatile Bomb
-        { spell = 272678, type = "ability"}, -- Primal Rage
+        { spell = 272678, type = "ability", buff = true}, -- Primal Rage
 
       },
       icon = 236184
@@ -1064,26 +1068,26 @@ templates.class.ROGUE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 408, type = "ability"}, -- Kidney Shot
-        { spell = 703, type = "ability"}, -- Garrote
+        { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
+        { spell = 703, type = "ability", requiresTarget = true}, -- Garrote
         { spell = 1725, type = "ability"}, -- Distract
-        { spell = 1766, type = "ability"}, -- Kick
-        { spell = 1784, type = "ability"}, -- Stealth
-        { spell = 1856, type = "ability"}, -- Vanish
-        { spell = 1966, type = "ability"}, -- Feint
-        { spell = 2094, type = "ability"}, -- Blind
-        { spell = 2983, type = "ability"}, -- Sprint
-        { spell = 5277, type = "ability"}, -- Evasion
-        { spell = 31224, type = "ability"}, -- Cloak of Shadows
-        { spell = 36554, type = "ability"}, -- Shadowstep
-        { spell = 79140, type = "ability"}, -- Vendetta
-        { spell = 114018, type = "ability"}, -- Shroud of Concealment
-        { spell = 115191, type = "ability"}, -- Stealth
-        { spell = 137619, type = "ability", talent = 9}, -- Marked for Death
-        { spell = 185311, type = "ability"}, -- Crimson Vial
-        { spell = 200806, type = "ability", talent = 18}, -- Exsanguinate
-        { spell = 245388, type = "ability", talent = 17}, -- Toxic Blade
-        { spell = 57934, type = "ability"}, -- Tricks of the Trade
+        { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
+        { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1966, type = "ability", buff = true}, -- Feint
+        { spell = 2094, type = "ability", requiresTarget = true}, -- Blind
+        { spell = 2983, type = "ability", buff = true}, -- Sprint
+        { spell = 5277, type = "ability", buff = true}, -- Evasion
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 36554, type = "ability", requiresTarget = true}, -- Shadowstep
+        { spell = 79140, type = "ability", requiresTarget = true, debuff = true}, -- Vendetta
+        { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
+        { spell = 115191, type = "ability", buff = true}, -- Stealth
+        { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
+        { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 200806, type = "ability", requiresTarget = true, usable = true, talent = 18}, -- Exsanguinate
+        { spell = 245388, type = "ability", requiresTarget = true, talent = 17}, -- Toxic Blade
+        { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
       },
       icon = 458726
     },
@@ -1161,27 +1165,27 @@ templates.class.ROGUE = {
       title = L["Cooldowns"],
       args = {
         { spell = 1725, type = "ability"}, -- Distract
-        { spell = 1766, type = "ability"}, -- Kick
-        { spell = 1776, type = "ability"}, -- Gouge
-        { spell = 1784, type = "ability"}, -- Stealth
-        { spell = 1856, type = "ability"}, -- Vanish
-        { spell = 1966, type = "ability"}, -- Feint
-        { spell = 2094, type = "ability"}, -- Blind
-        { spell = 2983, type = "ability"}, -- Sprint
-        { spell = 13750, type = "ability"}, -- Adrenaline Rush
-        { spell = 13877, type = "ability"}, -- Blade Flurry
-        { spell = 31224, type = "ability"}, -- Cloak of Shadows
-        { spell = 51690, type = "ability", talent = 21}, -- Killing Spree
+        { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
+        { spell = 1776, type = "ability", requiresTarget = true, debuff = true}, -- Gouge
+        { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1966, type = "ability", buff = true}, -- Feint
+        { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
+        { spell = 2983, type = "ability", buff = true }, -- Sprint
+        { spell = 13750, type = "ability", buff = true}, -- Adrenaline Rush
+        { spell = 13877, type = "ability", buff = true, charges = true}, -- Blade Flurry
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 51690, type = "ability", requiresTarget = true, talent = 21}, -- Killing Spree
         { spell = 79096, type = "ability"}, -- Restless Blades
-        { spell = 114018, type = "ability"}, -- Shroud of Concealment
-        { spell = 137619, type = "ability", talent = 9}, -- Marked for Death
-        { spell = 185311, type = "ability"}, -- Crimson Vial
-        { spell = 195457, type = "ability"}, -- Grappling Hook
-        { spell = 196937, type = "ability", talent = 3}, -- Ghostly Strike
-        { spell = 199754, type = "ability"}, -- Riposte
-        { spell = 199804, type = "ability"}, -- Between the Eyes
-        { spell = 271877, type = "ability", talent = 20}, -- Blade Rush
-        { spell = 57934, type = "ability"}, -- Tricks of the Trade
+        { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
+        { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
+        { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 195457, type = "ability", requiresTarget = true}, -- Grappling Hook
+        { spell = 196937, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Ghostly Strike
+        { spell = 199754, type = "ability", buff = true}, -- Riposte
+        { spell = 199804, type = "ability", usable = true, requiresTarget = true}, -- Between the Eyes
+        { spell = 271877, type = "ability", buff = true, talent = 20}, -- Blade Rush
+        { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
       },
       icon = 135610
     },
@@ -1257,27 +1261,27 @@ templates.class.ROGUE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 408, type = "ability"}, -- Kidney Shot
+        { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
         { spell = 1725, type = "ability"}, -- Distract
-        { spell = 1766, type = "ability"}, -- Kick
-        { spell = 1784, type = "ability"}, -- Stealth
-        { spell = 1856, type = "ability"}, -- Vanish
-        { spell = 1966, type = "ability"}, -- Feint
-        { spell = 2094, type = "ability"}, -- Blind
-        { spell = 2983, type = "ability"}, -- Sprint
-        { spell = 5277, type = "ability"}, -- Evasion
-        { spell = 31224, type = "ability"}, -- Cloak of Shadows
-        { spell = 36554, type = "ability"}, -- Shadowstep
-        { spell = 114018, type = "ability"}, -- Shroud of Concealment
-        { spell = 115191, type = "ability"}, -- Stealth
-        { spell = 121471, type = "ability"}, -- Shadow Blades
-        { spell = 137619, type = "ability", talent = 9}, -- Marked for Death
-        { spell = 185311, type = "ability"}, -- Crimson Vial
-        { spell = 185313, type = "ability"}, -- Shadow Dance
-        { spell = 212283, type = "ability"}, -- Symbols of Death
-        { spell = 277925, type = "ability", talent = 21}, -- Shuriken Tornado
-        { spell = 280719, type = "ability", talent = 20}, -- Secret Technique
-        { spell = 57934, type = "ability"}, -- Tricks of the Trade
+        { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
+        { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1966, type = "ability", buff = true}, -- Feint
+        { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
+        { spell = 2983, type = "ability", buff = true}, -- Sprint
+        { spell = 5277, type = "ability", buff = true}, -- Evasion
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 36554, type = "ability", charges = true, requiresTarget = true}, -- Shadowstep
+        { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
+        { spell = 115191, type = "ability", buff = true}, -- Stealth
+        { spell = 121471, type = "ability", buff = true}, -- Shadow Blades
+        { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
+        { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 185313, type = "ability", charges = true, buff = true}, -- Shadow Dance
+        { spell = 212283, type = "ability", buff = true}, -- Symbols of Death
+        { spell = 277925, type = "ability", buff = true, talent = 21}, -- Shuriken Tornado
+        { spell = 280719, type = "ability", requiresTarget = true, usable = true, debuff = true, talent = 20}, -- Secret Technique
+        { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
 
       },
       icon = 236279
@@ -1353,25 +1357,25 @@ templates.class.PRIEST = {
       title = L["Cooldowns"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
-        { spell = 586, type = "ability"}, -- Fade
+        { spell = 586, type = "ability", buff = true}, -- Fade
         { spell = 8122, type = "ability"}, -- Psychic Scream
-        { spell = 19236, type = "ability"}, -- Desperate Prayer
+        { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 33206, type = "ability"}, -- Pain Suppression
-        { spell = 34433, type = "ability"}, -- Shadowfiend
-        { spell = 47536, type = "ability"}, -- Rapture
-        { spell = 47540, type = "ability"}, -- Penance
+        { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
+        { spell = 47536, type = "ability", buff = true}, -- Rapture
+        { spell = 47540, type = "ability", requiresTarget = true}, -- Penance
         { spell = 62618, type = "ability"}, -- Power Word: Barrier
-        { spell = 73325, type = "ability" }, -- Leap of Faith
+        { spell = 73325, type = "ability"}, -- Leap of Faith
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
-        { spell = 121536, type = "ability", talent = 6}, -- Angelic Feather
-        { spell = 123040, type = "ability", talent = 8}, -- Mindbender
-        { spell = 129250, type = "ability", talent = 9}, -- Power Word: Solace
-        { spell = 194509, type = "ability"}, -- Power Word: Radiance
+        { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
+        { spell = 123040, type = "ability", totem = true, requiresTarget = true, talent = 8}, -- Mindbender
+        { spell = 129250, type = "ability", requiresTarget = true, talent = 9}, -- Power Word: Solace
+        { spell = 194509, type = "ability", charges = true}, -- Power Word: Radiance
         { spell = 204065, type = "ability", talent = 15}, -- Shadow Covenant
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
-        { spell = 214621, type = "ability", talent = 3}, -- Schism
+        { spell = 214621, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Schism
         { spell = 246287, type = "ability"}, -- Evangelism
         { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
@@ -1439,24 +1443,24 @@ templates.class.PRIEST = {
       title = L["Cooldowns"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
-        { spell = 586, type = "ability"}, -- Fade
+        { spell = 586, type = "ability", buff = true}, -- Fade
         { spell = 2050, type = "ability"}, -- Holy Word: Serenity
         { spell = 2061, type = "ability"}, -- Flash Heal
         { spell = 8122, type = "ability"}, -- Psychic Scream
-        { spell = 14914, type = "ability"}, -- Holy Fire
-        { spell = 19236, type = "ability"}, -- Desperate Prayer
+        { spell = 14914, type = "ability", requiresTarget = true}, -- Holy Fire
+        { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
         { spell = 32375, type = "ability"}, -- Mass Dispel
         { spell = 33076, type = "ability"}, -- Prayer of Mending
         { spell = 34861, type = "ability"}, -- Holy Word: Sanctify
         { spell = 47788, type = "ability"}, -- Guardian Spirit
-        { spell = 64843, type = "ability"}, -- Divine Hymn
-        { spell = 64901, type = "ability"}, -- Symbol of Hope
-        { spell = 73325, type = "ability" }, -- Leap of Faith
-        { spell = 88625, type = "ability"}, -- Holy Word: Chastise
+        { spell = 64843, type = "ability", buff = true}, -- Divine Hymn
+        { spell = 64901, type = "ability", buff = true}, -- Symbol of Hope
+        { spell = 73325, type = "ability"}, -- Leap of Faith
+        { spell = 88625, type = "ability", requiresTarget = true, debuff = true}, -- Holy Word: Chastise
         { spell = 110744, type = "ability", talent = 17}, -- Divine Star
         { spell = 120517, type = "ability", talent = 18}, -- Halo
-        { spell = 121536, type = "ability", talent = 6}, -- Angelic Feather
-        { spell = 200183, type = "ability", talent = 20}, -- Apotheosis
+        { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
+        { spell = 200183, type = "ability", buff = true, talent = 20}, -- Apotheosis
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
         { spell = 204883, type = "ability", talent = 15}, -- Circle of Healing
         { spell = 265202, type = "ability", talent = 21}, -- Holy Word: Salvation
@@ -1527,29 +1531,29 @@ templates.class.PRIEST = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 17, type = "ability"}, -- Power Word: Shield
-        { spell = 586, type = "ability"}, -- Fade
-        { spell = 8092, type = "ability"}, -- Mind Blast
+        { spell = 17, type = "ability", buff = true}, -- Power Word: Shield
+        { spell = 586, type = "ability", buff = true}, -- Fade
+        { spell = 8092, type = "ability", requiresTarget = true}, -- Mind Blast
         { spell = 8122, type = "ability"}, -- Psychic Scream
-        { spell = 15286, type = "ability"}, -- Vampiric Embrace
-        { spell = 15487, type = "ability"}, -- Silence
+        { spell = 15286, type = "ability", buff = true}, -- Vampiric Embrace
+        { spell = 15487, type = "ability", requiresTarget = true}, -- Silence
         { spell = 32375, type = "ability"}, -- Mass Dispel
-        { spell = 32379, type = "ability", talent = 14}, -- Shadow Word: Death
-        { spell = 34433, type = "ability"}, -- Shadowfiend
-        { spell = 47585, type = "ability"}, -- Dispersion
-        { spell = 64044, type = "ability", talent = 12}, -- Psychic Horror
-        { spell = 73325, type = "ability" }, -- Leap of Faith
-        { spell = 193223, type = "ability", talent = 21}, -- Surrender to Madness
-        { spell = 200174, type = "ability", talent = 17}, -- Mindbender
-        { spell = 205351, type = "ability", talent = 3}, -- Shadow Word: Void
-        { spell = 205369, type = "ability", talent = 11}, -- Mind Bomb
+        { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true, talent = 14}, -- Shadow Word: Death
+        { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
+        { spell = 47585, type = "ability", buff = true}, -- Dispersion
+        { spell = 64044, type = "ability", requiresTarget = true, talent = 12}, -- Psychic Horror
+        { spell = 73325, type = "ability"}, -- Leap of Faith
+        { spell = 193223, type = "ability", usable = true, buff = true, talent = 21}, -- Surrender to Madness
+        { spell = 200174, type = "ability", totem = true, requiresTarget = true, talent = 17}, -- Mindbender
+        { spell = 205351, type = "ability", charges = true, requiresTarget = true, talent = 3}, -- Shadow Word: Void
+        { spell = 205369, type = "ability", requiresTarget = true, talent = 11}, -- Mind Bomb
         { spell = 205385, type = "ability", talent = 15}, -- Shadow Crash
-        { spell = 205448, type = "ability"}, -- Void Bolt
+        { spell = 205448, type = "ability", usable = true, requiresTarget = true}, -- Void Bolt
         { spell = 213634, type = "ability"}, -- Purify Disease
-        { spell = 228260, type = "ability"}, -- Void Eruption
-        { spell = 263165, type = "ability", talent = 18}, -- Void Torrent
-        { spell = 263346, type = "ability", talent = 9}, -- Dark Void
-        { spell = 280711, type = "ability", talent = 20}, -- Dark Ascension
+        { spell = 228260, type = "ability", usable = true, requiresTarget = true}, -- Void Eruption
+        { spell = 263165, type = "ability", usable = true, requiresTarget = true, talent = 18}, -- Void Torrent
+        { spell = 263346, type = "ability", requiresTarget = true, talent = 9}, -- Dark Void
+        { spell = 280711, type = "ability", requiresTarget = true, talent = 20}, -- Dark Ascension
 
       },
       icon = 136230
@@ -1634,27 +1638,29 @@ templates.class.SHAMAN = {
       title = L["Cooldowns"],
       args = {
         { spell = 556, type = "ability"}, -- Astral Recall
-        { spell = 2484, type = "ability"}, -- Earthbind Totem
-        { spell = 8143, type = "ability"}, -- Tremor Totem
-        { spell = 32182, type = "ability"}, -- Heroism
+        { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
+        { spell = 8143, type = "ability", totem = true}, -- Tremor Totem
+        { spell = 32182, type = "ability", buff = true}, -- Heroism
+        { spell = 2825, type = "ability", buff = true}, -- Bloodlust
         { spell = 51490, type = "ability"}, -- Thunderstorm
-        { spell = 51505, type = "ability"}, -- Lava Burst
-        { spell = 51514, type = "ability"}, -- Hex
+        { spell = 51505, type = "ability", requiresTarget = true, talent = {1,3}}, -- Lava Burst
+        { spell = 51505, type = "ability", charges = true, requiresTarget = true, talent = 2, titleSuffix = " (2 Charges)"}, -- Lava Burst
+        { spell = 51514, type = "ability", requiresTarget = true}, -- Hex
         { spell = 51886, type = "ability"}, -- Cleanse Spirit
-        { spell = 57994, type = "ability"}, -- Wind Shear
-        { spell = 108271, type = "ability"}, -- Astral Shift
-        { spell = 108281, type = "ability"}, -- Ancestral Guidance
-        { spell = 114050, type = "ability", talent = 21}, -- Ascendance
-        { spell = 117014, type = "ability", talent = 3}, -- Elemental Blast
-        { spell = 188389, type = "ability"}, -- Flame Shock
-        { spell = 191634, type = "ability", talent = 20}, -- Stormkeeper
-        { spell = 192058, type = "ability"}, -- Capacitor Totem
-        { spell = 192077, type = "ability", talent = 15}, -- Wind Rush Totem
-        { spell = 192222, type = "ability", talent = 12}, -- Liquid Magma Totem
+        { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
+        { spell = 108271, type = "ability", buff = true}, -- Astral Shift
+        { spell = 108281, type = "ability", buff = true}, -- Ancestral Guidance
+        { spell = 114050, type = "ability", buff = true, talent = 21}, -- Ascendance
+        { spell = 117014, type = "ability", requiresTarget = true, talent = 3}, -- Elemental Blast
+        { spell = 188389, type = "ability", debuff = true, requiresTarget = true}, -- Flame Shock
+        { spell = 191634, type = "ability", buff = true, talent = 20}, -- Stormkeeper
+        { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
+        { spell = 192077, type = "ability", totem = true, talent = 15}, -- Wind Rush Totem
+        { spell = 192222, type = "ability", totem = true, talent = 12}, -- Liquid Magma Totem
         { spell = 192249, type = "ability", talent = 11}, -- Storm Elemental
         { spell = 198067, type = "ability"}, -- Fire Elemental
         { spell = 198103, type = "ability"}, -- Earth Elemental
-        { spell = 210714, type = "ability", talent = 17}, -- Icefury
+        { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 17}, -- Icefury
       },
       icon = 135790
     },
@@ -1740,26 +1746,27 @@ templates.class.SHAMAN = {
       title = L["Cooldowns"],
       args = {
         { spell = 556, type = "ability"}, -- Astral Recall
-        { spell = 2484, type = "ability"}, -- Earthbind Totem
-        { spell = 8143, type = "ability"}, -- Tremor Totem
-        { spell = 17364, type = "ability"}, -- Stormstrike
-        { spell = 32182, type = "ability"}, -- Heroism
-        { spell = 51514, type = "ability"}, -- Hex
-        { spell = 51533, type = "ability"}, -- Feral Spirit
+        { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
+        { spell = 8143, type = "ability", totem = true}, -- Tremor Totem
+        { spell = 17364, type = "ability", requiresTarget = true}, -- Stormstrike
+        { spell = 32182, type = "ability", buff = true}, -- Heroism
+        { spell = 2825, type = "ability", buff = true}, -- Bloodlust
+        { spell = 51514, type = "ability", requiresTarget = true}, -- Hex
+        { spell = 51533, type = "ability", buff = true}, -- Feral Spirit
         { spell = 51886, type = "ability"}, -- Cleanse Spirit
-        { spell = 57994, type = "ability"}, -- Wind Shear
-        { spell = 58875, type = "ability"}, -- Spirit Walk
-        { spell = 108271, type = "ability"}, -- Astral Shift
-        { spell = 114051, type = "ability", talent = 21 }, -- Ascendance
+        { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true}, -- Spirit Walk
+        { spell = 108271, type = "ability", buff = true}, -- Astral Shift
+        { spell = 114051, type = "ability", buff = true, talent = 21 }, -- Ascendance
         { spell = 115356, type = "ability", talent = 21 }, -- Windstrike
-        { spell = 187837, type = "ability", talent = 12 }, -- Lightning Bolt
-        { spell = 187874, type = "ability"}, -- Crash Lightning
-        { spell = 188089, type = "ability", talent = 20 }, -- Earthen Spike
-        { spell = 192058, type = "ability"}, -- Capacitor Totem
-        { spell = 192077, type = "ability", talent = 15 }, -- Wind Rush Totem
-        { spell = 193786, type = "ability"}, -- Rockbiter
-        { spell = 193796, type = "ability"}, -- Flametongue
-        { spell = 196884, type = "ability", talent = 14 }, -- Feral Lunge
+        { spell = 187837, type = "ability", requiresTarget = true, talent = 12 }, -- Lightning Bolt
+        { spell = 187874, type = "ability", requiresTarget = true}, -- Crash Lightning
+        { spell = 188089, type = "ability", debuff = true, requiresTarget = true, talent = 20 }, -- Earthen Spike
+        { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
+        { spell = 192077, type = "ability", totem = true, talent = 15 }, -- Wind Rush Totem
+        { spell = 193786, type = "ability", charges = true, requiresTarget = true}, -- Rockbiter
+        { spell = 193796, type = "ability", buff = true, requiresTarget = true}, -- Flametongue
+        { spell = 196884, type = "ability", requiresTarget = true, talent = 14 }, -- Feral Lunge
         { spell = 197214, type = "ability", talent = 18 }, -- Sundering
         { spell = 198103, type = "ability"}, -- Earth Elemental
       },
@@ -1835,30 +1842,34 @@ templates.class.SHAMAN = {
       title = L["Cooldowns"],
       args = {
         { spell = 556, type = "ability"}, -- Astral Recall
-        { spell = 2484, type = "ability"}, -- Earthbind Totem
-        { spell = 5394, type = "ability"}, -- Healing Stream Totem
-        { spell = 8143, type = "ability"}, -- Tremor Totem
-        { spell = 32182, type = "ability"}, -- Heroism
-        { spell = 51485, type = "ability", talent = 8 }, -- Earthgrab Totem
-        { spell = 51505, type = "ability"}, -- Lava Burst
-        { spell = 51514, type = "ability"}, -- Hex
-        { spell = 57994, type = "ability"}, -- Wind Shear
-        { spell = 61295, type = "ability"}, -- Riptide
-        { spell = 73685, type = "ability", talent = 3 }, -- Unleash Life
+        { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
+        { spell = 5394, type = "ability", totem = true, talent = {5,6}}, -- Healing Stream Totem
+        { spell = 5394, type = "ability", charges = true, totem = true, talent = 4, titleSuffix = " (2 Charges)"}, -- Healing Stream Totem
+        { spell = 8143, type = "ability", totem = true}, -- Tremor Totem
+        { spell = 32182, type = "ability", buff = true}, -- Heroism
+        { spell = 2825, type = "ability", buff = true}, -- Bloodlust
+        { spell = 51485, type = "ability", totem = true, talent = 8 }, -- Earthgrab Totem
+        { spell = 51505, type = "ability", requiresTarget = true, talent = {5,6}}, -- Lava Burst
+        { spell = 51505, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix = " (2 Charges)"}, -- Lava Burst
+        { spell = 51514, type = "ability", requiresTarget = true}, -- Hex
+        { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
+        { spell = 61295, type = "ability", talent = {5,6}}, -- Riptide
+        { spell = 61295, type = "ability", charges = true, talent = 4, titleSuffix = " (2 Charges)"}, -- Riptide
+        { spell = 73685, type = "ability", buff = true, talent = 3 }, -- Unleash Life
         { spell = 73920, type = "ability"}, -- Healing Rain
-        { spell = 79206, type = "ability"}, -- Spiritwalker's Grace
-        { spell = 98008, type = "ability"}, -- Spirit Link Totem
-        { spell = 108271, type = "ability"}, -- Astral Shift
-        { spell = 108280, type = "ability"}, -- Healing Tide Totem
-        { spell = 114052, type = "ability", talent = 21 }, -- Ascendance
-        { spell = 157153, type = "ability", talent = 18 }, -- Cloudburst Totem
-        { spell = 188838, type = "ability"}, -- Flame Shock
-        { spell = 192058, type = "ability"}, -- Capacitor Totem
-        { spell = 192077, type = "ability", talent = 15 }, -- Wind Rush Totem
+        { spell = 79206, type = "ability", buff = true}, -- Spiritwalker's Grace
+        { spell = 98008, type = "ability", totem = true}, -- Spirit Link Totem
+        { spell = 108271, type = "ability", buff = true}, -- Astral Shift
+        { spell = 108280, type = "ability", totem = true}, -- Healing Tide Totem
+        { spell = 114052, type = "ability", buff = true, talent = 21 }, -- Ascendance
+        { spell = 157153, type = "ability", charges = true, totem = true, talent = 18 }, -- Cloudburst Totem
+        { spell = 188838, type = "ability", debuff = true, requiresTarget = true}, -- Flame Shock
+        { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
+        { spell = 192077, type = "ability", totem = true, talent = 15 }, -- Wind Rush Totem
         { spell = 197995, type = "ability", talent = 20 }, -- Wellspring
         { spell = 198103, type = "ability"}, -- Earth Elemental
-        { spell = 198838, type = "ability", talent = 11 }, -- Earthen Wall Totem
-        { spell = 207399, type = "ability", talent = 12 }, -- Ancestral Protection Totem
+        { spell = 198838, type = "ability", totem = true, talent = 11 }, -- Earthen Wall Totem
+        { spell = 207399, type = "ability", totem = true, talent = 12 }, -- Ancestral Protection Totem
         { spell = 207778, type = "ability", talent = 17 }, -- Downpour
       },
       icon = 135127
@@ -1937,25 +1948,25 @@ templates.class.MAGE = {
         { spell = 122, type = "ability"}, -- Frost Nova
         { spell = 475, type = "ability"}, -- Remove Curse
         { spell = 1953, type = "ability"}, -- Blink
-        { spell = 2139, type = "ability"}, -- Counterspell
+        { spell = 2139, type = "ability", requiresTarget = true}, -- Counterspell
         { spell = 12042, type = "ability"}, -- Arcane Power
-        { spell = 12051, type = "ability"}, -- Evocation
-        { spell = 44425, type = "ability"}, -- Arcane Barrage
-        { spell = 45438, type = "ability"}, -- Ice Block
+        { spell = 12051, type = "ability", buff = true}, -- Evocation
+        { spell = 44425, type = "ability", requiresTarget = true}, -- Arcane Barrage
+        { spell = 45438, type = "ability", buff = true}, -- Ice Block
         { spell = 55342, type = "ability", talent = 8 }, -- Mirror Image
-        { spell = 80353, type = "ability"}, -- Time Warp
-        { spell = 110959, type = "ability"}, -- Greater Invisibility
+        { spell = 80353, type = "ability", buff = true}, -- Time Warp
+        { spell = 110959, type = "ability", buff = true}, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 15 }, -- Ring of Frost
-        { spell = 116011, type = "ability", talent = 9 }, -- Rune of Power
+        { spell = 116011, type = "ability", charges = true, buff = true, talent = 9 }, -- Rune of Power
         { spell = 153626, type = "ability", talent = 21 }, -- Arcane Orb
-        { spell = 157980, type = "ability", talent = 12 }, -- Supernova
+        { spell = 157980, type = "ability", requiresTarget = true, talent = 12 }, -- Supernova
         { spell = 190336, type = "ability"}, -- Conjure Refreshment
-        { spell = 195676, type = "ability"}, -- Displacement
+        { spell = 195676, type = "ability", usable = true}, -- Displacement
         { spell = 205022, type = "ability", talent = 3 }, -- Arcane Familiar
-        { spell = 205025, type = "ability"}, -- Presence of Mind
+        { spell = 205025, type = "ability", buff = true}, -- Presence of Mind
         { spell = 205032, type = "ability", talent = 11 }, -- Charged Up
-        { spell = 212653, type = "ability", talent = 5 }, -- Shimmer
-        { spell = 235450, type = "ability"}, -- Prismatic Barrier
+        { spell = 212653, type = "ability", charges = true, talent = 5 }, -- Shimmer
+        { spell = 235450, type = "ability", buff = true}, -- Prismatic Barrier
       },
       icon = 136075
     },
@@ -2022,25 +2033,25 @@ templates.class.MAGE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, type = "ability"}, -- Invisibility
+        { spell = 66, type = "ability", buff = true}, -- Invisibility
         { spell = 475, type = "ability"}, -- Remove Curse
         { spell = 1953, type = "ability"}, -- Blink
-        { spell = 2139, type = "ability"}, -- Counterspell
+        { spell = 2139, type = "ability", requiresTarget = true}, -- Counterspell
         { spell = 31661, type = "ability"}, -- Dragon's Breath
-        { spell = 44457, type = "ability", talent = 18 }, -- Living Bomb
-        { spell = 45438, type = "ability"}, -- Ice Block
+        { spell = 44457, type = "ability", debuff = true, requiresTarget = true, talent = 18 }, -- Living Bomb
+        { spell = 45438, type = "ability", buff = true}, -- Ice Block
         { spell = 55342, type = "ability", talent = 8 }, -- Mirror Image
-        { spell = 80353, type = "ability"}, -- Time Warp
-        { spell = 108853, type = "ability"}, -- Fire Blast
+        { spell = 80353, type = "ability", buff = true}, -- Time Warp
+        { spell = 108853, type = "ability", charges = true}, -- Fire Blast
         { spell = 113724, type = "ability", talent = 15 }, -- Ring of Frost
-        { spell = 116011, type = "ability", talent = 9 }, -- Rune of Power
+        { spell = 116011, type = "ability", charges = true, buff = true, talent = 9 }, -- Rune of Power
         { spell = 153561, type = "ability", talent = 21 }, -- Meteor
         { spell = 157981, type = "ability", talent = 6 }, -- Blast Wave
-        { spell = 190319, type = "ability"}, -- Combustion
+        { spell = 190319, type = "ability", buff = true}, -- Combustion
         { spell = 190336, type = "ability"}, -- Conjure Refreshment
-        { spell = 212653, type = "ability", talent = 5 }, -- Shimmer
-        { spell = 235313, type = "ability"}, -- Blazing Barrier
-        { spell = 257541, type = "ability", talent = 12 }, -- Phoenix Flames
+        { spell = 212653, type = "ability", charges = true, talent = 5 }, -- Shimmer
+        { spell = 235313, type = "ability", buff = true}, -- Blazing Barrier
+        { spell = 257541, type = "ability", charges = true, talent = 12 }, -- Phoenix Flames
       },
       icon = 610633
     },
@@ -2110,32 +2121,32 @@ templates.class.MAGE = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, type = "ability"}, -- Invisibility
+        { spell = 66, type = "ability", buff = true}, -- Invisibility
         { spell = 120, type = "ability"}, -- Cone of Cold
         { spell = 122, type = "ability"}, -- Frost Nova
         { spell = 475, type = "ability"}, -- Remove Curse
         { spell = 1953, type = "ability"}, -- Blink
-        { spell = 2139, type = "ability"}, -- Counterspell
-        { spell = 11426, type = "ability"}, -- Ice Barrier
-        { spell = 12472, type = "ability"}, -- Icy Veins
-        { spell = 30455, type = "ability"}, -- Ice Lance
+        { spell = 2139, type = "ability", requiresTarget = true}, -- Counterspell
+        { spell = 11426, type = "ability", buff = true}, -- Ice Barrier
+        { spell = 12472, type = "ability", buff = true}, -- Icy Veins
+        { spell = 30455, type = "ability", requiresTarget = true}, -- Ice Lance
         { spell = 31687, type = "ability"}, -- Summon Water Elemental
         { spell = 31707, type = "ability"}, -- Waterbolt
-        { spell = 45438, type = "ability"}, -- Ice Block
+        { spell = 45438, type = "ability", buff = true}, -- Ice Block
         { spell = 55342, type = "ability", talent = 8 }, -- Mirror Image
-        { spell = 80353, type = "ability"}, -- Time Warp
+        { spell = 80353, type = "ability", buff = true}, -- Time Warp
         { spell = 84714, type = "ability"}, -- Frozen Orb
-        { spell = 108839, type = "ability", talent = 6 }, -- Ice Floes
+        { spell = 108839, type = "ability", charges = true, buff = true, talent = 6 }, -- Ice Floes
         { spell = 113724, type = "ability", talent = 15 }, -- Ring of Frost
-        { spell = 116011, type = "ability", talent = 9 }, -- Rune of Power
-        { spell = 153595, type = "ability", talent = 18 }, -- Comet Storm
+        { spell = 116011, type = "ability", charges = true, buff = true, talent = 9 }, -- Rune of Power
+        { spell = 153595, type = "ability", requiresTarget = true, talent = 18 }, -- Comet Storm
         { spell = 157997, type = "ability", talent = 3 }, -- Ice Nova
         { spell = 190336, type = "ability"}, -- Conjure Refreshment
         { spell = 190356, type = "ability"}, -- Blizzard
-        { spell = 205021, type = "ability", talent = 20 }, -- Ray of Frost
-        { spell = 212653, type = "ability", talent = 5 }, -- Shimmer
+        { spell = 205021, type = "ability", requiresTarget = true, talent = 20 }, -- Ray of Frost
+        { spell = 212653, type = "ability", charges = true, talent = 5 }, -- Shimmer
         { spell = 235219, type = "ability"}, -- Cold Snap
-        { spell = 257537, type = "ability", talent = 12 }, -- Ebonbolt
+        { spell = 257537, type = "ability", requiresTarget = true, talent = 12 }, -- Ebonbolt
       },
       icon = 629077
     },
@@ -2218,38 +2229,38 @@ templates.class.WARLOCK = {
       title = L["Cooldowns"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
-        { spell = 3110, type = "ability"}, -- Firebolt
-        { spell = 3716, type = "ability"}, -- Consuming Shadows
-        { spell = 6358, type = "ability"}, -- Seduction
-        { spell = 6360, type = "ability"}, -- Whiplash
-        { spell = 6789, type = "ability", talent = 15 }, -- Mortal Coil
-        { spell = 7814, type = "ability"}, -- Lash of Pain
+        { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
+        { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+        { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
+        { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
+        { spell = 6789, type = "ability", requiresTarget = true, talent = 15 }, -- Mortal Coil
+        { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
         { spell = 7870, type = "ability"}, -- Lesser Invisibility
-        { spell = 17735, type = "ability"}, -- Suffering
+        { spell = 17735, type = "ability", requiresTarget = true, debuff = true}, -- Suffering
         { spell = 17767, type = "ability"}, -- Shadow Bulwark
-        { spell = 19505, type = "ability"}, -- Devour Magic
-        { spell = 19647, type = "ability"}, -- Spell Lock
+        { spell = 19505, type = "ability", requiresTarget = true}, -- Devour Magic
+        { spell = 19647, type = "ability", requiresTarget = true}, -- Spell Lock
         { spell = 20707, type = "ability"}, -- Soulstone
         { spell = 29893, type = "ability"}, -- Create Soulwell
         { spell = 30283, type = "ability"}, -- Shadowfury
         { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
         { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
-        { spell = 48181, type = "ability", talent = 17 }, -- Haunt
-        { spell = 54049, type = "ability"}, -- Shadow Bite
+        { spell = 48181, type = "ability", requiresTarget = true, debuff = true, talent = 17 }, -- Haunt
+        { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
         { spell = 89792, type = "ability" }, -- Flee
         { spell = 89808, type = "ability"}, -- Singe Magic
-        { spell = 104773, type = "ability"}, -- Unending Resolve
-        { spell = 108416, type = "ability", talent = 9 }, -- Dark Pact
+        { spell = 104773, type = "ability", buff = true}, -- Unending Resolve
+        { spell = 108416, type = "ability", buff = true, talent = 9 }, -- Dark Pact
         { spell = 108503, type = "ability", talent = 18 }, -- Grimoire of Sacrifice
         { spell = 111771, type = "ability"}, -- Demonic Gateway
         { spell = 112042, type = "ability"}, -- Threatening Presence
-        { spell = 113860, type = "ability", talent = 21 }, -- Dark Soul: Misery
-        { spell = 119910, type = "ability"}, -- Spell Lock
-        { spell = 205179, type = "ability", talent = 11 }, -- Phantom Singularity
-        { spell = 205180, type = "ability"}, -- Summon Darkglare
-        { spell = 264106, type = "ability", talent = 3 }, -- Deathbolt
+        { spell = 113860, type = "ability", buff = true, talent = 21 }, -- Dark Soul: Misery
+        { spell = 119910, type = "ability", requiresTarget = true}, -- Spell Lock
+        { spell = 205179, type = "ability", requiresTarget = true, debuff = true, talent = 11 }, -- Phantom Singularity
+        { spell = 205180, type = "ability", totem = true}, -- Summon Darkglare
+        { spell = 264106, type = "ability", requiresTarget = true, talent = 3 }, -- Deathbolt
         { spell = 264993, type = "ability"}, -- Shadow Shield
-        { spell = 278350, type = "ability", talent = 12 }, -- Vile Taint
+        { spell = 278350, type = "ability", requiresTarget = true, talent = 12 }, -- Vile Taint
       },
       icon = 615103
     },
@@ -2328,42 +2339,42 @@ templates.class.WARLOCK = {
       title = L["Cooldowns"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
-        { spell = 3716, type = "ability"}, -- Consuming Shadows
-        { spell = 6360, type = "ability"}, -- Whiplash
-        { spell = 6789, type = "ability", talent = 14 }, -- Mortal Coil
-        { spell = 7814, type = "ability"}, -- Lash of Pain
+        { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+        { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
+        { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
+        { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
         { spell = 7870, type = "ability"}, -- Lesser Invisibility
-        { spell = 17735, type = "ability"}, -- Suffering
+        { spell = 17735, type = "ability", requiresTarget = true, debuff = true}, -- Suffering
         { spell = 17767, type = "ability"}, -- Shadow Bulwark
-        { spell = 19505, type = "ability"}, -- Devour Magic
-        { spell = 19647, type = "ability"}, -- Spell Lock
+        { spell = 19505, type = "ability", requiresTarget = true}, -- Devour Magic
+        { spell = 19647, type = "ability", requiresTarget = true}, -- Spell Lock
         { spell = 20707, type = "ability"}, -- Soulstone
         { spell = 29893, type = "ability"}, -- Create Soulwell
-        { spell = 30151, type = "ability"}, -- Pursuit
-        { spell = 30213, type = "ability"}, -- Legion Strike
+        { spell = 30151, type = "ability", requiresTarget = true}, -- Pursuit
+        { spell = 30213, type = "ability", requiresTarget = true}, -- Legion Strike
         { spell = 30283, type = "ability"}, -- Shadowfury
         { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
         { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
-        { spell = 54049, type = "ability"}, -- Shadow Bite
+        { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
         { spell = 89751, type = "ability"}, -- Felstorm
-        { spell = 89766, type = "ability"}, -- Axe Toss
+        { spell = 89766, type = "ability", requiresTarget = true, debuff = true}, -- Axe Toss
         { spell = 89792, type = "ability"}, -- Flee
         { spell = 89808, type = "ability"}, -- Singe Magic
-        { spell = 104316, type = "ability"}, -- Call Dreadstalkers
-        { spell = 104773, type = "ability"}, -- Unending Resolve
-        { spell = 108416, type = "ability", talent = 9 }, -- Dark Pact
+        { spell = 104316, type = "ability", requiresTarget = true, debuff = true}, -- Call Dreadstalkers
+        { spell = 104773, type = "ability", buff = true}, -- Unending Resolve
+        { spell = 108416, type = "ability", buff = true, talent = 9 }, -- Dark Pact
         { spell = 111771, type = "ability"}, -- Demonic Gateway
-        { spell = 111898, type = "ability", talent = 18 }, -- Grimoire: Felguard
+        { spell = 111898, type = "ability", requiresTarget = true, talent = 18 }, -- Grimoire: Felguard
         { spell = 112042, type = "ability"}, -- Threatening Presence
-        { spell = 264057, type = "ability", talent = 11 }, -- Soul Strike
+        { spell = 264057, type = "ability", requiresTarget = true, talent = 11 }, -- Soul Strike
         { spell = 264119, type = "ability", talent = 12 }, -- Summon Vilefiend
-        { spell = 264130, type = "ability", talent = 5 }, -- Power Siphon
+        { spell = 264130, type = "ability", usable = true, talent = 5 }, -- Power Siphon
         { spell = 264993, type = "ability"}, -- Shadow Shield
         { spell = 265187, type = "ability"}, -- Summon Demonic Tyrant
-        { spell = 267171, type = "ability", talent = 2 }, -- Demonic Strength
+        { spell = 267171, type = "ability", requiresTarget = true, talent = 2 }, -- Demonic Strength
         { spell = 267211, type = "ability", talent = 3 }, -- Bilescourge Bombers
-        { spell = 267217, type = "ability", talent = 21 }, -- Nether Portal
-        { spell = 6358, type = "ability"}, -- Seduction
+        { spell = 267217, type = "ability", buff = true, talent = 21 }, -- Nether Portal
+        { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
       },
       icon = 1378282
     },
@@ -2444,38 +2455,38 @@ templates.class.WARLOCK = {
       title = L["Cooldowns"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
-        { spell = 1122, type = "ability"}, -- Summon Infernal
-        { spell = 3110, type = "ability"}, -- Firebolt
-        { spell = 3716, type = "ability"}, -- Consuming Shadows
+        { spell = 1122, type = "ability", totem = true}, -- Summon Infernal
+        { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
+        { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
         { spell = 6353, type = "ability", talent = 3 }, -- Soul Fire
-        { spell = 6360, type = "ability"}, -- Whiplash
-        { spell = 6789, type = "ability", talent = 14 }, -- Mortal Coil
-        { spell = 7814, type = "ability"}, -- Lash of Pain
+        { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
+        { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
+        { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
         { spell = 7870, type = "ability"}, -- Lesser Invisibility
-        { spell = 17735, type = "ability"}, -- Suffering
+        { spell = 17735, type = "ability", requiresTarget = true, debuff = true}, -- Suffering
         { spell = 17767, type = "ability"}, -- Shadow Bulwark
-        { spell = 17877, type = "ability", talent = 6 }, -- Shadowburn
-        { spell = 17962, type = "ability"}, -- Conflagrate
-        { spell = 19647, type = "ability"}, -- Spell Lock
+        { spell = 17877, type = "ability", requiresTarget = true, charges = true, talent = 6 }, -- Shadowburn
+        { spell = 17962, type = "ability", requiresTarget = true, charges = true}, -- Conflagrate
+        { spell = 19647, type = "ability", requiresTarget = true}, -- Spell Lock
         { spell = 20707, type = "ability"}, -- Soulstone
         { spell = 29893, type = "ability"}, -- Create Soulwell
         { spell = 30283, type = "ability"}, -- Shadowfury
         { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
         { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
-        { spell = 54049, type = "ability"}, -- Shadow Bite
-        { spell = 80240, type = "ability"}, -- Havoc
+        { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
+        { spell = 80240, type = "ability", requiresTarget = true, debuff = true}, -- Havoc
         { spell = 89792, type = "ability"}, -- Flee
         { spell = 89808, type = "ability"}, -- Singe Magic
-        { spell = 104773, type = "ability"}, -- Unending Resolve
-        { spell = 108416, type = "ability", talent = 9 }, -- Dark Pact
+        { spell = 104773, type = "ability", buff = true}, -- Unending Resolve
+        { spell = 108416, type = "ability", buff = true, talent = 9 }, -- Dark Pact
         { spell = 108503, type = "ability", talent = 18 }, -- Grimoire of Sacrifice
         { spell = 111771, type = "ability"}, -- Demonic Gateway
         { spell = 112042, type = "ability"}, -- Threatening Presence
-        { spell = 113858, type = "ability", talent = 21 }, -- Dark Soul: Instability
+        { spell = 113858, type = "ability", buff = true, talent = 21 }, -- Dark Soul: Instability
         { spell = 152108, type = "ability", talent = 12 }, -- Cataclysm
-        { spell = 196447, type = "ability", talent = 20 }, -- Channel Demonfire
+        { spell = 196447, type = "ability", usable = true, talent = 20 }, -- Channel Demonfire
         { spell = 264993, type = "ability"}, -- Shadow Shield
-        { spell = 6358, type = "ability"}, -- Seduction
+        { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
       },
       icon = 135807
     },
@@ -2551,32 +2562,32 @@ templates.class.MONK = {
       args = {
         { spell = 101643, type = "ability"}, -- Transcendence
         { spell = 107079, type = "ability"}, -- Quaking Palm
-        { spell = 109132, type = "ability"}, -- Roll
-        { spell = 115008, type = "ability", talent = 5 }, -- Chi Torpedo
-        { spell = 115078, type = "ability"}, -- Paralysis
+        { spell = 109132, type = "ability", charges = true}, -- Roll
+        { spell = 115008, type = "ability", charges = true, talent = 5 }, -- Chi Torpedo
+        { spell = 115078, type = "ability", requiresTarget = true}, -- Paralysis
         { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
-        { spell = 115176, type = "ability"}, -- Zen Meditation
+        { spell = 115176, type = "ability", buff = true}, -- Zen Meditation
         { spell = 115181, type = "ability"}, -- Breath of Fire
-        { spell = 115203, type = "ability"}, -- Fortifying Brew
+        { spell = 115203, type = "ability", buff = true}, -- Fortifying Brew
         { spell = 115295, type = "ability", talent = 20 }, -- Guard
-        { spell = 115308, type = "ability"}, -- Ironskin Brew
-        { spell = 115315, type = "ability", talent = 11 }, -- Summon Black Ox Statue
+        { spell = 115308, type = "ability", charges = true, buff = true}, -- Ironskin Brew
+        { spell = 115315, type = "ability", totem = true, totemNumber = 1, talent = 11 }, -- Summon Black Ox Statue
         { spell = 115399, type = "ability", talent = 9 }, -- Black Ox Brew
-        { spell = 115546, type = "ability"}, -- Provoke
+        { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
         { spell = 116705, type = "ability"}, -- Spear Hand Strike
         { spell = 116841, type = "ability", talent = 3 }, -- Tiger's Lust
         { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
-        { spell = 116847, type = "ability", talent = 17 }, -- Rushing Jade Wind
+        { spell = 116847, type = "ability", buff = true, talent = 17 }, -- Rushing Jade Wind
         { spell = 119381, type = "ability"}, -- Leg Sweep
-        { spell = 119582, type = "ability"}, -- Purifying Brew
+        { spell = 119582, type = "ability", charges = true}, -- Purifying Brew
         { spell = 119996, type = "ability"}, -- Transcendence: Transfer
-        { spell = 121253, type = "ability"}, -- Keg Smash
-        { spell = 122278, type = "ability", talent = 15 }, -- Dampen Harm
-        { spell = 122281, type = "ability", talent = 14 }, -- Healing Elixir
+        { spell = 121253, type = "ability", requiresTarget = true}, -- Keg Smash
+        { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
+        { spell = 122281, type = "ability", charges = true, buff = true, talent = 14 }, -- Healing Elixir
         { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
         { spell = 126892, type = "ability"}, -- Zen Pilgrimage
-        { spell = 132578, type = "ability", talent = 18 }, -- Invoke Niuzao, the Black Ox
-        { spell = 205523, type = "ability"}, -- Blackout Strike
+        { spell = 132578, type = "ability", requiresTarget = true, talent = 18 }, -- Invoke Niuzao, the Black Ox
+        { spell = 205523, type = "ability", requiresTarget = true}, -- Blackout Strike
 
       },
       icon = 133701
@@ -2645,35 +2656,35 @@ templates.class.MONK = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100784, type = "ability"}, -- Blackout Kick
+        { spell = 100784, type = "ability", requiresTarget = true}, -- Blackout Kick
         { spell = 101643, type = "ability"}, -- Transcendence
         { spell = 107079, type = "ability"}, -- Quaking Palm
-        { spell = 107428, type = "ability"}, -- Rising Sun Kick
-        { spell = 109132, type = "ability"}, -- Roll
-        { spell = 115008, type = "ability", talent = 5 }, -- Chi Torpedo
-        { spell = 115078, type = "ability"}, -- Paralysis
+        { spell = 107428, type = "ability", requiresTarget = true}, -- Rising Sun Kick
+        { spell = 109132, type = "ability", charges = true}, -- Roll
+        { spell = 115008, type = "ability", charges = true, talent = 5 }, -- Chi Torpedo
+        { spell = 115078, type = "ability", requiresTarget = true}, -- Paralysis
         { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
-        { spell = 115151, type = "ability"}, -- Renewing Mist
+        { spell = 115151, type = "ability", charges = true}, -- Renewing Mist
         { spell = 115310, type = "ability"}, -- Revival
-        { spell = 115313, type = "ability", talent = 16 }, -- Summon Jade Serpent Statue
-        { spell = 115546, type = "ability"}, -- Provoke
-        { spell = 116680, type = "ability"}, -- Thunder Focus Tea
+        { spell = 115313, type = "ability", totem = true, totemNumber = 1, talent = 16 }, -- Summon Jade Serpent Statue
+        { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
+        { spell = 116680, type = "ability", buff = true}, -- Thunder Focus Tea                    -- add talent = 19 abilityChargeBuff
         { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
         { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
         { spell = 116849, type = "ability"}, -- Life Cocoon
         { spell = 119381, type = "ability"}, -- Leg Sweep
         { spell = 119996, type = "ability"}, -- Transcendence: Transfer
-        { spell = 122278, type = "ability", talent = 15 }, -- Dampen Harm
-        { spell = 122281, type = "ability", talent = 13 }, -- Healing Elixir
-        { spell = 122783, type = "ability", talent = 14 }, -- Diffuse Magic
+        { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
+        { spell = 122281, type = "ability", charges = true, buff = true, talent = 13 }, -- Healing Elixir
+        { spell = 122783, type = "ability", buff = true, talent = 14 }, -- Diffuse Magic
         { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
         { spell = 126892, type = "ability"}, -- Zen Pilgrimage
         { spell = 191837, type = "ability"}, -- Essence Font
-        { spell = 196725, type = "ability", talent = 17 }, -- Refreshing Jade Wind
-        { spell = 197908, type = "ability", talent = 9 }, -- Mana Tea
+        { spell = 196725, type = "ability", buff = true, talent = 17 }, -- Refreshing Jade Wind
+        { spell = 197908, type = "ability", buff = true, talent = 9 }, -- Mana Tea
         { spell = 198664, type = "ability", talent = 18 }, -- Invoke Chi-Ji, the Red Crane
         { spell = 198898, type = "ability", talent = 11 }, -- Song of Chi-Ji
-        { spell = 243435, type = "ability"}, -- Fortifying Brew
+        { spell = 243435, type = "ability", buff = true}, -- Fortifying Brew
       },
       icon = 627485
     },
@@ -2744,34 +2755,34 @@ templates.class.MONK = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100784, type = "ability"}, -- Blackout Kick
+        { spell = 100784, type = "ability", requiresTarget = true}, -- Blackout Kick
         { spell = 101545, type = "ability"}, -- Flying Serpent Kick
         { spell = 101546, type = "ability"}, -- Spinning Crane Kick
         { spell = 101643, type = "ability"}, -- Transcendence
-        { spell = 107428, type = "ability"}, -- Rising Sun Kick
-        { spell = 109132, type = "ability"}, -- Roll
-        { spell = 113656, type = "ability"}, -- Fists of Fury
-        { spell = 115008, type = "ability", talent = 5 }, -- Chi Torpedo
-        { spell = 115078, type = "ability"}, -- Paralysis
-        { spell = 115080, type = "ability"}, -- Touch of Death
+        { spell = 107428, type = "ability", requiresTarget = true}, -- Rising Sun Kick
+        { spell = 109132, type = "ability", charges = true}, -- Roll
+        { spell = 113656, type = "ability", requiresTarget = true}, -- Fists of Fury
+        { spell = 115008, type = "ability", charges = true, talent = 5 }, -- Chi Torpedo
+        { spell = 115078, type = "ability", requiresTarget = true}, -- Paralysis
+        { spell = 115080, type = "ability", debuff = true, requiresTarget = true}, -- Touch of Death
         { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
         { spell = 115288, type = "ability", talent = 9 }, -- Energizing Elixir
-        { spell = 115546, type = "ability"}, -- Provoke
+        { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
         { spell = 116705, type = "ability"}, -- Spear Hand Strike
         { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
         { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
         { spell = 119381, type = "ability"}, -- Leg Sweep
         { spell = 119996, type = "ability"}, -- Transcendence: Transfer
-        { spell = 122278, type = "ability", talent = 15 }, -- Dampen Harm
-        { spell = 122470, type = "ability"}, -- Touch of Karma
-        { spell = 122783, type = "ability", talent = 14 }, -- Diffuse Magic
-        { spell = 123904, type = "ability", talent = 18 }, -- Invoke Xuen, the White Tiger
+        { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
+        { spell = 122470, type = "ability", debuff = true, requiresTarget = true}, -- Touch of Karma
+        { spell = 122783, type = "ability", buff = true, talent = 14 }, -- Diffuse Magic
+        { spell = 123904, type = "ability", requiresTarget = true, talent = 18 }, -- Invoke Xuen, the White Tiger
         { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
         { spell = 126892, type = "ability"}, -- Zen Pilgrimage
-        { spell = 137639, type = "ability"}, -- Storm, Earth, and Fire
-        { spell = 152173, type = "ability", talent = 21 }, -- Serenity
-        { spell = 152175, type = "ability", talent = 20 }, -- Whirling Dragon Punch
-        { spell = 261715, type = "ability", talent = 17 }, -- Rushing Jade Wind
+        { spell = 137639, type = "ability", charges = true, buff = true}, -- Storm, Earth, and Fire
+        { spell = 152173, type = "ability", buff = true, talent = 21 }, -- Serenity
+        { spell = 152175, type = "ability", usable = true, talent = 20 }, -- Whirling Dragon Punch
+        { spell = 261715, type = "ability", buff = true, talent = 17 }, -- Rushing Jade Wind
         { spell = 261947, type = "ability", talent = 8 }, -- Fist of the White Tiger
       },
       icon = 627606
@@ -2856,41 +2867,42 @@ templates.class.DRUID = {
       args = {
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
-        { spell = 1850, type = "ability"}, -- Dash
+        { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
-        { spell = 2908, type = "ability"}, -- Soothe
+        { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
         { spell = 5211, type = "ability", talent = 6 }, -- Mighty Bash
         { spell = 5215, type = "ability"}, -- Prowl
         { spell = 5487, type = "ability"}, -- Bear Form
-        { spell = 6795, type = "ability"}, -- Growl
+        { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
         { spell = 16979, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
-        { spell = 20484, type = "ability"}, -- Rebirth
-        { spell = 22812, type = "ability"}, -- Barkskin
-        { spell = 22842, type = "ability", talent = 8 }, -- Frenzied Regeneration
+        { spell = 20484, type = "ability", requiresTarget = true}, -- Rebirth
+        { spell = 22812, type = "ability", buff = true}, -- Barkskin
+        { spell = 22842, type = "ability", buff = true, talent = 8 }, -- Frenzied Regeneration
         { spell = 24858, type = "ability"}, -- Moonkin Form
         { spell = 29166, type = "ability"}, -- Innervate
-        { spell = 33917, type = "ability"}, -- Mangle
+        { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability", talent = 9 }, -- Wild Growth
         { spell = 49376, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 77758, type = "ability", talent = 8 }, -- Thrash
-        { spell = 78675, type = "ability"}, -- Solar Beam
+        { spell = 78675, type = "ability", requiresTarget = true}, -- Solar Beam
         { spell = 102359, type = "ability", talent = 11 }, -- Mass Entanglement
         { spell = 102383, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
-        { spell = 102560, type = "ability", talent = 15 }, -- Incarnation: Chosen of Elune
+        { spell = 102560, type = "ability", buff = true, talent = 15 }, -- Incarnation: Chosen of Elune
         { spell = 108238, type = "ability", talent = 9 }, -- Renewal
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
-        { spell = 192081, type = "ability", talent = 8 }, -- Ironfur
-        { spell = 194153, type = "ability"}, -- Lunar Strike
+        { spell = 192081, type = "ability", buff = true, talent = 8 }, -- Ironfur
+        { spell = 190984, type = "ability", requiresTarget = true}, -- Solar Wrath                -- these two
+        { spell = 194153, type = "ability", requiresTarget = true}, -- Lunar Strike               -- doesn't have a cooldown
         { spell = 194223, type = "ability"}, -- Celestial Alignment
-        { spell = 202425, type = "ability", talent = 2 }, -- Warrior of Elune
-        { spell = 202770, type = "ability", talent = 20 }, -- Fury of Elune
+        { spell = 202425, type = "ability", buff = true, talent = 2 }, -- Warrior of Elune
+        { spell = 202770, type = "ability", buff = true, talent = 20 }, -- Fury of Elune
         { spell = 205636, type = "ability", talent = 3 }, -- Force of Nature
-        { spell = 252216, type = "ability", talent = 4 }, -- Tiger Dash
-        { spell = 274281, type = "ability", talent = 21 }, -- New Moon
-        { spell = 274282, type = "ability", talent = 21 }, -- Half Moon
-        { spell = 274283, type = "ability", talent = 21 }, -- Full Moon
+        { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
+        { spell = 274281, type = "ability", charges = true, target = true, talent = 21 }, -- New Moon
+        { spell = 274282, type = "ability", charges = true, target = true, talent = 21 }, -- Half Moon
+        { spell = 274283, type = "ability", charges = true, target = true, talent = 21 }, -- Full Moon
       },
       icon = 136060
     },
@@ -2977,38 +2989,38 @@ templates.class.DRUID = {
       args = {
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
-        { spell = 1850, type = "ability"}, -- Dash
+        { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
-        { spell = 2908, type = "ability"}, -- Soothe
+        { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
         { spell = 5211, type = "ability", talent = 10 }, -- Mighty Bash
         { spell = 5215, type = "ability"}, -- Prowl
-        { spell = 5217, type = "ability"}, -- Tiger's Fury
+        { spell = 5217, type = "ability", buff = true}, -- Tiger's Fury
         { spell = 5487, type = "ability"}, -- Bear Form
-        { spell = 6795, type = "ability"}, -- Growl
+        { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
         { spell = 16979, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
         { spell = 20484, type = "ability"}, -- Rebirth
-        { spell = 22570, type = "ability"}, -- Maim
-        { spell = 22842, type = "ability", talent = 8 }, -- Frenzied Regeneration
-        { spell = 33917, type = "ability"}, -- Mangle
+        { spell = 22570, type = "ability", requiresTarget = true}, -- Maim
+        { spell = 22842, type = "ability", buff = true, talent = 8 }, -- Frenzied Regeneration
+        { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability", talent = 9 }, -- Wild Growth
         { spell = 49376, type = "ability", talent = 6 }, -- Wild Charge
-        { spell = 61336, type = "ability"}, -- Survival Instincts
+        { spell = 61336, type = "ability", charges = true, buff = true}, -- Survival Instincts
         { spell = 77758, type = "ability"}, -- Thrash
-        { spell = 102359, type = "ability", talent = 11 }, -- Mass Entanglement
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
-        { spell = 102543, type = "ability", talent = 15 }, -- Incarnation: King of the Jungle
-        { spell = 106839, type = "ability"}, -- Skull Bash
-        { spell = 106898, type = "ability"}, -- Stampeding Roar
+        { spell = 102543, type = "ability", buff = true, talent = 15 }, -- Incarnation: King of the Jungle
+        { spell = 106839, type = "ability", requiresTarget = true}, -- Skull Bash
+        { spell = 106898, type = "ability", buff = true}, -- Stampeding Roar
         { spell = 106951, type = "ability"}, -- Berserk
         { spell = 108238, type = "ability", talent = 5 }, -- Renewal
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
-        { spell = 192081, type = "ability", talent = 8 }, -- Ironfur
+        { spell = 192081, type = "ability", buff = true, talent = 8 }, -- Ironfur
         { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
-        { spell = 197626, type = "ability", talent = 7 }, -- Starsurge
-        { spell = 202028, type = "ability", talent = 17 }, -- Brutal Slash
-        { spell = 252216, type = "ability", talent = 4 }, -- Tiger Dash
-        { spell = 274837, type = "ability", talent = 21 }, -- Feral Frenzy
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 7 }, -- Starsurge
+        { spell = 202028, type = "ability", charges = true, talent = 17 }, -- Brutal Slash
+        { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
+        { spell = 274837, type = "ability", requiresTarget = true, talent = 21 }, -- Feral Frenzy
       },
       icon = 236149
     },
@@ -3093,36 +3105,36 @@ templates.class.DRUID = {
         { spell = 99, type = "ability"}, -- Incapacitating Roar
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
-        { spell = 1850, type = "ability"}, -- Dash
+        { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
-        { spell = 5211, type = "ability", talent = 10 }, -- Mighty Bash
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
         { spell = 5215, type = "ability"}, -- Prowl
         { spell = 5487, type = "ability"}, -- Bear Form
-        { spell = 6795, type = "ability"}, -- Growl
+        { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
         { spell = 16979, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
-        { spell = 20484, type = "ability"}, -- Rebirth
-        { spell = 22812, type = "ability"}, -- Barkskin
-        { spell = 22842, type = "ability"}, -- Frenzied Regeneration
-        { spell = 33917, type = "ability"}, -- Mangle
+        { spell = 20484, type = "ability", requiresTarget = true}, -- Rebirth
+        { spell = 22812, type = "ability", buff = true}, -- Barkskin
+        { spell = 22842, type = "ability", charges = true, buff = true}, -- Frenzied Regeneration
+        { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability", talent = 9 }, -- Wild Growth
         { spell = 49376, type = "ability", talent = 6 }, -- Wild Charge
-        { spell = 61336, type = "ability"}, -- Survival Instincts
+        { spell = 61336, type = "ability", charges = true, buff = true}, -- Survival Instincts
         { spell = 77758, type = "ability"}, -- Thrash
-        { spell = 102359, type = "ability", talent = 11 }, -- Mass Entanglement
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
         { spell = 102383, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
-        { spell = 102558, type = "ability", talent = 15 }, -- Incarnation: Guardian of Ursoc
-        { spell = 106839, type = "ability"}, -- Skull Bash
+        { spell = 102558, type = "ability", buff = true, talent = 15 }, -- Incarnation: Guardian of Ursoc
+        { spell = 106839, type = "ability", requiresTarget = true}, -- Skull Bash
         { spell = 106898, type = "ability"}, -- Stampeding Roar
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
-        { spell = 155835, type = "ability", talent = 3 }, -- Bristling Fur
-        { spell = 192081, type = "ability"}, -- Ironfur
+        { spell = 155835, type = "ability", buff = true, talent = 3 }, -- Bristling Fur
+        { spell = 192081, type = "ability", buff = true}, -- Ironfur
         { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
         { spell = 197626, type = "ability", talent = 7 }, -- Starsurge
         { spell = 204066, type = "ability", talent = 20 }, -- Lunar Beam
         { spell = 236748, type = "ability", talent = 5 }, -- Intimidating Roar
-        { spell = 252216, type = "ability", talent = 4 }, -- Tiger Dash
+        { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
       },
       icon = 236169
     },
@@ -3216,33 +3228,33 @@ templates.class.DRUID = {
         { spell = 740, type = "ability"}, -- Tranquility
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
-        { spell = 1850, type = "ability"}, -- Dash
-        { spell = 2908, type = "ability"}, -- Soothe
+        { spell = 1850, type = "ability", buff = true}, -- Dash
+        { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
         { spell = 5211, type = "ability", talent = 10 }, -- Mighty Bash
         { spell = 5215, type = "ability"}, -- Prowl
         { spell = 5487, type = "ability"}, -- Bear Form
-        { spell = 6795, type = "ability"}, -- Growl
+        { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
         { spell = 18562, type = "ability"}, -- Swiftmend
         { spell = 20484, type = "ability"}, -- Rebirth
-        { spell = 22812, type = "ability"}, -- Barkskin
-        { spell = 22842, type = "ability", talent = 9 }, -- Frenzied Regeneration
-        { spell = 29166, type = "ability"}, -- Innervate
-        { spell = 33891, type = "ability", talent = 15 }, -- Incarnation: Tree of Life
-        { spell = 33917, type = "ability"}, -- Mangle
+        { spell = 22812, type = "ability", buff = true}, -- Barkskin
+        { spell = 22842, type = "ability", buff = true, talent = 9 }, -- Frenzied Regeneration
+        { spell = 29166, type = "ability", buff = true}, -- Innervate
+        { spell = 33891, type = "ability", buff = true, talent = 15 }, -- Incarnation: Tree of Life
+        { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability"}, -- Wild Growth
         { spell = 77758, type = "ability", talent = 9 }, -- Thrash
         { spell = 102342, type = "ability"}, -- Ironbark
         { spell = 102351, type = "ability", talent = 3 }, -- Cenarion Ward
-        { spell = 102359, type = "ability", talent = 11 }, -- Mass Entanglement
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102793, type = "ability"}, -- Ursol's Vortex
         { spell = 108238, type = "ability", talent = 5 }, -- Renewal
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
-        { spell = 192081, type = "ability", talent = 9 }, -- Ironfur
+        { spell = 192081, type = "ability", buff = true, talent = 9 }, -- Ironfur
         { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
         { spell = 197626, type = "ability", talent = 7 }, -- Starsurge
         { spell = 197721, type = "ability", talent = 21 }, -- Flourish
-        { spell = 252216, type = "ability", talent = 4 }, -- Tiger Dash
+        { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
       },
       icon = 236153
     },
@@ -3312,27 +3324,27 @@ templates.class.DEMONHUNTER = {
       args = {
         { spell = 131347, type = "ability"}, -- Glide
         { spell = 179057, type = "ability"}, -- Chaos Nova
-        { spell = 183752, type = "ability"}, -- Disrupt
-        { spell = 185123, type = "ability"}, -- Throw Glaive
+        { spell = 183752, type = "ability", requiresTarget = true}, -- Disrupt
+        { spell = 185123, type = "ability", requiresTarget = true}, -- Throw Glaive
         { spell = 188499, type = "ability"}, -- Blade Dance
         { spell = 188501, type = "ability"}, -- Spectral Sight
-        { spell = 191427, type = "ability"}, -- Metamorphosis
-        { spell = 195072, type = "ability"}, -- Fel Rush
-        { spell = 196555, type = "ability", talent = 12 }, -- Netherwalk
+        { spell = 191427, type = "ability", buff = true}, -- Metamorphosis
+        { spell = 195072, type = "ability", charges = true}, -- Fel Rush
+        { spell = 196555, type = "ability", buff = true, talent = 12 }, -- Netherwalk
         { spell = 196718, type = "ability"}, -- Darkness
         { spell = 198013, type = "ability"}, -- Eye Beam
-        { spell = 198589, type = "ability"}, -- Blur
+        { spell = 198589, type = "ability", buff = true}, -- Blur
         { spell = 198793, type = "ability"}, -- Vengeful Retreat
-        { spell = 206491, type = "ability", talent = 21 }, -- Nemesis
+        { spell = 206491, type = "ability", buff = true, talent = 21 }, -- Nemesis
         { spell = 210152, type = "ability"}, -- Death Sweep
         { spell = 211881, type = "ability", talent = 18 }, -- Fel Eruption
-        { spell = 217832, type = "ability"}, -- Imprison
-        { spell = 232893, type = "ability", talent = 3 }, -- Felblade
-        { spell = 258860, type = "ability", talent = 15 }, -- Dark Slash
-        { spell = 258920, type = "ability", talent = 6 }, -- Immolation Aura
+        { spell = 217832, type = "ability", requiresTarget = true}, -- Imprison
+        { spell = 232893, type = "ability", requiresTarget = true, talent = 3 }, -- Felblade
+        { spell = 258860, type = "ability", debuff = true, requiresTarget = true, talent = 15 }, -- Dark Slash
+        { spell = 258920, type = "ability", buff = true, talent = 6 }, -- Immolation Aura
         { spell = 258925, type = "ability", talent = 9 }, -- Fel Barrage
-        { spell = 278326, type = "ability"}, -- Consume Magic
-        { spell = 281854, type = "ability"}, -- Torment
+        { spell = 278326, type = "ability", requiresTarget = true}, -- Consume Magic
+        { spell = 281854, type = "ability", debuff = true, requiresTarget = true}, -- Torment
       },
       icon = 1305156
     },
@@ -3399,27 +3411,27 @@ templates.class.DEMONHUNTER = {
       title = L["Cooldowns"],
       args = {
         { spell = 131347, type = "ability"}, -- Glide
-        { spell = 178740, type = "ability"}, -- Immolation Aura
-        { spell = 183752, type = "ability"}, -- Disrupt
-        { spell = 185245, type = "ability"}, -- Torment
-        { spell = 187827, type = "ability"}, -- Metamorphosis
+        { spell = 178740, type = "ability", buff = true}, -- Immolation Aura
+        { spell = 183752, type = "ability", requiresTarget = true}, -- Disrupt
+        { spell = 185245, type = "ability", debuff = true, requiresTarget = true}, -- Torment
+        { spell = 187827, type = "ability", buff = true}, -- Metamorphosis
         { spell = 188501, type = "ability"}, -- Spectral Sight
-        { spell = 189110, type = "ability"}, -- Infernal Strike
+        { spell = 189110, type = "ability", charges = true}, -- Infernal Strike
         { spell = 202137, type = "ability"}, -- Sigil of Silence
         { spell = 202138, type = "ability", talent = 15 }, -- Sigil of Chains
         { spell = 202140, type = "ability"}, -- Sigil of Misery
-        { spell = 203720, type = "ability"}, -- Demon Spikes
-        { spell = 204021, type = "ability"}, -- Fiery Brand
-        { spell = 204157, type = "ability"}, -- Throw Glaive
+        { spell = 203720, type = "ability", charges = true, buff = true}, -- Demon Spikes
+        { spell = 204021, type = "ability", debuff = true, requiresTarget = true}, -- Fiery Brand
+        { spell = 204157, type = "ability", requiresTarget = true}, -- Throw Glaive
         { spell = 204513, type = "ability"}, -- Sigil of Flame
         { spell = 212084, type = "ability", talent = 18 }, -- Fel Devastation
-        { spell = 217832, type = "ability"}, -- Imprison
-        { spell = 228477, type = "ability"}, -- Soul Cleave
-        { spell = 232893, type = "ability", talent = 9 }, -- Felblade
+        { spell = 217832, type = "ability", requiresTarget = true}, -- Imprison
+        { spell = 228477, type = "ability", requiresTarget = true}, -- Soul Cleave
+        { spell = 232893, type = "ability", requiresTarget = true, talent = 9 }, -- Felblade
         { spell = 247454, type = "ability", talent = 17 }, -- Spirit Bomb
-        { spell = 263642, type = "ability", talent = 12 }, -- Fracture
-        { spell = 263648, type = "ability", talent = 21 }, -- Soul Barrier
-        { spell = 278326, type = "ability"}, -- Consume Magic
+        { spell = 263642, type = "ability", charges = true, talent = 12 }, -- Fracture
+        { spell = 263648, type = "ability", buff = true, talent = 21 }, -- Soul Barrier
+        { spell = 278326, type = "ability", requiresTarget = true}, -- Consume Magic
 
       },
       icon = 1344650
@@ -3495,32 +3507,32 @@ templates.class.DEATHKNIGHT = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 3714, type = "ability"}, -- Path of Frost
-        { spell = 43265, type = "ability"}, -- Death and Decay
-        { spell = 47528, type = "ability"}, -- Mind Freeze
-        { spell = 48265, type = "ability"}, -- Death's Advance
-        { spell = 48707, type = "ability"}, -- Anti-Magic Shell
-        { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49028, type = "ability"}, -- Dancing Rune Weapon
-        { spell = 49576, type = "ability"}, -- Death Grip
-        { spell = 50842, type = "ability"}, -- Blood Boil
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
+        { spell = 43265, type = "ability", buff = true}, -- Death and Decay
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 48265, type = "ability", buff = true}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 49028, type = "ability", buff = true}, -- Dancing Rune Weapon
+        { spell = 49576, type = "ability", requiresTarget = true}, -- Death Grip
+        { spell = 50842, type = "ability", charges = true}, -- Blood Boil
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 55233, type = "ability"}, -- Vampiric Blood
-        { spell = 56222, type = "ability"}, -- Dark Command
+        { spell = 55233, type = "ability", buff = true}, -- Vampiric Blood
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 61999, type = "ability"}, -- Raise Ally
-        { spell = 108199, type = "ability"}, -- Gorefiend's Grasp
-        { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 194679, type = "ability", talent = 12}, -- Rune Tap
+        { spell = 108199, type = "ability", requiresTarget = true}, -- Gorefiend's Grasp
+        { spell = 111673, type = "ability", requiresTarget = true}, -- Control Undead
+        { spell = 194679, type = "ability", charges = true, buff = true, talent = 12}, -- Rune Tap
         { spell = 194844, type = "ability", talent = 21}, -- Bonestorm
-        { spell = 195182, type = "ability"}, -- Marrowrend
-        { spell = 195292, type = "ability"}, -- Death's Caress
-        { spell = 206930, type = "ability"}, -- Heart Strike
-        { spell = 206931, type = "ability", talent = 2}, -- Blooddrinker
-        { spell = 206940, type = "ability", talent = 18}, -- Mark of Blood
-        { spell = 210764, type = "ability", talent = 3}, -- Rune Strike
-        { spell = 212552, type = "ability", talent = 15}, -- Wraith Walk
-        { spell = 219809, type = "ability", talent = 9}, -- Tombstone
-        { spell = 221562, type = "ability"}, -- Asphyxiate
+        { spell = 195182, type = "ability", requiresTarget = true, charges = true}, -- Marrowrend
+        { spell = 195292, type = "ability", requiresTarget = true}, -- Death's Caress
+        { spell = 206930, type = "ability", requiresTarget = true}, -- Heart Strike
+        { spell = 206931, type = "ability", requiresTarget = true, debuff = true, talent = 2}, -- Blooddrinker
+        { spell = 206940, type = "ability", requiresTarget = true, debuff = true, talent = 18}, -- Mark of Blood
+        { spell = 210764, type = "ability", requiresTarget = true, charges = true, talent = 3}, -- Rune Strike
+        { spell = 212552, type = "ability", buff = true, talent = 15}, -- Wraith Walk
+        { spell = 219809, type = "ability", usable = true, buff = true, talent = 9}, -- Tombstone
+        { spell = 221562, type = "ability", requiresTarget = true}, -- Asphyxiate
         { spell = 274156, type = "ability", talent = 6}, -- Consumption
       },
       icon = 136120
@@ -3588,28 +3600,28 @@ templates.class.DEATHKNIGHT = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 3714, type = "ability"}, -- Path of Frost
-        { spell = 45524, type = "ability"}, -- Chains of Ice
-        { spell = 47528, type = "ability"}, -- Mind Freeze
-        { spell = 47568, type = "ability"}, -- Empower Rune Weapon
-        { spell = 48265, type = "ability", talent = 15}, -- Death's Advance
-        { spell = 48707, type = "ability"}, -- Anti-Magic Shell
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
+        { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 47568, type = "ability", buff = true}, -- Empower Rune Weapon
+        { spell = 48265, type = "ability", buff = true, talent = 15}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
         { spell = 48743, type = "ability"}, -- Death Pact
-        { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49020, type = "ability"}, -- Obliterate
-        { spell = 49184, type = "ability"}, -- Howling Blast
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 49020, type = "ability", requiresTarget = true}, -- Obliterate
+        { spell = 49184, type = "ability", requiresTarget = true}, -- Howling Blast
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 51271, type = "ability"}, -- Pillar of Frost
-        { spell = 56222, type = "ability"}, -- Dark Command
+        { spell = 51271, type = "ability", buff = true}, -- Pillar of Frost
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 57330, type = "ability", talent = 6}, -- Horn of Winter
         { spell = 61999, type = "ability"}, -- Raise Ally
-        { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 152279, type = "ability", talent = 21}, -- Breath of Sindragosa
+        { spell = 111673, type = "ability", requiresTarget = true}, -- Control Undead
+        { spell = 152279, type = "ability", buff = true, talent = 21}, -- Breath of Sindragosa
         { spell = 194913, type = "ability"}, -- Glacial Advance
-        { spell = 196770, type = "ability"}, -- Remorseless Winter
+        { spell = 196770, type = "ability", buff = true}, -- Remorseless Winter
         { spell = 207167, type = "ability", talent = 9}, -- Blinding Sleet
         { spell = 207230, type = "ability", talent = 12}, -- Frostscythe
-        { spell = 212552, type = "ability", talent = 14}, -- Wraith Walk
+        { spell = 212552, type = "ability", buff = true, talent = 14}, -- Wraith Walk
         { spell = 279302, type = "ability", talent = 18}, -- Frostwyrm's Fury
       },
       icon = 135372
@@ -3675,36 +3687,36 @@ templates.class.DEATHKNIGHT = {
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 3714, type = "ability"}, -- Path of Frost
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
         { spell = 42650, type = "ability"}, -- Army of the Dead
-        { spell = 43265, type = "ability"}, -- Death and Decay
-        { spell = 45524, type = "ability"}, -- Chains of Ice
+        { spell = 43265, type = "ability", buff = true}, -- Death and Decay
+        { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
         { spell = 46584, type = "ability"}, -- Raise Dead
-        { spell = 47468, type = "ability"}, -- Claw
-        { spell = 47481, type = "ability"}, -- Gnaw
-        { spell = 47484, type = "ability"}, -- Huddle
-        { spell = 47528, type = "ability"}, -- Mind Freeze
-        { spell = 48265, type = "ability"}, -- Death's Advance
-        { spell = 48707, type = "ability"}, -- Anti-Magic Shell
+        { spell = 47468, type = "ability", requiresTarget = true}, -- Claw
+        { spell = 47481, type = "ability", requiresTarget = true}, -- Gnaw
+        { spell = 47484, type = "ability", requiresTarget = true}, -- Huddle
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 48265, type = "ability", buff = true}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
         { spell = 48743, type = "ability"}, -- Death Pact
-        { spell = 48792, type = "ability"}, -- Icebound Fortitude
-        { spell = 49206, type = "ability", talent = 21}, -- Summon Gargoyle
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 49206, type = "ability", requiresTarget = true, talent = 21}, -- Summon Gargoyle
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 55090, type = "ability"}, -- Scourge Strike
-        { spell = 56222, type = "ability"}, -- Dark Command
+        { spell = 55090, type = "ability", requiresTarget = true}, -- Scourge Strike
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 61999, type = "ability"}, -- Raise Ally
         { spell = 63560, type = "ability"}, -- Dark Transformation
-        { spell = 77575, type = "ability"}, -- Outbreak
-        { spell = 85948, type = "ability"}, -- Festering Strike
-        { spell = 108194, type = "ability", talent = 9}, -- Asphyxiate
+        { spell = 77575, type = "ability", requiresTarget = true}, -- Outbreak
+        { spell = 85948, type = "ability", requiresTarget = true}, -- Festering Strike
+        { spell = 108194, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Asphyxiate
         { spell = 111673, type = "ability"}, -- Control Undead
-        { spell = 115989, type = "ability", talent = 6}, -- Unholy Blight
-        { spell = 130736, type = "ability", talent = 12}, -- Soul Reaper
+        { spell = 115989, type = "ability", buff = true, talent = 6}, -- Unholy Blight
+        { spell = 130736, type = "ability", requiresTarget = true, buff = true, talent = 12}, -- Soul Reaper
         { spell = 152280, type = "ability", talent = 17}, -- Defile
-        { spell = 207289, type = "ability", talent = 20}, -- Unholy Frenzy
-        { spell = 207311, type = "ability"}, -- Clawing Shadows
-        { spell = 212552, type = "ability", talent = 14}, -- Wraith Walk
-        { spell = 275699, type = "ability"}, -- Apocalypse
+        { spell = 207289, type = "ability", buff = true, talent = 20}, -- Unholy Frenzy
+        { spell = 207311, type = "ability", requiresTarget = true}, -- Clawing Shadows
+        { spell = 212552, type = "ability", buff = true, talent = 14}, -- Wraith Walk
+        { spell = 275699, type = "ability", usable = true, requiresTarget = true}, -- Apocalypse
       },
       icon = 136144
     },
@@ -3766,7 +3778,7 @@ tinsert(templates.general.args, {
   forceOwnOnly = true,
   ownOnly = nil,
   overideTitle = L["Bloodlust/Heroism"],
-  spellIds = {2825, 32182, 80353, 90355, 160452, 264667}}
+  spellIds = {2825, 32182, 80353, 264667}}
 );
 
 -- Items section
@@ -4004,7 +4016,7 @@ tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(12));
 templates.class.MONK[1][9] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 115072, type = "ability", buffShowOn = "showAlways"}, -- Expel Harm
+    { spell = 115072, type = "ability", charges = true}, -- Expel Harm
   },
   icon = 627486,
 };
@@ -4170,11 +4182,19 @@ local function handleItem(item)
   end
   if (item.talent) then
     item.load = item.load or {};
-    item.load.use_talent = true;
-    item.load.talent = {
-      single = item.talent;
-      multi = {};
-    }
+    if type(item.talent) == "table" then
+      item.load.talent = { multi = {} };
+      for _,v in pairs(item.talent) do
+        item.load.talent.multi[v] = true;
+      end
+      item.load.use_talent = false;
+    else
+      item.load.talent = {
+        single = item.talent;
+        multi = {};
+      };
+      item.load.use_talent = true;
+    end
   end
   if (item.pvptalent) then
     item.load = item.load or {};
@@ -4261,7 +4281,7 @@ local function fixupIcons()
     for specIndex, spec in pairs(class) do
       for _, section in pairs(spec) do
         for _, item in pairs(section.args) do
-          if (item.spell and item.type ~= "item") then
+          if (item.spell and (not item.type ~= "item")) then
             local icon = select(3, GetSpellInfo(item.spell));
             if (icon) then
               item.icon = icon;
