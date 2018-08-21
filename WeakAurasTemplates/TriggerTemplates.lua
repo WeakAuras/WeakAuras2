@@ -252,7 +252,7 @@ local function buildCondition(trigger, check, properties)
   return result;
 end
 
-local function buffGreyed(conditions, trigger, regionType)
+local function missingBuffGreyed(conditions, trigger, regionType)
   if regionType ~= "model" then
     tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes.grey[regionType]}));
   end
@@ -282,7 +282,7 @@ local function hasChargesGrey(conditions, trigger, regionType)
   end
 end
 
-local function onCdCheckGrey(conditions, trigger, regionType)
+local function isOnCdGrey(conditions, trigger, regionType)
   if regionType ~= "model" then
     tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes.grey[regionType]}));
   end
@@ -308,7 +308,7 @@ local function totemActiveGlow(conditions, trigger, regionType)
   end
 end
 
-local function spellInRangeRed(conditions, trigger, regionType)
+local function isSpellNotInRangeRed(conditions, trigger, regionType)
   if regionType ~= "model" then
     tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes.red[regionType]}));
   end
@@ -457,7 +457,7 @@ local function subTypesFor(item, regionType)
           createConditions = function(conditions, item, regionType)
             insufficientResourcesBlue(conditions, 0, regionType);
             hasChargesGrey(conditions, 0, regionType);
-            spellInRangeRed(conditions, 0, regionType);
+            isSpellNotInRangeRed(conditions, 0, regionType);
           end,
         });
         if (item.usable) then
@@ -470,7 +470,7 @@ local function subTypesFor(item, regionType)
             createConditions = function(conditions, item, regionType)
               isNotUsableBlue(conditions, 0, regionType);
               hasChargesGrey(conditions, 0, regionType);
-              spellInRangeRed(conditions, 0, regionType);
+              isSpellNotInRangeRed(conditions, 0, regionType);
             end,
           });
         end
@@ -510,7 +510,7 @@ local function subTypesFor(item, regionType)
         end,
         createConditions = function(conditions, item, regionType)
           insufficientResourcesBlue(conditions, 0, regionType);
-          onCdCheckGrey(conditions, 0, regionType);
+          isOnCdGrey(conditions, 0, regionType);
         end,
       });
       if (item.buff) then
@@ -520,7 +520,7 @@ local function subTypesFor(item, regionType)
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item, regionType)
             insufficientResourcesBlue(conditions, 1, regionType);
-            onCdCheckGrey(conditions, 1, regionType);
+            isOnCdGrey(conditions, 1, regionType);
             isBuffedGlow(conditions, 0, regionType);
           end,
         });
@@ -531,7 +531,7 @@ local function subTypesFor(item, regionType)
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item, regionType)
               isNotUsableBlue(conditions, 1, regionType);
-              onCdCheckGrey(conditions, 1, regionType);
+              isOnCdGrey(conditions, 1, regionType);
               isBuffedGlow(conditions, 0, regionType);
             end,
           });
@@ -543,8 +543,8 @@ local function subTypesFor(item, regionType)
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item, regionType)
               insufficientResourcesBlue(conditions, 1, regionType);
-              onCdCheckGrey(conditions, 1, regionType);
-              spellInRangeRed(conditions, 1, regionType);
+              isOnCdGrey(conditions, 1, regionType);
+              isSpellNotInRangeRed(conditions, 1, regionType);
               isBuffedGlow(conditions, 0, regionType);
             end,
           });
@@ -556,7 +556,7 @@ local function subTypesFor(item, regionType)
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item, regionType)
             insufficientResourcesBlue(conditions, 1, regionType);
-            onCdCheckGrey(conditions, 1, regionType);
+            isOnCdGrey(conditions, 1, regionType);
             isBuffedGlow(conditions, 0, regionType);
           end,
         });
@@ -567,8 +567,8 @@ local function subTypesFor(item, regionType)
             createTriggers = createAbilityAndDebuffTrigger,
             createConditions = function(conditions, item, regionType)
               insufficientResourcesBlue(conditions, 1, regionType);
-              onCdCheckGrey(conditions, 1, regionType);
-              spellInRangeRed(conditions, 1, regionType);
+              isOnCdGrey(conditions, 1, regionType);
+              isSpellNotInRangeRed(conditions, 1, regionType);
               isBuffedGlow(conditions, 0, regionType);
             end,
           });
@@ -583,7 +583,7 @@ local function subTypesFor(item, regionType)
           end,
           createConditions = function(conditions, item, regionType)
             insufficientResourcesBlue(conditions, 1, regionType);
-            onCdCheckGrey(conditions, 1, regionType);
+            isOnCdGrey(conditions, 1, regionType);
             totemActiveGlow(conditions, 0, regionType);
           end,
         });
@@ -597,7 +597,7 @@ local function subTypesFor(item, regionType)
             end,
             createConditions = function(conditions, item, regionType)
               isNotUsableBlue(conditions, 0, regionType);
-              onCdCheckGrey(conditions, 0, regionType);
+              isOnCdGrey(conditions, 0, regionType);
             end,
           });
           if (item.requiresTarget) then
@@ -609,8 +609,8 @@ local function subTypesFor(item, regionType)
               end,
               createConditions = function(conditions, item, regionType)
                 isNotUsableBlue(conditions, 0, regionType);
-                onCdCheckGrey(conditions, 0, regionType);
-                spellInRangeRed(conditions, 0, regionType);
+                isOnCdGrey(conditions, 0, regionType);
+                isSpellNotInRangeRed(conditions, 0, regionType);
               end,
             });
           end
@@ -624,8 +624,8 @@ local function subTypesFor(item, regionType)
             end,
             createConditions = function(conditions, item, regionType)
               insufficientResourcesBlue(conditions, 0, regionType);
-              onCdCheckGrey(conditions, 0, regionType);
-              spellInRangeRed(conditions, 0, regionType);
+              isOnCdGrey(conditions, 0, regionType);
+              isSpellNotInRangeRed(conditions, 0, regionType);
             end,
           });
         end
@@ -657,7 +657,7 @@ local function subTypesFor(item, regionType)
         createBuffTrigger(triggers, 0, item, "showAlways", true);
       end,
       createConditions = function(conditions, item, regionType)
-        buffGreyed(conditions, 0, regionType);
+        missingBuffGreyed(conditions, 0, regionType);
       end,
     });
   elseif(item.type == "debuff") then
@@ -685,7 +685,7 @@ local function subTypesFor(item, regionType)
         createBuffTrigger(triggers, 0, item, "showAlways", false);
       end,
       createConditions = function(conditions, item, regionType)
-        buffGreyed(conditions, 0, regionType);
+        missingBuffGreyed(conditions, 0, regionType);
       end,
     });
   elseif(item.type == "item") then
@@ -703,7 +703,7 @@ local function subTypesFor(item, regionType)
         createItemTrigger(triggers, 0, item, "showAlways");
       end,
       createConditions = function(conditions, item, regionType)
-        onCdCheckGrey(conditions, 0, regionType);
+        isOnCdGrey(conditions, 0, regionType);
       end,
     });
   elseif(item.type == "totem") then
