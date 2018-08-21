@@ -354,6 +354,8 @@ local templates = {
     title = L["Default"],
     icon = "Interface\\ICONS\\Temp.blp",
     data = {
+      cooldown = true,
+      inverse = true,
     };
   },
   {
