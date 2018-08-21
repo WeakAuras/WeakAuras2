@@ -503,7 +503,7 @@ local function subTypesFor(item, regionType)
       end
     else -- Ability without charges
       tinsert(types, {
-        title = L["Show Only On Cooldown"],
+        title = L["Cooldown Tracking"],
         description = L["Always shows the aura, turns grey when on cooldown, blue when unusable."],
         createTriggers = function(triggers, item)
           createAbilityTrigger(triggers, 0, item, "showAlways");
