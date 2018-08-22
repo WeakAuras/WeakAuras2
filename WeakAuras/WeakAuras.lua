@@ -2741,7 +2741,6 @@ local function pAdd(data)
       triggerSystem.Add(data);
     end
 
-
     data.init_started = nil;
     data.load = data.load or {};
     data.actions = data.actions or {};

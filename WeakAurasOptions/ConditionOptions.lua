@@ -1056,7 +1056,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
     end
   end
 
-  if (currentConditionTemplate) then
+  if (currentConditionTemplate and currentConditionTemplate.type and type(currentConditionTemplate.type) == "string") then
     local setOp;
     local setValue;
     if (data.controlledChildren) then
@@ -1124,33 +1124,35 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
       }
       order = order + 1;
     elseif (currentConditionTemplate.type == "select") then
-      args["condition" .. i .. tostring(path) .. "_op"] = {
-        name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
-        desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
-        type = "select",
-        order = order,
-        values = WeakAuras.equality_operator_types,
-        get = function()
-          return check.op;
-        end,
-        set = setOp,
-      }
-      order = order + 1;
+      if (type(currentConditionTemplate.values) == "table") then
+        args["condition" .. i .. tostring(path) .. "_op"] = {
+          name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
+          desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
+          type = "select",
+          order = order,
+          values = WeakAuras.equality_operator_types,
+          get = function()
+            return check.op;
+          end,
+          set = setOp,
+        }
+        order = order + 1;
 
-      order = addSpace(args, order);
+        order = addSpace(args, order);
 
-      args["condition" .. i .. tostring(path) .. "_value"] = {
-        type = "select",
-        name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
-        desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
-        order = order,
-        values = currentConditionTemplate.values,
-        get = function()
-          return check.value;
-        end,
-        set = setValue
-      }
-      order = order + 1;
+        args["condition" .. i .. tostring(path) .. "_value"] = {
+          type = "select",
+          name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
+          desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
+          order = order,
+          values = currentConditionTemplate.values,
+          get = function()
+            return check.value;
+          end,
+          set = setValue
+        }
+        order = order + 1;
+      end
     elseif (currentConditionTemplate.type == "bool") then
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "select",
