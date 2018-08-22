@@ -906,7 +906,9 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       values = WeakAuras.bufftrigger_progress_behavior_types,
       order = 71,
       get = function() return trigger.buffShowOn end,
-      hidden = function() return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
+      hidden = function()
+        return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone));
+      end
     },
     unitExists = {
       type = "toggle",
@@ -915,7 +917,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       width = "double",
       hidden = function()
         return not (trigger.type == "aura"
-          and not(trigger.unit ~= "group" and trigger.autoclone)
+          and not(trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone)
           and trigger.unit ~= "multi"
           and trigger.unit ~= "group"
           and trigger.unit ~= "player");
