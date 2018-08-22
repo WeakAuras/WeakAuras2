@@ -39,6 +39,7 @@ local function changes(field, regionType)
       aurabar= "barColor",
       progresstexture = "foregroundColor",
       text = "color",
+      texture = "color",
     };
     return {
       value = colors[field],
@@ -159,10 +160,12 @@ end
 
 local function isBuffedGlow(conditions, trigger, regionType)
   if regionType ~= "model" then
-    if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
-    else
+    if regionType == "icon" then
       tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+    elseif regionType == "aurabar" or regionType == "progresstexture" then
+      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("yellow", regionType)}));
+    else
+      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
     end
   end
 end
@@ -170,9 +173,11 @@ end
 local function totemActiveGlow(conditions, trigger, regionType)
   if regionType ~= "model" then
     if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
-    else
       tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+    elseif regionType == "aurabar" or regionType == "progresstexture" then
+      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("yellow", regionType)}));
+    else
+      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
     end
   end
 end
