@@ -30,32 +30,35 @@ local colors = {
   white = { 1, 1, 1, 1 },
   yellow = { 1, 1, 0, 1 },
   green = { 0, 1, 0, 1},
-}
+};
 
-local function changes(field, regionType)
-  if colors[field] then
-    local regionColorField = {
-      icon = "color",
-      aurabar= "barColor",
-      progresstexture = "foregroundColor",
-      text = "color",
-      texture = "color",
-    };
+local regionColorProperty = {
+  icon = "color",
+  aurabar= "barColor",
+  progresstexture = "foregroundColor",
+  text = "color",
+  texture = "color",
+};
+
+local function changes(property, regionType)
+  if colors[property] and regionColorProperty[regionType] then
     return {
-      value = colors[field],
-      property = regionColorField[regionType],
+      value = colors[property],
+      property = regionColorProperty[regionType],
     };
-  elseif field == "alpha" then
+  elseif not WeakAuras.regionTypes[regionType].default[property] then
+    return nil;
+  elseif property == "alpha" then
     return {
       value = 0.5,
       property = "alpha",
     };
-  elseif field == "inverse" then
+  elseif property == "inverse" then
     return {
       value = false,
       property = "inverse",
     };
-  elseif field == "glow" then
+  elseif property == "glow" then
     return {
       value = true,
       property = "glow",
@@ -116,82 +119,64 @@ local function buildCondition(trigger, check, properties)
   end
 
   result.changes = {};
+  local hasChanges = false;
   for index, v in ipairs(properties) do
     result.changes[index] = CopyTable(v);
+    hasChanges = true;
   end
-  return result;
+  return hasChanges and result or nil;
 end
 
 local function missingBuffGreyed(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes("grey", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes("grey", regionType)}));
 end
 
 local function hasTargetAlpha(conditions, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes("alpha", regionType)}));
-  end
+  tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes("alpha", regionType)}));
 end
 
 local function isNotUsableBlue(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.usable, {changes("blue", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.usable, {changes("blue", regionType)}));
 end
 
 local function insufficientResourcesBlue(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.insufficientResources, {changes("blue", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.insufficientResources, {changes("blue", regionType)}));
 end
 
 local function hasChargesGrey(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.charges, {changes("grey", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.charges, {changes("grey", regionType)}));
 end
 
 local function isOnCdGrey(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes("grey", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes("grey", regionType)}));
 end
 
 local function isBuffedGlow(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    if regionType == "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
-    elseif regionType == "aurabar" or regionType == "progresstexture" then
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("yellow", regionType)}));
-    else
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
-    end
+  if regionType == "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
   end
 end
 
 local function totemActiveGlow(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
-    elseif regionType == "aurabar" or regionType == "progresstexture" then
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("yellow", regionType)}));
-    else
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
-    end
+  if regionType ~= "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
   end
 end
 
 local function isSpellNotInRangeRed(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes("red", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes("red", regionType)}));
 end
 
 local function itemInRangeRed(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes("red", regionType)}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes("red", regionType)}));
 end
 
 local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
