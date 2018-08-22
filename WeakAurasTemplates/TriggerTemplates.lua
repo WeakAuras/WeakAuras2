@@ -578,6 +578,17 @@ local function subTypesFor(item, regionType)
     });
   end
 
+  -- filter when createConditions return nothing for this regionType
+  for index, type in pairs(types) do
+    if type.createConditions then
+      local conditions = {}
+      type.createConditions(conditions, item, regionType)
+      if #conditions == 0 then
+        types[index] = nil;
+      end
+    end
+  end
+
   return types;
 end
 
