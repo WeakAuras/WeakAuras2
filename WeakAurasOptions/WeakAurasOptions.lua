@@ -828,7 +828,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
                   if (arg.showExactOption and trigger["use_exact_"..realname]) then
                     local spellId = tonumber(trigger[realname])
-                    if (spellId) then
+                    if (spellId and spellId ~= 0) then
                       return tostring(spellId);
                     else
                       return L["Invalid Spell ID"];
