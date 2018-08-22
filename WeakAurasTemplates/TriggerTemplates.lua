@@ -23,175 +23,44 @@ AceGUI:RegisterLayout("WATemplateTriggerLayoutFlyout", function(content, childre
   flowLayout(content, children);
 end);
 
-local grey = {
-  0.5,
-  0.5,
-  0.5,
-  1,
-};
+local colors = {
+  grey = { 0.5, 0.5, 0.5, 1 },
+  blue = { 0.5, 0.5, 1, 1 },
+  red = { 0.8, 0.1, 0.1, 1 },
+  white = { 1, 1, 1, 1 },
+  yellow = { 1, 1, 0, 1 },
+  green = { 0, 1, 0, 1},
+}
 
-local blue = {
-  0.5,
-  0.5,
-  1,
-  1,
-};
-
-local red = {
-  0.8,
-  0.1,
-  0.1,
-  1,
-};
-
-local white = {
-  1,
-  1,
-  1,
-  1,
-};
-
-local yellow = {
-  1,
-  1,
-  0,
-  1,
-};
-
-local changes = {
-  grey = {
-    icon = {
-      value = grey,
-      property = "color",
-    },
-    aurabar = {
-      value = grey,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = grey,
-      property = "foregroundColor",
-    },
-    text = {
-      value = grey,
-      property = "color",
-    },
-  },
-  blue = {
-    icon = {
-      value = blue,
-      property = "color",
-    },
-    aurabar = {
-      value = blue,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = blue,
-      property = "foregroundColor",
-    },
-    text = {
-      value = blue,
-      property = "color",
-    },
-  },
-  red = {
-    icon = {
-      value = red,
-      property = "color",
-    },
-    aurabar = {
-      value = red,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = red,
-      property = "foregroundColor",
-    },
-    text = {
-      value = red,
-      property = "color",
-    },
-  },
-  white = {
-    icon = {
-      value = white,
-      property = "color",
-    },
-    aurabar = {
-      value = white,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = white,
-      property = "foregroundColor",
-    },
-    text = {
-      value = white,
-      property = "color",
-    },
-  },
-  yellow ={
-    icon = {
-      value = yellow,
-      property = "color",
-    },
-    aurabar = {
-      value = yellow,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = yellow,
-      property = "foregroundColor",
-    },
-    text = {
-      value = yellow,
-      property = "color",
-    },
-  },
-  alpha = {
-    icon = {
+local function changes(field, regionType)
+  if colors[field] then
+    local regionColorField = {
+      icon = "color",
+      aurabar= "barColor",
+      progresstexture = "foregroundColor",
+      text = "color",
+    };
+    return {
+      value = colors[field],
+      property = regionColorField[regionType],
+    };
+  elseif field == "alpha" then
+    return {
       value = 0.5,
       property = "alpha",
-    },
-    aurabar = {
-      value = 0.5,
-      property = "alpha",
-    },
-    progresstexture = {
-      value = 0.5,
-      property = "alpha",
-    },
-    text = {
-      value = 0.5,
-      property = "alpha",
-    },
-    model = {
-      value = 0.5,
-      property = "alpha",
-    }
-  },
-  inverse = {
-    icon = {
+    };
+  elseif field == "inverse" then
+    return {
       value = false,
       property = "inverse",
-    },
-    aurabar = {
-      value = false,
-      property = "inverse",
-    },
-    progresstexture = {
-      value = false,
-      property = "inverse",
-    },
-  },
-  glow = {
-    icon = {
+    };
+  elseif field == "glow" then
+    return {
       value = true,
       property = "glow",
-    },
-  }
-}
+    };
+  end
+end
 
 local checks = {
   spellInRange = {
@@ -254,46 +123,46 @@ end
 
 local function missingBuffGreyed(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes.grey[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes("grey", regionType)}));
   end
 end
 
 local function hasTargetAlpha(conditions, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes.alpha[regionType]}));
+    tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes("alpha", regionType)}));
   end
 end
 
 local function isNotUsableBlue(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.usable, {changes.blue[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.usable, {changes("blue", regionType)}));
   end
 end
 
 local function insufficientResourcesBlue(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.insufficientResources, {changes.blue[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.insufficientResources, {changes("blue", regionType)}));
   end
 end
 
 local function hasChargesGrey(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.charges, {changes.grey[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.charges, {changes("grey", regionType)}));
   end
 end
 
 local function isOnCdGrey(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes.grey[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes("grey", regionType)}));
   end
 end
 
 local function isBuffedGlow(conditions, trigger, regionType)
   if regionType ~= "model" then
     if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes.yellow[regionType]}));
+      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
     else
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes.inverse[regionType], changes.glow[regionType], changes.white[regionType]}));
+      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
     end
   end
 end
@@ -301,22 +170,22 @@ end
 local function totemActiveGlow(conditions, trigger, regionType)
   if regionType ~= "model" then
     if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes.yellow[regionType]}));
+      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
     else
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes.inverse[regionType], changes.glow[regionType], changes.white[regionType]}));
+      tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
     end
   end
 end
 
 local function isSpellNotInRangeRed(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes.red[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes("red", regionType)}));
   end
 end
 
 local function itemInRangeRed(conditions, trigger, regionType)
   if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes.red[regionType]}));
+    tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes("red", regionType)}));
   end
 end
 
