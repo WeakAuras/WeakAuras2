@@ -263,8 +263,16 @@ end
 
 local function subTypesFor(item, regionType)
   local types = {};
+  local icon = {
+    target = 132212,
+    glow = 571554,
+    charges = 237538,
+    cd = 134377,
+    cd2 = 134376,
+  };
   if (item.type == "ability") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Basic Show On Cooldown"],
       description = L["Only shows the aura when the ability is on cooldown."],
       createTriggers = function(triggers, item)
@@ -273,6 +281,7 @@ local function subTypesFor(item, regionType)
     });
     if (item.charges) then
       tinsert(types, {
+        icon = icon.charges,
         title = L["Charge Tracking"],
         description = L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."],
         createTriggers = function(triggers, item)
@@ -285,6 +294,7 @@ local function subTypesFor(item, regionType)
       });
       if (item.buff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Charge and Buff Tracking"],
           description = L["Tracks the charge and the buff, glows while the buff is active, blue on insufficient resources."],
           createTriggers = createAbilityAndBuffTrigger,
@@ -296,6 +306,7 @@ local function subTypesFor(item, regionType)
         });
       elseif(item.debuff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Charge and Debuff Tracking"],
           description = L["Tracks the charge and the debuff, glows while the debuff is active, blue on insufficient resources."],
           createTriggers = createAbilityAndDebuffTrigger,
@@ -307,6 +318,7 @@ local function subTypesFor(item, regionType)
         })
       elseif(item.requiresTarget) then
         tinsert(types,  {
+          icon = icon.target,
           title = L["Show Charges with Range Tracking"],
           description = L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."],
           genericShowOn = "showAlways",
@@ -321,6 +333,7 @@ local function subTypesFor(item, regionType)
         });
         if (item.usable) then
           tinsert(types,  {
+            icon = icon.target,
             title = L["Show Charges with Usable Check"],
             description = L["Always shows the aura, turns red when out of range, blue on insufficient resources."],
             createTriggers = function(triggers, item)
@@ -335,6 +348,7 @@ local function subTypesFor(item, regionType)
         end
       elseif(item.totem) then
         tinsert(types, {
+          icon = icon.charges,
           title = L["Show Totem and Charge Information"],
           description = L["Always shows the aura, turns grey when on zero charges, glows when active, blue on insufficient resources."],
           createTriggers = function(triggers, item)
@@ -349,6 +363,7 @@ local function subTypesFor(item, regionType)
         });
       elseif(item.usable) then
         tinsert(types, {
+          icon = icon.charges,
           title = L["Show Charges and Check Usable"],
           description = L["Always shows the aura, turns grey when on zero charges, blue when usable."],
           createTriggers = function(triggers, item)
@@ -362,6 +377,7 @@ local function subTypesFor(item, regionType)
       end
     else -- Ability without charges
       tinsert(types, {
+        icon = icon.cd2,
         title = L["Cooldown Tracking"],
         description = L["Always shows the aura, turns grey when on cooldown, blue when unusable."],
         createTriggers = function(triggers, item)
@@ -374,6 +390,7 @@ local function subTypesFor(item, regionType)
       });
       if (item.buff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Show Cooldown and Buff"],
           description = L["Glows while buffed."],
           createTriggers = createAbilityAndBuffTrigger,
@@ -385,6 +402,7 @@ local function subTypesFor(item, regionType)
         });
         if (item.usable) then
           tinsert(types, {
+            icon = icon.glow,
             title = L["Show Cooldown and Buff and Check Usable"],
             description = L["Glows while buffed."],
             createTriggers = createAbilityAndBuffTrigger,
@@ -397,6 +415,7 @@ local function subTypesFor(item, regionType)
         end
         if (item.requiresTarget) then
           tinsert(types, {
+            icon = icon.target,
             title = L["Show Cooldown and Buff and Check for Target"],
             description = L["Glows while buffed, red when out of range."],
             createTriggers = createAbilityAndBuffTrigger,
@@ -410,6 +429,7 @@ local function subTypesFor(item, regionType)
         end
       elseif(item.debuff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Show Cooldown and Debuff"],
           description = L["Glows while debuffed."],
           createTriggers = createAbilityAndDebuffTrigger,
@@ -421,6 +441,7 @@ local function subTypesFor(item, regionType)
         });
         if (item.requiresTarget) then
           tinsert(types, {
+            icon = icon.target,
             title = L["Show Cooldown and Debuff and Check for Target"],
             description = L["Glows while debuffed, red when out of range."],
             createTriggers = createAbilityAndDebuffTrigger,
@@ -434,6 +455,7 @@ local function subTypesFor(item, regionType)
         end
       elseif(item.totem) then
         tinsert(types, {
+          icon = icon.cd2,
           title = L["Show Cooldown and Totem Information"],
           description = L["Always shows the aura, turns grey if the ability is not usable."],
           createTriggers = function(triggers, item)
@@ -449,6 +471,7 @@ local function subTypesFor(item, regionType)
       else
         if (item.usable) then
           tinsert(types, {
+            icon = icon.cd2,
             title = L["Show Cooldown and Check Usable"],
             description = L["Always shows the aura, turns grey if the ability is not usable."],
             createTriggers = function(triggers, item)
@@ -461,6 +484,7 @@ local function subTypesFor(item, regionType)
           });
           if (item.requiresTarget) then
             tinsert(types, {
+              icon = icon.target,
               title = L["Show Cooldown and Check Usable & Target"],
               description = L["Always shows the aura, turns grey if the ability is not usable and red when out of range."],
               createTriggers = function(triggers, item)
@@ -476,6 +500,7 @@ local function subTypesFor(item, regionType)
         end
         if (item.requiresTarget) then
           tinsert(types, {
+            icon = icon.target,
             title = L["Show Cooldown and Check for Target"],
             description = L["Always shows the aura, turns red when out of range."],
             createTriggers = function(triggers, item)
@@ -492,6 +517,7 @@ local function subTypesFor(item, regionType)
     end
   elseif(item.type == "buff") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Show Only if Buffed"],
       description = L["Only shows the aura if the target has the buff."],
       createTriggers = function(triggers, item)
@@ -499,6 +525,7 @@ local function subTypesFor(item, regionType)
       end
     });
     tinsert(types, {
+      icon = icon.glow,
       title = L["Always Show"],
       description = L["Always shows the aura, makes it glow if buffed."],
       buffShowOn = "showAlways",
@@ -510,6 +537,7 @@ local function subTypesFor(item, regionType)
       end,
     });
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, grey if buff not active."],
       createTriggers = function(triggers, item)
@@ -521,6 +549,7 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "debuff") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Show Only if Debuffed"],
       description = L["Only show the aura if the target has the debuff."],
       createTriggers = function(triggers, item)
@@ -528,6 +557,7 @@ local function subTypesFor(item, regionType)
       end
     });
     tinsert(types, {
+      icon = icon.glow,
       title = L["Always Show"],
       description = L["Always show the aura, makes it glow if debuffed."],
       createTriggers = function(triggers, item)
@@ -538,6 +568,7 @@ local function subTypesFor(item, regionType)
       end,
     });
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if the debuff not active."],
       createTriggers = function(triggers, item)
@@ -549,6 +580,7 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "item") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Show Only if on Cooldown"],
       description = L["Only show the aura when the item is on cooldown."],
       createTriggers = function(triggers, item)
@@ -556,6 +588,7 @@ local function subTypesFor(item, regionType)
       end
     });
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if on cooldown."],
       createTriggers = function(triggers, item)
@@ -567,6 +600,7 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "totem") then
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, turns grey if on cooldown."],
       createTriggers = function(triggers, item)
@@ -870,6 +904,9 @@ function WeakAuras.CreateTemplateView(frame)
       local button = AceGUI:Create("WeakAurasNewButton");
       button:SetTitle(subType.title);
       button:SetDescription(subType.description);
+      if subType.icon then
+        button:SetIcon(subType.icon);
+      end
       button:SetFullWidth(true);
       button:SetClick(function()
         if (newView.existingAura) then
