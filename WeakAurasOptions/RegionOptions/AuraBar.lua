@@ -858,7 +858,6 @@ local templates = {
       barColor = { 0, 1, 0, 1},
       rotateText = "LEFT",
       orientation = "VERTICAL_INVERSE",
-      icon = false,
       inverse = true,
       smoothProgress = true,
     }
