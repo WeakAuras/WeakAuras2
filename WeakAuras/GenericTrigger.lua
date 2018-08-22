@@ -826,6 +826,7 @@ function GenericTrigger.Add(data, region)
         local internal_events = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
+        local tsuConditionVariables;
         if(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -895,6 +896,10 @@ function GenericTrigger.Add(data, region)
           end
         else
           triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""), id);
+          if (trigger.custom_type == "stateupdate") then
+            tsuConditionVariables = WeakAuras.LoadFunction("return \n" .. (trigger.customVariables or ""));
+          end
+
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
             untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""), id);
             if (not untriggerFunc) then
@@ -984,7 +989,8 @@ function GenericTrigger.Add(data, region)
           stacksFunc = stacksFunc,
           loadFunc = loadFunc,
           duration = duration,
-          automaticAutoHide = automaticAutoHide
+          automaticAutoHide = automaticAutoHide,
+          tsuConditionVariables = tsuConditionVariables
         };
       end
     end
@@ -2701,16 +2707,27 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
 
   if (trigger.type == "custom") then
     if (trigger.custom_type == "stateupdate") then
-      local allStates = {};
-      WeakAuras.ActivateAuraEnvironment(data.id);
-      RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
-      WeakAuras.ActivateAuraEnvironment(nil);
       local count = 0;
-      for id, state in pairs(allStates) do
-        if (state.additionalProgress) then
-          count = max(count, #state.additionalProgress);
+      local variables = events[data.id][triggernum].tsuConditionVariables;
+      if (variables) then
+        if (type(variables.additionalProgress) == "table") then
+          count = #variables.additionalProgress;
+        elseif (type(variables.additionalProgress) == "number") then
+          count = variables.additionalProgress;
+        end
+      else
+        local allStates = {};
+        WeakAuras.ActivateAuraEnvironment(data.id);
+        RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
+        WeakAuras.ActivateAuraEnvironment(nil);
+        local count = 0;
+        for id, state in pairs(allStates) do
+          if (state.additionalProgress) then
+            count = max(count, #state.additionalProgress);
+          end
         end
       end
+
       count = min(count, 7);
       for i = 1, count do
         result = result or {};
@@ -2877,6 +2894,29 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
   return ret;
 end
 
+local commonConditions = {
+  expirationTime = {
+    display = L["Remaining Duration"],
+    type = "timer",
+  },
+  duration = {
+    display = L["Total Duration"],
+    type = "number",
+  },
+  value = {
+    display = L["Progress Value"],
+    type = "number",
+  },
+  total = {
+    display = L["Progress Total"],
+    type = "number",
+  },
+  stacks = {
+    display = L["Stacks"],
+    type = "number"
+  }
+}
+
 function GenericTrigger.GetTriggerConditions(data, triggernum)
   local trigger;
   if (triggernum == 0) then
@@ -2899,32 +2939,17 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
       end
 
       if (timedDuration) then
-        result["expirationTime"] = {
-          display = L["Remaining Duration"],
-          type = "timer",
-        }
-        result["duration"] = {
-          display = L["Total Duration"],
-          type = "number",
-        }
+        result.expirationTime = commonConditions.expirationTime;
+        result.duration = commonConditions.duration;
       end
 
       if (valueDuration) then
-        result["value"] = {
-          display = L["Progress Value"],
-          type = "number",
-        }
-        result["total"] = {
-          display = L["Progress Total"],
-          type = "number",
-        }
+        result.value = commonConditions.value;
+        result.total = commonConditions.total;
       end
 
       if (WeakAuras.event_prototypes[trigger.event].stacksFunc) then
-        result["stacks"] = {
-          display = L["Stacks"],
-          type = "number"
-        }
+        result.stacks = commonConditions.stacks;
       end
 
       for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
@@ -2961,7 +2986,70 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
 
       return result;
     end
+  elseif(trigger.type == "custom") then
+    if (trigger.custom_type == "status" or trigger.custom_type == "event") then
+      local result = {};
+
+      local canHaveDurationFunc = trigger.custom_type == "status" or (trigger.custom_type == "event" and (trigger.custom_hide ~= "timed" or trigger.dynamicDuration));
+
+      if (canHaveDurationFunc and trigger.customDuration and trigger.customDuration ~= "") then
+        result.expirationTime = commonConditions.expirationTime;
+        result.duration = commonConditions.duration;
+        result.value = commonConditions.value;
+        result.total = commonConditions.total;
+      end
+
+      if (trigger.custom_type == "event" and trigger.custom_hide ~= "custom" and trigger.dynamicDuration ~= true) then
+        -- This is the static duration of a event/timed trigger
+        result.expirationTime = commonConditions.expirationTime;
+        result.duration = commonConditions.duration;
+      end
+
+      if (trigger.customStacks and trigger.customStacks ~= "") then
+        result.stacks = commonConditions.stacks;
+      end
+
+      return result;
+    elseif (trigger.custom_type == "stateupdate") then
+      if (events[data.id][triggernum] and events[data.id][triggernum].tsuConditionVariables) then
+        local result = CopyTable(events[data.id][triggernum].tsuConditionVariables);
+        -- Make the life of tsu authors easier, by automatically filling in the details for
+        -- expirationTime, duration, value, total, stacks, if those exists but aren't a table value
+        -- By allowing a short-hand notation of just variable = type
+        -- In addition to the long form of variable = { type = xyz, display = "desc"}
+
+        for k, v in pairs(commonConditions) do
+          if (result[k] and type(result[k]) ~= "table") then
+            result[k] = v;
+          end
+        end
+
+        for k, v in pairs(events[data.id][triggernum].tsuConditionVariables) do
+          if (type(v) == "string") then
+            result[k] = {
+              display = k,
+              type = v,
+            };
+          end
+        end
+
+        for k, v in pairs(result) do
+          if (type(v) ~= "table") then
+            result[k] = nil;
+          elseif (v.display == nil or type(v.display) ~= "string") then
+            if (type(k) == "string") then
+              v.display = k;
+            else
+              result[k] = nil;
+            end
+          end
+        end
+
+        return result;
+      end
+    end
   end
+
   return nil;
 end
 
