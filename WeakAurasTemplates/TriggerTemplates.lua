@@ -46,7 +46,7 @@ local function changes(property, regionType)
       value = colors[property],
       property = regionColorProperty[regionType],
     };
-  elseif not WeakAuras.regionTypes[regionType].default[property] then
+  elseif WeakAuras.regionTypes[regionType].default[property] == nil then
     return nil;
   elseif property == "alpha" then
     return {
