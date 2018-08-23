@@ -1,4 +1,4 @@
-local internalVersion = 6;
+local internalVersion = 7;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -1785,7 +1785,7 @@ end
 
 function WeakAuras.UnloadAll()
   for _, v in pairs(triggerState) do
-    for i = 0, v.numTriggers - 1 do
+    for i = 1, v.numTriggers do
       if (v[i]) then
         wipe(v[i]);
       end
@@ -1832,7 +1832,7 @@ do
   end
 
   function WeakAuras.UnloadDisplay(id)
-    for i = 0, triggerState[id].numTriggers - 1 do
+    for i = 1, triggerState[id].numTriggers do
       if (triggerState[id][i]) then
         wipe(triggerState[id][i]);
       end
@@ -2588,6 +2588,52 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  -- Version 6 was introduced July 30, 2018 in BFA
+  -- Changes were entirely within triggers, so no code runs here
+
+  -- Version 7 was introduced %DATE% in BFA
+  -- Triggers were cleaned up into a 1-indexed array
+
+  if data.internalVersion < 7 then
+
+    -- migrate trigger data
+    data.triggers = data.additional_triggers or {}
+    tinsert(data.triggers, 1, {
+      trigger = data.trigger or {},
+      untrigger = data.untrigger or {},
+    })
+    data.additional_triggers = nil
+    data.trigger = nil
+    data.untrigger = nil
+    data.numTriggers = nil
+    data.triggers.customTriggerLogic = data.customTriggerLogic
+    data.customTriggerLogic = nil
+    local activeTriggerMode = data.activeTriggerMode or WeakAuras.trigger_modes.first_active
+    if activeTriggerMode ~= WeakAuras.trigger_modes.first_active then
+      activeTriggerMode = activeTriggerMode + 1
+    end
+    data.triggers.activeTriggerMode = activeTriggerMode
+    data.activeTriggerMode = nil
+    data.triggers.disjunctive = data.disjunctive
+    data.disjunctive = nil
+    -- migrate condition trigger references
+    local function recurseRepairChecks(checks)
+      if not checks then return end
+      for _, check in pairs(checks) do
+        if check.trigger and check.trigger >= 0 then
+          check.trigger = check.trigger + 1
+        end
+        recurseRepairChecks(check.checks)
+      end
+    end
+    for _, condition in pairs(data.conditions) do
+      if condition.check.trigger and condition.check.trigger >= 0 then
+        condition.check.trigger = condition.check.trigger + 1
+      end
+      recurseRepairChecks(condition.check.checks)
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -2693,23 +2739,21 @@ end
 
 local function removeSpellNames(data)
   local trigger
-  for triggernum=0,(data.numTriggers or 9) do
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
-    if type(trigger.spellName) == "number" then
-      trigger.realSpellName = GetSpellInfo(trigger.spellName) or trigger.realSpellName
-    end
-    if (trigger.spellId) then
-      trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
-    end
-    if (trigger.spellIds) then
-      for i = 1, 10 do
-        if (trigger.spellIds[i]) then
-          trigger.names = trigger.names or {};
-          trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
+  for i = 1, #data.triggers do
+    trigger = data.triggers[i].trigger
+    if trigger then
+      if type(trigger.spellName) == "number" then
+        trigger.realSpellName = GetSpellInfo(trigger.spellName) or trigger.realSpellName
+      end
+      if (trigger.spellId) then
+        trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
+      end
+      if (trigger.spellIds) then
+        for i = 1, 10 do
+          if (trigger.spellIds[i]) then
+            trigger.names = trigger.names or {};
+            trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
+          end
         end
       end
     end
@@ -2734,8 +2778,8 @@ local function pAdd(data)
     db.displays[id] = data;
     WeakAuras.SetRegion(data);
   else
-    if (not data.activeTriggerMode or data.activeTriggerMode >= data.numTriggers) then
-      data.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+    if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
+      data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
     end
 
     for _, triggerSystem in pairs(triggerSystems) do
@@ -2752,7 +2796,7 @@ local function pAdd(data)
     local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
     local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
-    local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""), id);
+    local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id);
     WeakAuras.LoadCustomActionFunctions(data);
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
@@ -2777,9 +2821,9 @@ local function pAdd(data)
     end
 
     triggerState[id] = {
-      disjunctive = data.disjunctive or "all",
-      numTriggers = data.numTriggers,
-      activeTriggerMode = data.activeTriggerMode or 0,
+      disjunctive = data.triggers.disjunctive or "all",
+      numTriggers = #data.triggers,
+      activeTriggerMode = data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active,
       triggerLogicFunc = triggerLogicFunc,
       triggers = {},
       triggerCount = 0,
@@ -3503,34 +3547,30 @@ function WeakAuras.GetData(id)
 end
 
 function WeakAuras.GetTriggerSystem(data, triggernum)
-  if (triggernum == 0) then
-    return triggerTypes[data.trigger.type];
-  elseif (data.additional_triggers and data.additional_triggers[triggernum]) then
-    return triggerTypes[data.additional_triggers[triggernum].trigger.type];
-  end
-  return nil;
+  local triggerType = data.triggers[triggernum] and data.triggers[triggernum].trigger.type
+  return triggerType and triggerTypes[triggerType]
 end
 
 local function wrapTriggerSystemFunction(functionName, mode)
   local func;
   func = function(data, triggernum)
     if (not triggernum) then
-      return func(data, data.activeTriggerMode or -1);
+      return func(data, data.triggers.activeTriggerMode or -1);
     elseif (triggernum < 0) then
       local result;
       if (mode == "or") then
         result = false;
-        for i = 0, data.numTriggers - 1 do
+        for i = 1, #data.triggers do
           result = result or func(data, i);
         end
       elseif (mode == "and") then
         result = true;
-        for i = 0, data.numTriggers - 1 do
+        for i = 1, #data.triggers do
           result = result and func(data, i);
         end
       elseif (mode == "table") then
         result = {};
-        for i = 0, data.numTriggers - 1 do
+        for i = 1, #data.triggers do
           local tmp = func(data, i);
           if (tmp) then
             for k, v in pairs(tmp) do
@@ -3540,7 +3580,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
         end
       elseif (mode == "firstValue") then
         result = false;
-        for i = 0, data.numTriggers - 1 do
+        for i = 1, #data.triggers do
           local tmp = func(data, i);
           if (tmp) then
             result = tmp;
@@ -3548,7 +3588,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
           end
         end
       elseif (mode == "nameAndIcon") then
-        for i = 0, data.numTriggers - 1 do
+        for i = 1, #data.triggers do
           local tmp1, tmp2 = func(data, i);
           if (tmp1) then
             return tmp1, tmp2;
@@ -3556,10 +3596,10 @@ local function wrapTriggerSystemFunction(functionName, mode)
         end
       end
       return result;
-    else -- triggernum >= 0
+    else -- triggernum >= 1
       local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
       if (not triggerSystem) then
-        return false;
+        return false
       end
       return triggerSystem[functionName](data, triggernum);
     end
@@ -3597,7 +3637,7 @@ end
 
 function WeakAuras.GetTriggerConditions(data)
   local conditions = {};
-  for i = 0, data.numTriggers - 1 do
+  for i = 1, #data.triggers do
     local triggerSystem = WeakAuras.GetTriggerSystem(data, i);
     if (triggerSystem) then
       conditions[i] = triggerSystem.GetTriggerConditions(data, i);
@@ -3619,16 +3659,10 @@ function WeakAuras.CreateFallbackState(id, triggernum, state)
     return false;
   end
 
-  triggerSystem.CreateFallbackState(data, triggernum, state);
-  if (triggernum == 0) then
-    state.trigger = data.trigger;
-    state.triggernum = 0;
-    state.id = id;
-  else
-    state.trigger = data.additional_triggers[triggernum].trigger;
-    state.triggernum = triggernum;
-    state.id = id;
-  end
+  triggerSystem.CreateFallbackState(data, triggernum, state)
+  state.trigger = data.triggers[triggernum].trigger
+  state.triggernum = triggernum
+  state.id = id
 end
 
 function WeakAuras.CanShowNameInfo(data)
@@ -4213,11 +4247,11 @@ local emptyState = {};
 emptyState[""] = {};
 
 local function applyToTriggerStateTriggers(stateShown, id, triggernum)
-  if (stateShown and not triggerState[id].triggers[triggernum + 1]) then
-    triggerState[id].triggers[triggernum + 1] = true;
+  if (stateShown and not triggerState[id].triggers[triggernum]) then
+    triggerState[id].triggers[triggernum] = true;
     triggerState[id].triggerCount = triggerState[id].triggerCount + 1;
     return true;
-  elseif (not stateShown and triggerState[id].triggers[triggernum + 1]) then
+  elseif (not stateShown and triggerState[id].triggers[triggernum]) then
     -- Check if any other clone is shown
     local anyCloneShown = false;
     for _, state in pairs(triggerState[id][triggernum]) do
@@ -4227,7 +4261,7 @@ local function applyToTriggerStateTriggers(stateShown, id, triggernum)
       end
     end
     if (not anyCloneShown) then
-      triggerState[id].triggers[triggernum + 1] = false;
+      triggerState[id].triggers[triggernum] = false;
       triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
       return true;
     end
@@ -4293,18 +4327,12 @@ function WeakAuras.UpdatedTriggerState(id)
   end
 
   local changed = false;
-  for triggernum = 0, triggerState[id].numTriggers - 1 do
+  for triggernum = 1, triggerState[id].numTriggers do
     triggerState[id][triggernum] = triggerState[id][triggernum] or {};
     for cloneId, state in pairs(triggerState[id][triggernum]) do
-      if (triggernum == 0) then
-        state.trigger = db.displays[id].trigger;
-        state.triggernum = 0;
-        state.id = id;
-      else
-        state.trigger = db.displays[id].additional_triggers[triggernum].trigger;
-        state.triggernum = triggernum;
-        state.id = id;
-      end
+      state.trigger = db.displays[id].triggers[triggernum].trigger;
+      state.triggernum = triggernum;
+      state.id = id;
 
       if (state.changed) then
         startStopTimers(id, cloneId, triggernum, state);
@@ -4325,8 +4353,8 @@ function WeakAuras.UpdatedTriggerState(id)
   local newActiveTrigger = triggerState[id].activeTriggerMode;
   if (newActiveTrigger == WeakAuras.trigger_modes.first_active) then
     -- Mode is first active trigger, so find a active trigger
-    for i = 0, triggerState[id].numTriggers - 1 do
-      if (triggerState[id].triggers[i + 1]) then
+    for i = 1, triggerState[id].numTriggers do
+      if (triggerState[id].triggers[i]) then
         newActiveTrigger = i;
         break;
       end
@@ -4367,7 +4395,7 @@ function WeakAuras.UpdatedTriggerState(id)
     end
   end
 
-  for triggernum = 0, triggerState[id].numTriggers - 1 do
+  for triggernum = 1, triggerState[id].numTriggers do
     triggerState[id][triggernum] = triggerState[id][triggernum] or {};
     for cloneId, state in pairs(triggerState[id][triggernum]) do
       if (not state.show) then

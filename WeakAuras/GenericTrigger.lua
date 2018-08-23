@@ -806,17 +806,8 @@ function GenericTrigger.Add(data, region)
   events[id] = nil;
   WeakAuras.forceable_events[id] = {};
 
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-      data.untrigger = data.untrigger or {};
-      untrigger = data.untrigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-      data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
-      untrigger = data.additional_triggers[triggernum].untrigger;
-    end
+  for triggernum, triggerData in ipairs(data.triggers) do
+    local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     local triggerType;
     if(trigger and type(trigger) == "table") then
       triggerType = trigger.type;
@@ -1072,16 +1063,8 @@ local oldPowerTriggers = {
 }
 
 function GenericTrigger.Modernize(data)
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-
-    if(triggernum == 0) then
-      trigger = data.trigger;
-      untrigger = data.untrigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-      untrigger = data.additional_triggers[triggernum].untrigger;
-    end
+  for triggernum, triggerData in ipairs(data.triggers) do
+    local trigger, untrigger = triggerData.trigger, triggerData.untrigger
 
     if (data.internalVersion < 2) then
       -- Convert any references to "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" to "COMBAT_LOG_EVENT_UNFILTERED"
@@ -2606,12 +2589,7 @@ function WeakAuras.GetUniqueCloneId()
 end
 
 function GenericTrigger.CanHaveDuration(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
 
   if(
     (
@@ -2687,12 +2665,7 @@ end
 function GenericTrigger.GetOverlayInfo(data, triggernum)
   local result;
 
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  elseif (data.additional_triggers and data.additional_triggers[triggernum]) then
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
 
   if (trigger.type ~= "custom" and trigger.event and WeakAuras.event_prototypes[trigger.event] and WeakAuras.event_prototypes[trigger.event].overlayFuncs) then
     result = {};
@@ -2749,12 +2722,7 @@ end
 
 function GenericTrigger.CanHaveAuto(data, triggernum)
   -- Is also called on importing before conversion, so do a few checks
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  elseif (data.additional_triggers and data.additional_triggers[triggernum]) then
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
 
   if (not trigger) then
     return false;
@@ -2791,12 +2759,7 @@ function GenericTrigger.CanHaveClones(data)
 end
 
 function GenericTrigger.GetNameAndIcon(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  elseif (data.additional_triggers and data.additional_triggers[triggernum]) then
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   local icon, name
   if (trigger.type == "event" or trigger.type == "status") then
     if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
@@ -2817,12 +2780,7 @@ end
 -- @param triggernum
 -- @return string
 function GenericTrigger.CanHaveTooltip(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
       if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
@@ -2867,12 +2825,7 @@ function GenericTrigger.SetToolTip(trigger, state)
 end
 
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   local ret = "";
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
@@ -2918,12 +2871,7 @@ local commonConditions = {
 }
 
 function GenericTrigger.GetTriggerConditions(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
 
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
@@ -3059,27 +3007,28 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   local event = events[data.id][triggernum];
 
   WeakAuras.ActivateAuraEnvironment(data.id, "", state);
+  local firstTrigger = data.triggers[1].trigger
   if (event.nameFunc) then
-    local ok, name = xpcall(event.nameFunc, geterrorhandler(), data.trigger);
+    local ok, name = xpcall(event.nameFunc, geterrorhandler(), firstTrigger);
     state.name = ok and name or nil;
   end
   if (event.iconFunc) then
-    local ok, icon = xpcall(event.iconFunc, geterrorhandler(), data.trigger);
+    local ok, icon = xpcall(event.iconFunc, geterrorhandler(), firstTrigger);
     state.icon = ok and icon or nil;
   end
 
   if (event.textureFunc ) then
-    local ok, texture = xpcall(event.textureFunc, geterrorhandler(), data.trigger);
+    local ok, texture = xpcall(event.textureFunc, geterrorhandler(), firstTrigger);
     state.texture = ok and texture or nil;
   end
 
   if (event.stacksFunc) then
-    local ok, stacks = event.stacksFunc(data.trigger);
+    local ok, stacks = event.stacksFunc(firstTrigger);
     state.stacks = ok and stacks or nil;
   end
 
   if (event.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, geterrorhandler(), data.trigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, geterrorhandler(), firstTrigger);
     if (not ok) then
       state.progressType = "timed";
       state.duration = 0;

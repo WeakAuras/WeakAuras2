@@ -1469,19 +1469,10 @@ function BuffTrigger.Add(data)
   local id = data.id;
   auras[id] = nil;
 
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger; -- luacheck: ignore
-    if(triggernum == 0) then
-      trigger = data.trigger;
-      data.untrigger = data.untrigger or {};
-      untrigger = data.untrigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-      data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
-      untrigger = data.additional_triggers[triggernum].untrigger;
-    end
+  for triggernum, triggerData in ipairs(data.triggers) do
+    local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     local triggerType;
-    if(trigger and type(trigger) == "table") then
+    if(type(trigger) == "table") then
       triggerType = trigger.type;
       if(triggerType == "aura") then
         trigger.names = trigger.names or {};
@@ -1593,7 +1584,7 @@ function BuffTrigger.Add(data)
           ownOnly = trigger.ownOnly,
           buffShowOn = buffShowOn,
           unitExists = unitExists,
-          numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
+          numAdditionalTriggers = max(#data.triggers - 1, 0),
           hideAlone = trigger.hideAlone,
           stack_info = trigger.stack_info,
           name_info = trigger.name_info,
@@ -1608,14 +1599,8 @@ end
 --- Updates old data to the new format.
 -- @param data
 function BuffTrigger.Modernize(data)
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger;
-
-    if(triggernum == 0) then
-      trigger = data.trigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-    end
+  for triggernum, triggerData in ipairs(data.triggers) do
+    local trigger = triggerData.trigger;
 
     if (data.internalVersion < 2) then
       if (trigger and trigger.type == "aura") then
@@ -1646,12 +1631,7 @@ end
 -- @param triggernum
 -- @return boolean
 function BuffTrigger.CanGroupShowWithZero(data, triggernum)
-  local trigger
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   local group_countFunc, group_countFuncStr;
   if(trigger.unit == "group") then
     local count, countType = WeakAuras.ParseNumber(trigger.group_count);
@@ -1675,12 +1655,7 @@ end
 -- @param data
 -- @param triggernum
 function BuffTrigger.CanHaveDuration(data, triggernum)
-  local trigger
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
     if (trigger.buffShowOn ~= "showOnMissing") then
       return "timed";
@@ -1711,12 +1686,7 @@ end
 -- @param triggernum
 -- @return
 function BuffTrigger.CanHaveClones(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   return (trigger.fullscan and trigger.autoclone)
     or (trigger.unit == "group" and trigger.groupclone)
     or (trigger.unit == "multi");
@@ -1727,12 +1697,7 @@ end
 -- @param triggernum
 -- @return string
 function BuffTrigger.CanHaveTooltip(data, triggernum)
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
   if(trigger.unit == "group" and trigger.name_info ~= "aura" and not trigger.groupclone) then
     return "playerlist";
   elseif(trigger.fullscan and trigger.unit ~= "group") then
@@ -1827,12 +1792,8 @@ end
 -- @param triggernum
 -- @return name and icon
 function BuffTrigger.GetNameAndIcon(data, triggernum)
-  local _, name, icon, trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local _, name, icon
+  local trigger = data.triggers[triggernum].trigger
   if (trigger.fullscan) then
     if (trigger.spellId) then
       name, _, icon = GetSpellInfo(trigger.spellId);
@@ -1872,12 +1833,7 @@ end
 
 function BuffTrigger.GetTriggerConditions(data, triggernum)
   local result = {};
-  local trigger;
-  if (triggernum == 0) then
-    trigger = data.trigger;
-  else
-    trigger = data.additional_triggers[triggernum].trigger;
-  end
+  local trigger = data.triggers[triggernum].trigger
 
   result["unitCaster"] = {
     display = L["Caster"],

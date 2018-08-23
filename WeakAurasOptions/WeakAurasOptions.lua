@@ -50,7 +50,7 @@ local tempGroup = {
   regionType = "group",
   controlledChildren = {},
   load = {},
-  trigger = {},
+  triggers = {{}},
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
   xOffset = 0,
@@ -135,18 +135,9 @@ function WeakAuras.MultipleDisplayTooltipMenu()
       text = L["Add to new Group"],
       notCheckable = 1,
       func = function()
-        local new_id = tempGroup.controlledChildren[1].." Group";
-        local num = 2;
-        while(WeakAuras.GetData(new_id)) do
-          new_id = "New "..num;
-          num = num + 1;
-        end
-
         local data = {
-          id = new_id,
+          id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
           regionType = "group",
-          trigger = {},
-          load = {}
         };
         WeakAuras.Add(data);
         WeakAuras.NewDisplayButton(data);
@@ -177,18 +168,9 @@ function WeakAuras.MultipleDisplayTooltipMenu()
       text = L["Add to new Dynamic Group"],
       notCheckable = 1,
       func = function()
-        local new_id = tempGroup.controlledChildren[1].." Group";
-        local num = 2;
-        while(WeakAuras.GetData(new_id)) do
-          new_id = "New "..num;
-          num = num + 1;
-        end
-
         local data = {
-          id = new_id,
+          id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
           regionType = "dynamicgroup",
-          trigger = {},
-          load = {}
         };
 
         WeakAuras.Add(data);
@@ -373,26 +355,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
     trigger, untrigger = {}, {};
   elseif(triggertype == "load") then
     trigger = data.load;
+  elseif data.triggers[triggernum] then
+    trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger
   else
-    if(triggernum == 0) then
-      data.untrigger = data.untrigger or {};
-      if(triggertype == "untrigger") then
-        trigger = data.untrigger;
-      else
-        trigger = data.trigger;
-        untrigger = data.untrigger;
-      end
-    elseif(triggernum >= 1) then
-      data.additional_triggers[triggernum].untrigger = data.additional_triggers[triggernum].untrigger or {};
-      if(triggertype == "untrigger") then
-        trigger = data.additional_triggers[triggernum].untrigger;
-      else
-        trigger = data.additional_triggers[triggernum].trigger;
-        untrigger = data.additional_triggers[triggernum].untrigger;
-      end
-    else
-      error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
-    end
+    error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
   end
   unevent = unevent or trigger.unevent;
   local options = {};
@@ -2630,8 +2596,8 @@ function WeakAuras.ReloadTriggerOptions(data)
     for index, childId in pairs(data.controlledChildren) do
       if not(optionTriggerChoices[id]) then
         optionTriggerChoices[id] = optionTriggerChoices[childId];
-        trigger = WeakAuras.GetData(childId).trigger;
-        untrigger = WeakAuras.GetData(childId).untrigger;
+        trigger = WeakAuras.GetData(childId).triggers[1].trigger;
+        untrigger = WeakAuras.GetData(childId).triggers[1].untrigger;
       else
         if(optionTriggerChoices[id] ~= optionTriggerChoices[childId]) then
           trigger, untrigger = {}, {};
@@ -2641,25 +2607,20 @@ function WeakAuras.ReloadTriggerOptions(data)
       end
     end
 
-    optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
+    optionTriggerChoices[id] = optionTriggerChoices[id] or 1;
 
-    local commonOptionTriggerChoice = optionTriggerChoices[id] >= 0 and optionTriggerChoices[id];
+    local commonOptionTriggerChoice = optionTriggerChoices[id] >= 1 and optionTriggerChoices[id];
     for index, childId in pairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        optionTriggerChoices[childId] = commonOptionTriggerChoice or optionTriggerChoices[childId] or 0;
+        optionTriggerChoices[childId] = commonOptionTriggerChoice or optionTriggerChoices[childId] or 1;
         WeakAuras.ReloadTriggerOptions(childData);
       end
     end
   else
-    optionTriggerChoices[id] = min(optionTriggerChoices[id] or 0, (data.numTriggers or 1) - 1);
-    if(optionTriggerChoices[id] == 0) then
-      trigger = data.trigger;
-      untrigger = data.untrigger;
-    else
-      trigger = data.additional_triggers and data.additional_triggers[optionTriggerChoices[id]].trigger or data.trigger;
-      untrigger = data.additional_triggers and data.additional_triggers[optionTriggerChoices[id]].untrigger or data.untrigger;
-    end
+    optionTriggerChoices[id] = min(optionTriggerChoices[id] or 1, #data.triggers);
+    local triggerChoice = optionTriggerChoices[id]
+    trigger, untrigger = data.triggers[triggerChoice].trigger, data.triggers[triggerChoice].untrigger
   end
 
   local function deleteTrigger()
@@ -2667,38 +2628,16 @@ function WeakAuras.ReloadTriggerOptions(data)
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          if (optionTriggerChoices[childId] == 0) then
-            if (childData.additional_triggers and childData.additional_triggers[1] and childData.additional_triggers[1].trigger) then
-              childData.trigger = childData.additional_triggers[1].trigger;
-              childData.untrigger = childData.additional_triggers[1].untrigger;
-              tremove(childData.additional_triggers, 1);
-            end
-          else
-            if (childData.additional_triggers) then
-              tremove(childData.additional_triggers, optionTriggerChoices[childId]);
-              optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
-            end
-          end
-
+          tremove(childData.triggers, optionTriggerChoices[childId])
+          optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
           WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
-
-          childData.numTriggers = 1 + (childData.additional_triggers and #childData.additional_triggers or 0)
           WeakAuras.ReloadTriggerOptions(childData);
         end
       end
     else
-      if (optionTriggerChoices[id] == 0) then
-        data.trigger = data.additional_triggers[1].trigger;
-        data.untrigger = data.additional_triggers[1].untrigger;
-        tremove(data.additional_triggers, 1);
-      else
-        tremove(data.additional_triggers, optionTriggerChoices[id]);
-        optionTriggerChoices[id] = optionTriggerChoices[id] - 1;
-      end
-
+      tremove(data.triggers, optionTriggerChoices[id])
+      optionTriggerChoices[id] = max(1, optionTriggerChoices[id] - 1)
       WeakAuras.DeleteConditionsForTrigger(data, optionTriggerChoices[id]);
-
-      data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0)
     end
     WeakAuras.Add(data);
     WeakAuras.ReloadTriggerOptions(data);
@@ -2718,25 +2657,10 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 
   local function moveTriggerDownImpl(data, i)
-    if (i < 0 or i + 1 >= data.numTriggers) then
+    if (i < 1 or i >= #data.triggers) then
       return false;
     end
-
-    if (i == 0) then
-      local tmp = data.additional_triggers[1];
-      tremove(data.additional_triggers, 1);
-      tinsert(data.additional_triggers, 1, {
-        trigger = data.trigger,
-        untrigger = data.untrigger
-      });
-      data.trigger = tmp.trigger;
-      data.untrigger = tmp.untrigger;
-    else
-      local tmp = data.additional_triggers[i + 1];
-      tremove(data.additional_triggers, i + 1);
-      tinsert(data.additional_triggers, i, tmp);
-    end
-
+    data.triggers[i], data.triggers[i + 1] = data.triggers[i + 1], data.triggers[i]
     for _, condition in ipairs(data.conditions) do
       moveTriggerDownConditionCheck(condition.check, i);
     end
@@ -2766,7 +2690,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     local hasMultipleTriggers = false;
     for index, id in pairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(id);
-      if (childData.numTriggers ~=1) then
+      if (#childData.triggers ~=1) then
         hasMultipleTriggers = true;
         break;
       end
@@ -2775,7 +2699,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       chooseTriggerWidth = chooseTriggerWidth + 0.45;
     end
   else
-    if (data.numTriggers == 1) then
+    if (#data.triggers == 1) then
       chooseTriggerWidth = chooseTriggerWidth + 0.45;
     end
   end
@@ -2791,20 +2715,21 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = "double",
       order = 0,
       values = function()
-        if (data.additional_triggers and #data.additional_triggers > 0) then
+        if #data.triggers > 1 then
           return WeakAuras.trigger_require_types;
+        else
+          return  WeakAuras.trigger_require_types_one;
         end
-        return  WeakAuras.trigger_require_types_one;
       end,
       get = function()
-        if (data.additional_triggers and #data.additional_triggers > 0) then
-          return data.disjunctive or "all";
+        if #data.triggers > 1 then
+          return data.triggers.disjunctive or "all";
         else
-          return (data.disjunctive and data.disjunctive ~= "all") and data.disjunctive or "any";
+          return (data.triggers.disjunctive and data.triggers.disjunctive ~= "all") and data.triggers.disjunctive or "any";
         end
       end,
       set = function(info, v)
-        data.disjunctive = v;
+        data.triggers.disjunctive = v;
         WeakAuras.Add(data);
       end
     },
@@ -2817,38 +2742,37 @@ function WeakAuras.ReloadTriggerOptions(data)
       values = function()
         local vals = {};
         vals[WeakAuras.trigger_modes.first_active] = L["Dynamic information from first active trigger"];
-        local numTriggers = data.additional_triggers and #data.additional_triggers or 0;
-        for i=0,numTriggers do
-          vals[i] = L["Dynamic information from Trigger %i"]:format(i + 1);
+        for i = 1, #data.triggers do
+          vals[i] = L["Dynamic information from Trigger %i"]:format(i);
         end
         return vals;
       end,
       get = function()
-        return data.activeTriggerMode or WeakAuras.trigger_modes.first_active;
+        return data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active;
       end,
       set = function(info, v)
-        data.activeTriggerMode = v;
+        data.triggers.activeTriggerMode = v;
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end,
-      hidden = function() return data.numTriggers <= 1 end
+      hidden = function() return #data.triggers <= 1 end
     },
     chooseTrigger = {
       type = "select",
       name = L["Choose Trigger"],
       order = 0.5,
       values = function()
-        local ret = {[0] = L["Trigger %d"]:format(1)};
+        local ret = {};
         if(data.controlledChildren) then
-          for index=1,(data.numTriggers and data.numTriggers + 1 or 9) do
+          for index = 1, #data.triggers do
             local all, none, any = true, true, false;
             for _, childId in pairs(data.controlledChildren) do
               local childData = WeakAuras.GetData(childId);
               if(childData) then
                 none = false;
-                if(childData.additional_triggers and childData.additional_triggers[index]) then
+                if childData.triggers[index] then
                   any = true;
                 else
                   all = false;
@@ -2857,22 +2781,22 @@ function WeakAuras.ReloadTriggerOptions(data)
             end
             if not(none) then
               if(all) then
-                ret[index] = L["Trigger %d"]:format(index + 1);
+                ret[index] = L["Trigger %d"]:format(index);
               elseif(any) then
-                ret[index] = "|cFF777777"..L["Trigger %d"]:format(index + 1);
+                ret[index] = "|cFF777777"..L["Trigger %d"]:format(index);
               end
             end
           end
-        elseif(data.additional_triggers) then
-          for index, trigger in pairs(data.additional_triggers) do
-            ret[index] = L["Trigger %d"]:format(index + 1);
+        else
+          for i = 1, #data.triggers do
+            ret[i] = L["Trigger %d"]:format(i);
           end
         end
         return ret;
       end,
       get = function() return optionTriggerChoices[id]; end,
       set = function(info, v)
-        if(v == 0 or (data.additional_triggers and data.additional_triggers[v])) then
+        if data.triggers[v] then
           optionTriggerChoices[id] = v;
           WeakAuras.ReloadTriggerOptions(data);
         end
@@ -2895,18 +2819,14 @@ function WeakAuras.ReloadTriggerOptions(data)
           for index, childId in pairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
-              childData.additional_triggers = childData.additional_triggers or {};
-              tinsert(childData.additional_triggers, {trigger = {}, untrigger = {}});
-              childData.numTriggers = 1 + (childData.additional_triggers and #childData.additional_triggers or 0)
-              optionTriggerChoices[childId] = #childData.additional_triggers;
+              tinsert(childData.triggers, {trigger = {}, untrigger = {}});
+              optionTriggerChoices[childId] = #childData.triggers;
               WeakAuras.ReloadTriggerOptions(childData);
             end
           end
         else
-          data.additional_triggers = data.additional_triggers or {};
-          tinsert(data.additional_triggers, {trigger = {}, untrigger = {}});
-          data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0)
-          optionTriggerChoices[id] = #data.additional_triggers;
+          tinsert(data.triggers, {trigger = {}, untrigger = {}});
+          optionTriggerChoices[id] = #data.triggers;
         end
         WeakAuras.ReloadTriggerOptions(data);
       end,
@@ -2922,7 +2842,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       order = 1.1,
       func = deleteTrigger,
       hidden = function()
-        return data.numTriggers == 1
+        return #data.triggers < 2
       end,
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
@@ -2951,14 +2871,14 @@ function WeakAuras.ReloadTriggerOptions(data)
           for index, childId in pairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
-              if (optionTriggerChoices[childId] ~= 0) then
+              if (optionTriggerChoices[childId] ~= 1) then
                 return false;
               end
             end
           end
           return true;
         else
-          if (optionTriggerChoices[id] == 0) then
+          if (optionTriggerChoices[id] == 1) then
             return true;
           else
             return false;
@@ -2966,7 +2886,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         end
       end,
       hidden = function()
-        return data.numTriggers == 1
+        return #data.triggers < 2
       end,
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
@@ -2995,22 +2915,22 @@ function WeakAuras.ReloadTriggerOptions(data)
           for index, childId in pairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(childId);
             if(childData) then
-              if (optionTriggerChoices[childId] ~= childData.numTriggers -1) then
+              if (optionTriggerChoices[childId] ~= #childData.triggers) then
                 return false;
               end
             end
           end
           return true;
         else
-          if (optionTriggerChoices[id] == data.numTriggers - 1) then
-            return true;
-          else
+          if (optionTriggerChoices[id] ~= #data.triggers) then
             return false;
+          else
+            return true;
           end
         end
       end,
       hidden = function()
-        return data.numTriggers == 1
+        return #data.triggers < 2
       end,
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
@@ -3039,11 +2959,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         if(info == "default") then
           return L["Multiple Triggers"];
         else
-          if(optionTriggerChoices[id] == 0) then
-            return L["Trigger %d"]:format(1);
-          else
-            return L["Trigger %d"]:format(optionTriggerChoices[id] + 1);
-          end
+          return L["Trigger %d"]:format(optionTriggerChoices[id]);
         end
       end,
       order = 2
@@ -3083,9 +2999,9 @@ function WeakAuras.ReloadTriggerOptions(data)
   };
 
   local function hideTriggerCombiner()
-    return not (data.disjunctive == "custom")
+    return not (data.triggers.disjunctive == "custom")
   end
-  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", 0.1, hideTriggerCombiner, {"customTriggerLogic"}, false);
+  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", 0.1, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
 
   trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger));
 
@@ -3103,12 +3019,12 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     removeFuncs(displayOptions[id]);
 
-    if(optionTriggerChoices[id] >= 0 and getAll(data, {"trigger", "type"}) == "aura") then
+    if(optionTriggerChoices[id] >= 1 and getAll(data, {"trigger", "type"}) == "aura") then
       local aura_options = WeakAuras.GetBuffTriggerOptions(data, trigger);
       displayOptions[id].args.trigger.args = union(trigger_options, aura_options);
       removeFuncs(displayOptions[id].args.trigger);
       displayOptions[id].args.trigger.args.type.set = options_set;
-    elseif(optionTriggerChoices[id] >= 0 and (getAll(data, {"trigger", "type"}) == "event" or getAll(data, {"trigger", "type"}) == "status")) then
+    elseif(optionTriggerChoices[id] >= 1 and (getAll(data, {"trigger", "type"}) == "event" or getAll(data, {"trigger", "type"}) == "status")) then
       local event = getAll(data, {"trigger", "event"});
       local unevent = getAll(data, {"trigger", "unevent"});
       if(event and WeakAuras.event_prototypes[event]) then
@@ -3138,12 +3054,7 @@ function WeakAuras.ReloadTriggerOptions(data)
         displayOptions[id].args.trigger.args.unevent.set = options_set;
       end
       if(displayOptions[id].args.trigger.args.subeventPrefix) then
-        displayOptions[id].args.trigger.args.subeventPrefix.set = function(info, v)
-          if not(subevent_actual_prefix_types[v]) then
-            data.trigger.subeventSuffix = "";
-          end
-          options_set(info, v);
-        end
+        displayOptions[id].args.trigger.args.subeventPrefix.set = options_set
       end
       if(displayOptions[id].args.trigger.args.subeventSuffix) then
         displayOptions[id].args.trigger.args.subeventSuffix.set = options_set;
@@ -4297,18 +4208,9 @@ function WeakAuras.ShowCloneDialog(data)
       button2 = L["No"],
       button3 = L["Never"],
       OnAccept = function()
-        local new_id = data.id.." Group";
-        local num = 2;
-        while(WeakAuras.GetData(new_id)) do
-          new_id = "New "..num;
-          num = num + 1;
-        end
-
         local parentData = {
-          id = new_id,
+          id = WeakAuras.FindUnusedId(data.id.." Group"),
           regionType = "dynamicgroup",
-          trigger = {},
-          load = {}
         };
         WeakAuras.Add(parentData);
         WeakAuras.NewDisplayButton(parentData);

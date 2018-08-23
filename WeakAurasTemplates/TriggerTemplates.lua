@@ -252,13 +252,13 @@ local function createItemTrigger(triggers, position, item, genericShowOn)
 end
 
 local function createAbilityAndBuffTrigger(triggers, item)
-  createBuffTrigger(triggers, 0, item, "showOnActive", true);
-  createAbilityTrigger(triggers, 1, item, "showAlways");
+  createBuffTrigger(triggers, 1, item, "showOnActive", true);
+  createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
 local function createAbilityAndDebuffTrigger(triggers, item)
-  createBuffTrigger(triggers, 0, item, "showOnActive", false);
-  createAbilityTrigger(triggers, 1, item, "showAlways");
+  createBuffTrigger(triggers, 1, item, "showOnActive", false);
+  createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
 -- Create preview thumbnail
@@ -338,7 +338,7 @@ local function subTypesFor(item, regionType)
       title = L["Basic Show On Cooldown"],
       description = L["Only shows the aura when the ability is on cooldown."],
       createTriggers = function(triggers, item)
-        createAbilityTrigger(triggers, 0, item, "showOnCooldown");
+        createAbilityTrigger(triggers, 1, item, "showOnCooldown");
       end,
     });
     if (item.charges) then
@@ -347,11 +347,11 @@ local function subTypesFor(item, regionType)
         title = L["Charge Tracking"],
         description = L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."],
         createTriggers = function(triggers, item)
-          createAbilityTrigger(triggers, 0, item, "showAlways");
+          createAbilityTrigger(triggers, 1, item, "showAlways");
         end,
         createConditions = function(conditions, item, regionType)
-          insufficientResourcesBlue(conditions, 0, regionType);
-          hasChargesGrey(conditions, 0, regionType);
+          insufficientResourcesBlue(conditions, 1, regionType);
+          hasChargesGrey(conditions, 1, regionType);
         end,
       });
       if (item.buff) then
@@ -361,9 +361,9 @@ local function subTypesFor(item, regionType)
           description = L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."],
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 1, regionType);
-            hasChargesGrey(conditions, 1, regionType);
-            isBuffedGlow(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 2, regionType);
+            hasChargesGrey(conditions, 2, regionType);
+            isBuffedGlow(conditions, 1, regionType);
           end,
         });
       elseif(item.debuff) then
@@ -373,9 +373,9 @@ local function subTypesFor(item, regionType)
           description = L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."],
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 1, regionType);
-            hasChargesGrey(conditions, 1, regionType);
-            isBuffedGlow(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 2, regionType);
+            hasChargesGrey(conditions, 2, regionType);
+            isBuffedGlow(conditions, 1, regionType);
           end,
         })
       elseif(item.requiresTarget) then
@@ -385,12 +385,12 @@ local function subTypesFor(item, regionType)
           description = L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."],
           genericShowOn = "showAlways",
           createTriggers = function(triggers, item)
-            createAbilityTrigger(triggers, 0, item, "showAlways");
+            createAbilityTrigger(triggers, 1, item, "showAlways");
           end,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 0, regionType);
-            hasChargesGrey(conditions, 0, regionType);
-            isSpellNotInRangeRed(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 1, regionType);
+            hasChargesGrey(conditions, 1, regionType);
+            isSpellNotInRangeRed(conditions, 1, regionType);
           end,
         });
         if (item.usable) then
@@ -399,12 +399,12 @@ local function subTypesFor(item, regionType)
             title = L["Show Charges with Usable Check"],
             description = L["Always shows the aura, turns red when out of range, blue on insufficient resources."],
             createTriggers = function(triggers, item)
-              createAbilityTrigger(triggers, 0, item, "showAlways");
+              createAbilityTrigger(triggers, 1, item, "showAlways");
             end,
             createConditions = function(conditions, item, regionType)
-              isNotUsableBlue(conditions, 0, regionType);
-              hasChargesGrey(conditions, 0, regionType);
-              isSpellNotInRangeRed(conditions, 0, regionType);
+              isNotUsableBlue(conditions, 1, regionType);
+              hasChargesGrey(conditions, 1, regionType);
+              isSpellNotInRangeRed(conditions, 1, regionType);
             end,
           });
         end
@@ -414,13 +414,13 @@ local function subTypesFor(item, regionType)
           title = L["Show Totem and Charge Information"],
           description = L["Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."],
           createTriggers = function(triggers, item)
-            createTotemTrigger(triggers, 0, item);
-            createAbilityTrigger(triggers, 1, item, "showAlways");
+            createTotemTrigger(triggers, 1, item);
+            createAbilityTrigger(triggers, 2, item, "showAlways");
           end,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 1, regionType);
-            hasChargesGrey(conditions, 1, regionType);
-            totemActiveGlow(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 2, regionType);
+            hasChargesGrey(conditions, 2, regionType);
+            totemActiveGlow(conditions, 1, regionType);
           end,
         });
       elseif(item.usable) then
@@ -429,11 +429,11 @@ local function subTypesFor(item, regionType)
           title = L["Show Charges and Check Usable"],
           description = L["Always shows the aura, turns grey when on zero charges, blue when usable."],
           createTriggers = function(triggers, item)
-            createAbilityTrigger(triggers, 0, item, "showAlways");
+            createAbilityTrigger(triggers, 1, item, "showAlways");
           end,
           createConditions = function(conditions, item, regionType)
-            isNotUsableBlue(conditions, 0, regionType);
-            hasChargesGrey(conditions, 0, regionType);
+            isNotUsableBlue(conditions, 1, regionType);
+            hasChargesGrey(conditions, 1, regionType);
           end,
         });
       end
@@ -443,11 +443,11 @@ local function subTypesFor(item, regionType)
         title = L["Cooldown Tracking"],
         description = L["Always shows the aura, turns grey when on cooldown, blue when unusable."],
         createTriggers = function(triggers, item)
-          createAbilityTrigger(triggers, 0, item, "showAlways");
+          createAbilityTrigger(triggers, 1, item, "showAlways");
         end,
         createConditions = function(conditions, item, regionType)
-          insufficientResourcesBlue(conditions, 0, regionType);
-          isOnCdGrey(conditions, 0, regionType);
+          insufficientResourcesBlue(conditions, 1, regionType);
+          isOnCdGrey(conditions, 1, regionType);
         end,
       });
       if (item.buff) then
@@ -457,9 +457,9 @@ local function subTypesFor(item, regionType)
           description = L["Highlight while buffed."],
           createTriggers = createAbilityAndBuffTrigger,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 1, regionType);
-            isOnCdGrey(conditions, 1, regionType);
-            isBuffedGlow(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 2, regionType);
+            isOnCdGrey(conditions, 2, regionType);
+            isBuffedGlow(conditions, 1, regionType);
           end,
         });
         if (item.usable) then
@@ -469,9 +469,9 @@ local function subTypesFor(item, regionType)
             description = L["Highlight while buffed."],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item, regionType)
-              isNotUsableBlue(conditions, 1, regionType);
-              isOnCdGrey(conditions, 1, regionType);
-              isBuffedGlow(conditions, 0, regionType);
+              isNotUsableBlue(conditions, 2, regionType);
+              isOnCdGrey(conditions, 2, regionType);
+              isBuffedGlow(conditions, 1, regionType);
             end,
           });
         end
@@ -482,10 +482,10 @@ local function subTypesFor(item, regionType)
             description = L["Highlight while buffed, red when out of range."],
             createTriggers = createAbilityAndBuffTrigger,
             createConditions = function(conditions, item, regionType)
-              insufficientResourcesBlue(conditions, 1, regionType);
-              isOnCdGrey(conditions, 1, regionType);
-              isSpellNotInRangeRed(conditions, 1, regionType);
-              isBuffedGlow(conditions, 0, regionType);
+              insufficientResourcesBlue(conditions, 2, regionType);
+              isOnCdGrey(conditions, 2, regionType);
+              isSpellNotInRangeRed(conditions, 2, regionType);
+              isBuffedGlow(conditions, 1, regionType);
             end,
           });
         end
@@ -496,9 +496,9 @@ local function subTypesFor(item, regionType)
           description = L["Highlight while debuffed."],
           createTriggers = createAbilityAndDebuffTrigger,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 1, regionType);
-            isOnCdGrey(conditions, 1, regionType);
-            isBuffedGlow(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 2, regionType);
+            isOnCdGrey(conditions, 2, regionType);
+            isBuffedGlow(conditions, 1, regionType);
           end,
         });
         if (item.requiresTarget) then
@@ -508,10 +508,10 @@ local function subTypesFor(item, regionType)
             description = L["Highlight while debuffed, red when out of range."],
             createTriggers = createAbilityAndDebuffTrigger,
             createConditions = function(conditions, item, regionType)
-              insufficientResourcesBlue(conditions, 1, regionType);
-              isOnCdGrey(conditions, 1, regionType);
-              isSpellNotInRangeRed(conditions, 1, regionType);
-              isBuffedGlow(conditions, 0, regionType);
+              insufficientResourcesBlue(conditions, 2, regionType);
+              isOnCdGrey(conditions, 2, regionType);
+              isSpellNotInRangeRed(conditions, 2, regionType);
+              isBuffedGlow(conditions, 1, regionType);
             end,
           });
         end
@@ -521,13 +521,13 @@ local function subTypesFor(item, regionType)
           title = L["Show Cooldown and Totem Information"],
           description = L["Always shows the aura, turns grey if the ability is not usable."],
           createTriggers = function(triggers, item)
-            createTotemTrigger(triggers, 0, item);
-            createAbilityTrigger(triggers, 1, item, "showAlways");
+            createTotemTrigger(triggers, 1, item);
+            createAbilityTrigger(triggers, 2, item, "showAlways");
           end,
           createConditions = function(conditions, item, regionType)
-            insufficientResourcesBlue(conditions, 1, regionType);
-            isOnCdGrey(conditions, 1, regionType);
-            totemActiveGlow(conditions, 0, regionType);
+            insufficientResourcesBlue(conditions, 2, regionType);
+            isOnCdGrey(conditions, 2, regionType);
+            totemActiveGlow(conditions, 1, regionType);
           end,
         });
       else
@@ -537,11 +537,11 @@ local function subTypesFor(item, regionType)
             title = L["Show Cooldown and Check Usable"],
             description = L["Always shows the aura, turns grey if the ability is not usable."],
             createTriggers = function(triggers, item)
-              createAbilityTrigger(triggers, 0, item, "showAlways");
+              createAbilityTrigger(triggers, 1, item, "showAlways");
             end,
             createConditions = function(conditions, item, regionType)
-              isNotUsableBlue(conditions, 0, regionType);
-              isOnCdGrey(conditions, 0, regionType);
+              isNotUsableBlue(conditions, 1, regionType);
+              isOnCdGrey(conditions, 1, regionType);
             end,
           });
           if (item.requiresTarget) then
@@ -550,12 +550,12 @@ local function subTypesFor(item, regionType)
               title = L["Show Cooldown and Check Usable & Target"],
               description = L["Always shows the aura, turns grey if the ability is not usable and red when out of range."],
               createTriggers = function(triggers, item)
-                createAbilityTrigger(triggers, 0, item, "showAlways");
+                createAbilityTrigger(triggers, 1, item, "showAlways");
               end,
               createConditions = function(conditions, item, regionType)
-                isNotUsableBlue(conditions, 0, regionType);
-                isOnCdGrey(conditions, 0, regionType);
-                isSpellNotInRangeRed(conditions, 0, regionType);
+                isNotUsableBlue(conditions, 1, regionType);
+                isOnCdGrey(conditions, 1, regionType);
+                isSpellNotInRangeRed(conditions, 1, regionType);
               end,
             });
           end
@@ -566,12 +566,12 @@ local function subTypesFor(item, regionType)
             title = L["Show Cooldown and Check for Target"],
             description = L["Always shows the aura, turns red when out of range."],
             createTriggers = function(triggers, item)
-              createAbilityTrigger(triggers, 0, item, "showAlways");
+              createAbilityTrigger(triggers, 1, item, "showAlways");
             end,
             createConditions = function(conditions, item, regionType)
-              insufficientResourcesBlue(conditions, 0, regionType);
-              isOnCdGrey(conditions, 0, regionType);
-              isSpellNotInRangeRed(conditions, 0, regionType);
+              insufficientResourcesBlue(conditions, 1, regionType);
+              isOnCdGrey(conditions, 1, regionType);
+              isSpellNotInRangeRed(conditions, 1, regionType);
             end,
           });
         end
@@ -583,7 +583,7 @@ local function subTypesFor(item, regionType)
       title = L["Show Only if Buffed"],
       description = L["Only shows the aura if the target has the buff."],
       createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 0, item, "showOnActive", true);
+        createBuffTrigger(triggers, 1, item, "showOnActive", true);
       end
     });
     tinsert(types, {
@@ -592,10 +592,10 @@ local function subTypesFor(item, regionType)
       description = L["Always shows the aura, highlight it if buffed."],
       buffShowOn = "showAlways",
       createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 0, item, "showAlways", true);
+        createBuffTrigger(triggers, 1, item, "showAlways", true);
       end,
       createConditions = function(conditions, item, regionType)
-        isBuffedGlow(conditions, 0, regionType);
+        isBuffedGlow(conditions, 1, regionType);
       end,
     });
     tinsert(types, {
@@ -603,10 +603,10 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always shows the aura, grey if buff not active."],
       createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 0, item, "showAlways", true);
+        createBuffTrigger(triggers, 1, item, "showAlways", true);
       end,
       createConditions = function(conditions, item, regionType)
-        missingBuffGreyed(conditions, 0, regionType);
+        missingBuffGreyed(conditions, 1, regionType);
       end,
     });
   elseif(item.type == "debuff") then
@@ -615,7 +615,7 @@ local function subTypesFor(item, regionType)
       title = L["Show Only if Debuffed"],
       description = L["Only show the aura if the target has the debuff."],
       createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 0, item, "showOnActive", false);
+        createBuffTrigger(triggers, 1, item, "showOnActive", false);
       end
     });
     tinsert(types, {
@@ -623,10 +623,10 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always show the aura, highlight it if debuffed."],
       createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 0, item, "showAlways", false);
+        createBuffTrigger(triggers, 1, item, "showAlways", false);
       end,
       createConditions = function(conditions, item, regionType)
-        isBuffedGlow(conditions, 0, regionType);
+        isBuffedGlow(conditions, 1, regionType);
       end,
     });
     tinsert(types, {
@@ -634,10 +634,10 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if the debuff not active."],
       createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 0, item, "showAlways", false);
+        createBuffTrigger(triggers, 1, item, "showAlways", false);
       end,
       createConditions = function(conditions, item, regionType)
-        missingBuffGreyed(conditions, 0, regionType);
+        missingBuffGreyed(conditions, 1, regionType);
       end,
     });
   elseif(item.type == "item") then
@@ -646,7 +646,7 @@ local function subTypesFor(item, regionType)
       title = L["Show Only if on Cooldown"],
       description = L["Only show the aura when the item is on cooldown."],
       createTriggers = function(triggers, item)
-        createItemTrigger(triggers, 0, item, "showOnCooldown");
+        createItemTrigger(triggers, 1, item, "showOnCooldown");
       end
     });
     tinsert(types, {
@@ -654,10 +654,10 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if on cooldown."],
       createTriggers = function(triggers, item)
-        createItemTrigger(triggers, 0, item, "showAlways");
+        createItemTrigger(triggers, 1, item, "showAlways");
       end,
       createConditions = function(conditions, item, regionType)
-        isOnCdGrey(conditions, 0, regionType);
+        isOnCdGrey(conditions, 1, regionType);
       end,
     });
   elseif(item.type == "totem") then
@@ -666,10 +666,10 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always shows the aura, turns grey if on cooldown."],
       createTriggers = function(triggers, item)
-        createTotemTrigger(triggers, 0, item);
+        createTotemTrigger(triggers, 1, item);
       end,
       createConditions = function(conditions, item, regionType)
-        totemActiveGlow(conditions, 0, regionType);
+        totemActiveGlow(conditions, 1, regionType);
       end,
     });
   end
@@ -776,7 +776,6 @@ function WeakAuras.CreateTemplateView(frame)
   end
 
   local function replaceTrigger(data, item, subType)
-    data.additional_triggers = nil;
     local triggers;
     if (item.triggers) then
       triggers = item.triggers;
@@ -785,33 +784,21 @@ function WeakAuras.CreateTemplateView(frame)
     end
 
     for i, v in pairs(triggers) do
-      if (i == 0) then
-        data.trigger = {};
-        WeakAuras.DeepCopy(v.trigger, data.trigger);
-        data.untrigger = {};
-        if (v.untrigger) then
-          WeakAuras.DeepCopy(v.untrigger, data.untrigger);
-        end
-      else
-        data.additional_triggers = data.additional_triggers or {};
-        data.additional_triggers[i] = data.additional_triggers[i] or {};
-        data.additional_triggers[i].trigger = {};
-        WeakAuras.DeepCopy(v.trigger, data.additional_triggers[i].trigger);
-        data.additional_triggers[i].untrigger = {};
-        if (v.untrigger) then
-          WeakAuras.DeepCopy(v.untrigger, data.additional_triggers[i].untrigger);
-        end
+      data.triggers[i] = data.triggers[i] or {};
+      data.triggers[i].trigger = {};
+      WeakAuras.DeepCopy(v.trigger, data.triggers[i].trigger);
+      data.triggers[i].untrigger = {};
+      if (v.untrigger) then
+        WeakAuras.DeepCopy(v.untrigger, data.triggers[i].untrigger);
       end
     end
-    data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
-    if (triggers[1]) then -- Multiple triggers
-      data.disjunctive = "any";
-      data.activeTriggerMode = -10;
+    if (#data.triggers > 1) then -- Multiple triggers
+      data.triggers.disjunctive = "any";
+      data.triggers.activeTriggerMode = -10;
     end
   end
 
   local function addTrigger(data, item, subType)
-    data.additional_triggers = data.additional_triggers or {};
     local triggers;
     if (item.triggers) then
       triggers = item.triggers;
@@ -820,20 +807,19 @@ function WeakAuras.CreateTemplateView(frame)
     end
 
     for i, v in pairs(triggers) do
-      local position = data.numTriggers + i;
-      data.additional_triggers[position] = data.additional_triggers[position] or {};
-      data.additional_triggers[position].trigger = {};
-      WeakAuras.DeepCopy(v.trigger, data.additional_triggers[position].trigger);
-      data.additional_triggers[position].untrigger = {};
+      local position = #data.triggers + 1
+      data.triggers[position] = data.triggers[position] or {};
+      data.triggers[position].trigger = {};
+      WeakAuras.DeepCopy(v.trigger, data.triggers[position].trigger);
+      data.triggers[position].untrigger = {};
       if (v.untrigger) then
-        WeakAuras.DeepCopy(v.untrigger, data.additional_triggers[position].untrigger);
+        WeakAuras.DeepCopy(v.untrigger, data.triggers[position].untrigger);
       end
     end
-    data.numTriggers = 1 + (data.additional_triggers and #data.additional_triggers or 0);
      -- Multiple Triggers, override disjunctive, even if the users set it previously
-    if (triggers[1]) then
-      data.disjunctive = "any";
-      data.activeTriggerMode = -10;
+    if (triggers[2]) then
+      data.triggers.disjunctive = "any";
+      data.triggers.activeTriggerMode = -10;
     end
   end
 
@@ -1028,7 +1014,7 @@ function WeakAuras.CreateTemplateView(frame)
     local function handle(data, item, subType)
       replaceTrigger(data, item, subType);
       replaceCondition(data, item, subType);
-      WeakAuras.optionTriggerChoices[data.id] = 0;
+      WeakAuras.optionTriggerChoices[data.id] = 1;
       newView:CancelClose();
       WeakAuras.Add(data);
       WeakAuras.NewDisplayButton(data);
@@ -1051,7 +1037,7 @@ function WeakAuras.CreateTemplateView(frame)
 
   local function addTriggers(data, item, subType)
     local function handle(data, item, subType)
-      local prevNumTriggers = data.numTriggers;
+      local prevNumTriggers = #data.triggers;
       addTrigger(data, item, subType);
       addCondition(data, item, subType, prevNumTriggers);
       WeakAuras.optionTriggerChoices[data.id] = prevNumTriggers;
