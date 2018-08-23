@@ -261,12 +261,74 @@ local function createAbilityAndDebuffTrigger(triggers, item)
   createAbilityTrigger(triggers, 1, item, "showAlways");
 end
 
+-- Create preview thumbnail
+local function createThumbnail(parent)
+  -- Preview frame
+  local borderframe = CreateFrame("FRAME", nil, parent);
+  borderframe:SetWidth(32);
+  borderframe:SetHeight(32);
+
+  -- Preview border
+  local border = borderframe:CreateTexture(nil, "OVERLAY");
+  border:SetAllPoints(borderframe);
+  border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
+  border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
+
+  -- Main region
+  local region = CreateFrame("FRAME", nil, borderframe);
+  borderframe.region = region;
+
+  -- Preview children
+  region.children = {};
+
+  -- Return preview
+  return borderframe;
+end
+
 local function subTypesFor(item, regionType)
   local types = {};
   local icon = {
-    target = 132212,
-    glow = 571554,
-    charges = 237538,
+    target = function()
+      local thumbnail = createThumbnail(UIParent);
+      local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+      t1:SetTexture(134376);
+      t1:SetAllPoints(thumbnail);
+
+      thumbnail.elapsed = 0;
+      thumbnail:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = self.elapsed + elapsed;
+        if(self.elapsed < 0.5) then
+          t1:SetVertexColor(1,0,0,1);
+        elseif(self.elapsed < 1.5) then
+          t1:SetVertexColor(1,1,1,1);
+        elseif(self.elapsed < 3) then
+        -- do nothing
+        else
+          self.elapsed = self.elapsed - 3;
+        end
+      end);
+      return thumbnail;
+    end, -- 132212,
+    glow = function()
+      local thumbnail = createThumbnail(UIParent);
+      local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+      t1:SetTexture(134376);
+      t1:SetAllPoints(thumbnail);
+      WeakAuras.ShowOverlayGlow(thumbnail); -- where to call HideOverlayGlow() ?
+      return thumbnail;
+    end, -- 571554
+    charges = function()
+      local thumbnail = createThumbnail(UIParent);
+      local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+      t1:SetTexture(134376);
+      t1:SetAllPoints(thumbnail);
+      local t2 = thumbnail:CreateFontString(nil, "ARTWORK");
+      t2:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE");
+      t2:SetTextColor(1,1,1,1);
+      t2:SetText("2");
+      t2:SetPoint("BOTTOMRIGHT", -2, 2);
+      return thumbnail;
+    end,
     cd = 134377,
     cd2 = 134376,
   };
@@ -905,7 +967,11 @@ function WeakAuras.CreateTemplateView(frame)
       button:SetTitle(subType.title);
       button:SetDescription(subType.description);
       if subType.icon then
-        button:SetIcon(subType.icon);
+        if type(subType.icon) == "function" then
+          button:SetIcon(subType.icon());
+        else
+          button:SetIcon(subType.icon);
+        end
       end
       button:SetFullWidth(true);
       button:SetClick(function()
