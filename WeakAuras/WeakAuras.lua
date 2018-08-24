@@ -738,64 +738,106 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 end
 
-local function CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
-  local trigger = condition.check and condition.check.trigger;
-  local variable = condition.check and condition.check.variable;
-  local op = condition.check and condition.check.op;
-  local value = condition.check and condition.check.value;
+local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
+  local trigger = input and input.trigger;
+  local variable = input and input.variable;
+  local op = input and input.op;
+  local value = input and input.value;
+
+  local check = nil;
+  local recheckCode = nil;
+
+  if (variable == "AND" or variable == "OR") then
+    local test = {};
+    if (input.checks) then
+      for i, subcheck in ipairs(input.checks) do
+        local subtest, subrecheckCode = CreateTestForCondition(subcheck, allConditionsTemplate, usedStates);
+        if (subtest) then
+          tinsert(test, "(" .. subtest .. ")");
+        end
+        if (subrecheckCode) then
+          recheckCode = recheckCode or "";
+          recheckCode = recheckCode .. subrecheckCode;
+        end
+      end
+    end
+    if (next(test)) then
+      if (variable == "AND") then
+        check = tconcat(test, " and ");
+      else
+        check = tconcat(test, " or ");
+      end
+    end
+  end
+
   if (trigger and variable and value) then
+    usedStates[trigger] = true;
+
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
     local type = conditionTemplate and conditionTemplate.type;
     local test = conditionTemplate and conditionTemplate.test;
 
-    local check = nil;
-    local stateCheck = "state and state.show and ";
-    local stateVariableCheck = "state." .. variable .. "~= nil and ";
+    local stateCheck = "state[" .. trigger .. "] and state[" .. trigger .. "].show and ";
+    local stateVariableCheck = "state[" .. trigger .. "]." .. variable .. "~= nil and ";
     if (test) then
       if (value) then
+        test = test:gsub("state", "state[" .. trigger .. "]")
         check = string.format(test, value, op or "");
+        check = "state and (" .. check .. ")";
       end
     elseif (type == "number" and op) then
-      check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. value;
+      check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. value;
     elseif (type == "timer" and op) then
       if (op == "==") then
-        check = stateCheck .. stateVariableCheck .. "abs(state." ..variable .. "- now -" .. value .. ") < 0.05";
+        check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]." ..variable .. "- now -" .. value .. ") < 0.05";
       else
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. "- now" .. op .. value;
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. "- now" .. op .. value;
       end
     elseif (type == "select" and op) then
       if (tonumber(value)) then
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. tonumber(value);
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. tonumber(value);
       else
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. op .. "'" .. value .. "'";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. "'" .. value .. "'";
       end
     elseif (type == "bool") then
       local rightSide = value == 0 and "false" or "true";
-      check = stateCheck .. stateVariableCheck .. "state." .. variable .. "==" .. rightSide
+      check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. "==" .. rightSide
     elseif (type == "string") then
       if(op == "==") then
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. " == [[" .. value .. "]]";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. " == [[" .. value .. "]]";
       elseif (op  == "find('%s')") then
-        check = stateCheck .. stateVariableCheck .. "state." .. variable .. ":find([[" .. value .. "]], 1, true)";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. ":find([[" .. value .. "]], 1, true)";
       elseif (op == "match('%s')") then
-        check = stateCheck .. stateVariableCheck .. "state." ..  variable .. ":match([[" .. value .. "]], 1, true)";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." ..  variable .. ":match([[" .. value .. "]], 1, true)";
       end
     end
 
-    if (check) then
-      ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. trigger .. ")\n";
-      ret = ret .. "  state = allStates[cloneId] or allStates['']\n";
-      ret = ret .. "  if (" .. check .. ") then\n";
-      ret = ret .. "    newActiveConditions[" .. conditionNumber .. "] = true;\n";
-      ret = ret .. "  end\n";
-    end
-
     if (type == "timer" and value) then
-      ret = ret .. "  local nextTime = state and state." .. variable .. " and (state." .. variable .. " -" .. value .. ")\n";
-      ret = ret .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
-      ret = ret .. "    recheckTime = nextTime\n";
-      ret = ret .. "  end\n"
+      recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]." .. variable .. " and (state[" .. trigger .. "]." .. variable .. " -" .. value .. ")\n";
+      recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
+      recheckCode = recheckCode .. "    recheckTime = nextTime\n";
+      recheckCode = recheckCode .. "  end\n"
     end
+  end
+  return check, recheckCode;
+end
+
+local function CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
+  local usedStates = {};
+  local check, recheckCode = CreateTestForCondition(condition.check, allConditionsTemplate, usedStates);
+  if (check) then
+    for triggernum in pairs(usedStates) do
+      ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. triggernum .. ")\n";
+      ret = ret .. "  state[" .. triggernum  .. "] = allStates[cloneId] or allStates['']\n";
+    end
+    ret = ret .. "  if (" .. check .. ") then\n";
+    ret = ret .. "    newActiveConditions[" .. conditionNumber .. "] = true;\n";
+    ret = ret .. "  end\n";
+  end
+  if (recheckCode) then
+    ret = ret .. recheckCode;
+  end
+  if (check or recheckCode) then
     ret = ret .. "\n";
   end
   return ret;
@@ -999,6 +1041,8 @@ function WeakAuras.ConstructConditionFunction(data)
   local ret = "";
   ret = ret .. "local newActiveConditions = {};\n"
   ret = ret .. "local propertyChanges = {};\n"
+  ret = ret .. "local state = {};\n"
+  ret = ret .. "local nextTime;\n"
   ret = ret .. "return function(region, skipActions)\n";
   if (debug) then ret = ret .. "  print('check conditions for:', region.id, region.cloneId)\n"; end
   ret = ret .. "  local id = region.id\n";
@@ -1006,7 +1050,7 @@ function WeakAuras.ConstructConditionFunction(data)
   ret = ret .. "  local activatedConditions = WeakAuras.GetActiveConditions(id, cloneId)\n";
   ret = ret .. "  wipe(newActiveConditions)\n";
   ret = ret .. "  local allStates\n";
-  ret = ret .. "  local state\n";
+  ret = ret .. "  wipe(state)\n";
   ret = ret .. "  local recheckTime;\n"
   ret = ret .. "  local now = GetTime();\n"
 
@@ -1110,6 +1154,40 @@ local function handleDynamicConditionsOnUpdate(self)
 end
 
 local registeredGlobalFunctions = {};
+
+local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditionsTemplate, register)
+  local trigger = check and check.trigger;
+  local variable = check and check.variable;
+
+  if (trigger == -2) then
+    if (check.checks) then
+      for _, subcheck in ipairs(check.checks) do
+        EvaluateCheckForRegisterForGlobalConditions(id, subcheck, allConditionsTemplate, register);
+      end
+    end
+  elseif (trigger and variable) then
+    local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
+    if (conditionTemplate and conditionTemplate.events) then
+      for _, event in ipairs(conditionTemplate.events) do
+        if (not dynamicConditions[event]) then
+          register[event] = true;
+          dynamicConditions[event] = {};
+        end
+        dynamicConditions[event][id] = true;
+      end
+
+      if (conditionTemplate.globalStateUpdate and not registeredGlobalFunctions[variable]) then
+        registeredGlobalFunctions[variable] = true;
+        for _, event in ipairs(conditionTemplate.events) do
+          globalDynamicConditionFuncs[event] = globalDynamicConditionFuncs[event] or {};
+          tinsert(globalDynamicConditionFuncs[event], conditionTemplate.globalStateUpdate);
+        end
+        conditionTemplate.globalStateUpdate(globalConditionState);
+      end
+    end
+  end
+end
+
 function WeakAuras.RegisterForGlobalConditions(id)
   local data = WeakAuras.GetData(id);
   for event, conditonFunctions in pairs(dynamicConditions) do
@@ -1122,30 +1200,7 @@ function WeakAuras.RegisterForGlobalConditions(id)
     allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
 
     for conditionNumber, condition in ipairs(data.conditions) do
-      local trigger = condition.check and condition.check.trigger;
-      local variable = condition.check and condition.check.variable;
-
-      if (trigger and variable) then
-        local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
-        if (conditionTemplate and conditionTemplate.events) then
-          for _, event in ipairs(conditionTemplate.events) do
-            if (not dynamicConditions[event]) then
-              register[event] = true;
-              dynamicConditions[event] = {};
-            end
-            dynamicConditions[event][id] = true;
-          end
-
-          if (conditionTemplate.globalStateUpdate and not registeredGlobalFunctions[variable]) then
-            registeredGlobalFunctions[variable] = true;
-            for _, event in ipairs(conditionTemplate.events) do
-              globalDynamicConditionFuncs[event] = globalDynamicConditionFuncs[event] or {};
-              tinsert(globalDynamicConditionFuncs[event], conditionTemplate.globalStateUpdate);
-            end
-            conditionTemplate.globalStateUpdate(globalConditionState);
-          end
-        end
-      end
+      EvaluateCheckForRegisterForGlobalConditions(id, condition.check, allConditionsTemplate, register);
     end
   end
 

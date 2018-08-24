@@ -828,7 +828,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                 if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
                   if (arg.showExactOption and trigger["use_exact_"..realname]) then
                     local spellId = tonumber(trigger[realname])
-                    if (spellId) then
+                    if (spellId and spellId ~= 0) then
                       return tostring(spellId);
                     else
                       return L["Invalid Spell ID"];
@@ -2588,14 +2588,34 @@ function WeakAuras.GetSpellTooltipText(id)
   return tooltipText;
 end
 
-function WeakAuras.DeleteConditionsForTrigger(data, triggernum)
-  for _, condition in ipairs(data.conditions) do
-    if (condition.trigger == triggernum) then
-      condition.trigger = nil;
+local function DeleteConditionsForTriggerHandleSubChecks(checks, triggernum)
+  for _, check in ipairs(checks) do
+    if (check.trigger == triggernum) then
+      check.trigger = nil;
     end
 
-    if (condition.trigger and condition.trigger > triggernum) then
-      condition.trigger = condition.trigger - 1;
+    if (check.trigger and check.trigger > triggernum) then
+      check.trigger = check.trigger - 1;
+    end
+
+    if (checks.checks) then
+      DeleteConditionsForTriggerHandleSubChecks(checks.checks, triggernum);
+    end
+  end
+end
+
+function WeakAuras.DeleteConditionsForTrigger(data, triggernum)
+  for _, condition in ipairs(data.conditions) do
+    if (condition.check and condition.check.trigger == triggernum) then
+      condition.check.trigger = nil;
+    end
+
+    if (condition.check and condition.check.trigger and condition.check.trigger > triggernum) then
+      condition.check.trigger = condition.check.trigger - 1;
+    end
+
+    if (condition.check and condition.check.checks) then
+      DeleteConditionsForTriggerHandleSubChecks(condition.check.checks, triggernum)
     end
   end
 end
@@ -2685,6 +2705,19 @@ function WeakAuras.ReloadTriggerOptions(data)
     WeakAuras.ReloadTriggerOptions(data);
   end
 
+  local function moveTriggerDownConditionCheck(check, i)
+    if (check.trigger == i) then
+      check.trigger = i + 1;
+    elseif (check.trigger == i  + 1) then
+      check.trigger = i;
+    end
+    if (check.checks) then
+      for _, subCheck in ipairs(check.checks) do
+        moveTriggerDownConditionCheck(subCheck, i);
+      end
+    end
+  end
+
   local function moveTriggerDownImpl(data, i)
     if (i < 0 or i + 1 >= data.numTriggers) then
       return false;
@@ -2706,11 +2739,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     end
 
     for _, condition in ipairs(data.conditions) do
-      if (condition.check.trigger == i) then
-        condition.check.trigger = i + 1;
-      elseif (condition.check.trigger == i  + 1) then
-        condition.check.trigger = i;
-      end
+      moveTriggerDownConditionCheck(condition.check, i);
     end
 
     return true;
