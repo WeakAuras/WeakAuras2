@@ -381,12 +381,16 @@ local function importPendingData()
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
-  WeakAuras.CloseImportExport()
   HideUIPanel(ItemRefTooltip) -- this also wipes pendingData as a side effect
   buttonAnchor:Hide()
   thumbnailAnchor.currentThumbnail:Hide()
   thumbnailAnchor.currentThumbnail = nil
-  if not imports then return end
+  if imports and WeakAuras.LoadOptions() then
+    WeakAuras.ShowOptions()
+  else
+    return
+  end
+  WeakAuras.CloseImportExport()
   WeakAuras.SetImporting(true)
 
   -- import parent/single aura
@@ -550,9 +554,6 @@ local function importPendingData()
     WeakAuras.UpdateDisplayButton(parentData)
     WeakAuras.ReloadGroupRegionOptions(parentData)
     WeakAuras.SortDisplayButtons()
-  end
-  if not WeakAuras.IsOptionsOpen() then
-    WeakAuras.ShowOptions()
   end
   WeakAuras.SetImporting(false)
   WeakAuras.PickDisplay(installedData[0].id)
