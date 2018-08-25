@@ -685,7 +685,7 @@ function WeakAuras.CreateFrame()
       if(GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
         local simpleLabel = AceGUI:Create("Label");
         simpleLabel:SetFont("Fonts\\FRIZQT__.TTF", 36, "OUTLINE");
-        simpleLabel:SetColor(1, 1, 0);
+        simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         simpleLabel:SetText(L["Simple"]);
         containerScroll:AddChild(simpleLabel);
 
@@ -700,7 +700,7 @@ function WeakAuras.CreateFrame()
 
         local advancedLabel = AceGUI:Create("Label");
         advancedLabel:SetFont("Fonts\\FRIZQT__.TTF", 36, "OUTLINE");
-        advancedLabel:SetColor(1, 1, 0);
+        advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         advancedLabel:SetText(L["Advanced"]);
         containerScroll:AddChild(advancedLabel);
       end
@@ -729,7 +729,7 @@ function WeakAuras.CreateFrame()
 
       local externalLabel = AceGUI:Create("Label");
       externalLabel:SetFont("Fonts\\FRIZQT__.TTF", 36, "OUTLINE");
-      externalLabel:SetColor(1, 1, 0);
+      externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
       externalLabel:SetText(L["External"]);
       containerScroll:AddChild(externalLabel);
 
