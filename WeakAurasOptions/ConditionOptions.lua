@@ -947,7 +947,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
             condition.check.variable = conditions[i].check.variable;
             condition.check.op = conditions[i].check.op;
             condition.check.value = conditions[i].check.value;
-            condition.check.checks = CopyTable(conditions[i].check.checks);
+            if (conditions[i].check.checks) then
+              condition.check.checks = CopyTable(conditions[i].check.checks);
+            end
 
             condition.changes = {};
             for changeIndex, change in ipairs(conditions[i].changes) do
