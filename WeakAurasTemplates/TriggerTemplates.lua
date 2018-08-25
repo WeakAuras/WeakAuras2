@@ -675,12 +675,13 @@ local function subTypesFor(item, regionType)
   end
 
   -- filter when createConditions return nothing for this regionType
-  for index, type in pairs(types) do
+  for index = #types, 1, -1 do
+    local type = types[index];
     if type.createConditions then
       local conditions = {}
       type.createConditions(conditions, item, regionType)
       if #conditions == 0 then
-        types[index] = nil;
+        tremove(types, index);
       end
     end
   end
