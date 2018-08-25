@@ -123,7 +123,6 @@ local function CreateFrameSizer(frame, callback, position)
   return handle
 end
 
-
 local defaultWidth = 730
 local defaultHeight = 665
 
@@ -698,6 +697,10 @@ function WeakAuras.CreateFrame()
         end);
         containerScroll:AddChild(button);
 
+        local spacer1Label = AceGUI:Create("Label");
+        spacer1Label:SetText("")
+        containerScroll:AddChild(spacer1Label)
+
         local advancedLabel = AceGUI:Create("Label");
         advancedLabel:SetFont("Fonts\\FRIZQT__.TTF", 36, "OUTLINE");
         advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
@@ -727,11 +730,19 @@ function WeakAuras.CreateFrame()
         containerScroll:AddChild(button);
       end
 
+      local spacer2Label = AceGUI:Create("Label");
+      spacer2Label:SetText("")
+      containerScroll:AddChild(spacer2Label)
+
       local externalLabel = AceGUI:Create("Label");
       externalLabel:SetFont("Fonts\\FRIZQT__.TTF", 36, "OUTLINE");
       externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
       externalLabel:SetText(L["External"]);
       containerScroll:AddChild(externalLabel);
+
+      local spacer3Label = AceGUI:Create("Label");
+      spacer3Label:SetText("")
+      containerScroll:AddChild(spacer3Label)
 
       local importButton = AceGUI:Create("WeakAurasNewButton");
       importButton:SetTitle(L["Import"]);
