@@ -487,12 +487,13 @@ function WeakAuras.CheckTalentByIndex(index)
   return selected or known;
 end
 
+-- The one true order of the first 3 talents, see the setup of WeakAuras.pvp_talent_types
+local pvpTalentId = { 3589, 3588, 3587 };
+
 function WeakAuras.CheckPvpTalentByIndex(index)
   if (index <= 3) then
     local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
-    if not talentSlotInfo then return false end
-    local checkTalentId = talentSlotInfo.availableTalentIDs[index];
-    return talentSlotInfo.selectedTalentID == checkTalentId;
+    return select(3, GetPvpTalentInfoByID(pvpTalentId[index])) == select(3, GetPvpTalentInfoByID(talentSlotInfo.selectedTalentID));
   else
     local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2)
     if checkTalentSlotInfo then
