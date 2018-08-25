@@ -746,6 +746,7 @@ local templates = {
   {
     title = L["Default"],
     data = {
+      inverse = true,
     };
   },
   {
@@ -759,6 +760,7 @@ local templates = {
       mirror = true,
       foregroundTexture = "Textures\\SpellActivationOverlays\\Backlash",
       orientation = "HORIZONTAL",
+      inverse = true,
     },
   },
   {
@@ -769,6 +771,7 @@ local templates = {
       height = 200,
       xOffset = -150,
       yOffset = 0,
+      inverse = true,
     },
   },
   {
@@ -779,6 +782,7 @@ local templates = {
       height = 200,
       xOffset = -200,
       yOffset = 0,
+      inverse = true,
     },
   },
   {
@@ -790,6 +794,7 @@ local templates = {
       xOffset = 150,
       yOffset = 0,
       mirror = true,
+      inverse = true,
     },
   },
   {
@@ -801,6 +806,7 @@ local templates = {
       xOffset = 200,
       yOffset = 0,
       mirror = true,
+      inverse = true,
     },
   },
 }

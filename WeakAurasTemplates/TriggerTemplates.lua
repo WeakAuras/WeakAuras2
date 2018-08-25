@@ -23,175 +23,48 @@ AceGUI:RegisterLayout("WATemplateTriggerLayoutFlyout", function(content, childre
   flowLayout(content, children);
 end);
 
-local grey = {
-  0.5,
-  0.5,
-  0.5,
-  1,
+local colors = {
+  grey = { 0.5, 0.5, 0.5, 1 },
+  blue = { 0.5, 0.5, 1, 1 },
+  red = { 0.8, 0.1, 0.1, 1 },
+  white = { 1, 1, 1, 1 },
+  yellow = { 1, 1, 0, 1 },
+  green = { 0, 1, 0, 1},
 };
 
-local blue = {
-  0.5,
-  0.5,
-  1,
-  1,
+local regionColorProperty = {
+  icon = "color",
+  aurabar= "barColor",
+  progresstexture = "foregroundColor",
+  text = "color",
+  texture = "color",
 };
 
-local red = {
-  0.8,
-  0.1,
-  0.1,
-  1,
-};
-
-local white = {
-  1,
-  1,
-  1,
-  1,
-};
-
-local yellow = {
-  1,
-  1,
-  0,
-  1,
-};
-
-local changes = {
-  grey = {
-    icon = {
-      value = grey,
-      property = "color",
-    },
-    aurabar = {
-      value = grey,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = grey,
-      property = "foregroundColor",
-    },
-    text = {
-      value = grey,
-      property = "color",
-    },
-  },
-  blue = {
-    icon = {
-      value = blue,
-      property = "color",
-    },
-    aurabar = {
-      value = blue,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = blue,
-      property = "foregroundColor",
-    },
-    text = {
-      value = blue,
-      property = "color",
-    },
-  },
-  red = {
-    icon = {
-      value = red,
-      property = "color",
-    },
-    aurabar = {
-      value = red,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = red,
-      property = "foregroundColor",
-    },
-    text = {
-      value = red,
-      property = "color",
-    },
-  },
-  white = {
-    icon = {
-      value = white,
-      property = "color",
-    },
-    aurabar = {
-      value = white,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = white,
-      property = "foregroundColor",
-    },
-    text = {
-      value = white,
-      property = "color",
-    },
-  },
-  yellow ={
-    icon = {
-      value = yellow,
-      property = "color",
-    },
-    aurabar = {
-      value = yellow,
-      property = "barColor",
-    },
-    progresstexture = {
-      value = yellow,
-      property = "foregroundColor",
-    },
-    text = {
-      value = yellow,
-      property = "color",
-    },
-  },
-  alpha = {
-    icon = {
+local function changes(property, regionType)
+  if colors[property] and regionColorProperty[regionType] then
+    return {
+      value = colors[property],
+      property = regionColorProperty[regionType],
+    };
+  elseif WeakAuras.regionTypes[regionType].default[property] == nil then
+    return nil;
+  elseif property == "alpha" then
+    return {
       value = 0.5,
       property = "alpha",
-    },
-    aurabar = {
-      value = 0.5,
-      property = "alpha",
-    },
-    progresstexture = {
-      value = 0.5,
-      property = "alpha",
-    },
-    text = {
-      value = 0.5,
-      property = "alpha",
-    },
-    model = {
-      value = 0.5,
-      property = "alpha",
-    }
-  },
-  inverse = {
-    icon = {
+    };
+  elseif property == "inverse" then
+    return {
       value = false,
       property = "inverse",
-    },
-    aurabar = {
-      value = false,
-      property = "inverse",
-    },
-    progresstexture = {
-      value = false,
-      property = "inverse",
-    },
-  },
-  glow = {
-    icon = {
+    };
+  elseif property == "glow" then
+    return {
       value = true,
       property = "glow",
-    },
-  }
-}
+    };
+  end
+end
 
 local checks = {
   spellInRange = {
@@ -246,78 +119,64 @@ local function buildCondition(trigger, check, properties)
   end
 
   result.changes = {};
+  local hasChanges = false;
   for index, v in ipairs(properties) do
     result.changes[index] = CopyTable(v);
+    hasChanges = true;
   end
-  return result;
+  return hasChanges and result or nil;
 end
 
 local function missingBuffGreyed(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes.grey[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes("grey", regionType)}));
 end
 
 local function hasTargetAlpha(conditions, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes.alpha[regionType]}));
-  end
+  tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes("alpha", regionType)}));
 end
 
 local function isNotUsableBlue(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.usable, {changes.blue[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.usable, {changes("blue", regionType)}));
 end
 
 local function insufficientResourcesBlue(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.insufficientResources, {changes.blue[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.insufficientResources, {changes("blue", regionType)}));
 end
 
 local function hasChargesGrey(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.charges, {changes.grey[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.charges, {changes("grey", regionType)}));
 end
 
 local function isOnCdGrey(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes.grey[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.onCooldown, {changes("grey", regionType)}));
 end
 
 local function isBuffedGlow(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes.yellow[regionType]}));
-    else
-      tinsert(conditions, buildCondition(trigger, checks.buffed, {changes.inverse[regionType], changes.glow[regionType], changes.white[regionType]}));
-    end
+  if regionType == "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
   end
 end
 
 local function totemActiveGlow(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    if regionType ~= "icon" then
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes.yellow[regionType]}));
-    else
-      tinsert(conditions, buildCondition(trigger, checks.totem, {changes.inverse[regionType], changes.glow[regionType], changes.white[regionType]}));
-    end
+  if regionType ~= "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
   end
 end
 
 local function isSpellNotInRangeRed(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes.red[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes("red", regionType)}));
 end
 
 local function itemInRangeRed(conditions, trigger, regionType)
-  if regionType ~= "model" then
-    tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes.red[regionType]}));
-  end
+  tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes("red", regionType)}));
 end
 
 local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
@@ -402,10 +261,80 @@ local function createAbilityAndDebuffTrigger(triggers, item)
   createAbilityTrigger(triggers, 1, item, "showAlways");
 end
 
+-- Create preview thumbnail
+local function createThumbnail(parent)
+  -- Preview frame
+  local borderframe = CreateFrame("FRAME", nil, parent);
+  borderframe:SetWidth(32);
+  borderframe:SetHeight(32);
+
+  -- Preview border
+  local border = borderframe:CreateTexture(nil, "OVERLAY");
+  border:SetAllPoints(borderframe);
+  border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
+  border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
+
+  -- Main region
+  local region = CreateFrame("FRAME", nil, borderframe);
+  borderframe.region = region;
+
+  -- Preview children
+  region.children = {};
+
+  -- Return preview
+  return borderframe;
+end
+
 local function subTypesFor(item, regionType)
   local types = {};
+  local icon = {
+    target = function()
+      local thumbnail = createThumbnail(UIParent);
+      local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+      t1:SetTexture(134376);
+      t1:SetAllPoints(thumbnail);
+
+      thumbnail.elapsed = 0;
+      thumbnail:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = self.elapsed + elapsed;
+        if(self.elapsed < 0.5) then
+          t1:SetVertexColor(1,0,0,1);
+        elseif(self.elapsed < 1.5) then
+          t1:SetVertexColor(1,1,1,1);
+        elseif(self.elapsed < 3) then
+        -- do nothing
+        else
+          self.elapsed = self.elapsed - 3;
+        end
+      end);
+      return thumbnail;
+    end, -- 132212,
+    glow = function()
+      local thumbnail = createThumbnail(UIParent);
+      local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+      t1:SetTexture(134376);
+      t1:SetAllPoints(thumbnail);
+      WeakAuras.ShowOverlayGlow(thumbnail); -- where to call HideOverlayGlow() ?
+      return thumbnail;
+    end, -- 571554
+    charges = function()
+      local thumbnail = createThumbnail(UIParent);
+      local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+      t1:SetTexture(134376);
+      t1:SetAllPoints(thumbnail);
+      local t2 = thumbnail:CreateFontString(nil, "ARTWORK");
+      t2:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE");
+      t2:SetTextColor(1,1,1,1);
+      t2:SetText("2");
+      t2:SetPoint("BOTTOMRIGHT", -2, 2);
+      return thumbnail;
+    end,
+    cd = 134377,
+    cd2 = 134376,
+  };
   if (item.type == "ability") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Basic Show On Cooldown"],
       description = L["Only shows the aura when the ability is on cooldown."],
       createTriggers = function(triggers, item)
@@ -414,6 +343,7 @@ local function subTypesFor(item, regionType)
     });
     if (item.charges) then
       tinsert(types, {
+        icon = icon.charges,
         title = L["Charge Tracking"],
         description = L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."],
         createTriggers = function(triggers, item)
@@ -426,6 +356,7 @@ local function subTypesFor(item, regionType)
       });
       if (item.buff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Charge and Buff Tracking"],
           description = L["Tracks the charge and the buff, glows while the buff is active, blue on insufficient resources."],
           createTriggers = createAbilityAndBuffTrigger,
@@ -437,6 +368,7 @@ local function subTypesFor(item, regionType)
         });
       elseif(item.debuff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Charge and Debuff Tracking"],
           description = L["Tracks the charge and the debuff, glows while the debuff is active, blue on insufficient resources."],
           createTriggers = createAbilityAndDebuffTrigger,
@@ -448,6 +380,7 @@ local function subTypesFor(item, regionType)
         })
       elseif(item.requiresTarget) then
         tinsert(types,  {
+          icon = icon.target,
           title = L["Show Charges with Range Tracking"],
           description = L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."],
           genericShowOn = "showAlways",
@@ -462,6 +395,7 @@ local function subTypesFor(item, regionType)
         });
         if (item.usable) then
           tinsert(types,  {
+            icon = icon.target,
             title = L["Show Charges with Usable Check"],
             description = L["Always shows the aura, turns red when out of range, blue on insufficient resources."],
             createTriggers = function(triggers, item)
@@ -476,6 +410,7 @@ local function subTypesFor(item, regionType)
         end
       elseif(item.totem) then
         tinsert(types, {
+          icon = icon.charges,
           title = L["Show Totem and Charge Information"],
           description = L["Always shows the aura, turns grey when on zero charges, glows when active, blue on insufficient resources."],
           createTriggers = function(triggers, item)
@@ -490,6 +425,7 @@ local function subTypesFor(item, regionType)
         });
       elseif(item.usable) then
         tinsert(types, {
+          icon = icon.charges,
           title = L["Show Charges and Check Usable"],
           description = L["Always shows the aura, turns grey when on zero charges, blue when usable."],
           createTriggers = function(triggers, item)
@@ -503,6 +439,7 @@ local function subTypesFor(item, regionType)
       end
     else -- Ability without charges
       tinsert(types, {
+        icon = icon.cd2,
         title = L["Cooldown Tracking"],
         description = L["Always shows the aura, turns grey when on cooldown, blue when unusable."],
         createTriggers = function(triggers, item)
@@ -515,6 +452,7 @@ local function subTypesFor(item, regionType)
       });
       if (item.buff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Show Cooldown and Buff"],
           description = L["Glows while buffed."],
           createTriggers = createAbilityAndBuffTrigger,
@@ -526,6 +464,7 @@ local function subTypesFor(item, regionType)
         });
         if (item.usable) then
           tinsert(types, {
+            icon = icon.glow,
             title = L["Show Cooldown and Buff and Check Usable"],
             description = L["Glows while buffed."],
             createTriggers = createAbilityAndBuffTrigger,
@@ -538,6 +477,7 @@ local function subTypesFor(item, regionType)
         end
         if (item.requiresTarget) then
           tinsert(types, {
+            icon = icon.target,
             title = L["Show Cooldown and Buff and Check for Target"],
             description = L["Glows while buffed, red when out of range."],
             createTriggers = createAbilityAndBuffTrigger,
@@ -551,6 +491,7 @@ local function subTypesFor(item, regionType)
         end
       elseif(item.debuff) then
         tinsert(types, {
+          icon = icon.glow,
           title = L["Show Cooldown and Debuff"],
           description = L["Glows while debuffed."],
           createTriggers = createAbilityAndDebuffTrigger,
@@ -562,6 +503,7 @@ local function subTypesFor(item, regionType)
         });
         if (item.requiresTarget) then
           tinsert(types, {
+            icon = icon.target,
             title = L["Show Cooldown and Debuff and Check for Target"],
             description = L["Glows while debuffed, red when out of range."],
             createTriggers = createAbilityAndDebuffTrigger,
@@ -575,6 +517,7 @@ local function subTypesFor(item, regionType)
         end
       elseif(item.totem) then
         tinsert(types, {
+          icon = icon.cd2,
           title = L["Show Cooldown and Totem Information"],
           description = L["Always shows the aura, turns grey if the ability is not usable."],
           createTriggers = function(triggers, item)
@@ -590,6 +533,7 @@ local function subTypesFor(item, regionType)
       else
         if (item.usable) then
           tinsert(types, {
+            icon = icon.cd2,
             title = L["Show Cooldown and Check Usable"],
             description = L["Always shows the aura, turns grey if the ability is not usable."],
             createTriggers = function(triggers, item)
@@ -602,6 +546,7 @@ local function subTypesFor(item, regionType)
           });
           if (item.requiresTarget) then
             tinsert(types, {
+              icon = icon.target,
               title = L["Show Cooldown and Check Usable & Target"],
               description = L["Always shows the aura, turns grey if the ability is not usable and red when out of range."],
               createTriggers = function(triggers, item)
@@ -617,6 +562,7 @@ local function subTypesFor(item, regionType)
         end
         if (item.requiresTarget) then
           tinsert(types, {
+            icon = icon.target,
             title = L["Show Cooldown and Check for Target"],
             description = L["Always shows the aura, turns red when out of range."],
             createTriggers = function(triggers, item)
@@ -633,6 +579,7 @@ local function subTypesFor(item, regionType)
     end
   elseif(item.type == "buff") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Show Only if Buffed"],
       description = L["Only shows the aura if the target has the buff."],
       createTriggers = function(triggers, item)
@@ -640,6 +587,7 @@ local function subTypesFor(item, regionType)
       end
     });
     tinsert(types, {
+      icon = icon.glow,
       title = L["Always Show"],
       description = L["Always shows the aura, makes it glow if buffed."],
       buffShowOn = "showAlways",
@@ -651,6 +599,7 @@ local function subTypesFor(item, regionType)
       end,
     });
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, grey if buff not active."],
       createTriggers = function(triggers, item)
@@ -662,6 +611,7 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "debuff") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Show Only if Debuffed"],
       description = L["Only show the aura if the target has the debuff."],
       createTriggers = function(triggers, item)
@@ -669,6 +619,7 @@ local function subTypesFor(item, regionType)
       end
     });
     tinsert(types, {
+      icon = icon.glow,
       title = L["Always Show"],
       description = L["Always show the aura, makes it glow if debuffed."],
       createTriggers = function(triggers, item)
@@ -679,6 +630,7 @@ local function subTypesFor(item, regionType)
       end,
     });
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if the debuff not active."],
       createTriggers = function(triggers, item)
@@ -690,6 +642,7 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "item") then
     tinsert(types, {
+      icon = icon.cd,
       title = L["Show Only if on Cooldown"],
       description = L["Only show the aura when the item is on cooldown."],
       createTriggers = function(triggers, item)
@@ -697,6 +650,7 @@ local function subTypesFor(item, regionType)
       end
     });
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if on cooldown."],
       createTriggers = function(triggers, item)
@@ -708,6 +662,7 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "totem") then
     tinsert(types, {
+      icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, turns grey if on cooldown."],
       createTriggers = function(triggers, item)
@@ -717,6 +672,18 @@ local function subTypesFor(item, regionType)
         totemActiveGlow(conditions, 0, regionType);
       end,
     });
+  end
+
+  -- filter when createConditions return nothing for this regionType
+  for index = #types, 1, -1 do
+    local type = types[index];
+    if type.createConditions then
+      local conditions = {}
+      type.createConditions(conditions, item, regionType)
+      if #conditions == 0 then
+        tremove(types, index);
+      end
+    end
   end
 
   return types;
@@ -1000,6 +967,13 @@ function WeakAuras.CreateTemplateView(frame)
       local button = AceGUI:Create("WeakAurasNewButton");
       button:SetTitle(subType.title);
       button:SetDescription(subType.description);
+      if subType.icon then
+        if type(subType.icon) == "function" then
+          button:SetIcon(subType.icon());
+        else
+          button:SetIcon(subType.icon);
+        end
+      end
       button:SetFullWidth(true);
       button:SetClick(function()
         if (newView.existingAura) then
