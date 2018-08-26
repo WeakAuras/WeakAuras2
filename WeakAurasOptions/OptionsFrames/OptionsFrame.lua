@@ -686,6 +686,7 @@ function WeakAuras.CreateFrame()
         simpleLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
         simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         simpleLabel:SetText(L["Simple"]);
+        simpleLabel:SetFullWidth(true)
         containerScroll:AddChild(simpleLabel);
 
         local button = AceGUI:Create("WeakAurasNewButton");
@@ -705,6 +706,7 @@ function WeakAuras.CreateFrame()
         advancedLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
         advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         advancedLabel:SetText(L["Advanced"]);
+        advancedLabel:SetFullWidth(true)
         containerScroll:AddChild(advancedLabel);
       end
 
@@ -738,6 +740,7 @@ function WeakAuras.CreateFrame()
       externalLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
       externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
       externalLabel:SetText(L["External"]);
+      externalLabel:SetFullWidth(true)
       containerScroll:AddChild(externalLabel);
 
       local spacer3Label = AceGUI:Create("Label");
