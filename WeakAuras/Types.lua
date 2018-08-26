@@ -1597,6 +1597,7 @@ WeakAuras.update_categories = {
     fields = {
       "url",
       "desc",
+      "version",
     },
     label = L["Meta Data"],
   },
