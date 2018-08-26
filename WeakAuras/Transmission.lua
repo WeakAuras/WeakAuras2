@@ -1603,7 +1603,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     end
     descbox:SetPoint("BOTTOMLEFT", descboxframe, "BOTTOMLEFT", 8, 8);
     descbox:SetPoint("TOPRIGHT", descboxframe, "TOPRIGHT", -8, -8);
-    descbox:SetFont("Fonts\\FRIZQT__.TTF", 12);
+    descbox:SetFont(STANDARD_TEXT_FONT, 12);
     descbox:EnableMouse(true);
     descbox:SetAutoFocus(false);
     descbox:SetCountInvisibleLetters(false);

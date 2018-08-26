@@ -199,7 +199,7 @@ local function ConstructTextEditor(frame)
   end)
 
   local editorError = group.frame:CreateFontString(nil, "OVERLAY");
-  editorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
+  editorError:SetFont(STANDARD_TEXT_FONT, 10)
   editorError:SetJustifyH("LEFT");
   editorError:SetJustifyV("TOP");
   editorError:SetTextColor(1, 0, 0);
@@ -209,7 +209,7 @@ local function ConstructTextEditor(frame)
   local editorLine = CreateFrame("Editbox", nil, group.frame);
   -- Set script on enter pressed..
   editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -10, -15);
-  editorLine:SetFont("Fonts\\FRIZQT__.TTF", 10)
+  editorLine:SetFont(STANDARD_TEXT_FONT, 10)
   editorLine:SetJustifyH("RIGHT");
   editorLine:SetWidth(80);
   editorLine:SetHeight(20);

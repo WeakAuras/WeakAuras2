@@ -1563,7 +1563,7 @@ local function Constructor()
   renamebox:SetPoint("TOP", button, "TOP");
   renamebox:SetPoint("LEFT", icon, "RIGHT", 6, 0);
   renamebox:SetPoint("RIGHT", button, "RIGHT", -4, 0);
-  renamebox:SetFont("Fonts\\FRIZQT__.TTF", 10);
+  renamebox:SetFont(STANDARD_TEXT_FONT, 10);
   renamebox:Hide();
 
   renamebox.func = function() --[[By default, do nothing!]] end;

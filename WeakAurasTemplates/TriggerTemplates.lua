@@ -323,7 +323,7 @@ local function subTypesFor(item, regionType)
       t1:SetTexture(134376);
       t1:SetAllPoints(thumbnail);
       local t2 = thumbnail:CreateFontString(nil, "ARTWORK");
-      t2:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE");
+      t2:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE");
       t2:SetTextColor(1,1,1,1);
       t2:SetText("2");
       t2:SetPoint("BOTTOMRIGHT", -2, 2);
