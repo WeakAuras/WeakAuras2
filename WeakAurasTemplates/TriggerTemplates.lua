@@ -983,8 +983,11 @@ function WeakAuras.CreateTemplateView(frame)
     local group = AceGUI:Create("WeakAurasTemplateGroup");
     group:SetFullWidth(true);
     local subTypes = subTypesFor(item, newView.data.regionType);
-    for _, subType in pairs(subTypes) do
+    local subTypesButtons = {}
+    local firstButton = true;
+    for k, subType in pairs(subTypes) do
       local button = AceGUI:Create("WeakAurasNewButton");
+      subTypesButtons[k] = button;
       button:SetTitle(subType.title);
       button:SetDescription(subType.description);
       if subType.icon then
@@ -996,7 +999,16 @@ function WeakAuras.CreateTemplateView(frame)
       end
       button:SetFullWidth(true);
       button:SetClick(function()
-        if (newView.existingAura) then
+        if newView.batchStep then
+          for x, b in pairs(subTypesButtons) do
+            if (x == k) then
+              b.frame:LockHighlight();
+            else
+              b.frame:UnlockHighlight();
+            end
+          end
+          newView.choosenItemBatchSubType[item.spell] = subType;
+        elseif (newView.existingAura) then
           newView.choosenItem = item;
           newView.choosenSubType = subType;
           createButtons();
@@ -1017,6 +1029,11 @@ function WeakAuras.CreateTemplateView(frame)
           WeakAuras.PickDisplay(newView.data.id);
         end
       end);
+      if newView.batchStep and firstButton then
+        button.frame:LockHighlight();
+        newView.choosenItemBatchSubType[item.spell] = subType;
+        firstButton = false;
+      end
       group:AddChild(button);
     end
     return group;
@@ -1133,6 +1150,8 @@ function WeakAuras.CreateTemplateView(frame)
 
   createButtons = function(selectedItem) -- selectedItem is either a regionType or a trigger section
     newViewScroll:ReleaseChildren();
+    newView.makeBatchButton:Hide();
+    newView.batchButton:Hide();
     if (not newView.data) then
       -- First step: Show region types
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
@@ -1146,6 +1165,30 @@ function WeakAuras.CreateTemplateView(frame)
         end
       end
       newView.backButton:Hide();
+    elseif (newView.data and newView.batchStep) then
+      -- Batch
+      if (newView.batchStep) then
+        newView.choosenItemBatchSubType = {};
+        for _, item in pairs(newView.choosenItemBatch) do
+          local classHeader = AceGUI:Create("Heading");
+          classHeader:SetFullWidth(true);
+          newViewScroll:AddChild(classHeader);
+
+          local button = AceGUI:Create("WeakAurasNewButton");
+          button:SetTitle(item.title);
+          button:SetDescription(item.description);
+          button:SetFullWidth(true);
+          if(item.icon) then
+            button:SetIcon(item.icon);
+          end
+          newViewScroll:AddChild(button);
+
+          newView.choosenItem = item;
+          local typesButtons = createTriggerTypeButtons();
+          newViewScroll:AddChild(typesButtons);
+        end
+        newView.makeBatchButton:Show()
+      end
     elseif (newView.data and not newView.choosenItem) then
       -- Second step: Trigger selection screen
 
@@ -1220,8 +1263,46 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
+  local newViewMakeBatch = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
+  newViewMakeBatch:SetScript("OnClick", function()
+    local saveData = {};
+    WeakAuras.DeepCopy(newView.data, saveData);
+    for _, item in pairs(newView.choosenItemBatch) do
+      -- copy data
+      local subType = newView.choosenItemBatchSubType[item.spell]
+      replaceTrigger(newView.data, item, subType);
+      replaceCondition(newView.data, item, subType);
+      newView.data.id = WeakAuras.FindUnusedId(item.title);
+      newView.data.load = {};
+      if (item.load) then
+        WeakAuras.DeepCopy(item.load, newView.data.load);
+      end
+      if (subType.data) then
+        WeakAuras.DeepCopy(subType.data, newView.data);
+      end
+      -- create aura
+      WeakAuras.Add(newView.data);
+      WeakAuras.NewDisplayButton(newView.data);
+      -- clean data
+      newView.data = {};
+      WeakAuras.DeepCopy(saveData, newView.data);
+    end
+    newView:CancelClose();
+    -- WeakAuras.PickDisplay(newView.data.id);
+  end);
+  newViewMakeBatch:SetPoint("BOTTOMRIGHT", -267, -23);
+  newViewMakeBatch:SetHeight(20);
+  newViewMakeBatch:SetWidth(100);
+  newViewMakeBatch:SetText(L["Create Auras"]);
+  newView.makeBatchButton = newViewMakeBatch;
+  newView.makeBatchButton:Hide();
+
   local newViewBatch = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
-  newViewBatch:SetScript("OnClick", function() newView:CancelClose() end);
+  newViewBatch:SetScript("OnClick", function()
+    newView.batchStep = true;
+    newView.batchButton:Hide();
+    createButtons();
+  end);
   newViewBatch:SetPoint("BOTTOMRIGHT", -267, -23);
   newViewBatch:SetHeight(20);
   newViewBatch:SetWidth(100);
@@ -1254,6 +1335,7 @@ function WeakAuras.CreateTemplateView(frame)
     end
     newView.batchButton:Hide();
     newView.choosenItemBatch = {};
+    newView.batchStep = nil;
     createButtons();
   end);
   newViewBack:SetPoint("BOTTOMRIGHT", -147, -23);
@@ -1284,6 +1366,8 @@ function WeakAuras.CreateTemplateView(frame)
       newView.existingAura = false;
       newView.choosenItem = nil;
       newView.choosenSubType = nil;
+      newView.batchStep = nil;
+      newView.choosenItemBatch = {};
     end
     newView.class = select(2, UnitClass("player"));
     newView.spec = GetSpecialization() or 1;
