@@ -584,6 +584,7 @@ local function subTypesFor(item, regionType)
       description = L["Only shows the aura if the target has the buff."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", true);
+        data = { inverse = false }
       end
     });
     tinsert(types, {
@@ -597,6 +598,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         isBuffedGlow(conditions, 1, regionType);
       end,
+      data = { inverse = false }
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -608,6 +610,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
       end,
+      data = { inverse = false }
     });
   elseif(item.type == "debuff") then
     tinsert(types, {
@@ -616,8 +619,8 @@ local function subTypesFor(item, regionType)
       description = L["Only show the aura if the target has the debuff."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", false);
+        data = { inverse = false }
       end
-    });
     tinsert(types, {
       icon = icon.glow,
       title = L["Always Show"],
@@ -628,6 +631,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         isBuffedGlow(conditions, 1, regionType);
       end,
+      data = { inverse = false }
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -639,6 +643,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
       end,
+      data = { inverse = false }
     });
   elseif(item.type == "item") then
     tinsert(types, {
@@ -927,6 +932,9 @@ function WeakAuras.CreateTemplateView(frame)
               if (item.load) then
                 WeakAuras.DeepCopy(item.load, newView.data.load);
               end
+              if (subType.data) then
+                WeakAuras.DeepCopy(subType.data, newView.data);
+              end
               newView:CancelClose();
               WeakAuras.Add(newView.data);
               WeakAuras.NewDisplayButton(newView.data);
@@ -973,6 +981,9 @@ function WeakAuras.CreateTemplateView(frame)
           newView.data.load = {};
           if (item.load) then
             WeakAuras.DeepCopy(item.load, newView.data.load);
+          end
+          if (subType.data) then
+            WeakAuras.DeepCopy(subType.data, newView.data);
           end
           newView:CancelClose();
           WeakAuras.Add(newView.data);
