@@ -3816,6 +3816,11 @@ templates.items[2] = {
     { spell = 268836, type = "buff", unit = "player", titleItemPrefix = 159625},
     { spell = 266047, type = "buff", unit = "player", titleItemPrefix = 159627},
     { spell = 268998, type = "buff", unit = "player", titleItemPrefix = 159630},
+    { spell = 273935, type = "buff", unit = "player", titleItemPrefix = 158162},
+    { spell = 273955, type = "buff", unit = "player", titleItemPrefix = 158163},
+    { spell = 273942, type = "buff", unit = "player", titleItemPrefix = 158164},
+    { spell = 268550, type = "buff", unit = "player", titleItemPrefix = 158215},
+    { spell = 274472, type = "buff", unit = "player", titleItemPrefix = 161117},
   }
 }
 
@@ -3840,8 +3845,15 @@ templates.items[3] = {
     { spell = 159625, type = "item"},
     { spell = 159627, type = "item"},
     { spell = 159630, type = "item"},
-    { spell = 159611, type = "item"}, -- no buff
-    { spell = 158367, type = "item"}, --no buff
+    { spell = 159611, type = "item"},
+    { spell = 158367, type = "item"},
+    { spell = 158162, type = "item"},
+    { spell = 158163, type = "item"},
+    { spell = 158164, type = "item"},
+    { spell = 158215, type = "item"},
+    { spell = 158216, type = "item"},
+    { spell = 158224, type = "item"},
+    { spell = 161117, type = "item"},
   }
 }
 
@@ -3874,6 +3886,14 @@ templates.items[4] = {
     { spell = 268062, type = "buff", unit = "player", titleItemPrefix = 159626},
     { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
     { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
+    { spell = 268518, type = "buff", unit = "player", titleItemPrefix = 155568},
+    { spell = 273992, type = "buff", unit = "player", titleItemPrefix = 158154},
+    { spell = 273988, type = "buff", unit = "player", titleItemPrefix = 158155},
+    { spell = 268532, type = "buff", unit = "player", titleItemPrefix = 158218}, --tank
+    { spell = 268528, type = "buff", unit = "player", titleItemPrefix = 158556},
+    { spell = 273974, type = "buff", unit = "player", titleItemPrefix = 158153},
+    { spell = 274430, type = "buff", unit = "player",  spellIds = {274430, 274431}, titleItemPrefix = 161113},
+    { spell = 274459, type = "buff", unit = "player", titleItemPrefix = 161115},
   }
 }
 
