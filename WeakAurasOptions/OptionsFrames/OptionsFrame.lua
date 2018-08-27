@@ -683,7 +683,7 @@ function WeakAuras.CreateFrame()
 
       if(GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
         local simpleLabel = AceGUI:Create("Label");
-        simpleLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
+        simpleLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE");
         simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         simpleLabel:SetText(L["Simple"]);
         simpleLabel:SetFullWidth(true)
@@ -703,7 +703,7 @@ function WeakAuras.CreateFrame()
         containerScroll:AddChild(spacer1Label)
 
         local advancedLabel = AceGUI:Create("Label");
-        advancedLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
+        advancedLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE");
         advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         advancedLabel:SetText(L["Advanced"]);
         advancedLabel:SetFullWidth(true)
@@ -737,7 +737,7 @@ function WeakAuras.CreateFrame()
       containerScroll:AddChild(spacer2Label)
 
       local externalLabel = AceGUI:Create("Label");
-      externalLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
+      externalLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE");
       externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
       externalLabel:SetText(L["External"]);
       externalLabel:SetFullWidth(true)
