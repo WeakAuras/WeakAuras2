@@ -1036,6 +1036,7 @@ WeakAuras.event_prototypes = {
         init = "UnitIsUnit(concernedUnit, extraUnit)",
         values = "actual_unit_types_with_specific",
         test = "unitisunit",
+        store = true,
         conditionType = "bool",
         desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end
       },
