@@ -901,6 +901,19 @@ function WeakAuras.CreateTemplateView(frame)
     return 1 / columns;
   end
 
+  local function GetPreviousGroup()
+    if (newView.previousPick) then
+      local previousData = WeakAuras.GetData(newView.previousPick);
+      if (previousData) then
+        if previousData.regionType == "dynamicgroup" or previousData.regionType == "group" then
+          return previousData;
+        else
+          return WeakAuras.GetData(previousData.parent);
+        end
+      end
+    end
+  end
+
   local function createTriggerFlyout(section, fullWidth)
     local group = AceGUI:Create("WeakAurasTemplateGroup");
     group:SetFullWidth(true);
@@ -968,6 +981,12 @@ function WeakAuras.CreateTemplateView(frame)
                   WeakAuras.DeepCopy(subType.data, newView.data);
                 end
                 newView:CancelClose();
+                local parentData = GetPreviousGroup()
+                if (parentData) then
+                  newView.data.parent = parentData.id;
+                  tinsert(parentData.controlledChildren, newView.data.id);
+                  WeakAuras.Add(parentData);
+                end
                 WeakAuras.Add(newView.data);
                 WeakAuras.NewDisplayButton(newView.data);
                 WeakAuras.PickDisplay(newView.data.id);
@@ -1031,6 +1050,12 @@ function WeakAuras.CreateTemplateView(frame)
             WeakAuras.DeepCopy(subType.data, newView.data);
           end
           newView:CancelClose();
+          local parentData = GetPreviousGroup()
+          if (parentData) then
+            newView.data.parent = parentData.id;
+            tinsert(parentData.controlledChildren, newView.data.id);
+            WeakAuras.Add(parentData);
+          end
           WeakAuras.Add(newView.data);
           WeakAuras.NewDisplayButton(newView.data);
           WeakAuras.PickDisplay(newView.data.id);
@@ -1300,9 +1325,9 @@ function WeakAuras.CreateTemplateView(frame)
   batchModeToggler:Hide();
   newView.batchModeToggler = batchModeToggler;
 
-
   local newViewMakeBatch = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
   newViewMakeBatch:SetScript("OnClick", function()
+    local parentData = GetPreviousGroup()
     local saveData = {};
     WeakAuras.DeepCopy(newView.data, saveData);
     for _, item in pairs(newView.choosenItemBatch) do
@@ -1319,14 +1344,30 @@ function WeakAuras.CreateTemplateView(frame)
         WeakAuras.DeepCopy(subType.data, newView.data);
       end
       -- create aura
+      if (parentData) then
+        newView.data.parent = parentData.id;
+        tinsert(parentData.controlledChildren, newView.data.id);
+        WeakAuras.Add(parentData);
+      end
       WeakAuras.Add(newView.data);
       WeakAuras.NewDisplayButton(newView.data);
       -- clean data
       newView.data = {};
       WeakAuras.DeepCopy(saveData, newView.data);
     end
+    -- refresh group
+    if parentData then
+      local parentButton = WeakAuras.GetDisplayButton(parentData.id);
+      parentButton.callbacks.UpdateExpandButton();
+      WeakAuras.UpdateDisplayButton(parentData);
+      WeakAuras.ReloadGroupRegionOptions(parentData);
+      WeakAuras.SortDisplayButtons();
+      parentButton:Expand();
+      WeakAuras.PickDisplay(parentData.id);
+    else
+      WeakAuras.PickDisplay(newView.data.id);
+    end
     newView:CancelClose();
-    -- WeakAuras.PickDisplay(newView.data.id);
   end);
   newViewMakeBatch:SetPoint("BOTTOMRIGHT", -267, -23);
   newViewMakeBatch:SetHeight(20);
@@ -1423,7 +1464,8 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  function WeakAuras.OpenTriggerTemplate(data)
+  function WeakAuras.OpenTriggerTemplate(data, previousPick)
+    frame.newView.previousPick = previousPick;
     frame.newView:Open(data);
   end
 

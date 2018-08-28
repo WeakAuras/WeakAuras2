@@ -670,6 +670,7 @@ function WeakAuras.CreateFrame()
   end
 
   frame.PickOption = function(self, option)
+    local previousPick = self.pickedDisplay;
     self:ClearPicks();
     self.moversizer:Hide();
     self.pickedOption = option;
@@ -694,7 +695,7 @@ function WeakAuras.CreateFrame()
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()
-          WeakAuras.OpenTriggerTemplate();
+          WeakAuras.OpenTriggerTemplate(nil, previousPick);
         end);
         containerScroll:AddChild(button);
 

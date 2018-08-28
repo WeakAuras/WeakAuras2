@@ -4174,7 +4174,7 @@ function WeakAuras.CloseCodeReview(data)
   frame.codereview:Close();
 end
 
-function WeakAuras.OpenTriggerTemplate(data)
+function WeakAuras.OpenTriggerTemplate(data, previousPick)
   if not(IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
@@ -4184,6 +4184,7 @@ function WeakAuras.OpenTriggerTemplate(data)
     end
     frame.newView = WeakAuras.CreateTemplateView(frame);
   end
+  frame.newView.previousPick = previousPick;
   frame.newView:Open(data);
 end
 
