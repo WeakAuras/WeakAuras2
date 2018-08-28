@@ -828,12 +828,12 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
   local check, recheckCode = CreateTestForCondition(condition.check, allConditionsTemplate, usedStates);
   if (check) then
     for triggernum in pairs(usedStates) do
-      ret = ret .. "  allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. triggernum .. ")\n";
-      ret = ret .. "  state[" .. triggernum  .. "] = allStates[cloneId] or allStates['']\n";
+      ret = ret .. "    allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. triggernum .. ")\n";
+      ret = ret .. "    state[" .. triggernum  .. "] = allStates[cloneId] or allStates['']\n";
     end
-    ret = ret .. "  if (" .. check .. ") then\n";
-    ret = ret .. "    newActiveConditions[" .. conditionNumber .. "] = true;\n";
-    ret = ret .. "  end\n";
+    ret = ret .. "    if (" .. check .. ") then\n";
+    ret = ret .. "      newActiveConditions[" .. conditionNumber .. "] = true;\n";
+    ret = ret .. "    end\n";
   end
   if (recheckCode) then
     ret = ret .. recheckCode;
@@ -899,10 +899,8 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
               and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
               pathToCustomFunction = string.format("WeakAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
             end
-            ret = ret .. "     if (not skipActions) then\n";
-            ret = ret .. "       region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. ")" .. "\n";
-            if (debug) then ret = ret .. "       print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. "')\n"; end
-            ret = ret .. "     end\n"
+            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. ")" .. "\n";
+            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. "')\n"; end
           end
         end
       end
@@ -1044,7 +1042,7 @@ function WeakAuras.ConstructConditionFunction(data)
   ret = ret .. "local propertyChanges = {};\n"
   ret = ret .. "local state = {};\n"
   ret = ret .. "local nextTime;\n"
-  ret = ret .. "return function(region, skipActions)\n";
+  ret = ret .. "return function(region, hideRegion)\n";
   if (debug) then ret = ret .. "  print('check conditions for:', region.id, region.cloneId)\n"; end
   ret = ret .. "  local id = region.id\n";
   ret = ret .. "  local cloneId = region.cloneId or ''\n";
@@ -1057,11 +1055,13 @@ function WeakAuras.ConstructConditionFunction(data)
 
   local normalConditionCount = data.conditions and #data.conditions;
   -- First Loop gather which conditions are active
+  ret = ret .. " if (not hideRegion) then\n"
   if (data.conditions) then
     for conditionNumber, condition in ipairs(data.conditions) do
       ret = CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
     end
   end
+  ret = ret .. "  end\n";
 
   ret = ret .. "  if (recheckTime) then\n"
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, id, cloneId);\n"
@@ -4300,7 +4300,7 @@ local function ApplyStatesToRegions(id, triggernum, states)
       end
     end
     if (checkConditions[id]) then -- Even if this state has not changed
-      checkConditions[id](region);
+      checkConditions[id](region, not state.show);
     end
   end
 
@@ -4383,9 +4383,9 @@ function WeakAuras.UpdatedTriggerState(id)
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
         clone:Collapse();
       end
-  end
-  -- Show new states
-  ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
+    end
+    -- Show new states
+    ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   end
 
   for cloneId, state in pairs(activeTriggerState) do
