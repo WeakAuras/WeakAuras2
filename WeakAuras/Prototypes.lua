@@ -493,6 +493,9 @@ local pvpTalentId = { 3589, 3588, 3587 };
 function WeakAuras.CheckPvpTalentByIndex(index)
   if (index <= 3) then
     local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
+    if (not talentSlotInfo or not talentSlotInfo.selectedTalentID) then
+      return false;
+    end
     return select(3, GetPvpTalentInfoByID(pvpTalentId[index])) == select(3, GetPvpTalentInfoByID(talentSlotInfo.selectedTalentID));
   else
     local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2)
