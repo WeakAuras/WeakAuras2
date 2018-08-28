@@ -825,22 +825,21 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
                   return nil;
                 end
               elseif(arg.type == "spell") then
-                if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                  if (arg.showExactOption and trigger["use_exact_"..realname]) then
-                    local spellId = tonumber(trigger[realname])
-                    if (spellId and spellId ~= 0) then
-                      return tostring(spellId);
+                if(trigger["use_"..realname]) then
+                  if (trigger[realname] and trigger[realname] ~= "") then
+                    if (arg.showExactOption and trigger["use_exact_"..realname]) then
+                      local spellId = tonumber(trigger[realname])
+                      if (spellId and spellId ~= 0) then
+                        return tostring(spellId);
+                      end
                     else
-                      return L["Invalid Spell ID"];
-                    end
-                  else
-                    local name = GetSpellInfo(trigger[realname]);
-                    if(name) then
-                      return name;
-                    else
-                      return L["Invalid Spell Name/ID/Link"];
+                      local name = GetSpellInfo(trigger[realname]);
+                      if(name) then
+                        return name;
+                      end
                     end
                   end
+                  return arg.showExactOption and trigger["use_exact_"..realname] and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
                 else
                   return nil;
                 end
