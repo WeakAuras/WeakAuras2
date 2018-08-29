@@ -906,6 +906,8 @@ function WeakAuras.CreateTemplateView(frame)
     group:SetFullWidth(true);
     newView.choosenItemBatch = {};
     newView.choosenItemButtonsBatch = {};
+    newView.batchModeToggler:SetChecked(false);
+    newView.BatchMode = false;
     group:SetLayout("WATemplateTriggerLayoutFlyout");
     if (section) then
       for j, item in sortedPairs(section, createSortFunctionFor(section)) do
