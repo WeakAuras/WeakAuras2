@@ -381,6 +381,7 @@ local blockedFunctions = {
   setfenv = true,
   loadstring = true,
   pcall = true,
+  xpcall = true,
   -- blocked WoW API
   SendMail = true,
   SetTradeMoney = true,
