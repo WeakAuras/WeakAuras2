@@ -85,6 +85,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
+    default = 32
   },
   height = {
     display = L["Height"],
@@ -92,7 +93,8 @@ local properties = {
     type = "number",
     min = 1,
     softMax = screenHeight,
-    bigStep = 1
+    bigStep = 1,
+    default = 32
   },
   orientation = {
     display = L["Orientation"],

@@ -60,6 +60,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
+    default = 32
   },
   height = {
     display = L["Height"],
@@ -67,7 +68,8 @@ local properties = {
     type = "number",
     min = 1,
     softMax = screenHeight,
-    bigStep = 1
+    bigStep = 1,
+    default = 32
   },
   glow = {
     display = L["Glow"],
@@ -85,7 +87,8 @@ local properties = {
     type = "number",
     min = 6,
     softMax = 72,
-    step = 1
+    step = 1,
+    default = 12
   },
   text2Color = {
     display = L["2. Text Color"],
@@ -98,7 +101,8 @@ local properties = {
     type = "number",
     min = 6,
     softMax = 72,
-    step = 1
+    step = 1,
+    default = 12
   },
   color = {
     display = L["Color"],
