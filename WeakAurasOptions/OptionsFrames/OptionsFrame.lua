@@ -730,6 +730,8 @@ function WeakAuras.CreateFrame()
           local new_id = WeakAuras.FindUnusedId("New")
           local data = {id = new_id, regionType = regionType}
           WeakAuras.DeepCopy(WeakAuras.data_stub, data)
+          data.internalVersion = WeakAuras.InternalVersion();
+          WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
           local parentData;
           if (not data.controlledChildren and previousPick) then
             if (type(previousPick) == "table") then
@@ -749,8 +751,6 @@ function WeakAuras.CreateFrame()
               end
             end
           end
-          data.internalVersion = WeakAuras.InternalVersion();
-          WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
           if (parentData) then
