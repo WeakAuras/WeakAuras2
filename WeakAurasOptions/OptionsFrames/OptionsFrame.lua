@@ -669,14 +669,32 @@ function WeakAuras.CreateFrame()
     WeakAuras.ResumeAllDynamicGroups();
   end
 
-  frame.PickOption = function(self, option)
-    local previousPick = self.pickedDisplay;
-    if (type(self.pickedDisplay) == "table") then
-      previousPick = {}
-      WeakAuras.DeepCopy(tempGroup.controlledChildren, previousPick);
-    elseif (type(self.pickedDisplay) == "string") then
-      previousPick = self.pickedDisplay;
+  local function GetPreviousGroupData(pickedDisplay)
+    local parentData;
+    if (pickedDisplay) then
+      local pickedId;
+      if (type(pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1]) then
+        pickedId = tempGroup.controlledChildren[1];
+      elseif (type(pickedDisplay) == "string") then
+        pickedId = pickedDisplay;
+      end
+      if (pickedId) then
+        local pickedData = WeakAuras.GetData(pickedId);
+        if (pickedData.controlledChildren) then
+          parentData = pickedData;
+        else
+          local parentId = pickedData.parent;
+          if (parentId) then
+            parentData = WeakAuras.GetData(parentId);
+          end
+        end
+      end
     end
+    return parentData;
+  end
+
+  frame.PickOption = function(self, option)
+    local parentData = GetPreviousGroupData(self.pickedDisplay);
     self:ClearPicks();
     self.moversizer:Hide();
     self.pickedOption = option;
@@ -701,7 +719,7 @@ function WeakAuras.CreateFrame()
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()
-          WeakAuras.OpenTriggerTemplate(nil, previousPick);
+          WeakAuras.OpenTriggerTemplate(nil, parentData);
         end);
         containerScroll:AddChild(button);
 
@@ -732,24 +750,10 @@ function WeakAuras.CreateFrame()
           WeakAuras.DeepCopy(WeakAuras.data_stub, data)
           data.internalVersion = WeakAuras.InternalVersion();
           WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
-          local parentData;
-          if (not data.controlledChildren and previousPick) then
-            if (type(previousPick) == "table") then
-              previousPick = previousPick[1];
-            end
-            local previousData = WeakAuras.GetData(previousPick);
-            if (previousData) then
-              if (previousData.controlledChildren) then
-                parentData = previousData;
-              else
-                parentData = WeakAuras.GetData(previousData.parent);
-              end
-              if (parentData) then
-                data.parent = parentData.id;
-                tinsert(parentData.controlledChildren, new_id);
-                WeakAuras.Add(parentData);
-              end
-            end
+          if (not data.controlledChildren and parentData) then
+            data.parent = parentData.id;
+            tinsert(parentData.controlledChildren, new_id);
+            WeakAuras.Add(parentData);
           end
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
