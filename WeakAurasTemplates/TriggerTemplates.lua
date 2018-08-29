@@ -903,9 +903,12 @@ function WeakAuras.CreateTemplateView(frame)
 
   local function GetPreviousGroup()
     if (newView.previousPick) then
+      if (type(newView.previousPick) == "table") then
+        newView.previousPick = newView.previousPick[1];
+      end
       local previousData = WeakAuras.GetData(newView.previousPick);
       if (previousData) then
-        if previousData.regionType == "dynamicgroup" or previousData.regionType == "group" then
+        if (previousData.controlledChildren) then
           return previousData;
         else
           return WeakAuras.GetData(previousData.parent);

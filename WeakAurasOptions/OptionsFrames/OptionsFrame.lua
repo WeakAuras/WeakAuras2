@@ -671,6 +671,12 @@ function WeakAuras.CreateFrame()
 
   frame.PickOption = function(self, option)
     local previousPick = self.pickedDisplay;
+    if (type(self.pickedDisplay) == "table") then
+      previousPick = {}
+      WeakAuras.DeepCopy(tempGroup.controlledChildren, previousPick);
+    elseif (type(self.pickedDisplay) == "string") then
+      previousPick = self.pickedDisplay;
+    end
     self:ClearPicks();
     self.moversizer:Hide();
     self.pickedOption = option;
@@ -724,10 +730,37 @@ function WeakAuras.CreateFrame()
           local new_id = WeakAuras.FindUnusedId("New")
           local data = {id = new_id, regionType = regionType}
           WeakAuras.DeepCopy(WeakAuras.data_stub, data)
+          local parentData;
+          if (not data.controlledChildren and previousPick) then
+            if (type(previousPick) == "table") then
+              previousPick = previousPick[1];
+            end
+            local previousData = WeakAuras.GetData(previousPick);
+            if (previousData) then
+              if (previousData.controlledChildren) then
+                parentData = previousData;
+              else
+                parentData = WeakAuras.GetData(previousData.parent);
+              end
+              if (parentData) then
+                data.parent = parentData.id;
+                tinsert(parentData.controlledChildren, new_id);
+                WeakAuras.Add(parentData);
+              end
+            end
+          end
           data.internalVersion = WeakAuras.InternalVersion();
           WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
+          if (parentData) then
+            local parentButton = WeakAuras.GetDisplayButton(parentData.id);
+            parentButton.callbacks.UpdateExpandButton();
+            WeakAuras.UpdateDisplayButton(parentData);
+            WeakAuras.ReloadGroupRegionOptions(parentData);
+            WeakAuras.SortDisplayButtons();
+            parentButton:Expand();
+          end
           WeakAuras.PickAndEditDisplay(new_id);
         end);
         containerScroll:AddChild(button);
@@ -793,6 +826,7 @@ function WeakAuras.CreateFrame()
     else
       error("An options button other than New or Addons was selected... but there are no other options buttons!");
     end
+    --self:ClearPicks();
   end
 
   frame.PickDisplay = function(self, id)
