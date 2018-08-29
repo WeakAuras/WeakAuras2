@@ -272,25 +272,20 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         return;
       end
 
+      local default = allProperties.propertyMap[property].default;
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].property = property;
-          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = nil;
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = default;
           WeakAuras.Add(auraData);
         end
         conditions[i].changes[j].property = property;
         WeakAuras.ReloadTriggerOptions(data);
       else
-        local oldType;
-        if (conditions[i].changes[j].property) then
-          oldType = allProperties.propertyMap[conditions[i].changes[j].property] and allProperties.propertyMap[conditions[i].changes[j].property].type;
-        end
         conditions[i].changes[j].property = property;
-        if (oldType ~= allProperties.propertyMap[property].type) then
-          conditions[i].changes[j].value = nil;
-        end
+        conditions[i].changes[j].value = default;
         WeakAuras.Add(data);
         WeakAuras.ReloadTriggerOptions(data);
       end

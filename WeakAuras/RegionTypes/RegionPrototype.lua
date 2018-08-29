@@ -140,7 +140,7 @@ local function SoundPlayHelper(self)
   WeakAuras.StartProfileSystem("sound");
   local options = self.soundOptions;
   self.soundHandle = nil;
-  if (options.sound_type == "Stop") then
+  if (not options or options.sound_type == "Stop") then
     WeakAuras.StopProfileSystem("sound");
     return;
   end
@@ -183,6 +183,9 @@ local function SoundPlay(self, options)
 end
 
 local function SendChat(self, options)
+  if (not options) then
+    return
+  end
   WeakAuras.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_channel, options.r, options.g, options.b, self, options.message_custom);
 end
 
