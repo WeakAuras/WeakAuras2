@@ -1315,6 +1315,9 @@ function WeakAuras.CreateTemplateView(frame)
     local saveData = {};
     WeakAuras.DeepCopy(newView.data, saveData);
     for _, item in pairs(newView.choosenItemBatch) do
+      -- clean data
+      newView.data = {};
+      WeakAuras.DeepCopy(saveData, newView.data);
       -- copy data
       local subType = newView.choosenItemBatchSubType[item.spell]
       replaceTrigger(newView.data, item, subType);
@@ -1335,12 +1338,9 @@ function WeakAuras.CreateTemplateView(frame)
       end
       WeakAuras.Add(newView.data);
       WeakAuras.NewDisplayButton(newView.data);
-      -- clean data
-      newView.data = {};
-      WeakAuras.DeepCopy(saveData, newView.data);
     end
     -- refresh group
-    if newView.parentData then
+    if (newView.parentData) then
       local parentButton = WeakAuras.GetDisplayButton(newView.parentData.id);
       parentButton.callbacks.UpdateExpandButton();
       WeakAuras.UpdateDisplayButton(newView.parentData);
