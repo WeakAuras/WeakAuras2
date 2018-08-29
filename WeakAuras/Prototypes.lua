@@ -2212,6 +2212,22 @@ WeakAuras.event_prototypes = {
       WeakAuras.WatchSpellCooldown(spellName);
     end,
     init = function(trigger)
+      trigger.spellName = trigger.spellName or 0;
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+      end
+
+      if (type(spellName) == "string") then
+        spellName = "[[" .. spellName .. "]]";
+      end
+
+      local ret = [=[
+        local spellname = %s
+      ]=]
+      return ret:format(spellName);
     end,
     args = {
       {
@@ -2221,6 +2237,7 @@ WeakAuras.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
+        test = "spellname == spellName"
       }
     },
     nameFunc = function(trigger)
