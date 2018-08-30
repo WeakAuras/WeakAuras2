@@ -970,14 +970,7 @@ function WeakAuras.CreateTemplateView(frame)
                   WeakAuras.DeepCopy(subType.data, newView.data);
                 end
                 newView:CancelClose();
-                if (newView.parentData) then
-                  newView.data.parent = newView.parentData.id;
-                  tinsert(newView.parentData.controlledChildren, newView.data.id);
-                  WeakAuras.Add(newView.parentData);
-                end
-                WeakAuras.Add(newView.data);
-                WeakAuras.NewDisplayButton(newView.data);
-                WeakAuras.PickDisplay(newView.data.id);
+                WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
               end
             else
               -- create trigger type selection
@@ -1038,14 +1031,7 @@ function WeakAuras.CreateTemplateView(frame)
             WeakAuras.DeepCopy(subType.data, newView.data);
           end
           newView:CancelClose();
-          if (newView.parentData) then
-            newView.data.parent = newView.parentData.id;
-            tinsert(newView.parentData.controlledChildren, newView.data.id);
-            WeakAuras.Add(newView.parentData);
-          end
-          WeakAuras.Add(newView.data);
-          WeakAuras.NewDisplayButton(newView.data);
-          WeakAuras.PickDisplay(newView.data.id);
+          WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
         end
       end);
       if newView.batchStep and firstButton then
@@ -1334,25 +1320,7 @@ function WeakAuras.CreateTemplateView(frame)
         WeakAuras.DeepCopy(subType.data, newView.data);
       end
       -- create aura
-      if (newView.parentData) then
-        newView.data.parent = newView.parentData.id;
-        tinsert(newView.parentData.controlledChildren, newView.data.id);
-        WeakAuras.Add(newView.parentData);
-      end
-      WeakAuras.Add(newView.data);
-      WeakAuras.NewDisplayButton(newView.data);
-    end
-    -- refresh group
-    if (newView.parentData) then
-      local parentButton = WeakAuras.GetDisplayButton(newView.parentData.id);
-      parentButton.callbacks.UpdateExpandButton();
-      WeakAuras.UpdateDisplayButton(newView.parentData);
-      WeakAuras.ReloadGroupRegionOptions(newView.parentData);
-      WeakAuras.SortDisplayButtons();
-      parentButton:Expand();
-      WeakAuras.PickDisplay(newView.parentData.id);
-    else
-      WeakAuras.PickDisplay(newView.data.id);
+      WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
     end
     newView:CancelClose();
   end);
@@ -1451,8 +1419,8 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-  function WeakAuras.OpenTriggerTemplate(data, parentData)
-    frame.newView.parentData = parentData;
+  function WeakAuras.OpenTriggerTemplate(data, targetId)
+    frame.newView.targetId = targetId;
     frame.newView:Open(data);
   end
 

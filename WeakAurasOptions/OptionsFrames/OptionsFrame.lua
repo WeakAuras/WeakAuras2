@@ -669,39 +669,26 @@ function WeakAuras.CreateFrame()
     WeakAuras.ResumeAllDynamicGroups();
   end
 
-  local function GetPreviousGroupData(pickedDisplay)
-    local parentData;
+  local function GetTarget(pickedDisplay)
+    local targetId;
     if (pickedDisplay) then
-      local pickedId;
       if (type(pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1]) then
-        pickedId = tempGroup.controlledChildren[1];
+        targetId = tempGroup.controlledChildren[1];
       elseif (type(pickedDisplay) == "string") then
-        pickedId = pickedDisplay;
-      end
-      if (pickedId) then
-        local pickedData = WeakAuras.GetData(pickedId);
-        if (pickedData.controlledChildren) then
-          parentData = pickedData;
-        else
-          local parentId = pickedData.parent;
-          if (parentId) then
-            parentData = WeakAuras.GetData(parentId);
-          end
-        end
+        targetId = pickedDisplay;
       end
     end
-    return parentData;
+    return targetId;
   end
 
   frame.PickOption = function(self, option)
-    local parentData = GetPreviousGroupData(self.pickedDisplay);
-    local parentButton;
-    if (parentData) then
-      parentButton = WeakAuras.GetDisplayButton(parentData.id);
-    end
+    local targetId = GetTarget(self.pickedDisplay);
     self:ClearPicks();
-    if (parentButton) then
-      parentButton:Pick();
+    if (targetId) then
+      local pickedButton = WeakAuras.GetDisplayButton(targetId);
+      if (pickedButton) then
+        pickedButton:Pick();
+      end
     end
     self.moversizer:Hide();
     self.pickedOption = option;
@@ -724,7 +711,7 @@ function WeakAuras.CreateFrame()
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()
-          WeakAuras.OpenTriggerTemplate(nil, parentData);
+          WeakAuras.OpenTriggerTemplate(nil, targetId);
         end);
         containerScroll:AddChild(button);
 
@@ -750,26 +737,7 @@ function WeakAuras.CreateFrame()
         end
         button:SetDescription(regionData.description);
         button:SetClick(function()
-          local new_id = WeakAuras.FindUnusedId("New")
-          local data = {id = new_id, regionType = regionType}
-          WeakAuras.DeepCopy(WeakAuras.data_stub, data)
-          data.internalVersion = WeakAuras.InternalVersion();
-          WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default)
-          if (not data.controlledChildren and parentData) then
-            data.parent = parentData.id;
-            tinsert(parentData.controlledChildren, new_id);
-            WeakAuras.Add(parentData);
-          end
-          WeakAuras.Add(data);
-          WeakAuras.NewDisplayButton(data);
-          if (parentData) then
-            parentButton.callbacks.UpdateExpandButton();
-            WeakAuras.UpdateDisplayButton(parentData);
-            WeakAuras.ReloadGroupRegionOptions(parentData);
-            WeakAuras.SortDisplayButtons();
-            parentButton:Expand();
-          end
-          WeakAuras.PickAndEditDisplay(new_id);
+          WeakAuras.NewAura(nil, regionType, targetId);
         end);
         containerScroll:AddChild(button);
       end
