@@ -488,7 +488,11 @@ local methods = {
             end
           end
         else
-          WeakAuras.PickDisplay(data.id);
+          if (WeakAuras.IsDisplayPicked(data.id)) then
+            WeakAuras.ClearPicks(data.id);
+          else
+            WeakAuras.PickDisplay(data.id);
+          end
           self:ReloadTooltip();
         end
       end
