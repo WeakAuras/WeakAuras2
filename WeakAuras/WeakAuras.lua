@@ -372,7 +372,7 @@ WeakAuras.ShowOverlayGlow = WeakAuras_ShowOverlayGlow;
 WeakAuras.HideOverlayGlow = WeakAuras_HideOverlayGlow;
 
 local function forbidden()
-  print("|cffffff00A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
+  prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])
 end
 
 local blockedFunctions = {
