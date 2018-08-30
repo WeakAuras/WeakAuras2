@@ -849,6 +849,11 @@ function WeakAuras.CreateFrame()
     else
       WeakAuras.PauseAllDynamicGroups();
       finishPicking();
+      if (data.controlledChildren and #data.controlledChildren == 0) then
+        WeakAurasOptions.pickedDisplay = data.id;
+        WeakAurasOptions:PickOption("New");
+        WeakAurasOptions.pickedDisplay = data.id;
+      end
     end
   end
 
