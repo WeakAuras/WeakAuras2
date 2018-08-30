@@ -695,12 +695,17 @@ function WeakAuras.CreateFrame()
 
   frame.PickOption = function(self, option)
     local parentData = GetPreviousGroupData(self.pickedDisplay);
+    local parentButton;
+    if (parentData) then
+      parentButton = WeakAuras.GetDisplayButton(parentData.id);
+    end
     self:ClearPicks();
+    if (parentButton) then
+      parentButton:Pick();
+    end
     self.moversizer:Hide();
     self.pickedOption = option;
     if(option == "New") then
-      newButton:Pick();
-
       local containerScroll = AceGUI:Create("ScrollFrame");
       containerScroll:SetLayout("flow");
       container:SetLayout("fill");
@@ -758,7 +763,6 @@ function WeakAuras.CreateFrame()
           WeakAuras.Add(data);
           WeakAuras.NewDisplayButton(data);
           if (parentData) then
-            local parentButton = WeakAuras.GetDisplayButton(parentData.id);
             parentButton.callbacks.UpdateExpandButton();
             WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.ReloadGroupRegionOptions(parentData);
@@ -830,7 +834,6 @@ function WeakAuras.CreateFrame()
     else
       error("An options button other than New or Addons was selected... but there are no other options buttons!");
     end
-    --self:ClearPicks();
   end
 
   frame.PickDisplay = function(self, id)
