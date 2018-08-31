@@ -84,7 +84,7 @@ local function modify(parent, region, data)
   text:SetPoint("CENTER", UIParent, "CENTER");
 
   region.width = text:GetWidth();
-  region.height = text:GetHeight();
+  region.height = text:GetStringHeight();
   region:SetWidth(region.width);
   region:SetHeight(region.height);
 
@@ -111,10 +111,10 @@ local function modify(parent, region, data)
         text:SetText(textStr);
       end
 
-      local height = text:GetHeight();
+      local height = text:GetStringHeight();
 
       if(region.height ~= height) then
-        region.height = text:GetHeight();
+        region.height = text:GetStringHeight();
         region:SetHeight(region.height);
         if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
           WeakAuras.regions[data.parent].region:ControlChildren();
@@ -132,7 +132,7 @@ local function modify(parent, region, data)
         end
       end
       local width = text:GetWidth();
-      local height = text:GetHeight();
+      local height = text:GetStringHeight();
       if(width ~= region.width or height ~= region.height ) then
         region.width = width;
         region.height = height;
@@ -282,7 +282,7 @@ local function fallbackmodify(parent, region, data)
   text:SetPoint("CENTER", region, "CENTER");
 
   region:SetWidth(text:GetWidth());
-  region:SetHeight(text:GetHeight());
+  region:SetHeight(text:GetStringHeight());
 end
 
 WeakAuras.RegisterRegionType("fallback", create, fallbackmodify, default);
