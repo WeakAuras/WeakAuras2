@@ -109,6 +109,10 @@ local checks = {
     variable = "show",
     value = 1,
   },
+  overlayGlow = {
+    variable = "show",
+    value = 1,
+  };
 }
 
 local function buildCondition(trigger, check, properties)
@@ -162,12 +166,22 @@ local function isBuffedGlow(conditions, trigger, regionType)
 end
 
 local function totemActiveGlow(conditions, trigger, regionType)
-  if regionType ~= "icon" then
+  if regionType == "icon" then
     tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
   elseif regionType == "aurabar" or regionType == "progresstexture" then
     tinsert(conditions, buildCondition(trigger, checks.totem, {changes("inverse", regionType), changes("yellow", regionType)}));
   else
     tinsert(conditions, buildCondition(trigger, checks.totem, {changes("yellow", regionType)}));
+  end
+end
+
+local function overlayGlow(conditions, trigger, regionType)
+  if regionType == "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.overlayGlow, {changes("glow", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.overlayGlow, {changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.overlayGlow, {changes("yellow", regionType)}));
   end
 end
 
@@ -251,6 +265,16 @@ local function createItemTrigger(triggers, position, item, genericShowOn)
   };
 end
 
+local function createOverlayGlowTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Spell Activation Overlay",
+      spellName = item.spell
+    }
+  };
+end
+
 local function createAbilityAndBuffTrigger(triggers, item)
   createBuffTrigger(triggers, 1, item, "showOnActive", true);
   createAbilityTrigger(triggers, 2, item, "showAlways");
@@ -259,6 +283,11 @@ end
 local function createAbilityAndDebuffTrigger(triggers, item)
   createBuffTrigger(triggers, 1, item, "showOnActive", false);
   createAbilityTrigger(triggers, 2, item, "showAlways");
+end
+
+local function createAbilityAndOverlayGlowTrigger(triggers, item)
+  createAbilityTrigger(triggers, 0, item, "showAlways");
+  createOverlayGlowTrigger(triggers, 1, item);
 end
 
 -- Create preview thumbnail
@@ -408,6 +437,20 @@ local function subTypesFor(item, regionType)
             end,
           });
         end
+        if (item.overlayGlow) then
+          tinsert(types,  {
+            icon = icon.glow,
+            title = L["Show Charges with Proc Tracking"],
+            description = L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."],
+            createTriggers = createAbilityAndOverlayGlowTrigger,
+            createConditions = function(conditions, item, regionType)
+              isNotUsableBlue(conditions, 0, regionType);
+              hasChargesGrey(conditions, 0, regionType);
+              isSpellNotInRangeRed(conditions, 0, regionType);
+              overlayGlow(conditions, 1, regionType);
+            end,
+          });
+        end
       elseif(item.totem) then
         tinsert(types, {
           icon = icon.charges,
@@ -427,7 +470,7 @@ local function subTypesFor(item, regionType)
         tinsert(types, {
           icon = icon.charges,
           title = L["Show Charges and Check Usable"],
-          description = L["Always shows the aura, turns grey when on zero charges, blue when usable."],
+          description = L["Always shows the aura, turns grey when on zero charges, blue when not usable."],
           createTriggers = function(triggers, item)
             createAbilityTrigger(triggers, 1, item, "showAlways");
           end,
@@ -436,6 +479,19 @@ local function subTypesFor(item, regionType)
             hasChargesGrey(conditions, 1, regionType);
           end,
         });
+        if (item.overlayGlow) then
+          tinsert(types,  {
+            icon = icon.glow,
+            title = L["Show Charges with Proc Tracking"],
+            description = L["Always shows the aura, highlight while proc is active, blue when not usable."],
+            createTriggers = createAbilityAndOverlayGlowTrigger,
+            createConditions = function(conditions, item, regionType)
+              isNotUsableBlue(conditions, 0, regionType);
+              hasChargesGrey(conditions, 0, regionType);
+              overlayGlow(conditions, 1, regionType);
+            end,
+          });
+        end
       end
     else -- Ability without charges
       tinsert(types, {
@@ -558,6 +614,34 @@ local function subTypesFor(item, regionType)
                 isSpellNotInRangeRed(conditions, 1, regionType);
               end,
             });
+            if (item.overlayGlow) then
+              tinsert(types,  {
+                icon = icon.glow,
+                title = L["Show Cooldown and Check Usable, Target & Proc Tracking"],
+                description = L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."],
+                createTriggers = createAbilityAndOverlayGlowTrigger,
+                createConditions = function(conditions, item, regionType)
+                  isNotUsableBlue(conditions, 0, regionType);
+                  isOnCdGrey(conditions, 0, regionType);
+                  isSpellNotInRangeRed(conditions, 0, regionType);
+                  overlayGlow(conditions, 1, regionType);
+                end,
+              });
+            end
+          else
+            if (item.overlayGlow) then
+              tinsert(types,  {
+                icon = icon.glow,
+                title = L["Show Cooldown and Check Usable, Proc Tracking"],
+                description = L["Always shows the aura, highlight while proc is active, blue on insufficient resources."],
+                createTriggers = createAbilityAndOverlayGlowTrigger,
+                createConditions = function(conditions, item, regionType)
+                  isNotUsableBlue(conditions, 0, regionType);
+                  isOnCdGrey(conditions, 0, regionType);
+                  overlayGlow(conditions, 1, regionType);
+                end,
+              });
+            end
           end
         end
         if (item.requiresTarget) then
@@ -572,6 +656,32 @@ local function subTypesFor(item, regionType)
               insufficientResourcesBlue(conditions, 1, regionType);
               isOnCdGrey(conditions, 1, regionType);
               isSpellNotInRangeRed(conditions, 1, regionType);
+            end,
+          });
+          if (item.overlayGlow) then
+            tinsert(types,  {
+              icon = icon.glow,
+              title = L["Show Cooldown and Check for Target & Proc Tracking"],
+              description = L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."],
+              createTriggers = createAbilityAndOverlayGlowTrigger,
+              createConditions = function(conditions, item, regionType)
+                insufficientResourcesBlue(conditions, 0, regionType);
+                isOnCdGrey(conditions, 0, regionType);
+                isSpellNotInRangeRed(conditions, 0, regionType);
+                overlayGlow(conditions, 1, regionType);
+              end,
+            });
+          end
+        elseif (item.overlayGlow) then
+          tinsert(types,  {
+            icon = icon.glow,
+            title = L["Show Cooldown and Proc Tracking"],
+            description = L["Always shows the aura, highlight while proc is active, blue on insufficient resources."],
+            createTriggers = createAbilityAndOverlayGlowTrigger,
+            createConditions = function(conditions, item, regionType)
+              insufficientResourcesBlue(conditions, 0, regionType);
+              isOnCdGrey(conditions, 0, regionType);
+              overlayGlow(conditions, 1, regionType);
             end,
           });
         end
