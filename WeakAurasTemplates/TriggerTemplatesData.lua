@@ -154,15 +154,14 @@ templates.class.WARRIOR = {
       icon = 464973
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge
         { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
-        { spell = 121, type = "ability", requiresTarget = true}, -- Slam
-        { spell = 122, type = "ability"}, -- Whirlwind
-        { spell = 129, type = "ability", requiresTarget = true}, -- Pummel
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 845, type = "ability", talent = 15}, -- Cleave
+        { spell = 1464, type = "ability", requiresTarget = true}, -- Slam
+        { spell = 1680, type = "ability"}, -- Whirlwind
         { spell = 1715, type = "ability", requiresTarget = true}, -- Hamstring
         { spell = 5246, type = "ability", debuff = true, requiresTarget = true}, -- Intimidating Shout
         { spell = 6544, type = "ability"}, -- Heroic Leap
@@ -250,7 +249,7 @@ templates.class.WARRIOR = {
       icon = 132154
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
         { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4}, -- Charge
@@ -345,7 +344,7 @@ templates.class.WARRIOR = {
       icon = 132090
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 23922, type = "ability", requiresTarget = true, overlayGlow = true}, -- Shield Slam
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
@@ -445,7 +444,7 @@ templates.class.PALADIN = {
       icon = 135952
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 498, type = "ability", buff = true}, -- Divine Protection
         { spell = 633, type = "ability"}, -- Lay on Hands
@@ -539,7 +538,7 @@ templates.class.PALADIN = {
       icon = 135952
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
         { spell = 642, type = "ability", buff = true}, -- Divine Shield
@@ -637,7 +636,7 @@ templates.class.PALADIN = {
       icon = 135952
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 633, type = "ability"}, -- Lay on Hands
         { spell = 642, type = "ability", buff = true}, -- Divine Shield
@@ -737,7 +736,7 @@ templates.class.HUNTER = {
       icon = 135860
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
@@ -842,7 +841,7 @@ templates.class.HUNTER = {
       icon = 236188
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
@@ -959,7 +958,7 @@ templates.class.HUNTER = {
       icon = 132309
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 781, type = "ability"}, -- Disengage
         { spell = 1543, type = "ability"}, -- Flare
@@ -1083,7 +1082,7 @@ templates.class.ROGUE = {
       icon = 132302
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
         { spell = 703, type = "ability", requiresTarget = true}, -- Garrote
@@ -1179,7 +1178,7 @@ templates.class.ROGUE = {
       icon = 1373908
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 1725, type = "ability"}, -- Distract
         { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
@@ -1276,7 +1275,7 @@ templates.class.ROGUE = {
       icon = 136175
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
         { spell = 1725, type = "ability"}, -- Distract
@@ -1371,7 +1370,7 @@ templates.class.PRIEST = {
       icon = 136207
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
         { spell = 586, type = "ability", buff = true}, -- Fade
@@ -1458,7 +1457,7 @@ templates.class.PRIEST = {
       icon = 135972
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 527, type = "ability"}, -- Purify
         { spell = 586, type = "ability", buff = true}, -- Fade
@@ -1547,7 +1546,7 @@ templates.class.PRIEST = {
       icon = 136207
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 17, type = "ability", buff = true}, -- Power Word: Shield
         { spell = 586, type = "ability", buff = true}, -- Fade
@@ -1653,7 +1652,7 @@ templates.class.SHAMAN = {
       icon = 135813
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 556, type = "ability"}, -- Astral Recall
         { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
@@ -1761,7 +1760,7 @@ templates.class.SHAMAN = {
       icon = 462327
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 556, type = "ability"}, -- Astral Recall
         { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
@@ -1857,7 +1856,7 @@ templates.class.SHAMAN = {
       icon = 135813
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 556, type = "ability"}, -- Astral Recall
         { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
@@ -1961,7 +1960,7 @@ templates.class.MAGE = {
       icon = 135848
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 122, type = "ability"}, -- Frost Nova
         { spell = 475, type = "ability"}, -- Remove Curse
@@ -2051,7 +2050,7 @@ templates.class.MAGE = {
       icon = 135818
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 66, type = "ability", buff = true}, -- Invisibility
         { spell = 475, type = "ability"}, -- Remove Curse
@@ -2141,7 +2140,7 @@ templates.class.MAGE = {
       icon = 236208
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 66, type = "ability", buff = true}, -- Invisibility
         { spell = 120, type = "ability"}, -- Cone of Cold
@@ -2249,7 +2248,7 @@ templates.class.WARLOCK = {
       icon = 136139
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
         { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
@@ -2360,7 +2359,7 @@ templates.class.WARLOCK = {
       icon = 136122
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
         { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
@@ -2477,7 +2476,7 @@ templates.class.WARLOCK = {
       icon = 135817
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
         { spell = 1122, type = "ability", totem = true}, -- Summon Infernal
@@ -2583,7 +2582,7 @@ templates.class.MONK = {
       icon = 611419
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 101643, type = "ability"}, -- Transcendence
         { spell = 107079, type = "ability"}, -- Quaking Palm
@@ -2680,7 +2679,7 @@ templates.class.MONK = {
       icon = 629534
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 100784, type = "ability", requiresTarget = true}, -- Blackout Kick
         { spell = 101643, type = "ability"}, -- Transcendence
@@ -2780,7 +2779,7 @@ templates.class.MONK = {
       icon = 629534
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 100780, type = "ability", requiresTarget = true}, -- Tiger Palm
         { spell = 100784, type = "ability", requiresTarget = true, overlayGlow = true}, -- Blackout Kick
@@ -2893,7 +2892,7 @@ templates.class.DRUID = {
       icon = 236216
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
@@ -3015,7 +3014,7 @@ templates.class.DRUID = {
       icon = 132152
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 339, type = "ability", requiresTarget = true, overlayGlow = true}, -- Entangling Roots
         { spell = 768, type = "ability"}, -- Cat Form
@@ -3134,7 +3133,7 @@ templates.class.DRUID = {
       icon = 451161
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 99, type = "ability"}, -- Incapacitating Roar
         { spell = 768, type = "ability"}, -- Cat Form
@@ -3257,7 +3256,7 @@ templates.class.DRUID = {
       icon = 236216
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 740, type = "ability"}, -- Tranquility
         { spell = 768, type = "ability"}, -- Cat Form
@@ -3354,7 +3353,7 @@ templates.class.DEMONHUNTER = {
       icon = 1392554
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 131347, type = "ability"}, -- Glide
         { spell = 179057, type = "ability"}, -- Chaos Nova
@@ -3442,7 +3441,7 @@ templates.class.DEMONHUNTER = {
       icon = 1344647
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 131347, type = "ability"}, -- Glide
         { spell = 178740, type = "ability", buff = true}, -- Immolation Aura
@@ -3539,7 +3538,7 @@ templates.class.DEATHKNIGHT = {
       icon = 237514
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 3714, type = "ability", buff = true}, -- Path of Frost
         { spell = 43265, type = "ability", overlayGlow = true}, -- Death and Decay
@@ -3632,7 +3631,7 @@ templates.class.DEATHKNIGHT = {
       icon = 237522
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 3714, type = "ability", buff = true}, -- Path of Frost
         { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
@@ -3719,7 +3718,7 @@ templates.class.DEATHKNIGHT = {
       icon = 1129420
     },
     [3] = {
-      title = L["Cooldowns"],
+      title = L["Abilities"],
       args = {
         { spell = 3714, type = "ability", buff = true}, -- Path of Frost
         { spell = 42650, type = "ability"}, -- Army of the Dead
