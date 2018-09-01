@@ -155,15 +155,8 @@ function CompressDisplay(data)
   -- Those can contain lots of unnecessary data.
   -- Also we warn about any custom code, so removing unnecessary
   -- custom code prevents unnecessary warnings
-  for triggernum=0,(data.numTriggers or 9) do
-    local trigger, untrigger;
-    if(triggernum == 0) then
-      trigger = data.trigger;
-      untrigger = data.untrigger;
-    elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-      trigger = data.additional_triggers[triggernum].trigger;
-      untrigger = data.additional_triggers[triggernum].untrigger;
-    end
+  for triggernum, triggerData in ipairs(data.triggers) do
+    local trigger, untrigger = triggerData.trigger, triggerData.untrigger
 
     if (trigger and trigger.type ~= "custom") then
       trigger.custom = nil;
@@ -686,9 +679,10 @@ function WeakAuras.DisplayToString(id, forChat)
     if(WeakAuras.transmitCache and WeakAuras.transmitCache[id]) then
       transmit.i = WeakAuras.transmitCache[id];
     end
-    if(data.trigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.spellCache) then
+    local firstTrigger = data.triggers[1].trigger
+    if(firstTrigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.spellCache) then
       transmit.a = {};
-      for i,v in pairs(data.trigger.names) do
+      for i,v in pairs(firstTrigger.names) do
         transmit.a[v] = WeakAuras.spellCache.GetIcon(v);
       end
     end
@@ -1033,11 +1027,8 @@ end
 
 
 local function scamCheck(codes, data)
-  checkTrigger(codes, L["%s - 1. Trigger"]:format(data.id), data.trigger, data.untrigger);
-  if (data.additional_triggers) then
-    for i, v in ipairs(data.additional_triggers) do
-      checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i+1), v.trigger, v.untrigger);
-    end
+  for i, v in ipairs(data.triggers) do
+    checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i), v.trigger, v.untrigger);
   end
 
   if (data.actions) then
@@ -1054,8 +1045,8 @@ local function scamCheck(codes, data)
     checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
   end
 
-  if(data.customTriggerLogic) then
-    checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.customTriggerLogic);
+  if(data.triggers.customTriggerLogic) then
+    checkTriggerLogic(codes,  L["%s - Trigger Logic"]:format(data.id), data.triggers.customTriggerLogic);
   end
 
   if(data.customText) then
@@ -1489,13 +1480,8 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     else
       if not children and (not data.controlledChildren or #data.controlledChildren == 0) then
         tinsert(tooltip, {1, L["No Children"], 1, 1, 1})
-        for triggernum = 0, 9 do
-          local trigger;
-          if(triggernum == 0) then
-            trigger = data.trigger;
-          elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-            trigger = data.additional_triggers[triggernum].trigger;
-          end
+        for triggernum = 1, min(#data.triggers, 10) do
+          local trigger = data.triggers[triggernum].trigger
           if(trigger) then
             if(trigger.type == "aura") then
               for index, name in pairs(trigger.names) do

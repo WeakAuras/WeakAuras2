@@ -1535,15 +1535,7 @@ WeakAuras.update_categories = {
   },
   {
     name = "trigger",
-    fields = {
-      "trigger",
-      "untrigger",
-      "disjunctive",
-      "additional_triggers",
-      "activeTriggerMode",
-      "numTriggers",
-      "customTriggerLogic"
-    },
+    fields = {"triggers"},
     label = L["Trigger"],
   },
   {
@@ -1617,18 +1609,21 @@ WeakAuras.internal_fields = {
 WeakAuras.data_stub = {
   -- note: this is the minimal data stub which prevents false positives in WeakAuras.diff upon reimporting an aura.
   -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
-  trigger = {
-    type = "aura",
-    names = {},
-    event = "Health",
-    subeventPrefix = "SPELL",
-    subeventSuffix = "_CAST_START",
-    spellIds = {},
-    unit = "player",
-    debuffType = "HELPFUL",
+  triggers = {
+    {
+      trigger = {
+        type = "aura",
+        names = {},
+        event = "Health",
+        subeventPrefix = "SPELL",
+        subeventSuffix = "_CAST_START",
+        spellIds = {},
+        unit = "player",
+        debuffType = "HELPFUL",
+      },
+      untrigger = {},
+    },
   },
-  numTriggers = 1,
-  untrigger = {},
   load = {
     size = {
       multi = {},

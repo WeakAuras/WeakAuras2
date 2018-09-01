@@ -15,21 +15,14 @@ local function IsRegionAGroup(data)
 end
 
 local ignoreForCopyingDisplay = {
-  trigger = true,
-  untrigger = true,
+  triggers = true,
   conditions = true,
   load = true,
   actions = true,
   animation = true,
   id = true,
   parent = true,
-  activeTriggerMode = true,
-  numTriggers = true,
   controlledChildren = true,
-  customTriggerLogic = true,
-  disjunctive = true,
-  additional_triggers = true,
-  disjunctive = true,
   uid = true,
 }
 
@@ -47,20 +40,8 @@ local function copyAuraPart(source, destination, part)
     end
   end
   if (part == "trigger" or all) and not IsRegionAGroup(source) then
-    destination.trigger = {};
-    WeakAuras.DeepCopy(source.trigger, destination.trigger);
-    if (source.additional_triggers) then
-      destination.additional_triggers = {};
-      WeakAuras.DeepCopy(source.additional_triggers, destination.additional_triggers);
-    else
-      destination.additional_triggers = nil;
-    end
-    destination.untrigger = {};
-    WeakAuras.DeepCopy(source.untrigger, destination.untrigger);
-    destination.activeTriggerMode = source.activeTriggerMode;
-    destination.numTriggers = source.numTriggers;
-    destination.customTriggerLogic = source.customTriggerLogic;
-    destination.disjunctive = source.disjunctive;
+    destination.triggers = {};
+    WeakAuras.DeepCopy(source.triggers, destination.triggers);
   end
   if (part == "condition" or all) and not IsRegionAGroup(source) then
     destination.conditions = {};
@@ -972,13 +953,8 @@ local methods = {
         namestable[1] = L["No Children"];
       end
     else
-      for triggernum = 0, data.numTriggers or 9 do
-        local trigger;
-        if(triggernum == 0) then
-          trigger = data.trigger;
-        elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-          trigger = data.additional_triggers[triggernum].trigger;
-        end
+      for triggernum, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
         if(trigger) then
           if(trigger.type == "aura") then
             if(trigger.fullscan) then

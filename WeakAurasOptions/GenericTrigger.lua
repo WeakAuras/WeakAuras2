@@ -26,13 +26,9 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
         local ret = {};
         WeakAuras.DeepCopy(baseRet, ret);
         local optionTriggerChoice = optionTriggerChoices[childId];
-        if (optionTriggerChoice == 0) then
-          tinsert(ret, 1, "trigger");
-        elseif (optionTriggerChoice > 0) then
-          tinsert(ret, 1, "trigger");
-          tinsert(ret, 1, optionTriggerChoice);
-          tinsert(ret, 1, "additional_triggers");
-        end
+        tinsert(ret, 1, "trigger");
+        tinsert(ret, 1, optionTriggerChoice)
+        tinsert(ret, 1, "triggers")
         result[childId] = ret;
       end
       return result;
@@ -45,35 +41,19 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
         local ret = {};
         WeakAuras.DeepCopy(baseRet, ret);
         local optionTriggerChoice = optionTriggerChoices[childId];
-        if (optionTriggerChoice == 0) then
-          tinsert(ret, 1, "untrigger");
-        elseif (optionTriggerChoice > 0) then
-          tinsert(ret, 1, "untrigger");
-          tinsert(ret, 1, optionTriggerChoice);
-          tinsert(ret, 1, "additional_triggers");
-        end
+        tinsert(ret, 1, "untrigger");
+        tinsert(ret, 1, optionTriggerChoice);
+        tinsert(ret, 1, "triggers");
         result[childId] = ret;
       end
       return result;
     end
-  elseif(optionTriggerChoices[id] == 0) then
-    function appendToTriggerPath(...)
-      local ret = {...};
-      tinsert(ret, 1, "trigger");
-      return ret;
-    end
-
-    function appendToUntriggerPath(...)
-      local ret = {...};
-      tinsert(ret, 1, "untrigger");
-      return ret;
-    end
-  elseif (optionTriggerChoices[id] > 0) then
+  else
     function appendToTriggerPath(...)
       local ret = {...};
       tinsert(ret, 1, "trigger");
       tinsert(ret, 1, optionTriggerChoices[id]);
-      tinsert(ret, 1, "additional_triggers");
+      tinsert(ret, 1, "triggers");
       return ret;
     end
 
@@ -81,7 +61,7 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
       local ret = {...};
       tinsert(ret, 1, "untrigger");
       tinsert(ret, 1, optionTriggerChoices[id]);
-      tinsert(ret, 1, "additional_triggers");
+      tinsert(ret, 1, "triggers");
       return ret;
     end
   end

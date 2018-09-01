@@ -14,7 +14,9 @@
 -- Datastructure:
 -- [] Index
 --    - check
---      - trigger: Trigger number
+--      - trigger: Trigger number. Negative values indicate a special check:
+--          -1: Global conditions
+--          -2: Combinator
 --      - variable: Variable inside the trigger state to check
 --      - op: Operator to use for check
 --      - value: Value to check
@@ -851,20 +853,20 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
     local isFirst = path[#path] == 1;
     if (isFirst) then
       if (needsTriggerName) then
-        optionsName = optionsName .. string.format(L["Trigger %s"], check.trigger + 1);
+        optionsName = optionsName .. string.format(L["Trigger %s"], check.trigger);
       end
     else
       if (needsTriggerName) then
         if (parentType == "AND") then
-          optionsName = optionsName .. string.format(L["and Trigger %s"], check.trigger + 1);
+          optionsName = optionsName .. string.format(L["and Trigger %s"], check.trigger);
         else
-          optionsName = optionsName .. string.format(L["or Trigger %s"], check.trigger + 1);
+          optionsName = optionsName .. string.format(L["or Trigger %s"], check.trigger);
         end
       end
     end
   else
     if (needsTriggerName) then
-      optionsName = optionsName .. string.format(L["If Trigger %s"], check.trigger + 1);
+      optionsName = optionsName .. string.format(L["If Trigger %s"], check.trigger);
     else
       optionsName = optionsName .. L["If"];
     end
@@ -1383,7 +1385,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
 end
 
 local function mergeConditionTemplates(allConditionTemplates, auraConditionsTemplate, numTriggers)
-  for triggernum = 0, numTriggers -1 do
+  for triggernum = 1, numTriggers do
     local auraTemplatesForTrigger = auraConditionsTemplate[triggernum];
     if (auraTemplatesForTrigger) then
       allConditionTemplates[triggernum] = allConditionTemplates[triggernum] or {};
@@ -1414,37 +1416,37 @@ local function createConditionTemplatesValueList(allConditionTemplates, numTrigg
 
   local index = 1;
   local startTriggernum = excludeCombinations and -1 or -2;
-  for triggernum = startTriggernum, numTriggers - 1 do
+  for triggernum = startTriggernum, numTriggers do
     local templatesForTrigger = allConditionTemplates[triggernum];
-
-    -- Sort Conditions for one trigger
-    local sorted = {};
-    if (templatesForTrigger) then
-      for conditionName in pairs(templatesForTrigger) do
-        tinsert(sorted, conditionName);
-      end
-      table.sort(sorted, function(a, b)
-        return templatesForTrigger[a].display < templatesForTrigger[b].display;
-      end);
-
-      if (#sorted > 0) then
-        if (triggernum == -2) then
-          -- Do Nothing
-          conditionTemplates.display[index]  = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. string.format(L["Combinations"]);
-        elseif (triggernum == -1) then
-          conditionTemplates.display[index]  = string.format(L["Global Conditions"]);
-        else
-          conditionTemplates.display[index]  = string.format(L["Trigger %d"], triggernum + 1);
+    if triggernum ~= 0 then
+      -- Sort Conditions for one trigger
+      local sorted = {};
+      if (templatesForTrigger) then
+        for conditionName in pairs(templatesForTrigger) do
+          tinsert(sorted, conditionName);
         end
-        index = index + 1;
-      end
+        table.sort(sorted, function(a, b)
+          return templatesForTrigger[a].display < templatesForTrigger[b].display;
+        end);
 
-      for _, conditionName in ipairs(sorted) do
-        conditionTemplates.display[index] = "    " .. templatesForTrigger[conditionName].display;
-        conditionTemplates.indexToTrigger[index] = triggernum;
-        conditionTemplates.indexToVariable[index] = conditionName;
-        conditionTemplates.conditionToIndex[triggernum .. "-" .. conditionName] = index;
-        index = index + 1;
+        if (#sorted > 0) then
+          if (triggernum == -2) then
+            -- Do Nothing
+            conditionTemplates.display[index]  = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. string.format(L["Combinations"]);
+          elseif (triggernum == -1) then
+            conditionTemplates.display[index]  = string.format(L["Global Conditions"]);
+          else
+            conditionTemplates.display[index]  = string.format(L["Trigger %d"], triggernum);
+          end
+
+          for _, conditionName in ipairs(sorted) do
+            conditionTemplates.display[index] = "    " .. templatesForTrigger[conditionName].display;
+            conditionTemplates.indexToTrigger[index] = triggernum;
+            conditionTemplates.indexToVariable[index] = conditionName;
+            conditionTemplates.conditionToIndex[triggernum .. "-" .. conditionName] = index;
+            index = index + 1;
+          end
+        end
       end
     end
   end
@@ -1471,14 +1473,14 @@ local function createConditionTemplates(data)
     allConditionTemplates = {};
     for _, id in ipairs(data.controlledChildren) do
       local data = WeakAuras.GetData(id);
-      numTriggers = max(numTriggers, data.numTriggers);
+      numTriggers = max(numTriggers, #data.triggers);
 
       local auraConditionsTemplate = WeakAuras.GetTriggerConditions(data);
       mergeConditionTemplates(allConditionTemplates, auraConditionsTemplate, numTriggers)
     end
   else
     allConditionTemplates = WeakAuras.GetTriggerConditions(data);
-    numTriggers = data.numTriggers;
+    numTriggers = #data.triggers;
   end
 
   allConditionTemplates[-2] = {
