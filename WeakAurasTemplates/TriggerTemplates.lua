@@ -286,8 +286,8 @@ local function createAbilityAndDebuffTrigger(triggers, item)
 end
 
 local function createAbilityAndOverlayGlowTrigger(triggers, item)
-  createAbilityTrigger(triggers, 0, item, "showAlways");
-  createOverlayGlowTrigger(triggers, 1, item);
+  createAbilityTrigger(triggers, 1, item, "showAlways");
+  createOverlayGlowTrigger(triggers, 2, item);
 end
 
 -- Create preview thumbnail
@@ -444,10 +444,10 @@ local function subTypesFor(item, regionType)
             description = L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."],
             createTriggers = createAbilityAndOverlayGlowTrigger,
             createConditions = function(conditions, item, regionType)
-              isNotUsableBlue(conditions, 0, regionType);
-              hasChargesGrey(conditions, 0, regionType);
-              isSpellNotInRangeRed(conditions, 0, regionType);
-              overlayGlow(conditions, 1, regionType);
+              isNotUsableBlue(conditions, 1, regionType);
+              hasChargesGrey(conditions, 1, regionType);
+              isSpellNotInRangeRed(conditions, 1, regionType);
+              overlayGlow(conditions, 2, regionType);
             end,
           });
         end
@@ -486,9 +486,9 @@ local function subTypesFor(item, regionType)
             description = L["Always shows the aura, highlight while proc is active, blue when not usable."],
             createTriggers = createAbilityAndOverlayGlowTrigger,
             createConditions = function(conditions, item, regionType)
-              isNotUsableBlue(conditions, 0, regionType);
-              hasChargesGrey(conditions, 0, regionType);
-              overlayGlow(conditions, 1, regionType);
+              isNotUsableBlue(conditions, 1, regionType);
+              hasChargesGrey(conditions, 1, regionType);
+              overlayGlow(conditions, 2, regionType);
             end,
           });
         end
@@ -621,10 +621,10 @@ local function subTypesFor(item, regionType)
                 description = L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."],
                 createTriggers = createAbilityAndOverlayGlowTrigger,
                 createConditions = function(conditions, item, regionType)
-                  isNotUsableBlue(conditions, 0, regionType);
-                  isOnCdGrey(conditions, 0, regionType);
-                  isSpellNotInRangeRed(conditions, 0, regionType);
-                  overlayGlow(conditions, 1, regionType);
+                  isNotUsableBlue(conditions, 1, regionType);
+                  isOnCdGrey(conditions, 1, regionType);
+                  isSpellNotInRangeRed(conditions, 1, regionType);
+                  overlayGlow(conditions, 2, regionType);
                 end,
               });
             end
@@ -636,9 +636,9 @@ local function subTypesFor(item, regionType)
                 description = L["Always shows the aura, highlight while proc is active, blue on insufficient resources."],
                 createTriggers = createAbilityAndOverlayGlowTrigger,
                 createConditions = function(conditions, item, regionType)
-                  isNotUsableBlue(conditions, 0, regionType);
-                  isOnCdGrey(conditions, 0, regionType);
-                  overlayGlow(conditions, 1, regionType);
+                  isNotUsableBlue(conditions, 1, regionType);
+                  isOnCdGrey(conditions, 1, regionType);
+                  overlayGlow(conditions, 2, regionType);
                 end,
               });
             end
@@ -665,10 +665,10 @@ local function subTypesFor(item, regionType)
               description = L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."],
               createTriggers = createAbilityAndOverlayGlowTrigger,
               createConditions = function(conditions, item, regionType)
-                insufficientResourcesBlue(conditions, 0, regionType);
-                isOnCdGrey(conditions, 0, regionType);
-                isSpellNotInRangeRed(conditions, 0, regionType);
-                overlayGlow(conditions, 1, regionType);
+                insufficientResourcesBlue(conditions, 1, regionType);
+                isOnCdGrey(conditions, 1, regionType);
+                isSpellNotInRangeRed(conditions, 1, regionType);
+                overlayGlow(conditions, 2, regionType);
               end,
             });
           end
@@ -679,9 +679,9 @@ local function subTypesFor(item, regionType)
             description = L["Always shows the aura, highlight while proc is active, blue on insufficient resources."],
             createTriggers = createAbilityAndOverlayGlowTrigger,
             createConditions = function(conditions, item, regionType)
-              insufficientResourcesBlue(conditions, 0, regionType);
-              isOnCdGrey(conditions, 0, regionType);
-              overlayGlow(conditions, 1, regionType);
+              insufficientResourcesBlue(conditions, 1, regionType);
+              isOnCdGrey(conditions, 1, regionType);
+              overlayGlow(conditions, 2, regionType);
             end,
           });
         end
