@@ -2610,6 +2610,47 @@ function WeakAuras.AddMany(table)
   end
 end
 
+local function validateUserConfig(data)
+  local seen = {}
+  for index, option in ipairs(data.authorOptions) do
+    seen[option.key] = index
+    if not data.config[option.key] then
+      data.config[option.key] = option.default
+    end
+  end
+  for key, value in pairs(data.config) do
+    if not seen[key] then
+      data.config[key] = nil
+    else
+      local option = data.authorOptions[seen[key]]
+      if type(value) ~= type(option.default) then
+        -- if type mismatch then we know that it can't be right
+        data.config[key] = option.default
+      elseif option.type == "number" or option.type == "range" then
+        if (option.max and option.max < value) or (option.min and option.min > value) then
+          data.config[key] = option.default
+        else
+          if option.type == "number" and option.step then
+            data.config[key] = math.floor(value * option.step)/option.step
+          end
+        end
+      elseif option.type == "select" then
+        if value < 1 or value > #option.values then
+          data.config[key] = option.default
+        end
+      elseif option.type == "color" then
+        for i = 1, 4 do
+          local c = data.config[key][i]
+          if type(c) ~= "number" or c < 0 or c > 1 then
+            data.config[key] = option.default
+            break
+          end
+        end
+      end
+    end
+  end
+end
+
 local function removeSpellNames(data)
   local trigger
   for i = 1, #data.triggers do
@@ -2746,6 +2787,7 @@ function WeakAuras.PreAdd(data)
   end
   WeakAuras.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
+  validateUserConfig(data)
   removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil
