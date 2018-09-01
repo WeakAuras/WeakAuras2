@@ -621,6 +621,7 @@ local function subTypesFor(item, regionType)
         createBuffTrigger(triggers, 1, item, "showOnActive", false);
         data = { inverse = false }
       end
+    });
     tinsert(types, {
       icon = icon.glow,
       title = L["Always Show"],
