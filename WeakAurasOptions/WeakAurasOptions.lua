@@ -198,7 +198,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
         WeakAuras.ReloadGroupRegionOptions(data);
         WeakAuras.SortDisplayButtons();
         button:Expand();
-        WeakAuras.PickDisplay(new_id);
+        WeakAuras.PickDisplay(data.id);
       end
     },
     {
