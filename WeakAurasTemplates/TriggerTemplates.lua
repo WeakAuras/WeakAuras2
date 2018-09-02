@@ -907,8 +907,6 @@ function WeakAuras.CreateTemplateView(frame)
     group:SetFullWidth(true);
     newView.choosenItemBatch = {};
     newView.choosenItemButtonsBatch = {};
-    newView.batchModeToggler:UnlockHighlight();
-    newView.BatchMode = false;
     group:SetLayout("WATemplateTriggerLayoutFlyout");
     if (section) then
       for j, item in sortedPairs(section, createSortFunctionFor(section)) do
@@ -942,14 +940,16 @@ function WeakAuras.CreateTemplateView(frame)
               tinsert(newView.choosenItemBatch, item);
               newView.choosenItemButtonsBatch[j] = button;
             end
-            if #newView.choosenItemBatch == 0 then
+            local count = 0;
+            for _ in pairs(newView.choosenItemBatch) do
+              count = count + 1;
+            end
+            if count == 0 then
               newView.batchButton:Hide();
-              newView.batchModeToggler:UnlockHighlight();
-              newView.BatchMode = false;
+              newView.batchModeToggler:SetValue(0);
             else
               newView.batchButton:Show();
-              newView.batchModeToggler:LockHighlight();
-              newView.BatchMode = true;
+              newView.batchModeToggler:SetValue(1);
             end
           else
             local subTypes = subTypesFor(item, newView.data.regionType);
@@ -1159,6 +1159,7 @@ function WeakAuras.CreateTemplateView(frame)
     newView.makeBatchButton:Hide();
     newView.batchButton:Hide();
     newView.batchModeToggler:Hide();
+    newView.batchModeTogglerLabel:Hide();
     if (not newView.data) then
       -- First step: Show region types
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
@@ -1197,6 +1198,7 @@ function WeakAuras.CreateTemplateView(frame)
         newView.makeBatchButton:Show()
       end
       newView.batchModeToggler:Hide();
+      newView.batchModeTogglerLabel:Hide();
     elseif (newView.data and not newView.choosenItem) then
       -- Second step: Trigger selection screen
 
@@ -1258,6 +1260,10 @@ function WeakAuras.CreateTemplateView(frame)
       newView.choosenItemBatch = {};
       if not newView.existingAura then
         newView.batchModeToggler:Show();
+        newView.batchModeTogglerLabel:Show();
+        if (selectedItem == nil) then
+          newView.batchModeToggler:SetValue(0);
+        end
       end
     elseif (newView.data and newView.choosenItem and not newView.choosenSubType) then
       -- Multi-Type template
@@ -1274,31 +1280,42 @@ function WeakAuras.CreateTemplateView(frame)
     end
   end
 
-
-  local batchModeToggler = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
-  batchModeToggler:SetScript("OnClick", function()
-      if newView.BatchMode then
-        newView.BatchMode = false;
-        -- clean selection
-        for k in pairs(newView.choosenItemBatch) do
-          newView.choosenItemBatch[k] = nil;
-        end
-        for k, f in pairs(newView.choosenItemButtonsBatch) do
-          f.frame:UnlockHighlight();
-          newView.choosenItemButtonsBatch[k] = nil;
-        end
-        newView.batchButton:Hide();
-        batchModeToggler:UnlockHighlight();
-      else
-        newView.BatchMode = true;
-        batchModeToggler:LockHighlight();
+  local batchModeToggler = CreateFrame("Slider", "batchModeToggler", newView.frame, "OptionsSliderTemplate");
+  batchModeToggler:SetScript("OnValueChanged", function(self, value)
+    if (value == 0) then
+      newView.BatchMode = false;
+      -- clean selection
+      for k in pairs(newView.choosenItemBatch) do
+        newView.choosenItemBatch[k] = nil;
       end
+      for k, f in pairs(newView.choosenItemButtonsBatch) do
+        f.frame:UnlockHighlight();
+        newView.choosenItemButtonsBatch[k] = nil;
+      end
+      newView.batchButton:Hide();
+    else
+      newView.BatchMode = true;
+    end
   end);
   batchModeToggler:SetPoint("BOTTOMLEFT", 10, -23);
-  batchModeToggler:SetSize(100, 20);
-  batchModeToggler:SetText('|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Batch mode"]);
+  batchModeToggler:SetSize(50, 20);
+  _G[batchModeToggler:GetName() .. 'Low']:SetText(L["off"]);
+  _G[batchModeToggler:GetName() .. 'High']:SetText(L["on"]);
+  batchModeToggler:SetMinMaxValues(0, 1);
+  batchModeToggler:SetObeyStepOnDrag(true);
+  batchModeToggler:SetValueStep(1);
   batchModeToggler:Hide();
   newView.batchModeToggler = batchModeToggler;
+
+  local batchModeTogglerLabel = CreateFrame("FRAME", "batchModeTogglerLabel", newView.frame);
+  batchModeTogglerLabel:SetSize(100, 20);
+  local batchModeTogglerLabelString = batchModeTogglerLabel:CreateFontString(nil, "ARTWORK");
+  batchModeTogglerLabelString:SetFont(STANDARD_TEXT_FONT, 12); -- "OUTLINE"
+  batchModeTogglerLabelString:SetTextColor(1,1,1,1);
+  batchModeTogglerLabelString:SetText('|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Batch mode"]);
+  batchModeTogglerLabelString:SetAllPoints(batchModeTogglerLabel);
+  batchModeTogglerLabel:SetPoint("BOTTOMLEFT", 60, -23);
+  newView.batchModeTogglerLabel = batchModeTogglerLabel;
 
   local newViewMakeBatch = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
   newViewMakeBatch:SetScript("OnClick", function()
@@ -1338,7 +1355,7 @@ function WeakAuras.CreateTemplateView(frame)
     newView.batchButton:Hide();
     createButtons();
   end);
-  newViewBatch:SetPoint("BOTTOMLEFT", 130, -23);
+  newViewBatch:SetPoint("BOTTOMLEFT", 170, -23);
   newViewBatch:SetHeight(20);
   newViewBatch:SetWidth(100);
   newViewBatch:SetText(L["Next"]);
