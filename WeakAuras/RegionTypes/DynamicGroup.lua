@@ -234,6 +234,17 @@ local function modify(parent, region, data)
           bIndex = b.dataIndex;
         end
 
+        if (aIndex == bIndex) then
+          local result = compareExpirationTimes(a, b);
+          if (result == nil) then
+            return a.dataIndex < b.dataIndex;
+          end
+          if (data.hybridSortMode == "descending") then
+            result = not result;
+          end
+          return result;
+        end
+
         if (aIndex and bIndex) then
           return aIndex < bIndex;
         end
@@ -246,14 +257,7 @@ local function modify(parent, region, data)
           return data.hybridPosition ~= "hybridFirst";
         end
 
-        local result = compareExpirationTimes(a, b);
-        if (result == nil) then
-          return a.dataIndex < b.dataIndex;
-        end
-        if (data.hybridSortMode == "descending") then
-          result = not result;
-        end
-        return result;
+        -- Can't happen
       end);
     elseif(anyIndexInfo) then
       table.sort(region.controlledRegions, function(a, b)
