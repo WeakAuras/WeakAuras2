@@ -681,7 +681,7 @@ function WeakAuras.CreateFrame()
     return targetId;
   end
 
-  frame.PickOption = function(self, option)
+  frame.PickOption = function(self, option, fromGroup)
     local targetId = GetTarget(self.pickedDisplay);
     self:ClearPicks();
     if (targetId) then
@@ -703,7 +703,7 @@ function WeakAuras.CreateFrame()
         simpleLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE");
         simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         simpleLabel:SetText(L["Simple"]);
-        simpleLabel:SetFullWidth(true)
+        simpleLabel:SetFullWidth(true);
         containerScroll:AddChild(simpleLabel);
 
         local button = AceGUI:Create("WeakAurasNewButton");
@@ -723,39 +723,41 @@ function WeakAuras.CreateFrame()
         advancedLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE");
         advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         advancedLabel:SetText(L["Advanced"]);
-        advancedLabel:SetFullWidth(true)
+        advancedLabel:SetFullWidth(true);
         containerScroll:AddChild(advancedLabel);
       end
 
       for regionType, regionData in pairs(regionOptions) do
-        local button = AceGUI:Create("WeakAurasNewButton");
-        button:SetTitle(regionData.displayName);
-        if(type(regionData.icon) == "string") then
-          button:SetIcon(regionData.icon);
-        elseif(type(regionData.icon) == "function") then
-          button:SetIcon(regionData.icon());
+        if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
+          local button = AceGUI:Create("WeakAurasNewButton");
+          button:SetTitle(regionData.displayName);
+          if(type(regionData.icon) == "string") then
+            button:SetIcon(regionData.icon);
+          elseif(type(regionData.icon) == "function") then
+            button:SetIcon(regionData.icon());
+          end
+          button:SetDescription(regionData.description);
+          button:SetClick(function()
+            WeakAuras.NewAura(nil, regionType, targetId);
+          end);
+          containerScroll:AddChild(button);
         end
-        button:SetDescription(regionData.description);
-        button:SetClick(function()
-          WeakAuras.NewAura(nil, regionType, targetId);
-        end);
-        containerScroll:AddChild(button);
       end
 
       local spacer2Label = AceGUI:Create("Label");
-      spacer2Label:SetText("")
-      containerScroll:AddChild(spacer2Label)
+      spacer2Label:SetText("");
+      containerScroll:AddChild(spacer2Label);
 
       local externalLabel = AceGUI:Create("Label");
       externalLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE");
       externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
       externalLabel:SetText(L["External"]);
-      externalLabel:SetFullWidth(true)
+      externalLabel:SetFullWidth(true);
       containerScroll:AddChild(externalLabel);
 
       local spacer3Label = AceGUI:Create("Label");
-      spacer3Label:SetText("")
-      containerScroll:AddChild(spacer3Label)
+      spacer3Label:SetText("");
+      containerScroll:AddChild(spacer3Label);
 
       local importButton = AceGUI:Create("WeakAurasNewButton");
       importButton:SetTitle(L["Import"]);
@@ -851,7 +853,7 @@ function WeakAuras.CreateFrame()
       finishPicking();
       if (data.controlledChildren and #data.controlledChildren == 0) then
         WeakAurasOptions.pickedDisplay = data.id;
-        WeakAurasOptions:PickOption("New");
+        WeakAurasOptions:PickOption("New", true);
         WeakAurasOptions.pickedDisplay = data.id;
       end
     end
