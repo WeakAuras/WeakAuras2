@@ -1438,6 +1438,7 @@ local function createConditionTemplatesValueList(allConditionTemplates, numTrigg
           else
             conditionTemplates.display[index]  = string.format(L["Trigger %d"], triggernum);
           end
+          index = index + 1;
 
           for _, conditionName in ipairs(sorted) do
             conditionTemplates.display[index] = "    " .. templatesForTrigger[conditionName].display;
