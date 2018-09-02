@@ -763,7 +763,7 @@ templates.class.HUNTER = {
         { spell = 193530, type = "ability", buff = true}, -- Aspect of the Wild
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 201430, type = "ability", talent = 18}, -- Stampede
-        { spell = 217200, type = "ability", charges = true, requiresTarget = true}, -- Barbed Shot
+        { spell = 217200, type = "ability", charges = true, requiresTarget = true, overlayGlow = true}, -- Barbed Shot
         { spell = 264667, type = "ability", buff = true}, -- Primal Rage
       },
       icon = 132176
@@ -847,14 +847,14 @@ templates.class.HUNTER = {
         { spell = 1543, type = "ability"}, -- Flare
         { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
         { spell = 5384, type = "ability", buff = true}, -- Feign Death
-        { spell = 19434, type = "ability", requiresTarget = true, charges = true}, -- Aimed Shot
+        { spell = 19434, type = "ability", requiresTarget = true, charges = true, overlayGlow = true}, -- Aimed Shot
         { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
         { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
         { spell = 109304, type = "ability"}, -- Exhilaration
         { spell = 120360, type = "ability", talent = 17}, -- Barrage
         { spell = 131894, type = "ability", talent = 3}, -- A Murder of Crows
         { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
-        { spell = 185358, type = "ability", requiresTarget = true}, -- Arcane Shot
+        { spell = 185358, type = "ability", requiresTarget = true, overlayGlow = true}, -- Arcane Shot
         { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
         { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
         { spell = 186387, type = "ability"}, -- Bursting Shot
@@ -864,7 +864,7 @@ templates.class.HUNTER = {
         { spell = 198670, type = "ability", talent = 21}, -- Piercing Shot
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 212431, type = "ability", talent = 6}, -- Explosive Shot
-        { spell = 257044, type = "ability", requiresTarget = true}, -- Rapid Fire
+        { spell = 257044, type = "ability", requiresTarget = true, overlayGlow = true}, -- Rapid Fire
         { spell = 257620, type = "ability", requiresTarget = true}, -- Multi-Shot
         { spell = 260402, type = "ability", buff = true, talent = 18}, -- Double Tap
         { spell = 264667, type = "ability", buff = true}, -- Primal Rage
@@ -985,7 +985,8 @@ templates.class.HUNTER = {
         { spell = 199483, type = "ability", talent = 9}, -- Camouflage
         { spell = 212436, type = "ability", charges = true, talent = 6 }, -- Butchery
         { spell = 259391, type = "ability", requiresTarget = true, talent = 21 }, -- Chakrams
-        { spell = 259489, type = "ability", requiresTarget = true}, -- Kill Command
+        { spell = 259489, type = "ability", requiresTarget = true, overlayGlow = true}, -- Kill Command
+        { spell = 259491, type = "ability", requiresTarget = true, overlayGlow = true}, -- Serpent Sting
         { spell = 259495, type = "ability", requiresTarget = true}, -- Wildfire Bomb
         { spell = 263892, type = "ability"}, -- Catlike Reflexes
         { spell = 264667, type = "ability", buff = true}, -- Primal Rage
