@@ -567,6 +567,10 @@ end
 
 -- WORKAROUND Texts don't get the right size by default in WoW 7.3
 function WeakAuras.regionPrototype.SetTextOnText(text, str)
+  if (text:GetText() == str) then
+    return
+  end
+
   text:SetWidth(0); -- This makes the text use its internal text size calculation
   text:SetText(str);
   local w = text:GetWidth();
