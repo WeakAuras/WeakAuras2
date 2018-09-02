@@ -777,7 +777,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     usedStates[trigger] = true;
 
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
-    local type = conditionTemplate and conditionTemplate.type;
+    local ctype = conditionTemplate and conditionTemplate.type;
     local test = conditionTemplate and conditionTemplate.test;
 
     local stateCheck = "state[" .. trigger .. "] and state[" .. trigger .. "].show and ";
@@ -786,26 +786,28 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
       if (value) then
         tinsert(WeakAuras.customConditionTestFunctions, test);
         local testFunctionNumber = #(WeakAuras.customConditionTestFunctions);
-        check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. value .. ", " .. (op or "nil") .. ")";
+        local valueString = type(value) == "string" and "[" .. value .. "]" or value;
+        local opString = type(op) == "string" and  "[[" .. op .. "]]" or op;
+        check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
       end
-    elseif (type == "number" and op) then
+    elseif (ctype == "number" and op) then
       check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. value;
-    elseif (type == "timer" and op) then
+    elseif (ctype == "timer" and op) then
       if (op == "==") then
         check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]." ..variable .. "- now -" .. value .. ") < 0.05";
       else
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. "- now" .. op .. value;
       end
-    elseif (type == "select" and op) then
+    elseif (ctype == "select" and op) then
       if (tonumber(value)) then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. tonumber(value);
       else
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. "'" .. value .. "'";
       end
-    elseif (type == "bool") then
+    elseif (ctype == "bool") then
       local rightSide = value == 0 and "false" or "true";
       check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. "==" .. rightSide
-    elseif (type == "string") then
+    elseif (ctype == "string") then
       if(op == "==") then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. " == [[" .. value .. "]]";
       elseif (op  == "find('%s')") then
@@ -815,7 +817,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
       end
     end
 
-    if (type == "timer" and value) then
+    if (ctype == "timer" and value) then
       recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]." .. variable .. " and (state[" .. trigger .. "]." .. variable .. " -" .. value .. ")\n";
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
