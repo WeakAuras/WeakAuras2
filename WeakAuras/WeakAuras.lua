@@ -1588,7 +1588,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inencounter = encounter_id ~= 0;
   local inpetbattle = C_PetBattles.IsInBattle()
-  local vehicle = UnitInVehicle('player')
+  local vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
   local vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
 
   local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
@@ -1760,21 +1760,36 @@ loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
 loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
 loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
-loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
-loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
+loadFrame:RegisterEvent("VEHICLE_UPDATE");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
-loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
 
 loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 loadFrame:RegisterEvent("CHALLENGE_MODE_START")
+
+local unitLoadFrame = CreateFrame("FRAME");
+WeakAuras.loadFrame = unitLoadFrame;
+WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
+
+unitLoadFrame:RegisterEvent("UNIT_FLAGS");
+unitLoadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
+unitLoadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(...)
     WeakAuras.StartProfileSystem("load");
     WeakAuras.ScanForLoads(...)
     WeakAuras.StopProfileSystem("load");
+  end);
+
+  unitLoadFrame:SetScript("OnEvent", function(s, e, arg1, ...)
+    WeakAuras.StartProfileSystem("load");
+    if (arg1 == "player") then
+      WeakAuras.ScanForLoads(...)
+      WeakAuras.StopProfileSystem("load");
+    end
   end);
 end
 
