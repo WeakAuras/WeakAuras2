@@ -739,6 +739,8 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 end
 
+WeakAuras.customConditionTestFunctions = {};
+
 local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
   local trigger = input and input.trigger;
   local variable = input and input.variable;
@@ -782,9 +784,9 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     local stateVariableCheck = "state[" .. trigger .. "]." .. variable .. "~= nil and ";
     if (test) then
       if (value) then
-        test = test:gsub("state", "state[" .. trigger .. "]")
-        check = string.format(test, value, op or "");
-        check = "state and (" .. check .. ")";
+        tinsert(WeakAuras.customConditionTestFunctions, test);
+        local testFunctionNumber = #(WeakAuras.customConditionTestFunctions);
+        check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. value .. ", " .. (op or "nil") .. ")";
       end
     elseif (type == "number" and op) then
       check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. value;
