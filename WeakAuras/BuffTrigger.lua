@@ -1863,7 +1863,9 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     result["buffed"] = {
       display = L["Buffed/Debuffed"],
       type = "bool",
-      test = "state and state.show and ((state.active and true or false) == (%s == 1))"
+      test = function(state, needle)
+        return state and state.show and ((state.active and true or false) == (needle == 1));
+      end
     }
   end
 
