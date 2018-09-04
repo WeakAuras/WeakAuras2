@@ -1175,8 +1175,24 @@ local methods = {
         if count == 1 then
           button.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, (y/uiscale))
           firstButtonFrame = button.frame
+        elseif count <= 3 then
+          button.frame:SetPoint("BOTTOMLEFT", firstButtonFrame, "BOTTOMLEFT", 0, -(count-1)*(h+1)*scale/uiscale)
+          if count == 3 then
+            -- add gradient alpha mask
+            local mask = button.frame:CreateMaskTexture()
+            mask:SetAllPoints(button.frame.background)
+            mask:SetTexture([[Interface\Azerite\AzeriteCenterBGFillingMask]])
+            mask:SetVertexOffset(UPPER_LEFT_VERTEX, 0, h*1.5);
+            mask:SetVertexOffset(UPPER_RIGHT_VERTEX, w, h*1.5);
+            button.frame.highlight:AddMaskTexture(mask)
+            button.frame.background:AddMaskTexture(mask)
+            button.frame.icon:AddMaskTexture(mask)
+            button.frame.mask = mask
+          end
         else
-          button.frame:SetPoint("BOTTOMLEFT", firstButtonFrame, "BOTTOMLEFT", 0, -(count-1)*h*scale/uiscale)
+          -- anchor out of screen
+          button.frame:StopMovingOrSizing()
+          button.frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, -500)
         end
       end
     else
@@ -1238,6 +1254,12 @@ local methods = {
               button.view:Show()
             end
             button.dragging = false
+            if button.frame.mask then
+              button.frame.highlight:RemoveMaskTexture(button.frame.mask)
+              button.frame.background:RemoveMaskTexture(button.frame.mask)
+              button.frame.icon:RemoveMaskTexture(button.frame.mask)
+              button.frame.mask = nil
+            end
           end
         end
       end
