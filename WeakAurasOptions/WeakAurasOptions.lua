@@ -4068,13 +4068,13 @@ end
 function WeakAuras.SetDragging(data, drop)
   WeakAuras_DropDownMenu:Hide()
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
-    local datas = {}
+    local children = {}
     for index, childId in pairs(tempGroup.controlledChildren) do
       local data = WeakAuras.GetData(childId);
-      datas[data.id] = index
+      children[data.id] = index
     end
     for id, button in pairs(displayButtons) do
-      button:SetDragging(data and datas, drop, displayButtons);
+      button:SetDragging(data and children, drop, displayButtons);
     end
   else
     for id, button in pairs(displayButtons) do

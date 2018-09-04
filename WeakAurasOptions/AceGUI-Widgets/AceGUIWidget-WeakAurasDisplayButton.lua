@@ -269,7 +269,6 @@ local Actions = {
           group:ReloadTooltip()
         else
           WeakAuras.Add(source.data)
-          -- error("Calling 'Group' with invalid groupId. Reload your UI to fix the display list.")
         end
       else
         -- move source into the top-level list
@@ -753,7 +752,7 @@ local methods = {
 
     function self.callbacks.OnDragStart()
       if WeakAuras.IsImporting() or self:IsGroup() then return end;
-      if not WeakAuras.tempGroup.controlledChildren then
+      if #WeakAuras.tempGroup.controlledChildren == 0 then
         WeakAuras.PickDisplay(data.id);
       end
       WeakAuras.SetDragging(data);
