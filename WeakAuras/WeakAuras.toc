@@ -23,6 +23,7 @@ locales.xml
 
 Prototypes.lua
 Types.lua
+Profiling.lua
 WeakAuras.lua
 Transmission.lua
 BuffTrigger.lua
