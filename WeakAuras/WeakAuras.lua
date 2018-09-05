@@ -2528,7 +2528,7 @@ function WeakAuras.Modernize(data)
   -- Version 6 was introduced July 30, 2018 in BFA
   -- Changes were entirely within triggers, so no code runs here
 
-  -- Version 7 was introduced %DATE% in BFA
+  -- Version 7 was introduced September 1, 2018 in BFA
   -- Triggers were cleaned up into a 1-indexed array
 
   if data.internalVersion < 7 then
