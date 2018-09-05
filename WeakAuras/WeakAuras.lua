@@ -351,136 +351,6 @@ function WeakAuras.IsOptionsOpen()
   return false;
 end
 
-local LBG = LibStub("LibButtonGlow-1.0")
-WeakAuras.ShowOverlayGlow = LBG.ShowOverlayGlow
-WeakAuras.HideOverlayGlow = LBG.HideOverlayGlow
-
-local function forbidden()
-  prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])
-end
-
-local blockedFunctions = {
-  -- Lua functions that may allow breaking out of the environment
-  getfenv = true,
-  setfenv = true,
-  loadstring = true,
-  pcall = true,
-  xpcall = true,
-  -- blocked WoW API
-  SendMail = true,
-  SetTradeMoney = true,
-  AddTradeMoney = true,
-  PickupTradeMoney = true,
-  PickupPlayerMoney = true,
-  TradeFrame = true,
-  MailFrame = true,
-  EnumerateFrames = true,
-  RunScript = true,
-  AcceptTrade = true,
-  SetSendMailMoney = true,
-  EditMacro = true,
-  SlashCmdList = true,
-  DevTools_DumpCommand = true,
-  hash_SlashCmdList = true,
-  CreateMacro = true,
-  SetBindingMacro = true,
-  GuildDisband = true,
-  GuildUninvite = true,
-  securecall = true,
-}
-
-local overrideFunctions = {
-  ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
-  ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
-}
-
-local aura_environments = {};
-local current_aura_env = nil;
-local aura_env_stack = {}; -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
-function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
-  if(not id or not db.displays[id]) then
-    -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
-    tremove(aura_env_stack);
-    current_aura_env = aura_env_stack[#aura_env_stack] or nil;
-  else
-    local data = db.displays[id];
-    if data.init_started then
-      -- Point the current environment to the correct table
-      aura_environments[id] = aura_environments[id] or {};
-      current_aura_env = aura_environments[id];
-      current_aura_env.cloneId = cloneId;
-      current_aura_env.state = state;
-      current_aura_env.region = WeakAuras.GetRegion(id, cloneId);
-      -- Push the new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env);
-    else
-      -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
-      aura_environments[id] = {};
-      current_aura_env = aura_environments[id];
-      current_aura_env.cloneId = cloneId;
-      current_aura_env.state = state;
-      current_aura_env.region = WeakAuras.GetRegion(id, cloneId);
-      -- Push the new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env);
-      -- Run the init function if supplied
-      local actions = data.actions.init;
-      data.init_started = 1;
-      if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.customActionsFunctions[id]["init"];
-        if func then
-          current_aura_env.id = id;
-          xpcall(func, geterrorhandler());
-        end
-      end
-    end
-    current_aura_env.id = id;
-  end
-end
-
-local env_getglobal
-local exec_env = setmetatable({}, { __index =
-  function(t, k)
-    if k == "_G" then
-      return t
-    elseif k == "getglobal" then
-      return env_getglobal
-    elseif k == "aura_env" then
-      return current_aura_env;
-    elseif blockedFunctions[k] then
-      return forbidden
-    elseif overrideFunctions[k] then
-      return overrideFunctions[k]
-    elseif WeakAuras.helperFunctions[k] then
-      return WeakAuras.helperFunctions[k]
-    else
-      return _G[k]
-    end
-  end
-})
-
-function env_getglobal(k)
-  return exec_env[k]
-end
-
-local function_cache = {};
-function WeakAuras.LoadFunction(string, id, inTrigger)
-  if function_cache[string] then
-    return function_cache[string]
-  else
-    local loadedFunction, errorString = loadstring("--[[ Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."' ]] " .. string)
-    if errorString then
-      print(errorString)
-    else
-      setfenv(loadedFunction, exec_env)
-      local success, func = pcall(assert(loadedFunction))
-      if success then
-        function_cache[string] = func
-        return func
-      end
-    end
-  end
-end
-
 function WeakAuras.ParseNumber(numString)
   if not(numString and type(numString) == "string") then
     if(type(numString) == "number") then
@@ -1882,7 +1752,7 @@ function WeakAuras.Delete(data)
 
   db.displays[id] = nil;
 
-  aura_environments[id] = nil;
+  WeakAuras.DeleteAuraEnvironment(id)
   triggerState[id] = nil;
 
   if (WeakAuras.personalRessourceDisplayFrame) then
@@ -1951,6 +1821,8 @@ function WeakAuras.Rename(data, newid)
   triggerState[newid] = triggerState[oldid];
   triggerState[oldid] = nil;
 
+  WeakAuras.RenameAuraEnvironment(oldid, newid)
+
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
 
@@ -1979,9 +1851,9 @@ function WeakAuras.Rename(data, newid)
     end
   end
 
-  aura_environments[newid] = aura_environments[oldid] or {};
-  aura_environments[newid].id = newid;
-  aura_environments[oldid] = nil;
+  WeakAuras.aura_environments[newid] = WeakAuras.aura_environments[oldid] or {};
+  WeakAuras.aura_environments[newid].id = newid;
+  WeakAuras.aura_environments[oldid] = nil;
 
   if (WeakAuras.personalRessourceDisplayFrame) then
     WeakAuras.personalRessourceDisplayFrame:rename(oldid, newid);
@@ -2767,6 +2639,8 @@ local function pAdd(data)
       activatedConditions = {},
     };
 
+    WeakAuras.CreateAuraEnvironment(id)
+
     db.displays[id] = data;
 
     local region = WeakAuras.SetRegion(data);
@@ -3031,7 +2905,7 @@ function WeakAuras.PerformActions(data, type, region)
         glow_frame = regions[frame_name].region;
       end
     else
-      glow_frame = exec_env[actions.glow_frame];
+      glow_frame = WeakAuras.GetSanitizedGlobal(actions.glow_frame);
       original_glow_frame = glow_frame
     end
 
@@ -4948,8 +4822,8 @@ local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
       end
       postponeAnchor(id);
     else
-      if (exec_env[anchorFrameFrame]) then
-        return exec_env[anchorFrameFrame];
+      if (WeakAuras.GetSanitizedGlobal(anchorFrameFrame)) then
+        return WeakAuras.GetSanitizedGlobal(anchorFrameFrame);
       end
       postponeAnchor(id);
       return  parent;

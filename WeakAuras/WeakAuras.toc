@@ -28,7 +28,7 @@ WeakAuras.lua
 Transmission.lua
 BuffTrigger.lua
 GenericTrigger.lua
-HelperFunctions.lua
+AuraEnvironment.lua
 
 RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua
