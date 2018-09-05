@@ -2035,7 +2035,7 @@ WeakAuras.event_prototypes = {
         local ret2 = [[
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -2386,7 +2386,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -2504,7 +2504,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -3899,7 +3899,7 @@ WeakAuras.event_prototypes = {
         local expirationTime = startTime + duration
         local remaining = expirationTime - GetTime();
         local remainingCheck = %s;
-        if(remaining >= remainingCheck) then
+        if(remaining >= remainingCheck and remaining > 0) then
           WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
         end
       ]];
@@ -4284,7 +4284,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0;
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck);
           end
         ]];
