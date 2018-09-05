@@ -2035,21 +2035,6 @@ function WeakAuras.DeepCopy(source, dest)
   recurse(source, dest);
 end
 
-function WeakAuras.Copy(sourceid, destid)
-  local sourcedata = db.displays[sourceid];
-  local destdata = db.displays[destid];
-  if(sourcedata and destdata) then
-    local oldParent = destdata.parent;
-    local oldChildren = destdata.controlledChildren;
-    wipe(destdata);
-    WeakAuras.DeepCopy(sourcedata, destdata);
-    destdata.id = destid;
-    destdata.parent = oldParent;
-    destdata.controlledChildren = oldChildren;
-    WeakAuras.Add(destdata);
-  end
-end
-
 function WeakAuras.RegisterAddon(addon, displayName, description, icon)
   if(addons[addon]) then
     addons[addon].displayName = displayName;
