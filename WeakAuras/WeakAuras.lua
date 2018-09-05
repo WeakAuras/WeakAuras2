@@ -1,25 +1,17 @@
 local internalVersion = 7;
 
--- Lua APIs
-local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
-local fmt, tostring, select, pairs, next, type = string.format, tostring, select, pairs, next, type
-local loadstring, assert, error = loadstring, assert, error
-local setmetatable = setmetatable
-local coroutine =  coroutine
-local _G = _G
-
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
-local LoadAddOn, setfenv, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
-  = LoadAddOn, setfenv, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
+local LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
+  = LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
   = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
   = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
-local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-  = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+  = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown = debugstack, IsSpellKnown
 
 local ADDON_NAME = "WeakAuras"
@@ -644,12 +636,12 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
     end
   end
 
-  local ret = "return function("..tconcat(input, ", ")..")\n";
+  local ret = "return function("..table.concat(input, ", ")..")\n";
   ret = ret..(init or "");
-  ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
+  ret = ret..(#debug > 0 and table.concat(debug, "\n") or "");
   ret = ret.."if(";
-  ret = ret..((#required > 0) and tconcat(required, " and ").." and " or "");
-  ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
+  ret = ret..((#required > 0) and table.concat(required, " and ").." and " or "");
+  ret = ret..(#tests > 0 and table.concat(tests, " and ") or "true");
   ret = ret..") then\n";
   if(#debug > 0) then
     ret = ret.."print('ret: true');\n";
@@ -766,9 +758,9 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     end
     if (next(test)) then
       if (variable == "AND") then
-        check = tconcat(test, " and ");
+        check = table.concat(test, " and ");
       else
-        check = tconcat(test, " or ");
+        check = table.concat(test, " or ");
       end
     end
   end
@@ -2720,7 +2712,7 @@ function WeakAuras.AddMany(table)
     if(data.parent) then
       if(idtable[data.parent]) then
         if(tContains(depends, data.parent)) then
-          error("Circular dependency in WeakAuras.AddMany between "..tconcat(depends, ", "));
+          error("Circular dependency in WeakAuras.AddMany between "..table.concat(depends, ", "));
         else
           if not(loaded[data.parent]) then
             local dependsOut = {};
@@ -4069,7 +4061,7 @@ do
   -- Add an action to be resumed via OnUpdate
   function dynFrame.AddAction(self, name, func)
     if not name then
-      name = fmt("NIL", dynFrame.size+1);
+      name = string.format("NIL", dynFrame.size+1);
     end
 
     if not dynFrame.update[name] then
