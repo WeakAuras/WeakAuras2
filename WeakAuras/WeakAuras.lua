@@ -22,7 +22,7 @@ local prettyPrint = WeakAuras.prettyPrint
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
-WeakAuras.maxTimerDuration = 60 * 60 * 24 * 7; -- A week
+WeakAuras.maxTimerDuration = 604800; -- A week, in seconds
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < WeakAuras.maxTimerDuration) then
     return self:ScheduleTimer(func, delay, ...);
