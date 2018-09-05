@@ -352,16 +352,8 @@ function WeakAuras.IsOptionsOpen()
 end
 
 local LBG = LibStub("LibButtonGlow-1.0")
-local function WeakAuras_ShowOverlayGlow(frame)
-  LBG.ShowOverlayGlow(frame)
-end
-
-local function WeakAuras_HideOverlayGlow(frame)
-  LBG.HideOverlayGlow(frame)
-end
-
-WeakAuras.ShowOverlayGlow = WeakAuras_ShowOverlayGlow;
-WeakAuras.HideOverlayGlow = WeakAuras_HideOverlayGlow;
+WeakAuras.ShowOverlayGlow = LBG.ShowOverlayGlow
+WeakAuras.HideOverlayGlow = LBG.HideOverlayGlow
 
 local function forbidden()
   prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])
@@ -398,8 +390,8 @@ local blockedFunctions = {
 }
 
 local overrideFunctions = {
-  ActionButton_ShowOverlayGlow = WeakAuras_ShowOverlayGlow,
-  ActionButton_HideOverlayGlow = WeakAuras_HideOverlayGlow,
+  ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
+  ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
 }
 
 local aura_environments = {};
@@ -3120,11 +3112,11 @@ function WeakAuras.PerformActions(data, type, region)
 
     if(glow_frame) then
       if(actions.glow_action == "show") then
-        WeakAuras_ShowOverlayGlow(glow_frame);
+        WeakAuras.ShowOverlayGlow(glow_frame);
       elseif(actions.glow_action == "hide") then
-        WeakAuras_HideOverlayGlow(glow_frame);
+        WeakAuras.HideOverlayGlow(glow_frame);
         if original_glow_frame then
-          WeakAuras_HideOverlayGlow(original_glow_frame);
+          WeakAuras.HideOverlayGlow(original_glow_frame);
         end
       end
     end
