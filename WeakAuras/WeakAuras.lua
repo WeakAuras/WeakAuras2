@@ -786,7 +786,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
       if (value) then
         tinsert(WeakAuras.customConditionTestFunctions, test);
         local testFunctionNumber = #(WeakAuras.customConditionTestFunctions);
-        local valueString = type(value) == "string" and "[" .. value .. "]" or value;
+        local valueString = type(value) == "string" and "[[" .. value .. "]]" or value;
         local opString = type(op) == "string" and  "[[" .. op .. "]]" or op;
         check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
       end

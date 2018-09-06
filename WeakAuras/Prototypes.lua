@@ -31,6 +31,12 @@ end
 
 function WeakAuras.CheckRange(unit, range, operator)
   local min, max = LibRangeCheck:GetRange(unit);
+  if (type(range) ~= "number") then
+    range = tonumber(range);
+  end
+  if (not range) then
+    return
+  end
   if (operator == "<=") then
     return (max or 0) <= range;
   else
