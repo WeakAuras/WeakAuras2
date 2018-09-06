@@ -1003,7 +1003,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           order = order,
           hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
           values = values,
-          -- width = "half",
+          width = "double",
           get = function(info, v)
             if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
               return trigger[realname].multi[v];
@@ -1028,14 +1028,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
           end
-        };
-        options["multiselectspace_"..name] = {
-          type = "execute",
-          name = "",
-          order = (order - 0.5),
-          hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
-          disabled = true,
-          image = function() return "", 52, 52 end
         };
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
