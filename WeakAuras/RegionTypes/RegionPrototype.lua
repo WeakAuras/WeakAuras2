@@ -307,8 +307,16 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin;
   local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax;
 
-  region.adjustedMin = hasAdjustedMin and data.adjustedMin and data.adjustedMin > 0 and data.adjustedMin;
-  region.adjustedMax = hasAdjustedMax and data.adjustedMax and data.adjustedMax > 0 and data.adjustedMax;
+  if (hasAdjustedMin) then
+    region.adjustedMin = data.adjustedMin and data.adjustedMin >= 0 and data.adjustedMin;
+  else
+    region.adjustedMin = nil;
+  end
+  if (hasAdjustedMax) then
+    region.adjustedMax = data.adjustedMax and data.adjustedMax >= 0 and data.adjustedMax;
+  else
+    region.adjustedMax = nil;
+  end
   region.inverse = false;
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
