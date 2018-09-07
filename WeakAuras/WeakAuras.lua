@@ -3673,7 +3673,14 @@ function WeakAuras.GetTriggerConditions(data)
   return conditions;
 end
 
-function WeakAuras.CreateFallbackState(id, triggernum, state)
+function WeakAuras.CreateFallbackState(id, triggernum)
+  fallbacksStates[id] = fallbacksStates[id] or {};
+  fallbacksStates[id][triggernum] = fallbacksStates[id][triggernum] or {};
+
+  local states = fallbacksStates[id][triggernum];
+  states[""] = states[""] or {};
+  local state = states[""];
+
   local data = db.displays[id];
   local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
   if (not triggerSystem) then
@@ -3684,6 +3691,8 @@ function WeakAuras.CreateFallbackState(id, triggernum, state)
   state.trigger = data.triggers[triggernum].trigger
   state.triggernum = triggernum
   state.id = id
+
+  return states;
 end
 
 function WeakAuras.CanShowNameInfo(data)
@@ -4311,33 +4320,20 @@ end
 
 local function ApplyStatesToRegions(id, triggernum, states)
   -- Show new clones
-  local visibleRegion = false;
   for cloneId, state in pairs(states) do
     local region = WeakAuras.GetRegion(id, cloneId);
     if (state.show) then
-      visibleRegion = true;
       if (not region.toShow or state.changed or region.state ~= state) then
         ApplyStateToRegion(id, region, state);
       end
     end
-    if (checkConditions[id]) then -- Even if this state has not changed
+    if (state.changed and checkConditions[id]) then
       checkConditions[id](region, not state.show);
     end
   end
 
-  if (visibleRegion) then
-    if (not states[""] or not states[""].show) then
-      WeakAuras.regions[id].region:Collapse();
-    end
-  else
-    -- no visible region, fallback to a fallback state
-    fallbacksStates[id] = fallbacksStates[id] or {};
-    fallbacksStates[id][triggernum] =  fallbacksStates[id][triggernum] or {};
-    WeakAuras.CreateFallbackState(id, triggernum, fallbacksStates[id][triggernum])
-    ApplyStateToRegion(id, WeakAuras.regions[id].region, fallbacksStates[id][triggernum]);
-    if (checkConditions[id]) then
-      checkConditions[id](WeakAuras.regions[id].region);
-    end
+  if (not states[""] or not states[""].show) then
+    WeakAuras.regions[id].region:Collapse();
   end
 end
 
@@ -4388,7 +4384,22 @@ function WeakAuras.UpdatedTriggerState(id)
 
   local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, newActiveTrigger);
   if (not next(activeTriggerState)) then
-    activeTriggerState = emptyState;
+    if (show) then
+      activeTriggerState = WeakAuras.CreateFallbackState(id, newActiveTrigger)
+    else
+      activeTriggerState = emptyState;
+    end
+  elseif (show) then
+    local needsFallback = true;
+    for cloneId, state in pairs(activeTriggerState) do
+      if (state.show) then
+        needsFallback = false;
+        break;
+      end
+    end
+    if (needsFallback) then
+      activeTriggerState = WeakAuras.CreateFallbackState(id, newActiveTrigger);
+    end
   end
 
   local region;
