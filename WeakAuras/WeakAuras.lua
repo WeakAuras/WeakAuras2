@@ -1792,8 +1792,8 @@ function WeakAuras.RegisterLoadEvents()
     WeakAuras.StartProfileSystem("load");
     if (arg1 == "player") then
       WeakAuras.ScanForLoads(...)
-      WeakAuras.StopProfileSystem("load");
     end
+    WeakAuras.StopProfileSystem("load");
   end);
 end
 

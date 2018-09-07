@@ -599,6 +599,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("generictrigger " .. orgEvent )
   local event_list = loaded_events[event];
   if (not event_list) then
+    WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
     return
   end
   if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -619,6 +620,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   else
     WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
+  WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
@@ -639,7 +641,6 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     WeakAuras.StopProfileAura(id);
     WeakAuras.ActivateAuraEnvironment(nil);
   end
-  WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
 function GenericTrigger.ScanAll(recentlyLoaded)
