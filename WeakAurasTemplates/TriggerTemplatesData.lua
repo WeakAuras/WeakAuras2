@@ -3783,29 +3783,29 @@ templates.class.DEATHKNIGHT = {
 tinsert(templates.general.args, {
   title = L["Health"],
   icon = "Interface\\Icons\\inv_alchemy_70_red",
-  triggers = { [0] = { trigger = { type = "status", event = "Health", unit = "player", use_unit = true, unevent = "auto" }}}
+  triggers = { [1] = { trigger = { type = "status", event = "Health", unit = "player", use_unit = true, unevent = "auto" }}}
 });
 tinsert(templates.general.args, {
   title = L["Cast"],
   icon = 136209,
-  triggers = {[0] = { trigger = { type = "status", event = "Cast", unevent = "auto", use_unit = true, unit = "player" }}}
+  triggers = {[1] = { trigger = { type = "status", event = "Cast", unevent = "auto", use_unit = true, unit = "player" }}}
 });
 tinsert(templates.general.args, {
   title = L["Always Active"],
   icon = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura78",
-  triggers = {[0] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_alwaystrue = true}}}
+  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_alwaystrue = true}}}
 });
 
 tinsert(templates.general.args, {
   title = L["Pet alive"],
   icon = "Interface\\Icons\\ability_hunter_pet_raptor",
-  triggers = {[0] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_HasPet = true}}}
+  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_HasPet = true}}}
 });
 
 tinsert(templates.general.args, {
   title = L["Pet Behavior"],
   icon = "Interface\\Icons\\Ability_hunter_pet_assist",
-  triggers = {[0] = { trigger = { type = "status", event = "Pet Behavior", unevent = "auto", use_behavior = true, behavior = "assist"}}}
+  triggers = {[1] = { trigger = { type = "status", event = "Pet Behavior", unevent = "auto", use_behavior = true, behavior = "assist"}}}
 });
 
 tinsert(templates.general.args, {
@@ -3959,7 +3959,7 @@ local function createSimplePowerTemplate(powertype)
     title = powerTypes[powertype].name,
     icon = powerTypes[powertype].icon,
     triggers = {
-      [0] = {
+      [1] = {
         ["trigger"] = {
           type = "status",
           event = "Power",
@@ -4096,7 +4096,7 @@ for i = 1, 4 do
   tinsert(templates.class.DRUID[i][8].args, {
     title = L["Shapeshift Form"],
     icon = 132276,
-    triggers = {[0] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
   });
 end
 
@@ -4124,7 +4124,7 @@ for i = 1, 3 do
   tinsert(templates.class.DEATHKNIGHT[i][8].args, {
     title = L["Runes"],
     icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
-    triggers = {[0] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
+    triggers = {[1] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
   });
 end
 
