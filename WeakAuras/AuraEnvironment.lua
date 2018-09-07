@@ -99,24 +99,30 @@ local overrideFunctions = {
 }
 
 local aura_environments = {}
+local environment_initialized = {}
+
+function WeakAuras.IsEnvironmentInitialized(id)
+  return environment_initialized[id]
+end
+
 function WeakAuras.CreateAuraEnvironment(id)
-  local data = WeakAuras.GetData(id)
   aura_environments[id] = {}
-  if data then
-    data.init_started = nil
-  end
+  environment_initialized[id] = false
 end
 
 function WeakAuras.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
+  environment_initialized[id] = nil
 end
 
 function WeakAuras.RenameAuraEnvironment(oldid, newid)
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
+  environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
 end
 
 local current_aura_env = nil
 local aura_env_stack = {} -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
+
 function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
   local data = WeakAuras.GetData(id)
   if not data then
@@ -124,7 +130,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
     tremove(aura_env_stack)
     current_aura_env = aura_env_stack[#aura_env_stack] or nil
   else
-    if data.init_started then
+    if environment_initialized[id] then
       -- Point the current environment to the correct table
       current_aura_env = aura_environments[id]
       current_aura_env.cloneId = cloneId
@@ -134,7 +140,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       tinsert(aura_env_stack, current_aura_env)
     else
       -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
-      data.init_started = true
+      environment_initialized[id] = true
       wipe(aura_environments[id])
       current_aura_env = aura_environments[id]
       current_aura_env.cloneId = cloneId

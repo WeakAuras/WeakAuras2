@@ -1373,13 +1373,13 @@ function WeakAuras.LoadEncounterInitScripts(id)
   end
   if (id) then
     local data = db.displays[id]
-    if (data and data.load.use_encounterid and not data.init_started and data.actions.init and data.actions.init.do_custom) then
+    if (data and data.load.use_encounterid and not WeakAuras.IsEnvironmentInitialized(id) and data.actions.init and data.actions.init.do_custom) then
       WeakAuras.ActivateAuraEnvironment(id)
       WeakAuras.ActivateAuraEnvironment(nil)
     end
   else
     for id, data in pairs(db.displays) do
-      if (data.load.use_encounterid and not data.init_started and data.actions.init and data.actions.init.do_custom) then
+      if (data.load.use_encounterid and not WeakAuras.IsEnvironmentInitialized(id) and data.actions.init and data.actions.init.do_custom) then
         WeakAuras.ActivateAuraEnvironment(id)
         WeakAuras.ActivateAuraEnvironment(nil)
       end
@@ -1850,10 +1850,6 @@ function WeakAuras.Rename(data, newid)
       animation.name = newid;
     end
   end
-
-  WeakAuras.aura_environments[newid] = WeakAuras.aura_environments[oldid] or {};
-  WeakAuras.aura_environments[newid].id = newid;
-  WeakAuras.aura_environments[oldid] = nil;
 
   if (WeakAuras.personalRessourceDisplayFrame) then
     WeakAuras.personalRessourceDisplayFrame:rename(oldid, newid);
@@ -2577,6 +2573,8 @@ function WeakAuras.PreAdd(data)
   end
   WeakAuras.Modernize(data);
   removeSpellNames(data)
+  data.init_started = nil
+  data.init_completed = nil
 end
 
 local function pAdd(data)
@@ -2595,7 +2593,6 @@ local function pAdd(data)
       triggerSystem.Add(data);
     end
 
-    data.init_started = nil;
     data.load = data.load or {};
     data.actions = data.actions or {};
     data.actions.init = data.actions.init or {};
