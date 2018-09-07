@@ -2621,15 +2621,15 @@ function WeakAuras.ReloadTriggerOptions(data)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           tremove(childData.triggers, optionTriggerChoices[childId])
-          optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
           WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
+          optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
           WeakAuras.ReloadTriggerOptions(childData);
         end
       end
     else
       tremove(data.triggers, optionTriggerChoices[id])
-      optionTriggerChoices[id] = max(1, optionTriggerChoices[id] - 1)
       WeakAuras.DeleteConditionsForTrigger(data, optionTriggerChoices[id]);
+      optionTriggerChoices[id] = max(1, optionTriggerChoices[id] - 1)
     end
     WeakAuras.Add(data);
     WeakAuras.ReloadTriggerOptions(data);
