@@ -66,6 +66,7 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   desc[2][1] = L["Children:"]
   tinsert(desc, " ");
   tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+  tinsert(desc, {" ", "|cFF00FFFF"..L["Drag to move"]});
   return desc;
 end
 
