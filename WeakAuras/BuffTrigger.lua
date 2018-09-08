@@ -1859,14 +1859,16 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     type = "string"
   }
 
-  if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
-    result["buffed"] = {
-      display = L["Buffed/Debuffed"],
-      type = "bool",
-      test = function(state, needle)
-        return state and state.show and ((state.active and true or false) == (needle == 1));
-      end
-    }
+  if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
+    if (trigger.buffShowOn == "showAlways") then
+      result["buffed"] = {
+        display = L["Buffed/Debuffed"],
+        type = "bool",
+        test = function(state, needle)
+          return state and state.show and ((state.active and true or false) == (needle == 1));
+        end
+      }
+    end
   end
 
   return result;
