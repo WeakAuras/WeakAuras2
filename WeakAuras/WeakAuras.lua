@@ -2443,7 +2443,7 @@ function WeakAuras.Modernize(data)
     triggerSystem.Modernize(data);
   end
 
-  data.internalVersion = internalVersion;
+  data.internalVersion = max(data.internalVersion or 0, internalVersion);
 end
 
 function WeakAuras.SyncParentChildRelationships(silent)
