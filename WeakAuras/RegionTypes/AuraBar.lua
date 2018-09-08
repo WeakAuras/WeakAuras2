@@ -1303,6 +1303,7 @@ local function modify(parent, region, data)
 
     -- Remove custom text update
   else
+    region.values.custom = nil;
     region.UpdateCustomText = nil;
     WeakAuras.UnregisterCustomTextUpdates(region);
   end

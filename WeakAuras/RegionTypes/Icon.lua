@@ -421,6 +421,7 @@ local function modify(parent, region, data)
       WeakAuras.UnregisterCustomTextUpdates(region);
     end
   else
+    region.values.custom = nil;
     region.UpdateCustomText = nil;
     WeakAuras.UnregisterCustomTextUpdates(region);
   end
