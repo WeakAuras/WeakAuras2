@@ -1178,6 +1178,9 @@ local methods = {
           button.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, y/uiscale)
           button.frame.temp.title = button.title:GetText()
           button.title:SetText((L["%i auras selected"]):format(#tempTable))
+          button.frame.temp.icon = button.icon:GetTexture()
+          button.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
+          button.icon:Show()
         else
           -- anchor out of screen
           button.frame:StopMovingOrSizing()
@@ -1231,6 +1234,11 @@ local methods = {
             button.frame:SetScript("OnUpdate", nil)
             if button.frame.temp.title then
               button.title:SetText(button.frame.temp.title)
+            end
+            if button.frame.temp.icon then
+              button.icon:SetTexture(button.frame.temp.icon)
+            else
+              button.icon:Hide()
             end
             if button.dragging then
               button.frame:SetParent(temp.parent)
