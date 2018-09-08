@@ -292,6 +292,9 @@ local Actions = {
         WeakAuras.UpdateGroupOrders(parent);
         WeakAuras.ReloadGroupRegionOptions(parent);
         WeakAuras.UpdateDisplayButton(parent);
+        local group = WeakAuras.GetDisplayButton(parent.id)
+        group.callbacks.UpdateExpandButton();
+        group:ReloadTooltip()
       else
         error("Display thinks it is a member of a group which does not control it")
       end
@@ -1138,7 +1141,7 @@ local methods = {
   end,
   ["Drag"] = function(self)
     local uiscale, scale = UIParent:GetScale(), self.frame:GetEffectiveScale()
-    local x, w, h = self.frame:GetLeft(), self.frame:GetWidth(), self.frame:GetHeight()
+    local x, w = self.frame:GetLeft(), self.frame:GetWidth()
     local _, y = GetCursorPosition()
 
     if self.multiTemp then
@@ -1151,7 +1154,6 @@ local methods = {
           end
         end
       end
-      local firstButtonFrame
       for count=1, #tempTable do
         local button = tempTable[count]
         -- hide "visual clutter"
@@ -1173,22 +1175,9 @@ local methods = {
         button.frame:SetFrameStrata("FULLSCREEN_DIALOG")
         button.frame:SetWidth(w)
         if count == 1 then
-          button.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, (y/uiscale))
-          firstButtonFrame = button.frame
-        elseif count <= 3 then
-          button.frame:SetPoint("BOTTOMLEFT", firstButtonFrame, "BOTTOMLEFT", 0, -(count-1)*(h+1)*scale/uiscale)
-          if count == 3 then
-            -- add gradient alpha mask
-            local mask = button.frame:CreateMaskTexture()
-            mask:SetAllPoints(button.frame.background)
-            mask:SetTexture([[Interface\Azerite\AzeriteCenterBGFillingMask]])
-            mask:SetVertexOffset(UPPER_LEFT_VERTEX, 0, h*1.5);
-            mask:SetVertexOffset(UPPER_RIGHT_VERTEX, w, h*1.5);
-            button.frame.highlight:AddMaskTexture(mask)
-            button.frame.background:AddMaskTexture(mask)
-            button.frame.icon:AddMaskTexture(mask)
-            button.frame.mask = mask
-          end
+          button.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, y/uiscale)
+          button.frame.temp.title = button.title:GetText()
+          button.title:SetText((L["%i auras selected"]):format(#tempTable))
         else
           -- anchor out of screen
           button.frame:StopMovingOrSizing()
@@ -1234,15 +1223,19 @@ local methods = {
     -- get action and execute it
     if self.multiTemp then
       -- multi selection
+      local temp = self.frame.temp
       for id, count in pairs(self.multiTemp.data) do
          for _, button in pairs(self.multiTemp.displayButtons) do
           if id == button.data.id then
             button.frame:StopMovingOrSizing()
             button.frame:SetScript("OnUpdate", nil)
+            if button.frame.temp.title then
+              button.title:SetText(button.frame.temp.title)
+            end
             if button.dragging then
-              button.frame:SetParent(self.frame.temp.parent)
-              button.frame:SetFrameStrata(self.frame.temp.strata)
-              button.frame.tmp = nil
+              button.frame:SetParent(temp.parent)
+              button.frame:SetFrameStrata(temp.strata)
+              button.frame.temp = nil
               if button.data.parent then
                 button.downgroup:Show()
                 button.ungroup:Show()
@@ -1254,12 +1247,6 @@ local methods = {
               button.view:Show()
             end
             button.dragging = false
-            if button.frame.mask then
-              button.frame.highlight:RemoveMaskTexture(button.frame.mask)
-              button.frame.background:RemoveMaskTexture(button.frame.mask)
-              button.frame.icon:RemoveMaskTexture(button.frame.mask)
-              button.frame.mask = nil
-            end
           end
         end
       end
@@ -1286,7 +1273,7 @@ local methods = {
       if self.dragging then
         self.frame:SetParent(self.frame.temp.parent)
         self.frame:SetFrameStrata(self.frame.temp.strata)
-        self.frame.tmp = nil
+        self.frame.temp = nil
         if self.data.parent then
           self.downgroup:Show()
           self.ungroup:Show()
