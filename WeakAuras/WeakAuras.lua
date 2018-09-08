@@ -2583,6 +2583,7 @@ local function pAdd(data)
     error("Improper arguments to WeakAuras.Add - id not defined");
   elseif (data.controlledChildren) then
     db.displays[id] = data;
+    WeakAuras.CreateAuraEnvironment(id)
     WeakAuras.SetRegion(data);
   else
     if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
