@@ -105,11 +105,6 @@ function WeakAuras.IsEnvironmentInitialized(id)
   return environment_initialized[id]
 end
 
-function WeakAuras.ResetAuraEnvironment(id)
-  aura_environments[id] = {}
-  environment_initialized[id] = false
-end
-
 function WeakAuras.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
@@ -123,6 +118,10 @@ end
 local current_aura_env = nil
 local aura_env_stack = {} -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
 
+function WeakAuras.ClearAuraEnvironment(id)
+  environment_initialized[id] = false;
+end
+
 function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
   local data = WeakAuras.GetData(id)
   if not data then
@@ -132,7 +131,6 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
   else
     if environment_initialized[id] then
       -- Point the current environment to the correct table
-      aura_environments[id] = aura_environments[id] or {}
       current_aura_env = aura_environments[id]
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state

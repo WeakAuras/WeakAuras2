@@ -2579,18 +2579,22 @@ end
 
 local function pAdd(data)
   local id = data.id;
+
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
-  elseif (data.controlledChildren) then
-    db.displays[id] = data;
-    WeakAuras.ResetAuraEnvironment(id)
+    return;
+  end
+
+  db.displays[id] = data;
+  WeakAuras.ClearAuraEnvironment(id);
+
+  if (data.controlledChildren) then
     WeakAuras.SetRegion(data);
   else
-
     if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
       data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
     end
-    WeakAuras.ResetAuraEnvironment(id)
+
 
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.Add(data);
@@ -2639,7 +2643,6 @@ local function pAdd(data)
       activatedConditions = {},
     };
 
-    db.displays[id] = data;
 
     local region = WeakAuras.SetRegion(data);
     if (WeakAuras.clones[id]) then
