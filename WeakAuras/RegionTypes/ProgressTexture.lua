@@ -703,6 +703,8 @@ end
 
 local TextureSetValueFunction = function(self, progress)
   self.progress = progress;
+  progress = max(0, progress);
+  progress = min(1, progress);
   self.foreground:SetValue(0, progress);
 end
 
@@ -770,14 +772,14 @@ local function ensureExtraSpinners(region, count)
   end
 end
 
-local function convertToProgress(rprogress, additionalProgress, min, totalWidth, inverse)
+local function convertToProgress(rprogress, additionalProgress, adjustMin, totalWidth, inverse, clamp)
   local startProgress = 0;
   local endProgress = 0;
 
   if (additionalProgress.min and additionalProgress.max) then
     if (totalWidth ~= 0) then
-      startProgress = max( (additionalProgress.min - min) / totalWidth, 0);
-      endProgress = (additionalProgress.max - min) / totalWidth;
+      startProgress = max( (additionalProgress.min - adjustMin) / totalWidth, 0);
+      endProgress = (additionalProgress.max - adjustMin) / totalWidth;
 
       if (inverse) then
         startProgress = 1 - startProgress;
@@ -801,6 +803,12 @@ local function convertToProgress(rprogress, additionalProgress, min, totalWidth,
       end
     end
   end
+
+  if (clamp) then
+    startProgress = max(0, min(1, startProgress));
+    endProgress = max(0, min(1, endProgress));
+  end
+
   return startProgress, endProgress;
 end
 
@@ -822,7 +830,7 @@ local function SetAdditionalProgress(self, additionalProgress, min, max, inverse
       local extraTexture = self.extraTextures[index];
 
       local totalWidth = max - min;
-      local startProgress, endProgress = convertToProgress(self.progress, additionalProgress, min, totalWidth, effectiveInverse);
+      local startProgress, endProgress = convertToProgress(self.progress, additionalProgress, min, totalWidth, effectiveInverse, self.overlayclip);
       if ((endProgress - startProgress) == 0) then
         extraTexture:Hide();
       else
@@ -859,7 +867,7 @@ local function SetAdditionalProgressCircular(self, additionalProgress, min, max,
       local extraSpinner = self.extraSpinners[index];
 
       local totalWidth = max - min;
-      local startProgress, endProgress = convertToProgress(self.progress, additionalProgress, min, totalWidth, effectiveInverse);
+      local startProgress, endProgress = convertToProgress(self.progress, additionalProgress, min, totalWidth, effectiveInverse, self.overlayclip);
       if (endProgress < startProgress) then
         startProgress, endProgress = endProgress, startProgress;
       end
@@ -1005,6 +1013,7 @@ local function modify(parent, region, data)
   region.scalex = 1;
   region.scaley = 1;
   region.aspect =  data.width / data.height;
+  region.overlayclip = data.overlayclip;
 
   region.textureWrapMode = data.textureWrapMode;
 

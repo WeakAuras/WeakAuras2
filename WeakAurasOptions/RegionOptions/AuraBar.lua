@@ -654,6 +654,13 @@ local function createOptions(id, data)
       }
       index = index + 0.01
     end
+
+    options["overlayclip"] = {
+      type = "toggle",
+      name = L["Clip Overlays"],
+      order = 58 + index;
+    }
+
   end
 
   return {

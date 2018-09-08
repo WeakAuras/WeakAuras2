@@ -332,11 +332,12 @@ local barPrototype = {
 
   ["UpdateProgress"] = function(self)
     -- Limit values
-    self.value   = math.max(self.min, self.value);
-    self.value   = math.min(self.max, self.value);
+    local value = self.value;
+    value = math.max(self.min, value);
+    value = math.min(self.max, value);
 
     -- Alignment variables
-    local progress = (self.value - self.min) / (self.max - self.min);
+    local progress = (value - self.min) / (self.max - self.min);
 
     -- Create statusbar illusion
     if (self.horizontal) then
@@ -410,6 +411,11 @@ local barPrototype = {
               endProgress = self.value - offset / valueWidth;
             end
           end
+        end
+
+        if (self.additionalBarsClip) then
+          startProgress = max(0, min(1, startProgress));
+          endProgress = max(0, min(1, endProgress));
         end
 
         if ((endProgress - startProgress) == 0) then
@@ -506,12 +512,13 @@ local barPrototype = {
     end
   end,
 
-  ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse)
+  ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse, overlayclip)
     self.additionalBars = additionalBars;
     self.additionalBarsColors = colors;
     self.additionalBarsMin = min;
     self.additionalBarsMax = max;
     self.additionalBarsInverse = inverse;
+    self.additionalBarsClip = overlayclip;
     self:UpdateAdditionalBars();
   end,
 
@@ -1031,6 +1038,7 @@ local function modify(parent, region, data)
   region.stickyDuration = data.stickyDuration;
   region.progressPrecision = data.progressPrecision;
   region.totalPrecision = data.totalPrecision;
+  region.overlayclip = data.overlayclip;
 
   region.overlays = {};
   if (data.overlays) then
@@ -1424,7 +1432,7 @@ local function modify(parent, region, data)
 
   function region:SetAdditionalProgress(additionalProgress, min, max, inverse)
     local effectiveInverse = (inverse and not region.inverseDirection) or (not inverse and region.inverseDirection);
-    region.bar:SetAdditionalBars(additionalProgress, region.overlays, min, max, effectiveInverse);
+    region.bar:SetAdditionalBars(additionalProgress, region.overlays, min, max, effectiveInverse, region.overlayclip);
   end
 
   function region:TimerTick()
