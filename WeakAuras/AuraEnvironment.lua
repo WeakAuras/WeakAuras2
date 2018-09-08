@@ -105,7 +105,7 @@ function WeakAuras.IsEnvironmentInitialized(id)
   return environment_initialized[id]
 end
 
-function WeakAuras.CreateAuraEnvironment(id)
+function WeakAuras.ResetAuraEnvironment(id)
   aura_environments[id] = {}
   environment_initialized[id] = false
 end
@@ -132,6 +132,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
   else
     if environment_initialized[id] then
       -- Point the current environment to the correct table
+      aura_environments[id] = aura_environments[id] or {}
       current_aura_env = aura_environments[id]
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
@@ -141,7 +142,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
     else
       -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
       environment_initialized[id] = true
-      wipe(aura_environments[id])
+      aura_environments[id] = {}
       current_aura_env = aura_environments[id]
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
