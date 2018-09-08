@@ -4166,7 +4166,7 @@ function WeakAuras.CloseCodeReview(data)
   frame.codereview:Close();
 end
 
-function WeakAuras.OpenTriggerTemplate(data)
+function WeakAuras.OpenTriggerTemplate(data, targetId)
   if not(IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
@@ -4176,6 +4176,7 @@ function WeakAuras.OpenTriggerTemplate(data)
     end
     frame.newView = WeakAuras.CreateTemplateView(frame);
   end
+  frame.newView.targetId = targetId;
   frame.newView:Open(data);
 end
 
@@ -4236,5 +4237,66 @@ function WeakAuras.ShowCloneDialog(data)
     };
 
     StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
+  end
+end
+
+function WeakAuras.NewAura(sourceData, regionType, targetId)
+  local function ensure(t, k, v)
+    return t and k and v and t[k] == v
+  end
+  local new_id = WeakAuras.FindUnusedId("New")
+  local data = {id = new_id, regionType = regionType}
+  WeakAuras.DeepCopy(WeakAuras.data_stub, data);
+  if (sourceData) then
+    WeakAuras.DeepCopy(sourceData, data);
+  end
+  data.internalVersion = WeakAuras.InternalVersion();
+  WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
+  if (data.regionType ~= "group" and data.regionType ~= "dynamicgroup" and targetId) then
+    local target = WeakAuras.GetDisplayButton(targetId);
+    local group
+    if (target) then
+      if (target:IsGroup()) then
+        group = target;
+      else
+        group = WeakAuras.GetDisplayButton(target.data.parent);
+      end
+      if (group) then
+        local children = group.data.controlledChildren;
+        local index = target:GetGroupOrder();
+        if (ensure(children, index, target.data.id)) then
+          -- account for insert position
+          index = before and index or index+1;
+          tinsert(children, index, data.id);
+        else
+          -- move source into group as the first child
+          tinsert(children, 1, data.id);
+        end
+        data.parent = group.data.id;
+        WeakAuras.Add(data);
+        WeakAuras.Add(group.data);
+        WeakAuras.NewDisplayButton(data);
+        WeakAuras.UpdateGroupOrders(group.data);
+        --WeakAuras.SortDisplayButtons();
+        WeakAuras.ReloadGroupRegionOptions(group.data);
+        WeakAuras.UpdateDisplayButton(group.data);
+        group.callbacks.UpdateExpandButton();
+        group:Expand();
+        group:ReloadTooltip();
+        WeakAuras.PickAndEditDisplay(data.id);
+      else
+        -- move source into the top-level list
+        WeakAuras.Add(data);
+        WeakAuras.NewDisplayButton(data);
+        WeakAuras.PickAndEditDisplay(data.id);
+      end
+    else
+      error("Calling 'WeakAuras.NewAura' with invalid groupId. Reload your UI to fix the display list.")
+    end
+  else
+    -- move source into the top-level list
+    WeakAuras.Add(data);
+    WeakAuras.NewDisplayButton(data);
+    WeakAuras.PickAndEditDisplay(data.id);
   end
 end
