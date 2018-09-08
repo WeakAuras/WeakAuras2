@@ -4120,7 +4120,10 @@ local function ApplyStatesToRegions(id, triggernum, states)
         ApplyStateToRegion(id, region, state);
       end
     end
-    if (state.changed and checkConditions[id]) then
+    -- We don't check for state.changed here, because conditions depend
+    -- on the states of all triggers, not just of the trigger whose states
+    -- we are checking
+    if (checkConditions[id]) then
       checkConditions[id](region, not state.show);
     end
   end
