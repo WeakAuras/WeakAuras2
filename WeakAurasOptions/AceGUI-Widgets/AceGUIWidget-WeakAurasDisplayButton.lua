@@ -1065,40 +1065,21 @@ local methods = {
       self:Enable();
     end
   end,
-  ["SetDragging"] = function(self, data, drop, displayButtons)
+  ["SetDragging"] = function(self, data, drop)
     if data then
       -- self
-      if self.data.id == data.id or (displayButtons and data[self.data.id] == 1) then
+      if self.data.id == data.id or self.multi then
         if drop then
+          --self.frame:Show()
           self:Drop()
-          if displayButtons then
-            for _, button in pairs(displayButtons) do
-              button.frame:SetScript("OnClick", button.callbacks.OnClickNormal)
-              button.frame:EnableKeyboard(false);
-            end
-          else
-            self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
-            self.frame:EnableKeyboard(false); -- disables self.callbacks.OnKeyDown
-          end
+          self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
+          self.frame:EnableKeyboard(false); -- disables self.callbacks.OnKeyDown
         else
           Hide_Tooltip()
-          if displayButtons then
-            for _, button in pairs(displayButtons) do
-              button.frame:SetScript("OnClick", nil)
-              button.frame:EnableKeyboard(true);
-            end
-            self.multiTemp = {
-              displayButtons = displayButtons,
-              data = data
-            }
-          else
-            self.frame:SetScript("OnClick", nil)
-            self.frame:EnableKeyboard(true); -- enables self.callbacks.OnKeyDown
-          end
+          self.frame:SetScript("OnClick", nil)
+          self.frame:EnableKeyboard(true); -- enables self.callbacks.OnKeyDown
           self:Drag()
         end
-        -- skip draged buttons after the first
-      elseif (displayButtons and data[self.data.id]) then
         -- invalid targets
       elseif not self.data.parent and not self:IsGroup()
       then
@@ -1117,23 +1098,11 @@ local methods = {
       end
     else
       -- restore events and layout
-      if self.multiTemp then
-        for _, button in pairs(self.multiTemp.displayButtons) do
-          button.frame:SetScript("OnClick", button.callbacks.OnClickNormal)
-          button.frame:EnableKeyboard(false);
-          button:Enable()
-          if (button.dragging) then
-            button:Drop(true)
-          end
-        end
-        self.multiTemp = nil
-      else
-        self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
-        self.frame:EnableKeyboard(false);
-        self:Enable()
-        if (self.dragging) then
-          self:Drop(true)
-        end
+      self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
+      self.frame:EnableKeyboard(false);
+      self:Enable()
+      if (self.dragging) then
+        self:Drop(true)
       end
     end
   end,
@@ -1143,165 +1112,88 @@ local methods = {
     local uiscale, scale = UIParent:GetScale(), self.frame:GetEffectiveScale()
     local x, w = self.frame:GetLeft(), self.frame:GetWidth()
     local _, y = GetCursorPosition()
-
-    if self.multiTemp then
-      -- multi selection
-      local tempTable = {}
-      for id, count in pairs(self.multiTemp.data) do
-        for _, button in pairs(self.multiTemp.displayButtons) do
-          if id == button.data.id then
-            tempTable[count] = button
-          end
-        end
-      end
-      for count=1, #tempTable do
-        local button = tempTable[count]
-        -- hide "visual clutter"
-        button.downgroup:Hide()
-        button.group:Hide()
-        button.loaded:Hide()
-        button.ungroup:Hide()
-        button.upgroup:Hide()
-        button.view:Hide()
-        -- mark as being dragged, attach to mouse and raise frame strata
-        button.dragging = true
-        button.frame:StartMoving()
-        button.frame:ClearAllPoints()
-        button.frame.temp = {
-          parent = button.frame:GetParent(),
-          strata = button.frame:GetFrameStrata(),
-        }
-        button.frame:SetParent(UIParent)
-        button.frame:SetFrameStrata("FULLSCREEN_DIALOG")
-        button.frame:SetWidth(w)
-        if count == 1 then
-          button.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, y/uiscale)
-          button.frame.temp.title = button.title:GetText()
-          button.title:SetText((L["%i auras selected"]):format(#tempTable))
-          button.frame.temp.icon = button.icon:GetTexture()
-          button.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
-          button.icon:Show()
-        else
-          -- anchor out of screen
-          button.frame:StopMovingOrSizing()
-          button.frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, -500)
-        end
-      end
-    else
-      -- single selection
-      -- hide "visual clutter"
-      self.downgroup:Hide()
-      self.group:Hide()
-      self.loaded:Hide()
-      self.ungroup:Hide()
-      self.upgroup:Hide()
-      self.view:Hide()
-      -- mark as being dragged, attach to mouse and raise frame strata
-      self.dragging = true
-      self.frame:StartMoving()
-      self.frame:ClearAllPoints()
-      self.frame.temp = {
-        parent = self.frame:GetParent(),
-        strata = self.frame:GetFrameStrata(),
-      }
-      self.frame:SetParent(UIParent)
-      self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
+    -- hide "visual clutter"
+    self.downgroup:Hide()
+    self.group:Hide()
+    self.loaded:Hide()
+    self.ungroup:Hide()
+    self.upgroup:Hide()
+    self.view:Hide()
+    -- mark as being dragged, attach to mouse and raise frame strata
+    self.dragging = true
+    self.frame:StartMoving()
+    self.frame:ClearAllPoints()
+    self.frame.temp = {
+      parent = self.frame:GetParent(),
+      strata = self.frame:GetFrameStrata(),
+    }
+    self.frame:SetParent(UIParent)
+    self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
+    if not self.multi then
       self.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, y/uiscale)
+    else
+      if self.multi.selected then
+        -- change label & icon
+        self.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, y/uiscale)
+        self.frame.temp.title = self.title:GetText()
+        self.title:SetText((L["%i auras selected"]):format(self.multi.size))
+        self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
+        self.icon:Show()
+      else
+        -- Hide frames
+        self.frame:StopMovingOrSizing()
+        self.frame:Hide()
+      end
     end
     -- attach OnUpdate event to update drop indicator
-    local id = self.data.id
-    self.frame:SetScript("OnUpdate", function(self,elapsed)
-      self.elapsed = (self.elapsed or 0) + elapsed
-      if self.elapsed > 0.1 then
-        Show_DropIndicator(id)
-        self.elapsed = 0
-      end
-    end)
-    Show_DropIndicator(id)
+    if not self.multi or (self.multi and self.multi.selected) then
+      local id = self.data.id
+      self.frame:SetScript("OnUpdate", function(self,elapsed)
+        self.elapsed = (self.elapsed or 0) + elapsed
+        if self.elapsed > 0.1 then
+          Show_DropIndicator(id)
+          self.elapsed = 0
+        end
+      end)
+      Show_DropIndicator(id)
+    end
     WeakAuras.UpdateButtonsScroll()
   end,
   ["Drop"] = function(self, reset)
     Show_DropIndicator()
     local target, area = select(2, GetDropTarget())
     -- get action and execute it
-    if self.multiTemp then
-      -- multi selection
-      local temp = self.frame.temp
-      for id, count in pairs(self.multiTemp.data) do
-         for _, button in pairs(self.multiTemp.displayButtons) do
-          if id == button.data.id then
-            button.frame:StopMovingOrSizing()
-            button.frame:SetScript("OnUpdate", nil)
-            if button.frame.temp.title then
-              button.title:SetText(button.frame.temp.title)
-            end
-            if button.frame.temp.icon then
-              button.icon:SetTexture(button.frame.temp.icon)
-            else
-              button.icon:Hide()
-            end
-            if button.dragging then
-              button.frame:SetParent(temp.parent)
-              button.frame:SetFrameStrata(temp.strata)
-              button.frame.temp = nil
-              if button.data.parent then
-                button.downgroup:Show()
-                button.ungroup:Show()
-                button.upgroup:Show()
-              else
-                button.group:Show()
-              end
-              button.loaded:Show()
-              button.view:Show()
-            end
-            button.dragging = false
-          end
-        end
-      end
-      -- exit if we have no target or only want to reset
-      if reset or not target then
-        self.multiTemp = nil
-        return WeakAuras.UpdateButtonsScroll()
-      end
-      for id, count in pairs(self.multiTemp.data) do
-        for _, button in pairs(self.multiTemp.displayButtons) do
-          if id == button.data.id then
-            local action = GetAction(target, area, button)
-            if action then
-              action(button,target)
-            end
-          end
-        end
-      end
-      self.multiTemp = nil
-    else
-      -- single selection
-      self.frame:StopMovingOrSizing()
-      self.frame:SetScript("OnUpdate", nil)
-      if self.dragging then
-        self.frame:SetParent(self.frame.temp.parent)
-        self.frame:SetFrameStrata(self.frame.temp.strata)
-        self.frame.temp = nil
-        if self.data.parent then
-          self.downgroup:Show()
-          self.ungroup:Show()
-          self.upgroup:Show()
-        else
-          self.group:Show()
-        end
-        self.loaded:Show()
-        self.view:Show()
-      end
-      self.dragging = false
-      -- exit if we have no target or only want to reset
-      if reset or not target then
-        return WeakAuras.UpdateButtonsScroll()
-      end
-      local action = GetAction(target, area, self)
-      if action then
-        action(self,target)
-      end
+    self.frame:StopMovingOrSizing()
+    self.frame:SetScript("OnUpdate", nil)
+    if self.multi and self.multi.selected then
+      -- restore title and icon
+      self.title:SetText(self.frame.temp.title)
+      WeakAuras.UpdateDisplayButton(self.data)
     end
+    if self.dragging then
+      self.frame:SetParent(self.frame.temp.parent)
+      self.frame:SetFrameStrata(self.frame.temp.strata)
+      self.frame.temp = nil
+      if self.data.parent then
+        self.downgroup:Show()
+        self.ungroup:Show()
+        self.upgroup:Show()
+      else
+        self.group:Show()
+      end
+      self.loaded:Show()
+      self.view:Show()
+    end
+    self.dragging = false
+    -- exit if we have no target or only want to reset
+    if reset or not target then
+      return WeakAuras.UpdateButtonsScroll()
+    end
+    local action = GetAction(target, area, self)
+    if action then
+      action(self,target)
+    end
+    self.multi = nil
     WeakAuras.SortDisplayButtons()
   end,
   ["GetGroupOrCopying"] = function(self)
