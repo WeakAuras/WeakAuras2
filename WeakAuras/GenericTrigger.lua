@@ -1318,6 +1318,7 @@ do
   local cdReadyFrame;
 
   local spells = {};
+  local spellKnown = {};
   local spellsRune = {}
   local spellCdDurs = {};
   local spellCdExps = {};
@@ -1365,12 +1366,15 @@ do
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
+    cdReadyFrame:RegisterEvent("SPELLS_CHANGED");
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
       WeakAuras.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
         or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
         WeakAuras.CheckCooldownReady();
+      elseif(event == "SPELLS_CHANGED") then
+        WeakAuras.CheckSpellKnown();
       elseif(event == "UNIT_SPELLCAST_SENT") then
         local unit, guid, castGUID, name = ...;
         if(unit == "player") then
@@ -1398,6 +1402,9 @@ do
   end
 
   function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd)
+    if (not spellKnown[id]) then
+      return;
+    end
     local startTime, duration, gcdCooldown;
     if (ignoreRuneCD) then
       if (spellsRune[id] and spellCdExpsRune[id] and spellCdDursRune[id]) then
@@ -1429,6 +1436,9 @@ do
   end
 
   function WeakAuras.GetSpellCharges(id)
+    if (not spellKnown[id]) then
+      return;
+    end
     return spellCharges[id], spellChargesMax[id];
   end
 
@@ -1638,6 +1648,16 @@ do
     end
 
     return charges, maxCharges, startTime, duration, cooldownBecauseRune;
+  end
+
+  function WeakAuras.CheckSpellKnown()
+    for id, _ in pairs(spells) do
+      local known = WeakAuras.IsSpellKnownIncludingPet(id);
+      if (known ~= spellKnown[id]) then
+        spellKnown[id] = known;
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+      end
+    end
   end
 
   function WeakAuras.CheckSpellCooldows(runeDuration)
@@ -1882,6 +1902,7 @@ do
       return;
     end
     spells[id] = true;
+    spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
     local charges, maxCharges, startTime, duration = WeakAuras.GetSpellCooldownUnified(id);
     spellCharges[id] = charges;
