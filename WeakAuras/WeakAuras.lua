@@ -1,4 +1,4 @@
-local internalVersion = 7;
+local internalVersion = 8;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2565,13 +2565,68 @@ local function removeSpellNames(data)
   end
 end
 
+local oldDataStub = {
+  -- note: this is the minimal data stub which prevents false positives in WeakAuras.diff upon reimporting an aura.
+  -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
+  trigger = {
+    type = "aura",
+    names = {},
+    event = "Health",
+    subeventPrefix = "SPELL",
+    subeventSuffix = "_CAST_START",
+    spellIds = {},
+    unit = "player",
+    debuffType = "HELPFUL",
+  },
+  numTriggers = 1,
+  untrigger = {},
+  load = {
+    size = {
+      multi = {},
+    },
+    spec = {
+      multi = {},
+    },
+    class = {
+      multi = {},
+    },
+  },
+  actions = {
+    init = {},
+    start = {},
+    finish = {},
+  },
+  animation = {
+    start = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    main = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    finish = {
+      type = "none",
+      duration_type = "seconds",
+    },
+  },
+  conditions = {},
+}
+
 function WeakAuras.PreAdd(data)
-  WeakAuras.validate(data, WeakAuras.data_stub)
+  -- Readd what Compress removed before version 8
+  if (not data.internalVersion or data.internalVersion < 7) then
+    WeakAuras.validate(data, oldDataStub)
+  elseif (data.internalVersion < 8) then
+    WeakAuras.validate(data, WeakAuras.data_stub)
+  end
+
   local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
   if default then
     WeakAuras.validate(data, default)
   end
   WeakAuras.Modernize(data);
+  WeakAuras.validate(data, WeakAuras.data_stub);
   removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil

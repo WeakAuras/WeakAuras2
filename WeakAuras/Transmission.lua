@@ -37,7 +37,7 @@ local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
 
 -- Local functions
-local encodeB64, decodeB64, tableSubtract, GenerateUniqueID
+local encodeB64, decodeB64, GenerateUniqueID
 local CompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
@@ -120,27 +120,6 @@ function decodeB64(str)
   return table.concat(bit8, "", 1, decoded_size)
 end
 
-function tableSubtract(minuend, subtrahend)
-  local function recurse(minuend, subtrahend)
-    for i,v in pairs(subtrahend) do
-      if(minuend[i] ~= nil) then
-        if(type(minuend[i]) == "table" and type(v) == "table") then
-          if(recurse(minuend[i], v)) then
-            minuend[i] = nil;
-          end
-        else
-          if(minuend[i] == v) then
-            minuend[i] = nil;
-          end
-        end
-      end
-    end
-    return next(minuend) == nil
-  end
-  recurse(minuend, subtrahend);
-end
-
-
 function GenerateUniqueID()
   -- generates a unique random 11 digit number in base64
   local s = {}
@@ -175,8 +154,6 @@ function CompressDisplay(data)
   copiedData.controlledChildren = nil;
   copiedData.parent = nil;
   local regionType = copiedData.regionType
-  tableSubtract(copiedData, WeakAuras.regionTypes[regionType].default)
-  tableSubtract(copiedData, WeakAuras.data_stub);
   copiedData.regionType = regionType
 
   return copiedData;
