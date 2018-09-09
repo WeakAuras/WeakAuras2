@@ -1311,7 +1311,25 @@ function WeakAuras.ShowOptions(msg)
   end
 
   frame:Show();
-  frame:PickOption("New");
+  if (frame.pickedDisplay) then
+    if (WeakAuras.IsPickedMultiple()) then
+      local children = {}
+      for k,v in pairs(tempGroup.controlledChildren) do
+        children[k] = v
+      end
+      for index,childId in pairs(children) do
+        if (index == 1) then
+          WeakAuras.PickDisplay(childId);
+        else
+          WeakAuras.PickDisplayMultiple(childId);
+        end
+      end
+    else
+      WeakAuras.PickDisplay(frame.pickedDisplay);
+    end
+  else
+    frame:PickOption("New");
+  end
   if not(firstLoad) then
     WeakAuras.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
@@ -4077,7 +4095,7 @@ function WeakAuras.SetDragging(data, drop)
       local button = WeakAuras.GetDisplayButton(childId)
       button.multi = {
         size = size,
-        selected = data.id == button.data.id
+        selected = data and (data.id == button.data.id)
       }
       button:SetDragging(data, drop);
       children[childId] = true
