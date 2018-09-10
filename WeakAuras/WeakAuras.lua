@@ -1910,6 +1910,8 @@ function WeakAuras.Rename(data, newid)
   WeakAuras.frameLevels[oldid] = nil;
 
   WeakAuras.ProfileRenameAura(oldid, newid);
+
+  WeakAuras.RenameCollapedData(oldid, newid)
 end
 
 function WeakAuras.Convert(data, newType)
