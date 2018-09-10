@@ -2439,6 +2439,18 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if data.internalVersion < 8 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if condition.check and condition.check.variable == "buffed" then
+          if data.triggers[condition.check.trigger].trigger.buffShowOn == "showOnActive" then
+            condition.check.variable = "show"
+          end
+        end
+      end
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end

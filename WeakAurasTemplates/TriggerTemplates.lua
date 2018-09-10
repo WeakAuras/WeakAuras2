@@ -85,11 +85,11 @@ local checks = {
     value = 1,
   },
   buffed = {
-    variable = "buffed",
+    variable = "show",
     value = 1,
   },
   buffedFalse = {
-    variable = "buffed",
+    variable = "show",
     value = 0,
   },
   onCooldown = {
@@ -204,7 +204,7 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
       buffShowOn = buffShowOn,
       debuffType = isBuff and "HELPFUL" or "HARMFUL",
       ownOnly = not item.forceOwnOnly and true or item.ownOnly,
-      unitExists = true,
+      unitExists = false,
     }
   };
   if (item.spellIds) then
