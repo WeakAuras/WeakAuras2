@@ -6,6 +6,132 @@ local profileData = {}
 profileData.systems = {}
 profileData.auras = {}
 
+WeakAuras.table_to_string = function(tbl, depth)
+  if depth and depth >= 3 then
+    return "{ ... }"
+  end
+  local str
+  for k,v in pairs(tbl) do
+    if type(v) ~= "userdata" then
+      if type(v) == "table" then
+        v = WeakAuras.table_to_string(v, (depth and depth + 1 or 1))
+      elseif type(v) == "function" then
+        v = "function"
+      elseif type(v) == "string" then
+        v = '"'.. v ..'"'
+      end
+
+      if type(k) == "string" then
+        k = '"' .. k ..'"'
+      end
+
+      str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99[" .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"
+    end
+  end
+  return (str or "{ ") .. " }"
+end
+
+local profilePopup
+local function CreateProfilePopup()
+  local popupFrame = CreateFrame("EditBox", "WADebugEditBox", UIParent)
+  popupFrame:SetFrameStrata("DIALOG")
+  popupFrame:SetMultiLine(true)
+  popupFrame:SetAutoFocus(true)
+  popupFrame:SetFontObject(ChatFontNormal)
+  popupFrame:SetSize(450, 300)
+  popupFrame:Hide()
+
+  popupFrame.orig_Hide = popupFrame.Hide
+  function popupFrame:Hide()
+    self:SetText("")
+    self.ScrollFrame:Hide()
+    self.Background:Hide()
+    self:orig_Hide()
+  end
+
+  popupFrame.orig_Show = popupFrame.Show
+  function popupFrame:Show()
+    self.ScrollFrame:Show()
+    self.Background:Show()
+    self:orig_Show()
+  end
+
+  function popupFrame:AddText(v)
+    if not v then return end
+    local m = popupFrame:GetText()
+    if m ~= "" then
+      m = m .. "|n"
+    end
+    if type(v) == "table" then
+      v = WeakAuras.table_to_string(v)
+    end
+    popupFrame:SetText(m .. v)
+  end
+
+  popupFrame:SetScript("OnEscapePressed", function(self)
+    self:ClearFocus()
+    self:Hide()
+    self.ScrollFrame:Hide()
+    self.Background:Hide()
+  end)
+
+  local scrollFrame = CreateFrame("ScrollFrame", "WADebugEditBoxScrollFrame", UIParent, "UIPanelScrollFrameTemplate")
+  scrollFrame:SetMovable(true)
+  scrollFrame:SetFrameStrata("DIALOG")
+  scrollFrame:SetSize(450, 300)
+  scrollFrame:SetPoint("CENTER")
+  scrollFrame:SetHitRectInsets(-8, -8, -8, -8)
+  scrollFrame:SetScrollChild(popupFrame)
+  scrollFrame:Hide()
+
+  scrollFrame:SetScript("OnMouseDown", function(self, button)
+    if button == "LeftButton" and not self.is_moving then
+      self:StartMoving()
+      self.is_moving = true
+    elseif button == "RightButton" then
+      self:GetScrollChild():SetFocus()
+    end
+  end)
+
+  scrollFrame:SetScript("OnMouseUp", function(self, button)
+    if button == "LeftButton" and self.is_moving then
+      self:StopMovingOrSizing()
+      self.is_moving = nil
+    end
+  end)
+
+  local bg = CreateFrame("Frame", nil, UIParent)
+  bg:SetFrameStrata("DIALOG")
+  bg:SetBackdrop({
+    bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-border",
+    edgeSize = 16,
+    insets = { left = 4, right = 4, top = 4, bottom = 4 }
+  })
+  bg:SetBackdropColor(.05, .05, .05, .8)
+  bg:SetBackdropBorderColor(.5, .5, .5)
+  bg:SetPoint("TOPLEFT", scrollFrame, -10, 10)
+  bg:SetPoint("BOTTOMRIGHT", scrollFrame, 30, -10)
+  bg:Hide()
+
+  popupFrame.ScrollFrame = scrollFrame
+  popupFrame.Background = bg
+
+  profilePopup = popupFrame
+end
+
+local function ProfilePopup()
+  -- create/get and return reference to profile EditBox
+  if not profilePopup then
+    CreateProfilePopup()
+  end
+
+  profilePopup:Hide()
+  return profilePopup
+end
+
+local popup = ProfilePopup()
+
 local function StartProfiling(map, id)
   if (not map[id]) then
     map[id] = {}
@@ -71,6 +197,7 @@ function WeakAuras.StartProfile()
   WeakAuras.StartProfileAura = StartProfileAura
   WeakAuras.StopProfileSystem = StopProfileSystem
   WeakAuras.StopProfileAura = StopProfileAura
+  popup:SetText("")
 end
 
 local function doNothing()
@@ -95,13 +222,13 @@ end
 
 local function PrintOneProfile(name, map, total)
   if (map.count ~= 0) then
-    print(name, "ERROR: count is not zero:", map.count)
+    popup:AddText(name .. "  ERROR: count is not zero:" .. " " .. map.count)
   end
   local percent = ""
-  if (total) then
+  if total then
     percent = ", " .. string.format("%.2f", 100 * map.elapsed / total) .. "%"
   end
-  print(name, string.format("%.2f", map.elapsed) .. "ms" .. percent)
+  popup:AddText(string.format("%s |cff999999%.2fms%s|r", name, map.elapsed, percent))
 end
 
 local function SortProfileMap(map)
@@ -136,26 +263,26 @@ function WeakAuras.PrintProfile()
     return
   end
 
-  print("--------------------------------")
-  prettyPrint(L["EXPERIMENTAL Profiling Data:"])
-  PrintOneProfile("|cff9900FFTotal Time:|r", profileData.systems.time)
-  PrintOneProfile("|cff9900FFTime inside WA:|r", profileData.systems.wa)
-  print("|cff9900FF% Time spent inside WA:|r", string.format("%.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
-  print("")
-  print("|cff9900FFSystems:|r")
+  popup:AddText(L["|cff9900ffWeakAuras EXPERIMENTAL Profiling Data:|r"])
+  popup:AddText("")
+  PrintOneProfile("|cff9900ffTotal time:|r", profileData.systems.time)
+  PrintOneProfile("|cff9900ffTime inside WA:|r", profileData.systems.wa)
+  popup:AddText(string.format("|cff9900ff%% Time spent inside WA:|r %.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
+  popup:AddText("")
+  popup:AddText("|cff9900ffSystems:|r")
 
   for i, k in ipairs(SortProfileMap(profileData.systems)) do
-    if (k ~= "time" and k~= "wa") then
+    if (k ~= "time" and k ~= "wa") then
       PrintOneProfile(k, profileData.systems[k], profileData.systems.wa.elapsed)
     end
   end
 
-  print("")
-  print("|cff9900FFAuras:|r")
+  popup:AddText("")
+  popup:AddText("|cff9900ffAuras:|r")
   local total = TotalProfileTime(profileData.auras)
-  print("Total Time attributed to auras: ", floor(total) .."ms")
+  popup:AddText("Total time attributed to auras: ", floor(total) .."ms")
   for i, k in ipairs(SortProfileMap(profileData.auras)) do
     PrintOneProfile(k, profileData.auras[k], total)
   end
-  print("--------------------------------")
+  popup:Show()
 end
