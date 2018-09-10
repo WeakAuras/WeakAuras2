@@ -66,6 +66,7 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   desc[2][1] = L["Children:"]
   tinsert(desc, " ");
   tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+  tinsert(desc, {" ", "|cFF00FFFF"..L["Drag to move"]});
   return desc;
 end
 
@@ -1310,7 +1311,25 @@ function WeakAuras.ShowOptions(msg)
   end
 
   frame:Show();
-  frame:PickOption("New");
+  if (frame.pickedDisplay) then
+    if (WeakAuras.IsPickedMultiple()) then
+      local children = {}
+      for k,v in pairs(tempGroup.controlledChildren) do
+        children[k] = v
+      end
+      for index,childId in pairs(children) do
+        if (index == 1) then
+          WeakAuras.PickDisplay(childId);
+        else
+          WeakAuras.PickDisplayMultiple(childId);
+        end
+      end
+    else
+      WeakAuras.PickDisplay(frame.pickedDisplay);
+    end
+  else
+    frame:PickOption("New");
+  end
   if not(firstLoad) then
     WeakAuras.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
@@ -4067,8 +4086,30 @@ end
 
 function WeakAuras.SetDragging(data, drop)
   WeakAuras_DropDownMenu:Hide()
-  for id, button in pairs(displayButtons) do
-    button:SetDragging(data, drop)
+  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
+    local children = {}
+    local size = #tempGroup.controlledChildren
+    -- set dragging for selected buttons in reverse for ordering
+    for index=size,1,-1 do
+      local childId = tempGroup.controlledChildren[index]
+      local button = WeakAuras.GetDisplayButton(childId)
+      button.multi = {
+        size = size,
+        selected = data and (data.id == button.data.id)
+      }
+      button:SetDragging(data, drop);
+      children[childId] = true
+    end
+    -- set dragging for non selected buttons
+    for id, button in pairs(displayButtons) do
+      if not children[button.data.id] then
+        button:SetDragging(data, drop);
+      end
+    end
+  else
+    for id, button in pairs(displayButtons) do
+      button:SetDragging(data, drop);
+    end
   end
 end
 
