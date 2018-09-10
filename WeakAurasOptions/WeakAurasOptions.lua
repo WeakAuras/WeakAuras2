@@ -4303,7 +4303,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         local index = target:GetGroupOrder();
         if (ensure(children, index, target.data.id)) then
           -- account for insert position
-          index = before and index or index+1;
+          index = index + 1;
           tinsert(children, index, data.id);
         else
           -- move source into group as the first child
@@ -4314,7 +4314,6 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         WeakAuras.Add(group.data);
         WeakAuras.NewDisplayButton(data);
         WeakAuras.UpdateGroupOrders(group.data);
-        --WeakAuras.SortDisplayButtons();
         WeakAuras.ReloadGroupRegionOptions(group.data);
         WeakAuras.UpdateDisplayButton(group.data);
         group.callbacks.UpdateExpandButton();
