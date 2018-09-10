@@ -1,4 +1,4 @@
-local internalVersion = 8;
+local internalVersion = 9;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2436,6 +2436,38 @@ function WeakAuras.Modernize(data)
         condition.check.trigger = condition.check.trigger + 1
       end
       recurseRepairChecks(condition.check.checks)
+    end
+  end
+
+  -- Version 8 was introduced in September 2018
+  -- Changes are in PreAdd
+
+  -- Version 9 was introduced in September 2019
+  if data.internalVersion < 9 then
+    local function repairCheck(check)
+      if check and check.variable == "buffed" then
+        local trigger = check.trigger and data.triggers[check.trigger].trigger;
+        if (trigger) then
+          if(trigger.buffShowOn == "showOnActive") then
+            check.variable = "show";
+          elseif (trigger.buffShowOn == "showOnMissing") then
+            check.variable = "show";
+            check.value = check.value == 0 and 1 or 0;
+          end
+        end
+      end
+    end
+
+    local function recurseRepairChecks(checks)
+      if not checks then return end
+      for _, check in pairs(checks) do
+        repairCheck(check);
+        recurseRepairChecks(check.checks);
+      end
+    end
+    for _, condition in pairs(data.conditions) do
+      repairCheck(condition.check);
+      recurseRepairChecks(condition.check.checks);
     end
   end
 
