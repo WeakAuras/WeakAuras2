@@ -3462,7 +3462,7 @@ templates.class.DEMONHUNTER = {
         { spell = 217832, type = "ability", requiresTarget = true}, -- Imprison
         { spell = 228477, type = "ability", requiresTarget = true}, -- Soul Cleave
         { spell = 232893, type = "ability", requiresTarget = true, overlayGlow = true, talent = 9 }, -- Felblade
-        { spell = 247454, type = "ability", talent = 17 }, -- Spirit Bomb
+        { spell = 247454, type = "ability", usable = true, talent = 17 }, -- Spirit Bomb
         { spell = 263642, type = "ability", charges = true, talent = 12 }, -- Fracture
         { spell = 263648, type = "ability", buff = true, talent = 21 }, -- Soul Barrier
         { spell = 278326, type = "ability", requiresTarget = true}, -- Consume Magic
