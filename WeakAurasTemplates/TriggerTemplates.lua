@@ -694,8 +694,8 @@ local function subTypesFor(item, regionType)
       description = L["Only shows the aura if the target has the buff."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", true);
-        data = { inverse = false }
-      end
+      end,
+      data = { inverse = false }
     });
     tinsert(types, {
       icon = icon.glow,
@@ -729,8 +729,8 @@ local function subTypesFor(item, regionType)
       description = L["Only show the aura if the target has the debuff."],
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", false);
-        data = { inverse = false }
-      end
+      end,
+      data = { inverse = false }
     });
     tinsert(types, {
       icon = icon.glow,
