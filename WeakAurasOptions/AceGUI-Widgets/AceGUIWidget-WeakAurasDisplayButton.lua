@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 38
+local Type, Version = "WeakAurasDisplayButton", 39
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1065,12 +1065,17 @@ local methods = {
       self:Enable();
     end
   end,
-  ["SetDragging"] = function(self, data, drop)
+  ["SetDragging"] = function(self, data, drop, size)
+    if (size) then
+      self.multi = {
+        size = size,
+        selected = data and (data.id == self.data.id)
+      }
+    end
     if data then
       -- self
       if self.data.id == data.id or self.multi then
         if drop then
-          --self.frame:Show()
           self:Drop()
           self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
           self.frame:EnableKeyboard(false); -- disables self.callbacks.OnKeyDown
@@ -1137,8 +1142,7 @@ local methods = {
         self.frame:SetPoint("Center", UIParent, "BOTTOMLEFT", (x+w/2)*scale/uiscale, y/uiscale)
         self.frame.temp.title = self.title:GetText()
         self.title:SetText((L["%i auras selected"]):format(self.multi.size))
-        self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
-        self.icon:Show()
+        self:OverrideIcon();
       else
         -- Hide frames
         self.frame:StopMovingOrSizing()
@@ -1168,7 +1172,7 @@ local methods = {
     if self.multi and self.multi.selected then
       -- restore title and icon
       self.title:SetText(self.frame.temp.title)
-      WeakAuras.UpdateDisplayButton(self.data)
+      self:RestoreIcon();
     end
     if self.dragging then
       self.frame:SetParent(self.frame.temp.parent)
@@ -1186,14 +1190,14 @@ local methods = {
     end
     self.dragging = false
     -- exit if we have no target or only want to reset
+    self.multi = nil
     if reset or not target then
       return WeakAuras.UpdateButtonsScroll()
     end
     local action = GetAction(target, area, self)
     if action then
-      action(self,target)
+      action(self, target)
     end
-    self.multi = nil
     WeakAuras.SortDisplayButtons()
   end,
   ["GetGroupOrCopying"] = function(self)
@@ -1210,6 +1214,7 @@ local methods = {
     self.frame.description = {...};
   end,
   ["SetIcon"] = function(self, icon)
+    self.orgIcon = icon;
     if(type(icon) == "string" or type(icon) == "number") then
       self.icon:SetTexture(icon);
       self.icon:Show();
@@ -1220,8 +1225,19 @@ local methods = {
       self.iconRegion = icon;
       icon:SetAllPoints(self.icon);
       icon:SetParent(self.frame);
+      self.iconRegion:Show();
       self.icon:Hide();
     end
+  end,
+  ["OverrideIcon"] = function(self)
+    self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
+    self.icon:Show()
+    if(self.iconRegion and self.iconRegion.Hide) then
+      self.iconRegion:Hide();
+    end
+  end,
+  ["RestoreIcon"] = function(self)
+    self:SetIcon(self.orgIcon);
   end,
   ["SetViewRegion"] = function(self, region)
     self.view.region = region;

@@ -4093,11 +4093,7 @@ function WeakAuras.SetDragging(data, drop)
     for index=size,1,-1 do
       local childId = tempGroup.controlledChildren[index]
       local button = WeakAuras.GetDisplayButton(childId)
-      button.multi = {
-        size = size,
-        selected = data and (data.id == button.data.id)
-      }
-      button:SetDragging(data, drop);
+      button:SetDragging(data, drop, size);
       children[childId] = true
     end
     -- set dragging for non selected buttons
