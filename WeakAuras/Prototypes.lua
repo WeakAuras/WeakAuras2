@@ -590,7 +590,16 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   if (not spell) then
     return false;
   end
-  return WeakAuras.IsSpellKnown(spell) or WeakAuras.IsSpellKnown(spell, true);
+  if (WeakAuras.IsSpellKnown(spell) or WeakAuras.IsSpellKnown(spell, true)) then
+    return true;
+  end
+  -- WORKAROUND brain damage around void eruption
+  -- In shadow form void eruption is overriden by void bolt, yet IsSpellKnown for void bolt
+  -- returns false, whereas it returns true for void eruption
+  local baseSpell = FindBaseSpellByID(spell);
+  if (baseSpell ~= spell) then
+    return WeakAuras.IsSpellKnown(baseSpell) or WeakAuras.IsSpellKnown(baseSpell, true);
+  end
 end
 
 function WeakAuras.UnitPowerDisplayMod(powerType)
