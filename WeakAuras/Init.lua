@@ -8,7 +8,7 @@ if versionString == "@project-version@" then
 end
 --@end-debug@
 WeakAuras.versionString = versionString
-WeakAuras.printPrefix = "|cff9900FF".."WeakAuras: "..FONT_COLOR_CODE_CLOSE
+WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
 
 WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)
