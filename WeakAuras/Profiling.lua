@@ -95,13 +95,13 @@ end
 
 local function PrintOneProfile(name, map, total)
   if (map.count ~= 0) then
-    print(name, " ERROR: count is not zero:", map.count)
+    print(name, "ERROR: count is not zero:", map.count)
   end
   local percent = ""
   if (total) then
     percent = ", " .. string.format("%.2f", 100 * map.elapsed / total) .. "%"
   end
-  print(name, " ", string.format("%.2f", map.elapsed), "ms", percent)
+  print(name, string.format("%.2f", map.elapsed) .. "ms" .. percent)
 end
 
 local function SortProfileMap(map)
@@ -138,11 +138,11 @@ function WeakAuras.PrintProfile()
 
   print("--------------------------------")
   prettyPrint(L["EXPERIMENTAL Profiling Data:"])
-  PrintOneProfile("Total Time:    ", profileData.systems.time)
-  PrintOneProfile("Time inside WA:", profileData.systems.wa)
-  print("% Time spent inside WA:", string.format("%.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
+  PrintOneProfile("|cff9900FFTotal Time:|r", profileData.systems.time)
+  PrintOneProfile("|cff9900FFTime inside WA:|r", profileData.systems.wa)
+  print("|cff9900FF% Time spent inside WA:|r", string.format("%.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
   print("")
-  print("Systems:")
+  print("|cff9900FFSystems:|r")
 
   for i, k in ipairs(SortProfileMap(profileData.systems)) do
     if (k ~= "time" and k~= "wa") then
@@ -151,9 +151,9 @@ function WeakAuras.PrintProfile()
   end
 
   print("")
-  print("Auras:")
+  print("|cff9900FFAuras:|r")
   local total = TotalProfileTime(profileData.auras)
-  print("Total Time attributed to auras: ", total)
+  print("Total Time attributed to auras: ", floor(total) .."ms")
   for i, k in ipairs(SortProfileMap(profileData.auras)) do
     PrintOneProfile(k, profileData.auras[k], total)
   end
