@@ -1391,14 +1391,24 @@ function WeakAuras.DoConfigUpdate()
     end
   end
 
+  -- Auras that are hidden because of e.g. conditions or straight up alpha
+  -- settings, do look very strange in the options So boost their alpha to 0.5
+  local function ApplyFakeAlpha(region)
+    if (region.GetRegionAlpha and region:GetRegionAlpha() < 0.5) then
+      region:SetAlpha(0.5);
+    end
+  end
+
   for id, region in pairs(WeakAuras.regions) do
     local data = db.displays[id];
     if(data) then
       GiveDynamicInfo(id, region.region, data);
+      ApplyFakeAlpha(region.region);
 
       if(WeakAuras.clones[id]) then
         for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
           GiveDynamicInfo(id, cloneRegion, data, cloneNum);
+          ApplyFakeAlpha(cloneRegion);
         end
       end
     end
@@ -1422,6 +1432,24 @@ function WeakAuras.UnlockUpdateInfo()
   if frame then
     frame:SetScript("OnUpdate", nil);
   end
+  local function RestoreAlpha(region)
+    if (region.GetRegionAlpha) then
+      region:SetAlpha(region:GetRegionAlpha());
+    end
+  end
+
+  for id, region in pairs(WeakAuras.regions) do
+    local data = db.displays[id];
+    if(data) then
+      RestoreAlpha(region.region);
+      if(WeakAuras.clones[id]) then
+        for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
+          RestoreAlpha(cloneRegion);
+        end
+      end
+    end
+  end
+
 end
 
 function WeakAuras.SetIconNames(data)
