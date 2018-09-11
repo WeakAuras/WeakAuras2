@@ -2900,39 +2900,42 @@ templates.class.DRUID = {
         { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
         { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
-        { spell = 5211, type = "ability", talent = 6 }, -- Mighty Bash
-        { spell = 5215, type = "ability"}, -- Prowl
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 6 }, -- Mighty Bash
+        { spell = 5215, type = "ability", buff = true}, -- Prowl
         { spell = 5487, type = "ability"}, -- Bear Form
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
-        { spell = 16979, type = "ability", talent = 6 }, -- Wild Charge
+        { spell = 8921, type = "ability", requiresTarget = true, debuff = true}, -- Moonfire
+        { spell = 16979, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
-        { spell = 20484, type = "ability", requiresTarget = true}, -- Rebirth
+        { spell = 20484, type = "ability"}, -- Rebirth
         { spell = 22812, type = "ability", buff = true}, -- Barkskin
         { spell = 22842, type = "ability", buff = true, talent = 8 }, -- Frenzied Regeneration
         { spell = 24858, type = "ability"}, -- Moonkin Form
-        { spell = 29166, type = "ability"}, -- Innervate
+        { spell = 29166, type = "ability", buff = true}, -- Innervate
         { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability", talent = 9 }, -- Wild Growth
-        { spell = 49376, type = "ability", talent = 6 }, -- Wild Charge
+        { spell = 49376, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 77758, type = "ability", talent = 8 }, -- Thrash
+        { spell = 78674, type = "ability", requiresTarget = true}, -- Starsurge
         { spell = 78675, type = "ability", requiresTarget = true}, -- Solar Beam
-        { spell = 102359, type = "ability", talent = 11 }, -- Mass Entanglement
+        { spell = 93402, type = "ability", requiresTarget = true, debuff = true}, -- Sunfire
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
         { spell = 102383, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102560, type = "ability", buff = true, talent = 15 }, -- Incarnation: Chosen of Elune
         { spell = 108238, type = "ability", talent = 9 }, -- Renewal
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
-        { spell = 192081, type = "ability", buff = true, talent = 8 }, -- Ironfur
         { spell = 190984, type = "ability", requiresTarget = true, overlayGlow = true}, -- Solar Wrath
+        { spell = 191034, type = "ability", buff = true}, -- Starfall
+        { spell = 192081, type = "ability", buff = true, talent = 8 }, -- Ironfur
         { spell = 194153, type = "ability", requiresTarget = true, overlayGlow = true}, -- Lunar Strike
         { spell = 194223, type = "ability"}, -- Celestial Alignment
+        { spell = 202347, type = "ability", requiresTarget = true, debuff = true}, -- Stellar Flare
         { spell = 202425, type = "ability", buff = true, talent = 2 }, -- Warrior of Elune
         { spell = 202770, type = "ability", buff = true, talent = 20 }, -- Fury of Elune
         { spell = 205636, type = "ability", talent = 3 }, -- Force of Nature
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
-        { spell = 274281, type = "ability", charges = true, target = true, talent = 21 }, -- New Moon
-        { spell = 274282, type = "ability", charges = true, target = true, talent = 21 }, -- Half Moon
-        { spell = 274283, type = "ability", charges = true, target = true, talent = 21 }, -- Full Moon
+        { spell = 274281, type = "ability", requiresTarget = true, charges = true, target = true, talent = 21 }, -- New Moon
       },
       icon = 136060
     },
@@ -3020,26 +3023,29 @@ templates.class.DRUID = {
         { spell = 339, type = "ability", requiresTarget = true, overlayGlow = true}, -- Entangling Roots
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
+        { spell = 1822, type = "ability", debuff = true, requiresTarget = true}, -- Rake
         { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
         { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
-        { spell = 5211, type = "ability", talent = 10 }, -- Mighty Bash
-        { spell = 5215, type = "ability"}, -- Prowl
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
+        { spell = 5215, type = "ability", buff = true}, -- Prowl
         { spell = 5217, type = "ability", buff = true}, -- Tiger's Fury
         { spell = 5221, type = "ability", requiresTarget = true, overlayGlow = true}, -- Shred
         { spell = 5487, type = "ability"}, -- Bear Form
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
+        { spell = 8921, type = "ability", debuff = true, requiresTarget = true}, -- Moonfire
         { spell = 8936, type = "ability", overlayGlow = true}, -- Regrowth
-        { spell = 16979, type = "ability", talent = 6 }, -- Wild Charge
+        { spell = 1079, type = "ability", debuff = true, requiresTarget = true}, -- Rip
+        { spell = 16979, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
         { spell = 20484, type = "ability"}, -- Rebirth
-        { spell = 22570, type = "ability", requiresTarget = true}, -- Maim
+        { spell = 22568, type = "ability", requiresTarget = true}, -- Ferocious Bite
+        { spell = 22570, type = "ability", requiresTarget = true, debuff = true}, -- Maim
         { spell = 22842, type = "ability", buff = true, talent = 8 }, -- Frenzied Regeneration
         { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability", talent = 9 }, -- Wild Growth
-        { spell = 49376, type = "ability", talent = 6 }, -- Wild Charge
+        { spell = 49376, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 61336, type = "ability", charges = true, buff = true}, -- Survival Instincts
-        -- { spell = 77758, type = "ability"}, -- Thrash
         { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102543, type = "ability", buff = true, talent = 15 }, -- Incarnation: King of the Jungle
@@ -3142,19 +3148,26 @@ templates.class.DRUID = {
         { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
         { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
-        { spell = 5215, type = "ability"}, -- Prowl
+        { spell = 5215, type = "ability", buff = true}, -- Prowl
         { spell = 5487, type = "ability"}, -- Bear Form
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
-        { spell = 16979, type = "ability", talent = 6 }, -- Wild Charge
+        { spell = 6807, type = "ability", requiresTarget = true}, -- Maul
+        { spell = 8921, type = "ability", debuff = true, requiresTarget = true, overlayGlow = true}, -- Moonfire
+        { spell = 16979, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
-        { spell = 20484, type = "ability", requiresTarget = true}, -- Rebirth
+        { spell = 18576, type = "ability", requiresTarget = true, talent = 11}, -- Mass Entanglement
+        { spell = 18577, type = "ability", talent = 12}, -- Typhoon
+        { spell = 20484, type = "ability"}, -- Rebirth
+        { spell = 21709, type = "ability", requiresTarget = true, talent = 10}, -- Mighty Bash
         { spell = 22812, type = "ability", buff = true}, -- Barkskin
         { spell = 22842, type = "ability", charges = true, buff = true}, -- Frenzied Regeneration
         { spell = 33917, type = "ability", requiresTarget = true, overlayGlow = true}, -- Mangle
         { spell = 48438, type = "ability", talent = 9 }, -- Wild Growth
-        { spell = 49376, type = "ability", talent = 6 }, -- Wild Charge
+        { spell = 49376, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 61336, type = "ability", charges = true, buff = true}, -- Survival Instincts
         { spell = 77758, type = "ability"}, -- Thrash
+        { spell = 77761, type = "ability", buff = true}, -- Stampeding Roar
+        { spell = 80313, type = "ability", buff = true, requiresTarget = true}, -- Pulverize
         { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
         { spell = 102383, type = "ability", talent = 6 }, -- Wild Charge
         { spell = 102401, type = "ability", talent = 6 }, -- Wild Charge
@@ -3165,7 +3178,7 @@ templates.class.DRUID = {
         { spell = 155835, type = "ability", buff = true, talent = 3 }, -- Bristling Fur
         { spell = 192081, type = "ability", buff = true}, -- Ironfur
         { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
-        { spell = 197626, type = "ability", talent = 7 }, -- Starsurge
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 7 }, -- Starsurge
         { spell = 204066, type = "ability", talent = 20 }, -- Lunar Beam
         { spell = 236748, type = "ability", talent = 5 }, -- Intimidating Roar
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
@@ -3264,8 +3277,8 @@ templates.class.DRUID = {
         { spell = 783, type = "ability"}, -- Travel Form
         { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
-        { spell = 5211, type = "ability", talent = 10 }, -- Mighty Bash
-        { spell = 5215, type = "ability"}, -- Prowl
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
+        { spell = 5215, type = "ability", buff = true}, -- Prowl
         { spell = 5487, type = "ability"}, -- Bear Form
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true}, -- Growl
         { spell = 18562, type = "ability"}, -- Swiftmend
@@ -3286,7 +3299,7 @@ templates.class.DRUID = {
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
         { spell = 192081, type = "ability", buff = true, talent = 9 }, -- Ironfur
         { spell = 197625, type = "ability", talent = 7 }, -- Moonkin Form
-        { spell = 197626, type = "ability", talent = 7 }, -- Starsurge
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 7 }, -- Starsurge
         { spell = 197721, type = "ability", talent = 21 }, -- Flourish
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
       },
