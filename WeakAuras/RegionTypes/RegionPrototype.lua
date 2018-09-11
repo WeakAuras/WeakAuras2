@@ -269,6 +269,10 @@ local function SetRegionAlpha(self, alpha)
   self:SetAlpha(self.animAlpha or self.alpha or 1);
 end
 
+local function GetRegionAlpha(self)
+  return self.animAlpha or self.alpha or 1;
+end
+
 local function SetAnimAlpha(self, alpha)
   if (self.animAlpha == alpha) then
     return;
@@ -293,6 +297,7 @@ function WeakAuras.regionPrototype.create(region)
   region.GetYOffset = GetYOffset;
   region.ResetPosition = ResetPosition;
   region.SetRegionAlpha = SetRegionAlpha;
+  region.GetRegionAlpha = GetRegionAlpha;
   region.SetAnimAlpha = SetAnimAlpha;
 end
 
