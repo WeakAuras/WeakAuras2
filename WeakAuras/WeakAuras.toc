@@ -21,6 +21,8 @@ Init.lua
 
 locales.xml
 
+# If you add files here, you have to add them to babelfish.lua as well
+
 Prototypes.lua
 Types.lua
 Profiling.lua

@@ -18,6 +18,8 @@ locales.xml
 
 ForAllIndentsAndPurposes.lua
 
+# If you add files here, you have to add them to babelfish.lua as well
+
 RegionOptions\AuraBar.lua
 RegionOptions\Texture.lua
 RegionOptions\Icon.lua
