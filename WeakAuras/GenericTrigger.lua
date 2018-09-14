@@ -862,9 +862,21 @@ function GenericTrigger.Add(data, region)
             else
               error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
             end
-          elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
-            error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
           else
+            if (trigger.event == "Combat Log") then
+              if (not trigger.subeventPrefix) then
+                trigger.subeventPrefix = ""
+              end
+              if (not trigger.subeventSuffix) then
+                trigger.subeventSuffix = "";
+              end
+              if not(WeakAuras.subevent_actual_prefix_types[trigger.subeventPrefix]) then
+                trigger.subeventSuffix = "";
+              end
+            end
+
+
+
             triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
 
             statesParameter = event_prototypes[trigger.event].statesParameter;

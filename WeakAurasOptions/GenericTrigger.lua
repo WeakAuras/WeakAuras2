@@ -10,9 +10,6 @@ local custom_trigger_types = WeakAuras.custom_trigger_types;
 local eventend_types = WeakAuras.eventend_types;
 
 function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
-  if (not trigger) then
-    return {};
-  end
   local id = data.id;
   local optionTriggerChoices =  WeakAuras.optionTriggerChoices;
   local appendToTriggerPath, appendToUntriggerPath;
@@ -67,6 +64,38 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
   end
 
   local options = {
+    typedesc = {
+      type = "toggle",
+      name = L["Type"],
+      order = 5,
+      disabled = true,
+      get = function() return true end
+    },
+    type = {
+      type = "select",
+      name = L["Type"],
+      desc = L["The type of trigger"],
+      order = 6,
+      values = WeakAuras.trigger_types,
+      set = function(info, v)
+        trigger.type = v;
+        if(trigger.event) then
+          local prototype = WeakAuras.event_prototypes[trigger.event];
+          if(prototype) then
+            if(v == "status" and prototype.type == "event") then
+              trigger.event = "Health";
+            elseif(v == "event" and prototype.type == "status") then
+              trigger.event = "Chat Message";
+            end
+          end
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.ReloadTriggerOptions(data);
+      end
+    },
     event = {
       type = "select",
       name = function()
