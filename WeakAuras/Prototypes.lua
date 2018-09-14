@@ -597,6 +597,9 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   -- In shadow form void eruption is overriden by void bolt, yet IsSpellKnown for void bolt
   -- returns false, whereas it returns true for void eruption
   local baseSpell = FindBaseSpellByID(spell);
+  if (not baseSpell) then
+    return false;
+  end
   if (baseSpell ~= spell) then
     return WeakAuras.IsSpellKnown(baseSpell) or WeakAuras.IsSpellKnown(baseSpell, true);
   end
