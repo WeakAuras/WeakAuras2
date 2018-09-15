@@ -13,9 +13,13 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
   local id = data.id;
 
   local trigger;
-  if (not data.controlledChildren) then
+  local triggerType;
+  if (data.controlledChildren) then
+    triggerType = WeakAuras.getAll(data, {"trigger", "type"});
+  else
     local triggernum = optionTriggerChoices[id];
     trigger = data.triggers[triggernum].trigger;
+    triggerType = trigger.type;
   end
 
   local appendToTriggerPath, appendToUntriggerPath;
@@ -69,7 +73,7 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
     end
   end
 
-  local options = {
+  local commonOptions = {
     event = {
       type = "select",
       name = function()
@@ -97,6 +101,9 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
       control = "WeakAurasSortedDropdown",
       hidden = function() return not (trigger.type == "event" or trigger.type == "status"); end
     },
+  }
+  local combatLogOptions =
+  {
     subeventPrefix = {
       type = "select",
       name = L["Message Prefix"],
@@ -119,6 +126,9 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
       order = 9.1,
       hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log"); end
     },
+  }
+  local customOptions =
+  {
     custom_type = {
       type = "select",
       name = L["Event Type"],
@@ -315,26 +325,26 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
   local function hideCustomTrigger()
     return not (trigger.type == "custom")
   end
-  WeakAuras.AddCodeOption(options, data, L["Custom Trigger"], "custom_trigger", 10, hideCustomTrigger, appendToTriggerPath("custom"), false, true, extraSetFunction, nil, true);
+  WeakAuras.AddCodeOption(customOptions, data, L["Custom Trigger"], "custom_trigger", 10, hideCustomTrigger, appendToTriggerPath("custom"), false, true, extraSetFunction, nil, true);
 
   local function hideCustomVariables()
     return not (trigger.type == "custom" and trigger.custom_type == "stateupdate");
   end
 
-  WeakAuras.AddCodeOption(options, data, WeakAuras.newFeatureString .. L["Custom Variables"], "custom_variables", 11, hideCustomVariables, appendToTriggerPath("customVariables"), false, true, extraSetFunctionReload, nil, true);
+  WeakAuras.AddCodeOption(customOptions, data, WeakAuras.newFeatureString .. L["Custom Variables"], "custom_variables", 11, hideCustomVariables, appendToTriggerPath("customVariables"), false, true, extraSetFunctionReload, nil, true);
 
   local function hideCustomUntrigger()
     return not (trigger.type == "custom"
       and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom")))
   end
-  WeakAuras.AddCodeOption(options, data, L["Custom Untrigger"], "custom_untrigger", 14, hideCustomUntrigger, appendToUntriggerPath("custom"), false, true, extraSetFunction);
+  WeakAuras.AddCodeOption(customOptions, data, L["Custom Untrigger"], "custom_untrigger", 14, hideCustomUntrigger, appendToUntriggerPath("custom"), false, true, extraSetFunction);
 
   local function hideCustomDuration()
     return not (trigger.type == "custom"
       and (trigger.custom_type == "status"
            or (trigger.custom_type == "event" and (trigger.custom_hide ~= "timed" or trigger.dynamicDuration))))
   end
-  WeakAuras.AddCodeOption(options, data, L["Duration Info"], "custom_duration", 16, hideCustomDuration, appendToTriggerPath("customDuration"), false, true, extraSetFunctionReload);
+  WeakAuras.AddCodeOption(customOptions, data, L["Duration Info"], "custom_duration", 16, hideCustomDuration, appendToTriggerPath("customDuration"), false, true, extraSetFunctionReload);
 
   local function hideIfTriggerStateUpdate()
     return not (trigger.type == "custom" and trigger.custom_type ~= "stateupdate")
@@ -375,34 +385,41 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
       }
     }
 
-    WeakAuras.AddCodeOption(options, data, string.format(L["Overlay %s Info"], i), "custom_overlay" .. i, 17 + i / 10, hideOverlay, appendToTriggerPath("customOverlay" .. i), false, true, extraSetFunctionReload, extraFunctions);
+    WeakAuras.AddCodeOption(customOptions, data, string.format(L["Overlay %s Info"], i), "custom_overlay" .. i, 17 + i / 10, hideOverlay, appendToTriggerPath("customOverlay" .. i), false, true, extraSetFunctionReload, extraFunctions);
   end
 
-  WeakAuras.AddCodeOption(options, data, L["Name Info"], "custom_name", 18, hideIfTriggerStateUpdate, appendToTriggerPath("customName"), false, true, extraSetFunction);
-  WeakAuras.AddCodeOption(options, data, L["Icon Info"], "custom_icon", 20, hideIfTriggerStateUpdate, appendToTriggerPath("customIcon"), false, true, extraSetFunction);
-  WeakAuras.AddCodeOption(options, data, L["Texture Info"], "custom_texture", 22, hideIfTriggerStateUpdate, appendToTriggerPath("customTexture"), false, true, extraSetFunction);
-  WeakAuras.AddCodeOption(options, data, L["Stack Info"], "custom_stacks", 23, hideIfTriggerStateUpdate, appendToTriggerPath("customStacks"), false, true, extraSetFunction);
+  WeakAuras.AddCodeOption(customOptions, data, L["Name Info"], "custom_name", 18, hideIfTriggerStateUpdate, appendToTriggerPath("customName"), false, true, extraSetFunction);
+  WeakAuras.AddCodeOption(customOptions, data, L["Icon Info"], "custom_icon", 20, hideIfTriggerStateUpdate, appendToTriggerPath("customIcon"), false, true, extraSetFunction);
+  WeakAuras.AddCodeOption(customOptions, data, L["Texture Info"], "custom_texture", 22, hideIfTriggerStateUpdate, appendToTriggerPath("customTexture"), false, true, extraSetFunction);
+  WeakAuras.AddCodeOption(customOptions, data, L["Stack Info"], "custom_stacks", 23, hideIfTriggerStateUpdate, appendToTriggerPath("customStacks"), false, true, extraSetFunction);
+
+  local options = {};
+  Mixin(options, commonOptions);
+
+  if (triggerType == "custom") then
+    Mixin(options, customOptions);
+  elseif (triggerType == "status" or triggerType == "event") then
+    local prototypeOptions = {};
+    Mixin(prototypeOptions, combatLogOptions);
+    if (data.controlledChildren) then
+      local event = WeakAuras.getAll(data, {"trigger", "event"});
+      local unevent = WeakAuras.getAll(data, {"trigger", "unevent"});
+      if(event and WeakAuras.event_prototypes[event]) then
+        prototypeOptions = WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, optionTriggerChoices[id], nil, unevent);
+      end
+    else
+      local triggerNum = optionTriggerChoices[id];
+      local trigger, untrigger = data.triggers[triggerNum].trigger, data.triggers[triggerNum].untrigger;
+      if(WeakAuras.event_prototypes[trigger.event]) then
+        prototypeOptions = WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, optionTriggerChoices[id]);
+      else
+        print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
+      end
+    end
+    if (prototypeOptions) then
+      Mixin(options, prototypeOptions);
+    end
+  end
 
   return options;
-end
-
-function WeakAuras.GetGenericTriggerOptions2(data, optionTriggerChoices)
-  local id  = data.id;
-  if (data.controlledChildren) then
-    local event = WeakAuras.getAll(data, {"trigger", "event"});
-    local unevent = WeakAuras.getAll(data, {"trigger", "unevent"});
-    if(event and WeakAuras.event_prototypes[event]) then
-      return WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, optionTriggerChoices[id], nil, unevent);
-    end
-  else
-    local triggerNum = optionTriggerChoices[id];
-    local trigger, untrigger = data.triggers[triggerNum].trigger, data.triggers[triggerNum].untrigger;
-    if(WeakAuras.event_prototypes[trigger.event]) then
-      return WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, optionTriggerChoices[id]);
-    else
-      print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
-    end
-  end
-
-  return {};
 end
