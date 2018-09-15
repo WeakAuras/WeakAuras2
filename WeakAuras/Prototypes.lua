@@ -2782,10 +2782,10 @@ WeakAuras.event_prototypes = {
 
       if (trigger.use_message) then
         local ret2 = [=[
-          local triggerMessage = [[%s]]
+          local triggerMessage = %s
           local triggerOperator = [[%s]]
         ]=]
-        ret = ret .. ret2:format(trigger.message or "", trigger.message_operator  or "")
+        ret = ret .. ret2:format('[=[' .. (trigger.message or "") .. ']=]', trigger.message_operator  or "")
       else
         ret = ret .. [[
           local triggerMessage = nil;
