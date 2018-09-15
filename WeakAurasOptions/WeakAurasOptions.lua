@@ -2740,6 +2740,12 @@ function WeakAuras.ReloadTriggerOptions(data)
     chooseTriggerWidth = chooseTriggerWidth + 0.15;
   end
 
+  local trigger;
+  if (not data.controlledChildren) then
+    local triggerNum = optionTriggerChoices[id];
+    trigger = data.triggers[triggerNum].trigger;
+  end
+
   local trigger_options = {
     disjunctive = {
       type = "select",
@@ -2995,6 +3001,38 @@ function WeakAuras.ReloadTriggerOptions(data)
         end
       end,
       order = 2
+    },
+    typedesc = {
+      type = "toggle",
+      name = L["Type"],
+      order = 5,
+      disabled = true,
+      get = function() return true end
+    },
+    type = {
+      type = "select",
+      name = L["Type"],
+      desc = L["The type of trigger"],
+      order = 6,
+      values = WeakAuras.trigger_types,
+      set = function(info, v)
+        trigger.type = v;
+        if(trigger.event) then
+          local prototype = WeakAuras.event_prototypes[trigger.event];
+          if(prototype) then
+            if(v == "status" and prototype.type == "event") then
+              trigger.event = "Health";
+            elseif(v == "event" and prototype.type == "status") then
+              trigger.event = "Chat Message";
+            end
+          end
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.ReloadTriggerOptions(data);
+      end
     },
   };
 
