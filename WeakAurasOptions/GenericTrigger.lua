@@ -9,7 +9,7 @@ local subevent_suffix_types = WeakAuras.subevent_suffix_types;
 local custom_trigger_types = WeakAuras.custom_trigger_types;
 local eventend_types = WeakAuras.eventend_types;
 
-function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
+local function GetGenericTriggerOptions(data, optionTriggerChoices)
   local id = data.id;
 
   local trigger;
@@ -423,3 +423,5 @@ function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
 
   return options;
 end
+
+WeakAuras.RegisterTriggerSystemOptions({"event", "status", "custom"}, GetGenericTriggerOptions);

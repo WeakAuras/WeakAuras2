@@ -55,7 +55,7 @@ local function getAuraMatchesList(name)
   end
 end
 
-function WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices)
+local function GetBuffTriggerOptions(data, optionTriggerChoices)
   local trigger;
   if (not data.controlledChildren) then
     local triggernum = optionTriggerChoices[data.id];
@@ -944,3 +944,5 @@ function WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices)
   };
   return aura_options;
 end
+
+WeakAuras.RegisterTriggerSystemOptions({"aura"}, GetBuffTriggerOptions);

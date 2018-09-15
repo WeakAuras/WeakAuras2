@@ -3053,12 +3053,25 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.ReloadTriggerOptions(data);
     end
 
-    local triggerType = getAll(data, {"trigger", "type"});
-    if(optionTriggerChoices[id] >= 1 and triggerType == "aura") then
-      local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices);
-      trigger_options = union(trigger_options, aura_options);
-    elseif(optionTriggerChoices[id] >= 1 and (triggerType == "event" or triggerType == "status" or triggerType == "custom")) then
-      trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices));
+    local commontriggerSystemOptionsFunction = nil;
+    local first = true;
+
+    for index, childId in ipairs(data.controlledChildren) do
+      local triggerChoice = optionTriggerChoices[id];
+      local childData = WeakAuras.GetData(childId);
+      local trigger = triggerChoice and childData.triggers[triggerChoice].trigger;
+      local triggerSystemOptionsFunction = trigger.type and WeakAuras.triggerTypesOptions[trigger.type];
+      if (triggerSystemOptionsFunction) then
+        if (first) then
+          commontriggerSystemOptionsFunction = triggerSystemOptionsFunction
+        elseif(commontriggerSystemOptionsFunction ~= triggerSystemOptionsFunction) then
+          commontriggerSystemOptionsFunction = nil;
+        end
+      end
+    end
+
+    if (commontriggerSystemOptionsFunction) then
+      trigger_options = union(trigger_options, commontriggerSystemOptionsFunction(data, optionTriggerChoices));
     end
     displayOptions[id].args.trigger.args = trigger_options;
 
@@ -3160,11 +3173,9 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ReloadTriggerOptions(data);
     end
-    if(trigger.type == "aura") then
-      local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices);
-      trigger_options = union(trigger_options, aura_options);
-    elseif(trigger.type == "event" or trigger.type == "status" or trigger.type == "custom") then
-      trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices));
+    local triggerSystemOptionsFunction = trigger.type and WeakAuras.triggerTypesOptions[trigger.type];
+    if (triggerSystemOptionsFunction) then
+      trigger_options = union(trigger_options, triggerSystemOptionsFunction(data, optionTriggerChoices));
     end
 
     displayOptions[id].args.trigger.args = trigger_options;

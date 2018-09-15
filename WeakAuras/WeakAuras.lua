@@ -173,6 +173,11 @@ local regionOptions = WeakAuras.regionOptions;
 WeakAuras.triggerTypes = {};
 local triggerTypes = WeakAuras.triggerTypes;
 
+-- Maps from trigger type to a functin that can create options for the trigger
+WeakAuras.triggerTypesOptions = {};
+local triggerTypesOptions = WeakAuras.triggerTypesOptions;
+
+
 -- Trigger State, updated by trigger systems, then applied to regions by UpdatedTriggerState
 -- keyed on id, triggernum, cloneid
 -- cloneid can be a empty string
@@ -4090,6 +4095,12 @@ function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
     triggerTypes[v] = triggerSystem;
   end
   tinsert(triggerSystems, triggerSystem);
+end
+
+function WeakAuras.RegisterTriggerSystemOptions(types, func)
+  for _, v in ipairs(types) do
+    triggerTypesOptions[v] = func;
+  end
 end
 
 function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
