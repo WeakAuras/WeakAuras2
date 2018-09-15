@@ -55,10 +55,13 @@ local function getAuraMatchesList(name)
   end
 end
 
-function WeakAuras.GetBuffTriggerOptions(data, triggernum)
+function WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices)
   local trigger;
-  if (triggernum) then
-    trigger = data.triggers[triggernum].trigger;
+  if (not data.controlledChildren) then
+    local triggernum = optionTriggerChoices[data.id];
+    if (triggernum) then
+      trigger = data.triggers[triggernum].trigger;
+    end
   end
 
   local spellCache = WeakAuras.spellCache;

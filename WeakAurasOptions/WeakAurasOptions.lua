@@ -3055,7 +3055,7 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data));
     if(optionTriggerChoices[id] >= 1 and getAll(data, {"trigger", "type"}) == "aura") then
-      local aura_options = WeakAuras.GetBuffTriggerOptions(data);
+      local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices);
       trigger_options = union(trigger_options, aura_options);
     elseif(optionTriggerChoices[id] >= 1 and (getAll(data, {"trigger", "type"}) == "event" or getAll(data, {"trigger", "type"}) == "status")) then
       local generic_options = WeakAuras.GetGenericTriggerOptions2(data, optionTriggerChoices);
@@ -3161,7 +3161,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     end
     trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger));
     if(trigger.type == "aura") then
-      local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices[id]);
+      local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices);
       trigger_options = union(trigger_options, aura_options);
     elseif(trigger.type == "event" or trigger.type == "status") then
       local generic_options = WeakAuras.GetGenericTriggerOptions2(data, optionTriggerChoices)
