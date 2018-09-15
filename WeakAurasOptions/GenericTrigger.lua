@@ -9,9 +9,15 @@ local subevent_suffix_types = WeakAuras.subevent_suffix_types;
 local custom_trigger_types = WeakAuras.custom_trigger_types;
 local eventend_types = WeakAuras.eventend_types;
 
-function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
+function WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices)
   local id = data.id;
-  local optionTriggerChoices =  WeakAuras.optionTriggerChoices;
+
+  local trigger;
+  if (not data.controlledChildren) then
+    local triggernum = optionTriggerChoices[id];
+    trigger = data.triggers[triggernum].trigger;
+  end
+
   local appendToTriggerPath, appendToUntriggerPath;
 
   if (data.controlledChildren) then

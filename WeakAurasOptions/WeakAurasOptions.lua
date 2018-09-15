@@ -3053,7 +3053,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.ReloadTriggerOptions(data);
     end
 
-    trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data));
+    trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices));
     if(optionTriggerChoices[id] >= 1 and getAll(data, {"trigger", "type"}) == "aura") then
       local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices);
       trigger_options = union(trigger_options, aura_options);
@@ -3159,7 +3159,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ReloadTriggerOptions(data);
     end
-    trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger));
+    trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, optionTriggerChoices));
     if(trigger.type == "aura") then
       local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices);
       trigger_options = union(trigger_options, aura_options);
