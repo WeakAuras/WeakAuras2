@@ -2614,7 +2614,7 @@ local function removeSpellNames(data)
   local trigger
   for i = 1, #data.triggers do
     trigger = data.triggers[i].trigger
-    if trigger then
+    if trigger and trigger.type == "aura" then
       if type(trigger.spellName) == "number" then
         trigger.realSpellName = GetSpellInfo(trigger.spellName) or trigger.realSpellName
       end
@@ -3560,7 +3560,6 @@ end
 
 WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
 WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
-WeakAuras.CanGroupShowWithZero = wrapTriggerSystemFunction("CanGroupShowWithZero", "or");
 WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");

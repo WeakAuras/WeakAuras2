@@ -58,7 +58,221 @@ local tempGroup = {
 };
 WeakAuras.tempGroup = tempGroup;
 
-local trigger_types = WeakAuras.trigger_types;
+function WeakAuras.MultipleDisplayTooltipDesc()
+  local desc = {{L["Multiple Displays"], L["Temporary Group"]}};
+  for index, id in pairs(tempGroup.controlledChildren) do
+    desc[index + 1] = {" ", id};
+  end
+  desc[2][1] = L["Children:"]
+  tinsert(desc, " ");
+  tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+  tinsert(desc, {" ", "|cFF00FFFF"..L["Drag to move"]});
+  return desc;
+end
+
+function WeakAuras.DuplicateAura(data)
+  local base_id = data.id .. " ";
+  local num = 2;
+
+  -- if the old id ends with a number increment the number
+  local matchName, matchNumber = string.match(data.id, "^(.-)(%d*)$")
+  matchNumber = tonumber(matchNumber)
+  if (matchName ~= "" and matchNumber ~= nil) then
+    base_id = matchName;
+    num = matchNumber + 1
+  end
+
+  local new_id = base_id .. num;
+  while(WeakAuras.GetData(new_id)) do
+    new_id = base_id .. num;
+    num = num + 1;
+  end
+
+  local newData = {};
+  WeakAuras.DeepCopy(data, newData);
+  newData.id = new_id;
+  newData.parent = nil;
+  newData.uid = nil
+  WeakAuras.Add(newData);
+  WeakAuras.NewDisplayButton(newData);
+  if(data.parent) then
+    local parentData = WeakAuras.GetData(data.parent);
+    local index;
+    for i, childId in pairs(parentData.controlledChildren) do
+      if(childId == data.id) then
+        index = i;
+        break;
+      end
+    end
+    if(index) then
+      local newIndex = index + 1;
+      if(newIndex > #parentData.controlledChildren) then
+        tinsert(parentData.controlledChildren, newData.id);
+      else
+        tinsert(parentData.controlledChildren, index + 1, newData.id);
+      end
+      newData.parent = data.parent;
+      WeakAuras.Add(parentData);
+      WeakAuras.Add(newData);
+
+      for index, id in pairs(parentData.controlledChildren) do
+        local childButton = WeakAuras.GetDisplayButton(id);
+        childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup");
+        childButton:SetGroupOrder(index, #parentData.controlledChildren);
+      end
+
+      local button = WeakAuras.GetDisplayButton(parentData.id);
+      button.callbacks.UpdateExpandButton();
+      WeakAuras.UpdateDisplayButton(parentData);
+      WeakAuras.ReloadGroupRegionOptions(parentData);
+    end
+  end
+  return newData.id;
+end
+
+function WeakAuras.MultipleDisplayTooltipMenu()
+  local menu = {
+    {
+      text = L["Add to new Group"],
+      notCheckable = 1,
+      func = function()
+        local data = {
+          id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
+          regionType = "group",
+        };
+        WeakAuras.Add(data);
+        WeakAuras.NewDisplayButton(data);
+
+        for index, childId in pairs(tempGroup.controlledChildren) do
+          local childData = WeakAuras.GetData(childId);
+          tinsert(data.controlledChildren, childId);
+          childData.parent = data.id;
+          WeakAuras.Add(data);
+          WeakAuras.Add(childData);
+        end
+
+        for index, id in pairs(data.controlledChildren) do
+          local childButton = WeakAuras.GetDisplayButton(id);
+          childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+          childButton:SetGroupOrder(index, #data.controlledChildren);
+        end
+
+        local button = WeakAuras.GetDisplayButton(data.id);
+        button.callbacks.UpdateExpandButton();
+        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.ReloadGroupRegionOptions(data);
+        WeakAuras.SortDisplayButtons();
+        button:Expand();
+      end
+    },
+    {
+      text = L["Add to new Dynamic Group"],
+      notCheckable = 1,
+      func = function()
+        local data = {
+          id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
+          regionType = "dynamicgroup",
+        };
+
+        WeakAuras.Add(data);
+        WeakAuras.NewDisplayButton(data);
+
+        for index, childId in pairs(tempGroup.controlledChildren) do
+          local childData = WeakAuras.GetData(childId);
+          tinsert(data.controlledChildren, childId);
+          childData.parent = data.id;
+          childData.xOffset = 0;
+          childData.yOffset = 0;
+          WeakAuras.Add(data);
+          WeakAuras.Add(childData);
+        end
+
+        for index, id in pairs(data.controlledChildren) do
+          local childButton = WeakAuras.GetDisplayButton(id);
+          childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+          childButton:SetGroupOrder(index, #data.controlledChildren);
+        end
+
+        local button = WeakAuras.GetDisplayButton(data.id);
+        button.callbacks.UpdateExpandButton();
+        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.ReloadGroupRegionOptions(data);
+        WeakAuras.SortDisplayButtons();
+        button:Expand();
+        WeakAuras.PickDisplay(data.id);
+      end
+    },
+    {
+      text = L["Duplicate All"],
+      notCheckable = 1,
+      func = function()
+        local toDuplicate = {};
+        for index, id in pairs(tempGroup.controlledChildren) do
+          toDuplicate[index] = id;
+        end
+
+        local duplicated = {};
+
+        for index, id in ipairs(toDuplicate) do
+          local childData = WeakAuras.GetData(id);
+          duplicated[index] = WeakAuras.DuplicateAura(childData);
+        end
+
+        WeakAuras.ClearPicks();
+        for index, id in ipairs(duplicated) do
+          WeakAuras.PickDisplayMultiple(id);
+        end
+      end
+    },
+    {
+      text = " ",
+      notCheckable = 1,
+      notClickable = 1
+    },
+    {
+      text = L["Delete all"],
+      notCheckable = 1,
+      func = function()
+        local toDelete = {};
+        local parents = {};
+        for index, id in pairs(tempGroup.controlledChildren) do
+          local childData = WeakAuras.GetData(id);
+          toDelete[index] = childData;
+          if(childData.parent) then
+            parents[childData.parent] = true;
+          end
+        end
+        WeakAuras.ConfirmDelete(toDelete, parents)
+      end
+    },
+    {
+      text = " ",
+      notClickable = 1,
+      notCheckable = 1,
+    },
+    {
+      text = L["Close"],
+      notCheckable = 1,
+      func = function() WeakAuras_DropDownMenu:Hide() end
+    }
+  };
+  local anyGrouped = false;
+  for index, id in pairs(tempGroup.controlledChildren) do
+    local childData = WeakAuras.GetData(id);
+    if(childData and childData.parent) then
+      anyGrouped = true;
+      break;
+    end
+  end
+  if(anyGrouped) then
+    menu[1].notClickable = 1;
+    menu[1].text = "|cFF777777"..menu[1].text;
+    menu[2].notClickable = 1;
+    menu[2].text = "|cFF777777"..menu[2].text;
+  end
+  return menu;
+end
+
 local point_types = WeakAuras.point_types;
 local operator_types = WeakAuras.operator_types;
 local operator_types_without_equal = WeakAuras.operator_types_without_equal;
@@ -2746,6 +2960,10 @@ function WeakAuras.ReloadTriggerOptions(data)
     trigger = data.triggers[triggerNum].trigger;
   end
 
+  local trigger_types = {};
+  for type, triggerSystem in pairs(WeakAuras.triggerTypes) do
+    trigger_types[type] = triggerSystem.GetName(type);
+  end
   local trigger_options = {
     disjunctive = {
       type = "select",
@@ -3014,7 +3232,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Type"],
       desc = L["The type of trigger"],
       order = 6,
-      values = WeakAuras.trigger_types,
+      values = trigger_types,
       set = function(info, v)
         trigger.type = v;
         if(trigger.event) then

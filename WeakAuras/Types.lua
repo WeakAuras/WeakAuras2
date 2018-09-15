@@ -99,13 +99,6 @@ WeakAuras.trigger_modes = {
   ["first_active"] = -10,
 }
 
-WeakAuras.trigger_types = {
-  aura = L["Aura"],
-  status = L["Status"],
-  event = L["Event"],
-  custom = L["Custom"]
-}
-
 WeakAuras.debuff_types = {
   HELPFUL = L["Buff"],
   HARMFUL = L["Debuff"]

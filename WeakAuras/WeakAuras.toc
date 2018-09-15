@@ -29,6 +29,7 @@ Profiling.lua
 WeakAuras.lua
 Transmission.lua
 BuffTrigger.lua
+BuffTrigger2.lua
 GenericTrigger.lua
 AuraEnvironment.lua
 

@@ -989,6 +989,8 @@ local methods = {
             if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
               tinsert(namestable, {L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
             end
+          elseif(trigger.type == "aura2") then
+            -- TODO do something
           else
             tinsert(namestable, {L["Trigger:"], L["Custom"]});
           end
