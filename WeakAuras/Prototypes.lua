@@ -2079,8 +2079,9 @@ WeakAuras.event_prototypes = {
       end
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
         local ret2 = [[
-          if (expirationTime) then
-            local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
+          local remaining = 0;
+          if (expirationTime and expirationTime > 0) then
+            remaining = expirationTime - GetTime();
             local remainingCheck = %s;
             if(remaining >= remainingCheck and remaining > 0) then
               WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
