@@ -3563,13 +3563,18 @@ function WeakAuras.CreateFallbackState(id, triggernum)
 
   local data = db.displays[id];
   local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
-  if (not triggerSystem) then
-    return false;
+  if (triggerSystem) then
+    triggerSystem.CreateFallbackState(data, triggernum, state)
+    state.trigger = data.triggers[triggernum].trigger
+    state.triggernum = triggernum
+  else
+    state.show = true;
+    state.changed = true;
+    state.progressType = "timed";
+    state.duration = 0;
+    state.expirationTime = math.huge;
   end
 
-  triggerSystem.CreateFallbackState(data, triggernum, state)
-  state.trigger = data.triggers[triggernum].trigger
-  state.triggernum = triggernum
   state.id = id
 
   return states;
