@@ -55,7 +55,12 @@ local function getAuraMatchesList(name)
   end
 end
 
-function WeakAuras.GetBuffTriggerOptions(data, trigger)
+function WeakAuras.GetBuffTriggerOptions(data, triggernum)
+  local trigger;
+  if (triggernum) then
+    trigger = data.triggers[triggernum].trigger;
+  end
+
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {

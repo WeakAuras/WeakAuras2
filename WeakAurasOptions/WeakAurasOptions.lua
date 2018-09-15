@@ -3058,11 +3058,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       local aura_options = WeakAuras.GetBuffTriggerOptions(data);
       trigger_options = union(trigger_options, aura_options);
     elseif(optionTriggerChoices[id] >= 1 and (getAll(data, {"trigger", "type"}) == "event" or getAll(data, {"trigger", "type"}) == "status")) then
-      local event = getAll(data, {"trigger", "event"});
-      local unevent = getAll(data, {"trigger", "unevent"});
-      if(event and WeakAuras.event_prototypes[event]) then
-        trigger_options = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, optionTriggerChoices[id], nil, unevent));
-      end
+      local generic_options = WeakAuras.GetGenericTriggerOptions2(data, optionTriggerChoices);
+      trigger_options = union(trigger_options, generic_options);
     end
     displayOptions[id].args.trigger.args = trigger_options;
 
@@ -3163,16 +3160,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.ReloadTriggerOptions(data);
     end
     trigger_options = union(trigger_options, WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger));
-    local triggernum = optionTriggerChoices[id];
     if(trigger.type == "aura") then
-      local aura_options = WeakAuras.GetBuffTriggerOptions(data, trigger);
+      local aura_options = WeakAuras.GetBuffTriggerOptions(data, optionTriggerChoices[id]);
       trigger_options = union(trigger_options, aura_options);
     elseif(trigger.type == "event" or trigger.type == "status") then
-      if(WeakAuras.event_prototypes[trigger.event]) then
-        trigger_options = union(trigger_options, WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, optionTriggerChoices[id]));
-      else
-        print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
-      end
+      local generic_options = WeakAuras.GetGenericTriggerOptions2(data, optionTriggerChoices)
+      trigger_options = union(trigger_options, generic_options);
     end
 
     displayOptions[id].args.trigger.args = trigger_options;

@@ -379,3 +379,24 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
 
   return options;
 end
+
+function WeakAuras.GetGenericTriggerOptions2(data, optionTriggerChoices)
+  local id  = data.id;
+  if (data.controlledChildren) then
+    local event = WeakAuras.getAll(data, {"trigger", "event"});
+    local unevent = WeakAuras.getAll(data, {"trigger", "unevent"});
+    if(event and WeakAuras.event_prototypes[event]) then
+      return WeakAuras.ConstructOptions(WeakAuras.event_prototypes[event], data, 10, optionTriggerChoices[id], nil, unevent);
+    end
+  else
+    local triggerNum = optionTriggerChoices[id];
+    local trigger, untrigger = data.triggers[triggerNum].trigger, data.triggers[triggerNum].untrigger;
+    if(WeakAuras.event_prototypes[trigger.event]) then
+      return WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, optionTriggerChoices[id]);
+    else
+      print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
+    end
+  end
+
+  return {};
+end
