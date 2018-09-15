@@ -3202,6 +3202,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.SetThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
+      WeakAuras.ReloadTriggerOptions(data);
     end;
   end
 
