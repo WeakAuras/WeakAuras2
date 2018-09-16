@@ -69,7 +69,8 @@ local BuffTrigger = {};
 
 local auras = {};
 
--- keyed on unit, debuffType, spellname, id, triggernum with value = a scanFunc that checks if the trigger settings match the data
+-- keyed on unit, debuffType, spellname, with a scan object value
+-- scan object: id, triggernum, scanFunc
 -- TODO not entirely happy with how deep this is
 -- TODO are we going to have multiple maps from e.g. roles to scanFuncs ?
 local scanFuncName = {};
@@ -284,13 +285,13 @@ local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
 
     local auras = triggerInfo[name];
     if (auras) then
-      for id, triggerData in pairs(auras) do
-        for triggernum, scanFunc in pairs(triggerData) do
-          if (scanFunc(name, icon, count)) then
-            if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
-              matchDataChanged[id] = matchDataChanged[id] or {};
-              matchDataChanged[id][triggernum] = true;
-            end
+      for _, triggerInfo in pairs(auras) do
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, count)) then
+          local id = triggerInfo.id;
+          local triggernum = triggerInfo.triggernum
+          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+            matchDataChanged[id] = matchDataChanged[id] or {};
+            matchDataChanged[id][triggernum] = true;
           end
         end
       end
@@ -367,8 +368,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     scanFuncName[triggerInfo.unit]                                           = scanFuncName[triggerInfo.unit] or {};
     scanFuncName[triggerInfo.unit][filter]                                   = scanFuncName[triggerInfo.unit][filter] or {};
     scanFuncName[triggerInfo.unit][filter][triggerInfo.name]                 = scanFuncName[triggerInfo.unit][filter][triggerInfo.name] or {};
-    scanFuncName[triggerInfo.unit][filter][triggerInfo.name][id]             = scanFuncName[triggerInfo.unit][filter][triggerInfo.name][id] or {};
-    scanFuncName[triggerInfo.unit][filter][triggerInfo.name][id][triggernum] = triggerInfo.scanFunc;
+    tinsert(scanFuncName[triggerInfo.unit][filter][triggerInfo.name], triggerInfo);
   end
 end
 
@@ -380,13 +380,17 @@ function BuffTrigger.LoadDisplay(id)
   end
 end
 
-local function UnloadAura(base, id)
-  for unit, unitData in pairs(base) do
+local function UnloadAura(scanFuncName, id)
+  for unit, unitData in pairs(scanFuncName) do
     for debuffType, debuffData in pairs(unitData) do
-      for needle, needleData in pairs(debuffData) do
-        needleData[id] = nil;
-        if (not next(needleData)) then
-          debuffData[needle] = nil;
+      for name, nameData in pairs(debuffData) do
+        for i = #nameData, 1, -1 do
+          if nameData[i].id == id then
+            tremove(nameData, i);
+          end
+        end
+        if (#nameData == 0) then
+          debuffData[name] = nil;
         end
       end
 
@@ -395,7 +399,7 @@ local function UnloadAura(base, id)
       end
     end
     if (not next(unitData)) then
-      base[unit] = nil;
+      scanFuncName[unit] = nil;
     end
   end
 end
@@ -422,17 +426,6 @@ end
 -- @param oldid
 -- @param newid
 
-local function Rename(base, oldid, newid)
-  for unit, unitData in pairs(base) do
-    for debuffType, debuffData in pairs(unitData) do
-      for needle, needleData in pairs(debuffData) do
-        needleData[newid] = needleData[oldid];
-        needleData[oldid] = nil;
-      end
-    end
-  end
-end
-
 function BuffTrigger.Rename(oldid, newid)
   auras[newid] = auras[oldid];
   auras[oldid] = nil;
@@ -447,22 +440,16 @@ function BuffTrigger.Rename(oldid, newid)
       filterData[oldid] = nil;
     end
   end
-
-  Rename(scanFuncName, oldid, newid);
-end
-
-local function trueFunc()
-  return true;
 end
 
 local function createScanFunc(trigger)
   if (not trigger.useCount) then
-    return trueFunc;
+    return nil;
   end
 
   -- name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ..
   local ret = [[
-    function(name, icon, count)
+    return function(name, icon, count)
   ]];
 
   if (trigger.useCount) then
@@ -471,7 +458,7 @@ local function createScanFunc(trigger)
         return false
       end
     ]]
-    ret = ret2:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
+    ret = ret .. ret2:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
   end
 
   ret = ret .. [[
@@ -479,7 +466,11 @@ local function createScanFunc(trigger)
     end
   ]];
 
-  return loadstring(ret);
+  local func, err = loadstring(ret);
+
+  if (func) then
+    return func();
+  end
 end
 
 --- Adds an aura, setting up internal data structures for all buff triggers.
@@ -502,7 +493,9 @@ function BuffTrigger.Add(data)
         unit = trigger.unit,
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
-        scanFunc = scanFunc;
+        scanFunc = scanFunc,
+        id = id,
+        triggernum = triggernum
       };
       auras[id] = auras[id] or {};
       auras[id][triggernum] = triggerInformation;
