@@ -182,6 +182,7 @@ local function UpdateTriggerState(id, triggernum)
         name = bestMatch.name,
         icon = bestMatch.icon,
         count = bestMatch.count,
+        progressType = "timed",
         duration = bestMatch.duration,
         expirationTime = bestMatch.expirationTime,
         unitCaster = bestMatch.unitCaster,
@@ -258,7 +259,7 @@ local function UpdateTriggerState(id, triggernum)
         changed = true;
       end
       if (changed) then
-        state.changd = true;
+        state.changed = true;
         WeakAuras.UpdatedTriggerState(id);
       end
     end
@@ -426,8 +427,8 @@ local function Rename(base, oldid, newid)
   for unit, unitData in pairs(base) do
     for debuffType, debuffData in pairs(unitData) do
       for needle, needleData in pairs(debuffData) do
-        unitData[newid] = unitData[oldid];
-        unitData[oldid] = nil;
+        needleData[newid] = needleData[oldid];
+        needleData[oldid] = nil;
       end
     end
   end
@@ -448,8 +449,8 @@ function BuffTrigger.Rename(oldid, newid)
     end
   end
 
-  Rename(allAurasName);
-  Rename(ownOnlyAurasName);
+  Rename(allAurasName, oldid, newid);
+  Rename(ownOnlyAurasName, oldid, newid);
 end
 
 local function trueFunc()

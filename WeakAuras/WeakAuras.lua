@@ -2766,7 +2766,6 @@ local function pAdd(data)
       activatedConditions = {},
     };
 
-
     local region = WeakAuras.SetRegion(data);
     if (WeakAuras.clones[id]) then
       for cloneId, _ in pairs(WeakAuras.clones[id]) do
@@ -4235,6 +4234,7 @@ local function applyToTriggerStateTriggers(stateShown, id, triggernum)
     if (not anyCloneShown) then
       triggerState[id].triggers[triggernum] = false;
       triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
+      print("dec tc ", triggerState[id].triggerCount)
       return true;
     end
   end
@@ -4244,6 +4244,9 @@ end
 local function evaluateTriggerStateTriggers(id)
   local result = false;
   WeakAuras.ActivateAuraEnvironment(id);
+
+  print("evaluateTriggerStateTriggers ", id)
+  print("  ", triggerState[id].disjunctive, " ", triggerState[id].triggerCount, " ", triggerState[id].numTriggers);
 
   if (triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0) then
     result = true;
@@ -4257,6 +4260,7 @@ local function evaluateTriggerStateTriggers(id)
   end
 
   WeakAuras.ActivateAuraEnvironment(nil);
+  print("  => ", result);
   return result;
 end
 
@@ -4307,6 +4311,8 @@ function WeakAuras.UpdatedTriggerState(id)
 
   -- Figure out whether we should be shown or not
   local show = triggerState[id].show;
+
+
   if (changed or show == nil) then
     show = evaluateTriggerStateTriggers(id);
   end
