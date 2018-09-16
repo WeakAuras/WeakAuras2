@@ -2446,7 +2446,7 @@ function WeakAuras.Modernize(data)
   if data.internalVersion < 9 then
     local function repairCheck(check)
       if check and check.variable == "buffed" then
-        local trigger = check.trigger and data.triggers[check.trigger].trigger;
+        local trigger = check.trigger and data.triggers[check.trigger] and data.triggers[check.trigger].trigger;
         if (trigger) then
           if(trigger.buffShowOn == "showOnActive") then
             check.variable = "show";
