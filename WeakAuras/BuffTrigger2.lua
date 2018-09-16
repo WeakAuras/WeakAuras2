@@ -347,10 +347,10 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("bufftrigger2");
 end);
 
-
 function BuffTrigger.ScanAll()
-  -- TODO
-  print("BuffTrigger.ScanAll")
+  for unit in pairs(scanFuncName) do
+    ScanUnit(unit);
+  end
 end
 
 function BuffTrigger.UnloadAll()
