@@ -4223,20 +4223,9 @@ local function applyToTriggerStateTriggers(stateShown, id, triggernum)
     triggerState[id].triggerCount = triggerState[id].triggerCount + 1;
     return true;
   elseif (not stateShown and triggerState[id].triggers[triggernum]) then
-    -- Check if any other clone is shown
-    local anyCloneShown = false;
-    for _, state in pairs(triggerState[id][triggernum]) do
-      if (state.show) then
-        anyCloneShown = true;
-        break;
-      end
-    end
-    if (not anyCloneShown) then
-      triggerState[id].triggers[triggernum] = false;
-      triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
-      print("dec tc ", triggerState[id].triggerCount)
-      return true;
-    end
+    triggerState[id].triggers[triggernum] = false;
+    triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
+    return true;
   end
   return false;
 end
@@ -4295,6 +4284,9 @@ function WeakAuras.UpdatedTriggerState(id)
   local changed = false;
   for triggernum = 1, triggerState[id].numTriggers do
     triggerState[id][triggernum] = triggerState[id][triggernum] or {};
+
+    local anyStateShown = false;
+
     for cloneId, state in pairs(triggerState[id][triggernum]) do
       state.trigger = db.displays[id].triggers[triggernum].trigger;
       state.triggernum = triggernum;
@@ -4302,11 +4294,11 @@ function WeakAuras.UpdatedTriggerState(id)
 
       if (state.changed) then
         startStopTimers(id, cloneId, triggernum, state);
-        local stateShown = triggerState[id][triggernum][cloneId] and triggerState[id][triggernum][cloneId].show;
-        -- Update triggerState.triggers
-        changed = applyToTriggerStateTriggers(stateShown, id, triggernum) or changed;
       end
+      anyStateShown = anyStateShown or state.show;
     end
+    -- Update triggerState.triggers
+    changed = applyToTriggerStateTriggers(anyStateShown, id, triggernum) or changed;
   end
 
   -- Figure out whether we should be shown or not

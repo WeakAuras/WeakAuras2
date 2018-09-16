@@ -70,7 +70,7 @@ local BuffTrigger = {};
 local auras = {};
 
 -- keyed on unit, debuffType, spellname, id, triggernum with value = a scanFunc that checks if the trigger settings match the data
--- TODO These could be merged
+-- TODO ownOnlyAurasName and allAurasName could be merged
 local ownOnlyAurasName = {};
 local allAurasName = {};
 
@@ -137,7 +137,7 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
   end
 
   if (data.expirationTime ~= expirationTime) then
-    data.expirationTime = name;
+    data.expirationTime = expirationTime;
     changed = true;
   end
 
@@ -172,6 +172,9 @@ local function UpdateTriggerState(id, triggernum)
     end
   end
 
+  -- TODO compare with the state that the old trigger generated
+  -- Both fullscan/multi/normal
+  -- Missing GUID, Rename count to stacks
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local cloneId = "";
   if (bestMatch) then
@@ -208,8 +211,6 @@ local function UpdateTriggerState(id, triggernum)
         changed = true;
       end
 
-      -- TODO add GUID (?)
-      -- TODO Rename to stacks
       if (state.count ~= bestMatch.count) then
         state.count = bestMatch.count;
         changed = true;
@@ -271,16 +272,10 @@ local function ScanAurasWithFilter(time, unit, filter, triggerInfo)
     return;
   end
 
-  print("ScanAurasWithFilter ", unit, filter, triggerInfo);
-
   local matchDataChanged = {};
 
   local index = 1;
   while(true) do
-    -- TODO figure out a way to break out of this loop early,
-    -- if there's no cloning aura for this unit, and we have found a match for every aura
-    -- Is that worth it? Any NOT debuffed check has to run the whole way
-    -- Any always check if the buff is not present has to check all auras too
     local name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
     index = index + 1;
     if (not name) then
@@ -292,7 +287,6 @@ local function ScanAurasWithFilter(time, unit, filter, triggerInfo)
       for id, triggerData in pairs(auras) do
         for triggernum, scanFunc in pairs(triggerData) do
           if (scanFunc(name, icon, count)) then
-            print("FOUND MATCH");
             if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
               matchDataChanged[id] = matchDataChanged[id] or {};
               matchDataChanged[id][triggernum] = true;
@@ -309,7 +303,6 @@ local function ScanAurasWithFilter(time, unit, filter, triggerInfo)
       for triggernum, triggerData in pairs(auraData) do
         for index, data in pairs(triggerData) do
           if (data.time < time) then
-            print("OUTDATE aura removed");
             triggerData[index] = nil;
             matchDataByTrigger[id][triggernum][unit][index] = nil;
 
@@ -394,8 +387,18 @@ local function UnloadAura(base, id)
   for unit, unitData in pairs(base) do
     for debuffType, debuffData in pairs(unitData) do
       for needle, needleData in pairs(debuffData) do
-        unitData[id] = nil;
+        needleData[id] = nil;
+        if (not next(needleData)) then
+          debuffData[needle] = nil;
+        end
       end
+
+      if (not next(debuffData)) then
+        unitData[debuffType] = nil;
+      end
+    end
+    if (not next(unitData)) then
+      base[unit] = nil;
     end
   end
 end

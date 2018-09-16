@@ -59,8 +59,17 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
   -- TODO LIST, aka what's missing?
   -- remaining time
+  --   * Hard because: Need to limit what to check as cleanly as possible
   -- show on: always/not buffed, unit not exists
+  --   * Need to know which scanFuncs are in that mode
+  --   * Need to call for always show for those to initialy createa a state
+  --   * for always show: Need to handle no bestMatch found differently
+  --   * for not buffed: No need to find "the" best match
+  --
   -- autoclone
+  --   * Just needs to change for always show to copy all matches
+  --   * Try to optimize non-cloning to not create all matches? We don't need them all
+  --
   -- fullscan
   --   aura names: IsExactly/Contains/Pattern Matching for
   --    match on tooltip:
@@ -68,17 +77,36 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   --    spellId
   --    debuffClass
   --    tooltip size
+  -- * Add a map from spellId to scanFunc to optimize that
+  -- * The others handle via additions to scanFunc
+  -- * Need a list of scanFuncs that don't have a name/spellId
+
   -- multi trigger
+  -- * This should use the ame match data, with less data and auto hiding
+  -- * Nee
   -- Multiple aura names
+  -- * Should be easy. We collect all matches and the rest is the same
   -- Specific Unit
+  -- * Be better than the old one and try to detect when the specific unit changed
+  -- * E.g. watch their GUID ? On UNIT_AURA changes, check if the GUID matches any watched specific unit and update it too
   -- Group:
+  --   * scanFuncs are per unit type
+  --   * ScanAuras takes a specific unit, so raidX
+  --   * No need to scan all auras when one unit changes
   --   group member count
+  --   * match data for all units is in UpdateTriggerState, so should be easier to do
   --   group role
+  --   * Is this just a additional check in ScanFuncs? Or do we have a separate map from group role to scanFuncs
   --   ignore self
+  --   * meta data to the scanFunc ? Or check inside the scanFunc ?
   --   name info
   --   stack info
+  --   * Offer both options for name/stack as state "functions". Needs a bit of extensions of states and text replacements
+  ---  * Needs a bit of design work
   --   hide alone
-  --
+  --   * Meta data for scanFunc
+  -- *** TODO
+  -- The biggest unaswered question is how to best store the scanFuncs so that we can easily figure out which scanFuncs to call.
 
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
