@@ -70,9 +70,9 @@ local BuffTrigger = {};
 local auras = {};
 
 -- keyed on unit, debuffType, spellname, id, triggernum with value = a scanFunc that checks if the trigger settings match the data
--- TODO ownOnlyAurasName and allAurasName could be merged
-local ownOnlyAurasName = {};
-local allAurasName = {};
+-- TODO not entirely happy with how deep this is
+-- TODO are we going to have multiple maps from e.g. roles to scanFuncs ?
+local scanFuncName = {};
 
 local timer = WeakAuras.timer;
 
@@ -267,7 +267,7 @@ local function UpdateTriggerState(id, triggernum)
   end
 end
 
-local function ScanAurasWithFilter(time, unit, filter, triggerInfo)
+local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
   if (not triggerInfo) then
     return;
   end
@@ -321,15 +321,13 @@ local function ScanAurasWithFilter(time, unit, filter, triggerInfo)
   end
 end
 
-local function ScanAuras(unit)
+local function ScanUnit(unit)
   local time = GetTime();
-  if (ownOnlyAurasName[unit]) then
-    ScanAurasWithFilter(time, unit, "HELPFUL|PLAYER", ownOnlyAurasName[unit]["HELPFUL"])
-    ScanAurasWithFilter(time, unit, "HARMFUL|PLAYER", ownOnlyAurasName[unit]["HARMFUL"])
-  end
-  if (allAurasName[unit]) then
-    ScanAurasWithFilter(time, unit, "HELPFUL", allAurasName[unit]["HELPFUL"])
-    ScanAurasWithFilter(time, unit, "HARMFUL", allAurasName[unit]["HARMFUL"])
+  if (scanFuncName[unit]) then
+    ScanUnitWithFilter(time, unit, "HELPFUL|PLAYER", scanFuncName[unit]["HELPFUL|PLAYER"])
+    ScanUnitWithFilter(time, unit, "HARMFUL|PLAYER", scanFuncName[unit]["HARMFUL|PLAYER"])
+    ScanUnitWithFilter(time, unit, "HELPFUL", scanFuncName[unit]["HELPFUL"])
+    ScanUnitWithFilter(time, unit, "HARMFUL", scanFuncName[unit]["HARMFUL"])
   end
 end
 
@@ -339,11 +337,11 @@ frame:RegisterEvent("UNIT_AURA");
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2");
   if(event == "PLAYER_TARGET_CHANGED") then
-    ScanAuras("target");
+    ScanUnit("target");
   elseif(event == "PLAYER_FOCUS_CHANGED") then
-    ScanAuras("focus");
+    ScanUnit("focus");
   elseif(event == "UNIT_AURA") then
-    ScanAuras(arg1);
+    ScanUnit(arg1);
   end
   WeakAuras.StopProfileSystem("bufftrigger2");
 end);
@@ -355,23 +353,22 @@ function BuffTrigger.ScanAll()
 end
 
 function BuffTrigger.UnloadAll()
-  wipe(allAurasName);
-  wipe(ownOnlyAurasName);
+  wipe(scanFuncName)
   wipe(matchData);
   wipe(matchDataByTrigger);
 end
 
 local function LoadAura(id, triggernum, triggerInfo)
   if (triggerInfo.name) then
-    local base = allAurasName;
+    local filter = triggerInfo.debuffType;
     if (triggerInfo.ownOnly) then
-      base = ownOnlyAurasName;
+      filter = filter .. "|PLAYER";
     end
-    base[triggerInfo.unit]                                                           = base[triggerInfo.unit] or {};
-    base[triggerInfo.unit][triggerInfo.debuffType]                                   = base[triggerInfo.unit][triggerInfo.debuffType] or {};
-    base[triggerInfo.unit][triggerInfo.debuffType][triggerInfo.name]                 = base[triggerInfo.unit][triggerInfo.debuffType][triggerInfo.name] or {};
-    base[triggerInfo.unit][triggerInfo.debuffType][triggerInfo.name][id]             = base[triggerInfo.unit][triggerInfo.debuffType][triggerInfo.name][id] or {};
-    base[triggerInfo.unit][triggerInfo.debuffType][triggerInfo.name][id][triggernum] = triggerInfo.scanFunc;
+    scanFuncName[triggerInfo.unit]                                           = scanFuncName[triggerInfo.unit] or {};
+    scanFuncName[triggerInfo.unit][filter]                                   = scanFuncName[triggerInfo.unit][filter] or {};
+    scanFuncName[triggerInfo.unit][filter][triggerInfo.name]                 = scanFuncName[triggerInfo.unit][filter][triggerInfo.name] or {};
+    scanFuncName[triggerInfo.unit][filter][triggerInfo.name][id]             = scanFuncName[triggerInfo.unit][filter][triggerInfo.name][id] or {};
+    scanFuncName[triggerInfo.unit][filter][triggerInfo.name][id][triggernum] = triggerInfo.scanFunc;
   end
 end
 
@@ -404,8 +401,7 @@ local function UnloadAura(base, id)
 end
 
 function BuffTrigger.UnloadDisplay(id)
-  UnloadAura(allAurasName, id);
-  UnloadAura(ownOnlyAurasName, id);
+  UnloadAura(scanFuncName, id);
 
   for unit, unitData in pairs(matchData) do
     for filter, filterData in pairs(unitData) do
@@ -452,8 +448,7 @@ function BuffTrigger.Rename(oldid, newid)
     end
   end
 
-  Rename(allAurasName, oldid, newid);
-  Rename(ownOnlyAurasName, oldid, newid);
+  Rename(scanFuncName, oldid, newid);
 end
 
 local function trueFunc()

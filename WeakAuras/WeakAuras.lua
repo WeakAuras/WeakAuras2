@@ -4234,9 +4234,6 @@ local function evaluateTriggerStateTriggers(id)
   local result = false;
   WeakAuras.ActivateAuraEnvironment(id);
 
-  print("evaluateTriggerStateTriggers ", id)
-  print("  ", triggerState[id].disjunctive, " ", triggerState[id].triggerCount, " ", triggerState[id].numTriggers);
-
   if (triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0) then
     result = true;
   elseif(triggerState[id].disjunctive == "all" and triggerState[id].triggerCount == triggerState[id].numTriggers) then
@@ -4249,7 +4246,6 @@ local function evaluateTriggerStateTriggers(id)
   end
 
   WeakAuras.ActivateAuraEnvironment(nil);
-  print("  => ", result);
   return result;
 end
 
