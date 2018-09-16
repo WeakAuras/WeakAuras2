@@ -3156,9 +3156,7 @@ templates.class.DRUID = {
         { spell = 16979, type = "ability", requiresTarget = true, talent = 6 }, -- Wild Charge
         { spell = 18562, type = "ability", talent = 9 }, -- Swiftmend
         { spell = 18576, type = "ability", requiresTarget = true, talent = 11}, -- Mass Entanglement
-        { spell = 18577, type = "ability", talent = 12}, -- Typhoon
         { spell = 20484, type = "ability"}, -- Rebirth
-        { spell = 21709, type = "ability", requiresTarget = true, talent = 10}, -- Mighty Bash
         { spell = 22812, type = "ability", buff = true}, -- Barkskin
         { spell = 22842, type = "ability", charges = true, buff = true}, -- Frenzied Regeneration
         { spell = 33917, type = "ability", requiresTarget = true, overlayGlow = true}, -- Mangle
