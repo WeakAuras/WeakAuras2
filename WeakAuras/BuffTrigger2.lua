@@ -71,7 +71,6 @@ local auras = {};
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
--- TODO not entirely happy with how deep this is
 -- TODO are we going to have multiple maps from e.g. roles to scanFuncs ?
 local scanFuncName = {};
 
@@ -347,7 +346,8 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("bufftrigger2");
 end);
 
-function BuffTrigger.ScanAll()
+function BuffTrigger.ScanAll(recentlyLoaded)
+  -- TODO optimize based on recentlyLoaded ?
   for unit in pairs(scanFuncName) do
     ScanUnit(unit);
   end
