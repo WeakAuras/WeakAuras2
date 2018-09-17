@@ -1375,6 +1375,7 @@ frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 frame:RegisterEvent("UNIT_AURA");
+frame:RegisterEvent("UNIT_PET");
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger");
   if (WeakAuras.IsPaused()) then return end;
@@ -1382,6 +1383,8 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     WeakAuras.ScanAuras("target");
   elseif(event == "PLAYER_FOCUS_CHANGED") then
     WeakAuras.ScanAuras("focus");
+  elseif(event == "UNIT_PET") then
+    WeakAuras.ScanAuras("pet");
   elseif(event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
     for unit,_ in pairs(specificBosses) do
       WeakAuras.ScanAuras(unit);
