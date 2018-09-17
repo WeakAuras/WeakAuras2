@@ -2339,7 +2339,14 @@ WeakAuras.event_prototypes = {
       WeakAuras.WatchSpellCooldown(spellName);
     end,
     init = function(trigger)
-      return "";
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = string.format("%q", spellName);
+      end
+      return string.format("local spell = %s;\n", spellName);
     end,
     statesParameter = "one",
     args = {
@@ -2349,7 +2356,8 @@ WeakAuras.event_prototypes = {
         display = L["Spell"],
         type = "spell",
         init = "arg",
-        showExactOption = true
+        showExactOption = true,
+        test = "spell == spellName"
       },
       {
         name = "direction",
