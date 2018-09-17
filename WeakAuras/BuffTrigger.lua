@@ -1375,7 +1375,7 @@ frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 frame:RegisterEvent("UNIT_AURA");
-frame:RegisterEvent("UNIT_PET");
+frame:RegisterUnitEvent("UNIT_PET", "player")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger");
   if (WeakAuras.IsPaused()) then return end;
