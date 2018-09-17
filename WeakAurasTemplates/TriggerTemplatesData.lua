@@ -99,6 +99,8 @@ local generalAzeriteTraits = {
   { spell = 273842, type = "buff", unit = "player"}, --Secrets of the Deep
   { spell = 280286, type = "debuff", unit = "target"}, --Dagger in the Back
   { spell = 281843, type = "buff", unit = "player"}, --Tradewinds
+  { spell = 280709, type = "buff", unit = "player"}, --Archive of the Titans
+  { spell = 280573, type = "buff", unit = "player"}, --Reorigination Array
 }
 
 local pvpAzeriteTraits = {
