@@ -239,6 +239,36 @@ local function createTotemTrigger(triggers, position, item)
   end
 end
 
+local function createPowerTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Power",
+      unevent = "auto",
+      use_unit = true,
+      unit = "player",
+      use_powertype = true,
+      use_showCost = true,
+      powertype = item.powertype
+    },
+  };
+end
+
+local function createHealthTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Health",
+      unit = "player",
+      use_unit = true,
+      unevent = "auto",
+      use_absorbMode = true,
+      use_showAbsorb = true,
+      use_showIncomingHeal = true,
+    },
+  };
+end
+
 local function createAbilityTrigger(triggers, position, item, genericShowOn)
   triggers[position] = {
     trigger = {
@@ -787,6 +817,24 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         totemActiveGlow(conditions, 1, regionType);
       end,
+    });
+  elseif(item.type == "power") then
+    tinsert(types, {
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createPowerTrigger(triggers, 1, item);
+      end,
+      data = { inverse = false, icon = false, text = false }
+    });
+  elseif(item.type == "health") then
+    tinsert(types, {
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createHealthTrigger(triggers, 1, item);
+      end,
+      data = { inverse = false, icon = false, text = false }
     });
   end
 
