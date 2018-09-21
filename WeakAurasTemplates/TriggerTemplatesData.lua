@@ -3796,7 +3796,7 @@ templates.class.DEATHKNIGHT = {
 tinsert(templates.general.args, {
   title = L["Health"],
   icon = "Interface\\Icons\\inv_alchemy_70_red",
-  triggers = { [1] = { trigger = { type = "status", event = "Health", unit = "player", use_unit = true, unevent = "auto" }}}
+  type = "health"
 });
 tinsert(templates.general.args, {
   title = L["Cast"],
@@ -3971,19 +3971,8 @@ local function createSimplePowerTemplate(powertype)
   local power = {
     title = powerTypes[powertype].name,
     icon = powerTypes[powertype].icon,
-    triggers = {
-      [1] = {
-        ["trigger"] = {
-          type = "status",
-          event = "Power",
-          unevent = "auto",
-          use_unit = true,
-          unit = "player",
-          use_powertype = true,
-          powertype = powertype
-        },
-      }
-    }
+    type = "power",
+    powertype = powertype,
   }
   return power;
 end
@@ -4048,6 +4037,9 @@ end
 tinsert(templates.class.PRIEST[3][8].args, createSimplePowerTemplate(13));
 
 -- Shaman
+for i = 1, 3 do
+  tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(0));
+end
 for i = 1, 2 do
   tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(11));
 end
