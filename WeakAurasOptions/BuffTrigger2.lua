@@ -188,31 +188,31 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       values = debuff_types,
       hidden = function() return not (trigger.type == "aura2"); end
     },
-    useCount = {
+    useStacks = {
       type = "toggle",
       name = L["Stack Count"],
       hidden = function() return not (trigger.type == "aura2"); end,
       order = 60
     },
-    countOperator = {
+    stacksOperator = {
       type = "select",
       name = L["Operator"],
       order = 62,
       width = "half",
       values = operator_types,
-      disabled = function() return not trigger.useCount; end,
+      disabled = function() return not trigger.useStacks; end,
       hidden = function() return not (trigger.type == "aura2"); end,
-      get = function() return trigger.useCount and trigger.countOperator or nil end
+      get = function() return trigger.useStacks and trigger.stacksOperator or nil end
     },
-    count = {
+    stacks = {
       type = "input",
       name = L["Stack Count"],
       validate = ValidateNumeric,
       order = 65,
       width = "half",
-      disabled = function() return not trigger.useCount; end,
+      disabled = function() return not trigger.useStacks; end,
       hidden = function() return not (trigger.type == "aura2"); end,
-      get = function() return trigger.useCount and trigger.count or nil end
+      get = function() return trigger.useStacks and trigger.stacks or nil end
     },
     ownOnly = {
       type = "toggle",

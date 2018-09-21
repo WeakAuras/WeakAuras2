@@ -81,7 +81,7 @@ local matchData = {};
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {};
 
-local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
   if (not matchData[unit]) then
     matchData[unit] = {};
   end
@@ -98,7 +98,7 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
     matchData[unit][filter][id][triggernum][index] = {
       name = name,
       icon = icon,
-      count = count,
+      stacks = stacks,
       duration = duration,
       expirationTime = expirationTime,
       unitCaster = unitCaster,
@@ -126,8 +126,8 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
     changed = true;
   end
 
-  if (data.count ~= count) then
-    data.count = count;
+  if (data.stacks ~= stacks) then
+    data.stacks = stacks;
     changed = true;
   end
 
@@ -174,17 +174,18 @@ local function UpdateTriggerState(id, triggernum)
 
   -- TODO compare with the state that the old trigger generated
   -- Both fullscan/multi/normal
-  -- Missing GUID, Rename count to stacks
+  -- Missing GUID
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local cloneId = "";
   if (bestMatch) then
     if (not triggerStates[cloneId]) then
       triggerStates[cloneId] = {
+        -- active: matched anything
         show = true,
         changed = true,
         name = bestMatch.name,
         icon = bestMatch.icon,
-        count = bestMatch.count,
+        stacks = bestMatch.stacks,
         progressType = "timed",
         duration = bestMatch.duration,
         expirationTime = bestMatch.expirationTime,
@@ -211,8 +212,8 @@ local function UpdateTriggerState(id, triggernum)
         changed = true;
       end
 
-      if (state.count ~= bestMatch.count) then
-        state.count = bestMatch.count;
+      if (state.stacks ~= bestMatch.stacks) then
+        state.stacks = bestMatch.stacks;
         changed = true;
       end
 
@@ -276,7 +277,7 @@ local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
 
   local index = 1;
   while(true) do
-    local name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
     index = index + 1;
     if (not name) then
       break;
@@ -285,10 +286,10 @@ local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
     local auras = triggerInfo[name];
     if (auras) then
       for _, triggerInfo in pairs(auras) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, count)) then
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
-          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, count, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
@@ -443,22 +444,22 @@ function BuffTrigger.Rename(oldid, newid)
 end
 
 local function createScanFunc(trigger)
-  if (not trigger.useCount) then
+  if (not trigger.useStacks) then
     return nil;
   end
 
-  -- name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ..
+  -- name, icon, stacks, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ..
   local ret = [[
-    return function(name, icon, count)
+    return function(name, icon, stacks)
   ]];
 
-  if (trigger.useCount) then
+  if (trigger.useStacks) then
     local ret2 = [[
-      if not(count %s %s) then
+      if not(stacks %s %s) then
         return false
       end
     ]]
-    ret = ret .. ret2:format(trigger.countOperator or ">=", tonumber(trigger.count) or 0);
+    ret = ret .. ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0);
   end
 
   ret = ret .. [[
