@@ -3415,6 +3415,108 @@ WeakAuras.event_prototypes = {
     hasSpellID = true,
     automaticrequired = true
   },
+  ["Talent Known"] = {
+    type = "status",
+    events = {
+      "PLAYER_TALENT_UPDATE",
+    },
+    force_events = "PLAYER_TALENT_UPDATE",
+    name = L["Talent Selected"],
+    init = function(trigger)
+      local inverse = trigger.use_inverse;
+      if (trigger.use_talent) then
+        -- Single selection
+        local index = trigger.talent and trigger.talent.single;
+        local tier = ceil(index / 3)
+        local column = (index - 1) % 3 + 1
+
+        local ret = [[
+          local tier = %s;
+          local column = %s;
+          local _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+          local active = selected or known;
+        ]]
+        if (inverse) then
+          ret = ret .. [[
+          active = not (active);
+          ]]
+        end
+        return ret:format(tier, column)
+      elseif (trigger.use_talent == false) then
+        if (trigger.talent.multi) then
+          local ret = [[
+            local tier
+            local column
+            local active = false;
+            local activeIcon;
+            local activeName;
+          ]]
+          for index in pairs(trigger.talent.multi) do
+            local tier = ceil(index / 3)
+            local column = (index - 1) % 3 + 1
+            local ret2 = [[
+              if (not active) then
+                local _, name, icon, selected, _, _, _, _, _, _n, known  = GetTalentInfo(%s, %s, 1)
+                if (selected or known) then
+                  active = true;
+                  activeName = name;
+                  activeIcon = icon;
+                end
+              end
+            ]]
+            ret = ret .. ret2:format(tier, column);
+          end
+          if (inverse) then
+            ret = ret .. [[
+            active = not (active);
+            ]]
+          end
+          return ret;
+        end
+      end
+      return "";
+    end,
+    args = {
+      {
+        name = "talent",
+        display = L["Talent selected"],
+        type = "multiselect",
+        values = function()
+          local class = select(2, UnitClass("player"));
+          local spec =  GetSpecialization();
+          if(WeakAuras.talent_types_specific[class] and  WeakAuras.talent_types_specific[class][spec]) then
+            return WeakAuras.talent_types_specific[class][spec];
+          else
+            return WeakAuras.talent_types;
+          end
+        end,
+        test = "active",
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "activeIcon",
+        store = "true",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "name",
+        init = "activeName",
+        store = "true",
+        test = "true"
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+    canHaveAuto = true
+  },
   ["Totem"] = {
     type = "status",
     events = {
