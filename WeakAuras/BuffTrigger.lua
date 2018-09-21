@@ -623,7 +623,6 @@ function WeakAuras.ScanAuras(unit)
 
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
-              -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
               for i = 1, BUFF_MAX_DISPLAY do
                 name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, i, filter);
@@ -1049,8 +1048,6 @@ do
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-
-        -- TODO 8.0: Check if there is a better way than iterating all auras
         local detected
         local name, icon, count, duration, expirationTime, unitCaster, spellId, _
         for i = 1, BUFF_MAX_DISPLAY do
@@ -1230,7 +1227,6 @@ do
             for triggernum, data in pairs(triggers) do
               local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
 
-              -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
               local name, icon, count, duration, expirationTime, unitCaster, _
               for i = 1, BUFF_MAX_DISPLAY do
