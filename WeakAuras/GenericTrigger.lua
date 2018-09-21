@@ -172,7 +172,11 @@ function TestForMultiSelect(trigger, arg)
     end
     test = test..")";
   elseif(trigger["use_"..name]) then -- single selection
-    local value = trigger[name].single;
+    local value = trigger[name] and trigger[name].single;
+    if (not value) then
+      test = "false";
+      return test;
+    end
     if not arg.test then
       test = trigger[name].single and "("..name.."=="..(tonumber(value) or "[["..value.."]]")..")";
     else
