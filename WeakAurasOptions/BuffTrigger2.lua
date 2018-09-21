@@ -238,6 +238,25 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 70,
       hidden = function() return not (trigger.type == "aura2"); end
     },
+
+    shownClones = {
+      type = "select",
+      name = L["Match Handling"],
+      values = WeakAuras.bufftrigger_2_clones_types,
+      order = 70.5,
+      hidden = function()
+        return not (trigger.type == "aura2");
+      end
+    },
+    matchesShowOn = {
+      type = "select",
+      name = L["Show On"],
+      values = WeakAuras.bufftrigger_2_progress_behavior_types,
+      order = 71,
+      hidden = function()
+        return not (trigger.type == "aura2");
+      end
+    },
   };
 
   -- Names

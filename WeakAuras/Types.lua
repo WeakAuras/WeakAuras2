@@ -1483,6 +1483,12 @@ WeakAuras.bufftrigger_progress_behavior_types = {
   showAlways= L["Always"]
 }
 
+WeakAuras.bufftrigger_2_progress_behavior_types = {
+  showOnActive = L["Auras found"],
+  showOnMissing = L["No Auras"],
+  showAlways= L["Always"]
+}
+
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],
   [2]  = L["Neck"],
