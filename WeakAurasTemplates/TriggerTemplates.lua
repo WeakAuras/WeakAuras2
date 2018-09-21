@@ -112,6 +112,10 @@ local checks = {
   overlayGlow = {
     variable = "show",
     value = 1,
+  },
+  uninterruptible = {
+    variable = "interruptible",
+    value = 0,
   };
 }
 
@@ -183,6 +187,10 @@ local function overlayGlow(conditions, trigger, regionType)
   else
     tinsert(conditions, buildCondition(trigger, checks.overlayGlow, {changes("yellow", regionType)}));
   end
+end
+
+local function uninterruptibleRed(conditions, trigger, regionType)
+  tinsert(conditions, buildCondition(trigger, checks.uninterruptible, {changes("red", regionType)}));
 end
 
 local function isSpellNotInRangeRed(conditions, trigger, regionType)
@@ -265,6 +273,18 @@ local function createHealthTrigger(triggers, position, item)
       use_absorbMode = true,
       use_showAbsorb = true,
       use_showIncomingHeal = true,
+    },
+  };
+end
+
+local function createCastTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Cast",
+      unevent = "auto",
+      use_unit = true,
+      unit = item.unit or "player"
     },
   };
 end
@@ -835,6 +855,18 @@ local function subTypesFor(item, regionType)
         createHealthTrigger(triggers, 1, item);
       end,
       data = { inverse = false, icon = false, text = false }
+    });
+  elseif(item.type == "cast") then
+    tinsert(types, {
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createCastTrigger(triggers, 1, item);
+      end,
+      createConditions = function(conditions, item, regionType)
+        uninterruptibleRed(conditions, 1, regionType);
+      end,
+      data = { inverse = false }
     });
   end
 

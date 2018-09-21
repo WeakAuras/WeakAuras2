@@ -3801,7 +3801,7 @@ tinsert(templates.general.args, {
 tinsert(templates.general.args, {
   title = L["Cast"],
   icon = 136209,
-  triggers = {[1] = { trigger = { type = "status", event = "Cast", unevent = "auto", use_unit = true, unit = "player" }}}
+  type = "cast"
 });
 tinsert(templates.general.args, {
   title = L["Always Active"],
