@@ -3347,7 +3347,7 @@ WeakAuras.event_prototypes = {
         ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
       end
       if(trigger.use_inverse) then
-        ret = ret.."active = not active and startTime\n";
+        ret = ret.."active = not active\n";
       end
 
       if (type(spellName) == "string") then
