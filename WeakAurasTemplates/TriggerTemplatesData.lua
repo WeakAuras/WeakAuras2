@@ -4048,17 +4048,6 @@ end
 tinsert(templates.class.PRIEST[3][8].args, createSimplePowerTemplate(13));
 
 -- Shaman
-for i = 1, 3 do
-  tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(0));
-
-  templates.class.SHAMAN[i][7] = {
-    title = L["Totems"],
-    args = {
-    },
-    icon = 538575,
-  };
-end
-
 for i = 1, 2 do
   tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(11));
 end
