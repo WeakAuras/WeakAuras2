@@ -48,6 +48,12 @@ local function getAuraMatchesList(name)
   end
 end
 
+local function shiftTable(tbl, pos)
+  for i = pos, 9, 1 do
+    tbl[i] = tbl[i + 1]
+  end
+end
+
 local function GetBuffTriggerOptions(data, optionTriggerChoices)
   local trigger;
   if (not data.controlledChildren) then
@@ -111,55 +117,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {
-
-    useName = {
-      type = "toggle",
-      name = L["Aura(s)"],
-      width = "half",
-      order = 10,
-      hidden = function() return not (trigger.type == "aura2"); end,
-      disabled = true,
-      get = function() return true end
-    },
-    nameicon = {
-      type = "execute",
-      name = function() return getAuraMatchesLabel(trigger.name) end,
-      desc = function() return getAuraMatchesList(trigger.name) end,
-      width = "half",
-      image = function()
-        local icon = spellCache.GetIcon(trigger.name);
-        return icon and tostring(icon) or "", 18, 18
-      end,
-      order = 11,
-      disabled = function() return not spellCache.GetIcon(trigger.name) end,
-      hidden = function() return not (trigger.type == "aura2"); end
-    },
-    name = {
-      type = "input",
-      name = L["Aura Name"],
-      desc = L["Enter an aura name, partial aura name, or spell id"],
-      order = 12,
-      hidden = function() return not (trigger.type == "aura2"); end,
-      get = function(info) return trigger.spellId and tostring(trigger.spellId) or trigger.name end,
-      set = function(info, v)
-        if(v == "") then
-          if(trigger.name) then
-            trigger.name = nil;
-            trigger.spellId = nil;
-          end
-        else
-          trigger.name, trigger.spellId = WeakAuras.spellCache.CorrectAuraName(v);
-        end
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.SetIconNames(data);
-        WeakAuras.UpdateDisplayButton(data);
-      end,
-    },
     useUnit = {
       type = "toggle",
       name = L["Unit"],
-      order = 40,
+      order = 10,
       disabled = true,
       hidden = function() return not (trigger.type == "aura2"); end,
       get = function() return true end
@@ -167,7 +128,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     unit = {
       type = "select",
       name = L["Unit"],
-      order = 41,
+      order = 10.1,
       values = function()
         return WeakAuras.actual_unit_types;
       end,
@@ -176,7 +137,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useDebuffType = {
       type = "toggle",
       name = L["Aura Type"],
-      order = 50,
+      order = 11,
       disabled = true,
       hidden = function() return not (trigger.type == "aura2"); end,
       get = function() return true end
@@ -184,9 +145,39 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     debuffType = {
       type = "select",
       name = L["Aura Type"],
-      order = 51,
+      order = 11.1,
       values = debuff_types,
       hidden = function() return not (trigger.type == "aura2"); end
+    },
+
+    -- Name/Exact Spell ID options added below
+    useName = {
+      type = "toggle",
+      name = L["Name"],
+      order = 12,
+      width = 0.8,
+      hidden = function() return not (trigger.type == "aura2"); end,
+    },
+    useNameSpace = {
+      type = "description",
+      name = "",
+      order = 12.1,
+      width = "normal",
+      hidden = function() return not (trigger.type == "aura2" and not trigger.useName); end,
+    },
+    useExactSpellId = {
+      type = "toggle",
+      name = L["Exact Spell Id"],
+      width = 0.8,
+      order = 22,
+      hidden = function() return not (trigger.type == "aura2"); end,
+    },
+    useExactSpellIdSpace = {
+      type = "description",
+      name = "",
+      order = 22.1,
+      width = "normal",
+      hidden = function() return not (trigger.type == "aura2" and not trigger.useExactSpellId); end,
     },
     useStacks = {
       type = "toggle",
@@ -248,6 +239,106 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       hidden = function() return not (trigger.type == "aura2"); end
     },
   };
+
+  -- Names
+  for i = 1, 9 do
+    if (i ~= 1) then
+      aura_options["namespace" .. i] = {
+        type = "execute",
+        name = L["or"],
+        width = 0.8,
+        image = function() return "", 0, 0 end,
+        order = i + 11.1,
+        hidden = function() return not (trigger.type == "aura2" and trigger.useName and trigger.auranames and trigger.auranames[i - 1]); end,
+      }
+    end
+
+    aura_options["nameicon" .. i] = {
+      type = "execute",
+      name = function() return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i]) end,
+      desc = function() return getAuraMatchesList(trigger.auranames and trigger.auranames[i]) end,
+      width = 0.2,
+      image = function()
+        local icon = spellCache.GetIcon(trigger.auranames and trigger.auranames[i]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
+      order = i + 11.2,
+      disabled = function() return not spellCache.GetIcon(trigger.auranames and trigger.auranames[i]) end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])); end
+    }
+
+    aura_options["name" .. i] = {
+      type = "input",
+      name = L["Aura Name"],
+      desc = L["Enter an aura name, partial aura name, or spell id"],
+      order = i + 11.3,
+      hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])); end,
+      get = function(info) return trigger.auranames and trigger.auranames[i] end,
+      set = function(info, v)
+        trigger.auranames = trigger.auranames or {};
+        if (v == "") then
+          shiftTable(trigger.auranames, i);
+        else
+          trigger.auranames[i] = v;
+        end
+
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+    }
+  end
+  -- Exact Spell IDs
+  for i = 1, 9 do
+    if (i ~= 1) then
+      aura_options["spellidspace" .. i] = {
+        type = "execute",
+        name = L["or"],
+        width = 0.8,
+        image = function() return "", 0, 0 end,
+        order = i + 21.1,
+        hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and trigger.auraspellids and trigger.auraspellids[i - 1]); end,
+      }
+    end
+
+    aura_options["spellidicon" .. i] = {
+      type = "execute",
+      name = function() return getAuraMatchesLabel(trigger.auraspellids and trigger.auraspellids[i]) end,
+      desc = function() return getAuraMatchesList(trigger.auraspellids and trigger.auraspellids[i]) end,
+      width = 0.2,
+      image = function()
+        local icon = spellCache.GetIcon(trigger.auraspellids and trigger.auraspellids[i]);
+        return icon and tostring(icon) or "", 18, 18
+      end,
+      order = i + 21.2,
+      disabled = function() return not spellCache.GetIcon(trigger.auraspellids and trigger.auraspellids[i]) end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])); end
+    }
+
+    aura_options["spellid" .. i] = {
+      type = "input",
+      name = L["Spell Id"],
+      desc = L["Enter a spell id"],
+      order = i + 21.3,
+      hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])); end,
+      get = function(info) return trigger.auraspellids and trigger.auraspellids[i] end,
+      set = function(info, v)
+        trigger.auraspellids = trigger.auraspellids or {};
+        if (v == "") then
+          shiftTable(trigger.auraspellids, i);
+        else
+          trigger.auraspellids[i] = v;
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end,
+      validate = ValidateNumeric,
+    }
+  end
+
   return aura_options;
 end
 

@@ -73,6 +73,7 @@ local auras = {};
 -- scan object: id, triggernum, scanFunc
 -- TODO are we going to have multiple maps from e.g. roles to scanFuncs ?
 local scanFuncName = {};
+local scanFuncSpellId = {};
 
 local timer = WeakAuras.timer;
 
@@ -269,12 +270,14 @@ local function UpdateTriggerState(id, triggernum)
   end
 end
 
-local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
-  if (not triggerInfo) then
+local function runScanFuncs(scanFuncs, matchDataChanged)
+
+end
+
+local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId)
+  if (not scanFuncName and not scanFuncSpellId) then
     return;
   end
-
-  local matchDataChanged = {};
 
   local index = 1;
   while(true) do
@@ -284,7 +287,21 @@ local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
       break;
     end
 
-    local auras = triggerInfo[name];
+    local auras = scanFuncName and scanFuncName[name];
+    if (auras) then
+      for _, triggerInfo in pairs(auras) do
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
+          local id = triggerInfo.id;
+          local triggernum = triggerInfo.triggernum
+          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+            matchDataChanged[id] = matchDataChanged[id] or {};
+            matchDataChanged[id][triggernum] = true;
+          end
+        end
+      end
+    end
+
+    auras = scanFuncSpellId and scanFuncSpellId[spellId];
     if (auras) then
       for _, triggerInfo in pairs(auras) do
         if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
@@ -316,6 +333,10 @@ local function ScanUnitWithFilter(time, unit, filter, triggerInfo)
     end
   end
 
+end
+
+
+local function UpdateStates(matchDataChanged)
   for id, auraData in pairs(matchDataChanged) do
     for triggernum in pairs(auraData) do
       UpdateTriggerState(id, triggernum);
@@ -325,12 +346,17 @@ end
 
 local function ScanUnit(unit)
   local time = GetTime();
-  if (scanFuncName[unit]) then
-    ScanUnitWithFilter(time, unit, "HELPFUL|PLAYER", scanFuncName[unit]["HELPFUL|PLAYER"])
-    ScanUnitWithFilter(time, unit, "HARMFUL|PLAYER", scanFuncName[unit]["HARMFUL|PLAYER"])
-    ScanUnitWithFilter(time, unit, "HELPFUL", scanFuncName[unit]["HELPFUL"])
-    ScanUnitWithFilter(time, unit, "HARMFUL", scanFuncName[unit]["HARMFUL"])
-  end
+  local matchDataChanged = {};
+
+  scanFuncName[unit] = scanFuncName[unit] or {};
+  scanFuncSpellId[unit] = scanFuncSpellId[unit] or {};
+
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL|PLAYER", scanFuncName[unit]["HELPFUL|PLAYER"], scanFuncSpellId[unit]["HELPFUL|PLAYER"])
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL|PLAYER", scanFuncName[unit]["HARMFUL|PLAYER"], scanFuncSpellId[unit]["HARMFUL|PLAYER"])
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL", scanFuncName[unit]["HELPFUL"], scanFuncSpellId[unit]["HELPFUL"])
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL", scanFuncName[unit]["HARMFUL"], scanFuncSpellId[unit]["HARMFUL"]);
+
+  UpdateStates(matchDataChanged);
 end
 
 local frame = CreateFrame("FRAME");
@@ -350,27 +376,56 @@ end);
 
 function BuffTrigger.ScanAll(recentlyLoaded)
   -- TODO optimize based on recentlyLoaded ?
+
+  local units = {};
+
   for unit in pairs(scanFuncName) do
+    units[unit] = true;
+  end
+  for unit in pairs(scanFuncSpellId) do
+    units[unit] = true;
+  end
+
+  for unit in pairs(units) do
     ScanUnit(unit);
   end
 end
 
 function BuffTrigger.UnloadAll()
   wipe(scanFuncName)
+  wipe(scanFuncSpellId)
   wipe(matchData);
   wipe(matchDataByTrigger);
 end
 
 local function LoadAura(id, triggernum, triggerInfo)
-  if (triggerInfo.name) then
-    local filter = triggerInfo.debuffType;
-    if (triggerInfo.ownOnly) then
-      filter = filter .. "|PLAYER";
+  if (triggerInfo.auranames) then
+    for _, name in ipairs(triggerInfo.auranames) do
+      local filter = triggerInfo.debuffType;
+      if (triggerInfo.ownOnly) then
+        filter = filter .. "|PLAYER";
+      end
+      scanFuncName[triggerInfo.unit]               = scanFuncName[triggerInfo.unit] or {};
+      scanFuncName[triggerInfo.unit][filter]       = scanFuncName[triggerInfo.unit][filter] or {};
+      scanFuncName[triggerInfo.unit][filter][name] = scanFuncName[triggerInfo.unit][filter][name] or {};
+      tinsert(scanFuncName[triggerInfo.unit][filter][name], triggerInfo);
     end
-    scanFuncName[triggerInfo.unit]                                           = scanFuncName[triggerInfo.unit] or {};
-    scanFuncName[triggerInfo.unit][filter]                                   = scanFuncName[triggerInfo.unit][filter] or {};
-    scanFuncName[triggerInfo.unit][filter][triggerInfo.name]                 = scanFuncName[triggerInfo.unit][filter][triggerInfo.name] or {};
-    tinsert(scanFuncName[triggerInfo.unit][filter][triggerInfo.name], triggerInfo);
+  end
+
+  if (triggerInfo.auraspellids) then
+    for _, spellIdString in ipairs(triggerInfo.auraspellids) do
+      local spellId = tonumber(spellIdString);
+      if (spellId) then
+        local filter = triggerInfo.debuffType;
+        if (triggerInfo.ownOnly) then
+          filter = filter .. "|PLAYER";
+        end
+        scanFuncSpellId[triggerInfo.unit]                  = scanFuncSpellId[triggerInfo.unit] or {};
+        scanFuncSpellId[triggerInfo.unit][filter]          = scanFuncSpellId[triggerInfo.unit][filter] or {};
+        scanFuncSpellId[triggerInfo.unit][filter][spellId] = scanFuncSpellId[triggerInfo.unit][filter][spellId] or {};
+        tinsert(scanFuncSpellId[triggerInfo.unit][filter][spellId], triggerInfo);
+      end
+    end
   end
 end
 
@@ -408,6 +463,7 @@ end
 
 function BuffTrigger.UnloadDisplay(id)
   UnloadAura(scanFuncName, id);
+  UnloadAura(scanFuncSpellId, id);
 
   for unit, unitData in pairs(matchData) do
     for filter, filterData in pairs(unitData) do
@@ -484,14 +540,10 @@ function BuffTrigger.Add(data)
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     if (trigger.type == "aura2") then
-      local auraName = trigger.name;
-      if (trigger.spellId) then
-        auraName = GetSpellInfo(trigger.spellId);
-      end
-
       local scanFunc = createScanFunc(trigger);
       local triggerInformation = {
-        name = auraName,
+        auranames = trigger.useName and trigger.auranames,
+        auraspellids = trigger.useExactSpellId and trigger.auraspellids,
         unit = trigger.unit,
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
