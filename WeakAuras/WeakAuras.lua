@@ -1648,6 +1648,7 @@ do
     triggerState[id].triggerCount = 0;
     triggerState[id].show = false;
     triggerState[id].activeTrigger = nil;
+    triggerState[id].activatedConditions = {};
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.LoadDisplay(id);
     end
