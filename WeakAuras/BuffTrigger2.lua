@@ -162,19 +162,18 @@ local function UpdateTriggerState(id, triggernum)
   -- Find best match
   local bestExpirationTime;
   local bestMatch = nil;
+  local bestUnit = nil;
 
   for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
     for index, auraData in pairs(unitData) do
       if (not bestExpirationTime or bestExpirationTime > auraData.expirationTime) then
         bestExpirationTime = auraData.expirationTime;
         bestMatch = auraData;
+        bestUnit = unit;
       end
     end
   end
 
-  -- TODO compare with the state that the old trigger generated
-  -- Both fullscan/multi/normal
-  -- Missing GUID
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local cloneId = "";
   if (bestMatch) then
@@ -192,6 +191,8 @@ local function UpdateTriggerState(id, triggernum)
         unitCaster = bestMatch.unitCaster,
         spellId = bestMatch.spellId,
         index = bestMatch.index,
+        unit = bestUnit,
+        GUID = UnitGUID(bestUnit)
       }
       WeakAuras.UpdatedTriggerState(id);
     else
