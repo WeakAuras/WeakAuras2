@@ -167,6 +167,10 @@ local function FindBestMatchData(id, triggernum)
 
   local totalCount = 0;
 
+  if (not matchDataByTrigger[id] or not matchDataByTrigger[id][triggernum]) then
+    return nil, 0;
+  end
+
   for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
     for index, auraData in pairs(unitData) do
       totalCount = totalCount + 1;
@@ -182,7 +186,6 @@ end
 local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount)
   if (not triggerStates[cloneId]) then
     triggerStates[cloneId] = {
-      -- active: matched anything
       show = true,
       changed = true,
       name = bestMatch.name,
@@ -267,6 +270,80 @@ local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCoun
   end
 end
 
+local function UpdateStateWithNoMatch(time, triggerStates, cloneId)
+  if (not triggerStates[cloneId]) then
+    triggerStates[cloneId] = {
+      show = true,
+      changed = true,
+      totalCount = 0,
+      time = time
+    }
+    return true;
+  else
+    local state = triggerStates[cloneId];
+    state.time = time;
+    local changed = false;
+    if (state.show ~= true) then
+      state.show = true;
+      changed = true;
+    end
+    if (state.name) then
+      state.name = nil;
+      changed = true;
+    end
+
+    if (state.icon) then
+      state.icon = nil;
+      changed = true;
+    end
+
+    if (state.stacks) then
+      state.stacks = nil;
+      changed = true;
+    end
+
+    if (state.duration) then
+      state.duration = nil;
+      changed = true;
+    end
+
+    if (state.expirationTime) then
+      state.expirationTime = nil;
+      changed = true;
+    end
+
+    if (state.progressType) then
+      state.progressType = nil;
+      changed = true;
+    end
+
+    if (state.unitCaster) then
+      state.unitCaster = nil;
+      changed = true;
+    end
+
+    if (state.spellId) then
+      state.spellId = nil;
+      changed = true;
+    end
+
+    if (state.index) then
+      state.index = nil;
+      changed = true;
+    end
+
+    if (state.totalCount ~= 0) then
+      state.totalCount = 0;
+      changed = true;
+    end
+
+    if (changed) then
+      state.changed = true;
+      return true;
+    end
+  end
+end
+
 local function RemoveState(triggerStates, cloneId)
   local state = triggerStates[cloneId];
   if (state) then
@@ -285,19 +362,16 @@ local function UpdateTriggerState(time, id, triggernum)
 
   local triggerInfo = triggerInfos[id][triggernum];
   local updated;
-  print("UpdateTriggerState ", id, triggernum)
   if (triggerInfo.showClones) then
     for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
       for index, auraData in pairs(unitData) do
         local cloneId = tostring(auraData);
         updated = UpdateStateWithMatch(auraData, triggerStates, cloneId) or updated;
-        print("adding match ", triggerStates[cloneId].name);
       end
     end
 
     for cloneId, state in pairs(triggerStates) do
       if (state.time < time) then
-        print("removing outdated ", triggerStates[cloneId].name);
         updated = RemoveState(triggerStates, cloneId) or updated;
       end
     end
@@ -305,15 +379,25 @@ local function UpdateTriggerState(time, id, triggernum)
     if (updated) then
       WeakAuras.UpdatedTriggerState(id);
     end
-  else
+  else -- No clones
     local bestMatch, totalCount = FindBestMatchData(id, triggernum);
     local cloneId = "";
     local updated = false;
+
     if (bestMatch) then
-      updated = UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount);
+      if (triggerInfo.matchesShowOn == "showOnMissing") then
+        updated = RemoveState(triggerStates, cloneId);
+      else
+        updated = UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount);
+      end
     else -- No best match
-      updated = RemoveState(triggerStates, cloneId);
+      if (triggerInfo.matchesShowOn == "showOnActive") then
+        updated = RemoveState(triggerStates, cloneId);
+      else
+        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId);
+      end
     end
+
     if (updated) then
       WeakAuras.UpdatedTriggerState(id);
     end
@@ -472,6 +556,11 @@ local function LoadAura(id, triggernum, triggerInfo)
         tinsert(scanFuncSpellId[triggerInfo.unit][filter][spellId], triggerInfo);
       end
     end
+  end
+
+  -- sets initial states up
+  if (triggerInfo.matchesShowOn ~= "showOnActive") then
+    UpdateTriggerState(GetTime(), id, triggernum);
   end
 end
 
