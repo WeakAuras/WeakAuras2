@@ -114,6 +114,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   -- *** TODO
   -- The biggest unaswered question is how to best store the scanFuncs so that we can easily figure out which scanFuncs to call.
 
+  local function effectiveShowOnIsShowOnActive(trigger)
+    local effectiveShowOn = true;
+    if (not trigger.showClones and trigger.matchesShowOn) then
+      effectiveShowOn = trigger.matchesShowOn == "showOnActive";
+    end
+    return effectiveShowOn;
+  end
+
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {
@@ -182,7 +190,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useStacks = {
       type = "toggle",
       name = L["Stack Count"],
-      hidden = function() return not (trigger.type == "aura2"); end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
       order = 60
     },
     stacksOperator = {
@@ -192,7 +200,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useStacks; end,
-      hidden = function() return not (trigger.type == "aura2"); end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useStacks and trigger.stacksOperator or nil end
     },
     stacks = {
@@ -202,8 +210,34 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 65,
       width = "half",
       disabled = function() return not trigger.useStacks; end,
-      hidden = function() return not (trigger.type == "aura2"); end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useStacks and trigger.stacks or nil end
+    },
+    useRem = {
+      type = "toggle",
+      name = L["Remaining Time"],
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      order = 66
+    },
+    remOperator = {
+      type = "select",
+      name = L["Operator"],
+      order = 66.1,
+      width = "half",
+      values = operator_types,
+      disabled = function() return not trigger.useRem; end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      get = function() return trigger.useRem and trigger.remOperator or nil end
+    },
+    rem = {
+      type = "input",
+      name = L["Remaining Time"],
+      validate = ValidateNumeric,
+      order = 66.2,
+      width = "half",
+      disabled = function() return not trigger.useRem; end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      get = function() return trigger.useRem and trigger.rem or nil end
     },
     ownOnly = {
       type = "toggle",

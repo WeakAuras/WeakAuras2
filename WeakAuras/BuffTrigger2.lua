@@ -160,12 +160,24 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
   return changed;
 end
 
-local function FindBestMatchData(id, triggernum)
+local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
+  if (auraDataRemaing > 0 and auraDataRemaing >= triggerInfoRemaing) then
+    if (not nextCheck) then
+      return auraDataExpirationTime - triggerInfoRemaing;
+    else
+      return min(auraDataExpirationTime - triggerInfoRemaing, nextCheck);
+    end
+  end
+  return nextCheck;
+end
+
+local function FindBestMatchData(time, id, triggernum, triggerInfo)
   -- Find best match
   local bestExpirationTime;
   local bestMatch = nil;
 
   local totalCount = 0;
+  local nextCheck
 
   if (not matchDataByTrigger[id] or not matchDataByTrigger[id][triggernum]) then
     return nil, 0;
@@ -173,17 +185,26 @@ local function FindBestMatchData(id, triggernum)
 
   for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
     for index, auraData in pairs(unitData) do
-      totalCount = totalCount + 1;
-      if (not bestExpirationTime or bestExpirationTime > auraData.expirationTime) then
-        bestExpirationTime = auraData.expirationTime;
-        bestMatch = auraData;
+      local remCheck = true;
+      if (triggerInfo.remainingFunc and auraData.expirationTime) then
+        local remaining = auraData.expirationTime - time;
+        remCheck = triggerInfo.remainingFunc(remaining);
+        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+      end
+
+      if (remCheck) then
+        totalCount = totalCount + 1;
+        if (not bestExpirationTime or bestExpirationTime > auraData.expirationTime) then
+          bestExpirationTime = auraData.expirationTime;
+          bestMatch = auraData;
+        end
       end
     end
   end
-  return bestMatch, totalCount;
+  return bestMatch, totalCount, nextCheck;
 end
 
-local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount)
+local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount)
   if (not triggerStates[cloneId]) then
     triggerStates[cloneId] = {
       show = true,
@@ -200,13 +221,13 @@ local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCoun
       unit = bestMatch.unit,
       GUID = UnitGUID(bestMatch.unit),
       totalCount = totalCount,
-      time = bestMatch.time
+      time = time
     }
     return true;
   else
     local state = triggerStates[cloneId];
 
-    state.time = bestMatch.time;
+    state.time = time;
 
     local changed = false;
     if (state.show ~= true) then
@@ -355,6 +376,8 @@ local function RemoveState(triggerStates, cloneId)
   end
 end
 
+local recheckTriggerInfo;
+
 local function UpdateTriggerState(time, id, triggernum)
   -- TODO cloneId: for group triggers, this needs to be the playerName
   -- allowing multiple buff triggers to refer to their matching clones
@@ -362,11 +385,21 @@ local function UpdateTriggerState(time, id, triggernum)
 
   local triggerInfo = triggerInfos[id][triggernum];
   local updated;
+  local nextCheck;
   if (triggerInfo.showClones) then
     for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
       for index, auraData in pairs(unitData) do
         local cloneId = tostring(auraData);
-        updated = UpdateStateWithMatch(auraData, triggerStates, cloneId) or updated;
+        local remCheck = true;
+        if (triggerInfo.remainingFunc and auraData.expirationTime) then
+          local remaining = auraData.expirationTime - time;
+          remCheck = triggerInfo.remainingFunc(remaining);
+          nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+        end
+
+        if (remCheck) then
+          updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId) or updated;
+        end
       end
     end
 
@@ -380,7 +413,8 @@ local function UpdateTriggerState(time, id, triggernum)
       WeakAuras.UpdatedTriggerState(id);
     end
   else -- No clones
-    local bestMatch, totalCount = FindBestMatchData(id, triggernum);
+    local bestMatch, totalCount
+    bestMatch, totalCount, nextCheck = FindBestMatchData(time, id, triggernum, triggerInfo);
     local cloneId = "";
     local updated = false;
 
@@ -388,7 +422,7 @@ local function UpdateTriggerState(time, id, triggernum)
       if (triggerInfo.matchesShowOn == "showOnMissing") then
         updated = RemoveState(triggerStates, cloneId);
       else
-        updated = UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount);
+        updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount);
       end
     else -- No best match
       if (triggerInfo.matchesShowOn == "showOnActive") then
@@ -402,6 +436,26 @@ local function UpdateTriggerState(time, id, triggernum)
       WeakAuras.UpdatedTriggerState(id);
     end
   end
+
+  if (nextCheck) then
+    if (triggerInfo.nextScheduledCheck ~= nextCheck) then
+      if (triggerInfo.nextScheduledCheckHandle) then
+        timer:CancelTimer(triggerInfo.nextScheduledCheckHandle);
+      end
+      triggerInfo.nextScheduledCheckHandle = timer:ScheduleTimerFixed(recheckTriggerInfo, nextCheck - time, triggerInfo);
+      triggerInfo.nextScheduledCheck = nextCheck;
+    end
+  elseif (triggerInfo.nextScheduledCheckHandle) then
+    timer:CancelTimer(triggerInfo.nextScheduledCheckHandle);
+    triggerInfo.nextScheduledCheckHandle = nil;
+    triggerInfo.nextScheduledCheck = nil;
+  end
+end
+
+recheckTriggerInfo = function(triggerInfo)
+  UpdateTriggerState(GetTime(), triggerInfo.id, triggerInfo.triggernum);
+  triggerInfo.nextScheduledCheckHandle = nil;
+  triggerInfo.nextScheduledCheck = nil;
 end
 
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId)
@@ -578,6 +632,9 @@ local function UnloadAura(scanFuncName, id)
       for name, nameData in pairs(debuffData) do
         for i = #nameData, 1, -1 do
           if nameData[i].id == id then
+            if (nameData[i].nextScheduledCheckHandle) then
+              timer:CancelTimer(nameData[i].nextScheduledCheckHandle);
+            end
             tremove(nameData, i);
           end
         end
@@ -625,7 +682,6 @@ function BuffTrigger.Rename(oldid, newid)
 
   matchDataByTrigger[newid] = matchDataByTrigger[oldid];
   matchDataByTrigger[oldid] = nil;
-
 
   for unit, unitData in pairs(matchData) do
     for filter, filterData in pairs(unitData) do
@@ -681,7 +737,14 @@ function BuffTrigger.Add(data)
         effectiveShowOn = trigger.matchesShowOn;
       end
 
-      local scanFunc = createScanFunc(trigger);
+      local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
+
+      local remFunc;
+      if (effectiveShowOn == "showOnActive" and trigger.useRem) then
+        local remFuncStr = WeakAuras.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0);
+        remFunc = WeakAuras.LoadFunction(remFuncStr);
+      end
+
       local triggerInformation = {
         auranames = trigger.useName and trigger.auranames,
         auraspellids = trigger.useExactSpellId and trigger.auraspellids,
@@ -691,8 +754,10 @@ function BuffTrigger.Add(data)
         showClones = trigger.showClones,
         matchesShowOn = effectiveShowOn,
         scanFunc = scanFunc,
+        remainingFunc = remFunc,
+        remainingCheck = effectiveShowOn == "showOnActive" and trigger.useRem and tonumber(trigger.rem) or 0,
         id = id,
-        triggernum = triggernum
+        triggernum = triggernum,
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;
