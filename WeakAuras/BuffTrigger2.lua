@@ -583,12 +583,17 @@ end
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame;
 frame:RegisterEvent("UNIT_AURA");
+frame:RegisterUnitEvent("UNIT_PET", "player")
+frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2");
   if(event == "PLAYER_TARGET_CHANGED") then
     ScanUnit("target");
   elseif(event == "PLAYER_FOCUS_CHANGED") then
     ScanUnit("focus");
+  elseif(event == "UNIT_PET") then
+    ScanUnit("pet")
   elseif(event == "UNIT_AURA") then
     ScanUnit(arg1);
   end
