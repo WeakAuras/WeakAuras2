@@ -165,18 +165,21 @@ local function FindBestMatchData(id, triggernum)
   local bestExpirationTime;
   local bestMatch = nil;
 
+  local totalCount = 0;
+
   for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
     for index, auraData in pairs(unitData) do
+      totalCount = totalCount + 1;
       if (not bestExpirationTime or bestExpirationTime > auraData.expirationTime) then
         bestExpirationTime = auraData.expirationTime;
         bestMatch = auraData;
       end
     end
   end
-  return bestMatch;
+  return bestMatch, totalCount;
 end
 
-local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId)
+local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount)
   if (not triggerStates[cloneId]) then
     triggerStates[cloneId] = {
       -- active: matched anything
@@ -193,6 +196,7 @@ local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId)
       index = bestMatch.index,
       unit = bestMatch.unit,
       GUID = UnitGUID(bestMatch.unit),
+      totalCount = totalCount,
       time = bestMatch.time
     }
     return true;
@@ -251,6 +255,11 @@ local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId)
       changed = true;
     end
 
+    if (state.totalCount ~= totalCount) then
+      state.totalCount = totalCount;
+      changed = true;
+    end
+
     if (changed) then
       state.changed = true;
       return true;
@@ -297,11 +306,11 @@ local function UpdateTriggerState(time, id, triggernum)
       WeakAuras.UpdatedTriggerState(id);
     end
   else
-    local bestMatch = FindBestMatchData(id, triggernum);
+    local bestMatch, totalCount = FindBestMatchData(id, triggernum);
     local cloneId = "";
     local updated = false;
     if (bestMatch) then
-      updated = UpdateStateWithMatch(bestMatch, triggerStates, cloneId);
+      updated = UpdateStateWithMatch(bestMatch, triggerStates, cloneId, totalCount);
     else -- No best match
       updated = RemoveState(triggerStates, cloneId);
     end
@@ -672,6 +681,10 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
+  local trigger = data.triggers[triggernum].trigger
+  if (not trigger.showClones) then
+    ret = ret .. "|cFFFF0000%totalCount|r -" .. L["Total Matches"] .. "\n";
+  end
   return ret;
 end
 
