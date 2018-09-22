@@ -74,6 +74,7 @@ local triggerInfos = {};
 -- TODO are we going to have multiple maps from e.g. roles to scanFuncs ?
 local scanFuncName = {};
 local scanFuncSpellId = {};
+local scanFuncGeneral = {};
 
 local timer = WeakAuras.timer;
 
@@ -458,8 +459,8 @@ recheckTriggerInfo = function(triggerInfo)
   triggerInfo.nextScheduledCheck = nil;
 end
 
-local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId)
-  if (not scanFuncName and not scanFuncSpellId) then
+local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral)
+  if (not scanFuncName and not scanFuncSpellId and not scanFuncGeneral) then
     return;
   end
 
@@ -488,6 +489,19 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     auras = scanFuncSpellId and scanFuncSpellId[spellId];
     if (auras) then
       for _, triggerInfo in pairs(auras) do
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
+          local id = triggerInfo.id;
+          local triggernum = triggerInfo.triggernum
+          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+            matchDataChanged[id] = matchDataChanged[id] or {};
+            matchDataChanged[id][triggernum] = true;
+          end
+        end
+      end
+    end
+
+    if (scanFuncGeneral) then
+      for _, triggerInfo in pairs(scanFuncGeneral) do
         if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
@@ -534,11 +548,27 @@ local function ScanUnit(unit)
 
   scanFuncName[unit] = scanFuncName[unit] or {};
   scanFuncSpellId[unit] = scanFuncSpellId[unit] or {};
+  scanFuncGeneral[unit] = scanFuncGeneral[unit] or {};
 
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL|PLAYER", scanFuncName[unit]["HELPFUL|PLAYER"], scanFuncSpellId[unit]["HELPFUL|PLAYER"])
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL|PLAYER", scanFuncName[unit]["HARMFUL|PLAYER"], scanFuncSpellId[unit]["HARMFUL|PLAYER"])
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL", scanFuncName[unit]["HELPFUL"], scanFuncSpellId[unit]["HELPFUL"])
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL", scanFuncName[unit]["HARMFUL"], scanFuncSpellId[unit]["HARMFUL"]);
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL|PLAYER",
+      scanFuncName[unit]["HELPFUL|PLAYER"],
+      scanFuncSpellId[unit]["HELPFUL|PLAYER"],
+      scanFuncGeneral[unit]["HELPFUL|PLAYER"])
+
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL|PLAYER",
+      scanFuncName[unit]["HARMFUL|PLAYER"],
+      scanFuncSpellId[unit]["HARMFUL|PLAYER"],
+      scanFuncGeneral[unit]["HARMFUL|PLAYER"])
+
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
+      scanFuncName[unit]["HELPFUL"],
+      scanFuncSpellId[unit]["HELPFUL"],
+      scanFuncGeneral[unit]["HELPFUL"])
+
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
+      scanFuncName[unit]["HARMFUL"],
+      scanFuncSpellId[unit]["HARMFUL"],
+      scanFuncGeneral[unit]["HARMFUL"]);
 
   UpdateStates(matchDataChanged, time);
 end
@@ -570,6 +600,10 @@ function BuffTrigger.ScanAll(recentlyLoaded)
     units[unit] = true;
   end
 
+  for unit in pairs(scanFuncGeneral) do
+    units[unit] = true;
+  end
+
   for unit in pairs(units) do
     ScanUnit(unit);
   end
@@ -583,33 +617,44 @@ function BuffTrigger.UnloadAll()
 end
 
 local function LoadAura(id, triggernum, triggerInfo)
+  local added = false;
+  local filter = triggerInfo.debuffType;
+  if (triggerInfo.ownOnly) then
+    filter = filter .. "|PLAYER";
+  end
+
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
-      local filter = triggerInfo.debuffType;
-      if (triggerInfo.ownOnly) then
-        filter = filter .. "|PLAYER";
+      if (name ~= "") then
+        scanFuncName[triggerInfo.unit]               = scanFuncName[triggerInfo.unit] or {};
+        scanFuncName[triggerInfo.unit][filter]       = scanFuncName[triggerInfo.unit][filter] or {};
+        scanFuncName[triggerInfo.unit][filter][name] = scanFuncName[triggerInfo.unit][filter][name] or {};
+        tinsert(scanFuncName[triggerInfo.unit][filter][name], triggerInfo);
+
+        added = true;
       end
-      scanFuncName[triggerInfo.unit]               = scanFuncName[triggerInfo.unit] or {};
-      scanFuncName[triggerInfo.unit][filter]       = scanFuncName[triggerInfo.unit][filter] or {};
-      scanFuncName[triggerInfo.unit][filter][name] = scanFuncName[triggerInfo.unit][filter][name] or {};
-      tinsert(scanFuncName[triggerInfo.unit][filter][name], triggerInfo);
     end
   end
 
   if (triggerInfo.auraspellids) then
     for _, spellIdString in ipairs(triggerInfo.auraspellids) do
-      local spellId = tonumber(spellIdString);
-      if (spellId) then
-        local filter = triggerInfo.debuffType;
-        if (triggerInfo.ownOnly) then
-          filter = filter .. "|PLAYER";
+      if (spellIdString ~= "") then
+        local spellId = tonumber(spellIdString);
+        if (spellId) then
+          scanFuncSpellId[triggerInfo.unit]                  = scanFuncSpellId[triggerInfo.unit] or {};
+          scanFuncSpellId[triggerInfo.unit][filter]          = scanFuncSpellId[triggerInfo.unit][filter] or {};
+          scanFuncSpellId[triggerInfo.unit][filter][spellId] = scanFuncSpellId[triggerInfo.unit][filter][spellId] or {};
+          tinsert(scanFuncSpellId[triggerInfo.unit][filter][spellId], triggerInfo);
         end
-        scanFuncSpellId[triggerInfo.unit]                  = scanFuncSpellId[triggerInfo.unit] or {};
-        scanFuncSpellId[triggerInfo.unit][filter]          = scanFuncSpellId[triggerInfo.unit][filter] or {};
-        scanFuncSpellId[triggerInfo.unit][filter][spellId] = scanFuncSpellId[triggerInfo.unit][filter][spellId] or {};
-        tinsert(scanFuncSpellId[triggerInfo.unit][filter][spellId], triggerInfo);
+        added = true;
       end
     end
+  end
+
+  if (not added) then
+    scanFuncGeneral[triggerInfo.unit]                  = scanFuncGeneral[triggerInfo.unit] or {};
+    scanFuncGeneral[triggerInfo.unit][filter]          = scanFuncGeneral[triggerInfo.unit][filter] or {};
+    tinsert(scanFuncGeneral[triggerInfo.unit][filter], triggerInfo);
   end
 
   -- sets initial states up
