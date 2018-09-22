@@ -253,7 +253,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       values = WeakAuras.bufftrigger_2_progress_behavior_types,
       order = 71,
       hidden = function()
-        return not (trigger.type == "aura2");
+        return not (trigger.type == "aura2" and not trigger.showClones);
+      end,
+      get = function()
+        return trigger.matchesShowOn or "showOnActive";
       end
     },
   };

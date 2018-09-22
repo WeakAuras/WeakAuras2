@@ -577,6 +577,12 @@ function BuffTrigger.Add(data)
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     if (trigger.type == "aura2") then
+
+      local effectiveShowOn = "showOnActive";
+      if (not trigger.showClones and trigger.matchesShowOn) then
+        effectiveShowOn = trigger.matchesShowOn;
+      end
+
       local scanFunc = createScanFunc(trigger);
       local triggerInformation = {
         auranames = trigger.useName and trigger.auranames,
@@ -585,7 +591,7 @@ function BuffTrigger.Add(data)
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
         showClones = trigger.showClones,
-        matchesShowOn = trigger.matchesShowOn,
+        matchesShowOn = effectiveShowOn,
         scanFunc = scanFunc,
         id = id,
         triggernum = triggernum
