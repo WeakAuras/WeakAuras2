@@ -238,7 +238,7 @@ local function createTotemTrigger(triggers, position, item)
       event = "Totem",
       use_totemName = item.totemNumber == nil,
       totemName = GetSpellInfo(item.spell),
-      unevent = "auto"
+      unevent = "auto",
     }
   };
   if (item.totemNumber) then
@@ -257,7 +257,7 @@ local function createPowerTrigger(triggers, position, item)
       unit = "player",
       use_powertype = true,
       use_showCost = true,
-      powertype = item.powertype
+      powertype = item.powertype,
     },
   };
 end
@@ -284,7 +284,7 @@ local function createCastTrigger(triggers, position, item)
       event = "Cast",
       unevent = "auto",
       use_unit = true,
-      unit = item.unit or "player"
+      unit = item.unit or "player",
     },
   };
 end
@@ -310,7 +310,7 @@ local function createItemTrigger(triggers, position, item, genericShowOn)
       unevent = "auto",
       use_genericShowOn = true,
       genericShowOn = genericShowOn,
-      itemName = item.spell
+      itemName = item.spell,
     }
   };
 end
@@ -320,7 +320,7 @@ local function createOverlayGlowTrigger(triggers, position, item)
     trigger = {
       type = "status",
       event = "Spell Activation Overlay",
-      spellName = item.spell
+      spellName = item.spell,
     }
   };
 end
@@ -745,7 +745,7 @@ local function subTypesFor(item, regionType)
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", true);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.glow,
@@ -758,7 +758,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         isBuffedGlow(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -770,7 +770,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
   elseif(item.type == "debuff") then
     tinsert(types, {
@@ -780,7 +780,7 @@ local function subTypesFor(item, regionType)
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", false);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.glow,
@@ -792,7 +792,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         isBuffedGlow(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -804,7 +804,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
   elseif(item.type == "item") then
     tinsert(types, {
@@ -813,7 +813,7 @@ local function subTypesFor(item, regionType)
       description = L["Only show the aura when the item is on cooldown."],
       createTriggers = function(triggers, item)
         createItemTrigger(triggers, 1, item, "showOnCooldown");
-      end
+      end,
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -845,7 +845,7 @@ local function subTypesFor(item, regionType)
       createTriggers = function(triggers, item)
         createPowerTrigger(triggers, 1, item);
       end,
-      data = { inverse = false, icon = false, text = false }
+      data = { inverse = false, icon = false, text = false },
     });
   elseif(item.type == "health") then
     tinsert(types, {
@@ -854,7 +854,7 @@ local function subTypesFor(item, regionType)
       createTriggers = function(triggers, item)
         createHealthTrigger(triggers, 1, item);
       end,
-      data = { inverse = false, icon = false, text = false }
+      data = { inverse = false, icon = false, text = false },
     });
   elseif(item.type == "cast") then
     tinsert(types, {
@@ -866,7 +866,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         uninterruptibleRed(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
   end
 
