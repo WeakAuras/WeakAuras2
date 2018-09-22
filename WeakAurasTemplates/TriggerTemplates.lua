@@ -89,7 +89,7 @@ local checks = {
     value = 1,
   },
   buffedFalse = {
-    variable = "show",
+    variable = "buffed",
     value = 0,
   },
   onCooldown = {
