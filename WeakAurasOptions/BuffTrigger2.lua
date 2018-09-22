@@ -64,54 +64,33 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   end
 
   -- TODO LIST, aka what's missing?
-  -- remaining time
-  --   * Hard because: Need to limit what to check as cleanly as possible
-  -- show on: always/not buffed, unit not exists
-  --   * Need to know which scanFuncs are in that mode
-  --   * Need to call for always show for those to initialy createa a state
-  --   * for always show: Need to handle no bestMatch found differently
-  --   * for not buffed: No need to find "the" best match
-  --
-  -- autoclone
-  --   * Just needs to change for always show to copy all matches
-  --   * Try to optimize non-cloning to not create all matches? We don't need them all
-  --
+  -- unit not exists
+
   -- fullscan
   --   aura names: IsExactly/Contains/Pattern Matching for
   --    match on tooltip:
-  --    Stealable
-  --    spellId
-  --    debuffClass
   --    tooltip size
-  -- * Add a map from spellId to scanFunc to optimize that
-  -- * The others handle via additions to scanFunc
-  -- * Need a list of scanFuncs that don't have a name/spellId
 
   -- multi trigger
-  -- * This should use the ame match data, with less data and auto hiding
-  -- * Nee
-  -- Multiple aura names
-  -- * Should be easy. We collect all matches and the rest is the same
+  -- * This should use the same match data, with less data and auto hiding
+  -- * Might not work
   -- Specific Unit
   -- * Be better than the old one and try to detect when the specific unit changed
   -- * E.g. watch their GUID ? On UNIT_AURA changes, check if the GUID matches any watched specific unit and update it too
   -- Group:
-  --   * scanFuncs are per unit type
-  --   * ScanAuras takes a specific unit, so raidX
+  --   * scanFuncs are per unit type (?)
+  --   * ScanUnit takes a specific unit, so raidX
   --   * No need to scan all auras when one unit changes
   --   group member count
   --   * match data for all units is in UpdateTriggerState, so should be easier to do
-  --   group role
-  --   * Is this just a additional check in ScanFuncs? Or do we have a separate map from group role to scanFuncs
-  --   ignore self
-  --   * meta data to the scanFunc ? Or check inside the scanFunc ?
-  --   name info
-  --   stack info
+  --   group role, ignore self
+  --   * Check group role / ignore self can be decided before iteration, by checking the unit
+  --   name info of group triggers
+  --   stack info of group triggers
   --   * Offer both options for name/stack as state "functions". Needs a bit of extensions of states and text replacements
   ---  * Needs a bit of design work
   --   hide alone
   --   * Meta data for scanFunc
-  -- *** TODO
   -- The biggest unaswered question is how to best store the scanFuncs so that we can easily figure out which scanFuncs to call.
 
   local function effectiveShowOnIsShowOnActive(trigger)
@@ -196,7 +175,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     stacksOperator = {
       type = "select",
       name = L["Operator"],
-      order = 62,
+      order = 60.1,
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useStacks; end,
@@ -207,7 +186,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Stack Count"],
       validate = ValidateNumeric,
-      order = 65,
+      order = 60.2,
       width = "half",
       disabled = function() return not trigger.useStacks; end,
       hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
@@ -217,12 +196,12 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "toggle",
       name = L["Remaining Time"],
       hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
-      order = 66
+      order = 61
     },
     remOperator = {
       type = "select",
       name = L["Operator"],
-      order = 66.1,
+      order = 61.1,
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useRem; end,
@@ -233,11 +212,54 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Remaining Time"],
       validate = ValidateNumeric,
-      order = 66.2,
+      order = 61.2,
       width = "half",
       disabled = function() return not trigger.useRem; end,
       hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useRem and trigger.rem or nil end
+    },
+    use_stealable = {
+      type = "toggle",
+      name = function(input)
+        local value = trigger.use_stealable;
+        if(value == nil) then return L["Stealable"];
+        elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..L["Stealable"];
+        else return "|cFF00FF00"..L["Stealable"]; end
+      end,
+      width = "double",
+      order = 63,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      get = function()
+        local value = trigger.use_stealable;
+        if(value == nil) then return false;
+        elseif(value == false) then return "false";
+        else return "true"; end
+      end,
+      set = function(info, v)
+        if(v) then
+          trigger.use_stealable = true;
+        else
+          local value = trigger.use_stealable;
+          if(value == false) then trigger.use_stealable = nil;
+          else trigger.use_stealable = false end
+        end
+        WeakAuras.Add(data);
+        WeakAuras.SetIconNames(data);
+      end
+    },
+    use_debuffClass = {
+      type = "toggle",
+      name = L["Debuff Type"],
+      order = 64.1,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end
+    },
+    debuffClass = {
+      type = "select",
+      name = L["Debuff Type"],
+      order = 64.2,
+      disabled = function() return not trigger.use_debuffClass end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      values = WeakAuras.debuff_class_types
     },
     ownOnly = {
       type = "toggle",

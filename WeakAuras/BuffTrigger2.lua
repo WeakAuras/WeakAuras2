@@ -467,6 +467,13 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
   local index = 1;
   while(true) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+    if (debuffClass == nil) then
+      debuffClass = "none";
+    elseif (debuffClass == "") then
+      debuffClass = "enrage"
+    else
+      debuffClass = string.lower(debuffClass);
+    end
     index = index + 1;
     if (not name) then
       break;
@@ -475,7 +482,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     local auras = scanFuncName and scanFuncName[name];
     if (auras) then
       for _, triggerInfo in pairs(auras) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
@@ -489,7 +496,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     auras = scanFuncSpellId and scanFuncSpellId[spellId];
     if (auras) then
       for _, triggerInfo in pairs(auras) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
@@ -502,7 +509,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
 
     if (scanFuncGeneral) then
       for _, triggerInfo in pairs(scanFuncGeneral) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks)) then
+        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
@@ -612,6 +619,7 @@ end
 function BuffTrigger.UnloadAll()
   wipe(scanFuncName)
   wipe(scanFuncSpellId)
+  wipe(scanFuncGeneral)
   wipe(matchData);
   wipe(matchDataByTrigger);
 end
@@ -698,9 +706,31 @@ local function UnloadAura(scanFuncName, id)
   end
 end
 
+local function UnloadGeneral(scanFuncGeneral, id)
+  for unit, unitData in pairs(scanFuncName) do
+    for debuffType, debuffData in pairs(unitData) do
+      for i = #debuffData, 1, -1 do
+        if debuffData[i].id == id then
+          if (debuffData[i].nextScheduledCheckHandle) then
+            timer:CancelTimer(debuffData[i].nextScheduledCheckHandle);
+          end
+          tremove(debuffData, i);
+        end
+      end
+      if (#debuffData == 0) then
+        unitData[debuffType] = nil;
+      end
+    end
+    if (not next(unitData)) then
+      scanFuncName[unit] = nil;
+    end
+  end
+end
+
 function BuffTrigger.UnloadDisplay(id)
   UnloadAura(scanFuncName, id);
   UnloadAura(scanFuncSpellId, id);
+  UnloadGeneral(scanFuncGeneral, id);
 
   for unit, unitData in pairs(matchData) do
     for filter, filterData in pairs(unitData) do
@@ -737,13 +767,11 @@ function BuffTrigger.Rename(oldid, newid)
 end
 
 local function createScanFunc(trigger)
-  if (not trigger.useStacks) then
+  if (not trigger.useStacks and trigger.use_stealable == nil and not trigger.use_debuffClass) then
     return nil;
   end
-
-  -- name, icon, stacks, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ..
   local ret = [[
-    return function(name, icon, stacks)
+    return function(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)
   ]];
 
   if (trigger.useStacks) then
@@ -753,6 +781,29 @@ local function createScanFunc(trigger)
       end
     ]]
     ret = ret .. ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0);
+  end
+
+  if (trigger.use_stealable) then
+    ret = ret .. [[
+      if (not isStealable) then
+        return false
+      end
+    ]]
+  elseif(trigger.use_stealable == false) then
+    ret = ret .. [[
+      if (isStealable) then
+        return false
+      end
+    ]]
+  end
+
+  if (trigger.use_debuffClass and trigger.debuffClass) then
+    local ret2 = [[
+      if (debuffClass ~= %q) then
+        return false;
+      end
+    ]]
+    ret = ret .. ret2:format(trigger.debuffClass);
   end
 
   ret = ret .. [[
