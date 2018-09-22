@@ -67,7 +67,7 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local BuffTrigger = {};
 
-local auras = {};
+local triggerInfos = {};
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -104,7 +104,8 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
       expirationTime = expirationTime,
       unitCaster = unitCaster,
       spellId = spellId,
-      time = time
+      unit = unit,
+      time = time,
     };
 
     matchDataByTrigger[id] = matchDataByTrigger[id] or {};
@@ -153,125 +154,161 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
   end
 
   data.index = index;
-
   data.time = time;
+  data.unit = unit;
 
   return changed;
 end
 
-local function UpdateTriggerState(id, triggernum)
+local function FindBestMatchData(id, triggernum)
   -- Find best match
   local bestExpirationTime;
   local bestMatch = nil;
-  local bestUnit = nil;
 
   for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
     for index, auraData in pairs(unitData) do
       if (not bestExpirationTime or bestExpirationTime > auraData.expirationTime) then
         bestExpirationTime = auraData.expirationTime;
         bestMatch = auraData;
-        bestUnit = unit;
       end
     end
   end
+  return bestMatch;
+end
 
-  local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  local cloneId = "";
-  if (bestMatch) then
-    if (not triggerStates[cloneId]) then
-      triggerStates[cloneId] = {
-        -- active: matched anything
-        show = true,
-        changed = true,
-        name = bestMatch.name,
-        icon = bestMatch.icon,
-        stacks = bestMatch.stacks,
-        progressType = "timed",
-        duration = bestMatch.duration,
-        expirationTime = bestMatch.expirationTime,
-        unitCaster = bestMatch.unitCaster,
-        spellId = bestMatch.spellId,
-        index = bestMatch.index,
-        unit = bestUnit,
-        GUID = UnitGUID(bestUnit)
-      }
-      WeakAuras.UpdatedTriggerState(id);
-    else
-      local state = triggerStates[cloneId];
-
-      local changed = false;
-      if (state.show ~= true) then
-        state.show = true;
-        changed = true;
-      end
-      if (state.name ~= bestMatch.name) then
-        state.name = bestMatch.name;
-        changed = true;
-      end
-
-      if (state.icon ~= bestMatch.icon) then
-        state.icon = bestMatch.icon;
-        changed = true;
-      end
-
-      if (state.stacks ~= bestMatch.stacks) then
-        state.stacks = bestMatch.stacks;
-        changed = true;
-      end
-
-      if (state.duration ~= bestMatch.duration) then
-        state.duration = bestMatch.duration;
-        changed = true;
-      end
-
-      if (state.expirationTime ~= bestMatch.expirationTime) then
-        state.expirationTime = bestMatch.expirationTime;
-        changed = true;
-      end
-
-      if (state.progressType ~= "timed") then
-        state.progressType = "timed";
-        changed = true;
-      end
-
-      if (state.unitCaster ~= bestMatch.unitCaster) then
-        state.unitCaster = bestMatch.unitCaster;
-        changed = true;
-      end
-
-      if (state.spellId ~= bestMatch.spellId) then
-        state.spellId = bestMatch.spellId;
-        changed = true;
-      end
-
-      if (state.index ~= bestMatch.index) then
-        state.index = bestMatch.index;
-        changed = true;
-      end
-
-      if (changed) then
-        state.changed = true;
-        WeakAuras.UpdatedTriggerState(id);
-      end
-    end
-  else -- No best match
+local function UpdateStateWithMatch(bestMatch, triggerStates, cloneId)
+  if (not triggerStates[cloneId]) then
+    triggerStates[cloneId] = {
+      -- active: matched anything
+      show = true,
+      changed = true,
+      name = bestMatch.name,
+      icon = bestMatch.icon,
+      stacks = bestMatch.stacks,
+      progressType = "timed",
+      duration = bestMatch.duration,
+      expirationTime = bestMatch.expirationTime,
+      unitCaster = bestMatch.unitCaster,
+      spellId = bestMatch.spellId,
+      index = bestMatch.index,
+      unit = bestMatch.unit,
+      GUID = UnitGUID(bestMatch.unit),
+      time = bestMatch.time
+    }
+    return true;
+  else
     local state = triggerStates[cloneId];
-    if (state) then
-      local changed = false;
-      if (state.show) then
-        state.show = false;
-        changed = true;
-      end
-      if (changed) then
-        state.changed = true;
-        WeakAuras.UpdatedTriggerState(id);
-      end
+
+    state.time = bestMatch.time;
+
+    local changed = false;
+    if (state.show ~= true) then
+      state.show = true;
+      changed = true;
+    end
+    if (state.name ~= bestMatch.name) then
+      state.name = bestMatch.name;
+      changed = true;
+    end
+
+    if (state.icon ~= bestMatch.icon) then
+      state.icon = bestMatch.icon;
+      changed = true;
+    end
+
+    if (state.stacks ~= bestMatch.stacks) then
+      state.stacks = bestMatch.stacks;
+      changed = true;
+    end
+
+    if (state.duration ~= bestMatch.duration) then
+      state.duration = bestMatch.duration;
+      changed = true;
+    end
+
+    if (state.expirationTime ~= bestMatch.expirationTime) then
+      state.expirationTime = bestMatch.expirationTime;
+      changed = true;
+    end
+
+    if (state.progressType ~= "timed") then
+      state.progressType = "timed";
+      changed = true;
+    end
+
+    if (state.unitCaster ~= bestMatch.unitCaster) then
+      state.unitCaster = bestMatch.unitCaster;
+      changed = true;
+    end
+
+    if (state.spellId ~= bestMatch.spellId) then
+      state.spellId = bestMatch.spellId;
+      changed = true;
+    end
+
+    if (state.index ~= bestMatch.index) then
+      state.index = bestMatch.index;
+      changed = true;
+    end
+
+    if (changed) then
+      state.changed = true;
+      return true;
     end
   end
 end
 
-local function runScanFuncs(scanFuncs, matchDataChanged)
+local function RemoveState(triggerStates, cloneId)
+  local state = triggerStates[cloneId];
+  if (state) then
+    if (state.show) then
+      state.show = false;
+      state.changed = true;
+      return true;
+    end
+  end
+end
 
+local function UpdateTriggerState(time, id, triggernum)
+  -- TODO cloneId: for group triggers, this needs to be the playerName
+  -- allowing multiple buff triggers to refer to their matching clones
+  local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+
+  local triggerInfo = triggerInfos[id][triggernum];
+  local updated;
+  print("UpdateTriggerState ", id, triggernum)
+  if (triggerInfo.showClones) then
+    for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
+      for index, auraData in pairs(unitData) do
+        local cloneId = tostring(auraData);
+        updated = UpdateStateWithMatch(auraData, triggerStates, cloneId) or updated;
+        print("adding match ", triggerStates[cloneId].name);
+      end
+    end
+
+    for cloneId, state in pairs(triggerStates) do
+      if (state.time < time) then
+        print("removing outdated ", triggerStates[cloneId].name);
+        updated = RemoveState(triggerStates, cloneId) or updated;
+      end
+    end
+
+    if (updated) then
+      WeakAuras.UpdatedTriggerState(id);
+    end
+  else
+    local bestMatch = FindBestMatchData(id, triggernum);
+    local cloneId = "";
+    local updated = false;
+    if (bestMatch) then
+      updated = UpdateStateWithMatch(bestMatch, triggerStates, cloneId);
+    else -- No best match
+      updated = RemoveState(triggerStates, cloneId);
+    end
+    if (updated) then
+      WeakAuras.UpdatedTriggerState(id);
+    end
+  end
 end
 
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId)
@@ -336,10 +373,10 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
 end
 
 
-local function UpdateStates(matchDataChanged)
+local function UpdateStates(matchDataChanged, time)
   for id, auraData in pairs(matchDataChanged) do
     for triggernum in pairs(auraData) do
-      UpdateTriggerState(id, triggernum);
+      UpdateTriggerState(time, id, triggernum);
     end
   end
 end
@@ -356,7 +393,7 @@ local function ScanUnit(unit)
   ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL", scanFuncName[unit]["HELPFUL"], scanFuncSpellId[unit]["HELPFUL"])
   ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL", scanFuncName[unit]["HARMFUL"], scanFuncSpellId[unit]["HARMFUL"]);
 
-  UpdateStates(matchDataChanged);
+  UpdateStates(matchDataChanged, time);
 end
 
 local frame = CreateFrame("FRAME");
@@ -430,8 +467,8 @@ local function LoadAura(id, triggernum, triggerInfo)
 end
 
 function BuffTrigger.LoadDisplay(id)
-  if (auras[id]) then
-    for triggernum, triggerInfo in pairs(auras[id]) do
+  if (triggerInfos[id]) then
+    for triggernum, triggerInfo in pairs(triggerInfos[id]) do
       LoadAura(id, triggernum, triggerInfo);
     end
   end
@@ -477,7 +514,7 @@ end
 -- @param id
 function BuffTrigger.Delete(id)
   BuffTrigger.UnloadDisplay(id);
-  auras[id] = nil;
+  triggerInfos[id] = nil;
 end
 
 --- Updates all data for aura oldid to use newid
@@ -485,8 +522,8 @@ end
 -- @param newid
 
 function BuffTrigger.Rename(oldid, newid)
-  auras[newid] = auras[oldid];
-  auras[oldid] = nil;
+  triggerInfos[newid] = triggerInfos[oldid];
+  triggerInfos[oldid] = nil;
 
   matchDataByTrigger[newid] = matchDataByTrigger[oldid];
   matchDataByTrigger[oldid] = nil;
@@ -536,7 +573,7 @@ end
 function BuffTrigger.Add(data)
   local id = data.id;
 
-  auras[id] = nil;
+  triggerInfos[id] = nil;
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     if (trigger.type == "aura2") then
@@ -547,12 +584,14 @@ function BuffTrigger.Add(data)
         unit = trigger.unit,
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
+        showClones = trigger.showClones,
+        matchesShowOn = trigger.matchesShowOn,
         scanFunc = scanFunc,
         id = id,
         triggernum = triggernum
       };
-      auras[id] = auras[id] or {};
-      auras[id][triggernum] = triggerInformation;
+      triggerInfos[id] = triggerInfos[id] or {};
+      triggerInfos[id][triggernum] = triggerInformation;
     end
   end
 end
