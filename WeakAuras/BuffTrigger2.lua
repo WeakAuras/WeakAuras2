@@ -844,8 +844,17 @@ function BuffTrigger.Add(data)
         remFunc = WeakAuras.LoadFunction(remFuncStr);
       end
 
+      local names;
+      if (trigger.useName and trigger.auranames) then
+        names = {};
+        for i = 1, 9 do
+          local spellId = tonumber(trigger.auranames[i]);
+          names[i] = GetSpellInfo(spellId) or trigger.auranames[i];
+        end
+      end
+
       local triggerInformation = {
-        auranames = trigger.useName and trigger.auranames,
+        auranames = names,
         auraspellids = trigger.useExactSpellId and trigger.auraspellids,
         unit = trigger.unit,
         debuffType = trigger.debuffType,
@@ -970,6 +979,8 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     display = L["Name"],
     type = "string"
   }
+
+  -- TODO add buffed condition
 
   return result;
 end
