@@ -1650,11 +1650,15 @@ function WeakAuras.UnlockUpdateInfo()
     local data = db.displays[id];
     if(data) then
       RestoreAlpha(region.region);
-      region.region:SetDurationInfo(0, math.huge);
+      if(region.SetDurationInfo) then
+        region.region:SetDurationInfo(0, math.huge);
+      end
       if(WeakAuras.clones[id]) then
         for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
           RestoreAlpha(cloneRegion);
-          cloneRegion:SetDurationInfo(0, math.huge);
+          if(region.SetDurationInfo) then
+            cloneRegion:SetDurationInfo(0, math.huge);
+          end
         end
       end
     end
