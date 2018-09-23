@@ -95,7 +95,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
   local function effectiveShowOnIsShowOnActive(trigger)
     local effectiveShowOn = true;
-    if (not trigger.showClones and trigger.matchesShowOn) then
+    if (trigger.matchesShowOn) then
       effectiveShowOn = trigger.matchesShowOn == "showOnActive";
     end
     return effectiveShowOn;
@@ -263,6 +263,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     ownOnly = {
       type = "toggle",
+      width = "double",
       name = function()
         local value = trigger.ownOnly;
         if(value == nil) then return L["Own Only"];
@@ -294,27 +295,28 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 70,
       hidden = function() return not (trigger.type == "aura2"); end
     },
-    showClones = {
-      type = "toggle",
-      name = L["Show all matches"],
-      order = 70.5,
-      hidden = function()
-        return not (trigger.type == "aura2");
-      end
-    },
     matchesShowOn = {
       type = "select",
-      width = "double",
+      width = "normal",
       name = L["Show On"],
       values = WeakAuras.bufftrigger_2_progress_behavior_types,
       order = 71,
       hidden = function()
-        return not (trigger.type == "aura2" and not trigger.showClones);
+        return not (trigger.type == "aura2");
       end,
       get = function()
         return trigger.matchesShowOn or "showOnActive";
       end
     },
+    showClones = {
+      type = "toggle",
+      name = L["Show all matches"],
+      order = 71.5,
+      hidden = function()
+        return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger));
+      end
+    },
+
   };
 
   -- Names
@@ -357,6 +359,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         if (v == "") then
           shiftTable(trigger.auranames, i);
         else
+          -- TODO use CorrectAuraName ?
           trigger.auranames[i] = v;
         end
 

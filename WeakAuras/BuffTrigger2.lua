@@ -833,10 +833,8 @@ function BuffTrigger.Add(data)
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     if (trigger.type == "aura2") then
 
-      local effectiveShowOn = "showOnActive";
-      if (not trigger.showClones and trigger.matchesShowOn) then
-        effectiveShowOn = trigger.matchesShowOn;
-      end
+      local effectiveShowOn = trigger.matchesShowOn or  "showOnActive";
+      local effectiveShowClones = effectiveShowOn == "showOnActive" and trigger.showClones;
 
       local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
 
@@ -852,7 +850,7 @@ function BuffTrigger.Add(data)
         unit = trigger.unit,
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
-        showClones = trigger.showClones,
+        showClones = effectiveShowClones,
         matchesShowOn = effectiveShowOn,
         scanFunc = scanFunc,
         remainingFunc = remFunc,
@@ -937,7 +935,11 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
   local trigger = data.triggers[triggernum].trigger
-  if (not trigger.showClones) then
+
+  local effectiveShowOn = trigger.matchesShowOn or  "showOnActive";
+  local effectiveShoWClones = effectiveShowOn == "showOnActive" and trigger.showClones;
+
+  if (not effectiveShoWClones) then
     ret = ret .. "|cFFFF0000%totalCount|r -" .. L["Total Matches"] .. "\n";
   end
   return ret;
@@ -983,6 +985,127 @@ end
 function BuffTrigger.GetName(triggerType)
   if (triggerType == "aura2") then
     return L["Aura"];
+  end
+end
+
+
+function WeakAuras.CanConvertBuffTrigger2(trigger)
+  if (trigger.type ~= "aura") then
+    return false;
+  end
+
+  if (trigger.unit == "multi") then
+    return false, L["Multi triggers can't be converted yet."];
+  end
+
+  -- Specific unit
+  if (trigger.unit == "member") then
+    return false, L["Specific unit can't be converted yet."];
+  end
+
+  if (trigger.unit == "group") then
+    return false, L["Group triggers can't be converted yet."];
+  end
+
+  if (trigger.fullscan) then
+    if (trigger.use_name and trigger.name_operator ~= "==") then
+      return false, L["Fullscan auras with pattern matching can't be converted yet."];
+    end
+
+    if (trigger.use_tooltip) then
+      return false, L["Fullscan auras with tooltip scanning can't be converted yet."];
+    end
+
+    if (trigger.use_name and trigger.use_spellId) then
+      return false, L["Fullscan auras checking for both name and spell id can't be converted."];
+    end
+
+    if (trigger.subcount) then
+      return false, L["Fullscan auras scanning the tooltip can't be converted yet."];
+    end
+  end
+
+  -- Unit Exists
+  if (trigger.unit ~= "player") then
+    if (trigger.buffShowOn == "showOnActive" and trigger.unitExists) then
+      return false, L["Unit exists checks can't be converted yet"];
+    end
+
+    if (trigger.buffShowOn == "showOnMissing" and not trigger.unitExists) then
+      return false, L["Unit exists checks can't be converted yet."];
+    end
+
+    if (trigger.buffShowOn == "showAlways" and not trigger.unitExists) then
+      return false, L["Unit exists checks can't be converted yet."];
+    end
+  end
+  return true;
+end
+
+function WeakAuras.ConvertBuffTrigger2(trigger)
+  if (not WeakAuras.CanConvertBuffTrigger2(trigger)) then
+    return;
+  end
+  trigger.type = "aura2";
+
+  if (trigger.fullscan and trigger.autoclone) then
+    trigger.showClones = true;
+  else
+    trigger.showClones = false;
+  end
+
+  if (trigger.fullscan and trigger.use_stealable) then
+    trigger.use_stealable = true;
+  else
+    trigger.use_stealable = nil;
+  end
+
+  if (trigger.fullscan and trigger.use_debuffClass and trigger.debuffClass) then
+  else
+    trigger.use_debuffClass = false;
+  end
+
+  if (trigger.fullscan) then
+    -- Use name from fullscan
+    if (trigger.use_name) then
+      if (trigger.name_operator == "==") then
+        -- Convert to normal name check
+        trigger.useName = true;
+        trigger.auranames = {};
+        trigger.auranames[1] = trigger.name;
+      end
+    end
+    if (trigger.use_spellId) then
+      trigger.useExactSpellId = true;
+      trigger.auraspellids = {};
+      trigger.auraspellids[1] = trigger.spellId;
+    end
+  else
+    trigger.useName = true;
+  end
+
+  if (not trigger.fullscan and trigger.unit ~= "multi") then
+    trigger.auranames = {}
+    for i = 1, 9 do
+      trigger.auranames[i] = trigger.spellIds[i] and tostring(trigger.spellIds[i]) or trigger.names[i]
+    end
+  end
+
+  -- debuffType is exactly the same, no need to touch it
+  -- remaining is exactly the same for now;
+  --   needs to be cleared once multi conversion is possible
+  -- ownOnly is exactly the same
+
+  if (trigger.useCount) then
+    trigger.useStacks = trigger.useCount;
+    trigger.stacksOperator = trigger.countOperator;
+    trigger.stacks = trigger.count;
+  end
+
+  if (trigger.fullscan and trigger.autoclone) then
+    trigger.matchesShowOn = "showOnActive";
+  else
+    trigger.matchesShowOn = trigger.buffShowOn;
   end
 end
 
