@@ -3281,7 +3281,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     local first = true;
 
     for index, childId in ipairs(data.controlledChildren) do
-      local triggerChoice = optionTriggerChoices[id];
+      local triggerChoice = optionTriggerChoices[childId];
       local childData = WeakAuras.GetData(childId);
       local trigger = triggerChoice and childData.triggers[triggerChoice].trigger;
       local triggerSystemOptionsFunction = trigger.type and WeakAuras.triggerTypesOptions[trigger.type];
