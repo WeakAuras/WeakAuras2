@@ -463,14 +463,15 @@ recheckTriggerInfo = function(triggerInfo)
 end
 
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral)
-  if (not scanFuncName and not scanFuncSpellId and not scanFuncGeneral) then
+  if (not scanFuncName) and (not scanFuncSpellId) and (not scanFuncGeneral) then
+    print(scanFuncName, scanFuncSpellId, scanFuncGeneral);
     return;
   end
 
   local index = 1;
   while(true) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
-    print("  Aura ", index, " ", name, " ", stacks, " ", duration, " ", expirationTime);
+    print("  Aura INFO: ", index, " ", name, " ", stacks, " ", duration, " ", expirationTime);
     if (debuffClass == nil) then
       debuffClass = "none";
     elseif (debuffClass == "") then
