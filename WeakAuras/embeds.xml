@@ -17,4 +17,5 @@
   <Script file="Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua"/>
   <Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
   <Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
+  <Script file="Libs\LibDeflate\LibDeflate.lua"/>
 </Ui>

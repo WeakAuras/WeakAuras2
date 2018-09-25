@@ -37,7 +37,7 @@ local event_types = WeakAuras.event_types;
 local status_types = WeakAuras.status_types;
 
 -- Local functions
-local encodeB64, decodeB64, GenerateUniqueID
+local decodeB64, GenerateUniqueID
 local CompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
 
@@ -65,33 +65,6 @@ local B64tobyte = {
 
 -- This code is based on the Encode7Bit algorithm from LibCompress
 -- Credit goes to Galmok (galmok@gmail.com)
-local encodeB64Table = {};
-
-function encodeB64(str)
-  local B64 = encodeB64Table;
-  local remainder = 0;
-  local remainder_length = 0;
-  local encoded_size = 0;
-  local l=#str
-  local code
-  for i=1,l do
-    code = string.byte(str, i);
-    remainder = remainder + bit_lshift(code, remainder_length);
-    remainder_length = remainder_length + 8;
-    while(remainder_length) >= 6 do
-      encoded_size = encoded_size + 1;
-      B64[encoded_size] = bytetoB64[bit_band(remainder, 63)];
-      remainder = bit_rshift(remainder, 6);
-      remainder_length = remainder_length - 6;
-    end
-  end
-  if remainder_length > 0 then
-    encoded_size = encoded_size + 1;
-    B64[encoded_size] = bytetoB64[remainder];
-  end
-  return table.concat(B64, "", 1, encoded_size)
-end
-
 local decodeB64Table = {}
 
 function decodeB64(str)
@@ -547,8 +520,9 @@ showCodeButton:SetScript("OnClick", function()
 end)
 
 
-local Compresser = LibStub:GetLibrary("LibCompress");
-local Encoder = Compresser:GetAddonEncodeTable()
+local Compresser = LibStub:GetLibrary("LibCompress")
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+local configForDeflate = {level = 9} -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
 local Serializer = LibStub:GetLibrary("AceSerializer-3.0");
 local Comm = LibStub:GetLibrary("AceComm-3.0");
 
@@ -612,26 +586,41 @@ function HandleModifiedItemClick(link, ...)
 end
 
 function TableToString(inTable, forChat)
-  local serialized = Serializer:Serialize(inTable);
-  local compressed = Compresser:CompressHuffman(serialized);
+  local serialized = Serializer:Serialize(inTable)
+  local compressed = LibDeflate:CompressDeflate(serialized, configForDeflate)
+  -- prepend with "!" so that we know that it is not a legacy compression
+  -- also this way, old versions of weakauras will error out due to the "bad" encoding
+  local encoded = "!"
   if(forChat) then
-    return encodeB64(compressed);
+    encoded = encoded .. LibDeflate:EncodeForPrint(compressed)
   else
-    return Encoder:Encode(compressed);
+    encoded = encoded .. LibDeflate:EncodeForWoWAddonChannel(compressed)
   end
+  return encoded
 end
 
 function StringToTable(inString, fromChat)
-  local decoded;
+  -- if gsub strips off a ! at the beginning then we know that this is not a legacy encoding
+  local encoded, usesDeflate = inString:gsub("^%!", "")
+  local decoded
   if(fromChat) then
-    decoded = decodeB64(inString);
+    if usesDeflate == 1 then
+      decoded = LibDeflate:DecodeForPrint(encoded)
+    else
+      decoded = decodeB64(encoded)
+    end
   else
-    decoded = Encoder:Decode(inString);
+    decoded = LibDeflate:DecodeForWoWAddonChannel(encoded)
   end
 
-  local decompressed, errorMsg = Compresser:Decompress(decoded);
+  local decompressed, errorMsg = nil, "unknown compression method"
+  if usesDeflate == 1 then
+    decompressed = LibDeflate:DecompressDeflate(decoded)
+  else
+    decompressed, errorMsg = Compresser:Decompress(decoded)
+  end
   if not(decompressed) then
-    return "Error decompressing: "..errorMsg;
+    return "Error decompressing: " .. errorMsg
   end
 
   local success, deserialized = Serializer:Deserialize(decompressed);
