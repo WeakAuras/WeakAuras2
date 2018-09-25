@@ -383,7 +383,6 @@ local function UpdateTriggerState(time, id, triggernum)
   -- TODO cloneId: for group triggers, this needs to be the playerName
   -- allowing multiple buff triggers to refer to their matching clones
 
-  print("  UpdatedTriggerState for ", id);
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
 
   local triggerInfo = triggerInfos[id][triggernum];
@@ -436,7 +435,6 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     if (updated) then
-      print("  states were updated for ", id);
       WeakAuras.UpdatedTriggerState(id);
     end
   end
@@ -464,14 +462,12 @@ end
 
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   if (not scanFuncName) and (not scanFuncSpellId) and (not scanFuncGeneral) then
-    print(scanFuncName, scanFuncSpellId, scanFuncGeneral);
     return;
   end
 
   local index = 1;
   while(true) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
-    print("  Aura INFO: ", index, " ", name, " ", stacks, " ", duration, " ", expirationTime);
     if (debuffClass == nil) then
       debuffClass = "none";
     elseif (debuffClass == "") then
@@ -488,11 +484,9 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     if (auras) then
       for _, triggerInfo in pairs(auras) do
         if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
-          print("  matched by ", triggerInfo.id);
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
-            print("  updated match data");
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
@@ -504,11 +498,9 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     if (auras) then
       for _, triggerInfo in pairs(auras) do
         if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
-          print("  matched by ", triggerInfos.id);
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
-            print("  updated match data");
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
@@ -559,7 +551,6 @@ local function UpdateStates(matchDataChanged, time)
 end
 
 local function ScanUnit(unit)
-  print("ScanUnit ", unit);
   local time = GetTime();
   local matchDataChanged = {};
 
@@ -576,13 +567,6 @@ local function ScanUnit(unit)
       scanFuncName[unit]["HARMFUL|PLAYER"],
       scanFuncSpellId[unit]["HARMFUL|PLAYER"],
       scanFuncGeneral[unit]["HARMFUL|PLAYER"])
-
-  print(" --- ");
-  if (scanFuncName[unit]["HELPFUL"]) then
-    for k, v in pairs(scanFuncName[unit]["HELPFUL"]) do
-      print("___ ", k, v);
-    end
-  end
 
   ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
       scanFuncName[unit]["HELPFUL"],
@@ -653,11 +637,8 @@ local function LoadAura(id, triggernum, triggerInfo)
     filter = filter .. "|PLAYER";
   end
 
-  print("LoadAura ", triggerInfo.id, " ", triggerInfo.unit, " ", filter,  " ", triggerInfo.auranames);
-
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
-      print("  ## ", name);
       if (name ~= "") then
         scanFuncName[triggerInfo.unit]               = scanFuncName[triggerInfo.unit] or {};
         scanFuncName[triggerInfo.unit][filter]       = scanFuncName[triggerInfo.unit][filter] or {};
