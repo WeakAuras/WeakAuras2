@@ -576,6 +576,11 @@ local function ScanUnit(unit)
       scanFuncSpellId[unit]["HARMFUL|PLAYER"],
       scanFuncGeneral[unit]["HARMFUL|PLAYER"])
 
+  print(" --- ");
+  for k, v in pairs(scanFuncName[unit]["HELPFUL"]) do
+    print("___ ", k, v);
+  end
+
   ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
       scanFuncName[unit]["HELPFUL"],
       scanFuncSpellId[unit]["HELPFUL"],
@@ -645,8 +650,11 @@ local function LoadAura(id, triggernum, triggerInfo)
     filter = filter .. "|PLAYER";
   end
 
+  print("LoadAura ", triggerInfo.id, " ", triggerInfo.unit, " ", filter,  " ", triggerInfo.auranames);
+
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
+      print("  ## ", name);
       if (name ~= "") then
         scanFuncName[triggerInfo.unit]               = scanFuncName[triggerInfo.unit] or {};
         scanFuncName[triggerInfo.unit][filter]       = scanFuncName[triggerInfo.unit][filter] or {};
