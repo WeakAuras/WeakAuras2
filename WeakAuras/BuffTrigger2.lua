@@ -732,7 +732,7 @@ local function UnloadAura(scanFuncName, id)
 end
 
 local function UnloadGeneral(scanFuncGeneral, id)
-  for unit, unitData in pairs(scanFuncName) do
+  for unit, unitData in pairs(scanFuncGeneral) do
     for debuffType, debuffData in pairs(unitData) do
       for i = #debuffData, 1, -1 do
         if debuffData[i].id == id then
@@ -747,7 +747,7 @@ local function UnloadGeneral(scanFuncGeneral, id)
       end
     end
     if (not next(unitData)) then
-      scanFuncName[unit] = nil;
+      scanFuncGeneral[unit] = nil;
     end
   end
 end
