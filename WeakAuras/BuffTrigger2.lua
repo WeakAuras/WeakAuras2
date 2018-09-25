@@ -577,8 +577,10 @@ local function ScanUnit(unit)
       scanFuncGeneral[unit]["HARMFUL|PLAYER"])
 
   print(" --- ");
-  for k, v in pairs(scanFuncName[unit]["HELPFUL"]) do
-    print("___ ", k, v);
+  if (scanFuncName[unit]["HELPFUL"]) then
+    for k, v in pairs(scanFuncName[unit]["HELPFUL"]) do
+      print("___ ", k, v);
+    end
   end
 
   ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
