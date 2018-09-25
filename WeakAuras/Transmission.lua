@@ -520,8 +520,7 @@ showCodeButton:SetScript("OnClick", function()
 end)
 
 
-local Compresser = LibStub:GetLibrary("LibCompress");
-local Encoder = Compresser:GetAddonEncodeTable()
+local Compresser = LibStub:GetLibrary("LibCompress")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local configForDeflate = {level = 9} -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
 local Serializer = LibStub:GetLibrary("AceSerializer-3.0");
