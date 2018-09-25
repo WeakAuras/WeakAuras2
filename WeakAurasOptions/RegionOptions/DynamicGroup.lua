@@ -13,7 +13,7 @@ local function createOptions(id, data)
       name = L["Align"],
       order = 10,
       values = WeakAuras.align_types,
-      hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
+      hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
       disabled = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
     },
     rotated_align = {
@@ -21,7 +21,7 @@ local function createOptions(id, data)
       name = L["Align"],
       order = 10,
       values = WeakAuras.rotated_align_types,
-      hidden = function() return (data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
+      hidden = function() return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
       get = function() return data.align; end,
       set = function(info, v) data.align = v; WeakAuras.Add(data); end
     },
@@ -39,7 +39,7 @@ local function createOptions(id, data)
       softMin = 0,
       softMax = 300,
       bigStep = 1,
-      hidden = function() return (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS" end
+      hidden = function() return data.grow == "CUSTOM" or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
     },
     rotation = {
       type = "range",
@@ -58,7 +58,7 @@ local function createOptions(id, data)
       max = 50,
       step = 0.1,
       bigStep = 1,
-      hidden = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
+      hidden = function() return data.grow == "CUSTOM" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
     },
     radius = {
       type = "range",
@@ -67,7 +67,7 @@ local function createOptions(id, data)
       softMin = 0,
       softMax = 500,
       bigStep = 1,
-      hidden = function() return not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
+      hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
     },
     animate = {
       type = "toggle",
