@@ -382,6 +382,8 @@ local recheckTriggerInfo;
 local function UpdateTriggerState(time, id, triggernum)
   -- TODO cloneId: for group triggers, this needs to be the playerName
   -- allowing multiple buff triggers to refer to their matching clones
+
+  print("  UpdatedTriggerState for ", id);
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
 
   local triggerInfo = triggerInfos[id][triggernum];
@@ -434,6 +436,7 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     if (updated) then
+      print("  states were updated for ", id);
       WeakAuras.UpdatedTriggerState(id);
     end
   end
@@ -467,6 +470,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
   local index = 1;
   while(true) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+    print("  Aura ", index, " ", name, " ", stacks, " ", duration, " ", expirationTime);
     if (debuffClass == nil) then
       debuffClass = "none";
     elseif (debuffClass == "") then
@@ -483,9 +487,11 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     if (auras) then
       for _, triggerInfo in pairs(auras) do
         if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
+          print("  matched by ", triggerInfo.id);
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+            print("  updated match data");
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
@@ -497,9 +503,11 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     if (auras) then
       for _, triggerInfo in pairs(auras) do
         if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
+          print("  matched by ", triggerInfos.id);
           local id = triggerInfo.id;
           local triggernum = triggerInfo.triggernum
           if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+            print("  updated match data");
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
@@ -550,6 +558,7 @@ local function UpdateStates(matchDataChanged, time)
 end
 
 local function ScanUnit(unit)
+  print("ScanUnit ", unit);
   local time = GetTime();
   local matchDataChanged = {};
 
