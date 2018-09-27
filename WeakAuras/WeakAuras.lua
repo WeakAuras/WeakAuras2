@@ -881,7 +881,7 @@ local globalConditions =
   ["attackabletarget"] = {
     display = L["Attackable Target"],
     type = "bool",
-    events = {"PLAYER_TARGET_CHANGED"},
+    events = {"PLAYER_TARGET_CHANGED", "UNIT_FACTION"},
     globalStateUpdate = function(state)
       state.attackabletarget = UnitCanAttack("player", "target");
     end
