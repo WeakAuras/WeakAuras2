@@ -834,6 +834,9 @@ function BuffTrigger.Add(data)
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     if (trigger.type == "aura2") then
 
+      trigger.unit = trigger.unit or "player";
+      trigger.debuffType = trigger.debuffType or "HELPFUL";
+
       local effectiveShowOn = trigger.matchesShowOn or  "showOnActive";
       local effectiveShowClones = effectiveShowOn == "showOnActive" and trigger.showClones;
 
