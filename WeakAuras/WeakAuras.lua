@@ -878,6 +878,14 @@ local globalConditions =
       state.hastarget = UnitExists("target");
     end
   },
+  ["attackabletarget"] = {
+    display = L["Attackable Target"],
+    type = "bool",
+    events = {"PLAYER_TARGET_CHANGED", "UNIT_FACTION"},
+    globalStateUpdate = function(state)
+      state.attackabletarget = UnitCanAttack("player", "target");
+    end
+  },
 }
 
 function WeakAuras.GetGlobalConditions()
