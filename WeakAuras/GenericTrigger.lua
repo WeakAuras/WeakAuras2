@@ -18,8 +18,8 @@ Loads all triggers of display id.
 UnloadAll
 Unloads all triggers.
 
-UnloadDisplay(id)
-Unloads all triggers of the display id.
+UnloadDisplays(id)
+Unloads all triggers of the display ids.
 
 ScanAll
 Resets the trigger state for all triggers.
@@ -648,29 +648,31 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   end
 end
 
-function GenericTrigger.ScanAll(recentlyLoaded)
-  for id, _ in pairs(loaded_auras) do
-    if (not recentlyLoaded or recentlyLoaded[id]) then
-      local updateTriggerState = false;
-      WeakAuras.ActivateAuraEnvironment(id);
-      for triggernum, event in pairs(events[id] or {}) do
-        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-        if (event.force_events) then
-          if (type(event.force_events) == "string") then
-            updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event.force_events) or updateTriggerState;
-          elseif (type(event.force_events) == "boolean" and event.force_events) then
-            for i, eventName in pairs(event.events) do
-              updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
-            end
-          end
+function GenericTrigger.ScanWithFakeEvent(id)
+  local updateTriggerState = false;
+  WeakAuras.ActivateAuraEnvironment(id);
+  for triggernum, event in pairs(events[id] or {}) do
+    local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+    if (event.force_events) then
+      if (type(event.force_events) == "string") then
+        updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event.force_events) or updateTriggerState;
+      elseif (type(event.force_events) == "boolean" and event.force_events) then
+        for i, eventName in pairs(event.events) do
+          updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
         end
       end
-
-      if (updateTriggerState) then
-        WeakAuras.UpdatedTriggerState(id);
-      end
-      WeakAuras.ActivateAuraEnvironment(nil);
     end
+  end
+
+  if (updateTriggerState) then
+    WeakAuras.UpdatedTriggerState(id);
+  end
+  WeakAuras.ActivateAuraEnvironment(nil);
+end
+
+function GenericTrigger.ScanAll()
+  for id, _ in pairs(loaded_auras) do
+    GenericTrigger.ScanWithFakeEvent(id);
   end
 end
 
@@ -704,27 +706,31 @@ function GenericTrigger.UnloadAll()
   WeakAuras.UnregisterAllEveryFrameUpdate();
 end
 
-function GenericTrigger.UnloadDisplay(id)
-  loaded_auras[id] = false;
-  for eventname, events in pairs(loaded_events) do
-    if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
-      for subeventname, subevents in pairs(events) do
-        subevents[id] = nil;
+function GenericTrigger.UnloadDisplays(toUnload)
+  for id in pairs(toUnload) do
+    loaded_auras[id] = false;
+    for eventname, events in pairs(loaded_events) do
+      if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
+        for subeventname, subevents in pairs(events) do
+          subevents[id] = nil;
+        end
+      else
+        events[id] = nil;
       end
-    else
-      events[id] = nil;
     end
+    WeakAuras.UnregisterEveryFrameUpdate(id);
   end
-  WeakAuras.UnregisterEveryFrameUpdate(id);
 end
 
+local genericTriggerRegisteredEvents = {};
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+genericTriggerRegisteredEvents["PLAYER_ENTERING_WORLD"] = true;
 frame:SetScript("OnEvent", HandleEvent);
 
 function GenericTrigger.Delete(id)
-  GenericTrigger.UnloadDisplay(id);
+  GenericTrigger.UnloadDisplays({id});
 end
 
 function GenericTrigger.Rename(oldid, newid)
@@ -776,32 +782,55 @@ local function trueFunction()
   return true;
 end
 
-function GenericTrigger.LoadDisplay(id)
-  local register_for_frame_updates = false;
-  if(events[id]) then
-    loaded_auras[id] = true;
-    for triggernum, data in pairs(events[id]) do
-      for index, event in pairs(data.events) do
-        if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-          frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-        elseif (event == "FRAME_UPDATE") then
-          register_for_frame_updates = true;
-        else
-          xpcall(frame.RegisterEvent, trueFunction, frame, event)
-          aceEvents:RegisterMessage(event, HandleEvent, frame)
+local eventsToRegister = {};
+function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
+  for id in pairs(toLoad) do
+    local register_for_frame_updates = false;
+    if(events[id]) then
+      loaded_auras[id] = true;
+      for triggernum, data in pairs(events[id]) do
+        for index, event in pairs(data.events) do
+          if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+            eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+          elseif (event == "FRAME_UPDATE") then
+            register_for_frame_updates = true;
+          else
+            if (genericTriggerRegisteredEvents[event]) then
+              -- Already registered event
+            else
+              eventsToRegister[event] = true;
+            end
+          end
         end
-      end
 
-      LoadEvent(id, triggernum, data);
+        LoadEvent(id, triggernum, data);
+      end
+    end
+
+    if(register_for_frame_updates) then
+      WeakAuras.RegisterEveryFrameUpdate(id);
+    else
+      WeakAuras.UnregisterEveryFrameUpdate(id);
     end
   end
 
-  if(register_for_frame_updates) then
-    WeakAuras.RegisterEveryFrameUpdate(id);
-  else
-    WeakAuras.UnregisterEveryFrameUpdate(id);
+  for event in pairs(eventsToRegister) do
+    xpcall(frame.RegisterEvent, trueFunction, frame, event)
+    genericTriggerRegisteredEvents[event] = true;
   end
 
+  for id in pairs(toLoad) do
+    GenericTrigger.ScanWithFakeEvent(id);
+  end
+
+  if (eventsToRegister[loadEvent]) then
+    WeakAuras.ScanEvents(loadEvent, ...);
+  end
+
+  wipe(eventsToRegister);
+end
+
+function GenericTrigger.FinishLoadUnload()
 end
 
 --- Adds a display, creating all internal data structures for all triggers.

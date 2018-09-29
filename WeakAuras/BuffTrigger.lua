@@ -6,11 +6,11 @@ It registers the BuffTrigger table for the trigger type "aura" and has the follo
 Add(data)
 Adds an aura, setting up internal data structures for all buff triggers.
 
-LoadDisplay(id)
-Loads the aura id, enabling all buff triggers in the aura.
+LoadDisplays(id)
+Loads the aura ids, enabling all buff triggers in the aura.
 
-UnloadDisplay(id)
-Unloads the aura id, disabling all buff triggers in the aura.
+UnloadDisplays(id)
+Unloads the aura ids, disabling all buff triggers in the aura.
 
 UnloadAll()
 Unloads all auras, disabling all buff triggers.
@@ -1426,20 +1426,28 @@ function BuffTrigger.UnloadAll()
   wipe(loaded_auras);
 end
 
-function BuffTrigger.LoadDisplay(id)
-  if(auras[id]) then
-    for triggernum, data in pairs(auras[id]) do
-      if(auras[id] and auras[id][triggernum]) then
-        LoadAura(id, triggernum, data);
+function BuffTrigger.LoadDisplays(toLoad)
+  for id in pairs(toLoad) do
+    if(auras[id]) then
+      for triggernum, data in pairs(auras[id]) do
+        if(auras[id] and auras[id][triggernum]) then
+          LoadAura(id, triggernum, data);
+        end
       end
     end
   end
 end
 
-function BuffTrigger.UnloadDisplay(id)
-  for unitname, auras in pairs(loaded_auras) do
-    auras[id] = nil;
+function BuffTrigger.UnloadDisplays(toUnload)
+  for id in pairs(toUnload) do
+    for unitname, auras in pairs(loaded_auras) do
+      auras[id] = nil;
+    end
   end
+end
+
+function BuffTrigger.FinishLoadUnload()
+  BuffTrigger.ScanAll();
 end
 
 --- Removes all data for an aura id
