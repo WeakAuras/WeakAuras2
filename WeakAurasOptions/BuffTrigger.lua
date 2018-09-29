@@ -1015,6 +1015,9 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 73.7,
       width = 1.2,
       name = function()
+        if (not WeakAuras.CanConvertBuffTrigger2) then
+          return "";
+        end
         local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
         return err or "";
       end,

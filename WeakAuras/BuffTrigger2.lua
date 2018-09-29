@@ -78,26 +78,32 @@ local scanFuncGeneral = {};
 
 local timer = WeakAuras.timer;
 
--- Auras that matched, keyed on id, triggernum, unit, index
+-- Auras that matched, unit, index
 local matchData = {};
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {};
 
-local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+local function ReferenceMatchData(id, triggernum, unit, filter, index)
+  local match = matchData[unit][filter][index];
+
+  matchDataByTrigger[id] = matchDataByTrigger[id] or {};
+  matchDataByTrigger[id][triggernum] = matchDataByTrigger[id][triggernum] or {};
+  matchDataByTrigger[id][triggernum][unit] = matchDataByTrigger[id][triggernum][unit] or {};
+  matchDataByTrigger[id][triggernum][unit][index] = match;
+
+  match.auras[id] = match.auras[id] or {}
+  match.auras[id][triggernum] = true;
+end
+
+local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
   if (not matchData[unit]) then
     matchData[unit] = {};
   end
   if (not matchData[unit][filter]) then
     matchData[unit][filter] = {};
   end
-  if (not matchData[unit][filter][id]) then
-    matchData[unit][filter][id] = {};
-  end
-  if (not matchData[unit][filter][id][triggernum]) then
-    matchData[unit][filter][id][triggernum] = {};
-  end
-  if (not matchData[unit][filter][id][triggernum][index]) then
-    matchData[unit][filter][id][triggernum][index] = {
+  if (not matchData[unit][filter][index]) then
+    matchData[unit][filter][index] = {
       name = name,
       icon = icon,
       stacks = stacks,
@@ -107,16 +113,12 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
       spellId = spellId,
       unit = unit,
       time = time,
+      auras = {};
     };
-
-    matchDataByTrigger[id] = matchDataByTrigger[id] or {};
-    matchDataByTrigger[id][triggernum] = matchDataByTrigger[id][triggernum] or {};
-    matchDataByTrigger[id][triggernum][unit] = matchDataByTrigger[id][triggernum][unit] or {};
-    matchDataByTrigger[id][triggernum][unit][index] = matchData[unit][filter][id][triggernum][index];
     return true;
   end
 
-  local data = matchData[unit][filter][id][triggernum][index];
+  local data = matchData[unit][filter][index];
 
   local changed = false;
   if (data.name ~= name) then
@@ -152,6 +154,18 @@ local function UpdateMatchData(time, unit, index, filter, id, triggernum, name, 
   if (data.spellId ~= spellId) then
     data.spellId = name;
     changed = true;
+  end
+
+  if (changed) then
+    -- Tell old auras that used this match data
+    for id, triggerData in pairs(data.auras) do
+      for triggernum in pairs(triggerData) do
+        matchDataByTrigger[id][triggernum][unit][index] = nil;
+        matchDataChanged[id] = matchDataChanged[id] or {};
+        matchDataChanged[id][triggernum] = true;
+      end
+    end
+    wipe(data.auras);
   end
 
   data.index = index;
@@ -480,40 +494,40 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
       break;
     end
 
-    local auras = scanFuncName and scanFuncName[name];
-    if (auras) then
-      for _, triggerInfo in pairs(auras) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
-          local id = triggerInfo.id;
-          local triggernum = triggerInfo.triggernum
-          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+    local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId);
+    if (updatedMatchData) then -- Aura data changed, check against triggerInfos
+      local auras = scanFuncName and scanFuncName[name];
+      if (auras) then
+        for _, triggerInfo in pairs(auras) do
+          if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(matchData[unit][filter][index])) then
+            local id = triggerInfo.id;
+            local triggernum = triggerInfo.triggernum
+            ReferenceMatchData(id, triggernum, unit, filter, index);
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
         end
       end
-    end
 
-    auras = scanFuncSpellId and scanFuncSpellId[spellId];
-    if (auras) then
-      for _, triggerInfo in pairs(auras) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
-          local id = triggerInfo.id;
-          local triggernum = triggerInfo.triggernum
-          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+      auras = scanFuncSpellId and scanFuncSpellId[spellId];
+      if (auras) then
+        for _, triggerInfo in pairs(auras) do
+          if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(matchData[unit][filter][index])) then
+            local id = triggerInfo.id;
+            local triggernum = triggerInfo.triggernum;
+            ReferenceMatchData(id, triggernum, unit, filter, index);
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
         end
       end
-    end
 
-    if (scanFuncGeneral) then
-      for _, triggerInfo in pairs(scanFuncGeneral) do
-        if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)) then
-          local id = triggerInfo.id;
-          local triggernum = triggerInfo.triggernum
-          if (UpdateMatchData(time, unit, index, filter, id, triggernum,  name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)) then
+      if (scanFuncGeneral) then
+        for _, triggerInfo in pairs(scanFuncGeneral) do
+          if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(matchData[unit][filter][index])) then
+            local id = triggerInfo.id;
+            local triggernum = triggerInfo.triggernum;
+            ReferenceMatchData(id, triggernum, unit, filter, index);
             matchDataChanged[id] = matchDataChanged[id] or {};
             matchDataChanged[id][triggernum] = true;
           end
@@ -524,21 +538,19 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
 
   -- Figure out if any matchData is outdated
   if (matchData[unit] and matchData[unit][filter]) then
-    for id, auraData in pairs(matchData[unit][filter]) do
-      for triggernum, triggerData in pairs(auraData) do
-        for index, data in pairs(triggerData) do
-          if (data.time < time) then
-            triggerData[index] = nil;
-            matchDataByTrigger[id][triggernum][unit][index] = nil;
-
-            matchDataChanged[id] = matchDataChanged[id] or {};
-            matchDataChanged[id][triggernum] = true;
-          end
-        end
+    for index, data in pairs(matchData[unit][filter]) do
+      if (data.time < time) then
+         matchData[unit][filter][index] = nil;
+         for id, triggerData in pairs(data.auras) do
+           for triggernum in pairs(triggerData) do
+             matchDataByTrigger[id][triggernum][unit][index] = nil;
+             matchDataChanged[id] = matchDataChanged[id] or {};
+             matchDataChanged[id][triggernum] = true;
+           end
+         end
       end
     end
   end
-
 end
 
 
@@ -669,8 +681,25 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(scanFuncGeneral[triggerInfo.unit][filter], triggerInfo);
   end
 
+  local updateTriggerState = false;
   -- sets initial states up
-  if (triggerInfo.matchesShowOn ~= "showOnActive") then
+  if (triggerInfo.matchesShowOn ~= "showOnMissing") then
+    -- Check against existing match data
+    if (matchData[triggerInfo.unit] and matchData[triggerInfo.unit][filter]) then
+      for index, match in pairs(matchData[triggerInfo.unit][filter]) do
+        if (not added
+            or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
+            or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
+          if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(matchData[triggerInfo.unit][filter][index])) then
+            ReferenceMatchData(id, triggernum, triggerInfo.unit, filter, index);
+            updateTriggerState = true;
+          end
+        end
+      end
+    end
+  end
+
+  if (updateTriggerState or triggerInfo.matchesShowOn ~= "showOnActive") then
     UpdateTriggerState(GetTime(), id, triggernum);
   end
 end
@@ -783,12 +812,12 @@ local function createScanFunc(trigger)
     return nil;
   end
   local ret = [[
-    return function(name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable)
+    return function(matchData)
   ]];
 
   if (trigger.useStacks) then
     local ret2 = [[
-      if not(stacks %s %s) then
+      if not(matchData.stacks %s %s) then
         return false
       end
     ]]
@@ -797,13 +826,13 @@ local function createScanFunc(trigger)
 
   if (trigger.use_stealable) then
     ret = ret .. [[
-      if (not isStealable) then
+      if (not matchData.isStealable) then
         return false
       end
     ]]
   elseif(trigger.use_stealable == false) then
     ret = ret .. [[
-      if (isStealable) then
+      if (matchData.isStealable) then
         return false
       end
     ]]
@@ -811,7 +840,7 @@ local function createScanFunc(trigger)
 
   if (trigger.use_debuffClass and trigger.debuffClass) then
     local ret2 = [[
-      if (debuffClass ~= %q) then
+      if (matchData.debuffClass ~= %q) then
         return false;
       end
     ]]
