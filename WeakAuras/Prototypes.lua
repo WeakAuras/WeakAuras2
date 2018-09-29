@@ -25,12 +25,12 @@ end
 
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
-function WeakAuras.GetRange(unit)
-  return LibRangeCheck:GetRange(unit);
+function WeakAuras.GetRange(unit, checkVisible)
+  return LibRangeCheck:GetRange(unit, checkVisible);
 end
 
 function WeakAuras.CheckRange(unit, range, operator)
-  local min, max = LibRangeCheck:GetRange(unit);
+  local min, max = LibRangeCheck:GetRange(unit, true);
   if (type(range) ~= "number") then
     range = tonumber(range);
   end
@@ -4812,7 +4812,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "target";
       local ret = [=[
           local unit = [[%s]];
-          local min, max = WeakAuras.GetRange(unit);
+          local min, max = WeakAuras.GetRange(unit, true);
           min = min or 0;
           max = max or 999;
           local triggerResult = true;
