@@ -419,6 +419,9 @@ local function GetGenericTriggerOptions(data, optionTriggerChoices)
       local trigger, untrigger = data.triggers[triggerNum].trigger, data.triggers[triggerNum].untrigger;
       if(WeakAuras.event_prototypes[trigger.event]) then
         prototypeOptions = WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, optionTriggerChoices[id]);
+        if (trigger.event == "Combat Log") then
+          Mixin(prototypeOptions, combatLogOptions);
+        end
       else
         print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
       end
