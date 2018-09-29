@@ -160,9 +160,11 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
     -- Tell old auras that used this match data
     for id, triggerData in pairs(data.auras) do
       for triggernum in pairs(triggerData) do
-        matchDataByTrigger[id][triggernum][unit][index] = nil;
-        matchDataChanged[id] = matchDataChanged[id] or {};
-        matchDataChanged[id][triggernum] = true;
+        if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] and matchDataByTrigger[id][triggernum][unit] and matchDataByTrigger[id][triggernum][unit][index]) then
+          matchDataByTrigger[id][triggernum][unit][index] = nil;
+          matchDataChanged[id] = matchDataChanged[id] or {};
+          matchDataChanged[id][triggernum] = true;
+        end
       end
     end
     wipe(data.auras);
@@ -188,7 +190,6 @@ end
 
 local function FindBestMatchData(time, id, triggernum, triggerInfo)
   -- Find best match
-  local bestExpirationTime;
   local bestMatch = nil;
 
   local totalCount = 0;
@@ -209,8 +210,7 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo)
 
       if (remCheck) then
         totalCount = totalCount + 1;
-        if (not bestExpirationTime or bestExpirationTime > auraData.expirationTime) then
-          bestExpirationTime = auraData.expirationTime;
+        if (not bestMatch or triggerInfo.compareFunc(bestMatch, auraData)) then
           bestMatch = auraData;
         end
       end
@@ -859,6 +859,20 @@ local function createScanFunc(trigger)
   end
 end
 
+local function highestExpirationTime(bestMatch, auraMatch)
+  if (bestMatch.expirationTime and auraMatch.expirationTime) then
+    return auraMatch.expirationTime > bestMatch.expirationTime;
+  end
+  return true;
+end
+
+local function lowestExpirationTime(bestMatch, auraMatch)
+  if (bestMatch.expirationTime and auraMatch.expirationTime) then
+    return auraMatch.expirationTime < bestMatch.expirationTime;
+  end
+  return false;
+end
+
 --- Adds an aura, setting up internal data structures for all buff triggers.
 -- @param data
 function BuffTrigger.Add(data)
@@ -872,8 +886,15 @@ function BuffTrigger.Add(data)
       trigger.unit = trigger.unit or "player";
       trigger.debuffType = trigger.debuffType or "HELPFUL";
 
-      local effectiveShowOn = trigger.matchesShowOn or  "showOnActive";
-      local effectiveShowClones = effectiveShowOn == "showOnActive" and trigger.showClones;
+      local effectiveShowOn = trigger.matchesShowOn or "showOnActive";
+
+      -- TODO remove before release, a small upgrade path for people on my branch
+      if (trigger.showClones) then
+        trigger.showClones = nil;
+        trigger.combineMatches = "showClones";
+      end
+
+      local effectiveShowClones = effectiveShowOn == "showOnActive" and trigger.combineMatches == "showClones";
 
       local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
 
@@ -905,6 +926,7 @@ function BuffTrigger.Add(data)
         remainingCheck = effectiveShowOn == "showOnActive" and trigger.useRem and tonumber(trigger.rem) or 0,
         id = id,
         triggernum = triggernum,
+        compareFunc = trigger.combineMatches == "showHighest" and highestExpirationTime or lowestExpirationTime,
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;

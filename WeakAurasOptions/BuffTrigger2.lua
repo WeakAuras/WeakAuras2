@@ -297,7 +297,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     matchesShowOn = {
       type = "select",
-      width = "normal",
       name = L["Show On"],
       values = WeakAuras.bufftrigger_2_progress_behavior_types,
       order = 71,
@@ -308,12 +307,16 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return trigger.matchesShowOn or "showOnActive";
       end
     },
-    showClones = {
-      type = "toggle",
-      name = L["Show all matches"],
+    combineMatches = {
+      type = "select",
+      name = "Combine matches",
+      values = WeakAuras.bufftrigger_2_match_types,
       order = 71.5,
       hidden = function()
-        return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger));
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing");
+      end,
+      get = function()
+        return trigger.combineMatches or "showLowest";
       end
     },
 

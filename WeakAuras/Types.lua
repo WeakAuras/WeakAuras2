@@ -1489,6 +1489,12 @@ WeakAuras.bufftrigger_2_progress_behavior_types = {
   showAlways= L["Always"]
 }
 
+WeakAuras.bufftrigger_2_match_types = {
+  showLowest = L["Show lowest time left"],
+  showHighest = L["Show longest time left"],
+  showClones = L["Show all Matches"]
+}
+
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],
   [2]  = L["Neck"],
