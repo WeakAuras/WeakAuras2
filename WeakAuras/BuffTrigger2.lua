@@ -7,11 +7,11 @@ It registers the BuffTrigger table for the trigger type "aura2" and has the foll
 Add(data)
 Adds an aura, setting up internal data structures for all buff triggers.
 
-LoadDisplay(id)
-Loads the aura id, enabling all buff triggers in the aura.
+LoadDisplays(id)
+Loads the aura ids, enabling all buff triggers in the aura.
 
-UnloadDisplay(id)
-Unloads the aura id, disabling all buff triggers in the aura.
+UnloadDisplays(id)
+Unloads the aura ids, disabling all buff triggers in the aura.
 
 UnloadAll()
 Unloads all auras, disabling all buff triggers.
@@ -601,9 +601,7 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("bufftrigger2");
 end);
 
-function BuffTrigger.ScanAll(recentlyLoaded)
-  -- TODO optimize based on recentlyLoaded ?
-
+function BuffTrigger.ScanAll()
   local units = {};
 
   for unit in pairs(scanFuncName) do
@@ -677,10 +675,12 @@ local function LoadAura(id, triggernum, triggerInfo)
   end
 end
 
-function BuffTrigger.LoadDisplay(id)
-  if (triggerInfos[id]) then
-    for triggernum, triggerInfo in pairs(triggerInfos[id]) do
-      LoadAura(id, triggernum, triggerInfo);
+function BuffTrigger.LoadDisplays(toLoad)
+  for id in pairs(toLoad) do
+    if (triggerInfos[id]) then
+      for triggernum, triggerInfo in pairs(triggerInfos[id]) do
+        LoadAura(id, triggernum, triggerInfo);
+      end
     end
   end
 end
@@ -733,17 +733,23 @@ local function UnloadGeneral(scanFuncGeneral, id)
   end
 end
 
-function BuffTrigger.UnloadDisplay(id)
-  UnloadAura(scanFuncName, id);
-  UnloadAura(scanFuncSpellId, id);
-  UnloadGeneral(scanFuncGeneral, id);
+function BuffTrigger.UnloadDisplays(toLoad)
+  for id in pairs(toLoad) do
+    UnloadAura(scanFuncName, id);
+    UnloadAura(scanFuncSpellId, id);
+    UnloadGeneral(scanFuncGeneral, id);
 
-  for unit, unitData in pairs(matchData) do
-    for filter, filterData in pairs(unitData) do
-      filterData[id] = nil;
+    for unit, unitData in pairs(matchData) do
+      for filter, filterData in pairs(unitData) do
+        filterData[id] = nil;
+      end
     end
+    matchDataByTrigger[id] = nil;
   end
-  matchDataByTrigger[id] = nil;
+end
+
+function BuffTrigger.FinishLoadUnload()
+  BuffTrigger.ScanAll();
 end
 
 --- Removes all data for an aura id
