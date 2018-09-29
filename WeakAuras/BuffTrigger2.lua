@@ -76,6 +76,9 @@ local scanFuncName = {};
 local scanFuncSpellId = {};
 local scanFuncGeneral = {};
 
+local unitExistScanFunc = {};
+local existingUnits = {};
+
 local timer = WeakAuras.timer;
 
 -- Auras that matched, unit, index
@@ -312,6 +315,9 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId)
       show = true,
       changed = true,
       totalCount = 0,
+      progressType = 'timed',
+      duration = 0,
+      expirationTime = math.huge,
       time = time
     }
     return true;
@@ -402,27 +408,36 @@ local function UpdateTriggerState(time, id, triggernum)
   local triggerInfo = triggerInfos[id][triggernum];
   local updated;
   local nextCheck;
+  local activeStates = 0;
   if (triggerInfo.showClones) then
-    for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
-      for index, auraData in pairs(unitData) do
-        local cloneId = tostring(auraData);
-        local remCheck = true;
-        if (triggerInfo.remainingFunc and auraData.expirationTime) then
-          local remaining = auraData.expirationTime - time;
-          remCheck = triggerInfo.remainingFunc(remaining);
-          nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
-        end
+    if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]) then
+      for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
+        for index, auraData in pairs(unitData) do
+          local cloneId = tostring(auraData);
+          local remCheck = true;
+          if (triggerInfo.remainingFunc and auraData.expirationTime) then
+            local remaining = auraData.expirationTime - time;
+            remCheck = triggerInfo.remainingFunc(remaining);
+            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+          end
 
-        if (remCheck) then
-          updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId) or updated;
+          if (remCheck) then
+            updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId) or updated;
+            activeStates = activeStates + 1;
+          end
         end
       end
     end
 
     for cloneId, state in pairs(triggerStates) do
-      if (state.time < time) then
+      if (state.show and state.time < time) then
         updated = RemoveState(triggerStates, cloneId) or updated;
       end
+    end
+
+    if(activeStates == 0 and (triggerInfo.matchesShowOn == "showAlways" and existingUnits[triggerInfo.unit]
+                              or triggerInfo.unitExists and not existingUnits[triggerInfo.unit])) then
+      updated = UpdateStateWithNoMatch(time, triggerStates, "") or updated;
     end
 
     if (updated) then
@@ -439,6 +454,12 @@ local function UpdateTriggerState(time, id, triggernum)
         updated = RemoveState(triggerStates, cloneId);
       else
         updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount);
+      end
+    elseif (not existingUnits[triggerInfo.unit]) then -- Unit does not exist
+      if (triggerInfo.unitExists) then
+        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId);
+      else
+        updated = RemoveState(triggerStates, cloneId);
       end
     else -- No best match
       if (triggerInfo.matchesShowOn == "showOnActive") then
@@ -570,6 +591,20 @@ local function ScanUnit(unit)
     return;
   end
 
+  local unitExists = UnitExists(unit);
+  if (existingUnits[unit] ~= unitExists) then
+    existingUnits[unit] = unitExists;
+
+    if (unitExistScanFunc[unit]) then
+      for id, idData in pairs(unitExistScanFunc[unit]) do
+        matchDataChanged[id] = matchDataChanged[id] or {};
+        for _, triggerInfo in ipairs(idData) do
+          matchDataChanged[id][triggerInfo.triggernum] = true;
+        end
+      end
+    end
+  end
+
   scanFuncName[unit] = scanFuncName[unit] or {};
   scanFuncSpellId[unit] = scanFuncSpellId[unit] or {};
   scanFuncGeneral[unit] = scanFuncGeneral[unit] or {};
@@ -672,6 +707,12 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(scanFuncGeneral[triggerInfo.unit][filter], triggerInfo);
   end
 
+  if (triggerInfo.unitExists) then
+    unitExistScanFunc[triggerInfo.unit] = unitExistScanFunc[triggerInfo.unit] or {};
+    unitExistScanFunc[triggerInfo.unit][id] = unitExistScanFunc[triggerInfo.unit][id] or {}
+    tinsert(unitExistScanFunc[triggerInfo.unit][id], triggerInfo);
+  end
+
   local updateTriggerState = false;
   -- sets initial states up
   if (triggerInfo.matchesShowOn ~= "showOnMissing") then
@@ -690,7 +731,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     end
   end
 
-  if (updateTriggerState or triggerInfo.matchesShowOn ~= "showOnActive") then
+  if (updateTriggerState or triggerInfo.matchesShowOn ~= "showOnActive" or triggerInfo.unitExists) then
     UpdateTriggerState(GetTime(), id, triggernum);
   end
 end
@@ -759,6 +800,10 @@ function BuffTrigger.UnloadDisplays(toLoad)
     UnloadAura(scanFuncSpellId, id);
     UnloadGeneral(scanFuncGeneral, id);
 
+    for unit, unitData in pairs(unitExistScanFunc) do
+      unitData[id] = nil;
+    end
+
     for unit, unitData in pairs(matchData) do
       for filter, filterData in pairs(unitData) do
         filterData[id] = nil;
@@ -775,7 +820,7 @@ end
 --- Removes all data for an aura id
 -- @param id
 function BuffTrigger.Delete(id)
-  BuffTrigger.UnloadDisplay(id);
+  BuffTrigger.UnloadDisplays({id});
   triggerInfos[id] = nil;
 end
 
@@ -899,7 +944,7 @@ function BuffTrigger.Add(data)
         trigger.combineMatches = "showClones";
       end
 
-      local effectiveShowClones = effectiveShowOn == "showOnActive" and trigger.combineMatches == "showClones";
+      local effectiveShowClones = effectiveShowOn ~= "showOnMissing" and trigger.combineMatches == "showClones";
 
       local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
 
@@ -918,6 +963,8 @@ function BuffTrigger.Add(data)
         end
       end
 
+      local showIfInvalidUnit = trigger.unit ~= "player" and trigger.unitExists or false
+
       local triggerInformation = {
         auranames = names,
         auraspellids = trigger.useExactSpellId and trigger.auraspellids,
@@ -932,6 +979,7 @@ function BuffTrigger.Add(data)
         id = id,
         triggernum = triggernum,
         compareFunc = trigger.combineMatches == "showHighest" and highestExpirationTime or lowestExpirationTime,
+        unitExists = showIfInvalidUnit;
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;
@@ -1102,20 +1150,6 @@ function WeakAuras.CanConvertBuffTrigger2(trigger)
     end
   end
 
-  -- Unit Exists
-  if (trigger.unit ~= "player") then
-    if (trigger.buffShowOn == "showOnActive" and trigger.unitExists) then
-      return false, L["Unit exists checks can't be converted yet"];
-    end
-
-    if (trigger.buffShowOn == "showOnMissing" and not trigger.unitExists) then
-      return false, L["Unit exists checks can't be converted yet."];
-    end
-
-    if (trigger.buffShowOn == "showAlways" and not trigger.unitExists) then
-      return false, L["Unit exists checks can't be converted yet."];
-    end
-  end
   return true;
 end
 
@@ -1172,6 +1206,7 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   -- remaining is exactly the same for now;
   --   needs to be cleared once multi conversion is possible
   -- ownOnly is exactly the same
+  -- unitExists is exactly the same
 
   if (trigger.useCount) then
     trigger.useStacks = trigger.useCount;

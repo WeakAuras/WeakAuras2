@@ -319,6 +319,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return trigger.combineMatches or "showLowest";
       end
     },
+    unitExists = {
+      type = "toggle",
+      name = L["Show If Unit Is Invalid"],
+      order = 72,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit ~= "player");
+      end
+    },
 
   };
 
