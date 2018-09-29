@@ -783,7 +783,6 @@ templates.class.HUNTER = {
         { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
         { spell = 264195, type = "buff", unit = "player"}, --Rotting Jaws
         { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-        { spell = 274598, type = "buff", unit = "player"}, --PH
       },
       icon = 135349
     },
