@@ -566,19 +566,13 @@ local function ScanUnit(unit)
   local time = GetTime();
   local matchDataChanged = {};
 
+  if (WeakAuras.IsPaused()) then
+    return;
+  end
+
   scanFuncName[unit] = scanFuncName[unit] or {};
   scanFuncSpellId[unit] = scanFuncSpellId[unit] or {};
   scanFuncGeneral[unit] = scanFuncGeneral[unit] or {};
-
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL|PLAYER",
-      scanFuncName[unit]["HELPFUL|PLAYER"],
-      scanFuncSpellId[unit]["HELPFUL|PLAYER"],
-      scanFuncGeneral[unit]["HELPFUL|PLAYER"])
-
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL|PLAYER",
-      scanFuncName[unit]["HARMFUL|PLAYER"],
-      scanFuncSpellId[unit]["HARMFUL|PLAYER"],
-      scanFuncGeneral[unit]["HARMFUL|PLAYER"])
 
   ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
       scanFuncName[unit]["HELPFUL"],
@@ -643,9 +637,6 @@ end
 local function LoadAura(id, triggernum, triggerInfo)
   local added = false;
   local filter = triggerInfo.debuffType;
-  if (triggerInfo.ownOnly) then
-    filter = filter .. "|PLAYER";
-  end
 
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
@@ -808,7 +799,7 @@ function BuffTrigger.Rename(oldid, newid)
 end
 
 local function createScanFunc(trigger)
-  if (not trigger.useStacks and trigger.use_stealable == nil and not trigger.use_debuffClass) then
+  if (not trigger.useStacks and trigger.use_stealable == nil and not trigger.use_debuffClass and trigger.ownOnly == nil) then
     return nil;
   end
   local ret = [[
@@ -845,6 +836,20 @@ local function createScanFunc(trigger)
       end
     ]]
     ret = ret .. ret2:format(trigger.debuffClass);
+  end
+
+  if (trigger.ownOnly) then
+    ret = ret .. [[
+      if (matchData.unitCaster ~= 'player') then
+        return false
+      end
+    ]]
+  elseif(trigger.ownOnly == false) then
+    ret = ret .. [[
+      if (matchData.unitCaster == 'player') then
+        return false
+      end
+    ]]
   end
 
   ret = ret .. [[
