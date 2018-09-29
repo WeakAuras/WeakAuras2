@@ -521,6 +521,7 @@ templates.class.PALADIN = {
         { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
         { spell = 204335, type = "buff", unit = "player"}, -- Aegis of Light
         { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
+        { spell = 280375, type = "buff", unit = "player"}, -- Redoubt
       },
       icon = 236265
     },
