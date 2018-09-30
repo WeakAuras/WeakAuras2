@@ -344,7 +344,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["nameicon" .. i] = {
       type = "execute",
       name = function() return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i]) end,
-      -- TODO this is too long
       desc = function() return getAuraMatchesList(trigger.auranames and trigger.auranames[i]) end,
       width = 0.2,
       image = function()
@@ -395,7 +394,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["spellidicon" .. i] = {
       type = "execute",
       name = function() return getAuraMatchesLabel(trigger.auraspellids and trigger.auraspellids[i]) end,
-      -- TODO this is too long
       desc = function() return getAuraMatchesList(trigger.auraspellids and trigger.auraspellids[i]) end,
       width = 0.2,
       image = function()

@@ -239,6 +239,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, tot
       unit = bestMatch.unit,
       GUID = UnitGUID(bestMatch.unit),
       totalCount = totalCount,
+      active = true,
       time = time
     }
     return true;
@@ -302,6 +303,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, tot
       changed = true;
     end
 
+    if (state.active ~= true) then
+      state.active = true;
+      changed = true;
+    end
+
     if (changed) then
       state.changed = true;
       return true;
@@ -318,6 +324,7 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId)
       progressType = 'timed',
       duration = 0,
       expirationTime = math.huge,
+      active = false,
       time = time
     }
     return true;
@@ -376,6 +383,11 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId)
 
     if (state.totalCount ~= 0) then
       state.totalCount = 0;
+      changed = true;
+    end
+
+    if (state.active) then
+      state.active = false;
       changed = true;
     end
 
@@ -1080,6 +1092,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
 end
 
 function BuffTrigger.GetTriggerConditions(data, triggernum)
+  local trigger = data.triggers[triggernum].trigger
   local result = {};
   result["unitCaster"] = {
     display = L["Caster"],
@@ -1105,7 +1118,15 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     type = "string"
   }
 
-  -- TODO add buffed condition
+  if (trigger.matchesShowOn == "showAlways") then
+    result["buffed"] = {
+      display = L["Buffed/Debuffed"],
+      type = "bool",
+      test = function(state, needle)
+        return state and state.show and ((state.active and true or false) == (needle == 1));
+      end
+    }
+  end
 
   return result;
 end
