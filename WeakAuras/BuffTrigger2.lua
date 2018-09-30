@@ -1068,8 +1068,37 @@ end
 -- @param triggernum
 -- @return name and icon
 function BuffTrigger.GetNameAndIcon(data, triggernum)
-  -- TODO BuffTrigger.GetNameAndIcon
-  return nil, nil;
+  local _, name, icon
+  local trigger = data.triggers[triggernum].trigger
+
+  if (trigger.useName and trigger.auranames) then
+    for i = 1, 9 do
+      local spellId = tonumber(trigger.auranames[i]);
+      if (spellId) then
+        name, _, icon = GetSpellInfo(trigger.auraspellids[i]);
+        if (name and icon) then
+          return name, icon
+        end
+      else
+        local iconFromSpellCache = WeakAuras.spellCache.GetIcon(trigger.auranames[i]);
+        if (iconFromSpellCache) then
+          return trigger.auranames[i], iconFromSpellCache;
+        end
+      end
+    end
+  end
+
+  if (trigger.useExactSpellId and trigger.auraspellids) then
+    for i = 1, 9 do
+      local spellId = trigger.auraspellids[i] ~= "" and tonumber(trigger.auraspellids[i])
+      if (spellId) then
+        name, _, icon = GetSpellInfo(trigger.auraspellids[i]);
+        if (name and icon) then
+          return name, icon;
+        end
+      end
+    end
+  end
 end
 
 --- Returns the tooltip text for additional properties.
