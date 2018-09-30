@@ -212,6 +212,35 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useRem and trigger.rem or nil end
     },
+    use_tooltip = {
+      type = "toggle",
+      name = L["Tooltip"],
+      order = 62,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end
+    },
+    use_tooltipSpace = {
+      type = "description",
+      name = "",
+      order = 62.1,
+      width = "normal",
+      hidden = function() return not (trigger.type == "aura2" and not trigger.use_tooltip); end,
+    },
+    tooltip_operator = {
+      type = "select",
+      name = L["Operator"],
+      order = 62.2,
+      disabled = function() return not trigger.use_tooltip end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltip); end,
+      values = WeakAuras.string_operator_types
+    },
+    tooltip = {
+      type = "input",
+      name = L["Tooltip"],
+      width = "double",
+      order = 62.3,
+      disabled = function() return not trigger.use_tooltip end,
+      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltip); end
+    },
     use_stealable = {
       type = "toggle",
       name = function(input)
