@@ -4809,23 +4809,58 @@ WeakAuras.event_prototypes = {
     },
     name = L["Range Check"],
     init = function(trigger)
-      trigger.unit = trigger.unit or "target";
       local ret = [=[
+        -- TODO: handle throttle
+
           local unit = [[%s]];
-          local min, max = WeakAuras.GetRange(unit, true);
-          min = min or 0;
-          max = max or 999;
+          local range = %s;
+          local operator = [[%s]];
           local triggerResult = true;
+          local count = 0;
+          local names = "";
+          local units = {};
+
+          if unit=="multi" then
+            -- TODO or NOT TODO (that is the question) maintain a list of nameplates using events instead of iterate
+            -- increase 40 ?
+            for i = 1, 40 do
+              local u = "nameplate"..i
+              if UnitCanAttack("player", u)
+              and WeakAuras.CheckRange(u, range, operator)
+              then
+                count = count + 1;
+                units[count] = u;
+                names = names .. UnitName(u) .. "\n";
+              end
+            end
+            triggerResult = count > 0;
+          elseif unit=="group" then
+            for u in WA_IterateGroupMembers() do
+              if UnitIsVisible(u)
+              and not UnitIsPlayer(u)
+              and not UnitIsDeadOrGhost(u)
+              and WeakAuras.CheckRange(u, range, operator)
+              then
+                count = count + 1;
+                units[count] = u;
+                names = names .. UnitName(u) .. "\n";
+              end
+            end
+            triggerResult = count > 0;
+          else
+            local min, max = WeakAuras.GetRange(unit, true);
+            min = min or 0;
+            max = max or 999;
+            if operator == "<=" then
+              triggerResult = max <= range;
+            else
+              triggerResult = min >= range;
+            end
+            names = UnitName(unit);
+            units = {unit};
+          end
       ]=]
-      if (trigger.use_range) then
-        trigger.range = trigger.range or 8;
-        if (trigger.range_operator == "<=") then
-          ret = ret .. "triggerResult = max <= " .. tostring(trigger.range) .. "\n";
-        else
-          ret = ret .. "triggerResult = min >= " .. tostring(trigger.range).. "\n";
-        end
-      end
-      return ret:format(trigger.unit);
+      return ret:format(trigger.unit or "target", trigger.range or 8, trigger.range_operator or "<=");
     end,
     statesParameter = "one",
     args = {
@@ -4841,7 +4876,7 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "unit",
-        values = "actual_unit_types_with_specific",
+        values = "unit_types",
         test = "true",
         store = true
       },
@@ -4852,7 +4887,7 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "min",
         store = true,
-        test = "true"
+        test = "unit~='group' and unit~='multi'" -- don't work, still show in text tooltip
       },
       {
         hidden = true,
@@ -4860,6 +4895,34 @@ WeakAuras.event_prototypes = {
         display = L["Maximum Estimate"],
         type = "number",
         init = "max",
+        store = true,
+        test = "unit~='group' and unit~='multi'" -- don't work, still show in text tooltip
+      },
+      {
+        hidden = true,
+        name = "stacks",
+        display = L["Count units in range"],
+        type = "number",
+        init = "count",
+        store = true,
+        test = "unit~='group' or unit~='multi'", -- don't work, still show in text tooltip
+        conditionType = "number"
+      },
+      {
+        hidden = true,
+        name = "names",
+        display = L["Names"],
+        type = "string",
+        init = "names",
+        store = true,
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "units",
+        display = L["Table of Units"],
+        type = "multiselect",
+        init = "units",
         store = true,
         test = "true"
       },
@@ -4876,7 +4939,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "UnitExists(unit)"
+        test = "unit=='multi' or (unit=='group' and IsInGroup()) or UnitExists(unit)"
       }
     },
     automaticrequired = true
