@@ -25,6 +25,28 @@ end
 
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
+local RangeCheckUpdater;
+local RangeCheckTimeSinceLastUpdate = 0;
+local RangeCheckTrottle = 0.2;
+
+function WeakAuras.InitRangeCheckUpdater()
+  if not RangeCheckUpdater then
+    RangeCheckUpdater = CreateFrame("Frame");
+    RangeCheckUpdater:SetScript("OnUpdate", function(self, elapsed)
+      if not(WeakAuras.IsPaused()) then
+        RangeCheckTimeSinceLastUpdate = RangeCheckTimeSinceLastUpdate + elapsed
+        if RangeCheckTimeSinceLastUpdate > RangeCheckTrottle then
+          RangeCheckTimeSinceLastUpdate = 0;
+          WeakAuras.ScanEvents("RANGE_CHECK_UPDATE");
+        end
+      end
+    end)
+    RangeCheckUpdater:SetScript("OnShow", function(self)
+      RangeCheckTimeSinceLastUpdate = 0
+    end)
+  end
+end
+
 function WeakAuras.GetRange(unit, checkVisible)
   return LibRangeCheck:GetRange(unit, checkVisible);
 end
@@ -4805,13 +4827,11 @@ WeakAuras.event_prototypes = {
   ["Range Check"] = {
     type = "status",
     events = {
-      "FRAME_UPDATE",
+      "RANGE_CHECK_UPDATE",
     },
     name = L["Range Check"],
     init = function(trigger)
       local ret = [=[
-        -- TODO: handle throttle
-
           local unit = [[%s]];
           local range = %s;
           local operator = [[%s]];
@@ -4858,9 +4878,13 @@ WeakAuras.event_prototypes = {
             end
             names = UnitName(unit);
             units = {unit};
+            count = 1;
           end
       ]=]
       return ret:format(trigger.unit or "target", trigger.range or 8, trigger.range_operator or "<=");
+    end,
+    loadFunc = function(trigger)
+      WeakAuras.InitRangeCheckUpdater()
     end,
     statesParameter = "one",
     args = {
@@ -4887,7 +4911,7 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "min",
         store = true,
-        test = "unit~='group' and unit~='multi'" -- don't work, still show in text tooltip
+        test = "true"
       },
       {
         hidden = true,
@@ -4896,7 +4920,7 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "max",
         store = true,
-        test = "unit~='group' and unit~='multi'" -- don't work, still show in text tooltip
+        test = "true"
       },
       {
         hidden = true,
@@ -4905,7 +4929,7 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "count",
         store = true,
-        test = "unit~='group' or unit~='multi'", -- don't work, still show in text tooltip
+        test = "true",
         conditionType = "number"
       },
       {
