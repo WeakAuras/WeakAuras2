@@ -730,7 +730,7 @@ genericTriggerRegisteredEvents["PLAYER_ENTERING_WORLD"] = true;
 frame:SetScript("OnEvent", HandleEvent);
 
 function GenericTrigger.Delete(id)
-  GenericTrigger.UnloadDisplays({id});
+  GenericTrigger.UnloadDisplays({[id] = true});
 end
 
 function GenericTrigger.Rename(oldid, newid)
