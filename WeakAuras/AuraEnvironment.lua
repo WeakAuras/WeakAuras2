@@ -25,7 +25,7 @@ end
 
 -- Function to assist iterating group members whether in a party or raid.
 local WA_IterateGroupMembers = function(reversed, forceParty)
-  local unit  = (not forceParty and IsInRaid()) and 'raid' or 'party'
+  local unit = (not forceParty and IsInRaid()) and 'raid' or 'party'
   local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()
   local i = reversed and numGroupMembers or (unit == 'party' and 0 or 1)
   return function()
