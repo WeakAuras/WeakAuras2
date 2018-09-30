@@ -794,8 +794,8 @@ local function UnloadGeneral(scanFuncGeneral, id)
   end
 end
 
-function BuffTrigger.UnloadDisplays(toLoad)
-  for id in pairs(toLoad) do
+function BuffTrigger.UnloadDisplays(toUnload)
+  for id in pairs(toUnload) do
     UnloadAura(scanFuncName, id);
     UnloadAura(scanFuncSpellId, id);
     UnloadGeneral(scanFuncGeneral, id);
@@ -820,7 +820,7 @@ end
 --- Removes all data for an aura id
 -- @param id
 function BuffTrigger.Delete(id)
-  BuffTrigger.UnloadDisplays({id});
+  BuffTrigger.UnloadDisplays({[id] = true});
   triggerInfos[id] = nil;
 end
 
@@ -832,6 +832,12 @@ function BuffTrigger.Rename(oldid, newid)
   triggerInfos[newid] = triggerInfos[oldid];
   triggerInfos[oldid] = nil;
 
+  if (triggerInfos[newid]) then
+    for triggernum, triggerData in pairs(triggerInfos[newid]) do
+      triggerData.id = newid;
+    end
+  end
+
   matchDataByTrigger[newid] = matchDataByTrigger[oldid];
   matchDataByTrigger[oldid] = nil;
 
@@ -840,6 +846,11 @@ function BuffTrigger.Rename(oldid, newid)
       filterData[newid] = filterData[oldid];
       filterData[oldid] = nil;
     end
+  end
+
+  for unit, unitData in pairs(unitExistScanFunc) do
+    unitData[newid] = unitData[oldid];
+    unitData[oldid] = nil;
   end
 end
 

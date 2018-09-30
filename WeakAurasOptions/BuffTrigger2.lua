@@ -64,8 +64,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   end
 
   -- TODO LIST, aka what's missing?
-  -- unit not exists
-
   -- fullscan
   --   aura names: IsExactly/Contains/Pattern Matching for
   --    match on tooltip:
