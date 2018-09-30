@@ -17,11 +17,7 @@ local function getAuraMatchesLabel(name)
     for id, _ in pairs(ids) do
       numMatches = numMatches + 1;
     end
-    if(numMatches == 1) then
-      return L["1 Match"];
-    else
-      return L["%i Matches"]:format(numMatches);
-    end
+    return tostring(numMatches);
   else
     return "";
   end
