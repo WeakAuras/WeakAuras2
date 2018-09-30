@@ -4839,49 +4839,60 @@ WeakAuras.event_prototypes = {
           local count = 0;
           local names = "";
           local units = {};
+          local activation = %s;
+          activation = activation and WeakAuras.IsTriggerActive(aura_env.id) or not activation;
 
-          if unit=="multi" then
-            -- TODO or NOT TODO (that is the question) maintain a list of nameplates using events instead of iterate
-            -- increase 40 ?
-            for i = 1, 40 do
-              local u = "nameplate"..i
-              if UnitCanAttack("player", u)
-              and WeakAuras.CheckRange(u, range, operator)
-              then
-                count = count + 1;
-                units[count] = u;
-                names = names .. UnitName(u) .. "\n";
+          if activation then
+            if unit=="multi" then
+              -- TODO or NOT TODO (that is the question) maintain a list of nameplates using events instead of iterate
+              -- increase 40 ?
+              for i = 1, 40 do
+                local u = "nameplate"..i
+                if UnitCanAttack("player", u)
+                and WeakAuras.CheckRange(u, range, operator)
+                then
+                  count = count + 1;
+                  units[count] = u;
+                  names = names .. UnitName(u) .. "\n";
+                end
               end
-            end
-            triggerResult = count > 0;
-          elseif unit=="group" then
-            for u in WA_IterateGroupMembers() do
-              if UnitIsVisible(u)
-              and not UnitIsPlayer(u)
-              and not UnitIsDeadOrGhost(u)
-              and WeakAuras.CheckRange(u, range, operator)
-              then
-                count = count + 1;
-                units[count] = u;
-                names = names .. UnitName(u) .. "\n";
+              triggerResult = count > 0;
+            elseif unit=="group" then
+              for u in WA_IterateGroupMembers() do
+                if UnitIsVisible(u)
+                and not UnitIsPlayer(u)
+                and not UnitIsDeadOrGhost(u)
+                and WeakAuras.CheckRange(u, range, operator)
+                then
+                  count = count + 1;
+                  units[count] = u;
+                  names = names .. UnitName(u) .. "\n";
+                end
               end
-            end
-            triggerResult = count > 0;
-          else
-            local min, max = WeakAuras.GetRange(unit, true);
-            min = min or 0;
-            max = max or 999;
-            if operator == "<=" then
-              triggerResult = max <= range;
+              triggerResult = count > 0;
             else
-              triggerResult = min >= range;
+              local min, max = WeakAuras.GetRange(unit, true);
+              min = min or 0;
+              max = max or 999;
+              if operator == "<=" then
+                triggerResult = max <= range;
+              else
+                triggerResult = min >= range;
+              end
+              names = UnitName(unit);
+              units = {unit};
+              count = 1;
             end
-            names = UnitName(unit);
-            units = {unit};
-            count = 1;
+          else
+            triggerResult = false;
           end
       ]=]
-      return ret:format(trigger.unit or "target", trigger.range or 8, trigger.range_operator or "<=");
+      return ret:format(
+        trigger.unit or "target", 
+        trigger.range or 8, 
+        trigger.range_operator or "<=", 
+        tostring(trigger.use_activation)
+      );
     end,
     loadFunc = function(trigger)
       WeakAuras.InitRangeCheckUpdater()
@@ -4960,6 +4971,18 @@ WeakAuras.event_prototypes = {
         conditionTest = function(state, needle, needle2)
           return state and state.show and WeakAuras.CheckRange(state.unit, needle, needle2);
         end,
+      },
+      {
+        name = "note2",
+        type = "description",
+        display = "",
+        text = L["If you check the option below, the range check function will be run only when the aura is active to save CPU."],
+      },
+      {
+        name = "activation",
+        display = L["Require Aura Activation"],
+        type = "toggle",
+        test = "true",
       },
       {
         hidden = true,
