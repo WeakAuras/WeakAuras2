@@ -1121,7 +1121,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
     for i = 1, 9 do
       local spellId = tonumber(trigger.auranames[i]);
       if (spellId) then
-        name, _, icon = GetSpellInfo(trigger.auraspellids[i]);
+        name, _, icon = GetSpellInfo(trigger.auranames[i]);
         if (name and icon) then
           return name, icon
         end
