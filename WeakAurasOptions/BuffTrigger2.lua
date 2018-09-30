@@ -367,8 +367,12 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         if (v == "") then
           shiftTable(trigger.auranames, i);
         else
-          -- TODO use CorrectAuraName ?
-          trigger.auranames[i] = v;
+          local spellId = tonumber(v);
+          if (spellId) then
+            WeakAuras.spellCache.CorrectAuraName(v);
+          else
+            trigger.auranames[i] = spellCache.BestKeyMatch(v);
+          end
         end
 
         WeakAuras.Add(data);
