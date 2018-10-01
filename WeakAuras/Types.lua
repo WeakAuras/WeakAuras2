@@ -134,6 +134,18 @@ WeakAuras.unit_types = {
   multi = L["Multi-target"]
 }
 
+WeakAuras.unit_types_bufftrigger_2 = {
+  player = L["Player"],
+  target = L["Target"],
+  focus = L["Focus"],
+  group = L["Group"],
+  boss = L["Boss"],
+  arena = L["Arena"],
+  --member = L["Specific Unit"],
+  pet = L["Pet"],
+  --multi = L["Multi-target"]
+}
+
 WeakAuras.actual_unit_types_with_specific = {
   player = L["Player"],
   target = L["Target"],

@@ -683,6 +683,39 @@ local function ScanUnit(unit)
   UpdateStates(matchDataChanged, time);
 end
 
+local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
+  if (WeakAuras.IsPaused()) then
+    return;
+  end
+  local unitExists = UnitExists(unit);
+  if (existingUnits[unit] ~= unitExists) then
+    existingUnits[unit] = unitExists;
+
+    if (unitExistScanFunc[unit]) then
+      for id, idData in pairs(unitExistScanFunc[unit]) do
+        matchDataChanged[id] = matchDataChanged[id] or {};
+        for _, triggerInfo in ipairs(idData) do
+          matchDataChanged[id][triggerInfo.triggernum] = true;
+        end
+      end
+    end
+  end
+
+  scanFuncName[unitType] = scanFuncName[unitType] or {};
+  scanFuncSpellId[unitType] = scanFuncSpellId[unitType] or {};
+  scanFuncGeneral[unitType] = scanFuncGeneral[unitType] or {};
+
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
+      scanFuncName[unitType]["HELPFUL"],
+      scanFuncSpellId[unitType]["HELPFUL"],
+      scanFuncGeneral[unitType]["HELPFUL"])
+
+  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
+      scanFuncName[unitType]["HARMFUL"],
+      scanFuncSpellId[unitType]["HARMFUL"],
+      scanFuncGeneral[unitType]["HARMFUL"]);
+end
+
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame;
 frame:RegisterEvent("UNIT_AURA");
@@ -698,6 +731,24 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   elseif(event == "UNIT_PET") then
     ScanUnit("pet")
   elseif(event == "UNIT_AURA") then
+    -- TODO better check?
+    if (arg1:sub(1,4) == "raid" or arg1:sub(1,5) == "party" or arg1 == "player") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      ScanGroupUnit(time, matchDataChanged, "group", arg1);
+      UpdateStates(matchDataChanged, time);
+    elseif (arg1:sub(1,4) == "boss") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      ScanGroupUnit(time, matchDataChanged, "boss", arg1);
+      UpdateStates(matchDataChanged, time);
+    elseif (arg1:sub(1,5) == "arena") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      ScanGroupUnit(time, matchDataChanged, "arena", arg1);
+      UpdateStates(matchDataChanged, time);
+    end
+
     ScanUnit(arg1);
   end
   WeakAuras.StopProfileSystem("bufftrigger2");
@@ -718,7 +769,23 @@ function BuffTrigger.ScanAll()
   end
 
   for unit in pairs(units) do
-    ScanUnit(unit);
+    if (unit == "group") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      if (IsInRaid()) then
+        for i = 1, GetNumGroupMembers() do
+          ScanGroupUnit(time, matchDataChanged, "group", "raid" .. i);
+        end
+      else
+        ScanGroupUnit(time, matchDataChanged, "group", "player")
+        for i = 1, GetNumSubgroupMembers() do
+          ScanGroupUnit(time, matchDataChanged, "group", "party" .. i);
+        end
+      end
+      UpdateStates(matchDataChanged, time);
+    else
+      ScanUnit(unit);
+    end
   end
 end
 

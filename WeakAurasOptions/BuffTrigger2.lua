@@ -2,11 +2,6 @@ local L = WeakAuras.L;
 
 local operator_types = WeakAuras.operator_types;
 local debuff_types = WeakAuras.debuff_types;
-local tooltip_count = WeakAuras.tooltip_count;
-local unit_types = WeakAuras.unit_types;
-local actual_unit_types_with_specific = WeakAuras.actual_unit_types_with_specific;
-local group_aura_name_info_types = WeakAuras.group_aura_name_info_types;
-local group_aura_stack_info_types = WeakAuras.group_aura_stack_info_types;
 
 local function getAuraMatchesLabel(name)
   local iconCache = WeakAuras.spellCache.Get();
@@ -63,9 +58,11 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   -- multi trigger
   -- * This should use the same match data, with less data and auto hiding
   -- * Might not work
+
   -- Specific Unit
   -- * Be better than the old one and try to detect when the specific unit changed
   -- * E.g. watch their GUID ? On UNIT_AURA changes, check if the GUID matches any watched specific unit and update it too
+
   -- Group:
   --   * scanFuncs are per unit type (?)
   --   * ScanUnit takes a specific unit, so raidX
@@ -106,7 +103,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Unit"],
       order = 10.1,
       values = function()
-        return WeakAuras.actual_unit_types;
+        return WeakAuras.unit_types_bufftrigger_2;
       end,
       hidden = function() return not (trigger.type == "aura2"); end,
     },
