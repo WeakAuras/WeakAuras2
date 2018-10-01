@@ -3753,6 +3753,7 @@ end
 
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltip = WeakAuras.GetHiddenTooltip();
+  tooltip:ClearLines();
   tooltip:SetUnitAura(unit, index, filter);
   local tooltipTextLine = select(5, tooltip:GetRegions())
 
@@ -3762,8 +3763,12 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltipSize = {};
   if(tooltipText) then
     for t in tooltipText:gmatch("(%d[%d%.,]*)") do
-      t = t:gsub(",", "");
-      t = t:gsub("%.", "");
+      if (LARGE_NUMBER_SEPERATOR == ",") then
+        t = t:gsub(",", "");
+      else
+        t = t:gsub("%.", "");
+        t = t:gsub(",", ".");
+      end
       tinsert(tooltipSize, tonumber(t));
     end
   end

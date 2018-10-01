@@ -108,7 +108,6 @@ local function UpdateToolTipDataInMatchData(matchData, time)
     matchData.tooltip, _, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter);
   end
 
-
   matchData.tooltipUpdated = time;
 end
 
@@ -257,6 +256,10 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, tot
       unit = bestMatch.unit,
       GUID = UnitGUID(bestMatch.unit),
       totalCount = totalCount,
+      tooltip = bestMatch.tooltip,
+      tooltip1 = bestMatch.tooltip1,
+      tooltip2 = bestMatch.tooltip2,
+      tooltip3 = bestMatch.tooltip3,
       active = true,
       time = time
     }
@@ -313,6 +316,24 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, tot
 
     if (state.index ~= bestMatch.index) then
       state.index = bestMatch.index;
+      changed = true;
+    end
+
+    --
+    if (state.tooltip ~= bestMatch.tooltip) then
+      state.tooltip = bestMatch.tooltip;
+      changed = true;
+    end
+    if (state.tooltip1 ~= bestMatch.tooltip1) then
+      state.tooltip1 = bestMatch.tooltip1;
+      changed = true;
+    end
+    if (state.tooltip2 ~= bestMatch.tooltip2) then
+      state.tooltip2 = bestMatch.tooltip2;
+      changed = true;
+    end
+    if (state.tooltip3 ~= bestMatch.tooltip3) then
+      state.tooltip3 = bestMatch.tooltip3;
       changed = true;
     end
 
@@ -540,16 +561,19 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     else
       debuffClass = string.lower(debuffClass);
     end
-    index = index + 1;
     if (not name) then
       break;
     end
 
     local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId);
+
     if (updatedMatchData) then -- Aura data changed, check against triggerInfos
       local auras = scanFuncName and scanFuncName[name];
       if (auras) then
         for _, triggerInfo in pairs(auras) do
+          if (triggerInfo.fetchTooltip) then
+            matchData[unit][filter][index]:UpdateTooltip(time);
+          end
           if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(time, matchData[unit][filter][index])) then
             local id = triggerInfo.id;
             local triggernum = triggerInfo.triggernum
@@ -563,6 +587,9 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
       auras = scanFuncSpellId and scanFuncSpellId[spellId];
       if (auras) then
         for _, triggerInfo in pairs(auras) do
+          if (triggerInfo.fetchTooltip) then
+            matchData[unit][filter][index]:UpdateTooltip(time);
+          end
           if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(time, matchData[unit][filter][index])) then
             local id = triggerInfo.id;
             local triggernum = triggerInfo.triggernum;
@@ -575,6 +602,9 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
 
       if (scanFuncGeneral) then
         for _, triggerInfo in pairs(scanFuncGeneral) do
+          if (triggerInfo.fetchTooltip) then
+            matchData[unit][filter][index]:UpdateTooltip(time);
+          end
           if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(time, matchData[unit][filter][index])) then
             local id = triggerInfo.id;
             local triggernum = triggerInfo.triggernum;
@@ -585,6 +615,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
         end
       end
     end
+    index = index + 1;
   end
 
   -- Figure out if any matchData is outdated
@@ -884,15 +915,30 @@ function BuffTrigger.Rename(oldid, newid)
   end
 end
 
+local function effectiveShowOnIsShowOnActive(trigger)
+  local effectiveShowOn = true;
+  if (trigger.matchesShowOn) then
+    effectiveShowOn = trigger.matchesShowOn == "showOnActive";
+  end
+  return effectiveShowOn;
+end
+
+
 local function createScanFunc(trigger)
-  if (not trigger.useStacks and trigger.use_stealable == nil and not trigger.use_debuffClass and trigger.ownOnly == nil and not trigger.use_tooltip) then
+  local useStacks = effectiveShowOnIsShowOnActive(trigger) and trigger.useStacks;
+  local use_stealable = effectiveShowOnIsShowOnActive(trigger) and trigger.use_stealable;
+  local use_debuffClass = effectiveShowOnIsShowOnActive(trigger) and trigger.use_debuffClass;
+  local use_tooltip = effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip and trigger.use_tooltip;
+  local use_tooltipValue = effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip and trigger.use_tooltipValue;
+
+  if (not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern) then
     return nil;
   end
   local ret = [[
     return function(time, matchData)
   ]];
 
-  if (trigger.useStacks) then
+  if (useStacks) then
     local ret2 = [[
       if not(matchData.stacks %s %s) then
         return false
@@ -901,13 +947,13 @@ local function createScanFunc(trigger)
     ret = ret .. ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0);
   end
 
-  if (trigger.use_stealable) then
+  if (use_stealable) then
     ret = ret .. [[
       if (not matchData.isStealable) then
         return false
       end
     ]]
-  elseif(trigger.use_stealable == false) then
+  elseif(use_stealable == false) then
     ret = ret .. [[
       if (matchData.isStealable) then
         return false
@@ -915,7 +961,7 @@ local function createScanFunc(trigger)
     ]]
   end
 
-  if (trigger.use_debuffClass and trigger.debuffClass) then
+  if (use_debuffClass and trigger.debuffClass) then
     local ret2 = [[
       if (matchData.debuffClass ~= %q) then
         return false;
@@ -938,10 +984,9 @@ local function createScanFunc(trigger)
     ]]
   end
 
-  if (trigger.use_tooltip and trigger.tooltip_operator and trigger.tooltip) then
+  if (use_tooltip and trigger.tooltip_operator and trigger.tooltip) then
     if (trigger.tooltip_operator == "==") then
       local ret2 = [[
-      matchData:UpdateTooltip(time);
       if not (matchData.tooltip == %q ) then
         return false;
       end
@@ -949,7 +994,6 @@ local function createScanFunc(trigger)
       ret = ret .. ret2:format(trigger.tooltip);
     elseif (trigger.tooltip_operator == "find('%s')") then
       local ret2 = [[
-      matchData:UpdateTooltip(time);
       if not (matchData.tooltip:find(%q)) then
         return false;
       end
@@ -957,12 +1001,46 @@ local function createScanFunc(trigger)
       ret = ret .. ret2:format(trigger.tooltip);
     elseif(trigger.tooltip_operator == "match('%s')") then
       local ret2 = [[
-      matchData:UpdateTooltip(time);
       if not (matchData.tooltip:match(%q) ) then
         return false;
       end
       ]]
       ret = ret .. ret2:format(trigger.tooltip);
+    end
+  end
+
+  if (use_tooltipValue and trigger.tooltipValueNr and trigger.tooltipValue_operator and trigger.tooltipValue) then
+    local property = "tooltip" .. tonumber(trigger.tooltipValueNr);
+    local ret2 = [[
+      if not (matchData.%s %s %s) then
+        return false;
+      end
+    ]]
+    ret = ret .. ret2:format(property, trigger.tooltipValue_operator, trigger.tooltipValue);
+  end
+
+  if (trigger.useNamePattern and trigger.namePattern_operator and trigger.namePattern_name) then
+    if (trigger.namePattern_operator == "==") then
+      local ret2 = [[
+      if not (matchData.name == %q ) then
+        return false;
+      end
+      ]]
+      ret = ret .. ret2:format(trigger.namePattern_name);
+    elseif (trigger.namePattern_operator == "find('%s')") then
+      local ret2 = [[
+      if not (matchData.name:find(%q)) then
+        return false;
+      end
+      ]]
+      ret = ret .. ret2:format(trigger.namePattern_name);
+    elseif(trigger.namePattern_operator == "match('%s')") then
+      local ret2 = [[
+      if not (matchData.name:match(%q) ) then
+        return false;
+      end
+      ]]
+      ret = ret .. ret2:format(trigger.namePattern_name);
     end
   end
 
@@ -1048,7 +1126,8 @@ function BuffTrigger.Add(data)
         id = id,
         triggernum = triggernum,
         compareFunc = trigger.combineMatches == "showHighest" and highestExpirationTime or lowestExpirationTime,
-        unitExists = showIfInvalidUnit;
+        unitExists = showIfInvalidUnit,
+        fetchTooltip = trigger.matchesShowOn ~= "showOnMissing" and trigger.fetchTooltip
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;
@@ -1152,10 +1231,11 @@ end
 -- @param triggernum
 -- @return string of additional properties
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
+  local trigger = data.triggers[triggernum].trigger
+
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
-  local trigger = data.triggers[triggernum].trigger
 
   local effectiveShowOn = trigger.matchesShowOn or  "showOnActive";
   local effectiveShoWClones = effectiveShowOn == "showOnActive" and trigger.showClones;
@@ -1163,6 +1243,13 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   if (not effectiveShoWClones) then
     ret = ret .. "|cFFFF0000%totalCount|r -" .. L["Total Matches"] .. "\n";
   end
+  if (effectiveShowOn ~= "showOnMissing" and trigger.fetchTooltip) then
+    ret = ret .. "|cFFFF0000%tooltip|r -" .. L["Tooltip"] .. "\n";
+    ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First value of Tooltip"] .. "\n";
+    ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second value of Tooltip"] .. "\n";
+    ret = ret .. "|cFFFF0000%tooltip3|r -" .. L["Third value of Tooltip"] .. "\n";
+  end
+
   return ret;
 end
 
@@ -1203,6 +1290,21 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     }
   end
 
+  if (trigger.matchesShowOn ~= "showOnMissing" and trigger.fetchTooltip) then
+    result["tooltip1"] = {
+      display = L["Tooltip Value 1"],
+      type = "number"
+    }
+    result["tooltip2"] = {
+      display = L["Tooltip Value 2"],
+      type = "number"
+    }
+    result["tooltip3"] = {
+      display = L["Tooltip Value 3"],
+      type = "number"
+    }
+  end
+
   return result;
 end
 
@@ -1240,20 +1342,12 @@ function WeakAuras.CanConvertBuffTrigger2(trigger)
   end
 
   if (trigger.fullscan) then
-    if (trigger.use_name and trigger.name_operator ~= "==") then
-      return false, L["Fullscan auras with pattern matching can't be converted yet."];
-    end
-
-    if (trigger.use_tooltip) then
-      return false, L["Fullscan auras with tooltip scanning can't be converted yet."];
+    if (trigger.subcount) then
+      return true, L["Warning: Tooltip Values are now available via %tooltip1, %tooltip2, %tooltip3 instead of %s. This is not automatically adjusted."]
     end
 
     if (trigger.use_name and trigger.use_spellId) then
       return false, L["Fullscan auras checking for both name and spell id can't be converted."];
-    end
-
-    if (trigger.subcount) then
-      return false, L["Fullscan auras scanning the tooltip can't be converted yet."];
     end
   end
 
@@ -1281,6 +1375,22 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   if (trigger.fullscan and trigger.use_debuffClass and trigger.debuffClass) then
   else
     trigger.use_debuffClass = false;
+  end
+
+  if (trigger.fullscan and trigger.use_tooltip) then
+    trigger.fetchTooltip = true;
+  else
+    trigger.use_tooltip = false;
+  end
+
+  if (trigger.fullscan and trigger.subcount) then
+    trigger.fetchTooltip = true;
+  end
+
+  if (trigger.fullscan and trigger.use_name) then
+    trigger.useNamePattern = true;
+    trigger.namePattern_operator = trigger.name_operator;
+    trigger.namePattern_name = trigger.name;
   end
 
   if (trigger.fullscan) then
