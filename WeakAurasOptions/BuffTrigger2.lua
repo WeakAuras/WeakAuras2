@@ -59,10 +59,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   -- * This should use the same match data, with less data and auto hiding
   -- * Might not work
 
-  -- Specific Unit
-  -- * Be better than the old one and try to detect when the specific unit changed
-  -- * E.g. watch their GUID ? On UNIT_AURA changes, check if the GUID matches any watched specific unit and update it too
-
   -- Group:
   --   * scanFuncs are per unit type (?)
   --   * ScanUnit takes a specific unit, so raidX
@@ -106,6 +102,21 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return WeakAuras.unit_types_bufftrigger_2;
       end,
       hidden = function() return not (trigger.type == "aura2"); end,
+    },
+    useSpecificUnit = {
+      type = "toggle",
+      name = L["Specific Unit"],
+      order = 10.2,
+      disabled = true,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member") end,
+      get = function() return true end
+    },
+    specificUnit = {
+      type = "input",
+      name = L["Specific Unit"],
+      order = 10.3,
+      desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member") end
     },
     useDebuffType = {
       type = "toggle",

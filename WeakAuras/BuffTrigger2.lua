@@ -644,45 +644,6 @@ local function UpdateStates(matchDataChanged, time)
   end
 end
 
-local function ScanUnit(unit)
-  local time = GetTime();
-  local matchDataChanged = {};
-
-  if (WeakAuras.IsPaused()) then
-    return;
-  end
-
-  local unitExists = UnitExists(unit);
-  if (existingUnits[unit] ~= unitExists) then
-    existingUnits[unit] = unitExists;
-
-    if (unitExistScanFunc[unit]) then
-      for id, idData in pairs(unitExistScanFunc[unit]) do
-        matchDataChanged[id] = matchDataChanged[id] or {};
-        for _, triggerInfo in ipairs(idData) do
-          matchDataChanged[id][triggerInfo.triggernum] = true;
-        end
-      end
-    end
-  end
-
-  scanFuncName[unit] = scanFuncName[unit] or {};
-  scanFuncSpellId[unit] = scanFuncSpellId[unit] or {};
-  scanFuncGeneral[unit] = scanFuncGeneral[unit] or {};
-
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
-      scanFuncName[unit]["HELPFUL"],
-      scanFuncSpellId[unit]["HELPFUL"],
-      scanFuncGeneral[unit]["HELPFUL"])
-
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
-      scanFuncName[unit]["HARMFUL"],
-      scanFuncSpellId[unit]["HARMFUL"],
-      scanFuncGeneral[unit]["HARMFUL"]);
-
-  UpdateStates(matchDataChanged, time);
-end
-
 local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
   if (WeakAuras.IsPaused()) then
     return;
@@ -716,12 +677,32 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
       scanFuncGeneral[unitType]["HARMFUL"]);
 end
 
+local function ScanUnit(unit)
+  if (WeakAuras.IsPaused()) then
+    return;
+  end
+  local time = GetTime();
+  local matchDataChanged = {};
+
+  ScanGroupUnit(time, matchDataChanged, unit, unit);
+
+  UpdateStates(matchDataChanged, time);
+end
+
+
+
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame;
 frame:RegisterEvent("UNIT_AURA");
 frame:RegisterUnitEvent("UNIT_PET", "player")
 frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+frame:RegisterEvent("ENCOUNTER_START");
+frame:RegisterEvent("ENCOUNTER_END");
+frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+frame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
+frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+frame:RegisterEvent("ARENA_OPPONENT_UPDATE");
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2");
   if(event == "PLAYER_TARGET_CHANGED") then
@@ -730,8 +711,27 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     ScanUnit("focus");
   elseif(event == "UNIT_PET") then
     ScanUnit("pet")
+  elseif(event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED") then
+    local time = GetTime();
+    local matchDataChanged = {};
+    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1);
+    UpdateStates(matchDataChanged, time);
+  elseif(event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+    local time = GetTime();
+    local matchDataChanged = {};
+    for i = 1, 4 do
+      local unit = "boss" .. i;
+      if(UnitExists(unit) ~= existingUnits[unit]) then
+        ScanGroupUnit(time, matchDataChanged, "boss", unit);
+      end
+    end
+    UpdateStates(matchDataChanged, time);
+  elseif (event =="ARENA_OPPONENT_UPDATE") then
+    local time = GetTime();
+    local matchDataChanged = {};
+    ScanGroupUnit(time, matchDataChanged, "arena", arg1);
+    UpdateStates(matchDataChanged, time);
   elseif(event == "UNIT_AURA") then
-    -- TODO better check?
     if (arg1:sub(1,4) == "raid" or arg1:sub(1,5) == "party" or arg1 == "player") then
       local time = GetTime();
       local matchDataChanged = {};
@@ -746,6 +746,11 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       local time = GetTime();
       local matchDataChanged = {};
       ScanGroupUnit(time, matchDataChanged, "arena", arg1);
+      UpdateStates(matchDataChanged, time);
+    elseif (arg1:sub(1, 9) == "nameplate") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      ScanGroupUnit(time, matchDataChanged, "nameplate", arg1);
       UpdateStates(matchDataChanged, time);
     end
 
@@ -783,10 +788,25 @@ function BuffTrigger.ScanAll()
         end
       end
       UpdateStates(matchDataChanged, time);
+    elseif (unit == "boss") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      for i = 1,4 do
+        ScanGroupUnit(time, matchDataChanged, "boss", "boss" .. i);
+      end
+      UpdateStates(matchDataChanged, time);
+    elseif(unit == "nameplate") then
+      local time = GetTime();
+      local matchDataChanged = {};
+      for i = 1,40 do
+        ScanGroupUnit(time, matchDataChanged, "nameplate", "nameplate" .. i);
+      end
+      UpdateStates(matchDataChanged, time);
     else
       ScanUnit(unit);
     end
   end
+
 end
 
 function BuffTrigger.UnloadAll()
@@ -1182,7 +1202,7 @@ function BuffTrigger.Add(data)
       local triggerInformation = {
         auranames = names,
         auraspellids = trigger.useExactSpellId and trigger.auraspellids,
-        unit = trigger.unit,
+        unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit,
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
         showClones = effectiveShowClones,
@@ -1249,9 +1269,9 @@ end
 
 function BuffTrigger.SetToolTip(trigger, state)
   if(trigger.debuffType == "HELPFUL") then
-    GameTooltip:SetUnitBuff(trigger.unit, state.index);
+    GameTooltip:SetUnitBuff(state.unit, state.index);
   elseif(trigger.debuffType == "HARMFUL") then
-    GameTooltip:SetUnitDebuff(trigger.unit, state.index);
+    GameTooltip:SetUnitDebuff(state.unit, state.index);
   end
 end
 
@@ -1400,14 +1420,6 @@ function WeakAuras.CanConvertBuffTrigger2(trigger)
   end
 
   -- Specific unit
-  if (trigger.unit == "member") then
-    return false, L["Specific unit can't be converted yet."];
-  end
-
-  if (trigger.unit == "group") then
-    return false, L["Group triggers can't be converted yet."];
-  end
-
   if (trigger.fullscan) then
     if (trigger.subcount) then
       return true, L["Warning: Tooltip Values are now available via %tooltip1, %tooltip2, %tooltip3 instead of %s. This is not automatically adjusted."]

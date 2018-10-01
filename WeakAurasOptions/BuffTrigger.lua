@@ -674,7 +674,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Specific Unit"],
       order = 43,
-      desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
+      desc = L["A Unit ID (e.g., party1)."],
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "member") end
     },
     useGroup_count = {
