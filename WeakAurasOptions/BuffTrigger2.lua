@@ -60,11 +60,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   end
 
   -- TODO LIST, aka what's missing?
-  -- fullscan
-  --   aura names: IsExactly/Contains/Pattern Matching for
-  --    match on tooltip:
-  --    tooltip size
-
   -- multi trigger
   -- * This should use the same match data, with less data and auto hiding
   -- * Might not work

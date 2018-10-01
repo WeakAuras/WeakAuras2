@@ -986,7 +986,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       func = function()
         WeakAuras.ConvertBuffTrigger2(trigger);
         WeakAuras.Add(data);
-        -- TODO check if needed, and whether anything else might be needed
         WeakAuras.ReloadTriggerOptions(data);
       end
     },
