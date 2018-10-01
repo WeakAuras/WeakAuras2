@@ -1503,11 +1503,21 @@ WeakAuras.bufftrigger_2_progress_behavior_types = {
   showAlways= L["Always"]
 }
 
-WeakAuras.bufftrigger_2_match_types = {
+WeakAuras.bufftrigger_2_combine_types = {
   showLowest = L["Show lowest time left"],
   showHighest = L["Show longest time left"],
   showClones = L["Show all Matches"]
 }
+
+WeakAuras.bufftrigger_2_combine_group_types = {
+  showLowest = L["Show lowest time left over all units"],
+  showHighest = L["Show longest time left over all units"],
+  showClones = L["Show all Matches from all Units"],
+  showLowestPerUnit = L["Show lowest time left per unit"],
+  showHighestPerUnit = L["Show longest time left per unit"],
+  showCombineAll = L["Combine all matches"],
+}
+
 
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],

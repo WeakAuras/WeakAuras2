@@ -60,27 +60,32 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   -- * Might not work
 
   -- Group:
-  --   * scanFuncs are per unit type (?)
-  --   * ScanUnit takes a specific unit, so raidX
-  --   * No need to scan all auras when one unit changes
   --   group member count
   --   * match data for all units is in UpdateTriggerState, so should be easier to do
+
   --   group role, ignore self
   --   * Check group role / ignore self can be decided before iteration, by checking the unit
+
   --   name info of group triggers
   --   stack info of group triggers
+
   --   * Offer both options for name/stack as state "functions". Needs a bit of extensions of states and text replacements
   ---  * Needs a bit of design work
+
   --   hide alone
-  --   * Meta data for scanFunc
+  --   * Point users to load option
   -- The biggest unaswered question is how to best store the scanFuncs so that we can easily figure out which scanFuncs to call.
 
-  local function effectiveShowOnIsShowOnActive(trigger)
+  local function EffectiveShowOnIsShowOnActive(trigger)
     local effectiveShowOn = true;
     if (trigger.matchesShowOn) then
       effectiveShowOn = trigger.matchesShowOn == "showOnActive";
     end
     return effectiveShowOn;
+  end
+
+  local function IsGroupTrigger(trigger)
+    return trigger.unit == "group" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena";
   end
 
   local spellCache = WeakAuras.spellCache;
@@ -193,7 +198,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useStacks = {
       type = "toggle",
       name = L["Stack Count"],
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       order = 60
     },
     stacksOperator = {
@@ -203,7 +208,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useStacks; end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useStacks and trigger.stacksOperator or nil end
     },
     stacks = {
@@ -213,13 +218,13 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 60.2,
       width = "half",
       disabled = function() return not trigger.useStacks; end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useStacks and trigger.stacks or nil end
     },
     useRem = {
       type = "toggle",
       name = L["Remaining Time"],
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       order = 61
     },
     remOperator = {
@@ -229,7 +234,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useRem; end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useRem and trigger.remOperator or nil end
     },
     rem = {
@@ -239,7 +244,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 61.2,
       width = "half",
       disabled = function() return not trigger.useRem; end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       get = function() return trigger.useRem and trigger.rem or nil end
     },
     fetchTooltip = {
@@ -253,21 +258,21 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "toggle",
       name = L["Tooltip"],
       order = 62.1,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip); end
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip); end
     },
     use_tooltipSpace = {
       type = "description",
       name = "",
       order = 62.2,
       width = "normal",
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and not trigger.use_tooltip and trigger.fetchTooltip); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and not trigger.use_tooltip and trigger.fetchTooltip); end,
     },
     tooltip_operator = {
       type = "select",
       name = L["Operator"],
       order = 62.3,
       disabled = function() return not trigger.use_tooltip end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltip and trigger.fetchTooltip); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltip and trigger.fetchTooltip); end,
       values = WeakAuras.string_operator_types
     },
     tooltip = {
@@ -276,19 +281,19 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "double",
       order = 62.4,
       disabled = function() return not trigger.use_tooltip end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltip and trigger.fetchTooltip); end
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltip and trigger.fetchTooltip); end
     },
     use_tooltipValue = {
       type = "toggle",
       name = L["Tooltip Value"],
       order = 63.1,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip); end
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip); end
     },
     tooltipValueNr = {
       type = "select",
       name = L["Tooltip Value Nr"],
       order = 63.2,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end,
       values = WeakAuras.tooltip_count,
     },
     use_tooltipValueSpace = {
@@ -296,13 +301,13 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = "",
       order = 63.2,
       width = "normal",
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and not trigger.use_tooltipValue and trigger.fetchTooltip); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and not trigger.use_tooltipValue and trigger.fetchTooltip); end,
     },
     tooltipValue_operator = {
       type = "select",
       name = L["Operator"],
       order = 63.3,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end,
       values = WeakAuras.operator_types
     },
     tooltipValue = {
@@ -311,7 +316,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "normal",
       validate = ValidateNumeric,
       order = 63.4,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end
     },
     use_stealable = {
       type = "toggle",
@@ -323,7 +328,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       end,
       width = "double",
       order = 64,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       get = function()
         local value = trigger.use_stealable;
         if(value == nil) then return false;
@@ -346,14 +351,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "toggle",
       name = L["Debuff Type"],
       order = 64.1,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end
     },
     debuffClass = {
       type = "select",
       name = L["Debuff Type"],
       order = 64.2,
       disabled = function() return not trigger.use_debuffClass end,
-      hidden = function() return not (trigger.type == "aura2" and effectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger)); end,
       values = WeakAuras.debuff_class_types
     },
     ownOnly = {
@@ -405,13 +410,26 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     combineMatches = {
       type = "select",
       name = "Combine matches",
-      values = WeakAuras.bufftrigger_2_match_types,
+      values = WeakAuras.bufftrigger_2_combine_types,
       order = 71.5,
       hidden = function()
-        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing");
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and not IsGroupTrigger(trigger));
       end,
       get = function()
         return trigger.combineMatches or "showLowest";
+      end
+    },
+    combineMatchesGroup = {
+      type = "select",
+      name = "Combine matches",
+      width = "double",
+      values = WeakAuras.bufftrigger_2_combine_group_types,
+      order = 71.6,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and IsGroupTrigger(trigger));
+      end,
+      get = function()
+        return trigger.combineMatchesGroup or "showLowestPerUnit";
       end
     },
     unitExists = {
@@ -419,7 +437,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Show If Unit Is Invalid"],
       order = 72,
       hidden = function()
-        return not (trigger.type == "aura2" and trigger.unit ~= "player");
+        return not (trigger.type == "aura2" and trigger.unit ~= "player" and not IsGroupTrigger(trigger));
       end
     },
 
