@@ -85,6 +85,8 @@ local matchData = {};
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {};
 
+local matchDataChanged = {};
+
 local function ReferenceMatchData(id, triggernum, unit, filter, index)
   local match = matchData[unit][filter][index];
 
@@ -547,6 +549,7 @@ local function allUnits(unit)
         end
         ret = unit .. i;
       end
+      i = i + 1;
       return ret;
     end
   end
@@ -561,7 +564,22 @@ local function UpdateTriggerState(time, id, triggernum)
   local totalCount = 0;
   local unitCount = 0;
   local auraDatas = {};
-  if (triggerInfo.combineMode == "showClones") then
+  if (triggerInfo.matchesShowOn == "showOnMissing") then
+    local anyMatch = false;
+    if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]) then
+      for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
+        if (next(unitData)) then
+          anyMatch = true;
+          break;
+        end
+      end
+    end
+    if(anyMatch) then
+      updated = RemoveState(triggerStates, "");
+    else
+      updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0);
+    end
+  elseif (triggerInfo.combineMode == "showClones") then
     if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]) then
       for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
         local unitCounted = false;
@@ -600,22 +618,13 @@ local function UpdateTriggerState(time, id, triggernum)
         updated = RemoveState(triggerStates, cloneId) or updated;
       end
     end
-
-    if (updated) then
-      WeakAuras.UpdatedTriggerState(id);
-    end
   elseif (triggerInfo.combineMode == "showLowest" or triggerInfo.combineMode == "showHighest") then -- ONE Aura
     local bestMatch, totalCount, unitCount
     bestMatch, totalCount, unitCount, nextCheck = FindBestMatchData(time, id, triggernum, triggerInfo);
     local cloneId = "";
-    local updated = false;
 
     if (bestMatch) then
-      if (triggerInfo.matchesShowOn == "showOnMissing") then
-        updated = RemoveState(triggerStates, cloneId);
-      else
-        updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount, unitCount);
-      end
+      updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount, unitCount);
     elseif (triggerInfo.matchesShowOn == "showAlways" and triggerInfo.groupTrigger) then
       updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0);
     elseif (not existingUnits[triggerInfo.unit]) then -- Unit does not exist
@@ -627,16 +636,9 @@ local function UpdateTriggerState(time, id, triggernum)
     else -- No best match, but unit exists
       if (triggerInfo.matchesShowOn == "showOnActive") then
         updated = RemoveState(triggerStates, cloneId);
-      else
-        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0);
       end
     end
-
-    if (updated) then
-      WeakAuras.UpdatedTriggerState(id);
-    end
   elseif (triggerInfo.combineMode == "showLowestPerUnit" or triggerInfo.combineMode == "showHighestPerUnit") then -- ONE AURA per unit
-    local updated = false;
     if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]) then
       local iterFunc, iterState;
       if (triggerInfo.matchesShowOn == "showOnActive") then
@@ -686,10 +688,10 @@ local function UpdateTriggerState(time, id, triggernum)
         updated = RemoveState(triggerStates, cloneId) or updated;
       end
     end
+  end
 
-    if (updated) then
-      WeakAuras.UpdatedTriggerState(id);
-    end
+  if (updated) then
+    WeakAuras.UpdatedTriggerState(id);
   end
 
   if (nextCheck) then
@@ -708,7 +710,8 @@ local function UpdateTriggerState(time, id, triggernum)
 end
 
 recheckTriggerInfo = function(triggerInfo)
-  UpdateTriggerState(GetTime(), triggerInfo.id, triggerInfo.triggernum);
+  matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {};
+  matchDataChanged[triggerInfo.id][triggerInfo.triggernum] = true;
   triggerInfo.nextScheduledCheckHandle = nil;
   triggerInfo.nextScheduledCheck = nil;
 end
@@ -717,6 +720,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
   if (not scanFuncName) and (not scanFuncSpellId) and (not scanFuncGeneral) then
     return;
   end
+
 
   local index = 1;
   while(true) do
@@ -845,22 +849,7 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
       scanFuncGeneral[unitType]["HARMFUL"]);
 end
 
-local function ScanUnit(unit)
-  if (WeakAuras.IsPaused()) then
-    return;
-  end
-  local time = GetTime();
-  local matchDataChanged = {};
-
-  ScanGroupUnit(time, matchDataChanged, unit, unit);
-
-  UpdateStates(matchDataChanged, time);
-end
-
-local function ScanAllGroup()
-  local time = GetTime();
-  local matchDataChanged = {};
-
+local function ScanAllGroup(time, matchDataChanged)
   -- We iterate over all raid/player unit ids here because ScanGroupUnit also
   -- handles the cases where a unit existance changes. That could be optimized
   if (IsInRaid()) then
@@ -873,18 +862,13 @@ local function ScanAllGroup()
       ScanGroupUnit(time, matchDataChanged, "group", "party" .. i);
     end
   end
-  UpdateStates(matchDataChanged, time);
 end
 
-local function ScanAllBoss()
-  local time = GetTime();
-  local matchDataChanged = {};
+local function ScanAllBoss(time, matchDataChanged)
   for i = 1,4 do
     ScanGroupUnit(time, matchDataChanged, "boss", "boss" .. i);
   end
-  UpdateStates(matchDataChanged, time);
 end
-
 
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame;
@@ -901,57 +885,50 @@ frame:RegisterEvent("ARENA_OPPONENT_UPDATE");
 frame:RegisterEvent("GROUP_ROSTER_UPDATE");
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2");
+  local time = GetTime();
   if(event == "PLAYER_TARGET_CHANGED") then
-    ScanUnit("target");
+    ScanGroupUnit(time, matchDataChanged, "target", "target");
   elseif(event == "PLAYER_FOCUS_CHANGED") then
-    ScanUnit("focus");
+    ScanGroupUnit(time, matchDataChanged, "focus", "focus");
   elseif(event == "UNIT_PET") then
-    ScanUnit("pet")
+    ScanGroupUnit(time, matchDataChanged, "pet", "pet")
   elseif(event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED") then
-    local time = GetTime();
-    local matchDataChanged = {};
     ScanGroupUnit(time, matchDataChanged, "nameplate", arg1);
-    UpdateStates(matchDataChanged, time);
   elseif(event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
-    ScanAllBoss();
+    ScanAllBoss(time, matchDataChanged);
   elseif (event =="ARENA_OPPONENT_UPDATE") then
-    local time = GetTime();
-    local matchDataChanged = {};
     ScanGroupUnit(time, matchDataChanged, "arena", arg1);
-    UpdateStates(matchDataChanged, time);
   elseif (event == "GROUP_ROSTER_UPDATE") then
-    ScanAllGroup();
+    ScanAllGroup(time, matchDataChanged);
   elseif(event == "UNIT_AURA") then
     if (arg1:sub(1,4) == "raid" or arg1:sub(1,5) == "party" or arg1 == "player") then
-      local time = GetTime();
-      local matchDataChanged = {};
       ScanGroupUnit(time, matchDataChanged, "group", arg1);
-      UpdateStates(matchDataChanged, time);
     elseif (arg1:sub(1,4) == "boss") then
-      local time = GetTime();
-      local matchDataChanged = {};
       ScanGroupUnit(time, matchDataChanged, "boss", arg1);
-      UpdateStates(matchDataChanged, time);
     elseif (arg1:sub(1,5) == "arena") then
-      local time = GetTime();
-      local matchDataChanged = {};
       ScanGroupUnit(time, matchDataChanged, "arena", arg1);
-      UpdateStates(matchDataChanged, time);
     elseif (arg1:sub(1, 9) == "nameplate") then
-      local time = GetTime();
-      local matchDataChanged = {};
       ScanGroupUnit(time, matchDataChanged, "nameplate", arg1);
-      UpdateStates(matchDataChanged, time);
     end
 
-    ScanUnit(arg1);
+    ScanGroupUnit(time, matchDataChanged, arg1, arg1);
+  end
+  WeakAuras.StopProfileSystem("bufftrigger2");
+end);
+
+frame:SetScript("OnUpdate", function()
+  WeakAuras.StartProfileSystem("bufftrigger2");
+  if (next(matchDataChanged)) then
+    local time = GetTime();
+    UpdateStates(matchDataChanged, time);
+    wipe(matchDataChanged);
   end
   WeakAuras.StopProfileSystem("bufftrigger2");
 end);
 
 function BuffTrigger.ScanAll()
   local units = {};
-
+  local time = GetTime();
   for unit in pairs(scanFuncName) do
     units[unit] = true;
   end
@@ -965,21 +942,18 @@ function BuffTrigger.ScanAll()
 
   for unit in pairs(units) do
     if (unit == "group") then
-      ScanAllGroup();
+      ScanAllGroup(time, matchDataChanged);
     elseif (unit == "boss") then
-      ScanAllBoss();
+      ScanAllBoss(time, matchDataChanged);
     elseif(unit == "nameplate") then
       local time = GetTime();
-      local matchDataChanged = {};
-      for i = 1,40 do
+      for i = 1, 40 do
         ScanGroupUnit(time, matchDataChanged, "nameplate", "nameplate" .. i);
       end
-      UpdateStates(matchDataChanged, time);
     else
-      ScanUnit(unit);
+      ScanGroupUnit(time, matchDataChanged, unit, unit);
     end
   end
-
 end
 
 function BuffTrigger.UnloadAll()
@@ -1070,7 +1044,8 @@ local function LoadAura(id, triggernum, triggerInfo)
   end
 
   if (updateTriggerState or triggerInfo.matchesShowOn ~= "showOnActive" or triggerInfo.unitExists or triggerInfo.groupTrigger) then
-    UpdateTriggerState(GetTime(), id, triggernum);
+    matchDataChanged[id] = matchDataChanged[id] or {};
+    matchDataChanged[id][triggernum] = true;
   end
 end
 
