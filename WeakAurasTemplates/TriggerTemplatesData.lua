@@ -198,7 +198,7 @@ templates.class.WARRIOR = {
         { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
         { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
         { spell = 278826, type = "buff", unit = "player"}, --Crushing Assault
-        { spell = 272870, type = "buff", unit = "player"}, --Executioner's Precision
+        { spell = 272870, type = "debuff", unit = "target"}, --Executioner's Precision
         { spell = 273415, type = "buff", unit = "player"}, --Gathering Storm
         { spell = 275540, type = "buff", unit = "player"}, --Test of Might
       },
