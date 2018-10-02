@@ -721,7 +721,6 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     return;
   end
 
-
   local index = 1;
   while(true) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
@@ -816,6 +815,68 @@ local function UpdateStates(matchDataChanged, time)
   end
 end
 
+-- Instead of filtering on demand in ScanGroupUnit, the filtered list
+-- could be kept up to date somewhere, responding to RosterUpdates, Role changes
+-- and Load/Unloading
+-- Also combine HELPFUL/HARMFUL
+local function FilterScanFuncs(input, unitType, isSelf)
+  local result = {};
+  if (input[unitType] and input[unitType]["HELPFUL"]) then
+    result["HELPFUL"] = {};
+    for name, nameData in pairs(input[unitType]["HELPFUL"]) do
+      result["HELPFUL"][name] = {};
+      for index, triggerInfo in pairs(nameData) do
+        if (isSelf and triggerInfo.ignoreSelf) then
+          -- Ignore this one;
+        else
+          tinsert(result["HELPFUL"][name], triggerInfo);
+        end
+      end
+    end
+  end
+
+  if (input[unitType] and input[unitType]["HARMFUL"]) then
+    result["HARMFUL"] = {};
+    for name, nameData in pairs(input[unitType]["HARMFUL"]) do
+      result["HARMFUL"][name] = {};
+      for index, triggerInfo in pairs(nameData) do
+        if (isSelf and triggerInfo.ignoreSelf) then
+          -- Ignore this one;
+        else
+          tinsert(result["HARMFUL"][name], triggerInfo);
+        end
+      end
+    end
+  end
+  return result;
+end
+
+local function FilterScanFuncs2(input, unitType, isSelf)
+  local result = {};
+  if (input[unitType] and input[unitType]["HELPFUL"]) then
+    result["HELPFUL"] = {};
+    for index, triggerInfo in pairs(input[unitType]["HELPFUL"]) do
+      if (isSelf and triggerInfo.ignoreSelf) then
+        -- Ignore this one;
+      else
+        tinsert(result["HELPFUL"], triggerInfo);
+      end
+    end
+  end
+
+  if (input[unitType] and input[unitType]["HARMFUL"]) then
+    result["HARMFUL"] = {};
+    for index, triggerInfo in pairs(input[unitType]["HARMFUL"]) do
+      if (isSelf and triggerInfo.ignoreSelf) then
+        -- Ignore this one;
+      else
+        tinsert(result["HARMFUL"], triggerInfo);
+      end
+    end
+  end
+  return result;
+end
+
 local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
   if (WeakAuras.IsPaused()) then
     return;
@@ -834,19 +895,37 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
     end
   end
 
-  scanFuncName[unitType] = scanFuncName[unitType] or {};
-  scanFuncSpellId[unitType] = scanFuncSpellId[unitType] or {};
-  scanFuncGeneral[unitType] = scanFuncGeneral[unitType] or {};
+  if (unitType ~= "group") then
+    scanFuncName[unitType] = scanFuncName[unitType] or {};
+    scanFuncSpellId[unitType] = scanFuncSpellId[unitType] or {};
+    scanFuncGeneral[unitType] = scanFuncGeneral[unitType] or {};
 
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
-      scanFuncName[unitType]["HELPFUL"],
-      scanFuncSpellId[unitType]["HELPFUL"],
-      scanFuncGeneral[unitType]["HELPFUL"])
+    ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
+        scanFuncName[unitType]["HELPFUL"],
+        scanFuncSpellId[unitType]["HELPFUL"],
+        scanFuncGeneral[unitType]["HELPFUL"])
 
-  ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
-      scanFuncName[unitType]["HARMFUL"],
-      scanFuncSpellId[unitType]["HARMFUL"],
-      scanFuncGeneral[unitType]["HARMFUL"]);
+    ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
+        scanFuncName[unitType]["HARMFUL"],
+        scanFuncSpellId[unitType]["HARMFUL"],
+        scanFuncGeneral[unitType]["HARMFUL"]);
+  else
+    local isSelf = UnitIsUnit("player", unit);
+
+    local scanFuncsNameFiltered = FilterScanFuncs(scanFuncName, unitType, isSelf);
+    local scanFuncsSpellIdFiltered = FilterScanFuncs(scanFuncSpellId, unitType, isSelf);
+    local scanFuncsGeneralFiltered = FilterScanFuncs2(scanFuncGeneral, unitType, isSelf);
+
+    ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
+        scanFuncsNameFiltered["HELPFUL"],
+        scanFuncsSpellIdFiltered["HELPFUL"],
+        scanFuncsGeneralFiltered["HELPFUL"])
+
+    ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
+        scanFuncsNameFiltered["HARMFUL"],
+        scanFuncsSpellIdFiltered["HARMFUL"],
+        scanFuncsGeneralFiltered["HARMFUL"]);
+  end
 end
 
 local function ScanAllGroup(time, matchDataChanged)
@@ -960,6 +1039,7 @@ function BuffTrigger.UnloadAll()
   wipe(scanFuncName)
   wipe(scanFuncSpellId)
   wipe(scanFuncGeneral)
+  wipe(unitExistScanFunc);
   wipe(matchData);
   wipe(matchDataByTrigger);
 end
@@ -1377,6 +1457,13 @@ function BuffTrigger.Add(data)
       end
 
       local showIfInvalidUnit = trigger.unit ~= "player" and trigger.unitExists or false
+      local effectiveUseGroupCount = effectiveShowOn == "showOnActive" and IsGroupTrigger(trigger) and trigger.useGroup_count;
+      local groupCountFunc;
+      if (effectiveUseGroupCount) then
+        -- TODO groupCountFunc
+        -- group count + group role
+      end
+      local effectiveIgnoreSelf = trigger.unit == "group" and trigger.ignoreSelf;
 
       local triggerInformation = {
         auranames = names,
@@ -1394,7 +1481,8 @@ function BuffTrigger.Add(data)
         compareFunc = (combineMode == "showHighest" or combineMode == "showHighestPerUnit") and highestExpirationTime or lowestExpirationTime,
         unitExists = showIfInvalidUnit,
         fetchTooltip = trigger.matchesShowOn ~= "showOnMissing" and trigger.fetchTooltip,
-        groupTrigger = IsGroupTrigger(trigger)
+        groupTrigger = IsGroupTrigger(trigger),
+        ignoreSelf = trigger.ignoreSelf,
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;
