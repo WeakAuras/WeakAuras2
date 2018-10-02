@@ -319,12 +319,13 @@ local function modify(parent, region, data)
   region.scalex = 1;
   region.scaley = 1;
   region.keepAspectRatio = data.keepAspectRatio;
+  region.zoom = data.zoom;
   icon:SetAllPoints();
 
   configureText(stacks, icon, data.text1Enabled, data.text1Point, data.width, data.height, data.text1Containment, data.text1Font, data.text1FontSize, data.text1FontFlags, data.text1Color);
   configureText(text2, icon, data.text2Enabled, data.text2Point, data.width, data.height, data.text2Containment, data.text2Font, data.text2FontSize, data.text2FontFlags, data.text2Color);
 
-  local texWidth = 1 - data.zoom * 0.5;
+  local texWidth = 1 - region.zoom * 0.5;
   local aspectRatio = region.keepAspectRatio and region.width / region.height or 1;
 
   icon:SetTexCoord(GetTexCoord(region, texWidth, aspectRatio))
@@ -496,7 +497,7 @@ local function modify(parent, region, data)
     end
     icon:SetAllPoints();
 
-    local texWidth = 1 - 0.5 * data.zoom;
+    local texWidth = 1 - 0.5 * region.zoom;
     local aspectRatio
     if (not region.keepAspectRatio or width == 0 or height == 0) then
       aspectRatio = 1
@@ -569,7 +570,7 @@ local function modify(parent, region, data)
   end
   
   function region:SetZoom(zoom)
-    data.zoom = zoom;
+    region.zoom = zoom;
     region:UpdateSize();
   end
 
