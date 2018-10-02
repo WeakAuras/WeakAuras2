@@ -114,6 +114,15 @@ local properties = {
     setter = "SetInverse",
     type = "bool"
   },
+  zoom = {
+    display = L["Zoom"],
+    setter = "SetZoom",
+    type = "number",
+    min = 0,
+    max = 1,
+    step = 0.01,
+    default = 0
+  },
 };
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
@@ -556,6 +565,11 @@ local function modify(parent, region, data)
 
   function region:SetInverse(inverse)
     cooldown:SetReverse(not inverse);
+  end
+  
+  function region:SetZoom(zoom)
+    data.zoom = zoom;
+    region:UpdateSize();
   end
 
   function region:SetGlow(showGlow)
