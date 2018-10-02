@@ -1699,6 +1699,15 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
     WeakAuras.UnregisterForGlobalConditions(id);
 
     local region = WeakAuras.regions[id].region;
+    if (checkConditions[id]) then
+      checkConditions[id](region, true);
+      if(clones[id]) then
+        for cloneId, region in pairs(clones[id]) do
+          checkConditions[id](region, true);
+        end
+      end
+    end
+
     region:Collapse();
     WeakAuras.CollapseAllClones(id);
   end
