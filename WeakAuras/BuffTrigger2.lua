@@ -75,6 +75,10 @@ local scanFuncName = {};
 local scanFuncSpellId = {};
 local scanFuncGeneral = {};
 
+local scanFuncNameGroup = {};
+local scanFuncSpellIdGroup = {};
+local scanFuncGeneralGroup = {};
+
 local unitExistScanFunc = {};
 local existingUnits = {};
 
@@ -815,65 +819,54 @@ local function UpdateStates(matchDataChanged, time)
   end
 end
 
--- Instead of filtering on demand in ScanGroupUnit, the filtered list
--- could be kept up to date somewhere, responding to RosterUpdates, Role changes
--- and Load/Unloading
--- Also combine HELPFUL/HARMFUL
-local function FilterScanFuncs(input, unitType, isSelf)
-  local result = {};
-  if (input[unitType] and input[unitType]["HELPFUL"]) then
-    result["HELPFUL"] = {};
-    for name, nameData in pairs(input[unitType]["HELPFUL"]) do
-      result["HELPFUL"][name] = {};
-      for index, triggerInfo in pairs(nameData) do
-        if (isSelf and triggerInfo.ignoreSelf) then
-          -- Ignore this one;
-        else
-          tinsert(result["HELPFUL"][name], triggerInfo);
-        end
-      end
-    end
+local function TriggerInfoApplies(triggerInfo, isSelf, role)
+  if (triggerInfo.ignoreSelf and isSelf) then
+    return false;
   end
+  -- TODO role check
+  return true;
+end
 
-  if (input[unitType] and input[unitType]["HARMFUL"]) then
-    result["HARMFUL"] = {};
-    for name, nameData in pairs(input[unitType]["HARMFUL"]) do
-      result["HARMFUL"][name] = {};
-      for index, triggerInfo in pairs(nameData) do
-        if (isSelf and triggerInfo.ignoreSelf) then
-          -- Ignore this one;
-        else
-          tinsert(result["HARMFUL"][name], triggerInfo);
-        end
+local function FilterScanFuncsHelper(input, isSelf, role)
+  if (not input) then
+    return nil;
+  end
+  local result = {};
+  for name, nameData in pairs(input) do
+    result[name] = {};
+    for index, triggerInfo in ipairs(nameData) do
+      if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
+        tinsert(result[name], triggerInfo);
       end
     end
   end
   return result;
 end
 
-local function FilterScanFuncs2(input, unitType, isSelf)
+local function FilterGeneralScanFuncsHelper(input, isSelf, role)
+  if (not input) then
+    return nil;
+  end
   local result = {};
-  if (input[unitType] and input[unitType]["HELPFUL"]) then
-    result["HELPFUL"] = {};
-    for index, triggerInfo in pairs(input[unitType]["HELPFUL"]) do
-      if (isSelf and triggerInfo.ignoreSelf) then
-        -- Ignore this one;
-      else
-        tinsert(result["HELPFUL"], triggerInfo);
-      end
+  for index, triggerInfo in ipairs(input) do
+    if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
+      tinsert(result, triggerInfo);
     end
   end
+  return result;
+end
 
-  if (input[unitType] and input[unitType]["HARMFUL"]) then
-    result["HARMFUL"] = {};
-    for index, triggerInfo in pairs(input[unitType]["HARMFUL"]) do
-      if (isSelf and triggerInfo.ignoreSelf) then
-        -- Ignore this one;
-      else
-        tinsert(result["HARMFUL"], triggerInfo);
-      end
-    end
-  end
+local function FilterScanFuncs(input, unit, isSelf, role)
+  local result = {};
+  result["HELPFUL"] = FilterScanFuncsHelper(input["group"] and input["group"]["HELPFUL"], isSelf, role);
+  result["HARMFUL"] = FilterScanFuncsHelper(input["group"] and input["group"]["HARMFUL"], isSelf, role);
+  return result;
+end
+
+local function FilterGeneralScanFuncs(input, unit, isSelf, role)
+  local result = {};
+  result["HELPFUL"] = FilterGeneralScanFuncsHelper(input["group"] and input["group"]["HELPFUL"], isSelf, role);
+  result["HARMFUL"] = FilterGeneralScanFuncsHelper(input["group"] and input["group"]["HARMFUL"], isSelf, role);
   return result;
 end
 
@@ -910,21 +903,54 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
         scanFuncSpellId[unitType]["HARMFUL"],
         scanFuncGeneral[unitType]["HARMFUL"]);
   else
-    local isSelf = UnitIsUnit("player", unit);
-
-    local scanFuncsNameFiltered = FilterScanFuncs(scanFuncName, unitType, isSelf);
-    local scanFuncsSpellIdFiltered = FilterScanFuncs(scanFuncSpellId, unitType, isSelf);
-    local scanFuncsGeneralFiltered = FilterScanFuncs2(scanFuncGeneral, unitType, isSelf);
+    scanFuncNameGroup[unit] = scanFuncNameGroup[unit] or {};
+    scanFuncSpellIdGroup[unit] = scanFuncSpellIdGroup[unit] or {};
+    scanFuncGeneralGroup[unit] = scanFuncGeneralGroup[unit] or {};
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
-        scanFuncsNameFiltered["HELPFUL"],
-        scanFuncsSpellIdFiltered["HELPFUL"],
-        scanFuncsGeneralFiltered["HELPFUL"])
+        scanFuncNameGroup[unit]["HELPFUL"],
+        scanFuncSpellIdGroup[unit]["HELPFUL"],
+        scanFuncGeneralGroup[unit]["HELPFUL"])
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
-        scanFuncsNameFiltered["HARMFUL"],
-        scanFuncsSpellIdFiltered["HARMFUL"],
-        scanFuncsGeneralFiltered["HARMFUL"]);
+        scanFuncNameGroup[unit]["HARMFUL"],
+        scanFuncSpellIdGroup[unit]["HARMFUL"],
+        scanFuncGeneralGroup[unit]["HARMFUL"]);
+  end
+end
+
+local function UpdatePerGroupUnitScanFuncs()
+  if (IsInRaid()) then
+    for i = 1, 40 do
+      local unit = "raid" .. i;
+      if (not UnitExists(unit)) then
+        scanFuncNameGroup[unit] = nil;
+      else
+        local isSelf = UnitIsUnit("player", unit);
+        local role = UnitGroupRolesAssigned(unit);
+        scanFuncNameGroup[unit] = FilterScanFuncs(scanFuncName, unit, isSelf, role);
+        scanFuncSpellIdGroup[unit] = FilterScanFuncs(scanFuncSpellId, unit);
+        scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit);
+      end
+    end
+  else
+    local unit = "player";
+    local role = UnitGroupRolesAssigned(unit);
+    scanFuncNameGroup[unit] = FilterScanFuncs(scanFuncName, unit, true, role);
+    scanFuncSpellIdGroup[unit] = FilterScanFuncs(scanFuncSpellId, unit, true, role);
+    scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit, true, role);
+    for i = 1, 4 do
+      unit = "party" .. i;
+      if (not UnitExists(unit)) then
+        scanFuncNameGroup[unit] = nil;
+      else
+        local isSelf = UnitIsUnit("player", unit);
+        local role = UnitGroupRolesAssigned(unit);
+        scanFuncNameGroup[unit] = FilterScanFuncs(scanFuncName, unit, isSelf, role);
+        scanFuncSpellIdGroup[unit] = FilterScanFuncs(scanFuncSpellId, unit, isSelf, role);
+        scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit, isSelf, role);
+      end
+    end
   end
 end
 
@@ -978,6 +1004,7 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   elseif (event =="ARENA_OPPONENT_UPDATE") then
     ScanGroupUnit(time, matchDataChanged, "arena", arg1);
   elseif (event == "GROUP_ROSTER_UPDATE") then
+    UpdatePerGroupUnitScanFuncs();
     ScanAllGroup(time, matchDataChanged);
   elseif(event == "UNIT_AURA") then
     if (arg1:sub(1,4) == "raid" or arg1:sub(1,5) == "party" or arg1 == "player") then
@@ -1036,25 +1063,27 @@ function BuffTrigger.ScanAll()
 end
 
 function BuffTrigger.UnloadAll()
-  wipe(scanFuncName)
-  wipe(scanFuncSpellId)
-  wipe(scanFuncGeneral)
+  wipe(scanFuncName);
+  wipe(scanFuncSpellId);
+  wipe(scanFuncGeneral);
+  wipe(scanFuncNameGroup);
+  wipe(scanFuncSpellIdGroup);
+  wipe(scanFuncGeneralGroup);
   wipe(unitExistScanFunc);
   wipe(matchData);
   wipe(matchDataByTrigger);
 end
 
-local function LoadAura(id, triggernum, triggerInfo)
-  local added = false;
+local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   local filter = triggerInfo.debuffType;
-
+  local added = false;
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
       if (name ~= "") then
-        scanFuncName[triggerInfo.unit]               = scanFuncName[triggerInfo.unit] or {};
-        scanFuncName[triggerInfo.unit][filter]       = scanFuncName[triggerInfo.unit][filter] or {};
-        scanFuncName[triggerInfo.unit][filter][name] = scanFuncName[triggerInfo.unit][filter][name] or {};
-        tinsert(scanFuncName[triggerInfo.unit][filter][name], triggerInfo);
+        scanFuncName[unit]               = scanFuncName[unit] or {};
+        scanFuncName[unit][filter]       = scanFuncName[unit][filter] or {};
+        scanFuncName[unit][filter][name] = scanFuncName[unit][filter][name] or {};
+        tinsert(scanFuncName[unit][filter][name], triggerInfo);
 
         added = true;
       end
@@ -1066,10 +1095,10 @@ local function LoadAura(id, triggernum, triggerInfo)
       if (spellIdString ~= "") then
         local spellId = tonumber(spellIdString);
         if (spellId) then
-          scanFuncSpellId[triggerInfo.unit]                  = scanFuncSpellId[triggerInfo.unit] or {};
-          scanFuncSpellId[triggerInfo.unit][filter]          = scanFuncSpellId[triggerInfo.unit][filter] or {};
-          scanFuncSpellId[triggerInfo.unit][filter][spellId] = scanFuncSpellId[triggerInfo.unit][filter][spellId] or {};
-          tinsert(scanFuncSpellId[triggerInfo.unit][filter][spellId], triggerInfo);
+          scanFuncSpellId[unit]                  = scanFuncSpellId[unit] or {};
+          scanFuncSpellId[unit][filter]          = scanFuncSpellId[unit][filter] or {};
+          scanFuncSpellId[unit][filter][spellId] = scanFuncSpellId[unit][filter][spellId] or {};
+          tinsert(scanFuncSpellId[unit][filter][spellId], triggerInfo);
         end
         added = true;
       end
@@ -1077,15 +1106,56 @@ local function LoadAura(id, triggernum, triggerInfo)
   end
 
   if (not added) then
-    scanFuncGeneral[triggerInfo.unit]                  = scanFuncGeneral[triggerInfo.unit] or {};
-    scanFuncGeneral[triggerInfo.unit][filter]          = scanFuncGeneral[triggerInfo.unit][filter] or {};
-    tinsert(scanFuncGeneral[triggerInfo.unit][filter], triggerInfo);
+    scanFuncGeneral[unit]                  = scanFuncGeneral[unit] or {};
+    scanFuncGeneral[unit][filter]          = scanFuncGeneral[unit][filter] or {};
+    tinsert(scanFuncGeneral[unit][filter], triggerInfo);
   end
+
+
+end
+
+local function LoadAura(id, triggernum, triggerInfo)
+  local added = false;
+  local filter = triggerInfo.debuffType;
+
+  AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral);
 
   if (triggerInfo.unitExists) then
     unitExistScanFunc[triggerInfo.unit] = unitExistScanFunc[triggerInfo.unit] or {};
     unitExistScanFunc[triggerInfo.unit][id] = unitExistScanFunc[triggerInfo.unit][id] or {}
     tinsert(unitExistScanFunc[triggerInfo.unit][id], triggerInfo);
+  end
+
+  -- Update in per group scan funcs
+  if (triggerInfo.unit == "group") then
+    if (IsInRaid()) then
+      for i = 1, 40 do
+        local unit = "raid" .. i;
+        if (UnitExists(unit)) then
+          local isSelf = UnitIsUnit("player", unit);
+          local role = UnitGroupRolesAssigned(unit);
+          if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
+            AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+          end
+        end
+      end
+    else
+      local unit = "player";
+      local role = UnitGroupRolesAssigned(unit);
+      if (TriggerInfoApplies(triggerInfo, true, role)) then
+        AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      end
+      for i = 1, 4 do
+        unit = "party" .. i;
+        if (UnitExists(unit)) then
+          local isSelf = UnitIsUnit("player", unit);
+          local role = UnitGroupRolesAssigned(unit);
+          if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
+            AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+          end
+        end
+      end
+    end
   end
 
   local updateTriggerState = false;
@@ -1199,7 +1269,9 @@ function BuffTrigger.UnloadDisplays(toUnload)
 
     for unit, unitData in pairs(matchData) do
       for filter, filterData in pairs(unitData) do
-        filterData[id] = nil;
+        for index, indexData in pairs(filterData) do
+          indexData.auras[id] = nil;
+        end
       end
     end
     matchDataByTrigger[id] = nil;
@@ -1236,8 +1308,10 @@ function BuffTrigger.Rename(oldid, newid)
 
   for unit, unitData in pairs(matchData) do
     for filter, filterData in pairs(unitData) do
-      filterData[newid] = filterData[oldid];
-      filterData[oldid] = nil;
+      for index, indexData in pairs(filterData) do
+        indexData.auras[newid] = indexData.auras[oldid];
+        indexData.auras[oldid] = nil;
+      end
     end
   end
 
@@ -1464,6 +1538,7 @@ function BuffTrigger.Add(data)
         -- group count + group role
       end
       local effectiveIgnoreSelf = trigger.unit == "group" and trigger.ignoreSelf;
+      local effectiveGroupRole = trigger.unit == "group" and trigger.useGroupRole and trigger.group_role;
 
       local triggerInformation = {
         auranames = names,
@@ -1482,7 +1557,8 @@ function BuffTrigger.Add(data)
         unitExists = showIfInvalidUnit,
         fetchTooltip = trigger.matchesShowOn ~= "showOnMissing" and trigger.fetchTooltip,
         groupTrigger = IsGroupTrigger(trigger),
-        ignoreSelf = trigger.ignoreSelf,
+        ignoreSelf = effectiveIgnoreSelf,
+        groupRole = effectiveGroupRole,
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;
