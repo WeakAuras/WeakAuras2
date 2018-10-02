@@ -121,7 +121,8 @@ local properties = {
     min = 0,
     max = 1,
     step = 0.01,
-    default = 0
+    default = 0,
+    isPercent = true
   },
 };
 
