@@ -475,20 +475,10 @@ local function modify(parent, region, data)
   end
 
   function region:UpdateSize()
-    local mirror_h, mirror_v, width, height;
-    local scalex = region.scalex;
-    local scaley = region.scaley;
-    if(scalex < 0) then
-      mirror_h = true;
-      scalex = scalex * -1;
-    end
-    width = region.width * scalex;
+    local width = region.width * math.abs(region.scalex);
+    local height = region.height * math.abs(region.scaley);
+
     region:SetWidth(width);
-    if(scaley < 0) then
-      mirror_v = true;
-      scaley = scaley * -1;
-    end
-    height = region.height * scaley;
     region:SetHeight(height);
     if MSQ then
       button:SetWidth(width);
@@ -497,12 +487,26 @@ local function modify(parent, region, data)
     end
     icon:SetAllPoints();
 
+    region:UpdateTexCoords();
+  end
+  
+  function region:UpdateTexCoords()
+    local mirror_h = region.scalex < 0; 
+    local mirror_v = region.scaley < 0;
+
     local texWidth = 1 - 0.5 * region.zoom;
     local aspectRatio
-    if (not region.keepAspectRatio or width == 0 or height == 0) then
-      aspectRatio = 1
+    if not region.keepAspectRatio then
+      aspectRatio = 1;
     else
-      aspectRatio = width / height;
+      local width = region.width * math.abs(region.scalex);
+      local height = region.height * math.abs(region.scaley);
+
+      if width == 0 or height == 0 then
+        aspectRatio = 1;
+      else
+        aspectRatio = width / height;
+      end
     end
 
     local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
@@ -571,7 +575,7 @@ local function modify(parent, region, data)
   
   function region:SetZoom(zoom)
     region.zoom = zoom;
-    region:UpdateSize();
+    region:UpdateTexCoords();
   end
 
   function region:SetGlow(showGlow)
