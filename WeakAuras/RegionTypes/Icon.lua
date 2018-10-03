@@ -114,6 +114,16 @@ local properties = {
     setter = "SetInverse",
     type = "bool"
   },
+  zoom = {
+    display = L["Zoom"],
+    setter = "SetZoom",
+    type = "number",
+    min = 0,
+    max = 1,
+    step = 0.01,
+    default = 0,
+    isPercent = true
+  },
 };
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
@@ -309,12 +319,13 @@ local function modify(parent, region, data)
   region.scalex = 1;
   region.scaley = 1;
   region.keepAspectRatio = data.keepAspectRatio;
+  region.zoom = data.zoom;
   icon:SetAllPoints();
 
   configureText(stacks, icon, data.text1Enabled, data.text1Point, data.width, data.height, data.text1Containment, data.text1Font, data.text1FontSize, data.text1FontFlags, data.text1Color);
   configureText(text2, icon, data.text2Enabled, data.text2Point, data.width, data.height, data.text2Containment, data.text2Font, data.text2FontSize, data.text2FontFlags, data.text2Color);
 
-  local texWidth = 1 - data.zoom * 0.5;
+  local texWidth = 1 - region.zoom * 0.5;
   local aspectRatio = region.keepAspectRatio and region.width / region.height or 1;
 
   icon:SetTexCoord(GetTexCoord(region, texWidth, aspectRatio))
@@ -464,20 +475,10 @@ local function modify(parent, region, data)
   end
 
   function region:UpdateSize()
-    local mirror_h, mirror_v, width, height;
-    local scalex = region.scalex;
-    local scaley = region.scaley;
-    if(scalex < 0) then
-      mirror_h = true;
-      scalex = scalex * -1;
-    end
-    width = region.width * scalex;
+    local width = region.width * math.abs(region.scalex);
+    local height = region.height * math.abs(region.scaley);
+
     region:SetWidth(width);
-    if(scaley < 0) then
-      mirror_v = true;
-      scaley = scaley * -1;
-    end
-    height = region.height * scaley;
     region:SetHeight(height);
     if MSQ then
       button:SetWidth(width);
@@ -486,12 +487,26 @@ local function modify(parent, region, data)
     end
     icon:SetAllPoints();
 
-    local texWidth = 1 - 0.5 * data.zoom;
+    region:UpdateTexCoords();
+  end
+  
+  function region:UpdateTexCoords()
+    local mirror_h = region.scalex < 0; 
+    local mirror_v = region.scaley < 0;
+
+    local texWidth = 1 - 0.5 * region.zoom;
     local aspectRatio
-    if (not region.keepAspectRatio or width == 0 or height == 0) then
-      aspectRatio = 1
+    if not region.keepAspectRatio then
+      aspectRatio = 1;
     else
-      aspectRatio = width / height;
+      local width = region.width * math.abs(region.scalex);
+      local height = region.height * math.abs(region.scaley);
+
+      if width == 0 or height == 0 then
+        aspectRatio = 1;
+      else
+        aspectRatio = width / height;
+      end
     end
 
     local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
@@ -556,6 +571,11 @@ local function modify(parent, region, data)
 
   function region:SetInverse(inverse)
     cooldown:SetReverse(not inverse);
+  end
+  
+  function region:SetZoom(zoom)
+    region.zoom = zoom;
+    region:UpdateTexCoords();
   end
 
   function region:SetGlow(showGlow)

@@ -398,6 +398,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         args["condition" .. i .. "value" .. j].softMax = properties.softMax;
         args["condition" .. i .. "value" .. j].step = properties.step;
         args["condition" .. i .. "value" .. j].bigStep = properties.bigStep;
+        args["condition" .. i .. "value" .. j].isPercent = properties.isPercent;
       else
         args["condition" .. i .. "value" .. j].type = "input";
         args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
