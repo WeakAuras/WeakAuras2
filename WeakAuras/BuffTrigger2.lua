@@ -1062,7 +1062,60 @@ function BuffTrigger.ScanAll()
   end
 end
 
+local function UnloadAura(scanFuncName, id)
+  for unit, unitData in pairs(scanFuncName) do
+    for debuffType, debuffData in pairs(unitData) do
+      for name, nameData in pairs(debuffData) do
+        for i = #nameData, 1, -1 do
+          if nameData[i].id == id or not id then
+            if (nameData[i].nextScheduledCheckHandle) then
+              timer:CancelTimer(nameData[i].nextScheduledCheckHandle);
+            end
+            tremove(nameData, i);
+          end
+        end
+        if (#nameData == 0) then
+          debuffData[name] = nil;
+        end
+      end
+
+      if (not next(debuffData)) then
+        unitData[debuffType] = nil;
+      end
+    end
+    if (not next(unitData)) then
+      scanFuncName[unit] = nil;
+    end
+  end
+end
+
+local function UnloadGeneral(scanFuncGeneral, id)
+  for unit, unitData in pairs(scanFuncGeneral) do
+    for debuffType, debuffData in pairs(unitData) do
+      for i = #debuffData, 1, -1 do
+        if debuffData[i].id == id or not id then
+          if (debuffData[i].nextScheduledCheckHandle) then
+            timer:CancelTimer(debuffData[i].nextScheduledCheckHandle);
+          end
+          tremove(debuffData, i);
+        end
+      end
+      if (#debuffData == 0) then
+        unitData[debuffType] = nil;
+      end
+    end
+    if (not next(unitData)) then
+      scanFuncGeneral[unit] = nil;
+    end
+  end
+end
+
 function BuffTrigger.UnloadAll()
+
+  UnloadAura(scanFuncName, nil);
+  UnloadAura(scanFuncSpellId, nil);
+  UnloadGeneral(scanFuncGeneral, nil);
+
   wipe(scanFuncName);
   wipe(scanFuncSpellId);
   wipe(scanFuncGeneral);
@@ -1205,54 +1258,6 @@ function BuffTrigger.LoadDisplays(toLoad)
       for triggernum, triggerInfo in pairs(triggerInfos[id]) do
         LoadAura(id, triggernum, triggerInfo);
       end
-    end
-  end
-end
-
-local function UnloadAura(scanFuncName, id)
-  for unit, unitData in pairs(scanFuncName) do
-    for debuffType, debuffData in pairs(unitData) do
-      for name, nameData in pairs(debuffData) do
-        for i = #nameData, 1, -1 do
-          if nameData[i].id == id then
-            if (nameData[i].nextScheduledCheckHandle) then
-              timer:CancelTimer(nameData[i].nextScheduledCheckHandle);
-            end
-            tremove(nameData, i);
-          end
-        end
-        if (#nameData == 0) then
-          debuffData[name] = nil;
-        end
-      end
-
-      if (not next(debuffData)) then
-        unitData[debuffType] = nil;
-      end
-    end
-    if (not next(unitData)) then
-      scanFuncName[unit] = nil;
-    end
-  end
-end
-
-local function UnloadGeneral(scanFuncGeneral, id)
-  for unit, unitData in pairs(scanFuncGeneral) do
-    for debuffType, debuffData in pairs(unitData) do
-      for i = #debuffData, 1, -1 do
-        if debuffData[i].id == id then
-          if (debuffData[i].nextScheduledCheckHandle) then
-            timer:CancelTimer(debuffData[i].nextScheduledCheckHandle);
-          end
-          tremove(debuffData, i);
-        end
-      end
-      if (#debuffData == 0) then
-        unitData[debuffType] = nil;
-      end
-    end
-    if (not next(unitData)) then
-      scanFuncGeneral[unit] = nil;
     end
   end
 end
