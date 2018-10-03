@@ -1813,7 +1813,7 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   if (trigger.fullscan and trigger.autoclone) then
     trigger.combineMatches = "showClones";
   else
-    trigger.showClones = "showLowest";
+    trigger.combineMatches = "showLowest";
   end
 
   if (trigger.fullscan and trigger.use_stealable) then
