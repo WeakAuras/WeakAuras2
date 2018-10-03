@@ -4072,6 +4072,84 @@ function WeakAuras.PickDisplayMultiple(id)
   frame:PickDisplayMultiple(id);
 end
 
+function WeakAuras.PickDisplayMultipleShift(target)
+  if (frame.pickedDisplay) then
+    -- get first aura selected
+    local first;
+    if (WeakAuras.IsPickedMultiple()) then
+      first = tempGroup.controlledChildren[1];
+    else
+      first = frame.pickedDisplay;
+    end
+    if (first and first ~= target) then
+      -- check that id is in same group as first
+      local firstData = WeakAuras.GetData(first);
+      -- in a group
+      if (firstData.parent) then
+        local sameGroup = false;
+        local group = WeakAuras.GetData(firstData.parent);
+        for index, child in pairs(group.controlledChildren) do
+          if (child == target) then
+            sameGroup = true;
+            break;
+          end
+        end
+        if (sameGroup) then
+          local batchSelection = {};
+          for index, child in pairs(group.controlledChildren) do
+            -- 1st button
+            if (child == target or child == first) then
+              table.insert(batchSelection, child);
+              for i=index+1,#group.controlledChildren do
+                local current = group.controlledChildren[i];
+                table.insert(batchSelection, current);
+                -- last button: stop selection
+                if (current == target or current == first) then
+                  break;
+                end
+              end
+              break;
+            end
+          end
+          if #batchSelection > 0 then
+            frame:PickDisplayBatch(batchSelection);
+          end
+        end
+      else
+        -- 1st aura selected is top-level, check if target is also top-level and is not a group
+        local targetData = WeakAuras.GetData(target);
+        if (targetData and not targetData.controlledChildren and not targetData.parent) then
+          local batchSelection = {};
+          for index,button in pairs(frame.buttonsScroll.children) do
+            local data = button.data;
+            -- 1st button
+            if (data and (data.id == target or data.id == first)) then
+              table.insert(batchSelection, data.id);
+              for i=index+1,#frame.buttonsScroll.children do
+                local current = frame.buttonsScroll.children[i];
+                local currentData = current.data;
+                if currentData and not currentData.parent and not currentData.controlledChildren then
+                  table.insert(batchSelection, currentData.id);
+                  -- last button: stop selection
+                  if (currentData.id == target or currentData.id == first) then
+                    break;
+                  end
+                end
+              end
+              break;
+            end
+          end
+          if #batchSelection > 0 then
+            frame:PickDisplayBatch(batchSelection);
+          end
+        end
+      end
+    end
+  else
+    WeakAuras.PickDisplay(target);
+  end
+end
+
 function WeakAuras.FillOptions(id)
   frame:FillOptions(displayOptions[id]);
 end

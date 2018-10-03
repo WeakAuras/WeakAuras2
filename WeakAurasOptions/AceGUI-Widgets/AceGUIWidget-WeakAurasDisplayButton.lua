@@ -477,6 +477,9 @@ local methods = {
             fullName = name.."-"..realm
           end
           editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
+        elseif not data.controlledChildren then
+          -- select all buttons between 1st select and current
+          WeakAuras.PickDisplayMultipleShift(data.id)
         end
       else
         if(mouseButton == "RightButton") then
