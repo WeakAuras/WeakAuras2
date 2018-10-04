@@ -1164,14 +1164,13 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
     tinsert(scanFuncGeneral[unit][filter], triggerInfo);
   end
 
-
+  return not added;
 end
 
 local function LoadAura(id, triggernum, triggerInfo)
-  local added = false;
   local filter = triggerInfo.debuffType;
 
-  AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral);
+  local generalFunc = AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral);
 
   if (triggerInfo.unitExists) then
     unitExistScanFunc[triggerInfo.unit] = unitExistScanFunc[triggerInfo.unit] or {};
@@ -1219,7 +1218,7 @@ local function LoadAura(id, triggernum, triggerInfo)
       for unit in allUnits(triggerInfo.unit) do
         if (matchData[unit] and matchData[unit][filter]) then
           for index, match in pairs(matchData[unit][filter]) do
-            if (not added
+            if (generalFunc
                 or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
                 or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
               if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(time, matchData[unit][filter][index])) then
@@ -1233,7 +1232,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     else
       if (matchData[triggerInfo.unit] and matchData[triggerInfo.unit][filter]) then
         for index, match in pairs(matchData[triggerInfo.unit][filter]) do
-          if (not added
+          if (generalFunc
               or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
               or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
             if ((not triggerInfo.scanFunc) or triggerInfo.scanFunc(time, matchData[triggerInfo.unit][filter][index])) then
