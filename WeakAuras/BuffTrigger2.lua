@@ -286,7 +286,7 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
   return bestMatch, matchCount, nextCheck;
 end
 
-local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, affected, unaffected)
+local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
   if (not triggerStates[cloneId]) then
     triggerStates[cloneId] = {
       show = true,
@@ -304,6 +304,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       GUID = UnitGUID(bestMatch.unit),
       matchCount = matchCount,
       unitCount = unitCount,
+      maxUnitCount = maxUnitCount,
       tooltip = bestMatch.tooltip,
       tooltip1 = bestMatch.tooltip1,
       tooltip2 = bestMatch.tooltip2,
@@ -369,7 +370,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       changed = true;
     end
 
-    --
     if (state.tooltip ~= bestMatch.tooltip) then
       state.tooltip = bestMatch.tooltip;
       changed = true;
@@ -397,6 +397,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       changed = true;
     end
 
+    if (state.maxUnitCount ~= maxUnitCount) then
+      state.maxUnitCount = maxUnitCount;
+      changed = true;
+    end
+
     if (state.affected ~= affected) then
       state.affected = affected;
       changed = true;
@@ -419,7 +424,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
   end
 end
 
-local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, affected, unaffected)
+local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
   if (not triggerStates[cloneId]) then
     triggerStates[cloneId] = {
       show = true,
@@ -430,6 +435,7 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
       expirationTime = math.huge,
       matchCount = matchCount,
       unitCount = unitCount,
+      maxUnitCount = maxUnitCount,
       active = false,
       time = time,
       affected = affected,
@@ -496,6 +502,11 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
 
     if (state.unitCount ~= unitCount) then
       state.unitCount = unitCount;
+      changed = true;
+    end
+
+    if (state.maxUnitCount ~= maxUnitCount) then
+      state.maxUnitCount = maxUnitCount;
       changed = true;
     end
 
@@ -602,15 +613,16 @@ local function MaxUnitCount(triggerInfo)
   if (triggerInfo.unit == "group") then
     local count;
     if (triggerInfo.groupRole) then
-      count = groupCount[triggerInfo.groupRole] or 0;
+      count = groupCount[triggerInfo.groupRole] or 1;
     else
       count = groupCount["group"] or 0;
     end
     if (triggerInfo.ignoreSelf and (not triggerInfo.groupRole or triggerInfo.groupRole == playerRole)) then
       count = count - 1;
     end
+    return count;
   else
-    return groupCount[triggerInfo.unit] or 0;
+    return groupCount[triggerInfo.unit] or UnitExists(triggerInfo.unit) and 1 or 0;
   end
 end
 
@@ -639,7 +651,7 @@ local function UpdateTriggerState(time, id, triggernum)
   local matchCount = 0;
   local unitCount = 0;
   local auraDatas = {};
-  local maxUnitCount = triggerInfo.groupCountFunc and MaxUnitCount(triggerInfo);
+  local maxUnitCount = MaxUnitCount(triggerInfo);
   local matchedUnits = {};
   if (triggerInfo.matchesShowOn == "showOnMissing") then
     local anyMatch = false;
@@ -661,7 +673,7 @@ local function UpdateTriggerState(time, id, triggernum)
     if(anyMatch) then
       updated = RemoveState(triggerStates, "");
     else
-      updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, affected, unaffected);
+      updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, 0, affected, unaffected);
     end
   elseif (triggerInfo.combineMode == "showClones") then
     if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]) then
@@ -697,12 +709,12 @@ local function UpdateTriggerState(time, id, triggernum)
 
       for _, auraData in ipairs(auraDatas) do
         local cloneId = tostring(auraData);
-        updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, affected, unaffected) or updated;
+        updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated;
       end
 
       if(matchCount == 0 and (triggerInfo.matchesShowOn == "showAlways" and (existingUnits[triggerInfo.unit] or triggerInfo.groupTrigger)
                                 or triggerInfo.unitExists and not existingUnits[triggerInfo.unit])) then
-        updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, affected, unaffected) or updated;
+        updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, 0, affected, unaffected) or updated;
       end
     end
 
@@ -726,12 +738,12 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     if (bestMatch) then
-      updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, affected, unaffected);
+      updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected);
     elseif (triggerInfo.matchesShowOn == "showAlways" and triggerInfo.groupTrigger) then
-      updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, affected, unaffected);
+      updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected);
     elseif (not existingUnits[triggerInfo.unit]) then -- Unit does not exist
       if (triggerInfo.unitExists) then
-        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, affected, unaffected);
+        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected);
       else
         updated = RemoveState(triggerStates, cloneId);
       end
@@ -783,9 +795,9 @@ local function UpdateTriggerState(time, id, triggernum)
         local cloneId = unit;
         local bestMatch = matches[unit];
         if (bestMatch and matchesGroupCount) then
-          updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, affected, unaffected) or updated;
+          updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated;
         elseif (triggerInfo.matchesShowOn == "showAlways") then
-          updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, affected, unaffected) or updated;
+          updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated;
         end
       end
     else
@@ -795,7 +807,7 @@ local function UpdateTriggerState(time, id, triggernum)
       end
       if (triggerInfo.matchesShowOn == "showAlways") then
         for unit, unitData in allUnits(triggerInfo.unit) do
-          updated = UpdateStateWithNoMatch(time, triggerStates, unit, 0, 0, affected, unaffected) or updated;
+          updated = UpdateStateWithNoMatch(time, triggerStates, unit, 0, 0, 0, affected, unaffected) or updated;
         end
       end
     end
@@ -1133,7 +1145,7 @@ local function UpdateGroupCountFor(unit, event)
 
       for i = 1, GetNumSubgroupMembers() do
         local role = UnitGroupRolesAssigned(WeakAuras.partyUnits[i]);
-        if (role) then
+        if (role and role ~= "NONE") then
           groupCount[role] = groupCount[role] + 1;
         end
       end
@@ -1885,11 +1897,17 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
   ret = ret .. "|cFFFF0000%matchCount|r -" .. L["Match count"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCount|r -" .. L["Units affected"] .. "\n";
+  ret = ret .. "|cFFFF0000%maxUnitCount|r -" .. L["Total Units"] .. "\n";
   if (effectiveShowOn ~= "showOnMissing" and trigger.fetchTooltip) then
     ret = ret .. "|cFFFF0000%tooltip|r -" .. L["Tooltip"] .. "\n";
     ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First value of Tooltip"] .. "\n";
     ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second value of Tooltip"] .. "\n";
     ret = ret .. "|cFFFF0000%tooltip3|r -" .. L["Third value of Tooltip"] .. "\n";
+  end
+
+  if (trigger.unit == "group" and trigger.useAffected) then
+    ret = ret .. "|cFFFF0000%affected|r -" .. L["Names of affected players"] .. "\n";
+    ret = ret .. "|cFFFF0000%unaffected|r -" .. L["Names of unaffected players"] .. "\n";
   end
 
   return ret;
@@ -1929,6 +1947,11 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
 
   result["unitCount"] = {
     display = L["Affected Unit Count"],
+    type = "number"
+  }
+
+  result["maxUnitCount"] = {
+    display = L["Total Unit Count"],
     type = "number"
   }
 
@@ -1985,7 +2008,7 @@ function WeakAuras.CanConvertBuffTrigger2(trigger)
   end
 
   if (trigger.unit == "group") then
-    return true, L["Name Info is now availabel via %affected, %unaffected. Number of affected group members via %unitCount."]
+    return true, L["Warning: Name Info is now availabel via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
   end
 
   if (trigger.fullscan) then
@@ -2082,6 +2105,12 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
     trigger.matchesShowOn = "showOnActive";
   else
     trigger.matchesShowOn = trigger.buffShowOn;
+  end
+
+  if (trigger.unit == "group" and not trigger.groupclone) then
+    if (trigger.name_info == "players" or trigger.name_info == "nonplayers") then
+      trigger.useAffected = true;
+    end
   end
 end
 
