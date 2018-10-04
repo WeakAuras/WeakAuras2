@@ -82,6 +82,16 @@ local scanFuncGeneralGroup = {};
 local unitExistScanFunc = {};
 local existingUnits = {};
 
+local groupCountScanFunc = {};
+
+
+local groupCount = {};
+local playerRole = {};
+
+-- TODO remove
+tmp = groupCountScanFunc;
+tmp2 = groupCount;
+
 local timer = WeakAuras.timer;
 
 -- Auras that matched, unit, index
@@ -510,7 +520,7 @@ local function allUnits(unit)
       local max = GetNumGroupMembers();
       return function()
         if (i <= max) then
-          local ret = "raid" .. i;
+          local ret = WeakAuras.raidUnits[i];
           i = i + 1;
           return i;
         end
@@ -525,7 +535,7 @@ local function allUnits(unit)
           return "player";
         else
           if (i <= max) then
-            local ret = "party" .. i;
+            local ret =  WeakAuras.partyUnits[i];
             i = i + 1;
             return ret;
           end
@@ -559,6 +569,22 @@ local function allUnits(unit)
   end
 end
 
+local function MaxUnitCount(triggerInfo)
+  if (triggerInfo.unit == "group") then
+    local count;
+    if (triggerInfo.groupRole) then
+      count = groupCount[triggerInfo.groupRole] or 0;
+    else
+      count = groupCount["group"] or 0;
+    end
+    if (triggerInfo.ignoreSelf and (not triggerInfo.groupRole or triggerInfo.groupRole == playerRole)) then
+      count = count - 1;
+    end
+  else
+    return groupCount[triggerInfo.unit] or 0;
+  end
+end
+
 local function UpdateTriggerState(time, id, triggernum)
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
 
@@ -568,6 +594,7 @@ local function UpdateTriggerState(time, id, triggernum)
   local totalCount = 0;
   local unitCount = 0;
   local auraDatas = {};
+  local maxUnitCount = triggerInfo.groupCountFunc and MaxUnitCount(triggerInfo);
   if (triggerInfo.matchesShowOn == "showOnMissing") then
     local anyMatch = false;
     if (matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]) then
@@ -607,14 +634,16 @@ local function UpdateTriggerState(time, id, triggernum)
       end
     end
 
-    for _, auraData in ipairs(auraDatas) do
-      local cloneId = tostring(auraData);
-      updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, totalCount, unitCount) or updated;
-    end
+    if (not triggerInfo.groupCountFunc or triggerInfo.groupCountFunc(unitCount, maxUnitCount)) then
+      for _, auraData in ipairs(auraDatas) do
+        local cloneId = tostring(auraData);
+        updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, totalCount, unitCount) or updated;
+      end
 
-    if(totalCount == 0 and (triggerInfo.matchesShowOn == "showAlways" and (existingUnits[triggerInfo.unit] or triggerInfo.groupTrigger)
-                              or triggerInfo.unitExists and not existingUnits[triggerInfo.unit])) then
-      updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0) or updated;
+      if(totalCount == 0 and (triggerInfo.matchesShowOn == "showAlways" and (existingUnits[triggerInfo.unit] or triggerInfo.groupTrigger)
+                                or triggerInfo.unitExists and not existingUnits[triggerInfo.unit])) then
+        updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0) or updated;
+      end
     end
 
     for cloneId, state in pairs(triggerStates) do
@@ -626,6 +655,10 @@ local function UpdateTriggerState(time, id, triggernum)
     local bestMatch, totalCount, unitCount
     bestMatch, totalCount, unitCount, nextCheck = FindBestMatchData(time, id, triggernum, triggerInfo);
     local cloneId = "";
+
+    if (triggerInfo.groupCountFunc and not triggerInfo.groupCountFunc(unitCount, maxUnitCount)) then
+      bestMatch = nil;
+    end
 
     if (bestMatch) then
       updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount, unitCount);
@@ -670,10 +703,15 @@ local function UpdateTriggerState(time, id, triggernum)
         matches[unit] = bestMatch;
       end
 
+      local matchesGroupCount = true;
+      if (triggerInfo.groupCountFunc and not triggerInfo.groupCountFunc(unitCount, maxUnitCount)) then
+        matchesGroupCount = false;
+      end
+
       for unit, unitData in iterFunc, iterState do
         local cloneId = unit;
         local bestMatch = matches[unit];
-        if (bestMatch) then
+        if (bestMatch and matchesGroupCount) then
           updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, totalCount, unitCount) or updated;
         elseif (triggerInfo.matchesShowOn == "showAlways") then
           updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, totalCount, unitCount) or updated;
@@ -928,7 +966,7 @@ end
 local function UpdatePerGroupUnitScanFuncs()
   if (IsInRaid()) then
     for i = 1, 40 do
-      local unit = "raid" .. i;
+      local unit = WeakAuras.raidUnits[i];
       if (not UnitExists(unit)) then
         scanFuncNameGroup[unit] = nil;
       else
@@ -946,7 +984,7 @@ local function UpdatePerGroupUnitScanFuncs()
     scanFuncSpellIdGroup[unit] = FilterScanFuncs(scanFuncSpellId, unit, true, role);
     scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit, true, role);
     for i = 1, 4 do
-      unit = "party" .. i;
+      unit = WeakAuras.partyUnits[i];
       if (not UnitExists(unit)) then
         scanFuncNameGroup[unit] = nil;
       else
@@ -965,12 +1003,12 @@ local function ScanAllGroup(time, matchDataChanged, resetMatchDataByTrigger)
   -- handles the cases where a unit existance changes. That could be optimized
   if (IsInRaid()) then
     for i = 1, 40 do
-      ScanGroupUnit(time, matchDataChanged, "group", "raid" .. i, resetMatchDataByTrigger);
+      ScanGroupUnit(time, matchDataChanged, "group", WeakAuras.raidUnits[i], resetMatchDataByTrigger);
     end
   else
     ScanGroupUnit(time, matchDataChanged, "group", "player", resetMatchDataByTrigger)
     for i = 1, 4 do
-      ScanGroupUnit(time, matchDataChanged, "group", "party" .. i, resetMatchDataByTrigger);
+      ScanGroupUnit(time, matchDataChanged, "group", WeakAuras.partyUnits[i], resetMatchDataByTrigger);
     end
   end
 end
@@ -978,6 +1016,63 @@ end
 local function ScanAllBoss(time, matchDataChanged)
   for i = 1,4 do
     ScanGroupUnit(time, matchDataChanged, "boss", "boss" .. i);
+  end
+end
+
+local function UpdateGroupCountFor(unit, event)
+  if (unit == "boss") then
+    local count = 0;
+    for i = 1, 4 do
+      if (UnitExists("boss" .. i)) then
+        count = count + 1;
+      end
+    end
+    groupCount["boss"] = 4;
+  end
+
+  if(unit == "nameplate") then
+    if (event == "NAME_PLATE_UNIT_ADDED") then
+      groupCount["nameplate"] = (groupCount["nameplate"] or 0) + 1;
+    else
+      groupCount["nameplate"] = (groupCount["nameplate"] or 0) - 1;
+    end
+  end
+
+  if (unit == "group") then
+
+    groupCount["HEALER"] = 0;
+    groupCount["DAMAGER"] = 0;
+    groupCount["TANK"] = 0;
+
+    playerRole = UnitGroupRolesAssigned("player");
+    if (IsInRaid()) then
+      groupCount["group"] = GetNumGroupMembers();
+      for i=1, GetNumGroupMembers() do
+        local role = UnitGroupRolesAssigned(WeakAuras.raidUnits[i]);
+        if (role) then
+          groupCount[role] = groupCount[role] + 1
+        end
+      end
+    else
+      groupCount["group"] = GetNumSubgroupMembers() + 1;
+
+      for i = 1, GetNumSubgroupMembers() do
+        local role = UnitGroupRolesAssigned(WeakAuras.partyUnits[i]);
+        if (role) then
+          groupCount[role] = groupCount[role] + 1;
+        end
+      end
+      if (playerRole) then
+        groupCount[playerRole] = groupCount[playerRole] + 1;
+      end
+    end
+  end
+
+  for index, triggerInfo in ipairs(groupCountScanFunc) do
+    if (triggerInfo.unit == unit) then
+      matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {};
+      matchDataChanged[triggerInfo.id][triggerInfo.triggernum] = true;
+    end
   end
 end
 
@@ -1004,13 +1099,17 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   elseif(event == "UNIT_PET") then
     ScanGroupUnit(time, matchDataChanged, "pet", "pet")
   elseif(event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED") then
+    UpdateGroupCountFor("nameplate", event);
     ScanGroupUnit(time, matchDataChanged, "nameplate", arg1);
   elseif(event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
+    UpdateGroupCountFor("boss");
     ScanAllBoss(time, matchDataChanged);
   elseif (event =="ARENA_OPPONENT_UPDATE") then
+    UpdateGroupCountFor("arena");
     ScanGroupUnit(time, matchDataChanged, "arena", arg1);
   elseif (event == "GROUP_ROSTER_UPDATE") then
     UpdatePerGroupUnitScanFuncs();
+    UpdateGroupCountFor("group");
     -- We reset matchDataByTrigger here, because of role changes. Tracking
     -- those accurately is possible but feel like it is too much effort for the gain
     -- it brings.
@@ -1120,7 +1219,6 @@ local function UnloadGeneral(scanFuncGeneral, id)
 end
 
 function BuffTrigger.UnloadAll()
-
   UnloadAura(scanFuncName, nil);
   UnloadAura(scanFuncSpellId, nil);
   UnloadGeneral(scanFuncGeneral, nil);
@@ -1132,6 +1230,7 @@ function BuffTrigger.UnloadAll()
   wipe(scanFuncSpellIdGroup);
   wipe(scanFuncGeneralGroup);
   wipe(unitExistScanFunc);
+  wipe(groupCountScanFunc);
   wipe(matchData);
   wipe(matchDataByTrigger);
 end
@@ -1187,11 +1286,15 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(unitExistScanFunc[triggerInfo.unit][id], triggerInfo);
   end
 
+  if (triggerInfo.groupCountFunc) then
+    tinsert(groupCountScanFunc, triggerInfo);
+  end
+
   -- Update in per group scan funcs
   if (triggerInfo.unit == "group") then
     if (IsInRaid()) then
       for i = 1, 40 do
-        local unit = "raid" .. i;
+        local unit = WeakAuras.raidUnits[i];
         if (UnitExists(unit)) then
           local isSelf = UnitIsUnit("player", unit);
           local role = UnitGroupRolesAssigned(unit);
@@ -1207,7 +1310,7 @@ local function LoadAura(id, triggernum, triggerInfo)
         AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
       end
       for i = 1, 4 do
-        unit = "party" .. i;
+        unit = WeakAuras.partyUnits[i];
         if (UnitExists(unit)) then
           local isSelf = UnitIsUnit("player", unit);
           local role = UnitGroupRolesAssigned(unit);
@@ -1278,6 +1381,12 @@ function BuffTrigger.UnloadDisplays(toUnload)
 
     for unit, unitData in pairs(unitExistScanFunc) do
       unitData[id] = nil;
+    end
+
+    for i = #groupCountScanFunc, 1, -1 do
+      if (groupCountScanFunc[i].id == id) then
+        tremove(groupCountScanFunc, i);
+      end
     end
 
     for unit, unitData in pairs(matchData) do
@@ -1547,8 +1656,18 @@ function BuffTrigger.Add(data)
       local effectiveUseGroupCount = effectiveShowOn == "showOnActive" and IsGroupTrigger(trigger) and trigger.useGroup_count;
       local groupCountFunc;
       if (effectiveUseGroupCount) then
-        -- TODO groupCountFunc
-        -- group count + group role
+        local group_countFuncStr;
+        local count, countType = WeakAuras.ParseNumber(trigger.group_count);
+        if(trigger.group_countOperator and count and countType) then
+          if(countType == "whole") then
+            group_countFuncStr = WeakAuras.function_strings.count:format(trigger.group_countOperator, count);
+          else
+            group_countFuncStr = WeakAuras.function_strings.count_fraction:format(trigger.group_countOperator, count);
+          end
+        else
+          group_countFuncStr = WeakAuras.function_strings.count:format(">", 0);
+        end
+        groupCountFunc = WeakAuras.LoadFunction(group_countFuncStr);
       end
       local effectiveIgnoreSelf = trigger.unit == "group" and trigger.ignoreSelf;
       local effectiveGroupRole = trigger.unit == "group" and trigger.useGroupRole and trigger.group_role;
@@ -1572,6 +1691,7 @@ function BuffTrigger.Add(data)
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
         groupRole = effectiveGroupRole,
+        groupCountFunc = groupCountFunc,
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;

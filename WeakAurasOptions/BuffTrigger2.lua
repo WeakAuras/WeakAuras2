@@ -395,13 +395,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 65,
       hidden = function() return not (trigger.type == "aura2"); end
     },
-
     useGroup_count = {
       type = "toggle",
       name = L["Group Member Count"],
-      disabled = true,
       hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger)); end,
-      get = function() return true; end,
       order = 66
     },
     useGroup_countSpace = {
@@ -455,8 +452,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "double",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
     },
-
-
     matchesShowOn = {
       type = "select",
       name = L["Show On"],
