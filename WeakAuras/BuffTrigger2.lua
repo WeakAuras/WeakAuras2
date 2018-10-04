@@ -1136,7 +1136,7 @@ local function UpdateGroupCountFor(unit, event)
       groupCount["group"] = GetNumGroupMembers();
       for i=1, GetNumGroupMembers() do
         local role = UnitGroupRolesAssigned(WeakAuras.raidUnits[i]);
-        if (role) then
+        if (role and role ~= "NONE") then
           groupCount[role] = groupCount[role] + 1
         end
       end
@@ -1149,7 +1149,7 @@ local function UpdateGroupCountFor(unit, event)
           groupCount[role] = groupCount[role] + 1;
         end
       end
-      if (playerRole) then
+      if (playerRole and playerRole ~= "NONE") then
         groupCount[playerRole] = groupCount[playerRole] + 1;
       end
     end
@@ -1704,16 +1704,25 @@ function BuffTrigger.Add(data)
 
       local effectiveShowOn = trigger.matchesShowOn or "showOnActive";
 
-      local effectiveShowClones = effectiveShowOn ~= "showOnMissing" and trigger.combineMatches == "showClones";
-
       local combineMode;
-      if (IsGroupTrigger(trigger)) then
-        combineMode = effectiveShowOn ~= "showOnMissing" and trigger.combineMatchesGroup or "showLowestPerUnit";
-        if (combineMode == "showCombineAll") then
-          combineMode = "showLowest";
+      if (effectiveShowOn ~= "showOnMissing") then
+        if (IsGroupTrigger(trigger)) then
+          if (trigger.showClones) then
+            if (trigger.combinePerUnit) then
+              combineMode = trigger.combineMode == "showLowest" and "showLowestPerUnit" or "showHighestPerUnit";
+            else
+              combineMode = "showClones";
+            end
+          else
+            combineMode = trigger.combineMode or "showLowest";
+          end
+        else
+          if (trigger.showClones) then
+            combineMode = "showClones";
+          else
+            combineMode = trigger.combineMode or "showLowest";
+          end
         end
-      else
-        combineMode = effectiveShowOn ~= "showOnMissing" and trigger.combineMatches or "showLowest";
       end
 
       local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
@@ -1880,18 +1889,6 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   local effectiveShowOn = trigger.matchesShowOn or "showOnActive";
-  local combineMode;
-  if (effectiveShowOn ~= "showOnMissing") then
-    if (IsGroupTrigger(trigger)) then
-      combineMode = trigger.combineMatchesGroup or "showLowestPerUnit";
-      if (combineMode == "showCombineAll") then
-        combineMode = "showLowest";
-      end
-    else
-      combineMode = trigger.combineMatches or "showLowest";
-    end
-  end
-
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";

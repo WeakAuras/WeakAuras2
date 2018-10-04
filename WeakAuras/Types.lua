@@ -1503,6 +1503,12 @@ WeakAuras.bufftrigger_2_progress_behavior_types = {
   showAlways= L["Always"]
 }
 
+WeakAuras.bufftrigger_2_preferred_match_types =
+{
+  showLowest = L["Least remaining time"],
+  showHighest = L["Most remaining time"]
+}
+
 WeakAuras.bufftrigger_2_combine_types = {
   showLowest = L["Show lowest time left"],
   showHighest = L["Show longest time left"],

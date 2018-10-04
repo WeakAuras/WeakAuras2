@@ -469,42 +469,63 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       end,
       get = function()
         return trigger.matchesShowOn or "showOnActive";
-      end
-    },
-    combineMatches = {
-      type = "select",
-      name = "Combine matches",
-      values = WeakAuras.bufftrigger_2_combine_types,
-      order = 71.5,
-      hidden = function()
-        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and not IsGroupTrigger(trigger));
       end,
-      get = function()
-        return trigger.combineMatches or "showLowest";
-      end
     },
-    combineMatchesGroup = {
-      type = "select",
-      name = "Combine matches",
+    matchesShowOnSpace = {
+      type = "description",
+      name = "",
+      order = 71.1,
+      hidden = function()
+        return not (trigger.type == "aura2");
+      end,
+    },
+    showClones = {
+      type = "toggle",
+      name = L["Autoclone (Show all matches)"],
+      order = 72,
+      hidden = function() return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"); end,
+      width = "double"
+    },
+    combinePerUnit = {
+      type = "toggle",
+      name = L["Combine Matches Per Unit"],
       width = "double",
-      values = WeakAuras.bufftrigger_2_combine_group_types,
-      order = 71.6,
+      order = 72.1,
       hidden = function()
-        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and IsGroupTrigger(trigger));
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and IsGroupTrigger(trigger) and trigger.showClones);
+      end,
+    },
+    combineMode = {
+      type = "select",
+      name = L["Preferred Match"],
+      values = WeakAuras.bufftrigger_2_preferred_match_types,
+      order = 72.3,
+      width = "normal",
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"
+                    and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones));
       end,
       get = function()
-        return trigger.combineMatchesGroup or "showLowestPerUnit";
-      end
+        return trigger.combineMode or "showLowest";
+      end,
+    },
+    combineModeSpace = {
+      type = "description",
+      name = "",
+      order = 72.4,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"
+                    and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones));
+      end,
     },
     unitExists = {
       type = "toggle",
       name = L["Show If Unit Is Invalid"],
-      order = 72,
+      order = 73,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "player" and not IsGroupTrigger(trigger));
       end
     },
-
   };
 
   -- Names
