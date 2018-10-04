@@ -59,23 +59,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   -- * This should use the same match data, with less data and auto hiding
   -- * Might not work
 
-  -- Group:
-  --   group member count
-  --   * match data for all units is in UpdateTriggerState, so should be easier to do
-
-  --   group role, ignore self
-  --   * Check group role / ignore self can be decided before iteration, by checking the unit
-
-  --   name info of group triggers
-  --   stack info of group triggers
-
-  --   * Offer both options for name/stack as state "functions". Needs a bit of extensions of states and text replacements
-  ---  * Needs a bit of design work
-
-  --   hide alone
-  --   * Point users to load option
-  -- The biggest unaswered question is how to best store the scanFuncs so that we can easily figure out which scanFuncs to call.
-
   local function EffectiveShowOnIsShowOnActive(trigger)
     local effectiveShowOn = true;
     if (trigger.matchesShowOn) then

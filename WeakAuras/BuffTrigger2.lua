@@ -2004,8 +2004,12 @@ function WeakAuras.CanConvertBuffTrigger2(trigger)
     return false, L["Multi triggers can't be converted yet."];
   end
 
+  if (trigger.unit and trigger.hideAlone) then
+    return false, L["Hide Alone is not available in the new aura tracking system. A load option can be used for that."]
+  end
+
   if (trigger.unit == "group") then
-    return true, L["Warning: Name Info is now availabel via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
+    return true, L["Warning: Name Info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
   end
 
   if (trigger.fullscan) then
