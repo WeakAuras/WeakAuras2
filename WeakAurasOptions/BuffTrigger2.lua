@@ -395,44 +395,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 65,
       hidden = function() return not (trigger.type == "aura2"); end
     },
-    useGroup_count = {
-      type = "toggle",
-      name = L["Group Member Count"],
-      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger)); end,
-      order = 66
-    },
-    useGroup_countSpace = {
-      type = "description",
-      name = "",
-      order = 66.1,
-      width = "normal",
-      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger) and not trigger.useGroup_count); end,
-    },
-    group_countOperator = {
-      type = "select",
-      name = L["Operator"],
-      order = 66.1,
-      width = "half",
-      values = operator_types,
-      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger) and trigger.useGroup_count); end,
-      get = function() return trigger.group_countOperator; end
-    },
-    group_count = {
-      type = "input",
-      name = L["Count"],
-      desc = function()
-        local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000error|r";
-        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
-      end,
-      order = 66.2,
-      width = "half",
-      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger) and trigger.useGroup_count); end,
-      validate = ValidateNumeric,
-    },
 
     useGroupRole = {
       type = "toggle",
-      name = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Filter by Group Role"],
+      name = L["Filter by Group Role"],
       order = 67.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
     },
@@ -450,6 +416,47 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Ignore self"],
       order = 67.3,
       width = "double",
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
+    },
+    useGroup_count = {
+      type = "toggle",
+      name = L["Group Member Count"],
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger)); end,
+      order = 68
+    },
+    useGroup_countSpace = {
+      type = "description",
+      name = "",
+      order = 68.1,
+      width = "normal",
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger) and not trigger.useGroup_count); end,
+    },
+    group_countOperator = {
+      type = "select",
+      name = L["Operator"],
+      order = 68.2,
+      width = "half",
+      values = operator_types,
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger) and trigger.useGroup_count); end,
+      get = function() return trigger.group_countOperator; end
+    },
+    group_count = {
+      type = "input",
+      name = L["Count"],
+      desc = function()
+        local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000error|r";
+        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
+      end,
+      order = 68.3,
+      width = "half",
+      hidden = function() return not (trigger.type == "aura2" and EffectiveShowOnIsShowOnActive(trigger) and IsGroupTrigger(trigger) and trigger.useGroup_count); end,
+      validate = ValidateNumeric,
+    },
+    useAffected = {
+      type = "toggle",
+      name = L["Fetch affected/unaffected names"],
+      width = "double",
+      order = 69,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
     },
     matchesShowOn = {
