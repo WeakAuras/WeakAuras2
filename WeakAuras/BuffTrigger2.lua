@@ -116,7 +116,7 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   matchData.tooltipUpdated = time;
 end
 
-local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
   if (not matchData[unit]) then
     matchData[unit] = {};
   end
@@ -181,7 +181,7 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
     changed = true;
   end
 
-  if (changed) then
+  if (changed or resetMatchDataByTrigger) then
     -- Tell old auras that used this match data
     for id, triggerData in pairs(data.auras) do
       for triggernum in pairs(triggerData) do
@@ -199,7 +199,7 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
   data.time = time;
   data.unit = unit;
 
-  return changed;
+  return changed or resetMatchDataByTrigger;
 end
 
 local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
@@ -720,7 +720,7 @@ recheckTriggerInfo = function(triggerInfo)
   triggerInfo.nextScheduledCheck = nil;
 end
 
-local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral)
+local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral, resetMatchDataByTrigger)
   if (not scanFuncName) and (not scanFuncSpellId) and (not scanFuncGeneral) then
     return;
   end
@@ -740,7 +740,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
       debuffClass = string.lower(debuffClass);
     end
 
-    local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId);
+    local updatedMatchData = UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId);
 
     if (updatedMatchData) then -- Aura data changed, check against triggerInfos
       local auras = scanFuncName and scanFuncName[name];
@@ -823,7 +823,9 @@ local function TriggerInfoApplies(triggerInfo, isSelf, role)
   if (triggerInfo.ignoreSelf and isSelf) then
     return false;
   end
-  -- TODO role check
+  if (triggerInfo.groupRole and triggerInfo.groupRole ~= role) then
+    return false;
+  end
   return true;
 end
 
@@ -870,7 +872,7 @@ local function FilterGeneralScanFuncs(input, unit, isSelf, role)
   return result;
 end
 
-local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
+local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchDataByTrigger)
   if (WeakAuras.IsPaused()) then
     return;
   end
@@ -896,12 +898,14 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
     ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
         scanFuncName[unitType]["HELPFUL"],
         scanFuncSpellId[unitType]["HELPFUL"],
-        scanFuncGeneral[unitType]["HELPFUL"])
+        scanFuncGeneral[unitType]["HELPFUL"],
+        resetMatchDataByTrigger);
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
         scanFuncName[unitType]["HARMFUL"],
         scanFuncSpellId[unitType]["HARMFUL"],
-        scanFuncGeneral[unitType]["HARMFUL"]);
+        scanFuncGeneral[unitType]["HARMFUL"],
+        resetMatchDataByTrigger);
   else
     scanFuncNameGroup[unit] = scanFuncNameGroup[unit] or {};
     scanFuncSpellIdGroup[unit] = scanFuncSpellIdGroup[unit] or {};
@@ -910,12 +914,14 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
     ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
         scanFuncNameGroup[unit]["HELPFUL"],
         scanFuncSpellIdGroup[unit]["HELPFUL"],
-        scanFuncGeneralGroup[unit]["HELPFUL"])
+        scanFuncGeneralGroup[unit]["HELPFUL"],
+        resetMatchDataByTrigger);
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
         scanFuncNameGroup[unit]["HARMFUL"],
         scanFuncSpellIdGroup[unit]["HARMFUL"],
-        scanFuncGeneralGroup[unit]["HARMFUL"]);
+        scanFuncGeneralGroup[unit]["HARMFUL"],
+        resetMatchDataByTrigger);
   end
 end
 
@@ -954,17 +960,17 @@ local function UpdatePerGroupUnitScanFuncs()
   end
 end
 
-local function ScanAllGroup(time, matchDataChanged)
+local function ScanAllGroup(time, matchDataChanged, resetMatchDataByTrigger)
   -- We iterate over all raid/player unit ids here because ScanGroupUnit also
   -- handles the cases where a unit existance changes. That could be optimized
   if (IsInRaid()) then
     for i = 1, 40 do
-      ScanGroupUnit(time, matchDataChanged, "group", "raid" .. i);
+      ScanGroupUnit(time, matchDataChanged, "group", "raid" .. i, resetMatchDataByTrigger);
     end
   else
-    ScanGroupUnit(time, matchDataChanged, "group", "player")
+    ScanGroupUnit(time, matchDataChanged, "group", "player", resetMatchDataByTrigger)
     for i = 1, 4 do
-      ScanGroupUnit(time, matchDataChanged, "group", "party" .. i);
+      ScanGroupUnit(time, matchDataChanged, "group", "party" .. i, resetMatchDataByTrigger);
     end
   end
 end
@@ -1005,7 +1011,10 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     ScanGroupUnit(time, matchDataChanged, "arena", arg1);
   elseif (event == "GROUP_ROSTER_UPDATE") then
     UpdatePerGroupUnitScanFuncs();
-    ScanAllGroup(time, matchDataChanged);
+    -- We reset matchDataByTrigger here, because of role changes. Tracking
+    -- those accurately is possible but feel like it is too much effort for the gain
+    -- it brings.
+    ScanAllGroup(time, matchDataChanged, true);
   elseif(event == "UNIT_AURA") then
     if (arg1:sub(1,4) == "raid" or arg1:sub(1,5) == "party" or arg1 == "player") then
       ScanGroupUnit(time, matchDataChanged, "group", arg1);
