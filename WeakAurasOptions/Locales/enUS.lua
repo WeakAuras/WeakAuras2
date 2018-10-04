@@ -108,7 +108,7 @@ Choose which events cause the custom trigger to be checked.
 Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
 L["Custom trigger status tooltip"] = [=[
 Choose which events cause the custom trigger to be checked.
@@ -116,7 +116,7 @@ Since this is a status-type trigger, the specified events may be called by WeakA
 Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
 L["Custom Untrigger"] = "Custom Untrigger"
 L["Custom untrigger event tooltip"] = [=[
@@ -125,7 +125,7 @@ This can be different than the events defined for the trigger.
 Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
 L["Death"] = "Death"
 L["Death Rune"] = "Death Rune"
