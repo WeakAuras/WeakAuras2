@@ -89,8 +89,6 @@ local playerRole = {};
 -- Mutli Target tracking
 local scanFuncNameMulti = {};
 local scanFuncSpellIdMulti = {};
--- TODO
-tmp = scanFuncSpellIdMulti;
 
 local timer = WeakAuras.timer;
 
