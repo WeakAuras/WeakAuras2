@@ -3555,7 +3555,7 @@ templates.class.DEATHKNIGHT = {
       title = L["Abilities"],
       args = {
         { spell = 3714, type = "ability", buff = true}, -- Path of Frost
-        { spell = 43265, type = "ability", overlayGlow = true}, -- Death and Decay
+        { spell = 43265, type = "ability", buff = true, buffId = 188290, overlayGlow = true}, -- Death and Decay
         { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
         { spell = 48265, type = "ability", buff = true}, -- Death's Advance
         { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
@@ -3568,10 +3568,10 @@ templates.class.DEATHKNIGHT = {
         { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 61999, type = "ability"}, -- Raise Ally
         { spell = 108199, type = "ability", requiresTarget = true}, -- Gorefiend's Grasp
-        { spell = 111673, type = "ability", requiresTarget = true}, -- Control Undead
+        { spell = 111673, type = "ability", requiresTarget = true, debuff = true, unit = "pet"}, -- Control Undead
         { spell = 194679, type = "ability", charges = true, buff = true, talent = 12}, -- Rune Tap
-        { spell = 194844, type = "ability", talent = 21}, -- Bonestorm
-        { spell = 195182, type = "ability", requiresTarget = true, charges = true}, -- Marrowrend
+        { spell = 194844, type = "ability", buff = true, talent = 21}, -- Bonestorm
+        { spell = 195182, type = "ability", buff = true, buffId = 195181, requiresTarget = true}, -- Marrowrend
         { spell = 195292, type = "ability", requiresTarget = true}, -- Death's Caress
         { spell = 206930, type = "ability", requiresTarget = true}, -- Heart Strike
         { spell = 206931, type = "ability", requiresTarget = true, debuff = true, talent = 2}, -- Blooddrinker
@@ -3640,6 +3640,7 @@ templates.class.DEATHKNIGHT = {
         { spell = 56222, type = "debuff", unit = "target"}, -- Dark Command
         { spell = 211793, type = "debuff", unit = "target"}, -- Remorseless Winter
         { spell = 55095, type = "debuff", unit = "target"}, -- Frost Fever
+        { spell = 48743, type = "debuff", unit = "player"}, -- Death Pact
 
       },
       icon = 237522
@@ -3651,18 +3652,17 @@ templates.class.DEATHKNIGHT = {
         { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
         { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
         { spell = 47568, type = "ability", buff = true}, -- Empower Rune Weapon
-        { spell = 48265, type = "ability", buff = true, talent = 15}, -- Death's Advance
         { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
-        { spell = 48743, type = "ability"}, -- Death Pact
+        { spell = 48743, type = "ability", debuff = true, unit = "player", talent = 15}, -- Death Pact
         { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
         { spell = 49020, type = "ability", requiresTarget = true, overlayGlow = true}, -- Obliterate
-        { spell = 49184, type = "ability", requiresTarget = true}, -- Howling Blast
+        { spell = 49184, type = "ability", requiresTarget = true, overlayGlow = true}, -- Howling Blast
         { spell = 50977, type = "ability"}, -- Death Gate
         { spell = 51271, type = "ability", buff = true}, -- Pillar of Frost
         { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 57330, type = "ability", talent = 6}, -- Horn of Winter
         { spell = 61999, type = "ability"}, -- Raise Ally
-        { spell = 111673, type = "ability", requiresTarget = true}, -- Control Undead
+        { spell = 111673, type = "ability", requiresTarget = true, debuff = true, unit = "pet"}, -- Control Undead
         { spell = 152279, type = "ability", buff = true, talent = 21}, -- Breath of Sindragosa
         { spell = 194913, type = "ability"}, -- Glacial Advance
         { spell = 196770, type = "ability", buff = true}, -- Remorseless Winter
@@ -3735,34 +3735,34 @@ templates.class.DEATHKNIGHT = {
       title = L["Abilities"],
       args = {
         { spell = 3714, type = "ability", buff = true}, -- Path of Frost
-        { spell = 42650, type = "ability"}, -- Army of the Dead
-        { spell = 43265, type = "ability", buff = true}, -- Death and Decay
+        { spell = 42650, type = "ability", buff = true}, -- Army of the Dead
+        { spell = 43265, type = "ability", buff = true, buffId = 188290}, -- Death and Decay
         { spell = 45524, type = "ability", requiresTarget = true, debuff = true}, -- Chains of Ice
         { spell = 46584, type = "ability"}, -- Raise Dead
         { spell = 47468, type = "ability", requiresTarget = true}, -- Claw
-        { spell = 47481, type = "ability", requiresTarget = true}, -- Gnaw
+        { spell = 47481, type = "ability", requiresTarget = true, debuff = true}, -- Gnaw
         { spell = 47484, type = "ability", requiresTarget = true}, -- Huddle
         { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
         { spell = 47541, type = "ability", requiresTarget = true, usable = true, overlayGlow = true}, -- Death Coil
         { spell = 48265, type = "ability", buff = true}, -- Death's Advance
         { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
-        { spell = 48743, type = "ability"}, -- Death Pact
+        { spell = 48743, type = "ability", debuff = true, unit = "player", talent = 15}, -- Death Pact
         { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
         { spell = 49206, type = "ability", requiresTarget = true, talent = 21}, -- Summon Gargoyle
         { spell = 50977, type = "ability"}, -- Death Gate
-        { spell = 55090, type = "ability", requiresTarget = true}, -- Scourge Strike
+        { spell = 55090, type = "ability", requiresTarget = true, talent = {1, 2}}, -- Scourge Strike
         { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
         { spell = 61999, type = "ability"}, -- Raise Ally
-        { spell = 63560, type = "ability"}, -- Dark Transformation
-        { spell = 77575, type = "ability", requiresTarget = true}, -- Outbreak
-        { spell = 85948, type = "ability", requiresTarget = true}, -- Festering Strike
+        { spell = 63560, type = "ability", buff = true, unit = "pet"}, -- Dark Transformation
+        { spell = 77575, type = "ability", requiresTarget = true, debuff = true, buffId = 191587}, -- Outbreak
+        { spell = 85948, type = "ability", requiresTarget = true, debuff = true, buffId = 194310}, -- Festering Strike
         { spell = 108194, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Asphyxiate
-        { spell = 111673, type = "ability"}, -- Control Undead
+        { spell = 111673, type = "ability", requiresTarget = true, debuff = true, unit = "pet"}, -- Control Undead
         { spell = 115989, type = "ability", buff = true, talent = 6}, -- Unholy Blight
-        { spell = 130736, type = "ability", requiresTarget = true, buff = true, talent = 12}, -- Soul Reaper
-        { spell = 152280, type = "ability", talent = 17}, -- Defile
+        { spell = 130736, type = "ability", requiresTarget = true, debuff = true, talent = 12}, -- Soul Reaper
+        { spell = 152280, type = "ability", buff = true, buffId = 188290, talent = 17}, -- Defile
         { spell = 207289, type = "ability", buff = true, talent = 20}, -- Unholy Frenzy
-        { spell = 207311, type = "ability", requiresTarget = true}, -- Clawing Shadows
+        { spell = 207311, type = "ability", requiresTarget = true, talent = 3}, -- Clawing Shadows
         { spell = 212552, type = "ability", buff = true, talent = 14}, -- Wraith Walk
         { spell = 275699, type = "ability", usable = true, requiresTarget = true}, -- Apocalypse
       },

@@ -207,7 +207,7 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
       unit = item.unit or isBuff and "player" or "target",
       type = "aura",
       spellIds = {
-        item.spell
+        item.buffId or item.spell
       },
       buffShowOn = buffShowOn,
       debuffType = isBuff and "HELPFUL" or "HARMFUL",
@@ -221,13 +221,13 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   if (item.fullscan) then
     triggers[position].trigger.use_spellId = true;
     triggers[position].trigger.fullscan = true;
-    triggers[position].trigger.spellId = tostring(item.spell);
+    triggers[position].trigger.spellId = tostring(item.buffId or item.spell);
   end
   if (item.unit == "group") then
     triggers[position].trigger.name_info = "players";
   end
   if (item.unit == "multi") then
-    triggers[position].trigger.spellId = item.spell;
+    triggers[position].trigger.spellId = item.buffId or item.spell;
   end
 end
 
