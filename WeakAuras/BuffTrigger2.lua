@@ -137,6 +137,16 @@ local function ReferenceMatchDataMulti(matchData, id, triggernum, destGUID)
   matchDataChanged[id][triggernum] = true;
 end
 
+local function MatchesTriggerInfoMulti(triggerInfo, sourceGUID)
+  if (triggerInfo.ownOnly) then
+    return sourceGUID == UnitGUID("player");
+  elseif (triggerInfo.ownOnly == false) then
+    return sourceGUID ~= UnitGUID("player");
+  else
+    return true;
+  end
+end
+
 local function UpdateToolTipDataInMatchData(matchData, time)
   if (matchData.tooltipUpdated == time) then
     return;
@@ -2383,7 +2393,9 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
       end
       if (updatedSpellId) then
         for index, triggerInfo in ipairs(scanFuncsSpellId[spellId]) do
-          ReferenceMatchDataMulti(matchDataMulti[destGUID][spellId][sourceGUID], triggerInfo.id, triggerInfo.triggernum, destGUID);
+          if (MatchesTriggerInfoMulti(triggerInfo, sourceGUID)) then
+            ReferenceMatchDataMulti(matchDataMulti[destGUID][spellId][sourceGUID], triggerInfo.id, triggerInfo.triggernum, destGUID);
+          end
         end
       end
     end
@@ -2396,7 +2408,9 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
       end
       if (updatedName) then
         for index, triggerInfo in ipairs(scanFuncsName[spellName]) do
-          ReferenceMatchDataMulti(matchDataMulti[destGUID][spellName][sourceGUID], triggerInfo.id, triggerInfo.triggernum, destGUID);
+          if (MatchesTriggerInfoMulti(triggerInfo, sourceGUID)) then
+            ReferenceMatchDataMulti(matchDataMulti[destGUID][spellName][sourceGUID], triggerInfo.id, triggerInfo.triggernum, destGUID);
+          end
         end
       end
     end
