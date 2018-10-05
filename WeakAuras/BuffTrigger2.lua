@@ -1328,16 +1328,23 @@ function BuffTrigger.UnloadAll()
   wipe(matchDataByTrigger);
 end
 
+local function GetOrCreateSubTable(base, next, ...)
+  if (not next) then
+    return base;
+  end
+
+  base[next] = base[next] or {};
+  return GetOrCreateSubTable(base, ...);
+end
+
 local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   local filter = triggerInfo.debuffType;
   local added = false;
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
       if (name ~= "") then
-        scanFuncName[unit]               = scanFuncName[unit] or {};
-        scanFuncName[unit][filter]       = scanFuncName[unit][filter] or {};
-        scanFuncName[unit][filter][name] = scanFuncName[unit][filter][name] or {};
-        tinsert(scanFuncName[unit][filter][name], triggerInfo);
+        local base = unit and GetOrCreateSubTable(scanFuncName, unit, filter, name) or GetOrCreateSubTable(scanFuncName, filter, name);
+        tinsert(base, triggerInfo);
 
         added = true;
       end
@@ -1349,20 +1356,17 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
       if (spellIdString ~= "") then
         local spellId = tonumber(spellIdString);
         if (spellId) then
-          scanFuncSpellId[unit]                  = scanFuncSpellId[unit] or {};
-          scanFuncSpellId[unit][filter]          = scanFuncSpellId[unit][filter] or {};
-          scanFuncSpellId[unit][filter][spellId] = scanFuncSpellId[unit][filter][spellId] or {};
-          tinsert(scanFuncSpellId[unit][filter][spellId], triggerInfo);
+          local base = unit and GetOrCreateSubTable(scanFuncSpellId, unit, filter, spellId) or GetOrCreateSubTable(scanFuncSpellId, filter, spellId);
+          tinsert(base, triggerInfo);
         end
         added = true;
       end
     end
   end
 
-  if (not added) then
-    scanFuncGeneral[unit]                  = scanFuncGeneral[unit] or {};
-    scanFuncGeneral[unit][filter]          = scanFuncGeneral[unit][filter] or {};
-    tinsert(scanFuncGeneral[unit][filter], triggerInfo);
+  if (not added and unit) then
+    local base = GetOrCreateSubTable(scanFuncGeneral, unit, filter);
+    tinsert(base, triggerInfo);
   end
 
   return not added;
