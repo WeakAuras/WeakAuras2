@@ -1448,7 +1448,8 @@ local function LoadAura(id, triggernum, triggerInfo)
   if (triggerInfo.matchesShowOn ~= "showOnMissing") then
     -- Check against existing match data
     if (triggerInfo.unit == "multi") then
-      -- TODO Check against existing data
+      -- We don't check against existing data, as it would be rather random what it would pick up
+      -- since that depends on what other auras are loaded at that time
     elseif (triggerInfo.groupTrigger) then
       for unit in allUnits(triggerInfo.unit) do
         if (matchData[unit] and matchData[unit][filter]) then
@@ -2297,42 +2298,84 @@ local function UpdateMatchDataMulti(base, key, sourceName, destGUID, destName, s
   return updated;
 end
 
-local function AugmentMatchDataMulti(matchData)
-  -- TODO
+local function AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+  local changed = false;
+  if (matchData.name ~= name) then
+    matchData.name = name;
+    changed = true;
+  end
+
+  if (matchData.icon ~= icon) then
+    matchData.icon = icon;
+    changed = true;
+  end
+
+  if (matchData.stacks ~= stacks) then
+    matchData.stacks = stacks;
+    changed = true;
+  end
+
+  if (matchData.duration ~= duration) then
+    matchData.duration = duration;
+    changed = true;
+  end
+
+  if (matchData.expirationTime ~= expirationTime) then
+    matchData.expirationTime = expirationTime;
+    changed = true;
+  end
+
+  if (matchData.unitCaster ~= unitCaster) then
+    matchData.unitCaster = unitCaster;
+    changed = true;
+  end
+
+  if (matchData.spellId ~= spellId) then
+    matchData.spellId = name;
+    changed = true;
+  end
+  return changed;
 end
 
-local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, event, sourceName, destGUID, destName, spellId, spellName, amount)
-  local unit = GetUnit(destGUID);
-  -- TODO use unit!
+local function AugmentMatchDataMulti(matchData, unit, filter, nameKey, spellKey)
+  local index = 1;
+  while(true) do
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+    if (name == nameKey or spellId == spellKey) then
+      local changed = AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      return changed;
+    end
+  end
+end
 
-  print("## ", spellName, spellId);
+local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, sourceName, destGUID, destName, spellId, spellName, amount)
+  local unit = GetUnit(destGUID);
   if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncSpellId[spellId]) then
-    local base = GetOrCreateSubTable(matchDataMulti, destGUID);
+    matchDataMulti[destGUID] = matchDataMulti[destGUID] or {};
 
     if (scanFuncsSpellId and scanFuncSpellId[spellId]) then
-      local updatedSpellId = UpdateMatchDataMulti(base, spellId, sourceName, destGUID, destName, spellId, spellName, amount)
+      local updatedSpellId = UpdateMatchDataMulti(matchDataMulti[destGUID], spellId, sourceName, destGUID, destName, spellId, spellName, amount)
       if (unit) then
-        updatedSpellId= AugmentMatchDataMulti(base, unit, spellId) or updatedSpellId;
+        updatedSpellId = AugmentMatchDataMulti(matchDataMulti[destGUID][spellId], unit, filter, nil, spellId) or updatedSpellId;
       else
         pendingTracks[destGUID] = true;
       end
       if (updatedSpellId) then
         for index, triggerInfo in ipairs(scanFuncsSpellId[spellId]) do
-          ReferenceMatchDataMulti(base[spellId], triggerInfo.id, triggerInfo.triggernum, destGUID);
+          ReferenceMatchDataMulti(matchDataMulti[destGUID][spellId], triggerInfo.id, triggerInfo.triggernum, destGUID);
         end
       end
     end
     if (scanFuncsName and scanFuncsName[spellName]) then
-      local updatedName = UpdateMatchDataMulti(base, spellName, sourceName, destGUID, destName, spellId, spellName, amount)
-      print("HERE");
+      local updatedName = UpdateMatchDataMulti(matchDataMulti[destGUID], spellName, sourceName, destGUID, destName, spellId, spellName, amount)
       if (unit) then
-        updatedName = AugmentMatchDataMulti(base, unit, spellName) or updatedName;
+        updatedName = AugmentMatchDataMulti(matchDataMulti[destGUID][spellName], unit, filter, spellName, nil) or updatedName;
       else
         pendingTracks[destGUID] = true;
       end
       if (updatedName) then
         for index, triggerInfo in ipairs(scanFuncsName[spellName]) do
-          ReferenceMatchDataMulti(base[spellName], triggerInfo.id, triggerInfo.triggernum, destGUID);
+          ReferenceMatchDataMulti(matchDataMulti[destGUID][spellName], triggerInfo.id, triggerInfo.triggernum, destGUID);
         end
       end
     end
@@ -2349,6 +2392,7 @@ local function RemoveMatchDataMulti(base, destGUID, key)
       end
     end
   end
+  base[key] = nil;
 end
 
 local function HandleCombatLogRemove(scanFuncsName, scanFuncsSpellId, destGUID, spellId, spellName)
@@ -2363,9 +2407,9 @@ end
 local function CombatLog(_, event, _, _, sourceName, _, _, destGUID, destName, _, _, spellId, spellName, _, auraType, amount)
   if(event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE") then
     if (auraType == "BUFF") then
-      HandleCombatLog(scanFuncNameMulti["HELPFUL"], scanFuncSpellId["HELPFUL"], event, sourceName, destGUID, destName, spellId, spellName, amount);
+      HandleCombatLog(scanFuncNameMulti["HELPFUL"], scanFuncSpellId["HELPFUL"], "HELPFUL", event, sourceName, destGUID, destName, spellId, spellName, amount);
     elseif(auraType == "DEBUFF") then
-      HandleCombatLog(scanFuncNameMulti["HARMFUL"], scanFuncSpellIdMulti["HARMFUL"], event, sourceName, destGUID, destName, spellId, spellName, amount);
+      HandleCombatLog(scanFuncNameMulti["HARMFUL"], scanFuncSpellIdMulti["HARMFUL"], "HARMFUL", event, sourceName, destGUID, destName, spellId, spellName, amount);
     end
   elseif (event == "SPELL_AURA_REMOVED") then
     if (auraType == "BUFF") then
@@ -2378,7 +2422,7 @@ end
 
 function BuffTrigger.HandlePendingTracks(unit, GUID)
   if(pendingTracks[GUID]) then
-    -- TODO Found a unit token for a GUID
+    -- TODO
   end
 end
 
