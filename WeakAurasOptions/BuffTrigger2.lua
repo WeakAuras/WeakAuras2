@@ -469,7 +469,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "double",
       order = 72.1,
       hidden = function()
-        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and IsGroupTrigger(trigger) and trigger.showClones);
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi");
       end,
     },
     combineMode = {

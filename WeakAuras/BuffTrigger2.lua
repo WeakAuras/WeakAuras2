@@ -94,21 +94,47 @@ local timer = WeakAuras.timer;
 
 -- Auras that matched, unit, index
 local matchData = {};
+local matchDataMulti = {};
+
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {};
 
 local matchDataChanged = {};
 
+local function GetOrCreateSubTable(base, next, ...)
+  if (not next) then
+    return base;
+  end
+
+  base[next] = base[next] or {};
+  return GetOrCreateSubTable(base[next], ...);
+end
+
+
 local function ReferenceMatchData(id, triggernum, unit, filter, index)
   local match = matchData[unit][filter][index];
 
-  matchDataByTrigger[id] = matchDataByTrigger[id] or {};
-  matchDataByTrigger[id][triggernum] = matchDataByTrigger[id][triggernum] or {};
-  matchDataByTrigger[id][triggernum][unit] = matchDataByTrigger[id][triggernum][unit] or {};
-  matchDataByTrigger[id][triggernum][unit][index] = match;
+  local base = GetOrCreateSubTable(matchDataByTrigger, id, triggernum, unit);
+  base[index] = match;
 
   match.auras[id] = match.auras[id] or {}
   match.auras[id][triggernum] = true;
+end
+
+local function ReferenceMatchDataMulti(matchData, id, triggernum, destGUID)
+  local needToInsert = false;
+
+  matchData.auras[id] = matchData.auras[id] or {};
+  needToInsert = not matchData.auras[id][triggernum];
+  matchData.auras[id][triggernum] = true;
+
+  if (needToInsert) then
+    local matchDataByTriggerBase = GetOrCreateSubTable(matchDataByTrigger, id, triggernum, destGUID);
+    tinsert(matchDataByTriggerBase, matchData);
+  end
+
+  matchDataChanged[id] = matchDataChanged[id] or {};
+  matchDataChanged[id][triggernum] = true;
 end
 
 local function UpdateToolTipDataInMatchData(matchData, time)
@@ -303,7 +329,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       spellId = bestMatch.spellId,
       index = bestMatch.index,
       unit = bestMatch.unit,
-      GUID = UnitGUID(bestMatch.unit),
+      GUID = bestMatch.unit and UnitGUID(bestMatch.unit) or bestMatch.GUID,
       matchCount = matchCount,
       unitCount = unitCount,
       maxUnitCount = maxUnitCount,
@@ -942,9 +968,11 @@ end
 
 local function UpdateStates(matchDataChanged, time)
   for id, auraData in pairs(matchDataChanged) do
+    WeakAuras.StartProfileAura(id);
     for triggernum in pairs(auraData) do
       UpdateTriggerState(time, id, triggernum);
     end
+    WeakAuras.StopProfileAura(id);
   end
 end
 
@@ -1328,15 +1356,6 @@ function BuffTrigger.UnloadAll()
   wipe(matchDataByTrigger);
 end
 
-local function GetOrCreateSubTable(base, next, ...)
-  if (not next) then
-    return base;
-  end
-
-  base[next] = base[next] or {};
-  return GetOrCreateSubTable(base, ...);
-end
-
 local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   local filter = triggerInfo.debuffType;
   local added = false;
@@ -1364,7 +1383,7 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
     end
   end
 
-  if (not added and unit) then
+  if (not added and scanFuncGeneral) then
     local base = GetOrCreateSubTable(scanFuncGeneral, unit, filter);
     tinsert(base, triggerInfo);
   end
@@ -1377,8 +1396,7 @@ local function LoadAura(id, triggernum, triggerInfo)
 
   local generalFunc;
   if (triggerInfo.unit == "multi") then
-    -- TODO
-    -- AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti)
+     AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
   elseif(triggerInfo.unit == "group") then
     -- Update in per group scan funcs
     if (triggerInfo.unit == "group") then
@@ -1483,6 +1501,8 @@ function BuffTrigger.UnloadDisplays(toUnload)
     UnloadAura(scanFuncName, id);
     UnloadAura(scanFuncSpellId, id);
     UnloadGeneral(scanFuncGeneral, id);
+    UnloadGeneral(scanFuncNameMulti, id);
+    UnloadGeneral(scanFuncSpellIdMulti, id);
 
     for unit, unitData in pairs(unitExistScanFunc) do
       unitData[id] = nil;
@@ -1726,7 +1746,7 @@ function BuffTrigger.Add(data)
       if (effectiveShowOn ~= "showOnMissing") then
         if (IsGroupTrigger(trigger)) then
           if (trigger.showClones) then
-            if (trigger.combinePerUnit) then
+            if (trigger.combinePerUnit and trigger.unit ~= "multi") then
               combineMode = trigger.combineMode == "showLowest" and "showLowestPerUnit" or "showHighestPerUnit";
             else
               combineMode = "showClones";
@@ -2158,7 +2178,9 @@ local guidToUnit = {};
 
 local function ReleaseUID(unit)
   local guid = unitToGuid[unit];
-  guidToUnit[guid][unit] = nil;
+  if (guid) then
+    guidToUnit[guid][unit] = nil;
+  end
 end
 
 local function SetUID(guid, unit)
@@ -2169,7 +2191,7 @@ local function SetUID(guid, unit)
   guidToUnit[guid][unit] = true;
 end
 
-local function GetUID(guid)
+local function GetUnit(guid)
   if (not guidToUnit[guid]) then
     return nil;
   end
@@ -2200,8 +2222,158 @@ local function UidTrack(unit)
   end
 end
 
-local function CombatLog(...)
-  -- TODO CombatLog
+local function UpdateMatchDataMulti(base, key, sourceName, destGUID, destName, spellId, spellName, amount)
+  local updated = false;
+  local icon = spellId and select(3, GetSpellInfo(spellId));
+  if (not base[key]) then
+    updated = true;
+    base[key] = {
+      -- TODO review this
+      name = spellName,
+      unitName = destName,
+      duration = 0,
+      expirationTime = math.huge,
+      icon = icon,
+      count = amount,
+      spellId = spellId,
+      unitCaster = sourceName and UnitName(sourceName),
+      GUID = destGUID,
+      auras = {},
+    };
+  else
+    local match = base[key];
+    if (match.name ~= spellName) then
+      match.name = spellName;
+      updated = true;
+    end
+    if (match.unitName ~= destName) then
+      match.unitName = destName;
+      updated = true;
+    end
+
+    local duration, expirationTime;
+    if (message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
+      -- Shouldn't affect duration/expirationTime nor icon
+      duration = match.duration or 0;
+      expirationTime = match.expirationTime or math.huge;
+      icon = match.icon or icon;
+    else
+      duration = 0;
+      expirationTime = math.huge;
+    end
+
+    if (match.duration ~= duration) then
+      match.duration = duration;
+      updated = true;
+    end
+
+    if (match.expirationTime ~= expirationTime) then
+      match.expirationTime = expirationTime;
+      updated = true;
+    end
+
+    if (match.icon ~= icon) then
+      match.icon = icon;
+      updated = true;
+    end
+
+    if (match.count ~= amount) then
+      match.count = amount;
+      updated = true;
+    end
+
+    if (match.spellId ~= spellId) then
+      match.spellId = spellId;
+      updated = true;
+    end
+
+    local unitCaster = sourceName and UnitName(sourceName);
+    if (match.unitCaster ~= unitCaster) then
+      match.unitCaster = unitCaster;
+      updated = true;
+    end
+  end
+
+  return updated;
+end
+
+local function AugmentMatchDataMulti(matchData)
+  -- TODO
+end
+
+local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, event, sourceName, destGUID, destName, spellId, spellName, amount)
+  local unit = GetUnit(destGUID);
+  -- TODO use unit!
+
+  print("## ", spellName, spellId);
+  if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncSpellId[spellId]) then
+    local base = GetOrCreateSubTable(matchDataMulti, destGUID);
+
+    if (scanFuncsSpellId and scanFuncSpellId[spellId]) then
+      local updatedSpellId = UpdateMatchDataMulti(base, spellId, sourceName, destGUID, destName, spellId, spellName, amount)
+      if (unit) then
+        updatedSpellId= AugmentMatchDataMulti(base, unit, spellId) or updatedSpellId;
+      else
+        pendingTracks[destGUID] = true;
+      end
+      if (updatedSpellId) then
+        for index, triggerInfo in ipairs(scanFuncsSpellId[spellId]) do
+          ReferenceMatchDataMulti(base[spellId], triggerInfo.id, triggerInfo.triggernum, destGUID);
+        end
+      end
+    end
+    if (scanFuncsName and scanFuncsName[spellName]) then
+      local updatedName = UpdateMatchDataMulti(base, spellName, sourceName, destGUID, destName, spellId, spellName, amount)
+      print("HERE");
+      if (unit) then
+        updatedName = AugmentMatchDataMulti(base, unit, spellName) or updatedName;
+      else
+        pendingTracks[destGUID] = true;
+      end
+      if (updatedName) then
+        for index, triggerInfo in ipairs(scanFuncsName[spellName]) do
+          ReferenceMatchDataMulti(base[spellName], triggerInfo.id, triggerInfo.triggernum, destGUID);
+        end
+      end
+    end
+  end
+end
+
+local function RemoveMatchDataMulti(base, destGUID, key)
+  if (base[key]) then
+    for id, idData in pairs(base[key].auras) do
+      for triggernum, triggerData in pairs(idData) do
+        tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key]);
+        matchDataChanged[id] = matchDataChanged[id] or {};
+        matchDataChanged[id][triggernum] = true;
+      end
+    end
+  end
+end
+
+local function HandleCombatLogRemove(scanFuncsName, scanFuncsSpellId, destGUID, spellId, spellName)
+  if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncSpellId[spellId]) then
+    if (matchDataMulti[destGUID]) then
+      RemoveMatchDataMulti(matchDataMulti[destGUID], destGUID, spellId);
+      RemoveMatchDataMulti(matchDataMulti[destGUID], destGUID, spellName);
+    end
+  end
+end
+
+local function CombatLog(_, event, _, _, sourceName, _, _, destGUID, destName, _, _, spellId, spellName, _, auraType, amount)
+  if(event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE") then
+    if (auraType == "BUFF") then
+      HandleCombatLog(scanFuncNameMulti["HELPFUL"], scanFuncSpellId["HELPFUL"], event, sourceName, destGUID, destName, spellId, spellName, amount);
+    elseif(auraType == "DEBUFF") then
+      HandleCombatLog(scanFuncNameMulti["HARMFUL"], scanFuncSpellIdMulti["HARMFUL"], event, sourceName, destGUID, destName, spellId, spellName, amount);
+    end
+  elseif (event == "SPELL_AURA_REMOVED") then
+    if (auraType == "BUFF") then
+      HandleCombatLogRemove(scanFuncNameMulti["HELPFUL"], scanFuncSpellId["HELPFUL"], destGUID, spellId, spellName);
+    elseif(auraType == "DEBUFF") then
+      HandleCombatLogRemove(scanFuncNameMulti["HARMFUL"], scanFuncSpellIdMulti["HARMFUL"], destGUID, spellId, spellName);
+    end
+  end
 end
 
 function BuffTrigger.HandlePendingTracks(unit, GUID)
