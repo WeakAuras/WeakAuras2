@@ -16,23 +16,23 @@
     name (required) -> displayed name in the user config panel
     desc (optional) -> string to be displayed in the option tooltip
   When options are merged together (i.e. when the user multiselects and then opens the custom options tab), there is one additonal field:
-    references (required) -> childID <=> optionID map, used to dereference to the proper option table in setters
+    references -> childID <=> optionID map, used to dereference to the proper option table in setters
 
   Supported option types, and additional fields that each type supports/requires:
     description -> dummy option which can be used to display some text. Not interactive, and so key/default are not set or required.
       name (required) -> text displayed on the panel
       fontSize (optional) -> fontSize. Default is medium.
-    string -> text field which the user can input a string.
+    input -> text field which the user can input a string.
       length (optional) -> allowed length of the string. If set, then input longer than the allowed length will be trimmed
     number -> text field which the user can type in a number. Input is converted to a number value.
       max (optional) -> maximum allowed value. If set, then input greater than the maximum will be clamped
       min (optional) -> minimum allowed value. If set, then input lesser than the minimum will be clamped
       step (optional) -> stepsize
     select -> dropdown menu with author-specified strings to select.
-      values (required) -> array of strings to select
+      values (required) -> array of strings to select. config value will be the index corresponding to the string.
     toggle -> checkbutton which can be in a state of true or false, corresponding to checked and unchecked
     color -> color selector. Color is delivered as an {r, g, b, a} array.
-    slider -> slider element which allows the user to select a number value.
+    range -> slider element which allows the user to select a number value.
       max (optional) -> maximum allowed value. If set, then input greater than the maximum will be clamped
       min (optional) -> minimum allowed value. If set, then input lesser than the minimum will be clamped
       softmax (optional) -> Like max, but the manual entry will accept values up to the softmax.
@@ -295,6 +295,27 @@ local typeControlAdders = {
       order = order,
       get = get(option, "default"),
       set = set(data, option, "default"),
+    }
+    order = order + 1
+    args["option" .. i .. "use_length"] = {
+      type = "toggle",
+      name = name(data, option, "use_length", L["Max Length"]),
+      desc = desc(data, option, "use_length"),
+      order = order,
+      get = get(option, "use_length"),
+      set = set(data, option, "use_length"),
+    }
+    order = order + 1
+    args["option" .. i .. "length"] = {
+      type = "range",
+      name = "",
+      desc = desc(data, option, "length"),
+      order = order,
+      min = 1,
+      step = 1,
+      softMax = 20,
+      get = get(option, "length"),
+      set = set(data, option, "length"),
     }
     order = order + 1
     return order
@@ -931,6 +952,7 @@ local function addUserModeOption(options, args, data, order, i, hidden)
 
   -- convert from weakauras option type to ace option type
   if optionType == "toggle" then
+  elseif optionType == "input" then
   elseif optionType == "number" then
     userOption.type = "input"
     userOption.get = getNum(config, option.key)
@@ -942,7 +964,6 @@ local function addUserModeOption(options, args, data, order, i, hidden)
     userOption.softMax = option.softMax
     userOption.softMin = option.softMin
     userOption.bigStep = option.step
-    -- userOption.set = se(data, config, option.key)
   elseif optionType == "description" then
     userOption.name = option.text or ""
     userOption.fontSize = option.fontSize

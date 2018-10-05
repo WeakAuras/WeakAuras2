@@ -1809,6 +1809,8 @@ WeakAuras.author_option_fields = {
   },
   input = {
     default = "",
+    use_length = false,
+    length = 10,
   },
   toggle = {
     default = false,
