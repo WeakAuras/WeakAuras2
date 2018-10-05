@@ -1316,13 +1316,7 @@ function WeakAuras.ShowOptions(msg)
       for k,v in pairs(tempGroup.controlledChildren) do
         children[k] = v
       end
-      for index,childId in pairs(children) do
-        if (index == 1) then
-          WeakAuras.PickDisplay(childId);
-        else
-          WeakAuras.PickDisplayMultiple(childId);
-        end
-      end
+      frame:PickDisplayBatch(children);
     else
       WeakAuras.PickDisplay(frame.pickedDisplay);
     end
