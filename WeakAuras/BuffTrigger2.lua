@@ -89,6 +89,8 @@ local playerRole = {};
 -- Mutli Target tracking
 local scanFuncNameMulti = {};
 local scanFuncSpellIdMulti = {};
+-- TODO
+tmp = scanFuncSpellIdMulti;
 
 local timer = WeakAuras.timer;
 
@@ -2380,11 +2382,11 @@ end
 
 local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
   local unit = GetUnit(destGUID);
-  if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncSpellId[spellId]) then
+  if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId]) then
     matchDataMulti[destGUID] = matchDataMulti[destGUID] or {};
     matchDataMulti[destGUID][sourceGUID] = matchDataMulti[destGUID][sourceGUID] or {};
 
-    if (scanFuncsSpellId and scanFuncSpellId[spellId]) then
+    if (scanFuncsSpellId and scanFuncsSpellId[spellId]) then
       local updatedSpellId = UpdateMatchDataMulti(matchDataMulti[destGUID], spellId, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
       if (unit) then
         updatedSpellId = AugmentMatchDataMulti(matchDataMulti[destGUID][spellId][sourceGUID], unit, filter, sourceGUID, nil, spellId) or updatedSpellId;
@@ -2399,6 +2401,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
         end
       end
     end
+
     if (scanFuncsName and scanFuncsName[spellName]) then
       local updatedName = UpdateMatchDataMulti(matchDataMulti[destGUID], spellName, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
       if (unit) then
@@ -2443,13 +2446,13 @@ end
 local function CombatLog(_, event, _, sourceGUID, sourceName, _, _, destGUID, destName, _, _, spellId, spellName, _, auraType, amount)
   if(event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE") then
     if (auraType == "BUFF") then
-      HandleCombatLog(scanFuncNameMulti["HELPFUL"], scanFuncSpellId["HELPFUL"], "HELPFUL", event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount);
+      HandleCombatLog(scanFuncNameMulti["HELPFUL"], scanFuncSpellIdMulti["HELPFUL"], "HELPFUL", event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount);
     elseif(auraType == "DEBUFF") then
       HandleCombatLog(scanFuncNameMulti["HARMFUL"], scanFuncSpellIdMulti["HARMFUL"], "HARMFUL", event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount);
     end
   elseif (event == "SPELL_AURA_REMOVED") then
     if (auraType == "BUFF") then
-      HandleCombatLogRemove(scanFuncNameMulti["HELPFUL"], scanFuncSpellId["HELPFUL"], sourceGUID, destGUID, spellId, spellName);
+      HandleCombatLogRemove(scanFuncNameMulti["HELPFUL"], scanFuncSpellIdMulti["HELPFUL"], sourceGUID, destGUID, spellId, spellName);
     elseif(auraType == "DEBUFF") then
       HandleCombatLogRemove(scanFuncNameMulti["HARMFUL"], scanFuncSpellIdMulti["HARMFUL"], sourceGUID, destGUID, spellId, spellName);
     end
