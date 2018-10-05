@@ -81,12 +81,14 @@ local scanFuncGeneralGroup = {};
 
 local unitExistScanFunc = {};
 local existingUnits = {};
-
 local groupCountScanFunc = {};
-
 
 local groupCount = {};
 local playerRole = {};
+
+-- Mutli Target tracking
+local scanFuncNameMulti = {};
+local scanFuncSpellIdMulti = {};
 
 local timer = WeakAuras.timer;
 
@@ -584,6 +586,8 @@ local function allUnits(unit)
       max = 5;
     elseif(unit == "nameplate") then
       max = 40;
+    else
+      return function() end
     end
     return function()
       local ret = unit .. i;
@@ -1316,10 +1320,21 @@ function BuffTrigger.UnloadAll()
   wipe(scanFuncNameGroup);
   wipe(scanFuncSpellIdGroup);
   wipe(scanFuncGeneralGroup);
+  wipe(scanFuncNameMulti);
+  wipe(scanFuncSpellId);
   wipe(unitExistScanFunc);
   wipe(groupCountScanFunc);
   wipe(matchData);
   wipe(matchDataByTrigger);
+end
+
+local function GetOrCreateSubTable(base, next, ...)
+  if (not next) then
+    return base;
+  end
+
+  base[next] = base[next] or {};
+  return GetOrCreateSubTable(base, ...);
 end
 
 local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
@@ -1328,10 +1343,8 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
   if (triggerInfo.auranames) then
     for _, name in ipairs(triggerInfo.auranames) do
       if (name ~= "") then
-        scanFuncName[unit]               = scanFuncName[unit] or {};
-        scanFuncName[unit][filter]       = scanFuncName[unit][filter] or {};
-        scanFuncName[unit][filter][name] = scanFuncName[unit][filter][name] or {};
-        tinsert(scanFuncName[unit][filter][name], triggerInfo);
+        local base = unit and GetOrCreateSubTable(scanFuncName, unit, filter, name) or GetOrCreateSubTable(scanFuncName, filter, name);
+        tinsert(base, triggerInfo);
 
         added = true;
       end
@@ -1343,20 +1356,17 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
       if (spellIdString ~= "") then
         local spellId = tonumber(spellIdString);
         if (spellId) then
-          scanFuncSpellId[unit]                  = scanFuncSpellId[unit] or {};
-          scanFuncSpellId[unit][filter]          = scanFuncSpellId[unit][filter] or {};
-          scanFuncSpellId[unit][filter][spellId] = scanFuncSpellId[unit][filter][spellId] or {};
-          tinsert(scanFuncSpellId[unit][filter][spellId], triggerInfo);
+          local base = unit and GetOrCreateSubTable(scanFuncSpellId, unit, filter, spellId) or GetOrCreateSubTable(scanFuncSpellId, filter, spellId);
+          tinsert(base, triggerInfo);
         end
         added = true;
       end
     end
   end
 
-  if (not added) then
-    scanFuncGeneral[unit]                  = scanFuncGeneral[unit] or {};
-    scanFuncGeneral[unit][filter]          = scanFuncGeneral[unit][filter] or {};
-    tinsert(scanFuncGeneral[unit][filter], triggerInfo);
+  if (not added and unit) then
+    local base = GetOrCreateSubTable(scanFuncGeneral, unit, filter);
+    tinsert(base, triggerInfo);
   end
 
   return not added;
@@ -1365,7 +1375,45 @@ end
 local function LoadAura(id, triggernum, triggerInfo)
   local filter = triggerInfo.debuffType;
 
-  local generalFunc = AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral);
+  local generalFunc;
+  if (triggerInfo.unit == "multi") then
+    -- TODO
+    -- AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti)
+  elseif(triggerInfo.unit == "group") then
+    -- Update in per group scan funcs
+    if (triggerInfo.unit == "group") then
+      if (IsInRaid()) then
+        for i = 1, 40 do
+          local unit = WeakAuras.raidUnits[i];
+          if (UnitExists(unit)) then
+            local isSelf = UnitIsUnit("player", unit);
+            local role = UnitGroupRolesAssigned(unit);
+            if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
+              AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+            end
+          end
+        end
+      else
+        local unit = "player";
+        local role = UnitGroupRolesAssigned(unit);
+        if (TriggerInfoApplies(triggerInfo, true, role)) then
+          AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+        end
+        for i = 1, 4 do
+          unit = WeakAuras.partyUnits[i];
+          if (UnitExists(unit)) then
+            local isSelf = UnitIsUnit("player", unit);
+            local role = UnitGroupRolesAssigned(unit);
+            if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
+              AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+            end
+          end
+        end
+      end
+    end
+  else
+    generalFunc = AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral);
+  end
 
   if (triggerInfo.unitExists) then
     unitExistScanFunc[triggerInfo.unit] = unitExistScanFunc[triggerInfo.unit] or {};
@@ -1377,43 +1425,13 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(groupCountScanFunc, triggerInfo);
   end
 
-  -- Update in per group scan funcs
-  if (triggerInfo.unit == "group") then
-    if (IsInRaid()) then
-      for i = 1, 40 do
-        local unit = WeakAuras.raidUnits[i];
-        if (UnitExists(unit)) then
-          local isSelf = UnitIsUnit("player", unit);
-          local role = UnitGroupRolesAssigned(unit);
-          if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
-            AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
-          end
-        end
-      end
-    else
-      local unit = "player";
-      local role = UnitGroupRolesAssigned(unit);
-      if (TriggerInfoApplies(triggerInfo, true, role)) then
-        AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
-      end
-      for i = 1, 4 do
-        unit = WeakAuras.partyUnits[i];
-        if (UnitExists(unit)) then
-          local isSelf = UnitIsUnit("player", unit);
-          local role = UnitGroupRolesAssigned(unit);
-          if (TriggerInfoApplies(triggerInfo, isSelf, role)) then
-            AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
-          end
-        end
-      end
-    end
-  end
-
   local updateTriggerState = false;
   -- sets initial states up
   if (triggerInfo.matchesShowOn ~= "showOnMissing") then
     -- Check against existing match data
-    if (triggerInfo.groupTrigger) then
+    if (triggerInfo.unit == "multi") then
+      -- TODO Check against existing data
+    elseif (triggerInfo.groupTrigger) then
       for unit in allUnits(triggerInfo.unit) do
         if (matchData[unit] and matchData[unit][filter]) then
           for index, match in pairs(matchData[unit][filter]) do
@@ -1686,7 +1704,7 @@ local function lowestExpirationTime(bestMatch, auraMatch)
 end
 
 local function IsGroupTrigger(trigger)
-  return trigger.unit == "group" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena";
+  return trigger.unit == "group" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi";
 end
 
 --- Adds an aura, setting up internal data structures for all buff triggers.
@@ -1728,7 +1746,7 @@ function BuffTrigger.Add(data)
       local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
 
       local remFunc;
-      if (effectiveShowOn == "showOnActive" and trigger.useRem) then
+      if (effectiveShowOn == "showOnActive" and trigger.unit ~= "multi" and trigger.useRem) then
         local remFuncStr = WeakAuras.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0);
         remFunc = WeakAuras.LoadFunction(remFuncStr);
       end
@@ -1742,7 +1760,7 @@ function BuffTrigger.Add(data)
         end
       end
 
-      local showIfInvalidUnit = trigger.unit ~= "player" and trigger.unitExists or false
+      local showIfInvalidUnit = trigger.unit ~= "player" and not IsGroupTrigger(trigger) and trigger.unitExists or false
       local effectiveUseGroupCount = effectiveShowOn == "showOnActive" and IsGroupTrigger(trigger) and trigger.useGroup_count;
       local groupCountFunc;
       if (effectiveUseGroupCount) then
@@ -1762,6 +1780,10 @@ function BuffTrigger.Add(data)
       local effectiveIgnoreSelf = trigger.unit == "group" and trigger.ignoreSelf;
       local effectiveGroupRole = trigger.unit == "group" and trigger.useGroupRole and trigger.group_role;
 
+      if (trigger.unit == "multi") then
+        BuffTrigger.InitMultiAura();
+      end
+
       local triggerInformation = {
         auranames = names,
         auraspellids = trigger.useExactSpellId and trigger.auraspellids,
@@ -1772,17 +1794,18 @@ function BuffTrigger.Add(data)
         matchesShowOn = effectiveShowOn,
         scanFunc = scanFunc,
         remainingFunc = remFunc,
-        remainingCheck = effectiveShowOn == "showOnActive" and trigger.useRem and tonumber(trigger.rem) or 0,
+        remainingCheck = effectiveShowOn == "showOnActive" and trigger.unit ~= "multi" and trigger.useRem and tonumber(trigger.rem) or 0,
         id = id,
         triggernum = triggernum,
         compareFunc = (combineMode == "showHighest" or combineMode == "showHighestPerUnit") and highestExpirationTime or lowestExpirationTime,
         unitExists = showIfInvalidUnit,
-        fetchTooltip = trigger.matchesShowOn ~= "showOnMissing" and trigger.fetchTooltip,
+        fetchTooltip = trigger.matchesShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
         groupRole = effectiveGroupRole,
         groupCountFunc = groupCountFunc,
-        useAffected = trigger.unit == "group" and trigger.useAffected
+        useAffected = trigger.unit == "group" and trigger.useAffected,
+        isMulti = trigger.unit == "multi"
       };
       triggerInfos[id] = triggerInfos[id] or {};
       triggerInfos[id][triggernum] = triggerInformation;
@@ -1895,7 +1918,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   ret = ret .. "|cFFFF0000%matchCount|r -" .. L["Match count"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCount|r -" .. L["Units affected"] .. "\n";
   ret = ret .. "|cFFFF0000%maxUnitCount|r -" .. L["Total Units"] .. "\n";
-  if (effectiveShowOn ~= "showOnMissing" and trigger.fetchTooltip) then
+  if (effectiveShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip) then
     ret = ret .. "|cFFFF0000%tooltip|r -" .. L["Tooltip"] .. "\n";
     ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First value of Tooltip"] .. "\n";
     ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second value of Tooltip"] .. "\n";
@@ -1962,7 +1985,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     }
   end
 
-  if (trigger.matchesShowOn ~= "showOnMissing" and trigger.fetchTooltip) then
+  if (trigger.matchesShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip) then
     result["tooltip1"] = {
       display = L["Tooltip Value 1"],
       type = "number"
@@ -2124,8 +2147,103 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   else
     trigger.useGroup_count = false;
   end
-
-
 end
+
+-- MULTI TARGET trigger code
+local multiAuraFrame;
+local pendingTracks = {};
+
+local unitToGuid = {};
+local guidToUnit = {};
+
+local function ReleaseUID(unit)
+  local guid = unitToGuid[unit];
+  guidToUnit[guid][unit] = nil;
+end
+
+local function SetUID(guid, unit)
+  ReleaseUID(unit);
+
+  unitToGuid[unit] = guid;
+  guidToUnit[guid] = guidToUnit[guid] or {};
+  guidToUnit[guid][unit] = true;
+end
+
+local function GetUID(guid)
+  if (not guidToUnit[guid]) then
+    return nil;
+  end
+  for unit in pairs(guidToUnit[guid]) do
+    if (UnitGUID(unit) == guid) then
+      return unit;
+    else
+      guidToUnit[guid][unit] = nil;
+    end
+  end
+end
+
+local function UidTrack(unit)
+  local GUID = UnitGUID(unit);
+  if(GUID) then
+    SetUID(GUID, unit);
+    BuffTrigger.HandlePendingTracks(unit, GUID);
+  else
+    ReleaseUID(unit);
+  end
+  unit = unit.."target";
+  GUID = UnitGUID(unit);
+  if(GUID) then
+    WeakAuras.SetUID(GUID, unit);
+    BuffTrigger.HandlePendingTracks(unit, GUID);
+  else
+    ReleaseUID(unit);
+  end
+end
+
+local function CombatLog(...)
+  -- TODO CombatLog
+end
+
+function BuffTrigger.HandlePendingTracks(unit, GUID)
+  if(pendingTracks[GUID]) then
+    -- TODO Found a unit token for a GUID
+  end
+end
+
+
+function BuffTrigger.InitMultiAura()
+  if not(multiAuraFrame) then
+    multiAuraFrame = CreateFrame("frame");
+    multiAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    multiAuraFrame:RegisterEvent("UNIT_TARGET");
+    multiAuraFrame:RegisterEvent("UNIT_AURA");
+    multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
+    multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+    multiAuraFrame:SetScript("OnEvent", BuffTrigger.HandleMultiEvent);
+    WeakAuras.frames["Multi-target 2 Aura Trigger Handler"] = multiAuraFrame;
+    -- TODO timer:ScheduleRepeatingTimer(BuffTrigger.MultiCheckExists, 10)
+  end
+end
+
+function BuffTrigger.HandleMultiEvent(frame, event, ...)
+  WeakAuras.StartProfileSystem("bufftrigger2 - multi");
+  if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
+    CombatLog(CombatLogGetCurrentEventInfo());
+  elseif(event == "UNIT_TARGET") then
+    UidTrack(...);
+  elseif(event == "PLAYER_FOCUS_CHANGED") then
+    UidTrack("focus");
+  elseif(event == "NAME_PLATE_UNIT_ADDED") then
+    UidTrack(...);
+  elseif(event == "NAME_PLATE_UNIT_REMOVED") then
+    local unit = ...
+    ReleaseUID(unit);
+    unit = unit.."target";
+    ReleaseUID(unit);
+  end
+  WeakAuras.StopProfileSystem("bufftrigger2 - multi");
+end
+
 
 WeakAuras.RegisterTriggerSystem({"aura2"}, BuffTrigger);

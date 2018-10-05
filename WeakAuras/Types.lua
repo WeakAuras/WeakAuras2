@@ -143,9 +143,8 @@ WeakAuras.unit_types_bufftrigger_2 = {
   arena = L["Arena"],
   nameplate = L["Nameplate"],
   pet = L["Pet"],
-  -- TODO: member and multi
   member = L["Specific Unit"],
-  --multi = L["Multi-target"]
+  multi = L["Multi-target (CLEU)"]
 }
 
 WeakAuras.actual_unit_types_with_specific = {
