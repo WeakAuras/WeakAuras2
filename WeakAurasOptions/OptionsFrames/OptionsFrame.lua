@@ -901,15 +901,19 @@ function WeakAuras.CreateFrame()
   end
 
   frame.PickDisplayBatch = function(self, batchSelection)
-    for index, id in ipairs(batchSelection) do
-      if index == 1 then
-        self:PickDisplay(id);
-      else
-        self.pickedDisplay = tempGroup;
-        WeakAuras.EnsureOptions(id);
-        displayButtons[id]:Pick();
-        tinsert(tempGroup.controlledChildren, id);
+    if #batchSelection == 1 then
+      self:PickDisplay(id);
+    else
+      for index, id in ipairs(batchSelection) do
+        if index == 1 then
+          self:PickDisplay(id);
+        else
+          WeakAuras.EnsureOptions(id);
+          displayButtons[id]:Pick();
+        end
       end
+      self.pickedDisplay = tempGroup;
+      tinsert(tempGroup.controlledChildren, id);
     end
     WeakAuras.ReloadTriggerOptions(tempGroup);
     self:FillOptions(displayOptions[tempGroup.id]);
