@@ -340,7 +340,8 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       affected = affected,
       unaffected = unaffected,
       active = true,
-      time = time
+      time = time,
+      autoHide = bestMatch.autoHide
     }
     return true;
   else
@@ -442,6 +443,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if (state.active ~= true) then
       state.active = true;
+      changed = true;
+    end
+
+    if (state.autoHide ~= bestMatch.autoHide) then
+      state.autoHide = bestMatch.autoHide;
       changed = true;
     end
 
@@ -2325,6 +2331,11 @@ local function AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffCl
     changed = true;
   end
 
+  if (not matchData.autoHide) then
+    matchData.autoHide = true;
+    changed = true;
+  end
+
   if (matchData.unitCaster ~= unitCaster) then
     matchData.unitCaster = unitCaster;
     changed = true;
@@ -2341,10 +2352,14 @@ local function AugmentMatchDataMulti(matchData, unit, filter, nameKey, spellKey)
   local index = 1;
   while(true) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+    if (not name) then
+      return false;
+    end
     if (name == nameKey or spellId == spellKey) then
       local changed = AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
       return changed;
     end
+    index = index + 1;
   end
 end
 
@@ -2420,9 +2435,45 @@ local function CombatLog(_, event, _, _, sourceName, _, _, destGUID, destName, _
   end
 end
 
+local function CheckAurasMulti(base, unit, filter)
+  local index = 1;
+  while(true) do
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
+    if (not name) then
+      return false;
+    end
+    if (base[name]) then
+      local changed = AugmentMatchDataMultiWith(base[name], name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId);
+      if (changed) then
+        for id, idData in pairs(base[name].auras) do
+          for triggernum in pairs(idData) do
+            matchDataChanged[id] = matchDataChanged[id] or {};
+            matchDataChanged[id][triggernum] = true;
+          end
+        end
+      end
+    end
+    if (base[spellId]) then
+      local changed = AugmentMatchDataMultiWith(base[spellId], name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId);
+      if (changed) then
+        for id, idData in pairs(base[name].auras) do
+          for triggernum in pairs(idData) do
+            matchDataChanged[id] = matchDataChanged[id] or {};
+            matchDataChanged[id][triggernum] = true;
+          end
+        end
+      end
+    end
+    index = index + 1;
+  end
+end
+
 function BuffTrigger.HandlePendingTracks(unit, GUID)
   if(pendingTracks[GUID]) then
-    -- TODO
+    if (matchDataMulti[GUID]) then
+      CheckAurasMulti(matchDataMulti[GUID], unit, "HELPFUL");
+      CheckAurasMulti(matchDataMulti[GUID], unit, "HARMFUL");
+    end
   end
 end
 
@@ -2436,9 +2487,9 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
+    multiAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD");
     multiAuraFrame:SetScript("OnEvent", BuffTrigger.HandleMultiEvent);
     WeakAuras.frames["Multi-target 2 Aura Trigger Handler"] = multiAuraFrame;
-    -- TODO timer:ScheduleRepeatingTimer(BuffTrigger.MultiCheckExists, 10)
   end
 end
 
@@ -2457,6 +2508,14 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     ReleaseUID(unit);
     unit = unit.."target";
     ReleaseUID(unit);
+  elseif(event == "PLAYER_LEAVING_WORLD") then
+    -- Remove everything..
+    for GUID, GUIDData  in pairs(matchDataMulti) do
+      for key in pairs(GUIDData) do
+        RemoveMatchDataMulti(GUIDData, GUID, key);
+      end
+    end
+    wipe(matchDataMulti);
   end
   WeakAuras.StopProfileSystem("bufftrigger2 - multi");
 end
