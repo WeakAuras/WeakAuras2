@@ -1003,7 +1003,7 @@ local function mergeOptions(childIndex, merged, toMerge)
     local shouldMerge = false
     for j = nextInsert, #merged + 1 do
       if not merged[j] then break end -- no more options to check, so must insert
-      if nextToMerge.type == merged[j].type then
+      if nextToMerge.type == merged[j].type and nextToMerge.name == merged[j].name then
         shouldMerge = true
         nextInsert = j
         break
