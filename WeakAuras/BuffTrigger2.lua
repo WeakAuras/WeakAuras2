@@ -740,7 +740,7 @@ local function UpdateTriggerState(time, id, triggernum)
     if (bestMatch) then
       updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected);
     elseif (triggerInfo.matchesShowOn == "showAlways" and triggerInfo.groupTrigger) then
-      updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected);
+      updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected);
     elseif (not existingUnits[triggerInfo.unit]) then -- Unit does not exist
       if (triggerInfo.unitExists) then
         updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected);
@@ -2108,6 +2108,11 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
     trigger.matchesShowOn = trigger.buffShowOn;
   end
 
+  if (trigger.unit == "group") then
+    trigger.matchesShowOn = "showOnActive";
+    trigger.showClones = trigger.groupclone;
+  end
+
   if (trigger.unit == "group" and not trigger.groupclone) then
     if (trigger.name_info == "players" or trigger.name_info == "nonplayers") then
       trigger.useAffected = true;
@@ -2117,8 +2122,9 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   if (trigger.unit == "group" and trigger.group_countOperator and trigger.group_count) then
     trigger.useGroup_count = true;
   else
-    trigger.useGroup_count = true;
+    trigger.useGroup_count = false;
   end
+
 
 end
 
