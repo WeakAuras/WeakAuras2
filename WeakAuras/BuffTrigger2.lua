@@ -2113,6 +2113,13 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
       trigger.useAffected = true;
     end
   end
+
+  if (trigger.unit == "group" and trigger.group_countOperator and trigger.group_count) then
+    trigger.useGroup_count = true;
+  else
+    trigger.useGroup_count = true;
+  end
+
 end
 
 WeakAuras.RegisterTriggerSystem({"aura2"}, BuffTrigger);
