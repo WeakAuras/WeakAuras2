@@ -984,9 +984,23 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return err or ""
       end,
       func = function()
-        WeakAuras.ConvertBuffTrigger2(trigger);
-        WeakAuras.Add(data);
-        WeakAuras.ReloadTriggerOptions(data);
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            local trigger = childData.triggers[optionTriggerChoices[childId]] and childData.triggers[optionTriggerChoices[childId]].trigger;
+            if (trigger) then
+              WeakAuras.ConvertBuffTrigger2(trigger);
+              WeakAuras.Add(childData);
+              WeakAuras.ReloadTriggerOptions(childData);
+            end
+          end
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        else
+          WeakAuras.ConvertBuffTrigger2(trigger);
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        end
       end
     },
     convertToBuffTrigger2SpaceAfter = {

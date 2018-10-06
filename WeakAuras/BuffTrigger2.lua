@@ -2155,6 +2155,14 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
     end
   end
 
+  if (trigger.unit == "multi") then
+    -- Closest to the old behavior
+    trigger.showClones = true;
+    trigger.useName = true;
+    trigger.auranames = {};
+    trigger.auranames[1] = trigger.spellId or trigger.name;
+  end
+
   -- debuffType is exactly the same, no need to touch it
   -- remaining is exactly the same for now;
   --   needs to be cleared once multi conversion is possible
