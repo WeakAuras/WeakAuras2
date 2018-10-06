@@ -1,5 +1,6 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local MSQ = LibStub("Masque", true);
+local LCG = LibStub("LibCustomGlow-1.0")
 local L = WeakAuras.L
 
 -- WoW API
@@ -40,6 +41,8 @@ local default = {
   frameStrata = 1,
   customTextUpdate = "update",
   glow = false,
+  glowType = "buttonOverlay",
+  glowColor = {1, 1, 1, 1},
   cooldownTextEnabled = true,
 };
 
@@ -75,6 +78,17 @@ local properties = {
     display = L["Glow"],
     setter = "SetGlow",
     type = "bool"
+  },
+  glowType = {
+    display = L["Glow Type"],
+    setter = "SetGlowType",
+    type = "list",
+    values = WeakAuras.glow_types,
+  },
+  glowColor = {
+    display = L["Glow Color"],
+    setter = "SetGlowColor",
+    type = "color"
   },
   text1Color = {
     display = L["1. Text Color"],
@@ -490,9 +504,9 @@ local function modify(parent, region, data)
 
     region:UpdateTexCoords();
   end
-  
+
   function region:UpdateTexCoords()
-    local mirror_h = region.scalex < 0; 
+    local mirror_h = region.scalex < 0;
     local mirror_v = region.scaley < 0;
 
     local texWidth = 1 - 0.5 * region.zoom;
@@ -578,18 +592,47 @@ local function modify(parent, region, data)
       cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration);
     end
   end
-  
+
   function region:SetZoom(zoom)
     region.zoom = zoom;
     region:UpdateTexCoords();
   end
 
+  function region:SetGlowType(newType)
+    local isGlowing = region.glow
+    if isGlowing then
+      region:SetGlow(false)
+    end
+    if newType == "buttonOverlay" then
+      region.glowStart = WeakAuras.ShowOverlayGlow
+      region.glowStop = WeakAuras.HideOverlayGlow
+    elseif newType == "ACShine" then
+      region.glowStart = LCG.AutoCastGlow_Start
+      region.glowStop = LCG.AutoCastGlow_Stop
+    elseif newType == "Pixel" then
+      region.glowStart = LCG.PixelGlow_Start
+      region.glowStop = LCG.PixelGlow_Stop
+    end
+    region.glowType = newType
+    if isGlowing then
+      region:SetGlow(true)
+    end
+  end
+
+  function region:SetGlowColor(r, g, b, a)
+    region.glowColor = {r, g, b, a}
+    if region.glow then
+      region:SetGlow(true)
+    end
+  end
+
   function region:SetGlow(showGlow)
+    region.glow = showGlow
     if MSQ then
       if (showGlow) then
-        WeakAuras.ShowOverlayGlow(region.button);
+        region.glowStart(region.button, region.glowColor);
       else
-        WeakAuras.HideOverlayGlow(region.button);
+        region.glowStop(region.button);
       end
     elseif (showGlow) then
       if (not region.__WAGlowFrame) then
@@ -597,15 +640,17 @@ local function modify(parent, region, data)
         region.__WAGlowFrame:SetAllPoints();
         region.__WAGlowFrame:SetSize(region.width, region.height);
       end
-      WeakAuras.ShowOverlayGlow(region.__WAGlowFrame);
+      region.glowStart(region.__WAGlowFrame, region.glowColor);
     else
       if (region.__WAGlowFrame) then
-        WeakAuras.HideOverlayGlow(region.__WAGlowFrame);
+        region.glowStop(region.__WAGlowFrame);
       end
     end
   end
 
-  region:SetGlow(data.glow);
+  region.glowColor = data.glowColor
+  region:SetGlowType(data.glowType)
+  region:SetGlow(data.glow)
 
   if(data.cooldown) then
     function region:SetValue(value, total)

@@ -75,10 +75,35 @@ local function createOptions(id, data)
       name = L["Desaturate"],
       order = 18.5,
     },
+    glowHeader = {
+      type = "header",
+      order = 19,
+      name = L["Glow Settings"],
+    },
     glow = {
       type = "toggle",
       name = L["Glow"],
-      order = 19,
+      order = 20,
+      width = "double",
+    },
+    glowType = {
+      type = "select",
+      name = L["Glow Type"],
+      order = 21,
+      values = WeakAuras.glow_types,
+      hidden = function() return not data.glow end,
+    },
+    glowColor = {
+      type = "color",
+      name = L["Glow Color"],
+      order = 22,
+      hidden = function() return data.glowType == "buttonOverlay" end,
+    },
+    glowColorSpace = {
+      type = "description",
+      name = "",
+      order = 23,
+      hidden = function() return data.glowType ~= "buttonOverlay" end,
     },
     textHeader1 = {
       type = "header",

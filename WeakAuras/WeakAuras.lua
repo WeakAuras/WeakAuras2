@@ -30,7 +30,7 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
 end
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
-
+local LCG = LibStub("LibCustomGlow-1.0")
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
 
@@ -3016,6 +3016,18 @@ function WeakAuras.PerformActions(data, type, region)
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   local squelch_glow = squelch_actions and (type == "finish");
   if(actions.do_glow and actions.glow_action and actions.glow_frame and not squelch_glow) then
+    local glowStart, glowStop
+    if actions.glow_type == "ACShine" then
+      glowStart = LCG.AutoCastGlow_Start
+      glowStop = LCG.AutoCastGlow_Stop
+    elseif actions.glow_type == "Pixel" then
+      glowStart = LCG.PixelGlow_Start
+      glowStop = LCG.PixelGlow_Stop
+    else
+      glowStart = WeakAuras.ShowOverlayGlow
+      glowStop = WeakAuras.HideOverlayGlow
+    end
+
     local glow_frame
     local original_glow_frame
     if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
@@ -3039,11 +3051,11 @@ function WeakAuras.PerformActions(data, type, region)
 
     if(glow_frame) then
       if(actions.glow_action == "show") then
-        WeakAuras.ShowOverlayGlow(glow_frame);
+        glowStart(glow_frame, actions.glow_color);
       elseif(actions.glow_action == "hide") then
-        WeakAuras.HideOverlayGlow(glow_frame);
+        glowStop(glow_frame);
         if original_glow_frame then
-          WeakAuras.HideOverlayGlow(original_glow_frame);
+          glowStop(original_glow_frame);
         end
       end
     end

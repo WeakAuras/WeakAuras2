@@ -202,6 +202,25 @@ function WeakAuras.AddActionOption(id, data)
           end
         end
       },
+      start_glow_type = {
+        type = "select",
+        name = L["Glow Type"],
+        order = 10.5,
+        values = WeakAuras.glow_types,
+        hidden = function() return not data.actions.start.do_glow end,
+      },
+      start_glow_color = {
+        type = "color",
+        name = L["Glow Color"],
+        order = 10.6,
+        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_type ~= "ACShine" end,
+      },
+      start_glow_color_space = {
+        type = "description",
+        name = "",
+        order = 10.7,
+        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_type == "ACShine" end,
+      },
       start_do_custom = {
         type = "toggle",
         name = L["Custom"],
@@ -349,6 +368,25 @@ function WeakAuras.AddActionOption(id, data)
             WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
           end
         end
+      },
+      finish_glow_type = {
+        type = "select",
+        name = L["Glow Type"],
+        order = 30.5,
+        values = WeakAuras.glow_types,
+        hidden = function() return not data.actions.finish.do_glow end,
+      },
+      finish_glow_color = {
+        type = "color",
+        name = L["Glow Color"],
+        order = 30.6,
+        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_type ~= "ACShine" end,
+      },
+      finish_glow_color_space = {
+        type = "description",
+        name = "",
+        order = 30.7,
+        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_type == "ACShine" end,
       },
       finish_do_custom = {
         type = "toggle",
