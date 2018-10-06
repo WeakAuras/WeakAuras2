@@ -4008,16 +4008,11 @@ do
 
   -- Setup frame
   dynFrame.frame:Hide();
+  local start = debugprofilestop()
   dynFrame.frame:SetScript("OnUpdate", function(self, elapsed)
-    -- Start timing
-    local start = debugprofilestop();
-    local hasData = true;
-
+    local hasData = false
     -- Resume as often as possible (Limit to 16ms per frame -> 60 FPS)
-    while (debugprofilestop() - start < 16 and hasData) do
-      -- Stop loop without data
-      hasData = false;
-
+    repeat
       -- Resume all coroutines
       for name, func in pairs(dynFrame.update) do
         -- Loop has data
@@ -4033,7 +4028,9 @@ do
           dynFrame:RemoveAction(name);
         end
       end
-    end
+    until not hasData or debugprofilestop() - start >= 16
+    -- update measure point
+    start = debugprofilestop()
   end);
 end
 
