@@ -711,7 +711,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     useGroupRole = {
       type = "toggle",
-      name = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Filter by Group Role"],
+      name = WeakAuras.newFeatureString .. L["Filter by Group Role"],
       order = 47.1,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },

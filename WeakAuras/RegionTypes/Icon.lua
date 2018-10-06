@@ -80,13 +80,13 @@ local properties = {
     type = "bool"
   },
   glowType = {
-    display = L["Glow Type"],
+    display = WeakAuras.newFeatureString .. L["Glow Type"],
     setter = "SetGlowType",
     type = "list",
     values = WeakAuras.glow_types,
   },
   glowColor = {
-    display = L["Glow Color"],
+    display = WeakAuras.newFeatureString .. L["Glow Color"],
     setter = "SetGlowColor",
     type = "color"
   },
