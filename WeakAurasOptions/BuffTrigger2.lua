@@ -116,6 +116,36 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       values = debuff_types,
       hidden = function() return not (trigger.type == "aura2"); end
     },
+    use_debuffClass = {
+      type = "toggle",
+      name = L["Debuff Type"],
+      order = 11.2,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.debuffType == "HARMFUL"); end
+    },
+    debuffClass = {
+      type = "select",
+      name = L["Debuff Type"],
+      order = 11.3,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit ~= "multi"
+                    and EffectiveShowOnIsShowOnActive(trigger)
+                    and trigger.debuffType == "HARMFUL"
+                    and trigger.use_debuffClass);
+      end,
+      values = WeakAuras.debuff_class_types
+    },
+    debuffClassSpace = {
+      type = "description",
+      name = "",
+      order = 11.4,
+      width = "normal",
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit ~= "multi"
+                    and EffectiveShowOnIsShowOnActive(trigger)
+                    and trigger.debuffType == "HARMFUL"
+                    and not trigger.use_debuffClass);
+      end,
+    },
     useName = {
       type = "toggle",
       name = L["Name(s)"],
@@ -184,7 +214,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useStacks; end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.useStacks); end,
       get = function() return trigger.useStacks and trigger.stacksOperator or nil end
     },
     stacks = {
@@ -193,9 +223,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       validate = ValidateNumeric,
       order = 60.2,
       width = "half",
-      disabled = function() return not trigger.useStacks; end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.useStacks); end,
       get = function() return trigger.useStacks and trigger.stacks or nil end
+    },
+    useStacksSpace = {
+      type = "description",
+      name = "",
+      order = 60.3,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and not trigger.useStacks); end,
     },
     useRem = {
       type = "toggle",
@@ -210,7 +245,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "half",
       values = operator_types,
       disabled = function() return not trigger.useRem; end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.useRem); end,
       get = function() return trigger.useRem and trigger.remOperator or nil end
     },
     rem = {
@@ -219,9 +254,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       validate = ValidateNumeric,
       order = 61.2,
       width = "half",
-      disabled = function() return not trigger.useRem; end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger)); end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.useRem); end,
       get = function() return trigger.useRem and trigger.rem or nil end
+    },
+    useRemSpace = {
+      type = "description",
+      name = "",
+      order = 61.3,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and not trigger.useRem); end,
     },
     fetchTooltip = {
       type = "toggle",
@@ -322,20 +362,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         WeakAuras.Add(data);
         WeakAuras.SetIconNames(data);
       end
-    },
-    use_debuffClass = {
-      type = "toggle",
-      name = L["Debuff Type"],
-      order = 64.1,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger)); end
-    },
-    debuffClass = {
-      type = "select",
-      name = L["Debuff Type"],
-      order = 64.2,
-      disabled = function() return not trigger.use_debuffClass end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger)); end,
-      values = WeakAuras.debuff_class_types
     },
     ownOnly = {
       type = "toggle",

@@ -3409,7 +3409,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     if (triggerSystemOptionsFunction) then
       trigger_options = union(trigger_options, triggerSystemOptionsFunction(data, optionTriggerChoices));
     end
-    if (trigger.type) then
+    if (trigger.type == "aura") then
       trigger_options = union(trigger_options, WeakAuras.GetBuffConversionOptions(data, optionTriggerChoices));
     end
 

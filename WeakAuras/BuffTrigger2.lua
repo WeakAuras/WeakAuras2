@@ -1599,7 +1599,7 @@ end
 local function createScanFunc(trigger)
   local useStacks = effectiveShowOnIsShowOnActive(trigger) and trigger.useStacks;
   local use_stealable = effectiveShowOnIsShowOnActive(trigger) and trigger.use_stealable;
-  local use_debuffClass = effectiveShowOnIsShowOnActive(trigger) and trigger.use_debuffClass;
+  local use_debuffClass = effectiveShowOnIsShowOnActive(trigger) and trigger.debuffType == "HARMFUL" and trigger.use_debuffClass;
   local use_tooltip = effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip and trigger.use_tooltip;
   local use_tooltipValue = effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip and trigger.use_tooltipValue;
 
