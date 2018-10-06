@@ -4070,7 +4070,7 @@ function WeakAuras.PickDisplayMultipleShift(target)
     -- get first aura selected
     local first;
     if (WeakAuras.IsPickedMultiple()) then
-      first = tempGroup.controlledChildren[1];
+      first = tempGroup.controlledChildren[#tempGroup.controlledChildren];
     else
       first = frame.pickedDisplay;
     end
@@ -4098,7 +4098,7 @@ function WeakAuras.PickDisplayMultipleShift(target)
               break;
             end
           end
-        else
+        elseif (firstData.parent == nil and targetData.parent == nil) then
           -- top-level
           for index, button in ipairs(frame.buttonsScroll.children) do
             local data = button.data;
