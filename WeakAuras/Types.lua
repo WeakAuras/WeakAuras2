@@ -1693,7 +1693,7 @@ WeakAuras.data_stub = {
   triggers = {
     {
       trigger = {
-        type = "aura",
+        type = "aura2",
         names = {},
         event = "Health",
         subeventPrefix = "SPELL",
