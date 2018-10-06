@@ -2681,12 +2681,63 @@ local oldDataStub = {
   conditions = {},
 }
 
+local oldDataStub2 = {
+  -- note: this is the minimal data stub which prevents false positives in WeakAuras.diff upon reimporting an aura.
+  -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
+  triggers = {
+    {
+      trigger = {
+        type = "aura",
+        names = {},
+        event = "Health",
+        subeventPrefix = "SPELL",
+        subeventSuffix = "_CAST_START",
+        spellIds = {},
+        unit = "player",
+        debuffType = "HELPFUL",
+      },
+      untrigger = {},
+    },
+  },
+  load = {
+    size = {
+      multi = {},
+    },
+    spec = {
+      multi = {},
+    },
+    class = {
+      multi = {},
+    },
+  },
+  actions = {
+    init = {},
+    start = {},
+    finish = {},
+  },
+  animation = {
+    start = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    main = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    finish = {
+      type = "none",
+      duration_type = "seconds",
+    },
+  },
+  conditions = {},
+}
+
 function WeakAuras.PreAdd(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
     WeakAuras.validate(data, oldDataStub)
   elseif (data.internalVersion < 8) then
-    WeakAuras.validate(data, WeakAuras.data_stub)
+    WeakAuras.validate(data, oldDataStub2)
   end
 
   local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
