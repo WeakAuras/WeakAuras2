@@ -3280,14 +3280,19 @@ function WeakAuras.ReloadTriggerOptions(data)
     local commontriggerSystemOptionsFunction = nil;
     local first = true;
 
+    local anyOldAuraTriggers = false;
     for index, childId in ipairs(data.controlledChildren) do
       local triggerChoice = optionTriggerChoices[childId];
       local childData = WeakAuras.GetData(childId);
       local trigger = triggerChoice and childData.triggers[triggerChoice].trigger;
       local triggerSystemOptionsFunction = trigger.type and WeakAuras.triggerTypesOptions[trigger.type];
+      if (trigger.type == "aura") then
+        anyOldAuraTriggers = true;
+      end
       if (triggerSystemOptionsFunction) then
         if (first) then
           commontriggerSystemOptionsFunction = triggerSystemOptionsFunction
+          first = false;
         elseif(commontriggerSystemOptionsFunction ~= triggerSystemOptionsFunction) then
           commontriggerSystemOptionsFunction = nil;
         end
@@ -3296,6 +3301,9 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     if (commontriggerSystemOptionsFunction) then
       trigger_options = union(trigger_options, commontriggerSystemOptionsFunction(data, optionTriggerChoices));
+    end
+    if (anyOldAuraTriggers) then
+      trigger_options = union(trigger_options, WeakAuras.GetBuffConversionOptions(data, optionTriggerChoices));
     end
     displayOptions[id].args.trigger.args = trigger_options;
 
@@ -3400,6 +3408,9 @@ function WeakAuras.ReloadTriggerOptions(data)
     local triggerSystemOptionsFunction = trigger.type and WeakAuras.triggerTypesOptions[trigger.type];
     if (triggerSystemOptionsFunction) then
       trigger_options = union(trigger_options, triggerSystemOptionsFunction(data, optionTriggerChoices));
+    end
+    if (trigger.type) then
+      trigger_options = union(trigger_options, WeakAuras.GetBuffConversionOptions(data, optionTriggerChoices));
     end
 
     displayOptions[id].args.trigger.args = trigger_options;

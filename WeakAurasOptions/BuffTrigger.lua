@@ -55,7 +55,7 @@ local function getAuraMatchesList(name)
   end
 end
 
-local function GetBuffTriggerOptions(data, optionTriggerChoices)
+function WeakAuras.GetBuffConversionOptions(data, optionTriggerChoices)
   local trigger;
   if (not data.controlledChildren) then
     local triggernum = optionTriggerChoices[data.id];
@@ -63,9 +63,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       trigger = data.triggers[triggernum].trigger;
     end
   end
-
-  local spellCache = WeakAuras.spellCache;
-  local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {
     convertToBuffTrigger2SpaceBefore = {
       type = "description",
@@ -165,6 +162,22 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return not WeakAuras.CanConvertBuffTrigger2
       end,
     },
+  }
+  return aura_options;
+end
+
+local function GetBuffTriggerOptions(data, optionTriggerChoices)
+  local trigger;
+  if (not data.controlledChildren) then
+    local triggernum = optionTriggerChoices[data.id];
+    if (triggernum) then
+      trigger = data.triggers[triggernum].trigger;
+    end
+  end
+
+  local spellCache = WeakAuras.spellCache;
+  local ValidateNumeric = WeakAuras.ValidateNumeric;
+  local aura_options = {
     fullscan = {
       type = "toggle",
       name = L["Use Full Scan (High CPU)"],
