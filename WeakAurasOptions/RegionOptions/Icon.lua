@@ -78,7 +78,7 @@ local function createOptions(id, data)
     glowHeader = {
       type = "header",
       order = 19,
-      name = L["Glow Settings"],
+      name = WeakAuras.newFeatureString .. L["Glow Settings"],
     },
     glow = {
       type = "toggle",

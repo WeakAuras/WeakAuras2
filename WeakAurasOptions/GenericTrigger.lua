@@ -318,7 +318,7 @@ function WeakAuras.GetGenericTriggerOptions(data, trigger, untrigger)
     return not (trigger.type == "custom" and trigger.custom_type == "stateupdate");
   end
 
-  WeakAuras.AddCodeOption(options, data, '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Custom Variables"], "custom_variables", 11, hideCustomVariables, appendToTriggerPath("customVariables"), false, true, extraSetFunctionReload, nil, true);
+  WeakAuras.AddCodeOption(options, data, WeakAuras.newFeatureString .. L["Custom Variables"], "custom_variables", 11, hideCustomVariables, appendToTriggerPath("customVariables"), false, true, extraSetFunctionReload, nil, true);
 
   local function hideCustomUntrigger()
     return not (trigger.type == "custom"

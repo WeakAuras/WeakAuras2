@@ -1436,7 +1436,7 @@ local function createConditionTemplatesValueList(allConditionTemplates, numTrigg
         if (#sorted > 0) then
           if (triggernum == -2) then
             -- Do Nothing
-            conditionTemplates.display[index]  = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. string.format(L["Combinations"]);
+            conditionTemplates.display[index]  = WeakAuras.newFeatureString .. string.format(L["Combinations"]);
           elseif (triggernum == -1) then
             conditionTemplates.display[index]  = string.format(L["Global Conditions"]);
           else

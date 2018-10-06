@@ -172,7 +172,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_do_glow = {
         type = "toggle",
-        name = L["Button Glow"],
+        name = WeakAuras.newFeatureString .. L["Button Glow"],
         order = 10.1
       },
       start_glow_action = {
@@ -339,7 +339,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_do_glow = {
         type = "toggle",
-        name = L["Button Glow"],
+        name = WeakAuras.newFeatureString .. L["Button Glow"],
         order = 30.1
       },
       finish_glow_action = {
