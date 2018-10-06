@@ -1324,10 +1324,11 @@ function WeakAuras.ShowOptions(msg)
     frame:PickOption("New");
   end
   if not(firstLoad) then
+    -- Show what was last shown
     WeakAuras.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
-      if(loaded[id] ~= nil) then
-        button:PriorityShow(1);
+      if (button:GetVisibility() > 0) then
+        button:PriorityShow(button:GetVisibility());
       end
     end
     WeakAuras.ResumeAllDynamicGroups();
