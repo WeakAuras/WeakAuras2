@@ -407,10 +407,15 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "select",
       name = L["Group Role"],
       values = WeakAuras.role_types,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
-      disabled = function() return not trigger.useGroupRole; end,
-      get = function() return trigger.group_role; end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"and trigger.useGroupRole); end,
       order = 67.2
+    },
+    group_roleSpace = {
+      type = "description",
+      name = "",
+      order = 67.2,
+      width = "normal",
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"and not trigger.useGroupRole); end,
     },
     ignoreSelf = {
       type = "toggle",
@@ -460,11 +465,21 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 69,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
     },
+    use_matchesShowOn = {
+      type = "toggle",
+      name = L["Show On"],
+      order = 71,
+      hidden = function()
+        return not (trigger.type == "aura2");
+      end,
+      get = function() return true; end,
+      disabled = true,
+    },
     matchesShowOn = {
       type = "select",
       name = L["Show On"],
       values = WeakAuras.bufftrigger_2_progress_behavior_types,
-      order = 71,
+      order = 71.1,
       hidden = function()
         return not (trigger.type == "aura2");
       end,
@@ -472,14 +487,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return trigger.matchesShowOn or "showOnActive";
       end,
     },
-    matchesShowOnSpace = {
-      type = "description",
-      name = "",
-      order = 71.1,
-      hidden = function()
-        return not (trigger.type == "aura2");
-      end,
-    },
+
     showClones = {
       type = "toggle",
       name = L["Auto-Clone (Show All Matches)"],
@@ -500,16 +508,27 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "toggle",
       name = L["Combine Matches Per Unit"],
       width = "double",
-      order = 72.1,
+      order = 72.2,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing" and IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi");
       end,
+    },
+    use_combineMode = {
+      type = "toggle",
+      name = L["Preferred Match"],
+      order = 72.3,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"
+                    and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones));
+      end,
+      get = function() return true; end,
+      disabled = true,
     },
     combineMode = {
       type = "select",
       name = L["Preferred Match"],
       values = WeakAuras.bufftrigger_2_preferred_match_types,
-      order = 72.3,
+      order = 72.4,
       width = "normal",
       hidden = function()
         return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"
@@ -517,15 +536,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       end,
       get = function()
         return trigger.combineMode or "showLowest";
-      end,
-    },
-    combineModeSpace = {
-      type = "description",
-      name = "",
-      order = 72.4,
-      hidden = function()
-        return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"
-                    and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones));
       end,
     },
     unitExists = {
