@@ -4047,11 +4047,13 @@ end
 
 function WeakAuras.PickDisplay(id)
   frame:PickDisplay(id);
+  WeakAuras.UpdateButtonsScroll()
 end
 
 function WeakAuras.PickAndEditDisplay(id)
   frame:PickDisplay(id);
   displayButtons[id].callbacks.OnRenameClick();
+  WeakAuras.UpdateButtonsScroll()
 end
 
 function WeakAuras.ClearPick(id)
