@@ -65,8 +65,8 @@ local pairs, next, type = pairs, next, type
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
+local timer = WeakAuras.timer;
 local BuffTrigger = {};
-
 local triggerInfos = {};
 
 -- keyed on unit, debuffType, spellname, with a scan object value
@@ -90,15 +90,12 @@ local playerRole = {};
 local scanFuncNameMulti = {};
 local scanFuncSpellIdMulti = {};
 
-local timer = WeakAuras.timer;
-
 -- Auras that matched, unit, index
 local matchData = {};
 local matchDataMulti = {};
 
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {};
-
 local matchDataChanged = {};
 
 local function GetOrCreateSubTable(base, next, ...)
@@ -110,10 +107,8 @@ local function GetOrCreateSubTable(base, next, ...)
   return GetOrCreateSubTable(base[next], ...);
 end
 
-
 local function ReferenceMatchData(id, triggernum, unit, filter, index)
   local match = matchData[unit][filter][index];
-
   local base = GetOrCreateSubTable(matchDataByTrigger, id, triggernum, unit);
   base[index] = match;
 
@@ -188,8 +183,8 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   end
 
   local data = matchData[unit][filter][index];
-
   local changed = false;
+
   if (data.name ~= name) then
     data.name = name;
     changed = true;
@@ -260,7 +255,6 @@ end
 local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits)
   -- Find best match
   local bestMatch = nil;
-
   local matchCount = 0;
   local unitCount = 0;
   local nextCheck
@@ -298,7 +292,6 @@ end
 local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
   -- Find best match
   local bestMatch = nil;
-
   local matchCount = 0;
   local nextCheck
 
@@ -356,7 +349,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
     return true;
   else
     local state = triggerStates[cloneId];
-
     state.time = time;
 
     local changed = false;
@@ -413,14 +405,17 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       state.tooltip = bestMatch.tooltip;
       changed = true;
     end
+
     if (state.tooltip1 ~= bestMatch.tooltip1) then
       state.tooltip1 = bestMatch.tooltip1;
       changed = true;
     end
+
     if (state.tooltip2 ~= bestMatch.tooltip2) then
       state.tooltip2 = bestMatch.tooltip2;
       changed = true;
     end
+
     if (state.tooltip3 ~= bestMatch.tooltip3) then
       state.tooltip3 = bestMatch.tooltip3;
       changed = true;
@@ -490,10 +485,12 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
     local state = triggerStates[cloneId];
     state.time = time;
     local changed = false;
+
     if (state.show ~= true) then
       state.show = true;
       changed = true;
     end
+
     if (state.name) then
       state.name = nil;
       changed = true;
@@ -690,7 +687,6 @@ end
 
 local function UpdateTriggerState(time, id, triggernum)
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-
   local triggerInfo = triggerInfos[id][triggernum];
   local updated;
   local nextCheck;
@@ -758,8 +754,12 @@ local function UpdateTriggerState(time, id, triggernum)
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated;
       end
 
-      if(matchCount == 0 and (triggerInfo.matchesShowOn == "showAlways" and (existingUnits[triggerInfo.unit] or triggerInfo.groupTrigger)
-                                or triggerInfo.unitExists and not existingUnits[triggerInfo.unit])) then
+      if(matchCount == 0
+        and (triggerInfo.matchesShowOn == "showAlways"
+        and (existingUnits[triggerInfo.unit]
+        or triggerInfo.groupTrigger)
+        or triggerInfo.unitExists
+        and not existingUnits[triggerInfo.unit])) then
         updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, 0, affected, unaffected) or updated;
       end
     end
@@ -808,7 +808,6 @@ local function UpdateTriggerState(time, id, triggernum)
       end
 
       local matches = {};
-
       local matchCount = 0;
       local unitCount = 0;
 
@@ -819,6 +818,7 @@ local function UpdateTriggerState(time, id, triggernum)
           unitCount = unitCount + 1;
           matchedUnits[unit] = true;
         end
+
         if (not nextCheck) then
           nextCheck = nextCheckForMatch
         elseif (nextCheckForMatch) then
@@ -851,6 +851,7 @@ local function UpdateTriggerState(time, id, triggernum)
       if (triggerInfo.useAffected) then
         affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits);
       end
+
       if (triggerInfo.matchesShowOn == "showAlways") then
         for unit, unitData in allUnits(triggerInfo.unit) do
           updated = UpdateStateWithNoMatch(time, triggerStates, unit, 0, 0, 0, affected, unaffected) or updated;
@@ -980,7 +981,6 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     end
   end
 end
-
 
 local function UpdateStates(matchDataChanged, time)
   for id, auraData in pairs(matchDataChanged) do
@@ -1557,7 +1557,6 @@ end
 --- Updates all data for aura oldid to use newid
 -- @param oldid
 -- @param newid
-
 function BuffTrigger.Rename(oldid, newid)
   triggerInfos[newid] = triggerInfos[oldid];
   triggerInfos[oldid] = nil;
@@ -1593,7 +1592,6 @@ local function effectiveShowOnIsShowOnActive(trigger)
   end
   return effectiveShowOn;
 end
-
 
 local function createScanFunc(trigger)
   local useStacks = effectiveShowOnIsShowOnActive(trigger) and trigger.useStacks;
@@ -1680,8 +1678,8 @@ local function createScanFunc(trigger)
     end
   end
 
-  if (use_tooltipValue and trigger.tooltipValueNr and trigger.tooltipValue_operator and trigger.tooltipValue) then
-    local property = "tooltip" .. tonumber(trigger.tooltipValueNr);
+  if (use_tooltipValue and trigger.tooltipValueNumber and trigger.tooltipValue_operator and trigger.tooltipValue) then
+    local property = "tooltip" .. tonumber(trigger.tooltipValueNumber);
     local ret2 = [[
       if not (matchData.%s %s %s) then
         return false;
@@ -1854,9 +1852,8 @@ end
 --- Updates old data to the new format.
 -- @param data
 function BuffTrigger.Modernize(data)
-  -- Nothing yet!
+  -- TODO: Stuff, does nothing yet!
 end
-
 
 --- Returns whether the trigger can have a duration.
 -- @param data
@@ -1953,21 +1950,21 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
-  ret = ret .. "|cFFFF0000%matchCount|r -" .. L["Match count"] .. "\n";
-  ret = ret .. "|cFFFF0000%unitCount|r -" .. L["Units affected"] .. "\n";
+  ret = ret .. "|cFFFF0000%matchCount|r -" .. L["Match Count"] .. "\n";
+  ret = ret .. "|cFFFF0000%unitCount|r -" .. L["Units Affected"] .. "\n";
   if (trigger.unit ~= "multi") then
     ret = ret .. "|cFFFF0000%maxUnitCount|r -" .. L["Total Units"] .. "\n";
   end
   if (effectiveShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip) then
     ret = ret .. "|cFFFF0000%tooltip|r -" .. L["Tooltip"] .. "\n";
-    ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First value of Tooltip"] .. "\n";
-    ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second value of Tooltip"] .. "\n";
-    ret = ret .. "|cFFFF0000%tooltip3|r -" .. L["Third value of Tooltip"] .. "\n";
+    ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First Value of Tooltip Text"] .. "\n";
+    ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second Value of Tooltip Text"] .. "\n";
+    ret = ret .. "|cFFFF0000%tooltip3|r -" .. L["Third Value of Tooltip Text"] .. "\n";
   end
 
   if (trigger.unit == "group" and trigger.useAffected) then
-    ret = ret .. "|cFFFF0000%affected|r -" .. L["Names of affected players"] .. "\n";
-    ret = ret .. "|cFFFF0000%unaffected|r -" .. L["Names of unaffected players"] .. "\n";
+    ret = ret .. "|cFFFF0000%affected|r -" .. L["Names of affected Players"] .. "\n";
+    ret = ret .. "|cFFFF0000%unaffected|r -" .. L["Names of unaffected Players"] .. "\n";
   end
 
   return ret;
@@ -1985,6 +1982,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     display = L["Remaining Duration"],
     type = "timer",
   }
+
   result["duration"] = {
     display = L["Total Duration"],
     type = "number",
@@ -2019,7 +2017,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
 
   if (trigger.matchesShowOn == "showAlways") then
     result["buffed"] = {
-      display = L["Buffed/Debuffed"],
+      display = L["Aura(s) Found"],
       type = "bool",
       test = function(state, needle)
         return state and state.show and ((state.active and true or false) == (needle == 1));
@@ -2059,31 +2057,30 @@ function BuffTrigger.GetName(triggerType)
   end
 end
 
-
 function WeakAuras.CanConvertBuffTrigger2(trigger)
   if (trigger.type ~= "aura") then
     return false;
   end
 
   if (trigger.unit == "multi") then
-    return true, L["The availabel text replacements for Multi triggers match the normal triggers now."];
+    return true, L["Note: The available text replacements for multi triggers match the normal triggers now."];
   end
 
   if (trigger.unit and trigger.hideAlone) then
-    return false, L["Hide Alone is not available in the new aura tracking system. A load option can be used for that."]
+    return false, L["Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."]
   end
 
   if (trigger.unit == "group") then
-    return true, L["Warning: Name Info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
+    return true, L["Warning: Name info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
   end
 
   if (trigger.fullscan) then
     if (trigger.subcount) then
-      return true, L["Warning: Tooltip Values are now available via %tooltip1, %tooltip2, %tooltip3 instead of %s. This is not automatically adjusted."]
+      return true, L["Warning: Tooltip values are now available via %tooltip1, %tooltip2, %tooltip3 instead of %s. This is not automatically adjusted."]
     end
 
     if (trigger.use_name and trigger.use_spellId) then
-      return false, L["Fullscan auras checking for both name and spell id can't be converted."];
+      return false, L["Warning: Full Scan auras checking for both name and spell id can't be converted."];
     end
   end
 
@@ -2199,7 +2196,7 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   end
 end
 
--- MULTI TARGET trigger code
+-- Multi Target trigger code
 local multiAuraFrame;
 local pendingTracks = {};
 
@@ -2440,7 +2437,7 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
 end
 
 local function HandleCombatLogRemove(scanFuncsName, scanFuncsSpellId, sourceGUID, destGUID, spellId, spellName)
-  -- sourceGUID ?
+  -- TODO: sourceGUID ?
   if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncSpellId[spellId]) then
     if (matchDataMulti[destGUID]) then
       RemoveMatchDataMulti(matchDataMulti[destGUID], destGUID, spellId, sourceGUID);
@@ -2508,7 +2505,6 @@ function BuffTrigger.HandlePendingTracks(unit, GUID)
   end
 end
 
-
 function BuffTrigger.InitMultiAura()
   if not(multiAuraFrame) then
     multiAuraFrame = CreateFrame("frame");
@@ -2550,6 +2546,5 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
   end
   WeakAuras.StopProfileSystem("bufftrigger2 - multi");
 end
-
 
 WeakAuras.RegisterTriggerSystem({"aura2"}, BuffTrigger);

@@ -98,7 +98,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Specific Unit"],
       order = 10.3,
-      desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
+      desc = L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member") end
     },
     useDebuffType = {
@@ -116,11 +116,9 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       values = debuff_types,
       hidden = function() return not (trigger.type == "aura2"); end
     },
-
-    -- Name/Exact Spell ID options added below
     useName = {
       type = "toggle",
-      name = L["Name"],
+      name = L["Name(s)"],
       order = 12,
       width = 0.8,
       hidden = function() return not (trigger.type == "aura2"); end,
@@ -134,7 +132,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     useExactSpellId = {
       type = "toggle",
-      name = L["Exact Spell Id"],
+      name = L["Exact Spell ID(s)"],
       width = 0.8,
       order = 22,
       hidden = function() return not (trigger.type == "aura2"); end,
@@ -168,7 +166,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     namePattern_name = {
       type = "input",
-      name = L["Aura Name"],
+      name = L["Aura Name Pattern"],
       width = "double",
       order = 25.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern); end,
@@ -227,14 +225,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     fetchTooltip = {
       type = "toggle",
-      name = L["Fetch Tooltip Information"],
+      name = L["Use Tooltip Information"],
       order = 62,
       width = "double",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.matchesShowOn ~= "showOnMissing"); end
     },
     use_tooltip = {
       type = "toggle",
-      name = L["Tooltip"],
+      name = L["Tooltip Pattern Mach"],
       order = 62.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip); end
     },
@@ -255,7 +253,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     tooltip = {
       type = "input",
-      name = L["Tooltip"],
+      name = L["Tooltip Content"],
       width = "double",
       order = 62.4,
       disabled = function() return not trigger.use_tooltip end,
@@ -267,9 +265,9 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 63.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip); end
     },
-    tooltipValueNr = {
+    tooltipValueNumber = {
       type = "select",
-      name = L["Tooltip Value Nr"],
+      name = L["Tooltip Value #"],
       order = 63.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and EffectiveShowOnIsShowOnActive(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip); end,
       values = WeakAuras.tooltip_count,
@@ -300,9 +298,9 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "toggle",
       name = function(input)
         local value = trigger.use_stealable;
-        if(value == nil) then return L["Stealable"];
-        elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..L["Stealable"];
-        else return "|cFF00FF00"..L["Stealable"]; end
+        if(value == nil) then return L["Is Stealable"];
+        elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..L["Is Stealable"];
+        else return "|cFF00FF00"..L["Is Stealable"]; end
       end,
       width = "double",
       order = 64,
@@ -390,7 +388,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     ignoreSelf = {
       type = "toggle",
-      name = L["Ignore self"],
+      name = L["Ignore Self"],
       order = 67.3,
       width = "double",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
@@ -421,8 +419,8 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Count"],
       desc = function()
-        local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000error|r";
-        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
+        local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r";
+        return L["Group Aura Count Description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
       end,
       order = 68.3,
       width = "half",
@@ -431,7 +429,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     useAffected = {
       type = "toggle",
-      name = L["Fetch affected/unaffected names"],
+      name = L["Fetch Affected/Unaffected Names"],
       width = "double",
       order = 69,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"); end,
@@ -458,7 +456,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     showClones = {
       type = "toggle",
-      name = L["Autoclone (Show all matches)"],
+      name = L["Auto-Clone (Show All Matches)"],
       order = 72,
       hidden = function() return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"); end,
       width = "double"
@@ -535,7 +533,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["name" .. i] = {
       type = "input",
       name = L["Aura Name"],
-      desc = L["Enter an aura name, partial aura name, or spell id"],
+      desc = L["Enter an Aura Name, partial Aura Name, or Spell ID"],
       order = i + 11.3,
       hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])); end,
       get = function(info) return trigger.auranames and trigger.auranames[i] end,
@@ -589,8 +587,8 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
     aura_options["spellid" .. i] = {
       type = "input",
-      name = L["Spell Id"],
-      desc = L["Enter a spell id"],
+      name = L["Spell ID"],
+      desc = L["Enter a Spell ID"],
       order = i + 21.3,
       hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])); end,
       get = function(info) return trigger.auraspellids and trigger.auraspellids[i] end,

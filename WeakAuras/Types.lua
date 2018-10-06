@@ -1497,8 +1497,8 @@ WeakAuras.bufftrigger_progress_behavior_types = {
 }
 
 WeakAuras.bufftrigger_2_progress_behavior_types = {
-  showOnActive = L["Auras found"],
-  showOnMissing = L["No Auras"],
+  showOnActive = L["Aura(s) Found"],
+  showOnMissing = L["Aura(s) Missing"],
   showAlways= L["Always"]
 }
 
@@ -1522,7 +1522,6 @@ WeakAuras.bufftrigger_2_combine_group_types = {
   showHighestPerUnit = L["Show longest time left per unit"],
   showCombineAll = L["Combine all matches"],
 }
-
 
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],
