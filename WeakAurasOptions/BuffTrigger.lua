@@ -67,6 +67,104 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {
+    convertToBuffTrigger2SpaceBefore = {
+      type = "description",
+      order = 8.4,
+      width = 0.3,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2 = {
+      type = "execute",
+      name = L["Convert to New Aura Trigger"],
+      order = 8.5,
+      width = 1.4,
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+      disabled = function()
+        if (not WeakAuras.CanConvertBuffTrigger2) then
+          return true;
+        end
+        if (not WeakAuras.CanConvertBuffTrigger2(trigger)) then
+          return true;
+        end
+        return false;
+      end,
+      desc = function()
+        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
+        return err or ""
+      end,
+      func = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            local trigger = childData.triggers[optionTriggerChoices[childId]] and childData.triggers[optionTriggerChoices[childId]].trigger;
+            if (trigger) then
+              WeakAuras.ConvertBuffTrigger2(trigger);
+              WeakAuras.Add(childData);
+              WeakAuras.ReloadTriggerOptions(childData);
+            end
+          end
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        else
+          WeakAuras.ConvertBuffTrigger2(trigger);
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        end
+      end
+    },
+    convertToBuffTrigger2SpaceAfter = {
+      type = "description",
+      order = 8.6,
+      width = 0.3,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2SpaceBeforeDesc = {
+      type = "description",
+      order = 8.1,
+      width = 0.4,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2Desc = {
+      type = "description",
+      order = 8.2,
+      width = 1.2,
+      name = function()
+        if (not WeakAuras.CanConvertBuffTrigger2) then
+          return "";
+        end
+        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
+        return err or "";
+      end,
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2SpaceAfterDesc = {
+      type = "description",
+      order = 8.3,
+      width = 0.4,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
     fullscan = {
       type = "toggle",
       name = L["Use Full Scan (High CPU)"],
@@ -946,94 +1044,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 73,
       width = "double",
       name = "",
-      hidden = function()
-        -- For those that update without restarting
-        return not WeakAuras.CanConvertBuffTrigger2
-      end,
-    },
-    convertToBuffTrigger2SpaceBefore = {
-      type = "description",
-      order = 73.3,
-      width = 0.3,
-      name = "",
-      hidden = function()
-        -- For those that update without restarting
-        return not WeakAuras.CanConvertBuffTrigger2
-      end,
-    },
-    convertToBuffTrigger2 = {
-      type = "execute",
-      name = L["Convert to New Aura Trigger"],
-      order = 73.4,
-      width = 1.4,
-      hidden = function()
-        -- For those that update without restarting
-        return not WeakAuras.CanConvertBuffTrigger2
-      end,
-      disabled = function()
-        if (not WeakAuras.CanConvertBuffTrigger2) then
-          return true;
-        end
-        if (not WeakAuras.CanConvertBuffTrigger2(trigger)) then
-          return true;
-        end
-        return false;
-      end,
-      desc = function()
-        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
-        return err or ""
-      end,
-      func = function()
-        if(data.controlledChildren) then
-          for index, childId in pairs(data.controlledChildren) do
-            local childData = WeakAuras.GetData(childId);
-            local trigger = childData.triggers[optionTriggerChoices[childId]] and childData.triggers[optionTriggerChoices[childId]].trigger;
-            if (trigger) then
-              WeakAuras.ConvertBuffTrigger2(trigger);
-              WeakAuras.Add(childData);
-              WeakAuras.ReloadTriggerOptions(childData);
-            end
-          end
-          WeakAuras.Add(data);
-          WeakAuras.ReloadTriggerOptions(data);
-        else
-          WeakAuras.ConvertBuffTrigger2(trigger);
-          WeakAuras.Add(data);
-          WeakAuras.ReloadTriggerOptions(data);
-        end
-      end
-    },
-    convertToBuffTrigger2SpaceAfter = {
-      type = "description",
-      order = 73.5,
-      width = 0.3,
-      name = "",
-      hidden = function()
-        -- For those that update without restarting
-        return not WeakAuras.CanConvertBuffTrigger2
-      end,
-    },
-    convertToBuffTrigger2SpaceBeforeDesc = {
-      type = "description",
-      order = 73.6,
-      width = 0.4,
-      name = "",
-      hidden = function()
-        -- For those that update without restarting
-        return not WeakAuras.CanConvertBuffTrigger2
-      end,
-    },
-    convertToBuffTrigger2Desc = {
-      type = "description",
-      order = 73.7,
-      width = 1.2,
-      name = function()
-        if (not WeakAuras.CanConvertBuffTrigger2) then
-          return "";
-        end
-        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
-        return err or "";
-      end,
       hidden = function()
         -- For those that update without restarting
         return not WeakAuras.CanConvertBuffTrigger2

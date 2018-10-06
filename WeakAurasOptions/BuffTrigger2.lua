@@ -459,7 +459,16 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Auto-Clone (Show All Matches)"],
       order = 72,
       hidden = function() return not (trigger.type == "aura2" and trigger.matchesShowOn ~= "showOnMissing"); end,
-      width = "double"
+      width = "double",
+      set = function(info, v)
+        trigger.showClones = v;
+        if(v == true) then
+          WeakAuras.UpdateCloneConfig(data);
+        else
+          WeakAuras.CollapseAllClones(data.id);
+        end
+        WeakAuras.Add(data);
+      end,
     },
     combinePerUnit = {
       type = "toggle",

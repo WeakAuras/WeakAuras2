@@ -584,8 +584,6 @@ local function RemoveState(triggerStates, cloneId)
   end
 end
 
-local recheckTriggerInfo;
-
 local function allUnits(unit)
   if (unit == "group") then
     if (IsInRaid()) then
@@ -684,6 +682,8 @@ local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
 
   return affected, unaffected;
 end
+
+local recheckTriggerInfo;
 
 local function UpdateTriggerState(time, id, triggernum)
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
@@ -1104,6 +1104,8 @@ local function UpdatePerGroupUnitScanFuncs()
       local unit = WeakAuras.raidUnits[i];
       if (not UnitExists(unit)) then
         scanFuncNameGroup[unit] = nil;
+        scanFuncSpellIdGroup[unit] = nil;
+        scanFuncGeneralGroup[unit] = nil;
       else
         local isSelf = UnitIsUnit("player", unit);
         local role = UnitGroupRolesAssigned(unit);
@@ -1122,6 +1124,8 @@ local function UpdatePerGroupUnitScanFuncs()
       unit = WeakAuras.partyUnits[i];
       if (not UnitExists(unit)) then
         scanFuncNameGroup[unit] = nil;
+        scanFuncSpellIdGroup[unit] = nil;
+        scanFuncGeneralGroup[unit] = nil;
       else
         local isSelf = UnitIsUnit("player", unit);
         local role = UnitGroupRolesAssigned(unit);
@@ -1174,7 +1178,6 @@ local function UpdateGroupCountFor(unit, event)
   end
 
   if (unit == "group") then
-
     groupCount["HEALER"] = 0;
     groupCount["DAMAGER"] = 0;
     groupCount["TANK"] = 0;
@@ -1415,7 +1418,7 @@ local function LoadAura(id, triggernum, triggerInfo)
   if (triggerInfo.unit == "multi") then
      AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
   elseif(triggerInfo.unit == "group") then
-    -- Update in per group scan funcs
+    -- Update per group scan funcs
     if (triggerInfo.unit == "group") then
       if (IsInRaid()) then
         for i = 1, 40 do
@@ -1461,7 +1464,7 @@ local function LoadAura(id, triggernum, triggerInfo)
   end
 
   local updateTriggerState = false;
-  -- sets initial states up
+  -- set up initial states
   if (triggerInfo.matchesShowOn ~= "showOnMissing") then
     -- Check against existing match data
     if (triggerInfo.unit == "multi") then
@@ -1882,6 +1885,10 @@ end
 -- @param triggernum
 -- @return
 function BuffTrigger.CanHaveClones(data, triggernum)
+  local trigger = data.triggers[triggernum].trigger;
+  if (trigger.matchesShowOn ~= "showOnMissing" and trigger.showClones) then
+    return true;
+  end
   return false;
 end
 
