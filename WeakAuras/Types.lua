@@ -1731,3 +1731,9 @@ WeakAuras.difficulty_info = {
     difficulty = "timewalking",
   },
 }
+
+WeakAuras.glow_types = {
+  ACShine = L["Autocast Shine"],
+  Pixel = L["Pixel Glow"],
+  buttonOverlay = L["Action Button Glow"]
+}
