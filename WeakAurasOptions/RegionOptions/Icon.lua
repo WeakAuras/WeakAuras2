@@ -91,12 +91,22 @@ local function createOptions(id, data)
       name = L["Glow Type"],
       order = 21,
       values = WeakAuras.glow_types,
-      hidden = function() return not data.glow end,
+    },
+    glowToggleSpacer = {
+      type = "description",
+      name = "",
+      order = 22,
+    },
+    useGlowColor = {
+      type = "toggle",
+      name = L["Glow Color"],
+      order = 23,
     },
     glowColor = {
       type = "color",
       name = L["Glow Color"],
-      order = 22,
+      order = 24,
+      disabled = function() return not data.useGlowColor end,
     },
     textHeader1 = {
       type = "header",
