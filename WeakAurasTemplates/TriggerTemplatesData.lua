@@ -768,6 +768,10 @@ templates.class.HUNTER = {
         { spell = 201430, type = "ability", talent = 18}, -- Stampede
         { spell = 217200, type = "ability", charges = true, requiresTarget = true, overlayGlow = true}, -- Barbed Shot
         { spell = 264667, type = "ability", buff = true}, -- Primal Rage
+        { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
+        { spell = 90361, type = "ability",  unit = "pet", buff = true}, -- Spirit Mend
+        { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
+        { spell = 264265, type = "ability"}, -- Spirit Shock
       },
       icon = 132176
     },
@@ -824,7 +828,7 @@ templates.class.HUNTER = {
         { spell = 199483, type = "buff", unit = "player", talent = 9}, -- Camouflage
         { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
         { spell = 136, type = "buff", unit = "pet"}, -- Mend Pet
-
+        { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
       },
       icon = 461846
     },
@@ -870,8 +874,7 @@ templates.class.HUNTER = {
         { spell = 257620, type = "ability", requiresTarget = true}, -- Multi-Shot
         { spell = 260402, type = "ability", buff = true, talent = 18}, -- Double Tap
         { spell = 264667, type = "ability", buff = true}, -- Primal Rage
-        { spell = 281195, type = "ability", buff = true}, -- Survival of the Fittest
-
+        { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
       },
       icon = 132329
     },
