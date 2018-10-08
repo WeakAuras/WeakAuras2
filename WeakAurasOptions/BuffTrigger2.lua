@@ -579,7 +579,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["name" .. i] = {
       type = "input",
       name = L["Aura Name"],
-      desc = L["Enter an Aura Name, partial Aura Name, or Spell ID"],
+      desc = L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
       order = i + 11.3,
       hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])); end,
       get = function(info) return trigger.auranames and trigger.auranames[i] end,
@@ -619,15 +619,26 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
     aura_options["spellidicon" .. i] = {
       type = "execute",
-      name = function() return getAuraMatchesLabel(trigger.auraspellids and trigger.auraspellids[i]) end,
-      desc = function() return getAuraMatchesList(trigger.auraspellids and trigger.auraspellids[i]) end,
+      name = function()
+        return getAuraMatchesLabel(GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+      end,
+      desc = function()
+        local name = GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]);
+        if (name) then
+          local auraDesc = getAuraMatchesList(name);
+          if (auraDesc) then
+            auraDesc = name .. "\n" .. auraDesc;
+          end
+          return auraDesc;
+        end
+      end,
       width = 0.2,
       image = function()
-        local icon = spellCache.GetIcon(trigger.auraspellids and trigger.auraspellids[i]);
+        local icon = select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]));
         return icon and tostring(icon) or "", 18, 18
       end,
       order = i + 21.2,
-      disabled = function() return not spellCache.GetIcon(trigger.auraspellids and trigger.auraspellids[i]) end,
+      disabled = function() return not trigger.auraspellids or not trigger.auraspellids[i] or not select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i])) end,
       hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])); end
     }
 

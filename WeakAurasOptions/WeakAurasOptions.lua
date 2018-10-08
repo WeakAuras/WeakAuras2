@@ -2222,11 +2222,19 @@ local function replaceNameDescFuncs(intable, data)
           if (not name) then
           -- Do nothing
           elseif(first) then
-            combinedName = name;
-            first = false;
+            if (combinedName ~= "") then
+              combinedName = name;
+              first = false;
+            end
             foundNames[name] = true;
           elseif not(foundNames[name]) then
-            combinedName = combinedName .. "/" .. name;
+            if (name ~= "") then
+              if (childOption.type == "description") then
+                combinedName = combinedName .. "\n\n" .. name;
+              else
+                combinedName = combinedName .. " / " .. name;
+              end
+            end
             foundNames[name] = true;
           end
         end
