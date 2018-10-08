@@ -173,6 +173,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       spellId = spellId,
       unit = unit,
       time = time,
+      lastChanged = time,
       unit = unit,
       filter = filter,
       index = index,
@@ -220,6 +221,10 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
     changed = true;
   end
 
+  if (changed) then
+    data.lastChanged = time;
+  end
+
   if (changed or resetMatchDataByTrigger) then
     -- Tell old auras that used this match data
     for id, triggerData in pairs(data.auras) do
@@ -238,7 +243,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   data.time = time;
   data.unit = unit;
 
-  return changed or resetMatchDataByTrigger;
+  return changed or data.lastChanged == time or resetMatchDataByTrigger;
 end
 
 local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
@@ -796,6 +801,8 @@ local function UpdateTriggerState(time, id, triggernum)
     else -- No best match, but unit exists
       if (triggerInfo.matchesShowOn == "showOnActive") then
         updated = RemoveState(triggerStates, cloneId);
+      else
+        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected);
       end
     end
   elseif (triggerInfo.combineMode == "showLowestPerUnit" or triggerInfo.combineMode == "showHighestPerUnit") then -- ONE AURA per unit
@@ -892,13 +899,13 @@ recheckTriggerInfo = function(triggerInfo)
   triggerInfo.nextScheduledCheck = nil;
 end
 
-local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral, resetMatchDataByTrigger)
+local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral, resetMatchDataByTrigger, invalidUnit)
   if (not scanFuncName) and (not scanFuncSpellId) and (not scanFuncGeneral) then
     return;
   end
 
   local index = 1;
-  while(true) do
+  while(not invalidUnit) do
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter);
     if (not name) then
       break;
@@ -1045,7 +1052,7 @@ local function FilterGeneralScanFuncs(input, unit, isSelf, role)
   return result;
 end
 
-local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchDataByTrigger)
+local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchDataByTrigger, invalidUnit)
   if (WeakAuras.IsPaused()) then
     return;
   end
@@ -1072,13 +1079,15 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
         scanFuncName[unitType]["HELPFUL"],
         scanFuncSpellId[unitType]["HELPFUL"],
         scanFuncGeneral[unitType]["HELPFUL"],
-        resetMatchDataByTrigger);
+        resetMatchDataByTrigger,
+        invalidUnit);
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
         scanFuncName[unitType]["HARMFUL"],
         scanFuncSpellId[unitType]["HARMFUL"],
         scanFuncGeneral[unitType]["HARMFUL"],
-        resetMatchDataByTrigger);
+        resetMatchDataByTrigger,
+        invalidUnit);
   else
     scanFuncNameGroup[unit] = scanFuncNameGroup[unit] or {};
     scanFuncSpellIdGroup[unit] = scanFuncSpellIdGroup[unit] or {};
@@ -1088,13 +1097,15 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
         scanFuncNameGroup[unit]["HELPFUL"],
         scanFuncSpellIdGroup[unit]["HELPFUL"],
         scanFuncGeneralGroup[unit]["HELPFUL"],
-        resetMatchDataByTrigger);
+        resetMatchDataByTrigger,
+        invalidUnit);
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
         scanFuncNameGroup[unit]["HARMFUL"],
         scanFuncSpellIdGroup[unit]["HARMFUL"],
         scanFuncGeneralGroup[unit]["HARMFUL"],
-        resetMatchDataByTrigger);
+        resetMatchDataByTrigger,
+        invalidUnit);
   end
 end
 
@@ -1238,7 +1249,7 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     ScanGroupUnit(time, matchDataChanged, "pet", "pet")
   elseif(event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED") then
     UpdateGroupCountFor("nameplate", event);
-    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1);
+    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1, nil, event == "NAME_PLATE_UNIT_REMOVED");
   elseif(event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT") then
     UpdateGroupCountFor("boss");
     ScanAllBoss(time, matchDataChanged);
@@ -2164,7 +2175,7 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
     trigger.showClones = true;
     trigger.useName = true;
     trigger.auranames = {};
-    trigger.auranames[1] = trigger.spellId or trigger.name;
+    trigger.auranames[1] = tostring(trigger.spellId) or trigger.name;
   end
 
   -- debuffType is exactly the same, no need to touch it
@@ -2434,7 +2445,7 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
   if (base[key] and base[key][sourceGUID]) then
     for id, idData in pairs(base[key][sourceGUID].auras) do
       for triggernum, triggerData in pairs(idData) do
-        tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key]);
+        tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key][sourceGUID]);
         matchDataChanged[id] = matchDataChanged[id] or {};
         matchDataChanged[id][triggernum] = true;
       end
@@ -2444,8 +2455,7 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
 end
 
 local function HandleCombatLogRemove(scanFuncsName, scanFuncsSpellId, sourceGUID, destGUID, spellId, spellName)
-  -- TODO: sourceGUID ?
-  if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncSpellId[spellId]) then
+  if (scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId]) then
     if (matchDataMulti[destGUID]) then
       RemoveMatchDataMulti(matchDataMulti[destGUID], destGUID, spellId, sourceGUID);
       RemoveMatchDataMulti(matchDataMulti[destGUID], destGUID, spellName, sourceGUID);

@@ -266,6 +266,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     fetchTooltip = {
       type = "toggle",
       name = L["Use Tooltip Information"],
+      desc = L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 as text replacements."],
       order = 62,
       width = "double",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.matchesShowOn ~= "showOnMissing"); end
