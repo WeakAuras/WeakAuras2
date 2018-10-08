@@ -771,7 +771,7 @@ templates.class.HUNTER = {
         { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
         { spell = 90361, type = "ability",  unit = "pet", buff = true}, -- Spirit Mend
         { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
-        { spell = 264265, type = "ability",  unit = "pet", buff = false}, -- Spirit Shock
+        { spell = 264265, type = "ability"}, -- Spirit Shock
       },
       icon = 132176
     },
