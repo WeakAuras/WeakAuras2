@@ -85,6 +85,11 @@ local properties = {
     type = "list",
     values = WeakAuras.glow_types,
   },
+  useGlowColor = {
+    display = WeakAuras.newFeatureString .. L["Use Custom Glow Color"],
+    setter = "SetUseGlowColor",
+    type = "bool"
+  },
   glowColor = {
     display = WeakAuras.newFeatureString .. L["Glow Color"],
     setter = "SetGlowColor",
@@ -619,7 +624,7 @@ local function modify(parent, region, data)
     end
   end
 
-  function region:SetUseGlowcolor(useGlowColor)
+  function region:SetUseGlowColor(useGlowColor)
     region.useGlowColor = useGlowColor
     if region.glow then
       region:SetGlow(true)
