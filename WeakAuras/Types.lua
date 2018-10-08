@@ -1602,7 +1602,6 @@ WeakAuras.internal_fields = {
   internalVersion = true,
   sortHybridTable = true,
   expanded = true,
-  parent = true,
 }
 
 WeakAuras.data_stub = {
