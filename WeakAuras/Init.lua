@@ -9,6 +9,7 @@ end
 --@end-debug@
 WeakAuras.versionString = versionString
 WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
+WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 
 WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)
