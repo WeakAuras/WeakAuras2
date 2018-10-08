@@ -3051,7 +3051,11 @@ function WeakAuras.PerformActions(data, type, region)
 
     if(glow_frame) then
       if(actions.glow_action == "show") then
-        glowStart(glow_frame, actions.glow_color);
+        local color
+        if actions.use_glow_color then
+          color = actions.glow_color
+        end
+        glowStart(glow_frame, color);
       elseif(actions.glow_action == "hide") then
         glowStop(glow_frame);
         if original_glow_frame then
