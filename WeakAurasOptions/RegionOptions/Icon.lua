@@ -97,13 +97,6 @@ local function createOptions(id, data)
       type = "color",
       name = L["Glow Color"],
       order = 22,
-      hidden = function() return data.glowType == "buttonOverlay" end,
-    },
-    glowColorSpace = {
-      type = "description",
-      name = "",
-      order = 23,
-      hidden = function() return data.glowType ~= "buttonOverlay" end,
     },
     textHeader1 = {
       type = "header",

@@ -604,8 +604,8 @@ local function modify(parent, region, data)
       region:SetGlow(false)
     end
     if newType == "buttonOverlay" then
-      region.glowStart = WeakAuras.ShowOverlayGlow
-      region.glowStop = WeakAuras.HideOverlayGlow
+      region.glowStart = LCG.ButtonGlow_Start
+      region.glowStop = LCG.ButtonGlow_Stop
     elseif newType == "ACShine" then
       region.glowStart = LCG.AutoCastGlow_Start
       region.glowStop = LCG.AutoCastGlow_Stop
