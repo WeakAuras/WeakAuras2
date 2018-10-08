@@ -2126,10 +2126,9 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "charges",
-        display = L["Show if Charges"],
+        display = L["Stacks"],
         type = "number",
         store = true,
-        display = L["Stacks"],
         conditionType = "number"
       },
       {
