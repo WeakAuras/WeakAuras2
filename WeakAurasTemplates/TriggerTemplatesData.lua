@@ -772,7 +772,6 @@ templates.class.HUNTER = {
         { spell = 90361, type = "ability",  unit = "pet", buff = true}, -- Spirit Mend
         { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
         { spell = 264265, type = "ability",  unit = "pet", buff = false}, -- Spirit Shock
-
       },
       icon = 132176
     },
@@ -830,7 +829,6 @@ templates.class.HUNTER = {
         { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
         { spell = 136, type = "buff", unit = "pet"}, -- Mend Pet
         { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
-        
       },
       icon = 461846
     },
@@ -877,7 +875,6 @@ templates.class.HUNTER = {
         { spell = 260402, type = "ability", buff = true, talent = 18}, -- Double Tap
         { spell = 264667, type = "ability", buff = true}, -- Primal Rage
         { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
-
       },
       icon = 132329
     },
