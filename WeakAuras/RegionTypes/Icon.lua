@@ -41,8 +41,8 @@ local default = {
   frameStrata = 1,
   customTextUpdate = "update",
   glow = false,
+  useglowColor = false,
   glowType = "buttonOverlay",
-  glowColor = {1, 1, 1, 1},
   cooldownTextEnabled = true,
 };
 
@@ -619,6 +619,13 @@ local function modify(parent, region, data)
     end
   end
 
+  function region:SetUseGlowcolor(useGlowColor)
+    region.useGlowColor = useGlowColor
+    if region.glow then
+      region:SetGlow(true)
+    end
+  end
+
   function region:SetGlowColor(r, g, b, a)
     region.glowColor = {r, g, b, a}
     if region.glow then
@@ -640,7 +647,11 @@ local function modify(parent, region, data)
         region.__WAGlowFrame:SetAllPoints();
         region.__WAGlowFrame:SetSize(region.width, region.height);
       end
-      region.glowStart(region.__WAGlowFrame, region.glowColor);
+      local color
+      if region.useGlowColor then
+        color = region.glowColor
+      end
+      region.glowStart(region.__WAGlowFrame, color);
     else
       if (region.__WAGlowFrame) then
         region.glowStop(region.__WAGlowFrame);
@@ -648,6 +659,7 @@ local function modify(parent, region, data)
     end
   end
 
+  region.useGlowColor = data.useGlowColor
   region.glowColor = data.glowColor
   region:SetGlowType(data.glowType)
   region:SetGlow(data.glow)
