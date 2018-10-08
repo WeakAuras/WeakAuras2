@@ -55,9 +55,9 @@ local helperFunctions = {
   WA_ClassColorName = WA_ClassColorName,
 }
 
-local LBG = LibStub("LibButtonGlow-1.0")
-WeakAuras.ShowOverlayGlow = LBG.ShowOverlayGlow
-WeakAuras.HideOverlayGlow = LBG.HideOverlayGlow
+local LCG = LibStub("LibCustomGlow-1.0")
+WeakAuras.ShowOverlayGlow = LCG.ButtonGlow_Start
+WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
 
 local function forbidden()
   prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])

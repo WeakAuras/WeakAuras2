@@ -213,13 +213,7 @@ function WeakAuras.AddActionOption(id, data)
         type = "color",
         name = L["Glow Color"],
         order = 10.6,
-        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_type ~= "ACShine" end,
-      },
-      start_glow_color_space = {
-        type = "description",
-        name = "",
-        order = 10.7,
-        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_type == "ACShine" end,
+        hidden = function() return not data.actions.start.do_glow end,
       },
       start_do_custom = {
         type = "toggle",
@@ -380,13 +374,7 @@ function WeakAuras.AddActionOption(id, data)
         type = "color",
         name = L["Glow Color"],
         order = 30.6,
-        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_type ~= "ACShine" end,
-      },
-      finish_glow_color_space = {
-        type = "description",
-        name = "",
-        order = 30.7,
-        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_type == "ACShine" end,
+        hidden = function() return not data.actions.finish.do_glow end,
       },
       finish_do_custom = {
         type = "toggle",
