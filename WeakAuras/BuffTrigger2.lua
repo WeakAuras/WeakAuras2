@@ -1793,7 +1793,7 @@ function BuffTrigger.Add(data)
         end
       end
 
-      local scanFunc = effectiveShowOn == "showOnActive" and createScanFunc(trigger);
+      local scanFunc = effectiveShowOn ~= "showOnMissing" and createScanFunc(trigger);
 
       local remFunc;
       if (effectiveShowOn == "showOnActive" and trigger.unit ~= "multi" and trigger.useRem) then
