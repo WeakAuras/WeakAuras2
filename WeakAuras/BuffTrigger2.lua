@@ -172,6 +172,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       unitCaster = unitCaster,
       spellId = spellId,
       unit = unit,
+      isStealable = isStealable,
       time = time,
       lastChanged = time,
       unit = unit,
@@ -218,6 +219,11 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
 
   if (data.spellId ~= spellId) then
     data.spellId = name;
+    changed = true;
+  end
+
+  if (data.isStealable ~= isStealable) then
+    data.isStealable = name;
     changed = true;
   end
 
@@ -2298,7 +2304,7 @@ local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, de
     end
 
     local duration, expirationTime;
-    if (event == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
+    if (event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE") then
       -- Shouldn't affect duration/expirationTime nor icon
       duration = match.duration or 0;
       expirationTime = match.expirationTime or math.huge;
