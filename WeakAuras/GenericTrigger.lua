@@ -3016,11 +3016,17 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
       return result;
     elseif (trigger.custom_type == "stateupdate") then
       if (events[data.id][triggernum] and events[data.id][triggernum].tsuConditionVariables) then
+        if (type(events[data.id][triggernum].tsuConditionVariables)) ~= "table" then
+          return nil;
+        end
         local result = CopyTable(events[data.id][triggernum].tsuConditionVariables);
         -- Make the life of tsu authors easier, by automatically filling in the details for
         -- expirationTime, duration, value, total, stacks, if those exists but aren't a table value
         -- By allowing a short-hand notation of just variable = type
         -- In addition to the long form of variable = { type = xyz, display = "desc"}
+        if (not result) then
+          return nil;
+        end
 
         for k, v in pairs(commonConditions) do
           if (result[k] and type(result[k]) ~= "table") then
