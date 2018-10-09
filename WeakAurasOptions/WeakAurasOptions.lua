@@ -4168,22 +4168,50 @@ function WeakAuras.EnsureDisplayButton(data)
 end
 
 function WeakAuras.SetGrouping(data)
-  for id, button in pairs(displayButtons) do
-    button:SetGrouping(data);
+  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0 and data) then
+    local children = {};
+    -- set grouping for selected buttons
+    for index, childId in ipairs(tempGroup.controlledChildren) do
+      local button = WeakAuras.GetDisplayButton(childId);
+      button:SetGrouping(tempGroup.controlledChildren, true);
+      children[childId] = true;
+    end
+    -- set grouping for non selected buttons
+    for id, button in pairs(displayButtons) do
+      if not children[button.data.id] then
+        button:SetGrouping(tempGroup.controlledChildren);
+      end
+    end
+  else
+    for id, button in pairs(displayButtons) do
+      button:SetGrouping(data);
+    end
+  end
+end
+
+function WeakAuras.Ungroup(data)
+  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
+    for index, childId in ipairs(tempGroup.controlledChildren) do
+      local button = WeakAuras.GetDisplayButton(childId);
+      button:Ungroup(data);
+    end
+  else
+    local button = WeakAuras.GetDisplayButton(data.id);
+    button:Ungroup(data);
   end
 end
 
 function WeakAuras.SetDragging(data, drop)
   WeakAuras_DropDownMenu:Hide()
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
-    local children = {}
-    local size = #tempGroup.controlledChildren
+    local children = {};
+    local size = #tempGroup.controlledChildren;
     -- set dragging for selected buttons in reverse for ordering
-    for index=size,1,-1 do
-      local childId = tempGroup.controlledChildren[index]
-      local button = WeakAuras.GetDisplayButton(childId)
+    for index = size, 1, -1 do
+      local childId = tempGroup.controlledChildren[index];
+      local button = WeakAuras.GetDisplayButton(childId);
       button:SetDragging(data, drop, size);
-      children[childId] = true
+      children[childId] = true;
     end
     -- set dragging for non selected buttons
     for id, button in pairs(displayButtons) do
