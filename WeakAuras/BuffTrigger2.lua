@@ -383,6 +383,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if (state.expirationTime ~= bestMatch.expirationTime) then
       state.expirationTime = bestMatch.expirationTime;
+      state.resort = true;
       changed = true;
     end
 
@@ -518,6 +519,7 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
 
     if (state.expirationTime) then
       state.expirationTime = nil;
+      state.resort = true;
       changed = true;
     end
 
@@ -2267,7 +2269,7 @@ local function UidTrack(unit)
   end
 end
 
-local function UpdateMatchDataMulti(base, key, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
   local updated = false;
   local icon = spellId and select(3, GetSpellInfo(spellId));
   if (not base[key] or not base[key][sourceGUID]) then
@@ -2296,7 +2298,7 @@ local function UpdateMatchDataMulti(base, key, sourceGUID, sourceName, destGUID,
     end
 
     local duration, expirationTime;
-    if (message == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
+    if (event == "SPELL_AURA_APPLIED_DOSE" or message == "SPELL_AURA_REMOVED_DOSE") then
       -- Shouldn't affect duration/expirationTime nor icon
       duration = match.duration or 0;
       expirationTime = match.expirationTime or math.huge;
@@ -2408,7 +2410,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
     matchDataMulti[destGUID][sourceGUID] = matchDataMulti[destGUID][sourceGUID] or {};
 
     if (scanFuncsSpellId and scanFuncsSpellId[spellId]) then
-      local updatedSpellId = UpdateMatchDataMulti(matchDataMulti[destGUID], spellId, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+      local updatedSpellId = UpdateMatchDataMulti(matchDataMulti[destGUID], spellId, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
       if (unit) then
         updatedSpellId = AugmentMatchDataMulti(matchDataMulti[destGUID][spellId][sourceGUID], unit, filter, sourceGUID, nil, spellId) or updatedSpellId;
       else
@@ -2424,7 +2426,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
     end
 
     if (scanFuncsName and scanFuncsName[spellName]) then
-      local updatedName = UpdateMatchDataMulti(matchDataMulti[destGUID], spellName, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+      local updatedName = UpdateMatchDataMulti(matchDataMulti[destGUID], spellName, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
       if (unit) then
         updatedName = AugmentMatchDataMulti(matchDataMulti[destGUID][spellName][sourceGUID], unit, filter, sourceGUID, spellName, nil) or updatedName;
       else
