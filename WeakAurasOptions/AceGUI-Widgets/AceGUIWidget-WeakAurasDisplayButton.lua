@@ -519,6 +519,9 @@ local methods = {
           tinsert(data.controlledChildren, childId);
           local childButton = WeakAuras.GetDisplayButton(childId);
           local childData = WeakAuras.GetData(childId);
+          if childData.parent then
+            childButton:Ungroup();
+          end
           childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
           childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
           childData.parent = data.id;
