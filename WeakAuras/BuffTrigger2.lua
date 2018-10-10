@@ -685,9 +685,9 @@ local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
   local unaffected = "";
   for unit in allUnits(triggerInfo.unit) do
     if (matchedUnits[unit]) then
-      affected = affected .. GetUnitName(unit, false) .. ", ";
+      affected = affected .. (GetUnitName(unit, false) or unit) .. ", ";
     else
-      unaffected = unaffected .. GetUnitName(unit, false) .. ", ";
+      unaffected = unaffected .. (GetUnitName(unit, false) or unit) .. ", ";
     end
   end
   unaffected = unaffected == "" and L["None"] or unaffected:sub(0, -3);
