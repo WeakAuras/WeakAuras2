@@ -514,18 +514,33 @@ local methods = {
 
     function self.callbacks.OnClickGrouping()
       if (WeakAuras.IsImporting()) then return end;
-      tinsert(data.controlledChildren, self.grouping.id);
-      local childButton = WeakAuras.GetDisplayButton(self.grouping.id);
-      childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
-      childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
-      self.callbacks.UpdateExpandButton();
-      self.grouping.parent = data.id;
+      if #self.grouping > 0 then
+        for index, childId in ipairs(self.grouping) do
+          tinsert(data.controlledChildren, childId);
+          local childButton = WeakAuras.GetDisplayButton(childId);
+          local childData = WeakAuras.GetData(childId);
+          if childData.parent then
+            childButton:Ungroup();
+          end
+          childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+          childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
+          childData.parent = data.id;
+          WeakAuras.Add(childData);
+        end
+      else
+        tinsert(data.controlledChildren, self.grouping.id);
+        local childButton = WeakAuras.GetDisplayButton(self.grouping.id);
+        childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+        childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
+        self.grouping.parent = data.id;
+        WeakAuras.Add(self.grouping);
+      end
       if (data.regionType == "dynamicgroup") then
         self.grouping.xOffset = 0;
         self.grouping.yOffset = 0;
       end
       WeakAuras.Add(data);
-      WeakAuras.Add(self.grouping);
+      self.callbacks.UpdateExpandButton();
       WeakAuras.SetGrouping();
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ReloadGroupRegionOptions(data);
@@ -541,7 +556,6 @@ local methods = {
     end
 
     function self.callbacks.OnGroupClick()
-      WeakAuras.PickDisplay(data.id);
       WeakAuras.SetGrouping(data);
     end
 
@@ -579,28 +593,7 @@ local methods = {
     end
 
     function self.callbacks.OnUngroupClick()
-      if (WeakAuras.IsImporting()) then return end;
-      local parentData = WeakAuras.GetData(data.parent);
-      local index;
-      for childIndex, childId in pairs(parentData.controlledChildren) do
-        if(childId == data.id) then
-          index = childIndex;
-          break;
-        end
-      end
-      if(index) then
-        tremove(parentData.controlledChildren, index);
-        WeakAuras.Add(parentData);
-        WeakAuras.ReloadGroupRegionOptions(parentData);
-      else
-        error("Display thinks it is a member of a group which does not control it");
-      end
-      self:SetGroup();
-      data.parent = nil;
-      WeakAuras.Add(data);
-      WeakAuras.UpdateGroupOrders(parentData);
-      WeakAuras.UpdateDisplayButton(parentData);
-      WeakAuras.SortDisplayButtons();
+      WeakAuras.Ungroup(data);
     end
 
     function self.callbacks.OnUpGroupClick()
@@ -1048,10 +1041,10 @@ local methods = {
     Show_Long_Tooltip(self.frame, self.frame.description);
   end
   end,
-  ["SetGrouping"] = function(self, groupingData)
+  ["SetGrouping"] = function(self, groupingData, multi)
     self.grouping = groupingData;
     if(self.grouping) then
-      if(self.data.id == self.grouping.id) then
+      if(self.data.id == self.grouping.id or multi) then
         self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
         self:SetDescription(L["Cancel"], L["Do not group this display"]);
       else
@@ -1067,6 +1060,31 @@ local methods = {
       self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
       self:Enable();
     end
+  end,
+  ["Ungroup"] = function(self)
+    if (WeakAuras.IsImporting()) then return end;
+    local parentData = WeakAuras.GetData(self.data.parent);
+    if not parentData then return end;
+    local index;
+    for childIndex, childId in pairs(parentData.controlledChildren) do
+      if(childId == self.data.id) then
+        index = childIndex;
+        break;
+      end
+    end
+    if(index) then
+      tremove(parentData.controlledChildren, index);
+      WeakAuras.Add(parentData);
+      WeakAuras.ReloadGroupRegionOptions(parentData);
+    else
+      error("Display thinks it is a member of a group which does not control it");
+    end
+    self:SetGroup();
+    self.data.parent = nil;
+    WeakAuras.Add(self.data);
+    WeakAuras.UpdateGroupOrders(parentData);
+    WeakAuras.UpdateDisplayButton(parentData);
+    WeakAuras.SortDisplayButtons();
   end,
   ["SetDragging"] = function(self, data, drop, size)
     if (size) then
