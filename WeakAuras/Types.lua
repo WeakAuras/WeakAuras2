@@ -835,7 +835,8 @@ WeakAuras.texture_types = {
     ["Spells\\TEXTURES\\Beam_VineGreen"] = "Green Vine",
     ["Spells\\TEXTURES\\Beam_VineRed"] = "Red Vine",
     ["Spells\\TEXTURES\\Beam_WaterBlue"] = "Blue Water Beam",
-    ["Spells\\TEXTURES\\Beam_WaterGreen"] = "Green Water Beam"
+    ["Spells\\TEXTURES\\Beam_WaterGreen"] = "Green Water Beam",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\rainbowbar"] = "Rainbow Bar"
   },
   ["Shapes"] = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth"] = "Smooth Circle",
