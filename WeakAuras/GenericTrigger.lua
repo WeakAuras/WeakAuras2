@@ -2640,15 +2640,15 @@ end
 do
   local scheduled_scans = {};
 
-  local function doCastScan(fireTime)
-    WeakAuras.debug("Performing cast scan at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[fireTime] = nil;
-    WeakAuras.ScanEvents("CAST_REMAINING_CHECK");
+  local function doCastScan(args)
+    WeakAuras.debug("Performing cast scan at "..args[1].." ("..GetTime()..")");
+    scheduled_scans[args[1]] = nil;
+    WeakAuras.ScanEvents("CAST_REMAINING_CHECK", args[2]);
   end
-  function WeakAuras.ScheduleCastCheck(fireTime)
+  function WeakAuras.ScheduleCastCheck(fireTime, unit)
     if not(scheduled_scans[fireTime]) then
       WeakAuras.debug("Scheduled cast scan at "..fireTime);
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doCastScan, fireTime - GetTime() + 0.1, fireTime);
+      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doCastScan, fireTime - GetTime() + 0.1, {fireTime, unit});
     end
   end
 end
@@ -2983,7 +2983,7 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
               display = v.display,
               type = v.conditionType
             }
-            if (result[v.name].type == "select") then
+            if (result[v.name].type == "select" or result[v.name].type == "unit") then
               if (v.conditionValues) then
                 result[v.name].values = WeakAuras[v.conditionValues];
               else
