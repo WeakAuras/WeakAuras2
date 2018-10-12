@@ -6,7 +6,6 @@
   config -> key/value hash table.
     key, and format of value are defined by author, and the precise value is defined by the user.
     This table gets copied into the aura's script environment via aura_env.config.
-  configPage -> integer, used to determine which child's user options are displayed.
   authorMode -> bool, used to determine if author or user mode is displayed in Custom Options tab.
 
   option -> table with fields:
@@ -933,7 +932,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   return order
 end
 
-local function addUserModeOption(options, args, data, order, i, hidden)
+local function addUserModeOption(options, args, data, order, i)
   local option = options[i]
   local config = data.config
   local optionType = option.type
@@ -943,7 +942,6 @@ local function addUserModeOption(options, args, data, order, i, hidden)
     desc = option.desc,
     width = option.width,
     order = order,
-    hidden = hidden,
     get = get(config, option.key),
     set = set(data, config, option.key)
   }
@@ -1097,30 +1095,25 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
         order = startorder + 1,
       }
     else
-      local order = startorder + 1
+      local order = startorder
       local values = {}
       for i = 1, #data.controlledChildren do
         local childData = WeakAuras.GetData(data.controlledChildren[i])
         if childData and #childData.authorOptions > 0 then
           tinsert(values, childData.id)
           local childIndex = #values
-          local function hidden()
-            return data.configPage ~= childIndex
-          end
           args[childData.id .. "header"] = {
             type = "header",
-            name = childData.id .. L[" Configuration"],
+            name = childData.id,
             order = order,
-            hidden = hidden,
           }
           order = order + 1
           for j = 1, #childData.authorOptions do
-            order = addUserModeOption(childData.authorOptions, args, childData, order, j, hidden)
+            order = addUserModeOption(childData.authorOptions, args, childData, order, j)
           end
           args[childData.id .. "space1"] ={
             type = "description",
             name = "",
-            hidden = hidden,
             order = order,
           }
           order = order + 1
@@ -1129,7 +1122,6 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             name = L["Reset to Defaults"],
             desc = L["Reset all options to their default values."],
             order = order,
-            hidden = hidden,
             func = function()
               wipe(childData.config)
               WeakAuras.Add(childData)
@@ -1137,25 +1129,14 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             end
           }
           order = order + 1
-          args[childData.id .. "footer"] = {
-            type = "header",
-            name = "",
-            order = order,
-            hidden = hidden,
-          }
-          order = order + 1
         end
       end
-      data.configPage = data.configPage and math.min(data.configPage, #values) or 1
-      args["configPageDropdown"] = {
-        type = "select",
-        name = L["Choose an aura to configure:"],
-        order = startorder,
-        values = values,
-        width = "double",
-        get = get(data, "configPage"),
-        set = set(data, data, "configPage"),
+      args["userConfigFooter"] = {
+        type = "header",
+        name = "",
+        order = order,
       }
+      order = order + 1
       args["resetAllToDefault"] = {
         type = "execute",
         name = L["Reset ALL to Defaults"],

@@ -1718,7 +1718,6 @@ WeakAuras.internal_fields = {
   expanded = true,
   parent = true,
   authorMode = true,
-  configPage = true,
 }
 
 WeakAuras.data_stub = {
