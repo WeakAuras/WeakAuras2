@@ -93,9 +93,12 @@ local scanFuncSpellIdMulti = {}
 -- Auras that matched, unit, index
 local matchData = {}
 local matchDataMulti = {}
+WeakAuras.matchDataMulti = matchDataMulti;
 
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {}
+WeakAuras.matchDataByTrigger = matchDataByTrigger;
+
 local matchDataChanged = {}
 
 local function GetOrCreateSubTable(base, next, ...)
