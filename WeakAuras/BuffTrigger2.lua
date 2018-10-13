@@ -1981,10 +1981,8 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
           return name, icon
         end
       else
-        local iconFromSpellCache = WeakAuras.spellCache.GetIcon(trigger.auranames[i])
-        if iconFromSpellCache then
-          return trigger.auranames[i], iconFromSpellCache
-        end
+        name, _, icon = GetSpellInfo(trigger.auranames[i])
+        return name, icon
       end
     end
   end
