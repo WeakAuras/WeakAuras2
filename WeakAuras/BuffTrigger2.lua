@@ -217,7 +217,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
 
   if data.unitCaster ~= unitCaster then
     data.unitCaster = unitCaster
-    date.casterName = GetUnitName(unitCaster, false) or ""
+    date.casterName = unitCaster and GetUnitName(unitCaster, false) or ""
     changed = true
   end
 
