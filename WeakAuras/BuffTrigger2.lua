@@ -94,11 +94,9 @@ local cleanupTimerMulti = {};
 -- Auras that matched, unit, index
 local matchData = {}
 local matchDataMulti = {}
-WeakAuras.matchDataMulti = matchDataMulti;
 
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
 local matchDataByTrigger = {}
-WeakAuras.matchDataByTrigger = matchDataByTrigger;
 
 local matchDataChanged = {}
 
@@ -2336,7 +2334,6 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
 end
 
 local function CleanUpMulti(guid)
-  print("CleanUpMulti!!")
   cleanupTimerMulti[guid].handle = nil;
   cleanupTimerMulti[guid].nextTime = nil;
   local nextCheck;
