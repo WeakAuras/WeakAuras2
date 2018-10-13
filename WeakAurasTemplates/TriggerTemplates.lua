@@ -85,7 +85,7 @@ local checks = {
     value = 1,
   },
   buffed = {
-    variable = "show",
+    variable = "buffed",
     value = 1,
   },
   buffedFalse = {
