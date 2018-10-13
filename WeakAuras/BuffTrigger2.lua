@@ -89,6 +89,7 @@ local playerRole = {}
 -- Mutli Target tracking
 local scanFuncNameMulti = {}
 local scanFuncSpellIdMulti = {}
+local cleanupTimerMulti = {};
 
 -- Auras that matched, unit, index
 local matchData = {}
@@ -362,7 +363,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       unaffected = unaffected,
       active = true,
       time = time,
-      autoHide = bestMatch.autoHide
     }
     return true
   else
@@ -479,11 +479,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.active ~= true then
       state.active = true
-      changed = true
-    end
-
-    if state.autoHide ~= bestMatch.autoHide then
-      state.autoHide = bestMatch.autoHide
       changed = true
     end
 
@@ -2324,9 +2319,69 @@ local function UidTrack(unit)
   end
 end
 
-local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
+  if base[key] and base[key][sourceGUID] then
+    for id, idData in pairs(base[key][sourceGUID].auras) do
+      for triggernum, triggerData in pairs(idData) do
+        tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key][sourceGUID])
+        if (not next(matchDataByTrigger[id][triggernum][destGUID])) then
+          matchDataByTrigger[id][triggernum][destGUID] = nil;
+        end
+        matchDataChanged[id] = matchDataChanged[id] or {}
+        matchDataChanged[id][triggernum] = true
+      end
+    end
+  end
+  base[key] = nil
+end
+
+local function CleanUpMulti(guid)
+  print("CleanUpMulti!!")
+  cleanupTimerMulti[guid].handle = nil;
+  cleanupTimerMulti[guid].nextTime = nil;
+  local nextCheck;
+  if matchDataMulti[guid] then
+    local time = GetTime();
+    for key, data in pairs(matchDataMulti[guid]) do
+      for source, sourceData in pairs(data) do
+        local removeAt = sourceData.expirationTime or (sourceData.time + 60);
+        if (removeAt <= time) then
+          RemoveMatchDataMulti(matchDataMulti[guid], guid, key, source);
+        else
+          if (not nextCheck) then
+            nextCheck = removeAt;
+          elseif (removeAt < nextCheck) then
+            nextCheck = removeAt;
+          end
+        end
+      end
+    end
+  end
+
+  if (nextCheck) then
+    local timeUntilNext = nextCheck - GetTime();
+    if (timeUntilNext > 0) then
+     cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, timeUntilNext, guid);
+     cleanupTimerMulti[guid].nextTime = time;
+   end
+  end
+end
+
+local function ScheduleMultiCleanUp(guid, time)
+  cleanupTimerMulti[guid] = cleanupTimerMulti[guid] or {};
+  if (not cleanupTimerMulti[guid].nextTime or time < cleanupTimerMulti[guid].nextTime) then
+    if (cleanupTimerMulti[guid].handle) then
+      timer:CancelTimer(cleanupTimerMulti[guid].handle);
+    end
+    cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, time - GetTime(), guid);
+    cleanupTimerMulti[guid].nextTime = time;
+  end
+end
+
+local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
   local updated = false
   local icon = spellId and select(3, GetSpellInfo(spellId))
+  ScheduleMultiCleanUp(destGUID, time + 60);
   if not base[key] or not base[key][sourceGUID] then
     updated = true
     base[key] = base[key] or {}
@@ -2340,11 +2395,13 @@ local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, de
       sourceGUID = sourceGUID,
       unitName = destName,
       casterName = sourceName,
+      time = time,
       auras = {}
     }
   else
     base[key][sourceGUID] = base[key][sourceGUID] or {}
     local match = base[key][sourceGUID]
+    match.time = time;
     if match.name ~= spellName then
       match.name = spellName
       updated = true
@@ -2400,6 +2457,7 @@ local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, de
 end
 
 local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+  ScheduleMultiCleanUp(matchData.GUID, expirationTime);
   local changed = false
   if matchData.name ~= name then
     matchData.name = name
@@ -2423,11 +2481,6 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
 
   if matchData.expirationTime ~= expirationTime then
     matchData.expirationTime = expirationTime
-    changed = true
-  end
-
-  if not matchData.autoHide then
-    matchData.autoHide = true
     changed = true
   end
 
@@ -2467,13 +2520,15 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
 end
 
 local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+  local time = GetTime();
   local unit = GetUnit(destGUID)
   if scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId] then
+    ScheduleMultiCleanUp(destGUID, time + 60);
     matchDataMulti[destGUID] = matchDataMulti[destGUID] or {}
     matchDataMulti[destGUID][sourceGUID] = matchDataMulti[destGUID][sourceGUID] or {}
 
     if scanFuncsSpellId and scanFuncsSpellId[spellId] then
-      local updatedSpellId = UpdateMatchDataMulti(matchDataMulti[destGUID], spellId, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+      local updatedSpellId = UpdateMatchDataMulti(time, matchDataMulti[destGUID], spellId, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
       if unit then
         updatedSpellId = AugmentMatchDataMulti(matchDataMulti[destGUID][spellId][sourceGUID], unit, filter, sourceGUID, nil, spellId) or updatedSpellId
       else
@@ -2489,7 +2544,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
     end
 
     if scanFuncsName and scanFuncsName[spellName] then
-      local updatedName = UpdateMatchDataMulti(matchDataMulti[destGUID], spellName, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
+      local updatedName = UpdateMatchDataMulti(time, matchDataMulti[destGUID], spellName, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
       if unit then
         updatedName = AugmentMatchDataMulti(matchDataMulti[destGUID][spellName][sourceGUID], unit, filter, sourceGUID, spellName, nil) or updatedName
       else
@@ -2506,21 +2561,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
   end
 end
 
-local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
-  if base[key] and base[key][sourceGUID] then
-    for id, idData in pairs(base[key][sourceGUID].auras) do
-      for triggernum, triggerData in pairs(idData) do
-        tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key][sourceGUID])
-        if (not next(matchDataByTrigger[id][triggernum][destGUID])) then
-          matchDataByTrigger[id][triggernum][destGUID] = nil;
-        end
-        matchDataChanged[id] = matchDataChanged[id] or {}
-        matchDataChanged[id][triggernum] = true
-      end
-    end
-  end
-  base[key] = nil
-end
+
 
 local function HandleCombatLogRemove(scanFuncsName, scanFuncsSpellId, sourceGUID, destGUID, spellId, spellName)
   if scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId] then
