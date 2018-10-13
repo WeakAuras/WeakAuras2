@@ -557,15 +557,41 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
     aura_options["nameicon" .. i] = {
       type = "execute",
-      name = function() return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i]) end,
-      desc = function() return getAuraMatchesList(trigger.auranames and trigger.auranames[i]) end,
+      name = function()
+        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
+        if spellId then
+          return getAuraMatchesLabel(GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+        else
+          return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i])
+        end
+      end,
+      desc = function()
+        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
+        if spellId then
+          local name = GetSpellInfo(spellId)
+          if name then
+            local auraDesc = getAuraMatchesList(name)
+            if auraDesc then
+              auraDesc = name .. "\n" .. auraDesc
+            end
+            return auraDesc
+          end
+        else
+          return getAuraMatchesList(trigger.auranames and trigger.auranames[i])
+        end
+      end,
       width = 0.2,
       image = function()
-        local icon = spellCache.GetIcon(trigger.auranames and trigger.auranames[i])
+        local icon;
+        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
+        if spellId then
+          icon = select(3, GetSpellInfo(spellId));
+        else
+          icon = spellCache.GetIcon(trigger.auranames and trigger.auranames[i])
+        end
         return icon and tostring(icon) or "", 18, 18
       end,
       order = i + 11.2,
-      disabled = function() return not spellCache.GetIcon(trigger.auranames and trigger.auranames[i]) end,
       hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])) end
     }
 
@@ -613,17 +639,11 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["spellidicon" .. i] = {
       type = "execute",
       name = function()
-        return getAuraMatchesLabel(GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+        return " ";
       end,
       desc = function()
         local name = GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i])
-        if name then
-          local auraDesc = getAuraMatchesList(name)
-          if auraDesc then
-            auraDesc = name .. "\n" .. auraDesc
-          end
-          return auraDesc
-        end
+        return name;
       end,
       width = 0.2,
       image = function()
