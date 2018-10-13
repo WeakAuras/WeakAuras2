@@ -491,7 +491,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
   end
 end
 
-local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
+local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
       show = true,
@@ -508,7 +508,9 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
       affected = affected,
       unaffected = unaffected,
       unitName = "",
-      destName = ""
+      destName = "",
+      name = triggerInfo.fallbackName,
+      icon = triggerInfo.fallbackIcon
     }
     return true
   else
@@ -521,13 +523,13 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
       changed = true
     end
 
-    if state.name then
-      state.name = nil
+    if state.name ~= triggerInfo.fallbackName then
+      state.name = triggerInfo.fallbackName
       changed = true
     end
 
-    if state.icon then
-      state.icon = nil
+    if state.icon ~= triggerInfo.fallbackIcon then
+      state.icon = triggerInfo.fallbackIcon
       changed = true
     end
 
@@ -761,7 +763,7 @@ local function UpdateTriggerState(time, id, triggernum)
     if anyMatch then
       updated = RemoveState(triggerStates, "")
     else
-      updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, 0, affected, unaffected)
+      updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected)
     end
   elseif triggerInfo.combineMode == "showClones" then
     if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
@@ -806,7 +808,7 @@ local function UpdateTriggerState(time, id, triggernum)
         or triggerInfo.groupTrigger)
         or triggerInfo.unitExists
         and not existingUnits[triggerInfo.unit]) then
-        updated = UpdateStateWithNoMatch(time, triggerStates, "", 0, 0, 0, affected, unaffected) or updated
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected) or updated
       end
     end
 
@@ -832,10 +834,10 @@ local function UpdateTriggerState(time, id, triggernum)
     if bestMatch then
       updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
     elseif triggerInfo.matchesShowOn == "showAlways" and triggerInfo.groupTrigger then
-      updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
+      updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
     elseif not existingUnits[triggerInfo.unit] then -- Unit does not exist
       if triggerInfo.unitExists then
-        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected)
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, 0, 0, 0, affected, unaffected)
       else
         updated = RemoveState(triggerStates, cloneId)
       end
@@ -843,7 +845,7 @@ local function UpdateTriggerState(time, id, triggernum)
       if triggerInfo.matchesShowOn == "showOnActive" then
         updated = RemoveState(triggerStates, cloneId)
       else
-        updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, 0, 0, 0, affected, unaffected)
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, 0, 0, 0, affected, unaffected)
       end
     end
   elseif triggerInfo.combineMode == "showLowestPerUnit" or triggerInfo.combineMode == "showHighestPerUnit" then -- one aura per unit
@@ -891,7 +893,7 @@ local function UpdateTriggerState(time, id, triggernum)
         if bestMatch and matchesGroupCount then
           updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
         elseif triggerInfo.matchesShowOn == "showAlways" then
-          updated = UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+          updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
         end
       end
     else
@@ -902,7 +904,7 @@ local function UpdateTriggerState(time, id, triggernum)
 
       if triggerInfo.matchesShowOn == "showAlways" then
         for unit, unitData in allUnits(triggerInfo.unit) do
-          updated = UpdateStateWithNoMatch(time, triggerStates, unit, 0, 0, 0, affected, unaffected) or updated
+          updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, 0, 0, 0, affected, unaffected) or updated
         end
       end
     end
@@ -1877,6 +1879,8 @@ function BuffTrigger.Add(data)
         BuffTrigger.InitMultiAura()
       end
 
+      local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIcon(data, triggernum);
+
       local triggerInformation = {
         auranames = names,
         auraspellids = trigger.useExactSpellId and trigger.auraspellids,
@@ -1898,7 +1902,9 @@ function BuffTrigger.Add(data)
         groupRole = effectiveGroupRole,
         groupCountFunc = groupCountFunc,
         useAffected = trigger.unit == "group" and trigger.useAffected,
-        isMulti = trigger.unit == "multi"
+        isMulti = trigger.unit == "multi",
+        fallbackName = fallbackName,
+        fallbackIcon = fallbackIcon
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation
