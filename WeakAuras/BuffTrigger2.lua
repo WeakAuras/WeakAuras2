@@ -109,6 +109,22 @@ local function GetOrCreateSubTable(base, next, ...)
   return GetOrCreateSubTable(base[next], ...)
 end
 
+local function IsGroupTrigger(trigger)
+  return trigger.unit == "group" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
+end
+
+local function IsSingleMissing(trigger)
+  return not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showOnMissing";
+end
+
+local function HasMatchCount(trigger)
+  if IsGroupTrigger(trigger) then
+    return trigger.useMatch_count
+  else
+    return trigger.matchesShowOn == "showOnMatches"
+  end
+end
+
 local function ReferenceMatchData(id, triggernum, unit, filter, index)
   local match = matchData[unit][filter][index]
   local base = GetOrCreateSubTable(matchDataByTrigger, id, triggernum, unit)
@@ -729,6 +745,17 @@ end
 
 local recheckTriggerInfo
 
+local function SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+  if triggerInfo.groupCountFunc and not triggerInfo.groupCountFunc(unitCount, maxUnitCount) then
+    return false
+  end
+
+  if triggerInfo.matchCountFunc and not triggerInfo.matchCountFunc(matchCount) then
+    return false
+  end
+  return true
+end
+
 local function UpdateTriggerState(time, id, triggernum)
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   local triggerInfo = triggerInfos[id][triggernum]
@@ -739,29 +766,34 @@ local function UpdateTriggerState(time, id, triggernum)
   local auraDatas = {}
   local maxUnitCount = MaxUnitCount(triggerInfo)
   local matchedUnits = {}
-  if triggerInfo.matchesShowOn == "showOnMissing" then
-    local anyMatch = false
-    if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
-      for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
-        if next(unitData) then
-          anyMatch = true
-          break
-        end
-      end
-    end
 
-    local affected
-    local unaffected
-    if triggerInfo.useAffected then
-      affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
-    end
+  if triggerInfo.combineMode == "showOne" then
+    local bestMatch, matchCount, unitCount
+    bestMatch, matchCount, unitCount, nextCheck = FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits)
+    local cloneId = ""
 
-    if anyMatch then
-      updated = RemoveState(triggerStates, "")
+    local useMatch = true;
+    if triggerInfo.unitExists and not existingUnits[triggerInfo.unit] then
+      useMatch = true
     else
-      updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected)
+      useMatch = SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
-  elseif triggerInfo.combineMode == "showClones" then
+
+    if useMatch then
+      local affected, unaffected
+      if triggerInfo.useAffected then
+        affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
+      end
+
+      if bestMatch then
+        updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
+      else
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, 0, 0, 0, affected, unaffected)
+      end
+    else
+      updated = RemoveState(triggerStates, cloneId)
+    end
+  elseif (triggerInfo.combineMode == "showClones") then
     if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
       for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
         local unitCounted = false
@@ -786,9 +818,15 @@ local function UpdateTriggerState(time, id, triggernum)
       end
     end
 
-    if not triggerInfo.groupCountFunc or triggerInfo.groupCountFunc(unitCount, maxUnitCount) then
-      local affected
-      local unaffected
+    local useMatches = true
+    if triggerInfo.unitExists and not existingUnits[triggerInfo.unit] then
+      useMatches = true
+    else
+      useMatches = SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+    end
+
+    if useMatches then
+      local affected, unaffected
       if triggerInfo.useAffected then
         affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
       end
@@ -798,12 +836,7 @@ local function UpdateTriggerState(time, id, triggernum)
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
       end
 
-      if matchCount == 0
-        and (triggerInfo.matchesShowOn == "showAlways"
-        and (existingUnits[triggerInfo.unit]
-        or triggerInfo.groupTrigger)
-        or triggerInfo.unitExists
-        and not existingUnits[triggerInfo.unit]) then
+      if matchCount == 0 then
         updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected) or updated
       end
     end
@@ -813,51 +846,13 @@ local function UpdateTriggerState(time, id, triggernum)
         updated = RemoveState(triggerStates, cloneId) or updated
       end
     end
-  elseif triggerInfo.combineMode == "showLowest" or triggerInfo.combineMode == "showHighest" then -- one aura
-    local bestMatch, matchCount, unitCount
-    bestMatch, matchCount, unitCount, nextCheck = FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits)
-    local cloneId = ""
-
-    if triggerInfo.groupCountFunc and not triggerInfo.groupCountFunc(unitCount, maxUnitCount) then
-      bestMatch = nil
-    end
-
-    local affected, unaffected
-    if triggerInfo.useAffected then
-      affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
-    end
-
-    if bestMatch then
-      updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
-    elseif triggerInfo.matchesShowOn == "showAlways" and triggerInfo.groupTrigger then
-      updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
-    elseif not existingUnits[triggerInfo.unit] then -- Unit does not exist
-      if triggerInfo.unitExists then
-        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, 0, 0, 0, affected, unaffected)
-      else
-        updated = RemoveState(triggerStates, cloneId)
-      end
-    else -- No best match, but unit exists
-      if triggerInfo.matchesShowOn == "showOnActive" then
-        updated = RemoveState(triggerStates, cloneId)
-      else
-        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, 0, 0, 0, affected, unaffected)
-      end
-    end
-  elseif triggerInfo.combineMode == "showLowestPerUnit" or triggerInfo.combineMode == "showHighestPerUnit" then -- one aura per unit
+  elseif (triggerInfo.combineMode == "showPerUnit") then
     if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
-      local iterFunc, iterState
-      if triggerInfo.matchesShowOn == "showOnActive" then
-        iterFunc, iterState = pairs(matchDataByTrigger[id][triggernum])
-      else
-        iterFunc = allUnits(triggerInfo.unit)
-      end
-
       local matches = {}
       local matchCount = 0
       local unitCount = 0
 
-      for unit, unitData in iterFunc, iterState do
+      for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
         local bestMatch, matchCountPerUnit, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
         matchCount = matchCount + matchCountPerUnit
         if bestMatch then
@@ -873,34 +868,22 @@ local function UpdateTriggerState(time, id, triggernum)
         matches[unit] = bestMatch
       end
 
-      local matchesGroupCount = true
-      if triggerInfo.groupCountFunc and not triggerInfo.groupCountFunc(unitCount, maxUnitCount) then
-        matchesGroupCount = false
-      end
+      local useMatches = SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
 
-      local affected, unaffected
-      if triggerInfo.useAffected then
-        affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
-      end
-
-      for unit, unitData in iterFunc, iterState do
-        local cloneId = unit
-        local bestMatch = matches[unit]
-        if bestMatch and matchesGroupCount then
-          updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
-        elseif triggerInfo.matchesShowOn == "showAlways" then
-          updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+      if useMatches then
+        local affected, unaffected
+        if triggerInfo.useAffected then
+          affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
         end
-      end
-    else
-      local affected, unaffected
-      if triggerInfo.useAffected then
-        affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
-      end
 
-      if triggerInfo.matchesShowOn == "showAlways" then
-        for unit, unitData in allUnits(triggerInfo.unit) do
-          updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, 0, 0, 0, affected, unaffected) or updated
+        for unit, bestMatch in pairs(matches) do
+          if bestMatch then
+            updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+          end
+        end
+
+        if matchCount == 0 then
+          updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected) or updated
         end
       end
     end
@@ -1189,7 +1172,7 @@ end
 
 local function ScanAllGroup(time, matchDataChanged, resetMatchDataByTrigger)
   -- We iterate over all raid/player unit ids here because ScanGroupUnit also
-  -- handles the cases where a unit existance changes. TODO: that could be optimized
+  -- handles the cases where a unit existance changes.
   if IsInRaid() then
     for i = 1, 40 do
       ScanGroupUnit(time, matchDataChanged, "group", WeakAuras.raidUnits[i], resetMatchDataByTrigger)
@@ -1514,48 +1497,41 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(groupCountScanFunc, triggerInfo)
   end
 
-  local updateTriggerState = false
   -- set up initial states
-  if triggerInfo.matchesShowOn ~= "showOnMissing" then
     -- Check against existing match data
-    if triggerInfo.unit == "multi" then
-      -- We don't check against existing data, as it would be rather random what it would pick up
-      -- since that depends on what other auras are loaded at that time
-    elseif triggerInfo.groupTrigger then
-      for unit in allUnits(triggerInfo.unit) do
-        if matchData[unit] and matchData[unit][filter] then
-          for index, match in pairs(matchData[unit][filter]) do
-            if generalFunc
-                or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
-                or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId)) then
-              if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
-                ReferenceMatchData(id, triggernum, unit, filter, index)
-                updateTriggerState = true
-              end
+  if triggerInfo.unit == "multi" then
+    -- We don't check against existing data, as it would be rather random what it would pick up
+    -- since that depends on what other auras are loaded at that time
+  elseif triggerInfo.groupTrigger then
+    for unit in allUnits(triggerInfo.unit) do
+      if matchData[unit] and matchData[unit][filter] then
+        for index, match in pairs(matchData[unit][filter]) do
+          if generalFunc
+              or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
+              or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId)) then
+            if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
+              ReferenceMatchData(id, triggernum, unit, filter, index)
             end
           end
         end
       end
-    else
-      if matchData[triggerInfo.unit] and matchData[triggerInfo.unit][filter] then
-        for index, match in pairs(matchData[triggerInfo.unit][filter]) do
-          if (generalFunc
-              or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
-              or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
-            if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[triggerInfo.unit][filter][index]) then
-              ReferenceMatchData(id, triggernum, triggerInfo.unit, filter, index)
-              updateTriggerState = true
-            end
+    end
+  else
+    if matchData[triggerInfo.unit] and matchData[triggerInfo.unit][filter] then
+      for index, match in pairs(matchData[triggerInfo.unit][filter]) do
+        if (generalFunc
+            or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
+            or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
+          if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[triggerInfo.unit][filter][index]) then
+            ReferenceMatchData(id, triggernum, triggerInfo.unit, filter, index)
           end
         end
       end
     end
   end
 
-  if updateTriggerState or triggerInfo.matchesShowOn ~= "showOnActive" or triggerInfo.unitExists or triggerInfo.groupTrigger then
-    matchDataChanged[id] = matchDataChanged[id] or {}
-    matchDataChanged[id][triggernum] = true
-  end
+  matchDataChanged[id] = matchDataChanged[id] or {}
+  matchDataChanged[id][triggernum] = true
 end
 
 function BuffTrigger.LoadDisplays(toLoad)
@@ -1639,20 +1615,14 @@ function BuffTrigger.Rename(oldid, newid)
   end
 end
 
-local function effectiveShowOnIsShowOnActive(trigger)
-  local effectiveShowOn = true
-  if trigger.matchesShowOn then
-    effectiveShowOn = trigger.matchesShowOn == "showOnActive"
-  end
-  return effectiveShowOn
-end
-
 local function createScanFunc(trigger)
-  local useStacks = effectiveShowOnIsShowOnActive(trigger) and trigger.useStacks
-  local use_stealable = effectiveShowOnIsShowOnActive(trigger) and trigger.use_stealable
-  local use_debuffClass = effectiveShowOnIsShowOnActive(trigger) and trigger.debuffType == "HARMFUL" and trigger.use_debuffClass
-  local use_tooltip = effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip and trigger.use_tooltip
-  local use_tooltipValue = effectiveShowOnIsShowOnActive(trigger) and trigger.fetchTooltip and trigger.use_tooltipValue
+  local isSingleMissing = IsSingleMissing(trigger)
+  local isMulti = trigger.unit == "multi";
+  local useStacks = not isSingleMissing and not isMulti and trigger.useStacks
+  local use_stealable = not isSingleMissing and not isMulti and trigger.use_stealable
+  local use_debuffClass = not isSingleMissing and not isMulti and trigger.debuffType == "HARMFUL" and trigger.use_debuffClass
+  local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
+  local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
 
   if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern then
     return nil
@@ -1794,8 +1764,12 @@ local function lowestExpirationTime(bestMatch, auraMatch)
   return false
 end
 
-local function IsGroupTrigger(trigger)
-  return trigger.unit == "group" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
+local function GreaterEqualOne(x)
+  return x >= 1;
+end
+
+local function EqualZero(x)
+  return x == 0;
 end
 
 --- Adds an aura, setting up internal data structures for all buff triggers.
@@ -1811,33 +1785,19 @@ function BuffTrigger.Add(data)
       trigger.unit = trigger.unit or "player"
       trigger.debuffType = trigger.debuffType or "HELPFUL"
 
-      local effectiveShowOn = trigger.matchesShowOn or "showOnActive"
-
-      local combineMode
-      if effectiveShowOn ~= "showOnMissing" then
-        if IsGroupTrigger(trigger) then
-          if trigger.showClones then
-            if trigger.combinePerUnit and trigger.unit ~= "multi" then
-              combineMode = trigger.combineMode == "showLowest" and "showLowestPerUnit" or "showHighestPerUnit"
-            else
-              combineMode = "showClones"
-            end
-          else
-            combineMode = trigger.combineMode or "showLowest"
-          end
+      local combineMode = "showOne"
+      if not IsSingleMissing(trigger) and trigger.showClones then
+        if IsGroupTrigger(trigger) and trigger.combinePerUnit and trigger.unit ~= "multi" then
+          combineMode = "showPerUnit"
         else
-          if trigger.showClones then
-            combineMode = "showClones"
-          else
-            combineMode = trigger.combineMode or "showLowest"
-          end
+          combineMode = "showClones"
         end
       end
 
-      local scanFunc = effectiveShowOn ~= "showOnMissing" and createScanFunc(trigger)
+      local scanFunc = createScanFunc(trigger)
 
       local remFunc
-      if effectiveShowOn == "showOnActive" and trigger.unit ~= "multi" and trigger.useRem then
+      if trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useRem then
         local remFuncStr = WeakAuras.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0)
         remFunc = WeakAuras.LoadFunction(remFuncStr)
       end
@@ -1852,7 +1812,7 @@ function BuffTrigger.Add(data)
       end
 
       local showIfInvalidUnit = trigger.unit ~= "player" and not IsGroupTrigger(trigger) and trigger.unitExists or false
-      local effectiveUseGroupCount = effectiveShowOn == "showOnActive" and IsGroupTrigger(trigger) and trigger.useGroup_count
+      local effectiveUseGroupCount = IsGroupTrigger(trigger) and trigger.useGroup_count
       local groupCountFunc
       if effectiveUseGroupCount then
         local group_countFuncStr
@@ -1868,6 +1828,24 @@ function BuffTrigger.Add(data)
         end
         groupCountFunc = WeakAuras.LoadFunction(group_countFuncStr)
       end
+
+      local matchCountFunc
+      if HasMatchCount(trigger) and trigger.match_countOperator and trigger.match_count then
+        local count = tonumber(trigger.match_count);
+        local match_countFuncStr = WeakAuras.function_strings.count:format(trigger.match_countOperator, count)
+        matchCountFunc = WeakAuras.LoadFunction(match_countFuncStr)
+      elseif IsGroupTrigger(trigger) then
+        if trigger.showClones then
+          matchCountFunc = GreaterEqualOne
+        end
+      elseif not IsGroupTrigger(trigger) then
+        if trigger.matchesShowOn == "showOnMissing" then
+          matchCountFunc = EqualZero;
+        elseif trigger.matchesShowOn == "showOnActive" or not trigger.matchesShowOn then
+          matchCountFunc = GreaterEqualOne;
+        end
+      end
+
       local effectiveIgnoreSelf = trigger.unit == "group" and trigger.ignoreSelf
       local effectiveGroupRole = trigger.unit == "group" and trigger.useGroupRole and trigger.group_role
 
@@ -1884,23 +1862,23 @@ function BuffTrigger.Add(data)
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
         combineMode = combineMode,
-        matchesShowOn = effectiveShowOn,
         scanFunc = scanFunc,
         remainingFunc = remFunc,
-        remainingCheck = effectiveShowOn == "showOnActive" and trigger.unit ~= "multi" and trigger.useRem and tonumber(trigger.rem) or 0,
+        remainingCheck = trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useRem and tonumber(trigger.rem) or 0,
         id = id,
         triggernum = triggernum,
-        compareFunc = (combineMode == "showHighest" or combineMode == "showHighestPerUnit") and highestExpirationTime or lowestExpirationTime,
+        compareFunc = trigger.combineMode == "showHighest" and highestExpirationTime or lowestExpirationTime,
         unitExists = showIfInvalidUnit,
-        fetchTooltip = trigger.matchesShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip,
+        fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
         groupRole = effectiveGroupRole,
         groupCountFunc = groupCountFunc,
+        matchCountFunc = matchCountFunc,
         useAffected = trigger.unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
         fallbackName = fallbackName,
-        fallbackIcon = fallbackIcon
+        fallbackIcon = fallbackIcon,
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation
@@ -1911,7 +1889,7 @@ end
 --- Updates old data to the new format.
 -- @param data
 function BuffTrigger.Modernize(data)
-  -- TODO: Stuff, does nothing yet!
+  -- Does nothing yet!
 end
 
 --- Returns whether the trigger can have a duration.
@@ -1942,7 +1920,7 @@ end
 -- @return
 function BuffTrigger.CanHaveClones(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
-  if trigger.matchesShowOn ~= "showOnMissing" and trigger.showClones then
+  if not IsSingleMissing(trigger) and trigger.showClones then
     return true
   end
   return false
@@ -2007,7 +1985,6 @@ end
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  local effectiveShowOn = trigger.matchesShowOn or "showOnActive"
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n"
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n"
   ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster Unit"] .. "\n"
@@ -2020,7 +1997,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     ret = ret .. "|cFFFF0000%maxUnitCount|r -" .. L["Total Units"] .. "\n"
   end
 
-  if effectiveShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip then
+  if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
     ret = ret .. "|cFFFF0000%tooltip|r -" .. L["Tooltip"] .. "\n"
     ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First Value of Tooltip Text"] .. "\n"
     ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second Value of Tooltip Text"] .. "\n"
@@ -2081,7 +2058,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     }
   end
 
-  if trigger.matchesShowOn == "showAlways" then
+  if not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showAlways" then
     result["buffed"] = {
       display = L["Aura(s) Found"],
       type = "bool",
@@ -2091,7 +2068,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     }
   end
 
-  if trigger.matchesShowOn ~= "showOnMissing" and trigger.unit ~= "multi" and trigger.fetchTooltip then
+  if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
     result["tooltip1"] = {
       display = L["Tooltip Value 1"],
       type = "number"
@@ -2228,7 +2205,6 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
 
   -- debuffType is exactly the same, no need to touch it
   -- remaining is exactly the same for now
-  --   TODO: needs to be cleared once multi conversion is possible
   -- ownOnly is exactly the same
   -- unitExists is exactly the same
 
@@ -2245,7 +2221,7 @@ function WeakAuras.ConvertBuffTrigger2(trigger)
   end
 
   if trigger.unit == "group" then
-    trigger.matchesShowOn = "showOnActive"
+    trigger.matchesShowOn = nil;
     trigger.showClones = trigger.groupclone
   end
 

@@ -1499,7 +1499,8 @@ WeakAuras.bufftrigger_progress_behavior_types = {
 WeakAuras.bufftrigger_2_progress_behavior_types = {
   showOnActive = L["Aura(s) Found"],
   showOnMissing = L["Aura(s) Missing"],
-  showAlways= L["Always"]
+  showAlways = L["Always"],
+  showOnMatches = L["Match Count"]
 }
 
 WeakAuras.bufftrigger_2_preferred_match_types =
