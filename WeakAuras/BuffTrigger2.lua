@@ -2508,6 +2508,9 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
     for id, idData in pairs(base[key][sourceGUID].auras) do
       for triggernum, triggerData in pairs(idData) do
         tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key][sourceGUID])
+        if (not next(matchDataByTrigger[id][triggernum][destGUID])) then
+          matchDataByTrigger[id][triggernum][destGUID] = nil;
+        end
         matchDataChanged[id] = matchDataChanged[id] or {}
         matchDataChanged[id][triggernum] = true
       end
@@ -2590,6 +2593,7 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
+    multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
@@ -2605,6 +2609,8 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
     UidTrack(...)
+  elseif event == "PLAYER_TARGET_CHANGED" then
+    UidTrack("target")
   elseif event == "PLAYER_FOCUS_CHANGED" then
     UidTrack("focus")
   elseif event == "NAME_PLATE_UNIT_ADDED" then
