@@ -170,12 +170,13 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       duration = duration,
       expirationTime = expirationTime,
       unitCaster = unitCaster,
+      casterName = GetUnitName(unitCaster, false) or "",
       spellId = spellId,
       unit = unit,
+      unitName = GetUnitName(unit, false),
       isStealable = isStealable,
       time = time,
       lastChanged = time,
-      unit = unit,
       filter = filter,
       index = index,
       UpdateTooltip = UpdateToolTipDataInMatchData,
@@ -214,6 +215,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
 
   if data.unitCaster ~= unitCaster then
     data.unitCaster = unitCaster
+    date.casterName = GetUnitName(unitCaster, false) or ""
     changed = true
   end
 
@@ -340,9 +342,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       duration = bestMatch.duration,
       expirationTime = bestMatch.expirationTime,
       unitCaster = bestMatch.unitCaster,
+      casterName = bestMatch.casterName,
       spellId = bestMatch.spellId,
       index = bestMatch.index,
       unit = bestMatch.unit,
+      unitName = bestMatch.unitName,
       GUID = bestMatch.unit and UnitGUID(bestMatch.unit) or bestMatch.GUID,
       matchCount = matchCount,
       unitCount = unitCount,
@@ -362,6 +366,16 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
     local state = triggerStates[cloneId]
     local changed = false
     state.time = time
+
+    if (state.unit ~= bestMatch.unit) then
+      state.unit = bestMatch.unit;
+      changed = true;
+    end
+
+    if (state.unitName ~= bestMatch.unitName) then
+      state.unitName = bestMatch.unitName;
+      changed = true;
+    end
 
     if state.show ~= true then
       state.show = true
@@ -401,6 +415,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.unitCaster ~= bestMatch.unitCaster then
       state.unitCaster = bestMatch.unitCaster
+      state.casterName = bestMatch.casterName
       changed = true
     end
 
@@ -491,7 +506,9 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
       active = false,
       time = time,
       affected = affected,
-      unaffected = unaffected
+      unaffected = unaffected,
+      unitName = "",
+      destName = ""
     }
     return true
   else
@@ -535,8 +552,23 @@ local function UpdateStateWithNoMatch(time, triggerStates, cloneId, matchCount, 
       changed = true
     end
 
+    if state.unit then
+      state.unit = nil
+      changed = true
+    end
+
+    if state.unitName ~= "" then
+      state.unitName = ""
+      changed = true
+    end
+
     if state.unitCaster then
       state.unitCaster = nil
+      changed = true
+    end
+
+    if state.casterName ~= "" then
+      state.casterName = ""
       changed = true
     end
 
@@ -1978,7 +2010,9 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local effectiveShowOn = trigger.matchesShowOn or "showOnActive"
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n"
   ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n"
+  ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster Unit"] .. "\n"
+  ret = ret .. "|cFFFF0000%casterName|r -" .. L["Caster Name"] .. "\n"
+  ret = ret .. "|cFFFF0000%unitName|r -" .. L["Unit Name"] .. "\n"
   ret = ret .. "|cFFFF0000%matchCount|r -" .. L["Match Count"] .. "\n"
   ret = ret .. "|cFFFF0000%unitCount|r -" .. L["Units Affected"] .. "\n"
 
@@ -2295,6 +2329,8 @@ local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, de
       spellId = spellId,
       GUID = destGUID,
       sourceGUID = sourceGUID,
+      unitName = destName,
+      casterName = sourceName,
       auras = {}
     }
   else
@@ -2345,9 +2381,8 @@ local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, de
       updated = true
     end
 
-    local unitCaster = sourceName and UnitName(sourceName)
-    if match.unitCaster ~= unitCaster then
-      match.unitCaster = unitCaster
+    if match.casterName ~= sourceName then
+      match.casterName = sourceName
       updated = true
     end
   end
@@ -2355,7 +2390,7 @@ local function UpdateMatchDataMulti(base, key, event, sourceGUID, sourceName, de
   return updated
 end
 
-local function AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
   local changed = false
   if matchData.name ~= name then
     matchData.name = name
@@ -2389,7 +2424,14 @@ local function AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffCl
 
   if matchData.unitCaster ~= unitCaster then
     matchData.unitCaster = unitCaster
+    matchData.casterName = GetUnitName(unitCaster, false);
     changed = true
+  end
+
+  if (matchData.unit ~= unit) then
+    matchData.unit = unit;
+    matchData.unitName = GetUnitName(unit, false);
+    changed = true;
   end
 
   if matchData.spellId ~= spellId then
@@ -2408,7 +2450,7 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
     end
     local auraSourceGuid = unitCaster and UnitGUID(unitCaster)
     if (name == nameKey or spellId == spellKey) and sourceGUID == auraSourceGuid then
-      local changed = AugmentMatchDataMultiWith(matchData, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
       return changed
     end
     index = index + 1
@@ -2502,7 +2544,7 @@ local function CheckAurasMulti(base, unit, filter)
     end
     local auraCasterGUID = unitCaster and UnitGUID(unitCaster)
     if base[name] and base[name][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
       if changed then
         for id, idData in pairs(base[name][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
@@ -2513,7 +2555,7 @@ local function CheckAurasMulti(base, unit, filter)
       end
     end
     if base[spellId] and base[spellId][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
       if changed then
         for id, idData in pairs(base[spellId][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
