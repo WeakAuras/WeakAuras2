@@ -3,7 +3,7 @@ local L = WeakAuras.L
 local operator_types = WeakAuras.operator_types
 local debuff_types = WeakAuras.debuff_types
 
-local function getAuraMatchesLabel(name)
+local function GetAuraMatchesLabel(name)
   local iconCache = WeakAuras.spellCache.Get()
   local ids = iconCache[name]
   if ids then
@@ -18,7 +18,7 @@ local function getAuraMatchesLabel(name)
   end
 end
 
-local function getAuraMatchesList(name)
+local function GetAuraMatchesList(name)
   local iconCache = WeakAuras.spellCache.Get()
   local ids = iconCache[name]
   if ids then
@@ -39,7 +39,7 @@ local function getAuraMatchesList(name)
   end
 end
 
-local function shiftTable(tbl, pos)
+local function ShiftTable(tbl, pos)
   for i = pos, 9, 1 do
     tbl[i] = tbl[i + 1]
   end
@@ -59,14 +59,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   end
 
   local function IsSingleMissing(trigger)
-    return not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showOnMissing";
+    return not IsGroupTrigger(trigger) and trigger.matchShowOn == "showOnMissing";
   end
 
   local function HasMatchCount(trigger)
     if IsGroupTrigger(trigger) then
-      return trigger.useMatch_count
+      return trigger.useMatchCount
     else
-      return trigger.matchesShowOn == "showOnMatches"
+      return trigger.matchShowOn == "showOnMatches"
     end
   end
 
@@ -120,7 +120,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       values = debuff_types,
       hidden = function() return not trigger.type == "aura2" end
     },
-    use_debuffClass = {
+    useDebuffClass = {
       type = "toggle",
       name = L["Debuff Type"],
       order = 11.2,
@@ -134,7 +134,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
           and not IsSingleMissing(trigger)
           and trigger.debuffType == "HARMFUL"
-          and trigger.use_debuffClass)
+          and trigger.useDebuffClass)
       end,
       values = WeakAuras.debuff_class_types
     },
@@ -147,7 +147,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
           and not IsSingleMissing(trigger)
           and trigger.debuffType == "HARMFUL"
-          and not trigger.use_debuffClass)
+          and not trigger.useDebuffClass)
       end
     },
     useName = {
@@ -275,25 +275,25 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "double",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
     },
-    use_tooltip = {
+    useTooltip = {
       type = "toggle",
       name = L["Tooltip Pattern Mach"],
       order = 62.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.fetchTooltip) end
     },
-    use_tooltipSpace = {
+    useTooltipSpace = {
       type = "description",
       name = "",
       order = 62.2,
       width = "normal",
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.use_tooltip and trigger.fetchTooltip) end
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.useTooltip and trigger.fetchTooltip) end
     },
-    tooltip_operator = {
+    tooltipOperator = {
       type = "select",
       name = L["Operator"],
       order = 62.3,
-      disabled = function() return not trigger.use_tooltip end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end,
+      disabled = function() return not trigger.useTooltip end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTooltip and trigger.fetchTooltip) end,
       values = WeakAuras.string_operator_types
     },
     tooltip = {
@@ -301,10 +301,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Tooltip Content"],
       width = "double",
       order = 62.4,
-      disabled = function() return not trigger.use_tooltip end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end
+      disabled = function() return not trigger.useTooltip end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTooltip and trigger.fetchTooltip) end
     },
-    use_tooltipValue = {
+    useTooltipValue = {
       type = "toggle",
       name = L["Tooltip Value"],
       order = 63.1,
@@ -314,21 +314,21 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "select",
       name = L["Tooltip Value #"],
       order = 63.2,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
-      values = WeakAuras.tooltip_count
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTooltipValue and trigger.fetchTooltip) end,
+      values = WeakAuras.tooltipCount
     },
-    use_tooltipValueSpace = {
+    useTooltipValueSpace = {
       type = "description",
       name = "",
       order = 63.2,
       width = "normal",
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.use_tooltipValue and trigger.fetchTooltip) end
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.useTooltipValue and trigger.fetchTooltip) end
     },
-    tooltipValue_operator = {
+    tooltipValueOperator = {
       type = "select",
       name = L["Operator"],
       order = 63.3,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTooltipValue and trigger.fetchTooltip) end,
       values = WeakAuras.operator_types
     },
     tooltipValue = {
@@ -337,12 +337,12 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "normal",
       validate = ValidateNumeric,
       order = 63.4,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTooltipValue and trigger.fetchTooltip) end
     },
-    use_stealable = {
+    useStealable = {
       type = "toggle",
       name = function(input)
-        local value = trigger.use_stealable
+        local value = trigger.useStealable
         if value == nil then return L["Is Stealable"]
         elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Is Stealable"]
         else return "|cFF00FF00"..L["Is Stealable"] end
@@ -351,18 +351,18 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 64,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end,
       get = function()
-        local value = trigger.use_stealable
+        local value = trigger.useStealable
         if value == nil then return false
         elseif value == false then return "false"
         else return "true" end
       end,
       set = function(info, v)
         if v then
-          trigger.use_stealable = true
+          trigger.useStealable = true
         else
-          local value = trigger.use_stealable
-          if value == false then trigger.use_stealable = nil
-          else trigger.use_stealable = false end
+          local value = trigger.useStealable
+          if value == false then trigger.useStealable = nil
+          else trigger.useStealable = false end
         end
         WeakAuras.Add(data)
         WeakAuras.SetIconNames(data)
@@ -370,39 +370,39 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     useAffected = {
       type = "toggle",
-      name = L["Fetch Affected/Unaffected Names"],
+      name = L["Fetch Unit Names"],
       width = "double",
       order = 65,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group") end
     },
-    ownOnly = {
+    useOwnOnly = {
       type = "toggle",
       width = "double",
       name = function()
-        local value = trigger.ownOnly
+        local value = trigger.useOwnOnly
         if value == nil then return L["Own Only"]
         elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Own Only"]
         else return "|cFF00FF00"..L["Own Only"] end
       end,
       desc = function()
-        local value = trigger.ownOnly
+        local value = trigger.useOwnOnly
         if value == nil then return L["Only match auras cast by the player"]
         elseif value == false then return L["Only match auras cast by people other than the player"]
         else return L["Only match auras cast by the player"] end
       end,
       get = function()
-        local value = trigger.ownOnly
+        local value = trigger.useOwnOnly
         if value == nil then return false
         elseif value == false then return "false"
         else return "true" end
       end,
       set = function(info, v)
         if v then
-          trigger.ownOnly = true
+          trigger.useOwnOnly = true
         else
-          local value = trigger.ownOnly
-          if value == false then trigger.ownOnly = nil
-          else trigger.ownOnly = false end
+          local value = trigger.useOwnOnly
+          if value == false then trigger.useOwnOnly = nil
+          else trigger.useOwnOnly = false end
         end
         WeakAuras.Add(data)
       end,
@@ -415,50 +415,50 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 67.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group") end
     },
-    group_role = {
+    groupRole = {
       type = "select",
       name = L["Group Role"],
       values = WeakAuras.role_types,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group" and trigger.useGroupRole) end,
       order = 67.2
     },
-    group_roleSpace = {
+    groupRoleSpace = {
       type = "description",
       name = "",
       order = 67.2,
       width = "normal",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"and not trigger.useGroupRole) end
     },
-    ignoreSelf = {
+    useIgnoreSelf = {
       type = "toggle",
       name = L["Ignore Self"],
       order = 67.3,
       width = "double",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group") end
     },
-    useGroup_count = {
+    useGroupCount = {
       type = "toggle",
       name = L["Group Member Count"],
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger)) end,
       order = 68
     },
-    useGroup_countSpace = {
+    useGroupCountSpace = {
       type = "description",
       name = "",
       order = 68.1,
       width = "normal",
-      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and not trigger.useGroup_count) end
+      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and not trigger.useGroupCount) end
     },
-    group_countOperator = {
+    groupCountOperator = {
       type = "select",
       name = L["Operator"],
       order = 68.2,
       width = "half",
       values = operator_types,
-      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroup_count) end,
-      get = function() return trigger.group_countOperator end
+      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroupCount) end,
+      get = function() return trigger.groupCountOperator end
     },
-    group_count = {
+    groupCount = {
       type = "input",
       name = L["Count"],
       desc = function()
@@ -467,9 +467,9 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       end,
       order = 68.3,
       width = "half",
-      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroup_count) end,
+      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroupCount) end,
     },
-    use_matchesShowOn = {
+    useMatchShowOn = {
       type = "toggle",
       name = L["Show On"],
       order = 71,
@@ -477,23 +477,23 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       get = function() return true end,
       disabled = true
     },
-    matchesShowOn = {
+    matchShowOn = {
       type = "select",
       name = L["Show On"],
       values = WeakAuras.bufftrigger_2_progress_behavior_types,
       order = 71.1,
       hidden = function() return not (trigger.type == "aura2" and not IsGroupTrigger(trigger)) end,
       get = function()
-        return trigger.matchesShowOn or "showOnActive"
+        return trigger.matchShowOn or "showOnActive"
       end
     },
-    useMatch_count = {
+    useMatchCount = {
       type = "toggle",
       name = L["Match Count"],
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger)) end,
       order = 71.2
     },
-    useMatch_countSpace = {
+    useMatchCountSpace = {
       type = "description",
       name = "",
       order = 71.3,
@@ -503,13 +503,13 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           return true;
         end
         if IsGroupTrigger(trigger) then
-          return trigger.useMatch_count
+          return trigger.useMatchCount
         else
-          return trigger.matchesShowOn == "matchesShowOn"
+          return trigger.matchShowOn == "matchShowOn"
         end
       end
     },
-    match_countOperator = {
+    matchCountOperator = {
       type = "select",
       name = L["Operator"],
       order = 71.4,
@@ -517,7 +517,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       values = operator_types,
       hidden = function() return not (trigger.type == "aura2" and HasMatchCount(trigger)) end,
     },
-    match_count = {
+    matchCount = {
       type = "input",
       name = L["Count"],
       order = 71.5,
@@ -550,7 +550,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi")
       end
     },
-    use_combineMode = {
+    useCombineMode = {
       type = "toggle",
       name = L["Preferred Match"],
       order = 72.3,
@@ -601,9 +601,9 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = function()
         local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
         if spellId then
-          return getAuraMatchesLabel(GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+          return GetAuraMatchesLabel(GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
         else
-          return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i])
+          return GetAuraMatchesLabel(trigger.auranames and trigger.auranames[i])
         end
       end,
       desc = function()
@@ -611,14 +611,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         if spellId then
           local name = GetSpellInfo(spellId)
           if name then
-            local auraDesc = getAuraMatchesList(name)
+            local auraDesc = GetAuraMatchesList(name)
             if auraDesc then
               auraDesc = name .. "\n" .. auraDesc
             end
             return auraDesc
           end
         else
-          return getAuraMatchesList(trigger.auranames and trigger.auranames[i])
+          return GetAuraMatchesList(trigger.auranames and trigger.auranames[i])
         end
       end,
       width = 0.2,
@@ -646,7 +646,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       set = function(info, v)
         trigger.auranames = trigger.auranames or {}
         if v == "" then
-          shiftTable(trigger.auranames, i)
+          ShiftTable(trigger.auranames, i)
         else
           local spellId = tonumber(v)
           if spellId then
@@ -706,7 +706,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       set = function(info, v)
         trigger.auraspellids = trigger.auraspellids or {}
         if v == "" then
-          shiftTable(trigger.auraspellids, i)
+          ShiftTable(trigger.auraspellids, i)
         else
           trigger.auraspellids[i] = v
         end

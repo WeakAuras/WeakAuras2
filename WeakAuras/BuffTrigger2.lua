@@ -160,7 +160,7 @@ local function MatchesTriggerInfoMulti(triggerInfo, sourceGUID)
   end
 end
 
-local function UpdateToolTipDataInMatchData(matchData, time)
+local function UpdateTooltipDataInMatchData(matchData, time)
   if matchData.tooltipUpdated == time then
     return
   end
@@ -197,7 +197,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       lastChanged = time,
       filter = filter,
       index = index,
-      UpdateTooltip = UpdateToolTipDataInMatchData,
+      UpdateTooltip = UpdateTooltipDataInMatchData,
       auras = {}
     }
     return true
@@ -272,7 +272,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   return changed or data.lastChanged == time or resetMatchDataByTrigger
 end
 
-local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
+local function CalculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
   if auraDataRemaing > 0 and auraDataRemaing >= triggerInfoRemaing then
     if not nextCheck then
       return auraDataExpirationTime - triggerInfoRemaing
@@ -301,7 +301,7 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
       if triggerInfo.remainingFunc and auraData.expirationTime then
         local remaining = auraData.expirationTime - time
         remCheck = triggerInfo.remainingFunc(remaining)
-        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+        nextCheck = CalculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
       end
 
       if remCheck then
@@ -335,7 +335,7 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
     if triggerInfo.remainingFunc and auraData.expirationTime then
       local remaining = auraData.expirationTime - time
       remCheck = triggerInfo.remainingFunc(remaining)
-      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+      nextCheck = CalculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
     end
 
     if remCheck then
@@ -644,7 +644,7 @@ local function RemoveState(triggerStates, cloneId)
   end
 end
 
-local function allUnits(unit)
+local function GetAllUnits(unit)
   if unit == "group" then
     if IsInRaid() then
       local i = 1
@@ -730,7 +730,7 @@ end
 local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
   local affected = ""
   local unaffected = ""
-  for unit in allUnits(triggerInfo.unit) do
+  for unit in GetAllUnits(triggerInfo.unit) do
     if matchedUnits[unit] then
       affected = affected .. (GetUnitName(unit, false) or unit) .. ", "
     else
@@ -745,7 +745,7 @@ end
 
 local recheckTriggerInfo
 
-local function SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+local function SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
   if triggerInfo.groupCountFunc and not triggerInfo.groupCountFunc(unitCount, maxUnitCount) then
     return false
   end
@@ -776,7 +776,7 @@ local function UpdateTriggerState(time, id, triggernum)
     if triggerInfo.unitExists and not existingUnits[triggerInfo.unit] then
       useMatch = true
     else
-      useMatch = SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+      useMatch = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
 
     if useMatch then
@@ -802,7 +802,7 @@ local function UpdateTriggerState(time, id, triggernum)
           if triggerInfo.remainingFunc and auraData.expirationTime then
             local remaining = auraData.expirationTime - time
             remCheck = triggerInfo.remainingFunc(remaining)
-            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+            nextCheck = CalculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
           end
 
           if remCheck then
@@ -822,7 +822,7 @@ local function UpdateTriggerState(time, id, triggernum)
     if triggerInfo.unitExists and not existingUnits[triggerInfo.unit] then
       useMatches = true
     else
-      useMatches = SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+      useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
 
     if useMatches then
@@ -868,7 +868,7 @@ local function UpdateTriggerState(time, id, triggernum)
         matches[unit] = bestMatch
       end
 
-      local useMatches = SatifiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+      local useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
 
       if useMatches then
         local affected, unaffected
@@ -1503,7 +1503,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     -- We don't check against existing data, as it would be rather random what it would pick up
     -- since that depends on what other auras are loaded at that time
   elseif triggerInfo.groupTrigger then
-    for unit in allUnits(triggerInfo.unit) do
+    for unit in GetAllUnits(triggerInfo.unit) do
       if matchData[unit] and matchData[unit][filter] then
         for index, match in pairs(matchData[unit][filter]) do
           if generalFunc
@@ -2273,7 +2273,7 @@ local function GetUnit(guid)
   end
 end
 
-local function UidTrack(unit)
+local function TrackUid(unit)
   local GUID = UnitGUID(unit)
   if GUID then
     SetUID(GUID, unit)
@@ -2623,13 +2623,13 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
   if event == "COMBAT_LOG_EVENT_UNFILTERED" then
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
-    UidTrack(...)
+    TrackUid(...)
   elseif event == "PLAYER_TARGET_CHANGED" then
-    UidTrack("target")
+    TrackUid("target")
   elseif event == "PLAYER_FOCUS_CHANGED" then
-    UidTrack("focus")
+    TrackUid("focus")
   elseif event == "NAME_PLATE_UNIT_ADDED" then
-    UidTrack(...)
+    TrackUid(...)
   elseif event == "NAME_PLATE_UNIT_REMOVED" then
     local unit = ...
     ReleaseUID(unit)
