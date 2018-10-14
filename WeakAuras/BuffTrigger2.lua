@@ -160,7 +160,7 @@ local function MatchesTriggerInfoMulti(triggerInfo, sourceGUID)
   end
 end
 
-local function UpdateTooltipDataInMatchData(matchData, time)
+local function UpdateToolTipDataInMatchData(matchData, time)
   if matchData.tooltipUpdated == time then
     return
   end
@@ -197,7 +197,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       lastChanged = time,
       filter = filter,
       index = index,
-      UpdateTooltip = UpdateTooltipDataInMatchData,
+      UpdateTooltip = UpdateToolTipDataInMatchData,
       auras = {}
     }
     return true
@@ -272,12 +272,12 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   return changed or data.lastChanged == time or resetMatchDataByTrigger
 end
 
-local function CalculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime, nextCheck)
-  if auraDataRemaining > 0 and auraDataRemaining >= triggerInfoRemaining then
+local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
+  if auraDataRemaing > 0 and auraDataRemaing >= triggerInfoRemaing then
     if not nextCheck then
-      return auraDataExpirationTime - triggerInfoRemaining
+      return auraDataExpirationTime - triggerInfoRemaing
     else
-      return min(auraDataExpirationTime - triggerInfoRemaining, nextCheck)
+      return min(auraDataExpirationTime - triggerInfoRemaing, nextCheck)
     end
   end
   return nextCheck
@@ -301,7 +301,7 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
       if triggerInfo.remainingFunc and auraData.expirationTime then
         local remaining = auraData.expirationTime - time
         remCheck = triggerInfo.remainingFunc(remaining)
-        nextCheck = CalculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
       end
 
       if remCheck then
@@ -335,7 +335,7 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
     if triggerInfo.remainingFunc and auraData.expirationTime then
       local remaining = auraData.expirationTime - time
       remCheck = triggerInfo.remainingFunc(remaining)
-      nextCheck = CalculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
     end
 
     if remCheck then
@@ -802,7 +802,7 @@ local function UpdateTriggerState(time, id, triggernum)
           if triggerInfo.remainingFunc and auraData.expirationTime then
             local remaining = auraData.expirationTime - time
             remCheck = triggerInfo.remainingFunc(remaining)
-            nextCheck = CalculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
           end
 
           if remCheck then
