@@ -1405,7 +1405,6 @@ function BuffTrigger.UnloadAll()
   wipe(scanFuncSpellIdMulti)
   wipe(unitExistScanFunc)
   wipe(groupCountScanFunc)
-  wipe(matchData)
   wipe(matchDataByTrigger)
   wipe(matchDataMulti)
 end
@@ -1574,7 +1573,7 @@ function BuffTrigger.UnloadDisplays(toUnload)
 end
 
 function BuffTrigger.FinishLoadUnload()
-  BuffTrigger.ScanAll()
+
 end
 
 --- Removes all data for an aura id
