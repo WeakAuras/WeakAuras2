@@ -272,12 +272,12 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   return changed or data.lastChanged == time or resetMatchDataByTrigger
 end
 
-local function CalculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
-  if auraDataRemaing > 0 and auraDataRemaing >= triggerInfoRemaing then
+local function CalculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime, nextCheck)
+  if auraDataRemaining > 0 and auraDataRemaining >= triggerInfoRemaining then
     if not nextCheck then
-      return auraDataExpirationTime - triggerInfoRemaing
+      return auraDataExpirationTime - triggerInfoRemaining
     else
-      return min(auraDataExpirationTime - triggerInfoRemaing, nextCheck)
+      return min(auraDataExpirationTime - triggerInfoRemaining, nextCheck)
     end
   end
   return nextCheck
