@@ -191,14 +191,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "normal",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not trigger.useNamePattern) end
     },
-    namePattern_operator = {
+    namePatternOperator = {
       type = "select",
       name = L["Operator"],
       order = 25.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end,
       values = WeakAuras.string_operator_types
     },
-    namePattern_name = {
+    namePatternName = {
       type = "input",
       name = L["Aura Name Pattern"],
       width = "double",
