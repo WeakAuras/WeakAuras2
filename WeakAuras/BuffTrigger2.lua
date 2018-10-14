@@ -2333,7 +2333,7 @@ local function CleanUpMulti(guid)
     local timeUntilNext = nextCheck - GetTime();
     if (timeUntilNext > 0) then
      cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, timeUntilNext, guid);
-     cleanupTimerMulti[guid].nextTime = time;
+     cleanupTimerMulti[guid].nextTime = nextCheck;
    end
   end
 end
