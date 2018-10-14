@@ -3426,8 +3426,8 @@ WeakAuras.event_prototypes = {
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
-        local tier = ceil(index / 3)
-        local column = (index - 1) % 3 + 1
+        local tier = index and ceil(index / 3)
+        local column = index and ((index - 1) % 3 + 1)
 
         local ret = [[
           local tier = %s;
@@ -3440,7 +3440,7 @@ WeakAuras.event_prototypes = {
           active = not (active);
           ]]
         end
-        return ret:format(tier, column)
+        return ret:format(tier or 0, column or 0)
       elseif (trigger.use_talent == false) then
         if (trigger.talent.multi) then
           local ret = [[
