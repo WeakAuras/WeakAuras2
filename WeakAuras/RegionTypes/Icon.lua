@@ -571,6 +571,11 @@ local function modify(parent, region, data)
 
   function region:SetInverse(inverse)
     cooldown:SetReverse(not inverse);
+    if (cooldown.expirationTime and cooldown.duration) then
+      -- WORKAROUND SetReverse not applying until next frame
+      cooldown:SetCooldown(0, 0);
+      cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration);
+    end
   end
   
   function region:SetZoom(zoom)
@@ -610,6 +615,8 @@ local function modify(parent, region, data)
     function region:SetTime(duration, expirationTime)
       if (duration > 0) then
         cooldown:Show();
+        cooldown.expirationTime = expirationTime;
+        cooldown.duration = duration;
         cooldown:SetCooldown(expirationTime - duration, duration);
       else
         cooldown:Hide();
