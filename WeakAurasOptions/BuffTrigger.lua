@@ -809,6 +809,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Count"],
       desc = function()
+        -- TODO fix this
         local groupType = unit_types[trigger.unit or "group"] or "|cFFFF0000error|r";
         return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
       end,

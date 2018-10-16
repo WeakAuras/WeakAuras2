@@ -463,7 +463,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Count"],
       desc = function()
         local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
-        return L["Group Aura Count Description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
+        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
       end,
       order = 68.3,
       width = "half",
