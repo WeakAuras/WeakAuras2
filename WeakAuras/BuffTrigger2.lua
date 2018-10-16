@@ -238,7 +238,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   end
 
   if data.spellId ~= spellId then
-    data.spellId = name
+    data.spellId = spellId
     changed = true
   end
 
