@@ -640,9 +640,13 @@ local function modify(parent, region, data)
 
   function region:SetGlow(showGlow)
     region.glow = showGlow
+    local color
+    if region.useGlowColor then
+      color = region.glowColor
+    end
     if MSQ then
       if (showGlow) then
-        region.glowStart(region.button, region.glowColor);
+        region.glowStart(region.button, color);
       else
         region.glowStop(region.button);
       end
@@ -651,10 +655,6 @@ local function modify(parent, region, data)
         region.__WAGlowFrame = CreateFrame("Frame", nil, region);
         region.__WAGlowFrame:SetAllPoints();
         region.__WAGlowFrame:SetSize(region.width, region.height);
-      end
-      local color
-      if region.useGlowColor then
-        color = region.glowColor
       end
       region.glowStart(region.__WAGlowFrame, color);
     else
