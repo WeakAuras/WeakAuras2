@@ -945,8 +945,27 @@ local function PrepareMatchData(unit, filter)
   end
 end
 
+local function CleanUpOutdatedMatchData(time, unit, filter)
+  -- Figure out if any matchData is outdated
+  if matchData[unit] and matchData[unit][filter] then
+    for index, data in pairs(matchData[unit][filter]) do
+      if data.time < time then
+         matchData[unit][filter][index] = nil
+         for id, triggerData in pairs(data.auras) do
+           for triggernum in pairs(triggerData) do
+             matchDataByTrigger[id][triggernum][unit][index] = nil
+             matchDataChanged[id] = matchDataChanged[id] or {}
+             matchDataChanged[id][triggernum] = true
+           end
+         end
+      end
+    end
+  end
+end
+
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral, resetMatchDataByTrigger, invalidUnit)
-  if not scanFuncName and (not scanFuncSpellId) and (not scanFuncGeneral) then
+  if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral then
+    CleanUpOutdatedMatchData(time, unit, filter)
     return
   end
 
@@ -1018,21 +1037,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     index = index + 1
   end
 
-  -- Figure out if any matchData is outdated
-  if matchData[unit] and matchData[unit][filter] then
-    for index, data in pairs(matchData[unit][filter]) do
-      if data.time < time then
-         matchData[unit][filter][index] = nil
-         for id, triggerData in pairs(data.auras) do
-           for triggernum in pairs(triggerData) do
-             matchDataByTrigger[id][triggernum][unit][index] = nil
-             matchDataChanged[id] = matchDataChanged[id] or {}
-             matchDataChanged[id][triggernum] = true
-           end
-         end
-      end
-    end
-  end
+  CleanUpOutdatedMatchData(time, unit, filter)
 end
 
 local function UpdateStates(matchDataChanged, time)
