@@ -715,9 +715,9 @@ local function MaxUnitCount(triggerInfo)
   if triggerInfo.unit == "group" then
     local count
     if triggerInfo.groupRole then
-      count = groupCount[triggerInfo.groupRole] or 1
+      count = groupCount[triggerInfo.groupRole] or 0
     else
-      count = groupCount["group"] or 0
+      count = groupCount["group"] or 1
     end
     if triggerInfo.ignoreSelf and (not triggerInfo.groupRole or triggerInfo.groupRole == playerRole) then
       count = count - 1
