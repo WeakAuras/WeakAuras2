@@ -1526,7 +1526,7 @@ local function LoadAura(id, triggernum, triggerInfo)
       local isSelf = UnitIsUnit("player", unit)
       local role = UnitGroupRolesAssigned(unit)
       if TriggerInfoApplies(triggerInfo, isSelf, role) then
-        PrepareMatchData(triggerInfo.unit, filter)
+        PrepareMatchData("player", filter)
         if matchData[unit] and matchData[unit][filter] then
           for index, match in pairs(matchData[unit][filter]) do
             if (not triggerInfo.auranames and not triggerInfo.auraspellids)
