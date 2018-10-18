@@ -8,6 +8,38 @@ local function createOptions(id, data)
       order = 5,
       values = WeakAuras.grow_types
     },
+    gridType = {
+      type = "select",
+      name = L["Grid Orientation"],
+      order = 6,
+      values = WeakAuras.grid_grow_types,
+      hidden = function() return data.grow ~= "GRID" end,
+    },
+    columnLimit = {
+      type = "range",
+      name = L["Column Size"],
+      order = 7,
+      min = 1,
+      softMax = 10,
+      step = 1,
+      hidden = function() return data.grow ~= "GRID" end,
+    },
+    useLimit = {
+      type = "toggle",
+      name = L["Max Visible"],
+      order = 8,
+      hidden = function() return data.grow == "CUSTOM" end,
+    },
+    limit = {
+      type = "range",
+      name = L["Max Visible"],
+      order = 9,
+      min = 0,
+      softmax = 30,
+      step = 1,
+      hidden = function() return data.grow == "CUSTOM" end,
+      disabled = function() return not data.useLimit end,
+    },
     align = {
       type = "select",
       name = L["Align"],

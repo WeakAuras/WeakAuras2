@@ -1128,6 +1128,18 @@ WeakAuras.grow_types = {
   ["CIRCLE"] = L["Counter Clockwise"],
   ["COUNTERCIRCLE"] =L["Clockwise"],
   ["CUSTOM"] = L["Custom"],
+  ["GRID"] = L["Grid"],
+}
+
+WeakAuras.grid_grow_types = {
+  ["RIGHTUP"] = L["Right, then Up"],
+  ["RIGHTDOWN"] = L["Right, then Down"],
+  ["LEFTUP"] = L["Left, then Up"],
+  ["LEFTDOWN"] = L["Left, then Down"],
+  ["UPRIGHT"] = L["Up, then Right"],
+  ["UPLEFT"] = L["Up, then Left"],
+  ["DOWNRIGHT"] = L["Down, then Right"],
+  ["DOWNLEFT"] = L["Down, then Left"],
 }
 
 WeakAuras.text_rotate_types = {
