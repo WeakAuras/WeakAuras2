@@ -602,7 +602,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = function()
         local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
         if spellId then
-          return getAuraMatchesLabel(GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+          return getAuraMatchesLabel(GetSpellInfo(spellId))
         else
           return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i])
         end
