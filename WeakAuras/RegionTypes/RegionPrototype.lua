@@ -474,7 +474,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if (cloneId) then
         WeakAuras.ReleaseClone(id, cloneId, data.regionType);
       end
-      parent:ControlChildren();
+      parent:DeactivateRegion(id, cloneId);
     end
   else
     hideRegion = function()
@@ -499,7 +499,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
         hideRegion();
       end
-      parent:ControlChildren();
 
       if (region.SoundRepeatStop) then
         region:SoundRepeatStop();
@@ -514,14 +513,13 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
         region:PreShow();
       end
 
-      parent:EnsureTrays();
+      parent:ActivateRegion(id, cloneId)
       region.justCreated = nil;
       region:SetFrameLevel(WeakAuras.GetFrameLevelFor(id));
       WeakAuras.PerformActions(data, "start", region);
       if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
       end
-      parent:ControlChildren();
     end
   elseif not(data.controlledChildren) then
     function region:Collapse()
