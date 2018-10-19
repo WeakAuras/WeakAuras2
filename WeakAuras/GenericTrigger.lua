@@ -3160,4 +3160,20 @@ function GenericTrigger.GetName(triggerType)
   end
 end
 
+function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
+  local trigger = data.triggers[triggernum].trigger
+  if(trigger.type == "event" or trigger.type == "status") then
+    if(trigger.type == "event") then
+      tinsert(namestable, {L["Trigger:"], (WeakAuras.event_types[trigger.event] or L["Undefined"])});
+    else
+      tinsert(namestable, {L["Trigger:"], (WeakAuras.status_types[trigger.event] or L["Undefined"])});
+    end
+    if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
+      tinsert(namestable, {L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
+    end
+  else
+    tinsert(namestable, {L["Trigger:"], L["Custom"]});
+  end
+end
+
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

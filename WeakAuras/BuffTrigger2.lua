@@ -2694,4 +2694,49 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
   WeakAuras.StopProfileSystem("bufftrigger2 - multi")
 end
 
+function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
+  local trigger = data.triggers[triggernum].trigger
+  if (trigger.auranames) then
+    for index, name in pairs(trigger.auranames) do
+      local left = " ";
+      if(index == 1) then
+        if(#trigger.auranames > 0) then
+          if(#trigger.auranames > 1) then
+            left = L["Auras:"];
+          else
+            left = L["Aura:"];
+          end
+        end
+      end
+      local icon;
+      local spellId = tonumber(name);
+      if spellId then
+        icon = select(3, GetSpellInfo(spellId));
+      else
+        icon = WeakAuras.spellCache.GetIcon(name)
+      end
+      icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark";
+      tinsert(namestable, {left, name, icon});
+    end
+  end
+
+  if (trigger.auraspellids) then
+    for index, spellId in pairs(trigger.auraspellids) do
+      local left = " ";
+      if(index == 1) then
+        if(#trigger.auraspellids > 0) then
+          if(#trigger.auraspellids > 1) then
+            left = L["Spell IDs:"];
+          else
+            left = L["Spell ID:"];
+          end
+        end
+      end
+
+      local icon = select(3, GetSpellInfo(spellId)) or "Interface\\Icons\\INV_Misc_QuestionMark";
+      tinsert(namestable, {left, spellId, icon});
+    end
+  end
+end
+
 WeakAuras.RegisterTriggerSystem({"aura2"}, BuffTrigger)

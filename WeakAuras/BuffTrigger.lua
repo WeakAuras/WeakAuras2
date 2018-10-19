@@ -1894,4 +1894,26 @@ function BuffTrigger.GetName(triggerType)
   end
 end
 
+function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
+  local trigger = data.triggers[triggernum].trigger;
+  if(trigger.fullscan) then
+    tinsert(namestable, {L["Aura:"], L["Full Scan"]});
+  else
+    for index, name in pairs(trigger.names) do
+      local left = " ";
+      if(index == 1) then
+        if(#trigger.names > 0) then
+          if(#trigger.names > 1) then
+            left = L["Auras:"];
+          else
+            left = L["Aura:"];
+          end
+        end
+      end
+      local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+      tinsert(namestable, {left, name, icon});
+    end
+  end
+end
+
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);

@@ -3554,9 +3554,9 @@ end
 
 local function wrapTriggerSystemFunction(functionName, mode)
   local func;
-  func = function(data, triggernum)
+  func = function(data, triggernum, ...)
     if (not triggernum) then
-      return func(data, data.triggers.activeTriggerMode or -1);
+      return func(data, data.triggers.activeTriggerMode or -1, ...);
     elseif (triggernum < 0) then
       local result;
       if (mode == "or") then
@@ -3578,6 +3578,10 @@ local function wrapTriggerSystemFunction(functionName, mode)
               result[k] = v;
             end
           end
+        end
+      elseif (mode == "call") then
+        for i = 1, #data.triggers do
+          func(data, i, ...);
         end
       elseif (mode == "firstValue") then
         result = nil;
@@ -3602,7 +3606,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
       if (not triggerSystem) then
         return false
       end
-      return triggerSystem[functionName](data, triggernum);
+      return triggerSystem[functionName](data, triggernum, ...);
     end
   end
   return func;
@@ -3614,6 +3618,8 @@ WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 WeakAuras.GetAdditionalProperties = wrapTriggerSystemFunction("GetAdditionalProperties", "firstValue");
+WeakAuras.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
+
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
 
 function WeakAuras.GetOverlayInfo(data, triggernum)
