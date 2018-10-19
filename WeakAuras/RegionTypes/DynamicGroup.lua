@@ -771,89 +771,88 @@ local function modify(parent, region, data)
     local previous = self.activePositions or {}
     self:PositionActiveRegions()
     self:DoResize()
-    if data.animate then
-      local previousPreviousX, previousPreviousY;
-      for index, regionData in pairs(region.activeRegions) do
-        local childId = regionData.id;
-        local childData = regionData.data;
-        local childRegion = regionData.region;
-        if(childData and childRegion) then
-          if (childRegion.toShow or WeakAuras.IsAnimating(childRegion) == "finish") then
-            childRegion:Show();
-          end
-          local xOffset, yOffset = regionData.tray:GetCenter();
-          xOffset = xOffset or 0;
-          yOffset = yOffset or 0;
-          local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or previousPreviousX or 0, previous[regionData.key] and previous[regionData.key].y or previousPreviousY or 0;
-          local xDelta, yDelta = previousX - xOffset, previousY - yOffset;
-          previousPreviousX, previousPreviousY = previousX, previousY;
-          if((not regionData.hidden and WeakAuras.IsAnimating(childRegion) == "finish") and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1)) then
-            local anim;
-            if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-              local originX, originY = region:GetCenter();
-              local radius1, previousAngle = WeakAuras.GetPolarCoordinates(previousX, previousY, originX, originY);
-              local radius2, newAngle = WeakAuras.GetPolarCoordinates(xOffset, yOffset, originX, originY);
-              local dAngle = newAngle - previousAngle;
-              dAngle = (
-                (dAngle > 180 and dAngle - 360)
-                or (dAngle < -180 and dAngle + 360)
-                or dAngle
-                );
-              if(math.abs(radius1 - radius2) > 0.1) then
-                local translateFunc = [[
-                                  function(progress, _, _, previousAngle, dAngle)
-                                      local previousRadius, dRadius = %f, %f;
-                                      local radius = previousRadius + (1 - progress) * dRadius;
-                                      local angle = previousAngle + (1 - progress) * dAngle;
-                                      return cos(angle) * radius, sin(angle) * radius;
-                                  end
-                              ]]
-                anim = {
-                  type = "custom",
-                  duration = 0.2,
-                  use_translate = true,
-                  translateType = "custom",
-                  translateFunc = translateFunc:format(radius1, radius2 - radius1),
-                  x = previousAngle,
-                  y = dAngle
-                };
-              else
-                local translateFunc = [[
-                                  function(progress, _, _, previousAngle, dAngle)
-                                      local radius = %f;
-                                      local angle = previousAngle + (1 - progress) * dAngle;
-                                      return cos(angle) * radius, sin(angle) * radius;
-                                  end
-                              ]]
-                anim = {
-                  type = "custom",
-                  duration = 0.2,
-                  use_translate = true,
-                  translateType = "custom",
-                  translateFunc = translateFunc:format(radius1),
-                  x = previousAngle,
-                  y = dAngle
-                };
-              end
-            end
-            if not(anim) then
+
+    local previousPreviousX, previousPreviousY;
+    for index, regionData in pairs(region.activeRegions) do
+      local childId = regionData.id;
+      local childData = regionData.data;
+      local childRegion = regionData.region;
+      if(childData and childRegion) then
+        if (childRegion.toShow or WeakAuras.IsAnimating(childRegion) == "finish") then
+          childRegion:Show();
+        end
+        local xOffset, yOffset = regionData.tray:GetCenter();
+        xOffset = xOffset or 0;
+        yOffset = yOffset or 0;
+        local previousX, previousY = previous[regionData.key] and previous[regionData.key].x or previousPreviousX or 0, previous[regionData.key] and previous[regionData.key].y or previousPreviousY or 0;
+        local xDelta, yDelta = previousX - xOffset, previousY - yOffset;
+        previousPreviousX, previousPreviousY = previousX, previousY;
+        if data.animate and (not regionData.hidden and WeakAuras.IsAnimating(childRegion) == "finish") and not(abs(xDelta) < 0.1 and abs(yDelta) == 0.1) then
+          local anim;
+          if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
+            local originX, originY = region:GetCenter();
+            local radius1, previousAngle = WeakAuras.GetPolarCoordinates(previousX, previousY, originX, originY);
+            local radius2, newAngle = WeakAuras.GetPolarCoordinates(xOffset, yOffset, originX, originY);
+            local dAngle = newAngle - previousAngle;
+            dAngle = (
+              (dAngle > 180 and dAngle - 360)
+              or (dAngle < -180 and dAngle + 360)
+              or dAngle
+              );
+            if(math.abs(radius1 - radius2) > 0.1) then
+              local translateFunc = [[
+                                function(progress, _, _, previousAngle, dAngle)
+                                    local previousRadius, dRadius = %f, %f;
+                                    local radius = previousRadius + (1 - progress) * dRadius;
+                                    local angle = previousAngle + (1 - progress) * dAngle;
+                                    return cos(angle) * radius, sin(angle) * radius;
+                                end
+                            ]]
               anim = {
                 type = "custom",
                 duration = 0.2,
                 use_translate = true,
-                x = xDelta,
-                y = yDelta
+                translateType = "custom",
+                translateFunc = translateFunc:format(radius1, radius2 - radius1),
+                x = previousAngle,
+                y = dAngle
+              };
+            else
+              local translateFunc = [[
+                                function(progress, _, _, previousAngle, dAngle)
+                                    local radius = %f;
+                                    local angle = previousAngle + (1 - progress) * dAngle;
+                                    return cos(angle) * radius, sin(angle) * radius;
+                                end
+                            ]]
+              anim = {
+                type = "custom",
+                duration = 0.2,
+                use_translate = true,
+                translateType = "custom",
+                translateFunc = translateFunc:format(radius1),
+                x = previousAngle,
+                y = dAngle
               };
             end
+          end
+          if not(anim) then
+            anim = {
+              type = "custom",
+              duration = 0.2,
+              use_translate = true,
+              x = xDelta,
+              y = yDelta
+            };
+          end
 
-            WeakAuras.CancelAnimation(regionData.tray, nil, nil, nil, nil, nil, true);
-            WeakAuras.Animate("tray"..regionData.key, data, "tray", anim, regionData.tray, true, function() end);
-          elseif (not childRegion.toShow) then
-            if(WeakAuras.IsAnimating(childRegion) == "finish") then
-            -- childRegion will be hidden by its own animation, so it does not need to be hidden immediately
-            else
-              childRegion:Hide();
-            end
+          WeakAuras.CancelAnimation(regionData.tray, nil, nil, nil, nil, nil, true);
+          WeakAuras.Animate("tray"..regionData.key, data, "tray", anim, regionData.tray, true, function() end);
+        elseif (not childRegion.toShow) then
+          if(WeakAuras.IsAnimating(childRegion) == "finish") then
+          -- childRegion will be hidden by its own animation, so it does not need to be hidden immediately
+          else
+            childRegion:Hide();
           end
         end
       end
