@@ -48,56 +48,74 @@ function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
   return r, theta;
 end
 
+local selfPoints = {
+  default = "CENTER",
+  RIGHT = function(data)
+    if data.align  == "LEFT" then
+      return "TOPLEFT"
+    elseif data.align == "RIGHT" then
+      return "BOTTOMLEFT"
+    else
+      return "LEFT"
+    end
+  end,
+  LEFT = function(data)
+    if data.align  == "LEFT" then
+      return "TOPRIGHT"
+    elseif data.align == "RIGHT" then
+      return "BOTTOMRIGHT"
+    else
+      return "RIGHT"
+    end
+  end,
+  UP = function(data)
+    if data.align == "LEFT" then
+      return "BOTTOMLEFT"
+    elseif data.align == "RIGHT" then
+      return "BOTTOMRIGHT"
+    else
+      return "BOTTOM"
+    end
+  end,
+  DOWN = function(data)
+    if data.align == "LEFT" then
+      return "TOPLEFT"
+    elseif data.align == "RIGHT" then
+      return "TOPRIGHT"
+    else
+      return "TOP"
+    end
+  end,
+  HORIZONTAL = function(data)
+    if data.align == "LEFT" then
+      return "TOP"
+    elseif data.align == "RIGHT" then
+      return "BOTTOM"
+    else
+      return "CENTER"
+    end
+  end,
+  VERTICAL = function(data)
+    if data.align == "LEFT" then
+      return "LEFT"
+    elseif data.align == "RIGHT" then
+      return "RIGHT"
+    else
+      return "CENTER"
+    end
+  end,
+  CIRCLE = "CENTER",
+  COUNTERCIRCLE = "CENTER",
+}
+
 local function modify(parent, region, data)
   WeakAuras.FixGroupChildrenOrderForGroup(data);
   -- Scale
   region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
 
-  local selfPoint;
-  if(data.grow == "RIGHT") then
-    selfPoint = "LEFT";
-    if(data.align == "LEFT") then
-      selfPoint = "TOP"..selfPoint;
-    elseif(data.align == "RIGHT") then
-      selfPoint = "BOTTOM"..selfPoint;
-    end
-  elseif(data.grow == "LEFT") then
-    selfPoint = "RIGHT";
-    if(data.align == "LEFT") then
-      selfPoint = "TOP"..selfPoint;
-    elseif(data.align == "RIGHT") then
-      selfPoint = "BOTTOM"..selfPoint;
-    end
-  elseif(data.grow == "UP") then
-    selfPoint = "BOTTOM";
-    if(data.align == "LEFT") then
-      selfPoint = selfPoint.."LEFT";
-    elseif(data.align == "RIGHT") then
-      selfPoint = selfPoint.."RIGHT";
-    end
-  elseif(data.grow == "DOWN" ) then
-    selfPoint = "TOP";
-    if(data.align == "LEFT") then
-      selfPoint = selfPoint.."LEFT";
-    elseif(data.align == "RIGHT") then
-      selfPoint = selfPoint.."RIGHT";
-    end
-  elseif(data.grow == "HORIZONTAL") then
-    selfPoint = "CENTER";
-    if(data.align == "LEFT") then
-      selfPoint = "TOP";
-    elseif(data.align == "RIGHT") then
-      selfPoint = "BOTTOM";
-    end
-  elseif(data.grow == "VERTICAL") then
-    selfPoint = "CENTER";
-    if(data.align == "LEFT") then
-      selfPoint = "LEFT";
-    elseif(data.align == "RIGHT") then
-      selfPoint = "RIGHT";
-    end
-  elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    selfPoint = "CENTER";
+  local selfPoint = selfPoints[data.grow] or selfPoints.default
+  if type(selfPoint) == "function" then
+    selfPoint = selfPoint(data)
   end
   data.selfPoint = selfPoint;
 
