@@ -665,26 +665,25 @@ local function modify(parent, region, data)
   end
 
   function region:DoResize()
-    local numVisible = 0;
-    local minX, maxX, minY, maxY;
-    for index, regionData in pairs(region.controlledRegions) do
-      local childId = regionData.id;
-      local childData = regionData.data;
-      local childRegion = regionData.region;
-      if(childData and childRegion) then
-        if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-          numVisible = numVisible + 1;
-          local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom();
-          if(regionLeft and regionRight and regionTop and regionBottom) then
-            minX = minX and min(regionLeft, minX) or regionLeft;
-            maxX = maxX and max(regionRight, maxX) or regionRight;
-            minY = minY and min(regionBottom, minY) or regionBottom;
-            maxY = maxY and max(regionTop, maxY) or regionTop;
+    local numVisible = self.numVisible
+    if(numVisible > 0) then
+      local minX, maxX, minY, maxY;
+      for index, regionData in pairs(region.activeRegions) do
+        local childId = regionData.id;
+        local childData = regionData.data;
+        local childRegion = regionData.region;
+        if(childData and childRegion) then
+          if(not regionData.hidden or  WeakAuras.IsAnimating(childRegion) == "finish") then
+            local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom();
+            if(regionLeft and regionRight and regionTop and regionBottom) then
+              minX = minX and min(regionLeft, minX) or regionLeft;
+              maxX = maxX and max(regionRight, maxX) or regionRight;
+              minY = minY and min(regionBottom, minY) or regionBottom;
+              maxY = maxY and max(regionTop, maxY) or regionTop;
+            end
           end
         end
       end
-    end
-    if(numVisible > 0) then
       minX, maxX, minY, maxY = minX or 0, maxX or 0, minY or 0, maxY or 0;
       if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
         local originX, originY = region:GetCenter();
@@ -741,7 +740,6 @@ local function modify(parent, region, data)
       region.previousWidth = 1;
       region.previousHeight = 1;
     end
-
     if(WeakAuras.IsOptionsOpen()) then
       WeakAuras.OptionsFrame().moversizer:ReAnchor();
     end
