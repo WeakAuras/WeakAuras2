@@ -141,8 +141,6 @@ local function modify(parent, region, data)
   background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
   background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
 
-
-
   region.controlledRegions = {};
 
   function region:EnsureControlledRegions()
