@@ -314,8 +314,6 @@ local function modify(parent, region, data)
     end
   end
 
-  region:EnsureTrays();
-
   function region:DoResize()
     local numVisible = 0;
     local minX, maxX, minY, maxY;
