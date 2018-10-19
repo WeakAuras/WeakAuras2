@@ -486,9 +486,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
   end
 
   if(indynamicgroup) then
-    if not(cloneId) then
-      parent:PositionChildren();
-    end
     function region:Collapse()
       if (not region.toShow) then
         return;
