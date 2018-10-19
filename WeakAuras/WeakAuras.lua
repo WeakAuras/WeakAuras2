@@ -4326,8 +4326,8 @@ function WeakAuras.UpdatedTriggerState(id)
   if (show and not oldShow) then -- Hide => Show
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
-    for cloneId, state in pairs(activeTriggerState) do
-      if (checkConditions[id]) then
+    if (checkConditions[id]) then
+      for cloneId, clone in pairs(clones[id]) do
         local region = WeakAuras.GetRegion(id, cloneId);
         checkConditions[id](region, true);
       end
