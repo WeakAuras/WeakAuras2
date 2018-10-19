@@ -634,34 +634,24 @@ local function modify(parent, region, data)
   region.growFunc = grower(data)
 
   function region:PositionActiveRegions()
-    region:EnsureTrays();
-    local childData, childRegion;
-    local activeRegions = {}
-    for index, regionData in pairs(region.controlledRegions) do
-      childData = regionData.data;
-      childRegion = regionData.region;
-      if(childData and childRegion) then
-        if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-          activeRegions[#activeRegions] = regionData
-        end
-      end
-    end
     local newPositions = {}
-    region.growFunc(newPositions, activeRegions)
-    region.numVisible = 0
-    for index, activeRegion in ipairs(activeRegions) do
+    local positionsByKey = {}
+    self.growFunc(newPositions, self.activeRegions)
+    self.numVisible = 0
+    for index, regionData in ipairs(self.activeRegions) do
       local pos = newPositions[index] or {0, 0, true}
       pos[1] = type(pos[1]) == "number" and pos[1] or 0
       pos[2] = type(pos[2]) == "number" and pos[2] or 0
-      local tray = region.trays[activeRegion.key]
-      tray:ClearAllPoints()
-      tray:SetPoint(selfPoint, region, selfPoint, pos[1], pos[2])
+      local tray = regionData.tray
+      tray:SetPoint(selfPoint, pos[1], pos[2])
       tray:SetShown(not pos[3])
-      activeRegion.hidden = pos[3]
+      tray:SetWidth(regionData.data.width or regionData.region.width)
+      tray:SetHeight(regionData.data.height or regionData.region.height)
+      regionData.hidden = pos[3]
       self.numVisible = self.numVisible + (pos[3] and 0 or 1)
+      positionsByKey[regionData.key] = pos
     end
-
-    region:DoResize();
+    self.activePositions = positionsByKey
   end
 
   function region:DoResize()
