@@ -109,6 +109,239 @@ local selfPoints = {
   COUNTERCIRCLE = "CENTER",
 }
 
+local function noop() end
+
+local function polarToRect(r, theta)
+  return r * math.cos(theta), r * math.sin(theta)
+end
+
+local growers = {
+  LEFT = function(data)
+    local stagger = data.stagger or 0
+    local space = data.space or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local startX, startY = 0, 0
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        local regionData = activeRegions[i]
+        newPositions[i] = pos
+        x = x + (regionData.data.width or regionData.region.width) + space
+        y = y + stagger
+        i = i + 1
+      end
+    end
+  end,
+  RIGHT = function(data)
+    local stagger = data.stagger or 0
+    local space = data.space or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local startX, startY = 0, 0
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        local regionData = activeRegions[i]
+        newPositions[i] = pos
+        x = x - (regionData.data.width or regionData.region.width) - space
+        y = y + data.stagger
+        i = i + 1
+      end
+    end
+  end,
+  UP = function(data)
+    local stagger = data.stagger or 0
+    local space = data.space or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local startX, startY = 0, 0
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        local regionData = activeRegions[i]
+        newPositions[i] = pos
+        x = x + stagger
+        y = y + (regionData.data.height or regionData.region.height) + space
+        i = i + 1
+      end
+    end
+  end,
+  DOWN = function(data)
+    local stagger = data.stagger or 0
+    local space = data.space or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local startX, startY = 0, 0
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        local regionData = activeRegions[i]
+        newPositions[i] = pos
+        x = x + stagger
+        y = y - (regionData.data.height or regionData.region.height) - space
+        i = i + 1
+      end
+    end
+  end,
+  HORIZONTAL = function(data)
+    local stagger = data.stagger or 0
+    local space = data.space or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local midX, midY = 0, 0
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local totalWidth = 0
+      for i = 1, numVisible do
+        local regionData = activeRegions[i]
+        totalWidth = totalWidth + (regionData.data.width or regionData.region.width) + space
+      end
+      local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        local regionData = activeRegions[i]
+        newPositions[i] = pos
+        x = x + (regionData.data.width or regionData.region.width) + space
+        y = y + stagger
+        i = i + 1
+      end
+    end
+  end,
+  VERTICAL = function(data)
+    local stagger = data.stagger or 0
+    local space = data.space or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local midX, midY = 0, 0
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local totalHeight = 0
+      for i = 1, numVisible do
+        local regionData = activeRegions[i]
+        totalHeight = totalHeight + (regionData.data.height or regionData.region.height) + space
+      end
+      local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        local regionData = activeRegions[i]
+        newPositions[i] = pos
+        x = x + stagger
+        y = y + (regionData.data.height or regionData.region.height) + space
+        i = i + 1
+      end
+    end
+  end,
+  CIRCLE = function(data)
+    local oX, oY = 0, 0
+    local constantFactor = data.constantFactor
+    local space = data.space or 0
+    local radius = data.radius or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local sAngle = (data.rotation or 0) * math.pi/180
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local r
+      if constantFactor == "RADIUS" then
+        r = radius
+      else
+        if numVisible <= 1 then
+          r = 0
+        else
+          r = (numVisible * space) / (2 * math.pi)
+        end
+      end
+      local dAngle = 2 * math.pi/numVisible
+      local theta = sAngle
+      local i = 1
+      while i <= numVisible do
+        local pos = {polarToRect(r, theta)}
+        newPositions[i] = pos
+        theta = theta + dAngle
+        i = i + 1
+      end
+    end
+  end,
+  COUNTERCIRCLE = function(data)
+    local oX, oY = 0, 0
+    local constantFactor = data.constantFactor
+    local space = data.space or 0
+    local radius = data.radius or 0
+    local limit = data.useLimit and data.limit or math.huge
+    local sAngle = (data.rotation or 0) * math.pi/180
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local r
+      if constantFactor == "RADIUS" then
+        r = radius
+      else
+        if numVisible <= 1 then
+          r = 0
+        else
+          r = (numVisible * space) / (2 * math.pi)
+        end
+      end
+      local dAngle = -2 * math.pi/numVisible
+      local theta = sAngle
+      local i = 1
+      while i <= numVisible do
+        local pos = {polarToRect(r, theta)}
+        newPositions[i] = pos
+        theta = theta + dAngle
+        i = i + 1
+      end
+    end
+  end,
+  GRID = function(data)
+    local startX, startY = 0, 0
+    local gridType = data.gridType
+    -- in a grid context, space is the space between items on the same row/column
+    -- and stagger is the distance between columns
+    local space = data.space
+    local stagger = data.stagger
+    local columnLimit = data.columnLimit or math.huge
+    local rowIsHorizontal
+    if gridType:find("^RIGHT") or gridType:find("^LEFT") then
+      rowIsHorizontal = true
+    end
+    local xmul = gridType:find("RIGHT") and 1 or -1
+    local ymul = gridType:find("UP") and 1 or -1
+    local limit = data.useLimit and data.limit or math.huge
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY
+      local i = 1
+      while i <= numVisible do
+        local pos = {x, y}
+        if i % columnLimit == 0 then
+          if rowIsHorizontal then
+            x = startX
+            y = y + stagger * ymul
+          else
+            x = x + stagger * xmul
+          end
+        else
+          if rowIsHorizontal then
+            x = x + space * xmul
+          else
+            y = y + space + ymul
+          end
+        end
+        i = i + 1
+      end
+    end
+  end
+}
+growers.default = growers.DOWN
+
 local function modify(parent, region, data)
   WeakAuras.FixGroupChildrenOrderForGroup(data);
   -- Scale
@@ -398,148 +631,35 @@ local function modify(parent, region, data)
     end
   end
 
-  function region:PositionChildren()
+  local grower = growers[data.grow] or growers.default
+  region.growFunc = grower(data)
+
+  function region:PositionActiveRegions()
     region:EnsureTrays();
     local childData, childRegion;
-    local xOffset, yOffset = 0, 0;
-    local currentWidth, currentHeight = 0, 0;
-    local numVisible = 0;
-
+    local activeRegions = {}
     for index, regionData in pairs(region.controlledRegions) do
       childData = regionData.data;
       childRegion = regionData.region;
       if(childData and childRegion) then
         if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-          numVisible = numVisible + 1;
-          if(data.grow == "HORIZONTAL") then
-            currentWidth = currentWidth + (childData.width or childRegion.width);
-          elseif(data.grow == "VERTICAL") then
-            currentHeight = currentHeight + (childData.height or childRegion.height);
-          end
+          activeRegions[#activeRegions] = regionData
         end
       end
     end
-
-    if not(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-      if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
-        if(data.align == "LEFT" and data.stagger > 0) then
-          yOffset = yOffset - (data.stagger * (numVisible - 1));
-        elseif(data.align == "RIGHT" and data.stagger < 0) then
-          yOffset = yOffset - (data.stagger * (numVisible - 1));
-        elseif(data.align == "CENTER") then
-          if(data.stagger < 0) then
-            yOffset = yOffset - (data.stagger * (numVisible - 1) / 2);
-          else
-            yOffset = yOffset - (data.stagger * (numVisible - 1) / 2);
-          end
-        end
-      else
-        if(data.align == "LEFT" and data.stagger < 0) then
-          xOffset = xOffset - (data.stagger * (numVisible - 1));
-        elseif(data.align == "RIGHT" and data.stagger > 0) then
-          xOffset = xOffset - (data.stagger * (numVisible - 1));
-        elseif(data.align == "CENTER") then
-          if(data.stagger < 0) then
-            xOffset = xOffset - (data.stagger * (numVisible - 1) / 2);
-          else
-            xOffset = xOffset - (data.stagger * (numVisible - 1) / 2);
-          end
-        end
-      end
-    end
-
-    if(data.grow == "HORIZONTAL") then
-      currentWidth = currentWidth + (data.space * max(numVisible - 1, 0));
-      region:SetWidth(currentWidth > 0 and currentWidth or 1);
-      xOffset = -currentWidth/2;
-    elseif(data.grow == "VERTICAL") then
-      currentHeight = currentHeight + (data.space * max(numVisible - 1, 0));
-      region:SetHeight(currentHeight > 0 and currentHeight or 1);
-      yOffset = currentHeight/2;
-    end
-
-    local angle = data.rotation or 0;
-    local angleInc = 360 / (numVisible ~= 0 and numVisible or 1);
-    if (data.grow == "COUNTERCIRCLE") then
-      angleInc = -angleInc;
-    end
-    local radius = 0;
-    if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-      if(data.constantFactor == "RADIUS") then
-        radius = data.radius;
-      else
-        if(numVisible <= 1) then
-          radius = 0;
-        else
-          radius = (numVisible * data.space) / (2 * math.pi);
-        end
-      end
-    end
-    for index, regionData in pairs(region.controlledRegions) do
-      childData = regionData.data;
-      childRegion = regionData.region;
-      if(childData and childRegion) then
-        if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-          if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-            yOffset = cos(angle) * radius * -1;
-            xOffset = sin(angle) * radius;
-            angle = angle + angleInc;
-          end
-          if(data.grow == "HORIZONTAL") then
-            xOffset = xOffset + (childData.width or childRegion.width)/2;
-          end
-          if(data.grow == "VERTICAL") then
-            yOffset = yOffset - (childData.height or childRegion.height) / 2;
-          end
-          region.trays[regionData.key]:ClearAllPoints();
-          region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, xOffset, yOffset);
-          -- WORKAROUND
-          -- Fix for ticket 686: Somehow calling any function that requires the position here
-          -- actually ensures that we get the right position in DoResize
-          local tmp = region.trays[regionData.key]:GetBottom();
-
-          if(data.grow == "RIGHT") then
-            xOffset = xOffset + ((childData.width or childRegion.width) + data.space);
-            yOffset = yOffset + data.stagger;
-          elseif(data.grow == "HORIZONTAL") then
-            xOffset = xOffset + ((childData.width or childRegion.width)) / 2 + data.space;
-            yOffset = yOffset + data.stagger;
-          elseif(data.grow == "LEFT") then
-            xOffset = xOffset - ((childData.width or childRegion.width) + data.space);
-            yOffset = yOffset + data.stagger;
-          elseif(data.grow == "UP") then
-            yOffset = yOffset + ((childData.height or childRegion.height) + data.space);
-            xOffset = xOffset + data.stagger;
-          elseif(data.grow == "DOWN" ) then
-            yOffset = yOffset - ((childData.height or childRegion.height) + data.space);
-            xOffset = xOffset + data.stagger;
-          elseif(data.grow == "VERTICAL") then
-            yOffset = yOffset -( childData.height or childRegion.height) / 2 - data.space;
-            xOffset = xOffset + data.stagger;
-          end
-        else
-          local hiddenXOffset, hiddenYOffset;
-          if(data.grow == "RIGHT") then
-            hiddenXOffset = xOffset - ((childData.width or childRegion.width) + data.space);
-            hiddenYOffset = yOffset - data.stagger;
-          elseif(data.grow == "LEFT") then
-            hiddenXOffset = xOffset + ((childData.width or childRegion.width) + data.space);
-            hiddenYOffset = yOffset - data.stagger;
-          elseif(data.grow == "UP") then
-            hiddenYOffset = yOffset - ((childData.height or childRegion.height) + data.space);
-            hiddenXOffset = xOffset - data.stagger;
-          elseif(data.grow == "DOWN") then
-            hiddenYOffset = yOffset + ((childData.height or childRegion.height) + data.space);
-            hiddenXOffset = xOffset - data.stagger;
-          elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-            hiddenYOffset = cos(angle - angleInc) * radius * -1;
-            hiddenXOffset = sin(angle - angleInc) * radius;
-          end
-
-          region.trays[regionData.key]:ClearAllPoints();
-          region.trays[regionData.key]:SetPoint(selfPoint, region, selfPoint, hiddenXOffset, hiddenYOffset);
-        end
-      end
+    local newPositions = {}
+    region.growFunc(newPositions, activeRegions)
+    region.numVisible = 0
+    for index, activeRegion in ipairs(activeRegions) do
+      local pos = newPositions[index] or {0, 0, true}
+      pos[1] = type(pos[1]) == "number" and pos[1] or 0
+      pos[2] = type(pos[2]) == "number" and pos[2] or 0
+      local tray = region.trays[activeRegion.key]
+      tray:ClearAllPoints()
+      tray:SetPoint(selfPoint, region, selfPoint, pos[1], pos[2])
+      tray:SetShown(not pos[3])
+      activeRegion.hidden = pos[3]
+      self.numVisible = self.numVisible + (pos[3] and 0 or 1)
     end
 
     region:DoResize();
@@ -676,7 +796,7 @@ local function modify(parent, region, data)
     WeakAuras.StopProfileAura(region.id);
   end
 
-  region:PositionChildren();
+  region:PositionActiveRegions();
 
   function region:Scale(scalex, scaley)
     region:SetWidth((region.currentWidth or 16) * scalex);
