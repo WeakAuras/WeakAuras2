@@ -476,179 +476,6 @@ local function modify(parent, region, data)
   background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
   background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
 
-  region.controlledRegions = {};
---[[
-  function region:EnsureControlledRegions()
-    local anyIndexInfo = false;
-    local dataIndex = 1;
-    local regionIndex = 1;
-    while(dataIndex <= #data.controlledChildren) do
-      local childId = data.controlledChildren[dataIndex];
-      local childData = WeakAuras.GetData(childId);
-      local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region;
-      if(childRegion) then
-        if not(region.controlledRegions[regionIndex]) then
-          region.controlledRegions[regionIndex] = {};
-        end
-        region.controlledRegions[regionIndex].id = childId;
-        region.controlledRegions[regionIndex].data = childData;
-        region.controlledRegions[regionIndex].region = childRegion;
-        region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
-        anyIndexInfo = anyIndexInfo or childRegion.state and childRegion.state.index;
-        region.controlledRegions[regionIndex].dataIndex = dataIndex;
-        dataIndex = dataIndex + 1;
-        regionIndex = regionIndex + 1;
-        if(childData and WeakAuras.clones[childId]) then
-          for cloneId, cloneRegion in pairs(WeakAuras.clones[childId]) do
-            if not(region.controlledRegions[regionIndex]) then
-              region.controlledRegions[regionIndex] = {};
-            end
-            region.controlledRegions[regionIndex].id = childId;
-            region.controlledRegions[regionIndex].data = childData;
-            region.controlledRegions[regionIndex].cloneId = cloneId;
-            region.controlledRegions[regionIndex].region = cloneRegion;
-            region.controlledRegions[regionIndex].key = tostring(region.controlledRegions[regionIndex].region);
-            anyIndexInfo = anyIndexInfo or cloneRegion.state and cloneRegion.state.index;
-            region.controlledRegions[regionIndex].dataIndex = dataIndex;
-            regionIndex = regionIndex + 1;
-          end
-        end
-      else
-        dataIndex = dataIndex + 1;
-      end
-    end
-    while(region.controlledRegions[regionIndex]) do
-      region.controlledRegions[regionIndex] = nil;
-      regionIndex = regionIndex + 1;
-    end
-
-    local function expirationTime(region)
-      if (region.region and region.region.state) then
-        local expires = region.region.state.expirationTime;
-        if (expires and expires > 0 and expires > GetTime()) then
-          return expires;
-        end
-      end
-      return nil;
-    end
-
-    local function compareExpirationTimes(regionA, regionB)
-      local aExpires = expirationTime(regionA);
-      local bExpires = expirationTime(regionB);
-
-
-      if (aExpires and bExpires) then
-        if (aExpires == bExpires) then
-          return nil;
-        end
-        return aExpires < bExpires;
-      end
-
-      if (aExpires) then
-        return false;
-      end
-
-      if (bExpires) then
-        return true;
-      end
-
-      return nil;
-    end
-
-    if(data.sort == "ascending") then
-      table.sort(region.controlledRegions, function(a, b)
-        local result = compareExpirationTimes(a, b);
-        if (result == nil) then
-          return a.dataIndex < b.dataIndex;
-        end
-        return result;
-      end);
-    elseif(data.sort == "descending") then
-      table.sort(region.controlledRegions, function(a, b)
-        local result = compareExpirationTimes(a, b);
-        if (result == nil) then
-          return a.dataIndex < b.dataIndex;
-        end
-        return not result;
-      end);
-    elseif(data.sort == "hybrid") then
-      table.sort(region.controlledRegions, function(a, b)
-        if (not b) then return true; end
-        if (not a) then return false; end;
-        local aIndex;
-        local bIndex;
-        if (data.sortHybridTable and data.sortHybridTable[a.id]) then
-          aIndex = a.dataIndex;
-        end
-
-        if (data.sortHybridTable and data.sortHybridTable[b.id]) then
-          bIndex = b.dataIndex;
-        end
-
-        if (aIndex == bIndex) then
-          local result = compareExpirationTimes(a, b);
-          if (result == nil) then
-            return a.dataIndex < b.dataIndex;
-          end
-          if (data.hybridSortMode == "descending") then
-            result = not result;
-          end
-          return result;
-        end
-
-        if (aIndex and bIndex) then
-          return aIndex < bIndex;
-        end
-
-        if (aIndex) then
-          return data.hybridPosition == "hybridFirst";
-        end
-
-        if (bIndex) then
-          return data.hybridPosition ~= "hybridFirst";
-        end
-
-        -- Can't happen
-      end);
-    elseif(anyIndexInfo) then
-      table.sort(region.controlledRegions, function(a, b)
-        if (a.dataIndex ~= b.dataIndex) then
-          return (a.dataIndex or 0) < (b.dataIndex or 0)
-        end
-
-        local aIndex = a.region.state and a.region.state.index;
-        local bIndex = b.region.state and b.region.state.index;
-        if (aIndex == nil) then
-          return false;
-        end
-        if (bIndex == nil) then
-          return true;
-        end
-
-        return aIndex < bIndex;
-      end)
-    end
-  end
-
-  function region:EnsureTrays()
-    region:EnsureControlledRegions();
-    for index, regionData in ipairs(region.controlledRegions) do
-      if not(region.trays[regionData.key]) then
-        region.trays[regionData.key] = CreateFrame("Frame", nil, region);
-        regionData.region:SetParent(region.trays[regionData.key])
-      else
-        regionData.region:SetParent(region.trays[regionData.key]) -- removing and adding aura back doesnt delete tray, so need to reparent it
-      end
-      if(regionData.data and regionData.region) then
-        local tray = region.trays[regionData.key];
-        tray:SetWidth(regionData.data.width or regionData.region.width);
-        tray:SetHeight(regionData.data.height or regionData.region.height);
-
-        regionData.region:SetAnchor(selfPoint, tray, selfPoint);
-      end
-    end
-  end
- ]]
   function region:ReloadControlledRegions()
     WeakAuras.StartProfileSystem("dynamicgroup")
     WeakAuras.StartProfileAura(data.id)
@@ -785,6 +612,58 @@ local function modify(parent, region, data)
     regionData.sortIndex = nil
   end
 
+  function region:SortUpdatedRegions()
+    if self.suspended == 0 then
+      for regionKey, isActivating in pairs(self.updatedRegions) do
+        local regionData = self.controlledRegions[regionKey]
+        self.updatedRegions[regionKey] = nil
+        if regionData then
+          if isActivating then
+            insertRegion(regionData)
+          else
+            removeRegion(regionData)
+          end
+        end
+      end
+    elseif next(self.updatedRegions) ~= nil then
+      self.needToControlChildren = true
+    end
+  end
+
+  local grower = growers[data.grow] or growers.default
+  region.growFunc = grower(data)
+
+  function region:PositionActiveRegions()
+    region:EnsureTrays();
+    local childData, childRegion;
+    local activeRegions = {}
+    for index, regionData in pairs(region.controlledRegions) do
+      childData = regionData.data;
+      childRegion = regionData.region;
+      if(childData and childRegion) then
+        if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
+          activeRegions[#activeRegions] = regionData
+        end
+      end
+    end
+    local newPositions = {}
+    region.growFunc(newPositions, activeRegions)
+    region.numVisible = 0
+    for index, activeRegion in ipairs(activeRegions) do
+      local pos = newPositions[index] or {0, 0, true}
+      pos[1] = type(pos[1]) == "number" and pos[1] or 0
+      pos[2] = type(pos[2]) == "number" and pos[2] or 0
+      local tray = region.trays[activeRegion.key]
+      tray:ClearAllPoints()
+      tray:SetPoint(selfPoint, region, selfPoint, pos[1], pos[2])
+      tray:SetShown(not pos[3])
+      activeRegion.hidden = pos[3]
+      self.numVisible = self.numVisible + (pos[3] and 0 or 1)
+    end
+
+    region:DoResize();
+  end
+
   function region:DoResize()
     local numVisible = 0;
     local minX, maxX, minY, maxY;
@@ -866,58 +745,6 @@ local function modify(parent, region, data)
     if(WeakAuras.IsOptionsOpen()) then
       WeakAuras.OptionsFrame().moversizer:ReAnchor();
     end
-  end
-
-  function region:SortUpdatedRegions()
-    if self.suspended == 0 then
-      for regionKey, isActivating in pairs(self.updatedRegions) do
-        local regionData = self.controlledRegions[regionKey]
-        self.updatedRegions[regionKey] = nil
-        if regionData then
-          if isActivating then
-            insertRegion(regionData)
-          else
-            removeRegion(regionData)
-          end
-        end
-      end
-    elseif next(self.updatedRegions) ~= nil then
-      self.needToControlChildren = true
-    end
-  end
-
-  local grower = growers[data.grow] or growers.default
-  region.growFunc = grower(data)
-
-  function region:PositionActiveRegions()
-    region:EnsureTrays();
-    local childData, childRegion;
-    local activeRegions = {}
-    for index, regionData in pairs(region.controlledRegions) do
-      childData = regionData.data;
-      childRegion = regionData.region;
-      if(childData and childRegion) then
-        if(childRegion.toShow or  WeakAuras.IsAnimating(childRegion) == "finish") then
-          activeRegions[#activeRegions] = regionData
-        end
-      end
-    end
-    local newPositions = {}
-    region.growFunc(newPositions, activeRegions)
-    region.numVisible = 0
-    for index, activeRegion in ipairs(activeRegions) do
-      local pos = newPositions[index] or {0, 0, true}
-      pos[1] = type(pos[1]) == "number" and pos[1] or 0
-      pos[2] = type(pos[2]) == "number" and pos[2] or 0
-      local tray = region.trays[activeRegion.key]
-      tray:ClearAllPoints()
-      tray:SetPoint(selfPoint, region, selfPoint, pos[1], pos[2])
-      tray:SetShown(not pos[3])
-      activeRegion.hidden = pos[3]
-      self.numVisible = self.numVisible + (pos[3] and 0 or 1)
-    end
-
-    region:DoResize();
   end
 
   function region:Suspend()
