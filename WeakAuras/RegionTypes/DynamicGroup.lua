@@ -33,6 +33,7 @@ local function create(parent)
   region.background = background;
 
   region.trays = {};
+  region.suspended = 0
 
   WeakAuras.regionPrototype.create(region);
 
@@ -545,7 +546,7 @@ local function modify(parent, region, data)
   end
 
   function region:Suspend()
-    self.suspended = (self.suspended or 0) + 1;
+    self.suspended = self.suspended + 1;
   end
 
   function region:Resume()
@@ -560,7 +561,7 @@ local function modify(parent, region, data)
   end
 
   function region:ControlChildren()
-    if(self.suspended and self.suspended > 0) then
+    if self.suspended > 0 then
       self.needToControlChildren = true;
       return;
     end
