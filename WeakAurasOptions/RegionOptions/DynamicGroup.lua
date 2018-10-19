@@ -35,7 +35,7 @@ local function createOptions(id, data)
       name = L["Max Visible"],
       order = 9,
       min = 0,
-      softmax = 30,
+      softMax = 30,
       step = 1,
       hidden = function() return data.grow == "CUSTOM" end,
       disabled = function() return not data.useLimit end,
