@@ -504,7 +504,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
   end
 end
 
-local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
+local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, unit, matchCount, unitCount, maxUnitCount, affected, unaffected)
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
       show = true,
@@ -520,7 +520,8 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       time = time,
       affected = affected,
       unaffected = unaffected,
-      unitName = "",
+      unit = unit,
+      unitName = unit and GetUnitName(unit, false) or "",
       destName = "",
       name = triggerInfo.fallbackName,
       icon = triggerInfo.fallbackIcon
@@ -567,13 +568,9 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       changed = true
     end
 
-    if state.unit then
-      state.unit = nil
-      changed = true
-    end
-
-    if state.unitName ~= "" then
-      state.unitName = ""
+    if state.unit ~= unit then
+      state.unit = unit
+      state.unitName = unit and GetUnitName(unit, false)
       changed = true
     end
 
@@ -789,7 +786,7 @@ local function UpdateTriggerState(time, id, triggernum)
       if bestMatch then
         updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected)
       else
-        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, 0, 0, 0, affected, unaffected)
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, nil, 0, 0, 0, affected, unaffected)
       end
     else
       updated = RemoveState(triggerStates, cloneId)
@@ -838,7 +835,7 @@ local function UpdateTriggerState(time, id, triggernum)
       end
 
       if matchCount == 0 then
-        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected) or updated
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", nil, 0, 0, 0, affected, unaffected) or updated
       end
     end
 
@@ -848,11 +845,10 @@ local function UpdateTriggerState(time, id, triggernum)
       end
     end
   elseif (triggerInfo.combineMode == "showPerUnit") then
+    local matches = {}
+    local matchCount = 0
+    local unitCount = 0
     if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
-      local matches = {}
-      local matchCount = 0
-      local unitCount = 0
-
       for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
         local bestMatch, matchCountPerUnit, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
         matchCount = matchCount + matchCountPerUnit
@@ -868,23 +864,32 @@ local function UpdateTriggerState(time, id, triggernum)
         end
         matches[unit] = bestMatch
       end
+    end
 
-      local useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
+    local useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
 
-      if useMatches then
-        local affected, unaffected
-        if triggerInfo.useAffected then
-          affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
-        end
+    if useMatches then
+      local affected, unaffected
+      if triggerInfo.useAffected then
+        affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
+      end
 
+      if (triggerInfo.perUnitMode == "affected") then
         for unit, bestMatch in pairs(matches) do
           if bestMatch then
             updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
           end
         end
-
-        if matchCount == 0 then
-          updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", 0, 0, 0, affected, unaffected) or updated
+      else
+        for unit in GetAllUnits(triggerInfo.unit) do
+          local bestMatch = matches[unit]
+          if bestMatch then
+            if triggerInfo.perUnitMode == "all" then
+              updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+            end
+          else
+            updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+          end
         end
       end
     end
@@ -1857,9 +1862,11 @@ function BuffTrigger.Add(data)
       trigger.debuffType = trigger.debuffType or "HELPFUL"
 
       local combineMode = "showOne"
+      local perUnitMode
       if not IsSingleMissing(trigger) and trigger.showClones then
-        if IsGroupTrigger(trigger) and trigger.combinePerUnit and trigger.unit ~= "multi" then
+        if IsGroupTrigger(trigger) and trigger.combinePerUnit then
           combineMode = "showPerUnit"
+          perUnitMode = trigger.unit ~= "multi" and (trigger.perUnitMode or "affected")
         else
           combineMode = "showClones"
         end
@@ -1906,7 +1913,7 @@ function BuffTrigger.Add(data)
         local match_countFuncStr = WeakAuras.function_strings.count:format(trigger.match_countOperator, count)
         matchCountFunc = WeakAuras.LoadFunction(match_countFuncStr)
       elseif IsGroupTrigger(trigger) then
-        if trigger.showClones then
+        if trigger.showClones and not trigger.combinePerUnit then
           matchCountFunc = GreaterEqualOne
         end
       elseif not IsGroupTrigger(trigger) then
@@ -1947,6 +1954,7 @@ function BuffTrigger.Add(data)
         debuffType = trigger.debuffType,
         ownOnly = trigger.ownOnly,
         combineMode = combineMode,
+        perUnitMode = perUnitMode,
         scanFunc = scanFunc,
         remainingFunc = remFunc,
         remainingCheck = trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useRem and tonumber(trigger.rem) or 0,

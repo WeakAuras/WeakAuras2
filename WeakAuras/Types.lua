@@ -1515,6 +1515,12 @@ WeakAuras.bufftrigger_2_combine_types = {
   showClones = L["Show all Matches"]
 }
 
+WeakAuras.bufftrigger_2_per_unit_mode = {
+  affected = L["Affected"],
+  unaffected = L["Unaffected"],
+  all = L["All"]
+}
+
 WeakAuras.bufftrigger_2_combine_group_types = {
   showLowest = L["Show lowest time left over all units"],
   showHighest = L["Show longest time left over all units"],

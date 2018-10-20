@@ -548,13 +548,36 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "double",
       order = 72.2,
       hidden = function()
-        return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi")
+        return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.showClones)
+      end
+    },
+    use_perUnitMode = {
+      type = "toggle",
+      name = L["Show Matches for Units"],
+      order = 72.3,
+      hidden = function()
+        return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi" and trigger.combinePerUnit)
+      end,
+      get = function() return true end,
+      disabled = true
+    },
+    perUnitMode = {
+      type = "select",
+      name = L["Show Matches for"],
+      values = WeakAuras.bufftrigger_2_per_unit_mode,
+      order = 72.4,
+      width = "normal",
+      hidden = function()
+        return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi" and trigger.combinePerUnit)
+      end,
+      get = function()
+        return trigger.perUnitMode or "affected"
       end
     },
     use_combineMode = {
       type = "toggle",
       name = L["Preferred Match"],
-      order = 72.3,
+      order = 72.5,
       hidden = function()
         return not (trigger.type == "aura2" and not IsSingleMissing(trigger) and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones))
       end,
@@ -565,10 +588,21 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "select",
       name = L["Preferred Match"],
       values = WeakAuras.bufftrigger_2_preferred_match_types,
-      order = 72.4,
+      order = 72.6,
       width = "normal",
       hidden = function()
-        return not (trigger.type == "aura2" and not IsSingleMissing(trigger) and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones))
+        if (trigger.type == "aura2") then
+          if (IsGroupTrigger(trigger)) then
+            if trigger.showClones then
+              return not (trigger.combinePerUnit and trigger.perUnitMode ~= "unaffected")
+            else
+              return false
+            end
+          else
+            return not (not IsSingleMissing(trigger) and not trigger.showClones);
+          end
+        end
+        return true
       end,
       get = function()
         return trigger.combineMode or "showLowest"
