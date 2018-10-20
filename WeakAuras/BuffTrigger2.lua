@@ -987,8 +987,28 @@ local function CleanUpMatchDataGroupTriggers(unit)
   end
 end
 
-local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral, resetMatchDataByTrigger, invalidUnit)
-  if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral then
+local function CheckScanFuncs(scanFuncs, unit, filter, index)
+  if scanFuncs then
+    for _, triggerInfo in pairs(scanFuncs) do
+      if triggerInfo.fetchTooltip then
+        matchData[unit][filter][index]:UpdateTooltip(time)
+      end
+      if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
+        local id = triggerInfo.id
+        local triggernum = triggerInfo.triggernum
+        ReferenceMatchData(id, triggernum, unit, filter, index)
+        matchDataChanged[id] = matchDataChanged[id] or {}
+        matchDataChanged[id][triggernum] = true
+      end
+    end
+  end
+end
+
+local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
+                                  scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup,
+                                  scanFuncName, scanFuncSpellId, scanFuncGeneral,
+                                  resetMatchDataByTrigger, invalidUnit)
+  if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral and not scanFuncNameGroup and not scanFuncSpellIdGroup and not scanFuncGeneralGroup then
     CleanUpOutdatedMatchData(time, unit, filter)
     return
   end
@@ -1011,52 +1031,12 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFunc
     local updatedMatchData = UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
 
     if updatedMatchData then -- Aura data changed, check against triggerInfos
-      local auras = scanFuncName and scanFuncName[name]
-      if auras then
-        for _, triggerInfo in pairs(auras) do
-          if triggerInfo.fetchTooltip then
-            matchData[unit][filter][index]:UpdateTooltip(time)
-          end
-          if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
-            local id = triggerInfo.id
-            local triggernum = triggerInfo.triggernum
-            ReferenceMatchData(id, triggernum, unit, filter, index)
-            matchDataChanged[id] = matchDataChanged[id] or {}
-            matchDataChanged[id][triggernum] = true
-          end
-        end
-      end
-
-      auras = scanFuncSpellId and scanFuncSpellId[spellId]
-      if auras then
-        for _, triggerInfo in pairs(auras) do
-          if triggerInfo.fetchTooltip then
-            matchData[unit][filter][index]:UpdateTooltip(time)
-          end
-          if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
-            local id = triggerInfo.id
-            local triggernum = triggerInfo.triggernum
-            ReferenceMatchData(id, triggernum, unit, filter, index)
-            matchDataChanged[id] = matchDataChanged[id] or {}
-            matchDataChanged[id][triggernum] = true
-          end
-        end
-      end
-
-      if scanFuncGeneral then
-        for _, triggerInfo in pairs(scanFuncGeneral) do
-          if triggerInfo.fetchTooltip then
-            matchData[unit][filter][index]:UpdateTooltip(time)
-          end
-          if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
-            local id = triggerInfo.id
-            local triggernum = triggerInfo.triggernum
-            ReferenceMatchData(id, triggernum, unit, filter, index)
-            matchDataChanged[id] = matchDataChanged[id] or {}
-            matchDataChanged[id][triggernum] = true
-          end
-        end
-      end
+      CheckScanFuncs(scanFuncName and scanFuncName[name], unit, filter, index)
+      CheckScanFuncs(scanFuncNameGroup and scanFuncNameGroup[name], unit, filter, index)
+      CheckScanFuncs(scanFuncSpellId and scanFuncSpellId[spellId], unit, filter, index)
+      CheckScanFuncs(scanFuncSpellIdGroup and scanFuncSpellIdGroup[spellId], unit, filter, index)
+      CheckScanFuncs(scanFuncGeneral, unit, filter, index)
+      CheckScanFuncs(scanFuncGeneralGroup, unit, filter, index)
     end
     index = index + 1
   end
@@ -1128,9 +1108,6 @@ local function FilterGeneralScanFuncs(input, unit, isSelf, role)
 end
 
 local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchDataByTrigger, invalidUnit)
-  if WeakAuras.IsPaused() then
-    return
-  end
   local unitExists = UnitExists(unit)
   if existingUnits[unit] ~= unitExists then
     existingUnits[unit] = unitExists
@@ -1145,22 +1122,34 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
     end
   end
 
-  if unitType ~= "group" then
+  scanFuncName[unit] = scanFuncName[unit] or {}
+  scanFuncSpellId[unit] = scanFuncSpellId[unit] or {}
+  scanFuncGeneral[unit] = scanFuncGeneral[unit] or {}
+
+  if (unitType) then
     scanFuncName[unitType] = scanFuncName[unitType] or {}
     scanFuncSpellId[unitType] = scanFuncSpellId[unitType] or {}
     scanFuncGeneral[unitType] = scanFuncGeneral[unitType] or {}
+  end
 
+  if unitType ~= "group" then
     ScanUnitWithFilter(matchDataChanged, time, unit, "HELPFUL",
-      scanFuncName[unitType]["HELPFUL"],
-      scanFuncSpellId[unitType]["HELPFUL"],
-      scanFuncGeneral[unitType]["HELPFUL"],
+      unitType and scanFuncName[unitType]["HELPFUL"],
+      unitType and scanFuncSpellId[unitType]["HELPFUL"],
+      unitType and scanFuncGeneral[unitType]["HELPFUL"],
+      scanFuncName[unit]["HELPFUL"],
+      scanFuncSpellId[unit]["HELPFUL"],
+      scanFuncGeneral[unit]["HELPFUL"],
       resetMatchDataByTrigger,
       invalidUnit)
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
-      scanFuncName[unitType]["HARMFUL"],
-      scanFuncSpellId[unitType]["HARMFUL"],
-      scanFuncGeneral[unitType]["HARMFUL"],
+      unitType and scanFuncName[unitType]["HARMFUL"],
+      unitType and scanFuncSpellId[unitType]["HARMFUL"],
+      unitType and scanFuncGeneral[unitType]["HARMFUL"],
+      scanFuncName[unit]["HARMFUL"],
+      scanFuncSpellId[unit]["HARMFUL"],
+      scanFuncGeneral[unit]["HARMFUL"],
       resetMatchDataByTrigger,
       invalidUnit)
   else
@@ -1172,6 +1161,9 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
       scanFuncNameGroup[unit]["HELPFUL"],
       scanFuncSpellIdGroup[unit]["HELPFUL"],
       scanFuncGeneralGroup[unit]["HELPFUL"],
+      scanFuncName[unit]["HELPFUL"],
+      scanFuncSpellId[unit]["HELPFUL"],
+      scanFuncGeneral[unit]["HELPFUL"],
       resetMatchDataByTrigger,
       invalidUnit)
 
@@ -1179,6 +1171,9 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
       scanFuncNameGroup[unit]["HARMFUL"],
       scanFuncSpellIdGroup[unit]["HARMFUL"],
       scanFuncGeneralGroup[unit]["HARMFUL"],
+      scanFuncName[unit]["HARMFUL"],
+      scanFuncSpellId[unit]["HARMFUL"],
+      scanFuncGeneral[unit]["HARMFUL"],
       resetMatchDataByTrigger,
       invalidUnit)
   end
@@ -1333,11 +1328,11 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
   local time = GetTime()
   if event == "PLAYER_TARGET_CHANGED" then
-    ScanGroupUnit(time, matchDataChanged, "target", "target")
+    ScanGroupUnit(time, matchDataChanged, nil, "target")
   elseif event == "PLAYER_FOCUS_CHANGED" then
-    ScanGroupUnit(time, matchDataChanged, "focus", "focus")
+    ScanGroupUnit(time, matchDataChanged, nil, "focus")
   elseif event == "UNIT_PET" then
-    ScanGroupUnit(time, matchDataChanged, "pet", "pet")
+    ScanGroupUnit(time, matchDataChanged, nil, "pet")
   elseif event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
     UpdateGroupCountFor("nameplate", event)
     ScanGroupUnit(time, matchDataChanged, "nameplate", arg1, nil, event == "NAME_PLATE_UNIT_REMOVED")
@@ -1365,13 +1360,17 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       ScanGroupUnit(time, matchDataChanged, "arena", arg1)
     elseif arg1:sub(1, 9) == "nameplate" then
       ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
+    else
+      ScanGroupUnit(time, matchDataChanged, nil, arg1)
     end
-    ScanGroupUnit(time, matchDataChanged, arg1, arg1)
   end
   WeakAuras.StopProfileSystem("bufftrigger2")
 end)
 
 frame:SetScript("OnUpdate", function()
+  if WeakAuras.IsPaused() then
+    return
+  end
   WeakAuras.StartProfileSystem("bufftrigger2")
   if next(matchDataChanged) then
     local time = GetTime()
@@ -1408,7 +1407,7 @@ function BuffTrigger.ScanAll()
         ScanGroupUnit(time, matchDataChanged, "nameplate", "nameplate" .. i)
       end
     else
-      ScanGroupUnit(time, matchDataChanged, unit, unit)
+      ScanGroupUnit(time, matchDataChanged, nil, unit)
     end
   end
 end
