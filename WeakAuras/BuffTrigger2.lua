@@ -963,6 +963,25 @@ local function CleanUpOutdatedMatchData(time, unit, filter)
   end
 end
 
+local function CleanUpMatchDataGroupTriggers(unit)
+  if matchData[unit] then
+    for filter, filterData in pairs(matchData[unit]) do
+      for index, data in pairs(filterData) do
+        for id, triggerData in pairs(data.auras) do
+         for triggernum in pairs(triggerData) do
+           local triggerInfo = triggerInfos[id][triggernum]
+           if (triggerInfo.unit == "group") then
+             matchDataByTrigger[id][triggernum][unit][index] = nil
+             matchDataChanged[id] = matchDataChanged[id] or {}
+             matchDataChanged[id][triggernum] = true
+           end
+         end
+        end
+      end
+    end
+  end
+end
+
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter, scanFuncName, scanFuncSpellId, scanFuncGeneral, resetMatchDataByTrigger, invalidUnit)
   if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral then
     CleanUpOutdatedMatchData(time, unit, filter)
@@ -1199,14 +1218,31 @@ local function UpdatePerGroupUnitScanFuncs()
   end
 end
 
+local lastGroupType
 local function ScanAllGroup(time, matchDataChanged, resetMatchDataByTrigger)
   -- We iterate over all raid/player unit ids here because ScanGroupUnit also
   -- handles the cases where a unit existance changes.
+
   if IsInRaid() then
+    if lastGroupType ~= true then
+      -- We are now in a raid, but we might have matchDatas for the units player, party1..party4,
+      -- which needs to be removed
+      CleanUpMatchDataGroupTriggers("player")
+      for i = 1, 4 do
+        CleanUpMatchDataGroupTriggers(WeakAuras.partyUnits[i])
+      end
+    end
+    lastGroupType = true
     for i = 1, 40 do
       ScanGroupUnit(time, matchDataChanged, "group", WeakAuras.raidUnits[i], resetMatchDataByTrigger)
     end
   else
+    if lastGroupType ~= false then
+      for i = 1, 40 do
+        CleanUpMatchDataGroupTriggers(WeakAuras.raidUnits[i])
+      end
+    end
+    lastGroupType = false
     ScanGroupUnit(time, matchDataChanged, "group", "player", resetMatchDataByTrigger)
     for i = 1, 4 do
       ScanGroupUnit(time, matchDataChanged, "group", WeakAuras.partyUnits[i], resetMatchDataByTrigger)
@@ -1314,7 +1350,9 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     -- it brings.
     ScanAllGroup(time, matchDataChanged, true)
   elseif event == "UNIT_AURA" then
-    if arg1:sub(1,4) == "raid" or arg1:sub(1,5) == "party" or arg1 == "player" then
+    if (arg1:sub(1,4) == "raid" and IsInRaid()) then
+      ScanGroupUnit(time, matchDataChanged, "group", arg1)
+    elseif ((arg1:sub(1,5) == "party" or arg1 == "player") and not IsInRaid()) then
       ScanGroupUnit(time, matchDataChanged, "group", arg1)
     elseif arg1:sub(1,4) == "boss" then
       ScanGroupUnit(time, matchDataChanged, "boss", arg1)
