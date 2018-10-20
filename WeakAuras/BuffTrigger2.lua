@@ -194,7 +194,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       casterName = unitCaster and GetUnitName(unitCaster, false) or "",
       spellId = spellId,
       unit = unit,
-      unitName = GetUnitName(unit, false),
+      unitName = GetUnitName(unit, false) or "",
       isStealable = isStealable,
       time = time,
       lastChanged = time,
@@ -580,7 +580,7 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       changed = true
     end
 
-    local unitName = unit and GetUnitName(unit, false)
+    local unitName = unit and GetUnitName(unit, false) or ""
     if state.unitName ~= unitName then
       state.unitName = unitName
       changed = true
@@ -2603,7 +2603,7 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     changed = true
   end
 
-  local casterName = GetUnitName(unitCaster, false)
+  local casterName = GetUnitName(unitCaster, false) or ""
   if (matchData.casterName ~= casterName) then
     matchData.casterName = casterName
     changed = true
@@ -2614,7 +2614,7 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     changed = true;
   end
 
-  local unitName = GetUnitName(unit, false)
+  local unitName = GetUnitName(unit, false) or ""
   if (matchData.unitName ~= unitName) then
     matchData.unitName = unitName
     changed = true
