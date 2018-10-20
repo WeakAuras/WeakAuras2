@@ -728,7 +728,6 @@ end
 
 
 local function UpdateGroupCountFor(unit, event)
-  print("UpdateGroupCountFor ", unit, event)
   if unit == "boss" then
     local count = 0
     for i = 1, 4 do
