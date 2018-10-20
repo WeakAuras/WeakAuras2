@@ -1654,7 +1654,13 @@ function BuffTrigger.UnloadDisplays(toUnload)
     end
     matchDataByTrigger[id] = nil
 
-    -- TODO clean up matchDataMulti
+    for guid, guidData in pairs(matchDataMulti) do
+      for key, data in pairs(matchDataMulti[guid]) do
+        for source, sourceData in pairs(data) do
+          sourceData.auras[id] = nil;
+        end
+      end
+    end
 
   end
 end
