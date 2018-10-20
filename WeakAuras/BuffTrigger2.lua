@@ -81,6 +81,7 @@ local scanFuncGeneralGroup = {}
 
 local unitExistScanFunc = {}
 local existingUnits = {}
+local groupScanFuncs = {}
 local groupCountScanFunc = {}
 
 local groupCount = {}
@@ -765,6 +766,16 @@ local function SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, ma
   return true
 end
 
+local function TriggerInfoApplies(triggerInfo, isSelf, role)
+  if triggerInfo.ignoreSelf and isSelf then
+    return false
+  end
+  if triggerInfo.groupRole and triggerInfo.groupRole ~= role then
+    return false
+  end
+  return true
+end
+
 local function UpdateTriggerState(time, id, triggernum)
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   local triggerInfo = triggerInfos[id][triggernum]
@@ -893,13 +904,15 @@ local function UpdateTriggerState(time, id, triggernum)
         end
       else
         for unit in GetAllUnits(triggerInfo.unit) do
-          local bestMatch = matches[unit]
-          if bestMatch then
-            if triggerInfo.perUnitMode == "all" then
-              updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+          if (TriggerInfoApplies(triggerInfo, UnitIsUnit("player", unit), UnitGroupRolesAssigned(unit))) then
+            local bestMatch = matches[unit]
+            if bestMatch then
+              if triggerInfo.perUnitMode == "all" then
+                updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
+              end
+            else
+              updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
             end
-          else
-            updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, unit, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
           end
         end
       end
@@ -1074,16 +1087,6 @@ local function UpdateStates(matchDataChanged, time)
     end
     WeakAuras.StopProfileAura(id)
   end
-end
-
-local function TriggerInfoApplies(triggerInfo, isSelf, role)
-  if triggerInfo.ignoreSelf and isSelf then
-    return false
-  end
-  if triggerInfo.groupRole and triggerInfo.groupRole ~= role then
-    return false
-  end
-  return true
 end
 
 local function FilterScanFuncsHelper(input, isSelf, role)
@@ -1371,6 +1374,11 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     -- those accurately is possible but feel like it is too much effort for the gain
     -- it brings.
     ScanAllGroup(time, matchDataChanged, true)
+
+    for index, triggerInfo in ipairs(groupScanFuncs) do
+      matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {}
+      matchDataChanged[triggerInfo.id][triggerInfo.triggernum] = true
+    end
   elseif event == "UNIT_AURA" then
     if (arg1:sub(1,4) == "raid" and IsInRaid()) then
       ScanGroupUnit(time, matchDataChanged, "group", arg1)
@@ -1504,6 +1512,7 @@ function BuffTrigger.UnloadAll()
   wipe(scanFuncNameMulti)
   wipe(scanFuncSpellIdMulti)
   wipe(unitExistScanFunc)
+  wipe(groupScanFuncs)
   wipe(groupCountScanFunc)
   wipe(matchDataByTrigger)
   wipe(matchDataMulti)
@@ -1585,6 +1594,10 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(groupCountScanFunc, triggerInfo)
   end
 
+  if triggerInfo.unit == "group" then
+    tinsert(groupScanFuncs, triggerInfo)
+  end
+
   -- set up initial states
     -- Check against existing match data
   if triggerInfo.unit == "multi" then
@@ -1653,6 +1666,12 @@ function BuffTrigger.UnloadDisplays(toUnload)
     for i = #groupCountScanFunc, 1, -1 do
       if groupCountScanFunc[i].id == id then
         tremove(groupCountScanFunc, i)
+      end
+    end
+
+    for i = #groupScanFuncs, 1, -1 do
+      if groupScanFuncs[i].id == id then
+        tremove(groupScanFuncs, i)
       end
     end
 
