@@ -3509,7 +3509,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
           end
         end
       elseif (mode == "firstValue") then
-        result = false;
+        result = nil;
         for i = 1, #data.triggers do
           local tmp = func(data, i);
           if (tmp) then
