@@ -1691,7 +1691,7 @@ function BuffTrigger.UnloadDisplays(toUnload)
         end
       end
     end
-
+    matchDataChanged[id] = nil
   end
 end
 
@@ -1735,6 +1735,8 @@ function BuffTrigger.Rename(oldid, newid)
     unitData[newid] = unitData[oldid]
     unitData[oldid] = nil
   end
+  matchDataChanged[newid] = matchDataChanged[oldid]
+  matchDataChanged[oldid] = nil
 end
 
 local function createScanFunc(trigger)
