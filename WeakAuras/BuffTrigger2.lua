@@ -235,7 +235,12 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
 
   if data.unitCaster ~= unitCaster then
     data.unitCaster = unitCaster
-    data.casterName = unitCaster and GetUnitName(unitCaster, false) or ""
+    changed = true
+  end
+
+  local casterName = unitCaster and GetUnitName(unitCaster, false) or ""
+  if data.casterName ~= casterName then
+    data.casterName = casterName
     changed = true
   end
 
@@ -571,7 +576,12 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
 
     if state.unit ~= unit then
       state.unit = unit
-      state.unitName = unit and GetUnitName(unit, false)
+      changed = true
+    end
+
+    local unitName = unit and GetUnitName(unit, false)
+    if state.unitName ~= unitName then
+      state.unitName = unitName
       changed = true
     end
 
@@ -652,7 +662,7 @@ local function GetAllUnits(unit)
         if i <= max then
           local ret = WeakAuras.raidUnits[i]
           i = i + 1
-          return i
+          return ret
         end
         i = 1
       end
@@ -981,6 +991,7 @@ local function CleanUpMatchDataGroupTriggers(unit)
          for triggernum in pairs(triggerData) do
            local triggerInfo = triggerInfos[id][triggernum]
            if (triggerInfo.unit == "group") then
+             triggerData[triggernum] = nil
              matchDataByTrigger[id][triggernum][unit][index] = nil
              matchDataChanged[id] = matchDataChanged[id] or {}
              matchDataChanged[id][triggernum] = true
@@ -1584,7 +1595,7 @@ local function LoadAura(id, triggernum, triggerInfo)
       local isSelf = UnitIsUnit("player", unit)
       local role = UnitGroupRolesAssigned(unit)
       if TriggerInfoApplies(triggerInfo, isSelf, role) then
-        PrepareMatchData("player", filter)
+        PrepareMatchData(unit, filter)
         if matchData[unit] and matchData[unit][filter] then
           for index, match in pairs(matchData[unit][filter]) do
             if (not triggerInfo.auranames and not triggerInfo.auraspellids)
@@ -2570,15 +2581,26 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
 
   if matchData.unitCaster ~= unitCaster then
     matchData.unitCaster = unitCaster
-    matchData.casterName = GetUnitName(unitCaster, false);
+    changed = true
+  end
+
+  local casterName = GetUnitName(unitCaster, false)
+  if (matchData.casterName ~= casterName) then
+    matchData.casterName = casterName
     changed = true
   end
 
   if (matchData.unit ~= unit) then
     matchData.unit = unit;
-    matchData.unitName = GetUnitName(unit, false);
     changed = true;
   end
+
+  local unitName = GetUnitName(unit, false)
+  if (matchData.unitName ~= unitName) then
+    matchData.unitName = unitName
+    changed = true
+  end
+
 
   if matchData.spellId ~= spellId then
     matchData.spellId = name
