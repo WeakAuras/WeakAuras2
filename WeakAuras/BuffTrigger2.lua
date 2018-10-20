@@ -93,6 +93,7 @@ local cleanupTimerMulti = {};
 
 -- Auras that matched, unit, index
 local matchData = {}
+local matchDataUpToDate = {}
 
 local matchDataMulti = {}
 -- Auras that matched, keyed on id, triggernum, kept in sync with matchData
@@ -928,25 +929,29 @@ recheckTriggerInfo = function(triggerInfo)
 end
 
 local function PrepareMatchData(unit, filter)
-  -- TODO make this lazy
-  local time = GetTime();
-  local index = 1
-  while true do
-    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
-    if not name then
-      break
+  if (not matchDataUpToDate[unit] or not matchDataUpToDate[unit][filter]) then
+    local time = GetTime();
+    local index = 1
+    while true do
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
+      if not name then
+        break
+      end
+
+      if debuffClass == nil then
+        debuffClass = "none"
+      elseif debuffClass == "" then
+        debuffClass = "enrage"
+      else
+        debuffClass = string.lower(debuffClass)
+      end
+
+      local updatedMatchData = UpdateMatchData(time, matchDataChanged, false, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      index = index + 1
     end
 
-    if debuffClass == nil then
-      debuffClass = "none"
-    elseif debuffClass == "" then
-      debuffClass = "enrage"
-    else
-      debuffClass = string.lower(debuffClass)
-    end
-
-    local updatedMatchData = UpdateMatchData(time, matchDataChanged, false, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
-    index = index + 1
+    matchDataUpToDate[unit] = matchDataUpToDate[unit] or {}
+    matchDataUpToDate[unit][filter] = true
   end
 end
 
@@ -1009,6 +1014,9 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
                                   scanFuncName, scanFuncSpellId, scanFuncGeneral,
                                   resetMatchDataByTrigger, invalidUnit)
   if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral and not scanFuncNameGroup and not scanFuncSpellIdGroup and not scanFuncGeneralGroup then
+    if (matchDataUpToDate[unit]) then
+      matchDataUpToDate[unit][filter] = nil
+    end
     CleanUpOutdatedMatchData(time, unit, filter)
     return
   end
@@ -1042,6 +1050,9 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
   end
 
   CleanUpOutdatedMatchData(time, unit, filter)
+
+  matchDataUpToDate[unit] = matchDataUpToDate[unit] or {}
+  matchDataUpToDate[unit][filter] = true
 end
 
 local function UpdateStates(matchDataChanged, time)
