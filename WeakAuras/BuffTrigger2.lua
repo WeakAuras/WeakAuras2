@@ -255,6 +255,12 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
     changed = true
   end
 
+  local unitName = GetUnitName(unit, false) or ""
+  if (data.unitName ~= unitName) then
+    data.unitName = unitName
+    changed = true
+  end
+
   if changed then
     data.lastChanged = time
   end
@@ -720,8 +726,68 @@ local function GetAllUnits(unit)
   end
 end
 
+
+local function UpdateGroupCountFor(unit, event)
+  print("UpdateGroupCountFor ", unit, event)
+  if unit == "boss" then
+    local count = 0
+    for i = 1, 4 do
+      if UnitExists("boss" .. i) then
+        count = count + 1
+      end
+    end
+    groupCount["boss"] = 4
+  end
+
+  if unit == "nameplate" then
+    if event == "NAME_PLATE_UNIT_ADDED" then
+      groupCount["nameplate"] = (groupCount["nameplate"] or 0) + 1
+    else
+      groupCount["nameplate"] = (groupCount["nameplate"] or 0) - 1
+    end
+  end
+
+  if unit == "group" then
+    groupCount["HEALER"] = 0
+    groupCount["DAMAGER"] = 0
+    groupCount["TANK"] = 0
+
+    playerRole = UnitGroupRolesAssigned("player")
+    if IsInRaid() then
+      groupCount["group"] = GetNumGroupMembers()
+      for i = 1, GetNumGroupMembers() do
+        local role = UnitGroupRolesAssigned(WeakAuras.raidUnits[i])
+        if role and role ~= "NONE" then
+          groupCount[role] = groupCount[role] + 1
+        end
+      end
+    else
+      groupCount["group"] = GetNumSubgroupMembers() + 1
+      for i = 1, GetNumSubgroupMembers() do
+        local role = UnitGroupRolesAssigned(WeakAuras.partyUnits[i])
+        if role and role ~= "NONE" then
+          groupCount[role] = groupCount[role] + 1
+        end
+      end
+      if playerRole and playerRole ~= "NONE" then
+        groupCount[playerRole] = groupCount[playerRole] + 1
+      end
+    end
+  end
+
+  for index, triggerInfo in ipairs(groupCountScanFunc) do
+    if triggerInfo.unit == unit then
+      matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {}
+      matchDataChanged[triggerInfo.id][triggerInfo.triggernum] = true
+    end
+  end
+end
+
 local function MaxUnitCount(triggerInfo)
   if triggerInfo.unit == "group" then
+    if (not groupCount["group"]) then
+      UpdateGroupCountFor("group")
+    end
     local count
     if triggerInfo.groupRole then
       count = groupCount[triggerInfo.groupRole] or 0
@@ -733,6 +799,10 @@ local function MaxUnitCount(triggerInfo)
     end
     return count
   else
+    if (triggerInfo.unit == "boss" and not groupCount["boss"]) then
+      UpdateGroupCountFor("boss")
+    end
+
     return groupCount[triggerInfo.unit] or UnitExists(triggerInfo.unit) and 1 or 0
   end
 end
@@ -1278,61 +1348,6 @@ end
 local function ScanAllBoss(time, matchDataChanged)
   for i = 1,4 do
     ScanGroupUnit(time, matchDataChanged, "boss", "boss" .. i)
-  end
-end
-
-local function UpdateGroupCountFor(unit, event)
-  if unit == "boss" then
-    local count = 0
-    for i = 1, 4 do
-      if UnitExists("boss" .. i) then
-        count = count + 1
-      end
-    end
-    groupCount["boss"] = 4
-  end
-
-  if unit == "nameplate" then
-    if event == "NAME_PLATE_UNIT_ADDED" then
-      groupCount["nameplate"] = (groupCount["nameplate"] or 0) + 1
-    else
-      groupCount["nameplate"] = (groupCount["nameplate"] or 0) - 1
-    end
-  end
-
-  if unit == "group" then
-    groupCount["HEALER"] = 0
-    groupCount["DAMAGER"] = 0
-    groupCount["TANK"] = 0
-
-    playerRole = UnitGroupRolesAssigned("player")
-    if IsInRaid() then
-      groupCount["group"] = GetNumGroupMembers()
-      for i = 1, GetNumGroupMembers() do
-        local role = UnitGroupRolesAssigned(WeakAuras.raidUnits[i])
-        if role and role ~= "NONE" then
-          groupCount[role] = groupCount[role] + 1
-        end
-      end
-    else
-      groupCount["group"] = GetNumSubgroupMembers() + 1
-      for i = 1, GetNumSubgroupMembers() do
-        local role = UnitGroupRolesAssigned(WeakAuras.partyUnits[i])
-        if role and role ~= "NONE" then
-          groupCount[role] = groupCount[role] + 1
-        end
-      end
-      if playerRole and playerRole ~= "NONE" then
-        groupCount[playerRole] = groupCount[playerRole] + 1
-      end
-    end
-  end
-
-  for index, triggerInfo in ipairs(groupCountScanFunc) do
-    if triggerInfo.unit == unit then
-      matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {}
-      matchDataChanged[triggerInfo.id][triggerInfo.triggernum] = true
-    end
   end
 end
 
