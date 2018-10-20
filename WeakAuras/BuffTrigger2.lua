@@ -1882,7 +1882,11 @@ function BuffTrigger.Add(data)
       if not IsSingleMissing(trigger) and trigger.showClones then
         if IsGroupTrigger(trigger) and trigger.combinePerUnit then
           combineMode = "showPerUnit"
-          perUnitMode = trigger.unit ~= "multi" and (trigger.perUnitMode or "affected")
+          if (trigger.unit == "multi") then
+            perUnitMode = "affected"
+          else
+            perUnitMode = trigger.perUnitMode or "affected"
+          end
         else
           combineMode = "showClones"
         end
