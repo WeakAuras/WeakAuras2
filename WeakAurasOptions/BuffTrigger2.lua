@@ -277,7 +277,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     use_tooltip = {
       type = "toggle",
-      name = L["Tooltip Pattern Mach"],
+      name = L["Tooltip Pattern Match"],
       order = 62.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.fetchTooltip) end
     },
