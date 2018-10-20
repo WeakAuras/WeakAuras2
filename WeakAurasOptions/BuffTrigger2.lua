@@ -462,9 +462,12 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Count"],
       desc = function()
-        -- TODO fix this
-        local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
-        return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
+        if (trigger.unit == "multi") then
+          return L["Compare against the number of units affected."]
+        else
+          local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
+          return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
+        end
       end,
       order = 68.3,
       width = "half",

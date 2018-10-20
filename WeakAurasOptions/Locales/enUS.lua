@@ -193,16 +193,16 @@ L["Full Scan"] = "Full Scan"
 L["Ghost Wolf"] = "Ghost Wolf"
 L["Glow Action"] = "Glow Action"
 L["Group aura count description"] = [=[
-The amount of %s members which must be affected by one or more of the given auras for the display to trigger.
-If the entered number is a whole number (e.g. 5), the number of affected raid members will be compared with the entered number.
+The amount of units of type '%s' which must be affected by one or more of the given auras for the display to trigger.
+If the entered number is a whole number (e.g. 5), the number of affected units will be compared with the entered number.
 If the entered number is a decimal (e.g. 0.5), fraction (e.g. 1/2), or percentage (e.g. 50%%), then that fraction of the %s must be affected.
 
 |cFF4444FFFor example:|r
-|cFF00CC00> 0|r will trigger when anyone in the %s is affected
-|cFF00CC00= 100%%|r will trigger when everyone in the %s is affected
-|cFF00CC00!= 2|r will trigger when the number of %s members affected is not exactly 2
-|cFF00CC00<= 0.8|r will trigger when less than 80%% of the %s is affected (4 of 5 party members, 8 of 10 or 20 of 25 raid members)
-|cFF00CC00> 1/2|r will trigger when more than half of the %s is affected
+|cFF00CC00> 0|r will trigger when any unit of type '%s' is is affected
+|cFF00CC00= 100%%|r will trigger when ever unit of type '%s' is affected
+|cFF00CC00!= 2|r will trigger when the number of units of type '%s' affected is not exactly 2
+|cFF00CC00<= 0.8|r will trigger when less than 80%% of the units of type '%s' is affected (4 of 5 party members, 8 of 10 or 20 of 25 raid members)
+|cFF00CC00> 1/2|r will trigger when more than half of the units of type '%s' is affected
 |cFF00CC00>= 0|r will always trigger, no matter what
 ]=]
 L["Group Member Count"] = "Group Member Count"
