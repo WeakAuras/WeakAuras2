@@ -132,30 +132,31 @@ local function GetProperties(data)
   return properties;
 end
 
-local function GetTexCoord(region, texWidth, aspectRatio)
-  local currentCoord
 
+local function GetTexCoord(region, texWidth, aspectRatio)
+  region.currentCoord = region.currentCoord or {}
+  local usesMasque = false
   if region.MSQGroup then
     region.MSQGroup:ReSkin();
 
     local db = region.MSQGroup.db
     if db and not db.Disabled then
-      currentCoord = {region.icon:GetTexCoord()}
+      usesMasque = true
+      region.currentCoord[1], region.currentCoord[2], region.currentCoord[3], region.currentCoord[4], region.currentCoord[5], region.currentCoord[6], region.currentCoord[7], region.currentCoord[8] = region.icon:GetTexCoord()
     end
   end
-  if (not currentCoord) then
-    currentCoord = {0, 0, 0, 1, 1, 0, 1, 1};
+  if (not usesMasque) then
+    region.currentCoord[1], region.currentCoord[2], region.currentCoord[3], region.currentCoord[4], region.currentCoord[5], region.currentCoord[6], region.currentCoord[7], region.currentCoord[8] = 0, 0, 0, 1, 1, 0, 1, 1;
   end
 
   local xRatio = aspectRatio < 1 and aspectRatio or 1;
   local yRatio = aspectRatio > 1 and 1 / aspectRatio or 1;
-  local texCoord = {}
-  for i, coord in pairs(currentCoord) do
+  for i, coord in ipairs(region.currentCoord) do
     local aspectRatio = (i % 2 == 1) and xRatio or yRatio;
-    texCoord[i] = (coord - 0.5) * texWidth * aspectRatio + 0.5;
+    region.currentCoord[i] = (coord - 0.5) * texWidth * aspectRatio + 0.5;
   end
 
-  return unpack(texCoord)
+  return unpack(region.currentCoord)
 end
 
 local function create(parent, data)
