@@ -888,7 +888,7 @@ templates.class.HUNTER = {
         { spell = 272733, type = "buff", unit = "player"}, --In The Rhythm
         { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
         { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-        { spell = 277959, type = "buff", unit = "player"}, --Steady Aim
+        { spell = 277959, type = "debuff", unit = "target"}, --Steady Aim
         { spell = 274447, type = "buff", unit = "player"}, --Unerring Vision
       },
       icon = 135349
