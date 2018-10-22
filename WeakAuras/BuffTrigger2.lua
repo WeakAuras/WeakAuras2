@@ -256,7 +256,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   end
 
   local unitName = GetUnitName(unit, false) or ""
-  if (data.unitName ~= unitName) then
+  if data.unitName ~= unitName then
     data.unitName = unitName
     changed = true
   end
@@ -398,12 +398,12 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
     local changed = false
     state.time = time
 
-    if (state.unit ~= bestMatch.unit) then
+    if state.unit ~= bestMatch.unit then
       state.unit = bestMatch.unit
       changed = true
     end
 
-    if (state.unitName ~= bestMatch.unitName) then
+    if state.unitName ~= bestMatch.unitName then
       state.unitName = bestMatch.unitName
       changed = true
     end
@@ -725,7 +725,6 @@ local function GetAllUnits(unit)
     end
   end
 end
-
 
 local function UpdateGroupCountFor(unit, event)
   if unit == "boss" then
@@ -1072,7 +1071,7 @@ local function CleanUpMatchDataGroupTriggers(unit)
         for id, triggerData in pairs(data.auras) do
          for triggernum in pairs(triggerData) do
            local triggerInfo = triggerInfos[id][triggernum]
-           if (triggerInfo.unit == "group") then
+           if triggerInfo.unit == "group" then
              triggerData[triggernum] = nil
              matchDataByTrigger[id][triggernum][unit][index] = nil
              matchDataChanged[id] = matchDataChanged[id] or {}
@@ -1710,7 +1709,7 @@ function BuffTrigger.UnloadDisplays(toUnload)
 end
 
 function BuffTrigger.FinishLoadUnload()
-
+  -- Nothing!
 end
 
 --- Removes all data for an aura id
@@ -1928,7 +1927,7 @@ function BuffTrigger.Add(data)
       if not IsSingleMissing(trigger) and trigger.showClones then
         if IsGroupTrigger(trigger) and trigger.combinePerUnit then
           combineMode = "showPerUnit"
-          if (trigger.unit == "multi") then
+          if trigger.unit == "multi" then
             perUnitMode = "affected"
           else
             perUnitMode = trigger.perUnitMode or "affected"
@@ -1998,7 +1997,6 @@ function BuffTrigger.Add(data)
       end
 
       local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIcon(data, triggernum)
-
 
       local auraspellids
       if trigger.useExactSpellId and trigger.auraspellids then
@@ -2455,7 +2453,7 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
     for id, idData in pairs(base[key][sourceGUID].auras) do
       for triggernum, triggerData in pairs(idData) do
         tDeleteItem(matchDataByTrigger[id][triggernum][destGUID], base[key][sourceGUID])
-        if (not next(matchDataByTrigger[id][triggernum][destGUID])) then
+        if not next(matchDataByTrigger[id][triggernum][destGUID]) then
           matchDataByTrigger[id][triggernum][destGUID] = nil
         end
         matchDataChanged[id] = matchDataChanged[id] or {}
@@ -2475,10 +2473,10 @@ local function CleanUpMulti(guid)
     for key, data in pairs(matchDataMulti[guid]) do
       for source, sourceData in pairs(data) do
         local removeAt = sourceData.expirationTime or (sourceData.time + 60)
-        if (removeAt <= time) then
+        if removeAt <= time then
           RemoveMatchDataMulti(matchDataMulti[guid], guid, key, source)
         else
-          if (not nextCheck) then
+          if not nextCheck then
             nextCheck = removeAt
           elseif (removeAt < nextCheck) then
             nextCheck = removeAt
@@ -2488,9 +2486,9 @@ local function CleanUpMulti(guid)
     end
   end
 
-  if (nextCheck) then
+  if nextCheck then
     local timeUntilNext = nextCheck - GetTime()
-    if (timeUntilNext > 0) then
+    if timeUntilNext > 0 then
      cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, timeUntilNext, guid)
      cleanupTimerMulti[guid].nextTime = nextCheck
    end
@@ -2499,8 +2497,8 @@ end
 
 local function ScheduleMultiCleanUp(guid, time)
   cleanupTimerMulti[guid] = cleanupTimerMulti[guid] or {}
-  if (not cleanupTimerMulti[guid].nextTime or time < cleanupTimerMulti[guid].nextTime) then
-    if (cleanupTimerMulti[guid].handle) then
+  if not cleanupTimerMulti[guid].nextTime or time < cleanupTimerMulti[guid].nextTime then
+    if cleanupTimerMulti[guid].handle then
       timer:CancelTimer(cleanupTimerMulti[guid].handle)
     end
     cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, time - GetTime(), guid)
@@ -2532,10 +2530,12 @@ local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceNa
     base[key][sourceGUID] = base[key][sourceGUID] or {}
     local match = base[key][sourceGUID]
     match.time = time
+
     if match.name ~= spellName then
       match.name = spellName
       updated = true
     end
+
     if match.unitName ~= destName then
       match.unitName = destName
       updated = true
@@ -2620,7 +2620,7 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
   end
 
   local casterName = GetUnitName(unitCaster, false) or ""
-  if (matchData.casterName ~= casterName) then
+  if matchData.casterName ~= casterName then
     matchData.casterName = casterName
     changed = true
   end
@@ -2631,7 +2631,7 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
   end
 
   local unitName = GetUnitName(unit, false) or ""
-  if (matchData.unitName ~= unitName) then
+  if matchData.unitName ~= unitName then
     matchData.unitName = unitName
     changed = true
   end
@@ -2701,8 +2701,6 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
     end
   end
 end
-
-
 
 local function HandleCombatLogRemove(scanFuncsName, scanFuncsSpellId, sourceGUID, destGUID, spellId, spellName)
   if scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId] then
@@ -2819,7 +2817,7 @@ end
 
 function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
   local trigger = data.triggers[triggernum].trigger
-  if (trigger.auranames) then
+  if trigger.auranames then
     for index, name in pairs(trigger.auranames) do
       local left = " "
       if(index == 1) then
@@ -2843,12 +2841,12 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
     end
   end
 
-  if (trigger.auraspellids) then
+  if trigger.auraspellids then
     for index, spellId in pairs(trigger.auraspellids) do
       local left = " "
-      if(index == 1) then
-        if(#trigger.auraspellids > 0) then
-          if(#trigger.auraspellids > 1) then
+      if index == 1 then
+        if #trigger.auraspellids > 0 then
+          if #trigger.auraspellids > 1 then
             left = L["Spell IDs:"]
           else
             left = L["Spell ID:"]

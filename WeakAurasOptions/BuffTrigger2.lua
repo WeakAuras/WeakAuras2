@@ -59,7 +59,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   end
 
   local function IsSingleMissing(trigger)
-    return not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showOnMissing";
+    return not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showOnMissing"
   end
 
   local function HasMatchCount(trigger)
@@ -466,7 +466,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           return L["Compare against the number of units affected."]
         else
           local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
-          return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
+          return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
         end
       end,
       order = 68.3,
@@ -504,7 +504,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "normal",
       hidden = function()
         if trigger.type ~= "aura2" then
-          return true;
+          return true
         end
         if IsGroupTrigger(trigger) then
           return trigger.useMatch_count
@@ -602,7 +602,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
               return false
             end
           else
-            return not (not IsSingleMissing(trigger) and not trigger.showClones);
+            return not (not IsSingleMissing(trigger) and not trigger.showClones)
           end
         end
         return true
@@ -637,7 +637,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["nameicon" .. i] = {
       type = "execute",
       name = function()
-        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
+        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i])
         if spellId then
           return getAuraMatchesLabel(GetSpellInfo(spellId))
         else
@@ -645,7 +645,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         end
       end,
       desc = function()
-        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
+        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i])
         if spellId then
           local name = GetSpellInfo(spellId)
           if name then
@@ -661,10 +661,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       end,
       width = 0.2,
       image = function()
-        local icon;
-        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i]);
+        local icon
+        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i])
         if spellId then
-          icon = select(3, GetSpellInfo(spellId));
+          icon = select(3, GetSpellInfo(spellId))
         else
           icon = spellCache.GetIcon(trigger.auranames and trigger.auranames[i])
         end
@@ -718,11 +718,11 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["spellidicon" .. i] = {
       type = "execute",
       name = function()
-        return " ";
+        return " "
       end,
       desc = function()
         local name = GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i])
-        return name;
+        return name
       end,
       width = 0.2,
       image = function()
