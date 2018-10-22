@@ -84,28 +84,26 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Glow"],
       order = 20,
-      width = "double",
     },
     glowType = {
       type = "select",
       name = L["Glow Type"],
       order = 21,
       values = WeakAuras.glow_types,
-    },
-    glowToggleSpacer = {
-      type = "description",
-      name = "",
-      order = 22,
+      hidden = function() return not data.glow end,
     },
     useGlowColor = {
       type = "toggle",
       name = L["Glow Color"],
+      desc = L["If unchecked, then a default color will be used (usually yellow)"],
       order = 23,
+      hidden = function() return not data.glow end,
     },
     glowColor = {
       type = "color",
       name = L["Glow Color"],
       order = 24,
+      hidden = function() return not data.glow end,
       disabled = function() return not data.useGlowColor end,
     },
     textHeader1 = {

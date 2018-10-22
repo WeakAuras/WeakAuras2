@@ -42,6 +42,7 @@ local default = {
   customTextUpdate = "update",
   glow = false,
   useglowColor = false,
+  glowColor = {1, 1, 1, 1},
   glowType = "buttonOverlay",
   cooldownTextEnabled = true,
 };
