@@ -958,42 +958,7 @@ local methods = {
         namestable[1] = L["No Children"];
       end
     else
-      for triggernum, triggerData in ipairs(data.triggers) do
-        local trigger = triggerData.trigger
-        if(trigger) then
-          if(trigger.type == "aura") then
-            if(trigger.fullscan) then
-              tinsert(namestable, {L["Aura:"], L["Full Scan"]});
-            else
-              for index, name in pairs(trigger.names) do
-                local left = " ";
-                if(index == 1) then
-                  if(#trigger.names > 0) then
-                    if(#trigger.names > 1) then
-                      left = L["Auras:"];
-                    else
-                      left = L["Aura:"];
-                    end
-                  end
-                end
-                local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
-                tinsert(namestable, {left, name, icon});
-              end
-            end
-          elseif(trigger.type == "event" or trigger.type == "status") then
-            if(trigger.type == "event") then
-              tinsert(namestable, {L["Trigger:"], (WeakAuras.event_types[trigger.event] or L["Undefined"])});
-            else
-              tinsert(namestable, {L["Trigger:"], (WeakAuras.status_types[trigger.event] or L["Undefined"])});
-            end
-            if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
-              tinsert(namestable, {L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
-            end
-          else
-            tinsert(namestable, {L["Trigger:"], L["Custom"]});
-          end
-        end
-      end
+      WeakAuras.GetTriggerDescription(data, -1, namestable)
     end
     if(WeakAuras.CanHaveClones(data)) then
       tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})

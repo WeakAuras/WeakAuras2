@@ -173,6 +173,11 @@ local regionOptions = WeakAuras.regionOptions;
 WeakAuras.triggerTypes = {};
 local triggerTypes = WeakAuras.triggerTypes;
 
+-- Maps from trigger type to a functin that can create options for the trigger
+WeakAuras.triggerTypesOptions = {};
+local triggerTypesOptions = WeakAuras.triggerTypesOptions;
+
+
 -- Trigger State, updated by trigger systems, then applied to regions by UpdatedTriggerState
 -- keyed on id, triggernum, cloneid
 -- cloneid can be a empty string
@@ -2609,7 +2614,7 @@ local function removeSpellNames(data)
   local trigger
   for i = 1, #data.triggers do
     trigger = data.triggers[i].trigger
-    if trigger then
+    if trigger and trigger.type == "aura" then
       if type(trigger.spellName) == "number" then
         trigger.realSpellName = GetSpellInfo(trigger.spellName) or trigger.realSpellName
       end
@@ -2676,12 +2681,63 @@ local oldDataStub = {
   conditions = {},
 }
 
+local oldDataStub2 = {
+  -- note: this is the minimal data stub which prevents false positives in WeakAuras.diff upon reimporting an aura.
+  -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
+  triggers = {
+    {
+      trigger = {
+        type = "aura",
+        names = {},
+        event = "Health",
+        subeventPrefix = "SPELL",
+        subeventSuffix = "_CAST_START",
+        spellIds = {},
+        unit = "player",
+        debuffType = "HELPFUL",
+      },
+      untrigger = {},
+    },
+  },
+  load = {
+    size = {
+      multi = {},
+    },
+    spec = {
+      multi = {},
+    },
+    class = {
+      multi = {},
+    },
+  },
+  actions = {
+    init = {},
+    start = {},
+    finish = {},
+  },
+  animation = {
+    start = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    main = {
+      type = "none",
+      duration_type = "seconds",
+    },
+    finish = {
+      type = "none",
+      duration_type = "seconds",
+    },
+  },
+  conditions = {},
+}
+
 function WeakAuras.PreAdd(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
     WeakAuras.validate(data, oldDataStub)
   elseif (data.internalVersion < 8) then
-    WeakAuras.validate(data, WeakAuras.data_stub)
+    WeakAuras.validate(data, oldDataStub2)
   end
 
   local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
@@ -2760,7 +2816,6 @@ local function pAdd(data)
       triggerCount = 0,
       activatedConditions = {},
     };
-
 
     local region = WeakAuras.SetRegion(data);
     if (WeakAuras.clones[id]) then
@@ -3499,9 +3554,9 @@ end
 
 local function wrapTriggerSystemFunction(functionName, mode)
   local func;
-  func = function(data, triggernum)
+  func = function(data, triggernum, ...)
     if (not triggernum) then
-      return func(data, data.triggers.activeTriggerMode or -1);
+      return func(data, data.triggers.activeTriggerMode or -1, ...);
     elseif (triggernum < 0) then
       local result;
       if (mode == "or") then
@@ -3523,6 +3578,10 @@ local function wrapTriggerSystemFunction(functionName, mode)
               result[k] = v;
             end
           end
+        end
+      elseif (mode == "call") then
+        for i = 1, #data.triggers do
+          func(data, i, ...);
         end
       elseif (mode == "firstValue") then
         result = nil;
@@ -3547,7 +3606,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
       if (not triggerSystem) then
         return false
       end
-      return triggerSystem[functionName](data, triggernum);
+      return triggerSystem[functionName](data, triggernum, ...);
     end
   end
   return func;
@@ -3555,11 +3614,12 @@ end
 
 WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
 WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
-WeakAuras.CanGroupShowWithZero = wrapTriggerSystemFunction("CanGroupShowWithZero", "or");
 WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 WeakAuras.GetAdditionalProperties = wrapTriggerSystemFunction("GetAdditionalProperties", "firstValue");
+WeakAuras.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
+
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
 
 function WeakAuras.GetOverlayInfo(data, triggernum)
@@ -3750,6 +3810,7 @@ end
 
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltip = WeakAuras.GetHiddenTooltip();
+  tooltip:ClearLines();
   tooltip:SetUnitAura(unit, index, filter);
   local tooltipTextLine = select(5, tooltip:GetRegions())
 
@@ -3759,8 +3820,12 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltipSize = {};
   if(tooltipText) then
     for t in tooltipText:gmatch("(%d[%d%.,]*)") do
-      t = t:gsub(",", "");
-      t = t:gsub("%.", "");
+      if (LARGE_NUMBER_SEPERATOR == ",") then
+        t = t:gsub(",", "");
+      else
+        t = t:gsub("%.", "");
+        t = t:gsub(",", ".");
+      end
       tinsert(tooltipSize, tonumber(t));
     end
   end
@@ -4092,6 +4157,12 @@ function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
   tinsert(triggerSystems, triggerSystem);
 end
 
+function WeakAuras.RegisterTriggerSystemOptions(types, func)
+  for _, v in ipairs(types) do
+    triggerTypesOptions[v] = func;
+  end
+end
+
 function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   if (triggernum == -1) then
     return WeakAuras.GetGlobalConditionState();
@@ -4214,19 +4285,9 @@ local function applyToTriggerStateTriggers(stateShown, id, triggernum)
     triggerState[id].triggerCount = triggerState[id].triggerCount + 1;
     return true;
   elseif (not stateShown and triggerState[id].triggers[triggernum]) then
-    -- Check if any other clone is shown
-    local anyCloneShown = false;
-    for _, state in pairs(triggerState[id][triggernum]) do
-      if (state.show) then
-        anyCloneShown = true;
-        break;
-      end
-    end
-    if (not anyCloneShown) then
-      triggerState[id].triggers[triggernum] = false;
-      triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
-      return true;
-    end
+    triggerState[id].triggers[triggernum] = false;
+    triggerState[id].triggerCount = triggerState[id].triggerCount - 1;
+    return true;
   end
   return false;
 end
@@ -4281,6 +4342,9 @@ function WeakAuras.UpdatedTriggerState(id)
   local changed = false;
   for triggernum = 1, triggerState[id].numTriggers do
     triggerState[id][triggernum] = triggerState[id][triggernum] or {};
+
+    local anyStateShown = false;
+
     for cloneId, state in pairs(triggerState[id][triggernum]) do
       state.trigger = db.displays[id].triggers[triggernum].trigger;
       state.triggernum = triggernum;
@@ -4288,15 +4352,17 @@ function WeakAuras.UpdatedTriggerState(id)
 
       if (state.changed) then
         startStopTimers(id, cloneId, triggernum, state);
-        local stateShown = triggerState[id][triggernum][cloneId] and triggerState[id][triggernum][cloneId].show;
-        -- Update triggerState.triggers
-        changed = applyToTriggerStateTriggers(stateShown, id, triggernum) or changed;
       end
+      anyStateShown = anyStateShown or state.show;
     end
+    -- Update triggerState.triggers
+    changed = applyToTriggerStateTriggers(anyStateShown, id, triggernum) or changed;
   end
 
   -- Figure out whether we should be shown or not
   local show = triggerState[id].show;
+
+
   if (changed or show == nil) then
     show = evaluateTriggerStateTriggers(id);
   end

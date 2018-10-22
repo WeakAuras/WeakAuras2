@@ -31,10 +31,6 @@ Modernizes all generic triggers in data.
 # Helper functions mainly for the WeakAuras Options #
 #####################################################
 
-CanGroupShowWithZero(data)
-Returns whether the first trigger could be shown without any affected group members.
-If that is the case no automatic icon can be determined. Only used by the options dialog.
-
 CanHaveDuration(data, triggernum)
 Returns whether the trigger can have a duration.
 
@@ -862,9 +858,21 @@ function GenericTrigger.Add(data, region)
             else
               error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \""..trigger.event.."\" and default prototype reset failed.");
             end
-          elseif(trigger.event == "Combat Log" and not (trigger.subeventPrefix..trigger.subeventSuffix)) then
-            error("Improper arguments to WeakAuras.Add - event type is \"Combat Log\" but subevent is not defined");
           else
+            if (trigger.event == "Combat Log") then
+              if (not trigger.subeventPrefix) then
+                trigger.subeventPrefix = ""
+              end
+              if (not trigger.subeventSuffix) then
+                trigger.subeventSuffix = "";
+              end
+              if not(WeakAuras.subevent_actual_prefix_types[trigger.subeventPrefix]) then
+                trigger.subeventSuffix = "";
+              end
+            end
+
+
+
             triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
 
             statesParameter = event_prototypes[trigger.event].statesParameter;
@@ -1401,6 +1409,7 @@ do
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("SPELLS_CHANGED");
+    cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
       WeakAuras.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
@@ -2634,10 +2643,6 @@ do
   end
 end
 
-function GenericTrigger.CanGroupShowWithZero(data)
-  return false;
-end
-
 local uniqueId = 0;
 function WeakAuras.GetUniqueCloneId()
   uniqueId = (uniqueId + 1) % 1000000;
@@ -3141,6 +3146,34 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     RunOverlayFuncs(event, state);
   end
   WeakAuras.ActivateAuraEnvironment(nil);
+end
+
+function GenericTrigger.GetName(triggerType)
+  if (triggerType == "status") then
+    return L["Status"];
+  end
+  if (triggerType == "event") then
+    return L["Event"];
+  end
+  if (triggerType == "custom") then
+    return L["Custom"];
+  end
+end
+
+function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
+  local trigger = data.triggers[triggernum].trigger
+  if(trigger.type == "event" or trigger.type == "status") then
+    if(trigger.type == "event") then
+      tinsert(namestable, {L["Trigger:"], (WeakAuras.event_types[trigger.event] or L["Undefined"])});
+    else
+      tinsert(namestable, {L["Trigger:"], (WeakAuras.status_types[trigger.event] or L["Undefined"])});
+    end
+    if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
+      tinsert(namestable, {L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
+    end
+  else
+    tinsert(namestable, {L["Trigger:"], L["Custom"]});
+  end
 end
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

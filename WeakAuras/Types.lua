@@ -99,13 +99,6 @@ WeakAuras.trigger_modes = {
   ["first_active"] = -10,
 }
 
-WeakAuras.trigger_types = {
-  aura = L["Aura"],
-  status = L["Status"],
-  event = L["Event"],
-  custom = L["Custom"]
-}
-
 WeakAuras.debuff_types = {
   HELPFUL = L["Buff"],
   HARMFUL = L["Debuff"]
@@ -139,6 +132,19 @@ WeakAuras.unit_types = {
   member = L["Specific Unit"],
   pet = L["Pet"],
   multi = L["Multi-target"]
+}
+
+WeakAuras.unit_types_bufftrigger_2 = {
+  player = L["Player"],
+  target = L["Target"],
+  focus = L["Focus"],
+  group = L["Group"],
+  boss = L["Boss"],
+  arena = L["Arena"],
+  nameplate = L["Nameplate"],
+  pet = L["Pet"],
+  member = L["Specific Unit"],
+  multi = L["Multi-target (CLEU)"]
 }
 
 WeakAuras.actual_unit_types_with_specific = {
@@ -1490,6 +1496,40 @@ WeakAuras.bufftrigger_progress_behavior_types = {
   showAlways= L["Always"]
 }
 
+WeakAuras.bufftrigger_2_progress_behavior_types = {
+  showOnActive = L["Aura(s) Found"],
+  showOnMissing = L["Aura(s) Missing"],
+  showAlways = L["Always"],
+  showOnMatches = L["Match Count"]
+}
+
+WeakAuras.bufftrigger_2_preferred_match_types =
+{
+  showLowest = L["Least remaining time"],
+  showHighest = L["Most remaining time"]
+}
+
+WeakAuras.bufftrigger_2_combine_types = {
+  showLowest = L["Show lowest time left"],
+  showHighest = L["Show longest time left"],
+  showClones = L["Show all Matches"]
+}
+
+WeakAuras.bufftrigger_2_per_unit_mode = {
+  affected = L["Affected"],
+  unaffected = L["Unaffected"],
+  all = L["All"]
+}
+
+WeakAuras.bufftrigger_2_combine_group_types = {
+  showLowest = L["Show lowest time left over all units"],
+  showHighest = L["Show longest time left over all units"],
+  showClones = L["Show all Matches from all Units"],
+  showLowestPerUnit = L["Show lowest time left per unit"],
+  showHighestPerUnit = L["Show longest time left per unit"],
+  showCombineAll = L["Combine all matches"],
+}
+
 WeakAuras.item_slot_types = {
   [1]  = L["Head"],
   [2]  = L["Neck"],
@@ -1660,7 +1700,7 @@ WeakAuras.data_stub = {
   triggers = {
     {
       trigger = {
-        type = "aura",
+        type = "aura2",
         names = {},
         event = "Health",
         subeventPrefix = "SPELL",

@@ -34,6 +34,7 @@ Cache.lua
 ActionOptions.lua
 AnimationOptions.lua
 BuffTrigger.lua
+BuffTrigger2.lua
 GenericTrigger.lua
 
 WeakAurasOptions.lua

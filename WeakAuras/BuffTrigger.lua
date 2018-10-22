@@ -31,10 +31,6 @@ Updates all buff triggers in data.
 # Helper functions mainly for the WeakAuras Options #
 #####################################################
 
-CanGroupShowWithZero(data, triggernum)
-Returns whether the first trigger could be shown without any affected group members.
-If that is the case no automatic icon can be determined. Only used by the options dialog.
-
 CanHaveDuration(data, triggernum)
 Returns whether the trigger can have a duration.
 
@@ -627,7 +623,6 @@ function WeakAuras.ScanAuras(unit)
 
             for index, checkname in pairs(data.names) do
               -- Fetch aura data
-              -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
               for i = 1, BUFF_MAX_DISPLAY do
                 name, icon, count, _, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, i, filter);
@@ -1053,8 +1048,6 @@ do
       local updateTriggerState = false;
       for triggernum, data in pairs(triggers) do
         local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
-
-        -- TODO 8.0: Check if there is a better way than iterating all auras
         local detected
         local name, icon, count, duration, expirationTime, unitCaster, spellId, _
         for i = 1, BUFF_MAX_DISPLAY do
@@ -1234,7 +1227,6 @@ do
             for triggernum, data in pairs(triggers) do
               local filter = data.debuffType..(data.ownOnly and "|PLAYER" or "");
 
-              -- TODO 8.0: Check if there is a better way than iterating all auras
               local detected
               local name, icon, count, duration, expirationTime, unitCaster, _
               for i = 1, BUFF_MAX_DISPLAY do
@@ -1371,6 +1363,7 @@ end
 
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff Frame"] = frame;
+frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
@@ -1379,7 +1372,9 @@ frame:RegisterUnitEvent("UNIT_PET", "player")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger");
   if (WeakAuras.IsPaused()) then return end;
-  if(event == "PLAYER_TARGET_CHANGED") then
+  if (event == "PLAYER_ENTERING_WORLD") then
+    BuffTrigger.ScanAll();
+  elseif(event == "PLAYER_TARGET_CHANGED") then
     WeakAuras.ScanAuras("target");
   elseif(event == "PLAYER_FOCUS_CHANGED") then
     WeakAuras.ScanAuras("focus");
@@ -1641,7 +1636,7 @@ end
 -- @param data
 -- @param triggernum
 -- @return boolean
-function BuffTrigger.CanGroupShowWithZero(data, triggernum)
+local function CanGroupShowWithZero(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local group_countFunc, group_countFuncStr;
   if(trigger.unit == "group") then
@@ -1815,7 +1810,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
   else
     if (trigger.spellIds and trigger.spellIds[1]) then
       name, _, icon = GetSpellInfo(trigger.spellIds[1])
-    elseif(not (trigger.buffShowOn == "showOnMissing" or BuffTrigger.CanGroupShowWithZero(data, triggernum)) and trigger.names) then
+    elseif(not (trigger.buffShowOn == "showOnMissing" or CanGroupShowWithZero(data, triggernum)) and trigger.names) then
       -- Try to get an icon from the icon cache
       for index, checkname in pairs(trigger.names) do
         local iconFromSpellCache = WeakAuras.spellCache.GetIcon(checkname);
@@ -1891,6 +1886,34 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed";
   state.duration = 0;
   state.expirationTime = math.huge;
+end
+
+function BuffTrigger.GetName(triggerType)
+  if (triggerType == "aura") then
+    return L["Legacy Aura"];
+  end
+end
+
+function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
+  local trigger = data.triggers[triggernum].trigger;
+  if(trigger.fullscan) then
+    tinsert(namestable, {L["Aura:"], L["Full Scan"]});
+  else
+    for index, name in pairs(trigger.names) do
+      local left = " ";
+      if(index == 1) then
+        if(#trigger.names > 0) then
+          if(#trigger.names > 1) then
+            left = L["Auras:"];
+          else
+            left = L["Aura:"];
+          end
+        end
+      end
+      local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+      tinsert(namestable, {left, name, icon});
+    end
+  end
 end
 
 WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);

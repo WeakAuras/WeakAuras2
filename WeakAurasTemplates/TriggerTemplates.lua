@@ -85,7 +85,7 @@ local checks = {
     value = 1,
   },
   buffed = {
-    variable = "show",
+    variable = "buffed",
     value = 1,
   },
   buffedFalse = {
@@ -205,11 +205,12 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   triggers[position] = {
     trigger = {
       unit = item.unit or isBuff and "player" or "target",
-      type = "aura",
-      spellIds = {
-        item.buffId or item.spell
+      type = "aura2",
+      useName = true,
+      auranames = {
+        tostring(item.buffId or item.spell)
       },
-      buffShowOn = buffShowOn,
+      matchesShowOn = buffShowOn,
       debuffType = isBuff and "HELPFUL" or "HARMFUL",
       ownOnly = not item.forceOwnOnly and true or item.ownOnly,
       unitExists = false,
