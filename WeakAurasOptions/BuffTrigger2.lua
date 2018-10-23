@@ -507,7 +507,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         if IsGroupTrigger(trigger) then
           return trigger.useMatch_count
         else
-          return trigger.matchesShowOn == "matchesShowOn"
+          return trigger.matchesShowOn ~= "showOnMatches"
         end
       end
     },
