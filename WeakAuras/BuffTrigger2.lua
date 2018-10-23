@@ -861,8 +861,8 @@ local function UpdateTriggerState(time, id, triggernum)
     local cloneId = ""
 
     local useMatch = true
-    if triggerInfo.unitExists and not existingUnits[triggerInfo.unit] then
-      useMatch = true
+    if triggerInfo.unitExists ~= nil and not existingUnits[triggerInfo.unit] then
+      useMatch = triggerInfo.unitExists
     else
       useMatch = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
@@ -907,8 +907,8 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     local useMatches = true
-    if triggerInfo.unitExists and not existingUnits[triggerInfo.unit] then
-      useMatches = true
+    if triggerInfo.unitExists ~= nil and not existingUnits[triggerInfo.unit] then
+      useMatches = triggerInfo.unitExists
     else
       useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
@@ -936,8 +936,6 @@ local function UpdateTriggerState(time, id, triggernum)
     end
   elseif triggerInfo.combineMode == "showPerUnit" then
     local matches = {}
-    local matchCount = 0
-    local unitCount = 0
     if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
       for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
         local bestMatch, matchCountPerUnit, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
@@ -1597,7 +1595,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   end
 
-  if triggerInfo.unitExists then
+  if triggerInfo.unitExists ~= nil then
     unitExistScanFunc[triggerInfo.unit] = unitExistScanFunc[triggerInfo.unit] or {}
     unitExistScanFunc[triggerInfo.unit][id] = unitExistScanFunc[triggerInfo.unit][id] or {}
     tinsert(unitExistScanFunc[triggerInfo.unit][id], triggerInfo)
@@ -1954,7 +1952,10 @@ function BuffTrigger.Add(data)
         end
       end
 
-      local showIfInvalidUnit = trigger.unit ~= "player" and not IsGroupTrigger(trigger) and trigger.unitExists or false
+      local showIfInvalidUnit
+      if trigger.unit ~= "player" and not IsGroupTrigger(trigger) then
+        showIfInvalidUnit = trigger.unitExists or false
+      end
       local effectiveUseGroupCount = IsGroupTrigger(trigger) and trigger.useGroup_count
       local groupCountFunc
       if effectiveUseGroupCount then
