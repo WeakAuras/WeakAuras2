@@ -1996,7 +1996,7 @@ function BuffTrigger.Add(data)
         BuffTrigger.InitMultiAura()
       end
 
-      local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIcon(data, triggernum)
+      local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
 
       local auraspellids
       if trigger.useExactSpellId and trigger.auraspellids then
@@ -2099,11 +2099,8 @@ function BuffTrigger.SetToolTip(trigger, state)
   end
 end
 
---- Returns the name and icon to show in the options.
--- @param data
--- @param triggernum
--- @return name and icon
-function BuffTrigger.GetNameAndIcon(data, triggernum)
+
+function BuffTrigger.GetNameAndIconSimple(data, triggernum)
   local _, name, icon
   local trigger = data.triggers[triggernum].trigger
 
@@ -2117,7 +2114,9 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
         end
       else
         name, _, icon = GetSpellInfo(trigger.auranames[i])
-        return name, icon
+        if (name and icon) then
+          return name, icon
+        end
       end
     end
   end
@@ -2129,6 +2128,25 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
         name, _, icon = GetSpellInfo(trigger.auraspellids[i])
         if name and icon then
           return name, icon
+        end
+      end
+    end
+  end
+end
+
+--- Returns the name and icon to show in the options.
+-- @param data
+-- @param triggernum
+-- @return name and icon
+function BuffTrigger.GetNameAndIcon(data, triggernum)
+  local name, icon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
+  if (not name or not icon and WeakAuras.spellCache) then
+    local trigger = data.triggers[triggernum].trigger
+    if trigger.useName and trigger.auranames then
+      for i = 1, 9 do
+        icon = WeakAuras.spellCache.GetIcon(trigger.auranames[i])
+        if icon then
+          return trigger.auranames[i], icon
         end
       end
     end
