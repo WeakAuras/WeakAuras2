@@ -1757,7 +1757,7 @@ local function createScanFunc(trigger)
   local isMulti = trigger.unit == "multi"
   local useStacks = not isSingleMissing and not isMulti and trigger.useStacks
   local use_stealable = not isSingleMissing and not isMulti and trigger.use_stealable
-  local use_debuffClass = not isSingleMissing and not isMulti and trigger.debuffType == "HARMFUL" and trigger.use_debuffClass
+  local use_debuffClass = not isSingleMissing and not isMulti and trigger.use_debuffClass
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
 

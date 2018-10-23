@@ -124,7 +124,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "toggle",
       name = L["Debuff Type"],
       order = 11.2,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.debuffType == "HARMFUL") end
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
     },
     debuffClass = {
       type = "select",
@@ -133,7 +133,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
           and not IsSingleMissing(trigger)
-          and trigger.debuffType == "HARMFUL"
           and trigger.use_debuffClass)
       end,
       values = WeakAuras.debuff_class_types
@@ -146,7 +145,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
           and not IsSingleMissing(trigger)
-          and trigger.debuffType == "HARMFUL"
           and not trigger.use_debuffClass)
       end
     },
