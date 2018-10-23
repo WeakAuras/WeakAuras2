@@ -902,9 +902,18 @@ function WeakAuras.CreateFrame()
 
   frame.PickDisplayBatch = function(self, batchSelection)
     for index, id in ipairs(batchSelection) do
-      WeakAuras.EnsureOptions(id);
-      displayButtons[id]:Pick();
-      tinsert(tempGroup.controlledChildren, id);
+      local alreadySelected = false;
+      for _, v in pairs(tempGroup.controlledChildren) do
+        if(v == id) then
+          alreadySelected = true;
+          break;
+        end
+      end
+      if(not alreadySelected) then
+        WeakAuras.EnsureOptions(id);
+        displayButtons[id]:Pick();
+        tinsert(tempGroup.controlledChildren, id);
+      end
     end
     WeakAuras.ReloadTriggerOptions(tempGroup);
     self:FillOptions(displayOptions[tempGroup.id]);
