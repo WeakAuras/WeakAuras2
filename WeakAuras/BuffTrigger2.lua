@@ -169,8 +169,12 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   end
 
   if matchData.unit and matchData.index and matchData.filter then
-    local _
-    matchData.tooltip, _, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
+    local tooltip, _, tooltip1, tooltip2, tooltip3 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
+
+    local changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
+      or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3
+    matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3 = tooltip, tooltip1, tooltip2, tooltip3
+    return changed
   end
 
   matchData.tooltipUpdated = time
@@ -259,6 +263,10 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   if data.unitName ~= unitName then
     data.unitName = unitName
     changed = true
+  end
+
+  if data.tooltipUpdated and data.tooltipUpdated < time then
+    changed = data:UpdateTooltip(time) or changed
   end
 
   if changed then
