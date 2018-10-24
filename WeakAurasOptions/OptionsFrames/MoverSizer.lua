@@ -253,6 +253,7 @@ local function ConstructMoverSizer(parent)
   frame.topleft.Clear();
 
   local mover = CreateFrame("FRAME", nil, frame);
+  mover:RegisterEvent("PLAYER_REGEN_DISABLED")
   mover:EnableMouse();
   mover.moving = {};
   mover.interims = {};
@@ -347,6 +348,9 @@ local function ConstructMoverSizer(parent)
     end
 
     mover.doneMoving = function(self)
+      if (not mover.isMoving) then
+        return
+      end
       local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale();
       region:StopMovingOrSizing();
       mover.isMoving = false;
@@ -388,9 +392,11 @@ local function ConstructMoverSizer(parent)
     if(data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup") then
       mover:SetScript("OnMouseDown", nil);
       mover:SetScript("OnMouseUp", nil);
+      mover:SetScript("OnEvent", nil);
     else
       mover:SetScript("OnMouseDown", mover.startMoving);
       mover:SetScript("OnMouseUp", mover.doneMoving);
+      mover:SetScript("OnEvent", mover.doneMoving);
     end
 
     if(region:IsResizable()) then
