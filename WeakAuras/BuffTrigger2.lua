@@ -1527,6 +1527,7 @@ function BuffTrigger.UnloadAll()
   wipe(groupCountScanFunc)
   wipe(matchDataByTrigger)
   wipe(matchDataMulti)
+  wipe(matchDataChanged)
 end
 
 local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
