@@ -230,8 +230,8 @@ local growers = {
         local pos = {x, y}
         local regionData = activeRegions[i]
         newPositions[i] = pos
-        x = x + (regionData.data.width or regionData.region.width) + space
-        y = y + stagger
+        x = x - (regionData.data.width or regionData.region.width) + space
+        y = y - stagger
         i = i + 1
       end
     end
@@ -249,7 +249,7 @@ local growers = {
         local pos = {x, y}
         local regionData = activeRegions[i]
         newPositions[i] = pos
-        x = x - (regionData.data.width or regionData.region.width) - space
+        x = x + (regionData.data.width or regionData.region.width) + space
         y = y + data.stagger
         i = i + 1
       end
