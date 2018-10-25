@@ -105,13 +105,17 @@ local function nameType(data, option, phrase)
 end
 
 -- provides a tooltip showing all the conflicting values if there are any
-local function desc(data, option, key)
+local function desc(data, option, key, phrase)
   if not option.references then
-    return ""
+    return phrase
   elseif option[key] or not atLeastOneSet(data, option.references, key) then
-    return ""
+    return phrase
   else
-    local desc = {L["Values:"]}
+    local desc = {}
+    if phrase then
+      desc[1] = phrase
+    end
+    tinsert(desc, L["Values:"])
     for childID, optionID in pairs(option.references) do
       local childData = data[childID]
       local childOption = childData.authorOptions[optionID]
@@ -802,7 +806,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   args["option" .. i .. "key"] = {
     type = "input",
     name = name(data, option, "key", L["Option key"]),
-    desc = desc(data, option, "key"),
+    desc = desc(data, option, "key", L["Key for aura_env.config at which the user value can be found."]),
     order = order,
     get = get(option, "key"),
     set = set(data, option, "key"),
