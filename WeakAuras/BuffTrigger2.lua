@@ -1672,10 +1672,21 @@ function BuffTrigger.LoadDisplays(toLoad)
 end
 
 function BuffTrigger.UnloadDisplays(toUnload)
+  local updateGroupScanFuncs = false
   for id in pairs(toUnload) do
+    if triggerInfos[id] then
+      for triggernum, triggerInfo in pairs(triggerInfos[id]) do
+        updateGroupScanFuncs = triggerInfos.unit == "group" or updateGroupScanFuncs
+      end
+    end
     UnloadAura(scanFuncName, id)
     UnloadAura(scanFuncSpellId, id)
     UnloadGeneral(scanFuncGeneral, id)
+
+    UnloadAura(scanFuncNameGroup, id)
+    UnloadAura(scanFuncSpellIdGroup, id)
+    UnloadGeneral(scanFuncGeneralGroup, id)
+
     UnloadGeneral(scanFuncNameMulti, id)
     UnloadGeneral(scanFuncSpellIdMulti, id)
 
@@ -1712,6 +1723,10 @@ function BuffTrigger.UnloadDisplays(toUnload)
       end
     end
     matchDataChanged[id] = nil
+  end
+
+  if updateGroupScanFuncs then
+    UpdatePerGroupUnitScanFuncs()
   end
 end
 
