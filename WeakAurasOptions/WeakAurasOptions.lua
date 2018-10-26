@@ -428,7 +428,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
   elseif(triggertype == "load") then
     trigger = data.load;
   elseif data.triggers[triggernum] then
-    trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger
+    if(triggertype == "untrigger") then
+      trigger = data.triggers[triggernum].untrigger
+    else
+      trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger
+    end
   else
     error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
   end
