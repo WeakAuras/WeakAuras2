@@ -181,14 +181,15 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
   self.angle1 = angle1;
   self.angle2 = angle2;
 
-  local scalex = region.scale_x or 1;
-  local scaley = region.scale_y or 1;
+  local scalex = region.scalex or 1;
+  local scaley = region.scaley or 1;
+
   local rotation = region.rotation or 0;
   local mirror_h = region.mirror_h or false;
   local mirror_v = region.mirror_v or false;
 
-  local width = region.width - self.offset;
-  local height = region.height - self.offset;
+  local width = region.width * scalex - self.offset;
+  local height = region.height * scaley - self.offset;
 
   if (angle2 - angle1 >= 360) then
     -- SHOW everything
@@ -649,8 +650,8 @@ local textureFunctions = {
     self:SetValueFunction(startProgress, endProgress);
 
     local region = self.region;
-    local scalex = region.scale_x or 1;
-    local scaley = region.scale_y or 1;
+    local scalex = region.scalex or 1;
+    local scaley = region.scaley or 1;
     local rotation = region.rotation or 0;
     local mirror_h = region.mirror_h or false;
     local mirror_v = region.mirror_v or false;
@@ -1010,8 +1011,8 @@ local function modify(parent, region, data)
   region:SetHeight(data.height);
   region.width = data.width;
   region.height = data.height;
-  region.scalex = 1;
-  region.scaley = 1;
+  region.scalex = 1 + (data.crop_x or 0.41);
+  region.scaley = 1 + (data.crop_y or 0.41);
   region.aspect =  data.width / data.height;
   region.overlayclip = data.overlayclip;
 
@@ -1048,8 +1049,6 @@ local function modify(parent, region, data)
   end
 
   region.mirror_h = data.mirror;
-  region.scale_x = 1 + (data.crop_x or 0.41);
-  region.scale_y = 1 + (data.crop_y or 0.41);
   region.rotation = data.rotation or 0;
   region.user_x = -1 * (data.user_x or 0);
   region.user_y = data.user_y or 0;
