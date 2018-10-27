@@ -64,6 +64,7 @@ local fileList = {
         "WeakAurasOptions/ExternalAddons.lua",
         "WeakAurasOptions/GenericTrigger.lua",
         "WeakAurasOptions/WeakAurasOptions.lua",
+        "WeakAurasOptions/AuthorOptions.lua",
     },
     WeakAuras_Templates = {
         "WeakAurasTemplates/TriggerTemplates.lua",
