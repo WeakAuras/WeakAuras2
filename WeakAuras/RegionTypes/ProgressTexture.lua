@@ -181,20 +181,19 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
   self.angle1 = angle1;
   self.angle2 = angle2;
 
-  local scalex = region.scalex or 1;
-  local scaley = region.scaley or 1;
-
+  local crop_x = region.crop_x or 1;
+  local crop_y = region.crop_y or 1;
   local rotation = region.rotation or 0;
   local mirror_h = region.mirror_h or false;
   local mirror_v = region.mirror_v or false;
 
-  local width = region.width * scalex - self.offset;
-  local height = region.height * scaley - self.offset;
+  local width = region.width * (region.scalex or 1) - self.offset;
+  local height = region.height * (region.scaley or 1) - self.offset;
 
   if (angle2 - angle1 >= 360) then
     -- SHOW everything
     self.coords[1]:SetFull();
-    self.coords[1]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[1]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[1]:Show();
 
     self.coords[2]:Hide();
@@ -213,18 +212,18 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
 
   if (index1 + 1 >= index2) then
     self.coords[1]:SetAngle(width, height, angle1, angle2);
-    self.coords[1]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[1]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[1]:Show();
     self.coords[2]:Hide();
     self.coords[3]:Hide();
   elseif(index1 + 3 >= index2) then
     local firstEndAngle = (index1 + 1) * 90 + 45;
     self.coords[1]:SetAngle(width, height, angle1, firstEndAngle);
-    self.coords[1]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[1]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[1]:Show();
 
     self.coords[2]:SetAngle(width, height, firstEndAngle, angle2);
-    self.coords[2]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[2]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[2]:Show();
 
     self.coords[3]:Hide();
@@ -233,15 +232,15 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
     local secondEndAngle = firstEndAngle + 180;
 
     self.coords[1]:SetAngle(width, height, angle1, firstEndAngle);
-    self.coords[1]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[1]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[1]:Show();
 
     self.coords[2]:SetAngle(width, height, firstEndAngle, secondEndAngle);
-    self.coords[2]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[2]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[2]:Show();
 
     self.coords[3]:SetAngle(width, height, secondEndAngle, angle2);
-    self.coords[3]:Transform(scalex, scaley, rotation, mirror_h, mirror_v);
+    self.coords[3]:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v);
     self.coords[3]:Show();
   end
 end
@@ -650,15 +649,15 @@ local textureFunctions = {
     self:SetValueFunction(startProgress, endProgress);
 
     local region = self.region;
-    local scalex = region.scalex or 1;
-    local scaley = region.scaley or 1;
+    local crop_x = region.crop_x or 1;
+    local crop_y = region.crop_y or 1;
     local rotation = region.rotation or 0;
     local mirror_h = region.mirror_h or false;
     local mirror_v = region.mirror_v or false;
     local user_x = region.user_x;
     local user_y = region.user_y;
 
-    self.coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
+    self.coord:Transform(crop_x, crop_y, rotation, mirror_h, mirror_v, user_x, user_y);
     self.coord:Apply();
   end,
 
@@ -1011,8 +1010,8 @@ local function modify(parent, region, data)
   region:SetHeight(data.height);
   region.width = data.width;
   region.height = data.height;
-  region.scalex = 1 + (data.crop_x or 0.41);
-  region.scaley = 1 + (data.crop_y or 0.41);
+  region.scalex = 1;
+  region.scaley = 1;
   region.aspect =  data.width / data.height;
   region.overlayclip = data.overlayclip;
 
@@ -1049,6 +1048,8 @@ local function modify(parent, region, data)
   end
 
   region.mirror_h = data.mirror;
+  region.crop_x = 1 + (data.crop_x or 0.41);
+  region.crop_y = 1 + (data.crop_y or 0.41);
   region.rotation = data.rotation or 0;
   region.user_x = -1 * (data.user_x or 0);
   region.user_y = data.user_y or 0;
