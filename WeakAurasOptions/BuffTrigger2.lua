@@ -179,20 +179,20 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useNamePattern = {
       type = "toggle",
       name = L["Name Pattern Match"],
-      order = 25,
+      order = 45,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi") end
     },
     useNamePatternSpace = {
       type = "description",
       name = "",
-      order = 25.2,
+      order = 45.2,
       width = "normal",
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not trigger.useNamePattern) end
     },
     namePattern_operator = {
       type = "select",
       name = L["Operator"],
-      order = 25.1,
+      order = 45.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end,
       values = WeakAuras.string_operator_types
     },
@@ -200,7 +200,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Aura Name Pattern"],
       width = "double",
-      order = 25.2,
+      order = 45.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end
     },
     useStacks = {
