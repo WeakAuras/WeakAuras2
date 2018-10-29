@@ -979,18 +979,15 @@ local function addUserModeOption(options, args, data, order, i)
 end
 
 local function neq(a, b)
-  if type(a) ~= "table" then
-    return a ~= b
-  elseif type(b) ~= "table" then
-    return true
-  else
+  if type(a) == "table"  and type(b) == "table" then
     for k, v in pairs(a) do
       if neq(v, b[k]) then return true end
     end
     for k, v in pairs(b) do
       if neq(v, a[k]) then return true end
     end
-    return false
+  else
+    return a ~= b
   end
 end
 
