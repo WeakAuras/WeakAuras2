@@ -165,7 +165,7 @@ local function get(option, key)
   end
 end
 
-local function getNum(option, key)
+local function getNumAsString(option, key)
   return function()
     if option[key] ~= nil then
       return tostring(option[key])
@@ -329,7 +329,7 @@ local typeControlAdders = {
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
       order = order,
-      get = getNum(option, "default"),
+      get = getNumAsString(option, "default"),
       set = setNum(data, option, "default", true),
     }
     order = order + 1
@@ -339,7 +339,7 @@ local typeControlAdders = {
       name = name(data, option, "min", L["Min"]),
       desc = desc(data, option, "min"),
       order = order,
-      get = getNum(option, "min"),
+      get = getNumAsString(option, "min"),
       set = setNum(data, option, "min"),
       width = 2/3,
     }
@@ -350,7 +350,7 @@ local typeControlAdders = {
       name = name(data, option, "max", L["Max"]),
       desc = desc(data, option, "min"),
       order = order,
-      get = getNum(option, "max"),
+      get = getNumAsString(option, "max"),
       set = setNum(data, option, "max"),
       width = 2/3,
     }
@@ -361,7 +361,7 @@ local typeControlAdders = {
       name = name(data, option, "step", L["Step Size"]),
       desc = desc(data, option, "step"),
       order = order,
-      get = getNum(option, "step"),
+      get = getNumAsString(option, "step"),
       set = setNum(data, option, "step"),
       width = 2/3,
     }
@@ -375,7 +375,7 @@ local typeControlAdders = {
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
       order = order,
-      get = getNum(option, "default"),
+      get = getNumAsString(option, "default"),
       set = setNum(data, option, "default"),
     }
     order = order + 1
@@ -385,7 +385,7 @@ local typeControlAdders = {
       name = name(data, option, "min", L["Min"]),
       desc = desc(data, option, "min"),
       order = order,
-      get = getNum(option, "min"),
+      get = getNumAsString(option, "min"),
       set = setNum(data, option, "min"),
       width = 2/3,
     }
@@ -396,7 +396,7 @@ local typeControlAdders = {
       name = name(data, option, "max", L["Max"]),
       desc = desc(data, option, "max"),
       order = order,
-      get = getNum(option, "max"),
+      get = getNumAsString(option, "max"),
       set = setNum(data, option, "max"),
       width = 2/3,
     }
@@ -407,7 +407,7 @@ local typeControlAdders = {
       name = name(data, option, "step", L["Step Size"]),
       desc = desc(data, option, "step"),
       order = order,
-      get = getNum(option, "step"),
+      get = getNumAsString(option, "step"),
       set = setNum(data, option, "step"),
       width = 2/3,
     }
@@ -418,7 +418,7 @@ local typeControlAdders = {
       name = name(data, option, "softMin", L["Soft Min"]),
       desc = desc(data, option, "softMin"),
       order = order,
-      get = getNum(option, "softMin"),
+      get = getNumAsString(option, "softMin"),
       set = setNum(data, option, "softMin"),
       width = 2/3,
     }
@@ -429,7 +429,7 @@ local typeControlAdders = {
       name = name(data, option, "softMax", L["Soft Max"]),
       desc = desc(data, option, "softMax"),
       order = order,
-      get = getNum(option, "softMax"),
+      get = getNumAsString(option, "softMax"),
       set = setNum(data, option, "softMax"),
       width = 2/3,
     }
@@ -440,7 +440,7 @@ local typeControlAdders = {
       name = name(data, option, "bigStep", L["Slider Step Size"]),
       desc = desc(data, option, "bigStep"),
       order = order,
-      get = getNum(option, "bigStep"),
+      get = getNumAsString(option, "bigStep"),
       set = setNum(data, option, "bigStep"),
       width = 2/3,
     }
@@ -957,7 +957,7 @@ local function addUserModeOption(options, args, data, order, i)
   elseif optionType == "input" then
   elseif optionType == "number" then
     userOption.type = "input"
-    userOption.get = getNum(config, option.key)
+    userOption.get = getNumAsString(config, option.key)
     userOption.set = setNum(data, config, option.key, true)
   elseif  optionType == "range" then
     userOption.max = option.max

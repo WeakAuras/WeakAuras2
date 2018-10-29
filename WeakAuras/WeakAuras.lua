@@ -2613,18 +2613,18 @@ function WeakAuras.AddMany(table)
 end
 
 local function validateUserConfig(data)
-  local seen = {}
+  local authorOptionKeys = {}
   for index, option in ipairs(data.authorOptions) do
-    seen[option.key] = index
+    authorOptionKeys[option.key] = index
     if not data.config[option.key] then
       data.config[option.key] = option.default
     end
   end
   for key, value in pairs(data.config) do
-    if not seen[key] then
+    if not authorOptionKeys[key] then
       data.config[key] = nil
     else
-      local option = data.authorOptions[seen[key]]
+      local option = data.authorOptions[authorOptionKeys[key]]
       if type(value) ~= type(option.default) then
         -- if type mismatch then we know that it can't be right
         data.config[key] = option.default
