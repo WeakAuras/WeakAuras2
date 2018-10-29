@@ -545,7 +545,7 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
         ShowTooltip({
           {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
           {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
-          {1, L["Note, that cross realm transmission is not possible"], 1, 0.82, 0}
+          {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
         });
         tooltipLoading = true;
         receivedData = false;
@@ -555,7 +555,7 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
             ShowTooltip({
               {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
               {1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0},
-              {1, L["Note, that cross realm transmission is not possible"], 1, 0.82, 0}
+              {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
             })
           end
         end, 5);
@@ -1675,6 +1675,20 @@ function WeakAuras.ImportString(str)
   end
 end
 
+function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
+  local chattype = "WHISPER"
+  if target and not UnitIsSameServer(target) then
+    if UnitInRaid(target) then
+      chattype = "RAID"
+      text = ("§§%s:%s"):format(target, text)
+    elseif UnitInParty(target) then
+      chattype = "PARTY"
+      text = ("§§%s:%s"):format(target, text)
+    end
+  end
+  Comm:SendCommMessage(prefix, text, chattype, target, queueName, callbackFn, callbackArg)
+end
+
 local safeSenders = {}
 function RequestDisplay(characterName, displayName)
   safeSenders[characterName] = true
@@ -1684,7 +1698,7 @@ function RequestDisplay(characterName, displayName)
     d = displayName
   };
   local transmitString = TableToString(transmit);
-  Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
+  crossRealmSendCommMessage("WeakAuras", transmitString, characterName);
 end
 
 function TransmitError(errorMsg, characterName)
@@ -1692,21 +1706,34 @@ function TransmitError(errorMsg, characterName)
     m = "dE",
     eM = errorMsg
   };
-  Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
+  crossRealmSendCommMessage("WeakAuras", TableToString(transmit), characterName);
 end
 
 function TransmitDisplay(id, characterName)
   local encoded = WeakAuras.DisplayToString(id);
   if(encoded ~= "") then
-    Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
-      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
+    crossRealmSendCommMessage("WeakAuras", encoded, characterName, "BULK", function(displayName, done, total)
+      crossRealmSendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
     end, id);
   else
     TransmitError("dne", characterName);
   end
 end
 
+local myName, myServer = UnitFullName("player")
+
 Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
+  if distribution == "PARTY" or distribution == "RAID" then
+    local dest, msg = string.match(message, "^§§(.+):(.+)$")
+    if dest then
+      local dName, dServer = string.match(dest, "^(.*)-(.*)$")
+      if myName == dName and myServer == dServer then
+        message = msg
+      else
+        return
+      end
+    end
+  end
   if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
     receivedData = true;
     local done, total, displayName = strsplit(" ", message, 3)
@@ -1725,6 +1752,17 @@ Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sende
 end)
 
 Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
+  if distribution == "PARTY" or distribution == "RAID" then
+    local dest, msg = string.match(message, "^§§([^:]+):(.+)$")
+    if dest then
+      local dName, dServer = string.match(dest, "^(.*)-(.*)$")
+      if myName == dName and myServer == dServer then
+        message = msg
+      else
+        return
+      end
+    end
+  end
   local received = StringToTable(message);
   if(received and type(received) == "table" and received.m) then
     if(received.m == "d") and safeSenders[sender] then
