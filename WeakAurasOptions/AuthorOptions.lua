@@ -51,7 +51,7 @@ local collapsedOptions = {}
 
 local function ensureCollapsedData(data)
   if collapsedOptions[data.id] then return end
-  local collapsedData= {}
+  local collapsedData = {}
   for i = 1, #data.authorOptions do
     collapsedData[#collapsedData + 1] = false
   end
