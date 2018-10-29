@@ -30,6 +30,7 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
 end
 
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
+local LDBIcon = LibStub("LibDBIcon-1.0")
 local LCG = LibStub("LibCustomGlow-1.0")
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
@@ -83,9 +84,22 @@ function SlashCmdList.WEAKAURAS(msg)
     elseif(msg == "pprint") then
       WeakAuras.PrintProfile();
       return;
+    elseif(msg == "minimap") then
+      WeakAuras.ToggleMinimap();
+      return;
     end
   end
   WeakAuras.OpenOptions(msg);
+end
+
+function WeakAuras.ToggleMinimap()
+  WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
+  if WeakAurasSaved.minimap.hide then
+    LDBIcon:Hide("WeakAuras");
+    prettyPrint(L["Use /wa minimap to show the minimap icon again"])
+  else
+    LDBIcon:Show("WeakAuras");
+  end
 end
 
 BINDING_HEADER_WEAKAURAS = ADDON_NAME
@@ -1159,6 +1173,109 @@ function WeakAuras.CreatePvPTalentCache()
   end
 end
 
+local function tooltip_draw()
+  local tooltip = GameTooltip;
+  tooltip:ClearLines();
+  tooltip:AddDoubleLine("WeakAuras", versionString);
+  tooltip:AddLine(" ");
+  if(WeakAuras.IsOptionsOpen()) then
+    tooltip:AddLine(L["Click to close configuration"]);
+  else
+    tooltip:AddLine(L["Click to open configuration"]);
+    if(paused) then
+      tooltip:AddLine("|cFFFF0000"..L["Paused"].." - "..L["Shift-Click to resume"]);
+    else
+      tooltip:AddLine(L["Shift-Click to pause"]);
+      tooltip:AddLine(L["Right-Click to toggle profiling"]);
+      tooltip:AddLine(L["Shift-Right-Click to show profiling results"]);
+    end
+  end
+  if WeakAurasSaved.minimap.hide then
+    tooltip:AddLine(L["Middle-Click to show minimap icon"]);
+  else
+    tooltip:AddLine(L["Middle-Click to hide minimap icon"]);
+  end
+  tooltip:Show();
+end
+
+local colorFrame = CreateFrame("frame");
+WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
+local colorElapsed = 0;
+local colorDelay = 2;
+local r, g, b = 0.8, 0, 1;
+local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+local tooltip_update_frame = CreateFrame("FRAME");
+WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
+
+-- function copied from LibDBIcon-1.0.lua
+local function getAnchors(frame)
+	local x, y = frame:GetCenter()
+	if not x or not y then return "CENTER" end
+	local hhalf = (x > UIParent:GetWidth()*2/3) and "RIGHT" or (x < UIParent:GetWidth()/3) and "LEFT" or ""
+	local vhalf = (y > UIParent:GetHeight()/2) and "TOP" or "BOTTOM"
+	return vhalf..hhalf, frame, (vhalf == "TOP" and "BOTTOM" or "TOP")..hhalf
+end
+
+local Broker_WeakAuras;
+Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
+  type = "data source",
+  text = "WeakAuras",
+  icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
+  OnClick = function(self, button)
+    if button == 'LeftButton' then
+      if(IsShiftKeyDown()) then
+        if not(WeakAuras.IsOptionsOpen()) then
+          WeakAuras.Toggle();
+        end
+      else
+        WeakAuras.OpenOptions();
+      end
+    elseif(button == 'MiddleButton') then
+      WeakAuras.ToggleMinimap();
+    else
+      if(IsShiftKeyDown()) then
+        WeakAuras.PrintProfile();
+      else
+        WeakAuras.ToggleProfile();
+      end
+    end
+    tooltip_draw()
+  end,
+  OnEnter = function(self)
+    colorFrame:SetScript("OnUpdate", function(self, elaps)
+      colorElapsed = colorElapsed + elaps;
+      if(colorElapsed > colorDelay) then
+        colorElapsed = colorElapsed - colorDelay;
+        r, g, b = r2, g2, b2;
+        r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+      end
+      Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
+      Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
+      Broker_WeakAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
+    end);
+    local elapsed = 0;
+    local delay = 1;
+    tooltip_update_frame:SetScript("OnUpdate", function(self, elap)
+      elapsed = elapsed + elap;
+      if(elapsed > delay) then
+        elapsed = 0;
+        tooltip_draw();
+      end
+    end);
+    GameTooltip:SetOwner(self, "ANCHOR_NONE");
+    GameTooltip:SetPoint(getAnchors(self))
+    tooltip_draw();
+  end,
+  OnLeave = function(self)
+    colorFrame:SetScript("OnUpdate", nil);
+    tooltip_update_frame:SetScript("OnUpdate", nil);
+    GameTooltip:Hide();
+  end,
+  iconR = 1,
+  iconG = 1,
+  iconB = 1
+});
+
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = frame;
 frame:SetAllPoints(UIParent);
@@ -1192,6 +1309,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
+
+      db.minimap = db.minimap or { hide = false };
+      LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
   elseif(event == "PLAYER_LOGIN") then
     local toAdd = {};
@@ -3836,87 +3956,6 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
     return tooltipText, debuffType, 0;
   end
 end
-
-local function tooltip_draw()
-  GameTooltip:ClearLines();
-  GameTooltip:AddDoubleLine("WeakAuras", versionString, 0.5333, 0, 1, 1, 1, 1);
-  GameTooltip:AddLine(" ");
-  if(WeakAuras.IsOptionsOpen()) then
-    GameTooltip:AddLine(L["Click to close configuration"], 0, 1, 1);
-  else
-    GameTooltip:AddLine(L["Click to open configuration"], 0, 1, 1);
-    if(paused) then
-      GameTooltip:AddLine("|cFFFF0000"..L["Paused"].." - |cFF00FFFF"..L["Shift-Click to resume"], 0, 1, 1);
-    else
-      GameTooltip:AddLine(L["Shift-Click to pause"], 0, 1, 1);
-    end
-  end
-  GameTooltip:Show();
-end
-
-local colorFrame = CreateFrame("frame");
-WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
-local colorElapsed = 0;
-local colorDelay = 2;
-local r, g, b = 0.8, 0, 1;
-local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
-local tooltip_update_frame = CreateFrame("FRAME");
-WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
-local Broker_WeakAuras;
-Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
-  type = "data source",
-  text = "WeakAuras",
-  icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
-  OnClick = function(self, button)
-    if(IsShiftKeyDown()) then
-      if not(WeakAuras.IsOptionsOpen()) then
-        WeakAuras.Toggle();
-      end
-    else
-      WeakAuras.OpenOptions();
-    end
-  end,
-  OnEnter = function(self)
-    colorFrame:SetScript("OnUpdate", function(self, elaps)
-      colorElapsed = colorElapsed + elaps;
-      if(colorElapsed > colorDelay) then
-        colorElapsed = colorElapsed - colorDelay;
-        r, g, b = r2, g2, b2;
-        r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
-      end
-      Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
-      Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
-      Broker_WeakAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
-    end);
-    local elapsed = 0;
-    local delay = 1;
-    tooltip_update_frame:SetScript("OnUpdate", function(self, elap)
-      elapsed = elapsed + elap;
-      if(elapsed > delay) then
-        elapsed = 0;
-        tooltip_draw();
-      end
-    end);
-    -- Section the screen into 6 sextants and define the tooltip anchor position based on which sextant the cursor is in
-    local max_x = GetScreenWidth();
-    local max_y = GetScreenHeight();
-    local x, y = GetCursorPosition();
-    local horizontal = (x < (max_x/3) and "LEFT") or ((x >= (max_x/3) and x < ((max_x/3)*2)) and "") or "RIGHT";
-    local tooltip_vertical = (y < (max_y/2) and "BOTTOM") or "TOP";
-    local anchor_vertical = (y < (max_y/2) and "TOP") or "BOTTOM";
-    GameTooltip:SetOwner(self, "ANCHOR_NONE");
-    GameTooltip:SetPoint(tooltip_vertical..horizontal, self, anchor_vertical..horizontal);
-    tooltip_draw();
-  end,
-  OnLeave = function(self)
-    colorFrame:SetScript("OnUpdate", nil);
-    tooltip_update_frame:SetScript("OnUpdate", nil);
-    GameTooltip:Hide();
-  end,
-  iconR = 0.6,
-  iconG = 0,
-  iconB = 1
-});
 
 local FrameTimes = {};
 function WeakAuras.ProfileFrames(all)

@@ -220,6 +220,14 @@ function WeakAuras.StopProfile()
   WeakAuras.StopProfileAura = doNothing
 end
 
+function WeakAuras.ToggleProfile()
+  if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
+    WeakAuras.StartProfile()
+  else
+    WeakAuras.StopProfile()
+  end
+end
+
 local function PrintOneProfile(name, map, total)
   if (map.count ~= 0) then
     popup:AddText(name .. "  ERROR: count is not zero:" .. " " .. map.count)
