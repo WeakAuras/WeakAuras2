@@ -4884,35 +4884,35 @@ WeakAuras.event_prototypes = {
 };
 
 WeakAuras.dynamic_texts = {
-  ["%p"] = {
+  ["p"] = {
     unescaped = "%p",
     name = L["Progress"],
     value = "progress",
     static = "8.0"
   },
-  ["%t"] = {
+  ["t"] = {
     unescaped = "%t",
     name = L["Total"],
     value = "duration",
     static = "12.0"
   },
-  ["%n"] = {
+  ["n"] = {
     unescaped = "%n",
     name = L["Name"],
     value = "name"
   },
-  ["%i"] = {
+  ["i"] = {
     unescaped = "%i",
     name = L["Icon"],
     value = "icon"
   },
-  ["%s"] = {
+  ["s"] = {
     unescaped = "%s",
     name = L["Stacks"],
     value = "stacks",
     static = 1
   },
-  ["%c%d*"] = {
+  ["c%d*"] = {
     unescaped = "%c",
     name = L["Custom"],
     value = "custom",

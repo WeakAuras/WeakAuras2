@@ -17,15 +17,9 @@ local function createOptions(id, data)
       name = L["Display Text"],
       order = 10,
       get = function()
-        local ret = data.displayText;
-        for symbol, v in pairs(WeakAuras.dynamic_texts) do
-          ret = ret:gsub("(%"..symbol..")", "|cFFFF0000%1|r");
-        end
-        return ret;
+        return data.displayText;
       end,
       set = function(info, v)
-        v = v:gsub("|cFFFF0000", "");
-        v = v:gsub("|r", "");
         data.displayText = v;
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -36,7 +30,7 @@ local function createOptions(id, data)
     customTextUpdate = {
       type = "select",
       width = "double",
-      hidden = function() return not data.displayText:find("%%c"); end,
+      hidden = function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText); end,
       name = L["Update Custom Text On..."],
       values = WeakAuras.text_check_types,
       order = 36
@@ -125,7 +119,7 @@ local function createOptions(id, data)
     },
   };
 
-  WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 37, function() return not data.displayText:find("%%c") end, {"customText"}, false);
+  WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   return {
     text = options;

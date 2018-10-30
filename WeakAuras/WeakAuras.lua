@@ -4470,7 +4470,7 @@ end
 local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local regionValues = region.values;
   local value;
-  if textStr:find("%%?c") then
+  if string.sub(textStr, 1, 1) == "c" then
     if customFunc then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
       regionValues.custom = {select(2, xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration,
@@ -4480,7 +4480,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
     if not regionValues.custom then
       return ""
     end
-    local index = tonumber(textStr:match("%d+") or 1)
+    local index = tonumber(textStr:match("^c(%d+)$") or 1)
     value = WeakAuras.EnsureString(regionValues.custom[index])
   else
     local variable = WeakAuras.dynamic_texts[textStr];
@@ -4491,6 +4491,83 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
     value = variable and regionValues[variable] or "";
   end
   return value;
+end
+
+-- States:
+-- 0 Normal state, text is just appened to result. Can transition to percent start state 1 via %
+-- 1 Percent start state, entered via %. Can transition to via { to braced, via % to normal, AZaz09 to percent rest state
+-- 2 Percent rest state, stay in it via AZaz09, transition to normal on anything else
+-- 3 Braced state, } transitions to normal, everything else stay in braced state
+local function nextState(char, state)
+  if state == 0 then -- Normal State
+    if char == 37 then -- % sign
+      return 1 -- Enter Percent state
+    end
+    return 0
+  elseif state == 1 then -- Percent Start State
+    if char == 37 then -- % sign
+      return 0 -- Return to normal state
+    elseif char == 123 then -- { sign
+      return 3 -- Enter Braced state
+    elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+        -- 0-9a-zA-Z character
+      return 2 -- Enter Percent rest state
+    end
+    return 0 -- % followed by non alpha-numeric. Back to normal state
+  elseif state == 2 then
+    if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+      return 2 -- Continue in same state
+    end
+    if char == 37 then
+      return 1 -- End of %, but also start of new %
+    end
+    return 0 -- Back to normal
+  elseif state == 3 then
+    if char == 125 then -- } closing brace
+      return 0 -- Back to normal
+    end
+    return 3
+  end
+  -- Shouldn't happen
+  return state
+end
+
+function WeakAuras.ContainsCustomPlaceHolder(textStr)
+  local endPos = textStr:len();
+  local state = 0
+  local currentPos = 1
+  local start = 1
+  while currentPos <= endPos do
+    local char = string.byte(textStr, currentPos);
+    local nextState = nextState(char, state)
+
+    if state == 1 then -- Last char was a %
+      if char == 123 then
+        start = currentPos + 1
+      else
+        start = currentPos
+      end
+    elseif state == 2 or state == 3 then
+      if nextState == 0 or nextState == 1 then
+        local symbol = string.sub(textStr, start, currentPos - 1)
+        if string.match(symbol, "^c%d*$") then
+          return true
+        end
+      end
+    end
+
+    state = nextState
+    currentPos = currentPos + 1
+  end
+
+  if state == 2 then
+    local symbol = string.sub(textStr, start, currentPos - 1)
+    if string.match(symbol, "^c%d*$") then
+      return true
+    end
+  end
+
+  return false
 end
 
 function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
@@ -4511,54 +4588,89 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   end
 
   if (endPos == 2) then
-    local value = ReplaceValuePlaceHolders(textStr, region, customFunc);
-    if (value) then
-      textStr = tostring(value);
+    if string.byte(textStr, 1) == 37 then
+      local value = ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc);
+      if (value) then
+        textStr = tostring(value);
+      end
     end
     textStr = textStr:gsub("\\n", "\n");
     return textStr;
   end
 
-  local currentPos = endPos;
-  -- Look backwards
-  while (currentPos > 0) do
+  local result = ""
+  local currentPos = 1 -- Position of the "cursor"
+  local state = 0
+  local start = 1 -- Start of whatever "word" we are currently considering, doesn't include % or {} symbols
+
+  while currentPos <= endPos do
     local char = string.byte(textStr, currentPos);
-    if (char == 37) then   --%
-      if (endPos - currentPos == 1 and regionValues) then
-        local symbol = string.sub(textStr, currentPos, endPos)
-        local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
-        if (value) then
-          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-        end
-      elseif (endPos > currentPos) then
-        local symbol = string.sub(textStr, currentPos + 1, endPos);
-        local value
-        if symbol:find("^c%d*$") and regionValues then -- custom value
-          value = ReplaceValuePlaceHolders(symbol, region, customFunc)
-          if value then
-            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-          end
-        elseif regionState then -- state value
-          value = regionState[symbol] and tostring(regionState[symbol]);
-          if (value) then
-            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-          else
-            value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
-            value = value or "";
-            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
-          end
+    if state == 0 then -- Normal State
+      if char == 37 then -- % sign
+        if currentPos > start then
+          result = result .. string.sub(textStr, start, currentPos - 1)
         end
       end
-      endPos = currentPos - 1;
-    elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-      -- 0-9a-zA-Z character
-    else
-      endPos = currentPos - 1;
+    elseif state == 1 then -- Percent Start State
+      if char == 37 then
+        start = currentPos
+      elseif char == 123 then
+        start = currentPos + 1
+      elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+          -- 0-9a-zA-Z character
+        start = currentPos
+      else
+        start = currentPos
+      end
+    elseif state == 2 then -- Percent Rest State
+      if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+
+      else -- End of variable
+        local symbol = string.sub(textStr, start, currentPos - 1)
+        if regionState and regionState[symbol] then
+          result = result .. tostring(regionState[symbol])
+        else
+          local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
+          value = value or "";
+          result = result .. value
+        end
+
+        if char == 37 then
+        else
+          start = currentPos
+        end
+      end
+    elseif state == 3 then
+      if char == 125 then -- } closing brace
+        local symbol = string.sub(textStr, start, currentPos - 1)
+        if regionState and regionState[symbol] then
+          result = result .. tostring(regionState[symbol])
+        else
+          local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
+          value = value or "";
+          result = result .. value
+        end
+        start = currentPos + 1
+      end
     end
-    currentPos = currentPos - 1;
+    state = nextState(char, state)
+    currentPos = currentPos + 1
   end
 
-  textStr = textStr:gsub("\\n", "\n");
+  if state == 0 and currentPos > start then
+    result = result .. string.sub(textStr, start, currentPos - 1)
+  elseif state == 2 and currentPos > start then
+    local symbol = string.sub(textStr, start, currentPos - 1)
+    if regionState and regionState[symbol] then
+      result = result .. tostring(regionState[symbol])
+    else
+      local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
+      value = value or "";
+      result = result .. value
+    end
+  end
+
+  textStr = result:gsub("\\n", "\n");
   return textStr;
 end
 
