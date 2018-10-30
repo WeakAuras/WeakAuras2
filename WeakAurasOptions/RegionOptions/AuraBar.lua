@@ -59,8 +59,8 @@ local function createOptions(id, data)
       width = "double",
       hidden = function()
         return not (
-          data.displayTextLeft:find("%%c")
-          or data.displayTextRight:find("%%c")
+          WeakAuras.ContainsCustomPlaceHolder(data.displayTextLeft)
+          or WeakAuras.ContainsCustomPlaceHolder(data.displayTextRight)
           );
       end,
       name = L["Update Custom Text On..."],
@@ -615,8 +615,8 @@ local function createOptions(id, data)
 
   local function hideCustomTextEditor()
     return not (
-      data.displayTextLeft:find("%%c")
-      or data.displayTextRight:find("%%c")
+      WeakAuras.ContainsCustomPlaceHolder(data.displayTextLeft)
+      or WeakAuras.ContainsCustomPlaceHolder(data.displayTextRight)
       );
   end
 

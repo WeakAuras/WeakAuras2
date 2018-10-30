@@ -443,8 +443,8 @@ local function modify(parent, region, data)
   end
 
   local customTextFunc = nil
-  local data1Custom = data.text1Enabled and data.text1:find("%%c");
-  local data2Custom = data.text2Enabled and data.text2:find("%%c")
+  local data1Custom = data.text1Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text1)
+  local data2Custom = data.text2Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text2)
   if (data.customText and (data1Custom or data2Custom)) then
     customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id)
   end
