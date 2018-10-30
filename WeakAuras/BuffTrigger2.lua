@@ -1970,9 +1970,9 @@ function BuffTrigger.Add(data)
       local names
       if trigger.useName and trigger.auranames then
         names = {}
-        for i = 1, 9 do
-          local spellId = tonumber(trigger.auranames[i])
-          names[i] = GetSpellInfo(spellId) or trigger.auranames[i]
+        for index, spellName in ipairs(trigger.auranames) do
+          local spellId = tonumber(spellName)
+          names[index] = GetSpellInfo(spellId) or spellName
         end
       end
 
@@ -2130,15 +2130,15 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   if trigger.useName and trigger.auranames then
-    for i = 1, 9 do
-      local spellId = tonumber(trigger.auranames[i])
+    for index, spellName in ipairs(trigger.auranames) do
+      local spellId = tonumber(spellName)
       if spellId then
-        name, _, icon = GetSpellInfo(trigger.auranames[i])
+        name, _, icon = GetSpellInfo(spellName)
         if name and icon then
           return name, icon
         end
       else
-        name, _, icon = GetSpellInfo(trigger.auranames[i])
+        name, _, icon = GetSpellInfo(spellName)
         if (name and icon) then
           return name, icon
         end
@@ -2147,10 +2147,10 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
   end
 
   if trigger.useExactSpellId and trigger.auraspellids then
-    for i = 1, 9 do
-      local spellId = trigger.auraspellids[i] ~= "" and tonumber(trigger.auraspellids[i])
+    for index, spellIdString in ipairs(trigger.auraspellids) do
+      local spellId = spellIdString ~= "" and tonumber(spellIdString)
       if spellId then
-        name, _, icon = GetSpellInfo(trigger.auraspellids[i])
+        name, _, icon = GetSpellInfo(spellIdString)
         if name and icon then
           return name, icon
         end
@@ -2168,10 +2168,10 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
   if (not name or not icon and WeakAuras.spellCache) then
     local trigger = data.triggers[triggernum].trigger
     if trigger.useName and trigger.auranames then
-      for i = 1, 9 do
-        icon = WeakAuras.spellCache.GetIcon(trigger.auranames[i])
+      for index, spellName in ipairs(trigger.auranames) do
+        icon = WeakAuras.spellCache.GetIcon(spellName)
         if icon then
-          return trigger.auranames[i], icon
+          return spellName, icon
         end
       end
     end
