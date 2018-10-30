@@ -40,7 +40,8 @@ local function getAuraMatchesList(name)
 end
 
 local function shiftTable(tbl, pos)
-  for i = pos, 9, 1 do
+  local size = #tbl
+  for i = pos, size, 1 do
     tbl[i] = tbl[i + 1]
   end
 end
@@ -620,14 +621,15 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   }
 
   -- Names
-  for i = 1, 9 do
+  local nameOptionSize = min((trigger.auranames and #trigger.auranames or 0) + 1, 100)
+  for i = 1, nameOptionSize do
     if i ~= 1 then
       aura_options["namespace" .. i] = {
         type = "execute",
         name = L["or"],
         width = 0.8,
         image = function() return "", 0, 0 end,
-        order = i + 11.1,
+        order = i / 100 + 12.0001,
         hidden = function() return not (trigger.type == "aura2" and trigger.useName and trigger.auranames and trigger.auranames[i - 1]) end
       }
     end
@@ -668,7 +670,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         end
         return icon and tostring(icon) or "", 18, 18
       end,
-      order = i + 11.2,
+      order = i / 100 + 12.0002,
       hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])) end
     }
 
@@ -676,7 +678,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Aura Name"],
       desc = L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
-      order = i + 11.3,
+      order = i / 100 + 12.0003,
       hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])) end,
       get = function(info) return trigger.auranames and trigger.auranames[i] end,
       set = function(info, v)
@@ -697,18 +699,20 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         WeakAuras.SetThumbnail(data)
         WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
+        WeakAuras.ReloadTriggerOptions(data)
       end
     }
   end
   -- Exact Spell IDs
-  for i = 1, 9 do
+  local spellOptionsSize = min((trigger.auraspellids and #trigger.auraspellids or 0) + 1, 100)
+  for i = 1, spellOptionsSize do
     if i ~= 1 then
       aura_options["spellidspace" .. i] = {
         type = "execute",
         name = L["or"],
         width = 0.8,
         image = function() return "", 0, 0 end,
-        order = i + 21.1,
+        order = i / 100 + 22.0001,
         hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and trigger.auraspellids and trigger.auraspellids[i - 1]) end
       }
     end
@@ -727,7 +731,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         local icon = select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
         return icon and tostring(icon) or "", 18, 18
       end,
-      order = i + 21.2,
+      order = i / 100 + 22.0002,
       disabled = function() return not trigger.auraspellids or not trigger.auraspellids[i] or not select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i])) end,
       hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])) end
     }
@@ -736,7 +740,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Spell ID"],
       desc = L["Enter a Spell ID"],
-      order = i + 21.3,
+      order = i / 100 + 22.0003,
       hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])) end,
       get = function(info) return trigger.auraspellids and trigger.auraspellids[i] end,
       set = function(info, v)
@@ -750,6 +754,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         WeakAuras.SetThumbnail(data)
         WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
+        WeakAuras.ReloadTriggerOptions(data)
       end,
       validate = ValidateNumeric
     }
