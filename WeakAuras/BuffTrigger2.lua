@@ -167,17 +167,18 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   if matchData.tooltipUpdated == time then
     return
   end
+  local changed = false
 
   if matchData.unit and matchData.index and matchData.filter then
     local tooltip, _, tooltip1, tooltip2, tooltip3 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
 
-    local changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
+    changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
       or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3
     matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3 = tooltip, tooltip1, tooltip2, tooltip3
-    return changed
   end
 
   matchData.tooltipUpdated = time
+  return changed
 end
 
 local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
@@ -1094,7 +1095,7 @@ local function CheckScanFuncs(scanFuncs, unit, filter, index)
   if scanFuncs then
     for _, triggerInfo in pairs(scanFuncs) do
       if triggerInfo.fetchTooltip then
-        matchData[unit][filter][index]:UpdateTooltip(time)
+        matchData[unit][filter][index]:UpdateTooltip(GetTime())
       end
       if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
         local id = triggerInfo.id
@@ -1368,6 +1369,8 @@ frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
+frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
   local time = GetTime()
@@ -1398,6 +1401,10 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {}
       matchDataChanged[triggerInfo.id][triggerInfo.triggernum] = true
     end
+  elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
+    if arg1 == "player" then
+      ScanGroupUnit(time, matchDataChanged, nil, "vehicle")
+    end
   elseif event == "UNIT_AURA" then
     if (arg1:sub(1,4) == "raid" and IsInRaid()) then
       ScanGroupUnit(time, matchDataChanged, "group", arg1)
@@ -1411,6 +1418,9 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
     else
       ScanGroupUnit(time, matchDataChanged, nil, arg1)
+    end
+    if arg1 == "vehicle" then
+      ScanGroupUnit(time, matchDataChanged, nil, "player")
     end
   end
   WeakAuras.StopProfileSystem("bufftrigger2")
@@ -1564,6 +1574,7 @@ end
 
 local function LoadAura(id, triggernum, triggerInfo)
   local filter = triggerInfo.debuffType
+  local time = GetTime();
 
   if triggerInfo.unit == "multi" then
      AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
@@ -1608,8 +1619,11 @@ local function LoadAura(id, triggernum, triggerInfo)
     unitExistScanFunc[triggerInfo.unit] = unitExistScanFunc[triggerInfo.unit] or {}
     unitExistScanFunc[triggerInfo.unit][id] = unitExistScanFunc[triggerInfo.unit][id] or {}
     tinsert(unitExistScanFunc[triggerInfo.unit][id], triggerInfo)
-  end
 
+    if existingUnits[triggerInfo.unit] == nil then
+      existingUnits[triggerInfo.unit] = UnitExists(triggerInfo.unit)
+    end
+  end
   if triggerInfo.groupCountFunc then
     tinsert(groupCountScanFunc, triggerInfo)
   end
@@ -1635,6 +1649,9 @@ local function LoadAura(id, triggernum, triggerInfo)
                 or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
                 or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId)) then
               if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
+                if triggerInfo.fetchTooltip then
+                  matchData[unit][filter][index]:UpdateTooltip(time)
+                end
                 ReferenceMatchData(id, triggernum, unit, filter, index)
               end
             end
@@ -1650,6 +1667,9 @@ local function LoadAura(id, triggernum, triggerInfo)
             or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
             or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
           if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[triggerInfo.unit][filter][index]) then
+            if triggerInfo.fetchTooltip then
+              matchData[triggerInfo.unit][filter][index]:UpdateTooltip(time)
+            end
             ReferenceMatchData(id, triggernum, triggerInfo.unit, filter, index)
           end
         end
