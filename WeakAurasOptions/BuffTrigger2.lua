@@ -621,7 +621,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   }
 
   -- Names
-  local nameOptionSize = min((trigger.auranames and #trigger.auranames or 0) + 1, 100)
+  local nameOptionSize = 100
   for i = 1, nameOptionSize do
     if i ~= 1 then
       aura_options["namespace" .. i] = {
@@ -704,7 +704,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     }
   end
   -- Exact Spell IDs
-  local spellOptionsSize = min((trigger.auraspellids and #trigger.auraspellids or 0) + 1, 100)
+  local spellOptionsSize = 100
   for i = 1, spellOptionsSize do
     if i ~= 1 then
       aura_options["spellidspace" .. i] = {
