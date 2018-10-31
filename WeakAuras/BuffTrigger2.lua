@@ -2196,6 +2196,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
       end
     end
   end
+  return name, icon
 end
 
 --- Returns the tooltip text for additional properties.
