@@ -2616,7 +2616,7 @@ local function validateUserConfig(data)
   local authorOptionKeys = {}
   for index, option in ipairs(data.authorOptions) do
     authorOptionKeys[option.key] = index
-    if not data.config[option.key] then
+    if data.config[option.key] == nil then
       data.config[option.key] = option.default
     end
   end
