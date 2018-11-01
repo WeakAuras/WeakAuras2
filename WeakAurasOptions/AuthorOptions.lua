@@ -275,6 +275,26 @@ local function setColor(data, option, key)
   end
 end
 
+local function setSelectDefault(data, option, key)
+  if option.references then
+    return function(_, value)
+      for childID, optionID in pairs(option.references) do
+        local childData = data[childID]
+        local childOption = childData.authorOptions[optionID]
+        childOption.default = min(value, #childOption.values)
+        WeakAuras.Add(childData)
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function(_, value)
+      option.default = value
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
 local typeControlAdders = {
   toggle = function(option, args, data, order, i)
     args["option" .. i .. "default"] = {
@@ -555,7 +575,7 @@ local typeControlAdders = {
       order = order,
       values = defaultValues,
       get = get(option, "default"),
-      set = set(data, option, "default"),
+      set = setSelectDefault(data, option),
     }
     order = order + 1
     for j, value in ipairs(values) do
