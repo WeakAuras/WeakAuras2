@@ -509,31 +509,25 @@ local typeControlAdders = {
     local conflict = {} -- magic value
     if option.references then
       values = {}
-      print('------------------------------------------------')
       for childID, optionID in pairs(option.references) do
         local childData = data[childID]
         local childValues = childData.authorOptions[optionID].values
-        print(i,#childValues)
         local i = 1
         while i <= #values or i <= #childValues do
           local value = values[i]
-          print(i, value)
           if value == conflict then
             -- conflicts can't ever be resolved at this point
           elseif value == nil then
             -- set the new value
-            print('setting new value at',i,childValues[i])
             values[i] = childValues[i]
           elseif value ~= childValues[i] then
             -- either this child has a conflicting value at this index
             -- or it's already ended and is nil, so we need to mark a conflict
-            print('marking conflict at',i)
             values[i] = conflict
           end
           i = i + 1
         end
       end
-      print('total length of merged values:',#values)
     else
       values = option.values
     end
