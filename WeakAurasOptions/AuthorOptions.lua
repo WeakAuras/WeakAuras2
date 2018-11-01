@@ -1029,6 +1029,15 @@ local function mergeOptions(childIndex, merged, toMerge)
   end
 end
 
+local function allChoicesAreDefault(data)
+  for _, option in ipairs(data.authorOptions) do
+    if option.key ~= nil and option.default ~= nil and option.default ~= data.config[option.key] then
+      return false
+    end
+  end
+  return true
+end
+
 function WeakAuras.GetAuthorOptions(data, args, startorder)
   if data.controlledChildren then
     local isAuthorMode = true
@@ -1127,7 +1136,8 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
               wipe(childData.config)
               WeakAuras.Add(childData)
               WeakAuras.ReloadTriggerOptions(data)
-            end
+            end,
+            disabled = function() return allChoicesAreDefault(childData) end
           }
           order = order + 1
         end
@@ -1150,6 +1160,16 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             WeakAuras.Add(childData)
           end
           WeakAuras.ReloadTriggerOptions(data)
+        end,
+        hidden = function() return #values > 1 end,
+        disabled = function()
+          for _, childID in ipairs(values) do
+            local childData = WeakAuras.GetData(childID)
+            if not allChoicesAreDefault(childData) then
+              return false
+            end
+          end
+          return true
         end
       }
       order = order + 1
