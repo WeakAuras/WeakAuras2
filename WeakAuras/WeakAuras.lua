@@ -2635,7 +2635,8 @@ local function validateUserConfig(data)
           data.config[key] = option.default
         else
           if option.type == "number" and option.step then
-            data.config[key] = math.floor(value * option.step)/option.step
+            local min = option.min or 0
+            data.config[key] = option.step * floor((value - min)/option.step) + min
           end
         end
       elseif option.type == "select" then
