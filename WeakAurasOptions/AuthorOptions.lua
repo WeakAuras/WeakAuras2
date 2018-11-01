@@ -1119,8 +1119,8 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       local mergedOptions = {}
       local allData = {[0] = data}
       -- merge child options into one
-      for i = 1, #data.controlledChildren do
-        local childData = WeakAuras.GetData(data.controlledChildren[i])
+      for i, childID in ipairs(data.controlledChildren) do
+        local childData = WeakAuras.GetData(childID)
         local childOptions = childData and childData.authorOptions
         allData[i] = childData
         if childOptions then
