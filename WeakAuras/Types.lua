@@ -1789,6 +1789,7 @@ WeakAuras.author_option_fields = {
   common = {
     type = true,
     name = true,
+    useDesc = true,
     desc = true,
     key = true,
     width = true,
@@ -1808,14 +1809,14 @@ WeakAuras.author_option_fields = {
   },
   input = {
     default = "",
-    use_length = false,
+    useLength = false,
     length = 10,
   },
   toggle = {
     default = false,
   },
   description = {
-    name = "",
+    text = "",
     fontSize = "medium",
   },
   color = {

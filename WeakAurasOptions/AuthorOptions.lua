@@ -82,25 +82,16 @@ local function name(data, option, key, phrase)
   end
 end
 
-local function nameType(data, option, phrase)
+local function nameHead(data, option, phrase)
   if not option.references then
     return phrase
-  elseif #option.references == #data[0].controlledChildren then
-    local optionNum = option.references[1]
-    local notAllSame = false
-    for i = 2, #option.references do
-      if optionNum ~= option.references[i] then
-        notAllSame = true
-        break
+  else
+    for i = 1, #data[0].controlledChildren do
+      if not option.references[i] then
+        return "|cFF4080FF" .. phrase
       end
     end
-    if notAllSame then
-      return "|cFF4080FF" .. phrase
-    else
-      return phrase
-    end
-  else
-    return "|cFF4080FF" .. phrase
+    return phrase
   end
 end
 
@@ -129,9 +120,12 @@ end
 
 local function descType(data, option)
   if not option.references then
-    return ""
+    return L["This setting controls what widget is generated in user mode."]
   else
-    local desc = {L["Used in Auras:"]}
+    local desc = {
+      L["This setting controls what widget is generated in user mode."],
+      L["Used in Auras:"],
+    }
     for childID, optionID in pairs(option.references) do
       local childData = data[childID]
       tinsert(desc, ("%s - Option %i"):format(childData.id, optionID))
@@ -154,7 +148,28 @@ local function descSelect(data, option, key)
         tinsert(desc, ("%s %i: - %s"):format(childData.id, optionID, tostring(childOption.values[key])))
       end
     end
-    return tconcat(desc,"\n")
+    return tconcat(desc, "\n")
+  end
+end
+
+local function descColor(data, option, key)
+  if not option.references then
+    return ""
+  elseif option[key] or not atLeastOneSet(data, option.references, key) then
+    return ""
+  else
+    local desc = {
+      L["Values are in normalized rgba format."],
+      L["Values:"],
+    }
+    for childID, optionID in pairs(option.references) do
+      local childData = data[childID]
+      local childOption = childData.authorOptions[optionID]
+      if childOption[key] ~= nil then
+        tinsert(desc, ("%s #%i: %.2f %.2f %.2f %.2f"):format(childData.id, optionID, unpack(childOption[key])))
+      end
+    end
+    return tconcat(desc, "\n")
   end
 end
 
@@ -175,7 +190,9 @@ end
 
 local function getColor(option, key)
   return function()
-    return unpack(option[key])
+    if option[key] then
+      return unpack(option[key])
+    end
   end
 end
 
@@ -296,22 +313,23 @@ local typeControlAdders = {
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
       order = order,
+      width = "full",
       get = get(option, "default"),
       set = set(data, option, "default"),
     }
     order = order + 1
-    args["option" .. i .. "use_length"] = {
+    args["option" .. i .. "useLength"] = {
       type = "toggle",
-      name = name(data, option, "use_length", L["Max Length"]),
-      desc = desc(data, option, "use_length"),
+      name = name(data, option, "useLength", L["Max Length"]),
+      desc = desc(data, option, "useLength"),
       order = order,
-      get = get(option, "use_length"),
-      set = set(data, option, "use_length"),
+      get = get(option, "useLength"),
+      set = set(data, option, "useLength"),
     }
     order = order + 1
     args["option" .. i .. "length"] = {
       type = "range",
-      name = "",
+      name = name(data, option, "length", L["Length"]),
       desc = desc(data, option, "length"),
       order = order,
       min = 1,
@@ -319,6 +337,7 @@ local typeControlAdders = {
       softMax = 20,
       get = get(option, "length"),
       set = set(data, option, "length"),
+      disabled = function() return not option.useLength end,
     }
     order = order + 1
     return order
@@ -477,7 +496,7 @@ local typeControlAdders = {
     args["option" .. i .. "default"] = {
       type = "color",
       name = name(data, option, "default", L["Default"]),
-      desc = desc(data, option, "default"),
+      desc = descColor(data, option, "default"),
       order = order,
       get = getColor(option, "default"),
       set = setColor(data, option, "default")
@@ -706,7 +725,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   local option = authorOptions[i]
   args["option" .. i .. "header"] = {
     type = "description",
-    name = L["Option #%i"]:format(i),
+    name = nameHead(data, option, L["Option #%i"]:format(i)),
     order = order,
     width = 1.40,
     fontSize = "large",
@@ -815,7 +834,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
 
   args["option" .. i .. "type"] = {
     type = "select",
-    name = nameType(data, option, L["Option Type"]),
+    name = L["Option Type"],
     desc = descType(data, option),
     order = order,
     values = WeakAuras.author_option_types,
@@ -894,16 +913,16 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     order = order + 1
     args["option" .. i .. "usetooltip"] = {
       type = "toggle",
-      name = name(data, option, "use_tooltip", L["Tooltip"]),
+      name = name(data, option, "useDesc", L["Tooltip"]),
       order = order,
       width = 0.5,
-      get = get(option, "use_tooltip"),
+      get = get(option, "useDesc"),
       set = function(_, value)
         if option.references then
           for childID, optionID in pairs(option.references) do
             local childData = data[childID]
             local childOption = childData.authorOptions[optionID]
-            childOption.use_tooltip = value
+            childOption.useDesc = value
             if not value then
               childOption.desc = nil
             end
@@ -914,7 +933,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
           if not value then
             option.desc = nil
           end
-          option.use_tooltip = value
+          option.useDesc = value
           WeakAuras.Add(data)
           WeakAuras.ReloadTriggerOptions(data)
         end
@@ -923,13 +942,13 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     order = order + 1
     args["option" .. i .. "tooltip"] = {
       type = "input",
-      name = L["Tooltip Text"],
+      name = name(data, option, "desc", L["Tooltip Text"]),
       desc = desc(data, option, "desc"),
       order = order,
       width = 1.5,
       get = get(option, "desc"),
       set = set(data, option, "desc"),
-      disabled = function() return not option.use_tooltip end,
+      disabled = function() return not option.useDesc end,
     }
     order = order + 1
   end
@@ -992,17 +1011,14 @@ local function neq(a, b)
 end
 
 local function mergeOptions(childIndex, merged, toMerge)
-  local nextInsert = #merged
-  if nextInsert == 0 then
-    nextInsert = 1
-  end
+  local nextInsert = 1
   for i = 1, #toMerge do
     -- find the best place to start inserting the next option to merge
     local nextToMerge = toMerge[i]
     local shouldMerge = false
     for j = nextInsert, #merged + 1 do
       if not merged[j] then break end -- no more options to check, so must insert
-      if nextToMerge.type == merged[j].type and nextToMerge.name == merged[j].name then
+      if nextToMerge.type == merged[j].type and nextToMerge.key == merged[j].key then
         shouldMerge = true
         nextInsert = j
         break
@@ -1078,6 +1094,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
               name = L["Option #"] .. i,
               default = false,
               width = 1,
+              useDesc = false,
             }
             tinsert(collapsedOptions[childData.id], false)
             WeakAuras.Add(childData)
@@ -1137,7 +1154,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
               WeakAuras.Add(childData)
               WeakAuras.ReloadTriggerOptions(data)
             end,
-            disabled = function() return allChoicesAreDefault(childData) end
+            hidden = function() return allChoicesAreDefault(childData) end
           }
           order = order + 1
         end
@@ -1161,8 +1178,8 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           end
           WeakAuras.ReloadTriggerOptions(data)
         end,
-        hidden = function() return #values > 1 end,
-        disabled = function()
+        hidden = function()
+          if #values <= 1 then return true end
           for _, childID in ipairs(values) do
             local childData = WeakAuras.GetData(childID)
             if not allChoicesAreDefault(childData) then
@@ -1170,7 +1187,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             end
           end
           return true
-        end
+        end,
       }
       order = order + 1
       args["enterAuthorModeAll"] = {
@@ -1202,12 +1219,6 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       for i = 1, #authorOptions do
         order = addUserModeOption(authorOptions, args, data, order, i)
       end
-      args[data.id .. "footer"] = {
-        type = "header",
-        name = "",
-        order = order,
-      }
-      order = order + 1
       args["resetToDefault"] = {
         type = "execute",
         name = L["Reset to Defaults"],
@@ -1217,7 +1228,14 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           wipe(data.config)
           WeakAuras.Add(data)
           WeakAuras.ReloadTriggerOptions(data)
-        end
+        end,
+        hidden = function() return allChoicesAreDefault(data) end
+      }
+      order = order + 1
+      args[data.id .. "footer"] = {
+        type = "header",
+        name = "",
+        order = order,
       }
       order = order + 1
       args["enterAuthorMode"] = {
