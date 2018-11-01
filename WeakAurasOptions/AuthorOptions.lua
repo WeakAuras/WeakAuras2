@@ -523,6 +523,15 @@ local typeControlAdders = {
     else
       values = option.values
     end
+    args["optino" .. i .. "defaultspace"] = {
+      type = "toggle",
+      name = name(data, option, "default", L["Default"]),
+      order = order,
+      disabled = function() return true end,
+      get = function() return true end,
+      set = function() end,
+    }
+    order = order + 1
     args["option" .. i .. "default"] = {
       type = "select",
       name = name(data, option, "default", L["Default"]),
