@@ -509,17 +509,31 @@ local typeControlAdders = {
     local conflict = {} -- magic value
     if option.references then
       values = {}
+      print('------------------------------------------------')
       for childID, optionID in pairs(option.references) do
         local childData = data[childID]
-        local childOption = childData.authorOptions[optionID]
-        for i, v in ipairs(childOption.values) do
-          if values[i] == nil then
-            values[i] = v
-          elseif values[i] ~= v then
+        local childValues = childData.authorOptions[optionID].values
+        print(i,#childValues)
+        local i = 1
+        while i <= #values or i <= #childValues do
+          local value = values[i]
+          print(i, value)
+          if value == conflict then
+            -- conflicts can't ever be resolved at this point
+          elseif value == nil then
+            -- set the new value
+            print('setting new value at',i,childValues[i])
+            values[i] = childValues[i]
+          elseif value ~= childValues[i] then
+            -- either this child has a conflicting value at this index
+            -- or it's already ended and is nil, so we need to mark a conflict
+            print('marking conflict at',i)
             values[i] = conflict
           end
+          i = i + 1
         end
       end
+      print('total length of merged values:',#values)
     else
       values = option.values
     end
@@ -532,20 +546,28 @@ local typeControlAdders = {
       set = function() end,
     }
     order = order + 1
+    local defaultValues = {}
+    for i, v in ipairs(values) do
+      if v == conflict then
+        defaultValues[i] = "|cFF4080FF" .. L["Value %i"]:format(i)
+      else
+        defaultValues[i] = v
+      end
+    end
     args["option" .. i .. "default"] = {
       type = "select",
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
       order = order,
-      values = values,
+      values = defaultValues,
       get = get(option, "default"),
       set = set(data, option, "default"),
     }
     order = order + 1
-    for j = 1, #values do
+    for j, value in ipairs(values) do
       args["option" .. i .. "space" .. j] = {
         type = "toggle",
-        name = (values[j] == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(j),
+        name = L["Value %i"]:format(j),
         order = order,
         disabled = function() return true end,
         get = function() return true end,
@@ -554,11 +576,15 @@ local typeControlAdders = {
       order = order + 1
       args["option" .. i .. "value" .. j] = {
         type = "input",
-        name = "",
-        desc = descSelect(data, option, j),
+        name = (value == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(j),
+        desc = descSelect(data, option, j, conflict),
         order = order,
         width = 0.85,
-        get = get(values, j),
+        get = function()
+          if value ~= conflict then
+            return value
+          end
+        end,
         set = function(_, value)
           if option.references then
             for childID, optionID in pairs(option.references) do
@@ -612,7 +638,7 @@ local typeControlAdders = {
     end
     args["option" .. i .. "newvaluespace"] = {
       type = "toggle",
-      name = (values[#values] == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(#values + 1),
+      name = L["New Value"],
       order = order,
       disabled = function() return true end,
       get = function() return true end,
@@ -621,7 +647,7 @@ local typeControlAdders = {
     order = order + 1
     args["option" .. i .. "newvalue"] = {
       type = "input",
-      name = "",
+      name = L["New Value"],
       order = order,
       get = function() return "" end,
       set = function(_, value)
