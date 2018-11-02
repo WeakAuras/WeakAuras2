@@ -437,7 +437,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     useGroup_count = {
       type = "toggle",
-      name = L["Group Member Count"],
+      name = L["Unit Count"],
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger)) end,
       order = 68
     },
@@ -451,6 +451,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     group_countOperator = {
       type = "select",
       name = L["Operator"],
+      desc = function()
+        if (trigger.unit == "multi") then
+          return L["Compare against the number of units affected."]
+        else
+          local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
+          return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
+        end
+      end,
       order = 68.2,
       width = "half",
       values = operator_types,
@@ -519,6 +527,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = "half",
       values = operator_types,
       hidden = function() return not (trigger.type == "aura2" and HasMatchCount(trigger)) end,
+      desc = L["Counts the number of matches over all units."]
     },
     match_count = {
       type = "input",
@@ -526,7 +535,8 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 71.5,
       width = "half",
       hidden = function() return not (trigger.type == "aura2" and HasMatchCount(trigger)) end,
-      validate = ValidateNumeric
+      validate = ValidateNumeric,
+      desc = L["Counts the number of matches over all units."]
     },
     showClones = {
       type = "toggle",
