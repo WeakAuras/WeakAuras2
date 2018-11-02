@@ -1708,8 +1708,6 @@ WeakAuras.data_stub = {
         spellIds = {},
         unit = "player",
         debuffType = "HELPFUL",
-        duration = "1",
-        unevent = "timed"
       },
       untrigger = {},
     },
