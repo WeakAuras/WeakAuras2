@@ -1860,21 +1860,21 @@ local function createScanFunc(trigger)
   if use_tooltip and trigger.tooltip_operator and trigger.tooltip then
     if trigger.tooltip_operator == "==" then
       local ret2 = [[
-      if not matchData.tooltip == %q then
+      if not matchData.tooltip or not matchData.tooltip == %q then
         return false
       end
       ]]
       ret = ret .. ret2:format(trigger.tooltip)
     elseif trigger.tooltip_operator == "find('%s')" then
       local ret2 = [[
-      if not matchData.tooltip:find(%q) then
+      if not matchData.tooltip or not matchData.tooltip:find(%q) then
         return false
       end
       ]]
       ret = ret .. ret2:format(trigger.tooltip)
     elseif trigger.tooltip_operator == "match('%s')" then
       local ret2 = [[
-      if not matchData.tooltip:match(%q) then
+      if not matchData.tooltip or not matchData.tooltip:match(%q) then
         return false
       end
       ]]
@@ -1885,11 +1885,11 @@ local function createScanFunc(trigger)
   if use_tooltipValue and trigger.tooltipValueNumber and trigger.tooltipValue_operator and trigger.tooltipValue then
     local property = "tooltip" .. tonumber(trigger.tooltipValueNumber)
     local ret2 = [[
-      if not (matchData.%s %s %s) then
+      if not matchData.%s or not (matchData.%s %s %s) then
         return false
       end
     ]]
-    ret = ret .. ret2:format(property, trigger.tooltipValue_operator, trigger.tooltipValue)
+    ret = ret .. ret2:format(property, property, trigger.tooltipValue_operator, trigger.tooltipValue)
   end
 
   if trigger.useNamePattern and trigger.namePattern_operator and trigger.namePattern_name then
