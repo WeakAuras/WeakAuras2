@@ -2207,27 +2207,27 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n"
-  ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%casterName|r -" .. L["Caster Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitName|r -" .. L["Unit Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%matchCount|r -" .. L["Match Count"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitCount|r -" .. L["Units Affected"] .. "\n"
+  ret = ret .. "|cFFFF0000%spellId|r - " .. L["Spell ID"] .. "\n"
+  ret = ret .. "|cFFFF0000%unitCaster|r - " .. L["Caster Unit"] .. "\n"
+  ret = ret .. "|cFFFF0000%casterName|r - " .. L["Caster Name"] .. "\n"
+  ret = ret .. "|cFFFF0000%unitName|r - " .. L["Unit Name"] .. "\n"
+  ret = ret .. "|cFFFF0000%matchCount|r - " .. L["Match Count"] .. "\n"
+  ret = ret .. "|cFFFF0000%unitCount|r - " .. L["Units Affected"] .. "\n"
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFF0000%maxUnitCount|r -" .. L["Total Units"] .. "\n"
+    ret = ret .. "|cFFFF0000%maxUnitCount|r - " .. L["Total Units"] .. "\n"
   end
 
   if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
-    ret = ret .. "|cFFFF0000%tooltip|r -" .. L["Tooltip"] .. "\n"
-    ret = ret .. "|cFFFF0000%tooltip1|r -" .. L["First Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%tooltip2|r -" .. L["Second Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%tooltip3|r -" .. L["Third Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFF0000%tooltip|r - " .. L["Tooltip"] .. "\n"
+    ret = ret .. "|cFFFF0000%tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFF0000%tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFF0000%tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
   end
 
   if trigger.unit == "group" and trigger.useAffected then
-    ret = ret .. "|cFFFF0000%affected|r -" .. L["Names of affected Players"] .. "\n"
-    ret = ret .. "|cFFFF0000%unaffected|r -" .. L["Names of unaffected Players"] .. "\n"
+    ret = ret .. "|cFFFF0000%affected|r - " .. L["Names of affected Players"] .. "\n"
+    ret = ret .. "|cFFFF0000%unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
   end
 
   return ret
