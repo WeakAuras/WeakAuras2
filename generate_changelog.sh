@@ -5,7 +5,7 @@ tag=$( git describe --tags --always --abbrev=0 --exclude="*beta*" )
 
 if [ "$version" = "$tag" ]; then # on a tag
   current="$tag"
-  previous=$( git describe --tags --abbrev=0 HEAD~ )
+  previous=$( git describe --tags --abbrev=0 --exclude="*beta*" HEAD~ )
 else
   current=$( git log -1 --format="%H" )
   previous="$tag"
