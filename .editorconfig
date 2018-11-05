@@ -21,3 +21,6 @@ indent_size = 4
 
 [*.sh]
 end_of_line = lf
+
+[.mailmap]
+end_of_line = lf
