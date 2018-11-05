@@ -4707,6 +4707,8 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
       value = value or "";
       result = result .. value
     end
+  elseif state == 1 then
+    result = result .. "%"
   end
 
   textStr = result:gsub("\\n", "\n");
