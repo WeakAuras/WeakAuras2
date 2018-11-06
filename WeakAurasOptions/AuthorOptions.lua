@@ -772,14 +772,6 @@ end
 local function addControlsForOption(authorOptions, args, data, order, i)
   -- add header controls
   local option = authorOptions[i]
-  args["option" .. i .. "header"] = {
-    type = "description",
-    name = nameHead(data, option, L["Option #%i"]:format(i)),
-    order = order,
-    width = 1.40,
-    fontSize = "large",
-  }
-  order = order + 1
 
   local collapsed = true
   if option.references then
@@ -812,8 +804,17 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       end
     end,
     image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
-    imageWidth = 24,
-    imageHeight = 24
+    imageWidth = 18,
+    imageHeight = 18
+  }
+  order = order + 1
+
+  args["option" .. i .. "header"] = {
+    type = "description",
+    name = nameHead(data, option, L["Option #%i"]:format(i)),
+    order = order,
+    width = 1.40,
+    fontSize = "large",
   }
   order = order + 1
 
