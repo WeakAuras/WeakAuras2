@@ -15,18 +15,35 @@ function WeakAuras.AddActionOption(id, data)
       if(split) then
         local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
         if(data.actions and data.actions[field]) then
-          return data.actions[field][value];
+          if (info.type == "color") then
+            if type(data.actions[field][value]) == "table" then
+              local c = data.actions[field][value]
+              return c[1], c[2], c[3], c[4];
+            else
+              return 1, 1, 1, 1
+            end
+          else
+            return data.actions[field][value];
+          end
         else
           return nil;
         end
       end
     end,
-    set = function(info, v)
+    set = function(info, v, g, b, a)
       local split = info[#info]:find("_");
       local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
       data.actions = data.actions or {};
       data.actions[field] = data.actions[field] or {};
-      data.actions[field][value] = v;
+      if (info.type == "color") then
+        if not data.actions[field][value] or type(data.actions[field][value]) ~= "table" then
+          data.actions[field][value] = {}
+        end
+        local c = data.actions[field][value]
+        c[1], c[2], c[3], c[4] = v, g, b, a;
+      else
+        data.actions[field][value] = v;
+      end
       if(value == "sound" or value == "sound_path") then
         PlaySoundFile(v, data.actions.start.sound_channel or "Master");
       elseif(value == "sound_kit_id") then
