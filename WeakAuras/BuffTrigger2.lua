@@ -193,6 +193,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
       name = name,
       icon = icon,
       stacks = stacks,
+      debuffClass = debuffClass,
       duration = duration,
       expirationTime = expirationTime,
       unitCaster = unitCaster,
@@ -2715,6 +2716,14 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
     if not name then
       return false
     end
+
+    if debuffClass == nil then
+      debuffClass = "none"
+    elseif debuffClass == "" then
+      debuffClass = "enrage"
+    else
+      debuffClass = string.lower(debuffClass)
+    end
     local auraSourceGuid = unitCaster and UnitGUID(unitCaster)
     if (name == nameKey or spellId == spellKey) and sourceGUID == auraSourceGuid then
       local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
@@ -2797,6 +2806,13 @@ local function CheckAurasMulti(base, unit, filter)
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
     if not name then
       return false
+    end
+    if debuffClass == nil then
+      debuffClass = "none"
+    elseif debuffClass == "" then
+      debuffClass = "enrage"
+    else
+      debuffClass = string.lower(debuffClass)
     end
     local auraCasterGUID = unitCaster and UnitGUID(unitCaster)
     if base[name] and base[name][auraCasterGUID] then
