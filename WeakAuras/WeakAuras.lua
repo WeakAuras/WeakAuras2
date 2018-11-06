@@ -75,7 +75,15 @@ end
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
   if (msg) then
-    if (msg == "pstart") then
+    if msg == "help" then
+      prettyPrint(L["/wa help - show this message"])
+      prettyPrint(L["/wa minimap - toggle minimap icon"])
+      prettyPrint(L["-- Profiling: Measure the performance of your active auras --"])
+      prettyPrint(L["/wa pstart - start profiling"])
+      prettyPrint(L["/wa pstop - stop profiling"])
+      prettyPrint(L["/wa pprint - show profiling results"])
+      return;
+    elseif (msg == "pstart") then
       WeakAuras.StartProfile();
       return;
     elseif (msg == "pstop") then
