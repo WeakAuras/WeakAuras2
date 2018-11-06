@@ -1271,8 +1271,8 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
     tooltip_update_frame:SetScript("OnUpdate", nil);
     GameTooltip:Hide();
   end,
-  iconR = 1,
-  iconG = 1,
+  iconR = 0.6,
+  iconG = 0,
   iconB = 1
 });
 
