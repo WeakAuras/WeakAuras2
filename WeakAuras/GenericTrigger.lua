@@ -153,13 +153,15 @@ function TestForMultiSelect(trigger, arg)
   if(trigger["use_"..name] == false) then -- multi selection
     test = "(";
     local any = false;
-    for value, _ in pairs(trigger[name].multi) do
-      if not arg.test then
-        test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
-      else
-        test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+    if trigger[name].multi then
+      for value, _ in pairs(trigger[name].multi) do
+        if not arg.test then
+          test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
+        else
+          test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+        end
+        any = true;
       end
-      any = true;
     end
     if(any) then
       test = test:sub(0, -5);
