@@ -72,20 +72,34 @@ function WeakAuras.OpenOptions(msg)
   end
 end
 
+function WeakAuras.PrintHelp()
+  print(L["Usage:"])
+  print(L["/wa help - Show this message"])
+  print(L["/wa minimap - Toggle the minimap icon"])
+  print(L["/wa pstart - Start profiling"])
+  print(L["/wa pstop - Finish profiling"])
+  print(L["/wa pprint - Show the results from the most recent profiling"])
+  print(L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/wa2!"])
+end
+
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
-  if (msg) then
-    if (msg == "pstart") then
+  msg = string.lower(msg)
+  if msg then
+    if msg == "pstart" then
       WeakAuras.StartProfile();
       return;
-    elseif (msg == "pstop") then
+    elseif msg == "pstop" then
       WeakAuras.StopProfile();
       return;
-    elseif(msg == "pprint") then
+    elseif msg == "pprint" then
       WeakAuras.PrintProfile();
       return;
-    elseif(msg == "minimap") then
+    elseif msg == "minimap" then
       WeakAuras.ToggleMinimap();
+      return;
+    elseif msg == "help" then
+      WeakAuras.PrintHelp();
       return;
     end
   end
