@@ -3683,6 +3683,7 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {
       "BAG_UPDATE",
+      "BAG_UPDATE_COOLDOWN",
       "PLAYER_ENTERING_WORLD"
     },
     internal_events = {
