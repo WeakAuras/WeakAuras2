@@ -854,6 +854,16 @@ local function TriggerInfoApplies(triggerInfo, isSelf, role)
   return true
 end
 
+local function SortMatchDataByUnitIndex(a, b)
+  if a.unit and b.unit and a.unit ~= b.unit then
+    return a.unit < b.unit
+  end
+  if a.index and b.index and a.index ~= b.index then
+    return a.index < b.index
+  end
+  return a.expirationTime < b.expirationTime
+end
+
 local function UpdateTriggerState(time, id, triggernum)
   local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   local triggerInfo = triggerInfos[id][triggernum]
@@ -924,13 +934,16 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     if useMatches then
+
+      table.sort(auraDatas, SortMatchDataByUnitIndex)
+
       local affected, unaffected
       if triggerInfo.useAffected then
         affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
       end
 
-      for _, auraData in ipairs(auraDatas) do
-        local cloneId = tostring(auraData)
+      for index, auraData in ipairs(auraDatas) do
+        local cloneId = tostring(index)
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
       end
 
