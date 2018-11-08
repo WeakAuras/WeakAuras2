@@ -1192,23 +1192,17 @@ local function tooltip_draw()
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
   tooltip:AddLine(" ");
-  if(WeakAuras.IsOptionsOpen()) then
-    tooltip:AddLine(L["Click to close configuration"]);
-  else
-    tooltip:AddLine(L["Click to open configuration"]);
-    if(paused) then
-      tooltip:AddLine("|cFFFF0000"..L["Paused"].." - "..L["Shift-Click to resume"]);
+  tooltip:AddLine(L["|cffeda55fLeft-Click|r to toggle showing the main window."], 0.2, 1, 0.2, 1);
+  if not WeakAuras.IsOptionsOpen() then
+    if paused then
+      tooltip:AddLine("|cFFFF0000"..L["Paused"].." - "..L["Shift-Click to resume addon execution."], 0.2, 1, 0.2, 1);
     else
-      tooltip:AddLine(L["Shift-Click to pause"]);
-      tooltip:AddLine(L["Right-Click to toggle profiling"]);
-      tooltip:AddLine(L["Shift-Right-Click to show profiling results"]);
+      tooltip:AddLine(L["|cffeda55fShift-Click|r to pause addon execution."], 0.2, 1, 0.2, 1);
     end
   end
-  if WeakAurasSaved.minimap.hide then
-    tooltip:AddLine(L["Middle-Click to show minimap icon"]);
-  else
-    tooltip:AddLine(L["Middle-Click to hide minimap icon"]);
-  end
+  tooltip:AddLine(L["|cffeda55fRight-Click|r to toggle performance profiling on or off."], 0.2, 1, 0.2, 1);
+  tooltip:AddLine(L["|cffeda55fShift-Right-Click|r to show profiling results."], 0.2, 1, 0.2, 1);
+  tooltip:AddLine(L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."], 0.2, 1, 0.2, 1);
   tooltip:Show();
 end
 
