@@ -1720,13 +1720,12 @@ function TransmitDisplay(id, characterName)
   end
 end
 
-local myName, myServer = UnitFullName("player")
-
 Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
   if distribution == "PARTY" or distribution == "RAID" then
     local dest, msg = string.match(message, "^§§(.+):(.+)$")
     if dest then
       local dName, dServer = string.match(dest, "^(.*)-(.*)$")
+      local myName, myServer = UnitFullName("player")
       if myName == dName and myServer == dServer then
         message = msg
       else
@@ -1756,6 +1755,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
     local dest, msg = string.match(message, "^§§([^:]+):(.+)$")
     if dest then
       local dName, dServer = string.match(dest, "^(.*)-(.*)$")
+      local myName, myServer = UnitFullName("player")
       if myName == dName and myServer == dServer then
         message = msg
       else
