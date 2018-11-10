@@ -3,9 +3,10 @@
 
 # WeakAuras 2
 
-WeakAuras is a powerful and flexible framework that allows you to display highly customizable graphics on your screen to indicate buffs, debuffs, and a whole host of similar types of information. It was originally meant to be a lightweight replacement for Power Auras, but it now incorporates many features that Power Auras does not, while still remaining more efficient and easy to use.
+WeakAuras is a powerful and flexible framework that allows the display of highly customizable graphics on World of Warcraft's user interface to indicate buffs, debuffs, and other relevant information. This addon was created to be a lightweight replacement for Power Auras but has since introduced more functionalities while remaining efficient and easy to use.
 
-Features include:
+
+## Features
 
 * An intuitive and powerful configuration interface
 * Custom textures including all textures from Power Auras and Blizzard's spell alerts
@@ -17,16 +18,22 @@ Features include:
 * CPU optimizations such as conditional loading/unloading of displays, modularity, and prevention of full aura scanning
 * Powerful customization options, such as animation paths, on-show/on-hide code, and custom triggers, for Lua-savvy users
 
+## Quick Start
+
 To open the options window, type `/wa` or `/weakauras` into your chat and hit enter or use the LDB feed.
 
-## Extending WeakAuras 2
+## Extensions
 
 * [WeakAuras_StopMotion](https://www.wowace.com/addons/weakauras-stop-motion): This addon adds a new region type to WeakAuras that allows for stop motion animations. Stop Motion textures contain each frame of the animation as a separate image. The addon ships with a number of animations and it supports custom textures.
 * [SharedMedia](https://www.wowace.com/addons/sharedmedia) for more bar textures.
 * [SharedMediaAdditionalFonts](https://www.wowace.com/addons/shared-media-additional-fonts) for more fonts.
 * [ColorPickerPlus](https://mods.curse.com/addons/wow/colorpickerplus) for a better version of the WoW color picker that includes class color templates and a copy and paste function.
 
+## Documentation
+
 For in-depth documentation, see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
+
+## Examples
 
 For some examples of what WeakAuras can do, take a look at [wago.io](https://wago.io/) where tons of people upload their creations and even feature complete interfaces utilizing WeakAuras!
 
