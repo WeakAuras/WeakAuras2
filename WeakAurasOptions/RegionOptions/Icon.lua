@@ -3,48 +3,16 @@ local L = WeakAuras.L
 
 local function createOptions(id, data)
   local options = {
-    cooldown = {
-      type = "toggle",
-      name = L["Cooldown"],
-      order = 4,
-      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
-    },
-    inverse = {
-      type = "toggle",
-      name = L["Inverse"],
-      order = 6,
-      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
-      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
-      hidden = function() return not data.cooldown end
-    },
-    cooldownTextEnabled = {
-      type = "toggle",
-      name = L["Show Cooldown Text"],
-      order = 6.5,
-      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC") and GetCVar("countdownForCooldowns") == "1") end,
-      width = "double"
-    },
-    cooldownSpace = {
-      type = "description",
-      name = "",
-      order = 6.6,
-      width = "normal",
-      hidden = function()
-        return data.cooldown and (IsAddOnLoaded("OmniCC") or GetCVar("countdownForCooldowns") ~= "1");
-      end
-    },
     color = {
       type = "color",
       name = L["Color"],
       hasAlpha = true,
-      order = 7
+      order = 1
     },
     auto = {
       type = "toggle",
       name = L["Automatic Icon"],
-      order = 8,
+      order = 2,
       disabled = function() return not WeakAuras.CanHaveAuto(data); end,
       get = function() return WeakAuras.CanHaveAuto(data) and data.auto; end
     },
@@ -52,7 +20,7 @@ local function createOptions(id, data)
       type = "input",
       name = L["Display Icon"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-      order = 12,
+      order = 3,
       get = function()
         return data.displayIcon and tostring(data.displayIcon) or "";
       end,
@@ -67,13 +35,54 @@ local function createOptions(id, data)
       type = "execute",
       name = L["Choose"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
-      order = 18,
+      order = 4,
       func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
     },
     desaturate = {
       type = "toggle",
       name = L["Desaturate"],
-      order = 18.5,
+      order = 5,
+    },
+    cooldownHeader = {
+      type = "header",
+      order = 6,
+      name = L["Cooldown Settings"],
+    },
+    cooldown = {
+      type = "toggle",
+      name = L["Cooldown"],
+      order = 6.1,
+      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
+      get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
+    },
+    inverse = {
+      type = "toggle",
+      name = L["Inverse"],
+      order = 6.2,
+      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
+      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
+      hidden = function() return not data.cooldown end
+    },
+    cooldownSwipe = {
+      type = "toggle",
+      name = WeakAuras.newFeatureString .. L["Cooldown Swipe"],
+      order = 6.3,
+      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
+      hidden = function() return not data.cooldown end,
+    },
+    cooldownEdge = {
+      type = "toggle",
+      name = WeakAuras.newFeatureString .. L["Cooldown Edge"],
+      order = 6.4,
+      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
+      hidden = function() return not data.cooldown end,
+    },
+    cooldownTextEnabled = {
+      type = "toggle",
+      name = L["Show Cooldown Text"],
+      order = 6.5,
+      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
+      hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC") and GetCVar("countdownForCooldowns") == "1") end,
     },
     glowHeader = {
       type = "header",
