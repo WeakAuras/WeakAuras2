@@ -4461,13 +4461,8 @@ function WeakAuras.UpdatedTriggerState(id)
         checkConditions[id](region, true);
       end
     end
-    for cloneId, clone in pairs(clones[id]) do
-      if (checkConditions[id]) then
-        local region = WeakAuras.GetRegion(id, cloneId);
-        checkConditions[id](region, true);
-      end
-      clone:Collapse();
-    end
+    WeakAuras.CollapseAllClones(id);
+    WeakAuras.regions[id].region:Collapse();
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
