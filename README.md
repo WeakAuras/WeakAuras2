@@ -20,7 +20,7 @@ WeakAuras is a powerful and flexible framework that allows the display of highly
 
 ## Quick Start
 
-To open the options window, type `/wa` or `/weakauras` into your chat and hit enter or use the LDB feed.
+To open the options window, type `/wa` or `/weakauras` into your chat and hit enter or use the minimap icon.
 
 ## Extensions
 
