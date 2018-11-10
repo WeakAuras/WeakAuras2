@@ -45,6 +45,8 @@ local default = {
   glowColor = {1, 1, 1, 1},
   glowType = "buttonOverlay",
   cooldownTextEnabled = true,
+  cooldownSwipe = true,
+  cooldownEdge = false,
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -133,6 +135,16 @@ local properties = {
     display = L["Inverse"],
     setter = "SetInverse",
     type = "bool"
+  },
+  cooldownSwipe = {
+    display = WeakAuras.newFeatureString .. L["Cooldown Swipe"],
+    setter = "SetCooldownSwipe",
+    type = "bool",
+  },
+  cooldownEdge = {
+    display = WeakAuras.newFeatureString .. L["Cooldown Edge"],
+    setter = "SetCooldownEdge",
+    type = "bool",
   },
   zoom = {
     display = L["Zoom"],
@@ -223,7 +235,6 @@ local function create(parent, data)
   local cooldown = CreateFrame("COOLDOWN", "WeakAurasCooldown"..frameId, region, "CooldownFrameTemplate");
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
-  cooldown:SetDrawEdge(false);
 
   local stacksFrame = CreateFrame("frame", nil, region);
   local stacks = stacksFrame:CreateFontString(nil, "OVERLAY");
@@ -598,6 +609,19 @@ local function modify(parent, region, data)
       cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration);
     end
   end
+
+  function region:SetCooldownSwipe(cooldownSwipe)
+    region.cooldownSwipe = cooldownSwipe;
+    cooldown:SetDrawSwipe(cooldownSwipe);
+  end
+
+  function region:SetCooldownEdge(cooldownEdge)
+    region.cooldownEdge = cooldownEdge;
+    cooldown:SetDrawEdge(cooldownEdge);
+  end
+
+  region:SetCooldownSwipe(data.cooldownSwipe)
+  region:SetCooldownEdge(data.cooldownEdge)
 
   function region:SetZoom(zoom)
     region.zoom = zoom;
