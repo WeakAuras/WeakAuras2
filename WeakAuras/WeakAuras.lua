@@ -3087,6 +3087,13 @@ function WeakAuras.CollapseAllClones(id, triggernum)
   end
 end
 
+function WeakAuras.CollapseAndResetConditions(region, id)
+  if (checkConditions[id]) then
+    checkConditions[id](region, true);
+  end
+  region:Collapse();
+end
+
 function WeakAuras.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   for id, state in pairs(triggerState) do
@@ -4374,10 +4381,6 @@ local function ApplyStatesToRegions(id, triggernum, states)
       checkConditions[id](region, not state.show);
     end
   end
-
-  if (not states[""] or not states[""].show) then
-    WeakAuras.regions[id].region:Collapse();
-  end
 end
 
 local toRemove = {};
@@ -4455,24 +4458,19 @@ function WeakAuras.UpdatedTriggerState(id)
   if (show and not oldShow) then -- Hide => Show
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
-    if (checkConditions[id]) then
-      for cloneId, clone in pairs(clones[id]) do
-        local region = WeakAuras.GetRegion(id, cloneId);
-        checkConditions[id](region, true);
-      end
+    for cloneId, clone in pairs(clones[id]) do
+      WeakAuras.CollapseAndResetConditions(clone, id)
     end
-    WeakAuras.CollapseAllClones(id);
-    WeakAuras.regions[id].region:Collapse();
+    WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
-        if (checkConditions[id]) then
-          local region = WeakAuras.GetRegion(id, cloneId);
-          checkConditions[id](region, true);
-        end
-        clone:Collapse();
+        WeakAuras.CollapseAndResetConditions(clone, id)
       end
+    end
+    if (not activeTriggerState[""] or not activeTriggerState[""].show) then
+      WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
     end
     -- Show new states
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
