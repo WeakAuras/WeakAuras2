@@ -592,7 +592,7 @@ local function modify(parent, region, data)
 
   function region:SetInverse(inverse)
     cooldown:SetReverse(not inverse);
-    if (cooldown.expirationTime and cooldown.duration) then
+    if (cooldown.expirationTime and cooldown.duration and cooldown:IsShown()) then
       -- WORKAROUND SetReverse not applying until next frame
       cooldown:SetCooldown(0, 0);
       cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration);
