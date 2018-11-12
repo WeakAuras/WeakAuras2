@@ -2038,6 +2038,8 @@ function WeakAuras.Rename(data, newid)
   WeakAuras.frameLevels[oldid] = nil;
 
   WeakAuras.ProfileRenameAura(oldid, newid);
+
+  WeakAuras.RenameCollapsedData(oldid, newid)
 end
 
 function WeakAuras.Convert(data, newType)
@@ -2738,6 +2740,50 @@ function WeakAuras.AddMany(table)
   end
 end
 
+local function validateUserConfig(data)
+  local authorOptionKeys = {}
+  for index, option in ipairs(data.authorOptions) do
+    authorOptionKeys[option.key] = index
+    if data.config[option.key] == nil then
+      data.config[option.key] = option.default
+    end
+  end
+  for key, value in pairs(data.config) do
+    if not authorOptionKeys[key] then
+      data.config[key] = nil
+    else
+      local option = data.authorOptions[authorOptionKeys[key]]
+      if type(value) ~= type(option.default) then
+        -- if type mismatch then we know that it can't be right
+        data.config[key] = option.default
+      elseif option.type == "input" and option.use_length then
+        data.config[key] = data.config[key]:sub(1, option.length)
+      elseif option.type == "number" or option.type == "range" then
+        if (option.max and option.max < value) or (option.min and option.min > value) then
+          data.config[key] = option.default
+        else
+          if option.type == "number" and option.step then
+            local min = option.min or 0
+            data.config[key] = option.step * floor((value - min)/option.step) + min
+          end
+        end
+      elseif option.type == "select" then
+        if value < 1 or value > #option.values then
+          data.config[key] = option.default
+        end
+      elseif option.type == "color" then
+        for i = 1, 4 do
+          local c = data.config[key][i]
+          if type(c) ~= "number" or c < 0 or c > 1 then
+            data.config[key] = option.default
+            break
+          end
+        end
+      end
+    end
+  end
+end
+
 local function removeSpellNames(data)
   local trigger
   for i = 1, #data.triggers do
@@ -2874,6 +2920,7 @@ function WeakAuras.PreAdd(data)
   end
   WeakAuras.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
+  validateUserConfig(data)
   removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil

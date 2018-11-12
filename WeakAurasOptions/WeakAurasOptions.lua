@@ -51,6 +51,8 @@ local tempGroup = {
   controlledChildren = {},
   load = {},
   triggers = {{}},
+  config = {},
+  authorOptions = {},
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
   xOffset = 0,
@@ -2764,6 +2766,11 @@ function WeakAuras.AddOption(id, data)
         end,
         args = {}
       },
+      authorOptions = {
+        type = "group",
+        name = WeakAuras.newFeatureString .. L["Custom Options"],
+        order = 100
+      }
     }
   };
 
@@ -3455,6 +3462,15 @@ function WeakAuras.ReloadTriggerOptions(data)
       WeakAuras.ReloadTriggerOptions(data);
     end;
   end
+
+  displayOptions[id].args.authorOptions.args = {}
+  displayOptions[id].args.authorOptions.hidden = function()
+    return false;
+  end
+  displayOptions[id].args.authorOptions.disabled = function()
+    return false;
+  end
+  WeakAuras.GetAuthorOptions(data, displayOptions[id].args.authorOptions.args, 0)
 
   displayOptions[id].args.conditions.args = {};
   -- We never want the condition options to use the hiddenAll, disabledAll functions

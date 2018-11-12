@@ -348,6 +348,12 @@ local function importPendingData()
       merged = {},
     }
   end
+  if data then
+    data.authorMode = nil
+  end
+  if oldData then
+    oldData.authorMode = nil
+  end
   local installedData = {[0] = install(data, oldData, patch, mode, true)}
   WeakAuras.NewDisplayButton(installedData[0])
   coroutine.yield()
@@ -791,7 +797,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
         button:Show()
         button:Enable()
         button:SetPoint("TOPLEFT", checkButtonAnchor, "TOPLEFT", 17, -27*(0.6 + buttonsShown))
-        button:SetChecked(button ~= checkButtons.anchor)
+        button:SetChecked(button.default)
         buttonsShown = buttonsShown + 1
         buttonsChecked = buttonsChecked + (button:GetChecked() and 1 or 0)
       else
@@ -989,8 +995,6 @@ local function checkCustomCondition(codes, id, customText)
   t.code = customText;
   tinsert(codes, t);
 end
-
-
 
 local function scamCheck(codes, data)
   for i, v in ipairs(data.triggers) do
