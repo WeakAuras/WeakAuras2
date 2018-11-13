@@ -72,13 +72,14 @@ local function atLeastOneSet(data, references, key)
 end
 
 -- blues the name if there are conflicts between the references for this value
-local function name(data, option, key, phrase)
+local function name(data, option, key, name, phrase)
+  local header = name or phrase
   if not option.references then
-    return phrase
+    return header
   elseif option[key] ~= nil or not atLeastOneSet(data, option.references, key) then
-    return phrase
+    return header
   else
-    return "|cFF4080FF" .. phrase
+    return "|cFF4080FF" .. header
   end
 end
 
@@ -825,7 +826,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
 
   args["option" .. i .. "header"] = {
     type = "description",
-    name = nameHead(data, option, L["Option #%i"]:format(i)),
+    name = nameHead(data, option, option.name, L["Option #%i"]:format(i)),
     order = order,
     width = 1.40,
     fontSize = "large",
