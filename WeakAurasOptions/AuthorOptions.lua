@@ -1048,7 +1048,7 @@ local function addUserModeOption(options, args, data, order, i)
     userOption.step = option.step
     userOption.softMax = option.softMax
     userOption.softMin = option.softMin
-    userOption.bigStep = option.step
+    userOption.bigStep = option.bigStep
   elseif optionType == "description" then
     userOption.name = option.text or ""
     userOption.fontSize = option.fontSize
