@@ -171,8 +171,7 @@ clipboard.copyAuthorOptionsEntry = {
   func = function()
     WeakAuras_DropDownMenu:Hide();
     CopyToClipboard("authorOptions", L["Paste Author Option Settings"])
-  end,
-  print('????')
+  end
 };
 
 clipboard.copyUserConfigEntry = {
