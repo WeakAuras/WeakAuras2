@@ -373,6 +373,13 @@ local typeControlAdders = {
     }
     order = order + 1
 
+    args["option" .. i .. "defaultspace"] = {
+      type = "description",
+      order = order,
+      name = "",
+    }
+    order = order + 1
+
     args["option" .. i .. "min"] = {
       type = "input",
       name = name(data, option, "min", L["Min"]),
@@ -416,6 +423,13 @@ local typeControlAdders = {
       order = order,
       get = getNumAsString(option, "default"),
       set = setNum(data, option, "default"),
+    }
+    order = order + 1
+
+    args["option" .. i .. "defaultspace"] = {
+      type = "description",
+      order = order,
+      name = "",
     }
     order = order + 1
 
