@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 39
+local Type, Version = "WeakAurasDisplayButton", 40
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -24,6 +24,8 @@ local ignoreForCopyingDisplay = {
   parent = true,
   controlledChildren = true,
   uid = true,
+  authorOptions = true,
+  config = true,
 }
 
 local function copyAuraPart(source, destination, part)
@@ -163,6 +165,24 @@ clipboard.copyAnimationsEntry = {
   end
 };
 
+clipboard.copyAuthorOptionsEntry = {
+  text = WeakAuras.newFeatureString .. L["Author Options"],
+  notCheckable = true,
+  func = function()
+    WeakAuras_DropDownMenu:Hide();
+    CopyToClipboard("authorOptions", L["Paste Author Option Settings"])
+  end
+};
+
+clipboard.copyUserConfigEntry = {
+  text = WeakAuras.newFeatureString .. L["Custom Configuration"],
+  notCheckable = true,
+  func = function()
+    WeakAuras_DropDownMenu:Hide();
+    CopyToClipboard("config", L["Paste Custom Configuration"])
+  end
+};
+
 local function UpdateClipboardMenuEntry(data)
   clipboard.current = data;
 
@@ -181,6 +201,8 @@ local function UpdateClipboardMenuEntry(data)
     clipboard.copyLoadEntry.text = nil;
     clipboard.copyActionsEntry.text = nil;
     clipboard.copyAnimationsEntry.text = nil;
+    clipboard.copyAuthorOptionsEntry = nil;
+    clipboard.copyUserConfigEntry = nil;
     clipboard.copyGroupEntry.text = L["Group"];
   else
     clipboard.copyEverythingEntry.text = L["Everything"];
@@ -190,6 +212,8 @@ local function UpdateClipboardMenuEntry(data)
     clipboard.copyLoadEntry.text = L["Load"];
     clipboard.copyActionsEntry.text = L["Actions"];
     clipboard.copyAnimationsEntry.text = L["Animations"];
+    clipboard.copyAuthorOptionsEntry = WeakAuras.newFeatureString .. L["Author Options"];
+    clipboard.copyUserConfigEntry = WeakAuras.newFeatureString .. L["Custom Configuration"];
     clipboard.copyGroupEntry.text = nil;
   end
 end
@@ -795,6 +819,8 @@ local methods = {
     tinsert(copyEntries, clipboard.copyLoadEntry);
     tinsert(copyEntries, clipboard.copyActionsEntry);
     tinsert(copyEntries, clipboard.copyAnimationsEntry);
+    tinsert(copyEntries, clipboard.copyAuthorOptionsEntry);
+    tinsert(copyEntries, clipboard.copyUserConfigEntry);
 
     self:SetTitle(data.id);
     self.menu = {

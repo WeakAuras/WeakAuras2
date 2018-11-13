@@ -2756,7 +2756,7 @@ local function validateUserConfig(data)
       if type(value) ~= type(option.default) then
         -- if type mismatch then we know that it can't be right
         data.config[key] = option.default
-      elseif option.type == "input" and option.use_length then
+      elseif option.type == "input" and option.useLength then
         data.config[key] = data.config[key]:sub(1, option.length)
       elseif option.type == "number" or option.type == "range" then
         if (option.max and option.max < value) or (option.min and option.min > value) then
