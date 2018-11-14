@@ -13,14 +13,17 @@
     key (required) -> string which custom scripts can use to read the selected option
     default (required) -> default value of the option
     name (required) -> displayed name in the user config panel
+    width (required) -> number between 0.1 and 2 (softMin of 0.5). Determines the width of the option.
+    useDesc (optional) -> bool. If false, then the tooltip will not be used.
     desc (optional) -> string to be displayed in the option tooltip
   When options are merged together (i.e. when the user multiselects and then opens the custom options tab), there is one additonal field:
     references -> childID <=> optionID map, used to dereference to the proper option table in setters
-
   Supported option types, and additional fields that each type supports/requires:
-    description -> dummy option which can be used to display some text. Not interactive, and so key/default are not set or required.
-      name (required) -> text displayed on the panel
+    description -> dummy option which can be used to display some text. Not interactive, and so key/default/name are not set or required.
+      text (required) -> text displayed on the panel
       fontSize (optional) -> fontSize. Default is medium.
+    space -> dummy option which acts as a spacer. Not interactive, and so key/default/name are not set or required.
+      variableWidth (optional) -> bool. If false, then the space is given full width in AceConfig. Else, option.width is used.
     input -> text field which the user can input a string.
       length (optional) -> allowed length of the string. If set, then input longer than the allowed length will be trimmed
     number -> text field which the user can type in a number. Input is converted to a number value.
@@ -45,6 +48,18 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
+
+-- classifications of options. Currently, we have simple and noninteractive
+local optionClasses = {
+  toggle = "simple",
+  input = "simple",
+  number = "simple",
+  range = "simple",
+  color = "simple",
+  select = "simple",
+  description = "noninteractive",
+  space = "noninteractive",
+}
 
 -- temporary (not saved across sessions) cache of which authormode options are collapsed
 local collapsedOptions = {}
@@ -334,7 +349,6 @@ local typeControlAdders = {
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
       order = order,
-      width = "full",
       get = get(option, "default"),
       set = set(data, option, "default"),
     }
@@ -371,13 +385,6 @@ local typeControlAdders = {
       order = order,
       get = getNumAsString(option, "default"),
       set = setNum(data, option, "default", true),
-    }
-    order = order + 1
-
-    args["option" .. i .. "defaultspace"] = {
-      type = "description",
-      order = order,
-      name = "",
     }
     order = order + 1
 
@@ -424,13 +431,6 @@ local typeControlAdders = {
       order = order,
       get = getNumAsString(option, "default"),
       set = setNum(data, option, "default"),
-    }
-    order = order + 1
-
-    args["option" .. i .. "defaultspace"] = {
-      type = "description",
-      order = order,
-      name = "",
     }
     order = order + 1
 
@@ -566,15 +566,6 @@ local typeControlAdders = {
     else
       values = option.values
     end
-    args["optino" .. i .. "defaultspace"] = {
-      type = "toggle",
-      name = name(data, option, "default", L["Default"]),
-      order = order,
-      disabled = function() return true end,
-      get = function() return true end,
-      set = function() end,
-    }
-    order = order + 1
     local defaultValues = {}
     for i, v in ipairs(values) do
       if v == conflict then
@@ -696,6 +687,34 @@ local typeControlAdders = {
       end
     }
     order = order + 1
+    return order
+  end,
+  space = function(option, args, data, order, i)
+    args["option" .. i .. "variableWidth"] = {
+      type = "toggle",
+      order = order,
+      name = name(data, option, "variableWidth", L["Variable Size"]),
+      desc = desc(data, option, "variableWidth", L["If unchecked, then this space will fill the entire line it is on in User Mode."]),
+      get = get(option, "variableWidth"),
+      set = set(data, option, "variableWidth"),
+    }
+    order = order + 1
+
+    args["option" .. i .. "width"] = {
+      type = "range",
+      name = name(data, option, "width", L["Variable Size"]),
+      desc = desc(data, option, "width"),
+      get = get(option, "width"),
+      set = set(data, option, "width"),
+      disabled = function() return not option.variableWidth end,
+      order = order,
+      min = 0.1,
+      max = 2.0,
+      step = 1.0,
+      softMin = 0.5,
+    }
+    order = order + 1
+
     return order
   end
 }
@@ -826,7 +845,10 @@ local function addControlsForOption(authorOptions, args, data, order, i)
 
   args["option" .. i .. "header"] = {
     type = "description",
-    name = nameHead(data, option, option.name, L["Option #%i"]:format(i)),
+    name = nameHead(data, option, option.name
+                                  or (option.type == "space" and L["Space"])
+                                  or (option.type == "description" and L["Description"])
+                                  or L["Option #%i"]:format(i)),
     order = order,
     width = 1.40,
     fontSize = "large",
@@ -877,30 +899,11 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     return order
   end
 
-  args["option" .. i .. "name"] = {
-    type = "input",
-    name = name(data, option, "name", L["Display Name"]),
-    desc = desc(data, option, "name"),
-    order = order,
-    get = get(option, "name"),
-    set = set(data, option, "name"),
-  }
-  order = order + 1
-
-  args["option" .. i .. "key"] = {
-    type = "input",
-    name = name(data, option, "key", L["Option key"]),
-    desc = desc(data, option, "key", L["Key for aura_env.config at which the user value can be found."]),
-    order = order,
-    get = get(option, "key"),
-    set = set(data, option, "key"),
-  }
-  order = order + 1
-
   args["option" .. i .. "type"] = {
     type = "select",
     name = L["Option Type"],
     desc = descType(data, option),
+    width = "double",
     order = order,
     values = WeakAuras.author_option_types,
     get = get(option, "type"),
@@ -908,6 +911,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       if value == option.type then return end
       local author_option_fields = WeakAuras.author_option_fields
       local commonFields, newFields = author_option_fields.common, author_option_fields[value]
+      local newClass = optionClasses[value]
       if option.references then
         for childID, optionID in pairs(option.references) do
           local childData = data[childID]
@@ -925,6 +929,16 @@ local function addControlsForOption(authorOptions, args, data, order, i)
             end
           end
           childOption.type = value
+          if newClass == "noninteractive" then
+            childOption.name = nil
+            childOption.desc = nil
+            childOption.key = nil
+            childOption.useDesc = nil
+            childOption.default = nil
+          else
+            childOption.name = L["Option %i"]:format(i)
+            childOption.key = ("option%i"):format(i)
+          end
           WeakAuras.Add(childData)
         end
         WeakAuras.ReloadTriggerOptions(data[0])
@@ -942,6 +956,16 @@ local function addControlsForOption(authorOptions, args, data, order, i)
           end
         end
         option.type = value
+        if newClass == "noninteractive" then
+          option.name = nil
+          option.desc = nil
+          option.key = nil
+          option.useDesc = nil
+          option.default = nil
+        else
+          option.name = L["Option %i"]:format(i)
+          option.key = ("option%i"):format(i)
+        end
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
       end
@@ -949,26 +973,51 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   }
   order = order + 1
 
-  args["option" .. i .. "width"] = {
-    type = "range",
-    name = name(data, option, "width", L["Width"]),
-    desc = desc(data, option, "width"),
-    order = order,
-    min = 0.1,
-    max = 2,
-    softMin = 0.5,
-    step = 0.05,
-    bigStep = 0.1,
-    get = get(option, "width"),
-    set = set(data, option, "width")
-  }
-  order = order + 1
+  local optionClass = optionClasses[option.type]
+
+  if optionClass == "simple" then
+    args["option" .. i .. "name"] = {
+      type = "input",
+      name = name(data, option, "name", L["Display Name"]),
+      desc = desc(data, option, "name"),
+      order = order,
+      get = get(option, "name"),
+      set = set(data, option, "name"),
+    }
+    order = order + 1
+
+    args["option" .. i .. "key"] = {
+      type = "input",
+      name = name(data, option, "key", L["Option key"]),
+      desc = desc(data, option, "key", L["Key for aura_env.config at which the user value can be found."]),
+      order = order,
+      get = get(option, "key"),
+      set = set(data, option, "key"),
+    }
+    order = order + 1
+
+    args["option" .. i .. "width"] = {
+      type = "range",
+      name = name(data, option, "width", L["Width"]),
+      desc = desc(data, option, "width"),
+      order = order,
+      min = 0.1,
+      max = 2,
+      softMin = 0.5,
+      step = 0.05,
+      bigStep = 0.1,
+      get = get(option, "width"),
+      set = set(data, option, "width")
+    }
+    order = order + 1
+  end
 
   local addControlsForType = typeControlAdders[option.type]
   if addControlsForType then
     order = addControlsForType(option, args, data, order, i)
   end
-  if option.type ~= "description" then
+
+  if optionClass == "simple" then
     args["option" .. i .. "tooltipSpace"] = {
       type = "description",
       name = "",
@@ -1017,6 +1066,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     }
     order = order + 1
   end
+
   return order
 end
 
@@ -1024,41 +1074,60 @@ local function addUserModeOption(options, args, data, order, i)
   local option = options[i]
   local config = data.config
   local optionType = option.type
-  local userOption = {
-    type = option.type,
-    name = option.name,
-    desc = option.desc,
-    width = option.width,
-    order = order,
-    get = get(config, option.key),
-    set = set(data, config, option.key)
-  }
+  local optionClass = optionClasses[optionType]
+  local userOption
+
+  if optionClass == "simple" then
+    userOption = {
+      type = optionType,
+      name = option.name,
+      desc = option.desc,
+      width = option.width,
+      order = order,
+      get = get(config, option.key),
+      set = set(data, config, option.key)
+    }
+  elseif optionClass == "noninteractive" then
+    userOption = {
+      type = "description",
+      order = order,
+      name = "",
+      width = option.width,
+    }
+  end
   order = order + 1
   args[data.id .. "userOption" .. i] = userOption
 
   -- convert from weakauras option type to ace option type
-  if optionType == "toggle" then
-  elseif optionType == "input" then
-  elseif optionType == "number" then
-    userOption.type = "input"
-    userOption.get = getNumAsString(config, option.key)
-    userOption.set = setNum(data, config, option.key, true)
-  elseif  optionType == "range" then
-    userOption.max = option.max
-    userOption.min = option.min
-    userOption.step = option.step
-    userOption.softMax = option.softMax
-    userOption.softMin = option.softMin
-    userOption.bigStep = option.bigStep
-  elseif optionType == "description" then
-    userOption.name = option.text or ""
-    userOption.fontSize = option.fontSize
-  elseif optionType == "color" then
-    userOption.get = getColor(config, option.key)
-    userOption.set = setColor(data, config, option.key)
-  elseif optionType == "select" then
-    userOption.values = option.values
+  if optionClass == "simple" then
+    if optionType == "toggle" then
+    elseif optionType == "input" then
+    elseif optionType == "number" then
+      userOption.type = "input"
+      userOption.get = getNumAsString(config, option.key)
+      userOption.set = setNum(data, config, option.key, true)
+    elseif  optionType == "range" then
+      userOption.max = option.max
+      userOption.min = option.min
+      userOption.step = option.step
+      userOption.softMax = option.softMax
+      userOption.softMin = option.softMin
+      userOption.bigStep = option.bigStep
+    elseif optionType == "color" then
+      userOption.get = getColor(config, option.key)
+      userOption.set = setColor(data, config, option.key)
+    elseif optionType == "select" then
+      userOption.values = option.values
+    end
+  elseif optionClass == "noninteractive" then
+    if optionType == "description" then
+      userOption.name = option.text or ""
+      userOption.fontSize = option.fontSize
+    elseif optionType == "space" and not option.variableWidth then
+      userOption.width = "full"
+    end
   end
+
   return order
 end
 
