@@ -699,20 +699,12 @@ local typeControlAdders = {
       set = set(data, option, "variableWidth"),
     }
     order = order + 1
+    args["option" .. i .. "widthSpace"] = nil
 
-    args["option" .. i .. "width"] = {
-      type = "range",
-      name = name(data, option, "width", L["Variable Size"]),
-      desc = desc(data, option, "width"),
-      get = get(option, "width"),
-      set = set(data, option, "width"),
-      disabled = function() return not option.variableWidth end,
-      order = order,
-      min = 0.1,
-      max = 2.0,
-      step = 1.0,
-      softMin = 0.5,
-    }
+    local widthOption = args["option" .. i .. "width"]
+    widthOption.name = name(data, option, "width", L["Variable Size"])
+    widthOption.disabled = function() return not option.variableWidth end
+    widthOption.order = order
     order = order + 1
 
     return order
@@ -995,29 +987,6 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       set = set(data, option, "key"),
     }
     order = order + 1
-
-    args["option" .. i .. "width"] = {
-      type = "range",
-      name = name(data, option, "width", L["Width"]),
-      desc = desc(data, option, "width"),
-      order = order,
-      min = 0.1,
-      max = 2,
-      softMin = 0.5,
-      step = 0.05,
-      bigStep = 0.1,
-      get = get(option, "width"),
-      set = set(data, option, "width")
-    }
-    order = order + 1
-  end
-
-  local addControlsForType = typeControlAdders[option.type]
-  if addControlsForType then
-    order = addControlsForType(option, args, data, order, i)
-  end
-
-  if optionClass == "simple" then
     args["option" .. i .. "tooltipSpace"] = {
       type = "description",
       name = "",
@@ -1031,27 +1000,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       order = order,
       width = 0.5,
       get = get(option, "useDesc"),
-      set = function(_, value)
-        if option.references then
-          for childID, optionID in pairs(option.references) do
-            local childData = data[childID]
-            local childOption = childData.authorOptions[optionID]
-            childOption.useDesc = value
-            if not value then
-              childOption.desc = nil
-            end
-            WeakAuras.Add(childData)
-          end
-          WeakAuras.ReloadTriggerOptions(data[0])
-        else
-          if not value then
-            option.desc = nil
-          end
-          option.useDesc = value
-          WeakAuras.Add(data)
-          WeakAuras.ReloadTriggerOptions(data)
-        end
-      end,
+      set = set(data, option, "useDesc"),
     }
     order = order + 1
     args["option" .. i .. "tooltip"] = {
@@ -1065,6 +1014,24 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       disabled = function() return not option.useDesc end,
     }
     order = order + 1
+  end
+
+  args["option" .. i .. "width"] = {
+    type = "range",
+    name = name(data, option, "width", L["Width"]),
+    desc = desc(data, option, "width"),
+    order = order,
+    min = 0.1,
+    max = 2,
+    step = 0.05,
+    get = get(option, "width"),
+    set = set(data, option, "width")
+  }
+  order = order + 1
+
+  local addControlsForType = typeControlAdders[option.type]
+  if addControlsForType then
+    order = addControlsForType(option, args, data, order, i)
   end
 
   return order
@@ -1081,7 +1048,7 @@ local function addUserModeOption(options, args, data, order, i)
     userOption = {
       type = optionType,
       name = option.name,
-      desc = option.desc,
+      desc = option.useDesc and option.desc or nil,
       width = option.width,
       order = order,
       get = get(config, option.key),
