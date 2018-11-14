@@ -1781,6 +1781,7 @@ WeakAuras.author_option_types = {
   description = L["Description"],
   color = L["Color"],
   select = L["Dropdown Menu"],
+  space = L["Space"],
 }
 
 WeakAuras.author_option_fields = {
@@ -1823,7 +1824,15 @@ WeakAuras.author_option_fields = {
   select = {
     values = {"val1"},
     default = 1,
+  },
+  space = {
+    variableWidth = true,
   }
+}
+
+WeakAuras.space_types = {
+  multi = L["Multi-Line"],
+  single = L["Single-Line"]
 }
 
 WeakAuras.difficulty_info = {
