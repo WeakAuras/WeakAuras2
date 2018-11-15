@@ -1472,6 +1472,8 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
                   tinsert(tooltip, {2, left, name.." |T"..icon..":12:12:0:0:64:64:4:60:4:60|t", 1, 1, 1, 1, 1, 1});
                 end
               end
+            elseif(trigger.type == "aura2") then
+              tinsert(tooltip, {2, L["Trigger:"], L["Aura"], 1, 1, 1, 1, 1, 1});
             elseif(trigger.type == "event" or trigger.type == "status") then
               if(trigger.type == "event") then
                 tinsert(tooltip, {2, L["Trigger:"], (event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
