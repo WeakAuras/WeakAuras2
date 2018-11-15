@@ -317,7 +317,7 @@ local typeControlAdders = {
       type = "select",
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
-      order = order(),
+      order = order,
       values = WeakAuras.bool_types,
       get = function()
         if option.default == nil then return end
@@ -340,29 +340,33 @@ local typeControlAdders = {
         end
       end
     }
+    order = order + 1
+    return order
   end,
   input = function(option, args, data, order, i)
     args["option" .. i .. "default"] = {
       type = "input",
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
-      order = order(),
+      order = order,
       get = get(option, "default"),
       set = set(data, option, "default"),
     }
+    order = order + 1
     args["option" .. i .. "useLength"] = {
       type = "toggle",
       name = name(data, option, "useLength", L["Max Length"]),
       desc = desc(data, option, "useLength"),
-      order = order(),
+      order = order,
       get = get(option, "useLength"),
       set = set(data, option, "useLength"),
     }
+    order = order + 1
     args["option" .. i .. "length"] = {
       type = "range",
       name = name(data, option, "length", L["Length"]),
       desc = desc(data, option, "length"),
-      order = order(),
+      order = order,
       min = 1,
       step = 1,
       softMax = 20,
@@ -370,116 +374,132 @@ local typeControlAdders = {
       set = set(data, option, "length"),
       disabled = function() return not option.useLength end,
     }
+    order = order + 1
+    return order
   end,
   number = function(option, args, data, order, i)
     args["option" .. i .. "default"] = {
       type = "input",
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "default"),
       set = setNum(data, option, "default", true),
     }
+    order = order + 1
 
     args["option" .. i .. "min"] = {
       type = "input",
       name = name(data, option, "min", L["Min"]),
       desc = desc(data, option, "min"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "min"),
       set = setNum(data, option, "min"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "max"] = {
       type = "input",
       name = name(data, option, "max", L["Max"]),
       desc = desc(data, option, "min"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "max"),
       set = setNum(data, option, "max"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "step"] = {
       type = "input",
       name = name(data, option, "step", L["Step Size"]),
       desc = desc(data, option, "step"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "step"),
       set = setNum(data, option, "step"),
       width = 2/3,
     }
+    order = order + 1
+
+    return order
   end,
   range = function(option, args, data, order, i)
     args["option" .. i .. "default"] = {
       type = "input",
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "default"),
       set = setNum(data, option, "default"),
     }
+    order = order + 1
 
     args["option" .. i .. "min"] = {
       type = "input",
       name = name(data, option, "min", L["Min"]),
       desc = desc(data, option, "min"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "min"),
       set = setNum(data, option, "min"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "max"] = {
       type = "input",
       name = name(data, option, "max", L["Max"]),
       desc = desc(data, option, "max"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "max"),
       set = setNum(data, option, "max"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "step"] = {
       type = "input",
       name = name(data, option, "step", L["Step Size"]),
       desc = desc(data, option, "step"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "step"),
       set = setNum(data, option, "step"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "softmin"] = {
       type = "input",
       name = name(data, option, "softMin", L["Soft Min"]),
       desc = desc(data, option, "softMin"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "softMin"),
       set = setNum(data, option, "softMin"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "softmax"] = {
       type = "input",
       name = name(data, option, "softMax", L["Soft Max"]),
       desc = desc(data, option, "softMax"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "softMax"),
       set = setNum(data, option, "softMax"),
       width = 2/3,
     }
+    order = order + 1
 
     args["option" .. i .. "bigstep"] = {
       type = "input",
       name = name(data, option, "bigStep", L["Slider Step Size"]),
       desc = desc(data, option, "bigStep"),
-      order = order(),
+      order = order,
       get = getNumAsString(option, "bigStep"),
       set = setNum(data, option, "bigStep"),
       width = 2/3,
     }
+    order = order + 1
+    return order
   end,
   description = function(option, args, data, order, i)
     args["option" .. i .. "key"] = nil
@@ -488,31 +508,36 @@ local typeControlAdders = {
       type = "select",
       name = name(data, option, "fontSize", L["Font Size"]),
       desc = desc(data, option, "fontSize"),
-      order = order(),
+      order = order,
       values = WeakAuras.font_sizes,
       get = get(option, "fontSize"),
       set = set(data, option, "fontSize"),
     }
+    order = order + 1
     args["option" .. i .. "descinput"] = {
       type = "input",
       name = name(data, option, "text", L["Description Text"]),
       desc = desc(data, option, "text"),
-      order = order(),
+      order = order,
       width = "double",
       multiline = true,
       get = get(option, "text"),
       set = set(data, option, "text")
     }
+    order = order + 1
+    return order
   end,
   color = function(option, args, data, order, i)
     args["option" .. i .. "default"] = {
       type = "color",
       name = name(data, option, "default", L["Default"]),
       desc = descColor(data, option, "default"),
-      order = order(),
+      order = order,
       get = getColor(option, "default"),
       set = setColor(data, option, "default")
     }
+    order = order + 1
+    return order
   end,
   select = function(option, args, data, order, i)
     local values
@@ -553,25 +578,27 @@ local typeControlAdders = {
       type = "select",
       name = name(data, option, "default", L["Default"]),
       desc = desc(data, option, "default"),
-      order = order(),
+      order = order,
       values = defaultValues,
       get = get(option, "default"),
       set = setSelectDefault(data, option),
     }
+    order = order + 1
     for j, value in ipairs(values) do
       args["option" .. i .. "space" .. j] = {
         type = "toggle",
         name = L["Value %i"]:format(j),
-        order = order(),
+        order = order,
         disabled = function() return true end,
         get = function() return true end,
         set = function() end,
       }
+      order = order + 1
       args["option" .. i .. "value" .. j] = {
         type = "input",
         name = (value == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(j),
         desc = descSelect(data, option, j, conflict),
-        order = order(),
+        order = order,
         width = 0.85,
         get = function()
           if value ~= conflict then
@@ -603,10 +630,11 @@ local typeControlAdders = {
           end
         end
       }
+      order = order + 1
       args["option" .. i .. "valdelete" .. j] = {
         type = "execute",
         name = "",
-        order = order(),
+        order = order,
         func = function()
           if option.references then
             for childID, optionID in pairs(option.references) do
@@ -631,15 +659,16 @@ local typeControlAdders = {
     args["option" .. i .. "newvaluespace"] = {
       type = "toggle",
       name = L["New Value"],
-      order = order(),
+      order = order,
       disabled = function() return true end,
       get = function() return true end,
       set = function() end,
     }
+    order = order + 1
     args["option" .. i .. "newvalue"] = {
       type = "input",
       name = L["New Value"],
-      order = order(),
+      order = order,
       get = function() return "" end,
       set = function(_, value)
         if option.references then
@@ -657,22 +686,26 @@ local typeControlAdders = {
         end
       end
     }
+    order = order + 1
+    return order
   end,
   space = function(option, args, data, order, i)
     args["option" .. i .. "variableWidth"] = {
       type = "toggle",
-      order = order(),
+      order = order,
       name = name(data, option, "variableWidth", L["Variable Size"]),
       desc = desc(data, option, "variableWidth", L["If unchecked, then this space will fill the entire line it is on in User Mode."]),
       get = get(option, "variableWidth"),
       set = set(data, option, "variableWidth"),
     }
+    order = order + 1
     args["option" .. i .. "widthSpace"] = nil
 
     local widthOption = args["option" .. i .. "width"]
     widthOption.name = name(data, option, "width", L["Variable Size"])
     widthOption.disabled = function() return not option.variableWidth end
-    widthOption.order = order()
+    widthOption.order = order
+    order = order + 1
 
     return order
   end
@@ -782,7 +815,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   args["option" .. i .. "collapse"] = {
     type = "execute",
     name = "",
-    order = order(),
+    order = order,
     width = 0.15,
     func = function()
       if option.references then
@@ -800,6 +833,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     imageWidth = 18,
     imageHeight = 18
   }
+  order = order + 1
 
   args["option" .. i .. "header"] = {
     type = "description",
@@ -807,16 +841,17 @@ local function addControlsForOption(authorOptions, args, data, order, i)
                                   or (option.type == "space" and L["Space"])
                                   or (option.type == "description" and L["Description"])
                                   or L["Option #%i"]:format(i)),
-    order = order(),
+    order = order,
     width = 1.40,
     fontSize = "large",
   }
+  order = order + 1
 
   local upDisable, upFunc = up(data, option, i)
   args["option" .. i .. "up"] = {
     type = "execute",
     name = "",
-    order = order(),
+    order = order,
     disabled = upDisable,
     func = upFunc,
     width = 0.15,
@@ -824,12 +859,13 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     imageWidth = 24,
     imageHeight = 24
   }
+  order = order + 1
 
   local downDisable, downFunc = down(data, option, i)
   args["option" .. i .. "down"] = {
     type = "execute",
     name = "",
-    order = order(),
+    order = order,
     disabled = downDisable,
     func = downFunc,
     width = 0.15,
@@ -837,26 +873,30 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     imageWidth = 24,
     imageHeight = 24
   }
+  order = order + 1
 
   args["option" .. i .. "delete"] = {
     type = "execute",
     name = "",
-    order = order(),
+    order = order,
     func = delete(data, option, i),
     width = 0.15,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
     imageWidth = 24,
     imageHeight = 24
   }
+  order = order + 1
 
-  if collapsed then return end
+  if collapsed then
+    return order
+  end
 
   args["option" .. i .. "type"] = {
     type = "select",
     name = L["Option Type"],
     desc = descType(data, option),
     width = "double",
-    order = order(),
+    order = order,
     values = WeakAuras.author_option_types,
     get = get(option, "type"),
     set = function(_, value)
@@ -923,6 +963,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       end
     end
   }
+  order = order + 1
 
   local optionClass = optionClasses[option.type]
 
@@ -931,62 +972,69 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       type = "input",
       name = name(data, option, "name", L["Display Name"]),
       desc = desc(data, option, "name"),
-      order = order(),
+      order = order,
       get = get(option, "name"),
       set = set(data, option, "name"),
     }
+    order = order + 1
 
     args["option" .. i .. "key"] = {
       type = "input",
       name = name(data, option, "key", L["Option key"]),
       desc = desc(data, option, "key", L["Key for aura_env.config at which the user value can be found."]),
-      order = order(),
+      order = order,
       get = get(option, "key"),
       set = set(data, option, "key"),
     }
-
+    order = order + 1
     args["option" .. i .. "tooltipSpace"] = {
       type = "description",
       name = "",
-      order = order(),
+      order = order,
       width = "double",
     }
+    order = order + 1
     args["option" .. i .. "usetooltip"] = {
       type = "toggle",
       name = name(data, option, "useDesc", L["Tooltip"]),
-      order = order(),
+      order = order,
       width = 0.5,
       get = get(option, "useDesc"),
       set = set(data, option, "useDesc"),
     }
+    order = order + 1
     args["option" .. i .. "tooltip"] = {
       type = "input",
       name = name(data, option, "desc", L["Tooltip Text"]),
       desc = desc(data, option, "desc"),
-      order = order(),
+      order = order,
       width = 1.5,
       get = get(option, "desc"),
       set = set(data, option, "desc"),
       disabled = function() return not option.useDesc end,
     }
+    order = order + 1
   end
 
   args["option" .. i .. "width"] = {
     type = "range",
     name = name(data, option, "width", L["Width"]),
     desc = desc(data, option, "width"),
-    order = order(),
+    order = order,
     min = 0.1,
     max = 2,
     step = 0.05,
     get = get(option, "width"),
     set = set(data, option, "width")
   }
+  order = order + 1
 
   local addControlsForType = typeControlAdders[option.type]
   if addControlsForType then
-    addControlsForType(option, args, data, order, i)
+    order = addControlsForType(option, args, data, order, i)
   end
+
+  return order
 end
 
 local function addUserModeOption(options, args, data, order, i)
@@ -1002,18 +1050,19 @@ local function addUserModeOption(options, args, data, order, i)
       name = option.name,
       desc = option.useDesc and option.desc or nil,
       width = option.width,
-      order = order(),
+      order = order,
       get = get(config, option.key),
       set = set(data, config, option.key)
     }
   elseif optionClass == "noninteractive" then
     userOption = {
       type = "description",
-      order = order(),
+      order = order,
       name = "",
       width = option.width,
     }
   end
+  order = order + 1
   args[data.id .. "userOption" .. i] = userOption
 
   -- convert from weakauras option type to ace option type
@@ -1045,6 +1094,8 @@ local function addUserModeOption(options, args, data, order, i)
       userOption.width = "full"
     end
   end
+
+  return order
 end
 
 local function neq(a, b)
@@ -1104,20 +1155,7 @@ local function allChoicesAreDefault(data)
   return true
 end
 
-local function createOrder(order)
-  order = order - 1
-  return function()
-    order = order + 1
-    return order
-  end
-end
-
 function WeakAuras.GetAuthorOptions(data, args, startorder)
-  local _order = startorder
-  local function order()
-    _order = _order + 1
-    return _order
-  end
   if data.controlledChildren then
     local isAuthorMode = true
     for i = 1, #data.controlledChildren do
@@ -1129,6 +1167,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       end
     end
     if isAuthorMode then
+      local order = startorder + 2
       local mergedOptions = {}
       local allData = {[0] = data}
       -- merge child options into one
@@ -1140,35 +1179,13 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           mergeOptions(i, mergedOptions, childOptions)
         end
       end
-
       for i = 1, #mergedOptions do
-        addControlsForOption(mergedOptions, args, allData, order, i)
+        order = addControlsForOption(mergedOptions, args, allData, order, i)
       end
-
-      args["enterUserMode"] = {
-        type = "execute",
-        name = L["Enter User Mode"],
-        desc = L["Enter user mode."],
-        order = order(),
-        func = function()
-          for _, childData in ipairs(allData) do
-            childData.authorMode = nil
-            WeakAuras.Add(data)
-          end
-          WeakAuras.ReloadTriggerOptions(data)
-        end
-      }
-
-      args["enterUserModeSpacer"] = {
-        type = "description",
-        name = "",
-        order = order(),
-      }
-
       args["addOption"] = {
         type = "execute",
         name = L["Add Option"],
-        order = order(),
+        order = order,
         func = function()
           for _, childData in ipairs(allData) do
             local i = #childData.authorOptions + 1
@@ -1187,7 +1204,26 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
         end
       }
 
+      args["enterUserMode"] = {
+        type = "execute",
+        name = L["Enter User Mode"],
+        desc = L["Enter user mode."],
+        order = startorder,
+        func = function()
+          for _, childData in ipairs(allData) do
+            childData.authorMode = nil
+            WeakAuras.Add(data)
+          end
+          WeakAuras.ReloadTriggerOptions(data)
+        end
+      }
+      args["enterUserModeSpacer"] = {
+        type = "description",
+        name = "",
+        order = startorder + 1,
+      }
     else
+      local order = startorder
       local values = {}
       for i = 1, #data.controlledChildren do
         local childData = WeakAuras.GetData(data.controlledChildren[i])
@@ -1197,23 +1233,23 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           args[childData.id .. "header"] = {
             type = "header",
             name = childData.id,
-            order = order(),
+            order = order,
           }
-
+          order = order + 1
           for j = 1, #childData.authorOptions do
-            addUserModeOption(childData.authorOptions, args, childData, order, j)
+            order = addUserModeOption(childData.authorOptions, args, childData, order, j)
           end
           args[childData.id .. "space1"] ={
             type = "description",
             name = "",
-            order = order(),
+            order = order,
           }
-
+          order = order + 1
           args[childData.id .. "resetToDefault"] = {
             type = "execute",
             name = L["Reset to Defaults"],
             desc = L["Reset all options to their default values."],
-            order = order(),
+            order = order,
             func = function()
               wipe(childData.config)
               WeakAuras.Add(childData)
@@ -1221,20 +1257,20 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             end,
             hidden = function() return allChoicesAreDefault(childData) end
           }
-
+          order = order + 1
         end
       end
       args["userConfigFooter"] = {
         type = "header",
         name = "",
-        order = order(),
+        order = order,
       }
-
+      order = order + 1
       args["resetAllToDefault"] = {
         type = "execute",
         name = L["Reset ALL to Defaults"],
         desc = L["Reset all options in this group to their default values."],
-        order = order(),
+        order = order,
         func = function()
           for i = 1, #data.controlledChildren do
             local childData = WeakAuras.GetData(data.controlledChildren[i])
@@ -1254,12 +1290,12 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           return true
         end,
       }
-
+      order = order + 1
       args["enterAuthorModeAll"] = {
         type = "execute",
         name = L["Enter Author Mode"],
         desc = L["Configure what options appear on this pannel."],
-        order = order(),
+        order = order,
         func = function()
           for i = 1, #data.controlledChildren do
             local childData = WeakAuras.GetData(data.controlledChildren[i])
@@ -1278,18 +1314,17 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       args[data.id .. "header"] = {
         type = "header",
         name = data.id .. L[" Configuration"],
-        order = order(),
+        order = order,
       }
-
+      order = order + 1
       for i = 1, #authorOptions do
-        addUserModeOption(authorOptions, args, data, order, i)
+        order = addUserModeOption(authorOptions, args, data, order, i)
       end
-
       args["resetToDefault"] = {
         type = "execute",
         name = L["Reset to Defaults"],
         desc = L["Reset all options to their default values."],
-        order = order(),
+        order = order,
         func = function()
           wipe(data.config)
           WeakAuras.Add(data)
@@ -1297,18 +1332,18 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
         end,
         hidden = function() return allChoicesAreDefault(data) end
       }
-
+      order = order + 1
       args[data.id .. "footer"] = {
         type = "header",
         name = "",
-        order = order(),
+        order = order,
       }
-
+      order = order + 1
       args["enterAuthorMode"] = {
         type = "execute",
         name = L["Enter Author Mode"],
         desc = L["Configure what options appear on this pannel."],
-        order = order(),
+        order = order,
         func = function()
           data.authorMode = true
           WeakAuras.Add(data)
@@ -1316,32 +1351,17 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
         end,
       }
     else
-      args["enterUserMode"] = {
-        type = "execute",
-        name = L["Enter User Mode"],
-        desc = L["Enter user mode."],
-        order = order(),
-        func = function()
-          data.authorMode = nil
-          WeakAuras.Add(data)
-          WeakAuras.ReloadTriggerOptions(data)
-        end
-      }
+      local order = startorder + 2
 
-      args["enterUserModeSpacer"] = {
-        type = "description",
-        name = "",
-        order = order(),
-      }
+      order = order + 1
 
       for i = 1, #authorOptions do
-        addControlsForOption(authorOptions, args, data, order, i)
+        order = addControlsForOption(authorOptions, args, data, order, i)
       end
-
       args["addOption"] = {
         type = "execute",
         name = L["Add Option"],
-        order = order(),
+        order = order,
         func = function()
           local i = #authorOptions + 1
           authorOptions[i] = {
@@ -1357,6 +1377,22 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
         end
       }
 
+      args["enterUserMode"] = {
+        type = "execute",
+        name = L["Enter User Mode"],
+        desc = L["Enter user mode."],
+        order = startorder,
+        func = function()
+          data.authorMode = nil
+          WeakAuras.Add(data)
+          WeakAuras.ReloadTriggerOptions(data)
+        end
+      }
+      args["enterUserModeSpacer"] = {
+        type = "description",
+        name = "",
+        order = startorder + 1,
+      }
     end
   end
   return args
