@@ -380,6 +380,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       name = bestMatch.name,
       icon = bestMatch.icon,
       stacks = bestMatch.stacks,
+      debuffClass = bestMatch.debuffClass,
       progressType = "timed",
       duration = bestMatch.duration,
       expirationTime = bestMatch.expirationTime,
@@ -435,6 +436,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.stacks ~= bestMatch.stacks then
       state.stacks = bestMatch.stacks
+      changed = true
+    end
+
+    if state.debuffClass ~= bestMatch.debuffClass then
+      state.debuffClass = bestMatch.debuffClass
       changed = true
     end
 
@@ -2679,6 +2685,11 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
 
   if matchData.stacks ~= stacks then
     matchData.stacks = stacks
+    changed = true
+  end
+
+  if matchData.debuffClass ~= debuffClass then
+    matchData.debuffClass = debuffClass
     changed = true
   end
 
