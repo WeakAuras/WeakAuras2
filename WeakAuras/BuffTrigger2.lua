@@ -1638,7 +1638,7 @@ local function LoadAura(id, triggernum, triggerInfo)
       existingUnits[triggerInfo.unit] = UnitExists(triggerInfo.unit)
     end
   end
-  if triggerInfo.groupCountFunc then
+  if triggerInfo.groupCountFunc or triggerInfo.perUnitMode == "unaffected" or triggerInfo.perUnitMode == "all" then
     tinsert(groupCountScanFunc, triggerInfo)
   end
 
