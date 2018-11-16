@@ -76,7 +76,7 @@ local properties = {
     default = 32
   },
   glow = {
-    display = L["Glow"],
+    display = WeakAuras.newFeatureString .. L["Set Glow Visibility"],
     setter = "SetGlow",
     type = "bool"
   },
