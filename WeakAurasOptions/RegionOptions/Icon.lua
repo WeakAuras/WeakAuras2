@@ -82,7 +82,7 @@ local function createOptions(id, data)
     },
     glow = {
       type = "toggle",
-      name = L["Glow"],
+      name = L["Show Glow Effect"],
       order = 20,
     },
     glowType = {
