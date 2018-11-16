@@ -2960,7 +2960,10 @@ local function pAdd(data)
     local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
     local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
-    local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id);
+    local triggerLogicFunc;
+    if data.triggers.disjunctive == "custom" then
+      triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
+    end
     WeakAuras.LoadCustomActionFunctions(data);
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
