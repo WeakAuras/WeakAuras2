@@ -744,6 +744,16 @@ local methods = {
       end
     end
 
+    function self.callbacks.OnUpdateClick()
+      if not WeakAurasWagoUpdate then return end;
+      if self.update.slug then
+        local wago = WeakAurasWagoUpdate[self.update.slug]
+        if wago then
+          WeakAuras.ImportString(wago.string)
+        end
+      end
+    end
+
     function self.callbacks.OnRenameAction(newid)
       if (WeakAuras.IsImporting()) then return end;
       local oldid = data.id;
@@ -944,6 +954,23 @@ local methods = {
     self.ungroup:SetScript("OnClick", self.callbacks.OnUngroupClick);
     self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
     self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
+    self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
+
+    if WeakAurasWagoUpdate and self.data.url then
+      local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
+      if slug and version then
+        local wago = WeakAurasWagoUpdate[slug]
+        if wago and wago.version > version then
+          self.update.slug = slug
+          self.update.version = version
+          self.update.wagoVersion = wago.version
+          self.update.desc = L["From version "] .. self.update.version .. L[" To version "] .. self.update.wagoVersion;
+          self.update:Show()
+          self.update:Enable();
+        end
+      end
+    end
+
     if(data.parent) then
       local parentData = WeakAuras.GetData(data.parent);
       local index;
@@ -1705,6 +1732,28 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
+  local update
+  if WeakAurasWagoUpdate then
+    update = CreateFrame("BUTTON", nil, button);
+    button.update = update
+    update.slug = "";
+    update.version = "";
+    update.wagoVersion = "";
+    update.disabled = true;
+    update.func = function() end;
+    update:SetNormalTexture("interface\\minimap\\rotating-minimapcorpsearrow.blp");
+    update:Disable();
+    update:SetWidth(35);
+    update:SetHeight(35);
+    update:SetPoint("RIGHT", button, "RIGHT", -35, 0);
+    update:SetHighlightTexture("interface\\minimap\\rotating-minimapcorpsearrow.blp");
+    update.title = L["Update"];
+    update.desc = "";
+    update:SetScript("OnEnter", function() Show_Tooltip(button, update.title, update.desc) end);
+    update:SetScript("OnLeave", Hide_Tooltip);
+    update:Hide();
+  end
+
   local widget = {
     frame = button,
     title = title,
@@ -1722,6 +1771,7 @@ local function Constructor()
     loaded = loaded,
     background = background,
     expand = expand,
+    update = update,
     type = Type
   }
   for method, func in pairs(methods) do
