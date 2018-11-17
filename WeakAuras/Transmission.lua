@@ -1681,7 +1681,7 @@ function WeakAuras.ImportString(str)
   end
 end
 
-function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
+local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"
   if target and not UnitIsSameServer(target) then
     if UnitInRaid(target) then
