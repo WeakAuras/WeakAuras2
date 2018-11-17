@@ -4666,3 +4666,49 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     WeakAuras.PickAndEditDisplay(data.id);
   end
 end
+
+local collapsedOptions = {}
+function WeakAuras.IsCollapsed(id, namespace, key, default)
+  local tmp = collapsedOptions[id]
+  if tmp == nil then return default end
+
+  tmp = tmp[namespace]
+  if tmp == nil then return default end
+
+  tmp = tmp[key]
+  return tmp == nil and default or tmp
+end
+
+function WeakAuras.SetCollapsed(id, namespace, key, v)
+  collapsedOptions[id] = collapsedOptions[id] or {}
+  collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
+  collapsedOptions[id][namespace][key] = v
+end
+
+function WeakAuras.MoveCollapseDataUp(id, namespace, key)
+  collapsedOptions[id] = collapsedOptions[id] or {}
+  collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
+  collapsedOptions[id][namespace][key], collapsedOptions[id][namespace][key - 1] = collapsedOptions[id][namespace][key - 1], collapsedOptions[id][namespace][key]
+end
+
+function WeakAuras.MoveCollapseDataDown(id, namespace, key)
+  collapsedOptions[id] = collapsedOptions[id] or {}
+  collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
+  collapsedOptions[id][namespace][key], collapsedOptions[id][namespace][key + 1] = collapsedOptions[id][namespace][key + 1], collapsedOptions[id][namespace][key]
+end
+
+function WeakAuras.RemoveCollapsed(id, namespace, key)
+  local data = collapsedOptions[id] and collapsedOptions[id][namespace]
+  if data then
+    tremove(data, key)
+  end
+end
+
+function WeakAuras.RenameCollapsedData(oldid, newid)
+  collapsedOptions[newid] = collapsedOptions[oldid]
+  collapsedOptions[oldid] = nil
+end
+
+function WeakAuras.DeleteCollapsedData(id)
+  collapsedOptions[id] = nil
+end

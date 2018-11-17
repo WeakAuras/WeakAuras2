@@ -1935,6 +1935,8 @@ function WeakAuras.Delete(data)
   end
 
   WeakAuras.frameLevels[id] = nil;
+
+  WeakAuras.DeleteCollapsedData(id)
 end
 
 function WeakAuras.Rename(data, newid)

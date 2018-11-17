@@ -61,23 +61,6 @@ local optionClasses = {
   space = "noninteractive",
 }
 
--- temporary (not saved across sessions) cache of which authormode options are collapsed
-local collapsedOptions = {}
-
-local function ensureCollapsedData(data)
-  if collapsedOptions[data.id] then return end
-  local collapsedData = {}
-  for i = 1, #data.authorOptions do
-    collapsedData[#collapsedData + 1] = false
-  end
-  collapsedOptions[data.id] = collapsedData
-end
-
-function WeakAuras.RenameCollapsedData(oldid, newid)
-  collapsedOptions[newid] = collapsedOptions[oldid]
-  collapsedOptions[oldid] = nil
-end
-
 local function atLeastOneSet(data, references, key)
   for childID, optionID in pairs(references) do
     if data[childID].authorOptions[optionID][key] ~= nil then
@@ -720,9 +703,8 @@ local function up(data, option, index)
     end, function()
       for childID, optionID in pairs(option.references) do
         local childData = data[childID]
-        local collapsedData = collapsedOptions[childData.id]
         if childData then
-          collapsedData[optionID], collapsedData[optionID - 1] = collapsedData[optionID - 1], collapsedData[optionID]
+          WeakAuras.MoveCollapseDataUp(childData.id, "author", optionID)
           childData.authorOptions[optionID], childData.authorOptions[optionID - 1] = childData.authorOptions[optionID - 1], childData.authorOptions[optionID]
           WeakAuras.Add(childData)
         end
@@ -734,7 +716,7 @@ local function up(data, option, index)
       return index == 1
     end,
     function()
-      collapsedOptions[data.id][index], collapsedOptions[data.id][index - 1] = collapsedOptions[data.id][index - 1], collapsedOptions[data.id][index]
+      WeakAuras.MoveCollapseDataUp(data.id, "author", index)
       data.authorOptions[index], data.authorOptions[index - 1] = data.authorOptions[index - 1], data.authorOptions[index]
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
@@ -752,9 +734,8 @@ local function down(data, option, index)
     end, function()
       for childID, optionID in pairs(option.references) do
         local childData = data[childID]
-        local collapsedData = collapsedOptions[childData.id]
         if childData then
-          collapsedData[optionID], collapsedData[optionID + 1] = collapsedData[optionID + 1], collapsedData[optionID]
+          WeakAuras.MoveCollapseDataDown(childData.id, "author", optionID)
           childData.authorOptions[optionID], childData.authorOptions[optionID + 1] = childData.authorOptions[optionID + 1], childData.authorOptions[optionID]
           WeakAuras.Add(childData)
         end
@@ -766,7 +747,7 @@ local function down(data, option, index)
       return index == #data.authorOptions
     end,
     function()
-      collapsedOptions[data.id][index], collapsedOptions[data.id][index + 1] = collapsedOptions[data.id][index + 1], collapsedOptions[data.id][index]
+      WeakAuras.MoveCollapseDataDown(data.id, "author", index)
       data.authorOptions[index], data.authorOptions[index + 1] = data.authorOptions[index + 1], data.authorOptions[index]
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
@@ -779,7 +760,7 @@ local function delete(data, option, index)
     return function()
       for childID, optionID in pairs(option.references) do
         local childData = data[childID]
-        tremove(collapsedOptions[childData.id], optionID)
+        WeakAuras.RemoveCollapsed(childData.id, "author", optionID)
         tremove(childData.authorOptions, optionID)
         WeakAuras.Add(childData)
       end
@@ -787,7 +768,7 @@ local function delete(data, option, index)
     end
   else
     return function()
-      tremove(collapsedOptions[data.id], index)
+      WeakAuras.RemoveCollapsed(data.id, "author", index)
       tremove(data.authorOptions, index)
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
@@ -803,13 +784,13 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   if option.references then
     for childID, optionID in pairs(option.references) do
       local childData = data[childID]
-      if not collapsedOptions[childData.id][optionID] then
+      if not WeakAuras.IsCollapsed(childData.id, "author", optionID) then
         collapsed = false
         break
       end
     end
   else
-    collapsed = collapsedOptions[data.id][i]
+    collapsed = WeakAuras.IsCollapsed(data.id, "author", i)
   end
 
   args["option" .. i .. "collapse"] = {
@@ -821,11 +802,11 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       if option.references then
         for childID, optionID in pairs(option.references) do
           local childData = data[childID]
-          collapsedOptions[childData.id][optionID] = not collapsed
+          WeakAuras.SetCollapsed(childData.id, "author", optionID, not collapsed)
         end
         WeakAuras.ReloadTriggerOptions(data[0])
       else
-        collapsedOptions[data.id][i] = not collapsed
+        WeakAuras.SetCollapsed(data.id, "author", i, not collapsed)
         WeakAuras.ReloadTriggerOptions(data)
       end
     end,
@@ -1160,7 +1141,6 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
     local isAuthorMode = true
     for i = 1, #data.controlledChildren do
       local childData = WeakAuras.GetData(data.controlledChildren[i])
-      ensureCollapsedData(childData)
       if childData and not childData.authorMode then
         isAuthorMode = false
         break
@@ -1197,7 +1177,6 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
               width = 1,
               useDesc = false,
             }
-            tinsert(collapsedOptions[childData.id], false)
             WeakAuras.Add(childData)
           end
           WeakAuras.ReloadTriggerOptions(data)
@@ -1308,7 +1287,6 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
     end
   else
     local authorOptions = data.authorOptions
-    ensureCollapsedData(data)
     if not data.authorMode then
       local order = startorder
       args[data.id .. "header"] = {
@@ -1371,7 +1349,6 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             default = false,
             width = 1,
           }
-          tinsert(collapsedOptions[data.id], false)
           WeakAuras.Add(data)
           WeakAuras.ReloadTriggerOptions(data)
         end
