@@ -1062,6 +1062,7 @@ local function addUserModeOption(options, args, data, order, i)
       userOption.softMin = option.softMin
       userOption.bigStep = option.bigStep
     elseif optionType == "color" then
+      userOption.hasAlpha = true
       userOption.get = getColor(config, option.key)
       userOption.set = setColor(data, config, option.key)
     elseif optionType == "select" then
