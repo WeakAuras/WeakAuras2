@@ -960,10 +960,13 @@ local methods = {
       local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
       if slug and version then
         local wago = WeakAurasWagoUpdate[slug]
-        if wago and wago.wagoVersion > version then
+        if wago and wago.wagoVersion and wago.wagoVersion > version then
           self.update.slug = slug
           self.update.version = version
+          self.update.name = wago.name
+          self.update.author = wago.author
           self.update.wagoVersion = wago.wagoVersion
+          self.update.title = L["Update "] .. self.update.name .. L[" by "] .. self.update.author
           self.update.desc = L["From version "] .. self.update.version .. L[" To version "] .. self.update.wagoVersion;
           self.update:Show()
           self.update:Enable();
