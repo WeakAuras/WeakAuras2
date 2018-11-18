@@ -1218,9 +1218,9 @@ local function modify(parent, region, data)
     if data.timerClassColor then
       local col = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
       timer:SetTextColor(col.r, col.g, col.b, col.a);
-      else
-        timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
-      end
+    else
+      timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
+    end
     animRotate(timer, textDegrees);
     timer:Show();
     timer.visible = true;
@@ -1526,7 +1526,7 @@ local function modify(parent, region, data)
 
   function region:SetTextClassColor(b)
     self.text:SetTextColor(RAID_CLASS_COLORS[select(2, UnitClass("player"))])   
-end
+  end
   function region:SetTextSize(size)
     self.text:SetFont(SharedMedia:Fetch("font", data.textFont), size, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     self.text:SetTextHeight(size);
