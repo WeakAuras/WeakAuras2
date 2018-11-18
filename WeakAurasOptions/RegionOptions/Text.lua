@@ -68,6 +68,11 @@ local function createOptions(id, data)
       hasAlpha = true,
       order = 40
     },
+    classColor = {
+      type = "toggle",
+      name = L["Class Color"],
+      order = 41
+    },
     justify = {
       type = "select",
       name = L["Justify"],
@@ -165,7 +170,12 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   text:SetFont(fontPath, data.fontSize, data.outline and "OUTLINE" or nil);
   text:SetTextHeight(data.fontSize);
   text:SetText(data.displayText);
-  text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
+  if not data.ClassColor then
+    text:SetTextColor(data.color[1], data.color[2], data.color[3], data.color[4]);
+    else
+      local col = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+      text:SetTextColor(col.r, col.g, col.b, col.a)
+  end
   text:SetJustifyH(data.justify);
 
   text:ClearAllPoints();

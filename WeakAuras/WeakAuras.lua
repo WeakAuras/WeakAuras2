@@ -2362,6 +2362,7 @@ function WeakAuras.Modernize(data)
         data.text1 = data.displayStacks;
         data.displayStacks = nil;
         data.text1Color = data.textColor;
+        data.text1ClassColor = data.textColor
         data.textColor = nil;
         data.text1Point = data.stacksPoint;
         data.stacksPoint = nil;
@@ -2377,6 +2378,7 @@ function WeakAuras.Modernize(data)
         data.text2Enabled = false;
         data.text2 = "%p";
         data.text2Color = {1, 1, 1, 1};
+        data.text2ClassColor = data.textColor
         data.text2Point = "CENTER";
         data.text2Containment = "INSIDE";
         data.text2Font = "Friz Quadrata TT";

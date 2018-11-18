@@ -140,6 +140,12 @@ local function createOptions(id, data)
       order = 39.3,
       hidden = function() return not data.text1Enabled end,
     },
+    text1ClassColor = {
+      type = "toggle",
+      name = L["Class Color"],
+      order = 39.3,
+      hidden = function() return not data.text1Enabled end,
+    },
     text1Point = {
       type = "select",
       name = L["Text Position"],
@@ -204,6 +210,12 @@ local function createOptions(id, data)
       type = "color",
       name = L["Color"],
       hasAlpha = true,
+      order = 40.3,
+      hidden = function() return not data.text2Enabled end,
+    },
+    text2ClassColor = {
+      type = "toggle",
+      name = L["Class Color"],
       order = 40.3,
       hidden = function() return not data.text2Enabled end,
     },

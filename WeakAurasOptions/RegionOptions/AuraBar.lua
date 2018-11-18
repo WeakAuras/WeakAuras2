@@ -474,6 +474,13 @@ local function createOptions(id, data)
       disabled = function() return not data.text end,
       hidden = function() return not data.text end,
     },
+    textClassColor = {
+      type = "toggle",
+      name = L["Class Color"],
+      order = 48.1,
+      disabled = function() return not data.text end,
+      hidden = function() return not data.text end,
+    },
     textFont = {
       type = "select",
       dialogControl = "LSM30_Font",
@@ -539,6 +546,13 @@ local function createOptions(id, data)
       disabled = function() return not data.timer end,
       hidden = function() return not data.timer end,
     },
+    timerClassColor = {
+      type = "toggle",
+      name = L["Class Color"],
+      order = 53.1,
+      disabled = function() return not data.timer end,
+      hidden = function() return not data.timer end,
+    },
     timerFont = {
       type = "select",
       dialogControl = "LSM30_Font",
@@ -581,6 +595,13 @@ local function createOptions(id, data)
       name = L["Text Color"],
       hasAlpha = true,
       order = 57.3,
+      disabled = function() return not data.stacks end,
+      hidden = function() return not data.stacks end,
+    },
+    stacksClassColor = {
+      type = "toggle",
+      name = L["Class Color"],
+      order = 57.4,
       disabled = function() return not data.stacks end,
       hidden = function() return not data.stacks end,
     },

@@ -5,6 +5,7 @@ local default = {
   displayText = "%p",
   outline = "OUTLINE",
   color = {1, 1, 1, 1},
+  classColor = false,
   justify = "LEFT",
   selfPoint = "BOTTOM",
   anchorPoint = "CENTER",
@@ -25,6 +26,11 @@ local properties = {
     display = L["Color"],
     setter = "Color",
     type = "color",
+  },
+  classColor = {
+    display = L["Class Color"],
+    setter = "Color",
+    type = "bool",
   },
   fontSize = {
     display = L["Font Size"],
@@ -192,8 +198,14 @@ local function modify(parent, region, data)
     if (r or g or b) then
       a = a or 1;
     end
-    text:SetTextColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a);
+    if not data.classColor then
+      text:SetTextColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a);
+    else
+      local col = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+      text:SetTextColor(col.r, col.g, col.b, col.a);
+    end
   end
+
 
   function region:ColorAnim(r, g, b, a)
     region.color_anim_r = r;

@@ -15,6 +15,9 @@ local default = {
   textColor = {1.0, 1.0, 1.0, 1.0},
   timerColor = {1.0, 1.0, 1.0, 1.0},
   stacksColor = {1.0, 1.0, 1.0, 1.0},
+  textClassColor = false,
+  timerClassColor = false,
+  stacksClassColor = false,
   textFont = "Friz Quadrata TT",
   timerFont = "Friz Quadrata TT",
   stacksFont = "Friz Quadrata TT",
@@ -137,6 +140,22 @@ local properties = {
     setter = "SetStacksColor",
     type = "color"
   },
+  textClassColor = {
+    display = L["First Text Class Color"],
+    setter = "SetTextClassColor",
+    type = "bool"
+  },
+  timerClassColor = {
+    display = L["Second Text Class Color"],
+    setter = "SetTimerClassColor",
+    type = "bool"
+  },
+  stacksClassColor = {
+    display = L["Stacks Text Class Color"],
+    setter = "SetStacksClassColor",
+    type = "bool"
+  },
+
   textSize = {
     display = L["First Text Size"],
     setter = "SetTextSize",
@@ -1176,7 +1195,12 @@ local function modify(parent, region, data)
     -- Update text font
     text:SetFont(SharedMedia:Fetch("font", data.textFont), data.textSize, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     text:SetTextHeight(data.textSize);
+    if data.textClassColor then
+      local col = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+      text:SetTextColor(col.r, col.g, col.b, col.a);
+    else
     text:SetTextColor(data.textColor[1], data.textColor[2], data.textColor[3], data.textColor[4]);
+    end
     text:SetWordWrap(false);
     animRotate(text, textDegrees);
     text:Show();
@@ -1191,7 +1215,12 @@ local function modify(parent, region, data)
     -- Update timer font
     timer:SetFont(SharedMedia:Fetch("font", data.timerFont), data.timerSize, data.timerFlags and data.timerFlags ~= "None" and data.timerFlags);
     timer:SetTextHeight(data.timerSize);
-    timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
+    if data.timerClassColor then
+      local col = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+      timer:SetTextColor(col.r, col.g, col.b, col.a);
+      else
+        timer:SetTextColor(data.timerColor[1], data.timerColor[2], data.timerColor[3], data.timerColor[4]);
+      end
     animRotate(timer, textDegrees);
     timer:Show();
     timer.visible = true;
@@ -1236,7 +1265,13 @@ local function modify(parent, region, data)
       -- Update stack font
       stacks:SetFont(SharedMedia:Fetch("font", data.stacksFont), data.stacksSize, data.stacksFlags and data.stacksFlags ~= "None" and data.stacksFlags);
       stacks:SetTextHeight(data.stacksSize);
+      stacks:SetTextHeight(data.stacksSize);
+    if data.stacksClassColor then
+      local col = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+      stacks:SetTextColor(col.r, col.g, col.b, col.a);
+    else
       stacks:SetTextColor(data.stacksColor[1], data.stacksColor[2], data.stacksColor[3], data.stacksColor[4]);
+    end
       animRotate(stacks, textDegrees);
 
       -- Align text after rotation
@@ -1489,6 +1524,9 @@ local function modify(parent, region, data)
     self.stacks:SetTextColor(r, g, b, a);
   end
 
+  function region:SetTextClassColor(b)
+    self.text:SetTextColor(RAID_CLASS_COLORS[select(2, UnitClass("player"))])   
+end
   function region:SetTextSize(size)
     self.text:SetFont(SharedMedia:Fetch("font", data.textFont), size, data.textFlags and data.textFlags ~= "None" and data.textFlags);
     self.text:SetTextHeight(size);
