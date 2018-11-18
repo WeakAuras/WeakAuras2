@@ -748,13 +748,13 @@ local methods = {
       if (WeakAuras.IsImporting()) then return end;
       local oldid = data.id;
       if not(newid == oldid) then
-        local temp;
 
         WeakAuras.Rename(data, newid);
 
         WeakAuras.thumbnails[newid] = WeakAuras.thumbnails[oldid];
         WeakAuras.thumbnails[oldid] = nil;
         WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
+        WeakAuras.displayButtons[newid]:SetData(data)
         WeakAuras.displayButtons[oldid] = nil;
         WeakAuras.displayOptions[oldid] = nil;
         WeakAuras.AddOption(newid, data);
