@@ -749,7 +749,7 @@ local methods = {
       if self.update.slug then
         local wago = WeakAurasWagoUpdate[self.update.slug]
         if wago then
-          WeakAuras.ImportString(wago.string)
+          WeakAuras.ImportString(wago.encoded)
         end
       end
     end
@@ -960,10 +960,10 @@ local methods = {
       local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
       if slug and version then
         local wago = WeakAurasWagoUpdate[slug]
-        if wago and wago.version > version then
+        if wago and wago.wagoVersion > version then
           self.update.slug = slug
           self.update.version = version
-          self.update.wagoVersion = wago.version
+          self.update.wagoVersion = wago.wagoVersion
           self.update.desc = L["From version "] .. self.update.version .. L[" To version "] .. self.update.wagoVersion;
           self.update:Show()
           self.update:Enable();
