@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasNewButton", 21
+local Type, Version = "WeakAurasNewButton", 22
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -20,7 +20,7 @@ Methods
 -------------------------------------------------------------------------------]]
 local methods = {
   ["OnAcquire"] = function(self)
-    self:SetWidth(380);
+    self:SetWidth(570);
     self:SetHeight(40);
   end,
   ["SetTitle"] = function(self, title)

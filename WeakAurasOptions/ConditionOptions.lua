@@ -57,7 +57,7 @@ local function addSpace(args, order)
     name = "",
     image = function() return "", 0, 0 end,
     order = order,
-    width = "normal"
+    width = WeakAuras.normalWidth
   }
   order = order + 1;
   return order;
@@ -69,7 +69,7 @@ local function addHalfSpace(args, order)
     name = "",
     image = function() return "", 0, 0 end,
     order = order,
-    width = "half"
+    width = WeakAuras.halfWidth
   }
   order = order + 1;
   return order;
@@ -217,6 +217,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   local valuesForProperty = filterUsedProperties(allProperties.indexToProperty, display, usedProperties, conditions[i].changes[j].property);
   args["condition" .. i .. "property" .. j] = {
     type = "select",
+    width = WeakAuras.normalWidth,
     name = blueIfSubset(data, conditions[i].changes[j]) .. thenText,
     desc = descIfSubset(data, conditions[i].changes[j]),
     order = order,
@@ -379,6 +380,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   if (propertyType == "bool" or propertyType == "number") then
     args["condition" .. i .. "value" .. j] = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
       order = order,
@@ -407,6 +409,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   elseif (propertyType == "color") then
     args["condition" .. i .. "value" .. j] = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
       order = order,
@@ -424,6 +427,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     local values = property and allProperties.propertyMap[property] and allProperties.propertyMap[property].values;
     args["condition" .. i .. "value" .. j] = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = values,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType, values),
@@ -437,6 +441,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   elseif (propertyType == "sound") then
     args["condition" .. i .. "value" .. j .. "sound_type"] = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = WeakAuras.sound_condition_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", propertyType, WeakAuras.sound_condition_types),
@@ -465,6 +470,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "sound"] = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = WeakAuras.sound_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, WeakAuras.sound_types),
@@ -480,6 +486,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "sound_channel"] = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = WeakAuras.sound_channel_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", L["Sound Channel"], L["Sound Channel"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", propertyType, WeakAuras.sound_channel_types),
@@ -494,6 +501,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "sound_repeat"] = {
       type = "range",
+      width = WeakAuras.normalWidth,
       min = 0,
       softMax = 60,
       bigStep = 1,
@@ -511,6 +519,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "sound_repeat_space"] = {
       type = "description",
+      width = WeakAuras.normalWidth,
       name = "",
       order = order,
       hidden = function() return not (anySoundType("Loop")) end
@@ -534,7 +543,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "sound_path"] = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_path", L["Sound File Path"], L["Sound File Path"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_path", propertyType),
       order = order,
@@ -548,7 +557,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "sound_kit_id"] = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_kit_id", L["Sound Kit ID"], L["Sound Kit ID"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_kit_id", propertyType),
       order = order,
@@ -564,6 +573,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   elseif (propertyType == "chat") then
     args["condition" .. i .. "value" .. j .. "message type"] = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = WeakAuras.send_chat_message_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_type", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_type", propertyType, WeakAuras.send_chat_message_types),
@@ -593,6 +603,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "message dest"] = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", L["Send To"], L["Send To"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", propertyType),
       order = order,
@@ -608,6 +619,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "message channel"] = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_channel", L["Channel Number"], L["Channel Number"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_channel", propertyType),
       order = order,
@@ -631,7 +643,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "message"] = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message", L["Message"], L["Message"]),
       desc = descMessage,
       order = order,
@@ -650,7 +662,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "custom", L["Custom Code"], L["Custom Code"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "custom", propertyType),
       order = order,
@@ -696,7 +708,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         local _, errorString = loadstring("return  " .. custom);
         return errorString and "|cFFFF0000"..errorString or "";
       end,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = order,
       hidden = function()
         local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
@@ -728,7 +740,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", L["Custom Code"], L["Custom Code"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", propertyType),
       order = order,
@@ -775,7 +787,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         local _, errorString = loadstring("return function() " .. custom .. "\n end");
         return errorString and "|cFFFF0000"..errorString or "";
       end,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = order,
       hidden = function()
         local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
@@ -847,7 +859,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
 
   local indentDepth = min(#path, 3); -- Be reasonable
   local indentWidth = (indentDepth > 0 and 0.02 or 0) + indentDepth * 0.03;
-  local normalWidth = 1 - indentWidth;
+  local normalWidth = WeakAuras.normalWidth - indentWidth;
 
   local conditionTemplatesToUse = indentDepth < 3 and conditionTemplates or conditionTemplateWithoutCombinations;
 
@@ -886,7 +898,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
       name = "",
       image = function() return "", 0, 0 end,
       order = order,
-      width = 3,
+      width = WeakAuras.doubleWidth * 1.5,
     }
     order = order + 1;
 
@@ -1105,7 +1117,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         type = "select",
         order = order,
         values = currentConditionTemplate.operator_types_without_equal and WeakAuras.operator_types_without_equal or  WeakAuras.operator_types,
-        width = "half",
+        width = WeakAuras.halfWidth,
         get = function()
           return check.op;
         end,
@@ -1117,7 +1129,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         type = "input",
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
-        width = "half",
+        width = WeakAuras.halfWidth,
         order = order,
         validate = WeakAuras.ValidateNumeric,
         get = function()
@@ -1132,6 +1144,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
           name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
           desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
           type = "select",
+          width = WeakAuras.normalWidth,
           order = order,
           values = WeakAuras.equality_operator_types,
           get = function()
@@ -1145,6 +1158,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
 
         args["condition" .. i .. tostring(path) .. "_value"] = {
           type = "select",
+          width = WeakAuras.normalWidth,
           name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
           desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
           order = order,
@@ -1159,6 +1173,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
     elseif (currentConditionTemplate.type == "bool") then
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
         order = order,
@@ -1174,6 +1189,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
         type = "select",
+        width = WeakAuras.normalWidth,
         order = order,
         values = WeakAuras.string_operator_types,
         get = function()
@@ -1187,6 +1203,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
 
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
         order = order,
@@ -1216,7 +1233,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     type = "description",
     name = L["Condition %i"]:format(i),
     order = order,
-    width = 1.55,
+    width = WeakAuras.doubleWidth - 0.45,
     fontSize = "large"
   };
   order = order + 1;
@@ -1363,6 +1380,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
 
   args["condition" .. i .. "_addChange"] = {
     type = "execute",
+    width = WeakAuras.normalWidth,
     name = L["Add Property Change"],
     order = order,
     func = function()
@@ -1843,6 +1861,7 @@ function WeakAuras.GetConditionOptions(data, args, conditionVariable, startorder
 
   args["addCondition"] = {
     type = "execute",
+    width = WeakAuras.normalWidth,
     name = L["Add Condition"],
     order = order,
     func = function()

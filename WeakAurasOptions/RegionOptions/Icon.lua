@@ -5,12 +5,14 @@ local function createOptions(id, data)
   local options = {
     color = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 1
     },
     auto = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Automatic Icon"],
       order = 2,
       disabled = function() return not WeakAuras.CanHaveAuto(data); end,
@@ -18,6 +20,7 @@ local function createOptions(id, data)
     },
     displayIcon = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Display Icon"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
       order = 3,
@@ -33,6 +36,7 @@ local function createOptions(id, data)
     },
     chooseIcon = {
       type = "execute",
+      width = WeakAuras.normalWidth,
       name = L["Choose"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
       order = 4,
@@ -40,6 +44,7 @@ local function createOptions(id, data)
     },
     desaturate = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Desaturate"],
       order = 5,
     },
@@ -50,6 +55,7 @@ local function createOptions(id, data)
     },
     cooldown = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Cooldown"],
       order = 6.1,
       disabled = function() return not WeakAuras.CanHaveDuration(data); end,
@@ -57,6 +63,7 @@ local function createOptions(id, data)
     },
     inverse = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Inverse"],
       order = 6.2,
       disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
@@ -65,6 +72,7 @@ local function createOptions(id, data)
     },
     cooldownSwipe = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = WeakAuras.newFeatureString .. L["Cooldown Swipe"],
       order = 6.3,
       disabled = function() return not WeakAuras.CanHaveDuration(data) end,
@@ -72,6 +80,7 @@ local function createOptions(id, data)
     },
     cooldownEdge = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = WeakAuras.newFeatureString .. L["Cooldown Edge"],
       order = 6.4,
       disabled = function() return not WeakAuras.CanHaveDuration(data) end,
@@ -79,6 +88,7 @@ local function createOptions(id, data)
     },
     cooldownTextEnabled = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Show Cooldown Text"],
       order = 6.5,
       disabled = function() return not WeakAuras.CanHaveDuration(data); end,
@@ -91,23 +101,27 @@ local function createOptions(id, data)
     },
     glow = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Show Glow Effect"],
       order = 20,
     },
     glowType = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Glow Type"],
       order = 21,
       values = WeakAuras.glow_types,
     },
     useGlowColor = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Glow Color"],
       desc = L["If unchecked, then a default color will be used (usually yellow)"],
       order = 23,
     },
     glowColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Glow Color"],
       order = 24,
       disabled = function() return not data.useGlowColor end,
@@ -119,11 +133,13 @@ local function createOptions(id, data)
     },
     text1Enabled = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       order = 39.1,
       name = L["1. Text"],
     },
     text1 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Text"],
       desc = function()
         local ret = L["Dynamic text tooltip"];
@@ -135,6 +151,7 @@ local function createOptions(id, data)
     },
     text1Color = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 39.3,
@@ -142,6 +159,7 @@ local function createOptions(id, data)
     },
     text1Point = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Text Position"],
       order = 39.4,
       values = WeakAuras.point_types,
@@ -149,6 +167,7 @@ local function createOptions(id, data)
     },
     text1Containment = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = " ",
       order = 39.5,
       values = WeakAuras.containment_types,
@@ -156,6 +175,7 @@ local function createOptions(id, data)
     },
     text1Font = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font"],
       order = 39.6,
@@ -164,6 +184,7 @@ local function createOptions(id, data)
     },
     text1FontSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Size"],
       order = 39.7,
       min = 6,
@@ -173,6 +194,7 @@ local function createOptions(id, data)
     },
     text1FontFlags = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Outline"],
       order = 39.8,
       values = WeakAuras.font_flags,
@@ -186,11 +208,13 @@ local function createOptions(id, data)
     },
     text2Enabled = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       order = 40.1,
       name = L["2. Text"],
     },
     text2 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Text"],
       desc = function()
         local ret = L["Dynamic text tooltip"];
@@ -202,6 +226,7 @@ local function createOptions(id, data)
     },
     text2Color = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 40.3,
@@ -209,6 +234,7 @@ local function createOptions(id, data)
     },
     text2Point = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Text Position"],
       order = 40.4,
       values = WeakAuras.point_types,
@@ -216,6 +242,7 @@ local function createOptions(id, data)
     },
     text2Containment = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = " ",
       order = 40.5,
       values = WeakAuras.containment_types,
@@ -223,6 +250,7 @@ local function createOptions(id, data)
     },
     text2Font = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font"],
       order = 40.6,
@@ -231,6 +259,7 @@ local function createOptions(id, data)
     },
     text2FontSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Size"],
       order = 40.7,
       min = 6,
@@ -240,6 +269,7 @@ local function createOptions(id, data)
     },
     text2FontFlags = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Outline"],
       order = 40.8,
       values = WeakAuras.font_flags,
@@ -257,7 +287,7 @@ local function createOptions(id, data)
     },
     customTextUpdate = {
       type = "select",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function()
         return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
           or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
@@ -269,6 +299,7 @@ local function createOptions(id, data)
     -- Code Editor added below
     progressPrecision = {
       type = "select",
+      width = WeakAuras.normalWidth,
       order = 44,
       name = L["Remaining Time Precision"],
       values = WeakAuras.precision_types,
@@ -283,6 +314,7 @@ local function createOptions(id, data)
     },
     totalPrecision = {
       type = "select",
+      width = WeakAuras.normalWidth,
       order = 44.5,
       name = L["Total Time Precision"],
       values = WeakAuras.precision_types,
@@ -302,6 +334,7 @@ local function createOptions(id, data)
     },
     zoom = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Zoom"],
       order = 49,
       min = 0,
@@ -311,6 +344,7 @@ local function createOptions(id, data)
     },
     iconInset = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Icon Inset"],
       order = 49.1,
       min = 0,
@@ -323,23 +357,27 @@ local function createOptions(id, data)
     },
     keepAspectRatio = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Keep Aspect Ratio"],
       order = 49.1
     },
     stickyDuration = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Sticky Duration"],
       desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
       order = 49.4
     },
     useTooltip = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
       order = 49.5
     },
     alpha = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Icon Alpha"],
       order = 49.6,
       min = 0,

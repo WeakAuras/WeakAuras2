@@ -19,6 +19,7 @@ end
 function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
   options.useAdjustededMin = {
     type = "toggle",
+    width = WeakAuras.normalWidth,
     name = L["Set Minimum Progress"],
     desc = L["Values/Remaining Time below this value are displayed as no progress."],
     order = order
@@ -26,6 +27,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.adjustedMin = {
     type = "range",
+    width = WeakAuras.normalWidth,
     min = 0,
     softMax = 200,
     bigStep = 1,
@@ -36,7 +38,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustedMinSpacer = {
     type = "description",
-    width = "normal",
+    width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.02,
     hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
@@ -44,6 +46,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustededMax = {
     type = "toggle",
+    width = WeakAuras.normalWidth,
     name = L["Set Maximum Progress"],
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = order + 0.03
@@ -51,6 +54,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.adjustedMax = {
     type = "range",
+    width = WeakAuras.normalWidth,
     min = 0,
     softMax = 200,
     bigStep = 1,
@@ -61,7 +65,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustedMaxSpacer = {
     type = "description",
-    width = "normal",
+    width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.05,
     hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,

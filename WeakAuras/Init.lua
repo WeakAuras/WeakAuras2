@@ -1,6 +1,10 @@
 WeakAuras = {}
 WeakAuras.L = {}
 
+WeakAuras.normalWidth = 1.25
+WeakAuras.halfWidth = WeakAuras.normalWidth / 2
+WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
+
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version");
 local versionString = "@project-version@"
 --@debug@
