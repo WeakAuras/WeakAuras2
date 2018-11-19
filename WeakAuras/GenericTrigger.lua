@@ -2640,15 +2640,15 @@ end
 do
   local scheduled_scans = {};
 
-  local function doCastScan(args)
-    WeakAuras.debug("Performing cast scan at "..args[1].." ("..GetTime()..")");
-    scheduled_scans[args[1]] = nil;
-    WeakAuras.ScanEvents("CAST_REMAINING_CHECK", args[2]);
+  local function doCastScan(firetime, unit)
+    WeakAuras.debug("Performing cast scan at "..firetime.." ("..GetTime()..")");
+    scheduled_scans[firetime] = nil;
+    WeakAuras.ScanEvents("CAST_REMAINING_CHECK", unit);
   end
   function WeakAuras.ScheduleCastCheck(fireTime, unit)
     if not(scheduled_scans[fireTime]) then
       WeakAuras.debug("Scheduled cast scan at "..fireTime);
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doCastScan, fireTime - GetTime() + 0.1, {fireTime, unit});
+      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doCastScan, fireTime - GetTime() + 0.1, fireTime, unit);
     end
   end
 end
