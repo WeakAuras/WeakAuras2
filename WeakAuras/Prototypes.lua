@@ -694,7 +694,7 @@ WeakAuras.load_prototype = {
       name = "combat",
       display = L["In Combat"],
       type = "tristate",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       init = "arg",
       optional = true
     },
@@ -702,7 +702,7 @@ WeakAuras.load_prototype = {
       name = "encounter",
       display = L["In Encounter"],
       type = "tristate",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       init = "arg",
       optional = true
     },
@@ -711,14 +711,14 @@ WeakAuras.load_prototype = {
       display = WeakAuras.newFeatureString .. L["War Mode Active"],
       type = "tristate",
       init = "arg",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       optional = true
     },
     {
       name = "never",
       display = L["Never"],
       type = "toggle",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       init = "false"
     },
     {
@@ -726,7 +726,7 @@ WeakAuras.load_prototype = {
       display = L["In Pet Battle"],
       type = "tristate",
       init = "arg",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       optional = true
     },
     {
@@ -734,7 +734,7 @@ WeakAuras.load_prototype = {
       display = L["In Vehicle"],
       type = "tristate",
       init = "arg",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       optional = true
     },
     {
@@ -742,14 +742,14 @@ WeakAuras.load_prototype = {
       display = L["Has Vehicle UI"],
       type = "tristate",
       init = "arg",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       optional = true
     },
     {
       name = "ingroup",
       display = L["In Group"],
       type = "multiselect",
-      width = "normal",
+      width = WeakAuras.normalWidth,
       init = "arg",
       values = "group_types",
     },

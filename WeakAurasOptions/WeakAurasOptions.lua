@@ -457,6 +457,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         -- Ensure new line for non-toggle options
         options["spacer_"..name] = {
           type = "description",
+          width = WeakAuras.doubleWidth,
           name = "",
           order = order,
           hidden = hidden,
@@ -466,6 +467,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       if(arg.type == "tristate") then
         options["use_"..name] = {
           type = "toggle",
+          width = WeakAuras.normalWidth,
           name = function(input)
             local value = trigger["use_"..realname];
             if(value == nil) then return arg.display;
@@ -505,6 +507,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       elseif(arg.type == "multiselect") then
         options["use_"..name] = {
           type = "toggle",
+          width = WeakAuras.normalWidth,
           name = arg.display,
           desc = function()
             local v = trigger["use_"..realname];
@@ -554,12 +557,14 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       elseif (arg.type == "description") then
         options["description_space_"..name] = {
           type = "description",
+          width = WeakAuras.doubleWidth,
           name = "",
           order = order,
           hidden = hidden,
         }
         options["description_title_"..name] = {
           type = "description",
+          width = WeakAuras.doubleWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -568,6 +573,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         order = order + 1;
         options["description_"..name] = {
           type = "description",
+          width = WeakAuras.doubleWidth,
           name = arg.text,
           order = order,
           hidden = hidden,
@@ -576,6 +582,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       else
         options["use_"..name] = {
           type = "toggle",
+          width = WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -596,7 +603,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         };
       end
       if(arg.type == "toggle" or arg.type == "tristate") then
-        options["use_"..name].width = arg.width or "double";
+        options["use_"..name].width = arg.width or WeakAuras.doubleWidth;
       end
       if(arg.required) then
         trigger["use_"..realname] = true;
@@ -612,8 +619,8 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         if (not arg.noOperator) then
           options[name.."_operator"] = {
             type = "select",
+            width = WeakAuras.halfWidth,
             name = L["Operator"],
-            width = "half",
             order = order,
             hidden = hidden,
             values = arg.operator_types_without_equal and operator_types_without_equal or operator_types,
@@ -651,9 +658,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         end
         options[name] = {
           type = "input",
+          width = arg.noOperator and WeakAuras.normalWidth or WeakAuras.halfWidth,
           validate = ValidateNumeric,
           name = arg.display,
-          width = arg.noOperator and "normal" or "half",
           order = order,
           hidden = hidden,
           disabled = function() return not trigger["use_"..realname]; end,
@@ -690,6 +697,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       elseif(arg.type == "string") then
         options[name] = {
           type = "input",
+          width = WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -728,6 +736,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       elseif(arg.type == "longstring") then
         options[name.."_operator"] = {
           type = "select",
+          width = WeakAuras.normalWidth,
           name = L["Operator"],
           order = order,
           hidden = hidden,
@@ -765,8 +774,8 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         order = order + 1;
         options[name] = {
           type = "input",
+          width = WeakAuras.doubleWidth,
           name = arg.display,
-          width = "double",
           order = order,
           hidden = hidden,
           disabled = function() return not trigger["use_"..realname]; end,
@@ -805,10 +814,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           if (arg.showExactOption) then
             options["exact"..name] = {
               type = "toggle",
+              width = WeakAuras.normalWidth - 0.1,
               name = L["Exact Spell Match"],
               order = order,
               hidden = hidden,
-              width = 0.9,
               get = function()
                 return trigger["use_exact_"..realname];
               end,
@@ -826,10 +835,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           end
           options["icon"..name] = {
             type = "execute",
+            width = 0.1,
             name = "",
             order = order,
             hidden = hidden,
-            width = 0.1,
             image = function()
               if(trigger["use_"..realname] and trigger[realname]) then
                 if(arg.type == "aura") then
@@ -851,10 +860,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           order = order + 1;
           options[name] = {
             type = "input",
+            width = WeakAuras.doubleWidth,
             name = arg.display,
             order = order,
             hidden = hidden,
-            width = "double",
             disabled = function() return not trigger["use_"..realname]; end,
             get = function()
               if(arg.type == "item") then
@@ -923,6 +932,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         end
         options[name] = {
           type = "select",
+          width = WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -998,6 +1008,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         if(arg.type == "unit" and not (arg.required and triggertype == "untrigger")) then
           options["use_specific_"..name] = {
             type = "toggle",
+            width = WeakAuras.normalWidth,
             name = L["Specific Unit"],
             order = order,
             hidden = function() return (not trigger["use_specific_"..realname]) or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
@@ -1010,6 +1021,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           order = order + 1;
           options["specific_"..name] = {
             type = "input",
+            width = WeakAuras.normalWidth,
             name = L["Specific Unit"],
             desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
             order = order,
@@ -1037,6 +1049,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         end
         options[name] = {
           type = "select",
+          width = WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           values = values,
@@ -1078,10 +1091,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         options["multiselect_"..name] = {
           type = "multiselect",
           name = arg.display,
+          width = WeakAuras.doubleWidth,
           order = order,
           hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
           values = values,
-          width = "double",
           get = function(info, v)
             if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
               return trigger[realname].multi[v];
@@ -1144,21 +1157,22 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
   if not(triggertype or prototype.automaticrequired) then
     options.unevent = {
       type = "select",
+      width = WeakAuras.doubleWidth,
       name = L["Hide"],
-      width = "double",
       order = order
     };
     order = order + 1;
     if(unevent == "timed") then
-      options.unevent.width = "normal";
+      options.unevent.width = WeakAuras.normalWidth;
       options.duration = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Duration (s)"],
         order = order
       }
       order = order + 1;
     else
-      options.unevent.width = "double";
+      options.unevent.width = WeakAuras.doubleWidth;
     end
     if(unevent == "custom") then
       local unevent_options = WeakAuras.ConstructOptions(prototype, data, order, triggernum, "untrigger");
@@ -2502,7 +2516,7 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
 
   args[prefix .. "_custom"] = {
     type = "input",
-    width = "double",
+    width = WeakAuras.doubleWidth,
     name = name,
     order = order,
     multiline = true,
@@ -2555,7 +2569,7 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
       local _, errorString = loadstring(code);
       return errorString and "|cFFFF0000"..errorString or "";
     end,
-    width = "double",
+    width = WeakAuras.doubleWidth,
     order = order + 0.002,
     hidden = function()
       if (hiddenFunc()) then
@@ -2629,7 +2643,7 @@ local function addHeadersForRegionOptions(allOptions, output)
         output[regionType .. "_spacer"] = {
           type = "description",
           name = " ",
-          width = "double",
+          width = WeakAuras.doubleWidth,
           fontSize = "large",
           order = base,
           hidden = false
@@ -2638,7 +2652,7 @@ local function addHeadersForRegionOptions(allOptions, output)
       output[regionType .. "_title"] = {
         type = "description",
         name = regionOptions[regionType].displayName,
-        width = "double",
+        width = WeakAuras.doubleWidth,
         order = base + 0.01,
         fontSize = "large",
         hidden = false
@@ -2646,7 +2660,6 @@ local function addHeadersForRegionOptions(allOptions, output)
       output[regionType .. "_title_header"] = {
         type = "header",
         name = "",
-        width = "double",
         order = base + 0.02,
         hidden = false
       }
@@ -2657,7 +2670,7 @@ local function addHeadersForRegionOptions(allOptions, output)
   output["common_spacer"] = {
     type = "description",
     name = " ",
-    width = "double",
+    width = WeakAuras.doubleWidth,
     fontSize = "large",
     order = base,
     hidden = false
@@ -2666,7 +2679,7 @@ local function addHeadersForRegionOptions(allOptions, output)
   output["common_title"] = {
     type = "description",
     name = L["Common Options"],
-    width = "double",
+    width = WeakAuras.doubleWidth,
     order = base + 0.01,
     fontSize = "large",
     hidden = false
@@ -2993,7 +3006,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     disjunctive = {
       type = "select",
       name = L["Required for Activation"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = 0,
       values = function()
         if #data.triggers > 1 then
@@ -3018,7 +3031,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     activeTriggerMode = {
       type = "select",
       name = L["Dynamic Information"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = 0.3,
       values = function()
         local vals = {};
@@ -3247,6 +3260,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     },
     typedesc = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Type"],
       order = 5,
       disabled = true,
@@ -3254,6 +3268,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     },
     type = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Type"],
       desc = L["The type of trigger"],
       order = 6,
@@ -3542,10 +3557,11 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     position_header = {
       type = "header",
       name = L["Position Settings"],
-      order = 46.0
+      order = 46.0,
     },
     width = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Width"],
       order = 60,
       min = 1,
@@ -3555,6 +3571,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     height = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Height"],
       order = 65,
       min = 1,
@@ -3564,22 +3581,25 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     selfPoint = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Anchor"],
       order = 70,
       hidden = IsParentDynamicGroup,
       values = point_types,
-      disabled = disableSelfPoint
+      disabled = disableSelfPoint,
     },
     anchorFrameType = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Anchored To"],
       order = 72,
       hidden = IsParentDynamicGroup,
-      values = WeakAuras.anchor_frame_types
+      values = WeakAuras.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
     anchorFrameFrame = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Frame"],
       order = 72.2,
       hidden = function()
@@ -3592,6 +3612,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     -- Button to select frame to anchor on
     chooseAnchorFrameFrame = {
       type = "execute",
+      width = WeakAuras.normalWidth,
       name = L["Choose"],
       order = 72.4,
       hidden = function()
@@ -3606,6 +3627,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     anchorPoint = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = function()
         if (data.anchorFrameType == "SCREEN") then
           return L["To Screen's"]
@@ -3630,6 +3652,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     anchorPointGroup = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = function() return L["to group's"] end,
       order = 75,
       hidden = function()
@@ -3647,6 +3670,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     anchorFrameParent = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Set Parent to Anchor"],
       desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visiblility and scale."],
       order = 77,
@@ -3659,12 +3683,14 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     frameStrata = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Frame Strata"],
       order = 78,
       values = WeakAuras.frame_strata_types
     },
     anchorFrameSpace = {
       type = "execute",
+      width = WeakAuras.normalWidth,
       name = "",
       order = 79,
       image = function() return "", 0, 0 end,
@@ -3680,6 +3706,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     --   RIGHT/TOP => -screen -- +screen
     xOffset1 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["X Offset"],
       order = 80,
       softMin = 0,
@@ -3708,6 +3735,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     xOffset2 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["X Offset"],
       order = 80,
       softMin = ((-1/2) * screenWidth),
@@ -3736,6 +3764,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     xOffset3 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["X Offset"],
       order = 80,
       softMin = (-1 * screenWidth),
@@ -3764,6 +3793,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     xOffset4 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["X Offset"],
       order = 80,
       softMin = (-1 * screenWidth),
@@ -3792,6 +3822,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     yOffset1 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       order = 85,
       softMin = 0,
@@ -3820,6 +3851,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     yOffset2 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       order = 85,
       softMin = ((-1/2) * screenHeight),
@@ -3848,6 +3880,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     yOffset3 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       order = 85,
       softMin = (-1 * screenHeight),
@@ -3876,6 +3909,7 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
     },
     yOffset4 = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       order = 85,
       softMin = (-1 * screenHeight),
@@ -3920,11 +3954,13 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     border = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Border"],
       order = 46.05
     },
     borderEdge = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Border",
       name = L["Border Style"],
       order = 46.1,
@@ -3934,6 +3970,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     borderBackdrop = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Background",
       name = L["Backdrop Style"],
       order = 46.2,
@@ -3943,6 +3980,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     borderOffset = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Border Offset"],
       order = 46.3,
       softMin = 0,
@@ -3953,6 +3991,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     borderSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Border Size"],
       order = 46.4,
       softMin = 1,
@@ -3963,6 +4002,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     borderInset = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Border Inset"],
       order = 46.5,
       softMin = 1,
@@ -3973,6 +4013,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     borderColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Border Color"],
       hasAlpha = true,
       order = 46.6,
@@ -3981,6 +4022,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     borderInFront  = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Border in Front"],
       order = 46.7,
       disabled = function() return not data.border end,
@@ -3988,6 +4030,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     backdropInFront  = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Backdrop in Front"],
       order = 46.75,
       disabled = function() return not data.border end,
@@ -3995,6 +4038,7 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
     },
     backdropColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Backdrop Color"],
       hasAlpha = true,
       order = 46.8,

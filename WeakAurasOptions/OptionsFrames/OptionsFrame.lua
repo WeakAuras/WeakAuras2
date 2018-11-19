@@ -377,7 +377,7 @@ function WeakAuras.CreateFrame()
   local container = AceGUI:Create("InlineGroup");
   container.frame:SetParent(frame);
   container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
-  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -423, -14);
+  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -83 - WeakAuras.normalWidth * 340, -14);
   container.frame:Show();
   container.frame:SetClipsChildren(true);
   container.titletext:Hide();

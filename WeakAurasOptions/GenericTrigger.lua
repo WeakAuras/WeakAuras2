@@ -69,7 +69,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       type = "select",
       name = L["Event Type"],
       order = 7,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       values = custom_trigger_types,
       hidden = function() return not (trigger.type == "custom") end,
       set = function(info, v)
@@ -84,6 +84,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
     check = {
       type = "select",
       name = L["Check On..."],
+      width = WeakAuras.doubleWidth / 3,
       order = 8,
       values = check_types,
       hidden = function() return not (trigger.type == "custom"
@@ -103,7 +104,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       type = "select",
       name = L["Check On..."],
       order = 9,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       values = check_types,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
@@ -120,6 +121,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
     },
     events = {
       type = "input",
+      width = WeakAuras.doubleWidth * 2 / 3,
       name = L["Event(s)"],
       desc = L["Custom trigger status tooltip"],
       order = 8.1,
@@ -139,7 +141,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       type = "input",
       name = L["Event(s)"],
       desc = L["Custom trigger event tooltip"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = 9.1,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
       get = function() return trigger.events end,
@@ -154,6 +156,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
     -- texteditor below
     custom_hide = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Hide"],
       order = 12,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
@@ -171,7 +174,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       type = "select",
       name = L["Hide"],
       order = 12,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide == "custom") end,
       values = eventend_types,
       get = function() return trigger.custom_hide end,
@@ -185,6 +188,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
     },
     dynamicDuration = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Dynamic Duration"],
       order = 12.5,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
@@ -199,6 +203,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
     },
     duration = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Duration (s)"],
       order = 13,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom" and not trigger.dynamicDuration) end,
@@ -207,7 +212,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       type = "execute",
       name = L["Add Overlay"],
       order = 17.9,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function()
         if (trigger.type ~= "custom") then
           return true;
@@ -356,7 +361,7 @@ local function GetGenericTriggerOptions(data, optionTriggerChoices)
         end
       end,
       order = 7,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       values = function()
         local type;
         if (data.controlledChildren) then
@@ -380,6 +385,7 @@ local function GetGenericTriggerOptions(data, optionTriggerChoices)
     subeventPrefix = {
       type = "select",
       name = L["Message Prefix"],
+      width = WeakAuras.normalWidth,
       order = 8,
       values = subevent_prefix_types,
       control = "WeakAurasSortedDropdown",
@@ -387,6 +393,7 @@ local function GetGenericTriggerOptions(data, optionTriggerChoices)
     },
     subeventSuffix = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Message Suffix"],
       order = 9,
       values = subevent_suffix_types,

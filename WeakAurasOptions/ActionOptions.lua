@@ -61,7 +61,7 @@ function WeakAuras.AddActionOption(id, data)
         type = "toggle",
         name = L["Custom"],
         order = 0.011,
-        width = "double"
+        width = WeakAuras.doubleWidth
       },
       -- texteditor added here by AddCodeOption
       start_header = {
@@ -71,11 +71,13 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_do_message = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Chat Message"],
         order = 1
       },
       start_message_type = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Message Type"],
         order = 2,
         values = send_chat_message_types,
@@ -84,6 +86,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_message_space = {
         type = "execute",
+        width = WeakAuras.normalWidth,
         name = "",
         order = 3,
         image = function() return "", 0, 0 end,
@@ -91,6 +94,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_message_color = {
         type = "color",
+        width = WeakAuras.normalWidth,
         name = L["Color"],
         order = 3,
         hasAlpha = false,
@@ -105,6 +109,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_message_dest = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Send To"],
         order = 4,
         disabled = function() return not data.actions.start.do_message end,
@@ -112,6 +117,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_message_channel = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Channel Number"],
         order = 4,
         disabled = function() return not data.actions.start.do_message end,
@@ -119,8 +125,8 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_message = {
         type = "input",
+        width = WeakAuras.doubleWidth,
         name = L["Message"],
-        width = "double",
         order = 5,
         disabled = function() return not data.actions.start.do_message end,
         desc = function()
@@ -132,17 +138,20 @@ function WeakAuras.AddActionOption(id, data)
       -- texteditor added later
       start_do_sound = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Play Sound"],
         order = 7
       },
       start_do_loop = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Loop"],
         order = 7.1,
         disabled = function() return not data.actions.start.do_sound end,
       },
       start_sound_repeat = {
         type = "range",
+        width = WeakAuras.normalWidth,
         name = L["Repeat After"],
         order = 7.2,
         hidden = function() return not data.actions.start.do_loop end,
@@ -150,13 +159,14 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_sound_repeat_space = {
         type = "description",
+        width = WeakAuras.normalWidth,
         order = 7.3,
-        width = "normal",
         name = "",
         hidden = function() return not data.actions.start.do_loop end,
       },
       start_sound = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Sound"],
         order = 8,
         values = sound_types,
@@ -165,6 +175,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_sound_channel = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Sound Channel"],
         order = 8.5,
         values = WeakAuras.sound_channel_types,
@@ -173,27 +184,29 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_sound_path = {
         type = "input",
+        width = WeakAuras.doubleWidth,
         name = L["Sound File Path"],
         order = 9,
-        width = "double",
         hidden = function() return data.actions.start.sound ~= " custom" end,
         disabled = function() return not data.actions.start.do_sound end
       },
       start_sound_kit_id = {
         type = "input",
+        width = WeakAuras.doubleWidth,
         name = L["Sound Kit ID"],
         order = 9,
-        width = "double",
         hidden = function() return data.actions.start.sound ~= " KitID" end,
         disabled = function() return not data.actions.start.do_sound end
       },
       start_do_glow = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = WeakAuras.newFeatureString .. L["Button Glow"],
         order = 10.1
       },
       start_glow_action = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Glow Action"],
         order = 10.2,
         values = WeakAuras.glow_action_types,
@@ -201,12 +214,14 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_glow_frame = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Frame"],
         order = 10.3,
         hidden = function() return not data.actions.start.do_glow end
       },
       start_choose_glow_frame = {
         type = "execute",
+        width = WeakAuras.normalWidth,
         name = L["Choose"],
         order = 10.4,
         hidden = function() return not data.actions.start.do_glow end,
@@ -221,6 +236,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_glow_type = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Glow Type"],
         order = 10.5,
         values = WeakAuras.glow_types,
@@ -228,18 +244,21 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_glow_type_spacer = {
         type = "description",
+        width = WeakAuras.doubleWidth,
         name = "",
         order = 10.6,
         hidden = function() return not data.actions.start.do_glow end,
       },
       start_use_glow_color = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 10.7,
         hidden = function() return not data.actions.start.do_glow end,
       },
       start_glow_color = {
         type = "color",
+        width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 10.8,
         hidden = function() return not data.actions.start.do_glow end,
@@ -247,9 +266,9 @@ function WeakAuras.AddActionOption(id, data)
       },
       start_do_custom = {
         type = "toggle",
+        width = WeakAuras.doubleWidth,
         name = L["Custom"],
         order = 11,
-        width = "double"
       },
       -- texteditor added laters
       finish_header = {
@@ -259,11 +278,13 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_do_message = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Chat Message"],
         order = 21
       },
       finish_message_type = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Message Type"],
         order = 22,
         values = send_chat_message_types,
@@ -272,6 +293,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_message_space = {
         type = "execute",
+        width = WeakAuras.normalWidth,
         name = "",
         order = 23,
         image = function() return "", 0, 0 end,
@@ -279,6 +301,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_message_color = {
         type = "color",
+        width = WeakAuras.normalWidth,
         name = L["Color"],
         order = 23,
         hasAlpha = false,
@@ -293,6 +316,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_message_dest = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Send To"],
         order = 24,
         disabled = function() return not data.actions.finish.do_message end,
@@ -300,6 +324,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_message_channel = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Channel Number"],
         order = 24,
         disabled = function() return not data.actions.finish.do_message end,
@@ -307,8 +332,8 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_message = {
         type = "input",
+        width = WeakAuras.doubleWidth,
         name = L["Message"],
-        width = "double",
         order = 25,
         disabled = function() return not data.actions.finish.do_message end,
         desc = function()
@@ -320,11 +345,13 @@ function WeakAuras.AddActionOption(id, data)
       -- texteditor added below
       finish_do_sound = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Play Sound"],
         order = 27
       },
       finish_sound = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Sound"],
         order = 28,
         values = sound_types,
@@ -333,6 +360,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_sound_channel = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Sound Channel"],
         order = 28.5,
         values = WeakAuras.sound_channel_types,
@@ -341,33 +369,35 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_sound_path = {
         type = "input",
+        width = WeakAuras.doubleWidth,
         name = L["Sound File Path"],
         order = 29,
-        width = "double",
         hidden = function() return data.actions.finish.sound ~= " custom" end,
         disabled = function() return not data.actions.finish.do_sound end
       },
       finish_sound_kit_id = {
         type = "input",
+        width = WeakAuras.doubleWidth,
         name = L["Sound Kit ID"],
         order = 29,
-        width = "double",
         hidden = function() return data.actions.finish.sound ~= " KitID" end,
         disabled = function() return not data.actions.finish.do_sound end
       },
       finish_stop_sound = {
         type = "toggle",
+        width = WeakAuras.doubleWidth,
         name = L["Stop Sound"],
         order = 29.1,
-        width = "double"
       },
       finish_do_glow = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = WeakAuras.newFeatureString .. L["Button Glow"],
         order = 30.1
       },
       finish_glow_action = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Glow Action"],
         order = 30.2,
         values = WeakAuras.glow_action_types,
@@ -375,12 +405,14 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_glow_frame = {
         type = "input",
+        width = WeakAuras.normalWidth,
         name = L["Frame"],
         order = 30.3,
         hidden = function() return not data.actions.finish.do_glow end
       },
       finish_choose_glow_frame = {
         type = "execute",
+        width = WeakAuras.normalWidth,
         name = L["Choose"],
         order = 30.4,
         hidden = function() return not data.actions.finish.do_glow end,
@@ -395,6 +427,7 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_glow_type = {
         type = "select",
+        width = WeakAuras.normalWidth,
         name = L["Glow Type"],
         order = 30.5,
         values = WeakAuras.glow_types,
@@ -402,18 +435,21 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_glow_type_spacer = {
         type = "description",
+        width = WeakAuras.doubleWidth,
         name = "",
         order = 30.6,
         hidden = function() return not data.actions.finish.do_glow end,
       },
       finish_use_glow_color = {
         type = "toggle",
+        width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 30.7,
         hidden = function() return not data.actions.finish.do_glow end,
       },
       finish_glow_color = {
         type = "color",
+        width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 30.8,
         hidden = function() return not data.actions.finish.do_glow end,
@@ -421,9 +457,9 @@ function WeakAuras.AddActionOption(id, data)
       },
       finish_do_custom = {
         type = "toggle",
+        width = WeakAuras.doubleWidth,
         name = L["Custom"],
         order = 31,
-        width = "double"
       },
     -- Text editor added below
     },

@@ -10,12 +10,13 @@ local function createOptions(id, data)
       type = "select",
       dialogControl = "LSM30_Statusbar",
       order = 1,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = L["Bar Texture"],
       values = AceGUIWidgetLSMlists.statusbar
     },
     displayTextLeft = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = function()
         if(data.orientation == "HORIZONTAL") then
           return L["Left Text"];
@@ -36,6 +37,7 @@ local function createOptions(id, data)
     },
     displayTextRight = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = function()
         if(data.orientation == "HORIZONTAL") then
           return L["Right Text"];
@@ -56,7 +58,7 @@ local function createOptions(id, data)
     },
     customTextUpdate = {
       type = "select",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function()
         return not (
           WeakAuras.ContainsCustomPlaceHolder(data.displayTextLeft)
@@ -70,6 +72,7 @@ local function createOptions(id, data)
     -- code editor added below
     progressPrecision = {
       type = "select",
+      width = WeakAuras.normalWidth,
       order = 11,
       name = L["Remaining Time Precision"],
       values = WeakAuras.precision_types,
@@ -91,6 +94,7 @@ local function createOptions(id, data)
     },
     totalPrecision = {
       type = "select",
+      width = WeakAuras.normalWidth,
       order = 11.5,
       name = L["Total Time Precision"],
       values = WeakAuras.precision_types,
@@ -112,12 +116,14 @@ local function createOptions(id, data)
     },
     rotateText = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Rotate Text"],
       values = WeakAuras.text_rotate_types,
       order = 19.5
     },
     orientation = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Orientation"],
       order = 25,
       values = WeakAuras.orientation_types,
@@ -166,23 +172,27 @@ local function createOptions(id, data)
     },
     inverse = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Inverse"],
       order = 35
     },
     stickyDuration = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Sticky Duration"],
       desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
       order = 36
     },
     smoothProgress = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Smooth Progress"],
       desc = L["Animates progress changes"],
       order = 37
     },
     useTooltip = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
       order = 38
@@ -194,11 +204,13 @@ local function createOptions(id, data)
     },
     icon = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Icon"],
       order = 38.1,
     },
     auto = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Auto"],
       desc = L["Choose whether the displayed icon is automatic or defined manually"],
       order = 38.2,
@@ -208,6 +220,7 @@ local function createOptions(id, data)
     },
     displayIcon = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Display Icon"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
@@ -224,6 +237,7 @@ local function createOptions(id, data)
     },
     chooseIcon = {
       type = "execute",
+      width = WeakAuras.normalWidth,
       name = L["Choose"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
@@ -232,6 +246,7 @@ local function createOptions(id, data)
     },
     icon_side = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Icon"],
       values = WeakAuras.icon_side_types,
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
@@ -239,6 +254,7 @@ local function createOptions(id, data)
     },
     icon_side2 = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Icon"],
       values = WeakAuras.rotated_icon_side_types,
       hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
@@ -255,12 +271,14 @@ local function createOptions(id, data)
     },
     desaturate = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Desaturate"],
       order = 38.8,
       hidden = function() return not data.icon end,
     },
     icon_color = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Icon Color"],
       hasAlpha = true,
       order = 38.9,
@@ -268,6 +286,7 @@ local function createOptions(id, data)
     },
     zoom = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Zoom"],
       order = 38.91,
       min = 0,
@@ -283,18 +302,21 @@ local function createOptions(id, data)
     },
     barColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Bar Color"],
       hasAlpha = true,
       order = 39.5
     },
     backgroundColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Background Color"],
       hasAlpha = true,
       order = 40
     },
     alpha = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Bar Alpha"],
       order = 41,
       min = 0,
@@ -309,6 +331,7 @@ local function createOptions(id, data)
     },
     spark = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Spark"],
       order = 43
     },
@@ -316,12 +339,13 @@ local function createOptions(id, data)
       type = "input",
       name = L["Spark Texture"],
       order = 44,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
     },
     sparkDesaturate = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Desaturate"],
       order = 44.1,
       disabled = function() return not data.spark end,
@@ -330,7 +354,7 @@ local function createOptions(id, data)
     spaceSpark = {
       type = "execute",
       name = "",
-      width = "half",
+      width = WeakAuras.halfWidth,
       order = 44.2,
       image = function() return "", 0, 0 end,
       disabled = function() return not data.spark end,
@@ -339,7 +363,7 @@ local function createOptions(id, data)
     sparkChooseTexture = {
       type = "execute",
       name = L["Choose"],
-      width = "half",
+      width = WeakAuras.halfWidth,
       order = 44.3,
       func = function()
         WeakAuras.OpenTexturePicker(data, "sparkTexture", WeakAuras.texture_types);
@@ -349,6 +373,7 @@ local function createOptions(id, data)
     },
     sparkColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 44.4,
@@ -357,6 +382,7 @@ local function createOptions(id, data)
     },
     sparkBlendMode = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Blend Mode"],
       order = 44.5,
       values = WeakAuras.blend_types,
@@ -365,6 +391,7 @@ local function createOptions(id, data)
     },
     sparkWidth = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Width"],
       order = 44.6,
       min = 1,
@@ -375,6 +402,7 @@ local function createOptions(id, data)
     },
     sparkHeight = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Height"],
       order = 44.7,
       min = 1,
@@ -385,6 +413,7 @@ local function createOptions(id, data)
     },
     sparkOffsetX = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["X Offset"],
       order = 44.8,
       min = -screenWidth,
@@ -395,6 +424,7 @@ local function createOptions(id, data)
     },
     sparkOffsetY = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       order = 44.9,
       min = -screenHeight,
@@ -405,6 +435,7 @@ local function createOptions(id, data)
     },
     sparkRotationMode = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = WeakAuras.spark_rotation_types,
       name = L["Rotation Mode"],
       order = 45,
@@ -413,6 +444,7 @@ local function createOptions(id, data)
     },
     sparkRotation = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -423,6 +455,7 @@ local function createOptions(id, data)
     },
     sparkMirror = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Mirror"],
       order = 45.2,
       disabled = function() return not data.spark end,
@@ -430,6 +463,7 @@ local function createOptions(id, data)
     },
     sparkHidden = {
       type = "select",
+      width = WeakAuras.normalWidth,
       values = WeakAuras.spark_hide_types,
       name = L["Hide on"],
       order = 45.3,
@@ -453,6 +487,7 @@ local function createOptions(id, data)
     },
     text = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = function()
         if(data.orientation == "HORIZONTAL") then
           return L["Left Text"];
@@ -468,6 +503,7 @@ local function createOptions(id, data)
     },
     textColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Text Color"],
       hasAlpha = true,
       order = 48,
@@ -476,6 +512,7 @@ local function createOptions(id, data)
     },
     textFont = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font Type"],
       order = 49,
@@ -485,6 +522,7 @@ local function createOptions(id, data)
     },
     textSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Font Size"],
       order = 50,
       min = 6,
@@ -495,6 +533,7 @@ local function createOptions(id, data)
     },
     textFlags = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Font Flags"],
       order = 51,
       values = WeakAuras.font_flags,
@@ -518,6 +557,7 @@ local function createOptions(id, data)
     },
     timer = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = function()
         if(data.orientation == "HORIZONTAL") then
           return L["Right Text"];
@@ -533,6 +573,7 @@ local function createOptions(id, data)
     },
     timerColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Text Color"],
       hasAlpha = true,
       order = 53,
@@ -541,6 +582,7 @@ local function createOptions(id, data)
     },
     timerFont = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font Type"],
       order = 54,
@@ -550,6 +592,7 @@ local function createOptions(id, data)
     },
     timerSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Font Size"],
       order = 55,
       min = 6,
@@ -560,6 +603,7 @@ local function createOptions(id, data)
     },
     timerFlags = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Font Flags"],
       order = 56,
       values = WeakAuras.font_flags,
@@ -573,11 +617,13 @@ local function createOptions(id, data)
     },
     stacks = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Stacks"],
       order = 57.2
     },
     stacksColor = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Text Color"],
       hasAlpha = true,
       order = 57.3,
@@ -586,6 +632,7 @@ local function createOptions(id, data)
     },
     stacksFont = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font Type"],
       order = 57.4,
@@ -595,6 +642,7 @@ local function createOptions(id, data)
     },
     stacksSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Font Size"],
       order = 57.5,
       min = 6,
@@ -605,6 +653,7 @@ local function createOptions(id, data)
     },
     stacksFlags = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Font Flags"],
       order = 57.6,
       values = WeakAuras.font_flags,
@@ -635,6 +684,7 @@ local function createOptions(id, data)
     for id, display in ipairs(overlayInfo) do
       options["overlaycolor" .. id] = {
         type = "color",
+        width = WeakAuras.normalWidth,
         name = string.format(L["%s Color"], display),
         hasAlpha = true,
         order = 58 + index,
@@ -657,6 +707,7 @@ local function createOptions(id, data)
 
     options["overlayclip"] = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Clip Overlays"],
       order = 58 + index;
     }

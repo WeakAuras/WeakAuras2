@@ -4,26 +4,27 @@ local function createOptions(id, data)
   local options = {
     texture = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = L["Texture"],
       order = 1
     },
     desaturate = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Desaturate"],
       order = 2,
     },
     space2 = {
       type = "execute",
       name = "",
-      width = "half",
+      width = WeakAuras.halfWidth,
       order = 5,
       image = function() return "", 0, 0 end,
     },
     chooseTexture = {
       type = "execute",
       name = L["Choose"],
-      width = "half",
+      width = WeakAuras.halfWidth,
       order = 7,
       func = function()
         WeakAuras.OpenTexturePicker(data, "texture", WeakAuras.texture_types);
@@ -31,23 +32,27 @@ local function createOptions(id, data)
     },
     color = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 10
     },
     blendMode = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Blend Mode"],
       order = 12,
       values = WeakAuras.blend_types
     },
     mirror = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Mirror"],
       order = 20
     },
     alpha = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Alpha"],
       order = 25,
       min = 0,
@@ -57,11 +62,13 @@ local function createOptions(id, data)
     },
     rotate = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Allow Full Rotation"],
       order = 30
     },
     rotation = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -72,6 +79,7 @@ local function createOptions(id, data)
     },
     discrete_rotation = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Discrete Rotation"],
       min = 0,
       max = 360,

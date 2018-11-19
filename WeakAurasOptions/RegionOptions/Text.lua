@@ -7,7 +7,7 @@ local function createOptions(id, data)
   local options = {
     displayText = {
       type = "input",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       desc = function()
         local ret = L["Dynamic text tooltip"];
         ret = ret .. WeakAuras.GetAdditionalProperties(data);
@@ -29,7 +29,7 @@ local function createOptions(id, data)
     },
     customTextUpdate = {
       type = "select",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText); end,
       name = L["Update Custom Text On..."],
       values = WeakAuras.text_check_types,
@@ -38,6 +38,7 @@ local function createOptions(id, data)
     -- code editor added below
     progressPrecision = {
       type = "select",
+      width = WeakAuras.normalWidth,
       order = 39,
       name = L["Remaining Time Precision"],
       values = WeakAuras.precision_types,
@@ -51,6 +52,7 @@ local function createOptions(id, data)
     },
     totalPrecision = {
       type = "select",
+      width = WeakAuras.normalWidth,
       order = 39.5,
       name = L["Total Time Precision"],
       values = WeakAuras.precision_types,
@@ -64,18 +66,21 @@ local function createOptions(id, data)
     },
     color = {
       type = "color",
+      width = WeakAuras.normalWidth,
       name = L["Text Color"],
       hasAlpha = true,
       order = 40
     },
     justify = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Justify"],
       order = 43,
       values = WeakAuras.justify_types
     },
     font = {
       type = "select",
+      width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font"],
       order = 45,
@@ -83,6 +88,7 @@ local function createOptions(id, data)
     },
     fontSize = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Size"],
       order = 47,
       min = 6,
@@ -91,12 +97,14 @@ local function createOptions(id, data)
     },
     automaticWidth = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Width"],
       order = 47.1,
       values = WeakAuras.text_automatic_width
     },
     fixedWidth = {
       name = L["Width"],
+      width = WeakAuras.normalWidth,
       order = 47.2,
       type = "range",
       min = 1,
@@ -106,6 +114,7 @@ local function createOptions(id, data)
     },
     wordWrap = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Overflow"],
       order = 47.2,
       values = WeakAuras.text_word_wrap,
@@ -113,6 +122,7 @@ local function createOptions(id, data)
     },
     outline = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Outline"],
       order = 48,
       values = WeakAuras.font_flags

@@ -40,6 +40,7 @@ local function createOptions(id, data)
   local options = {
     align_h = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Horizontal Align"],
       order = 10,
       values = WeakAuras.align_types,
@@ -106,6 +107,7 @@ local function createOptions(id, data)
     },
     align_v = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Vertical Align"],
       order = 15,
       values = WeakAuras.rotated_align_types,
@@ -172,6 +174,7 @@ local function createOptions(id, data)
     },
     distribute_h = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Distribute Horizontally"],
       order = 20,
       softMin = -100,
@@ -255,6 +258,7 @@ local function createOptions(id, data)
     },
     distribute_v = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Distribute Vertically"],
       order = 25,
       softMin = -100,
@@ -338,6 +342,7 @@ local function createOptions(id, data)
     },
     space_h = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Space Horizontally"],
       order = 30,
       softMin = -100,
@@ -421,6 +426,7 @@ local function createOptions(id, data)
     },
     space_v = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Space Vertically"],
       order = 35,
       softMin = -100,
@@ -504,6 +510,7 @@ local function createOptions(id, data)
     },
     scale = {
       type = "range",
+      width = WeakAuras.normalWidth,
       name = L["Group Scale"],
       order = 45,
       min = 0.05,
