@@ -4599,7 +4599,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "destUnit",
-        display = L["Target"],
+        display = L["Caster's Target "],
         type = "unit",
         values = "actual_unit_types_with_specific",
         conditionType = "unit",
@@ -4612,7 +4612,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "destName",
-        display = L["Target Name"],
+        display = L["Name of Caster's Target"],
         store = true,
         hidden = true
       },

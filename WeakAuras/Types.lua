@@ -161,7 +161,7 @@ WeakAuras.actual_unit_types_with_specific_and_multi = {
   focus = L["Focus"],
   pet = L["Pet"],
   member = L["Specific Unit"],
-  multi = L["Multi-target (CLEU)"]
+  multi = L["Multi-target"]
 }
 
 WeakAuras.actual_unit_types = {
