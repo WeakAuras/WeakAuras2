@@ -155,6 +155,15 @@ WeakAuras.actual_unit_types_with_specific = {
   member = L["Specific Unit"]
 }
 
+WeakAuras.actual_unit_types_with_specific_and_multi = {
+  player = L["Player"],
+  target = L["Target"],
+  focus = L["Focus"],
+  pet = L["Pet"],
+  member = L["Specific Unit"],
+  multi = L["Multi-target"]
+}
+
 WeakAuras.actual_unit_types = {
   player = L["Player"],
   target = L["Target"],
@@ -188,7 +197,7 @@ do
 end
 
 local function LBR(key)
-  return LBR_Locale[key] or LBR_Base[key];
+  return LBR_Locale[key] or LBR_Base[key]
 end
 
 WeakAuras.race_types = {

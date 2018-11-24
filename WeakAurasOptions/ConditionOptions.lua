@@ -6,8 +6,8 @@
 -- [] Trigger number
 --   [] Condition name
 --      - display: Display Name
---      - type: Type, e.g. "select", "number", "timer"
---      - values: (only for "select")
+--      - type: Type, e.g. "select", "number", "timer", "unit"
+--      - values: (only for "select" and "unit")
 --      - test: a test function template
 
 -- Conditions + Changes: Actually active settings on a aura
@@ -1138,7 +1138,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         set = setValue
       }
       order = order + 1;
-    elseif (currentConditionTemplate.type == "select") then
+    elseif (currentConditionTemplate.type == "select") or (currentConditionTemplate.type == "unit") then
       if (type(currentConditionTemplate.values) == "table") then
         args["condition" .. i .. tostring(path) .. "_op"] = {
           name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
@@ -1156,19 +1156,51 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
 
         order = addSpace(args, order);
 
-        args["condition" .. i .. tostring(path) .. "_value"] = {
-          type = "select",
-          width = WeakAuras.normalWidth,
-          name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
-          desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
-          order = order,
-          values = currentConditionTemplate.values,
-          get = function()
-            return check.value;
-          end,
-          set = setValue
-        }
-        order = order + 1;
+        if (currentConditionTemplate.type == "unit") then
+          args["condition" .. i .. tostring(path) .. "_value"] = {
+            type = "select",
+            width = WeakAuras.normalWidth,
+            name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
+            desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
+            order = order,
+            values = currentConditionTemplate.values,
+            get = function()
+              return not check.value and "player" or currentConditionTemplate.values[check.value] and check.value or "member"
+            end,
+            set = setValue
+          }
+          order = order + 1;
+
+          args["condition" .. i .. tostring(path) .. "_member"] = {
+            type = "input",
+            width = WeakAuras.doubleWidth,
+            name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
+            desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
+            order = order,
+            get = function()
+              return check and check.value
+            end,
+            set = setValue,
+            hidden = function()
+              return not conditions[i].check.value or currentConditionTemplate.values[conditions[i].check.value] and conditions[i].check.value ~= "member"
+            end
+          }
+          order = order + 1;
+        else
+          args["condition" .. i .. tostring(path) .. "_value"] = {
+            type = "select",
+            width = WeakAuras.normalWidth,
+            name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
+            desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
+            order = order,
+            values = currentConditionTemplate.values,
+            get = function()
+              return check.value
+            end,
+            set = setValue
+          }
+          order = order + 1;
+        end
       end
     elseif (currentConditionTemplate.type == "bool") then
       args["condition" .. i .. tostring(path) .. "_value"] = {
