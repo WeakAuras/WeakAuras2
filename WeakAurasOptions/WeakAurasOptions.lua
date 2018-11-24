@@ -3548,11 +3548,6 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
   local positionOptions = {
     __title = L["Position Settings"],
     __order = metaOrder,
-    position_header = {
-      type = "header",
-      name = L["Position Settings"],
-      order = 46.0,
-    },
     width = {
       type = "range",
       width = WeakAuras.normalWidth,
@@ -3939,11 +3934,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
   local borderOptions = {
     __title = L["Border Settings"],
     __order = metaOrder,
-    border_header = {
-      type = "header",
-      name = L["Border Settings"],
-      order = 46.0
-    },
     border = {
       type = "toggle",
       width = WeakAuras.normalWidth,
