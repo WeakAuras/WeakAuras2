@@ -622,7 +622,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     unitExists = {
       type = "toggle",
-      name = L["Show If Unit Is Invalid"],
+      name = L["Show If Unit Does Not Exist"],
       order = 73,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "player" and not IsGroupTrigger(trigger))
