@@ -3,6 +3,8 @@ local L = WeakAuras.L
 
 local function createOptions(id, data)
   local options = {
+    __title = L["Icon Settings"],
+    __order = 1,
     color = {
       type = "color",
       width = WeakAuras.normalWidth,
@@ -396,7 +398,7 @@ local function createOptions(id, data)
 
   return {
     icon = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.PositionOptions(id, data, 2),
   };
 end
 

@@ -2,6 +2,8 @@ local L = WeakAuras.L
 
 local function createOptions(id, data)
   local options = {
+    __title = L["Dynamic Group Settings"],
+    __order = 1,
     grow = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -199,7 +201,7 @@ local function createOptions(id, data)
 
   return {
     dynamicgroup = options,
-    position = WeakAuras.PositionOptions(id, data, true, true),
+    position = WeakAuras.PositionOptions(id, data, 2, true, true),
   };
 end
 

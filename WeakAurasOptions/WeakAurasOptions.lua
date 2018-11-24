@@ -2606,29 +2606,21 @@ end
 
 local function flattenRegionOptions(allOptions, withoutHeader)
   local result = {};
+  local base = 1000;
 
-  local base = 100;
+  for optionGroup, options in pairs(allOptions) do
+    local groupBase = base * options.__order
 
-  for regionType, options in pairs(allOptions) do
-    if (regionType ~= "border" and regionType ~= "position") then
-      for optionName, option in pairs(options) do
-        result[regionType .. "." .. optionName] = copyOptionTable(option, base);
+    result[optionGroup]  = {
+      type = "header",
+      name = options.__title,
+      order = groupBase,
+    }
+
+    for optionName, option in pairs(options) do
+      if not optionName:find("^__") then
+        result[optionGroup .. "." .. optionName] = copyOptionTable(option, groupBase);
       end
-
-      base = base + 100;
-    end
-  end
-
-  if (allOptions["border"]) then
-    for optionName, option in pairs(allOptions["border"]) do
-      result["border." .. optionName] = copyOptionTable(option, base);
-    end
-    base = base + 100;
-  end
-
-  if (allOptions["position"]) then
-    for optionName, option in pairs(allOptions["position"]) do
-      result["position." .. optionName] = copyOptionTable(option, base);
     end
   end
 
@@ -3547,13 +3539,15 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   options.args.region.args = regionOption;
 end
 
-function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
+function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disableSelfPoint)
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
   end
 
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
+    __title = L["Position Settings"],
+    __order = metaOrder,
     position_header = {
       type = "header",
       name = L["Position Settings"],
@@ -3945,8 +3939,10 @@ function WeakAuras.AddPositionOptions(input, id, data)
   return union(input, WeakAuras.PositionOptions(id, data));
 end
 
-function WeakAuras.BorderOptions(id, data, showBackDropOptions)
+function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
   local borderOptions = {
+    __title = L["Border Settings"],
+    __order = metaOrder,
     border_header = {
       type = "header",
       name = L["Border Settings"],

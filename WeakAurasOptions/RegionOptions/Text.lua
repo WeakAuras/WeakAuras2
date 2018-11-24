@@ -5,6 +5,8 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 
 local function createOptions(id, data)
   local options = {
+    __title = L["Text Settings"],
+    __order = 1,
     displayText = {
       type = "input",
       width = WeakAuras.doubleWidth,
@@ -133,7 +135,7 @@ local function createOptions(id, data)
 
   return {
     text = options;
-    position = WeakAuras.PositionOptions(id, data, true);
+    position = WeakAuras.PositionOptions(id, data, 2, true);
   };
 end
 

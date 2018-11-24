@@ -38,6 +38,8 @@ end
 local function createOptions(id, data)
   -- Region options
   local options = {
+    __title = L["Group Settings"],
+    __order = 1,
     align_h = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -534,8 +536,8 @@ local function createOptions(id, data)
 
   return {
     group = options,
-    position = WeakAuras.PositionOptions(id, data, true, true),
-    border = WeakAuras.BorderOptions(id, data);
+    border = WeakAuras.BorderOptions(id, data, 2);
+    position = WeakAuras.PositionOptions(id, data, 3, true, true),
   };
 end
 

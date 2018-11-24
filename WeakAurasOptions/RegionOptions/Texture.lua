@@ -2,6 +2,8 @@ local L = WeakAuras.L
 
 local function createOptions(id, data)
   local options = {
+    __title = L["Texture Settings"],
+    __order = 1,
     texture = {
       type = "input",
       width = WeakAuras.doubleWidth,
@@ -91,7 +93,7 @@ local function createOptions(id, data)
 
   return {
     texture = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.PositionOptions(id, data, 2),
   };
 end
 

@@ -6,6 +6,8 @@ local function createOptions(id, data)
   -- Region options
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local options = {
+    __title = L["Progress Bar Settings"],
+    __order = 1,
     texture = {
       type = "select",
       dialogControl = "LSM30_Statusbar",
@@ -716,8 +718,8 @@ local function createOptions(id, data)
 
   return {
     aurabar = options,
-    position = WeakAuras.PositionOptions(id, data),
-    border = WeakAuras.BorderOptions(id, data, true);
+    border = WeakAuras.BorderOptions(id, data, 2, true);
+    position = WeakAuras.PositionOptions(id, data, 3),
   };
 end
 
