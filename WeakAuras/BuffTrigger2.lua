@@ -948,8 +948,17 @@ local function UpdateTriggerState(time, id, triggernum)
         affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
       end
 
+      local usedCloneIds = {};
+
       for index, auraData in ipairs(auraDatas) do
-        local cloneId = tostring(index)
+        local cloneId = auraData.unit .. " " .. auraData.spellId
+        if usedCloneIds[cloneId] then
+          usedCloneIds[cloneId] = usedCloneIds[cloneId] + 1
+          cloneId = cloneId .. usedCloneIds[cloneId]
+        else
+          usedCloneIds[cloneId] = 1
+        end
+
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
       end
 
