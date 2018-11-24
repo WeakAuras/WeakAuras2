@@ -187,8 +187,8 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
   local mirror_h = region.mirror_h or false;
   local mirror_v = region.mirror_v or false;
 
-  local width = region.width * (region.scalex or 1) - self.offset;
-  local height = region.height * (region.scaley or 1) - self.offset;
+  local width = region.width * (region.scalex or 1) + 2 * self.offset;
+  local height = region.height * (region.scaley or 1) + 2 * self.offset;
 
   if (angle2 - angle1 >= 360) then
     -- SHOW everything
