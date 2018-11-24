@@ -3935,10 +3935,6 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
   return positionOptions;
 end
 
-function WeakAuras.AddPositionOptions(input, id, data)
-  return union(input, WeakAuras.PositionOptions(id, data));
-end
-
 function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
   local borderOptions = {
     __title = L["Border Settings"],
@@ -4045,11 +4041,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
 
   return borderOptions;
 end
-
-function WeakAuras.AddBorderOptions(input, id, data)
-  return union(input, WeakAuras.BorderOptions(id, data));
-end
-
 
 function WeakAuras.OpenTextEditor(...)
   frame.texteditor:Open(...);
