@@ -2604,7 +2604,7 @@ local function copyOptionTable(input, orderAdjustment)
   return resultOption;
 end
 
-local function flattenRegionOptions(allOptions, withoutHeader)
+local function flattenRegionOptions(allOptions)
   local result = {};
   local base = 1000;
 
