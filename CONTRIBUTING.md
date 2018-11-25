@@ -1,5 +1,20 @@
 # Contributing to WeakAuras 2
 
+## Code Standards
+
+There are a few things which we require in any contribution:
+
+- This repository comes with a `.editorconfig` file, so the following requirements will be taken care of if you have [EditorConfig](https://editorconfig.org/) installed:
+  - Tabs consist of 2 spaces.
+  - Files end with a newline.
+  - Line endings in addon files must be Windows-Style (CRLF). This is a WoW AddOn, pretty much everyone is going to be running Windows when using or developing WeakAuras.
+  - No trailing whitespace at the end of a line.
+- All user-facing strings (names and desc fields in AceConfig tables, mostly) must be localized:
+  - We use a locale scraper to find translation phrases and automatically export them to WoWAce for translation. This scraper parses the addon files, looking for tokens that look like: `L["some translation phrase"]`. You must use double quoted strings, and name the localization table (found at `WeakAuras.L`) `L` in your code for this to work properly.
+  - Any new Lua files which you include in a .toc file must also be included in `babelfish.lua` in order to be scraped for translation phrases.
+- When writing a new file, avoid using semicolons. When modifying code in an existing file, try to be consistent, but err on the side of no semicolons.
+- New features should be indicated by concatenating `WeakAuras.newFeatureString` onto the associated translation phrase. We will remove the new feature indicator approximately 3 months after the first release.
+
 ## Pull Requests
 
 If you want to help, here's what you need to do:
