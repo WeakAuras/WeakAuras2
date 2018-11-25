@@ -4493,6 +4493,7 @@ WeakAuras.event_prototypes = {
                 destName = UnitExists(destUnit) and UnitName(destUnit) or "",
                 show = true,
                 changed = true,
+                inverse = castType == "cast",
                 resort = true
               }
             else
