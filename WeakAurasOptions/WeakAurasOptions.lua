@@ -2627,57 +2627,6 @@ local function flattenRegionOptions(allOptions)
   return result;
 end
 
-local function addHeadersForRegionOptions(allOptions, output)
-  local base = 100;
-  for regionType, options in pairs(allOptions) do
-    if (regionType ~= "border" and regionType ~= "position") then
-      if (base > 100) then
-        output[regionType .. "_spacer"] = {
-          type = "description",
-          name = " ",
-          width = WeakAuras.doubleWidth,
-          fontSize = "large",
-          order = base,
-          hidden = false
-        }
-      end
-      output[regionType .. "_title"] = {
-        type = "description",
-        name = regionOptions[regionType].displayName,
-        width = WeakAuras.doubleWidth,
-        order = base + 0.01,
-        fontSize = "large",
-        hidden = false
-      }
-      output[regionType .. "_title_header"] = {
-        type = "header",
-        name = "",
-        order = base + 0.02,
-        hidden = false
-      }
-      base = base + 100;
-    end
-  end
-
-  output["common_spacer"] = {
-    type = "description",
-    name = " ",
-    width = WeakAuras.doubleWidth,
-    fontSize = "large",
-    order = base,
-    hidden = false
-  }
-
-  output["common_title"] = {
-    type = "description",
-    name = L["Common Options"],
-    width = WeakAuras.doubleWidth,
-    order = base + 0.01,
-    fontSize = "large",
-    hidden = false
-  }
-end
-
 local function removePrefix(input)
   local index = string.find(input, ".", 1, true);
   if (index) then
@@ -3494,6 +3443,29 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 end
 
+local function fixMetaOrders(allOptions)
+  -- assumes that the results from create methods are contiguous in __order fields
+  -- shifts __order fields such that each optionGroup is ordered correctly relative
+  -- to its peers, but has a unique __order number in the combined option table.
+  local groupOrders = {}
+  for optionGroup, options in pairs(allOptions) do
+    local metaOrder = options.__order
+    groupOrders[metaOrder] = groupOrders[metaOrder] or {}
+    tinsert(groupOrders[metaOrder], optionGroup)
+  end
+
+  local index = 0
+  local newOrder = 1
+  while index < #groupOrders do
+    index = index + 1
+    table.sort(groupOrders[index])
+    for _, optionGroup in ipairs(groupOrders[index]) do
+      allOptions[optionGroup].__order = newOrder
+      newOrder = newOrder + 1
+    end
+  end
+end
+
 function WeakAuras.ReloadGroupRegionOptions(data)
   local regionTypes = {};
   local regionTypeCount = 0;
@@ -3525,16 +3497,13 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
   end
 
+  fixMetaOrders(allOptions);
   local regionOption = flattenRegionOptions(allOptions, false);
 
   replaceNameDescFuncs(regionOption, data);
   replaceImageFuncs(regionOption, data);
   replaceValuesFuncs(regionOption, data);
   removeFuncs(regionOption);
-
-  if (regionTypeCount > 1) then
-    addHeadersForRegionOptions(allOptions, regionOption);
-  end
 
   options.args.region.args = regionOption;
 end
