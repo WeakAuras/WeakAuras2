@@ -4656,6 +4656,12 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
 end
 
 local collapsedOptions = {}
+function WeakAuras.ResetCollapsed(id)
+  if id then
+    collapsedOptions[id] = nil
+  end
+end
+
 function WeakAuras.IsCollapsed(id, namespace, key, default)
   local tmp = collapsedOptions[id]
   if tmp == nil then return default end
