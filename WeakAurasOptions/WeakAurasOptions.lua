@@ -2597,29 +2597,69 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
   };
 end
 
-local function copyOptionTable(input, orderAdjustment)
+local function addCollapsibleHeader(options, id, key, title, order)
+  options[key .. "collapseSpacer"] = {
+    type = "description",
+    name = "",
+    order = order,
+    width = "full",
+  }
+  local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
+  options[key .. "collapseButton"] = {
+    type = "execute",
+    name = "",
+    order = order + 0.1,
+    width = 0.15,
+    func = function()
+      WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
+      WeakAuras.ReloadOptions(id)
+    end,
+    image = isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
+    imageWidth = 18,
+    imageHeight = 18,
+  }
+
+  options[key] = {
+    type = "description",
+    name = title,
+    order = order + 0.2,
+    width = WeakAuras.doubleWidth - 0.15,
+    fontSize = "large"
+  }
+  return function()
+    return WeakAuras.IsCollapsed(id, "region", key, false)
+  end
+end
+
+local function copyOptionTable(input, orderAdjustment, collapsedFunc)
   local resultOption = {};
   WeakAuras.DeepCopy(input, resultOption);
   resultOption.order = orderAdjustment + resultOption.order;
+  if collapsedFunc then
+    local oldHidden = resultOption.hidden;
+    if oldHidden then
+      resultOption.hidden = function()
+        return collapsedFunc() or (type(oldHidden) == "function" and oldHidden() or oldHidden);
+      end
+    else
+      resultOption.hidden = collapsedFunc;
+    end
+  end
   return resultOption;
 end
 
-local function flattenRegionOptions(allOptions)
+local function flattenRegionOptions(allOptions, id)
   local result = {};
   local base = 1000;
 
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
 
-    result[optionGroup]  = {
-      type = "header",
-      name = options.__title,
-      order = groupBase,
-    }
+    local collapsedFunc = addCollapsibleHeader(result, id, optionGroup, options.__title, groupBase)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then
-        result[optionGroup .. "." .. optionName] = copyOptionTable(option, groupBase);
+        result[optionGroup .. "." .. optionName] = copyOptionTable(option, groupBase, collapsedFunc);
       end
     end
   end
@@ -2743,7 +2783,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, false);
+        args = flattenRegionOptions(regionOption, id);
       },
       trigger = {
         type = "group",
@@ -3403,7 +3443,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = flattenRegionOptions(regionOption, true);
+      args = flattenRegionOptions(regionOption, id);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3525,7 +3565,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
   end
 
-  local regionOption = flattenRegionOptions(allOptions, false);
+  local regionOption = flattenRegionOptions(allOptions, id);
 
   replaceNameDescFuncs(regionOption, data);
   replaceImageFuncs(regionOption, data);
