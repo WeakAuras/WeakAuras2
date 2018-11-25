@@ -2637,9 +2637,15 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
   resultOption.order = orderAdjustment + resultOption.order;
   if collapsedFunc then
     local oldHidden = resultOption.hidden;
-    if oldHidden then
+    if oldHidden ~= nil then
+      local oldFunc
+      if type(oldHidden) ~= "function" then
+        oldFunc = function() return oldHidden end
+      else
+        oldFunc = oldHidden
+      end
       resultOption.hidden = function()
-        return collapsedFunc() or (type(oldHidden) == "function" and oldHidden() or oldHidden);
+        return collapsedFunc() or oldFunc();
       end
     else
       resultOption.hidden = collapsedFunc;
