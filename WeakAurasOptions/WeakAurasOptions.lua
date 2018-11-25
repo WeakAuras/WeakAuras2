@@ -3502,7 +3502,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     if(childData) then
       if (not regionTypes[childData.regionType]) then
         regionTypes[childData.regionType] = true;
-        regionTypeCount = regionTypeCount +1;
+        regionTypeCount = regionTypeCount + 1;
       end
     end
   end
