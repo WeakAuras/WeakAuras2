@@ -3982,8 +3982,8 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
     __order = metaOrder,
     border = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Border"],
+      width = WeakAuras.doubleWidth,
+      name = L["Enable"],
       order = 46.05
     },
     borderEdge = {
@@ -3994,7 +3994,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       order = 46.1,
       values = AceGUIWidgetLSMlists.border,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
     borderBackdrop = {
       type = "select",
@@ -4004,7 +4003,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       order = 46.2,
       values = AceGUIWidgetLSMlists.background,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
     borderOffset = {
       type = "range",
@@ -4015,7 +4013,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       softMax = 32,
       bigStep = 1,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
     borderSize = {
       type = "range",
@@ -4026,7 +4023,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       softMax = 64,
       bigStep = 1,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
     borderInset = {
       type = "range",
@@ -4037,7 +4033,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       softMax = 32,
       bigStep = 1,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
     borderColor = {
       type = "color",
@@ -4046,7 +4041,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       hasAlpha = true,
       order = 46.6,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
     borderInFront  = {
       type = "toggle",
@@ -4054,7 +4048,7 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       name = L["Border in Front"],
       order = 46.7,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border or not showBackDropOptions  end,
+      hidden = function() return not showBackDropOptions end,
     },
     backdropInFront  = {
       type = "toggle",
@@ -4062,7 +4056,7 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       name = L["Backdrop in Front"],
       order = 46.75,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border or not showBackDropOptions end,
+      hidden = function() return not showBackDropOptions end,
     },
     backdropColor = {
       type = "color",
@@ -4071,7 +4065,6 @@ function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
       hasAlpha = true,
       order = 46.8,
       disabled = function() return not data.border end,
-      hidden = function() return not data.border end,
     },
   }
 
