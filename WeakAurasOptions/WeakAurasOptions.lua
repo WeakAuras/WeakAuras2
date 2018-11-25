@@ -2548,19 +2548,20 @@ local function addCollapsibleHeader(options, id, key, title, order)
     order = order,
     width = "full",
   }
-  local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
   options[key .. "collapseButton"] = {
     type = "execute",
     name = "",
     order = order + 0.1,
     width = 0.15,
     func = function()
+      local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
       WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
-      WeakAuras.ReloadOptions(id)
+      WeakAuras.FillOptions(id)
     end,
-    image = isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
-    imageWidth = 18,
-    imageHeight = 18,
+    image = function()
+      local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
+      return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+    end
   }
 
   options[key] = {
