@@ -1438,7 +1438,7 @@ local function modify(parent, region, data)
 
   function region:TimerTick()
     local adjustMin = region.adjustedMin or 0;
-    self:SetTime( (region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
+    self:SetTime( (region.duration ~= 0 and region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
   end
 
   function region:SetIconColor(r, g, b, a)

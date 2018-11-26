@@ -4352,7 +4352,7 @@ local function ApplyStateToRegion(id, region, state)
     end
   end
   if (region.SetAdditionalProgress) then
-    region:SetAdditionalProgress(state.additionalProgress, region.adjustMin or 0, region.adjustedMax or state.total or state.duration or 0, state.inverse);
+    region:SetAdditionalProgress(state.additionalProgress, region.adjustMin or 0, region.duration ~= 0 and region.adjustedMax or state.total or state.duration or 0, state.inverse);
   end
   local controlChidren = state.resort;
   if (state.resort) then
