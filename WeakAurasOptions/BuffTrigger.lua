@@ -806,7 +806,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.normalWidth,
       name = L["Specific Unit"],
       order = 43,
-      desc = L["A Unit ID (e.g., party1)."],
+      desc = L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."],
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "member") end
     },
     useGroup_count = {
