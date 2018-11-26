@@ -107,7 +107,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.normalWidth,
       name = L["Specific Unit"],
       order = 10.3,
-      desc = L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."],
+      desc = L["A Unit ID (e.g., party1)."],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member") end
     },
     useDebuffType = {
