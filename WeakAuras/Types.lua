@@ -1108,7 +1108,7 @@ WeakAuras.rune_specific_types = {
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
   ["status"] = L["Status"],
-  ["stateupdate"] = L["Trigger State Updater"]
+  ["stateupdate"] = L["Trigger State Updater (Advanced)"]
 }
 
 WeakAuras.eventend_types = {
