@@ -445,7 +445,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
       else
         UpateRegionValues(region);
         local adjustMin = region.adjustedMin or 0;
-        region:SetTime((region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
+        region:SetTime((duration ~= 0 and region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
         if duration > 0 then
           self:SetScript("OnUpdate", function() WeakAuras.TimerTick(region) end);
         else
