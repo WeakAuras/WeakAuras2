@@ -1448,9 +1448,6 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     else
       ScanGroupUnit(time, matchDataChanged, nil, arg1)
     end
-    if arg1 == "vehicle" then
-      ScanGroupUnit(time, matchDataChanged, nil, "player")
-    end
   end
   WeakAuras.StopProfileSystem("bufftrigger2")
 end)
