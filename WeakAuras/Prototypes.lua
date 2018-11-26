@@ -4400,9 +4400,7 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
         "UNIT_SPELLCAST_STOP",
         "UNIT_SPELLCAST_CHANNEL_STOP",
-        "UNIT_SPELLCAST_INTERRUPTED",
-        "UNIT_SPELLCAST_FAILED",
-        "UNIT_SPELLCAST_FAILED_QUIET",
+        "UNIT_SPELLCAST_INTERRUPTED"
       };
       AddUnitChangeEvents(trigger.unit, result)
       if trigger.target ~= "" then
@@ -4446,8 +4444,6 @@ WeakAuras.event_prototypes = {
             if event == "UNIT_SPELLCAST_STOP"
             or event == "UNIT_SPELLCAST_CHANNEL_STOP"
             or event == "UNIT_SPELLCAST_INTERRUPTED"
-            or event == "UNIT_SPELLCAST_FAILED"
-            or event == "UNIT_SPELLCAST_FAILED_QUIET"
             then
               show = false
             else
@@ -4493,6 +4489,7 @@ WeakAuras.event_prototypes = {
                 destName = UnitExists(destUnit) and UnitName(destUnit) or "",
                 show = true,
                 changed = true,
+                inverse = castType == "cast",
                 resort = true
               }
             else
