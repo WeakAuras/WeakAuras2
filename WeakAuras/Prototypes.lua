@@ -4427,6 +4427,7 @@ WeakAuras.event_prototypes = {
           local remainingCheck = %s
           local trigger_target = [[%s]]
           local trigger_clone = %s
+          local localizedSpellName = [[%s]]
           local cloneId = ""
 
           if trigger_clone and sourceUnit and UnitExists(sourceUnit) then
@@ -4476,7 +4477,7 @@ WeakAuras.event_prototypes = {
             end
             if (show and not trigger_inverse) or (not show and trigger_inverse) then
               states[cloneId] = {
-                name = trigger_inverse and L["Spell Name"] or spell,
+                name = trigger_inverse and localizedSpellName or spell,
                 icon = trigger_inverse and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon" or icon,
                 duration = trigger_inverse and 0 or (endTime - startTime)/1000,
                 expirationTime = trigger_inverse and math.huge or expirationTime,
@@ -4519,7 +4520,8 @@ WeakAuras.event_prototypes = {
         trigger.use_castType and trigger.castType or "",
         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
         trigger.use_destUnit and trigger.destUnit or "",
-        trigger.unit == "multi" and trigger.use_clone and "true" or "false"
+        trigger.unit == "multi" and trigger.use_clone and "true" or "false",
+        L["Spell Name"]
       )
       return ret
     end,
