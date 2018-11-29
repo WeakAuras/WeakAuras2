@@ -745,13 +745,11 @@ local methods = {
     end
 
     function self.callbacks.OnUpdateClick()
-      if self.update.slug then
         local wago = WeakAurasWagoUpdate[self.update.slug]
         if wago then
           WeakAuras.ImportString(wago.encoded)
         end
       end
-    end
 
     function self.callbacks.OnRenameAction(newid)
       if (WeakAuras.IsImporting()) then return end;
@@ -813,7 +811,6 @@ local methods = {
       -- remove ignore flags
       self.data.ignoreWagoUpdate = nil
       -- show update frame
-      self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
       if self.data.url and self.data.url ~= "" then
         local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
         if slug and version then
@@ -821,9 +818,11 @@ local methods = {
           if wago and wago.wagoVersion and wago.wagoVersion > version then
             self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
             self.update.desc = L["From version "] .. version .. L[" To version "] .. wago.wagoVersion
+            self.update.slug = slug
             if wago.versionNote then
               self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
             end
+            self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
             self.update:Show()
             self.update:Enable()
           end
