@@ -951,7 +951,7 @@ local function UpdateTriggerState(time, id, triggernum)
       local usedCloneIds = {};
 
       for index, auraData in ipairs(auraDatas) do
-        local cloneId = auraData.unit .. " " .. auraData.spellId
+        local cloneId = (auraData.GUID or auraData.unit or "unknown") .. " " .. auraData.spellId
         if usedCloneIds[cloneId] then
           usedCloneIds[cloneId] = usedCloneIds[cloneId] + 1
           cloneId = cloneId .. usedCloneIds[cloneId]
