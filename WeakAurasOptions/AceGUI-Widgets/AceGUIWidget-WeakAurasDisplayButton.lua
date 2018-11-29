@@ -821,6 +821,9 @@ local methods = {
           if wago and wago.wagoVersion and wago.wagoVersion > version then
             self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
             self.update.desc = L["From version "] .. version .. L[" To version "] .. wago.wagoVersion
+            if wago.versionNote then
+              self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
+            end
             self.update:Show()
             self.update:Enable()
           end
