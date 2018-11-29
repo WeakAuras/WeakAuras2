@@ -801,6 +801,69 @@ local methods = {
       end
     end
 
+    function self.callbacks.ShowWagoUpdate()
+      -- change menu entry
+      for key, item in pairs(self.menu) do
+        if item.func == self.callbacks.ShowWagoUpdate then
+          self.menu[key].func = self.callbacks.HideWagoUpdate
+          self.menu[key].text = L["Hide Wago Updates"]
+          break
+        end
+      end
+      -- remove ignore flags
+      self.data.ignoreWagoUpdate = nil
+      -- show update frame
+      self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
+      if self.data.url and self.data.url ~= "" then
+        local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
+        if slug and version then
+          local wago = WeakAurasWagoUpdate[slug]
+          if wago and wago.wagoVersion and wago.wagoVersion > version then
+            self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
+            self.update.desc = L["From version "] .. version .. L[" To version "] .. wago.wagoVersion
+            self.update:Show()
+            self.update:Enable()
+          end
+        end
+      end
+      -- childs
+      if self.data.controlledChildren then
+        for childIndex, childId in pairs(self.data.controlledChildren) do
+          local button = WeakAuras.GetDisplayButton(childId)
+          if button then
+            button.callbacks.ShowWagoUpdate()
+          end
+        end
+      end
+    end
+
+    function self.callbacks.HideWagoUpdate()
+      -- change menu entry
+      for key, item in pairs(self.menu) do
+        if item.func == self.callbacks.HideWagoUpdate then
+          self.menu[key].func = self.callbacks.ShowWagoUpdate
+          self.menu[key].text = L["Show Wago Updates"]
+          break
+        end
+      end
+      -- set ignore flag
+      self.data.ignoreWagoUpdate = true
+      -- hide update frame
+      if self.update then
+        self.update:Hide()
+        self.update:Disable()
+      end
+      -- childs
+      if self.data.controlledChildren then
+        for childIndex, childId in pairs(self.data.controlledChildren) do
+          local button = WeakAuras.GetDisplayButton(childId)
+          if button then
+            button.callbacks.HideWagoUpdate()
+          end
+        end
+      end
+    end
+
     self.frame.terribleCodeOrganizationHackTable = {};
 
     function self.frame.terribleCodeOrganizationHackTable.IsGroupingOrCopying()
@@ -890,6 +953,14 @@ local methods = {
       });
     end
 
+    if WeakAurasWagoUpdate then
+      tinsert(self.menu, {
+        text = self.data.ignoreWagoUpdate and L["Show Wago Updates"] or L["Hide Wago Updates"],
+        notCheckable = 1,
+        func = self.data.ignoreWagoUpdate and self.callbacks.ShowWagoUpdate or self.callbacks.HideWagoUpdate
+      });
+    end
+
     tinsert(self.menu, {
       text = L["Export to string..."],
       notCheckable = 1,
@@ -953,26 +1024,9 @@ local methods = {
     self.ungroup:SetScript("OnClick", self.callbacks.OnUngroupClick);
     self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
     self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
-    
-    if WeakAurasWagoUpdate then
-      self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
-      if self.data.url then
-        local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
-        if slug and version then
-          local wago = WeakAurasWagoUpdate[slug]
-          if wago and wago.wagoVersion and wago.wagoVersion > version then
-            self.update.slug = slug
-            self.update.version = version
-            self.update.name = wago.name
-            self.update.author = wago.author
-            self.update.wagoVersion = wago.wagoVersion
-            self.update.title = L["Update "] .. self.update.name .. L[" by "] .. self.update.author
-            self.update.desc = L["From version "] .. self.update.version .. L[" To version "] .. self.update.wagoVersion;
-            self.update:Show()
-            self.update:Enable();
-          end
-        end
-      end
+
+    if WeakAurasWagoUpdate and not self.data.ignoreWagoUpdate then
+      self.callbacks.ShowWagoUpdate()
     end
 
     if(data.parent) then
@@ -1740,9 +1794,6 @@ local function Constructor()
   if WeakAurasWagoUpdate then
     update = CreateFrame("BUTTON", nil, button);
     button.update = update
-    update.slug = "";
-    update.version = "";
-    update.wagoVersion = "";
     update.disabled = true;
     update.func = function() end;
     update:SetNormalTexture("interface\\minimap\\rotating-minimapcorpsearrow.blp");
@@ -1751,7 +1802,7 @@ local function Constructor()
     update:SetHeight(35);
     update:SetPoint("RIGHT", button, "RIGHT", -35, 0);
     update:SetHighlightTexture("interface\\minimap\\rotating-minimapcorpsearrow.blp");
-    update.title = L["Update"];
+    update.title = "";
     update.desc = "";
     update:SetScript("OnEnter", function() Show_Tooltip(button, update.title, update.desc) end);
     update:SetScript("OnLeave", Hide_Tooltip);
