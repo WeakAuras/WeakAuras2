@@ -521,6 +521,7 @@ local typeControlAdders = {
     args["option" .. i .. "default"] = {
       type = "color",
       width = WeakAuras.normalWidth,
+      hasAlpha = true,
       name = name(data, option, "default", L["Default"]),
       desc = descColor(data, option, "default"),
       order = order,
@@ -797,13 +798,13 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   if option.references then
     for childID, optionID in pairs(option.references) do
       local childData = data[childID]
-      if not WeakAuras.IsCollapsed(childData.id, "author", optionID) then
+      if not WeakAuras.IsCollapsed(childData.id, "author", optionID, true) then
         collapsed = false
         break
       end
     end
   else
-    collapsed = WeakAuras.IsCollapsed(data.id, "author", i)
+    collapsed = WeakAuras.IsCollapsed(data.id, "author", i, true)
   end
 
   args["option" .. i .. "collapse"] = {
@@ -1195,6 +1196,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
               width = 1,
               useDesc = false,
             }
+            WeakAuras.SetCollapsed(childData.id, "author", i, false)
             WeakAuras.Add(childData)
           end
           WeakAuras.ReloadTriggerOptions(data)
@@ -1375,6 +1377,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             default = false,
             width = 1,
           }
+          WeakAuras.SetCollapsed(data.id, "author", i, false)
           WeakAuras.Add(data)
           WeakAuras.ReloadTriggerOptions(data)
         end
