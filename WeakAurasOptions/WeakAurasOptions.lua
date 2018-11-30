@@ -4743,8 +4743,18 @@ end
 
 function WeakAuras.RemoveCollapsed(id, namespace, key)
   local data = collapsedOptions[id] and collapsedOptions[id][namespace]
-  if data then
-    tremove(data, key)
+  if not data then
+    return
+  end
+
+  local maxKey = 0
+  for k in pairs(data) do
+    maxKey = max(maxKey, k)
+  end
+
+  while key <= maxKey do
+    data[key] = data[key + 1]
+    key = key + 1
   end
 end
 
