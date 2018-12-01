@@ -1296,11 +1296,23 @@ WeakAuras.event_prototypes = {
       ret = ret:format(trigger.unit, trigger.unit, trigger.use_powertype and trigger.powertype or "nil");
       if (trigger.use_powertype and trigger.powertype == 99) then
         ret = ret .. [[
-        local UnitPower = UnitStagger;
-        local UnitPowerMax = UnitHealthMax;
-      ]]
+          local UnitPower = UnitStagger;
+          local UnitPowerMax = UnitHealthMax;
+        ]]
+        if (trigger.use_scaleStagger and trigger.scaleStagger) then
+          ret = ret .. string.format([[
+            local UnitPowerMax = function(unit)
+              return UnitHealthMax(unit) * %s
+            end
+          ]], trigger.scaleStagger)
+        else
+          ret = ret .. [[
+          local UnitPowerMax = UnitHealthMax;
+        ]]
+        end
       end
-      if (trigger.use_showCost) then
+      local canEnableShowCost = (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
+      if (canEnableShowCost and trigger.use_showCost) then
         ret = ret .. [[
           if (event == "UNIT_SPELLCAST_START" and unit == "player") then
             local spellID = select(9, UnitCastingInfo("player"));
@@ -1381,6 +1393,16 @@ WeakAuras.event_prototypes = {
         reloadOptions = true
       },
       {
+        name = "scaleStagger",
+        display = L["Stagger Scale"],
+        type = "string",
+        validate = WeakAuras.ValidateNumeric,
+        enable = function(trigger)
+          return trigger.use_powertype and trigger.powertype == 99
+        end,
+        test = "true"
+      },
+      {
         name = "power",
         display = L["Power"],
         type = "number",
@@ -1404,7 +1426,11 @@ WeakAuras.event_prototypes = {
     durationFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then
-        return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
+        if trigger.use_scaleStagger and trigger.scaleStagger then
+          return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit) * trigger.scaleStagger), "fastUpdate";
+        else
+          return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
+        end
       end
       local powerTypeToCheck = trigger.powertype or UnitPowerType(trigger.unit);
       local pdm = WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);
