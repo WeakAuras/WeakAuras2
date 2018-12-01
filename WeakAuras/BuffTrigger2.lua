@@ -534,6 +534,13 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 end
 
 local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, unit, matchCount, unitCount, maxUnitCount, affected, unaffected)
+  if not triggerInfo.fallbackName or not triggerInfo.fallbackName then
+    local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(WeakAuras.GetData(triggerInfo.id), triggerInfo.triggernum)
+    if (fallbackName and fallbackIcon) then
+      triggerInfo.fallbackName = fallbackName
+      triggerInfo.fallbackIcon = fallbackIcon
+    end
+  end
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
       show = true,
@@ -1602,6 +1609,14 @@ local function LoadAura(id, triggernum, triggerInfo)
   local filter = triggerInfo.debuffType
   local time = GetTime();
 
+  if not triggerInfo.fallbackName or not triggerInfo.fallbackName then
+    local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(WeakAuras.GetData(id), triggernum)
+    if (fallbackName and fallbackIcon) then
+      triggerInfo.fallbackName = fallbackName
+      triggerInfo.fallbackIcon = fallbackIcon
+    end
+  end
+
   if triggerInfo.unit == "multi" then
      AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
   elseif triggerInfo.unit == "group" then
@@ -2172,6 +2187,9 @@ end
 
 
 function BuffTrigger.GetNameAndIconSimple(data, triggernum)
+  if not data then
+    return
+  end
   local _, name, icon
   local trigger = data.triggers[triggernum].trigger
 
