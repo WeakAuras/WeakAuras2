@@ -811,22 +811,9 @@ local methods = {
       -- remove ignore flags
       self.data.ignoreWagoUpdate = nil
       -- show update frame
-      if self.data.url and self.data.url ~= "" then
-        local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
-        if slug and version then
-          local wago = WeakAurasWagoUpdate[slug]
-          if wago and wago.wagoVersion and wago.wagoVersion > version then
-            self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
-            self.update.desc = L["From version "] .. version .. L[" To version "] .. wago.wagoVersion
-            self.update.slug = slug
-            if wago.versionNote then
-              self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
-            end
-            self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
-            self.update:Show()
-            self.update:Enable()
-          end
-        end
+      if self.update.slug then
+        self.update:Show()
+        self.update:Enable()
       end
       -- childs
       if self.data.controlledChildren then
@@ -851,7 +838,7 @@ local methods = {
       -- set ignore flag
       self.data.ignoreWagoUpdate = true
       -- hide update frame
-      if self.update then
+      if self.update.slug then
         self.update:Hide()
         self.update:Disable()
       end
@@ -1027,8 +1014,29 @@ local methods = {
     self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
     self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
 
-    if WeakAurasWagoUpdate and not self.data.ignoreWagoUpdate then
-      self.callbacks.ShowWagoUpdate()
+    if WeakAurasWagoUpdate then
+      if self.data.url and self.data.url ~= "" then
+        local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
+        if slug and version then
+          local wago = WeakAurasWagoUpdate[slug]
+          if wago and wago.wagoVersion and wago.wagoVersion > version then
+            self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
+            self.update.desc = L["From version "] .. version .. L[" to version "] .. wago.wagoVersion
+            self.update.slug = slug
+            if wago.versionNote then
+              self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
+            end
+            self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
+            if self.data.ignoreWagoUpdate then
+              self.update:Hide()
+              self.update:Disable()
+            else
+              self.update:Show()
+              self.update:Enable()
+            end
+          end
+        end
+      end
     end
 
     if(data.parent) then
