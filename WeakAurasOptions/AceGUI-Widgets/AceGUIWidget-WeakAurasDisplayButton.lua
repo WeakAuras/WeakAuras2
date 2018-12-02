@@ -804,7 +804,7 @@ local methods = {
       for key, item in pairs(self.menu) do
         if item.func == self.callbacks.SyncWithWago then
           self.menu[key].func = self.callbacks.UnsyncWithWago
-          self.menu[key].text = L["Sync with Wago"]
+          self.menu[key].text = L["Unsync with Wago"]
           break
         end
       end
@@ -814,7 +814,7 @@ local methods = {
       if self.update.slug then
         self.update:Show()
         self.update:Enable()
-        self.updatelogo:Show()
+        self.updateLogo:Show()
       end
       -- childs
       if self.data.controlledChildren then
@@ -832,7 +832,7 @@ local methods = {
       for key, item in pairs(self.menu) do
         if item.func == self.callbacks.UnsyncWithWago then
           self.menu[key].func = self.callbacks.SyncWithWago
-          self.menu[key].text = L["Unsync with Wago"]
+          self.menu[key].text = L["Sync with Wago"]
           break
         end
       end
@@ -946,7 +946,7 @@ local methods = {
 
     if WeakAurasWagoUpdate then
       tinsert(self.menu, {
-        text = self.data.ignoreWagoUpdate and L["Sync with Wago"] or L["Unsync Wago"],
+        text = self.data.ignoreWagoUpdate and L["Sync with Wago"] or L["Unsync with Wago"],
         notCheckable = 1,
         func = self.data.ignoreWagoUpdate and self.callbacks.SyncWithWago or self.callbacks.UnsyncWithWago
       });
