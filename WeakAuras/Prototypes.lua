@@ -2242,7 +2242,6 @@ WeakAuras.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-
           return state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellname, 'target') == needle)
         end,
         conditionEvents = {
@@ -3338,6 +3337,7 @@ WeakAuras.event_prototypes = {
     },
     force_events = "SPELL_UPDATE_USABLE",
     name = L["Action Usable"],
+    statesParameter = "one",
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName;
@@ -3359,17 +3359,17 @@ WeakAuras.event_prototypes = {
       end
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
-        local spellname = %s
-        local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
-        local charges = WeakAuras.GetSpellCharges(spellname);
+        local spellName = %s
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellName);
+        local charges = WeakAuras.GetSpellCharges(spellName);
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
         local ready = startTime == 0 or charges > 0
-        local active = IsUsableSpell(spellname) and ready
+        local active = IsUsableSpell(spellName) and ready
       ]=]
       if(trigger.use_targetRequired) then
-        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
+        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellName or '', 'target')\n";
       end
       if(trigger.use_inverse) then
         ret = ret.."active = not active\n";
@@ -3389,6 +3389,7 @@ WeakAuras.event_prototypes = {
         type = "spell",
         test = "true",
         showExactOption = true,
+        store = true
       },
       -- This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       -- IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
@@ -3410,6 +3411,20 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true
+      },
+      {
+        name = "spellInRange",
+        display = L["Spell in Range"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = function(state, needle)
+          return state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
+        end,
+        conditionEvents = {
+          "PLAYER_TARGET_CHANGED",
+          "WA_SPELL_RANGECHECK",
+        }
       },
       {
         hidden = true,
