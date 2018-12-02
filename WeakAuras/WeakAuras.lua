@@ -1189,7 +1189,6 @@ end
 
 function WeakAuras.CountWagoUpdates()
   local WeakAurasSaved = WeakAurasSaved
-  local updatedAuras = {}
   local updatedSlugs, updatedSlugsCount = {}, 0
   for id, aura in pairs(WeakAurasSaved.displays) do
     if not aura.ignoreWagoUpdate and aura.url and aura.url ~= "" then
@@ -1201,7 +1200,6 @@ function WeakAuras.CountWagoUpdates()
       if slug and version then
         local wago = WeakAurasWagoUpdate[slug]
         if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
-          table.insert(updatedAuras, aura.id)
           if not updatedSlugs[slug] then
             updatedSlugs[slug] = true
             updatedSlugsCount = updatedSlugsCount + 1
@@ -1210,7 +1208,7 @@ function WeakAuras.CountWagoUpdates()
       end
     end
   end
-  return updatedSlugsCount, #updatedAuras
+  return updatedSlugsCount
 end
 
 local function tooltip_draw()
@@ -1218,10 +1216,10 @@ local function tooltip_draw()
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
   if WeakAurasWagoUpdate then
-    local updatedSlugsCount, updatedAuras = WeakAuras.CountWagoUpdates()
-    if updatedAuras > 0 then
+    local count = WeakAuras.CountWagoUpdates()
+    if count > 0 then
       tooltip:AddLine(" ");
-      tooltip:AddLine((L["%i updates from Wago for %i auras are ready to be install"]):format(updatedSlugsCount, updatedAuras));
+      tooltip:AddLine((L["%i updates from Wago ready for installation"]):format(count));
     end
   end
   tooltip:AddLine(" ");
@@ -1241,10 +1239,12 @@ end
 
 local colorFrame = CreateFrame("frame");
 WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
+
 local colorElapsed = 0;
 local colorDelay = 2;
 local r, g, b = 0.8, 0, 1;
 local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+
 local tooltip_update_frame = CreateFrame("FRAME");
 WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 

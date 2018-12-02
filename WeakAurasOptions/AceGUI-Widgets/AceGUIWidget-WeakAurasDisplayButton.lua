@@ -799,12 +799,12 @@ local methods = {
       end
     end
 
-    function self.callbacks.ShowWagoUpdate()
+    function self.callbacks.SyncWithWago()
       -- change menu entry
       for key, item in pairs(self.menu) do
-        if item.func == self.callbacks.ShowWagoUpdate then
-          self.menu[key].func = self.callbacks.HideWagoUpdate
-          self.menu[key].text = L["Hide Wago Updates"]
+        if item.func == self.callbacks.SyncWithWago then
+          self.menu[key].func = self.callbacks.UnsyncWithWago
+          self.menu[key].text = L["Sync with Wago"]
           break
         end
       end
@@ -820,18 +820,18 @@ local methods = {
         for childIndex, childId in pairs(self.data.controlledChildren) do
           local button = WeakAuras.GetDisplayButton(childId)
           if button then
-            button.callbacks.ShowWagoUpdate()
+            button.callbacks.SyncWithWago()
           end
         end
       end
     end
 
-    function self.callbacks.HideWagoUpdate()
+    function self.callbacks.UnsyncWithWago()
       -- change menu entry
       for key, item in pairs(self.menu) do
-        if item.func == self.callbacks.HideWagoUpdate then
-          self.menu[key].func = self.callbacks.ShowWagoUpdate
-          self.menu[key].text = L["Show Wago Updates"]
+        if item.func == self.callbacks.UnsyncWithWago then
+          self.menu[key].func = self.callbacks.SyncWithWago
+          self.menu[key].text = L["Unsync with Wago"]
           break
         end
       end
@@ -847,7 +847,7 @@ local methods = {
         for childIndex, childId in pairs(self.data.controlledChildren) do
           local button = WeakAuras.GetDisplayButton(childId)
           if button then
-            button.callbacks.HideWagoUpdate()
+            button.callbacks.UnsyncWithWago()
           end
         end
       end
@@ -944,9 +944,9 @@ local methods = {
 
     if WeakAurasWagoUpdate then
       tinsert(self.menu, {
-        text = self.data.ignoreWagoUpdate and L["Show Wago Updates"] or L["Hide Wago Updates"],
+        text = self.data.ignoreWagoUpdate and L["Sync with Wago"] or L["Unsync Wago"],
         notCheckable = 1,
-        func = self.data.ignoreWagoUpdate and self.callbacks.ShowWagoUpdate or self.callbacks.HideWagoUpdate
+        func = self.data.ignoreWagoUpdate and self.callbacks.SyncWithWago or self.callbacks.UnsyncWithWago
       });
     end
 
