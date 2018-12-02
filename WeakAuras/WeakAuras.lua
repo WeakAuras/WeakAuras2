@@ -1187,10 +1187,41 @@ function WeakAuras.CreatePvPTalentCache()
   end
 end
 
+function WeakAuras.CountWagoUpdates()
+  local WeakAurasSaved = WeakAurasSaved
+  local updatedAuras = {}
+  local updatedSlugs, updatedSlugsCount = {}, 0
+  for id, aura in pairs(WeakAurasSaved.displays) do
+    if aura.url and aura.url ~= "" then
+      local slug, version = aura.url:match("wago.io/([^/]+)/([0-9]+)")
+      if slug and version then
+        local wago = WeakAurasWagoUpdate[slug]
+        if wago and wago.wagoVersion and wago.wagoVersion > version then
+          if aura.ignoreWagoUpdate then
+            table.insert(updatedAuras, aura.id)
+            if not updatedSlugs[slug] then
+              updatedSlugs[slug] = true
+              updatedSlugsCount = updatedSlugsCount + 1
+            end
+          end
+        end
+      end
+    end
+  end
+  return updatedSlugsCount, #updatedAuras
+end
+
 local function tooltip_draw()
   local tooltip = GameTooltip;
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
+  if WeakAurasWagoUpdate then
+    local updatedSlugsCount, updatedAuras = WeakAuras.CountWagoUpdates()
+    if updatedAuras > 0 then
+      tooltip:AddLine(" ");
+      tooltip:AddLine((L["%i updates from Wago for %i auras are ready to be install"]):format(updatedSlugsCount, updatedAuras));
+    end
+  end
   tooltip:AddLine(" ");
   tooltip:AddLine(L["|cffeda55fLeft-Click|r to toggle showing the main window."], 0.2, 1, 0.2);
   if not WeakAuras.IsOptionsOpen() then
