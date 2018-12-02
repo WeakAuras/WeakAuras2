@@ -814,6 +814,7 @@ local methods = {
       if self.update.slug then
         self.update:Show()
         self.update:Enable()
+        self.updatelogo:Show()
       end
       -- childs
       if self.data.controlledChildren then
@@ -841,6 +842,7 @@ local methods = {
       if self.update.slug then
         self.update:Hide()
         self.update:Disable()
+        self.updateLogo:Hide()
       end
       -- childs
       if self.data.controlledChildren then
@@ -1034,9 +1036,11 @@ local methods = {
             if self.data.ignoreWagoUpdate then
               self.update:Hide()
               self.update:Disable()
+              self.updateLogo:Hide()
             else
               self.update:Show()
               self.update:Enable()
+              self.updateLogo:Show()
             end
           end
         end
@@ -1804,23 +1808,45 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
-  local update
+  local update,updateLogo
   if WeakAurasWagoUpdate then
     update = CreateFrame("BUTTON", nil, button);
     button.update = update
     update.disabled = true;
     update.func = function() end;
-    update:SetNormalTexture("interface\\minimap\\rotating-minimapcorpsearrow.blp");
+    update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]]);
     update:Disable();
-    update:SetWidth(35);
-    update:SetHeight(35);
+    update:SetWidth(24);
+    update:SetHeight(24);
     update:SetPoint("RIGHT", button, "RIGHT", -35, 0);
-    update:SetHighlightTexture("interface\\minimap\\rotating-minimapcorpsearrow.blp");
     update.title = "";
     update.desc = "";
-    update:SetScript("OnEnter", function() Show_Tooltip(button, update.title, update.desc) end);
+
+    -- Add logo
+    updateLogo = CreateFrame("Frame",nil,button)
+    button.updateLogo = updateLogo
+    local tex = updateLogo:CreateTexture(nil,"OVERLAY")
+    tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
+    tex:SetAllPoints()
+    updateLogo:SetSize(24,24)
+    updateLogo:SetPoint("CENTER",update)
+
+    -- Animation On Hover
+    local animGroup = update:CreateAnimationGroup()
+    update.animGroup = animGroup
+    local animRotate = animGroup:CreateAnimation("rotation")
+    animRotate:SetDegrees(-360)
+    animRotate:SetDuration(1)
+    animRotate:SetSmoothing("OUT")
+
+    animGroup:SetScript("OnFinished",function() if (MouseIsOver(update)) then animGroup:Play() end end)
+    update:SetScript("OnEnter", function()
+      animGroup:Play()
+      Show_Tooltip(button, update.title, update.desc)
+    end);
     update:SetScript("OnLeave", Hide_Tooltip);
     update:Hide();
+    updateLogo:Hide()
   end
 
   local widget = {
@@ -1841,6 +1867,7 @@ local function Constructor()
     background = background,
     expand = expand,
     update = update,
+    updateLogo = updateLogo,
     type = Type
   }
   for method, func in pairs(methods) do
