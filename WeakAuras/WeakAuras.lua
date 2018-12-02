@@ -1192,17 +1192,19 @@ function WeakAuras.CountWagoUpdates()
   local updatedAuras = {}
   local updatedSlugs, updatedSlugsCount = {}, 0
   for id, aura in pairs(WeakAurasSaved.displays) do
-    if aura.url and aura.url ~= "" then
+    if not aura.ignoreWagoUpdate and aura.url and aura.url ~= "" then
       local slug, version = aura.url:match("wago.io/([^/]+)/([0-9]+)")
+      if not slug and not version then
+        slug = aura.url:match("wago.io/([^/]+)$")
+        version = 1
+      end
       if slug and version then
         local wago = WeakAurasWagoUpdate[slug]
-        if wago and wago.wagoVersion and wago.wagoVersion > version then
-          if aura.ignoreWagoUpdate then
-            table.insert(updatedAuras, aura.id)
-            if not updatedSlugs[slug] then
-              updatedSlugs[slug] = true
-              updatedSlugsCount = updatedSlugsCount + 1
-            end
+        if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
+          table.insert(updatedAuras, aura.id)
+          if not updatedSlugs[slug] then
+            updatedSlugs[slug] = true
+            updatedSlugsCount = updatedSlugsCount + 1
           end
         end
       end
