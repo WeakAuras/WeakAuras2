@@ -801,15 +801,25 @@ local methods = {
 
     function self.callbacks.SyncWithWago()
       -- change menu entry
+      local saveKey
       for key, item in pairs(self.menu) do
         if item.func == self.callbacks.SyncWithWago then
           self.menu[key].func = self.callbacks.UnsyncWithWago
           self.menu[key].text = L["Unsync with Wago"]
-          break
+          saveKey = key
         end
+      end
+      -- add version skip entry in menu
+      if self.update.wagoVersion and self.update.wagoVersion > self.update.version then
+        tinsert(self.menu, saveKey + 1, {
+          text = L["Skip this Wago version"],
+          notCheckable = 1,
+          func = self.callbacks.skipWagoUpdate
+        })
       end
       -- remove ignore flags
       self.data.ignoreWagoUpdate = nil
+      self.data.skipWagoUpdate = nil
       -- show update frame
       if self.update.slug then
         self.update:Show()
@@ -833,7 +843,10 @@ local methods = {
         if item.func == self.callbacks.UnsyncWithWago then
           self.menu[key].func = self.callbacks.SyncWithWago
           self.menu[key].text = L["Sync with Wago"]
-          break
+        end
+        -- remove skip version entry in menu
+        if item.func == self.callbacks.unskipWagoUpdate or item.func == self.callbacks.skipWagoUpdate then
+          tremove(self.menu, key)
         end
       end
       -- set ignore flag
@@ -850,6 +863,62 @@ local methods = {
           local button = WeakAuras.GetDisplayButton(childId)
           if button then
             button.callbacks.UnsyncWithWago()
+          end
+        end
+      end
+    end
+
+    function self.callbacks.unskipWagoUpdate()
+      -- change menu entry
+      for key, item in pairs(self.menu) do
+        if item.func == self.callbacks.unskipWagoUpdate then
+          self.menu[key].func = self.callbacks.skipWagoUpdate
+          self.menu[key].text = L["Skip this Wago version"]
+          break
+        end
+      end
+      self.data.skipWagoUpdate = nil
+      -- show update frame
+      if self.update.slug then
+        self.update:Show()
+        self.update:Enable()
+        self.updateLogo:Show()
+      end
+      -- childs
+      if self.data.controlledChildren then
+        for childIndex, childId in pairs(self.data.controlledChildren) do
+          local button = WeakAuras.GetDisplayButton(childId)
+          if button then
+            button.callbacks.unskipWagoUpdate()
+          end
+        end
+      end
+    end
+
+    function self.callbacks.skipWagoUpdate()
+      -- change menu entry
+      for key, item in pairs(self.menu) do
+        if item.func == self.callbacks.skipWagoUpdate then
+          self.menu[key].func = self.callbacks.unskipWagoUpdate
+          self.menu[key].text = L["Show Wago update"]
+          break
+        end
+      end
+
+      if self.update.slug then
+        -- skip wago version
+        self.data.skipWagoUpdate = self.update.wagoVersion
+        -- hide update frame
+        self.update:Hide()
+        self.update:Disable()
+        self.updateLogo:Hide()
+      end
+      -- childs
+      if self.data.controlledChildren then
+        for childIndex, childId in pairs(self.data.controlledChildren) do
+          local button = WeakAuras.GetDisplayButton(childId)
+          if button then
+            button.callbacks.skipWagoUpdate()
           end
         end
       end
@@ -944,14 +1013,6 @@ local methods = {
       });
     end
 
-    if WeakAurasWagoUpdate then
-      tinsert(self.menu, {
-        text = self.data.ignoreWagoUpdate and L["Sync with Wago"] or L["Unsync with Wago"],
-        notCheckable = 1,
-        func = self.data.ignoreWagoUpdate and self.callbacks.SyncWithWago or self.callbacks.UnsyncWithWago
-      });
-    end
-
     tinsert(self.menu, {
       text = L["Export to string..."],
       notCheckable = 1,
@@ -1025,22 +1086,53 @@ local methods = {
         end
         if slug and version then
           local wago = WeakAurasWagoUpdate[slug]
-          if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
-            self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
-            self.update.desc = L["From version "] .. version .. L[" to version "] .. wago.wagoVersion
-            self.update.slug = slug
-            if wago.versionNote then
-              self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
-            end
-            self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
-            if self.data.ignoreWagoUpdate then
-              self.update:Hide()
-              self.update:Disable()
-              self.updateLogo:Hide()
-            else
-              self.update:Show()
-              self.update:Enable()
-              self.updateLogo:Show()
+          -- add sync entry in menu
+          tinsert(self.menu, 8, {
+            text = self.data.ignoreWagoUpdate and L["Sync with Wago"] or L["Unsync with Wago"],
+            notCheckable = 1,
+            func = self.data.ignoreWagoUpdate and self.callbacks.SyncWithWago or self.callbacks.UnsyncWithWago
+          });
+          -- there is a string for this aura
+          if wago and wago.wagoVersion then
+            self.update.wagoVersion = tonumber(wago.wagoVersion)
+            self.update.version = tonumber(version)
+            -- string is newer
+            if self.update.wagoVersion > self.update.version then
+              self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
+              self.update.desc = L["From version "] .. version .. L[" to version "] .. wago.wagoVersion
+              self.update.slug = slug
+              if wago.versionNote then
+                self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
+              end
+              self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
+
+              -- show or hide update icon
+              if self.update.wagoVersion == self.data.skipWagoUpdate or self.data.ignoreWagoUpdate then
+                self.update:Hide()
+                self.update:Disable()
+                self.updateLogo:Hide()
+              else
+                self.update:Show()
+                self.update:Enable()
+                self.updateLogo:Show()
+              end
+
+              -- add skip version entry in menu
+              if not self.data.ignoreWagoUpdate then
+                if self.update.wagoVersion == self.data.skipWagoUpdate then
+                  tinsert(self.menu, 9, {
+                    text =  L["Show Wago update"],
+                    notCheckable = 1,
+                    func = self.callbacks.unskipWagoUpdate
+                  });
+                else
+                  tinsert(self.menu, 9, {
+                    text = L["Skip this Wago version"],
+                    notCheckable = 1,
+                    func = self.callbacks.skipWagoUpdate
+                  });
+                end
+              end
             end
           end
         end
