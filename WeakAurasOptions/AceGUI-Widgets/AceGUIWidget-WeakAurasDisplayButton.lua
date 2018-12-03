@@ -834,7 +834,7 @@ local methods = {
     function self.callbacks.wagoIgnoreAll()
       -- change menu entry
       self.menu[8].menuList[1].func = self.callbacks.wagoClearIgnoreAll
-      self.menu[8].menuList[1].text = L["Clear ignore updates"]
+      self.menu[8].menuList[1].text = L["Clear ignored updates"]
       -- remove skip version entry in menu
       tremove(self.menu[8].menuList, 2)
       -- set ignore flag
@@ -882,7 +882,7 @@ local methods = {
     function self.callbacks.wagoIgnoreNext()
       -- change menu entry
       self.menu[8].menuList[2].func = self.callbacks.wagoClearIgnoreNext
-      self.menu[8].menuList[2].text = L["Clear ignore update"]
+      self.menu[8].menuList[2].text = L["Clear ignored update"]
 
       if self.update.slug then
         -- skip wago version
@@ -1072,7 +1072,7 @@ local methods = {
             hasArrow = true,
             menuList = {
               {
-                text = self.data.ignoreWagoUpdate and L["Clear ignore updates"] or L["Ignore all updates"],
+                text = self.data.ignoreWagoUpdate and L["Clear ignored updates"] or L["Ignore all updates"],
                 notCheckable = 1,
                 func = self.data.ignoreWagoUpdate and self.callbacks.wagoClearIgnoreAll or self.callbacks.wagoIgnoreAll
               }
@@ -1107,7 +1107,7 @@ local methods = {
               if not self.data.ignoreWagoUpdate then
                 if self.update.wagoVersion == self.data.skipWagoUpdate then
                   tinsert(self.menu[8].menuList, {
-                    text =  L["Clear ignore update"],
+                    text =  L["Clear ignored update"],
                     notCheckable = 1,
                     func = self.callbacks.wagoClearIgnoreNext
                   });
