@@ -1117,17 +1117,6 @@ local methods = {
               end
               self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
 
-              -- show or hide update icon
-              if self.update.wagoVersion == self.data.skipWagoUpdate or self.data.ignoreWagoUpdate then
-                self.update:Hide()
-                self.update:Disable()
-                self.updateLogo:Hide()
-              else
-                self.update:Show()
-                self.update:Enable()
-                self.updateLogo:Show()
-              end
-
               -- add skip version entry in menu
               if not self.data.ignoreWagoUpdate then
                 if self.update.wagoVersion == self.data.skipWagoUpdate then
@@ -1144,16 +1133,27 @@ local methods = {
                   });
                 end
               end
-              tinsert(wagoMenu, {
-                text = " ",
-                notClickable = 1,
-                notCheckable = 1,
-              });
-              tinsert(wagoMenu, {
-                text = L["Update this aura"],
-                notCheckable = 1,
-                func = self.callbacks.OnUpdateClick
-              });
+
+              -- show or hide update icon
+              if self.update.wagoVersion == self.data.skipWagoUpdate or self.data.ignoreWagoUpdate then
+                self.update:Hide()
+                self.update:Disable()
+                self.updateLogo:Hide()
+              else
+                self.update:Show()
+                self.update:Enable()
+                self.updateLogo:Show()
+                tinsert(wagoMenu, {
+                  text = " ",
+                  notClickable = 1,
+                  notCheckable = 1,
+                });
+                tinsert(wagoMenu, {
+                  text = L["Update this aura"],
+                  notCheckable = 1,
+                  func = self.callbacks.OnUpdateClick
+                });
+              end
             end
           end
         end
