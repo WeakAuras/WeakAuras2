@@ -799,17 +799,17 @@ local methods = {
       end
     end
 
-    function self.callbacks.wagoClearIgnoreAll()
+    function self.callbacks.wagoStopIgnoreAll()
       -- remove ignore flags
       self.data.ignoreWagoUpdate = nil
       self.data.skipWagoUpdate = nil
       -- update menu entries
       local wagoMenu = self.menu[8].menuList
       wagoMenu[1].func = self.callbacks.wagoIgnoreAll
-      wagoMenu[1].text = L["Ignore all updates"]
+      wagoMenu[1].text = L["Ignore all Updates"]
       if self.update.slug then
         tinsert(wagoMenu, {
-          text = L["Ignore this update"],
+          text = L["Ignore this Update"],
           notCheckable = 1,
           func = self.callbacks.wagoIgnoreNext
         })
@@ -833,7 +833,7 @@ local methods = {
         for childIndex, childId in pairs(self.data.controlledChildren) do
           local button = WeakAuras.GetDisplayButton(childId)
           if button then
-            button.callbacks.wagoClearIgnoreAll()
+            button.callbacks.wagoStopIgnoreAll()
           end
         end
       end
@@ -844,8 +844,8 @@ local methods = {
       self.data.ignoreWagoUpdate = true
       -- update menu entries
       local wagoMenu = self.menu[8].menuList
-      wagoMenu[1].func = self.callbacks.wagoClearIgnoreAll
-      wagoMenu[1].text = L["Clear ignored updates"]
+      wagoMenu[1].func = self.callbacks.wagoStopIgnoreAll
+      wagoMenu[1].text = L["Stop ignoring Updates"]
       if self.update.slug then
         tremove(wagoMenu, 2)
         tremove(wagoMenu, 2)
@@ -866,14 +866,14 @@ local methods = {
       end
     end
 
-    function self.callbacks.wagoClearIgnoreNext()
+    function self.callbacks.wagoStopIgnoreNext()
       -- remove skip flag
       self.data.skipWagoUpdate = nil
       if self.update.slug then
         -- update menu entries
         local wagoMenu = self.menu[8].menuList
         wagoMenu[2].func = self.callbacks.wagoIgnoreNext
-        wagoMenu[2].text = L["Ignore this update"]
+        wagoMenu[2].text = L["Ignore this Update"]
         tinsert(wagoMenu, {
           text = " ",
           notClickable = 1,
@@ -894,7 +894,7 @@ local methods = {
         for childIndex, childId in pairs(self.data.controlledChildren) do
           local button = WeakAuras.GetDisplayButton(childId)
           if button then
-            button.callbacks.wagoClearIgnoreNext()
+            button.callbacks.wagoStopIgnoreNext()
           end
         end
       end
@@ -906,8 +906,8 @@ local methods = {
         self.data.skipWagoUpdate = self.update.wagoVersion
         -- update menu entries
         local wagoMenu = self.menu[8].menuList
-        wagoMenu[2].func = self.callbacks.wagoClearIgnoreNext
-        wagoMenu[2].text = L["Clear ignored update"]
+        wagoMenu[2].func = self.callbacks.wagoStopIgnoreNext
+        wagoMenu[2].text = L["Stop ignoring Update"]
         tremove(wagoMenu, 3)
         tremove(wagoMenu, 3)
         tremove(wagoMenu, 3)
@@ -1096,9 +1096,9 @@ local methods = {
             hasArrow = true,
             menuList = {
               {
-                text = self.data.ignoreWagoUpdate and L["Clear ignored updates"] or L["Ignore all updates"],
+                text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
                 notCheckable = 1,
-                func = self.data.ignoreWagoUpdate and self.callbacks.wagoClearIgnoreAll or self.callbacks.wagoIgnoreAll
+                func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
               }
             }
           });
@@ -1121,13 +1121,13 @@ local methods = {
               if not self.data.ignoreWagoUpdate then
                 if self.update.wagoVersion == self.data.skipWagoUpdate then
                   tinsert(wagoMenu, {
-                    text =  L["Clear ignored update"],
+                    text =  L["Stop ignoring Update"],
                     notCheckable = 1,
-                    func = self.callbacks.wagoClearIgnoreNext
+                    func = self.callbacks.wagoStopIgnoreNext
                   });
                 else
                   tinsert(wagoMenu, {
-                    text = L["Ignore this update"],
+                    text = L["Ignore this Update"],
                     notCheckable = 1,
                     func = self.callbacks.wagoIgnoreNext
                   });
