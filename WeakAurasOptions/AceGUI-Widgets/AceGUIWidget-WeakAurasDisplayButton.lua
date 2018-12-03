@@ -745,11 +745,11 @@ local methods = {
     end
 
     function self.callbacks.OnUpdateClick()
-        local wago = WeakAurasWagoUpdate[self.update.slug]
-        if wago then
-          WeakAuras.ImportString(wago.encoded)
-        end
+      local wago = WeakAurasCompanion[self.update.slug]
+      if wago then
+        WeakAuras.ImportString(wago.encoded)
       end
+    end
 
     function self.callbacks.OnRenameAction(newid)
       if (WeakAuras.IsImporting()) then return end;
@@ -800,22 +800,30 @@ local methods = {
     end
 
     function self.callbacks.wagoClearIgnoreAll()
-      -- change menu entry
-      self.menu[8].menuList[1].func = self.callbacks.wagoIgnoreAll
-      self.menu[8].menuList[1].text = L["Ignore all updates"]
-      -- add version skip entry in menu
-      if self.update.wagoVersion and self.update.wagoVersion > self.update.version then
-        tinsert(self.menu[8].menuList, {
+      -- remove ignore flags
+      self.data.ignoreWagoUpdate = nil
+      self.data.skipWagoUpdate = nil
+      -- update menu entries
+      local wagoMenu = self.menu[8].menuList
+      wagoMenu[1].func = self.callbacks.wagoIgnoreAll
+      wagoMenu[1].text = L["Ignore all updates"]
+      if self.update.slug then
+        tinsert(wagoMenu, {
           text = L["Ignore this update"],
           notCheckable = 1,
           func = self.callbacks.wagoIgnoreNext
         })
-      end
-      -- remove ignore flags
-      self.data.ignoreWagoUpdate = nil
-      self.data.skipWagoUpdate = nil
-      -- show update frame
-      if self.update.slug then
+        tinsert(wagoMenu, {
+          text = " ",
+          notClickable = 1,
+          notCheckable = 1,
+        });
+        tinsert(wagoMenu, {
+          text = L["Update this aura"],
+          notCheckable = 1,
+          func = self.callbacks.OnUpdateClick
+        });
+        -- show update frame
         self.update:Show()
         self.update:Enable()
         self.updateLogo:Show()
@@ -832,15 +840,17 @@ local methods = {
     end
 
     function self.callbacks.wagoIgnoreAll()
-      -- change menu entry
-      self.menu[8].menuList[1].func = self.callbacks.wagoClearIgnoreAll
-      self.menu[8].menuList[1].text = L["Clear ignored updates"]
-      -- remove skip version entry in menu
-      tremove(self.menu[8].menuList, 2)
       -- set ignore flag
       self.data.ignoreWagoUpdate = true
-      -- hide update frame
+      -- update menu entries
+      local wagoMenu = self.menu[8].menuList
+      wagoMenu[1].func = self.callbacks.wagoClearIgnoreAll
+      wagoMenu[1].text = L["Clear ignored updates"]
       if self.update.slug then
+        tremove(wagoMenu, 2)
+        tremove(wagoMenu, 2)
+        tremove(wagoMenu, 2)
+        -- hide update frame
         self.update:Hide()
         self.update:Disable()
         self.updateLogo:Hide()
@@ -857,13 +867,24 @@ local methods = {
     end
 
     function self.callbacks.wagoClearIgnoreNext()
-      -- change menu entry
-      self.menu[8].menuList[2].func = self.callbacks.wagoIgnoreNext
-      self.menu[8].menuList[2].text = L["Ignore this update"]
-
+      -- remove skip flag
       self.data.skipWagoUpdate = nil
-      -- show update frame
       if self.update.slug then
+        -- update menu entries
+        local wagoMenu = self.menu[8].menuList
+        wagoMenu[2].func = self.callbacks.wagoIgnoreNext
+        wagoMenu[2].text = L["Ignore this update"]
+        tinsert(wagoMenu, {
+          text = " ",
+          notClickable = 1,
+          notCheckable = 1,
+        });
+        tinsert(wagoMenu, {
+          text = L["Update this aura"],
+          notCheckable = 1,
+          func = self.callbacks.OnUpdateClick
+        });
+        -- show update frame
         self.update:Show()
         self.update:Enable()
         self.updateLogo:Show()
@@ -880,13 +901,16 @@ local methods = {
     end
 
     function self.callbacks.wagoIgnoreNext()
-      -- change menu entry
-      self.menu[8].menuList[2].func = self.callbacks.wagoClearIgnoreNext
-      self.menu[8].menuList[2].text = L["Clear ignored update"]
-
       if self.update.slug then
         -- skip wago version
         self.data.skipWagoUpdate = self.update.wagoVersion
+        -- update menu entries
+        local wagoMenu = self.menu[8].menuList
+        wagoMenu[2].func = self.callbacks.wagoClearIgnoreNext
+        wagoMenu[2].text = L["Clear ignored update"]
+        tremove(wagoMenu, 3)
+        tremove(wagoMenu, 3)
+        tremove(wagoMenu, 3)
         -- hide update frame
         self.update:Hide()
         self.update:Disable()
@@ -1056,7 +1080,7 @@ local methods = {
     self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
     self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
 
-    if WeakAurasWagoUpdate then
+    if WeakAurasCompanion then
       if self.data.url and self.data.url ~= "" then
         local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
         if not slug and not version then
@@ -1064,7 +1088,7 @@ local methods = {
           version = 1
         end
         if slug and version then
-          local wago = WeakAurasWagoUpdate[slug]
+          local wago = WeakAurasCompanion[slug]
           -- add sync entry in menu
           tinsert(self.menu, 8, {
             text = L["Wago Update"],
@@ -1078,6 +1102,7 @@ local methods = {
               }
             }
           });
+          local wagoMenu = self.menu[8].menuList
           -- there is a string for this aura
           if wago and wago.wagoVersion then
             self.update.wagoVersion = tonumber(wago.wagoVersion)
@@ -1106,19 +1131,29 @@ local methods = {
               -- add skip version entry in menu
               if not self.data.ignoreWagoUpdate then
                 if self.update.wagoVersion == self.data.skipWagoUpdate then
-                  tinsert(self.menu[8].menuList, {
+                  tinsert(wagoMenu, {
                     text =  L["Clear ignored update"],
                     notCheckable = 1,
                     func = self.callbacks.wagoClearIgnoreNext
                   });
                 else
-                  tinsert(self.menu[8].menuList, {
+                  tinsert(wagoMenu, {
                     text = L["Ignore this update"],
                     notCheckable = 1,
                     func = self.callbacks.wagoIgnoreNext
                   });
                 end
               end
+              tinsert(wagoMenu, {
+                text = " ",
+                notClickable = 1,
+                notCheckable = 1,
+              });
+              tinsert(wagoMenu, {
+                text = L["Update this aura"],
+                notCheckable = 1,
+                func = self.callbacks.OnUpdateClick
+              });
             end
           end
         end
@@ -1887,7 +1922,7 @@ local function Constructor()
   expand:SetScript("OnLeave", Hide_Tooltip);
 
   local update,updateLogo
-  if WeakAurasWagoUpdate then
+  if WeakAurasCompanion then
     update = CreateFrame("BUTTON", nil, button);
     button.update = update
     update.disabled = true;

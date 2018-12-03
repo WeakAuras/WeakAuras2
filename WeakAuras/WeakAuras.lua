@@ -1198,7 +1198,7 @@ function WeakAuras.CountWagoUpdates()
         version = 1
       end
       if slug and version then
-        local wago = WeakAurasWagoUpdate[slug]
+        local wago = WeakAurasCompanion[slug]
         if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
           if not updatedSlugs[slug] then
             updatedSlugs[slug] = true
@@ -1215,7 +1215,7 @@ local function tooltip_draw()
   local tooltip = GameTooltip;
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
-  if WeakAurasWagoUpdate then
+  if WeakAurasCompanion then
     local count = WeakAuras.CountWagoUpdates()
     if count > 0 then
       tooltip:AddLine(" ");
