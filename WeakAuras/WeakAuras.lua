@@ -1219,7 +1219,7 @@ local function tooltip_draw()
     local count = WeakAuras.CountWagoUpdates()
     if count > 0 then
       tooltip:AddLine(" ");
-      tooltip:AddLine((L["%i updates from Wago ready for installation"]):format(count));
+      tooltip:AddLine((L["There are %i updates to your auras ready to be installed!"]):format(count));
     end
   end
   tooltip:AddLine(" ");
