@@ -1091,7 +1091,7 @@ local methods = {
           local wago = WeakAurasCompanion[slug]
           -- add sync entry in menu
           tinsert(self.menu, 8, {
-            text = L["Wago Update"],
+            text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
             notCheckable = 1,
             hasArrow = true,
             menuList = {
