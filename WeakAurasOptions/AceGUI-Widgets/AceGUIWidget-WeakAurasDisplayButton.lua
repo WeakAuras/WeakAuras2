@@ -170,7 +170,7 @@ clipboard.copyAuthorOptionsEntry = {
   notCheckable = true,
   func = function()
     WeakAuras_DropDownMenu:Hide();
-    CopyToClipboard("authorOptions", L["Paste Author Option Settings"])
+    CopyToClipboard("authorOptions", L["Paste Author Options Settings"])
   end
 };
 
@@ -819,7 +819,7 @@ local methods = {
           notCheckable = 1,
         });
         tinsert(wagoMenu, {
-          text = L["Update this aura"],
+          text = L["Update this Aura"],
           notCheckable = 1,
           func = self.callbacks.OnUpdateClick
         });
@@ -880,7 +880,7 @@ local methods = {
           notCheckable = 1,
         });
         tinsert(wagoMenu, {
-          text = L["Update this aura"],
+          text = L["Update this Aura"],
           notCheckable = 1,
           func = self.callbacks.OnUpdateClick
         });
@@ -907,7 +907,7 @@ local methods = {
         -- update menu entries
         local wagoMenu = self.menu[8].menuList
         wagoMenu[2].func = self.callbacks.wagoStopIgnoreNext
-        wagoMenu[2].text = L["Stop ignoring Update"]
+        wagoMenu[2].text = L["Stop ignoring this Update"]
         tremove(wagoMenu, 3)
         tremove(wagoMenu, 3)
         tremove(wagoMenu, 3)
@@ -1121,7 +1121,7 @@ local methods = {
               if not self.data.ignoreWagoUpdate then
                 if self.update.wagoVersion == self.data.skipWagoUpdate then
                   tinsert(wagoMenu, {
-                    text =  L["Stop ignoring Update"],
+                    text =  L["Stop ignoring this Update"],
                     notCheckable = 1,
                     func = self.callbacks.wagoStopIgnoreNext
                   });
@@ -1149,7 +1149,7 @@ local methods = {
                   notCheckable = 1,
                 });
                 tinsert(wagoMenu, {
-                  text = L["Update this aura"],
+                  text = L["Update this Aura"],
                   notCheckable = 1,
                   func = self.callbacks.OnUpdateClick
                 });
@@ -1921,7 +1921,7 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
-  local update,updateLogo
+  local update, updateLogo
   if WeakAurasCompanion then
     update = CreateFrame("BUTTON", nil, button);
     button.update = update
@@ -1936,9 +1936,9 @@ local function Constructor()
     update.desc = "";
 
     -- Add logo
-    updateLogo = CreateFrame("Frame",nil,button)
+    updateLogo = CreateFrame("Frame", nil, button)
     button.updateLogo = updateLogo
-    local tex = updateLogo:CreateTexture(nil,"OVERLAY")
+    local tex = updateLogo:CreateTexture(nil, "OVERLAY")
     tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
     tex:SetAllPoints()
     updateLogo:SetSize(24,24)
