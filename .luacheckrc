@@ -44,6 +44,7 @@ globals = {
 	"WeakAuras_DropDownMenu",
 	"WeakAuras_DropIndicator",
 	"IndentationLib",
+	"WeakAurasCompanion",
 
 	-- FrameXML misc
 	"C_Timer",

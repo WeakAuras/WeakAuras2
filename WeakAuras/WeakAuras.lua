@@ -1187,10 +1187,41 @@ function WeakAuras.CreatePvPTalentCache()
   end
 end
 
+function WeakAuras.CountWagoUpdates()
+  local WeakAurasSaved = WeakAurasSaved
+  local updatedSlugs, updatedSlugsCount = {}, 0
+  for id, aura in pairs(WeakAurasSaved.displays) do
+    if not aura.ignoreWagoUpdate and aura.url and aura.url ~= "" then
+      local slug, version = aura.url:match("wago.io/([^/]+)/([0-9]+)")
+      if not slug and not version then
+        slug = aura.url:match("wago.io/([^/]+)$")
+        version = 1
+      end
+      if slug and version then
+        local wago = WeakAurasCompanion[slug]
+        if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
+          if not updatedSlugs[slug] then
+            updatedSlugs[slug] = true
+            updatedSlugsCount = updatedSlugsCount + 1
+          end
+        end
+      end
+    end
+  end
+  return updatedSlugsCount
+end
+
 local function tooltip_draw()
   local tooltip = GameTooltip;
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
+  if WeakAurasCompanion then
+    local count = WeakAuras.CountWagoUpdates()
+    if count > 0 then
+      tooltip:AddLine(" ");
+      tooltip:AddLine((L["There are %i updates to your auras ready to be installed!"]):format(count));
+    end
+  end
   tooltip:AddLine(" ");
   tooltip:AddLine(L["|cffeda55fLeft-Click|r to toggle showing the main window."], 0.2, 1, 0.2);
   if not WeakAuras.IsOptionsOpen() then
@@ -1208,10 +1239,12 @@ end
 
 local colorFrame = CreateFrame("frame");
 WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
+
 local colorElapsed = 0;
 local colorDelay = 2;
 local r, g, b = 0.8, 0, 1;
 local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+
 local tooltip_update_frame = CreateFrame("FRAME");
 WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 
