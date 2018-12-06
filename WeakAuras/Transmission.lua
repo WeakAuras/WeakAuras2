@@ -128,6 +128,8 @@ function CompressDisplay(data)
   copiedData.parent = nil;
   local regionType = copiedData.regionType
   copiedData.regionType = regionType
+  copiedData.ignoreWagoUpdate = nil
+  copiedData.skipWagoUpdate = nil
 
   return copiedData;
 end
