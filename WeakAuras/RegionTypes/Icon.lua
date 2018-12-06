@@ -222,10 +222,10 @@ local function create(parent, data)
   --The reason is so that WeakAuras cooldown frames can interact properly with OmniCC (i.e., put on its blacklist for timer overlays)
   local id = data.id;
   local frameId = id:lower():gsub(" ", "_");
-  if(_G[frameId]) then
+  if(_G["WeakAurasCooldown"..frameId]) then
     local baseFrameId = frameId;
     local num = 2;
-    while(_G[frameId]) do
+    while(_G["WeakAurasCooldown"..frameId]) do
       frameId = baseFrameId..num;
       num = num + 1;
     end
