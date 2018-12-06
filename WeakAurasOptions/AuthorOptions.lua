@@ -1147,11 +1147,24 @@ end
 
 local function allChoicesAreDefault(data)
   for _, option in ipairs(data.authorOptions) do
-    if option.key ~= nil and option.default ~= nil and option.default ~= data.config[option.key] then
+    if option.key ~= nil and option.default ~= nil and (option.default ~= data.config[option.key] or compareTables(option.default, data.config[option.key])) then
       return false
     end
   end
   return true
+end
+
+local function compareTables(t1, t2)
+	for k, v in pairs(t1) do
+		if (t2[k] ~= v) then
+		return false end
+	end
+
+	for k, v in pairs(t2) do
+		if (t1[k] ~= v) then
+		return false end
+	end
+	return true
 end
 
 function WeakAuras.GetAuthorOptions(data, args, startorder)
