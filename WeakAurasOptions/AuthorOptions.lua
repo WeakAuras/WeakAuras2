@@ -1166,9 +1166,12 @@ end
 
 local function allChoicesAreDefault(data)
   for _, option in ipairs(data.authorOptions) do
-    if option.key ~= nil and option.default ~= nil and option.default ~= data.config[option.key] then
-		  return tablesAreEqual(option.default, data.config[option.key])
-    end
+    if option.key ~= nil and option.default ~= nil then
+      if tablesAreEqual(option.default, data.config[option.key]) then
+      elseif option.default ~= data.config[option.key] then
+        return false
+      end
+     end
   end
   return true
 end
