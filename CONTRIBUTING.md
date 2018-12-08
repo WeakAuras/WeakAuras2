@@ -53,34 +53,42 @@ If you want to help, here's what you need to do:
 
 ### Keeping your fork updated
 
-* Specify a new remote upstream repository that will be used to sync your fork (you only need to do this once).
+- Specify a new remote upstream repository that will be used to sync your fork (you only need to do this once).
+
   ```bash
   > git remote add upstream https://github.com/WeakAuras/WeakAuras2.git
   ```
-* In order to sync your fork with the upstream WeakAuras 2 repository you would do
+
+- In order to sync your fork with the upstream WeakAuras 2 repository you would do
+
   ```bash
   > git fetch upstream
   > git checkout master
   > git rebase upstream/master
   ```
-* You are now all synced up.
+
+- You are now all synced up.
 
 ### Keeping your pull request updated
 
-* In order to sync your pull request with the upstream WeakAuras 2 repository in case there are any conflicts you would do
+- In order to sync your pull request with the upstream WeakAuras 2 repository in case there are any conflicts you would do
+
   ```bash
   > git fetch upstream
   > git checkout my-topic-branch
   > git rebase upstream/master
   ```
-* In case there are any conflicts, you will now have to [fix them manually](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase/).
-* After you're done with that, you are ready to force-push your changes.
+
+- In case there are any conflicts, you will now have to [fix them manually](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase/).
+- After you're done with that, you are ready to force-push your changes.
+
   ```bash
   > git push --force
   ```
-* Note: Force-pushing is a destructive operation, so make sure you don't lose something in the progress.
-* If you want to know more about force-pushing and why we do it, there are a two good posts about it: one by [Atlassian](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing) and one on [Reddit](https://www.reddit.com/r/git/comments/6jzogp/why_am_i_force_pushing_after_a_rebase/).
-* Your pull request should now have no conflicts and be ready for review and merging.
+
+- Note: Force-pushing is a destructive operation, so make sure you don't lose something in the progress.
+- If you want to know more about force-pushing and why we do it, there are a two good posts about it: one by [Atlassian](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing) and one on [Reddit](https://www.reddit.com/r/git/comments/6jzogp/why_am_i_force_pushing_after_a_rebase/).
+- Your pull request should now have no conflicts and be ready for review and merging.
 
 ## Reporting Issues and Requesting Features
 
@@ -90,5 +98,5 @@ If you want to help, here's what you need to do:
    so that we have a better picture about what the real problem is and how to fix it ASAP.
 1. If you didn't find any tickets with a problem similar to yours then please open a
    [new ticket](https://github.com/WeakAuras/WeakAuras2/issues/new/choose).
-    * Be descriptive as much as you can.
-    * Provide everything the template text asks you for.
+    - Be descriptive as much as you can.
+    - Provide everything the template text asks you for.
