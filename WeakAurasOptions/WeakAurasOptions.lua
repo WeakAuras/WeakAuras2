@@ -2692,7 +2692,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, false);
+        args = flattenRegionOptions(regionOption);
       },
       trigger = {
         type = "group",
@@ -3352,7 +3352,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = flattenRegionOptions(regionOption, true);
+      args = flattenRegionOptions(regionOption);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3468,13 +3468,11 @@ end
 
 function WeakAuras.ReloadGroupRegionOptions(data)
   local regionTypes = {};
-  local regionTypeCount = 0;
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
       if (not regionTypes[childData.regionType]) then
         regionTypes[childData.regionType] = true;
-        regionTypeCount = regionTypeCount + 1;
       end
     end
   end
@@ -3503,7 +3501,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   removeFuncs(allOptions);
   fixMetaOrders(allOptions);
 
-  local regionOption = flattenRegionOptions(allOptions, false);
+  local regionOption = flattenRegionOptions(allOptions);
 
   options.args.region.args = regionOption;
 end
