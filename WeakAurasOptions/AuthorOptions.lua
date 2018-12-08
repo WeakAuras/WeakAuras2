@@ -1145,7 +1145,7 @@ local function mergeOptions(childIndex, merged, toMerge)
   end
 end
 
-local function tablesAreEqual(t1, t2)
+local function valuesAreEqual(t1, t2)
 	if t1 == t2 then return true end
 	local ty1 = type(t1)
 	local ty2 = type(t2)
@@ -1154,24 +1154,21 @@ local function tablesAreEqual(t1, t2)
 
 	for k1, v1 in pairs(t1) do
 		local v2 = t2[k1]
-		if v2 == nil or not tablesAreEqual(v1, v2) then return false end
+		if v2 == nil or not valuesAreEqual(v1, v2) then return false end
 	end
  
 	for k2, v2 in pairs(t2) do
 		local v1 = t1[k2]
-		if v1 == nil or not tablesAreEqual(v1, v2) then return false end
+		if v1 == nil or not valuesAreEqual(v1, v2) then return false end
 	end
 	return true
 end
 
 local function allChoicesAreDefault(data)
   for _, option in ipairs(data.authorOptions) do
-    if option.key ~= nil and option.default ~= nil then
-      if tablesAreEqual(option.default, data.config[option.key]) then
-      elseif option.default ~= data.config[option.key] then
-        return false
-      end
-     end
+    if optionClasses[option.type] ~= "noninteractive" and not valuesAreEqual(option.default, data.config[option.key]) then
+      return false
+    end
   end
   return true
 end
