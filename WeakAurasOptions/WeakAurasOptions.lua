@@ -2608,86 +2608,27 @@ local function copyOptionTable(input, orderAdjustment)
   return resultOption;
 end
 
-local function flattenRegionOptions(allOptions, withoutHeader)
+local function flattenRegionOptions(allOptions)
   local result = {};
+  local base = 1000;
 
-  local base = 100;
+  for optionGroup, options in pairs(allOptions) do
+    local groupBase = base * options.__order
 
-  for regionType, options in pairs(allOptions) do
-    if (regionType ~= "border" and regionType ~= "position") then
-      for optionName, option in pairs(options) do
-        result[regionType .. "." .. optionName] = copyOptionTable(option, base);
+    result[optionGroup]  = {
+      type = "header",
+      name = options.__title,
+      order = groupBase,
+    }
+
+    for optionName, option in pairs(options) do
+      if not optionName:find("^__") then
+        result[optionGroup .. "." .. optionName] = copyOptionTable(option, groupBase);
       end
-
-      base = base + 100;
-    end
-  end
-
-  if (allOptions["border"]) then
-    for optionName, option in pairs(allOptions["border"]) do
-      result["border." .. optionName] = copyOptionTable(option, base);
-    end
-    base = base + 100;
-  end
-
-  if (allOptions["position"]) then
-    for optionName, option in pairs(allOptions["position"]) do
-      result["position." .. optionName] = copyOptionTable(option, base);
     end
   end
 
   return result;
-end
-
-local function addHeadersForRegionOptions(allOptions, output)
-  local base = 100;
-  for regionType, options in pairs(allOptions) do
-    if (regionType ~= "border" and regionType ~= "position") then
-      if (base > 100) then
-        output[regionType .. "_spacer"] = {
-          type = "description",
-          name = " ",
-          width = WeakAuras.doubleWidth,
-          fontSize = "large",
-          order = base,
-          hidden = false
-        }
-      end
-      output[regionType .. "_title"] = {
-        type = "description",
-        name = regionOptions[regionType].displayName,
-        width = WeakAuras.doubleWidth,
-        order = base + 0.01,
-        fontSize = "large",
-        hidden = false
-      }
-      output[regionType .. "_title_header"] = {
-        type = "header",
-        name = "",
-        order = base + 0.02,
-        hidden = false
-      }
-      base = base + 100;
-    end
-  end
-
-  output["common_spacer"] = {
-    type = "description",
-    name = " ",
-    width = WeakAuras.doubleWidth,
-    fontSize = "large",
-    order = base,
-    hidden = false
-  }
-
-  output["common_title"] = {
-    type = "description",
-    name = L["Common Options"],
-    width = WeakAuras.doubleWidth,
-    order = base + 0.01,
-    fontSize = "large",
-    hidden = false
-  }
 end
 
 local function removePrefix(input)
@@ -2755,7 +2696,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, false);
+        args = flattenRegionOptions(regionOption);
       },
       trigger = {
         type = "group",
@@ -3415,7 +3356,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = flattenRegionOptions(regionOption, true);
+      args = flattenRegionOptions(regionOption);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3506,15 +3447,36 @@ function WeakAuras.ReloadTriggerOptions(data)
   end
 end
 
+local function fixMetaOrders(allOptions)
+  -- assumes that the results from create methods are contiguous in __order fields
+  -- shifts __order fields such that each optionGroup is ordered correctly relative
+  -- to its peers, but has a unique __order number in the combined option table.
+  local groupOrders = {}
+  for optionGroup, options in pairs(allOptions) do
+    local metaOrder = options.__order
+    groupOrders[metaOrder] = groupOrders[metaOrder] or {}
+    tinsert(groupOrders[metaOrder], optionGroup)
+  end
+
+  local index = 0
+  local newOrder = 1
+  while index < #groupOrders do
+    index = index + 1
+    table.sort(groupOrders[index])
+    for _, optionGroup in ipairs(groupOrders[index]) do
+      allOptions[optionGroup].__order = newOrder
+      newOrder = newOrder + 1
+    end
+  end
+end
+
 function WeakAuras.ReloadGroupRegionOptions(data)
   local regionTypes = {};
-  local regionTypeCount = 0;
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
       if (not regionTypes[childData.regionType]) then
         regionTypes[childData.regionType] = true;
-        regionTypeCount = regionTypeCount +1;
       end
     end
   end
@@ -3537,32 +3499,26 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
   end
 
-  local regionOption = flattenRegionOptions(allOptions, false);
+  replaceNameDescFuncs(allOptions, data);
+  replaceImageFuncs(allOptions, data);
+  replaceValuesFuncs(allOptions, data);
+  removeFuncs(allOptions);
+  fixMetaOrders(allOptions);
 
-  replaceNameDescFuncs(regionOption, data);
-  replaceImageFuncs(regionOption, data);
-  replaceValuesFuncs(regionOption, data);
-  removeFuncs(regionOption);
-
-  if (regionTypeCount > 1) then
-    addHeadersForRegionOptions(allOptions, regionOption);
-  end
+  local regionOption = flattenRegionOptions(allOptions);
 
   options.args.region.args = regionOption;
 end
 
-function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
+function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disableSelfPoint)
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
   end
 
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
-    position_header = {
-      type = "header",
-      name = L["Position Settings"],
-      order = 46.0,
-    },
+    __title = L["Position Settings"],
+    __order = metaOrder,
     width = {
       type = "range",
       width = WeakAuras.normalWidth,
@@ -3945,17 +3901,10 @@ function WeakAuras.PositionOptions(id, data, hideWidthHeight, disableSelfPoint)
   return positionOptions;
 end
 
-function WeakAuras.AddPositionOptions(input, id, data)
-  return union(input, WeakAuras.PositionOptions(id, data));
-end
-
-function WeakAuras.BorderOptions(id, data, showBackDropOptions)
+function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
   local borderOptions = {
-    border_header = {
-      type = "header",
-      name = L["Border Settings"],
-      order = 46.0
-    },
+    __title = L["Border Settings"],
+    __order = metaOrder,
     border = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -4053,11 +4002,6 @@ function WeakAuras.BorderOptions(id, data, showBackDropOptions)
 
   return borderOptions;
 end
-
-function WeakAuras.AddBorderOptions(input, id, data)
-  return union(input, WeakAuras.BorderOptions(id, data));
-end
-
 
 function WeakAuras.OpenTextEditor(...)
   frame.texteditor:Open(...);

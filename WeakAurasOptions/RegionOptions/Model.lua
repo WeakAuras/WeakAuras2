@@ -2,6 +2,8 @@ local L = WeakAuras.L;
 
 local function createOptions(id, data)
   local options = {
+    __title = L["Model Settings"],
+    __order = 1,
     model_path = {
       type = "input",
       width = WeakAuras.doubleWidth,
@@ -188,8 +190,8 @@ local function createOptions(id, data)
 
   return {
     model = options,
-    position = WeakAuras.PositionOptions(id, data),
-    border = WeakAuras.BorderOptions(id, data);
+    border = WeakAuras.BorderOptions(id, data, 2);
+    position = WeakAuras.PositionOptions(id, data, 3),
   };
 end
 

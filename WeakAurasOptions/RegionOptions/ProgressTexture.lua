@@ -2,6 +2,8 @@ local L = WeakAuras.L;
 
 local function createOptions(id, data)
   local options = {
+    __title = L["Progress Texture Settings"],
+    __order = 1,
     foregroundTexture = {
       width = WeakAuras.normalWidth,
       type = "input",
@@ -322,7 +324,7 @@ local function createOptions(id, data)
 
   return {
     progresstexture = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.PositionOptions(id, data, 2),
   };
 end
 
