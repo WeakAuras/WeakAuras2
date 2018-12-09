@@ -1779,6 +1779,7 @@ function BuffTrigger.SetToolTip(trigger, state)
     else
       GameTooltip:AddLine(name.." "..L["None"]);
     end
+    return true
   elseif(trigger.fullscan and trigger.unit ~= "group" and state.index) then
     local unit = trigger.unit == "member" and trigger.specificUnit or trigger.unit;
     if(trigger.debuffType == "HELPFUL") then
@@ -1786,11 +1787,14 @@ function BuffTrigger.SetToolTip(trigger, state)
     elseif(trigger.debuffType == "HARMFUL") then
       GameTooltip:SetUnitDebuff(unit, state.index);
     end
+    return true
   else
     if (state.spellId) then
       GameTooltip:SetSpellByID(state.spellId);
+      return true
     end
   end
+  return false
 end
 
 --- Returns the name and icon to show in the options.

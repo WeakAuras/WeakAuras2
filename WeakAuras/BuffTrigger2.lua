@@ -2178,11 +2178,15 @@ function BuffTrigger.CanHaveTooltip(data, triggernum)
 end
 
 function BuffTrigger.SetToolTip(trigger, state)
+  if not state.unit or not state.index then
+    return false
+  end
   if trigger.debuffType == "HELPFUL" then
     GameTooltip:SetUnitBuff(state.unit, state.index)
   elseif trigger.debuffType == "HARMFUL" then
     GameTooltip:SetUnitDebuff(state.unit, state.index)
   end
+  return true
 end
 
 
