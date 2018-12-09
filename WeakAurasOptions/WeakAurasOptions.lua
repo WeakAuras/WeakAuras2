@@ -872,6 +872,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                   if(name) then
                     return name;
                   else
+                    local itemId = tonumber(trigger[realname])
+                    if itemId and itemId ~= 0 then
+                      return tostring(trigger[realname])
+                    end
                     return L["Invalid Item Name/ID/Link"];
                   end
                 else
