@@ -4005,8 +4005,11 @@ function WeakAuras.ShowMouseoverTooltip(region, owner)
     return;
   end
 
-  triggerSystem.SetToolTip(region.state.trigger, region.state);
-  GameTooltip:Show();
+  if (triggerSystem.SetToolTip(region.state.trigger, region.state)) then
+    GameTooltip:Show();
+  else
+    GameTooltip:Hide();
+  end
 end
 
 function WeakAuras.HideTooltip()

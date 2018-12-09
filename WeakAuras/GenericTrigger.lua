@@ -2875,12 +2875,16 @@ function GenericTrigger.SetToolTip(trigger, state)
   if (trigger.type == "custom" and trigger.custom_type == "stateupdate") then
     if (state.spellId) then
       GameTooltip:SetSpellByID(state.spellId);
+      return true
     elseif (state.itemId) then
       GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
+      return true
     elseif (state.unit and state.unitBuffIndex) then
       GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex);
+      return true
     elseif (state.unit and state.unitDebuffIndex) then
       GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex);
+      return true
     end
   end
 
@@ -2888,11 +2892,14 @@ function GenericTrigger.SetToolTip(trigger, state)
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
       if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
         GameTooltip:SetSpellByID(trigger.spellName);
+        return true
       elseif(WeakAuras.event_prototypes[trigger.event].hasItemID) then
         GameTooltip:SetHyperlink("item:"..trigger.itemName..":0:0:0:0:0:0:0")
+        return true
       end
     end
   end
+  return false
 end
 
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
