@@ -3961,12 +3961,7 @@ end
 function WeakAuras.CorrectItemName(input)
   local inputId = tonumber(input);
   if(inputId) then
-    local name = GetItemInfo(inputId);
-    if(name) then
-      return inputId;
-    else
-      return nil;
-    end
+    return inputId;
   elseif(input) then
     local _, link = GetItemInfo(input);
     if(link) then
