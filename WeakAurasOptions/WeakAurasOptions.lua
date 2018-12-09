@@ -3486,14 +3486,12 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
   end
 
+  fixMetaOrders(allOptions);
+  local regionOption = flattenRegionOptions(allOptions, id);
   replaceNameDescFuncs(allOptions, data);
   replaceImageFuncs(allOptions, data);
   replaceValuesFuncs(allOptions, data);
   removeFuncs(allOptions);
-  fixMetaOrders(allOptions);
-  local regionOption = flattenRegionOptions(allOptions, id);
-
-
   options.args.region.args = regionOption;
 end
 
