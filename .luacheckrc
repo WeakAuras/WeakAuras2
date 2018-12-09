@@ -64,6 +64,7 @@ globals = {
 	"UISpecialFrames",
 	"Mixin",
 	"SmoothStatusBarMixin",
+	"Round",
 
 	-- FrameXML frames
 	"GameTooltip",
