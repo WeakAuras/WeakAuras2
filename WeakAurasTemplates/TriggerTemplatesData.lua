@@ -2236,7 +2236,6 @@ templates.class.WARLOCK = {
         { spell = 113860, type = "buff", unit = "player", talent = 21 }, -- Dark Soul: Misery
         { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
         { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
-        { spell = 6307, type = "buff", unit = "player"}, -- Blood Pact
         { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
         { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
         { spell = 264571, type = "buff", unit = "player", talent = 1 }, -- Nightfall
@@ -2348,7 +2347,6 @@ templates.class.WARLOCK = {
         { spell = 267218, type = "buff", unit = "player", talent = 21 }, -- Nether Portal
         { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
         { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
-        { spell = 6307, type = "buff", unit = "player"}, -- Blood Pact
         { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
         { spell = 205146, type = "buff", unit = "player", talent = 4 }, -- Demonic Calling
         { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
@@ -2464,7 +2462,6 @@ templates.class.WARLOCK = {
         { spell = 126, type = "buff", unit = "player"}, -- Eye of Kilrogg
         { spell = 113858, type = "buff", unit = "player", talent = 21 }, -- Dark Soul: Instability
         { spell = 196099, type = "buff", unit = "player", talent = 18 }, -- Grimoire of Sacrifice
-        { spell = 6307, type = "buff", unit = "player"}, -- Blood Pact
         { spell = 266091, type = "buff", unit = "player", talent = 17 }, -- Grimoire of Supremacy
         { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
         { spell = 266030, type = "buff", unit = "player", talent = 4 }, -- Reverse Entropy
