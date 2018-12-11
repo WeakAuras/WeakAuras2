@@ -21,6 +21,7 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] Test B
 
 # Checklist:
+<!-- These can be checked off after the pull request is submitted, in case you want discussion before they’re completely ready -->
 
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
