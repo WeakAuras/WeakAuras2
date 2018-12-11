@@ -2650,11 +2650,12 @@ templates.class.MONK = {
       title = L["Specific Azerite Traits"],
       args = {
         { spell = 275893, type = "buff", unit = "player"}, --Fit to Burst
-        { spell = 278535, type = "buff", unit = "player"}, --Niuzao's Blessing
+        { spell = 285959, type = "buff", unit = "player"}, --Straight, No Chaser
         { spell = 273469, type = "buff", unit = "player"}, --Staggering Strikes
         { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
         { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
         { spell = 278767, type = "buff", unit = "player"}, --Training of Niuzao
+        { spell = 289324, type = "buff", unit = "player"}, --Exit Strategy
       },
       icon = 135349
     },
@@ -2751,6 +2752,8 @@ templates.class.MONK = {
         { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
         { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
         { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
+        { spell = 289324, type = "buff", unit = "player"}, --Exit Strategy
+        { spell = 287837, type = "buff", unit = "player"}, --Secret Infusion
       },
       icon = 135349
     },
@@ -2848,10 +2851,11 @@ templates.class.MONK = {
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
-        { spell = 272806, type = "buff", unit = "player"}, --Iron Fists
+        { spell = 287062, type = "buff", unit = "player"}, --Fury of Xuen
         { spell = 279922, type = "buff", unit = "player"}, --Open Palm Strikes
         { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
-        { spell = 278710, type = "buff", unit = "player"}, --Swift Roundhouse
+        { spell = 286587, type = "buff", unit = "player"}, --Dance of Chi-Ji
+        { spell = 289324, type = "buff", unit = "player"}, --Exit Strategy
       },
       icon = 135349
     },
