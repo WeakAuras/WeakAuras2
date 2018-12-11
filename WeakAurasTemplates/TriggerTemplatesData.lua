@@ -1024,7 +1024,7 @@ templates.class.HUNTER = {
         { spell = 288573, type = "buff", unit = "player"}, --Prime Intuition
         { spell = 263818, type = "buff", unit = "player"}, --Vigorous Wings
         { spell = 264199, type = "buff", unit = "player"}, --Whirling Rebound
-        
+
       },
       icon = 135349
     },
