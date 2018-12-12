@@ -5121,7 +5121,7 @@ local function ensurePRDFrame()
       elseif (ElvUIPlayerNamePlateAnchor) then
         personalRessourceDisplayFrame:Attach(ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor);
       else
-        personalRessourceDisplayFrame:Attach(frame, frame.UnitFrame.healthBar, NamePlateDriverFrame.nameplateManaBar);
+        personalRessourceDisplayFrame:Attach(frame, frame.UnitFrame.healthBar, NamePlateDriverFrame.classNamePlatePowerBar);
       end
     else
       personalRessourceDisplayFrame:Detach();
@@ -5145,7 +5145,7 @@ local function ensurePRDFrame()
           elseif (ElvUIPlayerNamePlateAnchor) then
             personalRessourceDisplayFrame:Attach(ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor);
           else
-            personalRessourceDisplayFrame:Attach(frame, frame.UnitFrame.healthBar, NamePlateDriverFrame.nameplateManaBar);
+            personalRessourceDisplayFrame:Attach(frame, frame.UnitFrame.healthBar, NamePlateDriverFrame.classNamePlatePowerBar);
           end
           personalRessourceDisplayFrame:Show();
           db.personalRessourceDisplayFrame = db.personalRessourceDisplayFrame or {};
