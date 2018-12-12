@@ -40,6 +40,7 @@ local L = WeakAuras.L
 -- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION C_Map
 -- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO C_SpecializationInfo
 
+local loginQueue = {}
 local queueshowooc;
 
 function WeakAuras.InternalVersion()
@@ -48,7 +49,10 @@ end
 
 function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
-    if InCombatLockdown() then
+    if not WeakAuras.IsLoginFinished() then
+      prettyPrint(L["Options will finish loading after the login process has completed."])
+      loginQueue[#loginQueue + 1] = WeakAuras.OpenOptions
+    elseif InCombatLockdown() then
       -- inform the user and queue ooc
       prettyPrint(L["Options will finish loading after combat ends."])
       queueshowooc = msg or "";
@@ -1317,8 +1321,8 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
-local callbacks = {}
 local loginThread = coroutine.create(function()
+  WeakAuras.Pause();
   local toAdd = {};
   for id, data in pairs(db.displays) do
     if(id ~= data.id) then
@@ -1352,8 +1356,12 @@ local loginThread = coroutine.create(function()
   WeakAuras.RegisterLoadEvents();
   WeakAuras.Resume();
   coroutine.yield();
-  for _, callback in ipairs(callbacks) do
-    callback();
+  for _, callback in ipairs(loginQueue) do
+    if type(callback) == 'table' then
+      callback[1](unpack(callback[2]))
+    else
+      callback()
+    end
     coroutine.yield();
   end
 end)
@@ -1403,10 +1411,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     local startTime = debugprofilestop()
     local finishTime = debugprofilestop()
     -- hard limit seems to be 19 seconds. We'll do 15 for now.
-    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 8000 do
+    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 15000 do
       coroutine.resume(loginThread)
       finishTime = debugprofilestop()
-      print(finishTime - startTime)
     end
     if coroutine.status(loginThread) ~= 'dead' then
       WeakAuras.dynFrame:AddAction('login', loginThread)
@@ -1442,6 +1449,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         end
       end
     end
+    loginQueue[#loginQueue + 1] = callback
   end
 end);
 
@@ -1584,6 +1592,10 @@ function WeakAuras.CreateEncounterTable(encounter_id)
 end
 
 function WeakAuras.LoadEncounterInitScripts(id)
+  if not WeakAuras.IsLoginFinished() then
+    loginQueue[#loginQueue + 1] = {WeakAuras.LoadEncounterInitScripts, {id}}
+    return
+  end
   if (WeakAuras.currentInstanceType ~= "raid") then
     return
   end
@@ -1623,6 +1635,10 @@ end
 local toLoad = {}
 local toUnload = {};
 function WeakAuras.ScanForLoads(self, event, arg1, ...)
+  if not WeakAuras.IsLoginFinished() then
+    loginQueue[#loginQueue + 1] = WeakAuras.ScanForLoads
+    return
+  end
   if (WeakAuras.IsOptionsProcessingPaused()) then
     return;
   end
@@ -2240,7 +2256,7 @@ function WeakAuras.ResolveCollisions(onFinished)
         -- Do the collision resolution
         local newId = self.editBox:GetText();
         if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
-          WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
+          WeakAuras.displayButtons[currentId].loginQueue.OnRenameAction(newId)
         else
           local data = WeakAuras.GetData(currentId);
           if(data) then
@@ -4159,6 +4175,10 @@ do
   end
 
   function WeakAuras.InitCustomTextUpdates()
+    if not WeakAuras.IsLoginFinished() then
+      loginQueue[#loginQueue] = WeakAuras.InitCustomTextUpdates
+      return
+    end
     if not(customTextUpdateFrame) then
       customTextUpdateFrame = CreateFrame("frame");
       customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
