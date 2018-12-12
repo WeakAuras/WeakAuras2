@@ -1368,6 +1368,7 @@ local loginThread = coroutine.create(function()
     coroutine.yield();
     nextCallback = loginQueue[1];
   end
+  WeakAuras.InitCustomTextUpdates()
 end)
 
 function WeakAuras.IsLoginFinished()
@@ -1421,6 +1422,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     end
     if coroutine.status(loginThread) ~= 'dead' then
       WeakAuras.dynFrame:AddAction('login', loginThread)
+    else
+      WeakAuras.InitCustomTextUpdates()
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
