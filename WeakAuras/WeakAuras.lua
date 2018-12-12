@@ -1397,7 +1397,14 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         loginFinished = true;
       end
     )
-    WeakAuras.dynFrame:AddAction('login', loginThread)
+    local startTime = debugprofilestop()
+    local finishTime = debugprofilestop()
+    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 15000 do
+      coroutine.resume(loginThread)
+    end
+    if coroutine.status(loginThread) ~= 'dead' then
+      WeakAuras.dynFrame:AddAction('login', loginThread)
+    end
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
