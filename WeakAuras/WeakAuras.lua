@@ -2256,7 +2256,7 @@ function WeakAuras.ResolveCollisions(onFinished)
         -- Do the collision resolution
         local newId = self.editBox:GetText();
         if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
-          WeakAuras.displayButtons[currentId].loginQueue.OnRenameAction(newId)
+          WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
         else
           local data = WeakAuras.GetData(currentId);
           if(data) then
@@ -3174,8 +3174,8 @@ function WeakAuras.SetRegion(data, cloneId)
           data.parent = nil;
         end
       end
-
-      local anim_cancelled = WeakAuras.CancelAnimation(region, true, true, true, true, true);
+      local loginFinished = WeakAuras.IsLoginFinished();
+      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);
@@ -3200,7 +3200,6 @@ function WeakAuras.SetRegion(data, cloneId)
       if(cloneId) then
         clonePool[regionType] = clonePool[regionType] or {};
       end
-
       if(anim_cancelled) then
         WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
       end
