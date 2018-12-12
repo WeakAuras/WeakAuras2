@@ -1317,6 +1317,11 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
+local loginFinished = false
+function WeakAuras.IsLoginFinished()
+  return loginFinished
+end
+
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = frame;
 frame:SetAllPoints(UIParent);
@@ -1355,32 +1360,44 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
   elseif(event == "PLAYER_LOGIN") then
-    local toAdd = {};
-    for id, data in pairs(db.displays) do
-      if(id ~= data.id) then
-        print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
-        data.id = id;
+    local loginThread = coroutine.create(
+      function()
+        local toAdd = {};
+        for id, data in pairs(db.displays) do
+          if(id ~= data.id) then
+            print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+            data.id = id;
+          end
+          tinsert(toAdd, data);
+        end
+        coroutine.yield();
+
+        WeakAuras.AddMany(toAdd);
+        coroutine.yield();
+        WeakAuras.AddManyFromAddons(from_files);
+        WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
+        coroutine.yield();
+        WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+        coroutine.yield();
+
+        for _, triggerSystem in pairs(triggerSystems) do
+          if (triggerSystem.AllAdded) then
+            triggerSystem.AllAdded();
+          end
+        end
+        coroutine.yield();
+
+        -- check in case of a disconnect during an encounter.
+        if (db.CurrentEncounter) then
+          WeakAuras.CheckForPreviousEncounter()
+        end
+        coroutine.yield();
+        WeakAuras.RegisterLoadEvents();
+        WeakAuras.Resume();
+        loginFinished = true;
       end
-      tinsert(toAdd, data);
-    end
-    WeakAuras.AddMany(toAdd);
-    WeakAuras.AddManyFromAddons(from_files);
-    WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
-
-    WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-
-    for _, triggerSystem in pairs(triggerSystems) do
-      if (triggerSystem.AllAdded) then
-        triggerSystem.AllAdded();
-      end
-    end
-    -- check in case of a disconnect during an encounter.
-    if (db.CurrentEncounter) then
-      WeakAuras.CheckForPreviousEncounter()
-    end
-
-    WeakAuras.RegisterLoadEvents();
-    WeakAuras.Resume();
+    )
+    WeakAuras.dynFrame:AddAction('login', loginThread)
   elseif(event == "PLAYER_ENTERING_WORLD") then
     -- Schedule events that need to be handled some time after login
     timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
