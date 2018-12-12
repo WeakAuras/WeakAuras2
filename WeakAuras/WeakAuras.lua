@@ -4207,7 +4207,6 @@ do
   end
 
   function WeakAuras.RegisterCustomTextUpdates(region)
-    WeakAuras.InitCustomTextUpdates();
     updateRegions[region] = true;
   end
 
