@@ -1610,6 +1610,7 @@ local function LoadEncounterInitScriptsImpl(id)
       WeakAuras.ActivateAuraEnvironment(id)
       WeakAuras.ActivateAuraEnvironment(nil)
     end
+    encounterScriptsDeferred[id] = nil
   else
     for id, data in pairs(db.displays) do
       if (data.load.use_encounterid and not WeakAuras.IsEnvironmentInitialized(id) and data.actions.init and data.actions.init.do_custom) then
@@ -1618,7 +1619,6 @@ local function LoadEncounterInitScriptsImpl(id)
       end
     end
   end
-  encounterScriptsDeferred[id] = nil
 end
 
 function WeakAuras.LoadEncounterInitScripts(id)
