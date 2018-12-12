@@ -2729,50 +2729,54 @@ function WeakAuras.SyncParentChildRelationships(silent)
 end
 
 function WeakAuras.AddMany(table)
-  local idtable = {};
-  for _, data in ipairs(table) do
-    idtable[data.id] = data;
-  end
-  local loaded = {};
-  local function load(id, depends)
-    local data = idtable[id];
-    if(data.parent) then
-      if(idtable[data.parent]) then
-        if(tContains(depends, data.parent)) then
-          error("Circular dependency in WeakAuras.AddMany between "..table.concat(depends, ", "));
-        else
-          if not(loaded[data.parent]) then
-            local dependsOut = {};
-            for i,v in pairs(depends) do
-              dependsOut[i] = v;
+  local f = coroutine.create(function()
+    local idtable = {};
+    for _, data in ipairs(table) do
+      idtable[data.id] = data;
+    end
+    local loaded = {};
+    local function load(id, depends)
+      local data = idtable[id];
+      if(data.parent) then
+        if(idtable[data.parent]) then
+          if(tContains(depends, data.parent)) then
+            error("Circular dependency in WeakAuras.AddMany between "..table.concat(depends, ", "));
+          else
+            if not(loaded[data.parent]) then
+              local dependsOut = {};
+              for i,v in pairs(depends) do
+                dependsOut[i] = v;
+              end
+              tinsert(dependsOut, data.parent);
+              load(data.parent, dependsOut);
             end
-            tinsert(dependsOut, data.parent);
-            load(data.parent, dependsOut);
           end
+        else
+          data.parent = nil;
         end
-      else
-        data.parent = nil;
+      end
+      if not(loaded[id]) then
+        WeakAuras.Add(data);
+        loaded[id] = true;
       end
     end
-    if not(loaded[id]) then
-      WeakAuras.Add(data);
-      loaded[id] = true;
+    local groups = {}
+    for id, data in pairs(idtable) do
+      load(id, {});
+      if data.regionType == "dynamicgroup" or data.regionType == "group" then
+        groups[data] = true
+      end
     end
-  end
-  local groups = {}
-  for id, data in pairs(idtable) do
-    load(id, {});
-    if data.regionType == "dynamicgroup" or data.regionType == "group" then
-      groups[data] = true
+    for data in pairs(groups) do
+      if data.type == "dynamicgroup" then
+        regions[data.id].region:ControlChildren()
+      else
+        WeakAuras.Add(data)
+      end
+      coroutine.yield()
     end
-  end
-  for data in pairs(groups) do
-    if data.type == "dynamicgroup" then
-      regions[data.id].region:ControlChildren()
-    else
-      WeakAuras.Add(data)
-    end
-  end
+  end)
+  WeakAuras.dynFrame:AddAction("addmany", f)
 end
 
 local function validateUserConfig(data)
