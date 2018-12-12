@@ -1317,9 +1317,43 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
-local loginFinished = false
+local loginThread = coroutine.create(function()
+  local toAdd = {};
+  for id, data in pairs(db.displays) do
+    if(id ~= data.id) then
+      print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+      data.id = id;
+    end
+    tinsert(toAdd, data);
+  end
+  coroutine.yield();
+
+  WeakAuras.AddMany(toAdd);
+  coroutine.yield();
+  WeakAuras.AddManyFromAddons(from_files);
+  WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
+  coroutine.yield();
+  WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+  coroutine.yield();
+
+  for _, triggerSystem in pairs(triggerSystems) do
+    if (triggerSystem.AllAdded) then
+      triggerSystem.AllAdded();
+    end
+  end
+  coroutine.yield();
+
+  -- check in case of a disconnect during an encounter.
+  if (db.CurrentEncounter) then
+    WeakAuras.CheckForPreviousEncounter()
+  end
+  coroutine.yield();
+  WeakAuras.RegisterLoadEvents();
+  WeakAuras.Resume();
+end)
+
 function WeakAuras.IsLoginFinished()
-  return loginFinished
+  return coroutine.status(loginThread) == 'dead'
 end
 
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
@@ -1360,47 +1394,13 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
   elseif(event == "PLAYER_LOGIN") then
-    local loginThread = coroutine.create(
-      function()
-        local toAdd = {};
-        for id, data in pairs(db.displays) do
-          if(id ~= data.id) then
-            print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
-            data.id = id;
-          end
-          tinsert(toAdd, data);
-        end
-        coroutine.yield();
-
-        WeakAuras.AddMany(toAdd);
-        coroutine.yield();
-        WeakAuras.AddManyFromAddons(from_files);
-        WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
-        coroutine.yield();
-        WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-        coroutine.yield();
-
-        for _, triggerSystem in pairs(triggerSystems) do
-          if (triggerSystem.AllAdded) then
-            triggerSystem.AllAdded();
-          end
-        end
-        coroutine.yield();
-
-        -- check in case of a disconnect during an encounter.
-        if (db.CurrentEncounter) then
-          WeakAuras.CheckForPreviousEncounter()
-        end
-        coroutine.yield();
-        WeakAuras.RegisterLoadEvents();
-        WeakAuras.Resume();
-        loginFinished = true;
-      end
-    )
     local startTime = debugprofilestop()
     local finishTime = debugprofilestop()
-    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 15000 do
+    -- hard limit seems to be 19 seconds. We'll do 15 for now.
+    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 8000 do
       coroutine.resume(loginThread)
+      finishTime = debugprofilestop()
+      print(finishTime - startTime)
     end
     if coroutine.status(loginThread) ~= 'dead' then
       WeakAuras.dynFrame:AddAction('login', loginThread)
