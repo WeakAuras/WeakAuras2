@@ -1317,6 +1317,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
+local callbacks = {}
 local loginThread = coroutine.create(function()
   local toAdd = {};
   for id, data in pairs(db.displays) do
@@ -1339,9 +1340,9 @@ local loginThread = coroutine.create(function()
   for _, triggerSystem in pairs(triggerSystems) do
     if (triggerSystem.AllAdded) then
       triggerSystem.AllAdded();
+      coroutine.yield();
     end
   end
-  coroutine.yield();
 
   -- check in case of a disconnect during an encounter.
   if (db.CurrentEncounter) then
@@ -1350,6 +1351,11 @@ local loginThread = coroutine.create(function()
   coroutine.yield();
   WeakAuras.RegisterLoadEvents();
   WeakAuras.Resume();
+  coroutine.yield();
+  for _, callback in ipairs(callbacks) do
+    callback();
+    coroutine.yield();
+  end
 end)
 
 function WeakAuras.IsLoginFinished()
@@ -1405,24 +1411,36 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     if coroutine.status(loginThread) ~= 'dead' then
       WeakAuras.dynFrame:AddAction('login', loginThread)
     end
-  elseif(event == "PLAYER_ENTERING_WORLD") then
-    -- Schedule events that need to be handled some time after login
-    timer:ScheduleTimer(function() squelch_actions = false; end, db.login_squelch_time);      -- No sounds while loading
-    WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
-    WeakAuras.UpdateCurrentInstanceType();
-  elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
-    WeakAuras.CreatePvPTalentCache();
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
   elseif(event == "LOADING_SCREEN_DISABLED") then
+  else
     in_loading_screen = false;
-  elseif(event == "ACTIVE_TALENT_GROUP_CHANGED") then
-    WeakAuras.CreateTalentCache();
-  elseif(event == "PLAYER_REGEN_ENABLED") then
-    if (queueshowooc) then
-      WeakAuras.OpenOptions(queueshowooc)
-      queueshowooc = nil
-      WeakAuras.frames["Addon Initialization Handler"]:UnregisterEvent("PLAYER_REGEN_ENABLED")
+    local callback
+    if(event == "PLAYER_ENTERING_WORLD") then
+      -- Schedule events that need to be handled some time after login
+      local now = GetTime()
+      callback = function()
+        local elapsed = GetTime() - now
+        local remainingSquelch = db.login_squelch_time - elapsed
+        if remainingSquelch > 0 then
+          timer:ScheduleTimer(function() squelch_actions = false; end, remainingSquelch);      -- No sounds while loading
+        end
+        WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
+        WeakAuras.UpdateCurrentInstanceType();
+      end
+    elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
+      callback = WeakAuras.CreatePvPTalentCache;
+    elseif(event == "ACTIVE_TALENT_GROUP_CHANGED") then
+      callback = WeakAuras.CreateTalentCache;
+    elseif(event == "PLAYER_REGEN_ENABLED") then
+      callback = function()
+        if (queueshowooc) then
+          WeakAuras.OpenOptions(queueshowooc)
+          queueshowooc = nil
+          WeakAuras.frames["Addon Initialization Handler"]:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        end
+      end
     end
   end
 end);
@@ -2780,6 +2798,7 @@ function WeakAuras.AddMany(table)
     end
     if not(loaded[id]) then
       WeakAuras.Add(data);
+      coroutine.yield();
       loaded[id] = true;
     end
   end
@@ -2796,6 +2815,7 @@ function WeakAuras.AddMany(table)
     else
       WeakAuras.Add(data)
     end
+    coroutine.yield();
   end
 end
 
