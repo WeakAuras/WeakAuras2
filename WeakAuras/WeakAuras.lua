@@ -1600,16 +1600,7 @@ function WeakAuras.CreateEncounterTable(encounter_id)
 end
 
 local encounterScriptsDeferred = {}
-function WeakAuras.LoadEncounterInitScripts(id)
-  if not WeakAuras.IsLoginFinished() then
-    if encounterScriptsDeferred[id] then
-      return
-    end
-    loginQueue[#loginQueue + 1] = {WeakAuras.LoadEncounterInitScripts, {id}}
-    encounterScriptsDeferred[id] = true
-    return
-  end
-  encounterScriptsDeferred = nil
+local function LoadEncounterInitScriptsImpl(id)
   if (WeakAuras.currentInstanceType ~= "raid") then
     return
   end
@@ -1627,6 +1618,19 @@ function WeakAuras.LoadEncounterInitScripts(id)
       end
     end
   end
+  encounterScriptsDeferred[id] = nil
+end
+
+function WeakAuras.LoadEncounterInitScripts(id)
+  if not WeakAuras.IsLoginFinished() then
+    if encounterScriptsDeferred[id] then
+      return
+    end
+    loginQueue[#loginQueue + 1] = {LoadEncounterInitScriptsImpl, {id}}
+    encounterScriptsDeferred[id] = true
+    return
+  end
+  LoadEncounterInitScriptsImpl(id)
 end
 
 function WeakAuras.UpdateCurrentInstanceType(instanceType)
@@ -4187,21 +4191,26 @@ do
     WeakAuras.StopProfileSystem("custom text - every frame update");
   end
 
+  local function InitCustomTextUpdatesImpl()
+    if not(customTextUpdateFrame) then
+      customTextUpdateFrame = CreateFrame("frame");
+      customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
+    end
+  end
 
   function WeakAuras.InitCustomTextUpdates()
     if not WeakAuras.IsLoginFinished() then
       if initRequested then
         return
       end
-      loginQueue[#loginQueue] = WeakAuras.InitCustomTextUpdates
+      loginQueue[#loginQueue] = InitCustomTextUpdatesImpl
       initRequested = true
       return
     end
-    if not(customTextUpdateFrame) then
-      customTextUpdateFrame = CreateFrame("frame");
-      customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
-    end
+    InitCustomTextUpdatesImpl()
   end
+
+
 
   function WeakAuras.RegisterCustomTextUpdates(region)
     WeakAuras.InitCustomTextUpdates();
