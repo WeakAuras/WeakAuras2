@@ -827,6 +827,13 @@ local methods = {
         self.update:Show()
         self.update:Enable()
         self.updateLogo:Show()
+        -- show update on group
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            button:ShowGroupUpdate()
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -854,6 +861,13 @@ local methods = {
         self.update:Hide()
         self.update:Disable()
         self.updateLogo:Hide()
+        -- update group icon if necessary
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            WeakAuras.RefreshGroupUpdateIcon(button)
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -888,6 +902,13 @@ local methods = {
         self.update:Show()
         self.update:Enable()
         self.updateLogo:Show()
+        -- show update on group
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            button:ShowGroupUpdate()
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -915,6 +936,13 @@ local methods = {
         self.update:Hide()
         self.update:Disable()
         self.updateLogo:Hide()
+        -- update group icon if necessary
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            WeakAuras.RefreshGroupUpdateIcon(button)
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -1153,6 +1181,13 @@ local methods = {
                   notCheckable = 1,
                   func = self.callbacks.OnUpdateClick
                 });
+                -- show icon on group
+                if self.data.parent then
+                  local button = WeakAuras.GetDisplayButton(self.data.parent)
+                  if button then
+                    button:ShowGroupUpdate()
+                  end
+                end
               end
             end
           end
@@ -1581,6 +1616,29 @@ local methods = {
       self:Collapse();
     end
   end,
+  ["ShowGroupUpdate"] = function(self)
+    if self.groupUpdate.disable then
+      self.groupUpdate:Show()
+      self.groupUpdate.disable = false
+    end
+  end,
+  ["HideGroupUpdate"] = function(self)
+    if not self.groupUpdate.disable then
+      self.groupUpdate:Hide()
+      self.groupUpdate.disable = true
+    end
+  end,
+  ["HasUpdate"] = function(self)
+    if self.update
+    and self.update.slug
+    and not self.data.ignoreWagoUpdate
+    and not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == self.update.wagoVersion)
+    then
+      return true
+    else
+      return false
+    end
+  end,
   ["SetGroupOrder"] = function(self, order, max)
     if(order == 1) then
       self:DisableUpGroup();
@@ -1922,6 +1980,7 @@ local function Constructor()
   expand:SetScript("OnLeave", Hide_Tooltip);
 
   local update, updateLogo
+  local groupUpdate
   if WeakAurasCompanion then
     update = CreateFrame("BUTTON", nil, button);
     button.update = update
@@ -1960,6 +2019,22 @@ local function Constructor()
     update:SetScript("OnLeave", Hide_Tooltip);
     update:Hide();
     updateLogo:Hide()
+
+    -- Update in group icon
+    groupUpdate = CreateFrame("Frame", nil, button);
+    button.groupUpdate = groupUpdate
+    local gtex = groupUpdate:CreateTexture(nil, "OVERLAY")
+    gtex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
+    gtex:SetAllPoints()
+    groupUpdate:SetSize(16, 16);
+    groupUpdate:SetPoint("BOTTOM", button, "BOTTOM");
+    groupUpdate:SetPoint("LEFT", icon, "RIGHT", 20, 0);
+    groupUpdate.disable = true
+    groupUpdate.title = L["Update in Group"];
+    groupUpdate.desc = L["Group contains updates from Wago"];
+    groupUpdate:SetScript("OnEnter", function() Show_Tooltip(button, groupUpdate.title, groupUpdate.desc) end);
+    groupUpdate:SetScript("OnLeave", Hide_Tooltip);
+    groupUpdate:Hide();
   end
 
   local widget = {
@@ -1980,6 +2055,7 @@ local function Constructor()
     background = background,
     expand = expand,
     update = update,
+    groupUpdate = groupUpdate,
     updateLogo = updateLogo,
     type = Type
   }

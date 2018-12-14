@@ -4460,7 +4460,23 @@ function WeakAuras.UpdateDisplayButton(data)
   local button = displayButtons[id];
   if (button) then
     button:SetIcon(WeakAuras.SetThumbnail(data));
+    if button:IsGroup() then
+      WeakAuras.RefreshGroupUpdateIcon(button)
+    end
   end
+end
+
+function WeakAuras.RefreshGroupUpdateIcon(button)
+  local parentId = button.data.id
+  for id, child in pairs(displayButtons) do
+    if child.data.parent == parentId then
+      if child:HasUpdate() then
+        button:ShowGroupUpdate()
+        return
+      end
+    end
+  end
+  button:HideGroupUpdate()
 end
 
 function WeakAuras.SetThumbnail(data)
