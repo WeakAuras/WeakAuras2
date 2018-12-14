@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
