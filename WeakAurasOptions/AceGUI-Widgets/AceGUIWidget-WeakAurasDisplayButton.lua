@@ -747,7 +747,7 @@ local methods = {
     function self.callbacks.OnUpdateClick()
       local _,_,updateData = self:HasUpdate()
       if updateData then
-        WeakAuras.ImportString(updateData.encoded)
+        WeakAuras.Import(updateData.encoded, self.data)
       end
     end
 
