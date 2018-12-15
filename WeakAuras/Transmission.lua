@@ -101,6 +101,7 @@ function GenerateUniqueID()
   end
   return table.concat(s)
 end
+WeakAuras.GenerateUniqueID = GenerateUniqueID
 
 function CompressDisplay(data)
   -- Clean up custom trigger fields that are unused
@@ -667,9 +668,7 @@ function WeakAuras.DisplayToString(id, forChat)
         if(childData) then
           if childData.uid then
             if uids[childData.uid] then
-              -- This should be pretty rare, but may cause some unexpected behavior.
-              -- The other option is to regenerate the uid in this case.B
-              childData.uid = nil
+              childData.uid = GenerateUniqueID()
             else
               uids[childData.uid] = true
             end

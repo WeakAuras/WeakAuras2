@@ -94,7 +94,7 @@ function WeakAuras.DuplicateAura(data)
   WeakAuras.DeepCopy(data, newData);
   newData.id = new_id;
   newData.parent = nil;
-  newData.uid = nil
+  newData.uid = WeakAuras.GenerateUniqueID();
   WeakAuras.Add(newData);
   WeakAuras.NewDisplayButton(newData);
   if(data.parent) then
@@ -385,7 +385,7 @@ function WeakAuras.DuplicateAura(data)
   WeakAuras.DeepCopy(data, newData);
   newData.id = new_id;
   newData.parent = nil;
-  newData.uid = nil
+  newData.uid = WeakAuras.GenerateUniqueID;
   WeakAuras.Add(newData);
   WeakAuras.NewDisplayButton(newData);
   if(data.parent) then
@@ -4621,7 +4621,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     return t and k and v and t[k] == v
   end
   local new_id = WeakAuras.FindUnusedId("New")
-  local data = {id = new_id, regionType = regionType}
+  local data = {id = new_id, regionType = regionType, uid = WeakAuras.GenerateUniqueID()}
   WeakAuras.DeepCopy(WeakAuras.data_stub, data);
   if (sourceData) then
     WeakAuras.DeepCopy(sourceData, data);

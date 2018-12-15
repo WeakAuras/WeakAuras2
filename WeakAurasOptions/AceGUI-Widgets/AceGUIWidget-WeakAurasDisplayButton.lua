@@ -1638,7 +1638,7 @@ local methods = {
         end
       end
     end
-    -- no addon, or no uid, or no data, or ignore flag
+    -- no addon, or no data, or ignore flag
     return false, false, nil
   end,
   ["SetGroupOrder"] = function(self, order, max)
