@@ -13,8 +13,9 @@ Converts the display id to a formatted table
 ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
 Shows a tooltip frame for an aura, which allows for importing if import is true
 
-ImportString(str)
-Imports an aura from a string
+Import(str, [target])
+Imports an aura from a table, which may or may not be encoded as a B64 string.
+If target is installed data, or is a uid which points to installed data, then the import will be an update to that aura
 
 ]]--
 
@@ -508,7 +509,7 @@ local function importPendingData()
     WeakAuras.SortDisplayButtons()
   end
   WeakAuras.SetImporting(false)
-  WeakAuras.PickDisplay(installedData[0].id)
+  return WeakAuras.PickDisplay(installedData[0].id)
 end
 
 ItemRefTooltip:HookScript("OnHide", function(self)
@@ -1109,22 +1110,7 @@ function WeakAuras.diff(ours, theirs)
   end
 end
 
-function WeakAuras.MatchData(data, children)
-  -- setup
-  local info = {
-    unmodified = 0,
-    modified = 0,
-    added = 0,
-    deleted = 0,
-    oldData = {},
-    newData = {},
-    indexMap = {
-      oldToNew = {},
-      newToOld = {},
-    },
-    diffs = {},
-    activeCategories = {},
-  }
+local function findMatch(data, children)
 
   local function isParentMatch(old, new)
     if old.parent then return end
@@ -1144,8 +1130,6 @@ function WeakAuras.MatchData(data, children)
       end
     end
   end
-
-  -- match the parent/single aura (if no children)
   local oldParent = WeakAuras.GetData(data.id)
   if oldParent and not isParentMatch(oldParent, data) then
     oldParent = nil
@@ -1163,12 +1147,32 @@ function WeakAuras.MatchData(data, children)
       return nil
     end
   end
+  return oldParent
+end
 
+function WeakAuras.MatchInfo(data, children, target)
+  -- match the parent/single aura (if no children)
+  local oldParent = target or findMatch(data)
   if not oldParent then return nil end
+  -- setup
+  local info = {
+    unmodified = 0,
+    modified = 0,
+    added = 0,
+    deleted = 0,
+    oldData = {},
+    newData = {},
+    indexMap = {
+      oldToNew = {},
+      newToOld = {},
+    },
+    diffs = {},
+    activeCategories = {},
+  }
 
   info.oldData[0] = oldParent
   info.newData[0] = data
-  info.diffs[0] = WeakAuras.diff(oldParent, data, true)
+  info.diffs[0] = WeakAuras.diff(oldParent, data)
   if info.diffs[0] then
     info.modified = info.modified + 1
   end
@@ -1337,7 +1341,7 @@ function WeakAuras.Update(data, diff)
 end
 
 
-function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
+function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, import, compressed, alterdesc)
   -- since we have new data, wipe the old pending data
   wipe(pendingData)
 
@@ -1353,7 +1357,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
 
   pendingData.codes = {};
   local highestVersion = data.internalVersion or 1;
-  local match = WeakAuras.MatchData(data, children)
   local hasDescription = data.desc and data.desc ~= "";
   local hasUrl = data.url and data.url ~= "";
   local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
@@ -1403,36 +1406,36 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     for i = 0, #pendingData.newData do
       scamCheck(pendingData.codes, pendingData.newData[i])
     end
-    if match ~= nil then
-      -- MatchData found at least one match
+    if matchInfo ~= nil then
+      -- we know of at least one match
       tinsert(tooltip, {1, " "})
       pendingData.mode = 1
-      if type(match) ~= "table" then
+      if type(matchInfo) ~= "table" then
         -- there is no difference whatsoever
         tinsert(tooltip, {1, L["You already have this group/aura. Importing will create a duplicate."], 1, 0.82, 0,})
       else
         -- load pendingData
-        for k,v in pairs(match) do
+        for k,v in pairs(matchInfo) do
           pendingData[k] = v
         end
         -- tally up changes
         if children and #children > 0 then
           tinsert(tooltip, {1, L["This is a modified version of your group, |cff9900FF%s.|r"]:format(pendingData.oldData[0].id), 1, 0.82, 0,})
           tinsert(tooltip, {1, " "})
-          if match.added ~= 0 then
-            tinsert(tooltip, {1, L["   • %d auras added"]:format(match.added), 1, 0.82, 0})
+          if matchInfo.added ~= 0 then
+            tinsert(tooltip, {1, L["   • %d auras added"]:format(matchInfo.added), 1, 0.82, 0})
           end
-          if match.modified ~= 0 then
-            tinsert(tooltip, {1, L["   • %d auras modified"]:format(match.modified), 1, 0.82, 0})
+          if matchInfo.modified ~= 0 then
+            tinsert(tooltip, {1, L["   • %d auras modified"]:format(matchInfo.modified), 1, 0.82, 0})
           end
-          if match.deleted ~= 0 then
-            tinsert(tooltip, {1, L["   • %d auras deleted"]:format(match.deleted), 1, 0.82, 0})
+          if matchInfo.deleted ~= 0 then
+            tinsert(tooltip, {1, L["   • %d auras deleted"]:format(matchInfo.deleted), 1, 0.82, 0})
           end
           tinsert(tooltip, {1, " "})
           tinsert(tooltip, {1, L["What do you want to do?"], 1, 0.82, 0})
           tinsert(tooltip, {1, " "})
         else
-          local oldID = type(match.oldData[0]) == "table" and match.oldData[0].id or "unknown"
+          local oldID = type(matchInfo.oldData[0]) == "table" and matchInfo.oldData[0].id or "unknown"
           tinsert(tooltip, {1, L["This is a modified version of your aura, |cff9900FF%s.|r"]:format(pendingData.oldData[0].id), 1, 0.82, 0})
           tinsert(tooltip, {1, L["What do you want to do?"], 1, 0.82, 0})
           tinsert(tooltip, {1, " "})
@@ -1649,7 +1652,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     end
   end
   WeakAuras.GetData = RegularGetData or WeakAuras.GetData
-  ShowTooltip(tooltip, linesFromTop, match and match.activeCategories)
+  ShowTooltip(tooltip, linesFromTop, matchInfo and matchInfo.activeCategories)
 
   if alterdesc then
     ItemRefTooltip.WeakAuras_Desc_Box.descbox:SetFocus();
@@ -1659,28 +1662,67 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
   end
 end
 
-function WeakAuras.ImportString(str)
-  local received = StringToTable(str, true);
-  if(received and type(received) == "table" and received.m) then
-    if(received.m == "d") then
-      -- prepare data to be shown as a tooltip and slotted into pendingData
-      tooltipLoading = nil;
-      local data, children, icon, icons = received.d, received.c, received.i, received.a
-      WeakAuras.PreAdd(data)
-      if children then
-        for _, child in ipairs(children) do
-          WeakAuras.PreAdd(child)
+function WeakAuras.Import(inData, target)
+  local data, children, icon, icons
+  if type(inData) == 'string' then
+    -- encoded data
+    local received = StringToTable(inData, true)
+    if type(received) == 'string' then
+      -- this is probably an error message from LibDeflate. Display it.
+      ShowTooltip{
+        {1, "WeakAuras", 0.5333, 0, 1},
+        {1, received, 1, 0, 0, 1}
+      }
+      return nil, received
+    elseif received.m == "d" then
+      data = received.d
+      children = received.c
+      icon = received.i
+      icons = received.a
+    end
+  elseif type(inData.d) == 'table' then
+    data = inData.d
+    children = inData.c
+    icon = inData.i
+    icons = inData.a
+  end
+  if type(data) ~= "table" then
+    return nil, "Invalid import data."
+  end
+  local status, msg = true, ""
+  if type(target) ~= nil then
+    local targetData
+    local uid = type(target) == 'table' and target.uid or target
+    if type(uid) == 'string' then
+      for _, installedData in pairs(WeakAurasSaved.displays) do
+        if installedData.uid == uid then
+          targetData = installedData
+          break
         end
       end
-      WeakAuras.ShowDisplayTooltip(data, children, icon, icons, "unknown")
     end
-  elseif(type(received) == "string") then
-    ShowTooltip({
-      {1, "WeakAuras", 0.5333, 0, 1},
-      {1, received, 1, 0, 0, 1}
-    });
+    if not targetData then
+      status = false
+      msg = "Invalid update target. Importing as an unknown payload."
+      target = nil
+    else
+      target = targetData
+    end
   end
+  WeakAuras.PreAdd(data)
+  if children then
+    for _, child in ipairs(children) do
+      WeakAuras.PreAdd(child)
+    end
+  end
+  tooltipLoading = nil;
+  local matchInfo = WeakAuras.MatchInfo(data, children, target)
+  WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, "unknown")
+  return status, msg
 end
+
+-- backwards compatibility
+WeakAuras.ImportString = WeakAuras.Import
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"

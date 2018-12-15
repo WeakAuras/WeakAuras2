@@ -71,7 +71,7 @@ local function ConstructImportExport(frame)
         input.editBox:ClearFocus();
         pasted = pasted:match( "^%s*(.-)%s*$" );
         if (#pasted > 20) then
-          WeakAuras.ImportString(pasted);
+          WeakAuras.Import(pasted);
           input:SetLabel(L["Processed %i chars"]:format(i));
           input.editBox:SetMaxBytes(2500);
           input.editBox:SetText(strsub(pasted, 1, 2500));

@@ -2754,7 +2754,6 @@ function WeakAuras.Modernize(data)
 
   -- Version 10 was introduced in December 2018
   if data.internalVersion < 10 then
-    data.uid = data.uid or WeakAuras.GenerateUniqueID()
     if not data.version and data.url and data.url ~= "" then
       local slug, version = data.url:match("wago.io/([^/]+)/([0-9]+)")
       if not slug and not version then
@@ -3068,6 +3067,7 @@ local function pAdd(data)
     return;
   end
 
+  data.uid = data.uid or WeakAuras.GenerateUniqueID();
   db.displays[id] = data;
   WeakAuras.ClearAuraEnvironment(id);
 
