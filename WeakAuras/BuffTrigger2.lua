@@ -155,9 +155,9 @@ end
 
 local function MatchesTriggerInfoMulti(triggerInfo, sourceGUID)
   if triggerInfo.ownOnly then
-    return sourceGUID == UnitGUID("player")
+    return sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")
   elseif triggerInfo.ownOnly == false then
-    return sourceGUID ~= UnitGUID("player")
+    return sourceGUID ~= UnitGUID("player") and sourceGUID ~= UnitGUID("pet")
   else
     return true
   end
@@ -1886,13 +1886,13 @@ local function createScanFunc(trigger)
 
   if trigger.ownOnly then
     ret = ret .. [[
-      if matchData.unitCaster ~= 'player' then
+      if matchData.unitCaster ~= 'player' and matchData.unitCaster ~= 'pet' then
         return false
       end
     ]]
   elseif trigger.ownOnly == false then
     ret = ret .. [[
-      if matchData.unitCaster == 'player' then
+      if matchData.unitCaster == 'player' or matchData.unitCaster == 'pet' then
         return false
       end
     ]]
