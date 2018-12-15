@@ -257,7 +257,7 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
   end
 
   if data.isStealable ~= isStealable then
-    data.isStealable = name
+    data.isStealable = isStealable
     changed = true
   end
 
