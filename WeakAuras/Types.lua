@@ -1727,6 +1727,8 @@ WeakAuras.internal_fields = {
   expanded = true,
   parent = true,
   authorMode = true,
+  skipWagoUpdate = true,
+  ignoreWagoUpdate = true
 }
 
 WeakAuras.data_stub = {
