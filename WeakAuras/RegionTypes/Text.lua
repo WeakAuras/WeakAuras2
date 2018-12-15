@@ -250,9 +250,7 @@ local function modify(parent, region, data)
   function region:SetTextHeight(size)
     local fontPath = SharedMedia:Fetch("font", data.font);
     region.text:SetFont(fontPath, size, data.outline);
-    region.text:SetWidth(0);
     region.text:SetTextHeight(size)
-    region.text:SetWidth(region.text:GetWidth() + 1);
   end
 
   function region:SetName(name)

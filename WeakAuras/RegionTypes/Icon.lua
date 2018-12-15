@@ -301,25 +301,15 @@ local function configureText(fontString, icon, enabled, point, width, height, co
     local selfPoint = WeakAuras.inverse_point_types[point];
     fontString:SetPoint(selfPoint, icon, point, -0.5 * sxo, -0.5 * syo);
   end
-  -- WORKAROUND even more Blizzard stupidity. SetJustifyH doesn't seem to work with the hack from SetTextOnText
-  -- So reset here to automatic width
+
   local fontPath = SharedMedia:Fetch("font", font);
   fontString:SetFont(fontPath, fontSize, fontFlags == "MONOCHROME" and "OUTLINE, MONOCHROME" or fontFlags);
-  local t = fontString:GetText();
-  fontString:SetText("WORKAROUND Blizzard Bugs");
-  fontString:SetText(t);
 
   fontString:SetTextHeight(fontSize);
   fontString:SetTextColor(textColor[1], textColor[2], textColor[3], textColor[4]);
 
   fontString:SetJustifyH(h);
   fontString:SetJustifyV(v);
-
-  fontString:SetWidth(0);
-  local tw = fontString:GetWidth();
-  local w = fontString:GetStringWidth();
-  w = w + max(15, w / 20);
-  fontString:SetWidth(w); -- But that internal text size calculation is wrong, see ticket 1014
 end
 
 local function modify(parent, region, data)
