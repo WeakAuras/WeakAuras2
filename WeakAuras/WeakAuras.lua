@@ -2753,10 +2753,10 @@ function WeakAuras.Modernize(data)
 
   -- Version 10 was introduced in December 2018
   if data.internalVersion < 10 then
-    if data.url and data.url ~= "" then
+    if not data.version and data.url and data.url ~= "" then
       local slug, version = data.url:match("wago.io/([^/]+)/([0-9]+)")
       if not slug and not version then
-        slug = self.data.url:match("wago.io/([^/]+)$")
+        slug = data.url:match("wago.io/([^/]+)$")
         version = 1
       end
       if slug then
