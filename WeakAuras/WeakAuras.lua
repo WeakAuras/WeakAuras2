@@ -2756,9 +2756,12 @@ function WeakAuras.Modernize(data)
     if data.url and data.url ~= "" then
       local slug, version = data.url:match("wago.io/([^/]+)/([0-9]+)")
       if not slug and not version then
+        slug = self.data.url:match("wago.io/([^/]+)$")
         version = 1
       end
-      data.version = version
+      if slug then
+        data.version = version
+      end
     end
   end
 
