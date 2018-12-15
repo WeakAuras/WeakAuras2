@@ -1651,7 +1651,7 @@ templates.class.SHAMAN = {
         { spell = 77762, type = "buff", unit = "player"}, -- Lava Surge
         { spell = 2645, type = "buff", unit = "player"}, -- Ghost Wolf
         { spell = 118522, type = "buff", unit = "player", talent = 3}, -- Elemental Blast: Critical Strike
-        { spell = 157348, type = "buff", unit = "pet"}, -- Call Lightning
+        { spell = 157348, type = "buff", unit = "pet", talent = {11,17}}, -- Call Lightning
 
       },
       icon = 451169
