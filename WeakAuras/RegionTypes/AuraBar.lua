@@ -1405,6 +1405,7 @@ local function modify(parent, region, data)
     end
 
     if (data.smoothProgress) then
+      region.bar.targetValue = progress
       region.bar:SetSmoothedValue(progress);
     else
       region.bar:SetValue(progress);
@@ -1424,6 +1425,7 @@ local function modify(parent, region, data)
       progress = 1 - progress;
     end
     if (data.smoothProgress) then
+      region.bar.targetValue = progress
       region.bar:SetSmoothedValue(progress);
     else
       region.bar:SetValue(progress);
@@ -1519,12 +1521,25 @@ local function modify(parent, region, data)
       return;
     end
     region.inverseDirection = inverse;
-    region.bar:SetValue(1 - region.bar:GetValue());
+    if (data.smoothProgress) then
+      if (region.bar.targetValue) then
+        region.bar.targetValue = 1 - region.bar.targetValue
+        region.bar:SetSmoothedValue(region.bar.targetValue);
+      end
+    else
+      region.bar:SetValue(1 - region.bar:GetValue());
+    end
   end
 
   function region:SetOrientation(orientation)
     orient(region, data, orientation);
-    region.bar:SetValue(region.bar:GetValue());
+    if (data.smoothProgress) then
+      if region.bar.targetValue then
+        region.bar:SetSmoothedValue(region.bar.targetValue);
+      end
+    else
+      region.bar:SetValue(region.bar:GetValue());
+    end
   end
 
   function region:SetOverlayColor(id, r, g, b, a)
