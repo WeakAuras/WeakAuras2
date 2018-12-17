@@ -326,6 +326,38 @@ local function createOptions(id, data)
       bigStep = 0.01,
       isPercent = true
     },
+    glowHeader = {
+      type = "header",
+      order = 41.1,
+      name = WeakAuras.newFeatureString .. L["Glow Settings"],
+    },
+    glow = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Show Glow Effect"],
+      order = 41.2,
+    },
+    glowType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Glow Type"],
+      order = 41.3,
+      values = WeakAuras.glow_types,
+    },
+    useGlowColor = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Glow Color"],
+      desc = L["If unchecked, then a default color will be used (usually yellow)"],
+      order = 41.4,
+    },
+    glowColor = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = L["Glow Color"],
+      order = 41.5,
+      disabled = function() return not data.useGlowColor end,
+    },
     spark_header = {
       type = "header",
       name = L["Spark Settings"],

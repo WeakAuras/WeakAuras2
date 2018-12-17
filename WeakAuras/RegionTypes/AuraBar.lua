@@ -1,5 +1,6 @@
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
+local LCG = LibStub("LibCustomGlow-1.0")
 
 -- Default settings
 local default = {
@@ -63,6 +64,10 @@ local default = {
   frameStrata = 1,
   customTextUpdate = "update",
   zoom = 0,
+  glow = false,
+  useglowColor = false,
+  glowColor = {1, 1, 1, 1},
+  glowType = "Pixel",
 };
 
 WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
@@ -71,6 +76,27 @@ WeakAuras.regionPrototype.AddAlphaToDefault(default);
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 local properties = {
+  glow = {
+    display = WeakAuras.newFeatureString .. L["Set Glow Visibility"],
+    setter = "SetGlow",
+    type = "bool"
+  },
+  glowType = {
+    display = WeakAuras.newFeatureString .. L["Glow Type"],
+    setter = "SetGlowType",
+    type = "list",
+    values = WeakAuras.glow_types,
+  },
+  useGlowColor = {
+    display = WeakAuras.newFeatureString .. L["Use Custom Glow Color"],
+    setter = "SetUseGlowColor",
+    type = "bool"
+  },
+  glowColor = {
+    display = WeakAuras.newFeatureString .. L["Glow Color"],
+    setter = "SetGlowColor",
+    type = "color"
+  },
   barColor = {
     display = L["Bar Color"],
     setter = "Color",
@@ -1530,6 +1556,72 @@ local function modify(parent, region, data)
   function region:SetOverlayColor(id, r, g, b, a)
     region.bar:SetAdditionalBarColor(id, { r, g, b, a});
   end
+
+  function region:SetGlowType(newType)
+    local isGlowing = region.glow
+    if isGlowing then
+      region:SetGlow(false)
+    end
+    if newType == "buttonOverlay" then
+      region.glowStart = LCG.ButtonGlow_Start
+      region.glowStop = LCG.ButtonGlow_Stop
+    elseif newType == "ACShine" then
+      region.glowStart = LCG.AutoCastGlow_Start
+      region.glowStop = LCG.AutoCastGlow_Stop
+    elseif newType == "Pixel" then
+      region.glowStart = LCG.PixelGlow_Start
+      region.glowStop = LCG.PixelGlow_Stop
+    end
+    region.glowType = newType
+    if isGlowing then
+      region:SetGlow(true)
+    end
+  end
+
+  function region:SetUseGlowColor(useGlowColor)
+    region.useGlowColor = useGlowColor
+    if region.glow then
+      region:SetGlow(true)
+    end
+  end
+
+  function region:SetGlowColor(r, g, b, a)
+    region.glowColor = {r, g, b, a}
+    if region.glow then
+      region:SetGlow(true)
+    end
+  end
+
+  function region:SetGlow(showGlow)
+    region.glow = showGlow
+    local color
+    if region.useGlowColor then
+      color = region.glowColor
+    end
+    if MSQ then
+      if (showGlow) then
+        region.glowStart(region.button, color);
+      else
+        region.glowStop(region.button);
+      end
+    elseif (showGlow) then
+      if (not region.__WAGlowFrame) then
+        region.__WAGlowFrame = CreateFrame("Frame", nil, region);
+        region.__WAGlowFrame:SetAllPoints();
+        region.__WAGlowFrame:SetSize(region.width, region.height);
+      end
+      region.glowStart(region.__WAGlowFrame, color);
+    else
+      if (region.__WAGlowFrame) then
+        region.glowStop(region.__WAGlowFrame);
+      end
+    end
+  end
+
+  region.useGlowColor = data.useGlowColor
+  region.glowColor = data.glowColor
+  region:SetGlowType(data.glowType)
+  region:SetGlow(data.glow)
 
   -- Update internal bar alignment
   region.bar:Update();
