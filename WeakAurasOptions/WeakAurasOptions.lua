@@ -3459,39 +3459,29 @@ end
 
 function WeakAuras.ReloadGroupRegionOptions(data)
   local regionTypes = {};
+  local id = data.id;
+  WeakAuras.EnsureOptions(id);
+  local options = displayOptions[id];
+  local allOptions = {};
+
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
-    if(childData) then
+    if(childData and regionOptions[childData.regionType]) then
       if (not regionTypes[childData.regionType]) then
         regionTypes[childData.regionType] = true;
+        allOptions = union(allOptions, regionOptions[childData.regionType].create(id, data));
       end
     end
   end
 
-  local id = data.id;
-  WeakAuras.EnsureOptions(id);
-  local options = displayOptions[id];
-
-  local allOptions = {};
-  for regionType in pairs(regionTypes) do
-    if(regionOptions[regionType]) then
-      allOptions = union(allOptions, regionOptions[regionType].create(id, data));
-    else
-      regionType = {
-        unsupported = {
-          type = "description",
-          name = L["Regions of type \"%s\" are not supported."]:format(regionType);
-        }
-      };
-    end
-  end
-
-  fixMetaOrders(allOptions);
-  local regionOption = flattenRegionOptions(allOptions, id);
   replaceNameDescFuncs(allOptions, data);
   replaceImageFuncs(allOptions, data);
   replaceValuesFuncs(allOptions, data);
   removeFuncs(allOptions);
+  fixMetaOrders(allOptions);
+
+  local regionOption = flattenRegionOptions(allOptions, id);
+
   options.args.region.args = regionOption;
 end
 
