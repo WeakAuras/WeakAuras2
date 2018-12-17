@@ -2585,12 +2585,16 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
     if oldHidden ~= nil then
       local oldFunc
       if type(oldHidden) ~= "function" then
-        oldFunc = function() return oldHidden end
+        oldFunc = function(...) return oldHidden end
       else
         oldFunc = oldHidden
       end
-      resultOption.hidden = function()
-        return collapsedFunc() or oldFunc();
+      resultOption.hidden = function(...)
+        if collapsedFunc() then
+          return true
+        else
+          return oldFunc(...)
+        end
       end
     else
       resultOption.hidden = collapsedFunc;
@@ -3485,13 +3489,12 @@ function WeakAuras.ReloadGroupRegionOptions(data)
     end
   end
 
-  replaceNameDescFuncs(allOptions, data);
-  replaceImageFuncs(allOptions, data);
-  replaceValuesFuncs(allOptions, data);
-  removeFuncs(allOptions);
   fixMetaOrders(allOptions);
-
   local regionOption = flattenRegionOptions(allOptions, id);
+  replaceNameDescFuncs(regionOption, data);
+  replaceImageFuncs(regionOption, data);
+  replaceValuesFuncs(regionOption, data);
+  removeFuncs(regionOption);
 
   options.args.region.args = regionOption;
 end
