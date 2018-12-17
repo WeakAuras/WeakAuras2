@@ -4407,10 +4407,10 @@ function WeakAuras.UpdateDisplayButton(data)
 end
 
 function WeakAuras.RefreshGroupUpdateIcon(button)
-  local parentId = button.data.id
-  for id, child in pairs(displayButtons) do
-    if child.data.parent == parentId then
-      local hasUpdate, skipVersion = child:HasUpdate()
+  for index, childId in pairs(button.data.controlledChildren) do
+    local childButton = WeakAuras.GetDisplayButton(childId);
+    if childButton then
+      local hasUpdate, skipVersion = childButton:HasUpdate()
       if hasUpdate and not skipVersion then
         button:ShowGroupUpdate()
         return
