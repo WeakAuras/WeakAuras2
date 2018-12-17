@@ -89,11 +89,15 @@ local checks = {
     variable = "insufficientResources",
     value = 1,
   },
-  buffed = {
+  buffedAuraFound = {
+    variable = "show",
+    value = 1,
+  },
+  buffedAuraAlways = {
     variable = "buffed",
     value = 1,
   },
-  buffedFalse = {
+  buffedFalseAuraAlways = {
     variable = "buffed",
     value = 0,
   },
@@ -141,7 +145,7 @@ local function buildCondition(trigger, check, properties)
 end
 
 local function missingBuffGreyed(conditions, trigger, regionType)
-  tinsert(conditions, buildCondition(trigger, checks.buffedFalse, {changes("grey", regionType)}));
+  tinsert(conditions, buildCondition(trigger, checks.buffedFalseAuraAlways, {changes("grey", regionType)}));
 end
 
 local function hasTargetAlpha(conditions, regionType)
@@ -170,11 +174,21 @@ end
 
 local function isBuffedGlow(conditions, trigger, regionType)
   if regionType == "icon" then
-    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+    tinsert(conditions, buildCondition(trigger, checks.buffedAuraFound, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
   elseif regionType == "aurabar" or regionType == "progresstexture" then
-    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("inverse", regionType), changes("yellow", regionType)}));
+    tinsert(conditions, buildCondition(trigger, checks.buffedAuraFound, {changes("inverse", regionType), changes("yellow", regionType)}));
   else
-    tinsert(conditions, buildCondition(trigger, checks.buffed, {changes("yellow", regionType)}));
+    tinsert(conditions, buildCondition(trigger, checks.buffedAuraFound, {changes("yellow", regionType)}));
+  end
+end
+
+local function isBuffedGlowAuraAlways(conditions, trigger, regionType)
+  if regionType == "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.buffedAuraAlways, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.buffedAuraAlways, {changes("inverse", regionType), changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.buffedAuraAlways, {changes("yellow", regionType)}));
   end
 end
 
@@ -775,7 +789,7 @@ local function subTypesFor(item, regionType)
         createBuffTrigger(triggers, 1, item, "showAlways", true);
       end,
       createConditions = function(conditions, item, regionType)
-        isBuffedGlow(conditions, 1, regionType);
+        isBuffedGlowAuraAlways(conditions, 1, regionType);
       end,
       data = { inverse = false },
     });
@@ -809,7 +823,7 @@ local function subTypesFor(item, regionType)
         createBuffTrigger(triggers, 1, item, "showAlways", false);
       end,
       createConditions = function(conditions, item, regionType)
-        isBuffedGlow(conditions, 1, regionType);
+        isBuffedGlowAuraAlways(conditions, 1, regionType);
       end,
       data = { inverse = false },
     });
