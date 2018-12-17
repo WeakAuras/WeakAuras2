@@ -3463,13 +3463,24 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   WeakAuras.EnsureOptions(id);
   local options = displayOptions[id];
   local allOptions = {};
-
+  local unsupportedCount = 0
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
-    if(childData and regionOptions[childData.regionType]) then
-      if (not regionTypes[childData.regionType]) then
-        regionTypes[childData.regionType] = true;
+    if childData and not regionTypes[childData.regionType] then
+      regionTypes[childData.regionType] = true;
+      if regionOptions[childData.regionType] then
         allOptions = union(allOptions, regionOptions[childData.regionType].create(id, data));
+      else
+        unsupportedCount = unsupportedCount + 1
+        allOptions["__unsupported" .. unsupportedCount] =  {
+          __title = "|cFFFFFF00" .. childData.regionType,
+          __order = 1,
+          warning = {
+            type = "description",
+            name = L["Regions of type \"%s\" are not supported."]:format(childData.regionType),
+            order = 1
+          },
+        }
       end
     end
   end
