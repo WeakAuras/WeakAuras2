@@ -4705,13 +4705,14 @@ WeakAuras.event_prototypes = {
         tinsert(events, "UNIT_PET");
       end
 
+      if (trigger.use_mounted ~= nil) then
+        tinsert(events, "PLAYER_MOUNT_DISPLAY_CHANGED");
+      end
+
       return events;
     end,
     internal_events = function(trigger, untrigger)
       local events = { "CONDITIONS_CHECK"};
-      if (trigger.use_mounted ~= nil) then
-        tinsert(events, "MOUNTED_UPDATE");
-      end
 
       if (trigger.use_HasPet ~= nil) then
         tinsert(events, "PET_UPDATE");
@@ -4725,9 +4726,6 @@ WeakAuras.event_prototypes = {
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
     loadFunc = function(trigger)
-      if(trigger.use_mounted ~= nil) then
-        WeakAuras.WatchForMounts();
-      end
       if (trigger.use_HasPet ~= nil) then
         WeakAuras.WatchForPetDeath();
       end
