@@ -2526,40 +2526,6 @@ do
   end
 end
 
--- Mounts
-do
-  local mountedFrame = nil
-  WeakAuras.frames["Mount Use Handler"] = mountedFrame;
-  function WeakAuras.WatchForMounts()
-    if not(mountedFrame) then
-      mountedFrame = CreateFrame("frame");
-      mountedFrame:RegisterEvent("COMPANION_UPDATE");
-      local elapsed = 0;
-      local delay = 0.5;
-      local isMounted = IsMounted();
-      local function checkForMounted(self, elaps)
-        WeakAuras.StartProfileSystem("generictrigger");
-        elapsed = elapsed + elaps
-        if(isMounted ~= IsMounted()) then
-          isMounted = IsMounted();
-          WeakAuras.ScanEvents("MOUNTED_UPDATE");
-          mountedFrame:SetScript("OnUpdate", nil);
-        end
-        if(elapsed > delay) then
-          mountedFrame:SetScript("OnUpdate", nil);
-        end
-        WeakAuras.StopProfileSystem("generictrigger");
-      end
-      mountedFrame:SetScript("OnEvent", function()
-        WeakAuras.StartProfileSystem("generictrigger");
-        elapsed = 0;
-        mountedFrame:SetScript("OnUpdate", checkForMounted);
-        WeakAuras.StopProfileSystem("generictrigger");
-      end)
-    end
-  end
-end
-
 -- Pets
 do
   local petFrame = nil
