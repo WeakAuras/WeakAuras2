@@ -2553,23 +2553,15 @@ local function addCollapsibleHeader(options, id, key, title, order)
     name = "",
     order = order + 0.1,
     width = 0.15,
-    func = "collapsedFunc",
-    image = function()
-      local isCollapsed
-      local data = WeakAuras.GetData(id)
-      if data.controlledChildren then
-        for _, childID in ipairs(data.controlledChildren) do
-          if WeakAuras.GetData(childID) and WeakAuras.IsCollapsed(childID, "region", key, false) then
-            isCollapsed = true
-            break
-          end
-        end
-      else
-        isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
-      end
-      return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
-            or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+    func = function()
+      local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
+      WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
+      WeakAuras.FillOptions(id)
     end,
+    image = function()
+      local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
+      return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+    end
   }
 
   options[key] = {
@@ -2695,30 +2687,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, id),
-        handler = {
-          collapsedFunc = function(self, info, ...)
-            local key = info[#info]:gsub("collapseButton$", "")
-            if data.controlledChildren then
-              local isCollapsed
-              for _, childID in ipairs(data.controlledChildren) do
-                if WeakAuras.GetData(childID) and WeakAuras.IsCollapsed(childID, "region", key, false) then
-                  isCollapsed = true
-                  break
-                end
-              end
-              for _, childID in ipairs(data.controlledChildren) do
-                if WeakAuras.GetData(childID) then
-                  WeakAuras.SetCollapsed(childID, "region", key, not isCollapsed)
-                end
-              end
-            else
-              local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
-              WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
-            end
-            WeakAuras.ReloadOptions(id)
-          end,
-        },
+        args = flattenRegionOptions(regionOption, id);
       },
       trigger = {
         type = "group",
