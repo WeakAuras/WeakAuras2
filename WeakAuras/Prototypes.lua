@@ -38,9 +38,9 @@ function WeakAuras.CheckRange(unit, range, operator)
     return
   end
   if (operator == "<=") then
-    return (max or 0) <= range;
+    return (max or 999) <= range;
   else
-    return (min or 1000) >= range;
+    return (min or 0) >= range;
   end
 end
 
