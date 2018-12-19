@@ -934,6 +934,14 @@ function WeakAuras.CreateFrame()
     end
   end
 
+  frame.RefillOptions = function(self)
+    if(type(self.pickedDisplay) == "string") then
+      self:FillOptions(displayOptions[frame.pickedDisplay]);
+    else
+      self:FillOptions(displayOptions[frame.pickedDisplay.id]);
+    end
+  end
+
   frame:SetClampedToScreen(true);
   local w,h = frame:GetSize();
   local left,right,top,bottom = w/2,-w/2,0,h-25

@@ -2541,7 +2541,9 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
   };
 end
 
-local function addCollapsibleHeader(options, id, key, title, order)
+local function addCollapsibleHeader(options, data, key, title, order)
+  local id = data.id
+
   options[key .. "collapseSpacer"] = {
     type = "description",
     name = "",
@@ -2553,10 +2555,24 @@ local function addCollapsibleHeader(options, id, key, title, order)
     name = "",
     order = order + 0.1,
     width = 0.15,
-    func = function()
-      local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
-      WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
-      WeakAuras.FillOptions(id)
+    func = function(info)
+      if data.controlledChildren then
+        for index, childId in ipairs(data.controlledChildren) do
+          local childData = WeakAuras.GetData(childId);
+          if(childData) then
+            WeakAuras.EnsureOptions(childId);
+            local childOption = getChildOption(displayOptions[childId], info);
+            if (childOption) then
+              local isCollapsed = WeakAuras.IsCollapsed(childId, "region", key, false)
+              WeakAuras.SetCollapsed(childId, "region", key, not isCollapsed)
+            end
+          end
+        end
+      else
+        local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
+        WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
+      end
+      WeakAuras.RefillOptions()
     end,
     image = function()
       local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
@@ -2603,14 +2619,14 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
   return resultOption;
 end
 
-local function flattenRegionOptions(allOptions, id)
+local function flattenRegionOptions(allOptions, data)
   local result = {};
   local base = 1000;
 
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
 
-    local collapsedFunc = addCollapsibleHeader(result, id, optionGroup, options.__title, groupBase)
+    local collapsedFunc = addCollapsibleHeader(result, data, optionGroup, options.__title, groupBase)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then
@@ -2687,7 +2703,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, id);
+        args = flattenRegionOptions(regionOption, data);
       },
       trigger = {
         type = "group",
@@ -3347,7 +3363,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = flattenRegionOptions(regionOption, id);
+      args = flattenRegionOptions(regionOption, data);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3490,7 +3506,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   end
 
   fixMetaOrders(allOptions);
-  local regionOption = flattenRegionOptions(allOptions, id);
+  local regionOption = flattenRegionOptions(allOptions, data);
   replaceNameDescFuncs(regionOption, data);
   replaceImageFuncs(regionOption, data);
   replaceValuesFuncs(regionOption, data);
@@ -4253,6 +4269,10 @@ end
 
 function WeakAuras.PickDisplayMultiple(id)
   frame:PickDisplayMultiple(id);
+end
+
+function WeakAuras.RefillOptions()
+  frame:RefillOptions()
 end
 
 function WeakAuras.PickDisplayMultipleShift(target)
