@@ -3643,7 +3643,7 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
         return data.anchorFrameParent or data.anchorFrameParent == nil;
       end,
       hidden = function()
-        return (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE");
+        return (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
       end,
     },
     frameStrata = {
@@ -3663,100 +3663,7 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
         return not (data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup());
       end
     },
-    -- IsParentDynamicGroup => xOffset4 / yOffset4
-    -- InGroup/Attached to mouse/PRD/SELECTFRAME => -screen -- +screen
-    -- Attached to Screen => depends on anchorPoint
-    --   LEFT/BOTTOM => 0 -- +screen
-    --   CENTER => -screen/2 -- +screen / 2
-    --   RIGHT/TOP => -screen -- +screen
-    xOffset1 = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["X Offset"],
-      order = 80,
-      softMin = 0,
-      softMax = screenWidth,
-      bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return true;
-        end
-        return not data.anchorPoint:find("LEFT")
-      end,
-      get = function() return data.xOffset end,
-      set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    xOffset2 = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["X Offset"],
-      order = 80,
-      softMin = ((-1/2) * screenWidth),
-      softMax = ((1/2) * screenWidth),
-      bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return true;
-        end
-        return (data.anchorPoint:find("LEFT") or data.anchorPoint:find("RIGHT"));
-      end,
-      get = function() return data.xOffset end,
-      set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    xOffset3 = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["X Offset"],
-      order = 80,
-      softMin = (-1 * screenWidth),
-      softMax = 0,
-      bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return true;
-        end
-        return not data.anchorPoint:find("RIGHT");
-      end,
-      get = function() return data.xOffset end,
-      set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    xOffset4 = {
+    xOffset = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["X Offset"],
@@ -3764,12 +3671,6 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
       softMin = (-1 * screenWidth),
       softMax = screenWidth,
       bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return false;
-        end
-        return true;
-      end,
       get = function() return data.xOffset end,
       set = function(info, v)
         data.xOffset = v;
@@ -3785,94 +3686,7 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
         end
       end
     },
-    yOffset1 = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y Offset"],
-      order = 85,
-      softMin = 0,
-      softMax = screenHeight,
-      bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return true;
-        end
-        return not data.anchorPoint:find("BOTTOM");
-      end,
-      get = function() return data.yOffset end,
-      set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    yOffset2 = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y Offset"],
-      order = 85,
-      softMin = ((-1/2) * screenHeight),
-      softMax = ((1/2) * screenHeight),
-      bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return true;
-        end
-        return data.anchorPoint:find("BOTTOM") or data.anchorPoint:find("TOP");
-      end,
-      get = function() return data.yOffset end,
-      set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    yOffset3 = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y Offset"],
-      order = 85,
-      softMin = (-1 * screenHeight),
-      softMax = 0,
-      bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return true;
-        end
-        return not data.anchorPoint:find("TOP");
-      end,
-      get = function() return data.yOffset end,
-      set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    yOffset4 = {
+    yOffset = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Y Offset"],
@@ -3880,12 +3694,6 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
       softMin = (-1 * screenHeight),
       softMax = screenHeight,
       bigStep = 10,
-      hidden = function()
-        if (data.parent or data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup()) then
-          return false;
-        end
-        return true;
-      end,
       get = function() return data.yOffset end,
       set = function(info, v)
         data.yOffset = v;
