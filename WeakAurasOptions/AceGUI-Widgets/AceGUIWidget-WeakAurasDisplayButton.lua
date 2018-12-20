@@ -1521,6 +1521,14 @@ local methods = {
         parentButton:RefreshUpdate(actionFunc)
       end
     else
+      -- is top level
+      local hasUpdate, skipVersion, _, slug = self:HasUpdate()
+      self:RefreshUpdateMenu()
+      if hasUpdate and not skipVersion then
+        self:ShowUpdateIcon()
+      else
+        self:HideUpdateIcon()
+      end
       if self.data.controlledChildren then
         -- is a group
         local hasUpdate, skipVersion, _, slug = self:HasUpdate()
@@ -1541,25 +1549,10 @@ local methods = {
             end
           end
         end
-        self:RefreshUpdateMenu()
-        if hasUpdate and not skipVersion then
-          self:ShowUpdateIcon()
-        else
-          self:HideUpdateIcon()
-        end
         if showGroupUpdateIcon then
           self:ShowGroupUpdate()
         else
           self:HideGroupUpdate()
-        end
-      else
-        local hasUpdate, skipVersion = self:HasUpdate()
-        -- is top level
-        self:RefreshUpdateMenu()
-        if hasUpdate and not skipVersion then
-          self:ShowUpdateIcon()
-        else
-          self:HideUpdateIcon()
         end
       end
     end
