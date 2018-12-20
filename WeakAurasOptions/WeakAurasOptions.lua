@@ -1785,7 +1785,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
         if(loaded[id] ~= nil) then
           button:PriorityShow(1);
         end
-        if not button.data.parent then
+        if WeakAurasCompanion and not button.data.parent then
           -- initialize update icons on top level buttons
           button:RefreshUpdate()
         end
