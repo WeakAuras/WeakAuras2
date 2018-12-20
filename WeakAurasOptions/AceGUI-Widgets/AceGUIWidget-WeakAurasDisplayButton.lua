@@ -807,28 +807,28 @@ local methods = {
       self.data.ignoreWagoUpdate = nil
       self.data.skipWagoUpdate = nil
       if not skipUpdateIcon then
-        self:RefreshUpdateIcon("wagoStopIgnoreAll")
+        self:RefreshUpdate("wagoStopIgnoreAll")
       end
     end
 
     function self.callbacks.wagoIgnoreAll(_, skipUpdateIcon)
       self.data.ignoreWagoUpdate = true
       if not skipUpdateIcon then
-        self:RefreshUpdateIcon("wagoIgnoreAll")
+        self:RefreshUpdate("wagoIgnoreAll")
       end
     end
 
     function self.callbacks.wagoStopIgnoreNext(_, skipUpdateIcon)
       self.data.skipWagoUpdate = nil
       if not skipUpdateIcon then
-        self:RefreshUpdateIcon("wagoStopIgnoreNext")
+        self:RefreshUpdate("wagoStopIgnoreNext")
       end
     end
 
     function self.callbacks.wagoIgnoreNext(_, skipUpdateIcon)
       self.data.skipWagoUpdate = self.update.version
       if not skipUpdateIcon then
-        self:RefreshUpdateIcon("wagoIgnoreNext")
+        self:RefreshUpdate("wagoIgnoreNext")
       end
     end
 
@@ -1513,27 +1513,47 @@ local methods = {
     -- no addon, or no data, or ignore flag
     return false, false, nil, nil
   end,
-  ["RefreshUpdateIcon"] = function(self, actionFunc, skipRefreshGroup)
+  ["RefreshUpdate"] = function(self, actionFunc, skipRefreshGroup)
     if self.data.parent then
       -- is in a group
       if not skipRefreshGroup then
-        local button = WeakAuras.GetDisplayButton(self.data.parent)
-        if button then
-          WeakAuras.RefreshGroupUpdateIcon(button)
+        local parentButton = WeakAuras.GetDisplayButton(self.data.parent)
+        if parentButton then
+          parentButton:RefreshUpdate(actionFunc)
         end
       end
     else
       if self.data.controlledChildren then
         -- is a group
-        if actionFunc then
-          for childIndex, childId in pairs(self.data.controlledChildren) do
-            local button = WeakAuras.GetDisplayButton(childId)
-            if button then
-              button.callbacks[actionFunc](nil, true)
+        local hasUpdate, skipVersion, _, slug = self:HasUpdate()
+        local showGroupUpdateIcon = false
+        for childIndex, childId in pairs(self.data.controlledChildren) do
+          local childButton = WeakAuras.GetDisplayButton(childId);
+          if childButton then
+            if actionFunc then
+              childButton.callbacks[actionFunc](nil, true)
+            end
+            childButton:RefreshUpdateMenu()
+            local childHasUpdate, childSkipVersion, _, childSlug = childButton:HasUpdate()
+            if childHasUpdate and slug ~= childSlug and not childSkipVersion then
+              showGroupUpdateIcon = true
+              childButton:ShowUpdateIcon()
+            else
+              childButton:HideUpdateIcon()
             end
           end
         end
-        WeakAuras.RefreshGroupUpdateIcon(self)
+        self:RefreshUpdateMenu()
+        if hasUpdate and not skipVersion then
+          self:ShowUpdateIcon()
+        else
+          self:HideUpdateIcon()
+        end
+        if showGroupUpdateIcon then
+          self:ShowGroupUpdate()
+        else
+          self:HideGroupUpdate()
+        end
       else
         local hasUpdate, skipVersion = self:HasUpdate()
         -- is top level
