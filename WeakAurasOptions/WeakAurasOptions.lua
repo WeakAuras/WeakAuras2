@@ -2316,6 +2316,10 @@ local function replaceNameDescFuncs(intable, data)
                         local display = childOptionTable[i].get(info) or L["None"];
                         if(type(display) == "number") then
                           display = math.floor(display * 100) / 100;
+                        else
+                          if #display > 50 then
+                            display = display:sub(1, 50) .. "..."
+                          end
                         end
                         tinsert(values, "|cFFE0E000"..childId..": |r"..display);
                       end
