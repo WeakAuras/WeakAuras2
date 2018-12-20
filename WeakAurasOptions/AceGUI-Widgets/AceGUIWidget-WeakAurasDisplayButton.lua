@@ -1513,14 +1513,12 @@ local methods = {
     -- no addon, or no data, or ignore flag
     return false, false, nil, nil
   end,
-  ["RefreshUpdate"] = function(self, actionFunc, skipRefreshGroup)
+  ["RefreshUpdate"] = function(self, actionFunc)
     if self.data.parent then
       -- is in a group
-      if not skipRefreshGroup then
-        local parentButton = WeakAuras.GetDisplayButton(self.data.parent)
-        if parentButton then
-          parentButton:RefreshUpdate(actionFunc)
-        end
+      local parentButton = WeakAuras.GetDisplayButton(self.data.parent)
+      if parentButton then
+        parentButton:RefreshUpdate(actionFunc)
       end
     else
       if self.data.controlledChildren then
