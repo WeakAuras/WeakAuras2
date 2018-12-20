@@ -70,6 +70,8 @@ local function create(parent)
   frame:SetMinResize(1, 1);
 
   local texture = frame:CreateTexture();
+  texture:SetSnapToPixelGrid(false)
+  texture:SetTexelSnappingBias(0)
   frame.texture = texture;
   texture:SetAllPoints(frame);
 
