@@ -1785,6 +1785,10 @@ function WeakAuras.LayoutDisplayButtons(msg)
         if(loaded[id] ~= nil) then
           button:PriorityShow(1);
         end
+        if WeakAurasCompanion and not button.data.parent then
+          -- initialize update icons on top level buttons
+          button:RefreshUpdate()
+        end
       end
     end
     WeakAuras.ResumeAllDynamicGroups();
@@ -4401,23 +4405,9 @@ function WeakAuras.UpdateDisplayButton(data)
   if (button) then
     button:SetIcon(WeakAuras.SetThumbnail(data));
     if WeakAurasCompanion and button:IsGroup() then
-      WeakAuras.RefreshGroupUpdateIcon(button)
+      button:RefreshUpdate()
     end
   end
-end
-
-function WeakAuras.RefreshGroupUpdateIcon(button)
-  for index, childId in pairs(button.data.controlledChildren) do
-    local childButton = WeakAuras.GetDisplayButton(childId);
-    if childButton then
-      local hasUpdate, skipVersion = childButton:HasUpdate()
-      if hasUpdate and not skipVersion then
-        button:ShowGroupUpdate()
-        return
-      end
-    end
-  end
-  button:HideGroupUpdate()
 end
 
 function WeakAuras.SetThumbnail(data)
