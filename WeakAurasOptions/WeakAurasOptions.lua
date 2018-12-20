@@ -2541,7 +2541,7 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
   };
 end
 
-local function addCollapsibleHeader(options, data, key, title, order)
+local function addCollapsibleHeader(options, data, key, title, order, isGroupTab)
   local id = data.id
 
   options[key .. "collapseSpacer"] = {
@@ -2556,7 +2556,7 @@ local function addCollapsibleHeader(options, data, key, title, order)
     order = order + 0.1,
     width = 0.15,
     func = function(info)
-      if data.controlledChildren then
+      if not isGroupTab and data.controlledChildren then
         for index, childId in ipairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
           if(childData) then
@@ -2619,14 +2619,14 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
   return resultOption;
 end
 
-local function flattenRegionOptions(allOptions, data)
+local function flattenRegionOptions(allOptions, data, isGroupTab)
   local result = {};
   local base = 1000;
 
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
 
-    local collapsedFunc = addCollapsibleHeader(result, data, optionGroup, options.__title, groupBase)
+    local collapsedFunc = addCollapsibleHeader(result, data, optionGroup, options.__title, groupBase, isGroupTab)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then
@@ -2703,7 +2703,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, data);
+        args = flattenRegionOptions(regionOption, data, true);
       },
       trigger = {
         type = "group",
@@ -3363,7 +3363,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = flattenRegionOptions(regionOption, data);
+      args = flattenRegionOptions(regionOption, data, true);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3506,7 +3506,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   end
 
   fixMetaOrders(allOptions);
-  local regionOption = flattenRegionOptions(allOptions, data);
+  local regionOption = flattenRegionOptions(allOptions, data, false);
   replaceNameDescFuncs(regionOption, data);
   replaceImageFuncs(regionOption, data);
   replaceValuesFuncs(regionOption, data);
