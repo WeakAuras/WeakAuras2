@@ -177,6 +177,7 @@ end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", filterFunc)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", filterFunc)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", filterFunc)
