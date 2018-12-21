@@ -536,8 +536,8 @@ local function createOptions(id, data)
 
   return {
     group = options,
-    border = WeakAuras.BorderOptions(id, data, 2);
-    position = WeakAuras.PositionOptions(id, data, 3, true, true),
+    border = WeakAuras.BorderOptions(id, data);
+    position = WeakAuras.PositionOptions(id, data, nil, true, true),
   };
 end
 

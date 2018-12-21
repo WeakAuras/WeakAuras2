@@ -324,7 +324,7 @@ local function createOptions(id, data)
 
   return {
     progresstexture = options,
-    position = WeakAuras.PositionOptions(id, data, 2),
+    position = WeakAuras.PositionOptions(id, data),
   };
 end
 

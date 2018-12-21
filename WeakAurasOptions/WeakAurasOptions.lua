@@ -3467,20 +3467,24 @@ local function fixMetaOrders(allOptions)
   -- shifts __order fields such that each optionGroup is ordered correctly relative
   -- to its peers, but has a unique __order number in the combined option table.
   local groupOrders = {}
+  local maxGroupOrder = 0
   for optionGroup, options in pairs(allOptions) do
     local metaOrder = options.__order
     groupOrders[metaOrder] = groupOrders[metaOrder] or {}
+    maxGroupOrder = max(maxGroupOrder, metaOrder)
     tinsert(groupOrders[metaOrder], optionGroup)
   end
 
   local index = 0
   local newOrder = 1
-  while index < #groupOrders do
+  while index <= maxGroupOrder do
     index = index + 1
-    table.sort(groupOrders[index])
-    for _, optionGroup in ipairs(groupOrders[index]) do
-      allOptions[optionGroup].__order = newOrder
-      newOrder = newOrder + 1
+    if groupOrders[index] then
+      table.sort(groupOrders[index])
+      for _, optionGroup in ipairs(groupOrders[index]) do
+        allOptions[optionGroup].__order = newOrder
+        newOrder = newOrder + 1
+      end
     end
   end
 end
@@ -3523,7 +3527,8 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   options.args.region.args = regionOption;
 end
 
-function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disableSelfPoint)
+function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
+  local metaOrder = 100
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
   end
@@ -3722,7 +3727,8 @@ function WeakAuras.PositionOptions(id, data, metaOrder, hideWidthHeight, disable
   return positionOptions;
 end
 
-function WeakAuras.BorderOptions(id, data, metaOrder, showBackDropOptions)
+function WeakAuras.BorderOptions(id, data, _, showBackDropOptions)
+  local metaOrder = 99
   local borderOptions = {
     __title = L["Border Settings"],
     __order = metaOrder,
