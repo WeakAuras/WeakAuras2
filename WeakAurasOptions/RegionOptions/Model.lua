@@ -190,8 +190,8 @@ local function createOptions(id, data)
 
   return {
     model = options,
-    border = WeakAuras.BorderOptions(id, data, 2);
-    position = WeakAuras.PositionOptions(id, data, 3),
+    border = WeakAuras.BorderOptions(id, data);
+    position = WeakAuras.PositionOptions(id, data),
   };
 end
 

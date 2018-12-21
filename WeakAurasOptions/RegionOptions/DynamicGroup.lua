@@ -201,7 +201,7 @@ local function createOptions(id, data)
 
   return {
     dynamicgroup = options,
-    position = WeakAuras.PositionOptions(id, data, 2, true, true),
+    position = WeakAuras.PositionOptions(id, data, nil, true, true),
   };
 end
 
