@@ -4501,19 +4501,20 @@ WeakAuras.event_prototypes = {
               interruptible = not interruptible
               expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
               remaining = expirationTime - GetTime()
-
               if not spell
               or trigger_spellId ~= "" and GetSpellInfo(trigger_spellId) ~= spell
               or trigger_spellName ~= "" and trigger_spellName ~= spell
               or trigger_castType  ~= "" and trigger_castType ~= castType
               or trigger_interruptible ~= nil and trigger_interruptible ~= interruptible
               or trigger_target ~= "" and not UnitIsUnit(trigger_target, destUnit)
+              or remainingCheck and not (remaining %s remainingCheck)
               then
                 show = false
-              elseif remainingCheck and remaining >= remainingCheck and remaining > 0 then
-                WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, sourceUnit)
               else
                 show = true
+              end
+              if remainingCheck and remaining >= remainingCheck and remaining > 0 then
+                WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, sourceUnit)
               end
             end
             if (show and not trigger_inverse) or (not show and trigger_inverse) then
@@ -4562,7 +4563,8 @@ WeakAuras.event_prototypes = {
         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
         trigger.use_destUnit and trigger.destUnit or "",
         trigger.unit == "multi" and trigger.use_clone and "true" or "false",
-        L["Spell Name"]
+        L["Spell Name"],
+        trigger.remaining_operator or "<"
       )
       return ret
     end,
