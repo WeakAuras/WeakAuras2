@@ -986,8 +986,10 @@ local methods = {
       if hasUpdate then
         self.update.hasUpdate = hasUpdate
         self.update.version = updateData.wagoVersion
+        local showVersion = self.data.semver or self.data.version
+        local showCompanionVersion = updateData.wagoSemver or updateData.wagoVersion
         self.update.title = L["Update "] .. updateData.name .. L[" by "] .. updateData.author
-        self.update.desc = L["From version "] .. self.data.version .. L[" to version "] .. updateData.wagoVersion
+        self.update.desc = L["From version "] .. showVersion .. L[" to version "] .. showCompanionVersion
         if updateData.versionNote then
           self.update.desc = ("%s\n\n%s"):format(self.update.desc, updateData.versionNote)
         end
