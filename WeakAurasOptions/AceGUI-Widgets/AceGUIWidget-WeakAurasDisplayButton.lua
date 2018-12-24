@@ -989,7 +989,7 @@ local methods = {
         self.update.title = L["Update "] .. updateData.name .. L[" by "] .. updateData.author
         self.update.desc = L["From version "] .. self.data.version .. L[" to version "] .. updateData.wagoVersion
         if updateData.versionNote then
-          self.update.desc = ("%s\n\n%s"):print(self.update.desc, updateData.versionNote)
+          self.update.desc = ("%s\n\n%s"):format(self.update.desc, updateData.versionNote)
         end
         self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
       end
