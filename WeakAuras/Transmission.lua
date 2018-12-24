@@ -1356,7 +1356,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
   local match = WeakAuras.MatchData(data, children)
   local hasDescription = data.desc and data.desc ~= "";
   local hasUrl = data.url and data.url ~= "";
-  local hasVersion = data.version and data.version ~= "";
+  local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
 
   if hasDescription or hasUrl or hasVersion then
     tinsert(tooltip, {1, " "});
@@ -1371,7 +1371,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
   end
 
   if hasVersion then
-    tinsert(tooltip, {1, L["Version: "] .. data.version, 1, 0.82, 0, 1});
+    tinsert(tooltip, {1, L["Version: "] .. (data.semver or data.version), 1, 0.82, 0, 1});
   end
 
   -- WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
