@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 43
+local Type, Version = "WeakAurasDisplayButton", 44
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -986,10 +986,12 @@ local methods = {
       if hasUpdate then
         self.update.hasUpdate = hasUpdate
         self.update.version = updateData.wagoVersion
+        local showVersion = self.data.semver or self.data.version
+        local showCompanionVersion = updateData.wagoSemver or updateData.wagoVersion
         self.update.title = L["Update "] .. updateData.name .. L[" by "] .. updateData.author
-        self.update.desc = L["From version "] .. self.data.version .. L[" to version "] .. updateData.wagoVersion
+        self.update.desc = L["From version "] .. showVersion .. L[" to version "] .. showCompanionVersion
         if updateData.versionNote then
-          self.update.desc = ("%s\n\n%s"):print(self.update.desc, updateData.versionNote)
+          self.update.desc = ("%s\n\n%s"):format(self.update.desc, updateData.versionNote)
         end
         self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
       end
@@ -1053,7 +1055,7 @@ local methods = {
 
     local hasDescription = data.desc and data.desc ~= "";
     local hasUrl = data.url and data.url ~= "";
-    local hasVersion = data.version and data.version ~= "";
+    local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
 
     if(hasDescription or hasUrl or hasVersion) then
       tinsert(namestable, " ");
@@ -1068,7 +1070,7 @@ local methods = {
     end
 
     if (hasVersion) then
-      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. data.version .. "|r");
+      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. (data.semver or data.version) .. "|r");
     end
 
     tinsert(namestable, " ");
