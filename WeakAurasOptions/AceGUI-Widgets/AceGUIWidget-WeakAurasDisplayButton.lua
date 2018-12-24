@@ -1055,7 +1055,7 @@ local methods = {
 
     local hasDescription = data.desc and data.desc ~= "";
     local hasUrl = data.url and data.url ~= "";
-    local hasVersion = data.version and data.version ~= "";
+    local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
 
     if(hasDescription or hasUrl or hasVersion) then
       tinsert(namestable, " ");
@@ -1070,7 +1070,7 @@ local methods = {
     end
 
     if (hasVersion) then
-      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. data.version .. "|r");
+      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. (data.semver or data.version) .. "|r");
     end
 
     tinsert(namestable, " ");
