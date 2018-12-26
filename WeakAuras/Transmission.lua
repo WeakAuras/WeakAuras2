@@ -436,6 +436,7 @@ local function importPendingData()
                 local data = toInsert[index][i]
                 local id = data.id
                 data.id = WeakAuras.FindUnusedId(id)
+                data.parent = parentData.id;
                 WeakAuras.Add(data)
                 tinsert(installedData, index, data)
                 if hybridTables and hybridTables.new[id] then
