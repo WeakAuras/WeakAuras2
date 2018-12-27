@@ -1694,9 +1694,6 @@ do
       end
     elseif (charges == maxCharges) then
       startTime, duration = 0, 0;
-    elseif (charges == 0 and duration == 0) then -- Lavaburst while under Ascendance can return 0 charges even if the spell is useable
-      charges = 1;
-      startTime, duration = startTimeCharges, durationCharges
     else
       startTime, duration = startTimeCharges, durationCharges
     end
