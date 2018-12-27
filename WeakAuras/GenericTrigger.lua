@@ -1657,12 +1657,18 @@ do
   end
 
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
-    local charges, maxCharges, startTime, duration = GetSpellCharges(id);
+    local charges, maxCharges, startTimeCharges, durationCharges
+    local startTime, duration, enabled = GetSpellCooldown(id)
+    -- Spells can return both information via GetSpellCooldown and GetSpellCharges
+    -- E.g. Rune of Power see Github-Issue: #1060
+    -- So if GetSpellCooldown returned a cooldown, use that one. Otherwise check GetSpellCharges
+    if duration == 0 or (duration == gcdDuration and startTime == gcdStart) then
+      charges, maxCharges, startTimeCharges, durationCharges = GetSpellCharges(id);
+    end
+
     local cooldownBecauseRune = false;
     if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
       local basecd = GetSpellBaseCooldown(id);
-      local enabled;
-      startTime, duration, enabled = GetSpellCooldown(id);
       if (enabled == 0) then
         startTime, duration = 0, 0
       end
@@ -1690,6 +1696,9 @@ do
       startTime, duration = 0, 0;
     elseif (charges == 0 and duration == 0) then -- Lavaburst while under Ascendance can return 0 charges even if the spell is useable
       charges = 1;
+      startTime, duration = startTimeCharges, durationCharges
+    else
+      startTime, duration = startTimeCharges, durationCharges
     end
 
     startTime = startTime or 0;
