@@ -135,7 +135,6 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
-      current_aura_env.config = CopyTable(data.config)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)
     else
