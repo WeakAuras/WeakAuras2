@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 44
+local Type, Version = "WeakAurasDisplayButton", 45
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -61,6 +61,15 @@ local function copyAuraPart(source, destination, part)
     destination.animation = {};
     WeakAuras.DeepCopy(source.animation, destination.animation);
   end
+  if (part == "authorOptions" or all) and not IsRegionAGroup(source) then
+    destination.authorOptions = {};
+    WeakAuras.DeepCopy(source.authorOptions, destination.authorOptions);
+  end
+  if (part == "config" or all) and not IsRegionAGroup(source) then
+    destination.config = {};
+    WeakAuras.DeepCopy(source.config, destination.config);
+  end
+
 end
 
 local function CopyToClipboard(part, description)
@@ -1488,23 +1497,19 @@ local methods = {
   end,
   ["HasUpdate"] = function(self)
     -- return hasUpdate, skipVersion, updateData, key
-    if WeakAurasCompanion
-    and self.data.uid
-    and not self.data.ignoreWagoUpdate
-    then
-      local slug = WeakAurasCompanion.uids[self.data.uid]
-      if slug then
-        local updateData = WeakAurasCompanion.slugs[slug]
-        if updateData then
-          if not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == updateData.wagoVersion) then
-            if tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
-              -- got update
-              return true, false, updateData, slug
-            end
-          else
-            -- version skip flag
-            return true, true, updateData, slug
+    if not WeakAurasCompanion or self.data.ignoreWagoUpdate then return end
+    local slug = self.data.uid and WeakAurasCompanion.uids[self.data.uid] or WeakAurasCompanion.ids[self.data.id]
+    if slug then
+      local updateData = WeakAurasCompanion.slugs[slug]
+      if updateData then
+        if not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == updateData.wagoVersion) then
+          if tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
+            -- got update
+            return true, false, updateData, slug
           end
+        else
+          -- version skip flag
+          return true, true, updateData, slug
         end
       end
     end
