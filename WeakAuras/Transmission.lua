@@ -315,6 +315,9 @@ local function install(data, oldData, patch, mode, isParent)
       end
     end
     WeakAuras.Update(oldData, patch)
+    if data.uid and data.uid ~= oldData.uid then
+      oldData.uid = data.uid
+    end
     data = oldData
   end
   return WeakAuras.GetData(data.id)
