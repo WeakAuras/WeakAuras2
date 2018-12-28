@@ -3067,7 +3067,6 @@ local function pAdd(data)
     return;
   end
 
-  data.uid = data.uid or WeakAuras.GenerateUniqueID();
   db.displays[id] = data;
   WeakAuras.ClearAuraEnvironment(id);
 
