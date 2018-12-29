@@ -55,6 +55,11 @@ local properties = {
     bigStep = 1,
     default = 32
   },
+  mirror = {
+    display = L["Mirror"],
+    setter = "SetMirror",
+    type = "bool"
+  }
 }
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
@@ -101,9 +106,11 @@ local function modify(parent, region, data)
     return 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy
   end
 
+  region.mirror = data.mirror
+
   local function DoTexCoord()
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
-    if(data.mirror) then
+    if(region.mirror) then
       mirror_h = not mirror_h;
     end
     local ulx,uly , llx,lly , urx,ury , lrx,lry;
@@ -167,6 +174,11 @@ local function modify(parent, region, data)
   function region:SetRegionHeight(height)
     region.height = height;
     region:Scale(region.scalex, region.scaley);
+  end
+
+  function region:SetMirror(mirror)
+    region.mirror = mirror
+    DoTexCoord()
   end
 
   function region:SetTexture(path)
