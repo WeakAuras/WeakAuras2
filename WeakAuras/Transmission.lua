@@ -627,6 +627,10 @@ function StringToTable(inString, fromChat)
     decoded = LibDeflate:DecodeForWoWAddonChannel(encoded)
   end
 
+  if not decoded then
+    return "Error decoding."
+  end
+
   local decompressed, errorMsg = nil, "unknown compression method"
   if usesDeflate == 1 then
     decompressed = LibDeflate:DecompressDeflate(decoded)
