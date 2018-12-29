@@ -1,7 +1,7 @@
 #!/bin/bash
 
-version=$( git describe --tags --always --exclude="*beta*" )
-tag=$( git describe --tags --always --abbrev=0 --exclude="*beta*" )
+version=$( git describe --tags --always )
+tag=$( git describe --tags --always --abbrev=0 )
 
 if [ "$version" = "$tag" ]; then # on a tag
   current="$tag"
