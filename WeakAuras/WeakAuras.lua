@@ -2888,7 +2888,11 @@ local function validateUserConfig(data)
       local option = data.authorOptions[authorOptionKeys[key]]
       if type(value) ~= type(option.default) then
         -- if type mismatch then we know that it can't be right
-        data.config[key] = option.default
+        if type(option.default) ~= "table" then
+          data.config[key] = option.default
+        else
+          data.config[key] = CopyTable(option.default)
+        end
       elseif option.type == "input" and option.useLength then
         data.config[key] = data.config[key]:sub(1, option.length)
       elseif option.type == "number" or option.type == "range" then
@@ -2903,6 +2907,17 @@ local function validateUserConfig(data)
       elseif option.type == "select" then
         if value < 1 or value > #option.values then
           data.config[key] = option.default
+        end
+      elseif option.type == "multiselect" then
+        local multiselect = data.config[key]
+        for i, v in ipairs(multiselect) do
+          if option.default[i] ~= nil then
+            if type(v) ~= "boolean" then
+              multiselect[i] = option.default[i]
+            end
+          else
+            multiselect[i] = nil
+          end
         end
       elseif option.type == "color" then
         for i = 1, 4 do
