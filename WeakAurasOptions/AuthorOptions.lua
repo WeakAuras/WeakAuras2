@@ -57,6 +57,7 @@ local optionClasses = {
   range = "simple",
   color = "simple",
   select = "simple",
+  multiselect = "simple",
   description = "noninteractive",
   space = "noninteractive",
 }
@@ -705,6 +706,176 @@ local typeControlAdders = {
     order = order + 1
 
     return order
+  end,
+  multiselect = function(option, args, data, order, i)
+    args["option" .. i .. "width"] = nil
+    local values
+    local conflict = {} -- magic value
+    if option.references then
+      values = {}
+      for childID, optionID in pairs(option.references) do
+        local childData = data[childID]
+        local childValues = childData.authorOptions[optionID].values
+        local i = 1
+        while i <= #values or i <= #childValues do
+          local value = values[i]
+          if value == conflict then
+            -- conflicts can't ever be resolved at this point
+          elseif value == nil then
+            -- set the new value
+            values[i] = childValues[i]
+          elseif value ~= childValues[i] then
+            -- either this child has a conflicting value at this index
+            -- or it's already ended and is nil, so we need to mark a conflict
+            values[i] = conflict
+          end
+          i = i + 1
+        end
+      end
+    else
+      values = option.values
+    end
+    local defaultValues = {}
+    for i, v in ipairs(values) do
+      if v == conflict then
+        defaultValues[i] = "|cFF4080FF" .. L["Value %i"]:format(i)
+      else
+        defaultValues[i] = v
+      end
+    end
+    args["option" .. i .. "default"] = {
+      type = "multiselect",
+      width = WeakAuras.normalWidth,
+      name = L["Default"],
+      order = order,
+      values = defaultValues,
+      get = function(_, k)
+        return option.default and option.default[k]
+      end,
+      set = function(_, k, v)
+        if option.references then
+          for childID, optionID in pairs(option.references) do
+            local childData = data[childID]
+            local childOption = childData.authorOptions[optionID]
+            childOption.default[k] = v
+            WeakAuras.Add(childData)
+          end
+          WeakAuras.ReloadTriggerOptions(data[0])
+        else
+          option.default[k] = v
+          WeakAuras.Add(data)
+          WeakAuras.ReloadTriggerOptions(data)
+        end
+      end,
+    }
+    order = order + 1
+    for j, value in ipairs(values) do
+      args["option" .. i .. "space" .. j] = {
+        type = "toggle",
+        width = WeakAuras.normalWidth,
+        name = L["Value %i"]:format(j),
+        order = order,
+        disabled = function() return true end,
+        get = function() return true end,
+        set = function() end,
+      }
+      order = order + 1
+      args["option" .. i .. "value" .. j] = {
+        type = "input",
+        width = WeakAuras.normalWidth - 0.15,
+        name = (value == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(j),
+        desc = descSelect(data, option, j, conflict),
+        order = order,
+        get = function()
+          if value ~= conflict then
+            return value
+          end
+        end,
+        set = function(_, value)
+          if option.references then
+            for childID, optionID in pairs(option.references) do
+              local childData = data[childID]
+              local childOption = childData.authorOptions[optionID]
+              local insertPoint = math.min(j, #childOption.values + 1)
+              if value == "" then
+                tremove(childOption.values, insertPoint)
+              else
+                childOption.values[insertPoint] = value
+              end
+              WeakAuras.Add(childData)
+            end
+            WeakAuras.ReloadTriggerOptions(data[0])
+          else
+            if value == "" then
+              tremove(values, j)
+            else
+              values[j] = value
+            end
+            WeakAuras.Add(data)
+            WeakAuras.ReloadTriggerOptions(data)
+          end
+        end
+      }
+      order = order + 1
+      args["option" .. i .. "valdelete" .. j] = {
+        type = "execute",
+        width = 0.15,
+        name = "",
+        order = order,
+        func = function()
+          if option.references then
+            for childID, optionID in pairs(option.references) do
+              local childData = data[childID]
+              local childOption = childData.authorOptions[optionID]
+              tremove(childOption.values, j)
+              WeakAuras.Add(childData)
+            end
+            WeakAuras.ReloadTriggerOptions(data[0])
+          else
+            tremove(values, j)
+            WeakAuras.Add(data)
+            WeakAuras.ReloadTriggerOptions(data)
+          end
+        end,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
+        imageWidth = 24,
+        imageHeight = 24
+      }
+    end
+    args["option" .. i .. "newvaluespace"] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["New Value"],
+      order = order,
+      disabled = function() return true end,
+      get = function() return true end,
+      set = function() end,
+    }
+    order = order + 1
+    args["option" .. i .. "newvalue"] = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["New Value"],
+      order = order,
+      get = function() return "" end,
+      set = function(_, value)
+        if option.references then
+          for childID, optionID in pairs(option.references) do
+            local childData = data[childID]
+            local childOption = childData.authorOptions[optionID]
+            childOption.values[#childOption.values + 1] = value
+            WeakAuras.Add(childData)
+          end
+          WeakAuras.ReloadTriggerOptions(data[0])
+        else
+          values[#values + 1] = value
+          WeakAuras.Add(data)
+          WeakAuras.ReloadTriggerOptions(data)
+        end
+      end
+    }
+    order = order + 1
+    return order
   end
 }
 
@@ -1071,7 +1242,7 @@ local function addUserModeOption(options, args, data, order, i)
       userOption.type = "input"
       userOption.get = getNumAsString(config, option.key)
       userOption.set = setNum(data, config, option.key, true)
-    elseif  optionType == "range" then
+    elseif optionType == "range" then
       userOption.max = option.max
       userOption.min = option.min
       userOption.step = option.step
@@ -1084,6 +1255,16 @@ local function addUserModeOption(options, args, data, order, i)
       userOption.set = setColor(data, config, option.key)
     elseif optionType == "select" then
       userOption.values = option.values
+    elseif optionType == "multiselect" then
+      userOption.values = option.values
+      userOption.get = function(_, k)
+        return data.config[option.key][k]
+      end
+      userOption.set = function(_, k, v)
+        data.config[option.key][k] = v
+        WeakAuras.Add(data)
+        WeakAuras.ReloadTriggerOptions(data)
+      end
     end
   elseif optionClass == "noninteractive" then
     if optionType == "description" then

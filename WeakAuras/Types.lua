@@ -1793,6 +1793,7 @@ WeakAuras.author_option_types = {
   color = L["Color"],
   select = L["Dropdown Menu"],
   space = L["Space"],
+  multiselect = L["Toggle List"],
 }
 
 WeakAuras.author_option_fields = {
@@ -1838,6 +1839,10 @@ WeakAuras.author_option_fields = {
   },
   space = {
     variableWidth = true,
+  },
+  multiselect = {
+    default = {true},
+    values = {"val1"},
   }
 }
 
