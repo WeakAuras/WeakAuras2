@@ -1263,7 +1263,7 @@ end
 
 local Broker_WeakAuras;
 Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
-  type = "data source",
+  type = "launcher",
   text = "WeakAuras",
   icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
   OnClick = function(self, button)
