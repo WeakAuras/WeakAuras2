@@ -1662,7 +1662,7 @@ do
     -- Spells can return both information via GetSpellCooldown and GetSpellCharges
     -- E.g. Rune of Power see Github-Issue: #1060
     -- So if GetSpellCooldown returned a cooldown, use that one. Otherwise check GetSpellCharges
-    if duration and duration < 1 or (duration == gcdDuration and startTime == gcdStart) then
+    if duration and duration <= 1 or (duration == gcdDuration and startTime == gcdStart) then
       charges, maxCharges, startTimeCharges, durationCharges = GetSpellCharges(id);
     end
 
