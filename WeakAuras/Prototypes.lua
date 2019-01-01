@@ -2009,8 +2009,9 @@ WeakAuras.event_prototypes = {
         local spellname = %s
         local ignoreRuneCD = %s
         local showgcd = %s;
-        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
-        local charges, maxCharges = WeakAuras.GetSpellCharges(spellname);
+        local ignoreSpellKnown = %s;
+        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown);
+        local charges, maxCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges ~= 1 and charges or nil;
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
@@ -2035,7 +2036,9 @@ WeakAuras.event_prototypes = {
       ret = ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
-        showOnCheck);
+        (trigger.use_ignoreSpellKnown and "true" or "false"),
+        showOnCheck
+      );
 
       if (not trigger.use_trackcharge or not trigger.trackcharge) then
         ret = ret .. [=[
@@ -2143,6 +2146,12 @@ WeakAuras.event_prototypes = {
         type = "spell",
         test = "true",
         showExactOption = true,
+      },
+      {
+        name = "ignoreSpellKnown",
+        display = L["Ignore Spell Known"],
+        type = "toggle",
+        test = "true"
       },
       {
         name = "remaining",

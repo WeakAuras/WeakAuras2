@@ -1454,8 +1454,8 @@ do
     end
   end
 
-  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd)
-    if (not spellKnown[id]) then
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown)
+    if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
     local startTime, duration, gcdCooldown;
@@ -1488,8 +1488,8 @@ do
     return startTime, duration, gcdCooldown;
   end
 
-  function WeakAuras.GetSpellCharges(id)
-    if (not spellKnown[id]) then
+  function WeakAuras.GetSpellCharges(id, ignoreSpellKnown)
+    if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
     return spellCharges[id], spellChargesMax[id];
