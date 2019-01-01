@@ -883,7 +883,7 @@ local function up(data, option, index)
   if option.references then
     return function()
       for _, optionID in pairs(option.references) do
-        if index == 1 then return true end
+        if optionID <= 1 then return true end
       end
     end, function()
       for childID, optionID in pairs(option.references) do
@@ -914,7 +914,7 @@ local function down(data, option, index)
     return function()
       for childID, optionID in pairs(option.references) do
         local childData = data[childID]
-        if index == #childData.authorOptions then return true end
+        if optionID >= #childData.authorOptions then return true end
       end
     end, function()
       for childID, optionID in pairs(option.references) do
