@@ -2877,7 +2877,11 @@ local function validateUserConfig(data)
     if option.key then
       authorOptionKeys[option.key] = index
       if data.config[option.key] == nil then
-        data.config[option.key] = option.default
+        if type(option.default) ~= "table" then
+          data.config[option.key] = option.default
+        else
+          data.config[option.key] = CopyTable(option.default)
+        end
       end
     end
   end
