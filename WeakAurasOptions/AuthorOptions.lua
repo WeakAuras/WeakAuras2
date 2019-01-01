@@ -1391,7 +1391,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             childData.authorOptions[i] = {
               type = "toggle",
               key  = "option" .. i,
-              name = L["Option #"] .. i,
+              name = L["Option %i"]:format(i),
               default = false,
               width = 1,
               useDesc = false,
@@ -1573,7 +1573,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           authorOptions[i] = {
             type = "toggle",
             key  = "option" .. i,
-            name = L["Option #"] .. i,
+            name = L["Option %i"]:format(i),
             default = false,
             width = 1,
           }
