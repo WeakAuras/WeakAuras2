@@ -733,7 +733,7 @@ function WeakAuras.DisplayToTableString(id)
     local lines = {"{"};
     recurseStringify(data, 1, lines);
     tinsert(lines, "}")
-    return table.concat(lines, "\n");
+    return table.concat(lines, "\n"):gsub("|", "||");
   end
 end
 

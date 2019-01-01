@@ -180,6 +180,13 @@ local function get(option, key)
   end
 end
 
+local function getStr(option, key)
+  return function()
+    local str = option[key] or ""
+    return str:gsub("|", "||")
+  end
+end
+
 local function getNumAsString(option, key)
   return function()
     if option[key] ~= nil then
@@ -210,6 +217,28 @@ local function set(data, option, key)
     end
   else
     return function(_, value)
+      option[key] = value
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
+local function setStr(data, option, key)
+  if option.references then
+    return function(_, value)
+      value = value:gsub("||", "|")
+      for childID, optionID in pairs(option.references) do
+        local childData = data[childID]
+        local childOption = childData.authorOptions[optionID]
+        childOption[key] = value
+        WeakAuras.Add(childData)
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function(_, value)
+      value = value:gsub("||", "|")
       option[key] = value
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
@@ -512,8 +541,8 @@ local typeControlAdders = {
       desc = desc(data, option, "text"),
       order = order,
       multiline = true,
-      get = get(option, "text"),
-      set = set(data, option, "text")
+      get = getStr(option, "text"),
+      set = setStr(data, option, "text")
     }
     order = order + 1
     return order
@@ -1140,8 +1169,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       name = name(data, option, "name", L["Display Name"]),
       desc = desc(data, option, "name"),
       order = order,
-      get = get(option, "name"),
-      set = set(data, option, "name"),
+      get = getStr(option, "name"),
+      set = setStr(data, option, "name"),
     }
     order = order + 1
 
@@ -1177,8 +1206,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       desc = desc(data, option, "desc"),
       order = order,
       width = WeakAuras.normalWidth * 1.5,
-      get = get(option, "desc"),
-      set = set(data, option, "desc"),
+      get = getStr(option, "desc"),
+      set = setStr(data, option, "desc"),
       disabled = function() return not option.useDesc end,
     }
     order = order + 1
