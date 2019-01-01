@@ -304,7 +304,7 @@ local function install(data, oldData, patch, mode, isParent)
       for key in pairs(patch) do
         local checkButton = keyToButton[key]
         if not isParent and checkButton == checkButtons.anchor then
-          checkButton = checkButton.arrangement
+          checkButton = checkButtons.arrangement
         end
         if checkButton and not checkButton:GetChecked() then
           patch[key] = nil
