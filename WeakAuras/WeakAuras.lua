@@ -3239,7 +3239,7 @@ function WeakAuras.SetRegion(data, cloneId)
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);
-      WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, parent, parent.regionType)
+      WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parent.regionType)
 
 
       data.animation = data.animation or {};
