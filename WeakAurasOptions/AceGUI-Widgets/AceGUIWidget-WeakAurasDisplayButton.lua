@@ -914,7 +914,7 @@ local methods = {
     tinsert(self.menu, {
       text = L["Set tooltip description"],
       notCheckable = 1,
-      func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, "desc") end
+      func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "desc") end
     });
 
 
@@ -922,7 +922,7 @@ local methods = {
       tinsert(self.menu, {
         text = L["Copy URL"],
         notCheckable = 1,
-        func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, "url") end
+        func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "url") end
       });
     end
 
