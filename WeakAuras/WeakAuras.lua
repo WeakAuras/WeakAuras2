@@ -4586,17 +4586,17 @@ end
 local function ApplyStatesToRegions(id, triggernum, states)
   -- Show new clones
   for cloneId, state in pairs(states) do
-    local region = WeakAuras.GetRegion(id, cloneId);
     if (state.show) then
+      local region = WeakAuras.GetRegion(id, cloneId);
       if (not region.toShow or state.changed or region.state ~= state) then
         ApplyStateToRegion(id, region, state);
       end
-    end
-    -- We don't check for state.changed here, because conditions depend
-    -- on the states of all triggers, not just of the trigger whose states
-    -- we are checking
-    if (checkConditions[id]) then
-      checkConditions[id](region, not state.show);
+      -- We don't check for state.changed here, because conditions depend
+      -- on the states of all triggers, not just of the trigger whose states
+      -- we are checking
+      if (checkConditions[id]) then
+        checkConditions[id](region, not state.show);
+      end
     end
   end
 end
