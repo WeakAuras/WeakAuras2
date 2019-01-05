@@ -936,6 +936,16 @@ local methods = {
       notCheckable = 1,
       func = function() WeakAuras.ExportToTable(data.id) end
     });
+
+    if WeakAurasCompanion then
+      tinsert(self.menu, {
+        text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
+        notCheckable = 1,
+        hasArrow = true,
+        menuList = { }
+      });
+    end
+
     tinsert(self.menu, {
       text = " ",
       notClickable = 1,
@@ -1004,12 +1014,6 @@ local methods = {
         end
         self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
       end
-      tinsert(self.menu, 8, {
-        text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
-        notCheckable = 1,
-        hasArrow = true,
-        menuList = { }
-      });
     end
 
     if data.parent then
@@ -1446,36 +1450,45 @@ local methods = {
     end
   end,
   ["RefreshUpdateMenu"] = function(self)
-    local wagoMenu = self.menu[8].menuList
-    for i=1,#wagoMenu do tremove(wagoMenu, 1) end
-    tinsert(wagoMenu, {
-      text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
-      notCheckable = 1,
-      func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
-    })
-    if not self.data.ignoreWagoUpdate then
-      if self.data.skipWagoUpdate and self.update.version == self.data.skipWagoUpdate then
-        tinsert(wagoMenu, {
-          text =  L["Stop ignoring this Update"],
-          notCheckable = 1,
-          func = self.callbacks.wagoStopIgnoreNext
-        });
-      else
-        tinsert(wagoMenu, {
-          text = L["Ignore this Update"],
-          notCheckable = 1,
-          func = self.callbacks.wagoIgnoreNext
-        });
-        tinsert(wagoMenu, {
-          text = " ",
-          notClickable = 1,
-          notCheckable = 1,
-        });
-        tinsert(wagoMenu, {
-          text = L["Update this Aura"],
-          notCheckable = 1,
-          func = self.callbacks.OnUpdateClick
-        });
+    local pos
+    for k, menu in pairs(self.menu) do
+      if menu.text and menu.text:find(L["Wago Update"]) then
+        pos = k
+        break
+      end
+    end
+    if pos then
+      local wagoMenu = self.menu[pos].menuList
+      for i=1,#wagoMenu do tremove(wagoMenu, 1) end
+      tinsert(wagoMenu, {
+        text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
+        notCheckable = 1,
+        func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
+      })
+      if not self.data.ignoreWagoUpdate and self.update.hasUpdate then
+        if self.data.skipWagoUpdate and self.update.version == self.data.skipWagoUpdate then
+          tinsert(wagoMenu, {
+            text =  L["Don't skip this Version"],
+            notCheckable = 1,
+            func = self.callbacks.wagoStopIgnoreNext
+          });
+        else
+          tinsert(wagoMenu, {
+            text = L["Skip this Version"],
+            notCheckable = 1,
+            func = self.callbacks.wagoIgnoreNext
+          });
+          tinsert(wagoMenu, {
+            text = " ",
+            notClickable = 1,
+            notCheckable = 1,
+          });
+          tinsert(wagoMenu, {
+            text = L["Update this Aura"],
+            notCheckable = 1,
+            func = self.callbacks.OnUpdateClick
+          });
+        end
       end
     end
   end,
