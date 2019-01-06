@@ -1000,11 +1000,33 @@ local function delete(data, option, index)
   end
 end
 
+local function duplicate(data, option, index)
+  if option.references then
+    return function()
+      for childID, optionID in pairs(option.references) do
+        local childData = data[childID]
+        local childOption = childData.authorOptions[optionID]
+        WeakAuras.InsertCollapsed(childData.id, "author", optionID + 1)
+        tinsert(childData.authorOptions, optionID + 1, CopyTable(childOption))
+        WeakAuras.Add(childData)
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function()
+      WeakAuras.InsertCollapsed(data.id, "author", index + 1)
+      tinsert(data.authorOptions, index + 1, CopyTable(data.authorOptions[index]))
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
 local function addControlsForOption(authorOptions, args, data, order, i)
   -- add header controls
   local option = authorOptions[i]
 
-  local collapsed = true
+  local collapsed = false
   if option.references then
     for childID, optionID in pairs(option.references) do
       local childData = data[childID]
@@ -1042,7 +1064,7 @@ local function addControlsForOption(authorOptions, args, data, order, i)
 
   args["option" .. i .. "header"] = {
     type = "description",
-    width = WeakAuras.doubleWidth - 0.6,
+    width = WeakAuras.doubleWidth - 0.75,
     name = nameHead(data, option, option.name
                                   or (option.type == "space" and L["Space"])
                                   or (option.type == "description" and L["Description"])
@@ -1075,6 +1097,18 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     disabled = downDisable,
     func = downFunc,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+    imageWidth = 24,
+    imageHeight = 24
+  }
+  order = order + 1
+
+  args["option" .. i .. "duplicate"] = {
+    type = "execute",
+    width = 0.15,
+    name = "",
+    order = order,
+    func = duplicate(data, option, i),
+    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
     imageWidth = 24,
     imageHeight = 24
   }

@@ -4542,6 +4542,24 @@ function WeakAuras.RemoveCollapsed(id, namespace, key)
   end
 end
 
+function WeakAuras.InsertCollapsed(id, namespace, key, value)
+  local data = collapsedOptions[id] and collapsedOptions[id][namespace]
+  if not data then
+    return
+  end
+
+  local index = key
+  for k in pairs(data) do
+    index = max(index, k)
+  end
+
+  while index > key do
+    data[index + 1] = data[index]
+    index = index - 1
+  end
+  data[key] = value
+end
+
 function WeakAuras.RenameCollapsedData(oldid, newid)
   collapsedOptions[newid] = collapsedOptions[oldid]
   collapsedOptions[oldid] = nil
