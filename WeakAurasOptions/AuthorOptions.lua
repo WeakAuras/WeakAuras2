@@ -718,11 +718,12 @@ local typeControlAdders = {
     return order
   end,
   space = function(option, args, data, order, i)
+    -- this option should be just useWidth but no need to do a migration in the data just for that.
     args["option" .. i .. "variableWidth"] = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       order = order,
-      name = name(data, option, "variableWidth", L["Variable Size"]),
+      name = name(data, option, "variableWidth", L["Width"]),
       desc = desc(data, option, "variableWidth", L["If unchecked, then this space will fill the entire line it is on in User Mode."]),
       get = get(option, "variableWidth"),
       set = set(data, option, "variableWidth"),
@@ -731,11 +732,36 @@ local typeControlAdders = {
     args["option" .. i .. "widthSpace"] = nil
 
     local widthOption = args["option" .. i .. "width"]
-    widthOption.name = name(data, option, "width", L["Variable Size"])
+    widthOption.name = name(data, option, "width", L["Width"])
     widthOption.disabled = function() return not option.variableWidth end
     widthOption.order = order
     order = order + 1
 
+    args["option" .. i .. "useHeight"] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      order = order,
+      name = name(data, option, "useHeight", L["Height"]),
+      desc = desc(data, option, "useHeight", L["If checked, then this space will span across multiple lines."]),
+      get = get(option, "useHeight"),
+      set = set(data, option, "useHeight"),
+    }
+    order = order + 1
+
+    args["option" .. i .. "height"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      order = order,
+      name = name(data, option, "height", L["Height"]),
+      desc = desc(data, option, "height"),
+      get = get(option, "height"),
+      set = set(data, option, "height"),
+      disabled = function() return not option.useHeight end,
+      min = 1,
+      softMax = 10,
+      step = 1,
+    }
+    order = order + 1
     return order
   end,
   multiselect = function(option, args, data, order, i)
@@ -1304,8 +1330,8 @@ local function addUserModeOption(options, args, data, order, i)
       width = option.width * WeakAuras.normalWidth,
     }
   end
-  order = order + 1
   args[data.id .. "userOption" .. i] = userOption
+  order = order + 1
 
   -- convert from weakauras option type to ace option type
   if optionClass == "simple" then
@@ -1343,8 +1369,15 @@ local function addUserModeOption(options, args, data, order, i)
     if optionType == "description" then
       userOption.name = option.text or ""
       userOption.fontSize = option.fontSize
-    elseif optionType == "space" and not option.variableWidth then
-      userOption.width = "full"
+    elseif optionType == "space" then
+      if not option.variableWidth then
+        userOption.width = "full"
+      end
+      if option.useHeight and option.height > 1 then
+        userOption.name = string.rep("\n", option.height - 1)
+      else
+        userOption.name = " "
+      end
     end
   end
 
