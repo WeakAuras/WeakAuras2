@@ -626,10 +626,11 @@ local typeControlAdders = {
         order = order,
         get = function()
           if value ~= conflict then
-            return value
+            return value:gsub("|", "||")
           end
         end,
         set = function(_, value)
+          value = value:gsub("||", "|")
           if option.references then
             for childID, optionID in pairs(option.references) do
               local childData = data[childID]
@@ -697,6 +698,7 @@ local typeControlAdders = {
       order = order,
       get = function() return "" end,
       set = function(_, value)
+        value = value:gsub("||", "|")
         if option.references then
           for childID, optionID in pairs(option.references) do
             local childData = data[childID]
@@ -817,10 +819,11 @@ local typeControlAdders = {
         order = order,
         get = function()
           if value ~= conflict then
-            return value
+            return value:gsub("|", "||")
           end
         end,
         set = function(_, value)
+          value = value:gsub("||", "|")
           if option.references then
             for childID, optionID in pairs(option.references) do
               local childData = data[childID]
@@ -888,6 +891,7 @@ local typeControlAdders = {
       order = order,
       get = function() return "" end,
       set = function(_, value)
+        value = value:gsub("||", "|")
         if option.references then
           for childID, optionID in pairs(option.references) do
             local childData = data[childID]
