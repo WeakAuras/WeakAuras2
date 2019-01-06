@@ -998,8 +998,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   if option.references then
     for childID, optionID in pairs(option.references) do
       local childData = data[childID]
-      if not WeakAuras.IsCollapsed(childData.id, "author", optionID, true) then
-        collapsed = false
+      if WeakAuras.IsCollapsed(childData.id, "author", optionID, true) then
+        collapsed = true
         break
       end
     end
