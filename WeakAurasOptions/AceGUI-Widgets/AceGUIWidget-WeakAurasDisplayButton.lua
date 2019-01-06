@@ -871,12 +871,12 @@ local methods = {
     self.menu = {
       {
         text = L["Rename"],
-        notCheckable = 1,
+        notCheckable = true,
         func = self.callbacks.OnRenameClick
       },
       {
         text = L["Copy settings..."],
-        notCheckable = 1,
+        notCheckable = true,
         hasArrow = true,
         menuList = copyEntries;
       },
@@ -890,7 +890,7 @@ local methods = {
         if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= "timer" and regionType ~= data.regionType) then
           tinsert(convertMenu, {
             text = regionData.displayName,
-            notCheckable = 1,
+            notCheckable = true,
             func = function()
               WeakAuras.ConvertDisplay(data, regionType);
               WeakAuras_DropDownMenu:Hide();
@@ -900,20 +900,20 @@ local methods = {
       end
       tinsert(self.menu, {
         text = L["Convert to..."],
-        notCheckable = 1,
+        notCheckable = true,
         hasArrow = true,
         menuList = convertMenu
       });
       tinsert(self.menu, {
         text = L["Duplicate"],
-        notCheckable = 1,
+        notCheckable = true,
         func = self.callbacks.OnDuplicateClick
       });
     end
 
     tinsert(self.menu, {
       text = L["Set tooltip description"],
-      notCheckable = 1,
+      notCheckable = true,
       func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "desc") end
     });
 
@@ -921,26 +921,26 @@ local methods = {
     if (data.url and data.url ~= "") then
       tinsert(self.menu, {
         text = L["Copy URL"],
-        notCheckable = 1,
+        notCheckable = true,
         func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "url") end
       });
     end
 
     tinsert(self.menu, {
       text = L["Export to string..."],
-      notCheckable = 1,
+      notCheckable = true,
       func = function() WeakAuras.ExportToString(data.id) end
     });
     tinsert(self.menu, {
       text = L["Export to Lua table..."],
-      notCheckable = 1,
+      notCheckable = true,
       func = function() WeakAuras.ExportToTable(data.id) end
     });
 
     if WeakAurasCompanion then
       tinsert(self.menu, {
         text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
-        notCheckable = 1,
+        notCheckable = true,
         hasArrow = true,
         menuList = { }
       });
@@ -948,30 +948,30 @@ local methods = {
 
     tinsert(self.menu, {
       text = " ",
-      notClickable = 1,
-      notCheckable = 1,
+      notClickable = true,
+      notCheckable = true,
     });
     tinsert(self.menu, {
       text = L["Delete"],
-      notCheckable = 1,
+      notCheckable = true,
       func = self.callbacks.OnDeleteClick
     });
 
     if (data.controlledChildren) then
       tinsert(self.menu, {
         text = L["Delete children and group"],
-        notCheckable = 1,
+        notCheckable = true,
         func = self.callbacks.OnDeleteAllClick
       });
     end
     tinsert(self.menu, {
       text = " ",
-      notClickable = 1,
-      notCheckable = 1,
+      notClickable = true,
+      notCheckable = true,
     });
     tinsert(self.menu, {
       text = L["Close"],
-      notCheckable = 1,
+      notCheckable = true,
       func = function() WeakAuras_DropDownMenu:Hide() end
     });
     if(data.controlledChildren) then
@@ -1462,30 +1462,30 @@ local methods = {
       for i=1,#wagoMenu do tremove(wagoMenu, 1) end
       tinsert(wagoMenu, {
         text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
-        notCheckable = 1,
+        notCheckable = true,
         func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
       })
       if not self.data.ignoreWagoUpdate and self.update.hasUpdate then
         if self.data.skipWagoUpdate and self.update.version == self.data.skipWagoUpdate then
           tinsert(wagoMenu, {
             text =  L["Don't skip this Version"],
-            notCheckable = 1,
+            notCheckable = true,
             func = self.callbacks.wagoStopIgnoreNext
           });
         else
           tinsert(wagoMenu, {
             text = L["Skip this Version"],
-            notCheckable = 1,
+            notCheckable = true,
             func = self.callbacks.wagoIgnoreNext
           });
           tinsert(wagoMenu, {
             text = " ",
-            notClickable = 1,
-            notCheckable = 1,
+            notClickable = true,
+            notCheckable = true,
           });
           tinsert(wagoMenu, {
             text = L["Update this Aura"],
-            notCheckable = 1,
+            notCheckable = true,
             func = self.callbacks.OnUpdateClick
           });
         end
