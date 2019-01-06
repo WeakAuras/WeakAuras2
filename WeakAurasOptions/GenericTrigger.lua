@@ -272,7 +272,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
     return not (trigger.type == "custom" and trigger.custom_type == "stateupdate");
   end
 
-  WeakAuras.AddCodeOption(customOptions, data, WeakAuras.newFeatureString .. L["Custom Variables"], "custom_variables", 11, hideCustomVariables, appendToTriggerPath("customVariables"), false, true, extraSetFunctionReload, nil, true);
+  WeakAuras.AddCodeOption(customOptions, data, L["Custom Variables"], "custom_variables", 11, hideCustomVariables, appendToTriggerPath("customVariables"), false, true, extraSetFunctionReload, nil, true);
 
   local function hideCustomUntrigger()
     return not (trigger.type == "custom"

@@ -708,7 +708,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "warmode",
-      display = WeakAuras.newFeatureString .. L["War Mode Active"],
+      display = L["War Mode Active"],
       type = "tristate",
       init = "arg",
       width = WeakAuras.doubleWidth,
