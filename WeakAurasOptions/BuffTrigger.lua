@@ -853,7 +853,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useGroupRole = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Filter by Group Role"],
+      name = L["Filter by Group Role"],
       order = 47.1,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },
