@@ -1839,6 +1839,8 @@ WeakAuras.author_option_fields = {
   },
   space = {
     variableWidth = true,
+    useHeight = false,
+    height = 1,
   },
   multiselect = {
     default = {true},
