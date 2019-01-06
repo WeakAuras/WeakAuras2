@@ -3849,10 +3849,13 @@ function WeakAuras.ConvertDisplay(data, newType)
   -- thumbnails[id].region:SetScript("OnUpdate", nil);
   thumbnails[id].region:Hide();
   thumbnails[id] = nil;
+  local visibility = displayButtons[id]:GetVisibility();
+  displayButtons[id]:PriorityHide(0);
 
   WeakAuras.Convert(data, newType);
   displayButtons[id]:SetViewRegion(WeakAuras.regions[id].region);
   displayButtons[id]:Initialize();
+  displayButtons[id]:PriorityShow(visibility);
   displayOptions[id] = nil;
   WeakAuras.AddOption(id, data);
   frame:FillOptions(displayOptions[id]);
