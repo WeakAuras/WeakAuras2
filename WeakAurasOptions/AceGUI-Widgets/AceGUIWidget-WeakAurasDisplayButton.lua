@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 45
+local Type, Version = "WeakAurasDisplayButton", 46
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1005,7 +1005,7 @@ local methods = {
       if hasUpdate then
         self.update.hasUpdate = hasUpdate
         self.update.version = updateData.wagoVersion
-        local showVersion = self.data.semver or self.data.version
+        local showVersion = self.data.semver or self.data.version or 0
         local showCompanionVersion = updateData.wagoSemver or updateData.wagoVersion
         self.update.title = L["Update "] .. updateData.name .. L[" by "] .. updateData.author
         self.update.desc = L["From version "] .. showVersion .. L[" to version "] .. showCompanionVersion
@@ -1516,7 +1516,7 @@ local methods = {
       local updateData = WeakAurasCompanion.slugs[slug]
       if updateData then
         if not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == updateData.wagoVersion) then
-          if tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
+          if not self.data.version or tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
             -- got update
             return true, false, updateData, slug
           end
