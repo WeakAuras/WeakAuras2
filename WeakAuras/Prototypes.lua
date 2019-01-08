@@ -44,7 +44,9 @@ function WeakAuras.CheckRange(unit, range, operator)
   end
 end
 
+-- encounterJournalID => encounterID
 WeakAuras.encounter_table = {
+  -- Uldir
   [2168] = 2144, -- Taloc the Corrupted
   [2167] = 2141, -- MOTHER
   [2146] = 2128, -- Fetid Devourer
@@ -53,6 +55,20 @@ WeakAuras.encounter_table = {
   [2194] = 2135, -- Mythrax the Unraveler
   [2166] = 2134, -- Vectis
   [2147] = 2122, -- G'huun
+  [2344] = 2265, -- Champion of the Light
+  -- Battle for Dazar'alor
+  --[2344] = 2265, -- Champion of the Light (A)
+  [2333] = 2265, -- Champion of the Light (H)
+  [2340] = 2284, -- Grong, the Revenant (A)
+  [2325] = 2263, -- Grong, the Jungle Lord (H)
+  [2323] = 2285, -- Jadefire Masters (A)
+  [2341] = 2266, -- Jadefire Masters (H)
+  [2342] = 2271, -- Opulence
+  [2330] = 2268, -- Conclave of the Chosen
+  [2334] = 2276, -- High Tinker Mekkatorque
+  [2335] = 2272, -- King Rastakhan
+  [2337] = 2280, -- Stormwall Blockade
+  [2343] = 2281, -- Lady Jaina Proudmoore
 }
 
 local function get_encounters_list()
