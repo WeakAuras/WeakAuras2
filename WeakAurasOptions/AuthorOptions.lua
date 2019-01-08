@@ -48,7 +48,8 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
-
+local conflictBlue = "|cFF4080FF"
+local references, conflict = {}, {} -- magic values
 -- classifications of options. Currently, we have simple and noninteractive
 local optionClasses = {
   toggle = "simple",
@@ -70,36 +71,77 @@ local function atLeastOneSet(data, references, key)
   end
 end
 
+local function neq(a, b)
+  if type(a) == "table"  and type(b) == "table" then
+    for k, v in pairs(a) do
+      if neq(v, b[k]) then return true end
+    end
+    for k, v in pairs(b) do
+      if neq(v, a[k]) then return true end
+    end
+  else
+    return a ~= b
+  end
+end
+
 -- blues the name if there are conflicts between the references for this value
 local function name(data, option, key, name, phrase)
   local header = name or phrase
-  if not option.references then
+  if not option[references] then
     return header
-  elseif option[key] ~= nil or not atLeastOneSet(data, option.references, key) then
+  elseif option[key] ~= nil or not atLeastOneSet(data, option[references], key) then
     return header
   else
-    return "|cFF4080FF" .. header
+    return conflictBlue .. header
   end
 end
 
 local function nameHead(data, option, phrase)
-  if not option.references then
+  if not option[references] then
     return phrase
   else
     for i = 1, #data[0].controlledChildren do
-      if not option.references[i] then
-        return "|cFF4080FF" .. phrase
+      if not option[references][i] then
+        return conflictBlue .. phrase
       end
     end
     return phrase
   end
 end
 
+local function nameUser(config, key, name)
+  if not config[references] then
+    return name
+  elseif config[key] ~= nil then
+    return name
+  else
+    return conflictBlue .. name
+  end
+end
+
+local function nameUserDesc(data, option)
+  if option.text then
+    return option.text
+  elseif not option[references] then
+    return ""
+  else
+    local text = {}
+    for childID, optionID in pairs(option[references]) do
+      local childData = data[childID]
+      local childOption = childData.authorOptions[optionID]
+      if childOption.text and childOption.text ~= nil then
+        tinsert(text, childOption.text)
+      end
+    end
+    return conflictBlue .. tconcat(text, "\n")
+  end
+end
+
 -- provides a tooltip showing all the conflicting values if there are any
 local function desc(data, option, key, phrase)
-  if not option.references then
+  if not option[references] then
     return phrase
-  elseif option[key] or not atLeastOneSet(data, option.references, key) then
+  elseif option[key] or not atLeastOneSet(data, option[references], key) then
     return phrase
   else
     local desc = {}
@@ -107,7 +149,7 @@ local function desc(data, option, key, phrase)
       desc[1] = phrase
     end
     tinsert(desc, L["Values:"])
-    for childID, optionID in pairs(option.references) do
+    for childID, optionID in pairs(option[references]) do
       local childData = data[childID]
       local childOption = childData.authorOptions[optionID]
       if childOption[key] ~= nil then
@@ -119,14 +161,14 @@ local function desc(data, option, key, phrase)
 end
 
 local function descType(data, option)
-  if not option.references then
+  if not option[references] then
     return L["This setting controls what widget is generated in user mode."]
   else
     local desc = {
       L["This setting controls what widget is generated in user mode."],
       L["Used in Auras:"],
     }
-    for childID, optionID in pairs(option.references) do
+    for childID, optionID in pairs(option[references]) do
       local childData = data[childID]
       tinsert(desc, ("%s - Option %i"):format(childData.id, optionID))
     end
@@ -135,13 +177,13 @@ local function descType(data, option)
 end
 
 local function descSelect(data, option, key)
-  if not option.references then
+  if not option[references] then
     return ""
   elseif option.values then
     return ""
   else
     local desc = {L["Values:"]}
-    for childID, optionID in pairs(option.references) do
+    for childID, optionID in pairs(option[references]) do
       local childData = data[childID]
       local childOption = childData.authorOptions[optionID]
       if childOption.values[key] ~= nil then
@@ -153,20 +195,38 @@ local function descSelect(data, option, key)
 end
 
 local function descColor(data, option, key)
-  if not option.references then
+  if not option[references] then
     return ""
-  elseif option[key] or not atLeastOneSet(data, option.references, key) then
+  elseif option[key] or not atLeastOneSet(data, option[references], key) then
     return ""
   else
     local desc = {
       L["Values are in normalized rgba format."],
       L["Values:"],
     }
-    for childID, optionID in pairs(option.references) do
+    for childID, optionID in pairs(option[references]) do
       local childData = data[childID]
       local childOption = childData.authorOptions[optionID]
       if childOption[key] ~= nil then
         tinsert(desc, ("%s #%i: %.2f %.2f %.2f %.2f"):format(childData.id, optionID, unpack(childOption[key])))
+      end
+    end
+    return tconcat(desc, "\n")
+  end
+end
+
+local function descUser(data, option)
+  if not option[references] then
+    return option.useDesc and option.desc or nil
+  elseif option.useDesc ~= nil and option.desc ~= nil then
+    return option.useDesc and option.desc or nil
+  else
+    local desc = {}
+    for childID, optionID in pairs(option[references]) do
+      local childData = data[childID]
+      local childOption = childData.authorOptions[optionID]
+      if childOption.useDesc and childOption.desc and childOption.desc ~= "" then
+        tinsert(desc, ("%s - %s"):format(childData.id, childOption.desc))
       end
     end
     return tconcat(desc, "\n")
@@ -195,6 +255,65 @@ local function getNumAsString(option, key)
   end
 end
 
+local function getValues(data, option)
+  local values
+  if option[references] then
+    values = {}
+    local firstChild = true
+    for childID, optionID in pairs(option[references]) do
+      local childData = data[childID]
+      local childValues = childData.authorOptions[optionID].values
+      local i = 1
+      while i <= #values or i <= #childValues do
+        if firstChild then
+          values[i] = childValues[i]
+        elseif values[i] ~= childValues[i] then
+          values[i] = conflict
+        end
+        i = i + 1
+      end
+      firstChild = false
+    end
+  else
+    values = option.values
+  end
+  return values
+end
+
+local function getUserValues(data, option)
+  local values
+  if option[references] then
+    values = {}
+    for childID, optionID in pairs(option[references]) do
+      local childData = data[childID]
+      local childValues = childData.authorOptions[optionID].values
+      local i = 1
+      while i <= #values or i <= #childValues do
+        local value = values[i]
+        if value == conflict then
+          -- conflicts can't ever be resolved at this point
+        elseif value == nil and i <= #values then
+          -- set the new value
+          values[i] = childValues[i]
+        elseif value ~= childValues[i] then
+          -- either this child has a conflicting value at this index
+          -- or it's already ended and is nil, so we need to mark a conflict
+          values[i] = conflict
+        end
+        i = i + 1
+      end
+    end
+    for i, v in ipairs(values) do
+      if v == conflict then
+        values[i] = conflictBlue .. L["Value %i"]:format(i)
+      end
+    end
+  else
+    values = option.values
+  end
+  return values
+end
+
 local function getColor(option, key)
   return function()
     if option[key] then
@@ -205,9 +324,9 @@ end
 
 -- setters for AceConfig
 local function set(data, option, key)
-  if option.references then
+  if option[references] then
     return function(_, value)
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         local childOption = childData.authorOptions[optionID]
         childOption[key] = value
@@ -224,11 +343,31 @@ local function set(data, option, key)
   end
 end
 
+local function setUser(data, config, key)
+  if config[references] then
+    return function(_, value)
+      for childID in pairs(config[references][key]) do
+        local childData = data[childID]
+        local childConfig = childData.config
+        childConfig[key] = value
+        WeakAuras.Add(childData)
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function(_, value)
+      config[key] = value
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
 local function setStr(data, option, key)
-  if option.references then
+  if option[references] then
     return function(_, value)
       value = value:gsub("||", "|")
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         local childOption = childData.authorOptions[optionID]
         childOption[key] = value
@@ -247,19 +386,19 @@ local function setStr(data, option, key)
 end
 
 local function setNum(data, option, key, required)
-  if option.references then
+  if option[references] then
     return function(_, value)
       if value ~= "" then
         local num = tonumber(value)
         if not num or math.abs(num) == math.huge or tostring(num) == "nan" then return end
-        for childID, optionID in pairs(option.references) do
+        for childID, optionID in pairs(option[references]) do
           local childData = data[childID]
           local childOption = childData.authorOptions[optionID]
           childOption[key] = num
           WeakAuras.Add(childData)
         end
       elseif not required then
-        for childID, optionID in pairs(option.references) do
+        for childID, optionID in pairs(option[references]) do
           local childData = data[childID]
           local childOption = childData.authorOptions[optionID]
           childOption[key] = nil
@@ -283,11 +422,39 @@ local function setNum(data, option, key, required)
   end
 end
 
+local function setUserNum(data, config, key)
+  if config[references] then
+    return function(_, value)
+      if value ~= "" then
+        local num = tonumber(value)
+        if not num or math.abs(num) == math.huge or tostring(num) == "nan" then return end
+        for childID in pairs(config[references][key]) do
+          local childData = data[childID]
+          local childConfig = childData.config
+          childConfig[key] = num
+          WeakAuras.Add(childData)
+        end
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function(_, value)
+      if value ~= "" then
+        local num = tonumber(value)
+        if not num or math.abs(num) == math.huge or tostring(num) == "nan" then return end
+        config[key] = num
+      end
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
 local function setColor(data, option, key)
-  if option.references then
+  if option[references] then
     return function(_, r, g, b, a)
       local color = {r, g, b, a}
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         local childOption = childData.authorOptions[optionID]
         childOption[key] = color
@@ -304,10 +471,31 @@ local function setColor(data, option, key)
   end
 end
 
+local function setUserColor(data, config, key)
+  if config[references] then
+    return function(_, r, g, b, a)
+      local color = {r, g, b, a}
+      for childID in pairs(config[references][key]) do
+        local childData = data[childID]
+        local childConfig = childData.config
+        childConfig[key] = color
+        WeakAuras.Add(childData)
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function(_, r, g, b, a)
+      config[key] = {r, g, b, a}
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
 local function setSelectDefault(data, option, key)
-  if option.references then
+  if option[references] then
     return function(_, value)
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         local childOption = childData.authorOptions[optionID]
         childOption.default = min(value, #childOption.values)
@@ -338,9 +526,9 @@ local typeControlAdders = {
         return option.default and 1 or 0
       end,
       set = function(_, value)
-        if option.references then
+        if option[references] then
           local val = value == 1
-          for childID, optionID in pairs(option.references) do
+          for childID, optionID in pairs(option[references]) do
             local childData = data[childID]
             local childOption = childData.authorOptions[optionID]
             childOption.default = val
@@ -562,36 +750,11 @@ local typeControlAdders = {
     return order
   end,
   select = function(option, args, data, order, i)
-    local values
-    local conflict = {} -- magic value
-    if option.references then
-      values = {}
-      for childID, optionID in pairs(option.references) do
-        local childData = data[childID]
-        local childValues = childData.authorOptions[optionID].values
-        local i = 1
-        while i <= #values or i <= #childValues do
-          local value = values[i]
-          if value == conflict then
-            -- conflicts can't ever be resolved at this point
-          elseif value == nil then
-            -- set the new value
-            values[i] = childValues[i]
-          elseif value ~= childValues[i] then
-            -- either this child has a conflicting value at this index
-            -- or it's already ended and is nil, so we need to mark a conflict
-            values[i] = conflict
-          end
-          i = i + 1
-        end
-      end
-    else
-      values = option.values
-    end
+    local values = getValues(data, option)
     local defaultValues = {}
     for i, v in ipairs(values) do
       if v == conflict then
-        defaultValues[i] = "|cFF4080FF" .. L["Value %i"]:format(i)
+        defaultValues[i] = conflictBlue .. L["Value %i"]:format(i)
       else
         defaultValues[i] = v
       end
@@ -621,7 +784,7 @@ local typeControlAdders = {
       args["option" .. i .. "value" .. j] = {
         type = "input",
         width = WeakAuras.normalWidth - 0.15,
-        name = (value == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(j),
+        name = (value == conflict and conflictBlue or "") .. L["Value %i"]:format(j),
         desc = descSelect(data, option, j, conflict),
         order = order,
         get = function()
@@ -631,8 +794,8 @@ local typeControlAdders = {
         end,
         set = function(_, value)
           value = value:gsub("||", "|")
-          if option.references then
-            for childID, optionID in pairs(option.references) do
+          if option[references] then
+            for childID, optionID in pairs(option[references]) do
               local childData = data[childID]
               local childOption = childData.authorOptions[optionID]
               local insertPoint = math.min(j, #childOption.values + 1)
@@ -662,8 +825,8 @@ local typeControlAdders = {
         name = "",
         order = order,
         func = function()
-          if option.references then
-            for childID, optionID in pairs(option.references) do
+          if option[references] then
+            for childID, optionID in pairs(option[references]) do
               local childData = data[childID]
               local childOption = childData.authorOptions[optionID]
               tremove(childOption.values, j)
@@ -699,8 +862,8 @@ local typeControlAdders = {
       get = function() return "" end,
       set = function(_, value)
         value = value:gsub("||", "|")
-        if option.references then
-          for childID, optionID in pairs(option.references) do
+        if option[references] then
+          for childID, optionID in pairs(option[references]) do
             local childData = data[childID]
             local childOption = childData.authorOptions[optionID]
             childOption.values[#childOption.values + 1] = value
@@ -766,36 +929,11 @@ local typeControlAdders = {
   end,
   multiselect = function(option, args, data, order, i)
     args["option" .. i .. "width"] = nil
-    local values
-    local conflict = {} -- magic value
-    if option.references then
-      values = {}
-      for childID, optionID in pairs(option.references) do
-        local childData = data[childID]
-        local childValues = childData.authorOptions[optionID].values
-        local i = 1
-        while i <= #values or i <= #childValues do
-          local value = values[i]
-          if value == conflict then
-            -- conflicts can't ever be resolved at this point
-          elseif value == nil then
-            -- set the new value
-            values[i] = childValues[i]
-          elseif value ~= childValues[i] then
-            -- either this child has a conflicting value at this index
-            -- or it's already ended and is nil, so we need to mark a conflict
-            values[i] = conflict
-          end
-          i = i + 1
-        end
-      end
-    else
-      values = option.values
-    end
+    local values = getValues(data, option)
     local defaultValues = {}
     for i, v in ipairs(values) do
       if v == conflict then
-        defaultValues[i] = "|cFF4080FF" .. L["Value %i"]:format(i)
+        defaultValues[i] = conflictBlue .. L["Value %i"]:format(i)
       else
         defaultValues[i] = v
       end
@@ -810,8 +948,8 @@ local typeControlAdders = {
         return option.default and option.default[k]
       end,
       set = function(_, k, v)
-        if option.references then
-          for childID, optionID in pairs(option.references) do
+        if option[references] then
+          for childID, optionID in pairs(option[references]) do
             local childData = data[childID]
             local childOption = childData.authorOptions[optionID]
             childOption.default[k] = v
@@ -840,7 +978,7 @@ local typeControlAdders = {
       args["option" .. i .. "value" .. j] = {
         type = "input",
         width = WeakAuras.normalWidth - 0.15,
-        name = (value == conflict and "|cFF4080FF" or "") .. L["Value %i"]:format(j),
+        name = (value == conflict and conflictBlue or "") .. L["Value %i"]:format(j),
         desc = descSelect(data, option, j, conflict),
         order = order,
         get = function()
@@ -850,8 +988,8 @@ local typeControlAdders = {
         end,
         set = function(_, value)
           value = value:gsub("||", "|")
-          if option.references then
-            for childID, optionID in pairs(option.references) do
+          if option[references] then
+            for childID, optionID in pairs(option[references]) do
               local childData = data[childID]
               local childOption = childData.authorOptions[optionID]
               local insertPoint = math.min(j, #childOption.values + 1)
@@ -883,8 +1021,8 @@ local typeControlAdders = {
         name = "",
         order = order,
         func = function()
-          if option.references then
-            for childID, optionID in pairs(option.references) do
+          if option[references] then
+            for childID, optionID in pairs(option[references]) do
               local childData = data[childID]
               local childOption = childData.authorOptions[optionID]
               tremove(childOption.values, j)
@@ -922,8 +1060,8 @@ local typeControlAdders = {
       get = function() return "" end,
       set = function(_, value)
         value = value:gsub("||", "|")
-        if option.references then
-          for childID, optionID in pairs(option.references) do
+        if option[references] then
+          for childID, optionID in pairs(option[references]) do
             local childData = data[childID]
             local childOption = childData.authorOptions[optionID]
             childOption.values[#childOption.values + 1] = value
@@ -945,13 +1083,13 @@ local typeControlAdders = {
 }
 
 local function up(data, option, index)
-  if option.references then
+  if option[references] then
     return function()
-      for _, optionID in pairs(option.references) do
+      for _, optionID in pairs(option[references]) do
         if optionID <= 1 then return true end
       end
     end, function()
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         if childData then
           WeakAuras.MoveCollapseDataUp(childData.id, "author", optionID)
@@ -975,14 +1113,14 @@ local function up(data, option, index)
 end
 
 local function down(data, option, index)
-  if option.references then
+  if option[references] then
     return function()
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         if optionID >= #childData.authorOptions then return true end
       end
     end, function()
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         if childData then
           WeakAuras.MoveCollapseDataDown(childData.id, "author", optionID)
@@ -1006,9 +1144,9 @@ local function down(data, option, index)
 end
 
 local function delete(data, option, index)
-  if option.references then
+  if option[references] then
     return function()
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         WeakAuras.RemoveCollapsed(childData.id, "author", optionID)
         tremove(childData.authorOptions, optionID)
@@ -1027,9 +1165,9 @@ local function delete(data, option, index)
 end
 
 local function duplicate(data, option, index)
-  if option.references then
+  if option[references] then
     return function()
-      for childID, optionID in pairs(option.references) do
+      for childID, optionID in pairs(option[references]) do
         local childData = data[childID]
         local childOption = childData.authorOptions[optionID]
         WeakAuras.InsertCollapsed(childData.id, "author", optionID + 1)
@@ -1053,8 +1191,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   local option = authorOptions[i]
 
   local collapsed = false
-  if option.references then
-    for childID, optionID in pairs(option.references) do
+  if option[references] then
+    for childID, optionID in pairs(option[references]) do
       local childData = data[childID]
       if WeakAuras.IsCollapsed(childData.id, "author", optionID, true) then
         collapsed = true
@@ -1071,8 +1209,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
     order = order,
     width = 0.15,
     func = function()
-      if option.references then
-        for childID, optionID in pairs(option.references) do
+      if option[references] then
+        for childID, optionID in pairs(option[references]) do
           local childData = data[childID]
           WeakAuras.SetCollapsed(childData.id, "author", optionID, not collapsed)
         end
@@ -1169,8 +1307,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       local author_option_fields = WeakAuras.author_option_fields
       local commonFields, newFields = author_option_fields.common, author_option_fields[value]
       local newClass = optionClasses[value]
-      if option.references then
-        for childID, optionID in pairs(option.references) do
+      if option[references] then
+        for childID, optionID in pairs(option[references]) do
           local childData = data[childID]
           local childOption = childData.authorOptions[optionID]
           for k in pairs(childOption) do
@@ -1305,9 +1443,8 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   return order
 end
 
-local function addUserModeOption(options, args, data, order, i)
+local function addUserModeOption(options, config, args, data, order, i)
   local option = options[i]
-  local config = data.config
   local optionType = option.type
   local optionClass = optionClasses[optionType]
   local userOption
@@ -1315,22 +1452,22 @@ local function addUserModeOption(options, args, data, order, i)
   if optionClass == "simple" then
     userOption = {
       type = optionType,
-      name = option.name,
-      desc = option.useDesc and option.desc or nil,
-      width = option.width * WeakAuras.normalWidth,
+      name = nameUser(config, option.key, option.name),
+      desc = descUser(data, option),
+      width = (option.width or 1) * WeakAuras.normalWidth,
       order = order,
       get = get(config, option.key),
-      set = set(data, config, option.key)
+      set = setUser(data, config, option.key)
     }
   elseif optionClass == "noninteractive" then
     userOption = {
       type = "description",
       order = order,
       name = "",
-      width = option.width * WeakAuras.normalWidth,
+      width = (option.width or 1) * WeakAuras.normalWidth,
     }
   end
-  args[data.id .. "userOption" .. i] = userOption
+  args["userOption" .. i] = userOption
   order = order + 1
 
   -- convert from weakauras option type to ace option type
@@ -1340,7 +1477,7 @@ local function addUserModeOption(options, args, data, order, i)
     elseif optionType == "number" then
       userOption.type = "input"
       userOption.get = getNumAsString(config, option.key)
-      userOption.set = setNum(data, config, option.key, true)
+      userOption.set = setUserNum(data, config, option.key, true)
     elseif optionType == "range" then
       userOption.max = option.max
       userOption.min = option.min
@@ -1351,23 +1488,31 @@ local function addUserModeOption(options, args, data, order, i)
     elseif optionType == "color" then
       userOption.hasAlpha = true
       userOption.get = getColor(config, option.key)
-      userOption.set = setColor(data, config, option.key)
+      userOption.set = setUserColor(data, config, option.key)
     elseif optionType == "select" then
-      userOption.values = option.values
+      userOption.values = getUserValues(data, option)
     elseif optionType == "multiselect" then
-      userOption.values = option.values
+      userOption.values = getUserValues(data, option)
       userOption.get = function(_, k)
-        return data.config[option.key][k]
+        return config[option.key][k]
       end
       userOption.set = function(_, k, v)
-        data.config[option.key][k] = v
-        WeakAuras.Add(data)
-        WeakAuras.ReloadTriggerOptions(data)
+        if config[references] then
+          for childID in pairs(config[references][option.key]) do
+            data[childID].config[option.key][k] = v
+            WeakAuras.Add(data[childID])
+          end
+          WeakAuras.ReloadTriggerOptions(data[0])
+        else
+          config[option.key][k] = v
+          WeakAuras.Add(data)
+          WeakAuras.ReloadTriggerOptions(data)
+        end
       end
     end
   elseif optionClass == "noninteractive" then
     if optionType == "description" then
-      userOption.name = option.text or ""
+      userOption.name = nameUserDesc(data, option)
       userOption.fontSize = option.fontSize
     elseif optionType == "space" then
       if not option.variableWidth then
@@ -1384,19 +1529,6 @@ local function addUserModeOption(options, args, data, order, i)
   return order
 end
 
-local function neq(a, b)
-  if type(a) == "table"  and type(b) == "table" then
-    for k, v in pairs(a) do
-      if neq(v, b[k]) then return true end
-    end
-    for k, v in pairs(b) do
-      if neq(v, a[k]) then return true end
-    end
-  else
-    return a ~= b
-  end
-end
-
 local function mergeOptions(childIndex, merged, toMerge)
   local nextInsert = 1
   for i = 1, #toMerge do
@@ -1405,7 +1537,9 @@ local function mergeOptions(childIndex, merged, toMerge)
     local shouldMerge = false
     for j = nextInsert, #merged + 1 do
       if not merged[j] then break end -- no more options to check, so must insert
-      if nextToMerge.type == merged[j].type and nextToMerge.key == merged[j].key then
+      if nextToMerge.type == merged[j].type
+      and nextToMerge.key == merged[j].key
+      and nextToMerge.name == merged[j].name then
         shouldMerge = true
         nextInsert = j
         break
@@ -1420,15 +1554,34 @@ local function mergeOptions(childIndex, merged, toMerge)
           mergedOption[k] = nil
         end
       end
-      mergedOption.references[childIndex] = i
+      mergedOption[references][childIndex] = i
     else
       -- can't merge, should insert instead
       local newOption = CopyTable(nextToMerge)
-      newOption.references = {[childIndex] = i}
+      newOption[references] = {[childIndex] = i}
       tinsert(merged, nextInsert, newOption)
     end
     -- nexver merge 2 options from the same child
     nextInsert = nextInsert + 1
+  end
+end
+
+local function mergeConfig(childIndex, mergedConfig, nextToMerge)
+  mergedConfig[references] = mergedConfig[references] or {}
+  for k, v in pairs(nextToMerge) do
+    if not mergedConfig[references][k] then
+      mergedConfig[references][k] = {[childIndex] = k}
+      if type(v) ~= "table" then
+        mergedConfig[k] = v
+      else
+        mergedConfig[k] = CopyTable(v)
+      end
+    else
+      mergedConfig[references][k][childIndex] = k
+      if neq(mergedConfig[k], v) then
+        mergedConfig[k] = nil
+      end
+    end
   end
 end
 
@@ -1451,10 +1604,23 @@ local function valuesAreEqual(t1, t2)
   return true
 end
 
-local function allChoicesAreDefault(data)
-  for _, option in ipairs(data.authorOptions) do
-    if optionClasses[option.type] ~= "noninteractive" and not valuesAreEqual(option.default, data.config[option.key]) then
-      return false
+local function allChoicesAreDefault(data, options)
+  for _, option in ipairs(options) do
+    if optionClasses[option.type] ~= "noninteractive" then
+      if option[references] then
+        for childID, optionID in pairs(option[references]) do
+          local childData = data[childID]
+          local childOption = childData.authorOptions[optionID]
+          local childConfig = childData.config
+          if not valuesAreEqual(childOption.default, childConfig[option.key]) then
+            return false
+          end
+        end
+      else
+        if not valuesAreEqual(option.default, data.config[option.key]) then
+          return false
+        end
+      end
     end
   end
   return true
@@ -1470,19 +1636,21 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
         break
       end
     end
+    local mergedOptions = {}
+    local allData = {[0] = data}
+    -- merge child options into one
+    local mergedConfig, keysSeen = {}, {}
+    for i, childID in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childID)
+      local childOptions = childData and childData.authorOptions
+      allData[i] = childData
+      if childOptions then
+        mergeOptions(i, mergedOptions, childOptions)
+        mergeConfig(i, mergedConfig, childData.config, keysSeen)
+      end
+    end
     if isAuthorMode then
       local order = startorder + 2
-      local mergedOptions = {}
-      local allData = {[0] = data}
-      -- merge child options into one
-      for i, childID in ipairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childID)
-        local childOptions = childData and childData.authorOptions
-        allData[i] = childData
-        if childOptions then
-          mergeOptions(i, mergedOptions, childOptions)
-        end
-      end
       for i = 1, #mergedOptions do
         order = addControlsForOption(mergedOptions, args, allData, order, i)
       end
@@ -1530,43 +1698,8 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       }
     else
       local order = startorder
-      local values = {}
-      for i = 1, #data.controlledChildren do
-        local childData = WeakAuras.GetData(data.controlledChildren[i])
-        if childData and #childData.authorOptions > 0 then
-          tinsert(values, childData.id)
-          local childIndex = #values
-          args[childData.id .. "header"] = {
-            type = "header",
-            name = childData.id,
-            order = order,
-          }
-          order = order + 1
-          for j = 1, #childData.authorOptions do
-            order = addUserModeOption(childData.authorOptions, args, childData, order, j)
-          end
-          args[childData.id .. "space1"] ={
-            type = "description",
-            width = WeakAuras.normalWidth,
-            name = "",
-            order = order,
-          }
-          order = order + 1
-          args[childData.id .. "resetToDefault"] = {
-            type = "execute",
-            width = WeakAuras.normalWidth,
-            name = L["Reset to Defaults"],
-            desc = L["Reset all options to their default values."],
-            order = order,
-            func = function()
-              wipe(childData.config)
-              WeakAuras.Add(childData)
-              WeakAuras.ReloadTriggerOptions(data)
-            end,
-            hidden = function() return allChoicesAreDefault(childData) end
-          }
-          order = order + 1
-        end
+      for i = 1, #mergedOptions do
+        order = addUserModeOption(mergedOptions, mergedConfig, args, allData, order, i)
       end
       args["userConfigFooter"] = {
         type = "header",
@@ -1589,14 +1722,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           WeakAuras.ReloadTriggerOptions(data)
         end,
         hidden = function()
-          if #values <= 1 then return true end
-          for _, childID in ipairs(values) do
-            local childData = WeakAuras.GetData(childID)
-            if not allChoicesAreDefault(childData) then
-              return false
-            end
-          end
-          return true
+          return #mergedOptions == 0 or allChoicesAreDefault(allData, mergedOptions)
         end,
       }
       order = order + 1
@@ -1620,14 +1746,9 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
     local authorOptions = data.authorOptions
     if not data.authorMode then
       local order = startorder
-      args[data.id .. "header"] = {
-        type = "header",
-        name = data.id .. L[" Configuration"],
-        order = order,
-      }
-      order = order + 1
+      local config = data.config
       for i = 1, #authorOptions do
-        order = addUserModeOption(authorOptions, args, data, order, i)
+        order = addUserModeOption(authorOptions, config, args, data, order, i)
       end
       args["resetToDefault"] = {
         type = "execute",
@@ -1640,7 +1761,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           WeakAuras.Add(data)
           WeakAuras.ReloadTriggerOptions(data)
         end,
-        hidden = function() return allChoicesAreDefault(data) end
+        hidden = function() return allChoicesAreDefault(data, authorOptions) end
       }
       order = order + 1
       args[data.id .. "footer"] = {
@@ -1663,7 +1784,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       }
     else
       local order = startorder + 2
-
+      local config = data.config
       order = order + 1
 
       for i = 1, #authorOptions do
