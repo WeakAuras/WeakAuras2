@@ -1,4 +1,4 @@
-local internalVersion = 10;
+local internalVersion = 11;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2752,16 +2752,15 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 10 was introduced in December 2018
-  if data.internalVersion < 10 then
-    if not data.version and data.url and data.url ~= "" then
+  -- Version 11 was introduced in January 2018
+  if data.internalVersion < 11 then
+    if data.url and data.url ~= "" then
       local slug, version = data.url:match("wago.io/([^/]+)/([0-9]+)")
       if not slug and not version then
-        slug = data.url:match("wago.io/([^/]+)$")
         version = 1
       end
-      if slug then
-        data.version = version
+      if version and tonumber(version) then
+        data.version = tonumber(version)
       end
     end
   end
