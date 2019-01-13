@@ -831,6 +831,7 @@ local typeControlAdders = {
               local insertPoint = math.min(j, #childOption.values + 1)
               if value == "" then
                 tremove(childOption.values, insertPoint)
+                tremove(childOption.default, insertPoint)
               else
                 childOption.values[insertPoint] = value
               end
@@ -840,6 +841,7 @@ local typeControlAdders = {
           else
             if value == "" then
               tremove(values, j)
+              tremove(option.default, j, false)
             else
               values[j] = value
             end
@@ -860,11 +862,13 @@ local typeControlAdders = {
               local childData = data[childID]
               local childOption = childData.authorOptions[optionID]
               tremove(childOption.values, j)
+              tremove(childOption.default, j)
               WeakAuras.Add(childData)
             end
             WeakAuras.ReloadTriggerOptions(data[0])
           else
             tremove(values, j)
+            tremove(option.default, j)
             WeakAuras.Add(data)
             WeakAuras.ReloadTriggerOptions(data)
           end
@@ -897,11 +901,13 @@ local typeControlAdders = {
             local childData = data[childID]
             local childOption = childData.authorOptions[optionID]
             childOption.values[#childOption.values + 1] = value
+            childOption.default[#childOption.values + 1] = false
             WeakAuras.Add(childData)
           end
           WeakAuras.ReloadTriggerOptions(data[0])
         else
           values[#values + 1] = value
+          option.default[#option.default + 1] = false
           WeakAuras.Add(data)
           WeakAuras.ReloadTriggerOptions(data)
         end
