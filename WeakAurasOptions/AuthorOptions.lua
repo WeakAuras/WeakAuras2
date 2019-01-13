@@ -61,6 +61,7 @@ local optionClasses = {
   multiselect = "simple",
   description = "noninteractive",
   space = "noninteractive",
+  header = "noninteractive",
 }
 
 local function atLeastOneSet(data, references, key)
@@ -1079,6 +1080,31 @@ local typeControlAdders = {
     }
     order = order + 1
     return order
+  end,
+  header = function(option, args, data, order, i)
+    args["option" .. i .. "width"] = nil
+    args["option" .. i .. "useName"] = {
+      type = "toggle",
+      name = name(data, option, "useName", L["Separator text"]),
+      desc = desc(data, option, "useName", L["If checked, then this separator will include text. Otherwise, it will be just a horizontal line."]),
+      order = order,
+      width = WeakAuras.normalWidth,
+      get = get(option, "useName"),
+      set = set(data, option, "useName"),
+    }
+    order = order + 1
+    args["option" .. i .. "text"] = {
+      type = "input",
+      name = name(data, option, "text", L["Separator Text"]),
+      desc = desc(data, option, "text"),
+      order = order,
+      width = WeakAuras.normalWidth,
+      get = getStr(option, "text"),
+      set = setStr(data, option, "text"),
+      disabled = function() return not option.useName end,
+    }
+    order = order + 1
+    return order
   end
 }
 
@@ -1229,9 +1255,10 @@ local function addControlsForOption(authorOptions, args, data, order, i)
   args["option" .. i .. "header"] = {
     type = "description",
     width = WeakAuras.doubleWidth - 0.75,
-    name = nameHead(data, option, option.name
+    name = nameHead(data, option, option.name -- TODO: find a better way than a giant chain of or.
                                   or (option.type == "space" and L["Space"])
                                   or (option.type == "description" and L["Description"])
+                                  or (option.type == "header" and L["Separator"])
                                   or L["Option #%i"]:format(i)),
     order = order,
     fontSize = "large",
@@ -1511,7 +1538,30 @@ local function addUserModeOption(options, config, args, data, order, i)
       end
     end
   elseif optionClass == "noninteractive" then
-    if optionType == "description" then
+    if optionType == "header" then
+      userOption.type = "header"
+      if option[references] then
+        local name = {}
+        local firstName = nil
+        local conflict = false
+        for childID, optionID in pairs(option[references]) do
+          local childData = data[childID]
+          local childOption = childData.authorOptions[optionID]
+          if childOption.useName and #childOption.text > 0 then
+            if firstName == nil then
+              firstName = childOption.text
+              tinsert(name, (childOption.text:gsub("||", "|")))
+            elseif childOption.text ~= firstName then
+              conflict = true
+              tinsert(name, (childOption.text:gsub("||", "|")))
+            end
+          end
+        end
+        userOption.name = (conflict and conflictBlue or "") .. tconcat(name, " / ")
+      else
+        userOption.name = option.useName and (option.text or ""):gsub("||", "|") or ""
+      end
+    elseif optionType == "description" then
       userOption.name = nameUserDesc(data, option)
       userOption.fontSize = option.fontSize
     elseif optionType == "space" then
