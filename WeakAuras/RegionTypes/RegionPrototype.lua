@@ -88,6 +88,11 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     action = "SendChat",
     type = "chat",
   };
+  properties["glowframe"] = {
+    display = L["Glow"],
+    action = "SetFrameGlow",
+    type = "glowframe"
+  }
   properties["customcode"] = {
     display = L["Run Custom Code"],
     action = "RunCode",
@@ -121,6 +126,10 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
       isPercent = true
     }
   end
+end
+
+local function SetFrameGlow(...)
+  print(...)
 end
 
 local function SoundRepeatStop(self)
@@ -291,7 +300,7 @@ function WeakAuras.regionPrototype.create(region)
   region.SoundRepeatStop = SoundRepeatStop;
   region.SendChat = SendChat;
   region.RunCode = RunCode;
-
+  region.SetFrameGlow = SetFrameGlow;
   region.SetAnchor = SetAnchor;
   region.SetOffset = SetOffset;
   region.SetXOffset = SetXOffset;
