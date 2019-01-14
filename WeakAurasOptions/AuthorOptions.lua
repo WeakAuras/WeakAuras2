@@ -23,7 +23,12 @@
       text (required) -> text displayed on the panel
       fontSize (optional) -> fontSize. Default is medium.
     space -> dummy option which acts as a spacer. Not interactive, and so key/default/name are not set or required.
-      variableWidth (optional) -> bool. If false, then the space is given full width in AceConfig. Else, option.width is used.
+      useWidth (required) -> bool. If false, then the space is given full width in AceConfig. Else, option.width is used.
+      useHeight (required) -> bool. If false, then the space covers only the line it renders on. Else, it covers the number of lines specified.
+      height (optional) -> number. Height of space, in lines.
+    separator -> AceConfig header widget.
+      useName (required) -> bool. If true, then option.text is used as the name.
+      test (optional) -> string. Text to be shown on the header widget.
     input -> text field which the user can input a string.
       length (optional) -> allowed length of the string. If set, then input longer than the allowed length will be trimmed
     number -> text field which the user can type in a number. Input is converted to a number value.
@@ -41,7 +46,6 @@
       softmin (optional) -> Like min, but the manual entry will accept values down to the softmin.
       bigStep (optional) -> step size of the slider. Defaults to 0.05
       step (optional) -> like bigStep, but applies to number input as well
-
 ]]
 
 local WeakAuras = WeakAuras
@@ -161,6 +165,45 @@ local function desc(data, option, key, phrase)
   end
 end
 
+local function descKey(data, option, key, conflicts)
+  local phrase = L["Key for aura_env.config at which the user value can be found."]
+  local warning = L["|cFFFF0000Duplicate Keys Found!|nPlease change the keys of the following options!|r"]
+  if not option[references] then
+    if not conflicts then
+      return phrase
+    elseif conflicts[key] then
+      local desc = {warning}
+      for optionID in pairs(conflicts[key]) do
+        if data.authorOptions[optionID] ~= option then
+          tinsert(desc, L["Option %i"]:format(optionID))
+        end
+      end
+      return tconcat(desc, "\n")
+    end
+  else
+    local haveConflict = false
+    local desc = {phrase}
+    for childID, optionID in pairs(option[references]) do
+      if conflicts[childID] and conflicts[childID][key] then
+        local childData = data[childID]
+        local childOption = childData.authorOptions[optionID]
+        local subDesc = {}
+        for optionID in pairs(conflicts[childID][key]) do
+          if childData.authorOptions[optionID] ~= childOption then
+            tinsert(subDesc,tostring(optionID))
+          end
+        end
+        if not haveConflict then
+          haveConflict = true
+          desc[1] = warning
+        end
+        tinsert(desc, childData.id .. ":\n" .. tconcat(subDesc, ", "))
+      end
+    end
+    return tconcat(desc, "\n")
+  end
+end
+
 local function descType(data, option)
   if not option[references] then
     return L["This setting controls what widget is generated in user mode."]
@@ -238,6 +281,28 @@ end
 local function get(option, key)
   return function()
     return option[key]
+  end
+end
+
+local function getKey(option, key, conflicts)
+  if option[references] then
+    return function()
+      local key = option.key
+      for childID in pairs(option[references]) do
+        if conflicts[childID] and conflicts[childID][key] then
+          return "|cFFFF0000" .. key
+        end
+      end
+      return key
+    end
+  else
+    return function()
+      if not conflicts or not conflicts[key] then
+        return key
+      else
+        return "|cFFFF0000" .. key
+      end
+    end
   end
 end
 
@@ -338,6 +403,40 @@ local function set(data, option, key)
   else
     return function(_, value)
       option[key] = value
+      WeakAuras.Add(data)
+      WeakAuras.ReloadTriggerOptions(data)
+    end
+  end
+end
+
+local function setKey(data, option, key, conflicts)
+  if option[references] then
+    return function(_, value)
+      local isConflict = false
+      for childID, conflictingKeys in pairs(conflicts) do
+        if conflictingKeys[key] then
+          isConflict = true
+          break
+        end
+      end
+      if isConflict then
+        value = value:gsub("^|cFFFF0000", "", 1)
+      end
+      for childID, optionID in pairs(option[references]) do
+        local childData = data[childID]
+        local childOption = childData.authorOptions[optionID]
+        childOption.key = value
+        WeakAuras.Add(childData)
+      end
+      WeakAuras.ReloadTriggerOptions(data[0])
+    end
+  else
+    return function(_, value)
+      if conflicts and conflicts[option.key] then
+        option.key = value:gsub("^|cFFFF0000", "", 1)
+      else
+        option.key = value
+      end
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
     end
@@ -1212,7 +1311,7 @@ local function duplicate(data, option, index)
   end
 end
 
-local function addControlsForOption(authorOptions, args, data, order, i)
+local function addControlsForOption(authorOptions, args, data, order, i, keyConflicts)
   -- add header controls
   local option = authorOptions[i]
 
@@ -1413,10 +1512,10 @@ local function addControlsForOption(authorOptions, args, data, order, i)
       type = "input",
       width = WeakAuras.normalWidth,
       name = name(data, option, "key", L["Option key"]),
-      desc = desc(data, option, "key", L["Key for aura_env.config at which the user value can be found."]),
+      desc = descKey(data, option, option.key, keyConflicts),
       order = order,
-      get = get(option, "key"),
-      set = set(data, option, "key"),
+      get = getKey(option, option.key, keyConflicts),
+      set = setKey(data, option, option.key, keyConflicts),
     }
     order = order + 1
     args["option" .. i .. "tooltipSpace"] = {
@@ -1676,6 +1775,21 @@ local function allChoicesAreDefault(data, options)
   return true
 end
 
+local function findConflictingKeys(options)
+  local conflicted, indices, firstIndices = false, {}, {}
+  for index, option in ipairs(options) do
+    if optionClasses[option.type] == "noninteractive" then
+    elseif not firstIndices[option.key] then
+      firstIndices[option.key] = {[index] = true}
+    else
+      conflicted = true
+      indices[option.key] = firstIndices[option.key]
+      indices[option.key][index] = true
+    end
+  end
+  return conflicted and indices
+end
+
 function WeakAuras.GetAuthorOptions(data, args, startorder)
   if data.controlledChildren then
     local isAuthorMode = true
@@ -1689,20 +1803,21 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
     local mergedOptions = {}
     local allData = {[0] = data}
     -- merge child options into one
-    local mergedConfig, keysSeen = {}, {}
+    local mergedConfig, keyConflicts = {}, {}
     for i, childID in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childID)
       local childOptions = childData and childData.authorOptions
       allData[i] = childData
       if childOptions then
         mergeOptions(i, mergedOptions, childOptions)
-        mergeConfig(i, mergedConfig, childData.config, keysSeen)
+        mergeConfig(i, mergedConfig, childData.config)
+        keyConflicts[i] = findConflictingKeys(childOptions)
       end
     end
     if isAuthorMode then
       local order = startorder + 2
       for i = 1, #mergedOptions do
-        order = addControlsForOption(mergedOptions, args, allData, order, i)
+        order = addControlsForOption(mergedOptions, args, allData, order, i, keyConflicts)
       end
       args["addOption"] = {
         type = "execute",
@@ -1836,9 +1951,9 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       local order = startorder + 2
       local config = data.config
       order = order + 1
-
+      local keyConflicts = findConflictingKeys(authorOptions)
       for i = 1, #authorOptions do
-        order = addControlsForOption(authorOptions, args, data, order, i)
+        order = addControlsForOption(authorOptions, args, data, order, i, keyConflicts)
       end
       args["addOption"] = {
         type = "execute",
