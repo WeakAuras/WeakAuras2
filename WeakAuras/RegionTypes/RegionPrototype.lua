@@ -1,5 +1,7 @@
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
+local LCG = LibStub("LibCustomGlow-1.0")
+local MSQ = LibStub("Masque", true);
 
 WeakAuras.regionPrototype = {};
 
@@ -93,6 +95,10 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     action = "SetFrameGlow",
     type = "glowframe"
   }
+  properties["animate"] = {
+    display = L["Animate"],
+    type = "animate"
+  }
   properties["customcode"] = {
     display = L["Run Custom Code"],
     action = "RunCode",
@@ -128,8 +134,61 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
   end
 end
 
-local function SetFrameGlow(...)
-  print(...)
+local function SetFrameGlow(self, options)
+  local color = {options[1],options[2],options[3],options[4]}
+  local glow_frame = options.glow_frame or nil 
+  local glow_type = options.glow_type
+  local glow_action = options.glow_action
+
+  local glowStart, glowStop
+  if glow_type == "ACShine" then
+    glowStart = LCG.AutoCastGlow_Start
+    glowStop = LCG.AutoCastGlow_Stop
+  elseif glow_type == "Pixel" then
+    glowStart = LCG.PixelGlow_Start
+    glowStop = LCG.PixelGlow_Stop
+  else
+    glowStart = WeakAuras.ShowOverlayGlow
+    glowStop = WeakAuras.HideOverlayGlow
+  end
+
+  if glow_frame then
+    local original_glow_frame
+    if(options.glow_frame:sub(1, 10) == "WeakAuras:") then
+      local frame_name = options.glow_frame:sub(11);
+      if(regions[frame_name]) then
+        glow_frame = regions[frame_name].region;
+        if (not glow_frame.__WAGlowFrame) then
+          glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
+          glow_frame.__WAGlowFrame:SetAllPoints(glow_frame);
+          glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize());
+        end
+        glow_frame = glow_frame.__WAGlowFrame;
+      end
+    else
+     glow_frame = WeakAuras.GetSanitizedGlobal(options.glow_frame);
+     original_glow_frame = glow_frame
+    end
+  else
+    glow_frame = self
+    if (not glow_frame.__WAGlowFrame) then
+      glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
+      glow_frame.__WAGlowFrame:SetAllPoints(glow_frame);
+      glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize());
+    end
+    glow_frame = glow_frame.__WAGlowFrame;
+  end
+
+  if(glow_frame) then
+    if(options.glow_action == "show") then
+      glowStart(glow_frame, color);
+    elseif(options.glow_action == "hide") then
+      glowStop(glow_frame);
+      if original_glow_frame then
+        glowStop(original_glow_frame);
+      end
+    end
+  end
 end
 
 local function SoundRepeatStop(self)
