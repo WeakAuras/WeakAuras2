@@ -96,7 +96,7 @@ local function valueToString(a, propertytype, subtype)
     else
       return "";
     end
-  elseif (propertytype == "chat" or propertyType == "glowframe" or propertytype == "sound" or propertytype == "customcode") then
+  elseif (propertytype == "chat" or propertyType == "animate" or propertyType == "glowframe" or propertytype == "sound" or propertytype == "customcode") then
     return tostring(a);
   elseif (propertytype == "bool") then
     return (a == 1 or a == true) and L["True"] or L["False"];
@@ -438,20 +438,26 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       set = setValue
     }
     order = order + 1;
+
   elseif (propertyType == "glowframe") then 
     args["condition" .. i .. "value" .. j .. "glow_action"] = {
       type = "select",
       width = WeakAuras.normalWidth,
       values = WeakAuras.glow_action_types,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", L["Differences"]),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", L["Differences"], L["Action"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", propertyType, WeakAuras.glow_action_types),
       order = order,
       get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action;
+        if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action) then
+          return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action
+        else
+          return WeakAuras.glow_action_types.show
+        end
       end,
       set = setValueComplex("glow_action"),
     }
     order = order + 1;
+
     args["condition" .. i .. "value" .. j .. "glow_type"] = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -460,11 +466,15 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", propertyType, WeakAuras.glow_types),
       order = order,
       get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_type;
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_type
       end,
       set = setValueComplex("glow_type"),
+      hidden = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action == "hide" 
+      end 
     }
     order = order + 1;
+
     args["condition" .. i .. "value" .. j .. "glow_color"] = {
       type = "color",
       hasAlpha = true, 
@@ -473,51 +483,93 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", propertyType, L["Glow Color"]),
       order = order,
       get = function()
-        if ( conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table"  ) then
+        if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table" 
+        and conditions[i].changes[j].value[1]
+        and conditions[i].changes[j].value[2]
+        and conditions[i].changes[j].value[3]
+        and conditions[i].changes[j].value[4]
+         ) then
           return conditions[i].changes[j].value[1], conditions[i].changes[j].value[2], conditions[i].changes[j].value[3], conditions[i].changes[j].value[4];
+        else
+          return 0.95, 0.95, 0.32, 1
         end
-        return 0.95, 0.95, 0.32, 1
       end,
-      set = setValueColor
+      set = setValueColor,
+      hidden = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action == "hide" 
+      end 
     }
     order = order + 1;
-    args["condition" .. i .. "value" .. j .. "frame_input"] = {
+--[[ -- Glow picker frame conditions (WIP)
+    args["condition" .. i .. "value" .. j .. "glow_frame"] = {
       type = "input",
       width = WeakAuras.doubleWidth*.7,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "frame_input", L["Frame"], L["Frame"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "frame_input", propertyType),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", L["Frame"], L["Frame"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", propertyType),
       order = order,
       get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.frame_input;
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frame;
       end,
-      set = setValueComplex("frame_input"), 
+      set = setValueComplex("glow_frame"), 
+      hidden = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action == "hide" 
+      end 
     }
     order = order + 1;
 
-    args["condition" .. i .. "value" .. j .. "frame_picker"] = {
+    args["condition" .. i .. "value" .. j .. "glow_frame_picker"] = {
       type = "execute",
       width = WeakAuras.doubleWidth*.3,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "frame_picker", L["Pick"], L["Pick"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "frame_picker", propertyType, L["Frame Picker"]),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_picker", L["Pick"], L["Choose Frame"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_picker", propertyType, L["hoose Frame"]),
       order = order,
       func = function()
         if type(data.conditions[i].changes[j].value) == "table" and data.conditions[i].changes[j].value.frame_input then
-          --print( data.conditions[i].changes[j].value.frame_input)
-          WeakAuras.PickDisplay(WeakAuras.GetData(data.conditions[i].changes[j].value.frame_input))
-          WeakAuras.StartFrameChooser(WeakAuras.GetData(data.conditions[i].changes[j].value.frame_input), {"conditions", i, "changes", j, "value", "frame_input"});
+          --WeakAuras.StartFrameChooser(WeakAuras.GetData(data.conditions[i].changes[j].value.frame_input), {"conditions", i, "changes", j, "value", "frame_input"});
+          print(WeakAuras.GetData(data.conditions[i].changes[j].value.frame_input))
         else
-          WeakAuras.StartFrameChooser(WeakAuras.GetData(data.conditions[i].changes[j].value.frame_input), {"conditions", i, "changes", j, "value", "frame_input"});
+          WeakAuras.StartFrameChooser(data.conditions[i].changes[j].value, {"frame_input"})--{"conditions", i, "changes", j, "value", "frame_input"});
         end
-      end
+      end, 
+      hidden = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action == "hide" 
+      end 
+    }
+    order = order + 1;
+      elseif (propertyType == "animate") then 
+    local animation_types = {
+      pulse = L["Pulse"],
+      bounce = L["Bounce"],
+      flip = L["Filp"],
+      shake = L["Shake"],
+      spin = L["Spin"],
+      spiral = L["Spiral"],
+    }
+    args["condition" .. i .. "value" .. j .. "animation_type"] = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      values = animation_types,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "animation_type", L["Differences"], L["Animation"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "animation_type", propertyType, animation_types),
+      order = order,
+      get = function()
+        if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.animation_type) then
+          return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.animation_type
+        else
+          return animation_types.pulse
+        end
+      end,
+      set = setValueComplex("animation_type"),
     }
     order = order + 1;
 
+]]
   elseif (propertyType == "sound") then
     args["condition" .. i .. "value" .. j .. "sound_type"] = {
       type = "select",
       width = WeakAuras.normalWidth,
       values = WeakAuras.sound_condition_types,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", L["Differences"]),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", L["Differences"], L["Controls"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", propertyType, WeakAuras.sound_condition_types),
       order = order,
       get = function()
@@ -546,7 +598,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       type = "select",
       width = WeakAuras.normalWidth,
       values = WeakAuras.sound_types,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Differences"]),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Sound"], L["Sound"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, WeakAuras.sound_types),
       order = order,
       get = function()
@@ -649,7 +701,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       type = "select",
       width = WeakAuras.normalWidth,
       values = WeakAuras.send_chat_message_types,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_type", L["Differences"]),
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_type", L["Differences"], L["Channel"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_type", propertyType, WeakAuras.send_chat_message_types),
       order = order,
       get = function()
@@ -1794,14 +1846,15 @@ end
 
 local propertyTypeToSubProperty = {
   chat = { "message_type", "message_dest", "message_channel", "message", "custom" },
-  glowframe = { "frame_picker", "frame_input", "glow_action", "glow_type", "glow_color"},
+  glowframe = { "frame_picker", "glow_frame", "glow_action", "glow_type", "glow_color"},
+  animate = {"animation_type"},
   sound = { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"},
   customcode = { "custom" }
 };
 
 local function mergeConditionChange(all, change, id, changeIndex, allProperties)
   local propertyType = all.property and allProperties.propertyMap[all.property] and allProperties.propertyMap[all.property].type
-  if (propertyType == "chat" or propertyType == "glowframe" or propertyType == "sound" or propertyType == "customcode") then
+  if (propertyType == "chat" or propertyType == "animate" or propertyType == "glowframe" or propertyType == "sound" or propertyType == "customcode") then
     if (type(all.value) ~= type(change.value)) then
       all.value = nil;
       all.samevalue = nil;
@@ -1867,7 +1920,7 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
       WeakAuras.DeepCopy(change, copy);
 
       local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
-      if (propertyType == "chat" or propertyType == "glowframe" or propertyType == "sound" or propertyType == "customcode") then
+      if (propertyType == "chat" or propertyType == "animate" or propertyType == "glowframe" or propertyType == "sound" or propertyType == "customcode") then
         copy.samevalue = {};
         for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
           copy.samevalue[propertyName] = true;
@@ -1915,7 +1968,7 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
       if (copy.changes) then
         for changeIndex, change in pairs(copy.changes) do
           local propertyType = change.property and propertyTypes.propertyMap[change.property] and propertyTypes.propertyMap[change.property].type;
-          if (propertyType == "chat" or propertyType == "glowframe" or propertyType == "sound" or propertyType == "customcode") then
+          if (propertyType == "chat" or propertyType == "animate" or propertyType == "glowframe" or propertyType == "sound" or propertyType == "customcode") then
             change.samevalue = {};
             for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
               change.samevalue[propertyName] = true;
