@@ -577,6 +577,14 @@ local function formatValueForAssignment(vtype, value, pathToCustomFunction)
         tostring(value.message_dest), tostring(value.message_channel),
         pathToCustomFunction);
     end
+  elseif(vtype) == "glowframe" then
+    if (value and type(value) == "table") then
+      --{glow_frame_picker = %q, glow_frame = %q, glow_action = %q, glow_type = %q, %s, %s, %s, %s}
+      return string.format("{glow_action = %q, glow_type = %q, %s, %s, %s, %s}",
+      --tostring(value.frame_picker), tostring(value.glow_frame or ""),
+      tostring(value.glow_action), tostring(value.glow_type),
+      tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
+    end
   elseif(vtype == "sound") then
     if (value and type(value) == "table") then
       return string.format("{ sound = %q, sound_channel = %q, sound_path = %q, sound_kit_id = %q, sound_type = %q, %s}",
@@ -4268,6 +4276,7 @@ do
 end
 
 function WeakAuras.ValueFromPath(data, path)
+  
   if(#path == 1) then
     return data[path[1]];
   else
@@ -4275,6 +4284,7 @@ function WeakAuras.ValueFromPath(data, path)
     for i=2,#path do
       reducedPath[i-1] = path[i];
     end
+    print(reducedPath)
     return WeakAuras.ValueFromPath(data[path[1]], reducedPath);
   end
 end
