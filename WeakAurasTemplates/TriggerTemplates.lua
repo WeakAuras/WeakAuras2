@@ -101,6 +101,10 @@ local checks = {
     variable = "buffed",
     value = 0,
   },
+  duration = {
+    variable = "show",
+    value = 1,
+  },
   onCooldown = {
     variable = "onCooldown",
     value = 1,
@@ -182,6 +186,16 @@ local function isBuffedGlow(conditions, trigger, regionType)
   end
 end
 
+local function isDurationGlow(conditions, trigger, regionType)
+  if regionType == "icon" then
+    tinsert(conditions, buildCondition(trigger, checks.duration, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
+  elseif regionType == "aurabar" or regionType == "progresstexture" then
+    tinsert(conditions, buildCondition(trigger, checks.duration, {changes("inverse", regionType), changes("yellow", regionType)}));
+  else
+    tinsert(conditions, buildCondition(trigger, checks.duration, {changes("yellow", regionType)}));
+  end
+end
+
 local function isBuffedGlowAuraAlways(conditions, trigger, regionType)
   if regionType == "icon" then
     tinsert(conditions, buildCondition(trigger, checks.buffedAuraAlways, {changes("inverse", regionType), changes("glow", regionType), changes("white", regionType)}));
@@ -253,6 +267,22 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   if (item.unit == "multi") then
     triggers[position].trigger.spellId = item.buffId or item.spell;
   end
+end
+
+local function createDurationTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "event",
+      event = "Combat Log",
+      subeventSuffix = "_CAST_SUCCESS",
+      use_sourceUnit = true,
+      sourceUnit = item.unit or "player",
+      use_spellId = true,
+      spellId = tostring(item.spell),
+      unevent = timed,
+      duration = tostring(item.duration),
+    }
+  };
 end
 
 local function createTotemTrigger(triggers, position, item)
@@ -347,6 +377,11 @@ local function createOverlayGlowTrigger(triggers, position, item)
       spellName = item.spell,
     }
   };
+end
+
+local function createAbilityAndDurationTrigger(triggers, item)
+  createDurationTrigger(triggers, 1, item);
+  createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
 local function createAbilityAndBuffTrigger(triggers, item)
@@ -458,7 +493,20 @@ local function subTypesFor(item, regionType)
         end,
         data = { cooldownSwipe = false, cooldownEdge = true },
       });
-      if (item.buff) then
+      if (item.duration) then
+        tinsert(types, {
+          icon = icon.glow,
+          title = L["Charge and Duration Tracking"],
+          description = L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."],
+          createTriggers = createAbilityAndDurationTrigger,
+          createConditions = function(conditions, item, regionType)
+            insufficientResourcesBlue(conditions, 2, regionType);
+            hasChargesGrey(conditions, 2, regionType);
+            isDurationGlow(conditions, 1, regionType);
+          end,
+          data = { cooldownSwipe = false, cooldownEdge = true },
+        });
+      elseif (item.buff) then
         tinsert(types, {
           icon = icon.glow,
           title = L["Charge and Buff Tracking"],
@@ -589,7 +637,47 @@ local function subTypesFor(item, regionType)
           isOnCdGrey(conditions, 1, regionType);
         end,
       });
-      if (item.buff) then
+      if (item.duration) then
+        tinsert(types, {
+          icon = icon.glow,
+          title = L["Show Cooldown and Duration"],
+          description = L["Highlight while spell is active."],
+          createTriggers = createAbilityAndDurationTrigger,
+          createConditions = function(conditions, item, regionType)
+            insufficientResourcesBlue(conditions, 2, regionType);
+            isOnCdGrey(conditions, 2, regionType);
+            isDurationGlow(conditions, 1, regionType);
+          end,
+          data = { cooldownSwipe = false, cooldownEdge = true },
+        });
+        if (item.usable) then
+          tinsert(types, {
+            icon = icon.glow,
+            title = L["Show Cooldown and Duration and Check Usable"],
+            description = L["Highlight while active."],
+            createTriggers = createAbilityAndDurationTrigger,
+            createConditions = function(conditions, item, regionType)
+              isNotUsableBlue(conditions, 2, regionType);
+              isOnCdGrey(conditions, 2, regionType);
+              isDurationGlow(conditions, 1, regionType);
+            end,
+          });
+        end
+        if (item.requiresTarget) then
+          tinsert(types, {
+            icon = icon.target,
+            title = L["Show Cooldown and Duration and Check for Target"],
+            description = L["Highlight while active, red when out of range."],
+            createTriggers = createAbilityAndDurationTrigger,
+            createConditions = function(conditions, item, regionType)
+              insufficientResourcesBlue(conditions, 2, regionType);
+              isOnCdGrey(conditions, 2, regionType);
+              isSpellNotInRangeRed(conditions, 2, regionType);
+              isDurationGlow(conditions, 1, regionType);
+            end,
+          });
+        end
+      elseif (item.buff) then
         tinsert(types, {
           icon = icon.glow,
           title = L["Show Cooldown and Buff"],
