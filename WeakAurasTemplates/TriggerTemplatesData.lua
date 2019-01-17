@@ -1696,9 +1696,9 @@ templates.class.SHAMAN = {
         { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
         { spell = 192077, type = "ability", totem = true, talent = 15}, -- Wind Rush Totem
         { spell = 192222, type = "ability", totem = true, talent = 12}, -- Liquid Magma Totem
-        { spell = 192249, type = "ability", talent = 11}, -- Storm Elemental
-        { spell = 198067, type = "ability"}, -- Fire Elemental
-        { spell = 198103, type = "ability"}, -- Earth Elemental
+        { spell = 192249, type = "ability", duration = 30,talent = 11}, -- Storm Elemental
+        { spell = 198067, type = "ability", duration = 30}, -- Fire Elemental
+        { spell = 198103, type = "ability", duration = 60}, -- Earth Elemental
         { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 17}, -- Icefury
       },
       icon = 135790
@@ -1808,7 +1808,7 @@ templates.class.SHAMAN = {
         { spell = 193796, type = "ability", buff = true, requiresTarget = true}, -- Flametongue
         { spell = 196884, type = "ability", requiresTarget = true, talent = 14 }, -- Feral Lunge
         { spell = 197214, type = "ability", talent = 18 }, -- Sundering
-        { spell = 198103, type = "ability"}, -- Earth Elemental
+        { spell = 198103, type = "ability", duration = 60 }, -- Earth Elemental
       },
       icon = 1370984
     },
@@ -1898,7 +1898,7 @@ templates.class.SHAMAN = {
         { spell = 61295, type = "ability", talent = {5,6}}, -- Riptide
         { spell = 61295, type = "ability", charges = true, talent = 4, titleSuffix = " (2 Charges)"}, -- Riptide
         { spell = 73685, type = "ability", buff = true, talent = 3 }, -- Unleash Life
-        { spell = 73920, type = "ability"}, -- Healing Rain
+        { spell = 73920, type = "ability", duration = 10}, -- Healing Rain
         { spell = 79206, type = "ability", buff = true}, -- Spiritwalker's Grace
         { spell = 98008, type = "ability", totem = true}, -- Spirit Link Totem
         { spell = 108271, type = "ability", buff = true}, -- Astral Shift
@@ -1909,7 +1909,7 @@ templates.class.SHAMAN = {
         { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
         { spell = 192077, type = "ability", totem = true, talent = 15 }, -- Wind Rush Totem
         { spell = 197995, type = "ability", talent = 20 }, -- Wellspring
-        { spell = 198103, type = "ability"}, -- Earth Elemental
+        { spell = 198103, type = "ability", duration = 60 }, -- Earth Elemental
         { spell = 198838, type = "ability", totem = true, talent = 11 }, -- Earthen Wall Totem
         { spell = 207399, type = "ability", totem = true, talent = 12 }, -- Ancestral Protection Totem
         { spell = 207778, type = "ability", talent = 17 }, -- Downpour
@@ -2504,7 +2504,7 @@ templates.class.WARLOCK = {
       title = L["Abilities"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
-        { spell = 1122, type = "ability", totem = true}, -- Summon Infernal
+        { spell = 1122, type = "ability", duration = 30}, -- Summon Infernal
         { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
         { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
         { spell = 6353, type = "ability", talent = 3 }, -- Soul Fire
@@ -2962,7 +2962,7 @@ templates.class.DRUID = {
         { spell = 202347, type = "ability", requiresTarget = true, debuff = true}, -- Stellar Flare
         { spell = 202425, type = "ability", buff = true, talent = 2 }, -- Warrior of Elune
         { spell = 202770, type = "ability", buff = true, talent = 20 }, -- Fury of Elune
-        { spell = 205636, type = "ability", talent = 3 }, -- Force of Nature
+        { spell = 205636, type = "ability", duration = 10, talent = 3 }, -- Force of Nature
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
         { spell = 274281, type = "ability", requiresTarget = true, charges = true, target = true, talent = 21 }, -- New Moon
       },
