@@ -4500,7 +4500,7 @@ WeakAuras.event_prototypes = {
             cloneId = UnitGUID(sourceUnit)
           end
 
-          if event == "PLAYER_TARGET_CHANGED" then
+          if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" then
             sourceUnit = trigger_unit
           end
           local destUnit = sourceUnit and sourceUnit .. "-target"
