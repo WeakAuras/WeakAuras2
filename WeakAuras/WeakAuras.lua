@@ -4377,9 +4377,9 @@ do
 
         -- Resume or remove
         if coroutine.status(func) ~= "dead" then
-          local err,ret1,ret2 = assert(coroutine.resume(func))
-          if err then
-            debug(debugstack(func))
+          local ok, msg = coroutine.resume(func)
+          if not ok then
+            geterrorhandler()(msg .. '\n' .. debugstack(func))
           end
         else
           dynFrame:RemoveAction(name);
