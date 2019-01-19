@@ -4706,12 +4706,17 @@ WeakAuras.event_prototypes = {
     name = L["Character Stats"],
     events = {
         "UNIT_STATS",
-        "COMBAT_RATING_UPDATE"
+        "COMBAT_RATING_UPDATE",
+        "PLAYER_TARGET_CHANGED"
     },
     internal_events = {
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      "WA_DELAYED_PLAYER_ENTERING_WORLD",
+      "PLAYER_MOVING_UPDATE"
     },
-    init = function(trigger)
+    loadFunc = function()
+      WeakAuras.WatchForPlayerMoving();
+    end,
+    init = function()
       local ret = [[
         local _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
       ]]
@@ -4725,6 +4730,14 @@ WeakAuras.event_prototypes = {
         display = L["Main Stat"],
         type = "number",
         init = "UnitStat('player', main_stat)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "stamina",
+        display = L["Stamina"],
+        type = "number",
+        init = "select(2, UnitStat('player', LE_UNIT_STAT_STAMINA)) * GetUnitMaxHealthModifier('player')",
         store = true,
         conditionType = "number"
       },
@@ -4809,16 +4822,16 @@ WeakAuras.event_prototypes = {
         conditionType = "number"
       },
       {
-        name = "speedrating",
-        display = L["Speed Rating"],
+        name = "movespeedrating",
+        display = L["Movement Speed Rating"],
         type = "number",
         init = "GetCombatRating(CR_SPEED)",
         store = true,
         conditionType = "number"
       },
       {
-        name = "speedpercent",
-        display = L["Speed (%)"],
+        name = "movespeedpercent",
+        display = L["Movement Speed (%)"],
         type = "number",
         init = "GetUnitSpeed('player') / 7 * 100",
         store = true,
@@ -4881,6 +4894,14 @@ WeakAuras.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "blocktargetpercent",
+        display = L["Block against Target (%)"],
+        type = "number",
+        init = "PaperDollFrame_GetArmorReductionAgainstTarget(GetShieldBlock())",
+        store = true,
+        conditionType = "number"
+      },
+      {
         name = "armorrating",
         display = L["Armor Rating"],
         type = "number",
@@ -4893,6 +4914,14 @@ WeakAuras.event_prototypes = {
         display = L["Armor (%)"],
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel('player'))",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "armortargetpercent",
+        display = L["Armor against Target (%)"],
+        type = "number",
+        init = "PaperDollFrame_GetArmorReductionAgainstTarget(select(2, UnitArmor('player')))",
         store = true,
         conditionType = "number"
       },
