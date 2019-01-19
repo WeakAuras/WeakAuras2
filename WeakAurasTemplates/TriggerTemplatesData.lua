@@ -3876,7 +3876,7 @@ templates.items[1] = {
 }
 
 templates.items[2] = {
-  title = L["On Use Trinkets (Buff)"],
+  title = L["On Use Trinkets (Aura)"],
   args = {
     { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
     { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
@@ -3901,6 +3901,10 @@ templates.items[2] = {
     { spell = 273942, type = "buff", unit = "player", titleItemPrefix = 158164},
     { spell = 268550, type = "buff", unit = "player", titleItemPrefix = 158215},
     { spell = 274472, type = "buff", unit = "player", titleItemPrefix = 161117},
+    { spell = 288267, type = "buff", unit = "player", titleItemPrefix = 165574},
+    { spell = 291170, type = "debuff", unit = "player", titleItemPrefix = 165578}, --heal
+    { spell = 288156, type = "buff", unit = "player", titleItemPrefix = 165580},
+    { spell = 287568, type = "buff", unit = "player", titleItemPrefix = 165569}, --tank
   }
 }
 
@@ -3934,11 +3938,18 @@ templates.items[3] = {
     { spell = 158216, type = "item"},
     { spell = 158224, type = "item"},
     { spell = 161117, type = "item"},
+    { spell = 165574, type = "item"},
+    { spell = 165568, type = "item"},
+    { spell = 165578, type = "item"}, --heal
+    { spell = 165580, type = "item"},
+    { spell = 165576, type = "item"},
+    { spell = 165572, type = "item"},
+    { spell = 165569, type = "item"}, --tank
   }
 }
 
 templates.items[4] = {
-  title = L["On Procc Trinkets (Buff)"],
+  title = L["On Procc Trinkets (Aura)"],
   args = {
     { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
     { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
@@ -3974,11 +3985,19 @@ templates.items[4] = {
     { spell = 273974, type = "buff", unit = "player", titleItemPrefix = 158153},
     { spell = 274430, type = "buff", unit = "player",  spellIds = {274430, 274431}, titleItemPrefix = 161113},
     { spell = 274459, type = "buff", unit = "player", titleItemPrefix = 161115},
+    { spell = 288194, type = "debuff", unit = "player", titleItemPrefix = 165577}, --tank
+    { spell = 288305, type = "buff", unit = "player", titleItemPrefix = 165581},
+    { spell = 288024, type = "buff", unit = "player", titleItemPrefix = 165573}, --tank
+    { spell = 289526, type = "debuff", unit = "target", titleItemPrefix = 165570},
+    { spell = 289524, type = "buff", unit = "player", titleItemPrefix = 165571},
+    { spell = 289523, type = "buff", unit = "player", titleItemPrefix = 165571},
+    { spell = 288330, type = "debuff", unit = "target", titleItemPrefix = 165579},
+    { spell = 290042, type = "buff", unit = "player", titleItemPrefix = 165572},
   }
 }
 
 templates.items[5] = {
-  title = L["PVP Trinkets (Buff)"],
+  title = L["PVP Trinkets (Aura)"],
   args = {
     { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
     { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
