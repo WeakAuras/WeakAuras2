@@ -1792,7 +1792,7 @@ templates.class.SHAMAN = {
         { spell = 32182, type = "ability", buff = true}, -- Heroism
         { spell = 2825, type = "ability", buff = true}, -- Bloodlust
         { spell = 51514, type = "ability", requiresTarget = true}, -- Hex
-        { spell = 51533, type = "ability", buff = true}, -- Feral Spirit
+        { spell = 51533, type = "ability", duration = 15}, -- Feral Spirit
         { spell = 51886, type = "ability"}, -- Cleanse Spirit
         { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
         { spell = 58875, type = "ability", buff = true}, -- Spirit Walk
@@ -2955,7 +2955,7 @@ templates.class.DRUID = {
         { spell = 108238, type = "ability", talent = 9 }, -- Renewal
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
         { spell = 190984, type = "ability", requiresTarget = true, overlayGlow = true}, -- Solar Wrath
-        { spell = 191034, type = "ability", buff = true}, -- Starfall
+        { spell = 191034, type = "ability", duration = 8}, -- Starfall
         { spell = 192081, type = "ability", buff = true, talent = 8 }, -- Ironfur
         { spell = 194153, type = "ability", requiresTarget = true, overlayGlow = true}, -- Lunar Strike
         { spell = 194223, type = "ability"}, -- Celestial Alignment
