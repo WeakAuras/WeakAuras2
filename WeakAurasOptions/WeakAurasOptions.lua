@@ -20,7 +20,7 @@ local ADDON_NAME = "WeakAurasOptions";
 local prettyPrint = WeakAuras.prettyPrint
 
 local ValidateNumeric = function(info, val)
-  if val ~= nil and val ~= "" and not tonumber(val) then
+  if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
     return false;
   end
   return true
