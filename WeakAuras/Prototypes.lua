@@ -4873,14 +4873,6 @@ WeakAuras.event_prototypes = {
         conditionType = "number"
       },
       {
-        name = "blockrating",
-        display = L["Block Rating"],
-        type = "number",
-        init = "GetCombatRating(CR_BLOCK)",
-        store = true,
-        conditionType = "number"
-      },
-      {
         name = "blockpercent",
         display = L["Block (%)"],
         type = "number",
