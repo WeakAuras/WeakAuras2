@@ -2644,7 +2644,7 @@ function WeakAuras.Modernize(data)
     ModernizeAnimations(data.animation and data.animation.start);
     ModernizeAnimations(data.animation and data.animation.main);
     ModernizeAnimations(data.animation and data.animation.finish);
-  end -- ENd of V1 => V2
+  end -- End of V1 => V2
 
   -- Version 3 was introduced April 2018 in Legion
   if (data.internalVersion < 3) then
@@ -2778,7 +2778,9 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 11 was introduced in January 2018
+  -- Version 10 is skipped, due to a bad migration script (see https://github.com/WeakAuras/WeakAuras2/pull/1091)
+
+  -- Version 11 was introduced in January 2019
   if data.internalVersion < 11 then
     if data.url and data.url ~= "" then
       local slug, version = data.url:match("wago.io/([^/]+)/([0-9]+)")
@@ -2791,7 +2793,7 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 12 was introduced Februar 2019 in BfA
+  -- Version 12 was introduced February 2019 in BfA
   if (data.internalVersion < 12) then
     if data.cooldownTextEnabled ~= nil then
       data.cooldownTextDisabled = not data.cooldownTextEnabled
@@ -3054,49 +3056,89 @@ function WeakAuras.AddMany(table)
   end
 end
 
-local function validateUserConfig(data)
+local function validateUserConfig(options, config)
   local authorOptionKeys = {}
-  for index, option in ipairs(data.authorOptions) do
-    if option.key then
+  for index, option in ipairs(options) do
+    local optionClass = WeakAuras.author_option_classes[option.type]
+    if optionClass == "simple" then
       authorOptionKeys[option.key] = index
-      if data.config[option.key] == nil then
+      if config[option.key] == nil then
         if type(option.default) ~= "table" then
-          data.config[option.key] = option.default
+          config[option.key] = option.default
         else
-          data.config[option.key] = CopyTable(option.default)
+          config[option.key] = CopyTable(option.default)
         end
+      end
+    elseif optionClass == "group" then
+      authorOptionKeys[option.key] = "group"
+      local subOptions = option.subOptions
+      if type(config[option.key]) ~= "table" then
+        config[option.key] = {}
+      end
+      local subConfig = config[option.key]
+      if option.groupType == "array" then
+        for k, v in pairs(subConfig) do
+          if type(k) ~= "number" or type(v) ~= "table" then
+            -- if k was not a number, then this was a simple group before
+            -- if v is not a table, then this was likely a color option
+            wipe(subConfig) -- second iteration will fill table with defaults
+            break
+          end
+        end
+        if option.limitType == "fixed" then
+          for i = #subConfig + 1, option.size do
+            -- add missing entries
+            subConfig[i] = {}
+          end
+        end
+        if option.limitType ~= "none" then
+          for i = option.size + 1, #subConfig do
+            -- remove excess entries
+            subConfig[i] = nil
+          end
+        end
+        for _, toValidate in pairs(subConfig) do
+          validateUserConfig(subOptions, toValidate)
+        end
+      else
+        if type(next(subConfig)) ~= "string" then
+          -- either there are no sub options, in which case this is a noop
+          -- or this group was previously an array, in which case we need to wipe
+          wipe(subConfig)
+        end
+        validateUserConfig(subOptions, subConfig)
       end
     end
   end
-  for key, value in pairs(data.config) do
+  for key, value in pairs(config) do
     if not authorOptionKeys[key] then
-      data.config[key] = nil
-    else
-      local option = data.authorOptions[authorOptionKeys[key]]
+      config[key] = nil
+    elseif authorOptionKeys[key] ~= "group" then
+      local option = options[authorOptionKeys[key]]
       if type(value) ~= type(option.default) then
         -- if type mismatch then we know that it can't be right
         if type(option.default) ~= "table" then
-          data.config[key] = option.default
+          config[key] = option.default
         else
-          data.config[key] = CopyTable(option.default)
+          config[key] = CopyTable(option.default)
         end
       elseif option.type == "input" and option.useLength then
-        data.config[key] = data.config[key]:sub(1, option.length)
+        config[key] = config[key]:sub(1, option.length)
       elseif option.type == "number" or option.type == "range" then
         if (option.max and option.max < value) or (option.min and option.min > value) then
-          data.config[key] = option.default
+          config[key] = option.default
         else
           if option.type == "number" and option.step then
             local min = option.min or 0
-            data.config[key] = option.step * Round((value - min)/option.step) + min
+            config[key] = option.step * Round((value - min)/option.step) + min
           end
         end
       elseif option.type == "select" then
         if value < 1 or value > #option.values then
-          data.config[key] = option.default
+          config[key] = option.default
         end
       elseif option.type == "multiselect" then
-        local multiselect = data.config[key]
+        local multiselect = config[key]
         for i, v in ipairs(multiselect) do
           if option.default[i] ~= nil then
             if type(v) ~= "boolean" then
@@ -3108,9 +3150,9 @@ local function validateUserConfig(data)
         end
       elseif option.type == "color" then
         for i = 1, 4 do
-          local c = data.config[key][i]
+          local c = config[key][i]
           if type(c) ~= "number" or c < 0 or c > 1 then
-            data.config[key] = option.default
+            config[key] = option.default
             break
           end
         end
@@ -3255,7 +3297,7 @@ function WeakAuras.PreAdd(data)
   end
   WeakAuras.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
-  validateUserConfig(data)
+  validateUserConfig(data.authorOptions, data.config)
   removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil
@@ -3264,7 +3306,6 @@ end
 
 local function pAdd(data)
   local id = data.id;
-
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
     return;
