@@ -254,7 +254,10 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
     }
   };
   if (item.spellIds) then
-    WeakAuras.DeepCopy(item.spellIds, triggers[position].trigger.spellIds);
+    triggers[position].trigger.auranames = {}
+    for index, spell in ipairs(item.spellIds) do
+      triggers[position].trigger.auranames[index] = tostring(spell)
+    end
   end
   if (item.fullscan) then
     triggers[position].trigger.use_spellId = true;
