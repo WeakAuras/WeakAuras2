@@ -1657,14 +1657,8 @@ do
   end
 
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
-    local charges, maxCharges, startTimeCharges, durationCharges
     local startTime, duration, enabled = GetSpellCooldown(id)
-    -- Spells can return both information via GetSpellCooldown and GetSpellCharges
-    -- E.g. Rune of Power see Github-Issue: #1060
-    -- So if GetSpellCooldown returned a cooldown, use that one. Otherwise check GetSpellCharges
-    if duration and duration <= 1 or (duration == gcdDuration and startTime == gcdStart) then
-      charges, maxCharges, startTimeCharges, durationCharges = GetSpellCharges(id);
-    end
+    local charges, maxCharges, startTimeCharges, durationCharges = GetSpellCharges(id);
 
     local cooldownBecauseRune = false;
     if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
@@ -1695,7 +1689,15 @@ do
     elseif (charges == maxCharges) then
       startTime, duration = 0, 0;
     else
-      startTime, duration = startTimeCharges, durationCharges
+      -- Spells can return both information via GetSpellCooldown and GetSpellCharges
+      -- E.g. Rune of Power see Github-Issue: #1060
+      -- So if GetSpellCooldown returned a cooldown, use that one, if it's a "significant" cooldown
+      --  Otherwise check GetSpellCharges
+      -- A few abilities have a minor cooldown just to prevent the user from triggering it multiple times,
+      -- ignore them since pratically no one wants to see them
+      if duration and duration <= 1.5 or (duration == gcdDuration and startTime == gcdStart) then
+        startTime, duration = startTimeCharges, durationCharges
+      end
     end
 
     startTime = startTime or 0;
