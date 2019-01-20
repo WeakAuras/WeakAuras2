@@ -324,11 +324,19 @@ local function modify(parent, region, data)
   region.progressPrecision = data.progressPrecision;
   region.totalPrecision = data.totalPrecision;
 
-  if MSQ and not region.MSQGroup then
-    region.MSQGroup = MSQ:Group("WeakAuras", region.frameId);
-    region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
+  if MSQ then
+    local masqueId = data.id:lower():gsub(" ", "_");
+    if masqueId ~= region.masqueId then
+      region.masqueId = masqueId
+      if region.MSQGroup then
+        region.MSQGroup:RemoveButton(button);
+      end
 
-    button.data = data
+      region.MSQGroup = MSQ:Group("WeakAuras", region.masqueId);
+      region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
+
+      button.data = data
+    end
   end
 
   region:SetWidth(data.width);
