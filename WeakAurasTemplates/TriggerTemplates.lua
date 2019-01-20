@@ -279,7 +279,7 @@ local function createDurationTrigger(triggers, position, item)
       sourceUnit = item.unit or "player",
       use_spellId = true,
       spellId = tostring(item.spell),
-      unevent = timed,
+      unevent = "timed",
       duration = tostring(item.duration),
     }
   };
