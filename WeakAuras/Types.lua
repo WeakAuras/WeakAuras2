@@ -1800,6 +1800,20 @@ WeakAuras.data_stub = {
   authorOptions = {},
 }
 
+WeakAuras.author_option_classes = {
+  toggle = "simple",
+  input = "simple",
+  number = "simple",
+  range = "simple",
+  color = "simple",
+  select = "simple",
+  multiselect = "simple",
+  description = "noninteractive",
+  space = "noninteractive",
+  header = "noninteractive",
+  group = "group"
+}
+
 WeakAuras.author_option_types = {
   toggle = L["Toggle"],
   input = L["String"],
@@ -1811,6 +1825,7 @@ WeakAuras.author_option_types = {
   space = L["Space"],
   multiselect = L["Toggle List"],
   header = L["Separator"],
+  group = WeakAuras.newFeatureString .. L["Option Group"],
 }
 
 WeakAuras.author_option_fields = {
@@ -1866,6 +1881,25 @@ WeakAuras.author_option_fields = {
     useName = false,
     text = "",
   },
+  group = {
+    groupType = "simple",
+    useCollapse = true,
+    collapse = false,
+    limitType = "none",
+    size = 10,
+    subOptions = {},
+  }
+}
+
+WeakAuras.group_limit_types = {
+  none = L["Unlimited"],
+  max = L["Limited"],
+  fixed = L["Fixed Size"],
+}
+
+WeakAuras.group_option_types = {
+  simple = L["Simple"],
+  array = L["Array"],
 }
 
 WeakAuras.difficulty_info = {
