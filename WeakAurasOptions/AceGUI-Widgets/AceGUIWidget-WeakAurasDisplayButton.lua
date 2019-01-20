@@ -766,6 +766,7 @@ local methods = {
       if not(newid == oldid) then
 
         WeakAuras.Rename(data, newid);
+        WeakAuras.Add(data);
 
         WeakAuras.thumbnails[newid] = WeakAuras.thumbnails[oldid];
         WeakAuras.thumbnails[oldid] = nil;
