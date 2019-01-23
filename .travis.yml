@@ -16,7 +16,7 @@ script:
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then ./wowace_translations.sh; fi
   - |
     ./generate_changelog.sh
-    sed -i "s/@build-time@/`date +%s`/" WeakAuras/Init.lua
+    sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
     if [[ "$TRAVIS_TAG" == "8.0-"* ]]; then
       curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -o -p 65387 -g 8.0.1
     else
