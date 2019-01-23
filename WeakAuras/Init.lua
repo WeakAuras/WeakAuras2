@@ -7,17 +7,17 @@ WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version");
 local versionString = "@project-version@"
-local projectDateInt = "@project-date-integer@"
+local buildTime = "@build-time@"
 
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
-  projectDateInt = "Dev"
+  buildTime = "Dev"
 end
 --@end-debug@
 
 WeakAuras.versionString = versionStringFromToc
-WeakAuras.projectDateInt = projectDateInt
+WeakAuras.buildTime = buildTime
 WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 
