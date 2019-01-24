@@ -508,7 +508,6 @@ local function modify(parent, region, data)
   function region:UpdateSize()
     local width = region.width * math.abs(region.scalex);
     local height = region.height * math.abs(region.scaley);
-
     region:SetWidth(width);
     region:SetHeight(height);
     if MSQ then
@@ -519,6 +518,9 @@ local function modify(parent, region, data)
     icon:SetAllPoints();
 
     region:UpdateTexCoords();
+    if region.glow then
+      region:SetGlow(true);
+    end
   end
 
   function region:UpdateTexCoords()
