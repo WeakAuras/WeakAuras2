@@ -2943,6 +2943,8 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
             end
             if (v.operator_types_without_equal) then
               result[v.name].operator_types_without_equal = true;
+            elseif (v.operator_types_only_equal) then
+              result[v.name].operator_types_only_equal = true;
             end
           end
         end
