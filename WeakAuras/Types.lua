@@ -1598,6 +1598,7 @@ WeakAuras.mythic_plus_affixes = {
   [13] = true,
   [14] = true,
   [16] = true,
+  [117] = true -- Reaping
 }
 
 for k in pairs(WeakAuras.mythic_plus_affixes) do
