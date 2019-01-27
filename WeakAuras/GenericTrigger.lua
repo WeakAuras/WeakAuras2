@@ -2636,72 +2636,36 @@ end
 function GenericTrigger.CanHaveDuration(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  if(
-    (
-    (
-    trigger.type == "event"
-    or trigger.type == "status"
-    )
-    and (
-    (
-    trigger.event
-    and WeakAuras.event_prototypes[trigger.event]
-    and (WeakAuras.event_prototypes[trigger.event].durationFunc
-    or WeakAuras.event_prototypes[trigger.event].canHaveDuration)
-    )
-    or (
-    trigger.unevent == "timed"
-    and trigger.duration
-    )
-    )
-    and not trigger.use_inverse
-    )
-    or (
-    trigger.type == "custom"
-    and (
-    (
-    trigger.custom_type == "event"
-    and trigger.custom_hide == "timed"
-    and trigger.duration
-    )
-    or (
-    trigger.customDuration
-    and trigger.customDuration ~= ""
-    )
-    or trigger.custom_type == "stateupdate"
-    )
-    )
-    ) then
-    if(
-      (
-      trigger.type == "event"
-      or trigger.type == "status"
-      )
-      and trigger.event
-      and WeakAuras.event_prototypes[trigger.event]
-      and WeakAuras.event_prototypes[trigger.event].durationFunc
-      ) then
-      if(type(WeakAuras.event_prototypes[trigger.event].init) == "function") then
-        WeakAuras.event_prototypes[trigger.event].init(trigger);
+  if (trigger.type == "event" or trigger.type == "status") then
+    if trigger.event and WeakAuras.event_prototypes[trigger.event] then
+      if WeakAuras.event_prototypes[trigger.event].durationFunc then
+        if(type(WeakAuras.event_prototypes[trigger.event].init) == "function") then
+          WeakAuras.event_prototypes[trigger.event].init(trigger);
+        end
+        local current, maximum, custom = WeakAuras.event_prototypes[trigger.event].durationFunc(trigger);
+        current = type(current) ~= "number" and current or 0
+        maximum = type(maximum) ~= "number" and maximum or 0
+        if(custom) then
+          return {current = current, maximum = maximum};
+        else
+          return "timed";
+        end
+      elseif WeakAuras.event_prototypes[trigger.event].canHaveDuration then
+        return WeakAuras.event_prototypes[trigger.event].canHaveDuration
       end
-      local current, maximum, custom = WeakAuras.event_prototypes[trigger.event].durationFunc(trigger);
-      current = type(current) ~= "number" and current or 0
-      maximum = type(maximum) ~= "number" and maximum or 0
-      if(custom) then
-        return {current = current, maximum = maximum};
-      else
-        return "timed";
-      end
-    elseif trigger.event
-      and WeakAuras.event_prototypes[trigger.event]
-      and WeakAuras.event_prototypes[trigger.event].canHaveDuration then
-      return WeakAuras.event_prototypes[trigger.event].canHaveDuration
-    else
+    elseif trigger.unevent == "timed"and trigger.duration then
+      return "timed"
+    end
+  elseif (trigger.type == "custom") then
+    if trigger.custom_type == "event" and trigger.custom_hide == "timed" and trigger.duration then
+      return "timed";
+    elseif (trigger.customDuration and trigger.customDuration ~= "") then
+      return "timed";
+    elseif (trigger.custom_type == "stateupdate") then
       return "timed";
     end
-  else
-    return false;
   end
+  return false
 end
 
 --- Returns a table containing the names of all overlays
