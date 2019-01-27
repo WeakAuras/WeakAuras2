@@ -1,5 +1,65 @@
 local L = WeakAuras.L
 
+local selfPoints = {
+  default = "CENTER",
+  RIGHT = function(data)
+    if data.align  == "LEFT" then
+      return "TOPLEFT"
+    elseif data.align == "RIGHT" then
+      return "BOTTOMLEFT"
+    else
+      return "LEFT"
+    end
+  end,
+  LEFT = function(data)
+    if data.align  == "LEFT" then
+      return "TOPRIGHT"
+    elseif data.align == "RIGHT" then
+      return "BOTTOMRIGHT"
+    else
+      return "RIGHT"
+    end
+  end,
+  UP = function(data)
+    if data.align == "LEFT" then
+      return "BOTTOMLEFT"
+    elseif data.align == "RIGHT" then
+      return "BOTTOMRIGHT"
+    else
+      return "BOTTOM"
+    end
+  end,
+  DOWN = function(data)
+    if data.align == "LEFT" then
+      return "TOPLEFT"
+    elseif data.align == "RIGHT" then
+      return "TOPRIGHT"
+    else
+      return "TOP"
+    end
+  end,
+  HORIZONTAL = function(data)
+    if data.align == "LEFT" then
+      return "TOP"
+    elseif data.align == "RIGHT" then
+      return "BOTTOM"
+    else
+      return "CENTER"
+    end
+  end,
+  VERTICAL = function(data)
+    if data.align == "LEFT" then
+      return "LEFT"
+    elseif data.align == "RIGHT" then
+      return "RIGHT"
+    else
+      return "CENTER"
+    end
+  end,
+  CIRCLE = "CENTER",
+  COUNTERCIRCLE = "CENTER",
+}
+
 local function createOptions(id, data)
   local options = {
     __title = L["Dynamic Group Settings"],
@@ -9,7 +69,17 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Grow"],
       order = 5,
-      values = WeakAuras.grow_types
+      values = WeakAuras.grow_types,
+      set = function(info, v)
+        data.grow = v
+        local selfPoint = selfPoints[data.grow] or selfPoints.default
+        if type(selfPoint) == "function" then
+          selfPoint = selfPoint(data)
+        end
+        data.selfPoint = selfPoint
+        WeakAuras.Add(data)
+        WeakAuras.ReloadTriggerOptions(data)
+      end
     },
     align = {
       type = "select",
@@ -17,7 +87,17 @@ local function createOptions(id, data)
       name = L["Align"],
       order = 10,
       values = WeakAuras.align_types,
-      hidden = function() return (data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
+      set = function(info, v)
+        data.align = v
+        local selfPoint = selfPoints[data.grow] or selfPoints.default
+        if type(selfPoint) == "function" then
+          selfPoint = selfPoint(data)
+        end
+        data.selfPoint = selfPoint
+        WeakAuras.Add(data)
+        WeakAuras.ReloadTriggerOptions(data)
+      end,
+      hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
       disabled = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
     },
     rotated_align = {
@@ -26,9 +106,18 @@ local function createOptions(id, data)
       name = L["Align"],
       order = 10,
       values = WeakAuras.rotated_align_types,
-      hidden = function() return (data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
+      hidden = function() return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
       get = function() return data.align; end,
-      set = function(info, v) data.align = v; WeakAuras.Add(data); end
+      set = function(info, v)
+        data.align = v
+        local selfPoint = selfPoints[data.grow] or selfPoints.default
+        if type(selfPoint) == "function" then
+          selfPoint = selfPoint(data)
+        end
+        data.selfPoint = selfPoint
+        WeakAuras.Add(data)
+        WeakAuras.ReloadTriggerOptions(data)
+      end,
     },
     constantFactor = {
       type = "select",
@@ -46,7 +135,7 @@ local function createOptions(id, data)
       softMin = 0,
       softMax = 300,
       bigStep = 1,
-      hidden = function() return (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS" end
+      hidden = function() return data.grow == "CUSTOM" or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
     },
     rotation = {
       type = "range",
@@ -67,7 +156,7 @@ local function createOptions(id, data)
       max = 50,
       step = 0.1,
       bigStep = 1,
-      hidden = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
+      hidden = function() return data.grow == "CUSTOM" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
     },
     radius = {
       type = "range",
@@ -77,7 +166,7 @@ local function createOptions(id, data)
       softMin = 0,
       softMax = 500,
       bigStep = 1,
-      hidden = function() return not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
+      hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
     },
     animate = {
       type = "toggle",
@@ -215,232 +304,112 @@ local function createThumbnail(parent)
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
 
-  local region = CreateFrame("FRAME", nil, borderframe);
+  local region = WeakAuras.regionTypes["dynamicgroup"].create(borderframe);
   borderframe.region = region;
-
-  region.children = {};
-
   return borderframe;
 end
 
 local function modifyThumbnail(parent, borderframe, data, fullModify, size)
-  local region = borderframe.region;
-  size = size or 24;
+  local region = borderframe.region
+  borderframe:Hide()
+  size = size or 24
+  region.suspended = 1
 
-  for _, child in pairs(region.children) do
-    child:Hide()
+  -- i don't much like this hack. But i also want to be able to use the same code
+  -- for the thumbnail, without worrying about animations mucking it up.
+  local animate = data.animate
+  data.animate = nil
+  WeakAuras.regionTypes["dynamicgroup"].modify(borderframe, region, data)
+  data.animate = animate
+  local sortedChildren = region.sortedChildren
+  for _, regionData in ipairs(sortedChildren) do
+    regionData.region:Hide()
   end
-  local selfPoint;
-  if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-    selfPoint = "LEFT";
-    if(data.align == "LEFT") then
-      selfPoint = "TOP"..selfPoint;
-    elseif(data.align == "RIGHT") then
-      selfPoint = "BOTTOM"..selfPoint;
-    end
-  elseif(data.grow == "LEFT") then
-    selfPoint = "RIGHT";
-    if(data.align == "LEFT") then
-      selfPoint = "TOP"..selfPoint;
-    elseif(data.align == "RIGHT") then
-      selfPoint = "BOTTOM"..selfPoint;
-    end
-  elseif(data.grow == "UP") then
-    selfPoint = "BOTTOM";
-    if(data.align == "LEFT") then
-      selfPoint = selfPoint.."LEFT";
-    elseif(data.align == "RIGHT") then
-      selfPoint = selfPoint.."RIGHT";
-    end
-  elseif(data.grow == "DOWN" or data.grow == "VERTICAL") then
-    selfPoint = "TOP";
-    if(data.align == "LEFT") then
-      selfPoint = selfPoint.."LEFT";
-    elseif(data.align == "RIGHT") then
-      selfPoint = selfPoint.."RIGHT";
-    end
-  elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    selfPoint = "CENTER";
-  end
-  data.selfPoint = selfPoint;
-
-  local maxWidth, maxHeight = 0, 0;
-  local radius = 0;
-  if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    if(data.constantFactor == "RADIUS") then
-      radius = data.radius;
-    else
-      if(#data.controlledChildren == 1) then
-        radius = 0;
-      else
-        radius = (#data.controlledChildren * data.space) / (2 * math.pi)
-      end
-    end
-  end
-  for index, childId in ipairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
-    local childRegion = WeakAuras.GetRegion(childId)
-    if(childData and childRegion) then
-      if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-        maxWidth = maxWidth + (childData.width or childRegion.width);
-        maxWidth = maxWidth + (index > 1 and data.space or 0);
-        maxHeight = math.max(maxHeight, (childData.height or childRegion.height));
-      elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
-        maxHeight = maxHeight + (childData.height or childRegion.height);
-        maxHeight = maxHeight + (index > 1 and data.space or 0);
-        maxWidth = math.max(maxWidth, (childData.width or childRegion.width));
-      elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-        maxWidth = math.max(maxWidth, (childData.width or childRegion.width));
-        maxHeight = math.max(maxHeight, (childData.height or childRegion.height));
-      end
-    end
-  end
-  if(data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-    maxHeight = maxHeight + (math.abs(data.stagger) * (#data.controlledChildren - 1));
-  elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
-    maxWidth = maxWidth + (math.abs(data.stagger) * (#data.controlledChildren - 1));
-  elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    maxWidth = maxWidth + (2 * radius);
-    maxHeight = maxHeight + (2 * radius);
-  end
-
-  local scale=1;
-  if maxHeight > 0 and (maxHeight > maxWidth) then
-    scale = size / maxHeight;
-  elseif maxWidth > 0 and (maxWidth >= maxHeight) then
-    scale = size / maxWidth;
-  end
-
-  region:SetPoint("CENTER", borderframe, "CENTER");
-  region:SetWidth(maxWidth * scale);
-  region:SetHeight(maxHeight * scale);
-
-  local xOffset, yOffset = 0, 0;
-  if(math.abs(data.stagger) > 0.1 and not (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE")) then
-    if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
-      if(data.align == "LEFT" and data.stagger > 0) then
-        yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
-      elseif(data.align == "RIGHT" and data.stagger < 0) then
-        yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1));
-      elseif(data.align == "CENTER") then
-        if(data.stagger < 0) then
-          yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
-        else
-          yOffset = yOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
-        end
-      end
-    else
-      if(data.align == "LEFT" and data.stagger < 0) then
-        xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1));
-      elseif(data.align == "RIGHT" and data.stagger > 0) then
-        xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1));
-      elseif(data.align == "CENTER") then
-        if(data.stagger < 0) then
-          xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
-        else
-          xOffset = xOffset - (data.stagger * (#data.controlledChildren - 1) / 2);
-        end
-      end
-    end
-  end
-
-  local angle = data.rotation or 0;
-  local angleInc = 360 / (#data.controlledChildren ~= 0 and #data.controlledChildren or 1);
-  if (data.grow == "COUNTERCIRCLE") then
-    angleInc = -angleInc;
-  end
-  radius = 0;
-  if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    if(data.constantFactor == "RADIUS") then
-      radius = data.radius;
-    else
-      if(#data.controlledChildren <= 1) then
-        radius = 0;
-      else
-        radius = (#data.controlledChildren * data.space) / (2 * math.pi);
-      end
-    end
-  end
+  region.sortedChildren = {}
   for index, childId in pairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
-      if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-        yOffset = cos(angle) * radius * -1;
-        xOffset = sin(angle) * radius;
-        angle = angle + angleInc;
-      end
-      if not(region.children[index]) then
-        region.children[index] = CreateFrame("FRAME", nil, region);
-        region.children[index].texture = region.children[index]:CreateTexture(nil, "OVERLAY");
-        region.children[index].texture:SetAllPoints(region.children[index]);
-      end
-      local childRegion = region.children[index]
-      childRegion:Show()
-      local r, g, b;
+      local regionData = sortedChildren[index] or {}
+      region.sortedChildren[index] = regionData
+      regionData.data = childData
+      regionData.controlPoint = regionData.controlPoint or region.controlPoints:Acquire()
+      regionData.id = childId
+      regionData.dataIndex = index
+      regionData.region = regionData.region or CreateFrame("FRAME", nil, regionData.controlPoint)
+      regionData.region:SetParent(regionData.controlPoint)
+      local childRegion = regionData.region
+      childRegion:SetPoint(data.selfPoint, regionData.controlPoint, data.selfPoint)
+      childRegion.texture = childRegion.texture or childRegion:CreateTexture()
+      childRegion.texture:SetAllPoints()
+      childRegion.width = childData.width or 16
+      childRegion.height = childData.height or 16
+      local r, g, b
       if(childData.color) then
-        r, g, b = childData.color[1], childData.color[2], childData.color[3];
+        r, g, b = childData.color[1], childData.color[2], childData.color[3]
       elseif(childData.barColor) then
-        r, g, b = childData.barColor[1], childData.barColor[2], childData.barColor[3];
+        r, g, b = childData.barColor[1], childData.barColor[2], childData.barColor[3]
       elseif(childData.foregroundColor) then
-        r, g, b = childData.foregroundColor[1], childData.foregroundColor[2], childData.foregroundColor[3];
+        r, g, b = childData.foregroundColor[1], childData.foregroundColor[2], childData.foregroundColor[3]
       end
-      r, g, b = r or 0.2, g or 0.8, b or 0.2;
+      r, g, b = r or 0.2, g or 0.8, b or 0.2
 
-      childRegion.texture:SetColorTexture(r, g, b);
-
-      childRegion:ClearAllPoints();
-      childRegion:SetPoint(selfPoint, region, selfPoint, xOffset * scale, yOffset * scale);
-      childRegion:SetWidth((childData.width or childRegion.width or 0) * scale);
-      childRegion:SetHeight((childData.height or childRegion.height or 0) * scale);
-      if(data.grow == "RIGHT" or data.grow == "HORIZONTAL") then
-        xOffset = xOffset + ((childData.width or childRegion.width or 0) + data.space);
-        yOffset = yOffset + data.stagger;
-      elseif(data.grow == "LEFT") then
-        xOffset = xOffset - ((childData.width or childRegion.width or 0) + data.space);
-        yOffset = yOffset + data.stagger;
-      elseif(data.grow == "UP") then
-        yOffset = yOffset + ((childData.height or childRegion.height or 0) + data.space);
-        xOffset = xOffset + data.stagger;
-      elseif(data.grow == "DOWN" or data.grow == "VERTICAL") then
-        yOffset = yOffset - ((childData.height or childRegion.height or 0) + data.space);
-        xOffset = xOffset + data.stagger;
-      end
+      childRegion.texture:SetColorTexture(r, g, b)
+      childRegion:SetWidth((childData.width or childRegion.width or 16))
+      childRegion:SetHeight((childData.height or childRegion.height or 16))
     end
   end
-
-  local index = #data.controlledChildren + 1;
-  if not(region.children[index]) then
-    region.children[index] = CreateFrame("FRAME", nil, region);
-    region.children[index].texture = region.children[index]:CreateTexture(nil, "OVERLAY");
-    region.children[index].texture:SetAllPoints(region.children[index]);
+  region.background:Hide()
+  region:ClearAllPoints()
+  -- TODO: find a less hacky method of getting the right size for the thumbnail.
+  -- This is another hack. This time, it's due to the fact that a thumbnail isn't actually attached to anything
+  -- So, GetLeft and similar return nil in Resize. Workaround this by temporarily binding the region to UIParent
+  region:SetPoint("CENTER", UIParent, "CENTER")
+  region.needToReload = false
+  region.needToPosition = true
+  region:Resume()
+  region:ClearAllPoints()
+  region:SetPoint("CENTER", borderframe, "CENTER")
+  local width = region:GetWidth()
+  local height = region:GetHeight()
+  if width > height then
+    region:SetScale(size/width)
+  else
+    region:SetScale(size/height)
   end
-  region.children[index].texture:SetColorTexture(1, 1, 1);
-  region.children[index]:ClearAllPoints();
-  region.children[index]:Show()
+
+  -- "guide" line
+  if not(region.guide) then
+    region.guide = CreateFrame("FRAME", nil, region)
+    region.guide.texture = region.guide:CreateTexture(nil, "OVERLAY")
+    region.guide.texture:SetAllPoints(region.guide)
+  end
+  region.guide.texture:SetColorTexture(1, 1, 1)
+  region.guide:ClearAllPoints()
+  region.guide:Show()
   if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
-    region.children[index]:SetWidth(size);
-    region.children[index]:SetHeight(1);
+    region.guide:SetWidth(region:GetWidth())
+    region.guide:SetHeight(1)
     if(data.align == "LEFT") then
-      region.children[index]:SetPoint("CENTER", region, "TOP");
+      region.guide:SetPoint("CENTER", region, "TOP")
     elseif(data.align == "RIGHT") then
-      region.children[index]:SetPoint("CENTER", region, "BOTTOM");
+      region.guide:SetPoint("CENTER", region, "BOTTOM")
     else
-      region.children[index]:SetPoint("CENTER", region, "CENTER");
+      region.guide:SetPoint("CENTER", region, "CENTER")
     end
   elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
-    region.children[index]:SetWidth(1);
-    region.children[index]:SetHeight(size);
+    region.guide:SetWidth(1)
+    region.guide:SetHeight(region:GetHeight())
     if(data.align == "LEFT") then
-      region.children[index]:SetPoint("CENTER", region, "LEFT");
+      region.guide:SetPoint("CENTER", region, "LEFT")
     elseif(data.align == "RIGHT") then
-      region.children[index]:SetPoint("CENTER", region, "RIGHT");
+      region.guide:SetPoint("CENTER", region, "RIGHT")
     else
-      region.children[index]:SetPoint("CENTER", region, "CENTER");
+      region.guide:SetPoint("CENTER", region, "CENTER")
     end
   elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    region.children[index]:SetWidth(1);
-    region.children[index]:SetHeight(1);
-    region.children[index]:SetPoint("CENTER", region, "CENTER");
+    region.guide:SetWidth(1)
+    region.guide:SetHeight(1)
+    region.guide:SetPoint("CENTER", region, "CENTER")
   end
 end
 

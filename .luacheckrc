@@ -36,6 +36,7 @@ globals = {
 
 	-- WeakAuras
 	"WeakAuras",
+	"WeakAurasFrame",
 	"WeakAurasOptions",
 	"WeakAurasTimers",
 	"WeakAurasAceEvents",
@@ -49,6 +50,7 @@ globals = {
 	-- FrameXML misc
 	"C_Timer",
 	"CooldownFrame_Set",
+	"CreateObjectPool",
 	"DEFAULT_CHAT_FRAME",
 	"GameTooltip_Hide",
 	"GameTooltip_SetDefaultAnchor",
@@ -64,6 +66,7 @@ globals = {
 	"UISpecialFrames",
 	"Mixin",
 	"SmoothStatusBarMixin",
+	"tIndexOf",
 	"Round",
 
 	-- FrameXML frames

@@ -176,6 +176,11 @@ function WeakAuras.CreateFrame()
 
     for id, data in pairs(WeakAuras.regions) do
       data.region:Collapse();
+      if WeakAuras.clones[id] then
+        for cloneId, cloneRegion in pairs(WeakAuras.clones[id]) do
+          cloneRegion:Collapse()
+        end
+      end
     end
 
     WeakAuras.ResumeAllDynamicGroups();
