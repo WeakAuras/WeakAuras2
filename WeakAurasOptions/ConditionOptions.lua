@@ -1111,12 +1111,19 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
     end
 
     if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer") then
+      local opTypes = WeakAuras.operator_types
+      if currentConditionTemplate.operator_types_without_equal then
+        opTypes = WeakAuras.operator_types_without_equal
+      elseif currentConditionTemplate.operator_types_only_equal then
+        opTypes = WeakAuras.equality_operator_types
+      end
+
       args["condition" .. i .. tostring(path) .. "_op"] = {
         name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
         type = "select",
         order = order,
-        values = currentConditionTemplate.operator_types_without_equal and WeakAuras.operator_types_without_equal or  WeakAuras.operator_types,
+        values = opTypes,
         width = WeakAuras.halfWidth,
         get = function()
           return check.op;

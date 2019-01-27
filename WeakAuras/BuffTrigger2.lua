@@ -2292,6 +2292,12 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     type = "string"
   }
 
+  result["spellId"] = {
+    display = L["Spell Id"],
+    type = "number",
+    operator_types_only_equal = true
+  }
+
   result["matchCount"] = {
     display = L["Total Match Count"],
     type = "number"
