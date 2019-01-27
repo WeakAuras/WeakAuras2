@@ -1617,7 +1617,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
       else
         data.desc = nil;
       end
-      WeakAuras.ShowDisplayTooltip(data, children, nil, nil, import, nil, "desc");
+      WeakAuras.ShowDisplayTooltip(data, children, nil, nil, nil, import, nil, "desc");
       if(WeakAuras.GetDisplayButton) then
         local button = WeakAuras.GetDisplayButton(data.id);
         if(button) then
@@ -1831,7 +1831,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
           WeakAuras.PreAdd(child)
         end
       end
-      WeakAuras.ShowDisplayTooltip(data, children, icon, icons, sender, true)
+      WeakAuras.ShowDisplayTooltip(data, children, nil, icon, icons, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
       TransmitDisplay(received.d, sender);
