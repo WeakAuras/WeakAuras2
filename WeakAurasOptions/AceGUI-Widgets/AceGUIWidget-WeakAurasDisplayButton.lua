@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 46
+local Type, Version = "WeakAurasDisplayButton", 47
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -613,8 +613,8 @@ local methods = {
       if(data.controlledChildren) then
 
         local region = WeakAuras.regions[data.id];
-        if (region.ControlChildren) then
-          region:Pause();
+        if (region.Suspend) then
+          region:Suspend();
         end
 
         for _, id in pairs(data.controlledChildren) do

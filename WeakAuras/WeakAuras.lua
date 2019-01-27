@@ -1513,7 +1513,7 @@ end
 
 function WeakAuras.PauseAllDynamicGroups()
   for id, region in pairs(regions) do
-    if (region.region.ControlChildren) then
+    if (region.region.Suspend) then
       region.region:Suspend();
     end
   end
@@ -1521,7 +1521,7 @@ end
 
 function WeakAuras.ResumeAllDynamicGroups()
   for id, region in pairs(regions) do
-    if (region.region.ControlChildren) then
+    if (region.region.Resume) then
       region.region:Resume();
     end
   end
@@ -2066,6 +2066,10 @@ function WeakAuras.Rename(data, newid)
         parentData.sortHybridTable[oldid] = nil
       end
     end
+    local parentRegion = WeakAuras.GetRegion(data.parent)
+    if parentRegion and parentRegion.ReloadControlledChildren then
+      parentRegion:ReloadControlledChildren()
+    end
   end
 
   regions[newid] = regions[oldid];
@@ -2120,6 +2124,9 @@ function WeakAuras.Rename(data, newid)
       if(childData) then
         childData.parent = data.id;
       end
+    end
+    if regions[newid].ReloadControlledChildren then
+      regions[newid]:ReloadControlledChildren()
     end
   end
 
@@ -2862,7 +2869,7 @@ function WeakAuras.AddMany(table)
   end
   for data in pairs(groups) do
     if data.type == "dynamicgroup" then
-      regions[data.id].region:ControlChildren()
+      regions[data.id].region:ReloadControlledChildren()
     else
       WeakAuras.Add(data)
     end
@@ -3466,7 +3473,7 @@ function WeakAuras.UpdateAnimations()
   WeakAuras.StartProfileSystem("animations");
   for groupId, groupRegion in pairs(pending_controls) do
     pending_controls[groupId] = nil;
-    groupRegion:DoControlChildren();
+    groupRegion:DoPositionChildren();
   end
   local time = GetTime();
   local elapsed = time - last_update;
@@ -3620,6 +3627,12 @@ function WeakAuras.UpdateAnimations()
   ]]--
 
   WeakAuras.StopProfileSystem("animations");
+end
+
+function WeakAuras.RegisterGroupForPositioning(id, region)
+  pending_controls[id] = region
+  updatingAnimations = true
+  frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations)
 end
 
 function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinished, loop, cloneId)
@@ -4391,13 +4404,6 @@ end
 
 WeakAuras.dynFrame = dynFrame;
 
-function WeakAuras.ControlChildren(childid)
-  local parent = db.displays[childid].parent;
-  if (parent and db.displays[parent] and db.displays[parent].regionType == "dynamicgroup") then
-    regions[parent].region:ControlChildren();
-  end
-end
-
 function WeakAuras.SetDynamicIconCache(name, spellId, icon)
   db.dynamicIconCache[name] = db.dynamicIconCache[name] or {};
   db.dynamicIconCache[name][spellId] = icon;
@@ -4491,7 +4497,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
   end
 end
 
-local function ApplyStateToRegion(id, region, state)
+local function ApplyStateToRegion(id, cloneId, region, state, parent)
   region.state = state;
   if(region.SetDurationInfo) then
     if (state.progressType == "timed") then
@@ -4517,7 +4523,7 @@ local function ApplyStateToRegion(id, region, state)
   if (region.SetAdditionalProgress) then
     region:SetAdditionalProgress(state.additionalProgress, region.adjustMin or 0, region.duration ~= 0 and region.adjustedMax or state.total or state.duration or 0, state.inverse);
   end
-  local controlChidren = state.resort;
+  local reindex = state.resort;
   if (state.resort) then
     state.resort = false;
   end
@@ -4539,10 +4545,9 @@ local function ApplyStateToRegion(id, region, state)
   end
 
   WeakAuras.UpdateMouseoverTooltip(region);
-
   region:Expand();
-  if (controlChidren) then
-    WeakAuras.ControlChildren(region.id);
+  if reindex and parent and parent.ActivateChild then
+    parent:ActivateChild(id, cloneId)
   end
 end
 
@@ -4584,11 +4589,19 @@ end
 
 local function ApplyStatesToRegions(id, triggernum, states)
   -- Show new clones
+  local data = WeakAuras.GetData(id)
+  local parent
+  if data and data.parent then
+    parent = WeakAuras.GetRegion(data.parent)
+  end
+  if parent and parent.Suspend then
+    parent:Suspend()
+  end
   for cloneId, state in pairs(states) do
     if (state.show) then
       local region = WeakAuras.GetRegion(id, cloneId);
       if (not region.toShow or state.changed or region.state ~= state) then
-        ApplyStateToRegion(id, region, state);
+        ApplyStateToRegion(id, cloneId, region, state, parent);
       end
       -- We don't check for state.changed here, because conditions depend
       -- on the states of all triggers, not just of the trigger whose states
@@ -4597,6 +4610,9 @@ local function ApplyStatesToRegions(id, triggernum, states)
         checkConditions[id](region, not state.show);
       end
     end
+  end
+  if parent and parent.Resume then
+    parent:Resume()
   end
 end
 

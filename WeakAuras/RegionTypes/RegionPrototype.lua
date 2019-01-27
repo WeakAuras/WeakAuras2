@@ -464,6 +464,7 @@ end
 -- Expand/Collapse function
 
 function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
+  local id = data.id
   local indynamicgroup = parentRegionType == "dynamicgroup";
   local ingroup = parentRegionType == "group";
 
@@ -477,8 +478,10 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       region:Hide();
       if (cloneId) then
         WeakAuras.ReleaseClone(region.id, cloneId, data.regionType);
+        parent:RemoveChild(id, cloneId)
+      else
+        parent:DeactivateChild(id, cloneId);
       end
-      parent:ControlChildren();
     end
   else
     hideRegion = function()
@@ -490,9 +493,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 
   if(indynamicgroup) then
-    if not(cloneId) then
-      parent:PositionChildren();
-    end
     function region:Collapse()
       if (not region.toShow) then
         return;
@@ -503,7 +503,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
         hideRegion();
       end
-      parent:ControlChildren();
 
       if (region.SoundRepeatStop) then
         region:SoundRepeatStop();
@@ -517,15 +516,16 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if(region.PreShow) then
         region:PreShow();
       end
-
-      parent:EnsureTrays();
       region.justCreated = nil;
       region:SetFrameLevel(WeakAuras.GetFrameLevelFor(region.id));
+
+      region:Show();
+
       WeakAuras.PerformActions(data, "start", region);
       if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
       end
-      parent:ControlChildren();
+      parent:ActivateChild(data.id, cloneId);
     end
   elseif not(data.controlledChildren) then
     function region:Collapse()
