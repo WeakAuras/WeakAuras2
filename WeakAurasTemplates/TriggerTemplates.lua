@@ -253,6 +253,14 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
       unitExists = false,
     }
   };
+
+  if triggers[position].trigger.unit == "multi" and buffShowOn == "showOnActive"  then
+    local trigger = triggers[position].trigger
+    trigger.useGroup_count = true
+    trigger.group_countOperator =  ">="
+    trigger.group_count = "1"
+  end
+
   if (item.spellIds) then
     triggers[position].trigger.auranames = {}
     for index, spell in ipairs(item.spellIds) do
