@@ -326,12 +326,11 @@ local function modify(parent, region, data)
 
   if MSQ then
     local masqueId = data.id:lower():gsub(" ", "_");
-    if masqueId ~= region.masqueId then
+    -- TODO -- This should check if the masque id is different instead of always keeping the same masqueId
+    -- But currently masque behaves strangely when a button was already part of a group and the new group is disabled
+    -- In that case the button gets a Blizzard skin
+    if not masqueId then
       region.masqueId = masqueId
-      if region.MSQGroup then
-        region.MSQGroup:RemoveButton(button);
-      end
-
       region.MSQGroup = MSQ:Group("WeakAuras", region.masqueId);
       region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
 
