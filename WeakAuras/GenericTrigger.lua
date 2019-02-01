@@ -2653,7 +2653,8 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
       elseif WeakAuras.event_prototypes[trigger.event].canHaveDuration then
         return WeakAuras.event_prototypes[trigger.event].canHaveDuration
       end
-    elseif trigger.unevent == "timed"and trigger.duration then
+    end
+    if trigger.unevent == "timed" and trigger.duration then
       return "timed"
     end
   elseif (trigger.type == "custom") then
