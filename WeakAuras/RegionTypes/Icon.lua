@@ -690,6 +690,13 @@ local function modify(parent, region, data)
     end
   end
 
+  function region:PreShowGlow()
+    if region.glow then
+      region:SetGlow(false)
+      region:SetGlow(true)
+    end
+  end
+
   region.useGlowColor = data.useGlowColor
   region.glowColor = data.glowColor
   region:SetGlowType(data.glowType)
@@ -718,6 +725,7 @@ local function modify(parent, region, data)
     end
 
     function region:PreShow()
+      region:PreShowGlow()
       if (region.duration > 0.01) then
         cooldown:Show();
         cooldown:SetCooldown(region.expirationTime - region.duration, region.duration);
@@ -737,8 +745,7 @@ local function modify(parent, region, data)
       UpdateText();
     end
 
-    function region:PreShow()
-    end
+    region.PreShow = region.PreShowGlow
   end
 end
 
