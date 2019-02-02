@@ -24,8 +24,8 @@ local function create(parent)
   -- Main region
   local region = CreateFrame("FRAME", nil, parent);
   region:SetMovable(true);
-  region:SetWidth(1.0);
-  region:SetHeight(1.0);
+  region:SetWidth(2);
+  region:SetHeight(2);
 
   -- Border region
   local border = CreateFrame("frame", nil, region);
