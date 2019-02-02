@@ -122,7 +122,7 @@ function WeakAuras.ClearAuraEnvironment(id)
   environment_initialized[id] = false;
 end
 
-function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
+function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
   if not data then
@@ -136,6 +136,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
+      current_aura_env.states = states
       current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)
@@ -147,6 +148,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
+      current_aura_env.states = states
       current_aura_env.region = region
       -- push new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)

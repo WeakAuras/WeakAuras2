@@ -36,6 +36,8 @@ RegionOptions\Model.lua
 #@end-retail@
 RegionOptions\ProgressTexture.lua
 
+SubRegionOptions\SubText.lua
+
 Cache.lua
 
 ActionOptions.lua

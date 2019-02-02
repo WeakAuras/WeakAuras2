@@ -2436,6 +2436,9 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed"
   state.duration = 0
   state.expirationTime = math.huge
+  local name, icon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
+  state.name = name
+  state.icon = icon
 end
 
 function BuffTrigger.GetName(triggerType)
@@ -3090,6 +3093,29 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
 
       local icon = select(3, GetSpellInfo(spellId)) or "Interface\\Icons\\INV_Misc_QuestionMark"
       tinsert(namestable, {left, spellId, icon})
+    end
+  end
+end
+
+function BuffTrigger.CreateFakeStates(id, triggernum)
+  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local data = WeakAuras.GetData(id)
+  local state = {}
+  BuffTrigger.CreateFallbackState(data, triggernum, state)
+  state.expirationTime = GetTime() + 60
+  state.duration = 65
+  state.progressType = "timed"
+  state.stacks = 1
+  allStates[""] = state
+  if BuffTrigger.CanHaveClones(data, triggernum) then
+    for i = 1, 2 do
+      local state = {}
+      BuffTrigger.CreateFallbackState(data, triggernum, state)
+      state.expirationTime = GetTime() + 60 + i * 20
+      state.duration = 100
+      state.progressType = "timed"
+      state.stacks = 1
+      allStates[i] = state
     end
   end
 end

@@ -27,6 +27,7 @@ local fileList = {
         "WeakAuras/Transmission.lua",
         "WeakAuras/Types.lua",
         "WeakAuras/WeakAuras.lua",
+        "WeakAuras/SubRegionTypes/SubText.lua"
     },
     WeakAuras_Options = {
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasDisplayButton.lua",
@@ -68,6 +69,7 @@ local fileList = {
         "WeakAurasOptions/GenericTrigger.lua",
         "WeakAurasOptions/WeakAurasOptions.lua",
         "WeakAurasOptions/AuthorOptions.lua",
+        "WeakAurasOptions/SubRegionOptions/SubText.lua"
     },
     WeakAuras_Templates = {
         "WeakAurasTemplates/TriggerTemplates.lua",

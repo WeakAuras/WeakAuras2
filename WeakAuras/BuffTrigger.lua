@@ -1371,8 +1371,8 @@ frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 frame:RegisterEvent("UNIT_AURA");
 frame:RegisterUnitEvent("UNIT_PET", "player")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
-  WeakAuras.StartProfileSystem("bufftrigger");
   if (WeakAuras.IsPaused()) then return end;
+  WeakAuras.StartProfileSystem("bufftrigger");
   if (event == "PLAYER_ENTERING_WORLD") then
     BuffTrigger.ScanAll();
   elseif(event == "PLAYER_TARGET_CHANGED") then
@@ -1891,6 +1891,9 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed";
   state.duration = 0;
   state.expirationTime = math.huge;
+  local name, icon = BuffTrigger.GetNameAndIcon(data, triggernum)
+  state.name = name
+  state.icon = icon
 end
 
 function BuffTrigger.GetName(triggerType)
@@ -1917,6 +1920,27 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
       end
       local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
       tinsert(namestable, {left, name, icon});
+    end
+  end
+end
+
+function BuffTrigger.CreateFakeStates(id, triggernum)
+  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local data = WeakAuras.GetData(id)
+  local state = {}
+  BuffTrigger.CreateFallbackState(data, triggernum, state)
+  state.expirationTime = GetTime() + 60
+  state.duration = 65
+  state.progressType = "timed"
+  allStates[""] = state
+  if BuffTrigger.CanHaveClones(data, triggernum) then
+    for i = 1, 2 do
+      local state = {}
+      BuffTrigger.CreateFallbackState(data, triggernum, state)
+      state.expirationTime = GetTime() + 60 + i * 20
+      state.duration = 100
+      state.progressType = "timed"
+      allStates[i] = state
     end
   end
 end

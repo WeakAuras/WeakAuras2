@@ -193,9 +193,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         trigger.autoclone = v;
         if(v == true) then
           WeakAuras.ShowCloneDialog(data);
-          WeakAuras.UpdateCloneConfig(data);
-        else
-          WeakAuras.CollapseAllClones(data.id);
         end
         WeakAuras.Add(data);
       end,
@@ -779,9 +776,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         trigger.use_specific_unit = (v == "member");
         if(v == "multi") then
           WeakAuras.ShowCloneDialog(data);
-          WeakAuras.UpdateCloneConfig(data);
-        else
-          WeakAuras.CollapseAllClones(data.id);
         end
         WeakAuras.Add(data);
       end,
@@ -883,9 +877,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         trigger.groupclone = v;
         if(v == true) then
           WeakAuras.ShowCloneDialog(data);
-          WeakAuras.UpdateCloneConfig(data);
-        else
-          WeakAuras.CollapseAllClones(data.id);
         end
         WeakAuras.Add(data);
       end,

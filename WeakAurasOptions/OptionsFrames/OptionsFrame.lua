@@ -164,7 +164,7 @@ function WeakAuras.CreateFrame()
   frame:Hide();
 
   frame:SetScript("OnHide", function()
-    WeakAuras.UnlockUpdateInfo();
+    WeakAuras.ClearFakeStates()
     WeakAuras.SetDragging()
 
     local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame();
@@ -966,7 +966,7 @@ function WeakAuras.CreateFrame()
   frame.RefillOptions = function(self)
     if(type(self.pickedDisplay) == "string") then
       self:FillOptions(displayOptions[frame.pickedDisplay]);
-    else
+    elseif self.pickedDisplay then
       self:FillOptions(displayOptions[frame.pickedDisplay.id]);
     end
   end

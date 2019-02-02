@@ -241,6 +241,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         width = WeakAuras.doubleWidth - 0.15,
         name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
         order = order,
+        fontSize = "medium"
       }
       order = order + 1;
       options["button_" .. arg.name] = {
@@ -1260,7 +1261,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
   return menu;
 end
 
-function WeakAuras.DeleteOption(data)
+function WeakAuras.DeleteOption(data, massDelete)
   local id = data.id;
   local parentData;
   if(data.parent) then
@@ -1282,14 +1283,14 @@ function WeakAuras.DeleteOption(data)
 
   WeakAuras.CollapseAllClones(id);
 
-  WeakAuras.Delete(data);
   frame:ClearPicks();
+  WeakAuras.Delete(data);
   frame.buttonsScroll:DeleteChild(displayButtons[id]);
   thumbnails[id].region:Hide();
   thumbnails[id] = nil;
   displayButtons[id] = nil;
 
-  if(parentData and parentData.controlledChildren) then
+  if(parentData and parentData.controlledChildren and not massDelete) then
     for index, childId in pairs(parentData.controlledChildren) do
       local childButton = displayButtons[childId];
       if(childButton) then
@@ -1297,7 +1298,7 @@ function WeakAuras.DeleteOption(data)
       end
     end
     WeakAuras.Add(parentData);
-    WeakAuras.ReloadGroupRegionOptions(parentData);
+    WeakAuras.ReloadOptions2(parentData);
     WeakAuras.UpdateDisplayButton(parentData);
   end
 end
@@ -1309,7 +1310,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
   OnAccept = function(self)
     if self.data then
       for _, auraData in pairs(self.data.toDelete) do
-        WeakAuras.DeleteOption(auraData)
+        WeakAuras.DeleteOption(auraData, true)
       end
       if self.data.parents then
         for id in pairs(self.data.parents) do
@@ -1322,6 +1323,9 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
             parentButton:EnableExpand()
           end
           parentButton:SetNormalTooltip()
+          WeakAuras.Add(parentData)
+          WeakAuras.ReloadOptions2(parentData)
+          WeakAuras.UpdateDisplayButton(parentData)
         end
       end
       WeakAuras.SortDisplayButtons()
@@ -1385,6 +1389,7 @@ end
 function WeakAuras.ShowOptions(msg)
   local firstLoad = not(frame);
   WeakAuras.Pause();
+  WeakAuras.SetFakeStates()
 
   if (firstLoad) then
     frame = WeakAuras.CreateFrame();
@@ -1393,7 +1398,6 @@ function WeakAuras.ShowOptions(msg)
     WeakAuras.LayoutDisplayButtons(msg);
   end
   frame.buttonsScroll.frame:Show();
-  WeakAuras.LockUpdateInfo();
 
   if (frame.needsSort) then
     WeakAuras.SortDisplayButtons();
@@ -1451,98 +1455,6 @@ function WeakAuras.IsOptionsOpen()
   else
     return false;
   end
-end
-
-function WeakAuras.DoConfigUpdate()
-  local function GiveDynamicInfo(id, region, data, cloneNum)
-    if(WeakAuras.CanHaveDuration(data) == "timed") then
-      local rem = GetTime() + 8 - (frame.count + frame.elapsed);
-      if(cloneNum) then
-        rem = rem + (cloneNum == 1 and (frame.count >= 1 and 1 or -3) or (frame.count >= 2 and 2 or -2));
-      end
-      if(region.SetDurationInfo) then
-        if not(frame.count ~= 0 and region.cooldown and region.cooldown:IsVisible()) then
-          region:SetDurationInfo(12, rem);
-        end
-      end
-    elseif(type(WeakAuras.CanHaveDuration(data)) == "table") then
-      local demoValues = WeakAuras.CanHaveDuration(data);
-      local current, maximum = demoValues.current or 10, demoValues.maximum or 100;
-      if(region.SetDurationInfo) then
-        region:SetDurationInfo(current, maximum, true);
-      end
-    else
-      if(region.SetDurationInfo) then
-        region:SetDurationInfo(0, math.huge);
-      end
-    end
-  end
-
-  -- Auras that are hidden because of e.g. conditions or straight up alpha
-  -- settings, do look very strange in the options So boost their alpha to 0.5
-  local function ApplyFakeAlpha(region)
-    if (region.GetRegionAlpha and region:GetRegionAlpha() < 0.5) then
-      region:SetAlpha(0.5);
-    end
-  end
-
-  for id, region in pairs(WeakAuras.regions) do
-    local data = db.displays[id];
-    if(data) then
-      GiveDynamicInfo(id, region.region, data);
-      ApplyFakeAlpha(region.region);
-
-      if(WeakAuras.clones[id]) then
-        for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
-          GiveDynamicInfo(id, cloneRegion, data, cloneNum);
-          ApplyFakeAlpha(cloneRegion);
-        end
-      end
-    end
-  end
-end
-
-function WeakAuras.LockUpdateInfo()
-  frame.elapsed = 12;
-  frame.count = 0;
-  frame:SetScript("OnUpdate", function(self, elapsed)
-    frame.elapsed = frame.elapsed + elapsed;
-    if(frame.elapsed > 1) then
-      frame.elapsed = frame.elapsed - 1;
-      frame.count = (frame.count + 1) % 4;
-      WeakAuras.DoConfigUpdate();
-    end
-  end);
-end
-
-function WeakAuras.UnlockUpdateInfo()
-  if frame then
-    frame:SetScript("OnUpdate", nil);
-  end
-  local function RestoreAlpha(region)
-    if (region.GetRegionAlpha) then
-      region:SetAlpha(region:GetRegionAlpha());
-    end
-  end
-
-  for id, region in pairs(WeakAuras.regions) do
-    local data = db.displays[id];
-    if(data) then
-      RestoreAlpha(region.region);
-      if(region.SetDurationInfo) then
-        region.region:SetDurationInfo(0, math.huge);
-      end
-      if(WeakAuras.clones[id]) then
-        for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
-          RestoreAlpha(cloneRegion);
-          if(region.SetDurationInfo) then
-            cloneRegion:SetDurationInfo(0, math.huge);
-          end
-        end
-      end
-    end
-  end
-
 end
 
 function WeakAuras.SetIconNames(data)
@@ -2063,7 +1975,7 @@ local function replaceNameDescFuncs(intable, data)
       local childData = WeakAuras.GetData(childId);
 
       local regionType = regionPrefix(info[#info]);
-      if(childData and (not regionType or childData.regionType == regionType)) then
+      if(childData and (not regionType or childData.regionType == regionType or regionType == "sub")) then
         WeakAuras.EnsureOptions(childId);
         local childOptions = displayOptions[childId];
 
@@ -2483,7 +2395,16 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
   };
 end
 
-local function addCollapsibleHeader(options, key, title, order, isGroupTab)
+local function addCollapsibleHeader(options, key, input, order, isGroupTab)
+  local title = input.__title
+
+  local hasDelete = input.__delete
+  local hasUp = input.__up
+  local hasDown = input.__down
+  local hiddenFunc = input.__hidden
+
+  local titleWidth = WeakAuras.doubleWidth - (hasDelete and 0.15 or 0) - (hasUp and 0.15 or 0) - (hasDown and 0.15 or 0)
+
   options[key .. "collapseSpacer"] = {
     type = "description",
     name = "",
@@ -2494,7 +2415,7 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
     type = "execute",
     name = title,
     order = order + 0.1,
-    width = WeakAuras.doubleWidth,
+    width = titleWidth,
     func = function(info)
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
@@ -2504,10 +2425,60 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
     end,
-    control = "WeakAurasExpand"
+    control = "WeakAurasExpand",
+    hidden = hiddenFunc
   }
-  return function()
-    return WeakAuras.IsCollapsed("collapse", "region", key, false)
+
+  if hasUp then
+    options[key .. "upButton"] = {
+      type = "execute",
+      name = "",
+      order = order + 0.3,
+      width = 0.15,
+      func = input.__up,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
+      imageWidth = 24,
+      imageHeight = 24,
+      hidden = hiddenFunc,
+    }
+  end
+
+  if hasDown then
+    options[key .. "downButton"] = {
+      type = "execute",
+      name = "",
+      order = order + 0.4,
+      width = 0.15,
+      func = input.__down,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+      imageWidth = 24,
+      imageHeight = 24,
+      hidden = hiddenFunc
+    }
+  end
+
+  if hasDelete then
+    options[key .. "deleteButton"] = {
+      type = "execute",
+      name = "",
+      order = order + 0.5,
+      width = 0.15,
+      func = input.__delete,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
+      imageWidth = 24,
+      imageHeight = 24,
+      hidden = hiddenFunc
+    }
+  end
+
+  if hiddenFunc then
+    return function()
+      return hiddenFunc() or WeakAuras.IsCollapsed("collapse", "region", key, false)
+    end
+  else
+    return function()
+      return WeakAuras.IsCollapsed("collapse", "region", key, false)
+    end
   end
 end
 
@@ -2545,7 +2516,7 @@ local function flattenRegionOptions(allOptions, isGroupTab)
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
 
-    local collapsedFunc = addCollapsibleHeader(result, optionGroup, options.__title, groupBase, isGroupTab)
+    local collapsedFunc = addCollapsibleHeader(result, optionGroup, options, groupBase, isGroupTab)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then
@@ -2557,18 +2528,109 @@ local function flattenRegionOptions(allOptions, isGroupTab)
   return result;
 end
 
-local function removePrefix(input)
+local function parsePrefix(input, data, create)
+  local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..+%.(.+)")
+  subRegionIndex = tonumber(subRegionIndex)
+  if subRegionIndex then
+    if create then
+      data.subRegions = data.subRegions or {}
+      data.subRegions[subRegionIndex] = data.subRegions[subRegionIndex] or {}
+    else
+      if not data.subRegions or not data.subRegions[subRegionIndex] then
+        return nil
+      end
+    end
+    return data.subRegions[subRegionIndex], property
+  end
   local index = string.find(input, ".", 1, true);
   if (index) then
-    return string.sub(input, index + 1);
+    return data, string.sub(input, index + 1);
   end
-  return input;
+  return data, input
+end
+
+local function AddSubRegionImpl(data, subRegionName)
+  data.subRegions = data.subRegions or {}
+  if WeakAuras.subRegionTypes[subRegionName] and WeakAuras.subRegionTypes[subRegionName] then
+    if WeakAuras.subRegionTypes[subRegionName].supports(data.regionType) then
+      local default = WeakAuras.subRegionTypes[subRegionName].default
+      local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
+      subRegionData.type = subRegionName
+      tinsert(data.subRegions, subRegionData)
+      WeakAuras.Add(data)
+      WeakAuras.ReloadOptions2(data.id, data)
+    end
+  end
+end
+
+local function AddSubRegion(data, subRegionName)
+  WeakAuras.ApplyToDataOrChildData(data, AddSubRegionImpl, subRegionName)
+  WeakAuras.ReloadOptions2(data.id, data)
+end
+
+local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
+  if not next(supported) then
+    return
+  end
+
+  local result = {}
+  local order = 1
+  result.__order = 300
+  result.__title = L["Add Sub Regions"]
+  for subRegionType in pairs(supported) do
+    result[subRegionType .. "space"] = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = "",
+      order = order,
+    }
+    order = order + 1
+    result[subRegionType] = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = string.format(L["Add %s"], WeakAuras.subRegionTypes[subRegionType].displayName),
+      order = order,
+      func = function()
+        AddSubRegion(data, subRegionType)
+      end
+    }
+    order = order + 1
+  end
+  regionOption["sub"] = result;
 end
 
 function WeakAuras.AddOption(id, data)
   local regionOption;
+  local commonOption = {};
   if(regionOptions[data.regionType]) then
     regionOption = regionOptions[data.regionType].create(id, data);
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        local subRegionType = subRegionData.type
+        if WeakAuras.subRegionOptions[subRegionType] then
+          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index)
+          options.__order = 200 + index
+          regionOption["sub." .. index .. "." .. subRegionType] = options
+          commonOption[subRegionType] = common
+        end
+      end
+    end
+
+    local commonOptionIndex = 0
+    for option, optionData in pairs(commonOption) do
+      commonOptionIndex = commonOptionIndex + 1
+      optionData.__order = 100 + commonOptionIndex
+      regionOption[option] = optionData
+    end
+
+    local supported = {}
+    for subRegionName, subRegionType in pairs(WeakAuras.subRegionTypes) do
+      if subRegionType.supports(data.regionType) then
+        supported[subRegionName] = true
+      end
+    end
+    AddOptionsForSupportedSubRegion(regionOption, data, supported);
   else
     regionOption = {
       [data.regionType] = {
@@ -2590,25 +2652,28 @@ function WeakAuras.AddOption(id, data)
         name = L["Display"],
         order = 10,
         get = function(info)
-          local property = removePrefix(info[#info]);
+          local base, property = parsePrefix(info[#info], data);
+          if not base then
+            return nil
+          end
           if(info.type == "color") then
-            data[property] = data[property] or {};
-            local c = data[property];
+            base[property] = base[property] or {};
+            local c = base[property];
             return c[1], c[2], c[3], c[4];
           else
-            return data[property];
+            return base[property];
           end
         end,
         set = function(info, v, g, b, a)
-          local property = removePrefix(info[#info]);
+          local base, property = parsePrefix(info[#info], data, true);
           if(info.type == "color") then
-            data[property] = data[property] or {};
-            local c = data[property];
+            base[property] = base[property] or {};
+            local c = base[property];
             c[1], c[2], c[3], c[4] = v, g, b, a;
           elseif(info.type == "toggle") then
-            data[property] = v;
+            base[property] = v;
           else
-            data[property] = (v ~= "" and v) or nil;
+            base[property] = (v ~= "" and v) or nil;
           end
           WeakAuras.Add(data);
           WeakAuras.SetThumbnail(data);
@@ -2681,7 +2746,7 @@ end
 function WeakAuras.ReloadOptions(id)
   displayOptions[id] = nil;
   WeakAuras.EnsureOptions(id);
-  WeakAuras.FillOptions(id)
+  WeakAuras.RefillOptions()
 end
 
 function WeakAuras.EnsureOptions(id)
@@ -2689,6 +2754,46 @@ function WeakAuras.EnsureOptions(id)
     WeakAuras.AddOption(id, WeakAuras.GetData(id));
   end
 end
+
+local scheduleRefillFrame = CreateFrame("FRAME", "", UIParent)
+scheduleRefillFrame.OnUpdate = function()
+  for id, data in pairs(scheduleRefillFrame.ids) do
+    if not(displayOptions[id]) then
+      WeakAuras.AddOption(id, data);
+    end
+  end
+  wipe(scheduleRefillFrame.ids)
+
+  frame:RefillOptions()
+  frame:SetScript("OnUpdate", nil)
+end
+
+scheduleRefillFrame.ScheduleRefillOnly = function()
+  frame:SetScript("OnUpdate", scheduleRefillFrame.OnUpdate)
+end
+scheduleRefillFrame.ScheduleReload = function(self, id, data)
+  scheduleRefillFrame.ids[id] = data
+  scheduleRefillFrame:ScheduleRefillOnly()
+end
+
+scheduleRefillFrame.ids = {}
+
+
+-- TODO replace older ReloadOptions, SchduleReloadOptions, ReloadTriggerOptions, ReloadGroupRegionOptions
+-- automatically clear parent/tempGroup ?
+function WeakAuras.ReloadOptions2(id, data)
+  displayOptions[id] = nil
+  scheduleRefillFrame:ScheduleReload(id, data)
+end
+
+function WeakAuras.RefillOptions()
+  frame:RefillOptions()
+end
+
+function WeakAuras.SchduleRefillOptions()
+   scheduleRefillFrame:ScheduleRefillOnly()
+end
+
 
 function WeakAuras.GetSpellTooltipText(id)
   local tooltip = WeakAuras.GetHiddenTooltip();
@@ -3262,25 +3367,28 @@ function WeakAuras.ReloadTriggerOptions(data)
       name = L["Group"],
       order = 0,
       get = function(info)
-        local property = removePrefix(info[#info]);
+        local base, property = parsePrefix(info[#info], data);
+        if not base then
+          return nil
+        end
         if(info.type == "color") then
-          data[property] = data[property] or {};
-          local c = data[property];
+          base[property] = base[property] or {};
+          local c = base[property];
           return c[1], c[2], c[3], c[4];
         else
-          return data[property];
+          return base[property];
         end
       end,
       set = function(info, v, g, b, a)
-        local property = removePrefix(info[#info]);
+        local base, property = parsePrefix(info[#info], data, true);
         if(info.type == "color") then
-          data[property] = data[property] or {};
-          local c = data[property];
+          base[property] = base[property] or {};
+          local c = base[property];
           c[1], c[2], c[3], c[4] = v, g, b, a;
         elseif(info.type == "toggle") then
-          data[property] = v;
+          base[property] = v;
         else
-          data[property] = (v ~= "" and v) or nil;
+          base[property] = (v ~= "" and v) or nil;
         end
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
@@ -3446,7 +3554,9 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   WeakAuras.EnsureOptions(id);
   local options = displayOptions[id];
   local allOptions = {};
+  local commonOption = {};
   local unsupportedCount = 0
+  local supportedSubRegions = {}
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if childData and not regionTypes[childData.regionType] then
@@ -3465,8 +3575,33 @@ function WeakAuras.ReloadGroupRegionOptions(data)
           },
         }
       end
+      for subRegionName, subRegionType in pairs(WeakAuras.subRegionTypes) do
+        if subRegionType.supports(childData.regionType) then
+          supportedSubRegions[subRegionName] = true
+        end
+      end
+    end
+    if childData.subRegions then
+      for index, subRegionData in ipairs(childData.subRegions) do
+        local subRegionType = subRegionData.type
+        if WeakAuras.subRegionOptions[subRegionType] then
+          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index)
+          options.__order = 200 + index
+          allOptions["sub." .. index .. "." .. subRegionType] = options
+          commonOption[subRegionType] = common
+        end
+      end
     end
   end
+
+  local commonOptionIndex = 0
+  for option, optionData in pairs(commonOption) do
+    commonOptionIndex = commonOptionIndex + 1
+    optionData.__order = 100 + commonOptionIndex
+    allOptions[option] = optionData
+  end
+
+  AddOptionsForSupportedSubRegion(allOptions, data, supportedSubRegions);
 
   fixMetaOrders(allOptions);
   local regionOption = flattenRegionOptions(allOptions, false);
@@ -4276,10 +4411,6 @@ function WeakAuras.PickDisplayMultiple(id)
   frame:PickDisplayMultiple(id);
 end
 
-function WeakAuras.RefillOptions()
-  frame:RefillOptions()
-end
-
 function WeakAuras.PickDisplayMultipleShift(target)
   if (frame.pickedDisplay) then
     -- get first aura selected
@@ -4343,10 +4474,6 @@ function WeakAuras.PickDisplayMultipleShift(target)
   else
     WeakAuras.PickDisplay(target);
   end
-end
-
-function WeakAuras.FillOptions(id)
-  frame:FillOptions(displayOptions[id]);
 end
 
 function WeakAuras.GetDisplayButton(id)
@@ -4611,6 +4738,15 @@ function WeakAuras.ShowCloneDialog(data)
   end
 end
 
+local function AddDefaultSubRegions(data)
+  data.subRegions = data.subRegions or {}
+  for type, subRegionData in pairs(WeakAuras.subRegionTypes) do
+    if subRegionData.addDefaultsForNewAura then
+      subRegionData.addDefaultsForNewAura(data)
+    end
+  end
+end
+
 function WeakAuras.NewAura(sourceData, regionType, targetId)
   local function ensure(t, k, v)
     return t and k and v and t[k] == v
@@ -4623,6 +4759,9 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
   end
   data.internalVersion = WeakAuras.InternalVersion();
   WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
+
+  AddDefaultSubRegions(data)
+
   if (data.regionType ~= "group" and data.regionType ~= "dynamicgroup" and targetId) then
     local target = WeakAuras.GetDisplayButton(targetId);
     local group

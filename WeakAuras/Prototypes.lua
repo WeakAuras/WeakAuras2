@@ -5994,37 +5994,95 @@ end
 
 WeakAuras.dynamic_texts = {
   ["p"] = {
-    unescaped = "%p",
-    name = L["Progress"],
-    value = "progress",
-    static = "8.0"
+    func = function(state, region)
+      if not state then return "" end
+      if state.progressType == "static" then
+        return state.value or ""
+      end
+      if state.progressType == "timed" then
+        if not state.expirationTime or not state.duration then
+          return ""
+        end
+        local remaining  = state.expirationTime - GetTime();
+        local duration  = state.duration;
+
+        local remainingStr     = "";
+        if remaining == math.huge then
+          remainingStr     = " ";
+        elseif remaining > 60 then
+          remainingStr     = string.format("%i:", math.floor(remaining / 60));
+          remaining        = remaining % 60;
+          remainingStr     = remainingStr..string.format("%02i", remaining);
+        elseif remaining > 0 then
+          local progressPrecision = region.progressPrecision and math.abs(region.progressPrecision) or 1
+          -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
+          if progressPrecision == 4 and remaining <= 3 then
+            remainingStr = remainingStr..string.format("%.1f", remaining);
+          elseif progressPrecision == 5 and remaining <= 3 then
+            remainingStr = remainingStr..string.format("%.2f", remaining);
+          elseif (progressPrecision == 4 or progressPrecision == 5) and remaining > 3 then
+            remainingStr = remainingStr..string.format("%d", remaining);
+          else
+            remainingStr = remainingStr..string.format("%.".. progressPrecision .."f", remaining);
+          end
+        else
+          remainingStr     = " ";
+        end
+        return remainingStr
+      end
+    end
   },
   ["t"] = {
-    unescaped = "%t",
-    name = L["Total"],
-    value = "duration",
-    static = "12.0"
+    func = function(state, region)
+      if not state then return "" end
+      if state.progressType == "static" then
+        return state.total or ""
+      end
+      if state.progressType == "timed" then
+        if not state.duration then
+          return ""
+        end
+        -- Format a duration time string
+        local durationStr     = "";
+        local duration = state.duration
+        if duration > 60 then
+          durationStr     = string.format("%i:", math.floor(duration / 60));
+          duration       = duration % 60;
+          durationStr     = durationStr..string.format("%02i", duration);
+        elseif duration > 0 then
+          local totalPrecision = region.totalPrecision and math.abs(region.totalPrecision) or 1
+          if totalPrecision == 4 and duration <= 3 then
+            durationStr = durationStr..string.format("%.1f", duration);
+          elseif totalPrecision == 5 and duration <= 3 then
+            durationStr = durationStr..string.format("%.2f", duration);
+          elseif (totalPrecision == 4 or totalPrecision == 5) and duration > 3 then
+            durationStr = durationStr..string.format("%d", duration);
+          else
+            durationStr = durationStr..string.format("%."..totalPrecision.."f", duration);
+          end
+        else
+          durationStr     = " ";
+        end
+        return durationStr
+      end
+    end
   },
   ["n"] = {
-    unescaped = "%n",
-    name = L["Name"],
-    value = "name"
+    func = function(state)
+      if not state then return "" end
+      return state.name or state.id
+    end
   },
   ["i"] = {
-    unescaped = "%i",
-    name = L["Icon"],
-    value = "icon"
+    func = function(state)
+      if not state or not state.icon then return "|TInterface\\Icons\\INV_Misc_QuestionMark:12:12:0:0:64:64:4:60:4:60|t" end
+      return "|T".. state.icon ..":12:12:0:0:64:64:4:60:4:60|t"
+    end
   },
   ["s"] = {
-    unescaped = "%s",
-    name = L["Stacks"],
-    value = "stacks",
-    static = 1
-  },
-  ["c%d*"] = {
-    unescaped = "%c",
-    name = L["Custom"],
-    value = "custom",
-    static = L["Custom"]
+    func = function(state)
+      if not state or state.stacks == 0 then return "" end
+      return state.stacks
+    end
   }
 };

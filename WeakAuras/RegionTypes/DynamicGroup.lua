@@ -982,6 +982,8 @@ local function modify(parent, region, data)
   end
 
   region:ReloadControlledChildren()
+
+  WeakAuras.regionPrototype.modifyFinish(parent, region, data)
 end
 
 WeakAuras.RegisterRegionType("dynamicgroup", create, modify, default)

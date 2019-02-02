@@ -50,3 +50,4 @@ RegionTypes\DynamicGroup.lua
 #@retail@
 RegionTypes\Model.lua
 #@end-retail@
+SubRegionTypes\SubText.lua

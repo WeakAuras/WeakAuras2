@@ -571,11 +571,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.doubleWidth,
       set = function(info, v)
         trigger.showClones = v
-        if v == true then
-          WeakAuras.UpdateCloneConfig(data)
-        else
-          WeakAuras.CollapseAllClones(data.id)
-        end
         WeakAuras.Add(data)
       end
     },
