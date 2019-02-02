@@ -221,13 +221,6 @@ local function createOptions(id, data)
       bigStep = 0.01,
       isPercent = true
     },
-    stickyDuration = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Sticky Duration"],
-      desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
-      order = 55
-    },
     smoothProgress = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -822,4 +815,8 @@ if WeakAuras.IsClassic() then
   table.remove(templates, 2)
 end
 
-WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);
+local function GetAnchors(data)
+  return WeakAuras.default_types_for_anchor
+end
+
+WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates, GetAnchors);

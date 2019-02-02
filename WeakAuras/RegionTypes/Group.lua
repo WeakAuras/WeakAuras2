@@ -152,6 +152,8 @@ local function modify(parent, region, data)
     end
   end
   region:UpdateBorder()
+
+  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
 -- Register new region type with WeakAuras

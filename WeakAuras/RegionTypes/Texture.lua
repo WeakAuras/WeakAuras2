@@ -64,25 +64,24 @@ local properties = {
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
 
-local function GetProperties(data)
-  return properties;
-end
-
 local function create(parent)
-  local frame = CreateFrame("FRAME", nil, UIParent);
-  frame:SetMovable(true);
-  frame:SetResizable(true);
-  frame:SetMinResize(1, 1);
+  local region = CreateFrame("FRAME", nil, UIParent);
+  region:SetMovable(true);
+  region:SetResizable(true);
+  region:SetMinResize(1, 1);
 
-  local texture = frame:CreateTexture();
+  local texture = region:CreateTexture();
   texture:SetSnapToPixelGrid(false)
   texture:SetTexelSnappingBias(0)
-  frame.texture = texture;
-  texture:SetAllPoints(frame);
+  region.texture = texture;
+  texture:SetAllPoints(region);
 
-  WeakAuras.regionPrototype.create(frame);
-  frame.values = {};
-  return frame;
+  WeakAuras.regionPrototype.create(region);
+  region.values = {};
+
+  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
+
+  return region;
 end
 
 local function modify(parent, region, data)
@@ -181,9 +180,10 @@ local function modify(parent, region, data)
     DoTexCoord()
   end
 
-  function region:SetTexture(path)
-    local texturePath = path;
-    WeakAuras.SetTextureOrAtlas(region.texture, texturePath);
+  function region:Update()
+    if region.state.texture then
+      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture);
+    end
   end
 
   function region:Color(r, g, b, a)
@@ -232,6 +232,8 @@ local function modify(parent, region, data)
     region.Rotate = nil;
     region.GetRotation = nil;
   end
+
+  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-WeakAuras.RegisterRegionType("texture", create, modify, default, GetProperties);
+WeakAuras.RegisterRegionType("texture", create, modify, default, properties);

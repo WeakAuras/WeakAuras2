@@ -210,19 +210,10 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   end
 
   function borderframe:SetIcon(path)
-    local icon = (
-      WeakAuras.CanHaveAuto(data)
-      and path ~= ""
-      and path
-      or data.displayIcon
-      or "Interface\\Icons\\INV_Misc_QuestionMark"
-      );
-    borderframe.values.icon = "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t";
     UpdateText();
   end
 
   function borderframe:SetName(name)
-    borderframe.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
     UpdateText();
   end
 

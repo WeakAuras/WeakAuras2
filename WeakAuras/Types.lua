@@ -292,6 +292,19 @@ WeakAuras.point_types = {
   CENTER = L["Center"]
 }
 
+WeakAuras.default_types_for_anchor = {}
+for k, v in pairs(WeakAuras.point_types) do
+  WeakAuras.default_types_for_anchor[k] = {
+    display = v,
+    type = "point"
+  }
+end
+
+WeakAuras.default_types_for_anchor["ALL"] = {
+  display = L["Whole Area"],
+  type = "area"
+}
+
 WeakAuras.inverse_point_types = {
   BOTTOMLEFT = "TOPRIGHT",
   BOTTOM = "TOP",

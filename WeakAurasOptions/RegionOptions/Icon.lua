@@ -96,207 +96,6 @@ local function createOptions(id, data)
       disabled = function() return not WeakAuras.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
-    textHeader1 = {
-      type = "header",
-      order = 39,
-      name = L["1. Text Settings"]
-    },
-    text1Enabled = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      order = 39.1,
-      name = L["1. Text"],
-    },
-    text1 = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Text"],
-      desc = function()
-        local ret = L["Dynamic text tooltip"];
-        ret = ret .. WeakAuras.GetAdditionalProperties(data);
-        return ret
-      end,
-      order = 39.2,
-      hidden = function() return not data.text1Enabled end,
-    },
-    text1Color = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Color"],
-      hasAlpha = true,
-      order = 39.3,
-      hidden = function() return not data.text1Enabled end,
-    },
-    text1Point = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Text Position"],
-      order = 39.4,
-      values = WeakAuras.point_types,
-      hidden = function() return not data.text1Enabled end,
-    },
-    text1Containment = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = " ",
-      order = 39.5,
-      values = WeakAuras.containment_types,
-      hidden = function() return not data.text1Enabled end,
-    },
-    text1Font = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      dialogControl = "LSM30_Font",
-      name = L["Font"],
-      order = 39.6,
-      values = AceGUIWidgetLSMlists.font,
-      hidden = function() return not data.text1Enabled end,
-    },
-    text1FontSize = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Size"],
-      order = 39.7,
-      min = 6,
-      softMax = 72,
-      step = 1,
-      hidden = function() return not data.text1Enabled end,
-    },
-    text1FontFlags = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Outline"],
-      order = 39.8,
-      values = WeakAuras.font_flags,
-      hidden = function() return not data.text1Enabled end,
-    },
-
-    textHeader2 = {
-      type = "header",
-      order = 40,
-      name = L["2. Text Settings"]
-    },
-    text2Enabled = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      order = 40.1,
-      name = L["2. Text"],
-    },
-    text2 = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Text"],
-      desc = function()
-        local ret = L["Dynamic text tooltip"];
-        ret = ret .. WeakAuras.GetAdditionalProperties(data);
-        return ret
-      end,
-      order = 40.2,
-      hidden = function() return not data.text2Enabled end,
-    },
-    text2Color = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Color"],
-      hasAlpha = true,
-      order = 40.3,
-      hidden = function() return not data.text2Enabled end,
-    },
-    text2Point = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Text Position"],
-      order = 40.4,
-      values = WeakAuras.point_types,
-      hidden = function() return not data.text2Enabled end,
-    },
-    text2Containment = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = " ",
-      order = 40.5,
-      values = WeakAuras.containment_types,
-      hidden = function() return not data.text2Enabled end,
-    },
-    text2Font = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      dialogControl = "LSM30_Font",
-      name = L["Font"],
-      order = 40.6,
-      values = AceGUIWidgetLSMlists.font,
-      hidden = function() return not data.text2Enabled end,
-    },
-    text2FontSize = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Size"],
-      order = 40.7,
-      min = 6,
-      softMax = 72,
-      step = 1,
-      hidden = function() return not data.text2Enabled end,
-    },
-    text2FontFlags = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Outline"],
-      order = 40.8,
-      values = WeakAuras.font_flags,
-      hidden = function() return not data.text2Enabled end,
-    },
-
-    generalHeader = {
-      type = "header",
-      order = 43,
-      name = L["General Text Settings"],
-      hidden = function()
-        return not ((data.text1Enabled and (WeakAuras.ContainsPlaceHolders(data.text1, "pt") or WeakAuras.ContainsCustomPlaceHolder(data.text1)))
-          or (data.text2Enabled and (WeakAuras.ContainsPlaceHolders(data.text2, "pt") or WeakAuras.ContainsCustomPlaceHolder(data.text2))))
-      end,
-    },
-    customTextUpdate = {
-      type = "select",
-      width = WeakAuras.doubleWidth,
-      hidden = function()
-        return not ((data.text1Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text1))
-          or (data.text2Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text2)))
-      end,
-      name = L["Update Custom Text On..."],
-      values = WeakAuras.text_check_types,
-      order = 43.1
-    },
-    -- Code Editor added below
-    progressPrecision = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      order = 44,
-      name = L["Remaining Time Precision"],
-      values = WeakAuras.precision_types,
-      get = function() return data.progressPrecision or 1 end,
-      hidden = function()
-        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "pt"))
-          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
-      end,
-      disabled = function()
-        return not (data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "p") or data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "p"));
-      end
-    },
-    totalPrecision = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      order = 44.5,
-      name = L["Total Time Precision"],
-      values = WeakAuras.precision_types,
-      get = function() return data.totalPrecision or 1 end,
-      hidden = function()
-        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "pt"))
-          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
-      end,
-      disabled = function()
-        return not (data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "t") or data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "t"));
-      end
-    },
     otherHeader = {
       type = "header",
       order = 48,
@@ -331,13 +130,6 @@ local function createOptions(id, data)
       name = L["Keep Aspect Ratio"],
       order = 49.1
     },
-    stickyDuration = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Sticky Duration"],
-      desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
-      order = 49.4
-    },
     useTooltip = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -356,13 +148,6 @@ local function createOptions(id, data)
       isPercent = true
     },
   };
-
-  local function hideCustomTextEditor()
-    return not ((data.text1Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text1))
-             or (data.text2Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text2)))
-  end
-
-  WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 43.2,  hideCustomTextEditor, {"customText"}, false);
 
   for k, v in pairs(WeakAuras.GlowOptions(id, data, 10)) do
     options[k] = v
@@ -459,4 +244,115 @@ local templates = {
   }
 }
 
-WeakAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional cooldown overlay"], templates);
+local anchorPoints = {
+  BOTTOMLEFT = {
+    display = { L["Edge"], L["Bottom Left"] },
+    type = "point"
+  },
+  BOTTOM = {
+    display = { L["Edge"], L["Bottom"] },
+    type = "point"
+  },
+  BOTTOMRIGHT = {
+    display = { L["Edge"], L["Bottom Right"] },
+    type = "point"
+  },
+  RIGHT = {
+    display = { L["Edge"], L["Right"] },
+    type = "point"
+  },
+  TOPRIGHT = {
+    display = { L["Edge"], L["Top Right"] },
+    type = "point"
+  },
+  TOP = {
+    display = { L["Edge"], L["Top"] },
+    type = "point"
+  },
+  TOPLEFT = {
+    display = { L["Edge"], L["Top Left"] },
+    type = "point"
+  },
+  LEFT = {
+    display = { L["Edge"], L["Left"] },
+    type = "point"
+  },
+  CENTER = {
+    display = L["Center"],
+    type = "point"
+  },
+  INNER_BOTTOMLEFT = {
+    display = { L["Inner"], L["Bottom Left"] },
+    type = "point"
+  },
+  INNER_BOTTOM = {
+    display = { L["Inner"], L["Bottom"] },
+    type = "point"
+  },
+  INNER_BOTTOMRIGHT = {
+    display = { L["Inner"], L["Bottom Right"] },
+    type = "point"
+  },
+  INNER_RIGHT = {
+    display = { L["Inner"], L["Right"] },
+    type = "point"
+  },
+  INNER_TOPRIGHT = {
+    display = { L["Inner"], L["Top Right"] },
+    type = "point"
+  },
+  INNER_TOP = {
+    display = { L["Inner"], L["Top"] },
+    type = "point"
+  },
+  INNER_TOPLEFT = {
+    display = { L["Inner"], L["Top Left"] },
+    type = "point"
+  },
+  INNER_LEFT = {
+    display = { L["Inner"], L["Left"] },
+    type = "point"
+  },
+  OUTER_BOTTOMLEFT = {
+    display = { L["Outter"], L["Bottom Left"] },
+    type = "point"
+  },
+  OUTER_BOTTOM = {
+    display = { L["Outter"], L["Bottom"] },
+    type = "point"
+  },
+  OUTER_BOTTOMRIGHT = {
+    display = { L["Outter"], L["Bottom Right"] },
+    type = "point"
+  },
+  OUTER_RIGHT = {
+    display = { L["Outter"], L["Right"] },
+    type = "point"
+  },
+  OUTER_TOPRIGHT = {
+    display = { L["Outter"], L["Top Right"] },
+    type = "point"
+  },
+  OUTER_TOP = {
+    display = { L["Outter"], L["Top"] },
+    type = "point"
+  },
+  OUTER_TOPLEFT = {
+    display = { L["Outter"], L["Top Left"] },
+    type = "point"
+  },
+  OUTER_LEFT = {
+    display = { L["Outter"], L["Left"] },
+    type = "point"
+  },
+  ALL = {
+    display = L["Whole Area"],
+    type = "area"
+  }
+}
+
+local function GetAnchors(data)
+  return anchorPoints;
+end
+
+WeakAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional cooldown overlay"], templates, GetAnchors);

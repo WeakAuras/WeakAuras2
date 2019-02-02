@@ -1,4 +1,4 @@
-local internalVersion = 19;
+local internalVersion = 20;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -108,6 +108,18 @@ function SlashCmdList.WEAKAURAS(msg)
   WeakAuras.OpenOptions(msg);
 end
 
+function WeakAuras.ApplyToDataOrChildData(data, func, ...)
+  if data.controlledChildren then
+    for index, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      func(childData, ...)
+    end
+    return true
+  else
+    func(data, ...)
+  end
+end
+
 function WeakAuras.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
@@ -196,9 +208,15 @@ local clonePool = WeakAuras.clonePool;
 WeakAuras.regionTypes = {};
 local regionTypes = WeakAuras.regionTypes;
 
+WeakAuras.subRegionTypes = {}
+local subRegionTypes = WeakAuras.subRegionTypes
+
 -- One table per regionType, see RegisterRegionOptions
 WeakAuras.regionOptions = {};
 local regionOptions = WeakAuras.regionOptions;
+
+WeakAuras.subRegionOptions = {}
+local subRegionOptions = WeakAuras.subRegionOptions
 
 -- Maps from trigger type to trigger system
 WeakAuras.triggerTypes = {};
@@ -345,12 +363,72 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
       create = createFunction,
       modify = modifyFunction,
       default = default,
-      properties = properties
+      properties = properties,
     };
   end
 end
 
-function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates)
+function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties)
+  if not(name) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
+  elseif(type(name) ~= "string") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not a string", 2);
+  elseif not(displayName) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - display name is not defined".." "..name, 2);
+  elseif(type(displayName) ~= "string") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - display name is not a string", 2);
+  elseif not(supportFunction) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - support function is not defined", 2);
+  elseif(type(supportFunction) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - support function is not a function", 2);
+  elseif not(createFunction) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - creation function is not defined", 2);
+  elseif(type(createFunction) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - creation function is not a function", 2);
+  elseif not(modifyFunction) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - modification function is not defined", 2);
+  elseif(type(modifyFunction) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - modification function is not a function", 2)
+  elseif not(onAcquire) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - onAcquire function is not defined", 2);
+  elseif(type(onAcquire) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - onAcquire function is not a function", 2)
+  elseif not(onRelease) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - onRelease function is not defined", 2);
+  elseif(type(onRelease) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - onRelease function is not a function", 2)
+  elseif not(default) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - default options are not defined", 2);
+  elseif(type(default) ~= "table" and type(default) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - default options are not a table or a function", 2);
+  elseif(addDefaultsForNewAura and type(addDefaultsForNewAura) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - addDefaultsForNewAura function is not nil or a function", 2)
+  elseif(subRegionTypes[name]) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - region type \""..name.."\" already defined", 2);
+  else
+    local pool = CreateObjectPool(createFunction)
+
+    subRegionTypes[name] = {
+      displayName = displayName,
+      supports = supportFunction,
+      modify = modifyFunction,
+      default = default,
+      addDefaultsForNewAura = addDefaultsForNewAura,
+      properties = properties,
+      acquire = function()
+        local subRegion = pool:Acquire()
+        onAcquire(subRegion)
+        return subRegion
+      end,
+      release = function(subRegion)
+        onRelease(subRegion)
+        pool:Release(subRegion)
+      end
+    };
+  end
+end
+
+function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates, getAnchors)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -367,6 +445,8 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
     error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not defined".." "..name, 2);
   elseif(type(displayName) ~= "string") then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not a string", 2);
+  elseif (getAnchors and type(getAnchors) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterRegionOptions - anchors is not a function", 2);
   elseif(regionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
@@ -377,7 +457,27 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
       createThumbnail = createThumbnail,
       modifyThumbnail = modifyThumbnail,
       description = description,
-      templates = templates
+      templates = templates,
+      getAnchors = getAnchors
+    };
+  end
+end
+
+function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
+  if not(name) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not defined", 2);
+  elseif(type(name) ~= "string") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not a string", 2);
+  elseif not(createFunction) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not defined", 2);
+  elseif(type(createFunction) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not a function", 2);
+  elseif(subRegionOptions[name]) then
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - region type \""..name.."\" already defined", 2);
+  else
+    subRegionOptions[name] = {
+      create = createFunction,
+      description = description,
     };
   end
 end
@@ -735,10 +835,7 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
   local usedStates = {};
   local check, recheckCode = CreateTestForCondition(condition.check, allConditionsTemplate, usedStates);
   if (check) then
-    for triggernum in pairs(usedStates) do
-      ret = ret .. "    allStates = WeakAuras.GetTriggerStateForTrigger(id, " .. triggernum .. ")\n";
-      ret = ret .. "    state[" .. triggernum  .. "] = allStates[cloneId] or allStates['']\n";
-    end
+    ret = ret .. "    state = region.states\n"
     ret = ret .. "    if (" .. check .. ") then\n";
     ret = ret .. "      newActiveConditions[" .. conditionNumber .. "] = true;\n";
     ret = ret .. "    end\n";
@@ -752,10 +849,25 @@ local function CreateCheckCondition(ret, condition, conditionNumber, allConditio
   return ret;
 end
 
+local function ParseProperty(property)
+  local subIndex, prop = string.match(property, "^sub%.(%d*).(.*)")
+  if subIndex then
+    return tonumber(subIndex), prop
+  else
+    return nil, property
+  end
+end
+
 local function GetBaseProperty(data, property, start)
   if (not data) then
     return nil;
   end
+
+  local subIndex, prop = ParseProperty(property)
+  if subIndex then
+    return GetBaseProperty(data.subRegions[subIndex], prop, start)
+  end
+
   start = start or 1;
   local next = string.find(property, ".", start, true);
   if (next) then
@@ -877,8 +989,29 @@ function WeakAuras.GetProperties(data)
   if (type(propertiesFunction) == "function") then
     properties = propertiesFunction(data);
   else
-    properties = propertiesFunction;
+    properties = CopyTable(propertiesFunction);
   end
+
+  if data.subRegions then
+    for index, subRegion in ipairs(data.subRegions) do
+      local subRegionTypeData = WeakAuras.subRegionTypes[subRegion.type];
+      local propertiesFunction = subRegionTypeData and subRegionTypeData.properties
+      local subProperties;
+      if (type(propertiesFunction) == "function") then
+        subProperties = propertiesFunction(data, subRegion);
+      elseif propertiesFunction then
+        subProperties = CopyTable(propertiesFunction)
+      end
+
+      if subProperties then
+        for key, property in pairs(subProperties) do
+          property.display = { index .. ". " .. subRegionTypeData.displayName, property.display }
+          properties["sub." .. index .. "." .. key ] = property;
+        end
+      end
+    end
+  end
+
   return properties;
 end
 
@@ -956,7 +1089,6 @@ function WeakAuras.ConstructConditionFunction(data)
   local ret = "";
   ret = ret .. "local newActiveConditions = {};\n"
   ret = ret .. "local propertyChanges = {};\n"
-  ret = ret .. "local state = {};\n"
   ret = ret .. "local nextTime;\n"
   ret = ret .. "return function(region, hideRegion)\n";
   if (debug) then ret = ret .. "  print('check conditions for:', region.id, region.cloneId)\n"; end
@@ -964,8 +1096,6 @@ function WeakAuras.ConstructConditionFunction(data)
   ret = ret .. "  local cloneId = region.cloneId or ''\n";
   ret = ret .. "  local activatedConditions = WeakAuras.GetActiveConditions(id, cloneId)\n";
   ret = ret .. "  wipe(newActiveConditions)\n";
-  ret = ret .. "  local allStates\n";
-  ret = ret .. "  wipe(state)\n";
   ret = ret .. "  local recheckTime;\n"
   ret = ret .. "  local now = GetTime();\n"
 
@@ -1014,7 +1144,13 @@ function WeakAuras.ConstructConditionFunction(data)
       end
     end
 
-    ret = ret .. "    region:" .. properties[property].setter .. "(" .. arg1 .. formatValueForCall(properties[property].type, property)  .. ")\n";
+    local base = "region:"
+    local subIndex = ParseProperty(property)
+    if subIndex then
+      base = "region.subRegions[" .. subIndex .. "]:"
+    end
+
+    ret = ret .. "    " .. base .. properties[property].setter .. "(" .. arg1 .. formatValueForCall(properties[property].type, property)  .. ")\n";
     if (debug) then ret = ret .. "    print('Calling "  .. properties[property].setter ..  " with', " .. arg1 ..  formatValueForCall(properties[property].type, property) .. ")\n"; end
     ret = ret .. "  end\n";
   end
@@ -2042,7 +2178,8 @@ function WeakAuras.Delete(data)
 
   animations[tostring(regions[id].region)] = nil
 
-  WeakAuras.UnregisterCustomTextUpdates(regions[id].region)
+  regions[id].region:Collapse()
+
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:SetScript("OnShow", nil);
   regions[id].region:SetScript("OnHide", nil);
@@ -3020,6 +3157,205 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  -- Version 20 was introduced July 2019 in BFA
+  if data.internalVersion < 20 then
+    if data.regionType == "icon" then
+      local convertPoint = function(containment, point)
+        if point == "CENTER" then
+          return "CENTER"
+        elseif containment == "INSIDE" then
+          return "INNER_" .. point
+        elseif containment == "OUTSIDE" then
+          return "OUTER_" .. point
+        end
+      end
+
+      local text1 = {
+        ["type"] = "subtext",
+        text_visible = data.text1Enabled or true,
+        text_color = data.text1Color,
+        text_text = data.text1,
+        text_font = data.text1Font,
+        text_fontSize = data.text1FontSize,
+        text_fontType = data.text1FontFlags,
+        text_selfPoint = "AUTO",
+        text_anchorPoint = convertPoint(data.text1Containment, data.text1Point),
+        anchorXOffset = 0,
+        anchorYOffset = 0,
+        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowXOffset = 0,
+        text_shadowYOffset = 0,
+      }
+
+      local text2 = {
+        ["type"] = "subtext",
+        text_visible = data.text2Enabled or false,
+        text_color = data.text2Color,
+        text_text = data.text2,
+        text_font = data.text2Font,
+        text_fontSize = data.text2FontSize,
+        text_fontType = data.text2FontFlags,
+        text_selfPoint = "AUTO",
+        text_anchorPoint = convertPoint(data.text2Containment, data.text2Point),
+        anchorXOffset = 0,
+        anchorYOffset = 0,
+        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowXOffset = 0,
+        text_shadowYOffset = 0,
+      }
+
+      data.text1Enabled = nil
+      data.text1Color = nil
+      data.text1 = nil
+      data.text1Font = nil
+      data.text1FontSize = nil
+      data.text1FontFlags = nil
+      data.text1Containment = nil
+      data.text1Point = nil
+
+      data.text2Enabled = nil
+      data.text2Color = nil
+      data.text2 = nil
+      data.text2Font = nil
+      data.text2FontSize = nil
+      data.text2FontFlags = nil
+      data.text2Containment = nil
+      data.text2Point = nil
+
+      local propertyRenames = {
+        text1Color = "sub.1.text_color",
+        text1FontSize = "sub.1.text_fontSize",
+        text2Color = "sub.2.text_color",
+        text2FontSize = "sub.2.text_fontSize"
+      }
+
+      tinsert(data.subRegions, text1)
+      tinsert(data.subRegions, text2)
+
+      if (data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- Version 17 was introduced May 2019 in BFA
+  if data.internalVersion < 1 then
+    if data.regionType == "aurabar" then
+      local orientationToPostion = {
+        HORIZONTAL_INVERSE = { "INNER_LEFT", "INNER_RIGHT" },
+        HORIZONTAL = { "INNER_RIGHT", "INNER_LEFT" },
+        VERTICAL_INVERSE = { "INNER_BOTTOM", "INNER_TOP" },
+        VERTICAL = {"INNER_TOP", "INNER_BOTTOM"}
+      }
+
+      local positions = orientationToPostion[data.orientation] or { "INNER_LEFT", "INNER_RIGHT" }
+
+      local text1 = {
+        ["type"] = "subtext",
+        text_visible = data.timer,
+        text_color = data.timerColor,
+        text_text = data.displayTextRight,
+        text_font = data.timerFont,
+        text_fontSize = data.timerSize,
+        text_fontType = data.timerFlags,
+        text_selfPoint = "AUTO",
+        text_anchorPoint = positions[1],
+        anchorXOffset = 0,
+        anchorYOffset = 0,
+        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowXOffset = 1,
+        text_shadowYOffset = -1,
+        rotateText = data.rotateText
+      }
+
+      local text2 = {
+        ["type"] = "subtext",
+        text_visible = data.text,
+        text_color = data.textColor,
+        text_text = data.displayTextLeft,
+        text_font = data.textFont,
+        text_fontSize = data.textSize,
+        text_fontType = data.textFlags,
+        text_selfPoint = "AUTO",
+        text_anchorPoint = positions[2],
+        anchorXOffset = 0,
+        anchorYOffset = 0,
+        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowXOffset = 1,
+        text_shadowYOffset = -1,
+        rotateText = data.rotateText
+      }
+
+      local text3 = {
+        ["type"] = "subtext",
+        text_visible = data.stacks,
+        text_color = data.stacksColor,
+        text_text = "%s",
+        text_font = data.stacksFont,
+        text_fontSize = data.stacksSize,
+        text_fontType = data.stacksFlags,
+        text_selfPoint = "AUTO",
+        text_anchorPoint = "ICON_CENTER",
+        anchorXOffset = 0,
+        anchorYOffset = 0,
+        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowXOffset = 1,
+        text_shadowYOffset = -1,
+        rotateText = data.rotateText
+      }
+
+      data.timer = nil
+      data.textColor = nil
+      data.displayTextRight = nil
+      data.textFont = nil
+      data.textSize = nil
+      data.textFlags = nil
+      data.text = nil
+      data.timerColor = nil
+      data.displayTextLeft = nil
+      data.timerFont = nil
+      data.timerSize = nil
+      data.timerFlags = nil
+      data.stacks = nil
+      data.stacksColor = nil
+      data.stacksFont = nil
+      data.stacksSize = nil
+      data.stacksFlags = nil
+      data.rotateText = nil
+
+      local propertyRenames = {
+        timerColor = "sub.1.text_color",
+        timerSize = "sub.1.text_fontSize",
+        textColor = "sub.2.text_color",
+        textSize = "sub.2.text_fontSize",
+        stacksColor = "sub.3.text_color",
+        stacksSize = "sub.3.text_fontSize",
+      }
+
+      data.subRegions = data.subRegions or {}
+      tinsert(data.subRegions, text1)
+      tinsert(data.subRegions, text2)
+      tinsert(data.subRegions, text3)
+
+      if (data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
+
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -3397,6 +3733,33 @@ function WeakAuras.PreAdd(data)
   if default then
     WeakAuras.validate(data, default)
   end
+
+  if data.subRegions then
+    local result = {}
+    for index, subRegionData in ipairs(data.subRegions) do
+      local subType = subRegionData.type
+      if subType and WeakAuras.subRegionTypes[subType] then
+        -- If it is not supported, then drop it
+        if WeakAuras.subRegionTypes[subType].supports(data.regionType) then
+          local default = WeakAuras.subRegionTypes[subType].default
+          if type(default) == "function" then
+            default = default(data.regionType)
+          end
+          if default then
+            WeakAuras.validate(subRegionData, default)
+          end
+
+          tinsert(result, subRegionData)
+        end
+      else
+        -- Unknown sub type is because the user didn't restart their client
+        -- so keep it
+        tinsert(result, subRegionData)
+      end
+    end
+    data.subRegions = result
+  end
+
   WeakAuras.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
   validateUserConfig(data, data.authorOptions, data.config)
@@ -3479,6 +3842,8 @@ local function pAdd(data)
     end
 
     WeakAuras.LoadEncounterInitScripts(id);
+
+    WeakAuras.UpdateFakeStatesFor(id)
 
     if not(paused) then
       region:Collapse();
@@ -3685,7 +4050,7 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
 end
 
 function WeakAuras.PerformActions(data, type, region)
-  if (paused) then
+  if (paused or WeakAuras.IsOptionsOpen()) then
     return;
   end;
   local actions;
@@ -3717,7 +4082,7 @@ function WeakAuras.PerformActions(data, type, region)
   if(actions.do_custom and actions.custom and not squelch_actions) then
     local func = WeakAuras.customActionsFunctions[data.id][type]
     if func then
-      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
       xpcall(func, geterrorhandler());
       WeakAuras.ActivateAuraEnvironment(nil);
     end
@@ -3776,10 +4141,13 @@ function WeakAuras.PerformActions(data, type, region)
   end
 end
 
+local function noopErrorHandler() end
+
 local updatingAnimations;
 local last_update = GetTime();
 function WeakAuras.UpdateAnimations()
   WeakAuras.StartProfileSystem("animations");
+  local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or geterrorhandler()
   for groupId, groupRegion in pairs(pending_controls) do
     pending_controls[groupId] = nil;
     groupRegion:DoPositionChildren();
@@ -3833,21 +4201,21 @@ function WeakAuras.UpdateAnimations()
       anim.progress = 1;
     end
     local progress = anim.inverse and (1 - anim.progress) or anim.progress;
-    WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state);
+    WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state, anim.region.states);
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
-        local ok, x, y = xpcall(anim.translateFunc, geterrorhandler(), progress, 0, 0, anim.dX, anim.dY);
+        local ok, x, y = xpcall(anim.translateFunc, errorHandler, progress, 0, 0, anim.dX, anim.dY);
         anim.region:SetOffsetAnim(x, y);
       else
         anim.region:ClearAllPoints();
-        local ok, x, y = xpcall(anim.translateFunc, geterrorhandler(), progress, anim.startX, anim.startY, anim.dX, anim.dY);
+        local ok, x, y = xpcall(anim.translateFunc, errorHandler, progress, anim.startX, anim.startY, anim.dX, anim.dY);
         if (ok) then
           anim.region:SetPoint(anim.selfPoint, anim.anchor, anim.anchorPoint, x, y);
         end
       end
     end
     if(anim.alphaFunc) then
-      local ok, alpha = xpcall(anim.alphaFunc, geterrorhandler(), progress, anim.startAlpha, anim.dAlpha);
+      local ok, alpha = xpcall(anim.alphaFunc, errorHandler, progress, anim.startAlpha, anim.dAlpha);
       if (ok) then
         if (anim.region.SetAnimAlpha) then
           anim.region:SetAnimAlpha(alpha);
@@ -3857,7 +4225,7 @@ function WeakAuras.UpdateAnimations()
       end
     end
     if(anim.scaleFunc) then
-      local ok, scaleX, scaleY = xpcall(anim.scaleFunc, geterrorhandler(), progress, 1, 1, anim.scaleX, anim.scaleY);
+      local ok, scaleX, scaleY = xpcall(anim.scaleFunc, errorHandler, progress, 1, 1, anim.scaleX, anim.scaleY);
       if (ok) then
         if(anim.region.Scale) then
           anim.region:Scale(scaleX, scaleY);
@@ -3868,7 +4236,7 @@ function WeakAuras.UpdateAnimations()
       end
     end
     if(anim.rotateFunc and anim.region.Rotate) then
-      local ok, rotate = xpcall(anim.rotateFunc, geterrorhandler(), progress, anim.startRotation, anim.rotate);
+      local ok, rotate = xpcall(anim.rotateFunc, errorHandler, progress, anim.startRotation, anim.rotate);
       if (ok) then
         anim.region:Rotate(rotate);
       end
@@ -3876,7 +4244,7 @@ function WeakAuras.UpdateAnimations()
     if(anim.colorFunc and anim.region.ColorAnim) then
       local startR, startG, startB, startA = anim.region:GetColor();
       startR, startG, startB, startA = startR or 1, startG or 1, startB or 1, startA or 1;
-      local ok, r, g, b, a = xpcall(anim.colorFunc, geterrorhandler(), progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
+      local ok, r, g, b, a = xpcall(anim.colorFunc, errorHandler, progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
       if (ok) then
         anim.region:ColorAnim(r, g, b, a);
       end
@@ -4540,62 +4908,6 @@ function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps,
   };
 end
 
-do
-  local customTextUpdateFrame;
-  local updateRegions = {};
-  local initRequested = false
-
-  local function DoCustomTextUpdates()
-    WeakAuras.StartProfileSystem("custom text - every frame update");
-    for region, _ in pairs(updateRegions) do
-      if(region.UpdateCustomText) then
-        if(region:IsVisible()) then
-          WeakAuras.StartProfileAura(region.id);
-          region.UpdateCustomText();
-          WeakAuras.StopProfileAura(region.id);
-        end
-      else
-        updateRegions[region] = nil;
-      end
-    end
-    WeakAuras.StopProfileSystem("custom text - every frame update");
-  end
-
-  local function InitCustomTextUpdatesImpl()
-    if not(customTextUpdateFrame) then
-      customTextUpdateFrame = CreateFrame("frame");
-      customTextUpdateFrame:SetScript("OnUpdate", DoCustomTextUpdates);
-    end
-  end
-
-  function WeakAuras.InitCustomTextUpdates()
-    if not WeakAuras.IsLoginFinished() then
-      if initRequested then
-        return
-      end
-      loginQueue[#loginQueue] = InitCustomTextUpdatesImpl
-      initRequested = true
-      return
-    end
-    InitCustomTextUpdatesImpl()
-  end
-
-
-
-  function WeakAuras.RegisterCustomTextUpdates(region)
-    WeakAuras.InitCustomTextUpdates();
-    updateRegions[region] = true;
-  end
-
-  function WeakAuras.UnregisterCustomTextUpdates(region)
-    updateRegions[region] = nil;
-  end
-
-  function WeakAuras.IsRegisteredForCustomTextUpdates(region)
-    return updateRegions[region];
-  end
-end
-
 function WeakAuras.ValueFromPath(data, path)
   if(#path == 1) then
     return data[path[1]];
@@ -4634,11 +4946,11 @@ function WeakAuras.SetFrameLevel(id, frameLevel)
     return;
   end
   if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
-    WeakAuras.regions[id].region:SetFrameLevel(frameLevel);
+    WeakAuras.ApplyFrameLevel(WeakAuras.regions[id].region, frameLevel)
   end
   if (clones[id]) then
     for i,v in pairs(clones[id]) do
-      v:SetFrameLevel(frameLevel);
+      WeakAuras.ApplyFrameLevel(v, frameLevel)
     end
   end
   WeakAuras.frameLevels[id] = frameLevel;
@@ -4646,6 +4958,17 @@ end
 
 function WeakAuras.GetFrameLevelFor(id)
   return WeakAuras.frameLevels[id] or 5;
+end
+
+function WeakAuras.ApplyFrameLevel(region, frameLevel)
+  frameLevel = frameLevel or WeakAuras.GetFrameLevelFor(region.id)
+  region:SetFrameLevel(frameLevel)
+  if region.subRegions then
+    for index, subRegion in pairs(region.subRegions) do
+      -- The +5 is the right magic so that e.g. texts appear in front of progress bars
+      subRegion:SetFrameLevel(frameLevel + index + 5)
+    end
+  end
 end
 
 function WeakAuras.EnsureString(input)
@@ -4764,6 +5087,98 @@ function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   return triggerState[id][triggernum];
 end
 
+
+do
+  local visibleFakeStates = {}
+
+  local UpdateFakeTimesHandle
+
+  local function UpdateFakeTimers()
+    local t = GetTime()
+    for id, triggers in pairs(triggerState) do
+      local changed = false
+      for triggernum, triggerData in ipairs(triggers) do
+        for id, state in pairs(triggerData) do
+          if state.progressType == "timed" and state.expirationTime and state.expirationTime < t and state.duration and state.duration > 0 then
+            state.expirationTime = state.expirationTime + state.duration
+            state.changed = true
+            changed = true
+          end
+        end
+      end
+      if changed then
+        WeakAuras.UpdatedTriggerState(id)
+      end
+    end
+  end
+
+  function WeakAuras.SetFakeStates()
+    for id, states in pairs(triggerState) do
+      for triggernum in ipairs(states) do
+        WeakAuras.SetAllStatesHidden(id, triggernum)
+      end
+      WeakAuras.UpdatedTriggerState(id)
+    end
+    UpdateFakeTimesHandle = timer:ScheduleRepeatingTimer(UpdateFakeTimers, 1)
+  end
+
+  function WeakAuras.ClearFakeStates()
+    timer:CancelTimer(UpdateFakeTimesHandle)
+    for id in pairs(triggerState) do
+      WeakAuras.FakeStatesFor(id, false)
+    end
+  end
+
+  local function ApplyFakeAlpha(region)
+    if (region.GetRegionAlpha and region:GetRegionAlpha() < 0.5) then
+      region:SetAlpha(0.5);
+    end
+  end
+
+  local function RestoreAlpha(region)
+    if (region.GetRegionAlpha) then
+      region:SetAlpha(region:GetRegionAlpha());
+    end
+  end
+
+  function WeakAuras.FakeStatesFor(id, visible)
+    if visibleFakeStates[id] == visible then
+      return
+    end
+    if visible then
+      visibleFakeStates[id] = true
+      WeakAuras.UpdateFakeStatesFor(id)
+    else
+      visibleFakeStates[id] = false
+      if triggerState[id] then
+        for triggernum, state in ipairs(triggerState[id]) do
+          WeakAuras.SetAllStatesHidden(id, triggernum)
+        end
+        WeakAuras.UpdatedTriggerState(id)
+      end
+      RestoreAlpha(WeakAuras.regions[id].region)
+    end
+  end
+
+  function WeakAuras.UpdateFakeStatesFor(id)
+    if (WeakAuras.IsOptionsOpen() and visibleFakeStates[id]) then
+      local data = WeakAuras.GetData(id)
+      if (data) then
+        for triggernum, trigger in ipairs(data.triggers) do
+          WeakAuras.SetAllStatesHidden(id, triggernum)
+          local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum)
+          if triggerSystem and triggerSystem.CreateFakeStates then
+            triggerSystem.CreateFakeStates(id, triggernum)
+          end
+        end
+        WeakAuras.UpdatedTriggerState(id)
+
+        ApplyFakeAlpha(WeakAuras.regions[id].region)
+      end
+    end
+  end
+end
+
 local function startStopTimers(id, cloneId, triggernum, state)
   if (state.show) then
     if (state.autoHide and state.duration and state.duration > 0) then -- autohide, update timer
@@ -4801,7 +5216,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
         record.handle = nil;
         record.expirationTime = nil;
         record.state = nil
-    end
+      end
     end
   else -- not shown
     if(timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
@@ -4812,62 +5227,23 @@ local function startStopTimers(id, cloneId, triggernum, state)
       record.handle = nil;
       record.expirationTime = nil;
       record.state = nil
-  end
+    end
   end
 end
 
 local function ApplyStateToRegion(id, cloneId, region, state, parent)
-  region.state = state;
-  if(region.SetDurationInfo) then
-    if (state.progressType == "timed") then
-      local now = GetTime();
-      local value = math.huge - now;
-      if (state.expirationTime and state.expirationTime > 0) then
-        value = state.expirationTime - now;
-      end
-      local total = state.duration or 0
-      local func = nil;
+  region:Update();
 
-      region:SetDurationInfo(total, now + value, func, state.inverse);
-    elseif (state.progressType == "static") then
-      local value = state.value or 0;
-      local total = state.total or 0;
-      local durationFunc = state.durationFunc or true;
-
-      region:SetDurationInfo(value, total, durationFunc or true, state.inverse);
-    else
-      region:SetDurationInfo(0, math.huge);
+  if region.subRegions then
+    for index, subRegion in ipairs(region.subRegions) do
+      subRegion:Update()
     end
-  end
-  if (region.SetAdditionalProgress) then
-    region:SetAdditionalProgress(state.additionalProgress, region.adjustMin or 0, region.duration ~= 0 and region.adjustedMax or state.total or state.duration or 0, state.inverse);
-  end
-  local reindex = state.resort;
-  if (state.resort) then
-    state.resort = false;
-  end
-  if(region.SetName) then
-    region:SetName(state.name);
-  end
-  if(region.SetIcon) then
-    region:SetIcon(state.icon or "Interface\\Icons\\INV_Misc_QuestionMark");
-  end
-  if(region.SetStacks) then
-    region:SetStacks(state.stacks);
-  end
-  if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
-    WeakAuras.StartProfileSystem("custom text")
-    region.UpdateCustomText();
-    WeakAuras.StopProfileSystem("custom text")
-  end
-
-  if(state.texture and region.SetTexture) then
-    region:SetTexture(state.texture);
   end
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
-  if reindex and parent and parent.ActivateChild then
+  if state.resort and parent and parent.ActivateChild then
+    state.resort = false;
     parent:ActivateChild(id, cloneId)
   end
 end
@@ -4893,6 +5269,11 @@ local function evaluateTriggerStateTriggers(id)
   local result = false;
   WeakAuras.ActivateAuraEnvironment(id);
 
+  if WeakAuras.IsOptionsOpen() then
+    -- While the options are open ignore the combination function
+    return triggerState[id].triggerCount > 0
+  end
+
   if (triggerState[id].disjunctive == "any" and triggerState[id].triggerCount > 0) then
     result = true;
   elseif(triggerState[id].disjunctive == "all" and triggerState[id].triggerCount == triggerState[id].numTriggers) then
@@ -4908,7 +5289,7 @@ local function evaluateTriggerStateTriggers(id)
   return result;
 end
 
-local function ApplyStatesToRegions(id, triggernum, states)
+local function ApplyStatesToRegions(id, activeTrigger, states)
   -- Show new clones
   local data = WeakAuras.GetData(id)
   local parent
@@ -4921,14 +5302,30 @@ local function ApplyStatesToRegions(id, triggernum, states)
   for cloneId, state in pairs(states) do
     if (state.show) then
       local region = WeakAuras.GetRegion(id, cloneId);
-      if (not region.toShow or state.changed or region.state ~= state) then
-        ApplyStateToRegion(id, cloneId, region, state, parent);
+      local applyChanges = not region.toShow or state.changed or region.state ~= state
+      region.state = state
+      region.states = region.states or {}
+      local needsTimerTick = false
+      for triggernum = -1, triggerState[id].numTriggers do
+        local triggerState
+        if triggernum == activeTrigger then
+          triggerState = state
+        else
+          local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+          triggerState = triggerStates[cloneId] or triggerStates[""]
+        end
+        applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
+        region.states[triggernum] = triggerState
+        needsTimerTick = needsTimerTick or (triggerState and triggerState.show and triggerState.progressType == "timed")
       end
-      -- We don't check for state.changed here, because conditions depend
-      -- on the states of all triggers, not just of the trigger whose states
-      -- we are checking
-      if (checkConditions[id]) then
-        checkConditions[id](region, not state.show);
+
+      region:SetTriggerProvidesTimer(needsTimerTick)
+
+      if (applyChanges) then
+        ApplyStateToRegion(id, cloneId, region, state, region.states, parent);
+        if (checkConditions[id]) then
+          checkConditions[id](region, not state.show);
+        end
       end
     end
   end
@@ -4937,7 +5334,6 @@ local function ApplyStatesToRegions(id, triggernum, states)
   end
 end
 
-local toRemove = {};
 function WeakAuras.UpdatedTriggerState(id)
   if (not triggerState[id]) then
     return;
@@ -5034,51 +5430,65 @@ function WeakAuras.UpdatedTriggerState(id)
     triggerState[id][triggernum] = triggerState[id][triggernum] or {};
     for cloneId, state in pairs(triggerState[id][triggernum]) do
       if (not state.show) then
-        if (cloneId ~= "") then -- Keep "" state around, it's likely to be reused
-          tinsert(toRemove, cloneId)
-        else
-          for k, v in pairs(state) do
-            if (k ~= "trigger" and k ~= "triggernum" and k ~= "id") then
-              state[k] = nil;
-            end
-          end
-        end
+        triggerState[id][triggernum][cloneId] = nil;
       end
       state.changed = false;
     end
-    for _, cloneId in ipairs(toRemove) do
-      triggerState[id][triggernum][cloneId] = nil;
-    end
-    wipe(toRemove);
   end
 end
 
-local replaceStringCache = {};
+function WeakAuras.RunCustomTextFunc(region, customFunc)
+  if not customFunc then
+    return nil
+  end
+  local state = region.state
+  WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
+  local progress = WeakAuras.dynamic_texts.p.func(state, region)
+  local dur = WeakAuras.dynamic_texts.t.func(state, region)
+  local name = WeakAuras.dynamic_texts.n.func(state, region)
+  local icon = WeakAuras.dynamic_texts.i.func(state, region)
+  local stacks = WeakAuras.dynamic_texts.s.func(state, region)
 
-local function ReplaceValuePlaceHolders(textStr, region, customFunc)
+  local expirationTime
+  local duration
+  if state then
+    if state.progressType == "timed" then
+      expirationTime = state.expirationTime
+      duration = state.duration
+    else
+      expirationTime = state.value
+      duration = state.total
+    end
+  end
+
+  local custom = {select(2, xpcall(customFunc, geterrorhandler(), expirationTime or math.huge, duration or 0, progress, dur, name, icon, stacks))}
+  WeakAuras.ActivateAuraEnvironment(nil)
+  return custom
+end
+
+local function ReplaceValuePlaceHolders(textStr, region, customFunc, state)
   local regionValues = region.values;
   local value;
   if string.sub(textStr, 1, 1) == "c" then
+    local custom
     if customFunc then
-      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-      regionValues.custom = {select(2, xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration,
-            regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks))}
-      WeakAuras.ActivateAuraEnvironment(nil)
+      custom = WeakAuras.RunCustomTextFunc(region, customFunc)
+    else
+      custom = region.values.custom
     end
-    if not regionValues.custom then
-      return ""
-    end
+
     local index = tonumber(textStr:match("^c(%d+)$") or 1)
-    value = WeakAuras.EnsureString(regionValues.custom[index])
+    if custom then
+      value = WeakAuras.EnsureString(custom[index])
+    end
   else
     local variable = WeakAuras.dynamic_texts[textStr];
     if (not variable) then
       return nil;
     end
-    variable = variable and variable.value;
-    value = variable and regionValues[variable] or "";
+    value = variable.func(state, region)
   end
-  return value;
+  return value or "";
 end
 
 -- States:
@@ -5097,13 +5507,13 @@ local function nextState(char, state)
       return 0 -- Return to normal state
     elseif char == 123 then -- { sign
       return 3 -- Enter Braced state
-    elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-        -- 0-9a-zA-Z character
+    elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
+        -- 0-9a-zA-Z or dot character
       return 2 -- Enter Percent rest state
     end
     return 0 -- % followed by non alpha-numeric. Back to normal state
   elseif state == 2 then
-    if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+    if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
       return 2 -- Continue in same state
     end
     if char == 37 then
@@ -5173,17 +5583,38 @@ function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
   end)
 end
 
+function WeakAuras.ContainsAnyPlaceHolders(textStr)
+  return ContainsPlaceHolders(textStr, function(symbol) return true end)
+end
+
+local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+  local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+  triggerNum = triggerNum and tonumber(triggerNum)
+  if triggerNum and sym then
+    if regionStates and regionStates[triggerNum] then
+      if regionStates[triggerNum][sym] then
+        return regionStates[triggerNum].show and tostring(regionStates[triggerNum][sym]) or ""
+      else
+        local value = regionStates[triggerNum].show and ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
+        return value or ""
+      end
+    end
+    return ""
+  elseif regionState and regionState[symbol] then
+    return regionState.show and tostring(regionState[symbol]) or ""
+  else
+    local value = regionState and regionState.show and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
+    return value or ""
+  end
+end
+
 function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   local regionValues = region.values;
   local regionState = region.state;
+  local regionStates = region.states;
   if (not regionState and not regionValues) then
     return;
   end
-  -- We look backwards through the string
-  -- Invariant currentPos - endPos is a ascii "alphabetic" string
-  -- So on finding a "%" we extract  currentPos - endPos and depending
-  -- on how long the string is look it up in regionState or in regionValues
-  -- textStr is in UTF-8 encoding. We assume all state variables are pure alphanumeric strings
   local endPos = textStr:len();
   if (endPos < 2) then
     textStr = textStr:gsub("\\n", "\n");
@@ -5192,7 +5623,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
 
   if (endPos == 2) then
     if string.byte(textStr, 1) == 37 then
-      local value = ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc);
+      local value = ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc, regionState);
       if (value) then
         textStr = tostring(value);
       end
@@ -5219,24 +5650,18 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         start = currentPos
       elseif char == 123 then
         start = currentPos + 1
-      elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-          -- 0-9a-zA-Z character
+      elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
+          -- 0-9a-zA-Z or dot character
         start = currentPos
       else
         start = currentPos
       end
     elseif state == 2 then -- Percent Rest State
-      if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-
+      if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
+        -- 0-9a-zA-Z or dot character
       else -- End of variable
         local symbol = string.sub(textStr, start, currentPos - 1)
-        if regionState and regionState[symbol] then
-          result = result .. tostring(regionState[symbol])
-        else
-          local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
-          value = value or "";
-          result = result .. value
-        end
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
 
         if char == 37 then
         else
@@ -5246,13 +5671,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     elseif state == 3 then
       if char == 125 then -- } closing brace
         local symbol = string.sub(textStr, start, currentPos - 1)
-        if regionState and regionState[symbol] then
-          result = result .. tostring(regionState[symbol])
-        else
-          local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
-          value = value or "";
-          result = result .. value
-        end
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
         start = currentPos + 1
       end
     end
@@ -5264,13 +5683,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     result = result .. string.sub(textStr, start, currentPos - 1)
   elseif state == 2 and currentPos > start then
     local symbol = string.sub(textStr, start, currentPos - 1)
-    if regionState and regionState[symbol] then
-      result = result .. tostring(regionState[symbol])
-    else
-      local value = ReplaceValuePlaceHolders(symbol, region, customFunc);
-      value = value or "";
-      result = result .. value
-    end
+    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
   elseif state == 1 then
     result = result .. "%"
   end
