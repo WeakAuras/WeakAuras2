@@ -1,7 +1,15 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local MSQ = LibStub("Masque", true);
+local MSQ, MSQ_Version = LibStub("Masque", true);
+if MSQ then
+  if MSQ_Version <= 80100 then
+    MSQ = nil
+    print(print(WeakAuras.printPrefix .. L["Please upgrade your Masque version"]))
+  else
+    MSQ:AddType("WA_Aura", {"Icon", "Cooldown"})
+  end
+end
 local LCG = LibStub("LibCustomGlow-1.0")
 local L = WeakAuras.L
 
@@ -367,14 +375,11 @@ local function modify(parent, region, data)
 
   if MSQ then
     local masqueId = data.id:lower():gsub(" ", "_");
-    -- TODO -- This should check if the masque id is different instead of always keeping the same masqueId
-    -- But currently masque behaves strangely when a button was already part of a group and the new group is disabled
-    -- In that case the button gets a Blizzard skin
-    if not region.masqueId then
+    if region.masqueId ~= masqueId then
       region.masqueId = masqueId
-      region.MSQGroup = MSQ:Group("WeakAuras", region.masqueId);
-      region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown});
-
+      region.MSQGroup = MSQ:Group("WeakAuras", region.masqueId, data.uid);
+      region.MSQGroup:SetName(data.id)
+      region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown}, "WA_Aura", true);
       button.data = data
     end
   end
