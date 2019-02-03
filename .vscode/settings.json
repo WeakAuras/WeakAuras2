@@ -1,4 +1,5 @@
 {
   "lua.format.indentCount": 2,
-  "luaformatter.spaces": 2
+  "luaformatter.spaces": 2,
+  "search.usePCRE2": true
 }
