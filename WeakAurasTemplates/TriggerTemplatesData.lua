@@ -1628,7 +1628,6 @@ templates.class.SHAMAN = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 263806, type = "buff", unit = "player", talent = 11}, -- Wind Gust
         { spell = 192082, type = "buff", unit = "player", talent = 15}, -- Wind Rush
         { spell = 202192, type = "buff", unit = "player", talent = 6}, -- Resonance Totem
         { spell = 210659, type = "buff", unit = "player", talent = 6}, -- Tailwind Totem
@@ -1640,10 +1639,10 @@ templates.class.SHAMAN = {
         { spell = 546, type = "buff", unit = "player"}, -- Water Walking
         { spell = 114050, type = "buff", unit = "player", talent = 21}, -- Ascendance
         { spell = 210714, type = "buff", unit = "player", talent = 17}, -- Icefury
-        { spell = 260881, type = "buff", unit = "player"}, -- Spirit Wolf
-        { spell = 260734, type = "buff", unit = "player", talent = 5}, -- Master of the Elements
+        { spell = 260881, type = "buff", unit = "player", talent = 7}, -- Spirit Wolf
+        { spell = 260734, type = "buff", unit = "player", talent = 10}, -- Master of the Elements
         { spell = 191634, type = "buff", unit = "player", talent = 20}, -- Stormkeeper
-        { spell = 118337, type = "buff", unit = "player", talent = 16}, -- Harden Skin
+        { spell = 285514, type = "buff", unit = "player", talent = 16}, -- Surge of Power
         { spell = 974, type = "buff", unit = "player", talent = 8}, -- Earth Shield
         { spell = 6196, type = "buff", unit = "player"}, -- Far Sight
         { spell = 210658, type = "buff", unit = "player", talent = 6}, -- Ember Totem
