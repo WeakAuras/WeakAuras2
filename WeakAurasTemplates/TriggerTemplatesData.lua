@@ -1628,7 +1628,6 @@ templates.class.SHAMAN = {
     [1] = {
       title = L["Buffs"],
       args = {
-        -- { spell = 263806, type = "buff", unit = "player", talent = 11}, -- Wind Gust
         { spell = 192082, type = "buff", unit = "player", talent = 15}, -- Wind Rush
         { spell = 202192, type = "buff", unit = "player", talent = 6}, -- Resonance Totem
         { spell = 210659, type = "buff", unit = "player", talent = 6}, -- Tailwind Totem
