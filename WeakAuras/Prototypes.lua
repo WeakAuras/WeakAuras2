@@ -4556,7 +4556,7 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_INTERRUPTED"
       };
       AddUnitChangeEvents(trigger.unit, result)
-      if trigger.target ~= "" then
+      if trigger.target and trigger.target ~= "" then
         tinsert(result, "UNIT_TARGET")
       end
       return result
@@ -4651,7 +4651,12 @@ WeakAuras.event_prototypes = {
               }
             else
               local state = states[cloneId]
-              if state and state.show and state.sourceGUID == sourceGUID then
+              if state and state.show
+              and (
+                trigger_unit ~= "multi"
+                or (trigger_unit == "multi" and state.sourceGUID == sourceGUID)
+              )
+              then
                 state.show = false
                 state.changed = true
                 state.resort = true
