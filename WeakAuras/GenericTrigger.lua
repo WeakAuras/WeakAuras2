@@ -365,6 +365,13 @@ local function RunOverlayFuncs(event, state)
   state.changed = changed or state.changed;
 end
 
+local function callFunctionForActivateEvent(func, trigger, fallback)
+  if not func then
+    return fallback
+  end
+  local ok, value = xpcall(func, geterrorhandler(), trigger)
+  return ok and value or fallback
+end
 
 function WeakAuras.ActivateEvent(id, triggernum, data, state)
   local changed = state.changed or false;
@@ -476,10 +483,12 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
       state.total = nil;
     end
   end
-  local name = data.nameFunc and data.nameFunc(data.trigger) or state.name;
-  local icon = data.iconFunc and data.iconFunc(data.trigger) or state.icon;
-  local texture = data.textureFunc and data.textureFunc(data.trigger) or state.texture;
-  local stacks = data.stacksFunc and data.stacksFunc(data.trigger) or state.stacks;
+
+  local name = callFunctionForActivateEvent(data.nameFunc, data.trigger, state.name)
+  local icon = callFunctionForActivateEvent(data.iconFunc, data.trigger, state.icon)
+  local texture = callFunctionForActivateEvent(data.textureFunc, data.trigger, state.texture)
+  local stacks = callFunctionForActivateEvent(data.stacksFunc, data.trigger, state.stacks)
+
   if (state.name ~= name) then
     state.name = name;
     changed = true;
