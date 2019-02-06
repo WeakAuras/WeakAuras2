@@ -101,6 +101,98 @@ local function get_encounters_list()
   return encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
 end
 
+local function get_zoneId_list()
+  local zoneId_list = ""
+  EJ_SelectTier(EJ_GetNumTiers())
+  for _,inRaid in ipairs({false, true}) do
+    local instance_index = 1
+    local instance_id
+    local title = inRaid and L["Raids"] or L["Dungeons"]
+    zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
+    repeat
+      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+      instance_index = instance_index + 1
+      if instance_id then
+        EJ_SelectInstance(instance_id)
+        local iname,_,_, _,_,_,dungeonAreaMapID = EJ_GetInstanceInfo();
+        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
+          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
+          if mapGroupId then
+            local maps = ""
+            for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
+              if map.mapID then
+                maps = maps .. map.mapID .. ", "
+              end
+            end
+            maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
+            zoneId_list = ("%s%s: %s\n"):format(zoneId_list, iname, maps)
+          else
+            zoneId_list = ("%s%s: %d\n"):format(zoneId_list, iname, dungeonAreaMapID)
+          end
+        end
+      end
+    until not instance_id
+    zoneId_list = zoneId_list .. "\n"
+  end
+  local currentmap_id = C_Map.GetBestMapForUnit("player")
+  local currentmap_info = C_Map.GetMapInfo(currentmap_id)
+  local currentmap_name = currentmap_info and currentmap_info.name or ""
+  local mapGroupId = C_Map.GetMapGroupID(currentmap_id)
+  if mapGroupId then
+    -- if map is in a group, its real name is (or should be?) found in GetMapGroupMembersInfo
+    for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
+      if map.mapID and map.mapID == currentmap_id and map.name then
+        currentmap_name = map.name
+        break
+      end
+    end
+  end
+  return ("%s|cffffd200%s|r%s: %d\n\n%s"):format(
+    zoneId_list,
+    L["Current Zone\n"],
+    currentmap_name,
+    currentmap_id,
+    L["Supports multiple entries, separated by commas"]
+  )
+end
+
+local function get_zoneGroupId_list()
+  local zoneGroupId_list = ""
+  EJ_SelectTier(EJ_GetNumTiers())
+  for _,inRaid in ipairs({false, true}) do
+    local instance_index = 1
+    local instance_id
+    local title = inRaid and L["Raids"] or L["Dungeons"]
+    zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
+    repeat
+      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+      instance_index = instance_index + 1
+      if instance_id then
+        EJ_SelectInstance(instance_id)
+        local iname,_,_, _,_,_,dungeonAreaMapID = EJ_GetInstanceInfo();
+        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
+          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
+          if mapGroupId then
+            zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, iname, mapGroupId)
+          end
+        end
+      end
+    until not instance_id
+    zoneGroupId_list = zoneGroupId_list .. "\n"
+  end
+  local currentmap_id = C_Map.GetBestMapForUnit("player")
+  local currentmap_info = C_Map.GetMapInfo(currentmap_id)
+  local currentmap_name = currentmap_info and currentmap_info.name
+  local currentmapgroup_id = C_Map.GetMapGroupID(currentmap_id)
+  return ("%s|cffffd200%s|r\n%s%s\n\n%s"):format(
+    zoneGroupId_list,
+    L["Current Zone Group"],
+    currentmapgroup_id and currentmap_name and currentmap_name..": " or "",
+    currentmapgroup_id or L["None"],
+    L["Supports multiple entries, separated by commas"]
+  )
+end
+
 WeakAuras.function_strings = {
   count = [[
     return function(count)
@@ -961,9 +1053,7 @@ WeakAuras.load_prototype = {
       display = L["Zone ID(s)"],
       type = "string",
       init = "arg",
-      desc = function()
-        return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
-      end,
+      desc = get_zoneId_list,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)",
     },
     {
@@ -971,10 +1061,7 @@ WeakAuras.load_prototype = {
       display = L["Zone Group ID(s)"],
       type = "string",
       init = "arg",
-      desc = function()
-        local zoneId = C_Map.GetBestMapForUnit("player");
-        return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone Group ID: "] .. (zoneId and C_Map.GetMapGroupID(zoneId) or L["none"])
-      end,
+      desc = get_zoneGroupId_list,
       test = "WeakAuras.CheckNumericIds([[%s]], zonegroupId)",
     },
     {
