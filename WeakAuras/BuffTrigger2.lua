@@ -2560,8 +2560,8 @@ local function RemoveMatchDataMulti(base, destGUID, key, sourceGUID)
         matchDataChanged[id][triggernum] = true
       end
     end
+    base[key][sourceGUID] = nil
   end
-  base[key] = nil
 end
 
 local function CleanUpMulti(guid)
