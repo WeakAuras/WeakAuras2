@@ -114,14 +114,19 @@ local function nameHead(data, option, phrase)
   end
 end
 
-local function nameUser(config, key, name)
-  if not config[references] then
-    return name
-  elseif config[key] ~= nil then
-    return name
-  else
-    return conflictBlue .. name
+local function nameUser(data, config, option)
+  if option[references] then
+    local firstValue
+    for childID in pairs(option[references]) do
+      local childConfig = data[childID].config
+      if firstValue == nil then
+        firstValue = childConfig[option.key]
+      elseif neq(firstValue, childConfig[option.key]) then
+        return conflictBlue .. option.name
+      end
+    end
   end
+  return option.name
 end
 
 local function nameUserDesc(data, option)
@@ -306,6 +311,27 @@ local function getKey(option, key, conflicts)
   end
 end
 
+local function getUser(data, config, option)
+  if option[references] then
+    return function()
+      local firstValue
+      for childID in pairs(option[references]) do
+        local childConfig = data[childID].config
+        if firstValue == nil then
+          firstValue = childConfig[option.key]
+        elseif neq(firstValue, childConfig[option.key]) then
+          return
+        end
+      end
+      return firstValue
+    end
+  else
+    return function()
+      return config[option.key]
+    end
+  end
+end
+
 local function getStr(option, key)
   return function()
     local str = option[key] or ""
@@ -317,6 +343,31 @@ local function getNumAsString(option, key)
   return function()
     if option[key] ~= nil then
       return tostring(option[key])
+    end
+  end
+end
+
+local function getUserNum(data, config, option)
+  if option[references] then
+    return function()
+      local firstValue
+      for childID in pairs(option[references]) do
+        local childConfig = data[childID].config
+        if firstValue == nil then
+          firstValue = childConfig[option.key]
+        elseif neq(firstValue, childConfig[option.key]) then
+          return
+        end
+      end
+      if firstValue ~= nil then
+        return tostring(firstValue)
+      end
+    end
+  else
+    return function()
+      if config[option.key] ~= nil then
+        return tostring(config[option.key])
+      end
     end
   end
 end
@@ -388,6 +439,31 @@ local function getColor(option, key)
   end
 end
 
+local function getUserColor(data, config, option)
+  if option[references] then
+    return function()
+      local firstValue
+      for childID in pairs(option[references]) do
+        local childConfig = data[childID].config
+        if firstValue == nil then
+          firstValue = childConfig[option.key]
+        elseif neq(firstValue, childConfig[option.key]) then
+          return
+        end
+        if firstValue then
+          return unpack(firstValue)
+        end
+      end
+    end
+  else
+    return function()
+      if config[option.key] then
+        return unpack(config[option.key])
+      end
+    end
+  end
+end
+
 -- setters for AceConfig
 local function set(data, option, key)
   if option[references] then
@@ -443,20 +519,20 @@ local function setKey(data, option, key, conflicts)
   end
 end
 
-local function setUser(data, config, key)
-  if config[references] then
+local function setUser(data, config, option)
+  if option[references] then
     return function(_, value)
-      for childID in pairs(config[references][key]) do
+      for childID in pairs(option[references]) do
         local childData = data[childID]
         local childConfig = childData.config
-        childConfig[key] = value
+        childConfig[option.key] = value
         WeakAuras.Add(childData)
       end
       WeakAuras.ReloadTriggerOptions(data[0])
     end
   else
     return function(_, value)
-      config[key] = value
+      config[option.key] = value
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
     end
@@ -522,16 +598,16 @@ local function setNum(data, option, key, required)
   end
 end
 
-local function setUserNum(data, config, key)
-  if config[references] then
+local function setUserNum(data, config, option)
+  if option[references] then
     return function(_, value)
       if value ~= "" then
         local num = tonumber(value)
         if not num or math.abs(num) == math.huge or tostring(num) == "nan" then return end
-        for childID in pairs(config[references][key]) do
+        for childID in pairs(option[references]) do
           local childData = data[childID]
           local childConfig = childData.config
-          childConfig[key] = num
+          childConfig[option.key] = num
           WeakAuras.Add(childData)
         end
       end
@@ -542,7 +618,7 @@ local function setUserNum(data, config, key)
       if value ~= "" then
         local num = tonumber(value)
         if not num or math.abs(num) == math.huge or tostring(num) == "nan" then return end
-        config[key] = num
+        config[option.key] = num
       end
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
@@ -571,21 +647,21 @@ local function setColor(data, option, key)
   end
 end
 
-local function setUserColor(data, config, key)
-  if config[references] then
+local function setUserColor(data, config, option)
+  if option[references] then
     return function(_, r, g, b, a)
       local color = {r, g, b, a}
-      for childID in pairs(config[references][key]) do
+      for childID in pairs(option[references]) do
         local childData = data[childID]
         local childConfig = childData.config
-        childConfig[key] = color
+        childConfig[option.key] = color
         WeakAuras.Add(childData)
       end
       WeakAuras.ReloadTriggerOptions(data[0])
     end
   else
     return function(_, r, g, b, a)
-      config[key] = {r, g, b, a}
+      config[option.key] = {r, g, b, a}
       WeakAuras.Add(data)
       WeakAuras.ReloadTriggerOptions(data)
     end
@@ -1578,12 +1654,12 @@ local function addUserModeOption(options, config, args, data, order, i)
   if optionClass == "simple" then
     userOption = {
       type = optionType,
-      name = nameUser(config, option.key, option.name),
+      name = nameUser(data, config, option),
       desc = descUser(data, option),
       width = (option.width or 1) * WeakAuras.normalWidth,
       order = order,
-      get = get(config, option.key),
-      set = setUser(data, config, option.key)
+      get = getUser(data, config, option),
+      set = setUser(data, config, option)
     }
   elseif optionClass == "noninteractive" then
     userOption = {
@@ -1602,8 +1678,8 @@ local function addUserModeOption(options, config, args, data, order, i)
     elseif optionType == "input" then
     elseif optionType == "number" then
       userOption.type = "input"
-      userOption.get = getNumAsString(config, option.key)
-      userOption.set = setUserNum(data, config, option.key, true)
+      userOption.get = getUserNum(data, config, option)
+      userOption.set = setUserNum(data, config, option, true)
     elseif optionType == "range" then
       userOption.min = option.min
       userOption.max = max(option.min, option.max)
@@ -1613,8 +1689,8 @@ local function addUserModeOption(options, config, args, data, order, i)
       userOption.bigStep = option.bigStep
     elseif optionType == "color" then
       userOption.hasAlpha = true
-      userOption.get = getColor(config, option.key)
-      userOption.set = setUserColor(data, config, option.key)
+      userOption.get = getUserColor(data, config, option)
+      userOption.set = setUserColor(data, config, option)
     elseif optionType == "select" then
       userOption.values = getUserValues(data, option)
     elseif optionType == "multiselect" then
