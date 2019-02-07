@@ -1605,8 +1605,8 @@ local function addUserModeOption(options, config, args, data, order, i)
       userOption.get = getNumAsString(config, option.key)
       userOption.set = setUserNum(data, config, option.key, true)
     elseif optionType == "range" then
-      userOption.max = option.max
       userOption.min = option.min
+      userOption.max = max(option.min, option.max)
       userOption.step = option.step
       userOption.softMax = option.softMax
       userOption.softMin = option.softMin
