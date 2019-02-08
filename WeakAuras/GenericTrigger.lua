@@ -1381,14 +1381,9 @@ do
   local spells = {};
   local spellKnown = {};
   local spellsRune = {}
-  local spellCdDurs = {};
-  local spellCdExps = {};
-  local spellCdDursRune = {};
-  local spellCdExpsRune = {};
+
   local spellCharges = {};
   local spellChargesMax = {};
-  local spellCdHandles = {};
-  local spellCdRuneHandles = {};
 
   local items = {};
   local itemCdDurs = {};
@@ -1413,6 +1408,84 @@ do
   local gcdSpellName;
   local gcdSpellIcon;
   local gcdEndCheck;
+
+  local function GetRuneDuration()
+    local runeDuration = -100;
+    for id, _ in pairs(runes) do
+      local startTime, duration = GetRuneCooldown(id);
+      duration = duration or 0;
+      runeDuration = duration > 0 and duration or runeDuration
+    end
+    return runeDuration
+  end
+
+  local RecheckHandles = {
+    expirationTime = {},
+    handles = {},
+    Recheck = function(self, id)
+      self.handles[id] = nil
+      self.expirationTime[id] = nil
+      WeakAuras.CheckSpellCooldown(id, GetRuneDuration())
+    end,
+    Schedule = function(self, expirationTime, id)
+      if not self.expirationTime[id] or expirationTime < self.expirationTime[id] then
+        if self.handles[id] then
+          timer:CancelTimer(self.handles[id])
+          self.handles[id] = nil
+          self.expirationTime[id] = nil
+        end
+
+        local duration = expirationTime - GetTime()
+        if duration > 0 then
+          self.handles[id] = timer:ScheduleTimerFixed(self.Recheck, duration, self, id)
+          self.expirationTime[id] = expirationTime
+        end
+      end
+    end
+  }
+
+  local function FetchSpellCooldown(self, id)
+    if self.duration[id] and self.expirationTime[id] then
+      return self.expirationTime[id] - self.duration[id], self.duration[id]
+    end
+    return 0, 0
+  end
+
+  local function HandleSpell(self, id, startTime, duration)
+    local changed = false
+    local endTime = startTime + duration;
+    if self.duration[id] ~= duration then
+      self.duration[id] = duration
+      changed = true
+    end
+
+    if self.expirationTime[id] ~= endTime then
+      self.expirationTime[id] = endTime
+      changed = true
+    end
+
+    if changed then
+      RecheckHandles:Schedule(endTime, id)
+    end
+    return changed
+  end
+
+  local function CreateSpellCDHandler()
+    local cd = {
+      duration = {},
+      expirationTime = {},
+      handles = {}, -- Share handles, and use lowest time to schedule
+      HandleSpell = HandleSpell,
+      FetchSpellCooldown = FetchSpellCooldown
+    }
+    return cd
+  end
+
+  local spellCds = CreateSpellCDHandler();
+  local spellCdsRune = CreateSpellCDHandler();
+  local spellCdsOnlyCooldown = CreateSpellCDHandler();
+  local spellCdsOnlyCooldownRune = CreateSpellCDHandler();
+  local spellCdsCharges = CreateSpellCDHandler();
 
   function WeakAuras.InitCooldownReady()
     cdReadyFrame = CreateFrame("FRAME");
@@ -1463,27 +1536,23 @@ do
     end
   end
 
-  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown)
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
     local startTime, duration, gcdCooldown;
-    if (ignoreRuneCD) then
-      if (spellsRune[id] and spellCdExpsRune[id] and spellCdDursRune[id]) then
-        startTime = spellCdExpsRune[id] - spellCdDursRune[id]
-        duration = spellCdDursRune[id];
+    if track == "charges" then
+      startTime, duration = spellCdsCharges:FetchSpellCooldown(id)
+    elseif track == "cooldown" then
+      if ignoreRuneCD then
+        startTime, duration = spellCdsOnlyCooldownRune:FetchSpellCooldown(id)
       else
-        startTime = 0;
-        duration = 0;
+        startTime, duration = spellCdsOnlyCooldown:FetchSpellCooldown(id)
       end
+    elseif (ignoreRuneCD) then
+      startTime, duration = spellCdsRune:FetchSpellCooldown(id)
     else
-      if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
-        startTime = spellCdExps[id] - spellCdDurs[id];
-        duration = spellCdDurs[id];
-      else
-        startTime = 0;
-        duration = 0;
-      end
+      startTime, duration = spellCds:FetchSpellCooldown(id)
     end
 
     if (showgcd) then
@@ -1541,24 +1610,6 @@ do
     runeCdDurs[id] = nil;
     runeCdExps[id] = nil;
     WeakAuras.ScanEvents("RUNE_COOLDOWN_READY", id);
-  end
-
-  local function GetRuneDuration()
-    local runeDuration = -100;
-    for id, _ in pairs(runes) do
-      local startTime, duration = GetRuneCooldown(id);
-      duration = duration or 0;
-      runeDuration = duration > 0 and duration or runeDuration
-    end
-    return runeDuration
-  end
-
-  local function SpellCooldownRuneFinished(id)
-    WeakAuras.CheckSpellCooldown(id, GetRuneDuration())
-  end
-
-  local function SpellCooldownFinished(id)
-    WeakAuras.CheckSpellCooldown(id, GetRuneDuration())
   end
 
   local function ItemCooldownFinished(id)
@@ -1655,37 +1706,59 @@ do
   end
 
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
-    local startTime, duration, enabled = GetSpellCooldown(id)
+    local startTimeCooldown, durationCooldown, enabled = GetSpellCooldown(id)
     local charges, maxCharges, startTimeCharges, durationCharges = GetSpellCharges(id);
 
-    local cooldownBecauseRune = false;
-    if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
-      local basecd = GetSpellBaseCooldown(id);
-      if (enabled == 0) then
-        startTime, duration = 0, 0
-      end
+    startTimeCooldown = startTimeCooldown or 0;
+    durationCooldown = durationCooldown or 0;
 
-      local spellcount = GetSpellCount(id);
-      -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
-      -- either the spell count is greater than 0
-      -- or we have a ability without a base cooldown
-      -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
-      -- e.g. Raging Blow that gains a cooldown with a talent
-      if (spellcount > 0) then
-        charges = spellcount;
-      end
+    startTimeCharges = startTimeCharges or 0;
+    durationCharges = durationCharges or 0;
 
-      local onNonGCDCD = duration and startTime and duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart);
+    -- WORKAROUND Sometimes the API returns very high bogus numbers causing client freeezes, discard them here. WowAce issue #1008
+    if (durationCooldown > 604800) then
+      durationCooldown = 0;
+      startTimeCooldown = 0;
+    end
 
-      if ((basecd and basecd > 0) or onNonGCDCD) then
-        cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
-      else
-        charges = spellcount;
-        startTime = 0;
-        duration = 0;
-      end
+    -- Default to GetSpellCharges
+    local unifiedCooldownBecauseRune, cooldownBecauseRune = false, false;
+    if (enabled == 0) then
+      startTimeCooldown, durationCooldown = 0, 0
+    end
+
+    local spellcount = GetSpellCount(id);
+    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
+    -- either the spell count is greater than 0
+    -- or we have a ability without a base cooldown
+    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
+    -- e.g. Raging Blow that gains a cooldown with a talent
+    if (charges == nil and spellcount > 0) then
+      charges = spellcount;
+    end
+
+    local basecd = GetSpellBaseCooldown(id);
+    local onNonGCDCD = durationCooldown and startTimeCooldown and durationCooldown > 0 and (durationCooldown ~= gcdDuration or startTimeCooldown ~= gcdStart);
+    if ((basecd and basecd > 0) or onNonGCDCD) then
+      cooldownBecauseRune = runeDuration and durationCooldown and abs(durationCooldown - runeDuration) < 0.001;
+      unifiedCooldownBecauseRune = cooldownBecauseRune
+    else
+      charges = spellcount;
+    end
+
+    if not onNonGCDCD then
+      startTimeCooldown = 0;
+      durationCooldown = 0;
+    end
+
+    local startTime, duration = startTimeCooldown, durationCooldown
+    if (charges == nil) then
+      -- charges is nil if the spell has no charges.
+      -- Nothing to do in that case
     elseif (charges == maxCharges) then
+      -- At max charges,
       startTime, duration = 0, 0;
+      startTimeCharges, durationCharges = 0, 0
     else
       -- Spells can return both information via GetSpellCooldown and GetSpellCharges
       -- E.g. Rune of Power see Github-Issue: #1060
@@ -1695,18 +1768,12 @@ do
       -- ignore them since pratically no one wants to see them
       if duration and duration <= 1.5 or (duration == gcdDuration and startTime == gcdStart) then
         startTime, duration = startTimeCharges, durationCharges
+        unifiedCooldownBecauseRune = false
       end
     end
 
-    startTime = startTime or 0;
-    duration = duration or 0;
-    -- WORKAROUND Sometimes the API returns very high bogus numbers causing client freeezes, discard them here. WowAce issue #1008
-    if (duration > 604800) then
-      duration = 0;
-      startTime = 0;
-    end
-
-    return charges, maxCharges, startTime, duration, cooldownBecauseRune;
+    return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
+           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges;
   end
 
   function WeakAuras.CheckSpellKnown()
@@ -1720,84 +1787,35 @@ do
   end
 
   function WeakAuras.CheckSpellCooldown(id, runeDuration)
-    local charges, maxCharges, startTime, duration, cooldownBecauseRune = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
+    local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
+          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges
+          = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
 
     local time = GetTime();
     local remaining = startTime + duration - time;
 
     local chargesChanged = spellCharges[id] ~= charges;
     local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
-    if (chargesDifference ~= 0 ) then
-      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
-    end
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
 
-    if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
-      -- On non-GCD cooldown
-      local endTime = startTime + duration;
+    local changed = false
+    changed = spellCds:HandleSpell(id, startTime, duration)
+    if not unifiedCooldownBecauseRune then
+      changed = spellCdsRune:HandleSpell(id, startTime, duration) or changed
+    end
+    changed = spellCdsOnlyCooldown:HandleSpell(id, startTimeCooldown, durationCooldown) or changed
+    if not cooldownBecauseRune then
+      changed = spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown) or changed
+    end
+    changed = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges) or changed
 
-      if not(spellCdExps[id]) then
-        -- New cooldown
-        spellCdDurs[id] = duration;
-        spellCdExps[id] = endTime;
-        spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
-        if (spellsRune[id] and not cooldownBecauseRune ) then
-          spellCdDursRune[id] = duration;
-          spellCdExpsRune[id] = endTime;
-          spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
-        end
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_STARTED", id);
-      elseif(spellCdExps[id] ~= endTime or chargesChanged) then
-        -- Cooldown is now different
-        if(spellCdHandles[id]) then
-          timer:CancelTimer(spellCdHandles[id]);
-        end
+    if changed then
+      WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+    end
 
-        spellCdDurs[id] = duration;
-        spellCdExps[id] = endTime;
-        if (maxCharges == nil or charges + 1 == maxCharges) then
-          spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
-        end
-        if (spellsRune[id] and not cooldownBecauseRune ) then
-          spellCdDursRune[id] = duration;
-          spellCdExpsRune[id] = endTime;
-
-          if(spellCdRuneHandles[id]) then
-            timer:CancelTimer(spellCdRuneHandles[id]);
-          end
-          spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
-        end
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
-      end
-    else
-      if(spellCdExps[id]) then
-        local endTime = startTime + duration;
-        if (duration == WeakAuras.gcdDuration() and startTime == gcdStart and spellCdExps[id] > endTime or duration == 0) then
-          -- CheckCooldownReady caught the spell cooldown before the timer callback
-          -- This happens if a proc resets the cooldown
-          if(spellCdHandles[id]) then
-            timer:CancelTimer(spellCdHandles[id]);
-          end
-
-          if(spellCdRuneHandles[id]) then
-            timer:CancelTimer(spellCdRuneHandles[id]);
-          end
-
-          spellCdHandles[id] = nil;
-          spellCdDurs[id] = nil;
-          spellCdExps[id] = nil;
-
-          spellCdRuneHandles[id] = nil;
-          spellCdDursRune[id] = nil;
-          spellCdExpsRune[id] = nil;
-
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id, nil);
-        end
-      end
-      if (chargesChanged) then
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
-      end
+    if (chargesDifference ~= 0 ) then
+      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
     end
   end
 
@@ -1975,26 +1993,21 @@ do
     spells[id] = true;
     spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
-    local charges, maxCharges, startTime, duration, cooldownBecauseRune = WeakAuras.GetSpellCooldownUnified(id, GetRuneDuration());
+    local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
+          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges
+          = WeakAuras.GetSpellCooldownUnified(id, GetRuneDuration());
+
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
-
-    if(duration > 0 and (duration ~= gcdDuration or startTime ~= gcdStart)) then
-      local time = GetTime();
-      local endTime = startTime + duration;
-      spellCdDurs[id] = duration;
-      spellCdExps[id] = endTime;
-      if (ignoreRunes and not cooldownBecauseRune) then
-        spellCdDursRune[id] = duration;
-        spellCdExpsRune[id] = endTime;
-        if not(spellCdRuneHandles[id]) then
-          spellCdRuneHandles[id] = timer:ScheduleTimerFixed(SpellCooldownRuneFinished, endTime - time, id);
-        end
-      end
-      if not(spellCdHandles[id]) then
-        spellCdHandles[id] = timer:ScheduleTimerFixed(SpellCooldownFinished, endTime - time, id);
-      end
+    spellCds:HandleSpell(id, startTime, duration)
+    if not unifiedCooldownBecauseRune then
+      spellCdsRune:HandleSpell(id, startTime, duration)
     end
+    spellCdsOnlyCooldown:HandleSpell(id, startTimeCooldown, durationCooldown)
+    if not cooldownBecauseRune then
+      spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown)
+    end
+    spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges)
   end
 
   function WeakAuras.WatchItemCooldown(id)
