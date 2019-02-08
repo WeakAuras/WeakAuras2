@@ -442,7 +442,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
     init = "";
   end
   for index, arg in pairs(prototype.args) do
-    local enable = true;
+    local enable = arg.type ~= "collpase";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
     end

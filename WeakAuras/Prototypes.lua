@@ -2239,22 +2239,65 @@ WeakAuras.event_prototypes = {
         showExactOption = true,
       },
       {
-        name = "matchedRune",
-        display = L["Ignore Rune CD"],
-        type = "toggle",
-        test = "true",
+        name = "extra Cooldown Progress (Spell)",
+        display = function(trigger)
+          return function()
+            local text = "";
+            if trigger.use_showgcd then
+              text = L["Show GCD"]
+            end
+
+            if trigger.use_matchedRune then
+              if text ~= "" then text = text .. "; " end
+              text = L["Ignore Rune CDs"]
+            end
+
+            if trigger.use_ignoreSpellKnown then
+              if text ~= "" then text = text .. "; " end
+              text = L["Ignore Unknown Spell"]
+            end
+
+            if trigger.use_trackcharge and trigger.trackcharge then
+              if text ~= "" then text = text .. "; " end
+              text = L["Tracking Charge %n"]:format(trigger.trackcharge)
+            end
+            if text == "" then
+              return L["No extra options selected"]
+            end
+            return text
+          end
+        end,
+        type = "collapse",
       },
       {
         name = "showgcd",
         display = L["Show Global Cooldown"],
         type = "toggle",
-        test = "true"
+        test = "true",
+        collapse = "extra Cooldown Progress (Spell)"
+      },
+      {
+        name = "matchedRune",
+        display = L["Ignore Rune CD"],
+        type = "toggle",
+        test = "true",
+        collapse = "extra Cooldown Progress (Spell)"
       },
       {
         name = "ignoreSpellKnown",
         display = L["Ignore Spell Known"],
         type = "toggle",
-        test = "true"
+        test = "true",
+        collapse = "extra Cooldown Progress (Spell)"
+      },
+      {
+        name = "trackcharge",
+        display = L["Show CD of Charge"],
+        type = "number",
+        enable = function(trigger) return (trigger.genericShowOn ~= "showOnReady") end,
+        test = "true",
+        noOperator = true,
+        collapse = "extra Cooldown Progress (Spell)"
       },
       {
         name = "remaining",
@@ -2283,14 +2326,6 @@ WeakAuras.event_prototypes = {
         display = L["Max Charges"],
         conditionType = "number",
         test = "true",
-      },
-      {
-        name = "trackcharge",
-        display = L["Show CD of Charge"],
-        type = "number",
-        enable = function(trigger) return (trigger.genericShowOn ~= "showOnReady") end,
-        test = "true",
-        noOperator = true,
       },
       {
         name = "genericShowOn",
