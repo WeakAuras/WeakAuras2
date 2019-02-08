@@ -2231,6 +2231,14 @@ WeakAuras.event_prototypes = {
       {
       }, -- Ignore first argument (id)
       {
+        name = "spellName",
+        required = true,
+        display = L["Spell"],
+        type = "spell",
+        test = "true",
+        showExactOption = true,
+      },
+      {
         name = "matchedRune",
         display = L["Ignore Rune CD"],
         type = "toggle",
@@ -2241,14 +2249,6 @@ WeakAuras.event_prototypes = {
         display = L["Show Global Cooldown"],
         type = "toggle",
         test = "true"
-      },
-      {
-        name = "spellName",
-        required = true,
-        display = L["Spell"],
-        type = "spell",
-        test = "true",
-        showExactOption = true,
       },
       {
         name = "ignoreSpellKnown",
