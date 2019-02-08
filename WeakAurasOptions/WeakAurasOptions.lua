@@ -381,14 +381,54 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
   unevent = unevent or trigger.unevent;
   local options = {};
   local order = startorder or 10;
+
+  local isCollapsedFunctions;
   for index, arg in pairs(prototype.args) do
     local hidden = nil;
-    if(type(arg.enable) == "function") then
+    if(arg.collapse and isCollapsedFunctions[arg.collapse] and type(arg.enable) == "function") then
+      local isCollapsed = isCollapsedFunctions[arg.collapse]
+      hidden = function()
+        return isCollapsed() or not arg.enable(trigger)
+      end
+    elseif(type(arg.enable) == "function") then
       hidden = function() return not arg.enable(trigger) end;
+    elseif(arg.collapse and isCollapsedFunctions[arg.collapse]) then
+      hidden = isCollapsedFunctions[arg.collapse]
     end
     local name = arg.name;
     local reloadOptions = arg.reloadOptions;
-    if(name and not arg.hidden) then
+    if (name and arg.type == "collapse") then
+      options["summary_" .. arg.name] = {
+        type = "description",
+        width = WeakAuras.doubleWidth - 0.15,
+        name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
+        order = order,
+      }
+      order = order + 1;
+      options["button_" .. arg.name] = {
+        type = "execute",
+        width = 0.15,
+        name = "",
+        order = order,
+        image = function()
+          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        end,
+        imageWidth = 24,
+        imageHeight = 24,
+        func = function()
+          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
+          WeakAuras.ReloadTriggerOptions(data);
+        end
+      }
+      order = order + 1;
+
+      isCollapsedFunctions = isCollapsedFunctions or {};
+      isCollapsedFunctions[name] = function()
+        return WeakAuras.IsCollapsed("trigger", name, "", true);
+      end
+    elseif(name and not arg.hidden) then
       local realname = name;
       if(triggertype == "untrigger") then
         name = "untrigger_"..name;
