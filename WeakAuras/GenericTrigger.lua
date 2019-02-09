@@ -1742,7 +1742,7 @@ do
     if ((basecd and basecd > 0) or onNonGCDCD) then
       cooldownBecauseRune = runeDuration and durationCooldown and abs(durationCooldown - runeDuration) < 0.001;
       unifiedCooldownBecauseRune = cooldownBecauseRune
-    else
+    elseif charges == nil then
       charges = spellcount;
     end
 
