@@ -1499,12 +1499,6 @@ WeakAuras.cooldown_progress_behavior_types = {
   showAlways = L["Always"]
 }
 
-WeakAuras.cooldown_types = {
-  auto = L["Auto"],
-  charges = L["Charges"],
-  cooldown = L["Cooldown"]
-}
-
 WeakAuras.bufftrigger_progress_behavior_types = {
   showOnActive = L["Buffed/Debuffed"],
   showOnMissing = L["Missing"],

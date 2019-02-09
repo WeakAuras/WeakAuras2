@@ -2113,8 +2113,7 @@ WeakAuras.event_prototypes = {
         local ignoreRuneCD = %s
         local showgcd = %s;
         local ignoreSpellKnown = %s;
-        local track = %q
-        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
+        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown);
         local charges, maxCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges ~= 1 and charges or nil;
         if (charges == nil) then
@@ -2141,7 +2140,6 @@ WeakAuras.event_prototypes = {
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
-        (trigger.track or "auto"),
         showOnCheck
       );
 
@@ -2245,49 +2243,31 @@ WeakAuras.event_prototypes = {
         display = function(trigger)
           return function()
             local text = "";
-            if trigger.track == "charges" then
-              text = L["Tracking Charge CDs"]
-            elseif trigger.track == "cooldown" then
-              text = L["Tracking Only Cooldown"]
-            end
             if trigger.use_showgcd then
-              if text ~= "" then text = text .. "; " end
-              text = text .. L["Show GCD"]
+              text = L["Show GCD"]
             end
 
             if trigger.use_matchedRune then
               if text ~= "" then text = text .. "; " end
-              text = text ..L["Ignore Rune CDs"]
+              text = L["Ignore Rune CDs"]
             end
 
             if trigger.use_ignoreSpellKnown then
               if text ~= "" then text = text .. "; " end
-              text = text .. L["Ignore Unknown Spell"]
+              text = L["Ignore Unknown Spell"]
             end
 
-            if trigger.genericShowOn ~= "showOnReady" and trigger.track ~= "cooldown" then
-              if trigger.use_trackcharge and trigger.trackcharge then
-                if text ~= "" then text = text .. "; " end
-                text = text .. L["Tracking Charge %i"]:format(trigger.trackcharge)
-              end
+            if trigger.use_trackcharge and trigger.trackcharge then
+              if text ~= "" then text = text .. "; " end
+              text = L["Tracking Charge %n"]:format(trigger.trackcharge)
             end
             if text == "" then
-              return L["Extra Options: none"]
+              return L["No extra options selected"]
             end
-            return L["Extra Options: %s"]:format(text)
+            return text
           end
         end,
         type = "collapse",
-      },
-      {
-        name = "track",
-        display = L["Track Cooldowns"],
-        type = "select",
-        values = "cooldown_types",
-        collapse = "extra Cooldown Progress (Spell)",
-        test = "true",
-        required = true,
-        default = "auto"
       },
       {
         name = "showgcd",
@@ -2314,9 +2294,7 @@ WeakAuras.event_prototypes = {
         name = "trackcharge",
         display = L["Show CD of Charge"],
         type = "number",
-        enable = function(trigger)
-          return (trigger.genericShowOn ~= "showOnReady") and trigger.track ~= "cooldown"
-        end,
+        enable = function(trigger) return (trigger.genericShowOn ~= "showOnReady") end,
         test = "true",
         noOperator = true,
         collapse = "extra Cooldown Progress (Spell)"
