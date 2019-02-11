@@ -1681,8 +1681,8 @@ templates.class.SHAMAN = {
         { spell = 32182, type = "ability", buff = true}, -- Heroism
         { spell = 2825, type = "ability", buff = true}, -- Bloodlust
         { spell = 51490, type = "ability"}, -- Thunderstorm
-        { spell = 51505, type = "ability", requiresTarget = true, talent = {1,3}}, -- Lava Burst
-        { spell = 51505, type = "ability", charges = true, requiresTarget = true, talent = 2, titleSuffix = " (2 Charges)"}, -- Lava Burst
+        { spell = 51505, type = "ability", requiresTarget = true, talent = {1,3}, overlayGlow = true}, -- Lava Burst
+        { spell = 51505, type = "ability", charges = true, requiresTarget = true, talent = 2, titleSuffix = " (2 Charges)", overlayGlow = true}, -- Lava Burst
         { spell = 51514, type = "ability", requiresTarget = true}, -- Hex
         { spell = 51886, type = "ability"}, -- Cleanse Spirit
         { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
