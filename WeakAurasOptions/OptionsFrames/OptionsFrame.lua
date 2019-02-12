@@ -215,6 +215,34 @@ function WeakAuras.CreateFrame()
   closebutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
   closebutton:SetScript("OnClick", WeakAuras.HideOptions);
 
+  local streamerMode = CreateDecoration(frame)
+  streamerMode:SetPoint("TOPRIGHT", -135, 12)
+
+  local streamerModeButton = CreateFrame("CheckButton", nil, streamerMode, "OptionsCheckButtonTemplate")
+  streamerModeButton:SetWidth(30);
+  streamerModeButton:SetHeight(30);
+  streamerModeButton:SetPoint("CENTER", streamerMode, "CENTER", 1, -1);
+  streamerModeButton:SetHitRectInsets(0,0,0,0)
+  streamerModeButton:SetChecked(db.streamerMode)
+
+  streamerModeButton.SetValue = function(streamerModeButton)
+    if streamerModeButton:GetChecked() then
+      PlaySound(856)
+      db.streamerMode = true
+    else
+      PlaySound(857)
+      db.streamerMode = nil
+    end
+    WeakAuras.RefreshTooltipButtons()
+  end
+  streamerModeButton:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+    GameTooltip:SetText(L["Streamer Mode"])
+    GameTooltip:AddLine(L["If this option is enabled, auras urls will be hidden."], 1, 1, 1)
+    GameTooltip:Show()
+  end)
+  streamerModeButton:SetScript("OnLeave", GameTooltip_Hide)
+
   local import = CreateDecoration(frame)
   import:SetPoint("TOPRIGHT", -100, 12)
   --import:Hide()

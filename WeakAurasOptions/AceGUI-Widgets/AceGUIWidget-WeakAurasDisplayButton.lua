@@ -1079,7 +1079,7 @@ local methods = {
       tinsert(namestable, "|cFFFFD100\""..data.desc.."\"");
     end
 
-    if (hasUrl) then
+    if (hasUrl and not WeakAuras.savedVars.db.streamerMode) then
       tinsert(namestable, "|cFFFFD100" .. data.url .. "|r");
     end
 

@@ -1377,7 +1377,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
     tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
   end
 
-  if hasUrl then
+  if hasUrl and not WeakAuras.savedVars.db.streamerMode then
     tinsert(tooltip, {1, L["Source: "] .. data.url, 1, 0.82, 0, 1});
   end
 
