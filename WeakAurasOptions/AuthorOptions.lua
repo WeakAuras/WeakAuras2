@@ -400,26 +400,7 @@ end
 local function getUserValues(data, option)
   local values
   if option[references] then
-    values = {}
-    for childID, optionID in pairs(option[references]) do
-      local childData = data[childID]
-      local childValues = childData.authorOptions[optionID].values
-      local i = 1
-      while i <= #values or i <= #childValues do
-        local value = values[i]
-        if value == conflict then
-          -- conflicts can't ever be resolved at this point
-        elseif value == nil and i <= #values then
-          -- set the new value
-          values[i] = childValues[i]
-        elseif value ~= childValues[i] then
-          -- either this child has a conflicting value at this index
-          -- or it's already ended and is nil, so we need to mark a conflict
-          values[i] = conflict
-        end
-        i = i + 1
-      end
-    end
+    values = getValues(data, option)
     for i, v in ipairs(values) do
       if v == conflict then
         values[i] = conflictBlue .. L["Value %i"]:format(i)
