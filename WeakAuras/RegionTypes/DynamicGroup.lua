@@ -23,6 +23,8 @@ local default = {
   constantFactor = "RADIUS",
   frameStrata = 1,
   scale = 1,
+  useLimit = false,
+  limit = 5,
 }
 
 local function createControlPoint(self)
@@ -673,8 +675,8 @@ local function modify(parent, region, data)
                       type(newPos[3]) ~= "boolean" and true or newPos[3]
       else
         x, y, show =  type(regionData.xOffset) == "number" and regionData.xOffset or 0,
-                        type(regionData.yOffset) == "number" and regionData.Offset or 0,
-                        type(regionData.shown) ~= "boolean" and true or regionData.shown
+                      type(regionData.yOffset) == "number" and regionData.yOffset or 0,
+                      false
       end
       local controlPoint = regionData.controlPoint
       controlPoint:ClearAllPoints()
