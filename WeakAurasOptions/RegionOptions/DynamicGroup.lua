@@ -64,11 +64,12 @@ local function createOptions(id, data)
   local options = {
     __title = L["Dynamic Group Settings"],
     __order = 1,
+    -- grow options
     grow = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Grow"],
-      order = 5,
+      order = 1,
       values = WeakAuras.grow_types,
       set = function(info, v)
         data.grow = v
@@ -85,7 +86,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Align"],
-      order = 10,
+      order = 2,
       values = WeakAuras.align_types,
       set = function(info, v)
         data.align = v
@@ -104,7 +105,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Align"],
-      order = 10,
+      order = 3,
       values = WeakAuras.rotated_align_types,
       hidden = function() return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
       get = function() return data.align; end,
@@ -123,7 +124,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Constant Factor"],
-      order = 10,
+      order = 4,
       values = WeakAuras.circular_group_constant_factor_types,
       hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
@@ -131,7 +132,7 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Space"],
-      order = 15,
+      order = 5,
       softMin = 0,
       softMax = 300,
       bigStep = 1,
@@ -141,7 +142,7 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Rotation"],
-      order = 15,
+      order = 6,
       min = 0,
       max = 360,
       bigStep = 3,
@@ -151,7 +152,7 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Stagger"],
-      order = 20,
+      order = 7,
       min = -50,
       max = 50,
       step = 0.1,
@@ -162,72 +163,24 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Radius"],
-      order = 20,
+      order = 8,
       softMin = 0,
       softMax = 500,
       bigStep = 1,
       hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
     },
-    animate = {
-      type = "toggle",
-      width = WeakAuras.doubleWidth,
-      name = L["Animated Expand and Collapse"],
-      order = 30
-    },
-    border = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      dialogControl = "LSM30_Border",
-      name = L["Border"],
-      order = 35,
-      values = AceGUIWidgetLSMlists.border
-    },
-    background = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      dialogControl = "LSM30_Background",
-      name = L["Background"],
-      order = 40,
-      values = function()
-        local list = {};
-        for i,v in pairs(AceGUIWidgetLSMlists.background) do
-          list[i] = v;
-        end
-        list["None"] = L["None"];
-
-        return list;
-      end
-    },
-    borderOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Border Offset"],
-      order = 45,
-      softMin = 0,
-      softMax = 32,
-      bigStep = 1
-    },
-    backgroundInset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Background Inset"],
-      order = 47,
-      softMin = 0,
-      softMax = 32,
-      bigStep = 1
-    },
     sort = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Sort"],
-      order = 48,
+      order = 9,
       values = WeakAuras.group_sort_types
     },
     hybridPosition = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Hybrid Position"],
-      order = 48.1,
+      order = 10,
       values = WeakAuras.group_hybrid_position_types,
       hidden = function() return not(data.sort == "hybrid") end,
     },
@@ -235,7 +188,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Hybrid Sort Mode"],
-      order = 48.2,
+      order = 11,
       values = WeakAuras.group_hybrid_sort_types,
       hidden = function() return not(data.sort == "hybrid") end,
     },
@@ -243,7 +196,7 @@ local function createOptions(id, data)
       type = "multiselect",
       width = "full",
       name = L["Select the auras you always want to be listed first"],
-      order = 49,
+      order = 12,
       hidden = function() return not(data.sort == "hybrid") end,
       values = function()
         return data.controlledChildren
@@ -259,11 +212,40 @@ local function createOptions(id, data)
         data.sortHybridTable[id] = not(cur);
       end,
     },
+    sortSpace = {
+      type = "description",
+      name = "",
+      width = WeakAuras.doubleWidth,
+      order = 13,
+      hidden = function() return data.sort == "hybrid" end
+    },
+    useLimit = {
+      type = "toggle",
+      order = 14,
+      width = WeakAuras.normalWidth,
+      name = L["Limit"],
+    },
+    limit = {
+      type = "range",
+      order = 15,
+      width = WeakAuras.normalWidth,
+      name = L["Limit"],
+      min = 0,
+      softMax = 20,
+      step = 1,
+      disabled = function() return not data.useLimit end,
+    },
+    animate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Animated Expand and Collapse"],
+      order = 16
+    },
     scale = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Group Scale"],
-      order = 50,
+      order = 17,
       min = 0.05,
       softMax = 2,
       bigStep = 0.05,
@@ -281,11 +263,55 @@ local function createOptions(id, data)
         WeakAuras.ResetMoverSizer();
       end
     },
-    spacer = {
+    -- border/background options
+    -- TODO: use Weakauras.BorderOptions for these instead
+    tempspace = {
       type = "header",
       name = "",
-      order = 51
-    }
+      order = 18
+    },
+    border = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      dialogControl = "LSM30_Border",
+      name = L["Border"],
+      order = 19,
+      values = AceGUIWidgetLSMlists.border
+    },
+    background = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      dialogControl = "LSM30_Background",
+      name = L["Background"],
+      order = 20,
+      values = function()
+        local list = {};
+        for i,v in pairs(AceGUIWidgetLSMlists.background) do
+          list[i] = v;
+        end
+        list["None"] = L["None"];
+
+        return list;
+      end
+    },
+    borderOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Border Offset"],
+      order = 21,
+      softMin = 0,
+      softMax = 32,
+      bigStep = 1
+    },
+    backgroundInset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Background Inset"],
+      order = 22,
+      softMin = 0,
+      softMax = 32,
+      bigStep = 1
+    },
   };
 
   return {

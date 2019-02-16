@@ -23,6 +23,8 @@ local default = {
   constantFactor = "RADIUS",
   frameStrata = 1,
   scale = 1,
+  useLimit = false,
+  limit = 5,
 }
 
 local function createControlPoint(self)
