@@ -1210,6 +1210,23 @@ local function modify(parent, region, data)
     timer.visible = false;
   end
 
+  -- Icon update function
+  function region:SetIcon(path)
+    -- Set icon options
+    local iconPath = (
+      region.useAuto
+      and path ~= ""
+      and path
+      or data.displayIcon
+      or "Interface\\Icons\\INV_Misc_QuestionMark"
+      );
+    self.icon:SetTexture(iconPath);
+    region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
+
+    -- Update text
+    UpdateText(self, data);
+  end
+
   -- Update icon visibility
   if data.icon then
     -- Update icon
@@ -1220,23 +1237,6 @@ local function modify(parent, region, data)
     icon:SetTexCoord(GetTexCoordZoom(texWidth))
     icon:SetDesaturated(data.desaturate);
     icon:SetVertexColor(data.icon_color[1], data.icon_color[2], data.icon_color[3], data.icon_color[4]);
-
-    -- Icon update function
-    function region:SetIcon(path)
-      -- Set icon options
-      local iconPath = (
-        region.useAuto
-        and path ~= ""
-        and path
-        or data.displayIcon
-        or "Interface\\Icons\\INV_Misc_QuestionMark"
-        );
-      self.icon:SetTexture(iconPath);
-      region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
-
-      -- Update text
-      UpdateText(self, data);
-    end
 
     -- Update icon visibility
     icon:Show();
