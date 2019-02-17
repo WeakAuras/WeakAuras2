@@ -1454,6 +1454,11 @@ do
   local function HandleSpell(self, id, startTime, duration)
     local changed = false
     local endTime = startTime + duration;
+    if duration > 0 and startTime == gcdStart and duration == gcdDuration then
+      -- GCD cooldown
+      return false
+    end
+
     if self.duration[id] ~= duration then
       self.duration[id] = duration
       changed = true
@@ -1742,13 +1747,6 @@ do
     if ((basecd and basecd > 0) or onNonGCDCD) then
       cooldownBecauseRune = runeDuration and durationCooldown and abs(durationCooldown - runeDuration) < 0.001;
       unifiedCooldownBecauseRune = cooldownBecauseRune
-    elseif charges == nil then
-      charges = spellcount;
-    end
-
-    if not onNonGCDCD then
-      startTimeCooldown = 0;
-      durationCooldown = 0;
     end
 
     local startTime, duration = startTimeCooldown, durationCooldown
@@ -1810,7 +1808,7 @@ do
     end
     changed = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges) or changed
 
-    if changed then
+    if changed or chargesChanged then
       WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
     end
 
