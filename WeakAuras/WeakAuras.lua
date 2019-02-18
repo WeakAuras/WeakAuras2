@@ -5468,6 +5468,6 @@ function WeakAuras.AdvertiseBT2Upgrade()
       end
   end
   if count > 0 then
-    WeakAuras.prettyPrint((L["You have %d auras still using the legacy aura trigger, they are marked with a %s in WeakAuras's Options"]):format(count, WeakAuras.newFeatureString))
+    WeakAuras.prettyPrint((L["You have %d auras still using the legacy aura trigger, they are marked with a %s in WeakAuras Options"]):format(count, WeakAuras.newFeatureString))
   end
 end
