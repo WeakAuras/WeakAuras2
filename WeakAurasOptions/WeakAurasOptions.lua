@@ -4314,6 +4314,7 @@ function WeakAuras.UpdateDisplayButton(data)
     if WeakAurasCompanion and button:IsGroup() then
       button:RefreshUpdate()
     end
+    button:RefreshBT2UpgradeIcon()
   end
 end
 

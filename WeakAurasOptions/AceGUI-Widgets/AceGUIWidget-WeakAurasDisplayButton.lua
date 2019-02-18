@@ -1530,6 +1530,19 @@ local methods = {
     -- no addon, or no data, or ignore flag
     return false, false, nil, nil
   end,
+  ["RefreshBT2UpgradeIcon"] = function(self)
+    if not self.data.controlledChildren and self.data.triggers then
+      for i, t in pairs(self.data.triggers) do
+          if type(i) == "number" then
+              if t.trigger and t.trigger.type == "aura" then
+                self.bt2upgrade:Show()
+                return
+              end
+          end
+      end
+    end
+    self.bt2upgrade:Hide()
+  end,
   ["RefreshUpdate"] = function(self, actionFunc)
     if self.data.parent then
       -- is in a group
@@ -1975,6 +1988,23 @@ local function Constructor()
     groupUpdate:Hide()
   end
 
+  local bt2upgrade = CreateFrame("BUTTON", nil, button);
+  button.bt2upgrade = bt2upgrade
+  bt2upgrade.func = function() end
+  bt2upgrade:SetNormalTexture([[interface\optionsframe\ui-optionsframe-newfeatureicon.blp]])
+  bt2upgrade:SetWidth(16)
+  bt2upgrade:SetHeight(16)
+  bt2upgrade:SetPoint("RIGHT", button, "RIGHT", -60, 0)
+  bt2upgrade:SetScript("OnEnter", function()
+    Show_Tooltip(
+      button,
+      L["Legacy Aura Trigger"],
+      L["This aura has legacy aura trigger(s). Convert them to the new system to benefit from enhanced performance and features"]
+    )
+  end)
+  bt2upgrade:SetScript("OnLeave", Hide_Tooltip)
+  bt2upgrade:Hide()
+
   local widget = {
     frame = button,
     title = title,
@@ -1993,6 +2023,7 @@ local function Constructor()
     background = background,
     expand = expand,
     update = update,
+    bt2upgrade = bt2upgrade,
     groupUpdate = groupUpdate,
     updateLogo = updateLogo,
     type = Type
