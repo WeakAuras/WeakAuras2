@@ -1419,16 +1419,45 @@ do
     return runeDuration
   end
 
+  local function CheckGCD()
+    local event;
+    local startTime, duration = GetSpellCooldown(61304);
+    if(duration and duration > 0) then
+      if not(gcdStart) then
+        event = "GCD_START";
+      elseif(gcdStart ~= startTime) then
+        event = "GCD_CHANGE";
+      end
+      gcdStart, gcdDuration = startTime, duration;
+      local endCheck = startTime + duration + 0.1;
+      if(gcdEndCheck ~= endCheck) then
+        gcdEndCheck = endCheck;
+        timer:ScheduleTimerFixed(CheckGCD, duration + 0.1);
+      end
+    else
+      if(gcdStart) then
+        event = "GCD_END"
+      end
+      gcdStart, gcdDuration = nil, nil;
+      gcdSpellName, gcdSpellIcon = nil, nil;
+      gcdEndCheck = 0;
+    end
+    if(event) then
+      WeakAuras.ScanEvents(event);
+    end
+  end
+
   local RecheckHandles = {
     expirationTime = {},
     handles = {},
     Recheck = function(self, id)
       self.handles[id] = nil
       self.expirationTime[id] = nil
+      CheckGCD();
       WeakAuras.CheckSpellCooldown(id, GetRuneDuration())
     end,
     Schedule = function(self, expirationTime, id)
-      if not self.expirationTime[id] or expirationTime < self.expirationTime[id] then
+      if (not self.expirationTime[id] or expirationTime < self.expirationTime[id]) and expirationTime > 0 then
         if self.handles[id] then
           timer:CancelTimer(self.handles[id])
           self.handles[id] = nil
@@ -1453,10 +1482,22 @@ do
 
   local function HandleSpell(self, id, startTime, duration)
     local changed = false
+    local time = GetTime()
+    if self.expirationTime[id] and self.expirationTime[id] <= time then
+      self.duration[id] = 0
+      self.expirationTime[id] = 0
+      changed = true
+    end
     local endTime = startTime + duration;
+    if endTime <= time then
+      startTime = 0
+      duration = 0
+      endTime = 0
+    end
     if duration > 0 and startTime == gcdStart and duration == gcdDuration then
       -- GCD cooldown
-      return false
+      RecheckHandles:Schedule(endTime, id)
+      return changed
     end
 
     if self.duration[id] ~= duration then
@@ -1469,9 +1510,7 @@ do
       changed = true
     end
 
-    if changed then
-      RecheckHandles:Schedule(endTime, id)
-    end
+    RecheckHandles:Schedule(endTime, id)
     return changed
   end
 
@@ -1632,34 +1671,6 @@ do
     WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_READY", id);
   end
 
-  local function CheckGCD()
-    local event;
-    local startTime, duration = GetSpellCooldown(61304);
-    if(duration and duration > 0) then
-      if not(gcdStart) then
-        event = "GCD_START";
-      elseif(gcdStart ~= startTime) then
-        event = "GCD_CHANGE";
-      end
-      gcdStart, gcdDuration = startTime, duration;
-      local endCheck = startTime + duration + 0.1;
-      if(gcdEndCheck ~= endCheck) then
-        gcdEndCheck = endCheck;
-        timer:ScheduleTimerFixed(CheckGCD, duration + 0.1);
-      end
-    else
-      if(gcdStart) then
-        event = "GCD_END"
-      end
-      gcdStart, gcdDuration = nil, nil;
-      gcdSpellName, gcdSpellIcon = nil, nil;
-      gcdEndCheck = 0;
-    end
-    if(event) then
-      WeakAuras.ScanEvents(event);
-    end
-  end
-
   function WeakAuras.CheckRuneCooldown()
     local runeDuration = -100;
     for id, _ in pairs(runes) do
@@ -1793,7 +1804,7 @@ do
     local remaining = startTime + duration - time;
 
     local chargesChanged = spellCharges[id] ~= charges;
-    local chargesDifference =  (charges or 0) - (spellCharges[id] or 0)
+    local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
 
