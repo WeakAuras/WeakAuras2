@@ -222,6 +222,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     desc = descIfSubset(data, conditions[i].changes[j]),
     order = order,
     values = valuesForProperty,
+    control = "WeakAurasTwoColumnDropdown",
     get = function()
       local property = conditions[i].changes[j].property;
       return property and allProperties.propertyToIndex[property];
