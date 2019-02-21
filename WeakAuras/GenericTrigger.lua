@@ -1483,7 +1483,7 @@ do
   local function HandleSpell(self, id, startTime, duration)
     local changed = false
     local time = GetTime()
-    if self.expirationTime[id] and self.expirationTime[id] <= time then
+    if self.expirationTime[id] and self.expirationTime[id] <= time and self.expirationTime[id] ~= 0 then
       self.duration[id] = 0
       self.expirationTime[id] = 0
       changed = true
