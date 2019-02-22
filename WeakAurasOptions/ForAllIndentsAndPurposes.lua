@@ -1,5 +1,5 @@
 -- For All Indents And Purposes
-local revision = 21
+local revision = 22
 -- Maintainer: kristofer.karlsson@gmail.com
 
 -- For All Indents And Purposes -
@@ -974,16 +974,21 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
 
     -- returns the padded code, and true if modified, false if unmodified
     local linebreak = stringbyte("\n")
+    local space = stringbyte(" ")
     function lib.padWithLinebreaks(code)
-        local len = stringlen(code)
-        if stringbyte(code, len) == linebreak then
-            if stringbyte(code, len - 1) == linebreak then
-                return code, false
+        local len = stringlen(code) + 1
+        local breakfound = 0
+        while true do
+            len = len - 1
+            local byte = stringbyte(code, len)
+            if byte == linebreak then
+                breakfound = breakfound + 1
+                if breakfound == 2 then return code, false end
+            elseif byte ~= space then
+                if breakfound == 0 then return code .. "\n\n", true end
+                if breakfound == 1 then return code .. "\n", true end
             end
-            return code .. "\n", true
         end
-        return code .. "\n\n", true
-
     end
 
     -- Data tables
