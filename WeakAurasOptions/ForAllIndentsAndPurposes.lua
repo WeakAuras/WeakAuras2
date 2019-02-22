@@ -976,11 +976,11 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
     local linebreak = stringbyte("\n")
     local space = stringbyte(" ")
     function lib.padWithLinebreaks(code)
-        local len = stringlen(code) + 1
+        local len = stringlen(code)
         local breakfound = 0
+        local byte
         while true do
-            len = len - 1
-            local byte = stringbyte(code, len)
+            byte = stringbyte(code, len)
             if byte == linebreak then
                 breakfound = breakfound + 1
                 if breakfound == 2 then return code, false end
@@ -988,6 +988,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
                 if breakfound == 0 then return code .. "\n\n", true end
                 if breakfound == 1 then return code .. "\n", true end
             end
+            len = len - 1
         end
     end
 
