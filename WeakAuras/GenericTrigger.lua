@@ -1535,6 +1535,8 @@ do
   local spellCdsOnlyCooldownRune = CreateSpellCDHandler();
   local spellCdsCharges = CreateSpellCDHandler();
 
+  local spellIds = {}
+
   function WeakAuras.InitCooldownReady()
     cdReadyFrame = CreateFrame("FRAME");
     WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
@@ -1813,7 +1815,14 @@ do
     spellChargesMax[id] = maxCharges;
 
     local changed = false
-    changed = spellCds:HandleSpell(id, startTime, duration)
+    local spellId = select(7, GetSpellInfo(id))
+    if spellIds[id] ~= spellId then
+      spellIds[id] = spellId
+      changed = true
+      chargesChanged = true
+    end
+
+    changed = spellCds:HandleSpell(id, startTime, duration) or changed
     if not unifiedCooldownBecauseRune then
       changed = spellCdsRune:HandleSpell(id, startTime, duration) or changed
     end
@@ -2003,6 +2012,7 @@ do
       return;
     end
     spells[id] = true;
+    spellIds[id] = select(7, GetSpellInfo(id))
     spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
