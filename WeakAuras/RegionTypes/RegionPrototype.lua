@@ -474,6 +474,9 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   local hideRegion;
   if(indynamicgroup) then
     hideRegion = function()
+      if region.PreHide then
+        region:PreHide()
+      end
       region:Hide();
       if (cloneId) then
         WeakAuras.ReleaseClone(region.id, cloneId, data.regionType);
@@ -482,6 +485,9 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     end
   else
     hideRegion = function()
+      if region.PreHide then
+        region:PreHide()
+      end
       region:Hide();
       if (cloneId) then
         WeakAuras.ReleaseClone(region.id, cloneId, data.regionType);
