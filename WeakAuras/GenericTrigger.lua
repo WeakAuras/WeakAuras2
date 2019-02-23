@@ -1380,7 +1380,6 @@ do
 
   local spells = {};
   local spellKnown = {};
-  local spellsRune = {}
 
   local spellCharges = {};
   local spellChargesMax = {};
@@ -1995,7 +1994,6 @@ do
     if not id or id == 0 then return end
 
     if (ignoreRunes) then
-      spellsRune[id] = true;
       for i = 1, 6 do
         WeakAuras.WatchRuneCooldown(i);
       end
