@@ -88,13 +88,13 @@ local function createOptions(id, data)
       disabled = function() return not WeakAuras.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
-    cooldownTextEnabled = {
+    cooldownTextDisabled = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Show Cooldown Text"],
+      name = L["Hide Cooldown Text"],
       order = 6.5,
       disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      hidden = function() return not (data.cooldown and not IsAddOnLoaded("OmniCC") and GetCVar("countdownForCooldowns") == "1") end,
+      hidden = function() return not data.cooldown end,
     },
     glowHeader = {
       type = "header",

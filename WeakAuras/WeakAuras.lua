@@ -1,4 +1,4 @@
-local internalVersion = 11;
+local internalVersion = 12;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2769,6 +2769,14 @@ function WeakAuras.Modernize(data)
       if version and tonumber(version) then
         data.version = tonumber(version)
       end
+    end
+  end
+
+  -- Version 12 was introduced Februar 2019 in BfA
+  if (data.internalVersion < 12) then
+    if data.cooldownTextEnabled ~= nil then
+      data.cooldownTextDisabled = not data.cooldownTextEnabled
+      data.cooldownTextEnabled = nil
     end
   end
 

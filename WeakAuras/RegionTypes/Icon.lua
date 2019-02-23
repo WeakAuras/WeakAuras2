@@ -44,7 +44,7 @@ local default = {
   useglowColor = false,
   glowColor = {1, 1, 1, 1},
   glowType = "buttonOverlay",
-  cooldownTextEnabled = true,
+  cooldownTextDisabled = false,
   cooldownSwipe = true,
   cooldownEdge = false,
 };
@@ -374,7 +374,8 @@ local function modify(parent, region, data)
   end
 
   cooldown:SetReverse(not data.inverse);
-  cooldown:SetHideCountdownNumbers(not data.cooldownTextEnabled or IsAddOnLoaded("OmniCC") or false);
+  cooldown:SetHideCountdownNumbers(data.cooldownTextDisabled);
+  cooldown.noCooldownCount = data.cooldownTextDisabled;
 
   function region:Color(r, g, b, a)
     region.color_r = r;
