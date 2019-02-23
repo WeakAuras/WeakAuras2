@@ -283,16 +283,16 @@ local function createOptions(id, data)
       order = 43,
       name = L["General Text Settings"],
       hidden = function()
-        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "cpt"))
-          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "cpt")))
+        return not ((data.text1Enabled and (WeakAuras.ContainsPlaceHolders(data.text1, "pt") or WeakAuras.ContainsCustomPlaceHolder(data.text1)))
+          or (data.text2Enabled and (WeakAuras.ContainsPlaceHolders(data.text2, "pt") or WeakAuras.ContainsCustomPlaceHolder(data.text2))))
       end,
     },
     customTextUpdate = {
       type = "select",
       width = WeakAuras.doubleWidth,
       hidden = function()
-        return not ((data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "c"))
-          or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "c")))
+        return not ((data.text1Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text1))
+          or (data.text2Enabled and WeakAuras.ContainsCustomPlaceHolder(data.text2)))
       end,
       name = L["Update Custom Text On..."],
       values = WeakAuras.text_check_types,
@@ -311,7 +311,7 @@ local function createOptions(id, data)
           or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
       end,
       disabled = function()
-        return not (WeakAuras.ContainsPlaceHolders(data.text1, "p") or WeakAuras.ContainsPlaceHolders(data.text2, "p"));
+        return not (data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "p") or data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "p"));
       end
     },
     totalPrecision = {
@@ -326,7 +326,7 @@ local function createOptions(id, data)
           or (data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "pt")))
       end,
       disabled = function()
-        return not (WeakAuras.ContainsPlaceHolders(data.text1, "t") or WeakAuras.ContainsPlaceHolders(data.text2, "t"));
+        return not (data.text1Enabled and WeakAuras.ContainsPlaceHolders(data.text1, "t") or data.text2Enabled and WeakAuras.ContainsPlaceHolders(data.text2, "t"));
       end
     },
     otherHeader = {

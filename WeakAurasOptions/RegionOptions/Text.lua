@@ -45,11 +45,10 @@ local function createOptions(id, data)
       name = L["Remaining Time Precision"],
       values = WeakAuras.precision_types,
       get = function() return data.progressPrecision or 1 end,
-      hidden = function()
-        return not (data.displayText:find("%%p") or data.displayText:find("%%t"));
+      hidden = function() return not (WeakAuras.ContainsPlaceHolders(data.displayText, "pt"));
       end,
       disabled = function()
-        return not data.displayText:find("%%p");
+        return not WeakAuras.ContainsPlaceHolders(data.displayText, "p");
       end
     },
     totalPrecision = {
@@ -60,10 +59,10 @@ local function createOptions(id, data)
       values = WeakAuras.precision_types,
       get = function() return data.totalPrecision or 1 end,
       hidden = function()
-        return not (data.displayText:find("%%p") or data.displayText:find("%%t"));
+        return not (WeakAuras.ContainsPlaceHolders(data.displayText, "pt"));
       end,
       disabled = function()
-        return not data.displayText:find("%%t");
+        return not WeakAuras.ContainsPlaceHolders(data.displayText, "t");
       end
     },
     color = {
