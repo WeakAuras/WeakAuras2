@@ -262,39 +262,14 @@ local function modify(parent, region, data)
       model:ClearTransform();
       model:SetPosition(data.model_z, data.model_x, data.model_y);
     end
+    model:SetKeepModelOnHide(true)
   end
+
+  function region:PreHide()
+    model:SetKeepModelOnHide(false)
+  end
+
 end
 
 -- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties);
-
--- Work around for movies and world map hiding all models
-do
-  local function preShowModels(self, event)
-    WeakAuras.StartProfileSystem("model");
-    if (event == "PLAYER_LOGIN") then
-      C_Timer.After(2, preShowModels);
-      return;
-    end
-
-    for id, data in pairs(WeakAuras.regions) do
-      WeakAuras.StartProfileAura(id);
-      if (data.regionType == "model") then
-        data.region:PreShow();
-      end
-      WeakAuras.StopProfileAura(id);
-    end
-    WeakAuras.StopProfileSystem("model");
-  end
-
-  local movieWatchFrame;
-  movieWatchFrame = CreateFrame("frame");
-  movieWatchFrame:RegisterEvent("PLAY_MOVIE");
-  movieWatchFrame:RegisterEvent("CINEMATIC_STOP");
-  movieWatchFrame:RegisterEvent("PLAYER_LOGIN");
-
-  movieWatchFrame:SetScript("OnEvent", preShowModels);
-  WeakAuras.frames["Movie Watch Frame"] = movieWatchFrame;
-
-  hooksecurefunc(WorldMapFrame, "Hide", preShowModels);
-end
