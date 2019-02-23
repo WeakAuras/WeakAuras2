@@ -1495,7 +1495,12 @@ do
       endTime = 0
     end
     if duration > 0 and startTime == gcdStart and duration == gcdDuration then
-      -- GCD cooldown
+      -- GCD cooldown, this could mean that the spell reset!
+      if self.expirationTime[id] and self.expirationTime[id] > startTime + duration and self.expirationTime[id] ~= 0 then
+        self.duration[id] = 0
+        self.expirationTime[id] = 0
+        changed = true
+      end
       RecheckHandles:Schedule(endTime, id)
       return changed
     end
