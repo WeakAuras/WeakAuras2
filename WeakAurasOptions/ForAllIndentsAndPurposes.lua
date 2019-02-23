@@ -979,7 +979,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         local len = stringlen(code)
         local breakfound = 0
         local byte
-        while true do
+        while len >= 0 do
             byte = stringbyte(code, len)
             if byte == linebreak then
                 breakfound = breakfound + 1
