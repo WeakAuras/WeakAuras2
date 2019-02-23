@@ -4742,17 +4742,6 @@ function WeakAuras.UpdatedTriggerState(id)
 end
 
 local replaceStringCache = {};
-function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
-  if (textStr == nil or toCheck == nil) then
-    return false;
-  end
-  for i = 1, #toCheck do
-    if (textStr:find("%%" .. toCheck:sub(i, i))) then
-      return true;
-    end
-  end
-  return false;
-end
 
 local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local regionValues = region.values;
@@ -4819,7 +4808,10 @@ local function nextState(char, state)
   return state
 end
 
-function WeakAuras.ContainsCustomPlaceHolder(textStr)
+local function ContainsPlaceHolders(textStr, symbolFunc)
+  if not textStr then
+    return false
+  end
   local endPos = textStr:len();
   local state = 0
   local currentPos = 1
@@ -4837,7 +4829,7 @@ function WeakAuras.ContainsCustomPlaceHolder(textStr)
     elseif state == 2 or state == 3 then
       if nextState == 0 or nextState == 1 then
         local symbol = string.sub(textStr, start, currentPos - 1)
-        if string.match(symbol, "^c%d*$") then
+        if symbolFunc(symbol) then
           return true
         end
       end
@@ -4849,12 +4841,24 @@ function WeakAuras.ContainsCustomPlaceHolder(textStr)
 
   if state == 2 then
     local symbol = string.sub(textStr, start, currentPos - 1)
-    if string.match(symbol, "^c%d*$") then
+    if symbolFunc(symbol) then
       return true
     end
   end
 
   return false
+end
+
+function WeakAuras.ContainsCustomPlaceHolder(textStr)
+  return ContainsPlaceHolders(textStr, function(symbol)
+    return string.match(symbol, "^c%d*$")
+  end)
+end
+
+function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
+  return ContainsPlaceHolders(textStr, function(symbol)
+    return symbol:len() == 1 and toCheck:find(symbol, 1, true)
+  end)
 end
 
 function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)

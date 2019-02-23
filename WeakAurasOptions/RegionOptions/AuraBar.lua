@@ -81,16 +81,14 @@ local function createOptions(id, data)
       get = function() return data.progressPrecision or 1 end,
       hidden = function()
         return not (
-          data.displayTextLeft:find("%%p")
-          or data.displayTextLeft:find("%%t")
-          or data.displayTextRight:find("%%p")
-          or data.displayTextRight:find("%%t")
+          WeakAuras.ContainsPlaceHolders(data.displayTextLeft, "pt")
+          or WeakAuras.ContainsPlaceHolders(data.displayTextRight, "pt")
           );
       end,
       disabled = function()
         return not (
-          data.displayTextLeft:find("%%p")
-          or data.displayTextRight:find("%%p")
+        WeakAuras.ContainsPlaceHolders(data.displayTextLeft, "p")
+        or WeakAuras.ContainsPlaceHolders(data.displayTextRight, "p")
           );
       end,
     },
@@ -103,16 +101,14 @@ local function createOptions(id, data)
       get = function() return data.totalPrecision or 1 end,
       hidden = function()
         return not (
-          data.displayTextLeft:find("%%p")
-          or data.displayTextLeft:find("%%t")
-          or data.displayTextRight:find("%%p")
-          or data.displayTextRight:find("%%t")
+        WeakAuras.ContainsPlaceHolders(data.displayTextLeft, "pt")
+        or WeakAuras.ContainsPlaceHolders(data.displayTextRight, "pt")
           );
       end,
       disabled = function()
         return not (
-          data.displayTextLeft:find("%%t")
-          or data.displayTextRight:find("%%t")
+        WeakAuras.ContainsPlaceHolders(data.displayTextLeft, "t")
+        or WeakAuras.ContainsPlaceHolders(data.displayTextRight, "t")
           );
       end,
     },
