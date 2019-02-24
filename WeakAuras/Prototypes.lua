@@ -2071,9 +2071,7 @@ WeakAuras.event_prototypes = {
     },
     internal_events = function(trigger, untrigger)
       local events = {
-        "SPELL_COOLDOWN_READY",
         "SPELL_COOLDOWN_CHANGED",
-        "SPELL_COOLDOWN_STARTED",
         "COOLDOWN_REMAINING_CHECK",
         "WA_DELAYED_PLAYER_ENTERING_WORLD"
       };
@@ -3501,9 +3499,7 @@ WeakAuras.event_prototypes = {
       "RUNE_POWER_UPDATE",
     },
     internal_events = {
-      "SPELL_COOLDOWN_READY",
       "SPELL_COOLDOWN_CHANGED",
-      "SPELL_COOLDOWN_STARTED",
     },
     force_events = "SPELL_UPDATE_USABLE",
     name = L["Action Usable"],
