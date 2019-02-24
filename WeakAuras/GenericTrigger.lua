@@ -1481,11 +1481,13 @@ do
 
   local function HandleSpell(self, id, startTime, duration)
     local changed = false
+    local nowReady = false
     local time = GetTime()
     if self.expirationTime[id] and self.expirationTime[id] <= time and self.expirationTime[id] ~= 0 then
       self.duration[id] = 0
       self.expirationTime[id] = 0
       changed = true
+      nowReady = true
     end
     local endTime = startTime + duration;
     if endTime <= time then
@@ -1499,9 +1501,10 @@ do
         self.duration[id] = 0
         self.expirationTime[id] = 0
         changed = true
+        nowReady = true
       end
       RecheckHandles:Schedule(endTime, id)
-      return changed
+      return changed, nowReady
     end
 
     if self.duration[id] ~= duration then
@@ -1512,10 +1515,11 @@ do
     if self.expirationTime[id] ~= endTime then
       self.expirationTime[id] = endTime
       changed = true
+      nowReady = endTime == 0
     end
 
     RecheckHandles:Schedule(endTime, id)
-    return changed
+    return changed, nowReady
   end
 
   local function CreateSpellCDHandler()
@@ -1826,11 +1830,18 @@ do
     if not unifiedCooldownBecauseRune then
       changed = spellCdsRune:HandleSpell(id, startTime, duration) or changed
     end
-    changed = spellCdsOnlyCooldown:HandleSpell(id, startTimeCooldown, durationCooldown) or changed
+    local cdChanged, nowReady = spellCdsOnlyCooldown:HandleSpell(id, startTimeCooldown, durationCooldown)
+    changed = cdChanged or changed
     if not cooldownBecauseRune then
       changed = spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown) or changed
     end
-    changed = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges) or changed
+    local chargeChanged, chargeNowReady = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges)
+    changed = chargeChanged or changed
+    nowReady = chargeNowReady or nowReady
+
+    if nowReady then
+      WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
+    end
 
     if changed or chargesChanged then
       WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
