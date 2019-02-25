@@ -1410,8 +1410,6 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
-
-      WeakAuras.AdvertiseBT2Upgrade()
     end
   elseif(event == "PLAYER_LOGIN") then
     local startTime = debugprofilestop()
@@ -5451,23 +5449,4 @@ function WeakAuras.FindUnusedId(prefix)
     num = num + 1;
   end
   return id
-end
-
-function WeakAuras.AdvertiseBT2Upgrade()
-  local count = 0
-  for id, aura in pairs(WeakAurasSaved.displays) do
-      if not aura.controlledChildren and aura.triggers then
-          for i, t in pairs(aura.triggers) do
-              if type(i) == "number" then
-                  if t.trigger and t.trigger.type == "aura" then
-                  	count = count + 1
-                  	break
-                  end
-              end
-          end
-      end
-  end
-  if count > 0 then
-    WeakAuras.prettyPrint((L["You have %d auras still using the legacy aura trigger, they are marked with a %s in WeakAuras Options"]):format(count, WeakAuras.newFeatureString))
-  end
 end

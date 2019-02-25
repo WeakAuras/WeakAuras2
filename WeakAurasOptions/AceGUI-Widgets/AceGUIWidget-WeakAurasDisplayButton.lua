@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 46
+local Type, Version = "WeakAurasDisplayButton", 47
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1532,13 +1532,11 @@ local methods = {
   end,
   ["RefreshBT2UpgradeIcon"] = function(self)
     if not self.data.controlledChildren and self.data.triggers then
-      for i, t in pairs(self.data.triggers) do
-          if type(i) == "number" then
-              if t.trigger and t.trigger.type == "aura" then
-                self.bt2upgrade:Show()
-                return
-              end
-          end
+      for _, t in ipairs(self.data.triggers) do
+        if t.trigger and t.trigger.type == "aura" then
+          self.bt2upgrade:Show()
+          return
+        end
       end
     end
     self.bt2upgrade:Hide()
@@ -1991,7 +1989,7 @@ local function Constructor()
   local bt2upgrade = CreateFrame("BUTTON", nil, button);
   button.bt2upgrade = bt2upgrade
   bt2upgrade.func = function() end
-  bt2upgrade:SetNormalTexture([[interface\optionsframe\ui-optionsframe-newfeatureicon.blp]])
+  bt2upgrade:SetNormalTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
   bt2upgrade:SetWidth(16)
   bt2upgrade:SetHeight(16)
   bt2upgrade:SetPoint("RIGHT", button, "RIGHT", -60, 0)
