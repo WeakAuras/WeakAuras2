@@ -3,7 +3,8 @@ local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 local default = {
   controlledChildren = {},
-  border = "None",
+  border = false,
+  borderEdge = "None",
   borderOffset = 16,
   background = "None",
   backgroundInset = 0,
@@ -26,6 +27,10 @@ local default = {
   scale = 1,
   useLimit = false,
   limit = 5,
+  gridType = "RIGHTDOWN",
+  gridWidth = 5,
+  rowSpace = 1,
+  columnSpace = 1
 }
 
 local function createControlPoint(self)
@@ -409,6 +414,63 @@ local growers = {
       end
     end
   end,
+  GRID = function(data)
+    local gridType = data.gridType
+    local gridWidth = data.gridWidth
+    local rowSpace = data.rowSpace
+    local rowStagger = data.rowStagger or 0 -- NYI
+    local columnSpace = data.columnSpace
+    local columnStagger = data.columnStagger or 0 -- NYI
+    local startX, startY = 0, 0
+    local rowFirst = (gridType:find("^[RLH]")) ~= nil
+    local limit = data.useLimit and data.limit or math.huge
+    local rowMul, colMul
+    if gridType:find("D") then
+      rowMul = -1
+    else
+      rowMul = 1
+    end
+    if gridType:find("L") then
+      colMul = -1
+    else
+      colMul = 1
+    end
+    -- TODO: decide on implementing horizontal/vertical gridTypes
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY
+      local i = 1
+      local function bumpRow(nextChild)
+        if not rowFirst then
+          y = y + rowMul * ((nextChild.data.height or nextChild.region.height) + rowSpace)
+        else
+          y = y + rowMul * ((nextChild.data.height or nextChild.region.height) + rowSpace)
+          x = 0
+        end
+      end
+      local function bumpColumn(nextChild)
+        if rowFirst then
+          x = x + colMul * ((nextChild.data.width or nextChild.region.width) + columnSpace)
+        else
+          x = x + colMul * ((nextChild.data.width or nextChild.region.width) + columnSpace)
+          y = 0
+        end
+      end
+      while i <= numVisible do
+        local pos = {x, y}
+        newPositions[i] = pos
+        if (i % gridWidth == 0) ~= (rowFirst) then
+          -- either this is rows first AND we're at the end of the row
+          -- or this is columns first AND we're not at the end of the column
+          -- either way, bump column
+          bumpColumn(activeRegions[i])
+        else
+          bumpRow(activeRegions[i])
+        end
+        i = i + 1
+      end
+    end
+  end
 }
 
 local function createGrowFunc(data)
@@ -424,7 +486,7 @@ local function modify(parent, region, data)
   local background = region.background
 
   local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or ""
-  local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or ""
+  local edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.border or "") or ""
   background:SetBackdrop{
     bgFile = bgFile,
     edgeFile = edgeFile,

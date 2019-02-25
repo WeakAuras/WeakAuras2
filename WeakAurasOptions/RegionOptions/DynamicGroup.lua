@@ -60,6 +60,27 @@ local selfPoints = {
   COUNTERCIRCLE = "CENTER",
 }
 
+local gridSelfPoints = {
+  RU = "BOTTOMLEFT",
+  UR = "BOTTOMLEFT",
+  LU = "BOTTOMRIGHT",
+  UL = "BOTTOMRIGHT",
+  HU = "BOTTOM",
+  UH = "BOTTOM",
+  RD = "TOPLEFT",
+  DR = "TOPLEFT",
+  LD = "TOPRIGHT",
+  DL = "TOPRIGHT",
+  HD = "TOP",
+  DH = "TOP",
+  RV = "LEFT",
+  VR = "LEFT",
+  LV = "RIGHT",
+  VL = "RIGHT",
+  HV = "CENTER",
+  VH = "CENTER"
+}
+
 local function createOptions(id, data)
   local options = {
     __title = L["Dynamic Group Settings"],
@@ -67,7 +88,7 @@ local function createOptions(id, data)
     -- grow options
     grow = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth,
       name = L["Grow"],
       order = 1,
       values = WeakAuras.grow_types,
@@ -98,7 +119,7 @@ local function createOptions(id, data)
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
       end,
-      hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
+      hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
       disabled = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
     },
     rotated_align = {
@@ -107,7 +128,7 @@ local function createOptions(id, data)
       name = L["Align"],
       order = 3,
       values = WeakAuras.rotated_align_types,
-      hidden = function() return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end,
+      hidden = function() return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
       get = function() return data.align; end,
       set = function(info, v)
         data.align = v
@@ -120,6 +141,7 @@ local function createOptions(id, data)
         WeakAuras.ReloadTriggerOptions(data)
       end,
     },
+    -- circle grow options
     constantFactor = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -128,21 +150,11 @@ local function createOptions(id, data)
       values = WeakAuras.circular_group_constant_factor_types,
       hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
-    space = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Space"],
-      order = 5,
-      softMin = 0,
-      softMax = 300,
-      bigStep = 1,
-      hidden = function() return data.grow == "CUSTOM" or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
-    },
     rotation = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Start Angle"],
-      order = 6,
+      order = 5,
       min = 0,
       max = 360,
       bigStep = 3,
@@ -158,39 +170,112 @@ local function createOptions(id, data)
       bigStep = 3,
       hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
-    stagger = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Stagger"],
-      order = 7,
-      min = -50,
-      max = 50,
-      step = 0.1,
-      bigStep = 1,
-      hidden = function() return data.grow == "CUSTOM" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
-    },
     radius = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Radius"],
-      order = 8,
+      order = 6,
       softMin = 0,
       softMax = 500,
       bigStep = 1,
       hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
     },
+    -- grid grow options
+    gridType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Grid direction"],
+      order = 8,
+      values = WeakAuras.grid_types,
+      hidden = function() return data.grow ~= "GRID" end,
+      set = function(info, value)
+        data.selfPoint = gridSelfPoints[value]
+        data.gridType = value
+        WeakAuras.Add(data)
+      end,
+    },
+    gridWidth = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = function()
+        if not data.gridType then return "" end
+        local firstDirection = data.gridType:sub(1,1)
+        if firstDirection == "R" or firstDirection == "L" or firstDirection == "H" then
+          return L["Row Width"]
+        else
+          return L["Column Height"]
+        end
+      end,
+      order = 9,
+      min = 1,
+      softMax = 20,
+      step = 1,
+      hidden = function() return data.grow ~= "GRID" end,
+    },
+    rowSpace = {
+      type = "range",
+      name = L["Row Space"],
+      width = WeakAuras.normalWidth,
+      order = 10,
+      softMin = 0,
+      softMax = 300,
+      step = 1,
+      hidden = function() return data.grow ~= "GRID" end,
+    },
+    columnSpace = {
+      type = "range",
+      name = L["Column Space"],
+      width = WeakAuras.normalWidth,
+      order = 11,
+      softMin = 0,
+      softMax = 300,
+      step = 1,
+      hidden = function() return data.grow ~= "GRID" end,
+    },
+    -- generic grow options
+    space = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Space"],
+      order = 7,
+      softMin = 0,
+      softMax = 300,
+      bigStep = 1,
+      hidden = function()
+        return data.grow == "CUSTOM"
+            or data.grow == "GRID"
+            or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS")
+      end
+    },
+    stagger = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Stagger"],
+      order = 8,
+      min = -50,
+      max = 50,
+      step = 0.1,
+      bigStep = 1,
+      hidden = function()
+        return data.grow == "CUSTOM"
+            or data.grow == "CIRCLE"
+            or data.grow == "COUNTERCIRCLE"
+            or data.grow == "GRID"
+      end
+    },
+    -- sort options
     sort = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Sort"],
-      order = 9,
+      order = 20,
       values = WeakAuras.group_sort_types
     },
     hybridPosition = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Hybrid Position"],
-      order = 10,
+      order = 21,
       values = WeakAuras.group_hybrid_position_types,
       hidden = function() return not(data.sort == "hybrid") end,
     },
@@ -198,7 +283,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Hybrid Sort Mode"],
-      order = 11,
+      order = 22,
       values = WeakAuras.group_hybrid_sort_types,
       hidden = function() return not(data.sort == "hybrid") end,
     },
@@ -206,7 +291,7 @@ local function createOptions(id, data)
       type = "multiselect",
       width = "full",
       name = L["Select the auras you always want to be listed first"],
-      order = 12,
+      order = 23,
       hidden = function() return not(data.sort == "hybrid") end,
       values = function()
         return data.controlledChildren
@@ -226,18 +311,18 @@ local function createOptions(id, data)
       type = "description",
       name = "",
       width = WeakAuras.doubleWidth,
-      order = 13,
+      order = 24,
       hidden = function() return data.sort == "hybrid" end
     },
     useLimit = {
       type = "toggle",
-      order = 14,
+      order = 25,
       width = WeakAuras.normalWidth,
       name = L["Limit"],
     },
     limit = {
       type = "range",
-      order = 15,
+      order = 26,
       width = WeakAuras.normalWidth,
       name = L["Limit"],
       min = 0,
@@ -249,13 +334,13 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Animated Expand and Collapse"],
-      order = 16
+      order = 27
     },
     scale = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Group Scale"],
-      order = 17,
+      order = 28,
       min = 0.05,
       softMax = 2,
       bigStep = 0.05,
@@ -275,17 +360,17 @@ local function createOptions(id, data)
     },
     -- border/background options
     -- TODO: use Weakauras.BorderOptions for these instead
-    tempspace = {
+--[[     tempspace = {
       type = "header",
       name = "",
-      order = 18
+      order = 29
     },
     border = {
       type = "select",
       width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Border",
       name = L["Border"],
-      order = 19,
+      order = 30,
       values = AceGUIWidgetLSMlists.border
     },
     background = {
@@ -293,7 +378,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Background",
       name = L["Background"],
-      order = 20,
+      order = 31,
       values = function()
         local list = {};
         for i,v in pairs(AceGUIWidgetLSMlists.background) do
@@ -308,7 +393,7 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Border Offset"],
-      order = 21,
+      order = 32,
       softMin = 0,
       softMax = 32,
       bigStep = 1
@@ -317,15 +402,16 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Background Inset"],
-      order = 22,
+      order = 33,
       softMin = 0,
       softMax = 32,
       bigStep = 1
-    },
+    }, ]]
   };
 
   return {
     dynamicgroup = options,
+    border = WeakAuras.BorderOptions(id, data, nil, true),
     position = WeakAuras.PositionOptions(id, data, nil, true, true),
   };
 end

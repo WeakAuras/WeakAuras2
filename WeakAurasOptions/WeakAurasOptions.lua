@@ -3757,7 +3757,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
   return positionOptions;
 end
 
-function WeakAuras.BorderOptions(id, data, _, showBackDropOptions)
+function WeakAuras.BorderOptions(id, data, _--[[???]], showBackDropOptions)
   local metaOrder = 99
   local borderOptions = {
     __title = L["Border Settings"],
