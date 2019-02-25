@@ -3616,6 +3616,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
   return positionOptions;
 end
 
+-- TODO: update this function to not have an unused parameter
 function WeakAuras.BorderOptions(id, data, _, showBackDropOptions)
   local metaOrder = 99
   local borderOptions = {

@@ -1137,7 +1137,21 @@ WeakAuras.grow_types = {
   ["HORIZONTAL"] = L["Centered Horizontal"],
   ["VERTICAL"] = L["Centered Vertical"],
   ["CIRCLE"] = L["Counter Clockwise"],
-  ["COUNTERCIRCLE"] =L["Clockwise"],
+  ["COUNTERCIRCLE"] = L["Clockwise"],
+  ["GRID"] = L["Grid"]
+}
+
+-- horizontal types: R (right), L (left)
+-- vertical types: U (up), D (down)
+WeakAuras.grid_types = {
+  RU = L["Right, then Up"],
+  UR = L["Up, then Right"],
+  LU = L["Left, then Up"],
+  UL = L["Up, then Left"],
+  RD = L["Right, then Down"],
+  DR = L["Down, then Right"],
+  LD = L["Left, then Down"],
+  DL = L["Down, then Left"],
 }
 
 WeakAuras.text_rotate_types = {

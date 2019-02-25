@@ -26,6 +26,10 @@ local default = {
   scale = 1,
   useLimit = false,
   limit = 5,
+  gridType = "RD",
+  gridWidth = 5,
+  rowSpace = 1,
+  columnSpace = 1
 }
 
 local function createControlPoint(self)
@@ -214,6 +218,10 @@ local function staggerCoefficient(alignment, stagger)
   else
     return 0.5
   end
+end
+
+local function getDimension(regionData, dim)
+  return regionData.data[dim] or regionData.region[dim]
 end
 
 local growers = {
@@ -409,6 +417,64 @@ local growers = {
       end
     end
   end,
+  GRID = function(data)
+    local gridType = data.gridType
+    local gridWidth = data.gridWidth
+    local rowSpace = data.rowSpace
+    local colSpace = data.columnSpace
+    local rowFirst = (gridType:find("^[RL]")) ~= nil
+    local limit = data.useLimit and data.limit or math.huge
+    local rowMul, colMul
+    if gridType:find("D") then
+      rowMul = -1
+    else
+      rowMul = 1
+    end
+    if gridType:find("L") then
+      colMul = -1
+    else
+      colMul = 1
+    end
+    local primary = {
+      -- x direction
+      dim = "width",
+      coord = 1,
+      mul = colMul,
+      space = colSpace,
+      current = 0
+    }
+    local secondary = {
+      -- y direction
+      dim = "height",
+      coord = 2,
+      mul = rowMul,
+      space = rowSpace,
+      current = 0
+    }
+    if not rowFirst then
+      primary, secondary = secondary, primary
+    end
+    return function(newPositions, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      primary.current = 0
+      secondary.current = 0
+      secondary.max = 0
+      for i = 1 , numVisible do
+        newPositions[i] = {}
+        newPositions[i][primary.coord] = primary.current
+        newPositions[i][secondary.coord] = secondary.current
+        local regionData = activeRegions[i]
+        secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
+        if i % gridWidth == 0 then
+          primary.current = 0
+          secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
+          secondary.max = 0
+        else
+          primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
+        end
+      end
+    end
+  end
 }
 
 local function createGrowFunc(data)
