@@ -633,7 +633,9 @@ function WeakAuras.CreateFrame()
   frame.FillOptions = function(self, optionTable, selected)
     AceConfig:RegisterOptionsTable("WeakAuras", optionTable);
     AceConfigDialog:Open("WeakAuras", container);
-    AceConfigDialog:SelectGroup("WeakAuras", selected);
+    if selected then
+      container.content.obj.children[1]:SelectTab(selected)
+    end
     container:SetTitle("");
   end
 
