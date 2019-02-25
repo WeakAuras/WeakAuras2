@@ -1533,8 +1533,12 @@ local methods = {
   -- TODO: remove this once legacy aura trigger is removed
   ["RefreshBT2UpgradeIcon"] = function(self)
     if not self.data.controlledChildren and self.data.triggers then
-      for _, t in ipairs(self.data.triggers) do
+      for index, t in ipairs(self.data.triggers) do
         if t.trigger and t.trigger.type == "aura" then
+          self.bt2upgrade:SetScript("OnClick", function()
+            WeakAuras.optionTriggerChoices[self.data.id] = index
+            WeakAuras.PickDisplay(self.data.id, "trigger")
+          end)
           self.bt2upgrade:Show()
           return
         end

@@ -4102,8 +4102,8 @@ function WeakAuras.IsDisplayPicked(id)
   end
 end
 
-function WeakAuras.PickDisplay(id)
-  frame:PickDisplay(id);
+function WeakAuras.PickDisplay(id, tab)
+  frame:PickDisplay(id, tab);
   WeakAuras.UpdateButtonsScroll()
 end
 
