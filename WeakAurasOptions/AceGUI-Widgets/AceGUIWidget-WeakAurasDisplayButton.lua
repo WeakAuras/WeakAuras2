@@ -1530,6 +1530,7 @@ local methods = {
     -- no addon, or no data, or ignore flag
     return false, false, nil, nil
   end,
+  -- TODO: remove this once legacy aura trigger is removed
   ["RefreshBT2UpgradeIcon"] = function(self)
     if not self.data.controlledChildren and self.data.triggers then
       for _, t in ipairs(self.data.triggers) do
@@ -1986,6 +1987,7 @@ local function Constructor()
     groupUpdate:Hide()
   end
 
+  -- TODO: remove this once legacy aura trigger is removed
   local bt2upgrade = CreateFrame("BUTTON", nil, button);
   button.bt2upgrade = bt2upgrade
   bt2upgrade.func = function() end

@@ -2889,6 +2889,7 @@ function WeakAuras.ReloadTriggerOptions(data)
   else
     optionTriggerChoices[id] = min(optionTriggerChoices[id] or 1, #data.triggers);
     local triggerChoice = optionTriggerChoices[id]
+    -- TODO: remove this once legacy aura trigger is removed
   end
 
   local function deleteTrigger()
@@ -4314,6 +4315,7 @@ function WeakAuras.UpdateDisplayButton(data)
     if WeakAurasCompanion and button:IsGroup() then
       button:RefreshUpdate()
     end
+    -- TODO: remove this once legacy aura trigger is removed
     button:RefreshBT2UpgradeIcon()
   end
 end
