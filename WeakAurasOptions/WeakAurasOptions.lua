@@ -2890,6 +2890,10 @@ function WeakAuras.ReloadTriggerOptions(data)
     optionTriggerChoices[id] = min(optionTriggerChoices[id] or 1, #data.triggers);
     local triggerChoice = optionTriggerChoices[id]
     -- TODO: remove this once legacy aura trigger is removed
+    local button = displayButtons[id]
+    if (button) then
+      button:RefreshBT2UpgradeIcon()
+    end
   end
 
   local function deleteTrigger()
