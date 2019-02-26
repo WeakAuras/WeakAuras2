@@ -4102,7 +4102,7 @@ function WeakAuras.IsDisplayPicked(id)
   end
 end
 
-function WeakAuras.PickDisplay(id, tab)
+function WeakAuras.PickDisplay(id, tab) -- TODO: remove tab parametter once legacy aura trigger is removed
   frame:PickDisplay(id, tab);
   WeakAuras.UpdateButtonsScroll()
 end
