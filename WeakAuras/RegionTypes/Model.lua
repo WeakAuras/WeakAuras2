@@ -240,6 +240,7 @@ local function modify(parent, region, data)
   end
 
   function region:PreShow()
+    model:SetKeepModelOnHide(true)
     model:ClearTransform();
 
     if tonumber(data.model_path) then
@@ -262,7 +263,6 @@ local function modify(parent, region, data)
       model:ClearTransform();
       model:SetPosition(data.model_z, data.model_x, data.model_y);
     end
-    model:SetKeepModelOnHide(true)
   end
 
   function region:PreHide()
