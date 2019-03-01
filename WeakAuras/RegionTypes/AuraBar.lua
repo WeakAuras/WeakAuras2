@@ -1404,6 +1404,14 @@ local function modify(parent, region, data)
   end
   --  region:SetName("");
 
+  if data.smoothProgress then
+    region.PreShow = function()
+      region.bar:ResetSmoothedValue();
+    end
+  else
+    region.PreShow = nil
+  end
+
   function region:SetValue(value, total)
     local progress = 0;
     if (total ~= 0) then
