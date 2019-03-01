@@ -2130,6 +2130,37 @@ do
   end
 end
 
+local watchUnitChange
+local unitChangeGUIDS
+
+function WeakAuras.WatchUnitChange(unit)
+  if not watchUnitChange then
+    watchUnitChange = CreateFrame("FRAME");
+    WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
+    watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
+    watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    watchUnitChange:RegisterEvent("UNIT_TARGET");
+    watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+    watchUnitChange:RegisterEvent("GROUP_ROSTER_UPDATE");
+
+    unit = string.upper(unit)
+
+    watchUnitChange:SetScript("OnEvent", function(self, event)
+      WeakAuras.StartProfileSystem("generictrigger");
+      for unit, guid in pairs(unitChangeGUIDS) do
+        local newGuid = UnitGUID(unit) or ""
+        if guid ~= newGuid then
+          WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit)
+          unitChangeGUIDS[unit] = newGuid
+        end
+      end
+      WeakAuras.StopProfileSystem("generictrigger");
+    end)
+  end
+  unitChangeGUIDS = unitChangeGUIDS or {}
+  unitChangeGUIDS[unit] = UnitGUID(unit) or ""
+end
+
 function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
   local bestMatchNumItems = 0;
   local bestMatchNumEquipped = 0;
