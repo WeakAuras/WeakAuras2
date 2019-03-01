@@ -1115,11 +1115,16 @@ local function AddUnitChangeEvents(unit, t)
   elseif (unit == "pet") then
     tinsert(t, "UNIT_PET")
   else
-    tinsert(t, "PLAYER_TARGET_CHANGED");
-    tinsert(t, "PLAYER_FOCUS_CHANGED");
-    tinsert(t, "UNIT_TARGET");
-    tinsert(t, "INSTANCE_ENCOUNTER_ENGAGE_UNIT");
-    tinsert(t, "GROUP_ROSTER_UPDATE");
+    -- Handled by WatchUnitChange
+  end
+end
+
+local function AddUnitChangeInternalEvents(unit, t)
+  if (unit == "player" or unit == "multi" or unit == "target" or unit == "focus" or unit == "pet") then
+    -- Handled by normal events
+  else
+    WeakAuras.WatchUnitChange(unit)
+    tinsert(t, "UNIT_CHANGED_" .. string.upper(unit))
   end
 end
 
@@ -1136,6 +1141,11 @@ WeakAuras.event_prototypes = {
         AddUnitChangeEvents(trigger.unitisunit, result);
       end
       return result;
+    end,
+    internal_events = function(trigger)
+      local result = {}
+      AddUnitChangeInternalEvents(trigger.unit, result)
+      return result
     end,
     force_events = "UNIT_LEVEL",
     name = L["Unit Characteristics"],
@@ -1244,7 +1254,11 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
-    internal_events = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" },
+    internal_events = function(trigger)
+      local result = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" }
+      AddUnitChangeInternalEvents(trigger.unit, result)
+      return result
+    end,
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Health"],
     init = function(trigger)
@@ -1383,7 +1397,11 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
-    internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD" },
+    internal_events = function(trigger)
+      local result = { "WA_DELAYED_PLAYER_ENTERING_WORLD" }
+      AddUnitChangeInternalEvents(trigger.unit, result)
+      return result
+    end,
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Power"],
     init = function(trigger)
@@ -1576,7 +1594,11 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
-    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
+    internal_events = function(trigger)
+      local result = {"WA_DELAYED_PLAYER_ENTERING_WORLD"}
+      AddUnitChangeInternalEvents(trigger.unit, result)
+      return result
+    end,
     name = L["Alternate Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -4540,6 +4562,11 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.threatUnit, result);
       return result;
     end,
+    internal_events = function(trigger)
+      local result = {}
+      AddUnitChangeInternalEvents(trigger.unit, result)
+      return result
+    end,
     force_events = "UNIT_THREAT_SITUATION_UPDATE",
     name = L["Threat Situation"],
     init = function(trigger)
@@ -4615,9 +4642,11 @@ WeakAuras.event_prototypes = {
       end
       return result
     end,
-    internal_events = {
-      "CAST_REMAINING_CHECK"
-    },
+    internal_events = function(trigger)
+      local result = {"CAST_REMAINING_CHECK"}
+      AddUnitChangeInternalEvents(trigger.unit, result)
+      return result
+    end,
     force_events = "CAST_REMAINING_CHECK",
     canHaveAuto = true,
     canHaveDuration = "timed",
