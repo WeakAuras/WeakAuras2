@@ -1753,19 +1753,8 @@ do
       startTimeCooldown, durationCooldown = 0, 0
     end
 
-    local spellcount = GetSpellCount(id);
-    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
-    -- either the spell count is greater than 0
-    -- or we have a ability without a base cooldown
-    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
-    -- e.g. Raging Blow that gains a cooldown with a talent
-    if (charges == nil and spellcount > 0) then
-      charges = spellcount;
-    end
-
-    local basecd = GetSpellBaseCooldown(id);
     local onNonGCDCD = durationCooldown and startTimeCooldown and durationCooldown > 0 and (durationCooldown ~= gcdDuration or startTimeCooldown ~= gcdStart);
-    if ((basecd and basecd > 0) or onNonGCDCD) then
+    if (onNonGCDCD) then
       cooldownBecauseRune = runeDuration and durationCooldown and abs(durationCooldown - runeDuration) < 0.001;
       unifiedCooldownBecauseRune = cooldownBecauseRune
     end
@@ -1789,6 +1778,17 @@ do
         startTime, duration = startTimeCharges, durationCharges
         unifiedCooldownBecauseRune = false
       end
+    end
+
+    local spellcount = GetSpellCount(id);
+    local basecd = GetSpellBaseCooldown(id);
+    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
+    -- either the spell count is greater than 0
+    -- or we have a ability without a base cooldown
+    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
+    -- e.g. Raging Blow that gains a cooldown with a talent
+    if (charges == nil and not onNonGCDCD and (spellcount > 0 or not basecd or basecd == 0)) then
+      charges = spellcount;
     end
 
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
