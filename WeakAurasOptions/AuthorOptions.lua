@@ -1666,7 +1666,7 @@ local function addUserModeOption(options, config, args, data, order, i)
       userOption.softMin = option.softMin
       userOption.bigStep = option.bigStep
       userOption.min = option.min
-      userOption.max = option.min
+      userOption.max = option.max
       if userOption.max and userOption.min then
         userOption.max = max(userOption.min, userOption.max)
       end
