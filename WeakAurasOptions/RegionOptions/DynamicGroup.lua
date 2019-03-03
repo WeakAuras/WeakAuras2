@@ -141,8 +141,18 @@ local function createOptions(id, data)
     rotation = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Rotation"],
+      name = L["Start Angle"],
       order = 6,
+      min = 0,
+      max = 360,
+      bigStep = 3,
+      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+    },
+    arcLength = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Arc Length"],
+      order = 7,
       min = 0,
       max = 360,
       bigStep = 3,
