@@ -1145,6 +1145,9 @@ WeakAuras.event_prototypes = {
     internal_events = function(trigger)
       local result = {}
       AddUnitChangeInternalEvents(trigger.unit, result)
+      if trigger.unitisunit then
+        AddUnitChangeInternalEvents(trigger.unitisunit, result)
+      end
       return result
     end,
     force_events = "UNIT_LEVEL",
