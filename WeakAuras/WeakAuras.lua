@@ -3082,6 +3082,7 @@ function WeakAuras.PreAdd(data)
   removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil
+  data.expanded = nil
 end
 
 local function pAdd(data)
