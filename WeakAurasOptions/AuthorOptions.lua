@@ -1513,9 +1513,6 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
             childOption.key = nil
             childOption.useDesc = nil
             childOption.default = nil
-          else
-            childOption.name = L["Option %i"]:format(i)
-            childOption.key = ("option%i"):format(i)
           end
           WeakAuras.Add(childData)
         end
@@ -1540,9 +1537,6 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
           option.key = nil
           option.useDesc = nil
           option.default = nil
-        else
-          option.name = L["Option %i"]:format(i)
-          option.key = ("option%i"):format(i)
         end
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
