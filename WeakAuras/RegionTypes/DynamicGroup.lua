@@ -20,6 +20,7 @@ local default = {
   yOffset = 0,
   radius = 200,
   rotation = 0,
+  arcLength = 360,
   constantFactor = "RADIUS",
   frameStrata = 1,
   scale = 1,
@@ -352,7 +353,8 @@ local growers = {
     local space = data.space or 0
     local radius = data.radius or 0
     local limit = data.useLimit and data.limit or math.huge
-    local sAngle = (data.rotation or 0) * math.pi/180
+    local sAngle = (data.rotation or 0) * math.pi / 180
+    local arc = (data.arcLength or 0) * math.pi / 180
     return function(newPositions, activeRegions)
       local numVisible = min(limit, #activeRegions)
       local r
@@ -365,8 +367,8 @@ local growers = {
           r = (numVisible * space) / (2 * math.pi)
         end
       end
-      local dAngle = 2 * math.pi/numVisible
       local theta = sAngle
+      local dAngle = arc / numVisible
       local i = 1
       while i <= numVisible do
         local pos = {polarToRect(r, theta)}
@@ -382,7 +384,8 @@ local growers = {
     local space = data.space or 0
     local radius = data.radius or 0
     local limit = data.useLimit and data.limit or math.huge
-    local sAngle = (data.rotation or 0) * math.pi/180
+    local sAngle = (data.rotation or 0) * math.pi / 180
+    local arc = (data.arcLength or 0) * math.pi / 180
     return function(newPositions, activeRegions)
       local numVisible = min(limit, #activeRegions)
       local r
@@ -395,8 +398,8 @@ local growers = {
           r = (numVisible * space) / (2 * math.pi)
         end
       end
-      local dAngle = -2 * math.pi/numVisible
       local theta = sAngle
+      local dAngle = arc / -numVisible
       local i = 1
       while i <= numVisible do
         local pos = {polarToRect(r, theta)}
