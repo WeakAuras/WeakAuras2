@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasTwoColumnDropdown", 1
+local Type, Version = "WeakAurasTwoColumnDropdown", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -71,20 +71,41 @@ local methods = {
       local displayName = widget.userdata.firstList[value]
       local treeValue = widget.userdata.tree[displayName]
       if type(treeValue) == "table" then
+        local oldValue
+        if widget.userdata.secondList then
+          local v = widget.secondDropDown:GetValue()
+          if v then
+            oldValue = widget.userdata.secondList[v]
+          end
+        end
         local secondList = {}
         for displayName, _ in pairs(treeValue) do
           tinsert(secondList, displayName)
         end
         table.sort(secondList)
+
+        local oldValueIndex = tIndexOf(secondList, oldValue)
         widget.userdata.secondList = secondList
         widget.secondDropDown:SetList(secondList)
         widget.firstDropdown:SetRelativeWidth(0.5)
         widget.secondDropDown:SetRelativeWidth(0.5)
         widget.secondDropDown.userdata.hideMe = false
         widget:DoLayout()
+
+        if (oldValueIndex) then
+          widget.secondDropDown:SetValue(oldValueIndex)
+
+          local v = widget:GetValue()
+          if (v) then
+            widget:Fire("OnValueChanged", v)
+          end
+        else
+          widget.secondDropDown:SetValue(nil)
+        end
       else
         widget.firstDropdown:SetRelativeWidth(1)
         widget.secondDropDown.userdata.hideMe = true
+        widget.userdata.secondList = nil
         widget:DoLayout()
         widget:Fire("OnValueChanged", treeValue)
       end
@@ -93,18 +114,7 @@ local methods = {
     firstDropdown.OnFirstDropdownValueChanged = OnFirstDropdownValueChanged
 
     local OnSecondDropdownValueChanged = function(self, event, value)
-      local displayName1 = widget.userdata.firstList[widget.firstDropdown:GetValue()]
-      local displayName2 = widget.userdata.secondList[value]
-
-      local treeValue = widget.userdata.tree[displayName1]
-      if not treeValue then
-        return
-      end
-      treeValue = treeValue[displayName2]
-      if not treeValue then
-        return
-      end
-      widget:Fire("OnValueChanged", treeValue)
+      widget:Fire("OnValueChanged", widget:GetValue())
     end
 
     firstDropdown:SetCallback("OnValueChanged", OnFirstDropdownValueChanged)
