@@ -1621,7 +1621,12 @@ local function buildAllPotentialProperies(data, category)
     tinsert(allProperties.indexToProperty, k);
   end
   table.sort(allProperties.indexToProperty, function(a, b)
-    return allProperties.propertyMap[a].display <  allProperties.propertyMap[b].display
+    local av = allProperties.propertyMap[a].display
+    av = type(av) == "table" and av[1] or av
+
+    local bv = allProperties.propertyMap[b].display
+    bv = type(bv) == "table" and bv[1] or bv
+    return av < bv
   end);
 
   allProperties.propertyToIndex = {};

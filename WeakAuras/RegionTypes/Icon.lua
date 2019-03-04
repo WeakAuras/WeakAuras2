@@ -78,33 +78,33 @@ local properties = {
     default = 32
   },
   glow = {
-    display = WeakAuras.newFeatureString .. L["Glow"].. "/" .. L["Visibility"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Visibility"] },
     setter = "SetGlow",
     type = "bool"
   },
   glowType = {
-    display = WeakAuras.newFeatureString .. L["Glow"].. "/" .. L["Type"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Type"] },
     setter = "SetGlowType",
     type = "list",
     values = WeakAuras.glow_types,
   },
   useGlowColor = {
-    display = WeakAuras.newFeatureString .. L["Glow"].. "/" .. L["Use Custom Color"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Use Custom Color"] },
     setter = "SetUseGlowColor",
     type = "bool"
   },
   glowColor = {
-    display = WeakAuras.newFeatureString .. L["Glow"].. "/" .. L["Color"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Color"]},
     setter = "SetGlowColor",
     type = "color"
   },
   text1Color = {
-    display = L["1. Text"].. "/" .. L["Color"],
+    display = { L["1. Text"] , L["Color"] },
     setter = "SetText1Color",
     type = "color"
   },
   text1FontSize = {
-    display = L["1. Text"].. "/" .. L["Size"],
+    display = { L["1. Text"], L["Size"] },
     setter = "SetText1Height",
     type = "number",
     min = 6,
@@ -113,12 +113,12 @@ local properties = {
     default = 12
   },
   text2Color = {
-    display = L["2. Text"].. "/" .. L["Color"],
+    display = { L["2. Text"], L["Color"]},
     setter = "SetText2Color",
     type = "color"
   },
   text2FontSize = {
-    display = L["2. Text"].. "/" .. L["Size"],
+    display = { L["2. Text"], L["Size"]},
     setter = "SetText2Height",
     type = "number",
     min = 6,
@@ -137,12 +137,12 @@ local properties = {
     type = "bool"
   },
   cooldownSwipe = {
-    display = WeakAuras.newFeatureString .. L["Cooldown"].. "/" .. L["Swipe"],
+    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Swipe"]},
     setter = "SetCooldownSwipe",
     type = "bool",
   },
   cooldownEdge = {
-    display = WeakAuras.newFeatureString .. L["Cooldown"].. "/" .. L["Edge"],
+    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Edge"]},
     setter = "SetCooldownEdge",
     type = "bool",
   },
