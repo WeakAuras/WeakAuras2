@@ -165,14 +165,13 @@ local methods = {
   ["SetList"] = function(self, list, order, itemType)
     local tree = {}
     for key, displayName in pairs(list) do
-      local pos = string.find(displayName, '/', 1, true)
-      if not pos then
-        tree[displayName] = key
-      else
-        local base = string.sub(displayName, 1, pos - 1)
-        local suffix = string.sub(displayName, pos + 1)
+      if type(displayName) == "table" then
+        local base = displayName[1]
+        local suffix = displayName[2]
         tree[base] = tree[base] or {}
         tree[base][suffix] = key
+      else
+        tree[displayName] = key
       end
     end
     self.userdata.tree = tree
