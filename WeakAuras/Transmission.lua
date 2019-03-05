@@ -145,7 +145,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   local remaining = msg;
   local done;
   repeat
-    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- ([^%]]+)%]");
+    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- (.*)%]");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
@@ -546,7 +546,7 @@ local receivedData;
 hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
   buttonAnchor:Hide()
   if(link == "weakauras") then
-    local _, _, characterName, displayName = text:find("|Hweakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
+    local _, _, characterName, displayName = text:find("|Hweakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- (.*)%]|h");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
