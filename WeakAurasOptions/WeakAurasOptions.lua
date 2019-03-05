@@ -72,64 +72,72 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   return desc;
 end
 
-function WeakAuras.DuplicateAura(data)
-  local base_id = data.id .. " ";
-  local num = 2;
+function WeakAuras.DuplicateAura(data, newParent)
+  local base_id = data.id .. " "
+  local num = 2
 
   -- if the old id ends with a number increment the number
   local matchName, matchNumber = string.match(data.id, "^(.-)(%d*)$")
   matchNumber = tonumber(matchNumber)
   if (matchName ~= "" and matchNumber ~= nil) then
-    base_id = matchName;
+    base_id = matchName
     num = matchNumber + 1
   end
 
-  local new_id = base_id .. num;
+  local new_id = base_id .. num
   while(WeakAuras.GetData(new_id)) do
-    new_id = base_id .. num;
-    num = num + 1;
+    new_id = base_id .. num
+    num = num + 1
   end
 
-  local newData = {};
-  WeakAuras.DeepCopy(data, newData);
-  newData.id = new_id;
-  newData.parent = nil;
-  newData.uid = WeakAuras.GenerateUniqueID();
-  WeakAuras.Add(newData);
-  WeakAuras.NewDisplayButton(newData);
-  if(data.parent) then
-    local parentData = WeakAuras.GetData(data.parent);
-    local index;
-    for i, childId in pairs(parentData.controlledChildren) do
-      if(childId == data.id) then
-        index = i;
-        break;
+  local newData = {}
+  WeakAuras.DeepCopy(data, newData)
+  newData.id = new_id
+  newData.parent = nil
+  newData.uid = WeakAuras.GenerateUniqueID()
+  if newData.controlledChildren then
+    newData.controlledChildren = {}
+  end
+  WeakAuras.Add(newData)
+  WeakAuras.NewDisplayButton(newData)
+  if(newParent or data.parent) then
+    local parentId = newParent or data.parent
+    local parentData = WeakAuras.GetData(parentId)
+    local index
+    if newParent then
+      index = #parentData.controlledChildren + 1
+    else
+      for i, childId in pairs(parentData.controlledChildren) do
+        if(childId == data.id) then
+          index = i
+          break
+        end
       end
     end
     if(index) then
-      local newIndex = index + 1;
+      local newIndex = index + 1
       if(newIndex > #parentData.controlledChildren) then
-        tinsert(parentData.controlledChildren, newData.id);
+        tinsert(parentData.controlledChildren, newData.id)
       else
-        tinsert(parentData.controlledChildren, index + 1, newData.id);
+        tinsert(parentData.controlledChildren, index + 1, newData.id)
       end
-      newData.parent = data.parent;
-      WeakAuras.Add(parentData);
-      WeakAuras.Add(newData);
+      newData.parent = data.parent
+      WeakAuras.Add(parentData)
+      WeakAuras.Add(newData)
 
       for index, id in pairs(parentData.controlledChildren) do
-        local childButton = WeakAuras.GetDisplayButton(id);
-        childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup");
-        childButton:SetGroupOrder(index, #parentData.controlledChildren);
+        local childButton = WeakAuras.GetDisplayButton(id)
+        childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup")
+        childButton:SetGroupOrder(index, #parentData.controlledChildren)
       end
 
-      local button = WeakAuras.GetDisplayButton(parentData.id);
-      button.callbacks.UpdateExpandButton();
-      WeakAuras.UpdateDisplayButton(parentData);
-      WeakAuras.ReloadGroupRegionOptions(parentData);
+      local button = WeakAuras.GetDisplayButton(parentData.id)
+      button.callbacks.UpdateExpandButton()
+      WeakAuras.UpdateDisplayButton(parentData)
+      WeakAuras.ReloadGroupRegionOptions(parentData)
     end
   end
-  return newData.id;
+  return newData.id
 end
 
 function WeakAuras.MultipleDisplayTooltipMenu()
