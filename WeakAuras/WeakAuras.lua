@@ -1,4 +1,4 @@
-local internalVersion = 12;
+local internalVersion = 13;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2777,6 +2777,76 @@ function WeakAuras.Modernize(data)
     if data.cooldownTextEnabled ~= nil then
       data.cooldownTextDisabled = not data.cooldownTextEnabled
       data.cooldownTextEnabled = nil
+    end
+  end
+
+  -- Version 13 was introduced March 2019 in BFA
+  if data.internalVersion < 13 then
+    if data.regionType == "dynamicgroup" then
+      local selfPoints = {
+        default = "CENTER",
+        RIGHT = function(data)
+          if data.align  == "LEFT" then
+            return "TOPLEFT"
+          elseif data.align == "RIGHT" then
+            return "BOTTOMLEFT"
+          else
+            return "LEFT"
+          end
+        end,
+        LEFT = function(data)
+          if data.align  == "LEFT" then
+            return "TOPRIGHT"
+          elseif data.align == "RIGHT" then
+            return "BOTTOMRIGHT"
+          else
+            return "RIGHT"
+          end
+        end,
+        UP = function(data)
+          if data.align == "LEFT" then
+            return "BOTTOMLEFT"
+          elseif data.align == "RIGHT" then
+            return "BOTTOMRIGHT"
+          else
+            return "BOTTOM"
+          end
+        end,
+        DOWN = function(data)
+          if data.align == "LEFT" then
+            return "TOPLEFT"
+          elseif data.align == "RIGHT" then
+            return "TOPRIGHT"
+          else
+            return "TOP"
+          end
+        end,
+        HORIZONTAL = function(data)
+          if data.align == "LEFT" then
+            return "TOP"
+          elseif data.align == "RIGHT" then
+            return "BOTTOM"
+          else
+            return "CENTER"
+          end
+        end,
+        VERTICAL = function(data)
+          if data.align == "LEFT" then
+            return "LEFT"
+          elseif data.align == "RIGHT" then
+            return "RIGHT"
+          else
+            return "CENTER"
+          end
+        end,
+        CIRCLE = "CENTER",
+        COUNTERCIRCLE = "CENTER",
+      }
+      local selfPoint = selfPoints[data.grow or "DOWN"] or selfPoints.DOWN
+      if type(selfPoint) == "function" then
+        selfPoint = selfPoint(data)
+      end
+      data.selfPoint = selfPoint
     end
   end
 
