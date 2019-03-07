@@ -105,23 +105,13 @@ function WeakAuras.DuplicateAura(data, newParent)
     local parentData = WeakAuras.GetData(parentId)
     local index
     if newParent then
-      index = #parentData.controlledChildren + 1
+      index = #parentData.controlledChildren
     else
-      for i, childId in pairs(parentData.controlledChildren) do
-        if(childId == data.id) then
-          index = i
-          break
-        end
-      end
+      index = tIndexOf(parentData.controlledChildren, data.id)
     end
     if(index) then
-      local newIndex = index + 1
-      if(newIndex > #parentData.controlledChildren) then
-        tinsert(parentData.controlledChildren, newData.id)
-      else
-        tinsert(parentData.controlledChildren, index + 1, newData.id)
-      end
-      newData.parent = data.parent
+      tinsert(parentData.controlledChildren, index + 1, newData.id)
+      newData.parent = parentId
       WeakAuras.Add(parentData)
       WeakAuras.Add(newData)
 

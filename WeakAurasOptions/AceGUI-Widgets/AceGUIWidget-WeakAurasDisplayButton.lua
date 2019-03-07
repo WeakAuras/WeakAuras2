@@ -605,7 +605,7 @@ local methods = {
         local new_idGroup = WeakAuras.DuplicateAura(data)
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId)
-          local newChild = WeakAuras.DuplicateAura(childData, new_idGroup)
+          WeakAuras.DuplicateAura(childData, new_idGroup)
         end
         WeakAuras.SortDisplayButtons()
         WeakAuras.DoConfigUpdate()
