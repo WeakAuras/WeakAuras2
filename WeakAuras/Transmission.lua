@@ -252,7 +252,6 @@ radioButtons = {
 
 local radioButtonLabels = {
   L["Create a Copy"],
-  -- L["Replace Aura"],
   L["Update Auras"]
 }
 

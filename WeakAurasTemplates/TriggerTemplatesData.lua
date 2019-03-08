@@ -46,12 +46,12 @@ local powerTypes =
     [8] = { name = POWER_TYPE_LUNAR_POWER, icon = "Interface\\Icons\\ability_druid_eclipseorange"},
     [9] = { name = HOLY_POWER, icon = "Interface\\Icons\\achievement_bg_winsoa"},
     [11] = {name = POWER_TYPE_MAELSTROM, icon = 135990},
-    [12] = {name = CHI, icon = "Interface\\Icons\\ability_monk_healthsphere"},
+    [12] = {name = CHI_POWER, icon = "Interface\\Icons\\ability_monk_healthsphere"},
     [13] = {name = POWER_TYPE_INSANITY, icon = "Interface\\Icons\\spell_priest_shadoworbs"},
     [16] = {name = POWER_TYPE_ARCANE_CHARGES, icon = "Interface\\Icons\\spell_arcane_arcane01"},
     [17] = {name = POWER_TYPE_FURY_DEMONHUNTER, icon = 1344651},
     [18] = {name = POWER_TYPE_PAIN, icon = 1247265},
-    [99] = {name = L["Stagger"], icon = "Interface\\Icons\\monk_stance_drunkenox"}
+    [99] = {name = STAGGER, icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
 local generalAzeriteTraits = {
