@@ -2,9 +2,6 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
-local LibBabbleRace = LibStub("LibBabble-Race-3.0");
-local LBR_Locale = LibBabbleRace:GetUnstrictLookupTable()
-local LBR_Base = LibBabbleRace:GetBaseLookupTable();
 
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
@@ -185,41 +182,35 @@ WeakAuras.unit_threat_situation_types = {
 }
 
 WeakAuras.class_types = {}
-WeakAuras.class_color_types = {}
-local C_S_O, R_C_C, L_C_N_M, F_C_C_C = _G.CLASS_SORT_ORDER, _G.RAID_CLASS_COLORS, _G.LOCALIZED_CLASS_NAMES_MALE, _G.FONT_COLOR_CODE_CLOSE
-do
-  for i,eClass in ipairs(C_S_O) do
-    WeakAuras.class_color_types[eClass] = "|c"..R_C_C[eClass].colorStr
-    WeakAuras.class_types[eClass] = WeakAuras.class_color_types[eClass]..L_C_N_M[eClass]..F_C_C_C
+WeakAuras.class_color_types = {} -- TODO: it should be removed together with Bufftrigger (unused)
+for classID = 1, GetNumClasses() do
+  local classInfo = C_CreatureInfo.GetClassInfo(classID)
+  WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
+  WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
+end
+
+WeakAuras.race_types = {}
+local unplayableRace = {
+  [12] = true,
+  [13] = true,
+  [14] = true,
+  [15] = true,
+  [16] = true,
+  [17] = true,
+  [18] = true,
+  [19] = true,
+  [20] = true,
+  [21] = true,
+  [23] = true,
+  [33] = true,
+  [35] = true
+}
+for raceID = 1, 36 do
+  if (unplayableRace[raceID] == nil) then
+    local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
+    WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName
   end
 end
-
-local function LBR(key)
-  return LBR_Locale[key] or LBR_Base[key]
-end
-
-WeakAuras.race_types = {
-  Pandaren = LBR("Pandaren"),
-  Worgen = LBR("Worgen"),
-  Draenei = LBR("Draenei"),
-  Dwarf = LBR("Dwarf"),
-  Gnome = LBR("Gnome"),
-  Human = LBR("Human"),
-  NightElf = LBR("Night Elf"),
-  Goblin = LBR("Goblin"),
-  BloodElf = LBR("Blood Elf"),
-  Orc = LBR("Orc"),
-  Tauren = LBR("Tauren"),
-  Troll = LBR("Troll"),
-  Scourge = LBR("Undead"),
-  LightforgedDraenei = LBR("Lightforged Draenei"),
-  VoidElf = LBR("Void Elf"),
-  HighmountainTauren = LBR("Highmountain Tauren"),
-  Nightborne = LBR("Nightborne"),
-  DarkIronDwarf = LBR("Dark Iron Dwarf"),
-  ZandalariTroll = LBR("Zandalari Troll"),
-  MagharOrc = LBR("Mag'har Orc"),
-}
 
 WeakAuras.faction_group = {
   Alliance = L["Alliance"],
