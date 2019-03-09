@@ -206,9 +206,9 @@ local unplayableRace = {
   [35] = true
 }
 for raceID = 1, 36 do
-  if (unplayableRace[raceID] == nil) then
+  if not unplayableRace[raceID] then
     local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
-    WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName
+    WeakAuras.race_types[raceInfo.clientFileString] = raceInfo.raceName
   end
 end
 
@@ -463,7 +463,7 @@ WeakAuras.combatlog_flags_check_type = {
 }
 
 WeakAuras.combatlog_raid_mark_check_type = {
-  [0] = L["None"],
+  [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_2:14|t " .. RAID_TARGET_2, -- Circle
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_3:14|t " .. RAID_TARGET_3, -- Diamond
