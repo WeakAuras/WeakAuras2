@@ -5141,6 +5141,7 @@ WeakAuras.event_prototypes = {
 
       if (trigger.use_mounted ~= nil) then
         tinsert(events, "PLAYER_MOUNT_DISPLAY_CHANGED");
+        tinsert(events, "PLAYER_ENTERING_WORLD")
       end
 
       return events;
