@@ -194,32 +194,8 @@ do
   end
 end
 
-<<<<<<< HEAD
-WeakAuras.race_types = {}
-local unplayableRace = {
-  [12] = true,
-  [13] = true,
-  [14] = true,
-  [15] = true,
-  [16] = true,
-  [17] = true,
-  [18] = true,
-  [19] = true,
-  [20] = true,
-  [21] = true,
-  [23] = true,
-  [33] = true,
-  [35] = true
-}
-for raceID = 1, 36 do
-  if not unplayableRace[raceID] then
-    local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
-    WeakAuras.race_types[raceInfo.clientFileString] = raceInfo.raceName
-  end
-=======
 local function LBR(key)
   return LBR_Locale[key] or LBR_Base[key]
->>>>>>> parent of 5c2f3bb4... Refactor class and race types; drop the "LibBabble-Race-3.0" library
 end
 
 WeakAuras.race_types = {
