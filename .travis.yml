@@ -10,7 +10,7 @@ git:
 
 install: luarocks install --local luacheck
 
-before_script: /home/travis/.luarocks/bin/luacheck . --no-color -qo "011"
+before_script: /home/travis/.luarocks/bin/luacheck . --no-color -q
 
 script:
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then ./wowace_translations.sh; fi
