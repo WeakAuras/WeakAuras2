@@ -11,6 +11,7 @@
   <Include file="Libs\AceEvent-3.0\AceEvent-3.0.xml"/>
   <Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
   <Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
+  <Include file="Libs\LibBabble-Race-3.0\lib.xml"/>
   <Script file="Libs\LibCompress\LibCompress.lua"/>
   <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
   <Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>

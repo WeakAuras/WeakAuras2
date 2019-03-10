@@ -14,6 +14,7 @@ externals:
  WeakAuras/Libs/LibSharedMedia-3.0: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
  WeakAuras/Libs/LibDataBroker-1.1: git://github.com/tekkub/libdatabroker-1-1.git
  WeakAuras/Libs/LibCompress: https://repos.wowace.com/wow/libcompress/trunk
+ WeakAuras/Libs/LibBabble-Race-3.0: https://repos.wowace.com/wow/libbabble-race-3-0/trunk
  WeakAuras/Libs/LibSpellRange-1.0: git://github.com/ascott18/LibSpellRange-1.0.git
  WeakAuras/Libs/LibRangeCheck-2.0: https://repos.wowace.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
  WeakAuras/Libs/LibCustomGlow-1.0: https://repos.curseforge.com/wow/libcustomglow

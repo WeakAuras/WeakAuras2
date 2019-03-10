@@ -16,6 +16,8 @@ local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitC
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
+-- luacheck: globals C_SpecializationInfo C_Map
+
 local SpellRange = LibStub("SpellRange-1.0")
 function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
@@ -584,9 +586,12 @@ WeakAuras.anim_presets = {
 };
 
 WeakAuras.class_ids = {}
-for classID = 1, GetNumClasses() do
-  local classInfo = C_CreatureInfo.GetClassInfo(classID)
-  WeakAuras.class_ids[classInfo.classFile] = classInfo.classID
+local classID = 1;
+local _, classFileName;
+while(GetClassInfo(classID)) do
+  _, classFileName = GetClassInfo(classID)
+  WeakAuras.class_ids[classFileName] = classID;
+  classID = classID + 1;
 end
 
 function WeakAuras.CheckTalentByIndex(index)
