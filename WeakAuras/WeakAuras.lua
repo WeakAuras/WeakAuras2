@@ -4616,7 +4616,9 @@ local function ApplyStateToRegion(id, cloneId, region, state, parent)
     region:SetStacks(state.stacks);
   end
   if(region.UpdateCustomText and not WeakAuras.IsRegisteredForCustomTextUpdates(region)) then
+    WeakAuras.StartProfileSystem("custom text")
     region.UpdateCustomText();
+    WeakAuras.StopProfileSystem("custom text")
   end
 
   if(state.texture and region.SetTexture) then
