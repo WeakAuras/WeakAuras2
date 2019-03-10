@@ -35,7 +35,7 @@ Note that if the error looks like `[string "--[[ Error in ' my awesome aura' ]` 
 <!-- You can always find older versions of WeakAuras to test with at https://www.wowace.com/projects/weakauras-2/files -->
 
 **Additional context**
-<!-- If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables\` -->
+<!-- If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\` -->
 
 <!-- In case you do know which aura is problematic, please export the string and paste it below. -->
 
