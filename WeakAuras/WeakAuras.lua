@@ -1318,6 +1318,8 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
+local loginFinished = false
+
 local loginThread = coroutine.create(function()
   WeakAuras.Pause();
   local toAdd = {};
@@ -1365,10 +1367,13 @@ local loginThread = coroutine.create(function()
     coroutine.yield();
     nextCallback = loginQueue[1];
   end
+
+  loginFinished = true
+  WeakAuras.ResumeAllDynamicGroups();
 end)
 
 function WeakAuras.IsLoginFinished()
-  return coroutine.status(loginThread) == 'dead'
+  return loginFinished
 end
 
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
@@ -1494,6 +1499,11 @@ function WeakAuras.Resume()
   squelch_actions = true;
   WeakAuras.ScanAll();
   squelch_actions = false;
+  for _, regionData in pairs(regions) do
+    if regionData.region.Resume then
+      regionData.region:Resume(true)
+    end
+  end
 end
 
 function WeakAuras.Toggle()
