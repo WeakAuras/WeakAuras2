@@ -46,7 +46,8 @@ WeakAuras.group_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"],
   hybrid = L["Hybrid"],
-  none = L["None"]
+  none = L["None"],
+  custom = L["Custom"]
 }
 
 WeakAuras.group_hybrid_position_types = {
@@ -1134,6 +1135,7 @@ WeakAuras.grow_types = {
   ["VERTICAL"] = L["Centered Vertical"],
   ["CIRCLE"] = L["Counter Clockwise"],
   ["COUNTERCIRCLE"] =L["Clockwise"],
+  ["CUSTOM"] = L["Custom"],
 }
 
 WeakAuras.text_rotate_types = {

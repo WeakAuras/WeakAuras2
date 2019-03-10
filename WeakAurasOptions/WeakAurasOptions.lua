@@ -2341,12 +2341,13 @@ local function GetCustomCode(data, path)
   return data;
 end
 
-function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions)
+-- ? Possibly we should refactor this function to need a less extreme number of args?
+function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
   extraFunctions = extraFunctions or {};
   tinsert(extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function()
-      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions)
+      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent)
     end
   });
 

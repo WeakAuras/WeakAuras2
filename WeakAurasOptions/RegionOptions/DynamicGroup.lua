@@ -82,6 +82,7 @@ local function createOptions(id, data)
         WeakAuras.ReloadTriggerOptions(data)
       end
     },
+    -- custom grow option added below
     align = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -186,6 +187,7 @@ local function createOptions(id, data)
       order = 9,
       values = WeakAuras.group_sort_types
     },
+    -- custom sort option added below
     hybridPosition = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -234,6 +236,7 @@ local function createOptions(id, data)
       order = 14,
       width = WeakAuras.normalWidth,
       name = L["Limit"],
+      hidden = function() return data.grow == "CUSTOM" end,
     },
     limit = {
       type = "range",
@@ -244,6 +247,7 @@ local function createOptions(id, data)
       softMax = 20,
       step = 1,
       disabled = function() return not data.useLimit end,
+      hidden = function() return data.grow == "CUSTOM" end,
     },
     animate = {
       type = "toggle",
@@ -323,6 +327,9 @@ local function createOptions(id, data)
       bigStep = 1
     },
   };
+
+  WeakAuras.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", 2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
+  WeakAuras.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", 21, function() return data.sort ~= "custom" end, {"customSort"}, nil, nil, nil, nil, nil, true)
 
   return {
     dynamicgroup = options,

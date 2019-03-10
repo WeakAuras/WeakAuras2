@@ -104,6 +104,17 @@ local function compareExpirationTimes(regionDataA, regionDataB)
 
 end
 
+local function noop() end
+
+local function customRegionData(regionData)
+  return {
+    id = regionData.id,
+    cloneId = regionData.cloneId,
+    dataIndex = regionData.dataIndex,
+    state = regionData.region.state,
+  }
+end
+
 local sorters = {
   none = function(data)
     return function(a, b)
@@ -187,6 +198,19 @@ local sorters = {
       return not result
     end
   end,
+  custom = function(data)
+    local sortStr = data.sort or ""
+    local sortFunc = WeakAuras.LoadFunction("return " .. sortStr, data.id, "custom sort") or noop
+    return function(a, b)
+      local customA, customB = customRegionData(a), customRegionData(b)
+      WeakAuras.ActivateEnvironment(data.id)
+      local ok, result = xpcall(sortFunc, geterrorhandler(), customA, customB)
+      WeakAuras.ActivateEnvironment()
+      if ok then
+        return result
+      end
+    end
+  end
 }
 
 local function createSortFunc(data)
@@ -409,6 +433,20 @@ local growers = {
       end
     end
   end,
+  CUSTOM = function(data)
+    local growStr = data.customGrow or ""
+    local growFunc = WeakAuras.LoadFunction("return " .. growStr, data.id, "custom grow") or noop
+    return function(newPositions, activeRegions)
+      local customRegions = {}
+      for i, v in ipairs(activeRegions) do
+        customRegions[i] = customRegionData(v)
+      end
+      local ok = xpcall(growFunc, geterrorhandler(), newPositions, customRegions)
+      if not ok then
+        wipe(newPositions)
+      end
+    end
+  end
 }
 
 local function createGrowFunc(data)
