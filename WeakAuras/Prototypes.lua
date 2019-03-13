@@ -2999,19 +2999,18 @@ WeakAuras.event_prototypes = {
       WeakAuras.RegisterDBMCallback("kill");
 
       local ret = "return function (states, event, id)\n"
-      -- ret = ret .. "          print(event, id)\n";
       if (trigger.use_id) then
-        ret = ret .. "          local triggerId = \"" .. (trigger.id or "") .. "\"\n";
+        ret = ret .. ("          local triggerId = %q\n"):format(trigger.id or "");
       else
         ret = ret .. "          local triggerId = nil\n";
       end
 
       if (trigger.use_message) then
         local ret2 = [=[
-          local triggerMessage = %s
+          local triggerMessage = %q
           local triggerOperator = %q
         ]=]
-        ret = ret .. ret2:format('[=[' .. (trigger.message or "") .. ']=]', trigger.message_operator  or "")
+        ret = ret .. ret2:format(trigger.message or "", trigger.message_operator or "")
       else
         ret = ret .. [[
           local triggerMessage = nil;
@@ -3254,15 +3253,15 @@ WeakAuras.event_prototypes = {
       WeakAuras.RegisterBigWigsTimer();
       local ret = [=[
         return function(states, event, id)
-        local triggerAddon = %s;
+        local triggerAddon = %q;
         local triggerSpellId = %q;
-        local triggerText = %s;
+        local triggerText = %q;
         local triggerTextOperator = %q;
       ]=]
 
-      ret = ret:format(trigger.use_addon and ('[=[' .. (trigger.addon or '') .. ']=]') or "nil",
-        trigger.use_spellId and tostring(trigger.spellId) or "",
-        trigger.use_text and ('[=[' .. (trigger.text or '') .. ']=]') or "nil",
+      ret = ret:format(trigger.use_addon and trigger.addon or "",
+        trigger.use_spellId and trigger.spellId or "",
+        trigger.use_text and trigger.text or "",
         trigger.use_text and trigger.text_operator or ""
       );
 
@@ -3366,7 +3365,6 @@ WeakAuras.event_prototypes = {
           end
           return true;
         end]]
-        --print(ret);
         return ret;
       end
     end,
@@ -3379,7 +3377,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "spellId",
-        display = L["Spell Id"], -- Correct?
+        display = L["Spell Id"],
         type = "string",
       },
       {

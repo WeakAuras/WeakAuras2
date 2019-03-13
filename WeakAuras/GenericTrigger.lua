@@ -2469,13 +2469,13 @@ do
 
     local v = bars[id];
     local bestMatch;
-    if (addon and addon ~= v.addon) then
+    if (addon ~= "" and addon ~= v.addon) then
       return false;
     end
     if (spellId ~= "" and spellId ~= v.spellId) then
       return false;
     end
-    if (text) then
+    if (text ~= "") then
       if(textOperator == "==") then
         if (v.text ~= text) then
           return false;
