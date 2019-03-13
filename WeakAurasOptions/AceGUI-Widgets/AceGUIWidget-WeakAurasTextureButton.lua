@@ -28,7 +28,7 @@ local methods = {
     self.texture:SetTexture();
   end,
   ["SetTexture"] = function(self, texturePath, name)
-    if (GetAtlasInfo(texturePath)) then
+    if (C_Texture.GetAtlasInfo(texturePath)) then
       self.texture:SetAtlas(texturePath);
     else
       self.texture:SetTexture(texturePath);
