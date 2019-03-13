@@ -965,6 +965,7 @@ globals = {
 	"C_TaskQuest.GetQuestsForPlayerByMapID",
 	"C_TaskQuest.IsActive",
 	"C_TaskQuest.RequestPreloadRewardData",
+	"C_Texture",
 	"C_Timer",
 	"C_Timer.After",
 	"C_ToyBox",
