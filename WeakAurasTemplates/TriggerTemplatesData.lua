@@ -1638,7 +1638,7 @@ templates.class.SHAMAN = {
         { spell = 108281, type = "buff", unit = "player", talent = 14}, -- Ancestral Guidance
         { spell = 546, type = "buff", unit = "player"}, -- Water Walking
         { spell = 114050, type = "buff", unit = "player", talent = 21}, -- Ascendance
-        { spell = 210714, type = "buff", unit = "player", talent = 17}, -- Icefury
+        { spell = 210714, type = "buff", unit = "player", talent = 18}, -- Icefury
         { spell = 260881, type = "buff", unit = "player", talent = 7}, -- Spirit Wolf
         { spell = 260734, type = "buff", unit = "player", talent = 10}, -- Master of the Elements
         { spell = 191634, type = "buff", unit = "player", talent = 20}, -- Stormkeeper
@@ -1698,7 +1698,7 @@ templates.class.SHAMAN = {
         { spell = 192249, type = "ability", duration = 30,talent = 11}, -- Storm Elemental
         { spell = 198067, type = "ability", duration = 30}, -- Fire Elemental
         { spell = 198103, type = "ability", duration = 60}, -- Earth Elemental
-        { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 17}, -- Icefury
+        { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 18}, -- Icefury
       },
       icon = 135790
     },
