@@ -27,6 +27,75 @@ local function EnsureTexture(self, texture)
   end
 end
 
+local function moveOnePxl(direction)
+  if mover and mover.moving then
+    local data = mover.moving.data
+    if data then
+      if direction == "top" then
+        data.yOffset = data.yOffset + 1
+      elseif direction == "bottom" then
+        data.yOffset = data.yOffset - 1
+      elseif direction == "left" then
+        data.xOffset = data.xOffset - 1
+      elseif direction == "right" then
+        data.xOffset = data.xOffset + 1
+      end
+      WeakAuras.Add(data)
+      WeakAuras.SetThumbnail(data)
+      WeakAuras.ResetMoverSizer()
+      if(data.parent) then
+        local parentData = WeakAuras.GetData(data.parent)
+        if(parentData) then
+          WeakAuras.Add(parentData)
+          WeakAuras.SetThumbnail(parentData)
+        end
+      end
+    end
+  end
+end
+
+local function ConstructMover(frame)
+  local top = CreateFrame("BUTTON", nil, frame)
+  top:SetSize(25, 25)
+  top:SetPoint("LEFT", frame, "RIGHT", 1, 10)
+  local bottom = CreateFrame("BUTTON", nil, frame)
+  bottom:SetSize(25, 25)
+  bottom:SetPoint("LEFT", frame, "RIGHT", 1, -10)
+  local left = CreateFrame("BUTTON", nil, frame)
+  left:SetSize(25, 25)
+  left:SetPoint("TOP", frame, "BOTTOM", -10, -1)
+  local right = CreateFrame("BUTTON", nil, frame)
+  right:SetSize(25, 25)
+  right:SetPoint("TOP", frame, "BOTTOM", 10, -1)
+
+  local texTop = top:CreateTexture(nil, "OVERLAY")
+  texTop:SetTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  texTop:SetAllPoints(top)
+  local texBottom = bottom:CreateTexture(nil, "OVERLAY")
+  texBottom:SetTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  texBottom:SetTexCoord(0, 1, 1, 0)
+  texBottom:SetAllPoints(bottom)
+  local texLeft = bottom:CreateTexture(nil, "OVERLAY")
+  texLeft:SetTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  texLeft:SetRotation(math.pi/2)
+  texLeft:SetAllPoints(left)
+  local texRight = bottom:CreateTexture(nil, "OVERLAY")
+  texRight:SetTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  texRight:SetRotation(-math.pi/2)
+  texRight:SetAllPoints(right)
+
+  top:SetNormalTexture(texTop)
+  top:SetScript("OnClick", function() moveOnePxl("top") end)
+  bottom:SetNormalTexture(texBottom)
+  bottom:SetScript("OnClick", function() moveOnePxl("bottom") end)
+  left:SetNormalTexture(texLeft)
+  left:SetScript("OnClick", function() moveOnePxl("left") end)
+  right:SetNormalTexture(texRight)
+  right:SetScript("OnClick", function() moveOnePxl("right") end)
+
+  return top, bottom, left, right
+end
+
 local function ConstructSizer(frame)
   -- topright, bottomright, bottomleft, topleft
 
@@ -242,6 +311,8 @@ local function ConstructMoverSizer(parent)
 
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
+
+  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight = ConstructMover(frame)
 
   frame.top.Clear();
   frame.topright.Clear();
