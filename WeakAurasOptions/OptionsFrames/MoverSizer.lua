@@ -27,6 +27,80 @@ local function EnsureTexture(self, texture)
   end
 end
 
+local function moveOnePxl(direction)
+  if mover and mover.moving then
+    local data = mover.moving.data
+    if data then
+      if direction == "top" then
+        data.yOffset = data.yOffset + 1
+      elseif direction == "bottom" then
+        data.yOffset = data.yOffset - 1
+      elseif direction == "left" then
+        data.xOffset = data.xOffset - 1
+      elseif direction == "right" then
+        data.xOffset = data.xOffset + 1
+      end
+      WeakAuras.Add(data)
+      WeakAuras.SetThumbnail(data)
+      WeakAuras.ResetMoverSizer()
+      if(data.parent) then
+        local parentData = WeakAuras.GetData(data.parent)
+        if(parentData) then
+          WeakAuras.Add(parentData)
+          WeakAuras.SetThumbnail(parentData)
+        end
+      end
+      WeakAuras.ReloadOptions(data.id)
+    end
+  end
+end
+
+local function ConstructMover(frame)
+  local top = CreateFrame("BUTTON", nil, frame)
+  top:SetSize(25, 25)
+  top:SetPoint("LEFT", frame, "RIGHT", 1, 10)
+  local bottom = CreateFrame("BUTTON", nil, frame)
+  bottom:SetSize(25, 25)
+  bottom:SetPoint("LEFT", frame, "RIGHT", 1, -10)
+  local left = CreateFrame("BUTTON", nil, frame)
+  left:SetSize(25, 25)
+  left:SetPoint("TOP", frame, "BOTTOM", -10, -1)
+  local right = CreateFrame("BUTTON", nil, frame)
+  right:SetSize(25, 25)
+  right:SetPoint("TOP", frame, "BOTTOM", 10, -1)
+
+  top:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  top:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
+  top:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
+  top:SetScript("OnClick", function() moveOnePxl("top") end)
+
+  bottom:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  bottom:GetNormalTexture():SetTexCoord(0, 1, 1, 0)
+  bottom:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
+  bottom:GetHighlightTexture():SetTexCoord(0, 1, 1, 0)
+  bottom:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
+  bottom:GetPushedTexture():SetTexCoord(0, 1, 1, 0)
+  bottom:SetScript("OnClick", function() moveOnePxl("bottom") end)
+
+  left:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  left:GetNormalTexture():SetRotation(math.pi/2)
+  left:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
+  left:GetHighlightTexture():SetRotation(math.pi/2)
+  left:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
+  left:GetPushedTexture():SetRotation(math.pi/2)
+  left:SetScript("OnClick", function() moveOnePxl("left") end)
+
+  right:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
+  right:GetNormalTexture():SetRotation(-math.pi/2)
+  right:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
+  right:GetHighlightTexture():SetRotation(-math.pi/2)
+  right:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
+  right:GetPushedTexture():SetRotation(-math.pi/2)
+  right:SetScript("OnClick", function() moveOnePxl("right") end)
+
+  return top, bottom, left, right
+end
+
 local function ConstructSizer(frame)
   -- topright, bottomright, bottomleft, topleft
 
@@ -242,6 +316,8 @@ local function ConstructMoverSizer(parent)
 
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
+
+  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight = ConstructMover(frame)
 
   frame.top.Clear();
   frame.topright.Clear();
