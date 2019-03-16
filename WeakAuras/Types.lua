@@ -1119,6 +1119,10 @@ WeakAuras.autoeventend_types = {
   ["custom"] = L["Custom"]
 }
 
+WeakAuras.timedeventend_types = {
+  ["timed"] = L["Timed"],
+}
+
 WeakAuras.justify_types = {
   ["LEFT"] = L["Left"],
   ["CENTER"] = L["Center"],

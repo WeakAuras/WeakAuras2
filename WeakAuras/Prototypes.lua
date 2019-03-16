@@ -1240,7 +1240,7 @@ WeakAuras.event_prototypes = {
         test = "UnitExists(concernedUnit)"
       }
     },
-    automatic = true
+    automaticrequired = true
   },
   ["Health"] = {
     type = "status",
@@ -1380,7 +1380,7 @@ WeakAuras.event_prototypes = {
         end
       }
     },
-    automatic = true
+    automaticrequired = true
   },
   ["Power"] = {
     type = "status",
@@ -1586,7 +1586,7 @@ WeakAuras.event_prototypes = {
       local useThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck)
       return UnitPower(trigger.unit, powerType, useThirdArg) / pdm;
     end,
-    automatic = true
+    automaticrequired = true
   },
   ["Alternate Power"] = {
     type = "status",
@@ -1645,7 +1645,7 @@ WeakAuras.event_prototypes = {
       local icon = UnitAlternatePowerTextureInfo(trigger.unit, 0);
       return icon;
     end,
-    automatic = true
+    automaticrequired = true
   },
   -- Todo: Give useful options to condition based on GUID and flag info
   ["Combat Log"] = {
@@ -2053,7 +2053,8 @@ WeakAuras.event_prototypes = {
         store = true,
         test = "true"
       }
-    }
+    },
+    timedrequired = true
   },
   ["Spell Activation Overlay"] = {
     type = "status",
@@ -2533,7 +2534,8 @@ WeakAuras.event_prototypes = {
       end
       return icon;
     end,
-    hasSpellID = true
+    hasSpellID = true,
+    timedrequired = true
   },
   ["Charges Changed (Spell)"] = {
     type = "event",
@@ -2617,7 +2619,8 @@ WeakAuras.event_prototypes = {
       end
       return icon;
     end,
-    hasSpellID = true
+    hasSpellID = true,
+    timedrequired = true
   },
   ["Cooldown Progress (Item)"] = {
     type = "status",
@@ -2881,7 +2884,8 @@ WeakAuras.event_prototypes = {
       local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
       return icon;
     end,
-    hasItemID = true
+    hasItemID = true,
+    timedrequired = true
   },
   ["Cooldown Ready (Equipment Slot)"] = {
     type = "event",
@@ -2911,7 +2915,8 @@ WeakAuras.event_prototypes = {
     iconFunc = function(trigger)
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
     end,
-    hasItemID = true
+    hasItemID = true,
+    timedrequired = true
   },
   ["GTFO"] = {
     type = "event",
@@ -2931,6 +2936,7 @@ WeakAuras.event_prototypes = {
         conditionType = "select"
       },
     },
+    timedrequired = true
   },
   -- DBM events
   ["DBM Announce"] = {
@@ -2978,7 +2984,8 @@ WeakAuras.event_prototypes = {
         test = "true",
         init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
       },
-    }
+    },
+    timedrequired = true
   },
   ["DBM Timer"] = {
     type = "status",
@@ -3237,7 +3244,8 @@ WeakAuras.event_prototypes = {
         test = "true",
         init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
       },
-    }
+    },
+    timedrequired = true
   },
   ["BigWigs Timer"] = {
     type = "status",
@@ -4206,9 +4214,13 @@ WeakAuras.event_prototypes = {
         display = L["Clone per Event"],
         type = "toggle",
         test = "true",
-        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''",
+        reloadOptions = true
       },
-    }
+    },
+    timedrequired = function(trigger)
+      return trigger.use_cloneId
+    end
   },
   ["Ready Check"] = {
     type = "event",
@@ -4216,7 +4228,8 @@ WeakAuras.event_prototypes = {
       "READY_CHECK",
     },
     name = L["Ready Check"],
-    args = {}
+    args = {},
+    timedrequired = true
   },
   ["Combat Events"] = {
     type = "event",
@@ -4234,7 +4247,8 @@ WeakAuras.event_prototypes = {
         values = "combat_event_type",
         test = "event == %q"
       }
-    }
+    },
+    timedrequired = true
   },
   ["Death Knight Rune"] = {
     type = "status",
@@ -4604,7 +4618,7 @@ WeakAuras.event_prototypes = {
         test = "status ~= -1"
       },
     },
-    automatic = true
+    automaticrequired = true
   },
   ["Crowd Controlled"] = {
     type = "status",
