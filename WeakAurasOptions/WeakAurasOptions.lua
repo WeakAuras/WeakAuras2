@@ -1003,7 +1003,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       options.unevent.width = WeakAuras.doubleWidth;
     end
 
-    print("ConstructOptions unevent: ", unevent)
     if(unevent == "custom") then
       local unevent_options = WeakAuras.ConstructOptions(prototype, data, order, triggernum, "untrigger");
       options = union(options, unevent_options);
