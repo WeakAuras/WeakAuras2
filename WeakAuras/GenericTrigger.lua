@@ -882,8 +882,6 @@ function GenericTrigger.Add(data, region)
               end
             end
 
-
-
             triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
 
             statesParameter = event_prototypes[trigger.event].statesParameter;
@@ -911,6 +909,18 @@ function GenericTrigger.Add(data, region)
 
             if (event_prototypes[trigger.event].automaticrequired) then
               trigger.unevent = "auto";
+            elseif event_prototypes[trigger.event].timedrequired then
+              if type(event_prototypes[trigger.event].timedrequired) == "function" then
+                if event_prototypes[trigger.event].timedrequired(trigger) then
+                  trigger.unevent = "timed"
+                else
+                  if not(WeakAuras.eventend_types[trigger.unevent]) then
+                    trigger.unevent = "timed"
+                  end
+                end
+              else
+                trigger.unevent = "timed"
+              end
             elseif event_prototypes[trigger.event].automatic then
               if not(WeakAuras.autoeventend_types[trigger.unevent]) then
                 trigger.unevent = "auto"

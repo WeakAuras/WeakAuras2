@@ -124,6 +124,7 @@ local operator_types_without_equal = WeakAuras.operator_types_without_equal;
 local string_operator_types = WeakAuras.string_operator_types;
 local eventend_types = WeakAuras.eventend_types;
 local autoeventend_types = WeakAuras.autoeventend_types;
+local timedeventend_types = WeakAuras.timedeventend_types;
 local subevent_actual_prefix_types = WeakAuras.subevent_actual_prefix_types;
 
 
@@ -1001,11 +1002,26 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
     else
       options.unevent.width = WeakAuras.doubleWidth;
     end
+
+    print("ConstructOptions unevent: ", unevent)
     if(unevent == "custom") then
       local unevent_options = WeakAuras.ConstructOptions(prototype, data, order, triggernum, "untrigger");
       options = union(options, unevent_options);
     end
-    if(prototype.automatic) then
+    if (prototype.timedrequired) then
+      if (type(prototype.timedrequired) == "function") then
+        local func = prototype.timedrequired
+        options.unevent.values = function()
+          if func(trigger) then
+            return timedeventend_types
+          else
+            return eventend_types
+          end
+        end
+      else
+        options.unevent.values = timedeventend_types;
+      end
+    elseif (prototype.automatic) then
       options.unevent.values = autoeventend_types;
     else
       options.unevent.values = eventend_types;
