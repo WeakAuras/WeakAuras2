@@ -230,6 +230,11 @@ local function UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, 
     changed = true
   end
 
+  if data.debuffClass ~= debuffClass then
+    data.debuffClass = debuffClass
+    changed = true
+  end
+
   if data.duration ~= duration then
     data.duration = duration
     changed = true
