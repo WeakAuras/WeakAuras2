@@ -101,6 +101,34 @@ local function ConstructMover(frame)
   return top, bottom, left, right
 end
 
+local function PositionMover(frame)
+  if frame.moveTop:GetLeft() then
+    if frame.moveTop:GetLeft() < 0 then
+      frame.moveTop:ClearAllPoints()
+      frame.moveTop:SetPoint("LEFT", frame, "RIGHT", 1, 10)
+      frame.moveBottom:ClearAllPoints()
+      frame.moveBottom:SetPoint("LEFT", frame, "RIGHT", 1, -10)
+    elseif frame.moveTop:GetRight() > UIParent:GetRight() then
+      frame.moveTop:ClearAllPoints()
+      frame.moveTop:SetPoint("RIGHT", frame, "LEFT", -1, 10)
+      frame.moveBottom:ClearAllPoints()
+      frame.moveBottom:SetPoint("RIGHT", frame, "LEFT", -1, -10)
+    end
+
+    if frame.moveLeft:GetBottom() < 0 then
+      frame.moveLeft:ClearAllPoints()
+      frame.moveLeft:SetPoint("BOTTOM", frame, "TOP", -10, 1)
+      frame.moveRight:ClearAllPoints()
+      frame.moveRight:SetPoint("BOTTOM", frame, "TOP", 10, 1)
+    elseif frame.moveLeft:GetTop() > UIParent:GetTop() then
+      frame.moveLeft:ClearAllPoints()
+      frame.moveLeft:SetPoint("TOP", frame, "BOTTOM", -10, -1)
+      frame.moveRight:ClearAllPoints()
+      frame.moveRight:SetPoint("TOP", frame, "BOTTOM", 10, -1)
+    end
+  end
+end
+
 local function ConstructSizer(frame)
   -- topright, bottomright, bottomleft, topleft
 
@@ -318,6 +346,7 @@ local function ConstructMoverSizer(parent)
   = ConstructSizer(frame)
 
   frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight = ConstructMover(frame)
+  PositionMover(frame)
 
   frame.top.Clear();
   frame.topright.Clear();
@@ -647,6 +676,9 @@ local function ConstructMoverSizer(parent)
       end
     end
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy);
+    if self.isMoving then
+      PositionMover(frame)
+    end
   end);
 
   return frame, mover
