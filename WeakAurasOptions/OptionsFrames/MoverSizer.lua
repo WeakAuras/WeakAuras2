@@ -470,8 +470,14 @@ local function ConstructMoverSizer(parent)
         y = {}
       }
       local x, y = {}, {}
+      local skipIds = { [data.id] =  true }
+      if data.controlledChildren then
+        for _, id in pairs(data.controlledChildren) do
+          skipIds[id] = true
+        end
+      end
       for k, v in pairs(WeakAuras.displayButtons) do
-        if k ~= data.id and v.view.visibility ~= 0 then
+        if not skipIds[k] and v.view.visibility ~= 0 then
           tinsert(x, v.view.region:GetLeft())
           tinsert(x, v.view.region:GetRight())
           tinsert(y, v.view.region:GetTop())
@@ -506,13 +512,16 @@ local function ConstructMoverSizer(parent)
           local left = region:GetLeft()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
-            xOff = xOff + region.trx - region.blx
+            xOff = xOff - region.blx
           end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignxOf, yOff)
         elseif mover.alignxFrom == "RIGHT" then
           local right = region:GetRight()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          if data.regionType == "group" then
+            xOff = xOff - region.trx
+          end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignxOf, yOff)
         end
@@ -520,13 +529,16 @@ local function ConstructMoverSizer(parent)
           local top = region:GetTop()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
-            yOff = yOff - region.try + region.bly
+            yOff = yOff - region.try
           end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - top + mover.alignyOf)
         elseif mover.alignyFrom == "BOTTOM" then
           local bottom = region:GetBottom()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          if data.regionType == "group" then
+            yOff = yOff - region.bly
+          end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignyOf)
         end
