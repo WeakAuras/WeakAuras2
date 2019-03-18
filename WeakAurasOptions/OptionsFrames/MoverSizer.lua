@@ -98,7 +98,21 @@ local function ConstructMover(frame)
   right:GetPushedTexture():SetRotation(-math.pi/2)
   right:SetScript("OnClick", function() moveOnePxl("right") end)
 
-  return top, bottom, left, right
+  local linex = frame:CreateLine(nil, "OVERLAY", 7)
+  linex:SetThickness(2)
+  linex:SetColorTexture(1,1,0)
+  linex:SetStartPoint("BOTTOMLEFT", UIParent)
+  linex:SetEndPoint("BOTTOMRIGHT", UIParent)
+  linex:Hide()
+
+  local liney = frame:CreateLine(nil, "OVERLAY", 7)
+  liney:SetThickness(2)
+  liney:SetColorTexture(1,1,0)
+  liney:SetStartPoint("TOPLEFT", UIParent)
+  liney:SetEndPoint("BOTTOMLEFT", UIParent)
+  liney:Hide()
+
+  return top, bottom, left, right, linex, liney
 end
 
 local function PositionMover(frame)
@@ -345,7 +359,7 @@ local function ConstructMoverSizer(parent)
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
 
-  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight = ConstructMover(frame)
+  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight, frame.linex, frame.liney = ConstructMover(frame)
   PositionMover(frame)
 
   frame.top.Clear()
@@ -398,7 +412,7 @@ local function ConstructMoverSizer(parent)
   end
 
   frame.ReAnchor = function(self)
-    if(mover.moving.region) then
+    if mover.moving.region then
       self:AnchorPoints(mover.moving.region, mover.moving.data)
     end
   end
@@ -450,6 +464,32 @@ local function ConstructMoverSizer(parent)
       region:StartMoving()
       mover.isMoving = true
       mover.text:Show()
+      -- build list of alignment coordinates
+      mover.align = {
+        x = {},
+        y = {}
+      }
+      local x, y = {}, {}
+      for k, v in pairs(WeakAuras.displayButtons) do
+        if k ~= data.id and v.view.visibility ~= 0 then
+          tinsert(x, v.view.region:GetLeft())
+          tinsert(x, v.view.region:GetRight())
+          tinsert(y, v.view.region:GetTop())
+          tinsert(y, v.view.region:GetBottom())
+        end
+      end
+      table.sort(x)
+      table.sort(y)
+      for k, v in ipairs(x) do
+        if v ~= x[k+1] then
+          tinsert(mover.align.x, v)
+        end
+      end
+      for k, v in ipairs(y) do
+        if v ~= y[k+1] then
+          tinsert(mover.align.y, v)
+        end
+      end
     end
 
     mover.doneMoving = function(self)
@@ -460,6 +500,37 @@ local function ConstructMoverSizer(parent)
       region:StopMovingOrSizing()
       mover.isMoving = false
       mover.text:Hide()
+
+      if not IsShiftKeyDown() and (mover.alignxFrom or mover.alignyFrom) then
+        if mover.alignxFrom == "LEFT" then
+          local left = region:GetLeft()
+          local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          if data.regionType == "group" then
+            xOff = xOff + region.trx - region.blx
+          end
+          region:ClearAllPoints()
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignxOf, yOff)
+        elseif mover.alignxFrom == "RIGHT" then
+          local right = region:GetRight()
+          local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          region:ClearAllPoints()
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignxOf, yOff)
+        end
+        if mover.alignyFrom == "TOP" then
+          local top = region:GetTop()
+          local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          if data.regionType == "group" then
+            yOff = yOff - region.try + region.bly
+          end
+          region:ClearAllPoints()
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - top + mover.alignyOf)
+        elseif mover.alignyFrom == "BOTTOM" then
+          local bottom = region:GetBottom()
+          local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          region:ClearAllPoints()
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignyOf)
+        end
+      end
 
       if data.xOffset and data.yOffset then
         local selfX, selfY = mover.selfPointIcon:GetCenter()
@@ -492,6 +563,9 @@ local function ConstructMoverSizer(parent)
       end
       AceConfigDialog:Open("WeakAuras", parent.container)
       WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+      -- hide alignment lines
+      frame.liney:Hide()
+      frame.linex:Hide()
     end
 
     if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" then
@@ -530,7 +604,7 @@ local function ConstructMoverSizer(parent)
         mover:SetAllPoints(region)
         frame:SetScript("OnUpdate", function()
           frame.text:SetText(("(%.2f, %.2f)"):format(region:GetWidth(), region:GetHeight()))
-          if(data.width and data.height) then
+          if data.width and data.height then
             data.width = region:GetWidth()
             data.height = region:GetHeight()
           end
@@ -677,18 +751,58 @@ local function ConstructMoverSizer(parent)
     local midx = (distance / 2) * cos(angle)
     local midy = (distance / 2) * sin(angle)
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
-    if (midx > 0 and (self.text:GetRight() or 0) > (frame:GetLeft() or 0))
-    or (midx < 0 and (self.text:GetLeft() or 0) < (frame:GetRight() or 0))
+    local left, right, top, bottom = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom()
+    if (midx > 0 and (self.text:GetRight() or 0) > (left or 0))
+    or (midx < 0 and (self.text:GetLeft() or 0) < (right or 0))
     then
-      if midy > 0 and (self.text:GetTop() or 0) > (frame:GetBottom() or 0) then
-        midy = midy - ((self.text:GetTop() or 0) - (frame:GetBottom() or 0))
-      elseif midy < 0 and (self.text:GetBottom() or 0) < (frame:GetTop() or 0) then
-        midy = midy + ((frame:GetTop() or 0) - (self.text:GetBottom() or 0))
+      if midy > 0 and (self.text:GetTop() or 0) > (top or 0) then
+        midy = midy - ((self.text:GetTop() or 0) - (bottom or 0))
+      elseif midy < 0 and (self.text:GetBottom() or 0) < (top or 0) then
+        midy = midy + ((top or 0) - (self.text:GetBottom() or 0))
       end
     end
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
     if self.isMoving then
       PositionMover(frame)
+      if mover.align then
+        local foundx, foundy = false, false
+        for k, v in ipairs(mover.align.x) do
+          if left >= v - 5 and left <= v + 5
+          or right >= v - 5 and right <= v + 5
+          then
+            frame.liney:SetStartPoint("TOPLEFT", UIParent, v, 0)
+            frame.liney:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
+            frame.liney:Show()
+            mover.alignxFrom = (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
+            mover.alignxOf = v
+            foundx = true
+            break
+          end
+        end
+        for k, v in ipairs(mover.align.y) do
+          if top >= v - 5 and top <= v + 5
+          or bottom >= v - 5 and bottom <= v + 5
+          then
+            frame.linex:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
+            frame.linex:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
+            frame.linex:Show()
+            mover.alignyFrom = (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
+            mover.alignyOf = v
+            foundy = true
+            break
+          end
+        end
+        if not foundx then
+          mover.alignxFrom = nil
+          mover.alignxOf = nil
+          frame.liney:Hide()
+        end
+        if not foundy then
+          mover.alignyFrom = nil
+          mover.alignyOf = nil
+          frame.linex:Hide()
+        end
+      end
     end
   end)
 
