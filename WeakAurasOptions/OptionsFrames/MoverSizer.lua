@@ -778,7 +778,12 @@ local function ConstructMoverSizer(parent)
       PositionMover(frame)
       if mover.align then
         local foundx, foundy = false, false
-        for k, v in ipairs(mover.align.x) do
+        local reverse = mover.lastX and mover.lastX > selfX
+        local start = reverse and #mover.align.x or 1
+        local finish = reverse and 1 or #mover.align.x
+        local step = reverse and -1 or 1
+        for i=start,finish,step do
+          local v = mover.align.x[i]
           if left >= v - 5 and left <= v + 5
           or right >= v - 5 and right <= v + 5
           then
@@ -791,7 +796,12 @@ local function ConstructMoverSizer(parent)
             break
           end
         end
-        for k, v in ipairs(mover.align.y) do
+        reverse = mover.lastY and mover.lastY > selfY
+        start = reverse and #mover.align.y or 1
+        finish = reverse and 1 or #mover.align.y
+        step = reverse and -1 or 1
+        for i=start,finish,step do
+          local v = mover.align.y[i]
           if top >= v - 5 and top <= v + 5
           or bottom >= v - 5 and bottom <= v + 5
           then
@@ -814,6 +824,7 @@ local function ConstructMoverSizer(parent)
           mover.alignyOf = nil
           frame.linex:Hide()
         end
+        mover.lastX, mover.lastY = selfX, selfY
       end
     end
   end)
