@@ -98,21 +98,21 @@ local function ConstructMover(frame)
   right:GetPushedTexture():SetRotation(-math.pi/2)
   right:SetScript("OnClick", function() moveOnePxl("right") end)
 
-  local linex = frame:CreateLine(nil, "OVERLAY", 7)
-  linex:SetThickness(2)
-  linex:SetColorTexture(1,1,0)
-  linex:SetStartPoint("BOTTOMLEFT", UIParent)
-  linex:SetEndPoint("BOTTOMRIGHT", UIParent)
-  linex:Hide()
+  local lineX = frame:CreateLine(nil, "OVERLAY", 7)
+  lineX:SetThickness(2)
+  lineX:SetColorTexture(1,1,0)
+  lineX:SetStartPoint("BOTTOMLEFT", UIParent)
+  lineX:SetEndPoint("BOTTOMRIGHT", UIParent)
+  lineX:Hide()
 
-  local liney = frame:CreateLine(nil, "OVERLAY", 7)
-  liney:SetThickness(2)
-  liney:SetColorTexture(1,1,0)
-  liney:SetStartPoint("TOPLEFT", UIParent)
-  liney:SetEndPoint("BOTTOMLEFT", UIParent)
-  liney:Hide()
+  local lineY = frame:CreateLine(nil, "OVERLAY", 7)
+  lineY:SetThickness(2)
+  lineY:SetColorTexture(1,1,0)
+  lineY:SetStartPoint("TOPLEFT", UIParent)
+  lineY:SetEndPoint("BOTTOMLEFT", UIParent)
+  lineY:Hide()
 
-  return top, bottom, left, right, linex, liney
+  return top, bottom, left, right, lineX, lineY
 end
 
 local function PositionMover(frame)
@@ -359,7 +359,7 @@ local function ConstructMoverSizer(parent)
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
 
-  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight, frame.linex, frame.liney = ConstructMover(frame)
+  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight, frame.lineX, frame.lineY = ConstructMover(frame)
   PositionMover(frame)
 
   frame.top.Clear()
@@ -484,9 +484,9 @@ local function ConstructMoverSizer(parent)
             tinsert(y, v.view.region:GetTop())
             tinsert(y, v.view.region:GetBottom())
           else
-            local centerx, centery = v.view.region:GetCenter()
-            tinsert(x, centerx)
-            tinsert(y, centery)
+            local centerX, centerY = v.view.region:GetCenter()
+            tinsert(x, centerX)
+            tinsert(y, centerY)
           end
         end
       end
@@ -495,14 +495,14 @@ local function ConstructMoverSizer(parent)
       tinsert(y, midY)
       table.sort(x)
       table.sort(y)
-      for k, v in ipairs(x) do
-        if v ~= x[k+1] then
-          tinsert(mover.align.x, v)
+      for index, value in ipairs(x) do
+        if value ~= x[index+1] then
+          tinsert(mover.align.x, value)
         end
       end
-      for k, v in ipairs(y) do
-        if v ~= y[k+1] then
-          tinsert(mover.align.y, v)
+      for index, value in ipairs(y) do
+        if value ~= y[index+1] then
+          tinsert(mover.align.y, value)
         end
       end
     end
@@ -516,8 +516,8 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = false
       mover.text:Hide()
 
-      if not IsShiftKeyDown() and (mover.alignxFrom or mover.alignyFrom) then
-        if mover.alignxFrom == "LEFT" then
+      if not IsShiftKeyDown() and (mover.alignXFrom or mover.alignYFrom) then
+        if mover.alignXFrom == "LEFT" then
           local left = region:GetLeft()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
@@ -525,7 +525,7 @@ local function ConstructMoverSizer(parent)
           end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignxOf, yOff)
-        elseif mover.alignxFrom == "RIGHT" then
+        elseif mover.alignXFrom == "RIGHT" then
           local right = region:GetRight()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
@@ -533,7 +533,7 @@ local function ConstructMoverSizer(parent)
           end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignxOf, yOff)
-        elseif mover.alignxFrom == "CENTER" then
+        elseif mover.alignXFrom == "CENTER" then
           local center = region:GetCenter()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
@@ -542,30 +542,30 @@ local function ConstructMoverSizer(parent)
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - center + mover.alignxOf, yOff)
         end
-        if mover.alignyFrom == "TOP" then
+        if mover.alignYFrom == "TOP" then
           local top = region:GetTop()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             yOff = yOff - region.try
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - top + mover.alignyOf)
-        elseif mover.alignyFrom == "BOTTOM" then
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - top + mover.alignYOf)
+        elseif mover.alignYFrom == "BOTTOM" then
           local bottom = region:GetBottom()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             yOff = yOff - region.bly
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignyOf)
-        elseif mover.alignyFrom == "CENTER" then
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignYOf)
+        elseif mover.alignYFrom == "CENTER" then
           local _, center = region:GetCenter()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             yOff = yOff - region.try + (region.try - region.bly) / 2
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - center + mover.alignyOf)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - center + mover.alignYOf)
         end
       end
 
@@ -601,8 +601,8 @@ local function ConstructMoverSizer(parent)
       AceConfigDialog:Open("WeakAuras", parent.container)
       WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
       -- hide alignment lines
-      frame.liney:Hide()
-      frame.linex:Hide()
+      frame.lineY:Hide()
+      frame.lineX:Hide()
     end
 
     if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" then
@@ -788,7 +788,7 @@ local function ConstructMoverSizer(parent)
     local midx = (distance / 2) * cos(angle)
     local midy = (distance / 2) * sin(angle)
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
-    local left, right, top, bottom, centerx, centery = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom(), frame:GetCenter()
+    local left, right, top, bottom, centerX, centerY = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom(), frame:GetCenter()
     if (midx > 0 and (self.text:GetRight() or 0) > (left or 0))
     or (midx < 0 and (self.text:GetLeft() or 0) < (right or 0))
     then
@@ -803,7 +803,7 @@ local function ConstructMoverSizer(parent)
       PositionMover(frame)
       if mover.align then
         local ctrlDown = IsControlKeyDown()
-        local foundx, foundy = false, false
+        local foundX, foundY = false, false
         local reverse = mover.lastX and mover.lastX > selfX
         local start = reverse and #mover.align.x or 1
         local finish = reverse and 1 or #mover.align.x
@@ -814,15 +814,15 @@ local function ConstructMoverSizer(parent)
             left >= v - 5 and left <= v + 5
             or right >= v - 5 and right <= v + 5
           ) or (
-            ctrlDown and centerx >= v - 5 and centerx <= v + 5
+            ctrlDown and centerX >= v - 5 and centerX <= v + 5
           )
           then
-            frame.liney:SetStartPoint("TOPLEFT", UIParent, v, 0)
-            frame.liney:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
-            frame.liney:Show()
-            mover.alignxFrom = ctrlDown and "CENTER" or (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
+            frame.lineY:SetStartPoint("TOPLEFT", UIParent, v, 0)
+            frame.lineY:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
+            frame.lineY:Show()
+            mover.alignXFrom = ctrlDown and "CENTER" or (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
             mover.alignxOf = v
-            foundx = true
+            foundX = true
             break
           end
         end
@@ -836,27 +836,27 @@ local function ConstructMoverSizer(parent)
             top >= v - 5 and top <= v + 5
             or bottom >= v - 5 and bottom <= v + 5
           ) or (
-            ctrlDown and centery >= v - 5 and centery <= v + 5
+            ctrlDown and centerY >= v - 5 and centerY <= v + 5
           )
           then
-            frame.linex:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
-            frame.linex:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
-            frame.linex:Show()
-            mover.alignyFrom = ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
-            mover.alignyOf = v
-            foundy = true
+            frame.lineX:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
+            frame.lineX:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
+            frame.lineX:Show()
+            mover.alignYFrom = ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
+            mover.alignYOf = v
+            foundY = true
             break
           end
         end
-        if not foundx then
-          mover.alignxFrom = nil
+        if not foundX then
+          mover.alignXFrom = nil
           mover.alignxOf = nil
-          frame.liney:Hide()
+          frame.lineY:Hide()
         end
-        if not foundy then
-          mover.alignyFrom = nil
-          mover.alignyOf = nil
-          frame.linex:Hide()
+        if not foundY then
+          mover.alignYFrom = nil
+          mover.alignYOf = nil
+          frame.lineX:Hide()
         end
         mover.lastX, mover.lastY = selfX, selfY
       end
