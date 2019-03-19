@@ -478,10 +478,16 @@ local function ConstructMoverSizer(parent)
       end
       for k, v in pairs(WeakAuras.displayButtons) do
         if not skipIds[k] and v.view.visibility ~= 0 then
-          tinsert(x, v.view.region:GetLeft())
-          tinsert(x, v.view.region:GetRight())
-          tinsert(y, v.view.region:GetTop())
-          tinsert(y, v.view.region:GetBottom())
+          if not IsControlKeyDown() then
+            tinsert(x, v.view.region:GetLeft())
+            tinsert(x, v.view.region:GetRight())
+            tinsert(y, v.view.region:GetTop())
+            tinsert(y, v.view.region:GetBottom())
+          else
+            local centerx, centery = v.view.region:GetCenter()
+            tinsert(x, centerx)
+            tinsert(y, centery)
+          end
         end
       end
       local midX, midY = UIParent:GetCenter()
@@ -527,6 +533,14 @@ local function ConstructMoverSizer(parent)
           end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignxOf, yOff)
+        elseif mover.alignxFrom == "CENTER" then
+          local center = region:GetCenter()
+          local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          if data.regionType == "group" then
+            xOff = xOff - region.trx + (region.trx - region.blx) / 2
+          end
+          region:ClearAllPoints()
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - center + mover.alignxOf, yOff)
         end
         if mover.alignyFrom == "TOP" then
           local top = region:GetTop()
@@ -544,6 +558,14 @@ local function ConstructMoverSizer(parent)
           end
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignyOf)
+        elseif mover.alignyFrom == "CENTER" then
+          local _, center = region:GetCenter()
+          local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+          if data.regionType == "group" then
+            yOff = yOff - region.try + (region.try - region.bly) / 2
+          end
+          region:ClearAllPoints()
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - center + mover.alignyOf)
         end
       end
 
@@ -766,7 +788,7 @@ local function ConstructMoverSizer(parent)
     local midx = (distance / 2) * cos(angle)
     local midy = (distance / 2) * sin(angle)
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
-    local left, right, top, bottom = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom()
+    local left, right, top, bottom, centerx, centery = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom(), frame:GetCenter()
     if (midx > 0 and (self.text:GetRight() or 0) > (left or 0))
     or (midx < 0 and (self.text:GetLeft() or 0) < (right or 0))
     then
@@ -780,6 +802,7 @@ local function ConstructMoverSizer(parent)
     if self.isMoving then
       PositionMover(frame)
       if mover.align then
+        local ctrlDown = IsControlKeyDown()
         local foundx, foundy = false, false
         local reverse = mover.lastX and mover.lastX > selfX
         local start = reverse and #mover.align.x or 1
@@ -787,13 +810,17 @@ local function ConstructMoverSizer(parent)
         local step = reverse and -1 or 1
         for i=start,finish,step do
           local v = mover.align.x[i]
-          if left >= v - 5 and left <= v + 5
-          or right >= v - 5 and right <= v + 5
+          if not ctrlDown and (
+            left >= v - 5 and left <= v + 5
+            or right >= v - 5 and right <= v + 5
+          ) or (
+            ctrlDown and centerx >= v - 5 and centerx <= v + 5
+          )
           then
             frame.liney:SetStartPoint("TOPLEFT", UIParent, v, 0)
             frame.liney:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
             frame.liney:Show()
-            mover.alignxFrom = (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
+            mover.alignxFrom = ctrlDown and "CENTER" or (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
             mover.alignxOf = v
             foundx = true
             break
@@ -805,13 +832,17 @@ local function ConstructMoverSizer(parent)
         step = reverse and -1 or 1
         for i=start,finish,step do
           local v = mover.align.y[i]
-          if top >= v - 5 and top <= v + 5
-          or bottom >= v - 5 and bottom <= v + 5
+          if not ctrlDown and (
+            top >= v - 5 and top <= v + 5
+            or bottom >= v - 5 and bottom <= v + 5
+          ) or (
+            ctrlDown and centery >= v - 5 and centery <= v + 5
+          )
           then
             frame.linex:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
             frame.linex:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
             frame.linex:Show()
-            mover.alignyFrom = (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
+            mover.alignyFrom = ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
             mover.alignyOf = v
             foundy = true
             break
