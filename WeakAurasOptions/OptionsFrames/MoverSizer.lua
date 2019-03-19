@@ -484,6 +484,9 @@ local function ConstructMoverSizer(parent)
           tinsert(y, v.view.region:GetBottom())
         end
       end
+      local midX, midY = UIParent:GetCenter()
+      tinsert(x, midX)
+      tinsert(y, midY)
       table.sort(x)
       table.sort(y)
       for k, v in ipairs(x) do
