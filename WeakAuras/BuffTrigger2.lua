@@ -2271,6 +2271,12 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local result = {}
 
+  result["debuffClass"] = {
+    display = L["Debuff Type"],
+    type = "select",
+    values = WeakAuras.debuff_class_types
+  }
+
   result["unitCaster"] = {
     display = L["Caster"],
     type = "string"
