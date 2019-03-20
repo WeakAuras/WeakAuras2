@@ -91,6 +91,8 @@ local blockedFunctions = {
   GuildDisband = true,
   GuildUninvite = true,
   securecall = true,
+  C_Club.KickMember = true,
+  C_Club.DestroyClub = true,
 }
 
 local overrideFunctions = {
