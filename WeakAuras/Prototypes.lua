@@ -3296,7 +3296,7 @@ WeakAuras.event_prototypes = {
             WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - remainingCheck + extendTimer);
           end
           ]]
-        copyOrSchedule = copyOrSchedule:format(trigger.remaining_operator or "", trigger.remaining or 0);
+        copyOrSchedule = copyOrSchedule:format(trigger.remaining_operator or "<", trigger.remaining or 0);
       else
         copyOrSchedule = [[
           WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer);
