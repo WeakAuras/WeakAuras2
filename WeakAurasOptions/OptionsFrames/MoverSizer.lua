@@ -346,6 +346,51 @@ local function ConstructSizer(frame)
   return top, topright, right, bottomright, bottom, bottomleft, left, topleft
 end
 
+local function BuildAlignLines(mover)
+  local data = mover.moving.data
+  local align = {
+    x = {},
+    y = {}
+  }
+  local x, y = {}, {}
+  local skipIds = { [data.id] =  true }
+  if data.controlledChildren then
+    for _, id in pairs(data.controlledChildren) do
+      skipIds[id] = true
+    end
+  end
+  for k, v in pairs(WeakAuras.displayButtons) do
+    if not skipIds[k] and v.view.visibility ~= 0 then
+      if not IsControlKeyDown() then
+        tinsert(x, v.view.region:GetLeft())
+        tinsert(x, v.view.region:GetRight())
+        tinsert(y, v.view.region:GetTop())
+        tinsert(y, v.view.region:GetBottom())
+      else
+        local centerX, centerY = v.view.region:GetCenter()
+        tinsert(x, centerX)
+        tinsert(y, centerY)
+      end
+    end
+  end
+  local midX, midY = UIParent:GetCenter()
+  tinsert(x, midX)
+  tinsert(y, midY)
+  table.sort(x)
+  table.sort(y)
+  for index, value in ipairs(x) do
+    if value ~= x[index+1] then
+      tinsert(align.x, value)
+    end
+  end
+  for index, value in ipairs(y) do
+    if value ~= y[index+1] then
+      tinsert(align.y, value)
+    end
+  end
+  return align
+end
+
 local function ConstructMoverSizer(parent)
   local frame = CreateFrame("FRAME", nil, parent)
   frame:SetBackdrop({
@@ -465,49 +510,15 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = true
       mover.text:Show()
       -- build list of alignment coordinates
-      mover.align = {
-        x = {},
-        y = {}
-      }
-      local x, y = {}, {}
-      local skipIds = { [data.id] =  true }
-      if data.controlledChildren then
-        for _, id in pairs(data.controlledChildren) do
-          skipIds[id] = true
-        end
-      end
-      for k, v in pairs(WeakAuras.displayButtons) do
-        if not skipIds[k] and v.view.visibility ~= 0 then
-          if not IsControlKeyDown() then
-            tinsert(x, v.view.region:GetLeft())
-            tinsert(x, v.view.region:GetRight())
-            tinsert(y, v.view.region:GetTop())
-            tinsert(y, v.view.region:GetBottom())
-          else
-            local centerX, centerY = v.view.region:GetCenter()
-            tinsert(x, centerX)
-            tinsert(y, centerY)
-          end
-        end
-      end
-      local midX, midY = UIParent:GetCenter()
-      tinsert(x, midX)
-      tinsert(y, midY)
-      table.sort(x)
-      table.sort(y)
-      for index, value in ipairs(x) do
-        if value ~= x[index+1] then
-          tinsert(mover.align.x, value)
-        end
-      end
-      for index, value in ipairs(y) do
-        if value ~= y[index+1] then
-          tinsert(mover.align.y, value)
-        end
-      end
+      mover.align = BuildAlignLines(mover)
     end
 
-    mover.doneMoving = function(self)
+    mover.doneMoving = function(self, event, key)
+      if event == "MODIFIER_STATE_CHANGED" and key == "LCTRL" or key == "RCTRL" then
+        mover.align = BuildAlignLines(mover)
+        return
+      end
+
       if not mover.isMoving then
         return
       end
@@ -613,6 +624,7 @@ local function ConstructMoverSizer(parent)
       mover:SetScript("OnMouseDown", mover.startMoving)
       mover:SetScript("OnMouseUp", mover.doneMoving)
       mover:SetScript("OnEvent", mover.doneMoving)
+      mover:RegisterEvent("MODIFIER_STATE_CHANGED")
     end
 
     if region:IsResizable() then
