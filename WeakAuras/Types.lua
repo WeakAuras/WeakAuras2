@@ -1747,7 +1747,6 @@ WeakAuras.internal_fields = {
   parent = true,
   internalVersion = true,
   sortHybridTable = true,
-  parent = true,
   authorMode = true,
   skipWagoUpdate = true,
   ignoreWagoUpdate = true
@@ -1839,7 +1838,6 @@ WeakAuras.author_option_fields = {
     max = 1,
     step = .05,
     default = 0,
-    step = .05,
   },
   input = {
     default = "",
