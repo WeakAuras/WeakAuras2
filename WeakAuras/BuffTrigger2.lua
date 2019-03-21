@@ -544,7 +544,6 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
     triggerStates[cloneId] = {
       show = true,
       changed = true,
-      matchCount = 0,
       progressType = 'timed',
       duration = 0,
       expirationTime = math.huge,
