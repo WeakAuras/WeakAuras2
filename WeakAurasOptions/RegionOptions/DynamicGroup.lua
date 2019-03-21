@@ -426,33 +426,38 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   region.suspended = 1
 
   -- i don't much like this hack. But i also want to be able to use the same code
-  -- for the thumbnail, without worrying about animations mucking it up.
-  local animate = data.animate
+  -- for the thumbnail, without worrying about animations or anchors mucking it up.
+  local animate, anchorFrameType = data.animate, data.anchorFrameType
   data.animate = nil
+  data.anchorFrameType = "SCREEN"
   WeakAuras.regionTypes["dynamicgroup"].modify(borderframe, region, data)
   data.animate = animate
+  data.anchorFrameType = anchorFrameType
   local sortedChildren = region.sortedChildren
   for _, regionData in ipairs(sortedChildren) do
     regionData.region:Hide()
   end
   region.sortedChildren = {}
+  region.controlPoints:ReleaseAll()
   for index, childId in pairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     if(childData) then
       local regionData = sortedChildren[index] or {}
       region.sortedChildren[index] = regionData
       regionData.data = childData
-      regionData.controlPoint = regionData.controlPoint or region.controlPoints:Acquire()
+      regionData.controlPoint = region.controlPoints:Acquire()
       regionData.id = childId
       regionData.dataIndex = index
       regionData.region = regionData.region or CreateFrame("FRAME", nil, regionData.controlPoint)
-      regionData.region:SetParent(regionData.controlPoint)
       local childRegion = regionData.region
+      childRegion:Show()
+      childRegion:SetParent(regionData.controlPoint)
       childRegion:SetPoint(data.selfPoint, regionData.controlPoint, data.selfPoint)
       childRegion.texture = childRegion.texture or childRegion:CreateTexture()
       childRegion.texture:SetAllPoints()
       childRegion.width = childData.width or 16
       childRegion.height = childData.height or 16
+      childRegion.toShow = true
       local r, g, b
       if(childData.color) then
         r, g, b = childData.color[1], childData.color[2], childData.color[3]
@@ -478,7 +483,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   region.needToPosition = true
   region:Resume()
   region:ClearAllPoints()
-  region:SetPoint("CENTER", borderframe, "CENTER")
+  region:SetAnchor("CENTER", borderframe, "CENTER")
+  region:SetOffset(0,0)
   local width = region:GetWidth()
   local height = region:GetHeight()
   if width > height then

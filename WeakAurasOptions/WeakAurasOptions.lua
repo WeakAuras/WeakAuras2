@@ -4212,7 +4212,7 @@ function WeakAuras.SetThumbnail(data)
       WeakAuras.validate(data, regionTypes[regionType].default);
       regionOptions[regionType].modifyThumbnail(button.frame, thumbnail, data, regionTypes[regionType].modify);
     end
-
+    thumbnail:Show();
     return thumbnail;
   end
 end
