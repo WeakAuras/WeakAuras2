@@ -620,10 +620,12 @@ local function ConstructMoverSizer(parent)
       mover:SetScript("OnMouseDown", nil)
       mover:SetScript("OnMouseUp", nil)
       mover:SetScript("OnEvent", nil)
+      mover:SetScript("OnHide", nil)
     else
       mover:SetScript("OnMouseDown", mover.startMoving)
       mover:SetScript("OnMouseUp", mover.doneMoving)
       mover:SetScript("OnEvent", mover.doneMoving)
+      mover:SetScript("OnHide", mover.doneMoving)
       mover:RegisterEvent("MODIFIER_STATE_CHANGED")
     end
 
