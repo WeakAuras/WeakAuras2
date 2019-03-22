@@ -636,22 +636,8 @@ local function ConstructMoverSizer(parent)
         WeakAuras.CancelAnimation(region, true, true, true, true, true)
         local rSelfPoint, rAnchor, rAnchorPoint, rXOffset, rYOffset = region:GetPoint(1)
         region:StartSizing(point)
-        local textpoint, anchorpoint
-        if point:find("BOTTOM") then
-          textpoint = "TOP"
-          anchorpoint = "BOTTOM"
-        elseif point:find("TOP") then
-          textpoint = "BOTTOM"
-          anchorpoint = "TOP"
-        elseif point:find("LEFT") then
-          textpoint = "RIGHT"
-          anchorpoint = "LEFT"
-        elseif point:find("RIGHT") then
-          textpoint = "LEFT"
-          anchorpoint = "RIGHT"
-        end
         frame.text:ClearAllPoints()
-        frame.text:SetPoint(textpoint, frame, anchorpoint)
+        frame.text:SetPoint("CENTER", frame, "CENTER", 0, -15)
         frame.text:Show()
         mover:SetAllPoints(region)
         frame:SetScript("OnUpdate", function()
