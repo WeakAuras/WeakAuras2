@@ -527,7 +527,7 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = false
       mover.text:Hide()
 
-      if not IsShiftKeyDown() then
+      if not IsShiftKeyDown() and (mover.alignXFrom or mover.alignYFrom) then
         if mover.alignXFrom == "LEFT" then
           local left = region:GetLeft()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -591,6 +591,7 @@ local function ConstructMoverSizer(parent)
       region:ResetPosition()
       WeakAuras.Add(data)
       WeakAuras.SetThumbnail(data)
+      local xOff, yOff
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
       mover:ClearAllPoints()
       if data.regionType == "group" then
@@ -639,19 +640,15 @@ local function ConstructMoverSizer(parent)
         if point:find("BOTTOM") then
           textpoint = "TOP"
           anchorpoint = "BOTTOM"
-          mover.alignYFrom = point
         elseif point:find("TOP") then
           textpoint = "BOTTOM"
           anchorpoint = "TOP"
-          mover.alignYFrom = point
         elseif point:find("LEFT") then
           textpoint = "RIGHT"
           anchorpoint = "LEFT"
-          mover.alignXFrom = point
         elseif point:find("RIGHT") then
           textpoint = "LEFT"
           anchorpoint = "RIGHT"
-          mover.alignXFrom = point
         end
         frame.text:ClearAllPoints()
         frame.text:SetPoint(textpoint, frame, anchorpoint)
@@ -660,8 +657,23 @@ local function ConstructMoverSizer(parent)
         frame:SetScript("OnUpdate", function()
           frame.text:SetText(("(%.2f, %.2f)"):format(region:GetWidth(), region:GetHeight()))
           if data.width and data.height then
-            data.width = region:GetWidth()
-            data.height = region:GetHeight()
+            if IsControlKeyDown() then
+              data.width = region:GetWidth()
+              data.height = region:GetHeight()
+            else
+              if point:find("RIGHT") then
+                data.xOffset = region.xOffset + (region:GetWidth() - data.width) / 2
+              elseif point:find("LEFT") then
+                data.xOffset = region.xOffset - (region:GetWidth() - data.width) / 2
+              end
+              if point:find("TOP") then
+                data.yOffset = region.yOffset + (region:GetHeight() - data.height) / 2
+              elseif point:find("BOTTOM") then
+                data.yOffset = region.yOffset - (region:GetHeight() - data.height) / 2
+              end
+              data.width = region:GetWidth()
+              data.height = region:GetHeight()
+            end
           end
           region:ResetPosition()
           WeakAuras.Add(data)
@@ -670,82 +682,183 @@ local function ConstructMoverSizer(parent)
         end)
 
         mover.align = BuildAlignLines(mover)
+        mover.sizePoint = point
       end
 
-      frame.doneSizing = function()
+      frame.doneSizing = function(point)
         local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
         mover.isMoving = false
         region:StopMovingOrSizing()
 
-        if not IsShiftKeyDown() then
-          if mover.alignXFrom == "LEFT" then
-            local center = region:GetCenter()
-            region:SetWidth((center - mover.alignXOf) * 2)
-          elseif mover.alignXFrom == "RIGHT" then
-            local center = region:GetCenter()
-            region:SetWidth((center - mover.alignXOf) * 2)
+        if IsControlKeyDown() then
+          data.width = region:GetWidth()
+          data.height = region:GetHeight()
+        else
+          if point:find("RIGHT") then
+            data.xOffset = region.xOffset + (region:GetWidth() - data.width) / 2
+          elseif point:find("LEFT") then
+            data.xOffset = region.xOffset - (region:GetWidth() - data.width) / 2
           end
-          if mover.alignYFrom == "TOP" then
-            local _, center = region:GetCenter()
-            region:SetHeight((center - mover.alignYOf) * 2)
-          elseif mover.alignYFrom == "BOTTOM" then
-            local _, center = region:GetCenter()
-            region:SetHeight((center - mover.alignYOf) * 2)
+          if point:find("TOP") then
+            data.yOffset = region.yOffset + (region:GetHeight() - data.height) / 2
+          elseif point:find("BOTTOM") then
+            data.yOffset = region.yOffset - (region:GetHeight() - data.height) / 2
           end
-        end
-
-        if data.width and data.height then
           data.width = region:GetWidth()
           data.height = region:GetHeight()
         end
 
         region:ResetPosition()
         WeakAuras.Add(data)
+
+        if not IsShiftKeyDown() then
+          if IsControlKeyDown() then
+            if mover.alignXFrom == "LEFT" then
+              local center = region:GetCenter()
+              region:SetWidth((center - mover.alignXOf) * 2)
+            elseif mover.alignXFrom == "RIGHT" then
+              local center = region:GetCenter()
+              region:SetWidth((center - mover.alignXOf) * 2)
+            end
+            if mover.alignYFrom == "TOP" then
+              local _, center = region:GetCenter()
+              region:SetHeight((center - mover.alignYOf) * 2)
+            elseif mover.alignYFrom == "BOTTOM" then
+              local _, center = region:GetCenter()
+              region:SetHeight((center - mover.alignYOf) * 2)
+            end
+          else
+            if mover.alignXFrom then
+              local left = region:GetLeft()
+              local right = region:GetRight()
+              if point:find("RIGHT") then
+                local width = math.abs(left - mover.alignXOf)
+                local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+                region:SetWidth(width)
+                local diffWidth = width - (right - left)
+                if data.regionType == "group" then
+                  xOff = xOff - region.trx
+                end
+                region:ClearAllPoints()
+                region:SetPoint(selfPoint, anchor, anchorPoint, xOff + diffWidth / 2, yOff)
+              elseif point:find("LEFT") then
+                local width = math.abs(right - mover.alignXOf)
+                local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+                region:SetWidth(width)
+                local diffWidth = width - (right - left)
+                if data.regionType == "group" then
+                  xOff = xOff - region.blx
+                end
+                region:ClearAllPoints()
+                region:SetPoint(selfPoint, anchor, anchorPoint, xOff - diffWidth / 2, yOff)
+              end
+            end
+            if mover.alignYFrom then
+              local top = region:GetTop()
+              local bottom = region:GetBottom()
+              if point:find("TOP") then
+                local height = math.abs(bottom - mover.alignYOf )
+                local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+                region:SetHeight(height)
+                local diffHeight = height - (top - bottom)
+                if data.regionType == "group" then
+                  yOff = yOff - region.try
+                end
+                region:ClearAllPoints()
+                region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff + diffHeight / 2)
+              elseif point:find("BOTTOM") then
+                local height = math.abs(top - mover.alignYOf)
+                local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
+                region:SetHeight(height)
+                local diffHeight = height - (top - bottom)
+                if data.regionType == "group" then
+                  yOff = yOff - region.blx
+                end
+                region:ClearAllPoints()
+                region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - diffHeight / 2)
+              end
+            end
+          end
+        end
+
+        if data.xOffset and data.yOffset then
+          -- local selfX, selfY = mover.selfPointIcon:GetCenter()
+          local selfX, selfY = region:GetCenter()
+          local anchorX, anchorY = mover.anchorPointIcon:GetCenter()
+          local dX = selfX - anchorX
+          local dY = selfY - anchorY
+          data.xOffset = dX / scale
+          data.yOffset = dY / scale
+          data.width = region:GetWidth()
+          data.height = region:GetHeight()
+        end
+
+
+        region:ResetPosition()
+        WeakAuras.Add(data)
         WeakAuras.SetThumbnail(data)
         if data.parent then
           local parentData = db.displays[data.parent]
-          WeakAuras.Add(parentData)
-          WeakAuras.SetThumbnail(parentData)
+          if parentData then
+            WeakAuras.Add(parentData)
+            WeakAuras.SetThumbnail(parentData)
+          end
+        end
+        frame:ScaleCorners(region:GetWidth(), region:GetHeight())
+        local xOff, yOff
+        mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
+        xOff = xOff or 0
+        yOff = yOff or 0
+        mover:ClearAllPoints()
+        if data.regionType == "group" then
+          mover:SetWidth((region.trx - region.blx) * scale)
+          mover:SetHeight((region.try - region.bly) * scale)
+          mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, (xOff + region.blx) * scale, (yOff + region.bly) * scale)
+        else
+          mover:SetWidth(region:GetWidth() * scale)
+          mover:SetHeight(region:GetHeight() * scale)
+          mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff * scale, yOff * scale)
         end
         frame.text:Hide()
         frame:SetScript("OnUpdate", nil)
-        mover:ClearAllPoints()
-        mover:SetWidth(region:GetWidth() * scale)
-        mover:SetHeight(region:GetHeight() * scale)
-        mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff * scale, yOff * scale)
+        AceConfigDialog:Open("WeakAuras", parent.container)
         WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+        -- hide alignment lines
+        frame.lineY:Hide()
+        frame.lineX:Hide()
+        mover.sizePoint = nil
       end
 
       frame.bottomleft:SetScript("OnMouseDown", function() frame.startSizing("BOTTOMLEFT") end)
-      frame.bottomleft:SetScript("OnMouseUp", frame.doneSizing)
+      frame.bottomleft:SetScript("OnMouseUp", function() frame.doneSizing("BOTTOMLEFT") end)
       frame.bottomleft:SetScript("OnEnter", frame.bottomleft.Highlight)
       frame.bottomleft:SetScript("OnLeave", frame.bottomleft.Clear)
       frame.bottom:SetScript("OnMouseDown", function() frame.startSizing("BOTTOM") end)
-      frame.bottom:SetScript("OnMouseUp", frame.doneSizing)
+      frame.bottom:SetScript("OnMouseUp", function() frame.doneSizing("BOTTOM") end)
       frame.bottom:SetScript("OnEnter", frame.bottom.Highlight)
       frame.bottom:SetScript("OnLeave", frame.bottom.Clear)
       frame.bottomright:SetScript("OnMouseDown", function() frame.startSizing("BOTTOMRIGHT") end)
-      frame.bottomright:SetScript("OnMouseUp", frame.doneSizing)
+      frame.bottomright:SetScript("OnMouseUp", function() frame.doneSizing("BOTTOMRIGHT") end)
       frame.bottomright:SetScript("OnEnter", frame.bottomright.Highlight)
       frame.bottomright:SetScript("OnLeave", frame.bottomright.Clear)
       frame.right:SetScript("OnMouseDown", function() frame.startSizing("RIGHT") end)
-      frame.right:SetScript("OnMouseUp", frame.doneSizing)
+      frame.right:SetScript("OnMouseUp", function() frame.doneSizing("RIGHT") end)
       frame.right:SetScript("OnEnter", frame.right.Highlight)
       frame.right:SetScript("OnLeave", frame.right.Clear)
       frame.topright:SetScript("OnMouseDown", function() frame.startSizing("TOPRIGHT") end)
-      frame.topright:SetScript("OnMouseUp", frame.doneSizing)
+      frame.topright:SetScript("OnMouseUp", function() frame.doneSizing("TOPRIGHT") end)
       frame.topright:SetScript("OnEnter", frame.topright.Highlight)
       frame.topright:SetScript("OnLeave", frame.topright.Clear)
       frame.top:SetScript("OnMouseDown", function() frame.startSizing("TOP") end)
-      frame.top:SetScript("OnMouseUp", frame.doneSizing)
+      frame.top:SetScript("OnMouseUp", function() frame.doneSizing("TOP") end)
       frame.top:SetScript("OnEnter", frame.top.Highlight)
       frame.top:SetScript("OnLeave", frame.top.Clear)
       frame.topleft:SetScript("OnMouseDown", function() frame.startSizing("TOPLEFT") end)
-      frame.topleft:SetScript("OnMouseUp", frame.doneSizing)
+      frame.topleft:SetScript("OnMouseUp", function() frame.doneSizing("TOPLEFT") end)
       frame.topleft:SetScript("OnEnter", frame.topleft.Highlight)
       frame.topleft:SetScript("OnLeave", frame.topleft.Clear)
       frame.left:SetScript("OnMouseDown", function() frame.startSizing("LEFT") end)
-      frame.left:SetScript("OnMouseUp", frame.doneSizing)
+      frame.left:SetScript("OnMouseUp", function() frame.doneSizing("LEFT") end)
       frame.left:SetScript("OnEnter", frame.left.Highlight)
       frame.left:SetScript("OnLeave", frame.left.Clear)
 
@@ -767,6 +880,10 @@ local function ConstructMoverSizer(parent)
       frame.topleft:Hide()
       frame.left:Hide()
     end
+    mover.alignXFrom = nil
+    mover.alignYFrom = nil
+    mover.alignYOf = nil
+    mover.alignYOf = nil
     frame:Show()
   end
 
@@ -847,6 +964,7 @@ local function ConstructMoverSizer(parent)
       if mover.align then
         local ctrlDown = IsControlKeyDown()
         local foundX, foundY = false, false
+        local point = mover.sizePoint
         local reverse = mover.lastX and mover.lastX > selfX
         local start = reverse and #mover.align.x or 1
         local finish = reverse and 1 or #mover.align.x
@@ -854,8 +972,8 @@ local function ConstructMoverSizer(parent)
         for i=start,finish,step do
           local v = mover.align.x[i]
           if not ctrlDown and (
-            left >= v - 5 and left <= v + 5
-            or right >= v - 5 and right <= v + 5
+            ((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT")))
+            or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT")))
           ) or (
             ctrlDown and centerX >= v - 5 and centerX <= v + 5
           )
@@ -876,8 +994,8 @@ local function ConstructMoverSizer(parent)
         for i=start,finish,step do
           local v = mover.align.y[i]
           if not ctrlDown and (
-            top >= v - 5 and top <= v + 5
-            or bottom >= v - 5 and bottom <= v + 5
+            ((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP")))
+            or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM")))
           ) or (
             ctrlDown and centerY >= v - 5 and centerY <= v + 5
           )
