@@ -819,8 +819,8 @@ function WeakAuras.CreateFrame()
     end
   end
 
-  frame.PickDisplay = function(self, id, tab) -- TODO: remove tab parametter once legacy aura trigger is removed
-    self:ClearPicks();
+  frame.PickDisplay = function(self, id, noHide) -- TODO: remove tab parametter once legacy aura trigger is removed
+    if not noHide then self:ClearPicks() end
     local data = WeakAuras.GetData(id);
 
     local function finishPicking()
