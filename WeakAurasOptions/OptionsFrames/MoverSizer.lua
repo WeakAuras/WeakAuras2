@@ -360,7 +360,7 @@ local function BuildAlignLines(mover)
     end
   end
   for k, v in pairs(WeakAuras.displayButtons) do
-    if not skipIds[k] and v.view.visibility ~= 0 then
+    if not skipIds[k] and v.view.visibility ~= 0 and v.view.region then
       if not IsControlKeyDown() then
         tinsert(x, v.view.region:GetLeft())
         tinsert(x, v.view.region:GetRight())
