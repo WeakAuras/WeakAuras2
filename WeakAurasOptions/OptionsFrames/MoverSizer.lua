@@ -736,9 +736,6 @@ local function ConstructMoverSizer(parent)
                 local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
                 region:SetWidth(width)
                 local diffWidth = width - (right - left)
-                if data.regionType == "group" then
-                  xOff = xOff - region.trx
-                end
                 region:ClearAllPoints()
                 region:SetPoint(selfPoint, anchor, anchorPoint, xOff + diffWidth / 2, yOff)
               elseif point:find("LEFT") then
@@ -746,9 +743,6 @@ local function ConstructMoverSizer(parent)
                 local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
                 region:SetWidth(width)
                 local diffWidth = width - (right - left)
-                if data.regionType == "group" then
-                  xOff = xOff - region.blx
-                end
                 region:ClearAllPoints()
                 region:SetPoint(selfPoint, anchor, anchorPoint, xOff - diffWidth / 2, yOff)
               end
@@ -761,9 +755,6 @@ local function ConstructMoverSizer(parent)
                 local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
                 region:SetHeight(height)
                 local diffHeight = height - (top - bottom)
-                if data.regionType == "group" then
-                  yOff = yOff - region.try
-                end
                 region:ClearAllPoints()
                 region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff + diffHeight / 2)
               elseif point:find("BOTTOM") then
@@ -771,9 +762,6 @@ local function ConstructMoverSizer(parent)
                 local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
                 region:SetHeight(height)
                 local diffHeight = height - (top - bottom)
-                if data.regionType == "group" then
-                  yOff = yOff - region.blx
-                end
                 region:ClearAllPoints()
                 region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - diffHeight / 2)
               end
@@ -782,7 +770,6 @@ local function ConstructMoverSizer(parent)
         end
 
         if data.xOffset and data.yOffset then
-          -- local selfX, selfY = mover.selfPointIcon:GetCenter()
           local selfX, selfY = region:GetCenter()
           local anchorX, anchorY = mover.anchorPointIcon:GetCenter()
           local dX = selfX - anchorX
@@ -793,17 +780,10 @@ local function ConstructMoverSizer(parent)
           data.height = region:GetHeight()
         end
 
-
         region:ResetPosition()
         WeakAuras.Add(data)
         WeakAuras.SetThumbnail(data)
-        if data.parent then
-          local parentData = db.displays[data.parent]
-          if parentData then
-            WeakAuras.Add(parentData)
-            WeakAuras.SetThumbnail(parentData)
-          end
-        end
+
         frame:ScaleCorners(region:GetWidth(), region:GetHeight())
         local xOff, yOff
         mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
