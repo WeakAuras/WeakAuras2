@@ -527,7 +527,7 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = false
       mover.text:Hide()
 
-      if not IsShiftKeyDown() and (mover.alignXFrom or mover.alignYFrom) then
+      if not IsShiftKeyDown() then
         if mover.alignXFrom == "LEFT" then
           local left = region:GetLeft()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -535,7 +535,7 @@ local function ConstructMoverSizer(parent)
             xOff = xOff - region.blx
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignxOf, yOff)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignXOf, yOff)
         elseif mover.alignXFrom == "RIGHT" then
           local right = region:GetRight()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -543,7 +543,7 @@ local function ConstructMoverSizer(parent)
             xOff = xOff - region.trx
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignxOf, yOff)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignXOf, yOff)
         elseif mover.alignXFrom == "CENTER" then
           local center = region:GetCenter()
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -551,7 +551,7 @@ local function ConstructMoverSizer(parent)
             xOff = xOff - region.trx + (region.trx - region.blx) / 2
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - center + mover.alignxOf, yOff)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - center + mover.alignXOf, yOff)
         end
         if mover.alignYFrom == "TOP" then
           local top = region:GetTop()
@@ -639,15 +639,19 @@ local function ConstructMoverSizer(parent)
         if point:find("BOTTOM") then
           textpoint = "TOP"
           anchorpoint = "BOTTOM"
+          mover.alignYFrom = point
         elseif point:find("TOP") then
           textpoint = "BOTTOM"
           anchorpoint = "TOP"
+          mover.alignYFrom = point
         elseif point:find("LEFT") then
           textpoint = "RIGHT"
           anchorpoint = "LEFT"
+          mover.alignXFrom = point
         elseif point:find("RIGHT") then
           textpoint = "LEFT"
           anchorpoint = "RIGHT"
+          mover.alignXFrom = point
         end
         frame.text:ClearAllPoints()
         frame.text:SetPoint(textpoint, frame, anchorpoint)
@@ -664,12 +668,37 @@ local function ConstructMoverSizer(parent)
           frame:ScaleCorners(region:GetWidth(), region:GetHeight())
           AceConfigDialog:Open("WeakAuras", parent.container)
         end)
+
+        mover.align = BuildAlignLines(mover)
       end
 
       frame.doneSizing = function()
         local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
         mover.isMoving = false
         region:StopMovingOrSizing()
+
+        if not IsShiftKeyDown() then
+          if mover.alignXFrom == "LEFT" then
+            local center = region:GetCenter()
+            region:SetWidth((center - mover.alignXOf) * 2)
+          elseif mover.alignXFrom == "RIGHT" then
+            local center = region:GetCenter()
+            region:SetWidth((center - mover.alignXOf) * 2)
+          end
+          if mover.alignYFrom == "TOP" then
+            local _, center = region:GetCenter()
+            region:SetHeight((center - mover.alignYOf) * 2)
+          elseif mover.alignYFrom == "BOTTOM" then
+            local _, center = region:GetCenter()
+            region:SetHeight((center - mover.alignYOf) * 2)
+          end
+        end
+
+        if data.width and data.height then
+          data.width = region:GetWidth()
+          data.height = region:GetHeight()
+        end
+
         region:ResetPosition()
         WeakAuras.Add(data)
         WeakAuras.SetThumbnail(data)
@@ -835,7 +864,7 @@ local function ConstructMoverSizer(parent)
             frame.lineY:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
             frame.lineY:Show()
             mover.alignXFrom = ctrlDown and "CENTER" or (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
-            mover.alignxOf = v
+            mover.alignXOf = v
             foundX = true
             break
           end
@@ -864,7 +893,7 @@ local function ConstructMoverSizer(parent)
         end
         if not foundX then
           mover.alignXFrom = nil
-          mover.alignxOf = nil
+          mover.alignXOf = nil
           frame.lineY:Hide()
         end
         if not foundY then
