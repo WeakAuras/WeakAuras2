@@ -2287,7 +2287,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   local result = {}
 
   result["debuffClass"] = {
-    display = L["Debuff Type"],
+    display = WeakAuras.newFeatureString .. L["Debuff Type"],
     type = "select",
     values = WeakAuras.debuff_class_types
   }
