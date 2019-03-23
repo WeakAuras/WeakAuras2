@@ -537,7 +537,7 @@ local function ConstructMoverSizer(parent)
             xOff = xOff - region.blx
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignXOf, yOff)
+          region:SetPoint(selfPoint, anchor, anchorPoint, (xOff * scale - left + mover.alignXOf) / scale, yOff)
         elseif mover.alignXFrom == "RIGHT" then
           local right = region:GetRight() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -545,7 +545,7 @@ local function ConstructMoverSizer(parent)
             xOff = xOff - region.trx
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignXOf, yOff)
+          region:SetPoint(selfPoint, anchor, anchorPoint, (xOff * scale - right + mover.alignXOf) / scale, yOff)
         elseif mover.alignXFrom == "CENTER" then
           local center = region:GetCenter() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -553,7 +553,7 @@ local function ConstructMoverSizer(parent)
             xOff = xOff - region.trx + (region.trx - region.blx) / 2
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff - center + mover.alignXOf, yOff)
+          region:SetPoint(selfPoint, anchor, anchorPoint, (xOff * scale - center + mover.alignXOf) / scale, yOff)
         end
         if mover.alignYFrom == "TOP" then
           local top = region:GetTop() * scale
@@ -562,7 +562,7 @@ local function ConstructMoverSizer(parent)
             yOff = yOff - region.try
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - top + mover.alignYOf)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, (yOff * scale - top + mover.alignYOf) / scale)
         elseif mover.alignYFrom == "BOTTOM" then
           local bottom = region:GetBottom() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -570,7 +570,7 @@ local function ConstructMoverSizer(parent)
             yOff = yOff - region.bly
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignYOf)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, (yOff * scale - bottom + mover.alignYOf) / scale)
         elseif mover.alignYFrom == "CENTER" then
           local _, center = region:GetCenter()
           center = center * scale
@@ -579,7 +579,7 @@ local function ConstructMoverSizer(parent)
             yOff = yOff - region.try + (region.try - region.bly) / 2
           end
           region:ClearAllPoints()
-          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - center + mover.alignYOf)
+          region:SetPoint(selfPoint, anchor, anchorPoint, xOff, (yOff * scale - center + mover.alignYOf) / scale)
         end
       end
 
