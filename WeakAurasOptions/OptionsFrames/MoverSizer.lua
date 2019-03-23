@@ -898,7 +898,6 @@ local function ConstructMoverSizer(parent)
                 or (reverse and ((right >= v - 5 and right <= v + 5) and "RIGHT" or "LEFT")) -- right side first
                 or (not reverse and ((left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT")) -- left side first
               mover.alignXOf = v
-              print("mover.alignXFrom", mover.alignXFrom)
               foundX = true
               break
             end
