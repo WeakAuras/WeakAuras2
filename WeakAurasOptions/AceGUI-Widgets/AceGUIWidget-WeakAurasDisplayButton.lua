@@ -1648,9 +1648,11 @@ local methods = {
     self.frame:LockHighlight();
     self.view:PriorityShow(1);
   end,
-  ["ClearPick"] = function(self)
+  ["ClearPick"] = function(self, noHide)
     self.frame:UnlockHighlight();
-    self.view:PriorityHide(1);
+    if not noHide then
+      self.view:PriorityHide(1);
+    end
   end,
   ["PriorityShow"] = function(self, priority)
     self.view:PriorityShow(priority);
