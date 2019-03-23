@@ -5527,9 +5527,12 @@ function WeakAuras.AnchorFrame(data, region, parent)
   local anchorParent = GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
   if (data.anchorFrameParent or data.anchorFrameParent == nil
       or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
-    region:SetParent(anchorParent);
+    local errorhandler = function(text)
+      geterrorhandler()(L["'ERROR: Anchoring %s': \n"]:format(data.id))
+    end
+    xpcall(region.SetParent, errorhandler, region, anchorParent);
   else
-    region:SetParent(frame);
+    region:SetParent(region, frame);
   end
 
   region:SetAnchor(data.selfPoint, anchorParent, data.anchorPoint);
