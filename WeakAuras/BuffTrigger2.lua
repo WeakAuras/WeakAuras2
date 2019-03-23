@@ -420,6 +420,12 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       changed = true
     end
 
+    local GUID = bestMatch.unit and UnitGUID(bestMatch.unit) or bestMatch.GUID
+    if state.GUID ~= GUID then
+      state.GUID = GUID
+      changed = true
+    end
+
     if state.unitName ~= bestMatch.unitName then
       state.unitName = bestMatch.unitName
       changed = true
