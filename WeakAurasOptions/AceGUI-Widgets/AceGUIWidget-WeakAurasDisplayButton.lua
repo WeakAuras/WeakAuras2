@@ -528,7 +528,7 @@ local methods = {
           end
         else
           if (WeakAuras.IsDisplayPicked(data.id)) then
-            WeakAuras.ClearPicks(data.id);
+            WeakAuras.ClearPicks();
           else
             WeakAuras.PickDisplay(data.id);
           end
