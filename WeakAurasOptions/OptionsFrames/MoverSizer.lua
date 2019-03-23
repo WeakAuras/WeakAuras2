@@ -766,8 +766,8 @@ local function ConstructMoverSizer(parent)
           local anchorX, anchorY = mover.anchorPointIcon:GetCenter()
           local dX = selfX - anchorX
           local dY = selfY - anchorY
-          --data.xOffset = dX / scale
-          --data.yOffset = dY / scale
+          data.xOffset = dX * scale
+          data.yOffset = dY * scale
           data.width = region:GetWidth()
           data.height = region:GetHeight()
         end
