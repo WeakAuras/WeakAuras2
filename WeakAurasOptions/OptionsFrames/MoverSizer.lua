@@ -517,7 +517,7 @@ local function ConstructMoverSizer(parent)
     end
 
     mover.doneMoving = function(self, event, key)
-      if event == "MODIFIER_STATE_CHANGED" and key == "LCTRL" or key == "RCTRL" then
+      if event == "MODIFIER_STATE_CHANGED" and (key == "LCTRL" or key == "RCTRL") then
         mover.align = BuildAlignLines(mover)
         return
       end
