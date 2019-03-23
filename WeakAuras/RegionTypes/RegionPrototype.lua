@@ -208,7 +208,8 @@ local function UpdatePosition(self)
 
   local xOffset = self.xOffset + (self.xOffsetAnim or 0);
   local yOffset = self.yOffset + (self.yOffsetAnim or 0);
-  self:SetPoint(self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset );
+
+  xpcall(self.SetPoint, geterrorhandler(), self, self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset);
 end
 
 local function ResetPosition(self)
