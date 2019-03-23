@@ -12,6 +12,7 @@ local moversizer
 local mover
 
 local savedVars = WeakAuras.savedVars
+local uiscale = UIParent:GetEffectiveScale()
 
 local function EnsureTexture(self, texture)
   if texture then
@@ -359,17 +360,20 @@ local function BuildAlignLines(mover)
       skipIds[id] = true
     end
   end
+
   for k, v in pairs(WeakAuras.displayButtons) do
-    if not skipIds[k] and v.view.visibility ~= 0 and v.view.region then
+    local region = v.view.region
+    if not skipIds[k] and v.view.visibility ~= 0 and region then
+      local scale = region:GetEffectiveScale() / uiscale
       if not IsControlKeyDown() then
-        tinsert(x, v.view.region:GetLeft())
-        tinsert(x, v.view.region:GetRight())
-        tinsert(y, v.view.region:GetTop())
-        tinsert(y, v.view.region:GetBottom())
+        tinsert(x, (region:GetLeft() or 0) * scale)
+        tinsert(x, (region:GetRight() or 0) * scale)
+        tinsert(y, (region:GetTop() or 0) * scale)
+        tinsert(y, (region:GetBottom() or 0) * scale)
       else
-        local centerX, centerY = v.view.region:GetCenter()
-        tinsert(x, centerX)
-        tinsert(y, centerY)
+        local centerX, centerY = region:GetCenter()
+        tinsert(x, centerX * scale)
+        tinsert(y, centerY * scale)
       end
     end
   end
@@ -463,7 +467,7 @@ local function ConstructMoverSizer(parent)
   end
 
   frame.AnchorPoints = function(self, region, data)
-    local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
+    local scale = region:GetEffectiveScale() / uiscale
     if data.regionType == "group" then
       mover:SetWidth((region.trx - region.blx) * scale)
       mover:SetHeight((region.try - region.bly) * scale)
@@ -474,7 +478,7 @@ local function ConstructMoverSizer(parent)
   end
 
   frame.SetToRegion = function(self, region, data)
-    local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
+    local scale = region:GetEffectiveScale() / uiscale
     mover.moving.region = region
     mover.moving.data = data
     local xOff, yOff
@@ -501,7 +505,6 @@ local function ConstructMoverSizer(parent)
       WeakAuras.CancelAnimation(region, true, true, true, true, true)
       mover:ClearAllPoints()
       if data.regionType == "group" then
-        local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
         mover:SetPoint(mover.selfPoint, region, mover.anchorPoint, region.blx * scale, region.bly * scale)
       else
         mover:SetPoint(mover.selfPoint, region, mover.selfPoint)
@@ -522,14 +525,13 @@ local function ConstructMoverSizer(parent)
       if not mover.isMoving then
         return
       end
-      local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
       region:StopMovingOrSizing()
       mover.isMoving = false
       mover.text:Hide()
 
       if not IsShiftKeyDown() and (mover.alignXFrom or mover.alignYFrom) then
         if mover.alignXFrom == "LEFT" then
-          local left = region:GetLeft()
+          local left = region:GetLeft() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             xOff = xOff - region.blx
@@ -537,7 +539,7 @@ local function ConstructMoverSizer(parent)
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - left + mover.alignXOf, yOff)
         elseif mover.alignXFrom == "RIGHT" then
-          local right = region:GetRight()
+          local right = region:GetRight() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             xOff = xOff - region.trx
@@ -545,7 +547,7 @@ local function ConstructMoverSizer(parent)
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - right + mover.alignXOf, yOff)
         elseif mover.alignXFrom == "CENTER" then
-          local center = region:GetCenter()
+          local center = region:GetCenter() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             xOff = xOff - region.trx + (region.trx - region.blx) / 2
@@ -554,7 +556,7 @@ local function ConstructMoverSizer(parent)
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff - center + mover.alignXOf, yOff)
         end
         if mover.alignYFrom == "TOP" then
-          local top = region:GetTop()
+          local top = region:GetTop() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             yOff = yOff - region.try
@@ -562,7 +564,7 @@ local function ConstructMoverSizer(parent)
           region:ClearAllPoints()
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - top + mover.alignYOf)
         elseif mover.alignYFrom == "BOTTOM" then
-          local bottom = region:GetBottom()
+          local bottom = region:GetBottom() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             yOff = yOff - region.bly
@@ -571,6 +573,7 @@ local function ConstructMoverSizer(parent)
           region:SetPoint(selfPoint, anchor, anchorPoint, xOff, yOff - bottom + mover.alignYOf)
         elseif mover.alignYFrom == "CENTER" then
           local _, center = region:GetCenter()
+          center = center * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
           if data.regionType == "group" then
             yOff = yOff - region.try + (region.try - region.bly) / 2
@@ -672,7 +675,6 @@ local function ConstructMoverSizer(parent)
       end
 
       frame.doneSizing = function(point)
-        local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
         mover.isMoving = false
         region:StopMovingOrSizing()
 
@@ -680,18 +682,20 @@ local function ConstructMoverSizer(parent)
           data.width = region:GetWidth()
           data.height = region:GetHeight()
         else
+          local width = region:GetWidth()
+          local height = region:GetHeight()
           if point:find("RIGHT") then
-            data.xOffset = region.xOffset + (region:GetWidth() - data.width) / 2
+            data.xOffset = region.xOffset + (width - data.width) / 2
           elseif point:find("LEFT") then
-            data.xOffset = region.xOffset - (region:GetWidth() - data.width) / 2
+            data.xOffset = region.xOffset - (width - data.width) / 2
           end
           if point:find("TOP") then
-            data.yOffset = region.yOffset + (region:GetHeight() - data.height) / 2
+            data.yOffset = region.yOffset + (height - data.height) / 2
           elseif point:find("BOTTOM") then
-            data.yOffset = region.yOffset - (region:GetHeight() - data.height) / 2
+            data.yOffset = region.yOffset - (height - data.height) / 2
           end
-          data.width = region:GetWidth()
-          data.height = region:GetHeight()
+          data.width = width
+          data.height = height
         end
 
         region:ResetPosition()
@@ -700,23 +704,25 @@ local function ConstructMoverSizer(parent)
         if not IsShiftKeyDown() then
           if IsControlKeyDown() then
             if mover.alignXFrom == "LEFT" then
-              local center = region:GetCenter()
+              local center = region:GetCenter() * scale
               region:SetWidth((center - mover.alignXOf) * 2)
             elseif mover.alignXFrom == "RIGHT" then
-              local center = region:GetCenter()
+              local center = region:GetCenter() * scale
               region:SetWidth((center - mover.alignXOf) * 2)
             end
             if mover.alignYFrom == "TOP" then
               local _, center = region:GetCenter()
+              center = center * scale
               region:SetHeight((center - mover.alignYOf) * 2)
             elseif mover.alignYFrom == "BOTTOM" then
               local _, center = region:GetCenter()
+              center = center * scale
               region:SetHeight((center - mover.alignYOf) * 2)
             end
           else
             if mover.alignXFrom then
-              local left = region:GetLeft()
-              local right = region:GetRight()
+              local left = region:GetLeft() * scale
+              local right = region:GetRight() * scale
               if point:find("RIGHT") then
                 local width = math.abs(left - mover.alignXOf)
                 local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -760,8 +766,8 @@ local function ConstructMoverSizer(parent)
           local anchorX, anchorY = mover.anchorPointIcon:GetCenter()
           local dX = selfX - anchorX
           local dY = selfY - anchorY
-          data.xOffset = dX / scale
-          data.yOffset = dY / scale
+          --data.xOffset = dX / scale
+          --data.yOffset = dY / scale
           data.width = region:GetWidth()
           data.height = region:GetHeight()
         end
