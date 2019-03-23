@@ -875,59 +875,71 @@ local function ConstructMoverSizer(parent)
         local ctrlDown = IsControlKeyDown()
         local foundX, foundY = false, false
         local point = mover.sizePoint
-        local reverse = mover.lastX and mover.lastX > selfX
-        local start = reverse and #mover.align.x or 1
-        local finish = reverse and 1 or #mover.align.x
-        local step = reverse and -1 or 1
-        for i=start,finish,step do
-          local v = mover.align.x[i]
-          if not ctrlDown and (
-            ((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT")))
-            or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT")))
-          ) or (
-            ctrlDown and centerX >= v - 5 and centerX <= v + 5
-          )
-          then
-            frame.lineY:SetStartPoint("TOPLEFT", UIParent, v, 0)
-            frame.lineY:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
-            frame.lineY:Show()
-            mover.alignXFrom = ctrlDown and "CENTER" or (left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT"
-            mover.alignXOf = v
-            foundX = true
-            break
+        local reverse, start, finish, step
+        if mover.lastX ~= selfX then
+          -- if mouse move to the right, take first line found from the right, and match right side of the frame first
+          reverse = mover.lastX and mover.lastX < selfX -- reverse = mouse move to the right
+          start = reverse and #mover.align.x or 1
+          finish = reverse and 1 or #mover.align.x
+          step = reverse and -1 or 1
+          for i=start,finish,step do
+            local v = mover.align.x[i]
+            if not ctrlDown and (
+              ((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT")))
+              or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT")))
+            ) or (
+              ctrlDown and centerX >= v - 5 and centerX <= v + 5
+            )
+            then
+              frame.lineY:SetStartPoint("TOPLEFT", UIParent, v, 0)
+              frame.lineY:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
+              frame.lineY:Show()
+              mover.alignXFrom = ctrlDown and "CENTER"
+                or (reverse and ((right >= v - 5 and right <= v + 5) and "RIGHT" or "LEFT")) -- right side first
+                or (not reverse and ((left >= v - 5 and left <= v + 5) and "LEFT" or "RIGHT")) -- left side first
+              mover.alignXOf = v
+              print("mover.alignXFrom", mover.alignXFrom)
+              foundX = true
+              break
+            end
+          end
+          if not foundX then
+            mover.alignXFrom = nil
+            mover.alignXOf = nil
+            frame.lineY:Hide()
           end
         end
-        reverse = mover.lastY and mover.lastY > selfY
-        start = reverse and #mover.align.y or 1
-        finish = reverse and 1 or #mover.align.y
-        step = reverse and -1 or 1
-        for i=start,finish,step do
-          local v = mover.align.y[i]
-          if not ctrlDown and (
-            ((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP")))
-            or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM")))
-          ) or (
-            ctrlDown and centerY >= v - 5 and centerY <= v + 5
-          )
-          then
-            frame.lineX:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
-            frame.lineX:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
-            frame.lineX:Show()
-            mover.alignYFrom = ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
-            mover.alignYOf = v
-            foundY = true
-            break
+        if mover.lastY ~= selfY then
+          -- if mouse move to the top, take first line found from the top, and match top side of the frame first
+          reverse = mover.lastY and mover.lastY < selfY
+          start = reverse and #mover.align.y or 1
+          finish = reverse and 1 or #mover.align.y
+          step = reverse and -1 or 1
+          for i=start,finish,step do
+            local v = mover.align.y[i]
+            if not ctrlDown and (
+              ((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP")))
+              or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM")))
+            ) or (
+              ctrlDown and centerY >= v - 5 and centerY <= v + 5
+            )
+            then
+              frame.lineX:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
+              frame.lineX:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
+              frame.lineX:Show()
+              mover.alignYFrom = ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
+                or (reverse and ((top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM")) -- top side first
+                or (not reverse and ((bottom >= v - 5 and bottom <= v + 5) and "BOTTOM" or "TOP")) -- bottom side first
+              mover.alignYOf = v
+              foundY = true
+              break
+            end
           end
-        end
-        if not foundX then
-          mover.alignXFrom = nil
-          mover.alignXOf = nil
-          frame.lineY:Hide()
-        end
-        if not foundY then
-          mover.alignYFrom = nil
-          mover.alignYOf = nil
-          frame.lineX:Hide()
+          if not foundY then
+            mover.alignYFrom = nil
+            mover.alignYOf = nil
+            frame.lineX:Hide()
+          end
         end
         mover.lastX, mover.lastY = selfX, selfY
       end
