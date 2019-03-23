@@ -1786,15 +1786,7 @@ local function Constructor()
         button.terribleCodeOrganizationHackTable.OnShow();
         self.region:Expand();
         self.region:SetScript("OnMouseDown", function()
-          if IsControlKeyDown() then
-            if (WeakAuras.IsDisplayPicked(button.id)) then
-              WeakAuras.ClearPick(button.id);
-            else
-              WeakAuras.PickDisplayMultiple(button.id);
-            end
-          else
-            WeakAuras.PickDisplay(button.id, nil, true)
-          end
+          WeakAuras.PickDisplay(button.id, nil, true)
         end)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
