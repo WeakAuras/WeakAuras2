@@ -372,8 +372,8 @@ local function BuildAlignLines(mover)
         tinsert(y, (region:GetBottom() or 0) * scale)
       else
         local centerX, centerY = region:GetCenter()
-        tinsert(x, centerX * scale)
-        tinsert(y, centerY * scale)
+        tinsert(x, centerX or 0 * scale)
+        tinsert(y, centerY or 0 * scale)
       end
     end
   end
