@@ -1,4 +1,4 @@
-local internalVersion = 13;
+local internalVersion = 14;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2850,6 +2850,24 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  -- Version 14 was introduced March 2019 in BFA
+  if data.internalVersion < 14 then
+    if data.triggers then
+      for triggerId, triggerData in pairs(data.triggers) do
+        if type(triggerData) == "table"
+        and triggerData.trigger
+        and triggerData.trigger.debuffClass
+        and type(triggerData.trigger.debuffClass) == "string"
+        and triggerData.trigger.debuffClass ~= ""
+        then
+          local idx = triggerData.trigger.debuffClass..""
+          data.triggers[triggerId].trigger.debuffClass = {}
+          data.triggers[triggerId].trigger.debuffClass[idx] = true
+        end
+      end
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -5553,4 +5571,24 @@ function WeakAuras.FindUnusedId(prefix)
     num = num + 1;
   end
   return id
+end
+
+function WeakAuras.SerializeTable(t)
+  local s = {"{"}
+  for k, v in pairs(t) do
+    s[#s+1] = k
+    s[#s+1] = "="
+    if type(v) == "boolean" then
+      s[#s+1] = v and "true" or "false"
+    elseif type(v) == "string" then
+      s[#s+1] = ('"%s"'):format(v)
+    elseif type(v) == "number" then
+      s[#s+1] = v
+    elseif type(v) == "table" then
+      s[#s+1] = WeakAuras.SerializeTable(v)
+    end
+    s[#s+1] = ","
+  end
+  s[#s+1] = "}"
+  return table.concat(s)
 end
