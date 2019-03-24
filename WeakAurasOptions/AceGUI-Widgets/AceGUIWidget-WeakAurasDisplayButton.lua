@@ -1807,6 +1807,7 @@ local function Constructor()
         button.terribleCodeOrganizationHackTable.OnHide();
         self.region:Collapse();
         self.region:SetScript("OnMouseDown", nil)
+        self.region:EnableMouse(false)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
         end
