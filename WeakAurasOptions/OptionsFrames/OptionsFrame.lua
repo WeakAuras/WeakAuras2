@@ -661,21 +661,21 @@ function WeakAuras.CreateFrame()
     self:FillOptions(displayOptions[tempGroup.id]);
   end
 
-  frame.ClearPicks = function(self, except)
+  frame.ClearPicks = function(self, noHide)
     WeakAuras.PauseAllDynamicGroups();
 
     frame.pickedDisplay = nil;
     frame.pickedOption = nil;
     wipe(tempGroup.controlledChildren);
     for id, button in pairs(displayButtons) do
-      button:ClearPick();
+      button:ClearPick(noHide);
     end
-    newButton:ClearPick();
+    newButton:ClearPick(noHide);
     if(frame.addonsButton) then
-      frame.addonsButton:ClearPick();
+      frame.addonsButton:ClearPick(noHide);
     end
-    loadedButton:ClearPick();
-    unloadedButton:ClearPick();
+    loadedButton:ClearPick(noHide);
+    unloadedButton:ClearPick(noHide);
     container:ReleaseChildren();
     self.moversizer:Hide();
 
@@ -819,8 +819,8 @@ function WeakAuras.CreateFrame()
     end
   end
 
-  frame.PickDisplay = function(self, id, tab) -- TODO: remove tab parametter once legacy aura trigger is removed
-    self:ClearPicks();
+  frame.PickDisplay = function(self, id, tab, noHide) -- TODO: remove tab parametter once legacy aura trigger is removed
+    self:ClearPicks(noHide)
     local data = WeakAuras.GetData(id);
 
     local function finishPicking()

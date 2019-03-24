@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 48
+local Type, Version = "WeakAurasDisplayButton", 49
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -528,7 +528,7 @@ local methods = {
           end
         else
           if (WeakAuras.IsDisplayPicked(data.id)) then
-            WeakAuras.ClearPicks(data.id);
+            WeakAuras.ClearPicks();
           else
             WeakAuras.PickDisplay(data.id);
           end
@@ -1648,9 +1648,11 @@ local methods = {
     self.frame:LockHighlight();
     self.view:PriorityShow(1);
   end,
-  ["ClearPick"] = function(self)
+  ["ClearPick"] = function(self, noHide)
     self.frame:UnlockHighlight();
-    self.view:PriorityHide(1);
+    if not noHide then
+      self.view:PriorityHide(1);
+    end
   end,
   ["PriorityShow"] = function(self, priority)
     self.view:PriorityShow(priority);
@@ -1783,6 +1785,9 @@ local function Constructor()
       if(self.region and self.region.Expand) then
         button.terribleCodeOrganizationHackTable.OnShow();
         self.region:Expand();
+        self.region:SetScript("OnMouseDown", function()
+          WeakAuras.PickDisplay(button.id, nil, true)
+        end)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
         end
@@ -1801,6 +1806,7 @@ local function Constructor()
       if(self.region and self.region.Collapse) then
         button.terribleCodeOrganizationHackTable.OnHide();
         self.region:Collapse();
+        self.region:SetScript("OnMouseDown", nil)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
         end

@@ -1425,7 +1425,13 @@ end
 
 function WeakAuras.HideOptions()
   if(frame) then
-    frame:Hide();
+    -- remove aura selection by clicking on region
+    for id, button in pairs(displayButtons) do
+      if button.view and button.view.region and button:GetVisibility() > 0 then
+        button.view.region:SetScript("OnMouseDown", nil)
+      end
+    end
+    frame:Hide()
   end
 end
 
@@ -3962,8 +3968,8 @@ function WeakAuras.IsDisplayPicked(id)
   end
 end
 
-function WeakAuras.PickDisplay(id, tab) -- TODO: remove tab parametter once legacy aura trigger is removed
-  frame:PickDisplay(id, tab);
+function WeakAuras.PickDisplay(id, tab, noHide) -- TODO: remove tab parametter once legacy aura trigger is removed
+  frame:PickDisplay(id, tab, noHide)
   WeakAuras.UpdateButtonsScroll()
 end
 
