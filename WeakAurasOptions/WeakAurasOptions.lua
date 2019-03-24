@@ -1429,6 +1429,10 @@ function WeakAuras.HideOptions()
     for id, button in pairs(displayButtons) do
       if button.view and button.view.region and button:GetVisibility() > 0 then
         button.view.region:SetScript("OnMouseDown", nil)
+        button.view.region:SetScript("OnMouseUp", nil)
+        button.view.region:SetScript("OnEvent", nil)
+        button.view.region:SetScript("OnHide", nil)
+        button.view.region:EnableMouse(false)
       end
     end
     frame:Hide()
