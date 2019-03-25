@@ -2860,9 +2860,8 @@ function WeakAuras.Modernize(data)
         and type(triggerData.trigger.debuffClass) == "string"
         and triggerData.trigger.debuffClass ~= ""
         then
-          local idx = triggerData.trigger.debuffClass..""
-          data.triggers[triggerId].trigger.debuffClass = {}
-          data.triggers[triggerId].trigger.debuffClass[idx] = true
+          local idx = triggerData.trigger.debuffClass
+          data.triggers[triggerId].trigger.debuffClass = { [idx] = true }
         end
       end
     end
@@ -5581,7 +5580,7 @@ function WeakAuras.SerializeTable(t)
     if type(v) == "boolean" then
       s[#s+1] = v and "true" or "false"
     elseif type(v) == "string" then
-      s[#s+1] = ('"%s"'):format(v)
+      s[#s+1] = ("%q"):format(v)
     elseif type(v) == "number" then
       s[#s+1] = v
     elseif type(v) == "table" then
