@@ -12,7 +12,6 @@ local moversizer
 local mover
 
 local savedVars = WeakAuras.savedVars
-local uiscale = UIParent:GetEffectiveScale()
 
 local function EnsureTexture(self, texture)
   if texture then
@@ -364,7 +363,7 @@ local function BuildAlignLines(mover)
   for k, v in pairs(WeakAuras.displayButtons) do
     local region = v.view.region
     if not skipIds[k] and v.view.visibility ~= 0 and region then
-      local scale = region:GetEffectiveScale() / uiscale
+      local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
       if not IsControlKeyDown() then
         tinsert(x, (region:GetLeft() or 0) * scale)
         tinsert(x, (region:GetRight() or 0) * scale)
@@ -467,7 +466,7 @@ local function ConstructMoverSizer(parent)
   end
 
   frame.AnchorPoints = function(self, region, data)
-    local scale = region:GetEffectiveScale() / uiscale
+    local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
     if data.regionType == "group" then
       mover:SetWidth((region.trx - region.blx) * scale)
       mover:SetHeight((region.try - region.bly) * scale)
@@ -478,7 +477,7 @@ local function ConstructMoverSizer(parent)
   end
 
   frame.SetToRegion = function(self, region, data)
-    local scale = region:GetEffectiveScale() / uiscale
+    local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
     mover.moving.region = region
     mover.moving.data = data
     local xOff, yOff
