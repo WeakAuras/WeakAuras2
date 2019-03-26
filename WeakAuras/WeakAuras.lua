@@ -5571,23 +5571,3 @@ function WeakAuras.FindUnusedId(prefix)
   end
   return id
 end
-
-function WeakAuras.SerializeTable(t)
-  local s = {"{"}
-  for k, v in pairs(t) do
-    s[#s+1] = k
-    s[#s+1] = "="
-    if type(v) == "boolean" then
-      s[#s+1] = v and "true" or "false"
-    elseif type(v) == "string" then
-      s[#s+1] = ("%q"):format(v)
-    elseif type(v) == "number" then
-      s[#s+1] = v
-    elseif type(v) == "table" then
-      s[#s+1] = WeakAuras.SerializeTable(v)
-    end
-    s[#s+1] = ","
-  end
-  s[#s+1] = "}"
-  return table.concat(s)
-end
