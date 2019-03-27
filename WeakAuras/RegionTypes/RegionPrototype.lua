@@ -473,6 +473,21 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
   end
 
+  function region:OptionsClosed()
+    region:EnableMouse(false)
+    region:SetScript("OnMouseDown", nil)
+  end
+
+  function region:ClickToPick()
+    region:EnableMouse(true)
+    region:SetScript("OnMouseDown", function()
+      WeakAuras.PickDisplay(region.id, nil, true)
+    end)
+    if region.GetFrameStrata and region:GetFrameStrata() == "TOOLTIP" then
+      region:SetFrameStrata("HIGH")
+    end
+  end
+
   local hideRegion;
   if(indynamicgroup) then
     hideRegion = function()
@@ -525,7 +540,9 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       region.justCreated = nil;
       region:SetFrameLevel(WeakAuras.GetFrameLevelFor(region.id));
-
+      if WeakAuras.IsOptionsOpen() then
+        region:ClickToPick()
+      end
       region:Show();
 
       WeakAuras.PerformActions(data, "start", region);
@@ -577,6 +594,10 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       if ingroup then
         parent:UpdateBorder(region);
+      end
+
+      if WeakAuras.IsOptionsOpen() then
+        region:ClickToPick()
       end
     end
   end

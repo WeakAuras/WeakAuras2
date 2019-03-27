@@ -632,9 +632,6 @@ local function ConstructMoverSizer(parent)
       mover:SetScript("OnEvent", mover.doneMoving)
       mover:SetScript("OnHide", mover.doneMoving)
       mover:RegisterEvent("MODIFIER_STATE_CHANGED")
-      region:SetScript("OnMouseDown", function()
-        WeakAuras.PickDisplay(data.id, nil, true)
-      end)
     end
 
     if region:IsResizable() then

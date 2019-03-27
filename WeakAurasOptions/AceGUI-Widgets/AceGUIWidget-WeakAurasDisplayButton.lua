@@ -1785,9 +1785,6 @@ local function Constructor()
       if(self.region and self.region.Expand) then
         button.terribleCodeOrganizationHackTable.OnShow();
         self.region:Expand();
-        self.region:SetScript("OnMouseDown", function()
-          WeakAuras.PickDisplay(button.id, nil, true)
-        end)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
         end
@@ -1806,8 +1803,6 @@ local function Constructor()
       if(self.region and self.region.Collapse) then
         button.terribleCodeOrganizationHackTable.OnHide();
         self.region:Collapse();
-        self.region:SetScript("OnMouseDown", nil)
-        self.region:EnableMouse(false)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
         end
