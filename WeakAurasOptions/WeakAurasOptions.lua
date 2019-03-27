@@ -2214,17 +2214,13 @@ local function replaceNameDescFuncs(intable, data)
                         local display = key and selectValues[key] or L["None"];
                         tinsert(values, "|cFFE0E000"..childId..": |r"..display);
                       elseif(intable.type == "multiselect") then
-                        local selectedValues = "";
+                        local selectedValues = {};
                         for k, v in pairs(combinedKeys) do
                           if (childOptionTable[i].get(info, k)) then
-                            if (not selectedValues) then
-                              selectedValues = tostring(v);
-                            else
-                              selectedValues = selectedValues .. ", " .. tostring(v);
-                            end
+                            tinsert(selectedValues, tostring(v))
                           end
                         end
-                        tinsert(values, "|cFFE0E000"..childId..": |r"..selectedValues);
+                        tinsert(values, "|cFFE0E000"..childId..": |r"..table.concat(selectedValues, ","));
                       else
                         local display = childOptionTable[i].get(info) or L["None"];
                         if(type(display) == "number") then
