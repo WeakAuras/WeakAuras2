@@ -732,7 +732,7 @@ end
 function WeakAuras.DataToString(id)
   local data = WeakAuras.GetData(id)
   if data then
-    return WeakAuras.SerializeTable(data)
+    return WeakAuras.SerializeTable(data):gsub("|", "||")
   end
 end
 
@@ -740,7 +740,7 @@ function WeakAuras.SerializeTable(data)
   local lines = {"{"}
   recurseStringify(data, 1, lines)
   tinsert(lines, "}")
-  return table.concat(lines, "\n"):gsub("|", "||")
+  return table.concat(lines, "\n")
 end
 
 function WeakAuras.RefreshTooltipButtons()
