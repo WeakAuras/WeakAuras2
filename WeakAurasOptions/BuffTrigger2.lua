@@ -146,16 +146,29 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       end,
       values = WeakAuras.debuff_class_types,
       get = function(info, index)
-        return trigger.debuffClass and trigger.debuffClass[index] or false
+        return trigger.debuffClass and trigger.debuffClass[index]
       end,
-      set = function(info, index)
+      set = function(info, index, value)
         if type(trigger.debuffClass) ~= "table" then
           trigger.debuffClass = {}
         end
-        if trigger.debuffClass[index] then
-          trigger.debuffClass[index] = nil
+        if value ~= nil then
+          if value then
+            trigger.debuffClass[index] = true
+          else
+            trigger.debuffClass[index] = nil
+          end
         else
-          trigger.debuffClass[index] = true
+          if trigger.debuffClass[index] then
+            trigger.debuffClass[index] = nil
+          else
+            trigger.debuffClass[index] = true
+          end
+        end
+        local empty = true
+        for k, v in pairs(trigger.debuffClass) do empty = false; break end
+        if empty then
+          trigger.debuffClass = nil
         end
         WeakAuras.Add(data)
       end,
