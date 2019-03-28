@@ -7,7 +7,7 @@ This file adds the following API to the WeakAuras object:
 DisplayToString(id, forChat)
 Converts the display id to a plain text string
 
-DisplayAuraToString(id)
+DataToString(id)
 Converts the display id to a formatted table
 
 SerializeTable(data)
@@ -729,7 +729,7 @@ local function recurseStringify(data, level, lines)
   end
 end
 
-function WeakAuras.DisplayAuraToString(id)
+function WeakAuras.DataToString(id)
   local data = WeakAuras.GetData(id)
   if data then
     return WeakAuras.SerializeTable(data)
