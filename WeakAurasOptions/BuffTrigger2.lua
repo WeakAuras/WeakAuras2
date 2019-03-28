@@ -165,9 +165,8 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
             trigger.debuffClass[index] = true
           end
         end
-        local empty = true
-        for k, v in pairs(trigger.debuffClass) do empty = false; break end
-        if empty then
+        local next = next
+        if next(trigger.debuffClass) == nil then
           trigger.debuffClass = nil
         end
         WeakAuras.Add(data)
