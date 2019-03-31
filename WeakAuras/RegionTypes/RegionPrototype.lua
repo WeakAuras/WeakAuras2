@@ -540,9 +540,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       region.justCreated = nil;
       region:SetFrameLevel(WeakAuras.GetFrameLevelFor(region.id));
-      if WeakAuras.IsOptionsOpen() then
-        region:ClickToPick()
-      end
       region:Show();
 
       WeakAuras.PerformActions(data, "start", region);
@@ -594,10 +591,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       if ingroup then
         parent:UpdateBorder(region);
-      end
-
-      if WeakAuras.IsOptionsOpen() then
-        region:ClickToPick()
       end
     end
   end

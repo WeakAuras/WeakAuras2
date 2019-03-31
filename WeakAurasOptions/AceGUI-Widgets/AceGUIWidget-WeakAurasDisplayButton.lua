@@ -1793,6 +1793,9 @@ local function Constructor()
         end
       end
     end
+    if self.region and self.region.ClickToPick then
+      self.region:ClickToPick();
+    end
   end
   view.PriorityHide = function(self, priority)
     if (not WeakAuras.IsOptionsOpen()) then
