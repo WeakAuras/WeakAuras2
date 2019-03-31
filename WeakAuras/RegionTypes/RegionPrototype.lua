@@ -483,6 +483,9 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     region:SetScript("OnMouseDown", function()
       WeakAuras.PickDisplay(region.id, nil, true)
     end)
+    if region.GetFrameStrata and region:GetFrameStrata() == "TOOLTIP" then
+      region:SetFrameStrata("HIGH")
+    end
   end
 
   local hideRegion;
