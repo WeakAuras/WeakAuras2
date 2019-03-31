@@ -369,8 +369,6 @@ local function modify(parent, region, data)
       WeakAuras.ShowMouseoverTooltip(region, region);
     end);
     region:SetScript("OnLeave", WeakAuras.HideTooltip);
-  else
-    region:EnableMouse(false);
   end
 
   cooldown:SetReverse(not data.inverse);
