@@ -349,6 +349,7 @@ end
 local function UpateRegionValues(region)
   local remaining  = region.expirationTime - GetTime();
   local duration  = region.duration;
+  local progressPrecision = region.progressPrecision and math.abs(region.progressPrecision) or 1
 
   local remainingStr     = "";
   if remaining == math.huge then
@@ -358,15 +359,14 @@ local function UpateRegionValues(region)
     remaining       = remaining % 60;
     remainingStr     = remainingStr..string.format("%02i", remaining);
   elseif remaining > 0 then
-    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-    if region.progressPrecision == 4 and remaining <= 3 then
+    if progressPrecision == 4 and remaining <= 3 then
       remainingStr = remainingStr..string.format("%.1f", remaining);
-    elseif region.progressPrecision == 5 and remaining <= 3 then
+    elseif progressPrecision == 5 and remaining <= 3 then
       remainingStr = remainingStr..string.format("%.2f", remaining);
-    elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
+    elseif (progressPrecision == 4 or progressPrecision == 5) and remaining > 3 then
       remainingStr = remainingStr..string.format("%d", remaining);
     else
-      remainingStr = remainingStr..string.format("%."..(region.progressPrecision or 1).."f", remaining);
+      remainingStr = remainingStr..string.format("%."..progressPrecision.."f", remaining);
     end
   else
     remainingStr     = " ";
@@ -380,6 +380,7 @@ local function UpateRegionValues(region)
     duration       = duration % 60;
     durationStr     = durationStr..string.format("%02i", duration);
   elseif duration > 0 then
+    local totalPrecision = region.totalPrecision and math.abs(region.totalPrecision) or 1
     -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
     if region.totalPrecision == 4 and duration <= 3 then
       durationStr = durationStr..string.format("%.1f", duration);
@@ -388,7 +389,7 @@ local function UpateRegionValues(region)
     elseif (region.totalPrecision == 4 or region.totalPrecision == 5) and duration > 3 then
       durationStr = durationStr..string.format("%d", duration);
     else
-      durationStr = durationStr..string.format("%."..(region.totalPrecision or 1).."f", duration);
+      durationStr = durationStr..string.format("%."..(totalPrecision).."f", duration);
     end
   else
     durationStr     = " ";
