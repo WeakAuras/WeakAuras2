@@ -56,7 +56,7 @@ local function moveOnePxl(direction)
 end
 
 local function ConstructMover(frame)
-  local topAndBottom = CreateFrame("BUTTON", nil, frame)
+  local topAndBottom = CreateFrame("Frame", nil, frame)
   topAndBottom:SetClampedToScreen(true)
   topAndBottom:SetSize(25, 45)
   topAndBottom:SetPoint("LEFT", frame, "RIGHT", 1, 0)
@@ -67,7 +67,7 @@ local function ConstructMover(frame)
   bottom:SetSize(25, 25)
   bottom:SetPoint("BOTTOM", topAndBottom)
 
-  local leftAndRight = CreateFrame("BUTTON", nil, frame)
+  local leftAndRight = CreateFrame("Frame", nil, frame)
   leftAndRight:SetClampedToScreen(true)
   leftAndRight:SetSize(45, 25)
   leftAndRight:SetPoint("TOP", frame, "BOTTOM", 0, 1)
