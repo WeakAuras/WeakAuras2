@@ -1513,6 +1513,13 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
             childOption.key = nil
             childOption.useDesc = nil
             childOption.default = nil
+          else
+            -- don't use the optionID here if switching from a noninteractive type
+            -- mostly because it would have a very non-intuitive effect
+            -- the names and keys would likely not match anymore, and so
+            -- the merged display would basically explode into a bunch of separate options
+            childOption.name = childOption.name or ("Option %i"):format(i)
+            childOption.key = childOption.key or ("option" .. i)
           end
           WeakAuras.Add(childData)
         end
@@ -1537,6 +1544,9 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
           option.key = nil
           option.useDesc = nil
           option.default = nil
+        else
+          option.name = option.name or ("Option %i"):format(i)
+          option.key = option.key or ("option" .. i)
         end
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
