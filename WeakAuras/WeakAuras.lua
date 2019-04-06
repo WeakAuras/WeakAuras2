@@ -1,4 +1,4 @@
-local internalVersion = 13;
+local internalVersion = 14;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2847,6 +2847,23 @@ function WeakAuras.Modernize(data)
         selfPoint = selfPoint(data)
       end
       data.selfPoint = selfPoint
+    end
+  end
+
+  -- Version 14 was introduced March 2019 in BFA
+  if data.internalVersion < 14 then
+    if data.triggers then
+      for triggerId, triggerData in pairs(data.triggers) do
+        if type(triggerData) == "table"
+        and triggerData.trigger
+        and triggerData.trigger.debuffClass
+        and type(triggerData.trigger.debuffClass) == "string"
+        and triggerData.trigger.debuffClass ~= ""
+        then
+          local idx = triggerData.trigger.debuffClass
+          data.triggers[triggerId].trigger.debuffClass = { [idx] = true }
+        end
+      end
     end
   end
 

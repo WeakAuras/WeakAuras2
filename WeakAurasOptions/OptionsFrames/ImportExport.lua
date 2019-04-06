@@ -51,7 +51,7 @@ local function ConstructImportExport(frame)
         if(mode == "export") then
           displayStr = WeakAuras.DisplayToString(id, true);
         elseif(mode == "table") then
-          displayStr = WeakAuras.DisplayToTableString(id);
+          displayStr = WeakAuras.DataToString(id);
         end
         input.editBox:SetMaxBytes(nil);
         input.editBox:SetScript("OnEscapePressed", function() group:Close(); end);

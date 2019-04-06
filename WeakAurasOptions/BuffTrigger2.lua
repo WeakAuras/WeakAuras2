@@ -130,12 +130,12 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     use_debuffClass = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Debuff Type"],
+      name = WeakAuras.newFeatureString..L["Debuff Type"],
       order = 11.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
     },
     debuffClass = {
-      type = "select",
+      type = "multiselect",
       width = WeakAuras.normalWidth,
       name = L["Debuff Type"],
       order = 11.3,
@@ -144,7 +144,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           and not IsSingleMissing(trigger)
           and trigger.use_debuffClass)
       end,
-      values = WeakAuras.debuff_class_types
+      values = WeakAuras.debuff_class_types,
     },
     debuffClassSpace = {
       type = "description",

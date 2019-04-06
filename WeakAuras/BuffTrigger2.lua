@@ -1884,14 +1884,14 @@ local function createScanFunc(trigger)
       end
     ]]
   end
-
-  if use_debuffClass and trigger.debuffClass then
+  if use_debuffClass then
     local ret2 = [[
-      if matchData.debuffClass ~= %q then
+      local tDebuffClass = %s;
+      if not tDebuffClass[matchData.debuffClass] then
         return false
       end
     ]]
-    ret = ret .. ret2:format(trigger.debuffClass)
+    ret = ret .. ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and WeakAuras.SerializeTable(trigger.debuffClass) or "{}")
   end
 
   if trigger.ownOnly then

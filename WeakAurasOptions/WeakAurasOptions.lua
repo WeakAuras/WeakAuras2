@@ -2214,17 +2214,13 @@ local function replaceNameDescFuncs(intable, data)
                         local display = key and selectValues[key] or L["None"];
                         tinsert(values, "|cFFE0E000"..childId..": |r"..display);
                       elseif(intable.type == "multiselect") then
-                        local selectedValues = "";
+                        local selectedValues = {};
                         for k, v in pairs(combinedKeys) do
                           if (childOptionTable[i].get(info, k)) then
-                            if (not selectedValues) then
-                              selectedValues = tostring(v);
-                            else
-                              selectedValues = selectedValues .. ", " .. tostring(v);
-                            end
+                            tinsert(selectedValues, tostring(v))
                           end
                         end
-                        tinsert(values, "|cFFE0E000"..childId..": |r"..selectedValues);
+                        tinsert(values, "|cFFE0E000"..childId..": |r"..table.concat(selectedValues, ","));
                       else
                         local display = childOptionTable[i].get(info) or L["None"];
                         if(type(display) == "number") then
@@ -3325,9 +3321,42 @@ function WeakAuras.ReloadTriggerOptions(data)
     trigger.subeventPrefix = trigger.subeventPrefix or "SPELL"
     trigger.subeventSuffix = trigger.subeventSuffix or "_CAST_START";
 
-    displayOptions[id].args.trigger.get = function(info) return trigger[info[#info]] end;
-    displayOptions[id].args.trigger.set = function(info, v)
-      trigger[info[#info]] = (v ~= "" and v) or nil;
+    displayOptions[id].args.trigger.get = function(info, index)
+      local childOption = getChildOption(displayOptions[id], info)
+      if childOption.type == "multiselect" then
+        return trigger[info[#info]] and trigger[info[#info]][index]
+      else
+        return trigger[info[#info]]
+      end
+    end;
+    displayOptions[id].args.trigger.set = function(info, arg1, arg2)
+      local childOption = getChildOption(displayOptions[id], info)
+      if childOption.type == "multiselect" then
+        local index, value = arg1, arg2
+        if type(trigger[info[#info]]) ~= "table" then
+          trigger[info[#info]] = {}
+        end
+        if value ~= nil then
+          if value then
+            trigger[info[#info]][index] = true
+          else
+            trigger[info[#info]][index] = nil
+          end
+        else
+          if trigger[info[#info]][index] then
+            trigger[info[#info]][index] = nil
+          else
+            trigger[info[#info]][index] = true
+          end
+        end
+        local next = next
+        if next(trigger[info[#info]]) == nil then
+          trigger[info[#info]] = nil
+        end
+      else
+        trigger[info[#info]] = (arg1 ~= "" and arg1) or nil;
+      end
+
       WeakAuras.Add(data);
       WeakAuras.SetThumbnail(data);
       WeakAuras.SetIconNames(data);
