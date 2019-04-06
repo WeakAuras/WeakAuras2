@@ -1410,6 +1410,22 @@ local function ScanAllBoss(time, matchDataChanged)
   end
 end
 
+local function ScanUnit(time, arg1)
+  if (arg1:sub(1,4) == "raid" and IsInRaid()) then
+    ScanGroupUnit(time, matchDataChanged, "group", arg1)
+  elseif ((arg1:sub(1,5) == "party" or arg1 == "player") and not IsInRaid()) then
+    ScanGroupUnit(time, matchDataChanged, "group", arg1)
+  elseif arg1:sub(1,4) == "boss" then
+    ScanGroupUnit(time, matchDataChanged, "boss", arg1)
+  elseif arg1:sub(1,5) == "arena" then
+    ScanGroupUnit(time, matchDataChanged, "arena", arg1)
+  elseif arg1:sub(1, 9) == "nameplate" then
+    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
+  else
+    ScanGroupUnit(time, matchDataChanged, nil, arg1)
+  end
+end
+
 local frame = CreateFrame("FRAME")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 frame:RegisterEvent("UNIT_AURA")
@@ -1425,6 +1441,7 @@ frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
 frame:RegisterEvent("UNIT_EXITED_VEHICLE")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
   local time = GetTime()
@@ -1460,18 +1477,10 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       ScanGroupUnit(time, matchDataChanged, nil, "vehicle")
     end
   elseif event == "UNIT_AURA" then
-    if (arg1:sub(1,4) == "raid" and IsInRaid()) then
-      ScanGroupUnit(time, matchDataChanged, "group", arg1)
-    elseif ((arg1:sub(1,5) == "party" or arg1 == "player") and not IsInRaid()) then
-      ScanGroupUnit(time, matchDataChanged, "group", arg1)
-    elseif arg1:sub(1,4) == "boss" then
-      ScanGroupUnit(time, matchDataChanged, "boss", arg1)
-    elseif arg1:sub(1,5) == "arena" then
-      ScanGroupUnit(time, matchDataChanged, "arena", arg1)
-    elseif arg1:sub(1, 9) == "nameplate" then
-      ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
-    else
-      ScanGroupUnit(time, matchDataChanged, nil, arg1)
+    ScanUnit(time, arg1)
+  elseif event == "PLAYER_ENTERING_WORLD" then
+    for unit in pairs(matchData) do
+      ScanUnit(time, unit)
     end
   end
   WeakAuras.StopProfileSystem("bufftrigger2")
