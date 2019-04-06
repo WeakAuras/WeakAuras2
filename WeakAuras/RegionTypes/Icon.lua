@@ -364,13 +364,17 @@ local function modify(parent, region, data)
 
   local tooltipType = WeakAuras.CanHaveTooltip(data);
   if(tooltipType and data.useTooltip) then
-    region:EnableMouse(true);
-    region:SetScript("OnEnter", function()
-      WeakAuras.ShowMouseoverTooltip(region, region);
-    end);
-    region:SetScript("OnLeave", WeakAuras.HideTooltip);
-  else
-    region:EnableMouse(false);
+    if not region.tooltipFrame then
+      region.tooltipFrame = CreateFrame("frame");
+      region.tooltipFrame:SetAllPoints(region);
+      region.tooltipFrame:SetScript("OnEnter", function()
+        WeakAuras.ShowMouseoverTooltip(region, region);
+      end);
+      region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    end
+    region.tooltipFrame:EnableMouse(true);
+  elseif region.tooltipFrame then
+    region.tooltipFrame:EnableMouse(false);
   end
 
   cooldown:SetReverse(not data.inverse);

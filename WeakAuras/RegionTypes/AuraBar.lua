@@ -1273,16 +1273,18 @@ local function modify(parent, region, data)
   local tooltipType = WeakAuras.CanHaveTooltip(data);
   if tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
-    region.tooltipFrame = region.tooltipFrame or CreateFrame("frame");
-    region.tooltipFrame:SetAllPoints(icon);
-    region.tooltipFrame:EnableMouse(true);
-    region.tooltipFrame:SetScript("OnEnter", function()
-      WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
-    end);
-    region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    if not region.tooltipFrame then
+      region.tooltipFrame = CreateFrame("frame");
+      region.tooltipFrame:SetAllPoints(icon);
+      region.tooltipFrame:SetScript("OnEnter", function()
+        WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
+      end);
+      region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    end
 
-  -- Disable tooltip
+    region.tooltipFrame:EnableMouse(true);
   elseif region.tooltipFrame then
+    -- Disable tooltip
     region.tooltipFrame:EnableMouse(false);
   end
 

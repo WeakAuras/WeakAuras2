@@ -176,9 +176,11 @@ function WeakAuras.CreateFrame()
 
     for id, data in pairs(WeakAuras.regions) do
       data.region:Collapse();
+      data.region:OptionsClosed()
       if WeakAuras.clones[id] then
         for cloneId, cloneRegion in pairs(WeakAuras.clones[id]) do
           cloneRegion:Collapse()
+          cloneRegion:OptionsClosed()
         end
       end
     end

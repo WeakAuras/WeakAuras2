@@ -56,18 +56,27 @@ local function moveOnePxl(direction)
 end
 
 local function ConstructMover(frame)
-  local top = CreateFrame("BUTTON", nil, frame)
+  local topAndBottom = CreateFrame("Frame", nil, frame)
+  topAndBottom:SetClampedToScreen(true)
+  topAndBottom:SetSize(25, 45)
+  topAndBottom:SetPoint("LEFT", frame, "RIGHT", 1, 0)
+  local top = CreateFrame("BUTTON", nil, topAndBottom)
   top:SetSize(25, 25)
-  top:SetPoint("LEFT", frame, "RIGHT", 1, 10)
-  local bottom = CreateFrame("BUTTON", nil, frame)
+  top:SetPoint("TOP", topAndBottom)
+  local bottom = CreateFrame("BUTTON", nil, topAndBottom)
   bottom:SetSize(25, 25)
-  bottom:SetPoint("LEFT", frame, "RIGHT", 1, -10)
-  local left = CreateFrame("BUTTON", nil, frame)
+  bottom:SetPoint("BOTTOM", topAndBottom)
+
+  local leftAndRight = CreateFrame("Frame", nil, frame)
+  leftAndRight:SetClampedToScreen(true)
+  leftAndRight:SetSize(45, 25)
+  leftAndRight:SetPoint("TOP", frame, "BOTTOM", 0, 1)
+  local left = CreateFrame("BUTTON", nil, leftAndRight)
   left:SetSize(25, 25)
-  left:SetPoint("TOP", frame, "BOTTOM", -10, -1)
-  local right = CreateFrame("BUTTON", nil, frame)
+  left:SetPoint("LEFT", leftAndRight)
+  local right = CreateFrame("BUTTON", nil, leftAndRight)
   right:SetSize(25, 25)
-  right:SetPoint("TOP", frame, "BOTTOM", 10, -1)
+  right:SetPoint("RIGHT", leftAndRight)
 
   top:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
   top:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
@@ -112,35 +121,7 @@ local function ConstructMover(frame)
   lineY:SetEndPoint("BOTTOMLEFT", UIParent)
   lineY:Hide()
 
-  return top, bottom, left, right, lineX, lineY
-end
-
-local function PositionMover(frame)
-  if frame.moveTop:GetLeft() then
-    if frame.moveTop:GetLeft() < 0 then
-      frame.moveTop:ClearAllPoints()
-      frame.moveTop:SetPoint("LEFT", frame, "RIGHT", 1, 10)
-      frame.moveBottom:ClearAllPoints()
-      frame.moveBottom:SetPoint("LEFT", frame, "RIGHT", 1, -10)
-    elseif frame.moveTop:GetRight() > UIParent:GetRight() then
-      frame.moveTop:ClearAllPoints()
-      frame.moveTop:SetPoint("RIGHT", frame, "LEFT", -1, 10)
-      frame.moveBottom:ClearAllPoints()
-      frame.moveBottom:SetPoint("RIGHT", frame, "LEFT", -1, -10)
-    end
-
-    if frame.moveLeft:GetBottom() < 0 then
-      frame.moveLeft:ClearAllPoints()
-      frame.moveLeft:SetPoint("BOTTOM", frame, "TOP", -10, 1)
-      frame.moveRight:ClearAllPoints()
-      frame.moveRight:SetPoint("BOTTOM", frame, "TOP", 10, 1)
-    elseif frame.moveLeft:GetTop() > UIParent:GetTop() then
-      frame.moveLeft:ClearAllPoints()
-      frame.moveLeft:SetPoint("TOP", frame, "BOTTOM", -10, -1)
-      frame.moveRight:ClearAllPoints()
-      frame.moveRight:SetPoint("TOP", frame, "BOTTOM", 10, -1)
-    end
-  end
+  return lineX, lineY
 end
 
 local function ConstructSizer(frame)
@@ -407,8 +388,7 @@ local function ConstructMoverSizer(parent)
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
 
-  frame.moveTop, frame.moveBottom, frame.moveLeft, frame.moveRight, frame.lineX, frame.lineY = ConstructMover(frame)
-  PositionMover(frame)
+  frame.lineX, frame.lineY = ConstructMover(frame)
 
   frame.top.Clear()
   frame.topright.Clear()
@@ -632,9 +612,6 @@ local function ConstructMoverSizer(parent)
       mover:SetScript("OnEvent", mover.doneMoving)
       mover:SetScript("OnHide", mover.doneMoving)
       mover:RegisterEvent("MODIFIER_STATE_CHANGED")
-      region:SetScript("OnMouseDown", function()
-        WeakAuras.PickDisplay(data.id, nil, true)
-      end)
     end
 
     if region:IsResizable() then
@@ -872,7 +849,6 @@ local function ConstructMoverSizer(parent)
     end
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
     if self.isMoving then
-      PositionMover(frame)
       if mover.align then
         local ctrlDown = IsControlKeyDown()
         local foundX, foundY = false, false
