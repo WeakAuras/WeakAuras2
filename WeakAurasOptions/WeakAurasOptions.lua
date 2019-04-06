@@ -3321,9 +3321,42 @@ function WeakAuras.ReloadTriggerOptions(data)
     trigger.subeventPrefix = trigger.subeventPrefix or "SPELL"
     trigger.subeventSuffix = trigger.subeventSuffix or "_CAST_START";
 
-    displayOptions[id].args.trigger.get = function(info) return trigger[info[#info]] end;
-    displayOptions[id].args.trigger.set = function(info, v)
-      trigger[info[#info]] = (v ~= "" and v) or nil;
+    displayOptions[id].args.trigger.get = function(info, index)
+      local childOption = getChildOption(displayOptions[id], info)
+      if childOption.type == "multiselect" then
+        return trigger[info[#info]] and trigger[info[#info]][index]
+      else
+        return trigger[info[#info]]
+      end
+    end;
+    displayOptions[id].args.trigger.set = function(info, arg1, arg2)
+      local childOption = getChildOption(displayOptions[id], info)
+      if childOption.type == "multiselect" then
+        local index, value = arg1, arg2
+        if type(trigger[info[#info]]) ~= "table" then
+          trigger[info[#info]] = {}
+        end
+        if value ~= nil then
+          if value then
+            trigger[info[#info]][index] = true
+          else
+            trigger[info[#info]][index] = nil
+          end
+        else
+          if trigger[info[#info]][index] then
+            trigger[info[#info]][index] = nil
+          else
+            trigger[info[#info]][index] = true
+          end
+        end
+        local next = next
+        if next(trigger[info[#info]]) == nil then
+          trigger[info[#info]] = nil
+        end
+      else
+        trigger[info[#info]] = (arg1 ~= "" and arg1) or nil;
+      end
+
       WeakAuras.Add(data);
       WeakAuras.SetThumbnail(data);
       WeakAuras.SetIconNames(data);
