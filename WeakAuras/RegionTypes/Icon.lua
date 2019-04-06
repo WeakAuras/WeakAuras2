@@ -373,7 +373,7 @@ local function modify(parent, region, data)
       region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
     end
     region.tooltipFrame:EnableMouse(true);
-  else
+  elseif region.tooltipFrame then
     region.tooltipFrame:EnableMouse(false);
   end
 
