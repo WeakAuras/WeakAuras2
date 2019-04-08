@@ -1993,7 +1993,7 @@ templates.class.MAGE = {
         { spell = 1953, type = "ability"}, -- Blink
         { spell = 2139, type = "ability", requiresTarget = true}, -- Counterspell
         { spell = 5143, type = "ability", requiresTarget = true, overlayGlow = true}, -- Arcane Missiles
-        { spell = 12042, type = "ability"}, -- Arcane Power
+        { spell = 12042, type = "ability", buff = true}, -- Arcane Power
         { spell = 12051, type = "ability", buff = true}, -- Evocation
         { spell = 44425, type = "ability", requiresTarget = true}, -- Arcane Barrage
         { spell = 45438, type = "ability", buff = true}, -- Ice Block
