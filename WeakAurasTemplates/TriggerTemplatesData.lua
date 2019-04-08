@@ -369,7 +369,7 @@ templates.class.WARRIOR = {
         { spell = 20243, type = "ability", requiresTarget = true, talent = {16, 17}}, -- Devastate
         { spell = 23920, type = "ability", buff = true}, -- Spell Reflection
         { spell = 23922, type = "ability", requiresTarget = true}, -- Shield Slam
-        { spell = 34428, type = "ability", active = true, requiresTarget = true}, -- Victory Rush
+        { spell = 34428, type = "ability", usable = true, requiresTarget = true}, -- Victory Rush
         { spell = 46968, type = "ability"}, -- Shockwave
         { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
         { spell = 97462, type = "ability"}, -- Rallying Cry
