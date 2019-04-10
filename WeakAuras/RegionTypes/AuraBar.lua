@@ -1271,7 +1271,7 @@ local function modify(parent, region, data)
 
   -- Update tooltip availability
   local tooltipType = WeakAuras.CanHaveTooltip(data);
-  if tooltipType and data.useTooltip then
+  if icon:IsVisible() and tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
     if not region.tooltipFrame then
       region.tooltipFrame = CreateFrame("frame");
