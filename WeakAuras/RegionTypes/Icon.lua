@@ -363,7 +363,7 @@ local function modify(parent, region, data)
   icon:SetDesaturated(data.desaturate);
 
   local tooltipType = WeakAuras.CanHaveTooltip(data);
-  if(tooltipType and data.useTooltip) then
+  if region:IsVisible() and tooltipType and data.useTooltip then
     if not region.tooltipFrame then
       region.tooltipFrame = CreateFrame("frame");
       region.tooltipFrame:SetAllPoints(region);
