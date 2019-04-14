@@ -1414,13 +1414,17 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif(event == "PLAYER_LOGIN") then
     local startTime = debugprofilestop()
     local finishTime = debugprofilestop()
+    local ok, msg
     -- hard limit seems to be 19 seconds. We'll do 15 for now.
     while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 15000 do
-      coroutine.resume(loginThread)
+      ok, msg = coroutine.resume(loginThread)
       finishTime = debugprofilestop()
     end
     if coroutine.status(loginThread) ~= 'dead' then
       WeakAuras.dynFrame:AddAction('login', loginThread)
+    end
+    if not ok then
+      geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
