@@ -1274,7 +1274,7 @@ local function modify(parent, region, data)
   if tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
     if not region.tooltipFrame then
-      region.tooltipFrame = CreateFrame("frame");
+      region.tooltipFrame = CreateFrame("frame", nil, region);
       region.tooltipFrame:SetAllPoints(icon);
       region.tooltipFrame:SetScript("OnEnter", function()
         WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
