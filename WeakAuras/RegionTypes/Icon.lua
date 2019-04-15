@@ -363,9 +363,9 @@ local function modify(parent, region, data)
   icon:SetDesaturated(data.desaturate);
 
   local tooltipType = WeakAuras.CanHaveTooltip(data);
-  if region:IsVisible() and tooltipType and data.useTooltip then
+  if(tooltipType and data.useTooltip) then
     if not region.tooltipFrame then
-      region.tooltipFrame = CreateFrame("frame");
+      region.tooltipFrame = CreateFrame("frame", nil, region);
       region.tooltipFrame:SetAllPoints(region);
       region.tooltipFrame:SetScript("OnEnter", function()
         WeakAuras.ShowMouseoverTooltip(region, region);
