@@ -23,6 +23,11 @@ script:
       curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -o -p 65387
     fi
 
+after_failure:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh failure $WEBHOOK_URL
+
 notifications:
   email:
     on_failure: always
