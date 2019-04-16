@@ -56,8 +56,6 @@ GetTriggerConditions(data, triggernum)
 Returns potential conditions that this trigger provides.
 ]]--
 
--- luacheck: globals GTFO DBM BigWigsLoader CombatLogGetCurrentEventInfo
-
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type

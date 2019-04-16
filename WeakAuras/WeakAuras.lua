@@ -37,9 +37,6 @@ WeakAuras.timer = timer
 
 local L = WeakAuras.L
 
--- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION
--- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO
-
 local loginQueue = {}
 local queueshowooc;
 

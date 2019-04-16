@@ -33,6 +33,7 @@ globals = {
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",
 	"AceGUIWidgetLSMlists",
+	"AceGUIWeakAurasMultiLineEditBoxInsertLink",
 
 	-- WeakAuras
 	"WeakAuras",
@@ -44,8 +45,16 @@ globals = {
 	"WeakAurasOptionsSaved",
 	"WeakAuras_DropDownMenu",
 	"WeakAuras_DropIndicator",
-	"IndentationLib",
 	"WeakAurasCompanion",
+
+	-- Third Party Addons/Libs
+	"IndentationLib",
+	"KuiNameplatesPlayerAnchor",
+	"KuiNameplatesCore",
+	"ElvUIPlayerNamePlateAnchor",
+	"GTFO",
+	"DBM",
+	"BigWigsLoader",
 
 	-- FrameXML misc
 	"C_Timer",
@@ -68,10 +77,16 @@ globals = {
 	"SmoothStatusBarMixin",
 	"tIndexOf",
 	"Round",
+	"CombatLogGetCurrentEventInfo",
+	"CombatText_AddMessage",
+	"Saturate",
+	"Lerp",
+	"COMBAT_TEXT_SCROLL_FUNCTION",
 
 	-- FrameXML frames
 	"GameTooltip",
 	"ItemRefTooltip",
+	"NamePlateDriverFrame",
 	"UIErrorsFrame",
 	"UIParent",
 	"UIPanelWindows",
