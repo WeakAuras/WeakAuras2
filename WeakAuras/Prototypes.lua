@@ -67,6 +67,9 @@ WeakAuras.encounter_table = {
   [2335] = 2272, -- King Rastakhan
   [2337] = 2280, -- Stormwall Blockade
   [2343] = 2281, -- Lady Jaina Proudmoore
+  -- Crucible of Storms
+  [2328] = 2269, -- The Restless Cabal
+  [2332] = 2273, -- Uu'nat, Harbinger of the Void
 }
 
 local function get_encounters_list()
