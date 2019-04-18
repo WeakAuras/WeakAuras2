@@ -264,7 +264,7 @@ end
 
 local function createIcon()
   local data = {
-    model_path = "Creature/Arthaslichking/arthaslichking.m2",
+    model_path = 22217,
     modelIsUnit = false,
     model_x = 0,
     model_y = 0,

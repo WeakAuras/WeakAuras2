@@ -721,7 +721,7 @@ end
 
 local function createIcon()
   local data = {
-    foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+    foregroundTexture = 450915,
     sameTexture = true,
     backgroundOffset = 2,
     blendMode = "BLEND",
