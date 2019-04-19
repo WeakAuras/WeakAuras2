@@ -57,12 +57,12 @@ local function ConstructTexturePicker(frame)
       scroll:AddChild(textureWidget);
       table.sort(scroll.children, function(a, b)
         local aPath, bPath = a:GetTexturePath(), b:GetTexturePath();
-        local aNum, bNum = tonumber(aPath:match("%d+")), tonumber(bPath:match("%d+"));
-        local aNonNumber, bNonNumber = aPath:match("[^%d]+"), bPath:match("[^%d]+")
+        local aNum, bNum = type(aPath) == "number" and aPath or tonumber(aPath:match("%d+")), type(bPath) == "number" and bPath or tonumber(bPath:match("%d+"));
+        local aNonNumber, bNonNumber = type(aPath) == "number" and tostring(aPath) or aPath:match("[^%d]+"), type(bPath) == "number" and tostring(bPath) or bPath:match("[^%d]+")
         if(aNum and bNum and aNonNumber == bNonNumber) then
           return aNum < bNum;
         else
-          return aPath < bPath;
+          return tostring(aPath) < tostring(bPath);
         end
       end);
     end
@@ -159,7 +159,7 @@ local function ConstructTexturePicker(frame)
     frame.window = "texture";
     local picked = false;
     local _, givenPath
-    if(type(self.givenPath) == "string") then
+    if(type(self.givenPath) == "string" or type(self.givenPath) == "number") then
       givenPath = self.givenPath;
     else
       _, givenPath = next(self.givenPath);

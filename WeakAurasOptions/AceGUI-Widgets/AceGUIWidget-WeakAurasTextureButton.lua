@@ -112,7 +112,7 @@ local function Constructor()
   texture:SetPoint("BOTTOMLEFT", button, 4, 4);
   texture:SetPoint("TOPRIGHT", button, -4, -4);
 
-  button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path:gsub("\\", "\n")) end);
+  button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, type(texture.path) == "string" and texture.path:gsub("\\", "\n") or texture.path) end);
   button:SetScript("OnLeave", Hide_Tooltip);
 
   local widget = {
