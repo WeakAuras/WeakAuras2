@@ -160,7 +160,7 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = 450915,
+    texture = 450915, -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
     color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
