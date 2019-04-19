@@ -4656,7 +4656,7 @@ WeakAuras.event_prototypes = {
       return result
     end,
     internal_events = function(trigger)
-      local result = {"CAST_REMAINING_CHECK"}
+      local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
       AddUnitChangeInternalEvents(trigger.unit, result)
       return result
     end,
@@ -4683,7 +4683,10 @@ WeakAuras.event_prototypes = {
             cloneId = UnitGUID(sourceUnit)
           end
 
-          if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" then
+          if event == "PLAYER_TARGET_CHANGED"
+          or event == "PLAYER_FOCUS_CHANGED"
+          or (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" and trigger_inverse)
+          then
             sourceUnit = trigger_unit
           end
           local destUnit = sourceUnit and sourceUnit .. "-target"
