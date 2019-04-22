@@ -1,4 +1,4 @@
-local internalVersion = 14;
+local internalVersion = 15;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -12,7 +12,7 @@ local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInPar
   = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-local debugstack, IsSpellKnown = debugstack, IsSpellKnown
+local debugstack, IsSpellKnown, GetFileIDFromPath = debugstack, IsSpellKnown, GetFileIDFromPath
 
 local ADDON_NAME = "WeakAuras"
 local WeakAuras = WeakAuras
@@ -2367,6 +2367,39 @@ local function ModernizeAnimations(animations)
   animations.colorFunc     = ModernizeAnimation(animations.colorFunc);
 end
 
+function WeakAuras.preValidateModernize(data)
+  -- Version 15 was introduced April 2019 in BFA
+  if data.internalVersion < 15 then
+    if data.regionType == "texture" then
+      if type(data.texture) == "string" then
+        local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.texture = textureId
+        end
+      end
+    end
+    if data.regionType == "progresstexture" then
+      if type(data.foregroundTexture) == "string" then
+        local textureId = GetFileIDFromPath(data.foregroundTexture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.foregroundTexture = textureId
+        end
+      end
+      if type(data.backgroundTexture) == "string" then
+        local textureId = GetFileIDFromPath(data.backgroundTexture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.backgroundTexture = textureId
+        end
+      end
+    end
+    if data.regionType == "model" then
+      if type(data.model_path) == "string" then
+        -- TODO: handle model conversion to ids  -- "Creature/Arthaslichking/arthaslichking.m2"
+      end
+    end
+  end
+end
+
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 function WeakAuras.Modernize(data)
   if (not data.internalVersion) then
@@ -3161,6 +3194,7 @@ local oldDataStub2 = {
 }
 
 function WeakAuras.PreAdd(data)
+  WeakAuras.preValidateModernize(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
     WeakAuras.validate(data, oldDataStub)
