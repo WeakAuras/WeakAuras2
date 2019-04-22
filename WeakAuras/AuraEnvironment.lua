@@ -142,12 +142,28 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       environment_initialized[id] = true
       aura_environments[id] = {}
       current_aura_env = aura_environments[id]
+      -- Push the new environment onto the stack
+      tinsert(aura_env_stack, current_aura_env)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
-      current_aura_env.config = CopyTable(data.config)
-      -- Push the new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env)
+      if data.controlledChildren then
+        current_aura_env.configs = {}
+        current_aura_env.child_envs = {}
+        for dataIndex, childID in ipairs(data.controlledChildren) do
+          local childData = WeakAuras.GetData(childID)
+          current_aura_env.configs[dataIndex] = CopyTable(childData.config)
+          if childData then
+            if not environment_initialized[childID] then
+              WeakAuras.ActivateAuraEnvironment(childID)
+              WeakAuras.ActivateAuraEnvironment()
+            end
+            current_aura_env.child_envs[dataIndex] = aura_environments[childID]
+          end
+        end
+      else
+        current_aura_env.config = CopyTable(data.config)
+      end
       -- Run the init function if supplied
       local actions = data.actions.init
       if(actions and actions.do_custom and actions.custom) then

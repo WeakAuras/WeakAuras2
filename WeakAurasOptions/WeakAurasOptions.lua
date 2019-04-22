@@ -2352,12 +2352,15 @@ local function GetCustomCode(data, path)
   return data;
 end
 
-function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions)
+-- TODO: find a paradigm which doesn't have five million flags for AddCodeOption so that calls to it don't always go off the screen
+-- a table of settings is the obvious option to pack the flags.
+-- alternatively, we could create a "code" type option which then gets processed before sending to AceConfig
+function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
   extraFunctions = extraFunctions or {};
   tinsert(extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function()
-      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions)
+      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent)
     end
   });
 
