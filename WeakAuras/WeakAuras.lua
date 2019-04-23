@@ -3270,7 +3270,6 @@ local function pAdd(data)
     end
   end
 
-  removeSpellNames(data);
 end
 
 -- Dummy add function to protect errors from propagating out of the real add function
