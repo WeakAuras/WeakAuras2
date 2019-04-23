@@ -2399,9 +2399,17 @@ function WeakAuras.preValidateModernize(data)
         modelMigration:SetModel(data.model_path)
         local modelId = modelMigration:GetModelFileID()
         if modelId then
-          data.model_path = modelId
+          data.model_id = tostring(modelId)
         end
       end
+    end
+  end
+
+  local toc = select(4, GetBuildInfo())
+  if toc > 80100 then -- > 8.1.5
+    if data.regionType == "model" and data.model_id then
+      data.model_path = data.model_id
+      data.model_id = nil
     end
   end
 end

@@ -3,7 +3,7 @@ local L = WeakAuras.L;
 
 -- Default settings
 local default = {
-  model_path = 22217, -- "Creature/Arthaslichking/arthaslichking.m2"
+  model_path = "22217", -- "Creature/Arthaslichking/arthaslichking.m2"
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
   model_x = 0,
@@ -110,17 +110,18 @@ local function modify(parent, region, data)
 
   -- Adjust model
   local register = false;
-  if tonumber(data.model_path) then
+  local toc = select(4, GetBuildInfo())
+  if toc > 80100 and tonumber(data.model_path) then
+    model:SetModel(tonumber(data.model_path))
+  elseif toc <= 80100 and tonumber(data.model_path) then
     model:SetDisplayInfo(tonumber(data.model_path))
+  elseif (data.modelIsUnit) then
+    model:SetUnit(data.model_path)
+    register = true;
   else
-    if (data.modelIsUnit) then
-      model:SetUnit(data.model_path)
-      register = true;
-    else
-      pcall(function() model:SetModel(data.model_path) end);
-    end
-    model:SetPortraitZoom(data.portraitZoom and 1 or 0);
+    pcall(function() model:SetModel(data.model_path) end);
   end
+  model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
