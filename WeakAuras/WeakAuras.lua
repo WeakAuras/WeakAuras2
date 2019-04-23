@@ -3272,7 +3272,6 @@ local function pAdd(data)
 
 end
 
--- Dummy add function to protect errors from propagating out of the real add function
 function WeakAuras.Add(data)
   WeakAuras.PreAdd(data)
   pAdd(data);
