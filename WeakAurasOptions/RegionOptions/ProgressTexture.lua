@@ -8,7 +8,12 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       type = "input",
       name = L["Foreground Texture"],
-      order = 1
+      order = 1,
+      get = function() return tostring(data.foregroundTexture) end,
+      set = function(_, v)
+        data.foregroundTexture = tonumber(v) or v
+        WeakAuras.Add(data)
+      end
     },
     backgroundTexture = {
       type = "input",
@@ -16,7 +21,11 @@ local function createOptions(id, data)
       name = L["Background Texture"],
       order = 5,
       disabled = function() return data.sameTexture; end,
-      get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end
+      get = function() return data.sameTexture and tostring(data.foregroundTexture) or tostring(data.backgroundTexture) end,
+      set = function(_, v)
+        data.backgroundTexture = tonumber(v) or v
+        WeakAuras.Add(data)
+      end
     },
     mirror = {
       type = "toggle",

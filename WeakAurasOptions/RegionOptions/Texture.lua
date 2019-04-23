@@ -8,7 +8,12 @@ local function createOptions(id, data)
       type = "input",
       width = WeakAuras.doubleWidth,
       name = L["Texture"],
-      order = 1
+      order = 1,
+      get = function() return tostring(data.texture) end,
+      set = function(_, v)
+        data.texture = tonumber(v) or v
+        WeakAuras.Add(data)
+      end
     },
     desaturate = {
       type = "toggle",
