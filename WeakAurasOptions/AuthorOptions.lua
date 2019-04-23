@@ -1779,25 +1779,6 @@ local function mergeOptions(childIndex, merged, toMerge)
   end
 end
 
-local function mergeConfig(childIndex, mergedConfig, nextToMerge)
-  mergedConfig[references] = mergedConfig[references] or {}
-  for k, v in pairs(nextToMerge) do
-    if not mergedConfig[references][k] then
-      mergedConfig[references][k] = {[childIndex] = k}
-      if type(v) ~= "table" then
-        mergedConfig[k] = v
-      else
-        mergedConfig[k] = CopyTable(v)
-      end
-    else
-      mergedConfig[references][k][childIndex] = k
-      if neq(mergedConfig[k], v) then
-        mergedConfig[k] = nil
-      end
-    end
-  end
-end
-
 local function valuesAreEqual(t1, t2)
   if t1 == t2 then return true end
   local ty1 = type(t1)
@@ -1867,14 +1848,13 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
     local mergedOptions = {}
     local allData = {[0] = data}
     -- merge child options into one
-    local mergedConfig, keyConflicts = {}, {}
+    local keyConflicts = {}
     for i, childID in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childID)
       local childOptions = childData and childData.authorOptions
       allData[i] = childData
       if childOptions then
         mergeOptions(i, mergedOptions, childOptions)
-        mergeConfig(i, mergedConfig, childData.config)
         keyConflicts[i] = findConflictingKeys(childOptions)
       end
     end
@@ -1928,7 +1908,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
     else
       local order = startorder
       for i = 1, #mergedOptions do
-        order = addUserModeOption(mergedOptions, mergedConfig, args, allData, order, i)
+        order = addUserModeOption(mergedOptions, nil, args, allData, order, i)
       end
       args["userConfigFooter"] = {
         type = "header",
