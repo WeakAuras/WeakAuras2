@@ -3214,11 +3214,6 @@ local function pAdd(data)
       triggerSystem.Add(data);
     end
 
-    data.load = data.load or {};
-    data.actions = data.actions or {};
-    data.actions.init = data.actions.init or {};
-    data.actions.start = data.actions.start or {};
-    data.actions.finish = data.actions.finish or {};
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
     local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
