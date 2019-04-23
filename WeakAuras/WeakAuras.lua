@@ -2367,6 +2367,8 @@ local function ModernizeAnimations(animations)
   animations.colorFunc     = ModernizeAnimation(animations.colorFunc);
 end
 
+local modelMigration = CreateFrame("PlayerModel")
+
 function WeakAuras.preValidateModernize(data)
   -- Version 15 was introduced April 2019 in BFA
   if data.internalVersion < 15 then
@@ -2394,7 +2396,11 @@ function WeakAuras.preValidateModernize(data)
     end
     if data.regionType == "model" then
       if type(data.model_path) == "string" then
-        -- TODO: handle model conversion to ids  -- "Creature/Arthaslichking/arthaslichking.m2"
+        modelMigration:SetModel(data.model_path)
+        local modelId = modelMigration:GetModelFileID()
+        if modelId then
+          data.model_path = modelId
+        end
       end
     end
   end
