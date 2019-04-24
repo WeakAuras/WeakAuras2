@@ -48,8 +48,6 @@ local function releaseControlPoint(self, controlPoint)
   if regionData then
     controlPoint.regionData = nil
     regionData.controlPoint = nil
-    local parent = regionData.data.parent and WeakAuras.GetRegion(regionData.data.parent) or WeakAurasFrame
-    WeakAuras.AnchorFrame(regionData.data, regionData.region, parent)
   end
 end
 
