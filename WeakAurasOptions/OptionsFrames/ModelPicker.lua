@@ -11,6 +11,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local modelPicker
+local toc = select(4, GetBuildInfo())
 
 local function ConstructModelPicker(frame)
   local group = AceGUI:Create("InlineGroup");
@@ -175,8 +176,10 @@ local function ConstructModelPicker(frame)
 
     model_us = model_us or self.data.model_st_us;
 
-    if tonumber(model_path) then
+    if tonumber(model_path) and toc <= 80100 then
       self.model:SetDisplayInfo(tonumber(model_path))
+    elseif tonumber(model_path) then
+      self.model:SetModel(tonumber(model_path))
     else
       self.model:SetModel(model_path);
     end
@@ -222,7 +225,11 @@ local function ConstructModelPicker(frame)
     model_y = model_y or self.data.model_y;
 
     if tonumber(model_path) then
-      self.model:SetDisplayInfo(tonumber(model_path))
+      if toc > 80100 then
+        self.model:SetModel(tonumber(model_path))
+      else
+        self.model:SetDisplayInfo(tonumber(model_path))
+      end
     else
       self.model:SetModel(model_path);
     end
