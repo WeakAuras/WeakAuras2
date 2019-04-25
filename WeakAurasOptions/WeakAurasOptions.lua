@@ -2623,7 +2623,7 @@ function WeakAuras.AddOption(id, data)
       },
       authorOptions = {
         type = "group",
-        name = WeakAuras.newFeatureString .. L["Custom Options"],
+        name = L["Custom Options"],
         order = 100
       }
     }
