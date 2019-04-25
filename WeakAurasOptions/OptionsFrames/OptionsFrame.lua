@@ -722,7 +722,7 @@ function WeakAuras.CreateFrame()
         containerScroll:AddChild(simpleLabel);
 
         local button = AceGUI:Create("WeakAurasNewButton");
-        button:SetTitle(WeakAuras.newFeatureString .. L["From Template"]);
+        button:SetTitle(L["From Template"]);
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()

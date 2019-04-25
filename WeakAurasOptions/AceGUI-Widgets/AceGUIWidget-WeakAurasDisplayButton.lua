@@ -175,7 +175,7 @@ clipboard.copyAnimationsEntry = {
 };
 
 clipboard.copyAuthorOptionsEntry = {
-  text = WeakAuras.newFeatureString .. L["Author Options"],
+  text = L["Author Options"],
   notCheckable = true,
   func = function()
     WeakAuras_DropDownMenu:Hide();
@@ -184,7 +184,7 @@ clipboard.copyAuthorOptionsEntry = {
 };
 
 clipboard.copyUserConfigEntry = {
-  text = WeakAuras.newFeatureString .. L["Custom Configuration"],
+  text = L["Custom Configuration"],
   notCheckable = true,
   func = function()
     WeakAuras_DropDownMenu:Hide();

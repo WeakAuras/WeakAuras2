@@ -75,7 +75,7 @@ local function createOptions(id, data)
     cooldownSwipe = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Cooldown Swipe"],
+      name = L["Cooldown Swipe"],
       order = 6.3,
       disabled = function() return not WeakAuras.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
@@ -83,7 +83,7 @@ local function createOptions(id, data)
     cooldownEdge = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Cooldown Edge"],
+      name = L["Cooldown Edge"],
       order = 6.4,
       disabled = function() return not WeakAuras.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
@@ -99,7 +99,7 @@ local function createOptions(id, data)
     glowHeader = {
       type = "header",
       order = 19,
-      name = WeakAuras.newFeatureString .. L["Glow Settings"],
+      name = L["Glow Settings"],
     },
     glow = {
       type = "toggle",

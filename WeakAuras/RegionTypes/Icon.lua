@@ -78,23 +78,23 @@ local properties = {
     default = 32
   },
   glow = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Visibility"] },
+    display = { L["Glow"], L["Visibility"] },
     setter = "SetGlow",
     type = "bool"
   },
   glowType = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Type"] },
+    display = { L["Glow"], L["Type"] },
     setter = "SetGlowType",
     type = "list",
     values = WeakAuras.glow_types,
   },
   useGlowColor = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Use Custom Color"] },
+    display = { L["Glow"], L["Use Custom Color"] },
     setter = "SetUseGlowColor",
     type = "bool"
   },
   glowColor = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Color"]},
+    display = { L["Glow"], L["Color"]},
     setter = "SetGlowColor",
     type = "color"
   },
