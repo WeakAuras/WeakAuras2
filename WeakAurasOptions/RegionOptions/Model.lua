@@ -220,27 +220,10 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
   model:SetWidth(region:GetWidth() - 2);
   model:SetHeight(region:GetHeight() - 2);
   model:SetPoint("center", region, "center");
-  if tonumber(data.model_path) then
-    model:SetDisplayInfo(tonumber(data.model_path))
-  else
-    if (data.modelIsUnit) then
-      model:SetUnit(data.model_path)
-    else
-      pcall(function() model:SetModel(data.model_path) end);
-    end
-  end
+  WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
   model:SetScript("OnShow", function()
-    if tonumber(data.model_path) then
-      model:SetDisplayInfo(tonumber(data.model_path))
-    else
-      if (data.modelIsUnit) then
-        model:SetUnit(data.model_path)
-      else
-        pcall(function() model:SetModel(data.model_path) end);
-      end
-      model:SetPortraitZoom(data.portraitZoom and 1 or 0);
-    end
-
+    WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
+    model:SetPortraitZoom(data.portraitZoom and 1 or 0)
     if (data.api) then
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),

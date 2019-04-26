@@ -2368,6 +2368,7 @@ local function ModernizeAnimations(animations)
 end
 
 local modelMigration = CreateFrame("PlayerModel")
+local toc = select(4, GetBuildInfo())
 
 function WeakAuras.preValidateModernize(data)
   -- Version 15 was introduced April 2019 in BFA
@@ -2394,7 +2395,7 @@ function WeakAuras.preValidateModernize(data)
         end
       end
     end
-    if data.regionType == "model" then
+    if data.regionType == "model" and toc <= 80100 then -- can't migrate if >= 8.2
       if type(data.model_path) == "string" then
         modelMigration:SetModel(data.model_path)
         local modelId = modelMigration:GetModelFileID()
@@ -2405,7 +2406,6 @@ function WeakAuras.preValidateModernize(data)
     end
   end
 
-  local toc = select(4, GetBuildInfo())
   if toc > 80100 then -- > 8.1.5
     if data.regionType == "model" and data.model_id then
       data.model_path = data.model_id
@@ -5619,4 +5619,20 @@ function WeakAuras.FindUnusedId(prefix)
     num = num + 1;
   end
   return id
+end
+
+function WeakAuras.SetModel(frame, data, isUnit)
+  if tonumber(data) then
+    if toc > 80100 then
+      pcall(function() frame:SetModel(tonumber(data)) end)
+    else
+      pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
+    end
+  else
+    if isUnit then
+      pcall(function() frame:SetUnit(data) end)
+    else
+      pcall(function() frame:SetModel(data) end)
+    end
+  end
 end

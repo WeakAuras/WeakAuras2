@@ -109,18 +109,7 @@ local function modify(parent, region, data)
   region.scaley = 1;
 
   -- Adjust model
-  local register = false;
-  local toc = select(4, GetBuildInfo())
-  if toc > 80100 and tonumber(data.model_path) then
-    model:SetModel(tonumber(data.model_path))
-  elseif toc <= 80100 and tonumber(data.model_path) then
-    model:SetDisplayInfo(tonumber(data.model_path))
-  elseif (data.modelIsUnit) then
-    model:SetUnit(data.model_path)
-    register = true;
-  else
-    pcall(function() model:SetModel(data.model_path) end);
-  end
+  WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -131,7 +120,7 @@ local function modify(parent, region, data)
     model:SetPosition(data.model_z, data.model_x, data.model_y);
   end
 
-  if (register) then
+  if data.modelIsUnit then
     model:RegisterEvent("UNIT_MODEL_CHANGED");
     if (data.model_path == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -244,15 +233,7 @@ local function modify(parent, region, data)
     model:SetKeepModelOnHide(true)
     model:ClearTransform();
 
-    if tonumber(data.model_path) then
-      model:SetDisplayInfo(tonumber(data.model_path))
-    else
-      if (data.modelIsUnit) then
-        model:SetUnit(data.model_path)
-      else
-        pcall(function() model:SetModel(data.model_path) end);
-      end
-    end
+    WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0);
     if (data.api) then
       model:ClearTransform();

@@ -176,13 +176,7 @@ local function ConstructModelPicker(frame)
 
     model_us = model_us or self.data.model_st_us;
 
-    if tonumber(model_path) and toc <= 80100 then
-      self.model:SetDisplayInfo(tonumber(model_path))
-    elseif tonumber(model_path) then
-      self.model:SetModel(tonumber(model_path))
-    else
-      self.model:SetModel(model_path);
-    end
+    WeakAuras.SetModel(self.model, model_path)
     self.model:SetTransform(model_tx / 1000, model_ty / 1000, model_tz / 1000,
       rad(model_rx), rad(model_ry), rad(model_rz),
       model_us / 1000);
@@ -224,15 +218,7 @@ local function ConstructModelPicker(frame)
     model_x = model_x or self.data.model_x;
     model_y = model_y or self.data.model_y;
 
-    if tonumber(model_path) then
-      if toc > 80100 then
-        self.model:SetModel(tonumber(model_path))
-      else
-        self.model:SetDisplayInfo(tonumber(model_path))
-      end
-    else
-      self.model:SetModel(model_path);
-    end
+    WeakAuras.SetModel(self.model, model_path)
     self.model:ClearTransform();
     self.model:SetPosition(model_z, model_x, model_y);
     self.model:SetFacing(rad(self.data.rotation));
@@ -262,11 +248,7 @@ local function ConstructModelPicker(frame)
 
   function group.Open(self, data)
     self.data = data;
-    if tonumber(data.model_path) then
-      model:SetDisplayInfo(tonumber(data.model_path))
-    else
-      model:SetModel(data.model_path);
-    end
+    WeakAuras.SetModel(self.model, data.model_path)
     if (data.api) then
       self.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
