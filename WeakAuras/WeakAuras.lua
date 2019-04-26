@@ -2374,25 +2374,23 @@ local modelMigration = CreateFrame("PlayerModel")
 function WeakAuras.preValidateModernize(data)
   -- Version 15 was introduced May 2019 in BFA
   if data.internalVersion < 15 then
-    if data.regionType == "texture" then
-      if type(data.texture) == "string" then
-        local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
-        if textureId and textureId > 0 then
-          data.texture = textureId
-        end
+    if data.regionType == "texture" and type(data.texture) == "string" then
+      local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
+      if textureId and textureId > 0 then
+        data.texture = tostring(textureId)
       end
     end
     if data.regionType == "progresstexture" then
       if type(data.foregroundTexture) == "string" then
         local textureId = GetFileIDFromPath(data.foregroundTexture:gsub("\\\\", "\\"))
         if textureId and textureId > 0 then
-          data.foregroundTexture = textureId
+          data.foregroundTexture = tostring(textureId)
         end
       end
       if type(data.backgroundTexture) == "string" then
         local textureId = GetFileIDFromPath(data.backgroundTexture:gsub("\\\\", "\\"))
         if textureId and textureId > 0 then
-          data.backgroundTexture = textureId
+          data.backgroundTexture = tostring(textureId)
         end
       end
     end

@@ -8,12 +8,7 @@ local function createOptions(id, data)
       type = "input",
       width = WeakAuras.doubleWidth,
       name = L["Texture"],
-      order = 1,
-      get = function() return tostring(data.texture) end,
-      set = function(_, v)
-        data.texture = tonumber(v) or v
-        WeakAuras.Add(data)
-      end
+      order = 1
     },
     desaturate = {
       type = "toggle",
@@ -165,7 +160,7 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = 450915, -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+    texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
     color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
