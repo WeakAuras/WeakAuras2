@@ -4,12 +4,6 @@ local function createOptions(id, data)
   local options = {
     __title = L["Model Settings"],
     __order = 1,
-    model_path = {
-      type = "input",
-      width = WeakAuras.doubleWidth,
-      name = L["Model"],
-      order = 0.5
-    },
     space2 = {
       type = "execute",
       width = WeakAuras.normalWidth,
@@ -188,6 +182,22 @@ local function createOptions(id, data)
     },
   };
 
+  if WeakAuras.BuildInfo > 80100 then
+    options.model_fileId = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["Model"],
+      order = 0.5
+    }
+  else
+    options.model_path = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["Model"],
+      order = 0.5
+    }
+  end
+
   return {
     model = options,
     border = WeakAuras.BorderOptions(id, data);
@@ -220,9 +230,9 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
   model:SetWidth(region:GetWidth() - 2);
   model:SetHeight(region:GetHeight() - 2);
   model:SetPoint("center", region, "center");
-  WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
+  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
   model:SetScript("OnShow", function()
-    WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
+    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0)
     if (data.api) then
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -247,7 +257,8 @@ end
 
 local function createIcon()
   local data = {
-    model_path = 22217, -- "Creature/Arthaslichking/arthaslichking.m2"
+    model_path = "Creature/Arthaslichking/arthaslichking.m2",
+    model_fileId = "122968",
     modelIsUnit = false,
     model_x = 0,
     model_y = 0,

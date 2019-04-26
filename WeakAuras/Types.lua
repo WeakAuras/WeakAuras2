@@ -888,9 +888,8 @@ WeakAuras.texture_types = {
     ["bonusobjectives-bar-spark"] = "Bonus Objectives Spark"
   }
 }
-
-local toc = select(4, GetBuildInfo())
-if toc <= 80100 then -- 8.1.5
+local BuildInfo = select(4, GetBuildInfo())
+if BuildInfo <= 80100 then -- 8.1.5
   WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"
   WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
 end

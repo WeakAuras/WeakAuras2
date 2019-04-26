@@ -44,6 +44,8 @@ function WeakAuras.InternalVersion()
   return internalVersion;
 end
 
+WeakAuras.BuildInfo = select(4, GetBuildInfo())
+
 function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if not WeakAuras.IsLoginFinished() then
@@ -2368,10 +2370,9 @@ local function ModernizeAnimations(animations)
 end
 
 local modelMigration = CreateFrame("PlayerModel")
-local toc = select(4, GetBuildInfo())
 
 function WeakAuras.preValidateModernize(data)
-  -- Version 15 was introduced April 2019 in BFA
+  -- Version 15 was introduced May 2019 in BFA
   if data.internalVersion < 15 then
     if data.regionType == "texture" then
       if type(data.texture) == "string" then
@@ -2395,21 +2396,13 @@ function WeakAuras.preValidateModernize(data)
         end
       end
     end
-    if data.regionType == "model" and toc <= 80100 then -- can't migrate if >= 8.2
-      if type(data.model_path) == "string" then
-        modelMigration:SetModel(data.model_path)
-        local modelId = modelMigration:GetModelFileID()
-        if modelId then
-          data.model_id = tostring(modelId)
-        end
-      end
-    end
   end
 
-  if toc > 80100 then -- > 8.1.5
-    if data.regionType == "model" and data.model_id then
-      data.model_path = data.model_id
-      data.model_id = nil
+  if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 and not data.model_fileId then -- prepare for migration at 8.2
+    WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
+    local modelId = modelMigration:GetModelFileID()
+    if modelId then
+      data.model_fileId = tostring(modelId)
     end
   end
 end
@@ -5621,18 +5614,20 @@ function WeakAuras.FindUnusedId(prefix)
   return id
 end
 
-function WeakAuras.SetModel(frame, data, isUnit)
+function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit)  -- pcall(function()  end)
+  local WoW82 = WeakAuras.BuildInfo > 80100
+  local data = WoW82 and model_fileId or model_path
   if tonumber(data) then
-    if toc > 80100 then
-      pcall(function() frame:SetModel(tonumber(data)) end)
+    if WoW82 then
+      frame:SetModel(tonumber(data))
     else
-      pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
+      frame:SetDisplayInfo(tonumber(data))
     end
   else
     if isUnit then
-      pcall(function() frame:SetUnit(data) end)
+      frame:SetUnit(data)
     else
-      pcall(function() frame:SetModel(data) end)
+      frame:SetModel(data)
     end
   end
 end

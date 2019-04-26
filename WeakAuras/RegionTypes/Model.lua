@@ -3,7 +3,8 @@ local L = WeakAuras.L;
 
 -- Default settings
 local default = {
-  model_path = "22217", -- "Creature/Arthaslichking/arthaslichking.m2"
+  model_path = "Creature/Arthaslichking/arthaslichking.m2",
+  model_fileId = "122968",
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
   model_x = 0,
@@ -109,7 +110,7 @@ local function modify(parent, region, data)
   region.scaley = 1;
 
   -- Adjust model
-  WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
+  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -233,7 +234,7 @@ local function modify(parent, region, data)
     model:SetKeepModelOnHide(true)
     model:ClearTransform();
 
-    WeakAuras.SetModel(model, data.model_path, data.modelIsUnit)
+    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0);
     if (data.api) then
       model:ClearTransform();
