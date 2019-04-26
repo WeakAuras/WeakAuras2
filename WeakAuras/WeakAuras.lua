@@ -5612,20 +5612,20 @@ function WeakAuras.FindUnusedId(prefix)
   return id
 end
 
-function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit)  -- pcall(function()  end)
+function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit)
   local WoW82 = WeakAuras.BuildInfo > 80100
   local data = WoW82 and model_fileId or model_path
   if tonumber(data) then
     if WoW82 then
-      frame:SetModel(tonumber(data))
+      pcall(function() frame:SetModel(tonumber(data)) end)
     else
-      frame:SetDisplayInfo(tonumber(data))
+      pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
     end
   else
     if isUnit then
-      frame:SetUnit(data)
+      pcall(function() frame:SetUnit(data) end)
     else
-      frame:SetModel(data)
+      pcall(function() frame:SetModel(data) end)
     end
   end
 end
