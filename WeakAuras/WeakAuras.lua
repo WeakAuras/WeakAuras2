@@ -158,6 +158,7 @@ local loadFuncsForOptions = {};
 
 -- Check Conditions Functions, keyed on id
 local checkConditions = {};
+WeakAuras.checkConditions = checkConditions
 
 -- Dynamic Condition functions to run. keyed on event and id
 local dynamicConditions = {};
@@ -1954,17 +1955,7 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
     conditionChecksTimers.recheckHandle[id] = nil;
     WeakAuras.UnregisterForGlobalConditions(id);
 
-    local region = WeakAuras.regions[id].region;
-    if (checkConditions[id]) then
-      checkConditions[id](region, true);
-      if(clones[id]) then
-        for cloneId, region in pairs(clones[id]) do
-          checkConditions[id](region, true);
-        end
-      end
-    end
-
-    region:Collapse();
+    WeakAuras.regions[id].region:Collapse();
     WeakAuras.CollapseAllClones(id);
   end
 end
@@ -3398,13 +3389,6 @@ function WeakAuras.CollapseAllClones(id, triggernum)
   end
 end
 
-function WeakAuras.CollapseAndResetConditions(region, id)
-  if (checkConditions[id]) then
-    checkConditions[id](region, true);
-  end
-  region:Collapse();
-end
-
 function WeakAuras.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   for id, state in pairs(triggerState) do
@@ -4794,18 +4778,18 @@ function WeakAuras.UpdatedTriggerState(id)
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
     for cloneId, clone in pairs(clones[id]) do
-      WeakAuras.CollapseAndResetConditions(clone, id)
+      clone:Collapse()
     end
-    WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
+    WeakAuras.regions[id].region:Collapse()
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
-        WeakAuras.CollapseAndResetConditions(clone, id)
+        clone:Collapse()
       end
     end
     if (not activeTriggerState[""] or not activeTriggerState[""].show) then
-      WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
+      WeakAuras.regions[id].region:Collapse()
     end
     -- Show new states
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
