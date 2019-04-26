@@ -885,11 +885,15 @@ WeakAuras.texture_types = {
     ["GarrMission_EncounterBar-Spark"] = "Blizzard Garrison Mission Encounter Spark",
     ["Legionfall_BarSpark"]= "Blizzard Legionfall Spark",
     ["honorsystem-bar-spark"] = "Blizzard Honor System Spark",
-    ["bonusobjectives-bar-spark"] = "Bonus Objectives Spark",
-    -- ["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark", -- removed in 7.2
-    -- ["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark" -- removed in 7.2
+    ["bonusobjectives-bar-spark"] = "Bonus Objectives Spark"
   }
 }
+
+local toc = select(4, GetBuildInfo())
+if toc <= 80100 then -- 8.1.5
+  WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"
+  WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
+end
 
 if(WeakAuras.PowerAurasPath ~= "") then
   WeakAuras.texture_types["PowerAuras Heads-Up"] = {
