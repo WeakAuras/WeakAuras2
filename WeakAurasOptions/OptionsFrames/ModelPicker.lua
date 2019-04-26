@@ -176,7 +176,6 @@ local function ConstructModelPicker(frame)
 
     model_us = model_us or self.data.model_st_us;
 
-    print("group.PickSt", model_path)
     WeakAuras.SetModel(self.model, model_path, model_fileId)
     self.model:SetTransform(model_tx / 1000, model_ty / 1000, model_tz / 1000,
       rad(model_rx), rad(model_ry), rad(model_rz),
@@ -222,7 +221,6 @@ local function ConstructModelPicker(frame)
     model_x = model_x or self.data.model_x;
     model_y = model_y or self.data.model_y;
 
-    print("group.Pick", model_path)
     WeakAuras.SetModel(self.model, model_path, model_fileId)
     self.model:ClearTransform();
     self.model:SetPosition(model_z, model_x, model_y);
