@@ -4901,7 +4901,7 @@ WeakAuras.event_prototypes = {
   },
   ["Character Stats"] = {
     type = "status",
-    name = L["Character Stats"],
+    name = WeakAuras.newFeatureString .. L["Character Stats"],
     events = {
         "UNIT_STATS",
         "COMBAT_RATING_UPDATE",
