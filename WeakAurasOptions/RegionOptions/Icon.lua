@@ -364,9 +364,12 @@ local function createOptions(id, data)
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 43.2,  hideCustomTextEditor, {"customText"}, false);
 
+  for k, v in pairs(WeakAuras.GlowOptions(id, data, 10)) do
+    options[k] = v
+  end
+
   return {
     icon = options,
-    glow = WeakAuras.GlowOptions(id, data, 10),
     position = WeakAuras.PositionOptions(id, data),
   };
 end
