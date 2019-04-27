@@ -3687,7 +3687,7 @@ function WeakAuras.GlowOptions(id, data, order)
         if data.glowType == "buttonOverlay" then
           line = ("%s %s"):format(line, color)
         elseif data.glowType == "ACShine" then
-          line = L["%s %s, particules: %d, frequency: %d, scale: %d"]:format(
+          line = L["%s %s, particules: %d, frequency: %0.2f, scale: %0.2f"]:format(
             line,
             color,
             data.glowLines,
@@ -3695,10 +3695,10 @@ function WeakAuras.GlowOptions(id, data, order)
             data.glowScale
           )
           if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, offset: %d;%d"]:format(line, data.glowXOffset, data.glowYOffset)
+            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
           end
         elseif data.glowType == "Pixel" then
-          line = L["%s %s, lines: %d, frequency: %d, length: %d, thickness: %d"]:format(
+          line = L["%s %s, lines: %d, frequency: %0.2f, length: %d, thickness: %d"]:format(
             line,
             color,
             data.glowLines,
@@ -3707,7 +3707,7 @@ function WeakAuras.GlowOptions(id, data, order)
             data.glowThickness
           )
           if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, offset: %d;%d"]:format(line, data.glowXOffset, data.glowYOffset)
+            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
           end
           if data.glowBorder then
             line = L["%s, border"]:format(line)
