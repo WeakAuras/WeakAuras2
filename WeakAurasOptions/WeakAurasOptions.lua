@@ -3687,7 +3687,7 @@ function WeakAuras.GlowOptions(id, data, order)
         if data.glowType == "buttonOverlay" then
           line = ("%s %s"):format(line, color)
         elseif data.glowType == "ACShine" then
-          line = L["%s %s, particules: %d, frequency: %0.2f, scale: %0.2f"]:format(
+          line = L["%s %s, particles: %d, frequency: %0.2f, scale: %0.2f"]:format(
             line,
             color,
             data.glowLines,
