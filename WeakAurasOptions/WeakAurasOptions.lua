@@ -3792,7 +3792,7 @@ function WeakAuras.GlowOptions(id, data, order)
       name = "",
       width = indentWidth,
       order = order + 1.30,
-      hidden = hiddenGlowExtra,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
     },
     glowLength = {
       type = "range",
