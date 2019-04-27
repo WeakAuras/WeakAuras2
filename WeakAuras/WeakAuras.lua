@@ -2371,40 +2371,6 @@ end
 
 local modelMigration = CreateFrame("PlayerModel")
 
-function WeakAuras.preValidateModernize(data)
-  -- Version 15 was introduced May 2019 in BFA
-  if data.internalVersion < 15 then
-    if data.regionType == "texture" and type(data.texture) == "string" then
-      local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
-      if textureId and textureId > 0 then
-        data.texture = tostring(textureId)
-      end
-    end
-    if data.regionType == "progresstexture" then
-      if type(data.foregroundTexture) == "string" then
-        local textureId = GetFileIDFromPath(data.foregroundTexture:gsub("\\\\", "\\"))
-        if textureId and textureId > 0 then
-          data.foregroundTexture = tostring(textureId)
-        end
-      end
-      if type(data.backgroundTexture) == "string" then
-        local textureId = GetFileIDFromPath(data.backgroundTexture:gsub("\\\\", "\\"))
-        if textureId and textureId > 0 then
-          data.backgroundTexture = tostring(textureId)
-        end
-      end
-    end
-  end
-
-  if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 and not data.model_fileId then -- prepare for migration at 8.2
-    WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
-    local modelId = modelMigration:GetModelFileID()
-    if modelId then
-      data.model_fileId = tostring(modelId)
-    end
-  end
-end
-
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 function WeakAuras.Modernize(data)
   if (not data.internalVersion) then
@@ -2906,6 +2872,38 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  -- Version 15 was introduced May 2019 in BFA
+  if data.internalVersion < 15 then
+    if data.regionType == "texture" and type(data.texture) == "string" then
+      local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
+      if textureId and textureId > 0 then
+        data.texture = tostring(textureId)
+      end
+    end
+    if data.regionType == "progresstexture" then
+      if type(data.foregroundTexture) == "string" then
+        local textureId = GetFileIDFromPath(data.foregroundTexture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.foregroundTexture = tostring(textureId)
+        end
+      end
+      if type(data.backgroundTexture) == "string" then
+        local textureId = GetFileIDFromPath(data.backgroundTexture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.backgroundTexture = tostring(textureId)
+        end
+      end
+    end
+  end
+
+  if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 and not data.model_fileId then -- prepare for migration at 8.2
+    WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
+    local modelId = modelMigration:GetModelFileID()
+    if modelId then
+      data.model_fileId = tostring(modelId)
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -3199,7 +3197,6 @@ local oldDataStub2 = {
 }
 
 function WeakAuras.PreAdd(data)
-  WeakAuras.preValidateModernize(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
     WeakAuras.validate(data, oldDataStub)
