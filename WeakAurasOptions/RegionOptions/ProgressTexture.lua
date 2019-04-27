@@ -16,7 +16,7 @@ local function createOptions(id, data)
       name = L["Background Texture"],
       order = 5,
       disabled = function() return data.sameTexture; end,
-      get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture end,
+      get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end
     },
     mirror = {
       type = "toggle",
