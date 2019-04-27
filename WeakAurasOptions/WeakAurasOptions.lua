@@ -3649,7 +3649,7 @@ end
 
 function WeakAuras.GlowOptions(id, data, order)
   local hiddenGlowExtra = function()
-    return WeakAuras.IsCollapsed("glow", "glow", "glowflags", true);
+    return WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
   end
 
   local glowOptions = {
@@ -3666,25 +3666,73 @@ function WeakAuras.GlowOptions(id, data, order)
     },
     glowType = {
       type = "select",
-      width = WeakAuras.normalWidth - 0.25,
+      width = WeakAuras.normalWidth,
       name = L["Type"],
       order = order + 0.03,
       values = WeakAuras.glow_types,
     },
+    glowExtraDescription = {
+      type = "description",
+      name = function()
+        local line = L["|cFFffcc00Glow:|r"]
+        local color = L["Default Color"]
+        if data.useGlowColor then
+          color = L["|c%02x%02x%02x%02xColor|r"]:format(
+            data.glowColor[4] * 255,
+            data.glowColor[1] * 255,
+            data.glowColor[2] * 255,
+            data.glowColor[3] * 255
+          )
+        end
+        if data.glowType == "buttonOverlay" then
+          line = ("%s %s"):format(line, color)
+        elseif data.glowType == "ACShine" then
+          line = L["%s %s, particules: %d, frequency: %d, scale: %d"]:format(
+            line,
+            color,
+            data.glowLines,
+            data.glowFrequency,
+            data.glowScale
+          )
+          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
+            line = L["%s, offset: %d;%d"]:format(line, data.glowXOffset, data.glowYOffset)
+          end
+        elseif data.glowType == "Pixel" then
+          line = L["%s %s, lines: %d, frequency: %d, length: %d, thickness: %d"]:format(
+            line,
+            color,
+            data.glowLines,
+            data.glowFrequency,
+            data.glowLength,
+            data.glowThickness
+          )
+          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
+            line = L["%s, offset: %d;%d"]:format(line, data.glowXOffset, data.glowYOffset)
+          end
+          if data.glowBorder then
+            line = L["%s, border"]:format(line)
+          end
+        end
+        return line
+      end,
+      width = WeakAuras.doubleWidth - 0.15,
+      order = order + 1,
+      fontSize = "medium"
+    },
     glowExpand = {
       type = "execute",
       name = "",
-      order = order + 1,
-      width = 0.2,
+      order = order + 1.01,
+      width = 0.15,
       image = function()
-        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowflags", true);
+        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
         return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
       end,
       imageWidth = 24,
       imageHeight = 24,
       func = function()
-        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowflags", true);
-        WeakAuras.SetCollapsed("glow", "glow", "glowflags", not collapsed);
+        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
+        WeakAuras.SetCollapsed("glow", "glow", "glowextra", not collapsed);
       end
     },
     useGlowColor = {
