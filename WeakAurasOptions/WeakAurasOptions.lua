@@ -3647,6 +3647,120 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
   return positionOptions;
 end
 
+function WeakAuras.GlowOptions(id, data, order)
+  local glowOptions = {
+    __title = WeakAuras.newFeatureString .. L["Glow Settings"],
+    __order = order,
+    glow = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Show Glow Effect"],
+      order = order + 0.02,
+    },
+    glowType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Type"],
+      order = order + 0.03,
+      values = WeakAuras.glow_types,
+    },
+    useGlowColor = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Color"],
+      desc = L["If unchecked, then a default color will be used (usually yellow)"],
+      order = order + 0.04,
+    },
+    glowColor = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = L["Color"],
+      order = order + 0.05,
+      disabled = function() return not data.useGlowColor end,
+    },
+    glowLines = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Lines & Particules"],
+      order = order + 0.06,
+      min = 1,
+      softMax = 30,
+      step = 1,
+      hidden = function() return data.glowType == "buttonOverlay" end,
+    },
+    glowFrequency = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Frequency"],
+      order = order + 0.07,
+      softMin = -2,
+      softMax = 2,
+      step = 0.05,
+      hidden = function() return data.glowType == "buttonOverlay" end,
+    },
+    glowLength = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Length"],
+      order = order + 0.08,
+      min = 1,
+      softMax = 20,
+      step = 0.05,
+      hidden = function() return data.glowType ~= "Pixel" end,
+    },
+    glowThickness = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Thickness"],
+      order = order + 0.09,
+      min = 0.05,
+      softMax = 20,
+      step = 0.05,
+      hidden = function() return data.glowType ~= "Pixel" end,
+    },
+    glowXOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["X-Offset"],
+      order = order + 0.10,
+      softMin = -100,
+      softMax = 100,
+      step = 0.5,
+      hidden = function() return data.glowType == "buttonOverlay" end,
+    },
+    glowYOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Y-Offset"],
+      order = order + 0.11,
+      softMin = -100,
+      softMax = 100,
+      step = 0.5,
+      hidden = function() return data.glowType == "buttonOverlay" end,
+    },
+    glowScale = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Scale"],
+      order = order + 0.12,
+      min = 0.05,
+      softMax = 10,
+      step = 0.05,
+      isPercent = true,
+      hidden = function() return data.glowType ~= "ACShine" end,
+    },
+    glowBorder = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Border"],
+      order = order + 0.13,
+      hidden = function() return data.glowType ~= "Pixel" end,
+    }
+  }
+
+  return glowOptions
+end
+
 -- TODO: update this function to not have an unused parameter
 function WeakAuras.BorderOptions(id, data, _, showBackDropOptions)
   local metaOrder = 99
