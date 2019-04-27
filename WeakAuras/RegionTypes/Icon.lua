@@ -107,7 +107,7 @@ local properties = {
     type = "color"
   },
   glowLines = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Lines & Particules"]},
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Lines & Particles"]},
     setter = "SetGlowLines",
     type = "number",
     min = 1,
