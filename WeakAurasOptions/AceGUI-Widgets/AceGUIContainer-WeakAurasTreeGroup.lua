@@ -270,14 +270,14 @@ end
 local function Dragger_OnMouseUp(frame)
 	local treeframe = frame:GetParent()
 	local self = treeframe.obj
-	local frame = treeframe:GetParent()
+	local parentFrame = treeframe:GetParent()
 	treeframe:StopMovingOrSizing()
 	--treeframe:SetScript("OnUpdate", nil)
 	treeframe:SetUserPlaced(false)
 	--Without this :GetHeight will get stuck on the current height, causing the tree contents to not resize
 	treeframe:SetHeight(0)
-	treeframe:SetPoint("TOPLEFT", frame, "TOPLEFT",0,0)
-	treeframe:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",0,0)
+	treeframe:SetPoint("TOPLEFT", parentFrame, "TOPLEFT",0,0)
+	treeframe:SetPoint("BOTTOMLEFT", parentFrame, "BOTTOMLEFT",0,0)
 
 	local status = self.status or self.localstatus
 	status.treewidth = treeframe:GetWidth()
