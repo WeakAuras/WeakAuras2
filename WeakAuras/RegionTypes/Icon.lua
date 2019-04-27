@@ -816,7 +816,7 @@ local function modify(parent, region, data)
         region.glowStart(
           frame,
           color,
-          region.glowParticules,
+          region.glowLines,
           region.glowFrequency,
           region.glowScale,
           region.glowXOffset,
