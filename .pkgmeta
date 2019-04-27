@@ -1,4 +1,5 @@
 package-as: WeakAuras
+wowi-archive-previous: no
 
 externals:
  WeakAuras/Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
