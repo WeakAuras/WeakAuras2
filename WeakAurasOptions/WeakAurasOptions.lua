@@ -3652,6 +3652,8 @@ function WeakAuras.GlowOptions(id, data, order)
     return WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
   end
 
+  local indentWidth = 0.1
+
   local glowOptions = {
     glowHeader = {
       type = "header",
@@ -3735,27 +3737,41 @@ function WeakAuras.GlowOptions(id, data, order)
         WeakAuras.SetCollapsed("glow", "glow", "glowextra", not collapsed);
       end
     },
+    glow_space1 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.10,
+      hidden = hiddenGlowExtra,
+    },
     useGlowColor = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Color"],
       desc = L["If unchecked, then a default color will be used (usually yellow)"],
-      order = order + 1.04,
+      order = order + 1.11,
       hidden = hiddenGlowExtra
     },
     glowColor = {
       type = "color",
       width = WeakAuras.normalWidth,
       name = L["Color"],
-      order = order + 1.05,
+      order = order + 1.12,
       disabled = function() return not data.useGlowColor end,
       hidden = hiddenGlowExtra
     },
+    glow_space2 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.20,
+      hidden = hiddenGlowExtra,
+    },
     glowLines = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Lines & Particles"],
-      order = order + 1.06,
+      order = order + 1.21,
       min = 1,
       softMax = 30,
       step = 1,
@@ -3765,17 +3781,24 @@ function WeakAuras.GlowOptions(id, data, order)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Frequency"],
-      order = order + 1.07,
+      order = order + 1.22,
       softMin = -2,
       softMax = 2,
       step = 0.05,
       hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
     },
+    glow_space3 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.30,
+      hidden = hiddenGlowExtra,
+    },
     glowLength = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Length"],
-      order = order + 1.08,
+      order = order + 1.31,
       min = 1,
       softMax = 20,
       step = 0.05,
@@ -3785,17 +3808,24 @@ function WeakAuras.GlowOptions(id, data, order)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Thickness"],
-      order = order + 1.09,
+      order = order + 1.32,
       min = 0.05,
       softMax = 20,
       step = 0.05,
       hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
     },
+    glow_space4 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.40,
+      hidden = hiddenGlowExtra,
+    },
     glowXOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["X-Offset"],
-      order = order + 1.10,
+      order = order + 1.41,
       softMin = -100,
       softMax = 100,
       step = 0.5,
@@ -3805,17 +3835,24 @@ function WeakAuras.GlowOptions(id, data, order)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Y-Offset"],
-      order = order + 1.11,
+      order = order + 1.42,
       softMin = -100,
       softMax = 100,
       step = 0.5,
       hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
     },
+    glow_space5 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.50,
+      hidden = hiddenGlowExtra,
+    },
     glowScale = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Scale"],
-      order = order + 1.12,
+      order = order + 1.52,
       min = 0.05,
       softMax = 10,
       step = 0.05,
@@ -3824,9 +3861,9 @@ function WeakAuras.GlowOptions(id, data, order)
     },
     glowBorder = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Border"],
-      order = order + 1.13,
+      order = order + 1.53,
       hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
     }
   }
