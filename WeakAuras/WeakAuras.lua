@@ -1,4 +1,4 @@
-local internalVersion = 14;
+local internalVersion = 15;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2865,6 +2865,17 @@ function WeakAuras.Modernize(data)
           local idx = triggerData.trigger.debuffClass
           data.triggers[triggerId].trigger.debuffClass = { [idx] = true }
         end
+      end
+    end
+  end
+
+  -- Version 14 was introduced April 2019 in BFA
+  if data.internalVersion < 15 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+          if triggerData.trigger.type == "status" and triggerData.trigger.event == "Spell Known" then
+            triggerData.trigger.use_exact_spellName = true
+          end
       end
     end
   end
