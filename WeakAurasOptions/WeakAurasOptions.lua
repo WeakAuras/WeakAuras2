@@ -3754,7 +3754,7 @@ function WeakAuras.GlowOptions(id, data, order)
     glowLines = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Lines & Particules"],
+      name = L["Lines & Particles"],
       order = order + 1.06,
       min = 1,
       softMax = 30,
