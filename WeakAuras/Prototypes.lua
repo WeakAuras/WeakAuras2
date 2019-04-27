@@ -5261,11 +5261,18 @@ WeakAuras.event_prototypes = {
     force_events = "WA_SPELL_CHECK",
     name = L["Spell Known"],
     init = function(trigger)
+      local spellName = trigger.spellName or ""
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = select(7, GetSpellInfo(name)) or ""
+      end
       local ret = [[
         local spellName = tonumber(%q);
         local usePet = %s;
       ]]
-      return ret:format(trigger.spellName or "", trigger.use_petspell and "true" or "false");
+      return ret:format(spellName, trigger.use_petspell and "true" or "false");
     end,
     args = {
       {
@@ -5273,7 +5280,8 @@ WeakAuras.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        test = "true"
+        test = "true",
+        showExactOption = true,
       },
       {
         name = "petspell",
