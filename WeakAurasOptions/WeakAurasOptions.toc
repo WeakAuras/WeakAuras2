@@ -54,6 +54,7 @@ OptionsFrames\TexturePicker.lua
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
+AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua

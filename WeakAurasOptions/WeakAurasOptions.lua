@@ -252,7 +252,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       options["button_" .. arg.name] = {
         type = "execute",
         width = 0.15,
-        name = "",
+        name = L["Show Extra Options"],
         order = order,
         image = function()
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
@@ -264,7 +264,8 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
           WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
           WeakAuras.ReloadTriggerOptions(data);
-        end
+        end,
+        control = "WeakAurasIcon"
       }
       order = order + 1;
 
@@ -2487,7 +2488,14 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
   }
   options[key .. "collapseButton"] = {
     type = "execute",
-    name = "",
+    name = function()
+      local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
+      if isCollapsed then
+        return L["Expand"]
+      else
+        return L["Collapse"]
+      end
+    end,
     order = order + 0.1,
     width = 0.15,
     func = function(info)
@@ -2498,7 +2506,8 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
     image = function()
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
-    end
+    end,
+    control = "WeakAurasIcon"
   }
 
   options[key] = {
@@ -2983,8 +2992,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     },
     addTrigger = {
       type = "execute",
-      name = "",
-      desc = L["Add Trigger"],
+      name = L["Add Trigger"],
       order = 1,
       func = function()
         if(data.controlledChildren) then
@@ -3005,12 +3013,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\add",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     deleteTrigger = {
       type = "execute",
-      name = "",
-      desc = L["Delete Trigger"],
+      name = L["Delete Trigger"],
       order = 1.1,
       func = deleteTrigger,
       hidden = function()
@@ -3019,12 +3027,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     triggerUp = {
       type = "execute",
-      name = "",
-      desc = L["Up"],
+      name = L["Up"],
       order = 1.2,
       func = function()
         if(data.controlledChildren) then
@@ -3063,12 +3071,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     triggerDown = {
       type = "execute",
-      name = "",
-      desc = L["Down"],
+      name = L["Down"],
       order = 1.3,
       func = function()
         if(data.controlledChildren) then
@@ -3107,12 +3115,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     applyTemplate = {
       type = "execute",
-      name = "",
-      desc = L["Apply Template"],
+      name = L["Apply Template"],
       order = 1.4,
       func = function()
         WeakAuras.OpenTriggerTemplate(data);
@@ -3123,7 +3131,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\template",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     triggerHeader = {
       type = "header",
@@ -3754,7 +3763,10 @@ function WeakAuras.GlowOptions(id, data, order)
     },
     glowExpand = {
       type = "execute",
-      name = "",
+      name = function()
+        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true)
+        return collapsed and L["Expand"] or L["Collapse"]
+      end,
       order = order + 1.01,
       width = 0.15,
       image = function()
@@ -3766,7 +3778,8 @@ function WeakAuras.GlowOptions(id, data, order)
       func = function()
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
         WeakAuras.SetCollapsed("glow", "glow", "glowextra", not collapsed);
-      end
+      end,
+      control = "WeakAurasIcon"
     },
     glow_space1 = {
       type = "description",
