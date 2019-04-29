@@ -2873,13 +2873,13 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 14 was introduced April 2019 in BFA
+  -- Version 15 was introduced April 2019 in BFA
   if data.internalVersion < 15 then
     if data.triggers then
       for triggerId, triggerData in ipairs(data.triggers) do
-          if triggerData.trigger.type == "status" and triggerData.trigger.event == "Spell Known" then
-            triggerData.trigger.use_exact_spellName = true
-          end
+        if triggerData.trigger.type == "status" and triggerData.trigger.event == "Spell Known" then
+          triggerData.trigger.use_exact_spellName = true
+        end
       end
     end
   end
@@ -2916,6 +2916,9 @@ function WeakAuras.Modernize(data)
       local modelId = modelMigration:GetModelFileID()
       if modelId then
         data.model_fileId = tostring(modelId)
+      end
+    end
+  end
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
