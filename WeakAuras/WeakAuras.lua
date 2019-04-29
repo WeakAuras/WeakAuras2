@@ -2901,6 +2901,8 @@ function WeakAuras.Modernize(data)
     local modelId = modelMigration:GetModelFileID()
     if modelId then
       data.model_fileId = tostring(modelId)
+    elseif data.modelIsUnit then
+      data.model_fileId = data.model_path
     end
   end
 
