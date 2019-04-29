@@ -91,8 +91,11 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
-      end
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer()
+      end,
     },
+    -- custom grow option added below
     align = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -108,6 +111,8 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer()
       end,
       hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
       disabled = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
@@ -129,6 +134,8 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer()
       end,
     },
     -- circle grow options
@@ -153,7 +160,7 @@ local function createOptions(id, data)
     arcLength = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Arc Length"],
+      name = WeakAuras.newFeatureString .. L["Arc Length"],
       order = 7,
       min = 0,
       max = 360,
@@ -182,6 +189,8 @@ local function createOptions(id, data)
         data.selfPoint = gridSelfPoints[value]
         data.gridType = value
         WeakAuras.Add(data)
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer()
       end,
     },
     gridWidth = {
@@ -260,6 +269,7 @@ local function createOptions(id, data)
       order = 20,
       values = WeakAuras.group_sort_types
     },
+    -- custom sort option added below
     hybridPosition = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -308,6 +318,7 @@ local function createOptions(id, data)
       order = 25,
       width = WeakAuras.normalWidth,
       name = L["Limit"],
+      hidden = function() return data.grow == "CUSTOM" end,
     },
     limit = {
       type = "range",
@@ -318,6 +329,7 @@ local function createOptions(id, data)
       softMax = 20,
       step = 1,
       disabled = function() return not data.useLimit end,
+      hidden = function() return data.grow == "CUSTOM" end,
     },
     animate = {
       type = "toggle",
@@ -398,6 +410,9 @@ local function createOptions(id, data)
     },
   };
 
+  WeakAuras.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", 2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
+  WeakAuras.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", 21, function() return data.sort ~= "custom" end, {"customSort"}, nil, nil, nil, nil, nil, true)
+
   return {
     dynamicgroup = options,
     position = WeakAuras.PositionOptions(id, data, nil, true, true),
@@ -428,11 +443,17 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   -- i don't much like this hack. But i also want to be able to use the same code
   -- for the thumbnail, without worrying about animations or anchors mucking it up.
   local animate, anchorFrameType = data.animate, data.anchorFrameType
+  local grow = data.grow
+  local sort = data.sort
+  data.grow = data.grow == "CUSTOM" and "DOWN" or data.grow
+  data.sort = "none"
   data.animate = nil
   data.anchorFrameType = "SCREEN"
   WeakAuras.regionTypes["dynamicgroup"].modify(borderframe, region, data)
   data.animate = animate
   data.anchorFrameType = anchorFrameType
+  data.grow = grow
+  data.sort = sort
   local sortedChildren = region.sortedChildren
   for _, regionData in ipairs(sortedChildren) do
     regionData.region:Hide()

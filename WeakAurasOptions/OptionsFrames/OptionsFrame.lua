@@ -722,7 +722,7 @@ function WeakAuras.CreateFrame()
         containerScroll:AddChild(simpleLabel);
 
         local button = AceGUI:Create("WeakAurasNewButton");
-        button:SetTitle(WeakAuras.newFeatureString .. L["From Template"]);
+        button:SetTitle(L["From Template"]);
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()
@@ -829,6 +829,24 @@ function WeakAuras.CreateFrame()
       displayButtons[id]:Pick();
       self.pickedDisplay = id;
       local data = db.displays[id];
+      -- Expand parent + loaded/unloaded if needed
+      if data.parent then
+        if not displayButtons[data.parent]:GetExpanded() then
+          displayButtons[data.parent]:Expand()
+        end
+      end
+      if loaded[id] ~= nil then
+        -- Under loaded
+        if not loadedButton:GetExpanded() then
+          loadedButton:Expand()
+        end
+      else
+        -- Under Unloaded
+        if not unloadedButton:GetExpanded() then
+          unloadedButton:Expand()
+        end
+      end
+
       WeakAuras.ReloadTriggerOptions(data);
       self:FillOptions(displayOptions[id], tab); -- TODO: remove tab parametter once legacy aura trigger is removed
       WeakAuras.regions[id].region:Collapse();

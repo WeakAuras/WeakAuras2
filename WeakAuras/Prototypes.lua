@@ -4656,7 +4656,7 @@ WeakAuras.event_prototypes = {
       return result
     end,
     internal_events = function(trigger)
-      local result = {"CAST_REMAINING_CHECK"}
+      local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
       AddUnitChangeInternalEvents(trigger.unit, result)
       return result
     end,
@@ -4683,7 +4683,10 @@ WeakAuras.event_prototypes = {
             cloneId = UnitGUID(sourceUnit)
           end
 
-          if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" then
+          if event == "PLAYER_TARGET_CHANGED"
+          or event == "PLAYER_FOCUS_CHANGED"
+          or (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" and trigger_inverse)
+          then
             sourceUnit = trigger_unit
           end
           local destUnit = sourceUnit and sourceUnit .. "-target"
@@ -4898,7 +4901,7 @@ WeakAuras.event_prototypes = {
   },
   ["Character Stats"] = {
     type = "status",
-    name = L["Character Stats"],
+    name = WeakAuras.newFeatureString .. L["Character Stats"],
     events = {
         "UNIT_STATS",
         "COMBAT_RATING_UPDATE",
@@ -5258,11 +5261,18 @@ WeakAuras.event_prototypes = {
     force_events = "WA_SPELL_CHECK",
     name = L["Spell Known"],
     init = function(trigger)
+      local spellName = trigger.spellName or ""
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = select(7, GetSpellInfo(name)) or ""
+      end
       local ret = [[
         local spellName = tonumber(%q);
         local usePet = %s;
       ]]
-      return ret:format(trigger.spellName or "", trigger.use_petspell and "true" or "false");
+      return ret:format(spellName, trigger.use_petspell and "true" or "false");
     end,
     args = {
       {
@@ -5270,7 +5280,8 @@ WeakAuras.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        test = "true"
+        test = "true",
+        showExactOption = true,
       },
       {
         name = "petspell",

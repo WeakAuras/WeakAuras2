@@ -369,7 +369,7 @@ templates.class.WARRIOR = {
         { spell = 20243, type = "ability", requiresTarget = true, talent = {16, 17}}, -- Devastate
         { spell = 23920, type = "ability", buff = true}, -- Spell Reflection
         { spell = 23922, type = "ability", requiresTarget = true}, -- Shield Slam
-        { spell = 34428, type = "ability", active = true, requiresTarget = true}, -- Victory Rush
+        { spell = 34428, type = "ability", usable = true, requiresTarget = true}, -- Victory Rush
         { spell = 46968, type = "ability"}, -- Shockwave
         { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
         { spell = 97462, type = "ability"}, -- Rallying Cry
@@ -1993,7 +1993,7 @@ templates.class.MAGE = {
         { spell = 1953, type = "ability"}, -- Blink
         { spell = 2139, type = "ability", requiresTarget = true}, -- Counterspell
         { spell = 5143, type = "ability", requiresTarget = true, overlayGlow = true}, -- Arcane Missiles
-        { spell = 12042, type = "ability"}, -- Arcane Power
+        { spell = 12042, type = "ability", buff = true}, -- Arcane Power
         { spell = 12051, type = "ability", buff = true}, -- Evocation
         { spell = 44425, type = "ability", requiresTarget = true}, -- Arcane Barrage
         { spell = 45438, type = "ability", buff = true}, -- Ice Block

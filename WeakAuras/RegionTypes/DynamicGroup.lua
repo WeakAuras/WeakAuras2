@@ -48,8 +48,6 @@ local function releaseControlPoint(self, controlPoint)
   if regionData then
     controlPoint.regionData = nil
     regionData.controlPoint = nil
-    local parent = regionData.data.parent and WeakAuras.GetRegion(regionData.data.parent) or WeakAurasFrame
-    WeakAuras.AnchorFrame(regionData.data, regionData.region, parent)
   end
 end
 
@@ -107,6 +105,8 @@ local function compareExpirationTimes(regionDataA, regionDataB)
   end
 
 end
+
+local function noop() end
 
 local sorters = {
   none = function(data)
@@ -191,6 +191,18 @@ local sorters = {
       return not result
     end
   end,
+  custom = function(data)
+    local sortStr = data.sort or ""
+    local sortFunc = WeakAuras.LoadFunction("return " .. sortStr, data.id, "custom sort") or noop
+    return function(a, b)
+      WeakAuras.ActivateAuraEnvironment(data.id)
+      local ok, result = xpcall(sortFunc, geterrorhandler(), a, b)
+      WeakAuras.ActivateAuraEnvironment()
+      if ok then
+        return result
+      end
+    end
+  end
 }
 
 local function createSortFunc(data)
@@ -474,6 +486,18 @@ local growers = {
         end
       end
     end
+  end,
+  CUSTOM = function(data)
+    local growStr = data.customGrow or ""
+    local growFunc = WeakAuras.LoadFunction("return " .. growStr, data.id, "custom grow") or noop
+    return function(newPositions, activeRegions)
+      WeakAuras.ActivateAuraEnvironment(data.id)
+      local ok = xpcall(growFunc, geterrorhandler(), newPositions, activeRegions)
+      WeakAuras.ActivateAuraEnvironment()
+      if not ok then
+        wipe(newPositions)
+      end
+    end
   end
 }
 
@@ -507,6 +531,10 @@ local function modify(parent, region, data)
   background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset)
   background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset)
 
+  function region:IsSuspended()
+    return not WeakAuras.IsLoginFinished() or self.suspended > 0
+  end
+
   function region:Suspend()
     -- Stops group from repositioning and reindexing children
     -- Calls to Activate, Deactivate, and Reindex will cache the relevant children
@@ -519,8 +547,10 @@ local function modify(parent, region, data)
   function region:Resume()
     -- Allows group to reindex and reposition.
     -- TriggersSortUpdatedChildren and PositionChildren to happen
-    self.suspended = self.suspended - 1
-    if self.suspended <= 0 then
+    if self.suspended > 0 then
+      self.suspended = self.suspended - 1
+    end
+    if not self:IsSuspended() then
       if self.needToReload then
         self:ReloadControlledChildren()
       end
@@ -574,7 +604,7 @@ local function modify(parent, region, data)
 
   function region:ReloadControlledChildren()
     -- 'forgets' about regions it controls and starts from scratch. Mostly useful when Add()ing the group
-    if self.suspended <= 0 then
+    if not self:IsSuspended() then
       WeakAuras.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       self.needToReload = false
@@ -673,7 +703,7 @@ local function modify(parent, region, data)
     -- iterates through cache to insert all updated children in the right spot
     -- Called when the Group is Resume()d
     -- uses sort data to determine the correct spot
-    if self.suspended <= 0 then
+    if not self:IsSuspended() then
       WeakAuras.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       self.needToSort = false
@@ -718,7 +748,7 @@ local function modify(parent, region, data)
   function region:PositionChildren()
     -- Repositions active children according to their index
     -- Positioning is based on grow information from the data
-    if self.suspended <= 0 then
+    if not self:IsSuspended() then
       self.needToPosition = false
       if animate then
         WeakAuras.RegisterGroupForPositioning(data.id, self)
@@ -837,7 +867,7 @@ local function modify(parent, region, data)
 
   function region:Resize()
     -- Resizes the dynamic group, for background and border purposes
-    if self.suspended <= 0 then
+    if not self:IsSuspended() then
       self.needToResize = false
       WeakAuras.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)

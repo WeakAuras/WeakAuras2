@@ -1,4 +1,4 @@
-local internalVersion = 15;
+local internalVersion = 16;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -160,6 +160,7 @@ local loadFuncsForOptions = {};
 
 -- Check Conditions Functions, keyed on id
 local checkConditions = {};
+WeakAuras.checkConditions = checkConditions
 
 -- Dynamic Condition functions to run. keyed on event and id
 local dynamicConditions = {};
@@ -1320,6 +1321,8 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
+local loginFinished = false
+
 local loginThread = coroutine.create(function()
   WeakAuras.Pause();
   local toAdd = {};
@@ -1367,10 +1370,13 @@ local loginThread = coroutine.create(function()
     coroutine.yield();
     nextCallback = loginQueue[1];
   end
+
+  loginFinished = true
+  WeakAuras.ResumeAllDynamicGroups();
 end)
 
 function WeakAuras.IsLoginFinished()
-  return coroutine.status(loginThread) == 'dead'
+  return loginFinished
 end
 
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
@@ -1496,6 +1502,11 @@ function WeakAuras.Resume()
   squelch_actions = true;
   WeakAuras.ScanAll();
   squelch_actions = false;
+  for _, regionData in pairs(regions) do
+    if regionData.region.Resume then
+      regionData.region:Resume(true)
+    end
+  end
 end
 
 function WeakAuras.Toggle()
@@ -1946,17 +1957,7 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
     conditionChecksTimers.recheckHandle[id] = nil;
     WeakAuras.UnregisterForGlobalConditions(id);
 
-    local region = WeakAuras.regions[id].region;
-    if (checkConditions[id]) then
-      checkConditions[id](region, true);
-      if(clones[id]) then
-        for cloneId, region in pairs(clones[id]) do
-          checkConditions[id](region, true);
-        end
-      end
-    end
-
-    region:Collapse();
+    WeakAuras.regions[id].region:Collapse();
     WeakAuras.CollapseAllClones(id);
   end
 end
@@ -2872,8 +2873,19 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 15 was introduced May 2019 in BFA
+  -- Version 14 was introduced April 2019 in BFA
   if data.internalVersion < 15 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+          if triggerData.trigger.type == "status" and triggerData.trigger.event == "Spell Known" then
+            triggerData.trigger.use_exact_spellName = true
+          end
+      end
+    end
+  end
+
+  -- Version 16 was introduced May 2019 in BFA
+  if data.internalVersion < 16 then
     if data.regionType == "texture" and type(data.texture) == "string" then
       local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
       if textureId and textureId > 0 then
@@ -2904,9 +2916,6 @@ function WeakAuras.Modernize(data)
       local modelId = modelMigration:GetModelFileID()
       if modelId then
         data.model_fileId = tostring(modelId)
-      end
-    end
-  end
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
@@ -3244,11 +3253,6 @@ local function pAdd(data)
       triggerSystem.Add(data);
     end
 
-    data.load = data.load or {};
-    data.actions = data.actions or {};
-    data.actions.init = data.actions.init or {};
-    data.actions.start = data.actions.start or {};
-    data.actions.finish = data.actions.finish or {};
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
     local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
@@ -3305,10 +3309,8 @@ local function pAdd(data)
     end
   end
 
-  removeSpellNames(data);
 end
 
--- Dummy add function to protect errors from propagating out of the real add function
 function WeakAuras.Add(data)
   WeakAuras.PreAdd(data)
   pAdd(data);
@@ -3433,13 +3435,6 @@ function WeakAuras.CollapseAllClones(id, triggernum)
       v:Collapse();
     end
   end
-end
-
-function WeakAuras.CollapseAndResetConditions(region, id)
-  if (checkConditions[id]) then
-    checkConditions[id](region, true);
-  end
-  region:Collapse();
 end
 
 function WeakAuras.SetAllStatesHidden(id, triggernum)
@@ -4831,18 +4826,18 @@ function WeakAuras.UpdatedTriggerState(id)
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
     for cloneId, clone in pairs(clones[id]) do
-      WeakAuras.CollapseAndResetConditions(clone, id)
+      clone:Collapse()
     end
-    WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
+    WeakAuras.regions[id].region:Collapse()
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
-        WeakAuras.CollapseAndResetConditions(clone, id)
+        clone:Collapse()
       end
     end
     if (not activeTriggerState[""] or not activeTriggerState[""].show) then
-      WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
+      WeakAuras.regions[id].region:Collapse()
     end
     -- Show new states
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);

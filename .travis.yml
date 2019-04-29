@@ -3,30 +3,26 @@ language: minimal
 addons:
   apt:
     packages:
-    - luarocks
+      - luarocks
 
 git:
   depth: 150
 
 install: luarocks install --local luacheck
 
-before_script: /home/travis/.luarocks/bin/luacheck . --no-color -q
+script: /home/travis/.luarocks/bin/luacheck . --no-color -q
 
-script:
+after_success:
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then ./wowace_translations.sh; fi
-  - |
-    ./generate_changelog.sh
-    sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
-    if [[ "$TRAVIS_TAG" == "8.0-"* ]]; then
-      curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -o -p 65387 -g 8.0.1
-    else
-      curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -o -p 65387
-    fi
+  - ./generate_changelog.sh
+  - sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
-after_failure:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh failure $WEBHOOK_URL
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
+
+after_script: if [[ "$TRAVIS_TEST_RESULT" == 1 ]]; then curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL; fi
 
 notifications:
   email:
