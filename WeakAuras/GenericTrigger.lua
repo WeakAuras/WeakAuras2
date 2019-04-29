@@ -2142,6 +2142,7 @@ local watchUnitChange
 local unitChangeGUIDS
 
 function WeakAuras.WatchUnitChange(unit)
+  unit = string.upper(unit)
   if not watchUnitChange then
     watchUnitChange = CreateFrame("FRAME");
     WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
@@ -2150,8 +2151,6 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("UNIT_TARGET");
     watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
     watchUnitChange:RegisterEvent("GROUP_ROSTER_UPDATE");
-
-    unit = string.upper(unit)
 
     watchUnitChange:SetScript("OnEvent", function(self, event)
       WeakAuras.StartProfileSystem("generictrigger");
