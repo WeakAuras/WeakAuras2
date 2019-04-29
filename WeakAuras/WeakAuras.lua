@@ -2897,12 +2897,14 @@ function WeakAuras.Modernize(data)
   end
 
   if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 then -- prepare for migration at 8.2
-    WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
-    local modelId = modelMigration:GetModelFileID()
-    if modelId then
-      data.model_fileId = tostring(modelId)
-    elseif data.modelIsUnit then
+    if data.modelIsUnit then
       data.model_fileId = data.model_path
+    else
+      WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
+      local modelId = modelMigration:GetModelFileID()
+      if modelId then
+        data.model_fileId = tostring(modelId)
+      end
     end
   end
 
