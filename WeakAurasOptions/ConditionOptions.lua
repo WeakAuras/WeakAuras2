@@ -1273,13 +1273,13 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
   if data.controlledChildren then
     for id, reference in pairs(conditions[i].check.references) do
       local index = reference.conditionIndex;
-      if WeakAuras.IsCollapsed(id, "condition", index, true) then
+      if WeakAuras.IsCollapsed(id, "condition", index, false) then
         collapsed = true;
         break;
       end
     end
   else
-    collapsed = WeakAuras.IsCollapsed(data.id, "condition", i, true);
+    collapsed = WeakAuras.IsCollapsed(data.id, "condition", i, false);
   end
 
   args["condition" .. i .. "collapse"] = {
