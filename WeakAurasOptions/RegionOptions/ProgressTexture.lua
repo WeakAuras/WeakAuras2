@@ -764,7 +764,7 @@ local templates = {
       xOffset = 0,
       yOffset = 150,
       mirror = true,
-      foregroundTexture = "Textures\\SpellActivationOverlays\\Backlash",
+      foregroundTexture = "460830",
       orientation = "HORIZONTAL",
       inverse = true,
     },
