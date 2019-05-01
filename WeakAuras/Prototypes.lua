@@ -5261,9 +5261,9 @@ WeakAuras.event_prototypes = {
     force_events = "WA_SPELL_CHECK",
     name = L["Spell Known"],
     init = function(trigger)
-      local spellName = trigger.spellName or ""
+      local spellName;
       if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
+        spellName = trigger.spellName or "";
       else
         local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
         spellName = select(7, GetSpellInfo(name)) or ""
