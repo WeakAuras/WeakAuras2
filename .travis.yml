@@ -20,6 +20,8 @@ after_success:
 deploy:
   skip_cleanup: true
   provider: script
+  on:
+    tags: true
   script: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
 
 after_script: if [[ "$TRAVIS_TEST_RESULT" == 1 ]]; then curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL; fi
