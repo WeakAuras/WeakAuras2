@@ -32,12 +32,6 @@ local function createOptions(id, data)
       end,
       hidden = function() return data.modelIsUnit end
     },
-    portraitZoom = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Portrait Zoom"],
-      order = 4,
-    },
     advance = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -59,7 +53,13 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 7,
-      width = WeakAuras.doubleWidth
+      width = WeakAuras.normalWidth
+    },
+    portraitZoom = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Portrait Zoom"],
+      order = 8,
     },
     -- old settings
     model_z = {
