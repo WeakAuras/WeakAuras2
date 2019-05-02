@@ -2909,13 +2909,19 @@ function WeakAuras.Modernize(data)
   end
 
   if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 then -- prepare for migration at 8.2
+    data.modelDisplayInfo = false
     if data.modelIsUnit then
       data.model_fileId = data.model_path
     else
-      WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
-      local modelId = modelMigration:GetModelFileID()
-      if modelId then
-        data.model_fileId = tostring(modelId)
+      if tonumber(data.model_path) then
+        data.modelDisplayInfo = true
+        data.model_fileId = data.model_path
+      else
+        WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
+        local modelId = modelMigration:GetModelFileID()
+        if modelId then
+          data.model_fileId = tostring(modelId)
+        end
       end
     end
   end
@@ -5611,18 +5617,16 @@ function WeakAuras.FindUnusedId(prefix)
   return id
 end
 
-function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit)
+function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
   local WoW82 = WeakAuras.BuildInfo > 80100
   local data = WoW82 and model_fileId or model_path
-  if tonumber(data) then
+  if isDisplayInfo then
+    pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
+  elseif isUnit then
+    pcall(function() frame:SetUnit(data) end)
+  else
     if WoW82 then
       pcall(function() frame:SetModel(tonumber(data)) end)
-    else
-      pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
-    end
-  else
-    if isUnit then
-      pcall(function() frame:SetUnit(data) end)
     else
       pcall(function() frame:SetModel(data) end)
     end

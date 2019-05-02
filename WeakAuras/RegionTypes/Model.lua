@@ -110,7 +110,7 @@ local function modify(parent, region, data)
   region.scaley = 1;
 
   -- Adjust model
-  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
+  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -234,7 +234,7 @@ local function modify(parent, region, data)
     model:SetKeepModelOnHide(true)
     model:ClearTransform();
 
-    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
+    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0);
     if (data.api) then
       model:ClearTransform();

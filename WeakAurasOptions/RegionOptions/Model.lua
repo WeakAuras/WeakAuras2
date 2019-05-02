@@ -4,11 +4,21 @@ local function createOptions(id, data)
   local options = {
     __title = L["Model Settings"],
     __order = 1,
+    modelIsUnit = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Show model of unit "],
+      order = 0.5,
+      hidden = function() return data.modelDisplayInfo and WeakAuras.BuildInfo > 80100 end
+    },
+    -- Option for modelIsDisplayInfo added below
+
+    -- Option for path/id added below
     space2 = {
       type = "execute",
       width = WeakAuras.normalWidth,
       name = "",
-      order = 1,
+      order = 1.5,
       image = function() return "", 0, 0 end,
       hidden = function() return data.modelIsUnit end
     },
@@ -21,12 +31,6 @@ local function createOptions(id, data)
         WeakAuras.OpenModelPicker(data, "model_path");
       end,
       hidden = function() return data.modelIsUnit end
-    },
-    modelIsUnit = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Show model of unit "],
-      order = 3
     },
     portraitZoom = {
       type = "toggle",
@@ -183,18 +187,26 @@ local function createOptions(id, data)
   };
 
   if WeakAuras.BuildInfo > 80100 then
+    options.modelDisplayInfo = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Use Display Info Id"],
+      order = 0.6,
+      hidden = function() return data.modelIsUnit end
+    }
+
     options.model_fileId = {
       type = "input",
       width = WeakAuras.doubleWidth,
       name = L["Model"],
-      order = 0.5
+      order = 1
     }
   else
     options.model_path = {
       type = "input",
       width = WeakAuras.doubleWidth,
       name = L["Model"],
-      order = 0.5
+      order = 1
     }
   end
 
@@ -230,9 +242,9 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
   model:SetWidth(region:GetWidth() - 2);
   model:SetHeight(region:GetHeight() - 2);
   model:SetPoint("center", region, "center");
-  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
+  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetScript("OnShow", function()
-    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit)
+    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0)
     if (data.api) then
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
