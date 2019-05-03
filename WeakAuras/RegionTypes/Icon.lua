@@ -867,14 +867,6 @@ local function modify(parent, region, data)
   region.glowYOffset = data.glowYOffset
   region:SetGlowType(data.glowType)
   region:SetGlow(data.glow)
-  region:SetGlowLines(data.glowLines)
-  region:SetGlowFrequency(data.glowFrequency)
-  region:SetGlowLength(data.glowLength)
-  region:SetGlowThickness(data.glowThickness)
-  region:SetGlowScale(data.glowScale)
-  region:SetGlowBorder(data.glowBorder)
-  region:SetGlowXOffset(data.glowXOffset)
-  region:SetGlowYOffset(data.glowYOffset)
 
   if(data.cooldown) then
     function region:SetValue(value, total)
