@@ -749,6 +749,9 @@ local function modify(parent, region, data)
   function region:SetGlowLines(lines)
     region.glowLines = lines
     if region.glow then
+      if region.glowType == "ACShine" then -- workaround ACShine not updating numbers of dots
+        region:SetGlow(false)
+      end
       region:SetGlow(true)
     end
   end
