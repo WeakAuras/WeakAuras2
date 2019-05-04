@@ -3013,6 +3013,7 @@ WeakAuras.event_prototypes = {
           local extendTimer = %s
           local triggerUseRemaining = %s
           local triggerRemaining = %s
+          local triggerCount = %q
           local triggerDbmType = %s
           local cloneId = useClone and id or ""
           local state = states[cloneId]
@@ -3039,7 +3040,7 @@ WeakAuras.event_prototypes = {
 
           if useClone then
             if event == "DBM_TimerStart" then
-              if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
+              if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                 local bar = WeakAuras.GetDBMTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -3053,7 +3054,7 @@ WeakAuras.event_prototypes = {
               end
             elseif event == "DBM_TimerUpdate" then
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
+                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   copyOrSchedule(bar, id)
                 else
                   local state = states[id]
@@ -3069,7 +3070,7 @@ WeakAuras.event_prototypes = {
             elseif event == "DBM_TimerForce" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
+                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   copyOrSchedule(bar, cloneId)
                 end
               end
@@ -3077,13 +3078,13 @@ WeakAuras.event_prototypes = {
           else
             if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
               if extendTimer ~= 0 then
-                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
+                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   local bar = WeakAuras.GetDBMTimerById(id)
                   WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
-            local bar = WeakAuras.GetDBMTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerDbmType)
+            local bar = WeakAuras.GetDBMTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerDbmType, triggerCount)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
@@ -3113,6 +3114,7 @@ WeakAuras.event_prototypes = {
         trigger.use_extend and tonumber(trigger.extend or 0) or 0,
         trigger.use_remaining and "true" or "false",
         trigger.remaining or 0,
+        trigger.use_count and trigger.count or "",
         trigger.use_dbmType and trigger.dbmType or "nil",
         trigger.remaining_operator or "<"
       )
@@ -3139,6 +3141,11 @@ WeakAuras.event_prototypes = {
         type = "number",
       },
       {
+        name = "extend",
+        display = L["Offset Timer"],
+        type = "string",
+      },
+      {
         name = "dbmType",
         display = L["Type"],
         type = "select",
@@ -3147,9 +3154,11 @@ WeakAuras.event_prototypes = {
         test = "true"
       },
       {
-        name = "extend",
-        display = L["Offset Timer"],
+        name = "count",
+        display = L["Count"],
+        tooltip = "test tooltip",
         type = "string",
+        conditionType = "string",
       },
       {
         name = "cloneId",
@@ -3243,6 +3252,8 @@ WeakAuras.event_prototypes = {
           local triggerUseRemaining = %s
           local triggerRemaining = %s
           local triggerEmphasized = %s
+          local triggerCount = %q
+          local triggerCast = %s
           local cloneId = useClone and id or ""
           local state = states[cloneId]
 
@@ -3268,7 +3279,7 @@ WeakAuras.event_prototypes = {
 
           if useClone then
             if event == "BigWigs_StartBar" then
-              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized) then
+              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -3282,14 +3293,14 @@ WeakAuras.event_prototypes = {
               end
             elseif event == "BigWigs_Timer_Update" then
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
             elseif event == "BigWigs_Timer_Force" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
@@ -3297,13 +3308,13 @@ WeakAuras.event_prototypes = {
           else
             if event == "BigWigs_StartBar" then
               if extendTimer ~= 0 then
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
                   local bar = WeakAuras.GetBigWigsTimerById(id)
                   WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
-            local bar = WeakAuras.GetBigWigsTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerEmphasized)
+            local bar = WeakAuras.GetBigWigsTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerEmphasized, triggerCount, triggerCast)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
@@ -3333,6 +3344,8 @@ WeakAuras.event_prototypes = {
         trigger.use_remaining and "true" or "false",
         trigger.remaining or 0,
         trigger.use_emphasized == nil and "nil" or trigger.use_emphasized and "true" or "false",
+        trigger.use_count and trigger.count or "",
+        trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
         trigger.remaining_operator or "<"
       )
     end,
@@ -3342,7 +3355,7 @@ WeakAuras.event_prototypes = {
         name = "spellId",
         display = L["Spell Id"],
         type = "string",
-        conditionType = "number",
+        conditionType = "string",
       },
       {
         name = "text",
@@ -3350,14 +3363,6 @@ WeakAuras.event_prototypes = {
         type = "longstring",
         store = true,
         conditionType = "string"
-      },
-      {
-        name = "emphasized",
-        display = L["Emphasized"],
-        type = "tristate",
-        test = "true",
-        init = "false",
-        conditionType = "bool"
       },
       {
         name = "remaining",
@@ -3368,6 +3373,29 @@ WeakAuras.event_prototypes = {
         name = "extend",
         display = L["Offset Timer"],
         type = "string",
+      },
+      {
+        name = "emphasized",
+        display = L["Emphasized"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "count",
+        display = L["Count"],
+        tooltip = "test tooltip",
+        type = "string",
+        conditionType = "string",
+      },
+      {
+        name = "cast",
+        display = L["Is Cast"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
       },
       {
         name = "cloneId",
