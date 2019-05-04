@@ -2196,165 +2196,180 @@ end
 -- DBM
 do
   local registeredDBMEvents = {}
-  local bars = {};
-  local nextExpire; -- time of next expiring timer
-  local recheckTimer; -- handle of timer
+  local bars = {}
+  local nextExpire -- time of next expiring timer
+  local recheckTimer -- handle of timer
 
   local function dbmRecheckTimers()
-    local now = GetTime();
-    nextExpire = nil;
-    for k, v in pairs(bars) do
-      if (v.expirationTime < now) then
-        bars[k] = nil;
-        WeakAuras.ScanEvents("DBM_TimerStop", k);
-      elseif (nextExpire == nil) then
-        nextExpire = v.expirationTime;
-      elseif (v.expirationTime < nextExpire) then
-        nextExpire = v.expirationTime;
+    local now = GetTime()
+    nextExpire = nil
+    for id, bar in pairs(bars) do
+      if bar.expirationTime < now then
+        bars[id] = nil
+        WeakAuras.ScanEvents("DBM_TimerStop", id)
+      elseif nextExpire == nil then
+        nextExpire = bar.expirationTime
+      elseif bar.expirationTime < nextExpire then
+        nextExpire = bar.expirationTime
       end
     end
 
-    if (nextExpire) then
-      recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, nextExpire - now);
+    if nextExpire then
+      recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, nextExpire - now)
     end
   end
 
   local function dbmEventCallback(event, ...)
-    if (event == "DBM_TimerStart") then
-      local id, msg, duration, icon, timerType, spellId, colorId = ...;
-      local now = GetTime();
-      local expiring = now + duration;
+    if event == "DBM_TimerStart" then
+      local id, msg, duration, icon, timerType, spellId, colorId = ...
+      local now = GetTime()
+      local expirationTime = now + duration
       bars[id] = bars[id] or {}
-      -- Store everything, event though we are only using some of those
-      bars[id]["message"] = msg;
-      bars[id]["expirationTime"] = expiring;
-      bars[id]["duration"] = duration;
-      bars[id]["icon"] = icon;
-      bars[id]["timerType"] = timerType;
-      bars[id]["spellId"] = tostring(spellId);
-      bars[id]["colorId"] = colorId;
+      local bar = bars[id]
+      bar.message = msg
+      bar.expirationTime = expirationTime
+      bar.duration = duration
+      bar.icon = icon
+      bar.timerType = timerType
+      bar.spellId = tostring(spellId)
+      bar.colorId = colorId
 
-      if (nextExpire == nil) then
-        nextExpire = expiring;
-        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expiring - now);
-      elseif (expiring < nextExpire) then
-        nextExpire = expiring;
-        timer:CancelTimer(recheckTimer);
-        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expiring - now, msg);
+      WeakAuras.ScanEvents("DBM_TimerStart", id)
+      if nextExpire == nil then
+        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expirationTime - now)
+        nextExpire = expirationTime
+      elseif expirationTime < nextExpire then
+        timer:CancelTimer(recheckTimer)
+        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expirationTime - now)
+        nextExpire = expirationTime
       end
-      WeakAuras.ScanEvents("DBM_TimerStart", id);
-    elseif (event == "DBM_TimerStop") then
-      local id = ...;
-      bars[id] = nil;
-      WeakAuras.ScanEvents("DBM_TimerStop", id);
-    elseif (event == "kill" or event == "wipe") then -- Wipe or kill, removing all timers
-      local id = ...;
-      bars = {};
-      WeakAuras.ScanEvents("DBM_TimerStopAll", id);
+    elseif event == "DBM_TimerStop" then
+      local id = ...
+      bars[id] = nil
+      WeakAuras.ScanEvents("DBM_TimerStop", id)
+    elseif event == "kill" or event == "wipe" then -- Wipe or kill, removing all timers
+      local id = ...
+      bars = {}
+      WeakAuras.ScanEvents("DBM_TimerStopAll", id)
+    elseif event == "DBM_TimerUpdate" then
+      local id, elapsed, duration = ...
+      local now = GetTime()
+      local expirationTime = now + duration - elapsed
+      local bar = bars[id]
+      if bar then
+        bar.duration = duration
+        bar.expirationTime = expirationTime
+        if expirationTime < nextExpire then
+          timer:CancelTimer(recheckTimer)
+          recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, duration - elapsed)
+          nextExpire = expirationTime
+        end
+      end
+      WeakAuras.ScanEvents("DBM_TimerUpdate", id)
     else -- DBM_Announce
-      WeakAuras.ScanEvents(event, ...);
+      WeakAuras.ScanEvents(event, ...)
     end
   end
 
-  function WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId)
-    if (not bars[timerId]) then
-      return false;
+  function WeakAuras.DBMTimerMatches(id, message, operator, spellId, colorId)
+    if not bars[id] then
+      return false
     end
 
-    local v = bars[timerId];
-
-    if (id and id ~= timerId) then
-      return false;
+    local v = bars[id]
+    if spellId and spellId ~= "" and spellId ~= v.spellId then
+      return false
     end
-    if (spellId and spellId ~= v.spellId) then
-      return false;
-    end
-    if (message and operator) then
-      if(operator == "==") then
-        if (v.message ~= message) then
-          return false;
+    if message and message ~= "" and operator then
+      if operator == "==" then
+        if v.message ~= message then
+          return false
         end
-      elseif (operator == "find('%s')") then
-        if (v.message == nil or not v.message:find(message, 1, true)) then
-          return false;
+      elseif operator == "find('%s')" then
+        if v.message == nil or not v.message:find(message, 1, true) then
+          return false
         end
-      elseif (operator == "match('%s')") then
-        if (v.message == nil or not v.message:match(message)) then
-          return false;
+      elseif operator == "match('%s')" then
+        if v.message == nil or not v.message:match(message) then
+          return false
         end
       end
     end
-    return true;
+    if colorId and colorId ~= v.colorId then
+      return false
+    end
+    return true
   end
 
   function WeakAuras.GetDBMTimerById(id)
-    return bars[id];
+    return bars[id]
   end
 
   function WeakAuras.GetAllDBMTimers()
-    return bars;
+    return bars
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer)
-    local bar;
-    for k, v in pairs(bars) do
-      if (WeakAuras.DBMTimerMatches(k, id, message, operator, spellId)
-        and (bar == nil or bars[k].expirationTime < bar.expirationTime)
-        and (bars[k].expirationTime + extendTimer > GetTime() )) then
-        bar = bars[k];
+  function WeakAuras.GetDBMTimer(message, operator, spellId, extendTimer, colorId)
+    local bestMatch
+    for id, bar in pairs(bars) do
+      if WeakAuras.DBMTimerMatches(id, message, operator, spellId, colorId)
+      and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
+      and bar.expirationTime + extendTimer > GetTime()
+      then
+        bestMatch = bar
       end
     end
-    return bar;
+    return bestMatch
   end
 
   function WeakAuras.CopyBarToState(bar, states, id, extendTimer)
-    extendTimer = extendTimer or 0;
+    extendTimer = extendTimer or 0
     if extendTimer + bar.duration < 0 then return end
-    states[id] = states[id] or {};
-    local state = states[id];
-    state.show = true;
-    state.changed = true;
-    state.icon = bar.icon;
-    state.message = bar.message;
-    state.name = bar.message;
-    state.expirationTime = bar.expirationTime + extendTimer;
-    state.progressType = 'timed';
-    state.resort = true;
-    state.duration = bar.duration + extendTimer;
-    state.timerType = bar.timerType;
-    state.spellId = bar.spellId;
-    state.colorId = bar.colorId;
-    state.extend = extendTimer;
+    states[id] = states[id] or {}
+    local state = states[id]
+    state.show = true
+    state.changed = true
+    state.icon = bar.icon
+    state.message = bar.message
+    state.name = bar.message
+    state.expirationTime = bar.expirationTime + extendTimer
+    state.progressType = 'timed'
+    state.resort = true
+    state.duration = bar.duration + extendTimer
+    state.timerType = bar.timerType
+    state.spellId = bar.spellId
+    state.colorId = bar.colorId
+    state.extend = extendTimer
     if extendTimer ~= 0 then
-        state.autoHide = true
+      state.autoHide = true
     end
   end
 
   function WeakAuras.RegisterDBMCallback(event)
-    if (registeredDBMEvents[event]) then
+    if registeredDBMEvents[event] then
       return
     end
-    if (DBM) then
-      DBM:RegisterCallback(event, dbmEventCallback);
-      registeredDBMEvents[event] = true;
+    if DBM then
+      DBM:RegisterCallback(event, dbmEventCallback)
+      registeredDBMEvents[event] = true
     end
   end
 
   function WeakAuras.GetDBMTimers()
-    return bars;
+    return bars
   end
 
-  local scheduled_scans = {};
+  local scheduled_scans = {}
 
   local function doDbmScan(fireTime)
-    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[fireTime] = nil;
-    WeakAuras.ScanEvents("DBM_TimerUpdate");
+    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..GetTime()..")")
+    scheduled_scans[fireTime] = nil
+    WeakAuras.ScanEvents("DBM_TimerUpdate")
   end
   function WeakAuras.ScheduleDbmCheck(fireTime)
-    if not(scheduled_scans[fireTime]) then
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doDbmScan, fireTime - GetTime() + 0.1, fireTime);
-      WeakAuras.debug("Scheduled dbm scan at "..fireTime);
+    if not scheduled_scans[fireTime] then
+      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doDbmScan, fireTime - GetTime() + 0.1, fireTime)
+      WeakAuras.debug("Scheduled dbm scan at "..fireTime)
     end
   end
 end
@@ -2362,178 +2377,189 @@ end
 -- BigWigs
 do
   local registeredBigWigsEvents = {}
-  local bars = {};
-  local nextExpire; -- time of next expiring timer
-  local recheckTimer; -- handle of timer
+  local bars = {}
+  local nextExpire -- time of next expiring timer
+  local recheckTimer -- handle of timer
 
   local function recheckTimers()
-    local now = GetTime();
-    nextExpire = nil;
+    local now = GetTime()
+    nextExpire = nil
     for id, bar in pairs(bars) do
-      if (bar.expirationTime < now) then
-        bars[id] = nil;
-        WeakAuras.ScanEvents("BigWigs_StopBar", id);
-      elseif (nextExpire == nil) then
-        nextExpire = bar.expirationTime;
-      elseif (bar.expirationTime < nextExpire) then
-        nextExpire = bar.expirationTime;
+      if bar.expirationTime < now then
+        bars[id] = nil
+        WeakAuras.ScanEvents("BigWigs_StopBar", id)
+      elseif nextExpire == nil then
+        nextExpire = bar.expirationTime
+      elseif bar.expirationTime < nextExpire then
+        nextExpire = bar.expirationTime
       end
     end
 
-    if (nextExpire) then
-      recheckTimer = timer:ScheduleTimerFixed(recheckTimers, nextExpire - now);
+    if nextExpire then
+      recheckTimer = timer:ScheduleTimerFixed(recheckTimers, nextExpire - now)
     end
   end
 
   local function bigWigsEventCallback(event, ...)
-    if (event == "BigWigs_Message") then
-      WeakAuras.ScanEvents("BigWigs_Message", ...);
-    elseif (event == "BigWigs_StartBar") then
+    if event == "BigWigs_Message" then
+      WeakAuras.ScanEvents("BigWigs_Message", ...)
+    elseif event == "BigWigs_StartBar" then
       local addon, spellId, text, duration, icon = ...
-      local now = GetTime();
-      local expirationTime = now + duration;
+      local now = GetTime()
+      local expirationTime = now + duration
 
-      local newBar;
-      bars[text] = bars[text] or {};
-      local bar = bars[text];
-      bar.addon = addon;
-      bar.spellId = tostring(spellId);
-      bar.text = text;
+      local newBar
+      bars[text] = bars[text] or {}
+      local bar = bars[text]
+      bar.addon = addon
+      bar.spellId = tostring(spellId)
+      bar.text = text
       bar.duration = duration;
-      bar.expirationTime = expirationTime;
-      bar.icon = icon;
-      WeakAuras.ScanEvents("BigWigs_StartBar", text);
-      if (nextExpire == nil) then
-        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now);
-        nextExpire = expirationTime;
-      elseif (expirationTime < nextExpire) then
-        timer:CancelTimer(recheckTimer);
-        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now);
-        nextExpire = expirationTime;
+      bar.expirationTime = expirationTime
+      bar.icon = icon
+      local BWColorModule = BigWigs:GetPlugin("Colors")
+      bar.bwBarColor = BWColorModule:GetColorTable("barColor", addon, spellId)
+      bar.bwTextColor = BWColorModule:GetColorTable("barText", addon, spellId)
+      bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
+      local BWEmphasizedModule = BigWigs:GetPlugin("Super Emphasize")
+      bar.emphasized = BWEmphasizedModule:IsSuperEmphasized(addon, spellId) and true or false
+
+      WeakAuras.ScanEvents("BigWigs_StartBar", text)
+      if nextExpire == nil then
+        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now)
+        nextExpire = expirationTime
+      elseif expirationTime < nextExpire then
+        timer:CancelTimer(recheckTimer)
+        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now)
+        nextExpire = expirationTime
       end
-    elseif (event == "BigWigs_StopBar") then
+    elseif event == "BigWigs_StopBar" then
       local addon, text = ...
-      if(bars[text]) then
-        bars[text] = nil;
-        WeakAuras.ScanEvents("BigWigs_StopBar", text);
+      if bars[text] then
+        bars[text] = nil
+        WeakAuras.ScanEvents("BigWigs_StopBar", text)
       end
-    elseif (event == "BigWigs_StopBars"
-      or event == "BigWigs_OnBossDisable"
-      or event == "BigWigs_OnPluginDisable") then
+    elseif event == "BigWigs_StopBars"
+    or event == "BigWigs_OnBossDisable"
+    or event == "BigWigs_OnPluginDisable"
+    then
       local addon = ...
-      for key, bar in pairs(bars) do
-        if (bar.addon == addon) then
-          bars[key] = nil;
-          WeakAuras.ScanEvents("BigWigs_StopBar", key);
+      for id, bar in pairs(bars) do
+        if bar.addon == addon then
+          bars[id] = nil
+          WeakAuras.ScanEvents("BigWigs_StopBar", id)
         end
       end
     end
   end
 
   function WeakAuras.RegisterBigWigsCallback(event)
-    if (registeredBigWigsEvents [event]) then
+    if registeredBigWigsEvents[event] then
       return
     end
-    if (BigWigsLoader) then
-      BigWigsLoader.RegisterMessage(WeakAuras, event, bigWigsEventCallback);
-      registeredBigWigsEvents [event] = true;
+    if BigWigsLoader then
+      BigWigsLoader.RegisterMessage(WeakAuras, event, bigWigsEventCallback)
+      registeredBigWigsEvents[event] = true
     end
   end
 
   function WeakAuras.RegisterBigWigsTimer()
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StartBar");
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar");
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars");
-    WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable");
+    WeakAuras.RegisterBigWigsCallback("BigWigs_StartBar")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable")
   end
 
   function WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer)
-    extendTimer = extendTimer or 0;
+    extendTimer = extendTimer or 0
     if extendTimer + bar.duration < 0 then return end
-    states[id] = states[id] or {};
-    local state = states[id];
-    state.show = true;
-    state.changed = true;
-    state.addon = bar.addon;
-    state.spellId = bar.spellId;
-    state.text = bar.text;
-    state.name = bar.text;
-    state.duration = bar.duration + extendTimer;
-    state.expirationTime = bar.expirationTime + extendTimer;
-    state.resort = true;
-    state.progressType = "timed";
-    state.icon = bar.icon;
-    state.extend = extendTimer;
+    states[id] = states[id] or {}
+    local state = states[id]
+    state.show = true
+    state.changed = true
+    state.addon = bar.addon
+    state.spellId = bar.spellId
+    state.text = bar.text
+    state.name = bar.text
+    state.duration = bar.duration + extendTimer
+    state.expirationTime = bar.expirationTime + extendTimer
+    state.bwBarColor = bar.bwBarColor
+    state.bwTextColor = bar.bwTextColor
+    state.bwBackgroundColor = bar.bwBackgroundColor
+    state.emphasized = bar.emphasized
+    state.resort = true
+    state.progressType = "timed"
+    state.icon = bar.icon
+    state.extend = extendTimer
     if extendTimer ~= 0 then
       state.autoHide = true
     end
   end
 
-  function WeakAuras.BigWigsTimerMatches(id, addon, spellId, textOperator, text)
-    if(not bars[id]) then
-      return false;
+  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, emphasized)
+    if not bars[id] then
+      return false
     end
 
-    local v = bars[id];
-    local bestMatch;
-    if (addon ~= "" and addon ~= v.addon) then
-      return false;
+    local v = bars[id]
+    local bestMatch
+    if spellId and spellId ~= "" and spellId ~= v.spellId then
+      return false
     end
-    if (spellId ~= "" and spellId ~= v.spellId) then
-      return false;
-    end
-    if (text ~= "") then
-      if(textOperator == "==") then
-        if (v.text ~= text) then
-          return false;
+    if message and message ~= "" and operator then
+      if operator == "==" then
+        if v.text ~= message then
+          return false
         end
-      elseif (textOperator == "find('%s')") then
-        if (v.text == nil or not v.text:find(text, 1, true)) then
-          return false;
+      elseif operator == "find('%s')" then
+        if v.text == nil or not v.text:find(message, 1, true) then
+          return false
         end
-      elseif (textOperator == "match('%s')") then
-        if (v.text == nil or not v.text:match(text)) then
-          return false;
+      elseif operator == "match('%s')" then
+        if v.text == nil or not v.text:match(message) then
+          return false
         end
       end
     end
-    return true;
+    if emphasized ~= nil then
+      return v.emphasized == emphasized
+    end
+    return true
   end
 
   function WeakAuras.GetAllBigWigsTimers()
-    return bars;
+    return bars
   end
 
   function WeakAuras.GetBigWigsTimerById(id)
-    return bars[id];
+    return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text, extendTimer)
+  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, emphasized)
     local bestMatch
     for id, bar in pairs(bars) do
-      if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, operator, text)) then
-        if (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime) then
-          if (bar.expirationTime + extendTimer > GetTime()) then
-            bestMatch = bar;
-          end
-        end
+      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, emphasized)
+      and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
+      and bar.expirationTime + extendTimer > GetTime()
+      then
+        bestMatch = bar
       end
     end
-    return bestMatch;
+    return bestMatch
   end
 
-  local scheduled_scans = {};
+  local scheduled_scans = {}
 
   local function doBigWigsScan(fireTime)
-    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[fireTime] = nil;
-    WeakAuras.ScanEvents("BigWigs_Timer_Update");
+    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..GetTime()..")")
+    scheduled_scans[fireTime] = nil
+    WeakAuras.ScanEvents("BigWigs_Timer_Update")
   end
 
   function WeakAuras.ScheduleBigWigsCheck(fireTime)
-    if not(scheduled_scans[fireTime]) then
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime);
-      WeakAuras.debug("Scheduled BigWigs scan at "..fireTime);
+    if not scheduled_scans[fireTime] then
+      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime)
+      WeakAuras.debug("Scheduled BigWigs scan at "..fireTime)
     end
   end
 end

@@ -1955,3 +1955,13 @@ WeakAuras.font_sizes = {
   medium = L["Medium"],
   large = L["Large"],
 }
+
+WeakAuras.dbm_types = {
+  [1] = L["Add"],
+  [2] = L["AOE"],
+  [3] = L["Debuff"],
+  [4] = L["Interrupt"],
+  [5] = L["Role"],
+  [6] = L["Phase"],
+  [7] = L["Important"]
+}
