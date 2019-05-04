@@ -2232,6 +2232,7 @@ do
       bar.icon = icon
       bar.timerType = timerType
       bar.spellId = tostring(spellId)
+      bar.count = tostring(msg:match("(%d+)") or 0)
       bar.dbmType = dbmType
 
       local barOptions = DBM.Bars.options
@@ -2292,7 +2293,7 @@ do
     end
   end
 
-  function WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType)
+  function WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType, count)
     if not bars[id] then
       return false
     end
@@ -2316,6 +2317,9 @@ do
         end
       end
     end
+    if count and count ~= "" and count ~= v.count then
+      return false
+    end
     if dbmType and dbmType ~= v.dbmType then
       return false
     end
@@ -2330,10 +2334,10 @@ do
     return bars
   end
 
-  function WeakAuras.GetDBMTimer(message, operator, spellId, extendTimer, dbmType)
+  function WeakAuras.GetDBMTimer(message, operator, spellId, extendTimer, dbmType, count)
     local bestMatch
     for id, bar in pairs(bars) do
-      if WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType)
+      if WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType, count)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -2359,6 +2363,7 @@ do
     state.duration = bar.duration + extendTimer
     state.timerType = bar.timerType
     state.spellId = bar.spellId
+    state.count = bar.count
     state.dbmType = bar.dbmType
     state.dbmColor = bar.dbmColor
     state.extend = extendTimer
@@ -2436,7 +2441,7 @@ do
       bar.addon = addon
       bar.spellId = tostring(spellId)
       bar.text = text
-      bar.duration = duration;
+      bar.duration = duration
       bar.expirationTime = expirationTime
       bar.icon = icon
       local BWColorModule = BigWigs:GetPlugin("Colors")
@@ -2445,6 +2450,8 @@ do
       bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
       local BWEmphasizedModule = BigWigs:GetPlugin("Super Emphasize")
       bar.emphasized = BWEmphasizedModule:IsSuperEmphasized(addon, spellId) and true or false
+      bar.count = tostring(text:match("(%d+)") or 0)
+      bar.cast = not(text:match("^[^<]") and true)
 
       WeakAuras.ScanEvents("BigWigs_StartBar", text)
       if nextExpire == nil then
@@ -2509,6 +2516,8 @@ do
     state.bwTextColor = bar.bwTextColor
     state.bwBackgroundColor = bar.bwBackgroundColor
     state.emphasized = bar.emphasized
+    state.count = bar.count
+    state.cast = bar.cast
     state.resort = true
     state.progressType = "timed"
     state.icon = bar.icon
@@ -2518,7 +2527,7 @@ do
     end
   end
 
-  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, emphasized)
+  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, emphasized, count, cast)
     if not bars[id] then
       return false
     end
@@ -2543,8 +2552,14 @@ do
         end
       end
     end
-    if emphasized ~= nil then
-      return v.emphasized == emphasized
+    if emphasized ~= nil and v.emphasized ~= emphasized then
+      return false
+    end
+    if count and count ~= "" and count ~= v.count then
+      return false
+    end
+    if cast ~= nil and v.cast ~= cast then
+      return false
     end
     return true
   end
@@ -2557,10 +2572,10 @@ do
     return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, emphasized)
+  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, emphasized, count, cast)
     local bestMatch
     for id, bar in pairs(bars) do
-      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, emphasized)
+      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, emphasized, count, cast)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
