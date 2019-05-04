@@ -2221,7 +2221,7 @@ do
 
   local function dbmEventCallback(event, ...)
     if event == "DBM_TimerStart" then
-      local id, msg, duration, icon, timerType, spellId, colorId = ...
+      local id, msg, duration, icon, timerType, spellId, dbmType = ...
       local now = GetTime()
       local expirationTime = now + duration
       bars[id] = bars[id] or {}
@@ -2232,7 +2232,28 @@ do
       bar.icon = icon
       bar.timerType = timerType
       bar.spellId = tostring(spellId)
-      bar.colorId = colorId
+      bar.dbmType = dbmType
+
+      local barOptions = DBM.Bars.options
+      local r, g, b = 0, 0, 0
+      if dbmType == 1 then
+        r, g, b = barOptions.StartColorAR, barOptions.StartColorAG, barOptions.StartColorAB
+      elseif dbmType == 2 then
+        r, g, b = barOptions.StartColorAER, barOptions.StartColorAEG, barOptions.StartColorAEB
+      elseif dbmType == 3 then
+        r, g, b = barOptions.StartColorDR, barOptions.StartColorDG, barOptions.StartColorDB
+      elseif dbmType == 4 then
+        r, g, b = barOptions.StartColorIR, barOptions.StartColorIG, barOptions.StartColorIB
+      elseif dbmType == 5 then
+        r, g, b = barOptions.StartColorRR, barOptions.StartColorRG, barOptions.StartColorRB
+      elseif dbmType == 6 then
+        r, g, b = barOptions.StartColorPR, barOptions.StartColorPG, barOptions.StartColorPB
+      elseif dbmType == 7 then
+        r, g, b = barOptions.StartColorUIR, barOptions.StartColorUIG, barOptions.StartColorUIB
+      else
+        r, g, b = barOptions.StartColorR, barOptions.StartColorG, barOptions.StartColorB
+      end
+      bar.dbmColor = {r, g, b}
 
       WeakAuras.ScanEvents("DBM_TimerStart", id)
       if nextExpire == nil then
@@ -2271,7 +2292,7 @@ do
     end
   end
 
-  function WeakAuras.DBMTimerMatches(id, message, operator, spellId, colorId)
+  function WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType)
     if not bars[id] then
       return false
     end
@@ -2295,7 +2316,7 @@ do
         end
       end
     end
-    if colorId and colorId ~= v.colorId then
+    if dbmType and dbmType ~= v.dbmType then
       return false
     end
     return true
@@ -2309,10 +2330,10 @@ do
     return bars
   end
 
-  function WeakAuras.GetDBMTimer(message, operator, spellId, extendTimer, colorId)
+  function WeakAuras.GetDBMTimer(message, operator, spellId, extendTimer, dbmType)
     local bestMatch
     for id, bar in pairs(bars) do
-      if WeakAuras.DBMTimerMatches(id, message, operator, spellId, colorId)
+      if WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -2338,7 +2359,8 @@ do
     state.duration = bar.duration + extendTimer
     state.timerType = bar.timerType
     state.spellId = bar.spellId
-    state.colorId = bar.colorId
+    state.dbmType = bar.dbmType
+    state.dbmColor = bar.dbmColor
     state.extend = extendTimer
     if extendTimer ~= 0 then
       state.autoHide = true

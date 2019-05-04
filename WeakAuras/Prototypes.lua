@@ -3013,7 +3013,7 @@ WeakAuras.event_prototypes = {
           local extendTimer = %s
           local triggerUseRemaining = %s
           local triggerRemaining = %s
-          local triggerColorId = %s -- timer type
+          local triggerDbmType = %s
           local cloneId = useClone and id or ""
           local state = states[cloneId]
 
@@ -3039,7 +3039,7 @@ WeakAuras.event_prototypes = {
 
           if useClone then
             if event == "DBM_TimerStart" then
-              if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerColorId) then
+              if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
                 local bar = WeakAuras.GetDBMTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -3053,7 +3053,7 @@ WeakAuras.event_prototypes = {
               end
             elseif event == "DBM_TimerUpdate" then
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerColorId) then
+                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
                   copyOrSchedule(bar, id)
                 else
                   local state = states[id]
@@ -3069,7 +3069,7 @@ WeakAuras.event_prototypes = {
             elseif event == "DBM_TimerForce" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerColorId) then
+                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
                   copyOrSchedule(bar, cloneId)
                 end
               end
@@ -3077,13 +3077,13 @@ WeakAuras.event_prototypes = {
           else
             if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
               if extendTimer ~= 0 then
-                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerColorId) then
+                if WeakAuras.DBMTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType) then
                   local bar = WeakAuras.GetDBMTimerById(id)
                   WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
-            local bar = WeakAuras.GetDBMTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerColorId)
+            local bar = WeakAuras.GetDBMTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerDbmType)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
@@ -3113,7 +3113,7 @@ WeakAuras.event_prototypes = {
         trigger.use_extend and tonumber(trigger.extend or 0) or 0,
         trigger.use_remaining and "true" or "false",
         trigger.remaining or 0,
-        trigger.use_colorId and trigger.colorId or "nil",
+        trigger.use_dbmType and trigger.dbmType or "nil",
         trigger.remaining_operator or "<"
       )
     end,
@@ -3139,7 +3139,7 @@ WeakAuras.event_prototypes = {
         type = "number",
       },
       {
-        name = "colorId",
+        name = "dbmType",
         display = L["Type"],
         type = "select",
         values = "dbm_types",
