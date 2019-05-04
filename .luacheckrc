@@ -48,6 +48,7 @@ globals = {
 	"WeakAurasTimers",
 
 	-- Third Party Addons/Libs
+	"BigWigs",
 	"BigWigsLoader",
 	"DBM",
 	"ElvUIPlayerNamePlateAnchor",
