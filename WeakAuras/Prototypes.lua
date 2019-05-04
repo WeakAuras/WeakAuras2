@@ -3156,7 +3156,7 @@ WeakAuras.event_prototypes = {
       {
         name = "count",
         display = L["Count"],
-        tooltip = "test tooltip",
+        desc = L["Only if DBM shows it on it's bar"],
         type = "string",
         conditionType = "string",
       },
@@ -3375,19 +3375,19 @@ WeakAuras.event_prototypes = {
         type = "string",
       },
       {
+        name = "count",
+        display = L["Count"],
+        desc = L["Only if BigWigs shows it on it's bar"],
+        type = "string",
+        conditionType = "string",
+      },
+      {
         name = "emphasized",
         display = L["Emphasized"],
         type = "tristate",
         test = "true",
         init = "false",
         conditionType = "bool"
-      },
-      {
-        name = "count",
-        display = L["Count"],
-        tooltip = "test tooltip",
-        type = "string",
-        conditionType = "string",
       },
       {
         name = "cast",
