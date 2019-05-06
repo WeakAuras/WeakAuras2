@@ -1130,15 +1130,17 @@ WeakAuras.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_LEVEL",
-        "UNIT_FACTION"
-      };
+      local result = {}
       AddUnitChangeEvents(trigger.unit, result);
-      if trigger.unitisunit then
-        AddUnitChangeEvents(trigger.unitisunit, result);
-      end
       return result;
+    end,
+    unit_events = function(trigger)
+      return {
+        [trigger.unit or "player"] = {
+          "UNIT_LEVEL",
+          "UNIT_FACTION"
+      }
+    }
     end,
     internal_events = function(trigger)
       local result = {}
@@ -1243,17 +1245,23 @@ WeakAuras.event_prototypes = {
   ["Health"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_HEALTH_FREQUENT",
-      };
+      local result = {}
       AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
+    unit_events = function(trigger)
+      local result = {
+        "UNIT_HEALTH_FREQUENT"
+      };
       if (trigger.use_showAbsorb) then
         tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
       end
       if (trigger.use_showIncomingHeal) then
         tinsert(result, "UNIT_HEAL_PREDICTION");
       end
-      return result;
+      return {
+        [trigger.unit or "player"] = result
+      }
     end,
     internal_events = function(trigger)
       local result = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" }
@@ -1595,11 +1603,14 @@ WeakAuras.event_prototypes = {
   ["Alternate Power"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_POWER_FREQUENT",
-      };
+      local result = {};
       AddUnitChangeEvents(trigger.unit, result);
       return result;
+    end,
+    unit_events = function(trigger)
+      return {
+        [trigger.unit or "player"] = {"UNIT_POWER_FREQUENT"}
+      }
     end,
     internal_events = function(trigger)
       local result = {"WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -4577,11 +4588,14 @@ WeakAuras.event_prototypes = {
   ["Threat Situation"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_THREAT_SITUATION_UPDATE",
-      };
+      local result = {};
       AddUnitChangeEvents(trigger.threatUnit, result);
       return result;
+    end,
+    unit_events = function(trigger)
+      return {
+        [trigger.threatUnit or "player"] = {"UNIT_THREAT_SITUATION_UPDATE"}
+      }
     end,
     internal_events = function(trigger)
       local result = {}
@@ -4646,22 +4660,50 @@ WeakAuras.event_prototypes = {
   ["Cast"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_SPELLCAST_CHANNEL_START",
-        "UNIT_SPELLCAST_START",
-        "UNIT_SPELLCAST_DELAYED",
-        "UNIT_SPELLCAST_CHANNEL_UPDATE",
-        "UNIT_SPELLCAST_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_STOP",
-        "UNIT_SPELLCAST_CHANNEL_STOP",
-        "UNIT_SPELLCAST_INTERRUPTED"
-      };
-      AddUnitChangeEvents(trigger.unit, result)
-      if trigger.target and trigger.target ~= "" then
-        tinsert(result, "UNIT_TARGET")
+      local result
+      if trigger.unit == "multi" then
+        local result = {
+          "UNIT_SPELLCAST_CHANNEL_START",
+          "UNIT_SPELLCAST_START",
+          "UNIT_SPELLCAST_DELAYED",
+          "UNIT_SPELLCAST_CHANNEL_UPDATE",
+          "UNIT_SPELLCAST_INTERRUPTIBLE",
+          "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+          "UNIT_SPELLCAST_STOP",
+          "UNIT_SPELLCAST_CHANNEL_STOP",
+          "UNIT_SPELLCAST_INTERRUPTED"
+        };
+        if trigger.target and trigger.target ~= "" then
+          tinsert(result, "UNIT_TARGET")
+        end
+      else
+        result = {}
       end
+      AddUnitChangeEvents(trigger.unit, result)
       return result
+    end,
+    unit_events = function(trigger)
+      if trigger.unit == "multi" then
+        return {}
+      else
+        local result = {
+          "UNIT_SPELLCAST_CHANNEL_START",
+          "UNIT_SPELLCAST_START",
+          "UNIT_SPELLCAST_DELAYED",
+          "UNIT_SPELLCAST_CHANNEL_UPDATE",
+          "UNIT_SPELLCAST_INTERRUPTIBLE",
+          "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+          "UNIT_SPELLCAST_STOP",
+          "UNIT_SPELLCAST_CHANNEL_STOP",
+          "UNIT_SPELLCAST_INTERRUPTED"
+        };
+        if trigger.target and trigger.target ~= "" then
+          tinsert(result, "UNIT_TARGET")
+        end
+        return {
+          [trigger.unit or "player"] = result
+        }
+      end
     end,
     internal_events = function(trigger)
       local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -4911,9 +4953,11 @@ WeakAuras.event_prototypes = {
     type = "status",
     name = WeakAuras.newFeatureString .. L["Character Stats"],
     events = {
-        "UNIT_STATS",
         "COMBAT_RATING_UPDATE",
         "PLAYER_TARGET_CHANGED"
+    },
+    unit_events = {
+      ["player"] = {"UNIT_STATS"}
     },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD",
@@ -5152,17 +5196,8 @@ WeakAuras.event_prototypes = {
         tinsert(events, "PLAYER_UNGHOST");
       end
 
-      if (trigger.use_vehicle ~= nil) then
-        tinsert(events, "UNIT_ENTERED_VEHICLE");
-        tinsert(events, "UNIT_EXITED_VEHICLE");
-      end
-
       if (trigger.use_resting ~= nil) then
         tinsert(events, "PLAYER_UPDATE_RESTING");
-      end
-
-      if (trigger.use_HasPet ~= nil) then
-        tinsert(events, "UNIT_PET");
       end
 
       if (trigger.use_mounted ~= nil) then
@@ -5171,6 +5206,19 @@ WeakAuras.event_prototypes = {
       end
 
       return events;
+    end,
+    unit_events = function(trigger)
+      local result = {}
+      if (trigger.use_vehicle ~= nil) then
+        tinsert(result, "UNIT_ENTERED_VEHICLE")
+        tinsert(result, "UNIT_EXITED_VEHICLE")
+      end
+      if (trigger.use_HasPet ~= nil) then
+        tinsert(result, "UNIT_PET")
+      end
+      return {
+        ["player"] = result
+      }
     end,
     internal_events = function(trigger, untrigger)
       local events = { "CONDITIONS_CHECK"};
@@ -5259,8 +5307,10 @@ WeakAuras.event_prototypes = {
   ["Spell Known"] = {
     type = "status",
     events = {
-      "SPELLS_CHANGED",
-      "UNIT_PET",
+      "SPELLS_CHANGED"
+    },
+    unit_events = {
+      ["player"] = {"UNIT_PET"}
     },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD",
@@ -5312,7 +5362,7 @@ WeakAuras.event_prototypes = {
   ["Pet Behavior"] = {
     type = "status",
     events = function(trigger)
-      local result = {"UNIT_PET"};
+      local result = {};
       if (trigger.use_behavior) then
         tinsert(result, "PET_BAR_UPDATE");
       end
@@ -5321,6 +5371,9 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
+    unit_events = {
+      ["player"] = {"UNIT_PET"}
+    },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
