@@ -647,6 +647,7 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
         local updateTriggerState = false;
         for triggernum, data in pairs(triggers) do
           local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+          -- print("ScanUnitEvents", id, event, unit)
           if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
             updateTriggerState = true;
           end
@@ -669,6 +670,9 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     WeakAuras.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
+      -- if not(event == "FRAME_UPDATE" or event == "COMBAT_LOG_EVENT_UNFILTERED") then
+      --   print("ScanEventsInternal", id, event, arg1, arg2, ...)
+      -- end
       local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
       if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
         updateTriggerState = true;
@@ -713,6 +717,7 @@ function GenericTrigger.ScanAll()
 end
 
 function HandleEvent(frame, event, arg1, arg2, ...)
+  --print("HandleEvent", event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("generictrigger " .. event);
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then

@@ -1180,12 +1180,10 @@ WeakAuras.event_prototypes = {
       return result;
     end,
     unit_events = function(trigger)
-      return {
-        [trigger.unit or "player"] = {
-          "UNIT_LEVEL",
-          "UNIT_FACTION"
-      }
-    }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_LEVEL")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_FACTION")
+      return result
     end,
     internal_events = function(trigger)
       local result = {
@@ -1642,9 +1640,9 @@ WeakAuras.event_prototypes = {
       return result
     end,
     unit_events = function(trigger)
-      return {
-        [trigger.unit or "player"] = {"UNIT_POWER_FREQUENT"}
-      }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      return result
     end,
     internal_events = function(trigger)
       local result = {"WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -4791,27 +4789,20 @@ WeakAuras.event_prototypes = {
       return result
     end,
     unit_events = function(trigger)
-      if trigger.unit == "multi" then
-        return {}
-      else
-        local result = {
-          "UNIT_SPELLCAST_CHANNEL_START",
-          "UNIT_SPELLCAST_START",
-          "UNIT_SPELLCAST_DELAYED",
-          "UNIT_SPELLCAST_CHANNEL_UPDATE",
-          "UNIT_SPELLCAST_INTERRUPTIBLE",
-          "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-          "UNIT_SPELLCAST_STOP",
-          "UNIT_SPELLCAST_CHANNEL_STOP",
-          "UNIT_SPELLCAST_INTERRUPTED"
-        };
-        if trigger.target and trigger.target ~= "" then
-          tinsert(result, "UNIT_TARGET")
-        end
-        return {
-          [trigger.unit or "player"] = result
-        }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_START")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
+      if trigger.target and trigger.target ~= "" then
+        AddUnitEventForUnit_events(trigger.target, result, "UNIT_TARGET")
       end
+      return result
     end,
     internal_events = function(trigger)
       local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -5332,11 +5323,11 @@ WeakAuras.event_prototypes = {
     end,
     unit_events = function(trigger)
       local result = {}
-      if (trigger.use_vehicle ~= nil) then
+      if trigger.use_vehicle ~= nil then
         tinsert(result, "UNIT_ENTERED_VEHICLE")
         tinsert(result, "UNIT_EXITED_VEHICLE")
       end
-      if (trigger.use_HasPet ~= nil) then
+      if trigger.use_HasPet ~= nil then
         tinsert(result, "UNIT_PET")
       end
       return {
