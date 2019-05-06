@@ -3607,6 +3607,9 @@ WeakAuras.event_prototypes = {
         ["player"] = { "UNIT_POWER_FREQUENT" }
       }
     },
+    unit_events = {
+      ["player"] = { "UNIT_POWER_FREQUENT" }
+    },
     internal_events = {
       "SPELL_COOLDOWN_CHANGED",
     },
