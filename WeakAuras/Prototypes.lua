@@ -1126,21 +1126,34 @@ local function AddUnitChangeInternalEvents(unit, t)
   end
 end
 
+local function AddUnitEventForEvents(unit, result, event)
+  if not WeakAuras.baseUnitId[unit] then
+    tinsert(result, event)
+  end
+end
+
+local function AddUnitEventForUnit_events(unit, result, event)
+  if WeakAuras.baseUnitId[unit] then
+    result[unit] = result[unit] or {}
+    tinsert(result[unit], event)
+  end
+end
+
 WeakAuras.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitChangeEvents(trigger.unit, result);
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_LEVEL")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_FACTION")
+      AddUnitChangeEvents(trigger.unit, result)
       return result;
     end,
     unit_events = function(trigger)
-      return {
-        [trigger.unit or "player"] = {
-          "UNIT_LEVEL",
-          "UNIT_FACTION"
-      }
-    }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_LEVEL")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_FACTION")
+      return result
     end,
     internal_events = function(trigger)
       local result = {}
@@ -1246,22 +1259,26 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitChangeEvents(trigger.unit, result);
-      return result;
+      AddUnitChangeEvents(trigger.unit, result)
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_HEALTH_FREQUENT")
+      if trigger.use_showAbsorb then
+        AddUnitEventForEvents(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
+      end
+      if trigger.use_showIncomingHeal then
+        AddUnitEventForEvents(trigger.unit, result, "UNIT_HEAL_PREDICTION")
+      end
+      return result
     end,
     unit_events = function(trigger)
-      local result = {
-        "UNIT_HEALTH_FREQUENT"
-      };
-      if (trigger.use_showAbsorb) then
-        tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_HEALTH_FREQUENT")
+      if trigger.use_showAbsorb then
+        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
-      if (trigger.use_showIncomingHeal) then
-        tinsert(result, "UNIT_HEAL_PREDICTION");
+      if trigger.use_showIncomingHeal then
+        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_HEAL_PREDICTION")
       end
-      return {
-        [trigger.unit or "player"] = result
-      }
+      return result
     end,
     internal_events = function(trigger)
       local result = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" }
@@ -1392,25 +1409,32 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_DISPLAYPOWER")
+      if trigger.use_showCost then
+        AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_START")
+        AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_STOP")
+        AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_FAILED")
+      end
+      if trigger.use_powertype and trigger.powertype == 99 then
+        AddUnitEventForEvents(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
+      end
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
     unit_events = function(trigger)
-      local result = {
-        "UNIT_POWER_FREQUENT",
-        "UNIT_DISPLAYPOWER"
-      }
-      if (trigger.use_showCost) then
-        tinsert(result, "UNIT_SPELLCAST_START");
-        tinsert(result, "UNIT_SPELLCAST_STOP");
-        tinsert(result, "UNIT_SPELLCAST_FAILED");
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_DISPLAYPOWER")
+      if trigger.use_showCost then
+        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_START")
+        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
+        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_FAILED")
       end
-      if (trigger.use_powertype and trigger.powertype == 99) then
-        tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
+      if trigger.use_powertype and trigger.powertype == 99 then
+        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
-      return {
-        [trigger.unit or "player"] = result
-      }
+      return result
     end,
     internal_events = function(trigger)
       local result = { "WA_DELAYED_PLAYER_ENTERING_WORLD" }
@@ -1603,14 +1627,15 @@ WeakAuras.event_prototypes = {
   ["Alternate Power"] = {
     type = "status",
     events = function(trigger)
-      local result = {};
-      AddUnitChangeEvents(trigger.unit, result);
-      return result;
+      local result = {}
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      AddUnitChangeEvents(trigger.unit, result)
+      return result
     end,
     unit_events = function(trigger)
-      return {
-        [trigger.unit or "player"] = {"UNIT_POWER_FREQUENT"}
-      }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      return result
     end,
     internal_events = function(trigger)
       local result = {"WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -4589,13 +4614,14 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {};
-      AddUnitChangeEvents(trigger.threatUnit, result);
+      AddUnitEventForEvents(trigger.threatUnit, result, "UNIT_THREAT_SITUATION_UPDATE")
+      AddUnitChangeEvents(trigger.threatUnit, result)
       return result;
     end,
     unit_events = function(trigger)
-      return {
-        [trigger.threatUnit or "player"] = {"UNIT_THREAT_SITUATION_UPDATE"}
-      }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.threatUnit, result, "UNIT_THREAT_SITUATION_UPDATE")
+      return result
     end,
     internal_events = function(trigger)
       local result = {}
@@ -4660,50 +4686,37 @@ WeakAuras.event_prototypes = {
   ["Cast"] = {
     type = "status",
     events = function(trigger)
-      local result
-      if trigger.unit == "multi" then
-        local result = {
-          "UNIT_SPELLCAST_CHANNEL_START",
-          "UNIT_SPELLCAST_START",
-          "UNIT_SPELLCAST_DELAYED",
-          "UNIT_SPELLCAST_CHANNEL_UPDATE",
-          "UNIT_SPELLCAST_INTERRUPTIBLE",
-          "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-          "UNIT_SPELLCAST_STOP",
-          "UNIT_SPELLCAST_CHANNEL_STOP",
-          "UNIT_SPELLCAST_INTERRUPTED"
-        };
-        if trigger.target and trigger.target ~= "" then
-          tinsert(result, "UNIT_TARGET")
-        end
-      else
-        result = {}
+      local result = {}
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
+      if trigger.target and trigger.target ~= "" then
+        AddUnitEventForEvents(trigger.target, result, "UNIT_TARGET")
       end
       AddUnitChangeEvents(trigger.unit, result)
       return result
     end,
     unit_events = function(trigger)
-      if trigger.unit == "multi" then
-        return {}
-      else
-        local result = {
-          "UNIT_SPELLCAST_CHANNEL_START",
-          "UNIT_SPELLCAST_START",
-          "UNIT_SPELLCAST_DELAYED",
-          "UNIT_SPELLCAST_CHANNEL_UPDATE",
-          "UNIT_SPELLCAST_INTERRUPTIBLE",
-          "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-          "UNIT_SPELLCAST_STOP",
-          "UNIT_SPELLCAST_CHANNEL_STOP",
-          "UNIT_SPELLCAST_INTERRUPTED"
-        };
-        if trigger.target and trigger.target ~= "" then
-          tinsert(result, "UNIT_TARGET")
-        end
-        return {
-          [trigger.unit or "player"] = result
-        }
+      local result = {}
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_START")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
+      if trigger.target and trigger.target ~= "" then
+        AddUnitEventForUnit_events(trigger.target, result, "UNIT_TARGET")
       end
+      return result
     end,
     internal_events = function(trigger)
       local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -5181,39 +5194,35 @@ WeakAuras.event_prototypes = {
   ["Conditions"] = {
     type = "status",
     events = function(trigger, untrigger)
-      local events = {};
-      if (trigger.use_incombat ~= nil) then
-        tinsert(events, "PLAYER_REGEN_ENABLED");
-        tinsert(events, "PLAYER_REGEN_DISABLED");
+      local result = {}
+      if trigger.use_incombat ~= nil then
+        tinsert(result, "PLAYER_REGEN_ENABLED")
+        tinsert(result, "PLAYER_REGEN_DISABLED")
       end
-      if (trigger.use_pvpflagged ~= nil) then
-        tinsert(events, "PLAYER_FLAGS_CHANGED");
+      if trigger.use_pvpflagged ~= nil then
+        tinsert(result, "PLAYER_FLAGS_CHANGED")
       end
-
-      if (trigger.use_alive ~= nil) then
-        tinsert(events, "PLAYER_DEAD");
-        tinsert(events, "PLAYER_ALIVE");
-        tinsert(events, "PLAYER_UNGHOST");
+      if trigger.use_alive ~= nil then
+        tinsert(result, "PLAYER_DEAD")
+        tinsert(result, "PLAYER_ALIVE")
+        tinsert(result, "PLAYER_UNGHOST")
       end
-
-      if (trigger.use_resting ~= nil) then
-        tinsert(events, "PLAYER_UPDATE_RESTING");
+      if trigger.use_resting ~= nil then
+        tinsert(result, "PLAYER_UPDATE_RESTING")
       end
-
-      if (trigger.use_mounted ~= nil) then
-        tinsert(events, "PLAYER_MOUNT_DISPLAY_CHANGED");
-        tinsert(events, "PLAYER_ENTERING_WORLD")
+      if trigger.use_mounted ~= nil then
+        tinsert(result, "PLAYER_MOUNT_DISPLAY_CHANGED")
+        tinsert(result, "PLAYER_ENTERING_WORLD")
       end
-
-      return events;
+      return result
     end,
     unit_events = function(trigger)
       local result = {}
-      if (trigger.use_vehicle ~= nil) then
+      if trigger.use_vehicle ~= nil then
         tinsert(result, "UNIT_ENTERED_VEHICLE")
         tinsert(result, "UNIT_EXITED_VEHICLE")
       end
-      if (trigger.use_HasPet ~= nil) then
+      if trigger.use_HasPet ~= nil then
         tinsert(result, "UNIT_PET")
       end
       return {
