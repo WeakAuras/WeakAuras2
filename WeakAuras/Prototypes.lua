@@ -4696,6 +4696,7 @@ WeakAuras.event_prototypes = {
       AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_STOP")
       AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
       AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForEvents(trigger.unit, result, "UNIT_TARGET")
       if trigger.target and trigger.target ~= "" then
         AddUnitEventForEvents(trigger.target, result, "UNIT_TARGET")
       end
@@ -4713,6 +4714,7 @@ WeakAuras.event_prototypes = {
       AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
       AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
       AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_TARGET")
       if trigger.target and trigger.target ~= "" then
         AddUnitEventForUnit_events(trigger.target, result, "UNIT_TARGET")
       end
