@@ -79,13 +79,15 @@ local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
 
 local events = WeakAuras.events;
+local unit_events = WeakAuras.unit_events;
 local loaded_events = WeakAuras.loaded_events;
+local loaded_unit_events = {};
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 local specificBosses = WeakAuras.specificBosses;
 
 -- Local functions
-local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
+local LoadEvent, HandleEvent, HandleUnitEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
 function WeakAuras.split(input)
@@ -633,6 +635,33 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
+function WeakAuras.ScanUnitEvents(event, unit, ...)
+  WeakAuras.StartProfileSystem("generictrigger " .. event .. " " .. unit)
+  local unit_list = loaded_unit_events[unit]
+  if unit_list then
+    local event_list = unit_list[event]
+    if event_list then
+      for id, triggers in pairs(event_list) do
+        WeakAuras.StartProfileAura(id);
+        WeakAuras.ActivateAuraEnvironment(id);
+        local updateTriggerState = false;
+        for triggernum, data in pairs(triggers) do
+          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+          if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
+            updateTriggerState = true;
+          end
+        end
+        if (updateTriggerState) then
+          WeakAuras.UpdatedTriggerState(id);
+        end
+        WeakAuras.StopProfileAura(id);
+        WeakAuras.ActivateAuraEnvironment(nil);
+      end
+    end
+  end
+  WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit)
+end
+
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   local orgEvent = event;
   for id, triggers in pairs(event_list) do
@@ -668,6 +697,8 @@ function GenericTrigger.ScanWithFakeEvent(id)
       end
     end
   end
+
+  -- TODO unit_events ?
 
   if (updateTriggerState) then
     WeakAuras.UpdatedTriggerState(id);
@@ -705,9 +736,19 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("generictrigger " .. event);
 end
 
+function HandleUnitEvent(frame, event, unit, ...)
+  --print("HandleUnitEvent", event, unit)
+  WeakAuras.StartProfileSystem("generictrigger " .. event .. " " .. unit);
+  if not(WeakAuras.IsPaused()) then
+    WeakAuras.ScanUnitEvents(event, unit, ...);
+  end
+  WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit);
+end
+
 function GenericTrigger.UnloadAll()
   wipe(loaded_auras);
   wipe(loaded_events);
+  wipe(loaded_unit_events);
   WeakAuras.UnregisterAllEveryFrameUpdate();
 end
 
@@ -723,12 +764,19 @@ function GenericTrigger.UnloadDisplays(toUnload)
         events[id] = nil;
       end
     end
+    for unit, events in pairs(loaded_unit_events) do
+      for index, event in pairs(events) do
+        event[id] = nil;
+      end
+    end
     WeakAuras.UnregisterEveryFrameUpdate(id);
   end
 end
 
 local genericTriggerRegisteredEvents = {};
+local genericTriggerRegisteredUnitEvents = {};
 local frame = CreateFrame("FRAME");
+frame.units = {};
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 genericTriggerRegisteredEvents["PLAYER_ENTERING_WORLD"] = true;
@@ -751,6 +799,15 @@ function GenericTrigger.Rename(oldid, newid)
     else
       events[newid] = events[oldid];
       events[oldid] = nil;
+    end
+  end
+
+  unit_events[newid] = unit_events[oldid];
+  unit_events[oldid] = nil;
+  for unit, events in pairs(loaded_unit_events) do
+    for index, event in pairs(events) do
+      event[newid] = event[oldid]
+      event[oldid] = nil
     end
   end
 
@@ -777,6 +834,17 @@ function LoadEvent(id, triggernum, data)
       loaded_events[event][id][triggernum] = data;
     end
   end
+  if data.unit_events then
+    for unit, events in pairs(data.unit_events) do
+      unit = string.lower(unit)
+      for index, event in pairs(events) do
+        loaded_unit_events[unit] = loaded_unit_events[unit] or {};
+        loaded_unit_events[unit][event] = loaded_unit_events[unit][event] or {};
+        loaded_unit_events[unit][event][id] = loaded_unit_events[unit][event][id] or {}
+        loaded_unit_events[unit][event][id][triggernum] = data;
+      end
+    end
+  end
 
   if (data.loadFunc) then
     data.loadFunc(data.trigger);
@@ -788,6 +856,7 @@ local function trueFunction()
 end
 
 local eventsToRegister = {};
+local unitEventsToRegister = {};
 function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
   for id in pairs(toLoad) do
     local register_for_frame_updates = false;
@@ -804,6 +873,18 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
               -- Already registered event
             else
               eventsToRegister[event] = true;
+            end
+          end
+        end
+        if data.unit_events then
+          for unit, events in pairs(data.unit_events) do
+            for index, event in pairs(events) do
+              if (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
+                -- Already registered event
+              else
+                unitEventsToRegister[unit] = unitEventsToRegister[unit] or {};
+                unitEventsToRegister[unit][event] = true;
+              end
             end
           end
         end
@@ -824,6 +905,19 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     genericTriggerRegisteredEvents[event] = true;
   end
 
+  for unit, events in pairs(unitEventsToRegister) do
+    for event in pairs(events) do
+      -- print("unitEventsToRegister", unit, event)
+      if not frame.units[unit] then
+        frame.units[unit] = CreateFrame("FRAME")
+        frame.units[unit]:SetScript("OnEvent", HandleUnitEvent);
+      end
+      xpcall(frame.units[unit].RegisterUnitEvent, trueFunction, frame.units[unit], event, unit)
+      genericTriggerRegisteredUnitEvents[unit] = genericTriggerRegisteredUnitEvents[unit] or {};
+      genericTriggerRegisteredUnitEvents[unit][event] = true;
+    end
+  end
+
   for id in pairs(toLoad) do
     GenericTrigger.ScanWithFakeEvent(id);
   end
@@ -831,8 +925,15 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
   if (eventsToRegister[loadEvent]) then
     WeakAuras.ScanEvents(loadEvent, ...);
   end
+  local loadUnit = ...
+  for unit, event in pairs(unitEventsToRegister) do
+    if loadEvent == event and unit == loadUnit then
+      WeakAuras.ScanUnitEvents(loadEvent, ...);
+    end
+  end
 
   wipe(eventsToRegister);
+  wipe(unitEventsToRegister);
 end
 
 function GenericTrigger.FinishLoadUnload()
@@ -855,6 +956,7 @@ function GenericTrigger.Add(data, region)
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
         local internal_events = {};
+        local unit_events = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
@@ -947,11 +1049,15 @@ function GenericTrigger.Add(data, region)
               trigger_events = prototype.events;
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
+              unit_events = prototype.unit_events;
               if (type(trigger_events) == "function") then
                 trigger_events = trigger_events(trigger, untrigger);
               end
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
+              end
+              if (type(unit_events) == "function") then
+                unit_events = unit_events(trigger, untrigger);
               end
             end
           end
@@ -1039,6 +1145,7 @@ function GenericTrigger.Add(data, region)
           events = trigger_events,
           internal_events = internal_events,
           force_events = force_events,
+          unit_events = unit_events,
           inverse = trigger.use_inverse,
           subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
           unevent = trigger.unevent,

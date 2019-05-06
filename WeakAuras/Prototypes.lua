@@ -1383,11 +1383,15 @@ WeakAuras.event_prototypes = {
   ["Power"] = {
     type = "status",
     events = function(trigger)
+      local result = {}
+      AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
+    unit_events = function(trigger)
       local result = {
         "UNIT_POWER_FREQUENT",
         "UNIT_DISPLAYPOWER"
-      };
-      AddUnitChangeEvents(trigger.unit, result);
+      }
       if (trigger.use_showCost) then
         tinsert(result, "UNIT_SPELLCAST_START");
         tinsert(result, "UNIT_SPELLCAST_STOP");
@@ -1396,7 +1400,9 @@ WeakAuras.event_prototypes = {
       if (trigger.use_powertype and trigger.powertype == 99) then
         tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
       end
-      return result;
+      return {
+        [trigger.unit or "player"] = result
+      }
     end,
     internal_events = function(trigger)
       local result = { "WA_DELAYED_PLAYER_ENTERING_WORLD" }
@@ -3524,8 +3530,10 @@ WeakAuras.event_prototypes = {
     events = {
       "SPELL_UPDATE_USABLE",
       "PLAYER_TARGET_CHANGED",
-      "UNIT_POWER_FREQUENT",
       "RUNE_POWER_UPDATE",
+    },
+    unit_events = {
+      ["player"] = { "UNIT_POWER_FREQUENT" }
     },
     internal_events = {
       "SPELL_COOLDOWN_CHANGED",
