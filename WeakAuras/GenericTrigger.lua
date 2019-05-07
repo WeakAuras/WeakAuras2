@@ -646,7 +646,6 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
         local updateTriggerState = false;
         for triggernum, data in pairs(triggers) do
           local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-          -- print("ScanUnitEvents", id, event, unit)
           if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
             updateTriggerState = true;
           end
@@ -669,9 +668,6 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     WeakAuras.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
-      -- if not(event == "FRAME_UPDATE" or event == "COMBAT_LOG_EVENT_UNFILTERED") then
-      --   print("ScanEventsInternal", id, event, arg1, arg2, ...)
-      -- end
       local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
       if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
         updateTriggerState = true;
@@ -714,7 +710,6 @@ function GenericTrigger.ScanAll()
 end
 
 function HandleEvent(frame, event, arg1, arg2, ...)
-  --print("HandleEvent", event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("generictrigger " .. event);
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -1173,6 +1168,19 @@ function GenericTrigger.Add(data, region)
                 -- not added to trigger_events
               else
                 tinsert(trigger_events, event)
+              end
+              -- custom events in the form of event:unit are registered with RegisterUnitEvent
+              local trueEvent, unit = event:match("(.+):(%w+)")
+              if trueEvent and unit then
+                unit = string.lower(unit)
+                if WeakAuras.baseUnitId[unit] then
+                  trueEvent = string.upper(trueEvent)
+                  trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                  tinsert(trigger_unit_events[unit], trueEvent)
+                  trigger_events[index] = nil
+                else
+                  print(L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit))
+                end
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
