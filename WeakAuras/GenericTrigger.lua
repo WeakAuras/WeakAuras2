@@ -79,7 +79,6 @@ local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
 
 local events = WeakAuras.events;
-local unit_events = WeakAuras.unit_events;
 local loaded_events = WeakAuras.loaded_events;
 local loaded_unit_events = {};
 local loaded_auras = {}; -- id to bool map
@@ -702,8 +701,6 @@ function GenericTrigger.ScanWithFakeEvent(id)
     end
   end
 
-  -- TODO unit_events ?
-
   if (updateTriggerState) then
     WeakAuras.UpdatedTriggerState(id);
   end
@@ -807,8 +804,6 @@ function GenericTrigger.Rename(oldid, newid)
     end
   end
 
-  unit_events[newid] = unit_events[oldid];
-  unit_events[oldid] = nil;
   for unit, events in pairs(loaded_unit_events) do
     for index, event in pairs(events) do
       event[newid] = event[oldid]
@@ -961,7 +956,7 @@ function GenericTrigger.Add(data, region)
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
         local internal_events = {};
-        local unit_events = {};
+        local trigger_unit_events = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
@@ -1054,15 +1049,15 @@ function GenericTrigger.Add(data, region)
               trigger_events = prototype.events;
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
-              unit_events = prototype.unit_events;
+              trigger_unit_events = prototype.unit_events;
               if (type(trigger_events) == "function") then
                 trigger_events = trigger_events(trigger, untrigger);
               end
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
               end
-              if (type(unit_events) == "function") then
-                unit_events = unit_events(trigger, untrigger);
+              if (type(trigger_unit_events) == "function") then
+                trigger_unit_events = trigger_unit_events(trigger, untrigger);
               end
             end
           end
@@ -1150,7 +1145,7 @@ function GenericTrigger.Add(data, region)
           events = trigger_events,
           internal_events = internal_events,
           force_events = force_events,
-          unit_events = unit_events,
+          unit_events = trigger_unit_events,
           inverse = trigger.use_inverse,
           subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
           unevent = trigger.unevent,
