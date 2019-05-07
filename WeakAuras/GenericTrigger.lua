@@ -79,7 +79,6 @@ local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
 
 local events = WeakAuras.events;
-local unit_events = WeakAuras.unit_events;
 local loaded_events = WeakAuras.loaded_events;
 local loaded_unit_events = {};
 local loaded_auras = {}; -- id to bool map
@@ -702,8 +701,6 @@ function GenericTrigger.ScanWithFakeEvent(id)
     end
   end
 
-  -- TODO unit_events ?
-
   if (updateTriggerState) then
     WeakAuras.UpdatedTriggerState(id);
   end
@@ -1090,8 +1087,8 @@ function GenericTrigger.Add(data, region)
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
               end
-              if (type(unit_events) == "function") then
-                unit_events = unit_events(trigger, untrigger);
+              if (type(trigger_unit_events) == "function") then
+                trigger_unit_events = trigger_unit_events(trigger, untrigger);
               end
             end
           end
