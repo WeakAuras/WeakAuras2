@@ -3122,16 +3122,16 @@ WeakAuras.event_prototypes = {
     statesParameter = "full",
     args = {
       {
-        name = "message",
-        display = L["Message"],
-        type = "longstring",
+        name = "spellId",
+        display = L["Spell Id"],
+        type = "string",
         store = true,
         conditionType = "string"
       },
       {
-        name = "spellId",
-        display = L["Spell Id"],
-        type = "string",
+        name = "message",
+        display = L["Message"],
+        type = "longstring",
         store = true,
         conditionType = "string"
       },
@@ -3146,19 +3146,19 @@ WeakAuras.event_prototypes = {
         type = "string",
       },
       {
+        name = "count",
+        display = L["Count"],
+        desc = L["Only if DBM shows it on it's bar"],
+        type = "string",
+        conditionType = "string",
+      },
+      {
         name = "dbmType",
         display = L["Type"],
         type = "select",
         values = "dbm_types",
         conditionType = "select",
         test = "true"
-      },
-      {
-        name = "count",
-        display = L["Count"],
-        desc = L["Only if DBM shows it on it's bar"],
-        type = "string",
-        conditionType = "string",
       },
       {
         name = "cloneId",
