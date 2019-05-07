@@ -1105,18 +1105,21 @@ function GenericTrigger.Add(data, region)
                 -- that are already in place. Replacing all those checks would be a pain in the ass.
                 trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
               end
-              -- custom events in the form of event:unit are registered with RegisterUnitEvent
-              local trueEvent, unit = event:match("(.+):(%w+)")
-              if trueEvent and unit then
-                unit = string.lower(unit)
-                if WeakAuras.baseUnitId[unit] then
-                  trueEvent = string.upper(trueEvent)
-                  trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                  tinsert(trigger_unit_events[unit], trueEvent)
-                  trigger_events[index] = nil
-                else
-                  print(L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit))
-                end
+              -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
+              local trueEvent
+              for i in event:gmatch("[^:]+") do
+                 if not trueEvent then
+                    trueEvent = string.upper(i)
+                 else
+                    local unit = string.lower(i)
+                    if WeakAuras.baseUnitId[unit] then
+                      trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                      tinsert(trigger_unit_events[unit], trueEvent)
+                      trigger_events[index] = nil
+                    else
+                      print(L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit))
+                    end
+                 end
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
