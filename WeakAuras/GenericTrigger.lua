@@ -815,16 +815,17 @@ function GenericTrigger.Rename(oldid, newid)
 end
 
 function LoadEvent(id, triggernum, data)
-  local events = data.events or {};
-  for index, event in pairs(events) do
-    loaded_events[event] = loaded_events[event] or {};
-    if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
-      loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
-      loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
-      loaded_events[event][data.subevent][id][triggernum] = data;
-    else
-      loaded_events[event][id] = loaded_events[event][id] or {};
-      loaded_events[event][id][triggernum] = data;
+  if data.events then
+    for index, event in pairs(data.events) do
+      loaded_events[event] = loaded_events[event] or {};
+      if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
+        loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
+        loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
+        loaded_events[event][data.subevent][id][triggernum] = data;
+      else
+        loaded_events[event][id] = loaded_events[event][id] or {};
+        loaded_events[event][id][triggernum] = data;
+      end
     end
   end
   if (data.internal_events) then
