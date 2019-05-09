@@ -161,8 +161,6 @@ local function ConstructTexturePicker(frame)
     local _, givenPath
     if type(self.givenPath) == "string" then
       givenPath = self.givenPath;
-    elseif type(self.givenPath) == "number" then
-      givenPath = tostring(self.givenPath);
     else
       _, givenPath = next(self.givenPath);
     end
