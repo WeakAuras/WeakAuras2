@@ -422,7 +422,7 @@ local methods = {
 		local maxlines = (floor(((self.treeframe:GetHeight()or 0) - 20 ) / 18))
 		if maxlines <= 0 then return end
 
-		-- workaround for lag spikes on WoW 8.0
+		-- WORKAROUND for lag spikes on WoW 8.0
 		if WoW80 and self.frame:GetParent() == UIParent and not fromOnUpdate then
 			self.frame:SetScript("OnUpdate", FirstFrameUpdate)
 			return
@@ -459,16 +459,16 @@ local methods = {
 				end
 				if not show then
 					-- selection was deleted or something?
-				elseif show>=first and show<=last then
+				elseif show >= first and show <= last then
 					-- all good
 				else
 					-- scrolling needed!
-					if show<first then
-						status.scrollvalue = show-1
+					if show < first then
+						status.scrollvalue = show - 1
 					else
 						status.scrollvalue = show-maxlines
 					end
-					first, last = status.scrollvalue+1, status.scrollvalue + maxlines
+					first, last = status.scrollvalue + 1, status.scrollvalue + maxlines
 				end
 			end
 			if self.scrollbar:GetValue() ~= status.scrollvalue then
@@ -485,7 +485,7 @@ local methods = {
 
 				buttons[buttonnum] = button
 				button:SetParent(treeframe)
-				button:SetFrameLevel(treeframe:GetFrameLevel()+1)
+				button:SetFrameLevel(treeframe:GetFrameLevel() + 1)
 				button:ClearAllPoints()
 				if buttonnum == 1 then
 					if self.showscroll then
@@ -496,12 +496,12 @@ local methods = {
 						button:SetPoint("TOPLEFT", 0, -10)
 					end
 				else
-					button:SetPoint("TOPRIGHT", buttons[buttonnum-1], "BOTTOMRIGHT",0,0)
-					button:SetPoint("TOPLEFT", buttons[buttonnum-1], "BOTTOMLEFT",0,0)
+					button:SetPoint("TOPRIGHT", buttons[buttonnum - 1], "BOTTOMRIGHT", 0, 0)
+					button:SetPoint("TOPLEFT", buttons[buttonnum - 1], "BOTTOMLEFT", 0, 0)
 				end
 			end
 
-			UpdateButton(button, line, status.selected == line.uniquevalue, line.hasChildren, groupstatus[line.uniquevalue] )
+			UpdateButton(button, line, status.selected == line.uniquevalue, line.hasChildren, groupstatus[line.uniquevalue])
 			button:Show()
 			buttonnum = buttonnum + 1
 		end
@@ -543,12 +543,12 @@ local methods = {
 		if show then
 			self.scrollbar:Show()
 			if self.buttons[1] then
-				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",-22,-10)
+				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe, "TOPRIGHT", -22, -10)
 			end
 		else
 			self.scrollbar:Hide()
 			if self.buttons[1] then
-				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",0,-10)
+				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe, "TOPRIGHT", 0, -10)
 			end
 		end
 	end,
@@ -671,7 +671,7 @@ local function Constructor()
 	scrollbar:SetScript("OnValueChanged", nil)
 	scrollbar:SetPoint("TOPRIGHT", -10, -26)
 	scrollbar:SetPoint("BOTTOMRIGHT", -10, 26)
-	scrollbar:SetMinMaxValues(0,0)
+	scrollbar:SetMinMaxValues(0, 0)
 	scrollbar:SetValueStep(1)
 	scrollbar:SetValue(0)
 	scrollbar:SetWidth(16)
@@ -679,9 +679,9 @@ local function Constructor()
 
 	local scrollbg = scrollbar:CreateTexture(nil, "BACKGROUND")
 	scrollbg:SetAllPoints(scrollbar)
-	scrollbg:SetColorTexture(0,0,0,0.4)
+	scrollbg:SetColorTexture(0, 0, 0, 0.4)
 
-	local border = CreateFrame("Frame",nil,frame)
+	local border = CreateFrame("Frame", nil, frame)
 	border:SetPoint("TOPLEFT", treeframe, "TOPRIGHT")
 	border:SetPoint("BOTTOMRIGHT")
 	border:SetBackdrop(PaneBackdrop)
