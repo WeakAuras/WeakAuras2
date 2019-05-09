@@ -4,7 +4,7 @@ local L = WeakAuras.L;
 -- Default settings
 local default = {
   model_path = "Creature/Arthaslichking/arthaslichking.m2",
-  model_fileId = "122968",
+  model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
   model_x = 0,
