@@ -920,10 +920,8 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     WeakAuras.ScanEvents(loadEvent, ...);
   end
   local loadUnit = ...
-  for unit, event in pairs(unitEventsToRegister) do
-    if loadEvent == event and unit == loadUnit then
-      WeakAuras.ScanUnitEvents(loadEvent, ...);
-    end
+  if loadUnit and unitEventsToRegister[loadUnit] and unitEventsToRegister[loadUnit][loadEvent] then
+    WeakAuras.ScanUnitEvents(loadEvent, ...);
   end
 
   wipe(eventsToRegister);
