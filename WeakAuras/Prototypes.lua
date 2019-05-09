@@ -70,6 +70,15 @@ WeakAuras.encounter_table = {
   -- Crucible of Storms
   [2328] = 2269, -- The Restless Cabal
   [2332] = 2273, -- Uu'nat, Harbinger of the Void
+  -- The Eternal Palace
+  [2352] = 2298, -- Abyssal Commander Sivara
+  [2353] = 2305, -- Radiance of Ashara
+  [2347] = 2289, -- Blackwater Behemoth
+  [2354] = 2304, -- Lady Ashvane
+  [2351] = 2303, -- The Hatchery (Orgozoa)
+  [2359] = 2311, -- The Queen's Court
+  [2349] = 2293, -- Za'qul, Herald of N'zoth
+  [2361] = 2299, -- Queen Azshara
 }
 
 local function get_encounters_list()
