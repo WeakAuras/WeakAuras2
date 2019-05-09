@@ -1,6 +1,7 @@
 --[[-----------------------------------------------------------------------------
 WeakAurasTreeGroup Container
 Container that uses a tree control to switch between groups.
+This file was forked from AceGUIContainer-TreeGroup.lua version 41
 -------------------------------------------------------------------------------]]
 local Type, Version = "WeakAurasTreeGroup", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
@@ -80,7 +81,7 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		button.selected = false
 	end
 	button.level = level
-	if ( level == 1 ) then
+	if level == 1 then
 		button:SetNormalFontObject("GameFontNormal")
 		button:SetHighlightFontObject("GameFontHighlight")
 		button.text:SetPoint("LEFT", (icon and 16 or 0) + 8, 2)
