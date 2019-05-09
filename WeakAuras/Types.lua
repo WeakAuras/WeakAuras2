@@ -1963,14 +1963,17 @@ WeakAuras.baseUnitId = {
   ["vehicle"] = true
   -- ["mouseover"] = true
 }
+
 for i=1,4 do
   WeakAuras.baseUnitId["party"..i] = true
   WeakAuras.baseUnitId["partypet"..i] = true
 end
+
 for i=1,5 do
   WeakAuras.baseUnitId["arena"..i] = true
   WeakAuras.baseUnitId["boss"..i] = true
 end
+
 for i=1,40 do
   WeakAuras.baseUnitId["raid"..i] = true
   WeakAuras.baseUnitId["raidpet"..i] = true
