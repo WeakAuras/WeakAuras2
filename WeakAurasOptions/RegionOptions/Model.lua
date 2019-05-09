@@ -194,7 +194,6 @@ local function createOptions(id, data)
       order = 0.6,
       hidden = function() return data.modelIsUnit end
     }
-
     options.model_fileId = {
       type = "input",
       width = WeakAuras.doubleWidth,
