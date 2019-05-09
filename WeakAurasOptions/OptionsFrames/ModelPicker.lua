@@ -26,7 +26,7 @@ local function ConstructModelPicker(frame)
   modelPickerZ:SetLabel(L["Z Offset"]);
   modelPickerZ.frame:SetParent(group.frame);
   modelPickerZ:SetCallback("OnValueChanged", function()
-    group:Pick(nil, modelPickerZ:GetValue());
+    group:Pick(nil, nil, modelPickerZ:GetValue());
   end);
 
   local modelPickerX = AceGUI:Create("Slider");
@@ -34,7 +34,7 @@ local function ConstructModelPicker(frame)
   modelPickerX:SetLabel(L["X Offset"]);
   modelPickerX.frame:SetParent(group.frame);
   modelPickerX:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, modelPickerX:GetValue());
+    group:Pick(nil, nil, nil, modelPickerX:GetValue());
   end);
 
   local modelPickerY = AceGUI:Create("Slider");
@@ -42,7 +42,7 @@ local function ConstructModelPicker(frame)
   modelPickerY:SetLabel(L["Y Offset"]);
   modelPickerY.frame:SetParent(group.frame);
   modelPickerY:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, nil, modelPickerY:GetValue());
+    group:Pick(nil, nil, nil, nil, modelPickerY:GetValue());
   end);
 
   -- New TX TY TZ, RX, RY, RZ, US controls
@@ -51,7 +51,7 @@ local function ConstructModelPicker(frame)
   modelPickerTX:SetLabel(L["X Offset"]);
   modelPickerTX.frame:SetParent(group.frame);
   modelPickerTX:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, modelPickerTX:GetValue());
+    group:PickSt(nil, nil, modelPickerTX:GetValue());
   end);
 
   local modelPickerTY = AceGUI:Create("Slider");
@@ -59,7 +59,7 @@ local function ConstructModelPicker(frame)
   modelPickerTY:SetLabel(L["Y Offset"]);
   modelPickerTY.frame:SetParent(group.frame);
   modelPickerTY:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, modelPickerTY:GetValue());
+    group:PickSt(nil, nil, nil, modelPickerTY:GetValue());
   end);
 
   local modelPickerTZ = AceGUI:Create("Slider");
@@ -67,7 +67,7 @@ local function ConstructModelPicker(frame)
   modelPickerTZ:SetLabel(L["Z Offset"]);
   modelPickerTZ.frame:SetParent(group.frame);
   modelPickerTZ:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, modelPickerTZ:GetValue());
+    group:PickSt(nil, nil, nil, nil, modelPickerTZ:GetValue());
   end);
 
   local modelPickerRX = AceGUI:Create("Slider");
@@ -75,7 +75,7 @@ local function ConstructModelPicker(frame)
   modelPickerRX:SetLabel(L["X Rotation"]);
   modelPickerRX.frame:SetParent(group.frame);
   modelPickerRX:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, modelPickerRX:GetValue());
+    group:PickSt(nil, nil, nil, nil, nil, modelPickerRX:GetValue());
   end);
 
   local modelPickerRY = AceGUI:Create("Slider");
@@ -83,7 +83,7 @@ local function ConstructModelPicker(frame)
   modelPickerRY:SetLabel(L["Y Rotation"]);
   modelPickerRY.frame:SetParent(group.frame);
   modelPickerRY:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, modelPickerRY:GetValue());
+    group:PickSt(nil, nil, nil, nil, nil, nil, modelPickerRY:GetValue());
   end);
 
   local modelPickerRZ = AceGUI:Create("Slider");
@@ -91,7 +91,7 @@ local function ConstructModelPicker(frame)
   modelPickerRZ:SetLabel(L["Z Rotation"]);
   modelPickerRZ.frame:SetParent(group.frame);
   modelPickerRZ:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, modelPickerRZ:GetValue());
+    group:PickSt(nil, nil, nil, nil, nil, nil, nil, modelPickerRZ:GetValue());
   end);
 
   local modelPickerUS = AceGUI:Create("Slider");
@@ -99,10 +99,10 @@ local function ConstructModelPicker(frame)
   modelPickerUS:SetLabel(L["Scale"]);
   modelPickerUS.frame:SetParent(group.frame);
   modelPickerUS:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, nil, modelPickerUS:GetValue());
+    group:PickSt(nil, nil, nil, nil, nil, nil, nil, nil, modelPickerUS:GetValue());
   end);
 
-  local modelTree = AceGUI:Create("TreeGroup");
+  local modelTree = AceGUI:Create("WeakAurasTreeGroup");
   group.modelTree = modelTree;
   group.frame:SetScript("OnUpdate", function()
     local frameWidth = frame:GetWidth();
@@ -145,14 +145,14 @@ local function ConstructModelPicker(frame)
   end);
   group:SetLayout("fill");
   modelTree:SetTree(WeakAuras.ModelPaths);
-  modelTree:SetCallback("OnGroupSelected", function(self, event, value)
+  modelTree:SetCallback("OnGroupSelected", function(self, event, value, fileId)
     local path = string.gsub(value, "\001", "/");
     if(string.lower(string.sub(path, -3, -1)) == ".m2") then
       local model_path = path;
       if (group.givenApi) then
-        group:PickSt(model_path);
+        group:PickSt(model_path, fileId);
       else
-        group:Pick(model_path);
+        group:Pick(model_path, fileId);
       end
     end
   end);
@@ -163,8 +163,9 @@ local function ConstructModelPicker(frame)
   model:SetFrameStrata("FULLSCREEN");
   group.model = model;
 
-  function group.PickSt(self, model_path, model_tx, model_ty, model_tz, model_rx, model_ry, model_rz, model_us)
+  function group.PickSt(self, model_path, model_fileId, model_tx, model_ty, model_tz, model_rx, model_ry, model_rz, model_us)
     model_path = model_path or self.data.model_path;
+    model_fileId = model_fileId or self.data.model_fileId;
     model_tx = model_tx or self.data.model_st_tx;
     model_ty = model_ty or self.data.model_st_ty;
     model_tz = model_tz or self.data.model_st_tz;
@@ -175,11 +176,7 @@ local function ConstructModelPicker(frame)
 
     model_us = model_us or self.data.model_st_us;
 
-    if tonumber(model_path) then
-      self.model:SetDisplayInfo(tonumber(model_path))
-    else
-      self.model:SetModel(model_path);
-    end
+    WeakAuras.SetModel(self.model, model_path, model_fileId)
     self.model:SetTransform(model_tx / 1000, model_ty / 1000, model_tz / 1000,
       rad(model_rx), rad(model_ry), rad(model_rz),
       model_us / 1000);
@@ -188,6 +185,7 @@ local function ConstructModelPicker(frame)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           childData.model_path = model_path;
+          childData.model_fileId = model_fileId;
           childData.model_st_tx = model_tx;
           childData.model_st_ty = model_ty;
           childData.model_st_tz = model_tz;
@@ -202,6 +200,7 @@ local function ConstructModelPicker(frame)
       end
     else
       self.data.model_path = model_path;
+      self.data.model_fileId = model_fileId;
       self.data.model_st_tx = model_tx;
       self.data.model_st_ty = model_ty;
       self.data.model_st_tz = model_tz;
@@ -215,17 +214,14 @@ local function ConstructModelPicker(frame)
     end
   end
 
-  function group.Pick(self, model_path, model_z, model_x, model_y)
+  function group.Pick(self, model_path, model_fileId, model_z, model_x, model_y)
     model_path = model_path or self.data.model_path;
+    model_fileId = model_fileId or self.data.model_fileId;
     model_z = model_z or self.data.model_z;
     model_x = model_x or self.data.model_x;
     model_y = model_y or self.data.model_y;
 
-    if tonumber(model_path) then
-      self.model:SetDisplayInfo(tonumber(model_path))
-    else
-      self.model:SetModel(model_path);
-    end
+    WeakAuras.SetModel(self.model, model_path, model_fileId)
     self.model:ClearTransform();
     self.model:SetPosition(model_z, model_x, model_y);
     self.model:SetFacing(rad(self.data.rotation));
@@ -234,6 +230,7 @@ local function ConstructModelPicker(frame)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           childData.model_path = model_path;
+          childData.model_fileId = model_fileId;
           childData.model_z = model_z;
           childData.model_x = model_x;
           childData.model_y = model_y;
@@ -244,6 +241,7 @@ local function ConstructModelPicker(frame)
       end
     else
       self.data.model_path = model_path;
+      self.data.model_fileId = model_fileId;
       self.data.model_z = model_z;
       self.data.model_x = model_x;
       self.data.model_y = model_y;
@@ -255,11 +253,7 @@ local function ConstructModelPicker(frame)
 
   function group.Open(self, data)
     self.data = data;
-    if tonumber(data.model_path) then
-      model:SetDisplayInfo(tonumber(data.model_path))
-    else
-      model:SetModel(data.model_path);
-    end
+    WeakAuras.SetModel(self.model, data.model_path, data.model_fileId)
     if (data.api) then
       self.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
@@ -353,6 +347,7 @@ local function ConstructModelPicker(frame)
       end
     else
       self.givenModel = data.model_path;
+      self.givenModelId = data.model_fileId;
       self.givenApi = data.api;
 
       if (data.api) then
@@ -389,6 +384,7 @@ local function ConstructModelPicker(frame)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           childData.model_path = group.givenModel[childId];
+          childData.model_fileId = group.givenModelId[childId];
           childData.api = group.givenApi[childId];
           if (childData.api) then
             childData.model_st_tx = group.givenTX[childId];
@@ -410,10 +406,10 @@ local function ConstructModelPicker(frame)
       end
     else
       if (group.givenApi) then
-        group:PickSt(group.givenPath, group.givenTX, group.givenTY, group.givenTZ,
+        group:PickSt(group.givenPath, group.givenPathId, group.givenTX, group.givenTY, group.givenTZ,
           group.givenRX, group.givenRY, group.givenRZ, group.givenUS );
       else
-        group:Pick(group.givenPath, group.givenZ, group.givenX, group.givenY);
+        group:Pick(group.givenPath, group.givenPathId, group.givenZ, group.givenX, group.givenY);
       end
     end
     group.Close();

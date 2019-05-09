@@ -4,7 +4,7 @@ local root2 = math.sqrt(2);
 local halfroot2 = root2/2;
 
 local default = {
-  texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+  texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
   desaturate = false,
   width = 200,
   height = 200,

@@ -1,4 +1,4 @@
-local internalVersion = 15;
+local internalVersion = 16;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -12,7 +12,7 @@ local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInPar
   = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-local debugstack, IsSpellKnown = debugstack, IsSpellKnown
+local debugstack, IsSpellKnown, GetFileIDFromPath = debugstack, IsSpellKnown, GetFileIDFromPath
 
 local ADDON_NAME = "WeakAuras"
 local WeakAuras = WeakAuras
@@ -43,6 +43,8 @@ local queueshowooc;
 function WeakAuras.InternalVersion()
   return internalVersion;
 end
+
+WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
 function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
@@ -2368,6 +2370,8 @@ local function ModernizeAnimations(animations)
   animations.colorFunc     = ModernizeAnimation(animations.colorFunc);
 end
 
+local modelMigration = CreateFrame("PlayerModel")
+
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 function WeakAuras.Modernize(data)
   if (not data.internalVersion) then
@@ -2869,13 +2873,55 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 14 was introduced April 2019 in BFA
+  -- Version 15 was introduced April 2019 in BFA
   if data.internalVersion < 15 then
     if data.triggers then
       for triggerId, triggerData in ipairs(data.triggers) do
-          if triggerData.trigger.type == "status" and triggerData.trigger.event == "Spell Known" then
-            triggerData.trigger.use_exact_spellName = true
-          end
+        if triggerData.trigger.type == "status" and triggerData.trigger.event == "Spell Known" then
+          triggerData.trigger.use_exact_spellName = true
+        end
+      end
+    end
+  end
+
+  -- Version 16 was introduced May 2019 in BFA
+  if data.internalVersion < 16 then
+    if data.regionType == "texture" and type(data.texture) == "string" then
+      local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
+      if textureId and textureId > 0 then
+        data.texture = tostring(textureId)
+      end
+    end
+    if data.regionType == "progresstexture" then
+      if type(data.foregroundTexture) == "string" then
+        local textureId = GetFileIDFromPath(data.foregroundTexture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.foregroundTexture = tostring(textureId)
+        end
+      end
+      if type(data.backgroundTexture) == "string" then
+        local textureId = GetFileIDFromPath(data.backgroundTexture:gsub("\\\\", "\\"))
+        if textureId and textureId > 0 then
+          data.backgroundTexture = tostring(textureId)
+        end
+      end
+    end
+  end
+
+  if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 then -- prepare for migration at 8.2
+    data.modelDisplayInfo = false
+    if data.modelIsUnit then
+      data.model_fileId = data.model_path
+    else
+      if tonumber(data.model_path) then
+        data.modelDisplayInfo = true
+        data.model_fileId = data.model_path
+      else
+        WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
+        local modelId = modelMigration:GetModelFileID()
+        if modelId then
+          data.model_fileId = tostring(modelId)
+        end
       end
     end
   end
@@ -5569,4 +5615,20 @@ function WeakAuras.FindUnusedId(prefix)
     num = num + 1;
   end
   return id
+end
+
+function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
+  local WoW82 = WeakAuras.BuildInfo > 80100
+  local data = WoW82 and model_fileId or model_path
+  if isDisplayInfo then
+    pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
+  elseif isUnit then
+    pcall(function() frame:SetUnit(data) end)
+  else
+    if WoW82 then
+      pcall(function() frame:SetModel(tonumber(data)) end)
+    else
+      pcall(function() frame:SetModel(data) end)
+    end
+  end
 end

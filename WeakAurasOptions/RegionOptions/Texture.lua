@@ -160,7 +160,7 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+    texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
     color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
@@ -182,7 +182,7 @@ local templates = {
   {
     title = L["Star"],
     data = {
-      texture = "Spells\\T_Star3",
+      texture = "241049", -- Spells\\T_Star3
       blendMode = "ADD",
       width = 200,
       height = 200,
@@ -192,7 +192,7 @@ local templates = {
   {
     title = L["Leaf"],
     data = {
-      texture = "Spells\\Nature_Rune_128",
+      texture = "166606", -- Spells\\Nature_Rune_128
       blendMode = "ADD",
       width = 200,
       height = 200,
@@ -202,7 +202,7 @@ local templates = {
   {
     title = L["Hawk"],
     data = {
-      texture = "Spells\\Aspect_Hawk",
+      texture = "165609", -- Spells\\Aspect_Hawk
       blendMode = "ADD",
       width = 200,
       height = 200,
