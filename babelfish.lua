@@ -38,6 +38,7 @@ local fileList = {
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasNewHeaderButton.lua",
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasSortedDropDown.lua",
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasTextureButton.lua",
+        "WeakAurasOptions/AceGUI-Widgets/AceGUIContainer-WeakAurasTreeGroup.lua",
         "WeakAurasOptions/OptionsFrames/CodeReview.lua",
         "WeakAurasOptions/OptionsFrames/FrameChooser.lua",
         "WeakAurasOptions/OptionsFrames/IconPicker.lua",
