@@ -270,7 +270,7 @@ end
 local function createIcon()
   local data = {
     model_path = "Creature/Arthaslichking/arthaslichking.m2",
-    model_fileId = "122968",
+    model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
     modelIsUnit = false,
     model_x = 0,
     model_y = 0,
@@ -302,7 +302,7 @@ local templates = {
       width = 100,
       height = 100,
       model_path = "spells/6fx_smallfire.m2",
-      model_fileId = "937416",
+      model_fileId = "937416", -- spells/6fx_smallfire.m2
       model_x = 0,
       model_y = -0.5,
       model_z = -1.5
@@ -317,7 +317,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/7fx_druid_halfmoon_missile.m2",
-      model_fileId = "1322288",
+      model_fileId = "1322288", -- spells/7fx_druid_halfmoon_missile.m2
       model_x = 0,
       model_y = 0.7,
       model_z = 1.5
@@ -332,7 +332,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/proc_arcane_impact_low.m2",
-      model_fileId = "1042743",
+      model_fileId = "1042743", -- spells/proc_arcane_impact_low.m2
       model_x = 0,
       model_y = 0.8,
       model_z = 2
@@ -347,7 +347,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/7fx_godking_orangerune_state.m2",
-      model_fileId = "1307356",
+      model_fileId = "1307356", -- spells/7fx_godking_orangerune_state.m2
     },
   },
   {
@@ -359,7 +359,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/7fx_godking_bluerune_state.m2",
-      model_fileId = "1307354",
+      model_fileId = "1307354", -- spells/7fx_godking_bluerune_state.m2
     }
   },
   {
@@ -371,7 +371,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/7fx_godking_yellowrune_state.m2",
-      model_fileId = "1307358",
+      model_fileId = "1307358", -- spells/7fx_godking_yellowrune_state.m2
     }
   },
   {
@@ -383,7 +383,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/7fx_godking_purplerune_state.m2",
-      model_fileId = "1307355",
+      model_fileId = "1307355", -- spells/7fx_godking_purplerune_state.m2
     }
   },
   {
@@ -395,7 +395,7 @@ local templates = {
       advance = true,
       sequence = 1,
       model_path = "spells/7fx_godking_greenrune_state.m2",
-      model_fileId = "1307357",
+      model_fileId = "1307357", -- spells/7fx_godking_greenrune_state.m2
     }
   },
 }

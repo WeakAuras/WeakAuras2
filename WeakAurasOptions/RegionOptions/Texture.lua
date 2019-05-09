@@ -182,7 +182,7 @@ local templates = {
   {
     title = L["Star"],
     data = {
-      texture = "241049",
+      texture = "241049", -- Spells\\T_Star3
       blendMode = "ADD",
       width = 200,
       height = 200,
@@ -192,7 +192,7 @@ local templates = {
   {
     title = L["Leaf"],
     data = {
-      texture = "166606",
+      texture = "166606", -- Spells\\Nature_Rune_128
       blendMode = "ADD",
       width = 200,
       height = 200,
@@ -202,7 +202,7 @@ local templates = {
   {
     title = L["Hawk"],
     data = {
-      texture = "165609",
+      texture = "165609", -- Spells\\Aspect_Hawk
       blendMode = "ADD",
       width = 200,
       height = 200,
