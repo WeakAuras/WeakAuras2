@@ -1846,9 +1846,9 @@ local unitLoadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
-unitLoadFrame:RegisterEvent("UNIT_FLAGS");
-unitLoadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
-unitLoadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
+unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
+unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
+unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(...)
