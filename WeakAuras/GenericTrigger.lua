@@ -761,8 +761,8 @@ function GenericTrigger.UnloadDisplays(toUnload)
       end
     end
     for unit, events in pairs(loaded_unit_events) do
-      for index, event in pairs(events) do
-        event[id] = nil;
+      for eventname, auras in pairs(events) do
+        auras[id] = nil;
       end
     end
     WeakAuras.UnregisterEveryFrameUpdate(id);
@@ -799,9 +799,9 @@ function GenericTrigger.Rename(oldid, newid)
   end
 
   for unit, events in pairs(loaded_unit_events) do
-    for index, event in pairs(events) do
-      event[newid] = event[oldid]
-      event[oldid] = nil
+    for eventname, auras in pairs(events) do
+      auras[newid] = auras[oldid]
+      auras[oldid] = nil
     end
   end
 
