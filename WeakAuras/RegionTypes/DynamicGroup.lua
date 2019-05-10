@@ -192,8 +192,8 @@ local sorters = {
     end
   end,
   custom = function(data)
-    local sortStr = data.sort or ""
-    local sortFunc = WeakAuras.LoadFunction("return " .. sortStr, data.id, "custom sort") or noop
+    local sortStr = data.customSort or ""
+    local sortFunc = WeakAuras.LoadFunction(sortStr, data.id, "custom sort") or noop
     return function(a, b)
       WeakAuras.ActivateAuraEnvironment(data.id)
       local ok, result = xpcall(sortFunc, geterrorhandler(), a, b)
