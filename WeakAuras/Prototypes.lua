@@ -2146,9 +2146,10 @@ WeakAuras.event_prototypes = {
         local ignoreSpellKnown = %s;
         local track = %q
         local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
-        local charges, maxCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
-        local stacks = maxCharges ~= 1 and charges or nil;
+        local charges, maxCharges, spellCount = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
+        local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if (charges == nil) then
+          -- Use fake charges for spells that use GetSpellCooldown
           charges = (duration == 0) and 1 or 0;
         end
         local genericShowOn = %s
@@ -2361,6 +2362,13 @@ WeakAuras.event_prototypes = {
       {
         name = "charges",
         display = L["Stacks"],
+        type = "number",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "spellCount",
+        display = L["Spell Count"],
         type = "number",
         store = true,
         conditionType = "number"
@@ -3568,7 +3576,7 @@ WeakAuras.event_prototypes = {
       local ret = [=[
         local spellName = %s
         local startTime, duration = WeakAuras.GetSpellCooldown(spellName);
-        local charges = WeakAuras.GetSpellCharges(spellName);
+        local charges, _, spellCount = WeakAuras.GetSpellCharges(spellName);
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
@@ -3610,7 +3618,17 @@ WeakAuras.event_prototypes = {
         name = "charges",
         display = L["Charges"],
         type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end
+        enable = function(trigger) return not(trigger.use_inverse) end,
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "spellCount",
+        display = L["Spell Count"],
+        type = "number",
+        enable = function(trigger) return not(trigger.use_inverse) end,
+        store = true,
+        conditionType = "number"
       },
       {
         name = "inverse",
@@ -3657,7 +3675,12 @@ WeakAuras.event_prototypes = {
       return icon;
     end,
     stacksFunc = function(trigger)
-      return WeakAuras.GetSpellCharges(trigger.realSpellName);
+      local charges, maxCharges, spellCount = WeakAuras.GetSpellCharges(trigger.realSpellName);
+      if maxCharges and maxCharges > 1 then
+        return charges
+      elseif spellCount > 0 then
+        return spellCount
+      end
     end,
     hasSpellID = true,
     automaticrequired = true

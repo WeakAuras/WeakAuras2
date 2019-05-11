@@ -1391,6 +1391,7 @@ do
 
   local spellCharges = {};
   local spellChargesMax = {};
+  local spellCounts = {}
 
   local items = {};
   local itemCdDurs = {};
@@ -1632,7 +1633,7 @@ do
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
-    return spellCharges[id], spellChargesMax[id];
+    return spellCharges[id], spellChargesMax[id], spellCounts[id];
   end
 
   function WeakAuras.GetItemCooldown(id)
@@ -1788,19 +1789,9 @@ do
       end
     end
 
-    local spellcount = GetSpellCount(id);
-    local basecd = GetSpellBaseCooldown(id);
-    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
-    -- either the spell count is greater than 0
-    -- or we have a ability without a base cooldown
-    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
-    -- e.g. Raging Blow that gains a cooldown with a talent
-    if (charges == nil and not onNonGCDCD and (spellcount > 0 or not basecd or basecd == 0)) then
-      charges = spellcount;
-    end
-
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges;
+           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+           GetSpellCount(id);
   end
 
   function WeakAuras.CheckSpellKnown()
@@ -1815,16 +1806,18 @@ do
 
   function WeakAuras.CheckSpellCooldown(id, runeDuration)
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges
+          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+          spellCount
           = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
 
     local time = GetTime();
     local remaining = startTime + duration - time;
 
-    local chargesChanged = spellCharges[id] ~= charges;
-    local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
+    local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount;
+    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCount or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
+    spellCounts[id] = spellCount
 
     local changed = false
     local spellId = select(7, GetSpellInfo(id))
@@ -1856,7 +1849,7 @@ do
     end
 
     if (chargesDifference ~= 0 ) then
-      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
+      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or spellCount or 0);
     end
   end
 
@@ -2035,11 +2028,13 @@ do
     spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges
+          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+          spellCount
           = WeakAuras.GetSpellCooldownUnified(id, GetRuneDuration());
 
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
+    spellCounts[id] = spellCount
     spellCds:HandleSpell(id, startTime, duration)
     if not unifiedCooldownBecauseRune then
       spellCdsRune:HandleSpell(id, startTime, duration)
