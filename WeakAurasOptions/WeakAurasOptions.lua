@@ -1787,11 +1787,41 @@ local function disabeldOrHiddenChild(childOptionTable, info)
   return hiddenChild(childOptionTable, info) or disabledChild(childOptionTable, info);
 end
 
+local function getChildOption(displayOptions, info)
+  for i=1,#info do
+    displayOptions = displayOptions.args[info[i]];
+    if not(displayOptions) then
+      return nil;
+    end
+
+    if (displayOptions.hidden) then
+      local type = type(displayOptions.hidden);
+      if (type == "bool") then
+        if (displayOptions.hidden) then
+          return nil;
+        end
+      elseif (type == "function") then
+        if (displayOptions.hidden(info)) then
+          return nil;
+        end
+      end
+    end
+
+  end
+  return displayOptions
+end
+
 local function getAll(data, info, ...)
   local combinedValues = {};
   local first = true;
   local debug = false;
+  local isToggle = nil
   for index, childId in ipairs(data.controlledChildren) do
+    if isToggle == nil then
+      local childOptions = getChildOption(displayOptions[childId], info)
+      isToggle = childOptions and childOptions.type == "toggle"
+    end
+
     local childData = WeakAuras.GetData(childId);
 
     if(childData) then
@@ -1808,6 +1838,9 @@ local function getAll(data, info, ...)
         for i=#childOptionTable,0,-1 do
           if(childOptionTable[i].get) then
             local values = {childOptionTable[i].get(info, ...)};
+            if isToggle and values[1] == nil then
+              values[1] = false
+            end
             if(first) then
               combinedValues = values;
               first = false;
@@ -1933,30 +1966,6 @@ local function disabledAll(data, info)
   return true;
 end
 
-local function getChildOption(displayOptions, info)
-  for i=1,#info do
-    displayOptions = displayOptions.args[info[i]];
-    if not(displayOptions) then
-      return nil;
-    end
-
-    if (displayOptions.hidden) then
-      local type = type(displayOptions.hidden);
-      if (type == "bool") then
-        if (displayOptions.hidden) then
-          return nil;
-        end
-      elseif (type == "function") then
-        if (displayOptions.hidden(info)) then
-          return nil;
-        end
-      end
-    end
-
-  end
-  return displayOptions
-end
-
 local function replaceNameDescFuncs(intable, data)
 
   local function compareTables(tableA, tableB)
@@ -2038,7 +2047,14 @@ local function replaceNameDescFuncs(intable, data)
     local first = true;
     local combinedKeys = combineKeys(info);
 
+    local isToggle = nil
+
     for index, childId in ipairs(data.controlledChildren) do
+      if isToggle == nil then
+        local childOption = getChildOption(displayOptions[childId], info)
+        isToggle = childOption and childOption.type == "toggle"
+      end
+
       local childData = WeakAuras.GetData(childId);
 
       local regionType = regionPrefix(info[#info]);
@@ -2065,6 +2081,10 @@ local function replaceNameDescFuncs(intable, data)
           local values = {};
           if (get) then
             values = { get(info) };
+            local childOption = getChildOption(displayOptions[childId], info)
+            if isToggle and values[1] == nil then
+              values[1] = false
+            end
           end
           if(first) then
             combinedValues = values;
