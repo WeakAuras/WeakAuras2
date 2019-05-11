@@ -816,6 +816,12 @@ function LoadEvent(id, triggernum, data)
         loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
         loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
         loaded_events[event][data.subevent][id][triggernum] = data;
+      elseif(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevents) then
+        for i, subevent in pairs(data.subevents) do
+          loaded_events[event][subevent] = loaded_events[event][subevent] or {};
+          loaded_events[event][subevent][id] = loaded_events[event][subevent][id] or {}
+          loaded_events[event][subevent][id][triggernum] = data;
+        end
       else
         loaded_events[event][id] = loaded_events[event][id] or {};
         loaded_events[event][id][triggernum] = data;
@@ -949,6 +955,7 @@ function GenericTrigger.Add(data, region)
         local trigger_events = {};
         local internal_events = {};
         local trigger_unit_events = {};
+        local trigger_subevents;
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
@@ -1096,26 +1103,39 @@ function GenericTrigger.Add(data, region)
           else
             trigger_events = WeakAuras.split(trigger.events);
             for index, event in pairs(trigger_events) do
-              if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-                -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
-                -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
-                -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
-                -- that are already in place. Replacing all those checks would be a pain in the ass.
-                trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
-              end
               -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
               local trueEvent
+              local hasParam = false
+              local isCLEU = false
               for i in event:gmatch("[^:]+") do
                  if not trueEvent then
                     trueEvent = string.upper(i)
+                    isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
                  else
-                    local unit = string.lower(i)
-                    if WeakAuras.baseUnitId[unit] then
-                      trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                      tinsert(trigger_unit_events[unit], trueEvent)
-                      trigger_events[index] = nil
+                    if isCLEU then
+                      trigger_subevents = trigger_subevents or {}
+                      tinsert(trigger_subevents, string.upper(i))
+                      hasParam = true
+                    elseif trueEvent:match("^UNIT_") then
+                      local unit = string.lower(i)
+                      if WeakAuras.baseUnitId[unit] then
+                        trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                        tinsert(trigger_unit_events[unit], trueEvent)
+                        trigger_events[index] = nil
+                      end
                     end
                  end
+              end
+              if isCLEU then
+                if hasParam then
+                  trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED"
+                else
+                  -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
+                  -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
+                  -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
+                  -- that are already in place. Replacing all those checks would be a pain in the ass.
+                  trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"
+                end
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
@@ -1154,6 +1174,7 @@ function GenericTrigger.Add(data, region)
           unit_events = trigger_unit_events,
           inverse = trigger.use_inverse,
           subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
+          subevents = trigger_subevents,
           unevent = trigger.unevent,
           durationFunc = durationFunc,
           overlayFuncs = overlayFuncs,
