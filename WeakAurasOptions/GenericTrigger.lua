@@ -160,15 +160,15 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
         for index, event in pairs(WeakAuras.split(events)) do
           local trueEvent
           for i in event:gmatch("[^:]+") do
-             if not trueEvent then
-                trueEvent = string.upper(i)
-             else
-                local unit = string.lower(i)
-                if not WeakAuras.baseUnitId[unit] then
-                  local errorString = L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
-                  return errorString and "|cFFFF0000"..errorString or ""
-                end
-             end
+            if not trueEvent then
+              trueEvent = string.upper(i)
+            elseif trueEvent:match("^UNIT_") then
+              local unit = string.lower(i)
+              if not WeakAuras.baseUnitId[unit] then
+                local errorString = L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
+                return errorString and "|cFFFF0000"..errorString or ""
+              end
+            end
           end
         end
         return ""
@@ -188,14 +188,14 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
         for index, event in pairs(WeakAuras.split(events)) do
           local trueEvent
           for i in event:gmatch("[^:]+") do
-             if not trueEvent then
-                trueEvent = string.upper(i)
-             else
-                local unit = string.lower(i)
-                if not WeakAuras.baseUnitId[unit] then
-                  return false
-                end
-             end
+            if not trueEvent then
+              trueEvent = string.upper(i)
+            elseif trueEvent:match("^UNIT_") then
+              local unit = string.lower(i)
+              if not WeakAuras.baseUnitId[unit] then
+                return false
+              end
+            end
           end
         end
         return true
