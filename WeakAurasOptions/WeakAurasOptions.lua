@@ -1948,6 +1948,9 @@ end
 
 local function replaceNameDescFuncs(intable, data)
 
+  -- TODO: don't assume that the table will always be fully contiguous
+  -- The problem with that assumption is that some of our AceConfig get(...) methods can return nil
+  -- which breaks the # function.
   local function compareTables(tableA, tableB)
     if(#tableA == #tableB) then
       for j=1,#tableA do
@@ -2053,7 +2056,7 @@ local function replaceNameDescFuncs(intable, data)
         else
           local values = {};
           if (get) then
-            values = { get(info) };
+            values = { get(info) or false };
           end
           if(first) then
             combinedValues = values;
