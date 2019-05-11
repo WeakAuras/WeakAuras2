@@ -288,7 +288,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         }
         order = order + 1;
       end
-      if(arg.type == "tristate") then
+      if(arg.type == "tristate" or arg.type == "tristatestring") then
         options["use_"..name] = {
           type = "toggle",
           width = WeakAuras.normalWidth,
@@ -522,7 +522,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           order = order - 1;
         end
         order = order + 1;
-      elseif(arg.type == "string") then
+      elseif(arg.type == "string" or arg.type == "tristatestring") then
         options[name] = {
           type = "input",
           width = WeakAuras.normalWidth,
@@ -530,8 +530,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           order = order,
           hidden = hidden,
           desc = arg.desc,
-          disabled = function() return not trigger["use_"..realname]; end,
-          get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
             trigger[realname] = v;
             WeakAuras.Add(data);
@@ -545,6 +543,15 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             WeakAuras.SortDisplayButtons();
           end
         };
+
+        if arg.type == "string" then
+          options[name].disabled = function() return not trigger["use_"..realname] end
+          options[name].get = function() return trigger["use_"..realname] and trigger[realname] or nil; end
+        else
+          options[name].disabled = function() return trigger["use_"..realname] == nil end
+          options[name].get = function() return trigger["use_"..realname] ~= nil and trigger[realname] or nil; end
+        end
+
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;

@@ -871,13 +871,13 @@ WeakAuras.load_prototype = {
     {
       name = "name",
       display = L["Player Name"],
-      type = "string",
+      type = "tristatestring",
       init = "arg"
     },
     {
       name = "realm",
       display = L["Realm"],
-      type = "string",
+      type = "tristatestring",
       init = "arg"
     },
     {
