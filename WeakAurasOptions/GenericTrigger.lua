@@ -153,6 +153,54 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
         WeakAuras.UpdateDisplayButton(data);
       end
     },
+    event_customError = {
+      type = "description",
+      name = function()
+        local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
+        for index, event in pairs(WeakAuras.split(events)) do
+          local trueEvent
+          for i in event:gmatch("[^:]+") do
+             if not trueEvent then
+                trueEvent = string.upper(i)
+             else
+                local unit = string.lower(i)
+                if not WeakAuras.baseUnitId[unit] then
+                  local errorString = L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
+                  return errorString and "|cFFFF0000"..errorString or ""
+                end
+             end
+          end
+        end
+        return ""
+      end,
+      width = WeakAuras.doubleWidth,
+      order = 9.201,
+      hidden = function()
+        if not (
+          trigger.type == "custom"
+          and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate" or trigger.custom_type == "event")
+          and trigger.check ~= "update"
+        )
+        then
+          return true
+        end
+        local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
+        for index, event in pairs(WeakAuras.split(events)) do
+          local trueEvent
+          for i in event:gmatch("[^:]+") do
+             if not trueEvent then
+                trueEvent = string.upper(i)
+             else
+                local unit = string.lower(i)
+                if not WeakAuras.baseUnitId[unit] then
+                  return false
+                end
+             end
+          end
+        end
+        return true
+      end
+    },
     -- texteditor below
     custom_hide = {
       type = "select",
