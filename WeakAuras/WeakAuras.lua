@@ -5570,3 +5570,30 @@ function WeakAuras.FindUnusedId(prefix)
   end
   return id
 end
+
+function WeakAuras.IsCLEUSubevent(subevent)
+  if WeakAuras.subevent_prefix_types[subevent] then
+     return true
+  else
+     local prefixFound = false
+     for prefix in pairs(WeakAuras.subevent_prefix_types) do
+        if subevent:match(prefix) then
+           prefixFound = prefix
+           if prefix ~= "SPELL" then
+              break
+              -- else continue because of "SPELL_PERIODIC" and "SPELL_BUILDING
+           end
+        end
+     end
+     if prefixFound then
+        local suffix = subevent:match(prefixFound.."(.*)")
+        if WeakAuras.subevent_suffix_types[suffix] then
+           return true
+        else
+           return false
+        end
+     else
+        return false
+     end
+  end
+end

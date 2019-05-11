@@ -162,11 +162,15 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
           for i in event:gmatch("[^:]+") do
             if not trueEvent then
               trueEvent = string.upper(i)
+            elseif trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED" then
+              local subevent = string.upper(i)
+              if not WeakAuras.IsCLEUSubevent(subevent) then
+                return "|cFFFF0000"..L["%s is not a valid SubEvent for COMBAT_LOG_EVENT_UNFILTERED"]:format(subevent)
+              end
             elseif trueEvent:match("^UNIT_") then
               local unit = string.lower(i)
               if not WeakAuras.baseUnitId[unit] then
-                local errorString = L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
-                return errorString and "|cFFFF0000"..errorString or ""
+                return "|cFFFF0000"..L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
               end
             end
           end
@@ -190,6 +194,10 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
           for i in event:gmatch("[^:]+") do
             if not trueEvent then
               trueEvent = string.upper(i)
+            elseif trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED" then
+              if not WeakAuras.IsCLEUSubevent(string.upper(i)) then
+                return false
+              end
             elseif trueEvent:match("^UNIT_") then
               local unit = string.lower(i)
               if not WeakAuras.baseUnitId[unit] then

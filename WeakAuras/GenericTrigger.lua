@@ -1108,23 +1108,24 @@ function GenericTrigger.Add(data, region)
               local hasParam = false
               local isCLEU = false
               for i in event:gmatch("[^:]+") do
-                 if not trueEvent then
-                    trueEvent = string.upper(i)
-                    isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
-                 else
-                    if isCLEU then
-                      trigger_subevents = trigger_subevents or {}
-                      tinsert(trigger_subevents, string.upper(i))
-                      hasParam = true
-                    elseif trueEvent:match("^UNIT_") then
-                      local unit = string.lower(i)
-                      if WeakAuras.baseUnitId[unit] then
-                        trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                        tinsert(trigger_unit_events[unit], trueEvent)
-                        trigger_events[index] = nil
-                      end
-                    end
-                 end
+                if not trueEvent then
+                  trueEvent = string.upper(i)
+                  isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
+                elseif isCLEU then
+                  local subevent = string.upper(i)
+                  if WeakAuras.IsCLEUSubevent(subevent) then
+                    trigger_subevents = trigger_subevents or {}
+                    tinsert(trigger_subevents, subevent)
+                    hasParam = true
+                  end
+                elseif trueEvent:match("^UNIT_") then
+                  local unit = string.lower(i)
+                  if WeakAuras.baseUnitId[unit] then
+                    trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                    tinsert(trigger_unit_events[unit], trueEvent)
+                    trigger_events[index] = nil
+                  end
+                end
               end
               if isCLEU then
                 if hasParam then
