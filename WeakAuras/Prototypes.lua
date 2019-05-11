@@ -4219,6 +4219,18 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "string",
       },
+      { -- language Name
+      },
+      { -- Channel Name
+      },
+      {
+        name = "destName",
+        display = L["Destination Name"],
+        init = "arg",
+        type = "string",
+        store = true,
+        conditionType = "string",
+      },
       {
         name = "cloneId",
         display = L["Clone per Event"],
