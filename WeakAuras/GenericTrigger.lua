@@ -1171,17 +1171,37 @@ function GenericTrigger.Add(data, region)
               end
               -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
               local trueEvent
+              local hasParam = false
+              local isCLEU = false
               for i in event:gmatch("[^:]+") do
                  if not trueEvent then
                     trueEvent = string.upper(i)
+                    isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
                  else
-                    local unit = string.lower(i)
-                    if WeakAuras.baseUnitId[unit] then
-                      trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                      tinsert(trigger_unit_events[unit], trueEvent)
-                      trigger_events[index] = nil
+                    if isCLEU then
+                      trigger_subevents = trigger_subevents or {}
+                      tinsert(trigger_subevents, string.upper(i))
+                      hasParam = true
+                    elseif trueEvent:match("^UNIT_") then
+                      local unit = string.lower(i)
+                      if WeakAuras.baseUnitId[unit] then
+                        trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                        tinsert(trigger_unit_events[unit], trueEvent)
+                        trigger_events[index] = nil
+                      end
                     end
                  end
+              end
+              if isCLEU then
+                if hasParam then
+                  trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED"
+                else
+                  -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
+                  -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
+                  -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
+                  -- that are already in place. Replacing all those checks would be a pain in the ass.
+                  trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM"
+                end
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
