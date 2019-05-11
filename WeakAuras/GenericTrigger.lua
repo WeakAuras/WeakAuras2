@@ -1180,8 +1180,6 @@ function GenericTrigger.Add(data, region)
                       trigger_unit_events[unit] = trigger_unit_events[unit] or {}
                       tinsert(trigger_unit_events[unit], trueEvent)
                       trigger_events[index] = nil
-                    else
-                      print(L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit))
                     end
                  end
               end
