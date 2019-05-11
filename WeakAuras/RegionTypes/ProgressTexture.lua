@@ -16,8 +16,8 @@ local L = WeakAuras.L;
 --   region.full_rotation (false) - Allow full rotation [bool]
 
 local default = {
-  foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
-  backgroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+  foregroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+  backgroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
   desaturateBackground = false,
   desaturateForeground = false,
   sameTexture = true,

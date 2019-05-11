@@ -1882,6 +1882,7 @@ globals = {
 	"GetFactionInfoByID",
 	"GetFailedPVPTalentIDs",
 	"GetFailedTalentIDs",
+	"GetFileIDFromPath",
 	"GetFileStreamingStatus",
 	"GetFilteredAchievementID",
 	"GetFlexRaidDungeonInfo",

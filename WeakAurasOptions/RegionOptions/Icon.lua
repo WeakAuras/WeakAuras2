@@ -96,38 +96,6 @@ local function createOptions(id, data)
       disabled = function() return not WeakAuras.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
-    glowHeader = {
-      type = "header",
-      order = 19,
-      name = L["Glow Settings"],
-    },
-    glow = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Show Glow Effect"],
-      order = 20,
-    },
-    glowType = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Glow Type"],
-      order = 21,
-      values = WeakAuras.glow_types,
-    },
-    useGlowColor = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Glow Color"],
-      desc = L["If unchecked, then a default color will be used (usually yellow)"],
-      order = 23,
-    },
-    glowColor = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Glow Color"],
-      order = 24,
-      disabled = function() return not data.useGlowColor end,
-    },
     textHeader1 = {
       type = "header",
       order = 39,
@@ -395,6 +363,10 @@ local function createOptions(id, data)
   end
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 43.2,  hideCustomTextEditor, {"customText"}, false);
+
+  for k, v in pairs(WeakAuras.GlowOptions(id, data, 10)) do
+    options[k] = v
+  end
 
   return {
     icon = options,

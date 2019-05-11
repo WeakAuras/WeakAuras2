@@ -4,6 +4,7 @@ local L = WeakAuras.L;
 -- Default settings
 local default = {
   model_path = "Creature/Arthaslichking/arthaslichking.m2",
+  model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
   model_x = 0,
@@ -109,18 +110,8 @@ local function modify(parent, region, data)
   region.scaley = 1;
 
   -- Adjust model
-  local register = false;
-  if tonumber(data.model_path) then
-    model:SetDisplayInfo(tonumber(data.model_path))
-  else
-    if (data.modelIsUnit) then
-      model:SetUnit(data.model_path)
-      register = true;
-    else
-      pcall(function() model:SetModel(data.model_path) end);
-    end
-    model:SetPortraitZoom(data.portraitZoom and 1 or 0);
-  end
+  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+  model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
@@ -130,7 +121,7 @@ local function modify(parent, region, data)
     model:SetPosition(data.model_z, data.model_x, data.model_y);
   end
 
-  if (register) then
+  if data.modelIsUnit then
     model:RegisterEvent("UNIT_MODEL_CHANGED");
     if (data.model_path == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -243,15 +234,7 @@ local function modify(parent, region, data)
     model:SetKeepModelOnHide(true)
     model:ClearTransform();
 
-    if tonumber(data.model_path) then
-      model:SetDisplayInfo(tonumber(data.model_path))
-    else
-      if (data.modelIsUnit) then
-        model:SetUnit(data.model_path)
-      else
-        pcall(function() model:SetModel(data.model_path) end);
-      end
-    end
+    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0);
     if (data.api) then
       model:ClearTransform();

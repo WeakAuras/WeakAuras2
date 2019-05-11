@@ -721,7 +721,7 @@ end
 
 local function createIcon()
   local data = {
-    foregroundTexture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+    foregroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
     sameTexture = true,
     backgroundOffset = 2,
     blendMode = "BLEND",
@@ -764,7 +764,7 @@ local templates = {
       xOffset = 0,
       yOffset = 150,
       mirror = true,
-      foregroundTexture = "Textures\\SpellActivationOverlays\\Backlash",
+      foregroundTexture = "460830", -- "Textures\\SpellActivationOverlays\\Backlash"
       orientation = "HORIZONTAL",
       inverse = true,
     },

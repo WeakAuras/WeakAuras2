@@ -159,7 +159,7 @@ local function ConstructTexturePicker(frame)
     frame.window = "texture";
     local picked = false;
     local _, givenPath
-    if(type(self.givenPath) == "string") then
+    if type(self.givenPath) == "string" then
       givenPath = self.givenPath;
     else
       _, givenPath = next(self.givenPath);
