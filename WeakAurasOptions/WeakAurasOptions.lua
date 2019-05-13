@@ -298,6 +298,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..arg.display;
             else return "|cFF00FF00"..arg.display; end
           end,
+          desc = arg.desc,
           get = function()
             local value = trigger["use_"..realname];
             if(value == nil) then return false;
@@ -428,6 +429,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       end
       if(arg.type == "toggle" or arg.type == "tristate") then
         options["use_"..name].width = arg.width or WeakAuras.doubleWidth;
+      end
+      if(arg.type == "toggle") then
+        options["use_"..name].desc = arg.desc;
       end
       if(arg.required) then
         trigger["use_"..realname] = true;
