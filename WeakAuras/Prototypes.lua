@@ -1701,6 +1701,15 @@ WeakAuras.event_prototypes = {
         conditionType = "string"
       },
       {
+        name = "sourceNpcId",
+        display = L["Source NPC Id"],
+        type = "string",
+        test = "select(6, strsplit('-', sourceGUID or '')) == %q",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "ENVIRONMENTAL")
+        end,
+      },
+      {
         name = "sourceFlags",
         display = L["Source In Group"],
         type = "select",
@@ -1755,6 +1764,15 @@ WeakAuras.event_prototypes = {
         end,
         store = true,
         conditionType = "string"
+      },
+      {
+        name = "destNpcId",
+        display = L["Destination NPC Id"],
+        type = "string",
+        test = "select(6, strsplit('-', destGUID or '')) == %q",
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
       },
       { -- destName ignore for SPELL_CAST_START
         enable = function(trigger)
