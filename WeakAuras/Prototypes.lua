@@ -5302,24 +5302,27 @@ WeakAuras.event_prototypes = {
       "UNIT_PET",
     },
     internal_events = {
-      "WA_DELAYED_PLAYER_ENTERING_WORLD",
-      "WA_SPELL_CHECK"
+      "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
-    force_events = "WA_SPELL_CHECK",
+    force_events = "SPELLS_CHANGED",
     name = L["Spell Known"],
     init = function(trigger)
       local spellName;
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName or "";
+        local ret = [[
+          local spellName = tonumber(%q);
+          local usePet = %s;
+        ]]
+        return ret:format(spellName, trigger.use_petspell and "true" or "false");
       else
         local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
-        spellName = select(7, GetSpellInfo(name)) or ""
+        local ret = [[
+          local spellName = select(7, GetSpellInfo(%q));
+          local usePet = %s;
+        ]]
+        return ret:format(name, trigger.use_petspell and "true" or "false");
       end
-      local ret = [[
-        local spellName = tonumber(%q);
-        local usePet = %s;
-      ]]
-      return ret:format(spellName, trigger.use_petspell and "true" or "false");
     end,
     args = {
       {
