@@ -3401,13 +3401,15 @@ WeakAuras.event_prototypes = {
         name = "emphasized",
         display = L["Emphasized"],
         type = "tristate",
+        desc = L["Emphasized option checked in BigWigs's spell options"],
         test = "true",
         init = "false",
         conditionType = "bool"
       },
       {
         name = "cast",
-        display = L["Is Cast"],
+        display = L["Cast Bar"],
+        desc = L["Filter messages with format <message>"],
         type = "tristate",
         test = "true",
         init = "false",
