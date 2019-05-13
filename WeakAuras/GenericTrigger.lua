@@ -2293,12 +2293,15 @@ do
     end
   end
 
-  function WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType, count)
-    if not bars[id] then
+  function WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, count)
+    if not bars[timerId] then
       return false
     end
 
-    local v = bars[id]
+    local v = bars[timerId]
+    if id and id ~= "" and id ~= timerId then
+      return false
+    end
     if spellId and spellId ~= "" and spellId ~= v.spellId then
       return false
     end
@@ -2334,10 +2337,10 @@ do
     return bars
   end
 
-  function WeakAuras.GetDBMTimer(message, operator, spellId, extendTimer, dbmType, count)
+  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer, dbmType, count)
     local bestMatch
-    for id, bar in pairs(bars) do
-      if WeakAuras.DBMTimerMatches(id, message, operator, spellId, dbmType, count)
+    for timerId, bar in pairs(bars) do
+      if WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, count)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
