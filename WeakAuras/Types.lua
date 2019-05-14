@@ -1981,7 +1981,7 @@ for i=1,40 do
   WeakAuras.baseUnitId["raidpet"..i] = true
   WeakAuras.baseUnitId["nameplate"..i] = true
 end
-  
+
 WeakAuras.dbm_types = {
   [1] = L["Add"],
   [2] = L["AOE"],
