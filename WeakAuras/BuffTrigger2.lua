@@ -602,8 +602,8 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       changed = true
     end
 
-    if state.expirationTime then
-      state.expirationTime = nil
+    if state.expirationTime ~= math.huge then
+      state.expirationTime = math.huge
       state.resort = true
       changed = true
     end

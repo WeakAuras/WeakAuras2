@@ -456,7 +456,9 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
         end
         if (arg.optional and skipOptional) then
         -- Do nothing
-        elseif(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
+        elseif(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or arg.type == "tristatestring"
+               or (arg.type == "multiselect" and trigger["use_"..name] ~= nil)
+               or ((trigger["use_"..name] or arg.required) and trigger[name])) then
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
           end
@@ -471,6 +473,12 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
               else
                 test = name;
               end
+            end
+          elseif(arg.type == "tristatestring") then
+            if(trigger["use_"..name] == false) then
+              test = "("..name.. "~=".. (number or string.format("%q", trigger[name] or "")) .. ")"
+            elseif(trigger["use_"..name]) then
+              test = "("..name.. "==".. (number or string.format("%q", trigger[name] or "")) .. ")"
             end
           elseif(arg.type == "multiselect") then
             if(trigger["use_"..name] == false) then -- multi selection
@@ -2923,6 +2931,16 @@ function WeakAuras.Modernize(data)
           data.model_fileId = tostring(modelId)
         end
       end
+    end
+  end
+
+  -- Version 15 was introduced in May 2019 in BFA
+  if data.internalVersion < 16 then
+    if data.load.use_name == false then
+      data.load.use_name = nil
+    end
+    if data.load.use_realm == false then
+      data.load.use_realm = nil
     end
   end
 
