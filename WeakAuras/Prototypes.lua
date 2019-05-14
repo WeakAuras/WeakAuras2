@@ -4715,7 +4715,7 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_INTERRUPTED"
       };
       AddUnitChangeEvents(trigger.unit, result)
-      if trigger.target and trigger.target ~= "" then
+      if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
         tinsert(result, "UNIT_TARGET")
       end
       return result
