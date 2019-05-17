@@ -6,6 +6,7 @@ local LSM = LibStub("LibSharedMedia-3.0");
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
 local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
+local WrapTextInColorCode, GetClassColor = WrapTextInColorCode, GetClassColor -- for Classic
 
 -- shouldn't have to redeclare this here because it's already in Init.lua but it wasnt working ...
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
