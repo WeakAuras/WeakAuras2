@@ -1498,7 +1498,12 @@ WeakAuras.event_prototypes = {
       if (canEnableShowCost and trigger.use_showCost) then
         ret = ret .. [[
           if (event == "UNIT_SPELLCAST_START" and unit == "player") then
-            local spellID = select(9, UnitCastingInfo("player"));
+            local spellID;
+            if WeakAuras.IsClassic then
+              spellID = select(9, CastingInfo();
+            else
+              spellID = select(9, UnitCastingInfo("player"));
+            end
             if spellID then
               local costTable = GetSpellPowerCost(spellID);
               for _, costInfo in pairs(costTable) do
@@ -1510,7 +1515,12 @@ WeakAuras.event_prototypes = {
             end
             state.changed = true;
           elseif (event == "UNIT_DISPLAYPOWER") then
-            local spellID = select(9, UnitCastingInfo("player"));
+            local spellID;
+            if WeakAuras.IsClassic then
+              spellID = select(9, CastingInfo();
+            else
+              spellID = select(9, UnitCastingInfo("player"));
+            end
             if spellID then
               local costTable = GetSpellPowerCost(spellID);
               local cost;
@@ -4867,11 +4877,19 @@ WeakAuras.event_prototypes = {
             then
               show = false
             else
-              spell, _, icon, startTime, endTime, _, _, interruptible, spellId = UnitCastingInfo(sourceUnit)
+              if WeakAuras.IsClassic then
+                spell, _, icon, startTime, endTime, _, _, interruptible, spellId = CastingInfo()
+              else
+                spell, _, icon, startTime, endTime, _, _, interruptible, spellId = UnitCastingInfo(sourceUnit)
+              end
               if spell then
                 castType = "cast"
               else
-                spell, _, icon, startTime, endTime, _, interruptible, spellId = UnitChannelInfo(sourceUnit)
+                if WeakAuras.IsClassic then
+                  spell, _, icon, startTime, endTime, _, interruptible, spellId = ChannelInfo()
+                else
+                  spell, _, icon, startTime, endTime, _, interruptible, spellId = UnitChannelInfo(sourceUnit)
+                end
                 if spell then
                   castType = "channel"
                 end
@@ -4964,7 +4982,9 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         values = function(trigger)
-          if trigger.use_inverse then
+          if WeakAuras.IsClassic then
+            return { player = L["Player"] }
+          elseif trigger.use_inverse then
             return WeakAuras.actual_unit_types_with_specific
           else
             return WeakAuras.actual_unit_types_with_specific_and_multi
