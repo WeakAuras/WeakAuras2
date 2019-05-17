@@ -188,12 +188,15 @@ WeakAuras.unit_threat_situation_types = {
 
 WeakAuras.class_types = {}
 WeakAuras.class_color_types = {} -- TODO: it should be removed together with Bufftrigger (unused)
-if not WeakAuras.IsClassic then  -- WOWCLASSIC TO FIX
-  for classID = 1, 20 do
-    local classInfo = C_CreatureInfo.GetClassInfo(classID)
-    if classInfo then
-        WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
-        WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
+for classID = 1, 20 do
+  local classInfo = C_CreatureInfo.GetClassInfo(classID)
+  if classInfo then
+    if WeakAuras.IsClassic then
+      WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, select(4, GetClassColor(classInfo.classFile)))
+      WeakAuras.class_color_types[classInfo.classFile] = select(4, GetClassColor(classInfo.classFile))
+    else
+      WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
+      WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
     end
   end
 end
