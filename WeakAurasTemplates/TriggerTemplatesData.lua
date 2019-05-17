@@ -4436,9 +4436,11 @@ local function fixupIcons()
   end
 end
 
-local fixupIconsFrame = CreateFrame("frame");
-fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
-fixupIconsFrame:SetScript("OnEvent", fixupIcons);
+if not WeakAuras.IsClassic then
+  local fixupIconsFrame = CreateFrame("frame");
+  fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+  fixupIconsFrame:SetScript("OnEvent", fixupIcons);
+end
 
 enrichDatabase();
 

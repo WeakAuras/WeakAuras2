@@ -20,6 +20,8 @@ WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
 WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
+WeakAuras.BuildInfo = select(4, GetBuildInfo())
+WeakAuras.IsClassic = WeakAuras.BuildInfo == 11302
 
 WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)

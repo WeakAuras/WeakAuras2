@@ -1724,8 +1724,13 @@ function WeakAuras.CreateTemplateView(frame)
       newView.choosenItemBatch = {};
     end
     newView.class = select(2, UnitClass("player"));
-    newView.spec = GetSpecialization() or 1;
+    if not WeakAuras.IsClassic then
+      newView.spec = GetSpecialization() or 1;
+    else
+      newView.spec = 1;
+    end
     newView.race = select(2, UnitRace('player'));
+
     createButtons();
   end
 

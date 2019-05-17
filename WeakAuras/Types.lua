@@ -7,6 +7,10 @@ local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
 local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
 
+-- shouldn't have to redeclare this here because it's already in Init.lua but it wasnt working ...
+WeakAuras.BuildInfo = select(4, GetBuildInfo())
+WeakAuras.IsClassic = WeakAuras.BuildInfo == 11302
+
 WeakAuras.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
@@ -184,10 +188,14 @@ WeakAuras.unit_threat_situation_types = {
 
 WeakAuras.class_types = {}
 WeakAuras.class_color_types = {} -- TODO: it should be removed together with Bufftrigger (unused)
-for classID = 1, GetNumClasses() do
-  local classInfo = C_CreatureInfo.GetClassInfo(classID)
-  WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
-  WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
+if not WeakAuras.IsClassic then  -- WOWCLASSIC TO FIX
+  for classID = 1, 20 do
+    local classInfo = C_CreatureInfo.GetClassInfo(classID)
+    if classInfo then
+        WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
+        WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
+    end
+  end
 end
 
 WeakAuras.race_types = {}
@@ -206,10 +214,12 @@ local unplayableRace = {
   [33] = true,
   [35] = true
 }
-for raceID = 1, 36 do
-  if (unplayableRace[raceID] == nil) then
-    local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
-    WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName
+if not WeakAuras.IsClassic then
+  for raceID = 1, 36 do
+    if (unplayableRace[raceID] == nil) then
+      local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
+      WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName -- WOWCLASSIC not supported
+    end
   end
 end
 
@@ -525,11 +535,12 @@ local function update_specs()
   end
 end
 
-local spec_frame = CreateFrame("frame");
-spec_frame:RegisterEvent("PLAYER_LOGIN")
-spec_frame:SetScript("OnEvent", update_specs);
+
 WeakAuras.talent_types = {}
-do
+if not WeakAuras.IsClassic then -- WOWCLASSIC TO FIX
+  local spec_frame = CreateFrame("frame");
+  spec_frame:RegisterEvent("PLAYER_LOGIN")
+  spec_frame:SetScript("OnEvent", update_specs);
   local numTalents, numTiers, numColumns = MAX_TALENT_TIERS * NUM_TALENT_COLUMNS, MAX_TALENT_TIERS, NUM_TALENT_COLUMNS
   local talentId, tier, column = 1, 1, 1
   while talentId <= numTalents do
@@ -546,15 +557,18 @@ do
   end
 end
 
-WeakAuras.pvp_talent_types = {
-  select(2, GetPvpTalentInfoByID(3589)),
-  select(2, GetPvpTalentInfoByID(3588)),
-  select(2, GetPvpTalentInfoByID(3587)),
-  nil
-};
-
-for i = 1,10 do
-  tinsert(WeakAuras.pvp_talent_types, string.format(L["PvP Talent %i"], i));
+if not WeakAuras.IsClassic then
+  WeakAuras.pvp_talent_types = {
+    select(2, GetPvpTalentInfoByID(3589)),
+    select(2, GetPvpTalentInfoByID(3588)),
+    select(2, GetPvpTalentInfoByID(3587)),
+    nil
+  };
+  for i = 1,10 do
+    tinsert(WeakAuras.pvp_talent_types, string.format(L["PvP Talent %i"], i));
+  end
+else
+  WeakAuras.pvp_talent_types = {}
 end
 
 -- GetTotemInfo() only works for the first 5 totems
@@ -1499,11 +1513,15 @@ WeakAuras.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-WeakAuras.pet_spec_types = {
-  [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
-  [2] = select(2, GetSpecializationInfoByID(81)), -- Tenacity
-  [3] = select(2, GetSpecializationInfoByID(79)) -- Cunning
-}
+if not WeakAuras.IsClassic then
+  WeakAuras.pet_spec_types = {
+    [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
+    [2] = select(2, GetSpecializationInfoByID(81)), -- Tenacity
+    [3] = select(2, GetSpecializationInfoByID(79)) -- Cunning
+  }
+else
+  WeakAuras.pet_spec_types = {}
+end
 
 WeakAuras.cooldown_progress_behavior_types = {
   showOnCooldown = L["On Cooldown"],
@@ -1619,8 +1637,10 @@ WeakAuras.mythic_plus_affixes = {
   [117] = true -- Reaping
 }
 
-for k in pairs(WeakAuras.mythic_plus_affixes) do
-  WeakAuras.mythic_plus_affixes[k] = C_ChallengeMode.GetAffixInfo(k);
+if not WeakAuras.IsClassic then
+  for k in pairs(WeakAuras.mythic_plus_affixes) do
+    WeakAuras.mythic_plus_affixes[k] = C_ChallengeMode.GetAffixInfo(k);
+  end
 end
 
 WeakAuras.update_categories = {

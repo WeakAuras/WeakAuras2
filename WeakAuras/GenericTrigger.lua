@@ -1757,12 +1757,14 @@ do
   function WeakAuras.InitCooldownReady()
     cdReadyFrame = CreateFrame("FRAME");
     WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
+    if not WeakAuras.IsClassic then
+      cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
+      cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+      cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+    end
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
-    cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-    cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-    cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
     cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");

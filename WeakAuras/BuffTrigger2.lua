@@ -67,6 +67,8 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
+local UnitGroupRolesAssigned = not WeakAuras.IsClassic and UnitGroupRolesAssigned or function() return "DAMAGER" end
+
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
 local scanFuncName = {}
@@ -1442,17 +1444,19 @@ local frame = CreateFrame("FRAME")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterUnitEvent("UNIT_PET", "player")
-frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+if not WeakAuras.IsClassic then
+  frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+  frame:RegisterEvent("UNIT_EXITED_VEHICLE")
+end
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 frame:RegisterEvent("ENCOUNTER_START")
 frame:RegisterEvent("ENCOUNTER_END")
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
-frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
