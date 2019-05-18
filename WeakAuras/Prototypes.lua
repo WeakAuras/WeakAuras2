@@ -1096,7 +1096,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_zoneId_list,
-      test = "WeakAuras.CheckNumericIds(%q, zoneId)", -- WOWCLASSIC TO FIX: hidden it make error
+      test = "WeakAuras.CheckNumericIds(%q, zoneId)", -- WOWCLASSIC TO FIX: hidding it makes an error
     },
     {
       name = "zonegroupId",
@@ -1104,7 +1104,7 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_zoneGroupId_list,
-      test = "WeakAuras.CheckNumericIds(%q, zonegroupId)", -- WOWCLASSIC TO FIX: hidden it make error
+      test = "WeakAuras.CheckNumericIds(%q, zonegroupId)", -- WOWCLASSIC TO FIX: hidding it makes an error
     },
     {
       name = "encounterid",
