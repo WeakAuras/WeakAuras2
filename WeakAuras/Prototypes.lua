@@ -4171,7 +4171,17 @@ WeakAuras.event_prototypes = {
     name = L["Stance/Form/Aura"],
     init = function(trigger)
       local ret = [[
-      local form = GetShapeshiftForm();
+      local form
+      if WeakAuras.IsClassic then
+        for i=1, GetNumShapeshiftForms() do
+          local texture, isActive, isCastable = GetShapeshiftFormInfo(i);
+          if isActive then
+            form = i
+          end
+        end
+      else
+        form = GetShapeshiftForm();
+      end
       local inverse = %s;
     ]];
 
@@ -4215,14 +4225,21 @@ WeakAuras.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, class = UnitClass("player");
-      if(class == trigger.class) then
-        local form = GetShapeshiftForm();
-        local icon = form > 0 and GetShapeshiftFormInfo(form) or "Interface\\Icons\\Achievement_Character_Human_Male";
-        return icon;
+      local icon = "Interface\\Icons\\Achievement_Character_Human_Male"
+      if WeakAuras.IsClassic then
+        for i=1, GetNumShapeshiftForms() do
+          local texture, isActive, isCastable = GetShapeshiftFormInfo(i);
+          if isActive then
+            icon = texture
+          end
+        end
       else
-        return nil;
+        local form = GetShapeshiftForm()
+        if form and form > 0 then
+          icon = GetShapeshiftFormInfo(form);
+        end
       end
+      return icon or "Interface\\Icons\\Achievement_Character_Human_Male";
     end,
     automaticrequired = true
   },
