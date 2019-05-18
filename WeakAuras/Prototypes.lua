@@ -3805,14 +3805,26 @@ WeakAuras.event_prototypes = {
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
-        local tier = index and ceil(index / 3)
-        local column = index and ((index - 1) % 3 + 1)
+        local tier, column
+        if WeakAuras.IsClassic then
+          tier = index and ceil(index / 20)
+          column = index and ((index - 1) % 20 + 1)
+        else
+          tier = index and ceil(index / 3)
+          column = index and ((index - 1) % 3 + 1)
+        end
 
         local ret = [[
           local tier = %s;
           local column = %s;
-          local _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-          local active = selected or known;
+          local active
+          if WeakAuras.IsClassic then
+            local _, _, _, _, rank  = GetTalentInfo(tier, column)
+            active = rank > 0
+          else
+            local _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+            active = selected or known;
+          end
         ]]
         if (inverse) then
           ret = ret .. [[
@@ -3830,15 +3842,30 @@ WeakAuras.event_prototypes = {
             local activeName;
           ]]
           for index in pairs(trigger.talent.multi) do
-            local tier = ceil(index / 3)
-            local column = (index - 1) % 3 + 1
+            local tier, column
+            if WeakAuras.IsClassic then
+              tier = index and ceil(index / 20)
+              column = index and ((index - 1) % 20 + 1)
+            else
+              tier = index and ceil(index / 3)
+              column = index and ((index - 1) % 3 + 1)
+            end
             local ret2 = [[
               if (not active) then
-                local _, name, icon, selected, _, _, _, _, _, _n, known  = GetTalentInfo(%s, %s, 1)
-                if (selected or known) then
-                  active = true;
-                  activeName = name;
-                  activeIcon = icon;
+                if WeakAuras.IsClassic then
+                  local name, icon, _, _, rank  = GetTalentInfo(tier, column)
+                  if rank > 0 then
+                    active = true;
+                    activeName = name;
+                    activeIcon = icon;
+                  end
+                else
+                  local _, name, icon, selected, _, _, _, _, _, _n, known  = GetTalentInfo(%s, %s, 1)
+                  if (selected or known) then
+                    active = true;
+                    activeName = name;
+                    activeIcon = icon;
+                  end
                 end
               end
             ]]
@@ -3861,9 +3888,11 @@ WeakAuras.event_prototypes = {
         type = "multiselect",
         values = function()
           local class = select(2, UnitClass("player"));
-          local spec =  GetSpecialization();
+          local spec =  not WeakAuras.IsClassic and GetSpecialization();
           if(WeakAuras.talent_types_specific[class] and  WeakAuras.talent_types_specific[class][spec]) then
             return WeakAuras.talent_types_specific[class][spec];
+          elseif WeakAuras.IsClassic and WeakAuras.talent_types_specific[class] then
+            return WeakAuras.talent_types_specific[class];
           else
             return WeakAuras.talent_types;
           end
@@ -5703,7 +5732,6 @@ WeakAuras.event_prototypes = {
 if WeakAuras.IsClassic then
   WeakAuras.event_prototypes["Threat Situation"] = nil
   WeakAuras.event_prototypes["Death Knight Rune"] = nil
-  WeakAuras.event_prototypes["Talent Selected"] = nil -- TO FIX
 end
 
 WeakAuras.dynamic_texts = {
