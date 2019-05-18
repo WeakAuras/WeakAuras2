@@ -1135,7 +1135,8 @@ WeakAuras.load_prototype = {
       display = L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = "arg"
+      init = "arg",
+      hidden = WeakAuras.IsClassic
     },
     {
       name = "affixes",
