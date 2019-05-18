@@ -1148,17 +1148,30 @@ function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
 
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
-  local spec = GetSpecialization()
-  WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
 
-  for tier = 1, MAX_TALENT_TIERS do
-    for column = 1, NUM_TALENT_COLUMNS do
-      -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
-      local talentId = (tier-1)*3+column
-      -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
-      if (talentName and talentIcon) then
-        WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+  if WeakAuras.IsClassic then
+    for tab = 1, 5 do
+      for num_talent = 1, 20 do
+        local talentName, talentIcon = GetTalentInfo(tab, num_talent);
+        local talentId = (tab - 1)*20+num_talent
+        if (talentName and talentIcon) then
+          WeakAuras.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
+        end
+      end
+   end
+  else
+    local spec = GetSpecialization()
+    WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
+
+    for tier = 1, MAX_TALENT_TIERS do
+      for column = 1, NUM_TALENT_COLUMNS do
+        -- Get name and icon info for the current talent of the current class and save it
+        local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
+        local talentId = (tier-1)*3+column
+        -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
+        if (talentName and talentIcon) then
+          WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+        end
       end
     end
   end
@@ -1406,6 +1419,9 @@ loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
 if not WeakAuras.IsClassic then
   loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
   loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+else
+  loadedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED");
+  loadedFrame:RegisterEvent("SPELLS_CHANGED");
 end
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
@@ -1462,14 +1478,12 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         if remainingSquelch > 0 then
           timer:ScheduleTimer(function() squelch_actions = false; end, remainingSquelch);      -- No sounds while loading
         end
-        if not WeakAuras.IsClassic then
-          WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
-        end
+        WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
         WeakAuras.UpdateCurrentInstanceType();
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = WeakAuras.CreatePvPTalentCache;
-    elseif(event == "ACTIVE_TALENT_GROUP_CHANGED") then
+    elseif(event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED") then
       callback = WeakAuras.CreateTalentCache;
     elseif(event == "PLAYER_REGEN_ENABLED") then
       callback = function()

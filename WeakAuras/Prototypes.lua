@@ -607,10 +607,17 @@ for classID = 1, 20 do -- GetNumClasses not supported by wow classic
 end
 
 function WeakAuras.CheckTalentByIndex(index)
-  local tier = ceil(index / 3)
-  local column = (index - 1) % 3 + 1
-  local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-  return selected or known;
+  if WeakAuras.IsClassic then
+    local tab = ceil(index / 20)
+    local num_talent = (index - 1) % 20 + 1
+    local _, _, _, _, rank  = GetTalentInfo(tab, num_talent)
+    return rank and rank > 0;
+  else
+    local tier = ceil(index / 3)
+    local column = (index - 1) % 3 + 1
+    local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+    return selected or known;
+  end
 end
 
 -- The one true order of the first 3 talents, see the setup of WeakAuras.pvp_talent_types
@@ -802,13 +809,16 @@ local function valuesForTalentFunction(trigger)
     end
 
     if (trigger.use_spec == nil) then
-      single_spec = GetSpecialization();
+      single_spec = not WeakAuras.IsClassic and GetSpecialization();
     end
 
     -- If a single specific class was found, load the specific list for it
     if(single_class and WeakAuras.talent_types_specific[single_class]
       and single_spec and WeakAuras.talent_types_specific[single_class][single_spec]) then
       return WeakAuras.talent_types_specific[single_class][single_spec];
+    elseif(WeakAuras.IsClassic and single_class and WeakAuras.talent_types_specific[single_class]
+      and WeakAuras.talent_types_specific[single_class]) then
+      return WeakAuras.talent_types_specific[single_class];
     else
       return WeakAuras.talent_types;
     end
@@ -904,7 +914,7 @@ WeakAuras.load_prototype = {
       init = "arg"
     },
     {
-      name = "spec", -- WOWCLASSIC TO FIX
+      name = "spec",
       display = L["Talent Specialization"],
       type = "multiselect",
       values = function(trigger)
@@ -954,15 +964,14 @@ WeakAuras.load_prototype = {
       hidden = WeakAuras.IsClassic
     },
     {
-      name = "talent", -- WOWCLASSIC TO FIX
+      name = "talent",
       display = L["Talent selected"],
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d)",
-      hidden = WeakAuras.IsClassic
     },
     {
-      name = "talent2", -- WOWCLASSIC TO FIX
+      name = "talent2",
       display = L["And Talent selected"],
       type = "multiselect",
       values = valuesForTalentFunction,
@@ -970,10 +979,9 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
       end,
-      hidden = WeakAuras.IsClassic
     },
     {
-      name = "talent3", -- WOWCLASSIC TO FIX
+      name = "talent3",
       display = L["And Talent selected"],
       type = "multiselect",
       values = valuesForTalentFunction,
@@ -981,7 +989,6 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return (trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil;
       end,
-      hidden = WeakAuras.IsClassic
     },
     {
       name = "pvptalent",
