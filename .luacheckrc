@@ -2261,6 +2261,8 @@ globals = {
 	"GetNumSpecializationsForClassID",
 	"GetNumSpellTabs",
 	"GetNumSubgroupMembers",
+	"GetNumTalents",
+	"GetNumTalentTabs",
 	"GetNumTitles",
 	"GetNumTrackedAchievements",
 	"GetNumTrackingTypes",
