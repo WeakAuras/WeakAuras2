@@ -203,28 +203,35 @@ for classID = 1, 20 do
 end
 
 WeakAuras.race_types = {}
-local unplayableRace = {
-  [12] = true,
-  [13] = true,
-  [14] = true,
-  [15] = true,
-  [16] = true,
-  [17] = true,
-  [18] = true,
-  [19] = true,
-  [20] = true,
-  [21] = true,
-  [23] = true,
-  [33] = true,
-  [35] = true
-}
-if not WeakAuras.IsClassic then
-  for raceID = 1, 36 do
-    if (unplayableRace[raceID] == nil) then
+do
+  local unplayableRace = {
+    [12] = true,
+    [13] = true,
+    [14] = true,
+    [15] = true,
+    [16] = true,
+    [17] = true,
+    [18] = true,
+    [19] = true,
+    [20] = true,
+    [21] = true,
+    [23] = true,
+    [33] = true,
+    [35] = true
+  }
+  local raceID = 1
+  local stop
+  repeat
+    if not unplayableRace[raceID] then
       local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
-      WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName -- WOWCLASSIC not supported
+      if raceInfo then
+        WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName
+      else
+        stop = true
+      end
     end
-  end
+    raceID = raceID + 1
+  until stop
 end
 
 WeakAuras.faction_group = {
