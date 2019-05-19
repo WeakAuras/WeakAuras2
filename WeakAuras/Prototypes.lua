@@ -4680,17 +4680,10 @@ WeakAuras.event_prototypes = {
   },
   ["Threat Situation"] = {
     type = "status",
-    events = function(trigger)
-      local result = {};
-      AddUnitEventForEvents(result, trigger.threatUnit, "UNIT_THREAT_SITUATION_UPDATE")
-      AddUnitChangeEvents(trigger.threatUnit, result)
-      return result;
-    end,
-    unit_events = function(trigger)
-      local result = {}
-      AddUnitEventForUnit_events(result, trigger.threatUnit, "UNIT_THREAT_SITUATION_UPDATE")
-      return result
-    end,
+    events = {},
+    unit_events = {
+      ["player"] = {"UNIT_THREAT_SITUATION_UPDATE"}
+    },
     internal_events = function(trigger)
       local result = {}
       AddUnitChangeInternalEvents(trigger.unit, result)
