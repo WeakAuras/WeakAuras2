@@ -273,10 +273,6 @@ function ConstructFunction(prototype, trigger, inverse)
     end
   end
   local ret = "return function("..tconcat(input, ", ")..")\n";
-  if prototype.name == WeakAuras.newFeatureString .. L["Character Stats"] then
-    ret = ret .. "print('"..prototype.name.."')\n"
-    ViragDevTool_AddData(tests, "tests")
-  end
   ret = ret..(init or "");
 
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
