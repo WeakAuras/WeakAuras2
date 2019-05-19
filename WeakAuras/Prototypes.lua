@@ -5169,10 +5169,9 @@ WeakAuras.event_prototypes = {
     end,
     init = function()
       local ret = [[
+        local main_stat
         if not WeakAuras.IsClassic then
-          local _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
-        else
-          main_stat = true
+          _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
         end
       ]]
       return ret;
@@ -5184,8 +5183,9 @@ WeakAuras.event_prototypes = {
         name = "mainstat",
         display = L["Main Stat"],
         type = "number",
-        init = "WeakAuras.IsClassic and true or UnitStat('player', main_stat or 1)",
+        init = "UnitStat('player', main_stat or 1)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5195,6 +5195,7 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_STRENGTH)",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5204,15 +5205,17 @@ WeakAuras.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_AGILITY)",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
-      {
+     {
         name = "intellect",
         display = L["Intellect"],
         type = "number",
-        init = "UnitStat('player', LE_UNIT_STAT_INTELLECT)",
+        init = "IsClassic and UnitStat('player', LE_UNIT_STAT_INTELLECT)",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5228,8 +5231,9 @@ WeakAuras.event_prototypes = {
         name = "criticalrating",
         display = L["Critical Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_CRIT_SPELL)",
+        init = "GetCombatRating(CR_CRIT_SPELL)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5245,8 +5249,9 @@ WeakAuras.event_prototypes = {
         name = "hasterating",
         display = L["Haste Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_HASTE_SPELL)",
+        init = "GetCombatRating(CR_HASTE_SPELL)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5262,8 +5267,9 @@ WeakAuras.event_prototypes = {
         name = "masteryrating",
         display = L["Mastery Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_MASTERY)",
+        init = "GetCombatRating(CR_MASTERY)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5271,8 +5277,9 @@ WeakAuras.event_prototypes = {
         name = "masterypercent",
         display = L["Mastery (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetMasteryEffect()",
+        init = "GetMasteryEffect()",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5280,8 +5287,9 @@ WeakAuras.event_prototypes = {
         name = "versatilityrating",
         display = L["Versatility Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)",
+        init = "GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5289,8 +5297,9 @@ WeakAuras.event_prototypes = {
         name = "versatilitypercent",
         display = L["Versatility (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)",
+        init = "GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5298,8 +5307,9 @@ WeakAuras.event_prototypes = {
         name = "resistanceholy", -- WOW CLASSIC TODO: check if select(2, ...) is good parameter
         display = L["Holy Resistance"],
         type = "number",
-        init = "WeakAuras.IsClassic and select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
+        init = "IsClassic and select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5307,8 +5317,9 @@ WeakAuras.event_prototypes = {
         name = "resistancefire",
         display = L["Fire Resistance"],
         type = "number",
-        init = "WeakAuras.IsClassic and select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
+        init = "select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5316,8 +5327,9 @@ WeakAuras.event_prototypes = {
         name = "resistancenature",
         display = L["Nature Resistance"],
         type = "number",
-        init = "WeakAuras.IsClassic and select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
+        init = "select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5325,8 +5337,9 @@ WeakAuras.event_prototypes = {
         name = "resistancefrost",
         display = L["Frost Resistance"],
         type = "number",
-        init = "WeakAuras.IsClassic and select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
+        init = "select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5334,8 +5347,9 @@ WeakAuras.event_prototypes = {
         name = "resistanceshadow",
         display = L["Shadow Resistance"],
         type = "number",
-        init = "WeakAuras.IsClassic and select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
+        init = "select(2, UnitResistance('player', _G['MagicResFrame1']:GetID()))",
         store = WeakAuras.IsClassic,
+        enable = WeakAuras.IsClassic,
         conditionType = "number",
         hidden = not WeakAuras.IsClassic
       },
@@ -5343,8 +5357,9 @@ WeakAuras.event_prototypes = {
         name = "leechrating",
         display = L["Leech Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_LIFESTEAL)",
+        init = "GetCombatRating(CR_LIFESTEAL)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5352,8 +5367,9 @@ WeakAuras.event_prototypes = {
         name = "leechpercent",
         display = L["Leech (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetLifesteal()",
+        init = "GetLifesteal()",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5361,8 +5377,9 @@ WeakAuras.event_prototypes = {
         name = "movespeedrating",
         display = L["Movement Speed Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_SPEED)",
+        init = "GetCombatRating(CR_SPEED)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5378,8 +5395,9 @@ WeakAuras.event_prototypes = {
         name = "avoidancerating",
         display = L["Avoidance Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_AVOIDANCE)",
+        init = "GetCombatRating(CR_AVOIDANCE)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5387,8 +5405,9 @@ WeakAuras.event_prototypes = {
         name = "avoidancepercent",
         display = L["Avoidance (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetAvoidance()",
+        init = "GetAvoidance()",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5396,8 +5415,9 @@ WeakAuras.event_prototypes = {
         name = "dodgerating",
         display = L["Dodge Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_DODGE)",
+        init = "GetCombatRating(CR_DODGE)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5413,8 +5433,9 @@ WeakAuras.event_prototypes = {
         name = "parryrating",
         display = L["Parry Rating"],
         type = "number",
-        init = "not WeakAuras.IsClassic and GetCombatRating(CR_PARRY)",
+        init = "GetCombatRating(CR_PARRY)",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5438,8 +5459,9 @@ WeakAuras.event_prototypes = {
         name = "blocktargetpercent",
         display = L["Block against Target (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and PaperDollFrame_GetArmorReductionAgainstTarget(GetShieldBlock())",
+        init = "PaperDollFrame_GetArmorReductionAgainstTarget(GetShieldBlock())",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5455,8 +5477,9 @@ WeakAuras.event_prototypes = {
         name = "armorpercent",
         display = L["Armor (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel('player'))",
+        init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel('player'))",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
@@ -5464,8 +5487,9 @@ WeakAuras.event_prototypes = {
         name = "armortargetpercent",
         display = L["Armor against Target (%)"],
         type = "number",
-        init = "not WeakAuras.IsClassic and PaperDollFrame_GetArmorReductionAgainstTarget(select(2, UnitArmor('player')))",
+        init = "PaperDollFrame_GetArmorReductionAgainstTarget(select(2, UnitArmor('player')))",
         store = not WeakAuras.IsClassic,
+        enable = not WeakAuras.IsClassic,
         conditionType = "number",
         hidden = WeakAuras.IsClassic
       },
