@@ -1135,13 +1135,13 @@ local function AddUnitChangeInternalEvents(unit, t)
   end
 end
 
-local function AddUnitEventForEvents(unit, result, event)
+local function AddUnitEventForEvents(result, unit, event)
   if not WeakAuras.baseUnitId[unit] then
     tinsert(result, event)
   end
 end
 
-local function AddUnitEventForUnit_events(unit, result, event)
+local function AddUnitEventForUnit_events(result, unit, event)
   if WeakAuras.baseUnitId[unit] then
     result[unit] = result[unit] or {}
     tinsert(result[unit], event)
@@ -1153,15 +1153,15 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_LEVEL")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_FACTION")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_LEVEL")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_FACTION")
       AddUnitChangeEvents(trigger.unit, result)
       return result;
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_LEVEL")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_FACTION")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_LEVEL")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_FACTION")
       return result
     end,
     internal_events = function(trigger)
@@ -1269,23 +1269,23 @@ WeakAuras.event_prototypes = {
     events = function(trigger)
       local result = {}
       AddUnitChangeEvents(trigger.unit, result)
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_HEALTH_FREQUENT")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_HEALTH_FREQUENT")
       if trigger.use_showAbsorb then
-        AddUnitEventForEvents(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
       if trigger.use_showIncomingHeal then
-        AddUnitEventForEvents(trigger.unit, result, "UNIT_HEAL_PREDICTION")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_HEAL_PREDICTION")
       end
       return result
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_HEALTH_FREQUENT")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_HEALTH_FREQUENT")
       if trigger.use_showAbsorb then
-        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
+        AddUnitEventForUnit_events(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
       if trigger.use_showIncomingHeal then
-        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_HEAL_PREDICTION")
+        AddUnitEventForUnit_events(result, trigger.unit, "UNIT_HEAL_PREDICTION")
       end
       return result
     end,
@@ -1418,30 +1418,30 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_POWER_FREQUENT")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_DISPLAYPOWER")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_DISPLAYPOWER")
       if trigger.use_showCost then
-        AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_START")
-        AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_STOP")
-        AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_FAILED")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
       end
       if trigger.use_powertype and trigger.powertype == 99 then
-        AddUnitEventForEvents(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
       AddUnitChangeEvents(trigger.unit, result);
       return result;
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_POWER_FREQUENT")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_DISPLAYPOWER")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_DISPLAYPOWER")
       if trigger.use_showCost then
-        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_START")
-        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
-        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_FAILED")
+        AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_START")
+        AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+        AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
       end
       if trigger.use_powertype and trigger.powertype == 99 then
-        AddUnitEventForUnit_events(trigger.unit, result, "UNIT_ABSORB_AMOUNT_CHANGED")
+        AddUnitEventForUnit_events(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
       return result
     end,
@@ -1637,13 +1637,13 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
       AddUnitChangeEvents(trigger.unit, result)
       return result
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_POWER_FREQUENT")
       return result
     end,
     internal_events = function(trigger)
@@ -4679,13 +4679,13 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {};
-      AddUnitEventForEvents(trigger.threatUnit, result, "UNIT_THREAT_SITUATION_UPDATE")
+      AddUnitEventForEvents(result, trigger.threatUnit, "UNIT_THREAT_SITUATION_UPDATE")
       AddUnitChangeEvents(trigger.threatUnit, result)
       return result;
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.threatUnit, result, "UNIT_THREAT_SITUATION_UPDATE")
+      AddUnitEventForUnit_events(result, trigger.threatUnit, "UNIT_THREAT_SITUATION_UPDATE")
       return result
     end,
     internal_events = function(trigger)
@@ -4752,36 +4752,36 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_START")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_DELAYED")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_STOP")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
-      AddUnitEventForEvents(trigger.unit, result, "UNIT_TARGET")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
-        AddUnitEventForEvents(trigger.destUnit, result, "UNIT_TARGET")
+        AddUnitEventForEvents(result, trigger.destUnit, "UNIT_TARGET")
       end
       AddUnitChangeEvents(trigger.unit, result)
       return result
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_START")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_DELAYED")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_TARGET")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
-        AddUnitEventForUnit_events(trigger.destUnit, result, "UNIT_TARGET")
+        AddUnitEventForUnit_events(result, trigger.destUnit, "UNIT_TARGET")
       end
       return result
     end,
