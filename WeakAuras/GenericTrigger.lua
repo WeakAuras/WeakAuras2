@@ -1180,7 +1180,6 @@ function GenericTrigger.Add(data, region)
                 elseif isCLEU then
                   local subevent = string.upper(i)
                   if WeakAuras.IsCLEUSubevent(subevent) then
-                    trigger_subevents = trigger_subevents or {}
                     tinsert(trigger_subevents, subevent)
                     hasParam = true
                   end
