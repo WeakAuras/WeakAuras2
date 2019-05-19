@@ -772,7 +772,7 @@ end
 local genericTriggerRegisteredEvents = {};
 local genericTriggerRegisteredUnitEvents = {};
 local frame = CreateFrame("FRAME");
-frame.units = {};
+frame.unitFrames = {};
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 genericTriggerRegisteredEvents["PLAYER_ENTERING_WORLD"] = true;
@@ -908,11 +908,11 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
 
   for unit, events in pairs(unitEventsToRegister) do
     for event in pairs(events) do
-      if not frame.units[unit] then
-        frame.units[unit] = CreateFrame("FRAME")
-        frame.units[unit]:SetScript("OnEvent", HandleUnitEvent);
+      if not frame.unitFrames[unit] then
+        frame.unitFrames[unit] = CreateFrame("FRAME")
+        frame.unitFrames[unit]:SetScript("OnEvent", HandleUnitEvent);
       end
-      xpcall(frame.units[unit].RegisterUnitEvent, trueFunction, frame.units[unit], event, unit)
+      xpcall(frame.unitFrames[unit].RegisterUnitEvent, trueFunction, frame.unitFrames[unit], event, unit)
       genericTriggerRegisteredUnitEvents[unit] = genericTriggerRegisteredUnitEvents[unit] or {};
       genericTriggerRegisteredUnitEvents[unit][event] = true;
     end
