@@ -1174,7 +1174,7 @@ function GenericTrigger.Add(data, region)
           force_events = force_events,
           unit_events = trigger_unit_events,
           inverse = trigger.use_inverse,
-          subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
+          subevent = not trigger_subevents and trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
           subevents = trigger_subevents,
           unevent = trigger.unevent,
           durationFunc = durationFunc,
