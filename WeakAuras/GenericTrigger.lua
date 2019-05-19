@@ -862,7 +862,9 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
       for triggernum, data in pairs(events[id]) do
         for index, event in pairs(data.events) do
           if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-            eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+            if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
+              eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+            end
           elseif (event == "FRAME_UPDATE") then
             register_for_frame_updates = true;
           else
@@ -918,6 +920,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     GenericTrigger.ScanWithFakeEvent(id);
   end
 
+  -- Replay events that lead to loading, if we weren't already registered for them
   if (eventsToRegister[loadEvent]) then
     WeakAuras.ScanEvents(loadEvent, ...);
   end
