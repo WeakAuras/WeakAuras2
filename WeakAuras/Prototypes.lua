@@ -850,6 +850,7 @@ WeakAuras.load_prototype = {
       init = "arg",
       width = WeakAuras.doubleWidth,
       optional = true,
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -866,6 +867,7 @@ WeakAuras.load_prototype = {
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -875,6 +877,7 @@ WeakAuras.load_prototype = {
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -884,6 +887,7 @@ WeakAuras.load_prototype = {
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -961,6 +965,7 @@ WeakAuras.load_prototype = {
         end
       end,
       init = "arg",
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -1049,6 +1054,7 @@ WeakAuras.load_prototype = {
         end
       end,
       test = "WeakAuras.CheckPvpTalentByIndex(%d)",
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -1374,6 +1380,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true,
+        enable = not WeakAuras.IsClassic,
         hidden = WeakAuras.IsClassic
       },
       {
@@ -1383,7 +1390,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         values = "absorb_modes",
         required = true,
-        enable = function(trigger) return trigger.use_showAbsorb end,
+        enable = function(trigger) return WeakAuras.IsClassic and trigger.use_showAbsorb end,
         hidden = WeakAuras.IsClassic
       },
       {
@@ -1392,26 +1399,27 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true,
+        enable = not WeakAuras.IsClassic,
         hidden = WeakAuras.IsClassic
       },
       {
         name = "absorb",
         type = "number",
         display = L["Absorb"],
-        init = "not WeakAuras.IsClassic and UnitGetTotalAbsorbs(concernedUnit)",
+        init = "UnitGetTotalAbsorbs(concernedUnit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return trigger.use_showAbsorb end,
+        enable = function(trigger) return not WeakAuras.IsClassic and trigger.use_showAbsorb end,
         hidden = WeakAuras.IsClassic
       },
       {
         name = "healprediction",
         type = "number",
         display = L["Incoming Heal"],
-        init = "not WeakAuras.IsClassic and UnitGetIncomingHeals(concernedUnit)",
+        init = "UnitGetIncomingHeals(concernedUnit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return trigger.use_showIncomingHeal end,
+        enable = function(trigger) return not WeakAuras.IsClassic and trigger.use_showIncomingHeal end,
         hidden = WeakAuras.IsClassic
       },
       {
