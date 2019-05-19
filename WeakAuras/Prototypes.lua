@@ -1211,8 +1211,8 @@ WeakAuras.event_prototypes = {
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_LEVEL")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_FACTION")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_LEVEL")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_FACTION")
       return result
     end,
     internal_events = function(trigger)
@@ -1688,7 +1688,7 @@ WeakAuras.event_prototypes = {
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_POWER_FREQUENT")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_POWER_FREQUENT")
       return result
     end,
     internal_events = function(trigger)
@@ -4883,18 +4883,18 @@ WeakAuras.event_prototypes = {
     end,
     unit_events = function(trigger)
       local result = {}
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_START")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_DELAYED")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_STOP")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_CHANNEL_STOP")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_SPELLCAST_INTERRUPTED")
-      AddUnitEventForUnit_events(trigger.unit, result, "UNIT_TARGET")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
-        AddUnitEventForUnit_events(trigger.destUnit, result, "UNIT_TARGET")
+        AddUnitEventForUnit_events(result, trigger.destUnit, "UNIT_TARGET")
       end
       return result
     end,
