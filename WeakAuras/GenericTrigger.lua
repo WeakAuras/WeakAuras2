@@ -812,11 +812,7 @@ function LoadEvent(id, triggernum, data)
   if data.events then
     for index, event in pairs(data.events) do
       loaded_events[event] = loaded_events[event] or {};
-      if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
-        loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
-        loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
-        loaded_events[event][data.subevent][id][triggernum] = data;
-      elseif(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevents) then
+      if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevents) then
         for i, subevent in pairs(data.subevents) do
           loaded_events[event][subevent] = loaded_events[event][subevent] or {};
           loaded_events[event][subevent][id] = loaded_events[event][subevent][id] or {}
@@ -955,7 +951,7 @@ function GenericTrigger.Add(data, region)
         local trigger_events = {};
         local internal_events = {};
         local trigger_unit_events = {};
-        local trigger_subevents;
+        local trigger_subevents = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
@@ -1114,7 +1110,6 @@ function GenericTrigger.Add(data, region)
                 elseif isCLEU then
                   local subevent = string.upper(i)
                   if WeakAuras.IsCLEUSubevent(subevent) then
-                    trigger_subevents = trigger_subevents or {}
                     tinsert(trigger_subevents, subevent)
                     hasParam = true
                   end
@@ -1162,6 +1157,10 @@ function GenericTrigger.Add(data, region)
           automaticAutoHide = true;
         end
 
+        if trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix then
+          tinsert(trigger_subevents, trigger.subeventPrefix .. trigger.subeventSuffix)
+        end
+
         events[id] = events[id] or {};
         events[id][triggernum] = {
           trigger = trigger,
@@ -1174,7 +1173,6 @@ function GenericTrigger.Add(data, region)
           force_events = force_events,
           unit_events = trigger_unit_events,
           inverse = trigger.use_inverse,
-          subevent = not trigger_subevents and trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
           subevents = trigger_subevents,
           unevent = trigger.unevent,
           durationFunc = durationFunc,
