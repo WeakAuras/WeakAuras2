@@ -242,6 +242,8 @@ function ConstructFunction(prototype, trigger, inverse)
     local enable = arg.type ~= "description";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
+    elseif type(arg.enable) == "boolean" then
+      enable = arg.enable
     end
     if(enable) then
       local name = arg.name;
@@ -271,7 +273,10 @@ function ConstructFunction(prototype, trigger, inverse)
     end
   end
   local ret = "return function("..tconcat(input, ", ")..")\n";
-
+  if prototype.name == WeakAuras.newFeatureString .. L["Character Stats"] then
+    ret = ret .. "print('"..prototype.name.."')\n"
+    ViragDevTool_AddData(tests, "tests")
+  end
   ret = ret..(init or "");
 
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
@@ -3274,7 +3279,11 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
         if (v.conditionType and v.name and v.display) then
           local enable = true;
           if (v.enable) then
-            enable = v.enable(trigger);
+            if type(v.enable) == "function" then
+              enable = v.enable(trigger);
+            elseif type(v.enable) == "boolean" then
+              enable = v.enable
+            end
           end
 
           if (enable) then
