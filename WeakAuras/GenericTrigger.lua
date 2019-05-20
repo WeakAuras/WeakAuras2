@@ -1083,9 +1083,6 @@ function GenericTrigger.Add(data, region)
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
               end
-              if (type(trigger_unit_events) == "function") then
-                trigger_unit_events = trigger_unit_events(trigger, untrigger);
-              end
             end
           end
         else

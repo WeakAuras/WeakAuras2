@@ -1209,12 +1209,6 @@ WeakAuras.event_prototypes = {
       end
       return result;
     end,
-    unit_events = function(trigger)
-      local result = {}
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_LEVEL")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_FACTION")
-      return result
-    end,
     internal_events = function(trigger)
       local result = {
         "WA_DELAYED_PLAYER_ENTERING_WORLD"
@@ -1684,11 +1678,6 @@ WeakAuras.event_prototypes = {
       local result = {}
       AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
       AddUnitChangeEvents(trigger.unit, result)
-      return result
-    end,
-    unit_events = function(trigger)
-      local result = {}
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_POWER_FREQUENT")
       return result
     end,
     internal_events = function(trigger)
@@ -4881,23 +4870,6 @@ WeakAuras.event_prototypes = {
       AddUnitChangeEvents(trigger.unit, result)
       return result
     end,
-    unit_events = function(trigger)
-      local result = {}
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_START")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_STOP")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
-      AddUnitEventForUnit_events(result, trigger.unit, "UNIT_TARGET")
-      if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
-        AddUnitEventForUnit_events(result, trigger.destUnit, "UNIT_TARGET")
-      end
-      return result
-    end,
     internal_events = function(trigger)
       local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
       AddUnitChangeInternalEvents(trigger.unit, result)
@@ -5549,10 +5521,13 @@ WeakAuras.event_prototypes = {
         tinsert(result, "UNIT_EXITED_VEHICLE")
       end
       if trigger.use_HasPet ~= nil then
-        tinsert(result, "UNIT_PET")
+        tinsert(unit_events, "UNIT_PET")
       end
       return {
-        ["player"] = result
+        ["events"] = events,
+        ["unit_events"] = {
+          ["player"] = unit_events
+        }
       }
     end,
     internal_events = function(trigger, untrigger)
@@ -5716,9 +5691,6 @@ WeakAuras.event_prototypes = {
         }
       };
     end,
-    unit_events = {
-      ["player"] = {"UNIT_PET"}
-    },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
