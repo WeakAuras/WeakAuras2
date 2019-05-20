@@ -860,18 +860,20 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     if(events[id]) then
       loaded_auras[id] = true;
       for triggernum, data in pairs(events[id]) do
-        for index, event in pairs(data.events) do
-          if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-            if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
-              eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
-            end
-          elseif (event == "FRAME_UPDATE") then
-            register_for_frame_updates = true;
-          else
-            if (genericTriggerRegisteredEvents[event]) then
-              -- Already registered event
+        if data.events then
+          for index, event in pairs(data.events) do
+            if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+              if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
+                eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+              end
+            elseif (event == "FRAME_UPDATE") then
+              register_for_frame_updates = true;
             else
-              eventsToRegister[event] = true;
+              if (genericTriggerRegisteredEvents[event]) then
+                -- Already registered event
+              else
+                eventsToRegister[event] = true;
+              end
             end
           end
         end
@@ -1044,18 +1046,17 @@ function GenericTrigger.Add(data, region)
 
             local prototype = event_prototypes[trigger.event];
             if(prototype) then
-              trigger_events = prototype.events;
+              local trigger_all_events = prototype.events;
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
               trigger_unit_events = prototype.unit_events;
-              if (type(trigger_events) == "function") then
-                trigger_events = trigger_events(trigger, untrigger);
+              if (type(trigger_all_events) == "function") then
+                trigger_all_events = trigger_all_events(trigger, untrigger);
               end
+              trigger_events = trigger_all_events.events
+              trigger_unit_events = trigger_all_events.unit_events
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
-              end
-              if (type(trigger_unit_events) == "function") then
-                trigger_unit_events = trigger_unit_events(trigger, untrigger);
               end
             end
           end
