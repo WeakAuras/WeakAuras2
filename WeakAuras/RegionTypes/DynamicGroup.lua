@@ -750,7 +750,7 @@ local function modify(parent, region, data)
     -- Positioning is based on grow information from the data
     if not self:IsSuspended() then
       self.needToPosition = false
-      if #self.activeRegions > 0 then
+      if #self.sortedChildren > 0 then
         if animate then
           WeakAuras.RegisterGroupForPositioning(data.id, self)
         else
