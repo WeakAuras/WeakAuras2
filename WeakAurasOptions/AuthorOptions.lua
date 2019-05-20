@@ -1388,9 +1388,13 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
 
   args["option" .. i .. "collapse"] = {
     type = "execute",
-    name = collapsed and L["Expand"] or L["Collapse"],
+    name = nameHead(data, option, option.name -- TODO: find a better way than a giant chain of or.
+                                  or (option.type == "space" and L["Space"])
+                                  or (option.type == "description" and L["Description"])
+                                  or (option.type == "header" and L["Separator"])
+                                  or L["Option #%i"]:format(i)),
     order = order,
-    width = 0.15,
+    width = WeakAuras.doubleWidth - 0.6,
     func = function()
       if option[references] then
         for childID, optionID in pairs(option[references]) do
@@ -1406,20 +1410,7 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
     image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
     imageWidth = 18,
     imageHeight = 18,
-    control = "WeakAurasIcon"
-  }
-  order = order + 1
-
-  args["option" .. i .. "header"] = {
-    type = "description",
-    width = WeakAuras.doubleWidth - 0.75,
-    name = nameHead(data, option, option.name -- TODO: find a better way than a giant chain of or.
-                                  or (option.type == "space" and L["Space"])
-                                  or (option.type == "description" and L["Description"])
-                                  or (option.type == "header" and L["Separator"])
-                                  or L["Option #%i"]:format(i)),
-    order = order,
-    fontSize = "large",
+    control = "WeakAurasExpand"
   }
   order = order + 1
 

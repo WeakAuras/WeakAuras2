@@ -40,6 +40,7 @@ local fileList = {
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasTextureButton.lua",
         "WeakAurasOptions/AceGUI-Widgets/AceGUIContainer-WeakAurasTreeGroup.lua",
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasIcon.lua",
+        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasExpand.lua",
         "WeakAurasOptions/OptionsFrames/CodeReview.lua",
         "WeakAurasOptions/OptionsFrames/FrameChooser.lua",
         "WeakAurasOptions/OptionsFrames/IconPicker.lua",
