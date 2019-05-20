@@ -1856,9 +1856,9 @@ local unitLoadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
-unitLoadFrame:RegisterEvent("UNIT_FLAGS");
-unitLoadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
-unitLoadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
+unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
+unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
+unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(...)
@@ -5649,4 +5649,20 @@ function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayIn
       pcall(function() frame:SetModel(data) end)
     end
   end
+end
+
+function WeakAuras.IsCLEUSubevent(subevent)
+  if WeakAuras.subevent_prefix_types[subevent] then
+     return true
+  else
+    for prefix in pairs(WeakAuras.subevent_prefix_types) do
+      if subevent:match(prefix) then
+        local suffix = subevent:sub(#prefix + 1)
+        if WeakAuras.subevent_suffix_types[suffix] then
+          return true
+        end
+      end
+    end
+  end
+  return false
 end

@@ -153,6 +153,62 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
         WeakAuras.UpdateDisplayButton(data);
       end
     },
+    event_customError = {
+      type = "description",
+      name = function()
+        local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
+        for index, event in pairs(WeakAuras.split(events)) do
+          local trueEvent
+          for i in event:gmatch("[^:]+") do
+            if not trueEvent then
+              trueEvent = string.upper(i)
+            elseif trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED" then
+              local subevent = string.upper(i)
+              if not WeakAuras.IsCLEUSubevent(subevent) then
+                return "|cFFFF0000"..L["%s is not a valid SubEvent for COMBAT_LOG_EVENT_UNFILTERED"]:format(subevent)
+              end
+            elseif trueEvent:match("^UNIT_") then
+              local unit = string.lower(i)
+              if not WeakAuras.baseUnitId[unit] then
+                return "|cFFFF0000"..L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
+              end
+            end
+          end
+        end
+        return ""
+      end,
+      width = WeakAuras.doubleWidth,
+      order = 9.201,
+      hidden = function()
+        if not (
+          trigger.type == "custom"
+          and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate" or trigger.custom_type == "event")
+          and trigger.check ~= "update"
+        )
+        then
+          return true
+        end
+        local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
+        for index, event in pairs(WeakAuras.split(events)) do
+          local trueEvent
+          for i in event:gmatch("[^:]+") do
+            if not trueEvent then
+              trueEvent = string.upper(i)
+            elseif trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED" then
+              if not WeakAuras.IsCLEUSubevent(string.upper(i)) then
+                return false
+              end
+            elseif trueEvent:match("^UNIT_") then
+              local unit = string.lower(i)
+              if not WeakAuras.baseUnitId[unit] then
+                return false
+              end
+            end
+          end
+        end
+        return true
+      end
+    },
     -- texteditor below
     custom_hide = {
       type = "select",

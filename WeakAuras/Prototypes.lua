@@ -1116,11 +1116,14 @@ local function AddUnitChangeEvents(unit, t)
   if (unit == "player" or unit == "multi") then
 
   elseif (unit == "target") then
-    tinsert(t, "PLAYER_TARGET_CHANGED");
+    if not t.events then t.events = {} end
+    tinsert(t.events, "PLAYER_TARGET_CHANGED");
   elseif (unit == "focus") then
-    tinsert(t, "PLAYER_FOCUS_CHANGED");
+    if not t.events then t.events = {} end
+    tinsert(t.events, "PLAYER_FOCUS_CHANGED");
   elseif (unit == "pet") then
-    tinsert(t, "UNIT_PET")
+    if not t.unit_events then t.unit_events = {} end
+    tinsert(t.unit_events, "UNIT_PET")
   else
     -- Handled by WatchUnitChange
   end
@@ -1135,15 +1138,31 @@ local function AddUnitChangeInternalEvents(unit, t)
   end
 end
 
+local function AddUnitEventForEvents(result, unit, event)
+  if not WeakAuras.baseUnitId[unit] then
+    if not result.events then
+      result.events = {}
+    end
+    tinsert(result.events, event)
+  else
+    if not result.unit_events then
+      result.unit_events = {}
+    end
+    if not result.unit_events[unit] then
+      result.unit_events[unit] = {}
+    end
+    tinsert(result.unit_events[unit], event)
+  end
+end
+
 WeakAuras.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_LEVEL",
-        "UNIT_FACTION"
-      };
-      AddUnitChangeEvents(trigger.unit, result);
+      local result = {}
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_LEVEL")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_FACTION")
+      AddUnitChangeEvents(trigger.unit, result)
       if trigger.unitisunit then
         AddUnitChangeEvents(trigger.unitisunit, result);
       end
@@ -1252,17 +1271,16 @@ WeakAuras.event_prototypes = {
   ["Health"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_HEALTH_FREQUENT",
-      };
-      AddUnitChangeEvents(trigger.unit, result);
-      if (trigger.use_showAbsorb) then
-        tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
+      local result = {}
+      AddUnitChangeEvents(trigger.unit, result)
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_HEALTH_FREQUENT")
+      if trigger.use_showAbsorb then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
-      if (trigger.use_showIncomingHeal) then
-        tinsert(result, "UNIT_HEAL_PREDICTION");
+      if trigger.use_showIncomingHeal then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_HEAL_PREDICTION")
       end
-      return result;
+      return result
     end,
     internal_events = function(trigger)
       local result = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" }
@@ -1392,19 +1410,18 @@ WeakAuras.event_prototypes = {
   ["Power"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_POWER_FREQUENT",
-        "UNIT_DISPLAYPOWER"
-      };
+      local result = {}
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_DISPLAYPOWER")
+      if trigger.use_showCost then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
+      end
+      if trigger.use_powertype and trigger.powertype == 99 then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
+      end
       AddUnitChangeEvents(trigger.unit, result);
-      if (trigger.use_showCost) then
-        tinsert(result, "UNIT_SPELLCAST_START");
-        tinsert(result, "UNIT_SPELLCAST_STOP");
-        tinsert(result, "UNIT_SPELLCAST_FAILED");
-      end
-      if (trigger.use_powertype and trigger.powertype == 99) then
-        tinsert(result, "UNIT_ABSORB_AMOUNT_CHANGED");
-      end
       return result;
     end,
     internal_events = function(trigger)
@@ -1598,11 +1615,10 @@ WeakAuras.event_prototypes = {
   ["Alternate Power"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_POWER_FREQUENT",
-      };
-      AddUnitChangeEvents(trigger.unit, result);
-      return result;
+      local result = {}
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
+      AddUnitChangeEvents(trigger.unit, result)
+      return result
     end,
     internal_events = function(trigger)
       local result = {"WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -1658,7 +1674,7 @@ WeakAuras.event_prototypes = {
   ["Combat Log"] = {
     type = "event",
     events = {
-      "COMBAT_LOG_EVENT_UNFILTERED"
+      ["events"] = {"COMBAT_LOG_EVENT_UNFILTERED"}
     },
     init = function(trigger)
       local ret = [[
@@ -2117,9 +2133,7 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Spell)"] = {
     type = "status",
-    events = {
-
-    },
+    events = {},
     internal_events = function(trigger, untrigger)
       local events = {
         "SPELL_COOLDOWN_CHANGED",
@@ -2503,8 +2517,7 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Ready (Spell)"] = {
     type = "event",
-    events = {
-    },
+    events = {},
     internal_events = {
       "SPELL_COOLDOWN_READY",
     },
@@ -2572,8 +2585,7 @@ WeakAuras.event_prototypes = {
   },
   ["Charges Changed (Spell)"] = {
     type = "event",
-    events = {
-    },
+    events = {},
     internal_events = {
       "SPELL_CHARGES_CHANGED",
     },
@@ -2657,9 +2669,7 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Item)"] = {
     type = "status",
-    events = {
-
-    },
+    events = {},
     internal_events = {
       "ITEM_COOLDOWN_READY",
       "ITEM_COOLDOWN_CHANGED",
@@ -2882,8 +2892,7 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Ready (Item)"] = {
     type = "event",
-    events = {
-    },
+    events = {},
     internal_events = {
       "ITEM_COOLDOWN_READY",
     },
@@ -2974,8 +2983,7 @@ WeakAuras.event_prototypes = {
   -- DBM events
   ["DBM Announce"] = {
     type = "event",
-    events = {
-    },
+    events = {},
     internal_events = {
       "DBM_Announce"
     },
@@ -3022,9 +3030,7 @@ WeakAuras.event_prototypes = {
   },
   ["DBM Timer"] = {
     type = "status",
-    events = {
-
-    },
+    events = {},
     internal_events = {
       "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce"
     },
@@ -3503,8 +3509,7 @@ WeakAuras.event_prototypes = {
   },
   ["Swing Timer"] = {
     type = "status",
-    events = {
-    },
+    events = {},
     internal_events = {
       "SWING_TIMER_START",
       "SWING_TIMER_CHANGE",
@@ -3560,10 +3565,14 @@ WeakAuras.event_prototypes = {
   ["Action Usable"] = {
     type = "status",
     events = {
-      "SPELL_UPDATE_USABLE",
-      "PLAYER_TARGET_CHANGED",
-      "UNIT_POWER_FREQUENT",
-      "RUNE_POWER_UPDATE",
+      ["events"] = {
+        "SPELL_UPDATE_USABLE",
+        "PLAYER_TARGET_CHANGED",
+        "RUNE_POWER_UPDATE",
+      },
+      ["unit_events"] = {
+        ["player"] = { "UNIT_POWER_FREQUENT" }
+      }
     },
     internal_events = {
       "SPELL_COOLDOWN_CHANGED",
@@ -3706,7 +3715,7 @@ WeakAuras.event_prototypes = {
   ["Talent Known"] = {
     type = "status",
     events = {
-      "PLAYER_TALENT_UPDATE",
+      ["events"] = {"PLAYER_TALENT_UPDATE"}
     },
     force_events = "PLAYER_TALENT_UPDATE",
     name = L["Talent Selected"],
@@ -3808,8 +3817,10 @@ WeakAuras.event_prototypes = {
   ["Totem"] = {
     type = "status",
     events = {
-      "PLAYER_TOTEM_UPDATE",
-      "PLAYER_ENTERING_WORLD"
+      ["events"] = {
+        "PLAYER_TOTEM_UPDATE",
+        "PLAYER_ENTERING_WORLD"
+      }
     },
     internal_events = {
       "COOLDOWN_REMAINING_CHECK",
@@ -3971,9 +3982,11 @@ WeakAuras.event_prototypes = {
   ["Item Count"] = {
     type = "status",
     events = {
-      "BAG_UPDATE",
-      "BAG_UPDATE_COOLDOWN",
-      "PLAYER_ENTERING_WORLD"
+      ["events"] = {
+        "BAG_UPDATE",
+        "BAG_UPDATE_COOLDOWN",
+        "PLAYER_ENTERING_WORLD"
+      }
     },
     internal_events = {
       "ITEM_COUNT_UPDATE",
@@ -4036,7 +4049,7 @@ WeakAuras.event_prototypes = {
   ["Stance/Form/Aura"] = {
     type = "status",
     events = {
-      "UPDATE_SHAPESHIFT_FORM",
+      ["events"] = {"UPDATE_SHAPESHIFT_FORM"}
     },
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD" },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
@@ -4100,7 +4113,7 @@ WeakAuras.event_prototypes = {
   },
   ["Weapon Enchant"] = {
     type = "status",
-    events = { },
+    events = {},
     internal_events = {
       "MAINHAND_TENCH_UPDATE",
       "OFFHAND_TENCH_UPDATE"
@@ -4193,33 +4206,35 @@ WeakAuras.event_prototypes = {
   ["Chat Message"] = {
     type = "event",
     events = {
-      "CHAT_MSG_INSTANCE_CHAT",
-      "CHAT_MSG_INSTANCE_CHAT_LEADER",
-      "CHAT_MSG_BG_SYSTEM_ALLIANCE",
-      "CHAT_MSG_BG_SYSTEM_HORDE",
-      "CHAT_MSG_BG_SYSTEM_NEUTRAL",
-      "CHAT_MSG_BN_WHISPER",
-      "CHAT_MSG_CHANNEL",
-      "CHAT_MSG_EMOTE",
-      "CHAT_MSG_GUILD",
-      "CHAT_MSG_MONSTER_EMOTE",
-      "CHAT_MSG_MONSTER_PARTY",
-      "CHAT_MSG_MONSTER_SAY",
-      "CHAT_MSG_MONSTER_WHISPER",
-      "CHAT_MSG_MONSTER_YELL",
-      "CHAT_MSG_OFFICER",
-      "CHAT_MSG_PARTY",
-      "CHAT_MSG_PARTY_LEADER",
-      "CHAT_MSG_RAID",
-      "CHAT_MSG_RAID_LEADER",
-      "CHAT_MSG_RAID_BOSS_EMOTE",
-      "CHAT_MSG_RAID_BOSS_WHISPER",
-      "CHAT_MSG_RAID_WARNING",
-      "CHAT_MSG_SAY",
-      "CHAT_MSG_WHISPER",
-      "CHAT_MSG_YELL",
-      "CHAT_MSG_SYSTEM",
-      "CHAT_MSG_TEXT_EMOTE"
+      ["events"] = {
+        "CHAT_MSG_INSTANCE_CHAT",
+        "CHAT_MSG_INSTANCE_CHAT_LEADER",
+        "CHAT_MSG_BG_SYSTEM_ALLIANCE",
+        "CHAT_MSG_BG_SYSTEM_HORDE",
+        "CHAT_MSG_BG_SYSTEM_NEUTRAL",
+        "CHAT_MSG_BN_WHISPER",
+        "CHAT_MSG_CHANNEL",
+        "CHAT_MSG_EMOTE",
+        "CHAT_MSG_GUILD",
+        "CHAT_MSG_MONSTER_EMOTE",
+        "CHAT_MSG_MONSTER_PARTY",
+        "CHAT_MSG_MONSTER_SAY",
+        "CHAT_MSG_MONSTER_WHISPER",
+        "CHAT_MSG_MONSTER_YELL",
+        "CHAT_MSG_OFFICER",
+        "CHAT_MSG_PARTY",
+        "CHAT_MSG_PARTY_LEADER",
+        "CHAT_MSG_RAID",
+        "CHAT_MSG_RAID_LEADER",
+        "CHAT_MSG_RAID_BOSS_EMOTE",
+        "CHAT_MSG_RAID_BOSS_WHISPER",
+        "CHAT_MSG_RAID_WARNING",
+        "CHAT_MSG_SAY",
+        "CHAT_MSG_WHISPER",
+        "CHAT_MSG_YELL",
+        "CHAT_MSG_SYSTEM",
+        "CHAT_MSG_TEXT_EMOTE"
+      }
     },
     name = L["Chat Message"],
     init = function(trigger)
@@ -4288,7 +4303,7 @@ WeakAuras.event_prototypes = {
   ["Ready Check"] = {
     type = "event",
     events = {
-      "READY_CHECK",
+      ["events"] = {"READY_CHECK"}
     },
     name = L["Ready Check"],
     args = {},
@@ -4297,8 +4312,10 @@ WeakAuras.event_prototypes = {
   ["Combat Events"] = {
     type = "event",
     events = {
-      "PLAYER_REGEN_ENABLED",
-      "PLAYER_REGEN_DISABLED"
+      ["events"] = {
+        "PLAYER_REGEN_ENABLED",
+        "PLAYER_REGEN_DISABLED"
+      }
     },
     name = L["Entering/Leaving Combat"],
     args = {
@@ -4316,7 +4333,7 @@ WeakAuras.event_prototypes = {
   ["Death Knight Rune"] = {
     type = "status",
     events = {
-      "RUNE_POWER_UPDATE",
+      ["events"] = {"RUNE_POWER_UPDATE"}
     },
     internal_events = {
       "RUNE_COOLDOWN_READY",
@@ -4451,8 +4468,10 @@ WeakAuras.event_prototypes = {
   ["Item Equipped"] = {
     type = "status",
     events = {
-      "UNIT_INVENTORY_CHANGED",
-      "PLAYER_EQUIPMENT_CHANGED",
+      ["events"] = {
+        "UNIT_INVENTORY_CHANGED",
+        "PLAYER_EQUIPMENT_CHANGED",
+      }
     },
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
     force_events = "UNIT_INVENTORY_CHANGED",
@@ -4510,7 +4529,7 @@ WeakAuras.event_prototypes = {
   ["Item Set"] = {
     type = "status",
     events = {
-      "PLAYER_EQUIPMENT_CHANGED",
+      ["events"] = {"PLAYER_EQUIPMENT_CHANGED"}
     },
     force_events = "PLAYER_EQUIPMENT_CHANGED",
     name = L["Item Set Equipped"],
@@ -4567,10 +4586,12 @@ WeakAuras.event_prototypes = {
   ["Equipment Set"] = {
     type = "status",
     events = {
-      "PLAYER_EQUIPMENT_CHANGED",
-      "WEAR_EQUIPMENT_SET",
-      "EQUIPMENT_SETS_CHANGED",
-      "EQUIPMENT_SWAP_FINISHED",
+      ["events"] = {
+        "PLAYER_EQUIPMENT_CHANGED",
+        "WEAR_EQUIPMENT_SET",
+        "EQUIPMENT_SETS_CHANGED",
+        "EQUIPMENT_SWAP_FINISHED",
+      }
     },
     internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "PLAYER_EQUIPMENT_CHANGED",
@@ -4633,13 +4654,11 @@ WeakAuras.event_prototypes = {
   },
   ["Threat Situation"] = {
     type = "status",
-    events = function(trigger)
-      local result = {
-        "UNIT_THREAT_SITUATION_UPDATE",
-      };
-      AddUnitChangeEvents(trigger.threatUnit, result);
-      return result;
-    end,
+    events = {
+      ["unit_events"] = {
+        ["player"] = {"UNIT_THREAT_SITUATION_UPDATE"}
+      }
+    },
     internal_events = function(trigger)
       local result = {}
       AddUnitChangeInternalEvents(trigger.unit, result)
@@ -4686,7 +4705,9 @@ WeakAuras.event_prototypes = {
   ["Crowd Controlled"] = {
     type = "status",
     events = {
-      "UNIT_AURA"
+      ["unit_events"] = {
+        ["player"] = {"UNIT_AURA"}
+      }
     },
     force_events = "UNIT_AURA",
     name = L["Crowd Controlled"],
@@ -4703,21 +4724,21 @@ WeakAuras.event_prototypes = {
   ["Cast"] = {
     type = "status",
     events = function(trigger)
-      local result = {
-        "UNIT_SPELLCAST_CHANNEL_START",
-        "UNIT_SPELLCAST_START",
-        "UNIT_SPELLCAST_DELAYED",
-        "UNIT_SPELLCAST_CHANNEL_UPDATE",
-        "UNIT_SPELLCAST_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-        "UNIT_SPELLCAST_STOP",
-        "UNIT_SPELLCAST_CHANNEL_STOP",
-        "UNIT_SPELLCAST_INTERRUPTED"
-      };
-      AddUnitChangeEvents(trigger.unit, result)
+      local result = {}
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
-        tinsert(result, "UNIT_TARGET")
+        AddUnitEventForEvents(result, trigger.destUnit, "UNIT_TARGET")
       end
+      AddUnitChangeEvents(trigger.unit, result)
       return result
     end,
     internal_events = function(trigger)
@@ -4968,9 +4989,13 @@ WeakAuras.event_prototypes = {
     type = "status",
     name = WeakAuras.newFeatureString .. L["Character Stats"],
     events = {
-        "UNIT_STATS",
+      ["events"] = {
         "COMBAT_RATING_UPDATE",
         "PLAYER_TARGET_CHANGED"
+      },
+      ["unit_events"] = {
+        ["player"] = {"UNIT_STATS"}
+      }
     },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD",
@@ -5194,40 +5219,40 @@ WeakAuras.event_prototypes = {
   ["Conditions"] = {
     type = "status",
     events = function(trigger, untrigger)
-      local events = {};
-      if (trigger.use_incombat ~= nil) then
-        tinsert(events, "PLAYER_REGEN_ENABLED");
-        tinsert(events, "PLAYER_REGEN_DISABLED");
+      local events = {}
+      if trigger.use_incombat ~= nil then
+        tinsert(events, "PLAYER_REGEN_ENABLED")
+        tinsert(events, "PLAYER_REGEN_DISABLED")
       end
-      if (trigger.use_pvpflagged ~= nil) then
-        tinsert(events, "PLAYER_FLAGS_CHANGED");
+      if trigger.use_pvpflagged ~= nil then
+        tinsert(events, "PLAYER_FLAGS_CHANGED")
       end
-
-      if (trigger.use_alive ~= nil) then
-        tinsert(events, "PLAYER_DEAD");
-        tinsert(events, "PLAYER_ALIVE");
-        tinsert(events, "PLAYER_UNGHOST");
+      if trigger.use_alive ~= nil then
+        tinsert(events, "PLAYER_DEAD")
+        tinsert(events, "PLAYER_ALIVE")
+        tinsert(events, "PLAYER_UNGHOST")
       end
-
-      if (trigger.use_vehicle ~= nil) then
-        tinsert(events, "UNIT_ENTERED_VEHICLE");
-        tinsert(events, "UNIT_EXITED_VEHICLE");
+      if trigger.use_resting ~= nil then
+        tinsert(events, "PLAYER_UPDATE_RESTING")
       end
-
-      if (trigger.use_resting ~= nil) then
-        tinsert(events, "PLAYER_UPDATE_RESTING");
-      end
-
-      if (trigger.use_HasPet ~= nil) then
-        tinsert(events, "UNIT_PET");
-      end
-
-      if (trigger.use_mounted ~= nil) then
-        tinsert(events, "PLAYER_MOUNT_DISPLAY_CHANGED");
+      if trigger.use_mounted ~= nil then
+        tinsert(events, "PLAYER_MOUNT_DISPLAY_CHANGED")
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
-
-      return events;
+      local unit_events = {}
+      if trigger.use_vehicle ~= nil then
+        tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
+        tinsert(unit_events, "UNIT_EXITED_VEHICLE")
+      end
+      if trigger.use_HasPet ~= nil then
+        tinsert(unit_events, "UNIT_PET")
+      end
+      return {
+        ["events"] = events,
+        ["unit_events"] = {
+          ["player"] = unit_events
+        }
+      }
     end,
     internal_events = function(trigger, untrigger)
       local events = { "CONDITIONS_CHECK"};
@@ -5316,8 +5341,10 @@ WeakAuras.event_prototypes = {
   ["Spell Known"] = {
     type = "status",
     events = {
-      "SPELLS_CHANGED",
-      "UNIT_PET",
+      ["events"] = {"SPELLS_CHANGED"},
+      ["unit_events"] = {
+        ["player"] = {"UNIT_PET"}
+      }
     },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
@@ -5372,14 +5399,19 @@ WeakAuras.event_prototypes = {
   ["Pet Behavior"] = {
     type = "status",
     events = function(trigger)
-      local result = {"UNIT_PET"};
+      local result = {};
       if (trigger.use_behavior) then
         tinsert(result, "PET_BAR_UPDATE");
       end
       if (trigger.use_petspec) then
         tinsert(result, "PET_SPECIALIZATION_CHANGED ");
       end
-      return result;
+      return {
+        ["events"] = result,
+        ["unit_events"] = {
+          ["player"] = {"UNIT_PET"}
+        }
+      };
     end,
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
@@ -5459,7 +5491,7 @@ WeakAuras.event_prototypes = {
   ["Range Check"] = {
     type = "status",
     events = {
-      "FRAME_UPDATE",
+      ["events"] = {"FRAME_UPDATE"}
     },
     name = L["Range Check"],
     init = function(trigger)
