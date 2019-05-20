@@ -1282,11 +1282,12 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     collapsed = WeakAuras.IsCollapsed(data.id, "condition", i, false);
   end
 
-  args["condition" .. i .. "collapse"] = {
+  args["condition" .. i .. "header"] = {
     type = "execute",
-    name = collapsed and L["Expand"] or L["Collapse"],
+    name = L["Condition %i"]:format(i),
     order = order,
-    width = 0.15,
+    width = WeakAuras.doubleWidth - 0.45,
+    --fontSize = "large",
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
@@ -1301,16 +1302,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
     imageWidth = 18,
     imageHeight = 18,
-    control = "WeakAurasIcon"
-  };
-  order = order + 1;
-
-  args["condition" .. i .. "header"] = {
-    type = "description",
-    name = L["Condition %i"]:format(i),
-    order = order,
-    width = WeakAuras.doubleWidth - 0.6,
-    fontSize = "large"
+    control = "WeakAurasExpand"
   };
   order = order + 1;
 
