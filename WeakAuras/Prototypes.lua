@@ -4850,13 +4850,16 @@ WeakAuras.event_prototypes = {
     },
     automaticrequired = true
   },
-  ["Cast"] = { -- WOWCLASSIC TO FIX UnitCastingInfo not working
+  ["Cast"] = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      if not WeakAuras.IsClassic then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      end
+
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
@@ -4868,7 +4871,14 @@ WeakAuras.event_prototypes = {
         AddUnitEventForEvents(result, trigger.destUnit, "UNIT_TARGET")
       end
       AddUnitChangeEvents(trigger.unit, result)
+      if WeakAuras.IsClassic and trigger.unit ~= "player" then
+        if not result.events then result.events = {} end
+        tinsert(result.events, "COMBAT_LOG_EVENT_UNFILTERED")
+      end
       return result
+    end,
+    subevents = function(trigger)
+      return WeakAuras.IsClassic and trigger.unit ~= "player" and {"SPELL_CAST_START"}
     end,
     internal_events = function(trigger)
       local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
@@ -4881,7 +4891,8 @@ WeakAuras.event_prototypes = {
     name = L["Cast"],
     triggerFunction = function(trigger)
       local ret = [=[
-        return function(states, event, sourceUnit)
+        return function(states, event, ...)
+          local sourceUnit = ...
           local trigger_inverse = %s
           local trigger_unit = %q
           local trigger_spellName = %q
@@ -4893,6 +4904,12 @@ WeakAuras.event_prototypes = {
           local trigger_clone = %s
           local localizedSpellName = %q
           local cloneId = ""
+
+          if event == "COMBAT_LOG_EVENT_UNFILTERED"
+          and UnitGUID(trigger_unit) == select(4, ...)
+          then
+            sourceUnit = trigger_unit
+          end
 
           if trigger_clone and sourceUnit and UnitExists(sourceUnit) then
             cloneId = UnitGUID(sourceUnit)
@@ -4917,7 +4934,16 @@ WeakAuras.event_prototypes = {
               show = false
             else
               if WeakAuras.IsClassic then
-                spell, _, icon, startTime, endTime, _, _, interruptible, spellId = CastingInfo()
+                if trigger_unit == "player" then
+                  spell, _, icon, startTime, endTime, _, _, interruptible, spellId = CastingInfo()
+                elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+                  spellId = select(12, ...)
+                  if spellId then
+                    spell, _, icon, castTime = GetSpellInfo(spellId)
+                    startTime = GetTime() * 1000
+                    endTime = startTime + castTime
+                  end
+                end
               else
                 spell, _, icon, startTime, endTime, _, _, interruptible, spellId = UnitCastingInfo(sourceUnit)
               end
@@ -4925,7 +4951,16 @@ WeakAuras.event_prototypes = {
                 castType = "cast"
               else
                 if WeakAuras.IsClassic then
-                  spell, _, icon, startTime, endTime, _, interruptible, spellId = ChannelInfo()
+                  if trigger_unit == "player" then
+                    spell, _, icon, startTime, endTime, _, interruptible, spellId = ChannelInfo()
+                  elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+                    spellId = select(12, ...)
+                    if spellId then
+                      spell, _, icon, castTime = GetSpellInfo(spellId)
+                      startTime = GetTime() * 1000
+                      endTime = startTime + castTime
+                    end
+                  end
                 else
                   spell, _, icon, startTime, endTime, _, interruptible, spellId = UnitChannelInfo(sourceUnit)
                 end
@@ -5021,9 +5056,7 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         values = function(trigger)
-          if WeakAuras.IsClassic then
-            return { player = L["Player"] }
-          elseif trigger.use_inverse then
+          if WeakAuras.IsClassic or trigger.use_inverse then
             return WeakAuras.actual_unit_types_with_specific
           else
             return WeakAuras.actual_unit_types_with_specific_and_multi
