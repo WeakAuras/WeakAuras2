@@ -141,7 +141,7 @@ templates.class.WARRIOR = {
         { spell = 97463, type = "buff", unit = "player"}, -- Rallying Cry
         { spell = 260708, type = "buff", unit = "player"}, -- Sweeping Strikes
       },
-      icon = 458972
+      icon = 132333
     },
     [2] = {
       title = L["Debuffs"],
@@ -156,7 +156,7 @@ templates.class.WARRIOR = {
         { spell = 262115, type = "debuff", unit = "target"}, -- Deep Wounds
         { spell = 132169, type = "debuff", unit = "target", talent = 6}, -- Storm Bolt
       },
-      icon = 464973
+      icon = 132366
     },
     [3] = {
       title = L["Abilities"],
@@ -436,7 +436,7 @@ templates.class.PALADIN = {
         { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
         { spell = 223306, type = "buff", unit = "target", talent = 2}, -- Bestow Faith
       },
-      icon = 236254
+      icon = 135964
     },
     [2] = {
       title = L["Debuffs"],
@@ -783,7 +783,7 @@ templates.class.HUNTER = {
         { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
         { spell = 264265, type = "ability"}, -- Spirit Shock
       },
-      icon = 132176
+      icon = 135130
     },
     [5] = {
       title = L["Specific Azerite Traits"],
@@ -1128,7 +1128,7 @@ templates.class.ROGUE = {
         { spell = 245388, type = "ability", requiresTarget = true, talent = 17}, -- Toxic Blade
         { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
       },
-      icon = 458726
+      icon = 132350
     },
     [5] = {
       title = L["Specific Azerite Traits"],
@@ -1394,7 +1394,7 @@ templates.class.PRIEST = {
         { spell = 111759, type = "buff", unit = "player"}, -- Levitate
         { spell = 45243, type = "buff", unit = "player" }, -- Focused Will
       },
-      icon = 458720
+      icon = 135940
     },
     [2] = {
       title = L["Debuffs"],
@@ -1438,7 +1438,7 @@ templates.class.PRIEST = {
         { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
       },
-      icon = 253400
+      icon = 136224
     },
     [5] = {
       title = L["Specific Azerite Traits"],
@@ -1677,7 +1677,7 @@ templates.class.SHAMAN = {
         { spell = 157348, type = "buff", unit = "pet", talent = {11,17}}, -- Call Lightning
 
       },
-      icon = 451169
+      icon = 135863
     },
     [2] = {
       title = L["Debuffs"],
@@ -1724,7 +1724,7 @@ templates.class.SHAMAN = {
         { spell = 198103, type = "ability", duration = 60}, -- Earth Elemental
         { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 18}, -- Icefury
       },
-      icon = 135790
+      icon = 135963
     },
     [5] = {
       title = L["Specific Azerite Traits"],
@@ -2269,7 +2269,7 @@ templates.class.WARLOCK = {
         { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
         { spell = 755, type = "buff", unit = "pet"}, -- Health Funnel
       },
-      icon = 136150
+      icon = 136210
     },
     [2] = {
       title = L["Debuffs"],
@@ -2342,7 +2342,7 @@ templates.class.WARLOCK = {
         { spell = 264993, type = "ability"}, -- Shadow Shield
         { spell = 278350, type = "ability", requiresTarget = true, talent = 12 }, -- Vile Taint
       },
-      icon = 615103
+      icon = 135808
     },
     [5] = {
       title = L["Specific Azerite Traits"],
@@ -2942,7 +2942,7 @@ templates.class.DRUID = {
         { spell = 5215, type = "buff", unit = "player"}, -- Prowl
         { spell = 29166, type = "buff", unit = "group"}, -- Innervate
       },
-      icon = 535045
+      icon = 136097
     },
     [2] = {
       title = L["Debuffs"],
@@ -2962,7 +2962,7 @@ templates.class.DRUID = {
         { spell = 81261, type = "debuff", unit = "target"}, -- Solar Beam
         { spell = 2637, type = "debuff", unit = "multi"}, -- Hibernate
       },
-      icon = 236216
+      icon = 132114
     },
     [3] = {
       title = L["Abilities"],
@@ -3009,7 +3009,7 @@ templates.class.DRUID = {
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
         { spell = 274281, type = "ability", requiresTarget = true, charges = true, target = true, talent = 21 }, -- New Moon
       },
-      icon = 136060
+      icon = 132134
     },
     [5] = {
       title = L["Specific Azerite Traits"],
