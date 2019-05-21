@@ -162,7 +162,7 @@ templates.class.WARRIOR = {
       title = L["Abilities"],
       args = {
         { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge
-        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)", classic = false}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 845, type = "ability", talent = 15}, -- Cleave
         { spell = 1464, type = "ability", requiresTarget = true}, -- Slam
@@ -173,7 +173,7 @@ templates.class.WARRIOR = {
         { spell = 6552, type = "ability", requiresTarget = true}, -- Pummel
         { spell = 6673, type = "ability"}, -- Battle Shout
         { spell = 7384, type = "ability", requiresTarget = true, overlayGlow = true, talent = {19,21}}, -- Overpower
-        { spell = 7384, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 20, titleSuffix=" (2 Charges)"}, -- Overpower
+        { spell = 7384, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 20, titleSuffix=" (2 Charges)", classic = false}, -- Overpower
         { spell = 12294, type = "ability", requiresTarget = true}, -- Mortal Strike
         { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
         { spell = 34428, type = "ability", usable = true, requiresTarget = true}, -- Victory Rush
@@ -258,7 +258,7 @@ templates.class.WARRIOR = {
       title = L["Abilities"],
       args = {
         { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
-        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4}, -- Charge
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, classic = false}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 1719, type = "ability", buff = true}, -- Recklessness
         { spell = 5246, type = "ability"}, -- Intimidating Shout
@@ -4075,6 +4075,7 @@ end
 -- PVP Talents
 -------------------------------
 
+--[[
 for _, class in pairs(templates.class) do
   for _, spec in pairs(class) do
   -- TODO 8.0
@@ -4082,19 +4083,22 @@ for _, class in pairs(templates.class) do
   -- tinsert(spec[5].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
   end
 end
+]]--
 
-for _, class in pairs(templates.class) do
-  for _, spec in pairs(class) do
-    spec[4] = {
-      title = L["General Azerite Traits"],
-      args = CopyTable(generalAzeriteTraits),
-      icon = 2065624
-    }
-    spec[6] = {
-      title = L["PvP Azerite Traits"],
-      args = CopyTable(pvpAzeriteTraits),
-      icon = 236396
-    }
+if not WeakAuras.IsClassic then
+  for _, class in pairs(templates.class) do
+    for _, spec in pairs(class) do
+      spec[4] = {
+        title = L["General Azerite Traits"],
+        args = CopyTable(generalAzeriteTraits),
+        icon = 2065624
+      }
+      spec[6] = {
+        title = L["PvP Azerite Traits"],
+        args = CopyTable(pvpAzeriteTraits),
+        icon = 236396
+      }
+    end
   end
 end
 
@@ -4291,14 +4295,18 @@ local function handleItem(item)
       name, _, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
-        print ("Error: Unknown spell", item.spell);
+        if not WeakAuras.IsClassic then
+          print ("Error: Unknown spell", item.spell);
+        else
+          item.classic = false
+        end
       end
     end
     if (icon and not item.icon) then
       item.icon = icon;
     end
 
-    item.title = item.overideTitle or name;
+    item.title = item.overideTitle or name or "";
     if (item.titleSuffix) then
       item.title = item.title .. " " .. item.titleSuffix;
     end
@@ -4376,11 +4384,19 @@ local function enrichDatabase()
           use_class = true, class = { single = className, multi = {} },
           use_spec = true, spec = { single = specIndex, multi = {}}
         };
-        for _, item in pairs(section.args) do
-          if(handleItem(item)) then
+        for itemIndex, item in pairs(section.args) do
+          local handle = handleItem(item)
+          if(handle) then
             waitingForItemInfo = true;
           end
-          addLoadCondition(item, loadCondition);
+          -- item.classic is a tristate property, true = show only on classic, false = show only on retail, nil = show for both
+          if (WeakAuras.IsClassic and item.classic == false)
+          or (not WeakAuras.IsClassic and item.classic)
+          then
+            section.args[itemIndex] = nil
+          else
+            addLoadCondition(item, loadCondition);
+          end
         end
       end
     end
@@ -4391,10 +4407,13 @@ local function enrichDatabase()
       use_race = true, race = { single = raceName, multi = {} }
     };
     for _, item in pairs(race) do
-      if (handleItem(item)) then
+      local handle = handleItem(item)
+      if handle then
         waitingForItemInfo = true;
       end
-      addLoadCondition(item, loadCondition);
+      if handle ~= nil then
+        addLoadCondition(item, loadCondition);
+      end
     end
   end
 
@@ -4462,6 +4481,30 @@ for regionType, regionData in pairs(WeakAuras.regionOptions) do
       for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
         if (item.data[k] == nil) then
           item.data[k] = v;
+        end
+      end
+    end
+  end
+end
+
+if WeakAuras.IsClassic then
+  -- consolidate talents from all specs in a new dummy "classic" spec, indexed by spell for no duplicate
+  for className, class in pairs(templates.class) do
+    class["classic"] = {}
+    for specIndex, spec in pairs(class) do
+      for sectionIndex, section in pairs(spec) do
+        if not class["classic"][sectionIndex] then
+          class["classic"][sectionIndex] = {
+            icon = section.icon,
+            title = section.title,
+            args = {}
+          }
+        end
+        local args = class["classic"][sectionIndex].args
+        for _, item in pairs(section.args) do
+          if item.spell then
+            args[item.spell] = item
+          end
         end
       end
     end
