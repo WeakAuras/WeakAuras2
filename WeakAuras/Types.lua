@@ -1114,6 +1114,10 @@ WeakAuras.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
+if WeakAuras.IsClassic then
+  WeakAuras.swing_types["ranged"] = RANGEDSLOT
+end
+
 WeakAuras.rune_specific_types = {
   [1] = L["Rune #1"],
   [2] = L["Rune #2"],

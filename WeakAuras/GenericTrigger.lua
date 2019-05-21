@@ -1475,6 +1475,10 @@ end
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
+  local ranged = WeakAuras.IsClassic and GetInventorySlotInfo("RangedSlot")
+
+  local autoshotname = GetSpellInfo(75)
+  local swingmode
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -1488,7 +1492,7 @@ do
       local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingMain) then
         return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
-      elseif (lastSwingRange) then
+      elseif not WeakAuras.IsClassic and lastSwingRange then
         return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
       else
         return 0, math.huge, name, icon;
@@ -1498,6 +1502,14 @@ do
       local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingOff) then
         return swingDurationOff, lastSwingOff + swingDurationOff, name, icon;
+      else
+        return 0, math.huge, name, icon;
+      end
+    elseif(hand == "ranged") then
+      local itemId = GetInventoryItemID("player", ranged);
+      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      if (lastSwingRange) then
+        return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
       else
         return 0, math.huge, name, icon;
       end
@@ -1511,13 +1523,13 @@ do
       lastSwingMain, swingDurationMain = nil, nil;
     elseif(hand == "off") then
       lastSwingOff, swingDurationOff = nil, nil;
-    elseif(hand == "range") then
+    elseif(hand == "ranged") then
       lastSwingRange, swingDurationRange = nil, nil;
     end
     WeakAuras.ScanEvents("SWING_TIMER_END");
   end
 
-  local function swingTimerCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
+  local function swingTimerCLEUCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
     WeakAuras.StartProfileSystem("generictrigger swing");
     if(sourceGUID == selfGUID) then
       if(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
@@ -1540,22 +1552,6 @@ do
           timer:CancelTimer(offTimer);
           offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off");
         end
-
-        WeakAuras.ScanEvents(event);
-      elseif(event == "RANGE_DAMAGE" or event == "RANGE_MISSED") then
-        local event;
-        local currentTime = GetTime();
-        local speed = UnitRangedDamage("player");
-        if(lastSwingRange) then
-          timer:CancelTimer(rangeTimer, true);
-          event = "SWING_TIMER_CHANGE";
-        else
-          event = "SWING_TIMER_START";
-        end
-        lastSwingRange = currentTime;
-        swingDurationRange = speed;
-        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "range");
-
         WeakAuras.ScanEvents(event);
       end
     elseif (destGUID == selfGUID and (select(1, ...) == "PARRY" or select(4, ...) == "PARRY")) then
@@ -1575,13 +1571,53 @@ do
     WeakAuras.StopProfileSystem("generictrigger swing");
   end
 
+  local function swingTimerCheck(event, unit, guid, spell)
+    if unit ~= "player" then return end
+    WeakAuras.StartProfileSystem("generictrigger swing");
+    if event == "UNIT_SPELLCAST_SUCCEEDED" then
+      if swingmode == 1 and GetSpellInfo(spell) == autoshotname then
+        local event;
+        local currentTime = GetTime();
+        local speed = UnitRangedDamage("player");
+        if(lastSwingRange) then
+          timer:CancelTimer(rangeTimer, true);
+          event = "SWING_TIMER_CHANGE";
+        else
+          event = "SWING_TIMER_START";
+        end
+        lastSwingRange = currentTime;
+        swingDurationRange = speed;
+        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged");
+        WeakAuras.ScanEvents(event);
+      end
+    end
+    WeakAuras.StopProfileSystem("generictrigger swing");
+  end
+
   function WeakAuras.InitSwingTimer()
     if not(swingTimerFrame) then
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+      swingTimerFrame:RegisterEvent("START_AUTOREPEAT_SPELL");
+      swingTimerFrame:RegisterEvent("STOP_AUTOREPEAT_SPELL");
+      swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
+      swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+      -- swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK", "player");
       swingTimerFrame:SetScript("OnEvent",
-        function()
-          swingTimerCheck(CombatLogGetCurrentEventInfo())
+        function(_, event, ...)
+          if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            swingTimerCLEUCheck(CombatLogGetCurrentEventInfo())
+          elseif event == "START_AUTOREPEAT_SPELL" then
+            swingmode = 1
+          elseif event == "STOP_AUTOREPEAT_SPELL" then
+            if not swingmode or swingmode == 1 then
+              swingmode = nil
+            end
+          elseif event == "PLAYER_ENTER_COMBAT" then
+            swingmode = 0
+          else
+            swingTimerCheck(event, ...)
+          end
         end);
       selfGUID = UnitGUID("player");
     end
