@@ -10,7 +10,7 @@ local WrapTextInColorCode, GetClassColor = WrapTextInColorCode, GetClassColor --
 
 -- shouldn't have to redeclare this here because it's already in Init.lua but it wasnt working ...
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
-WeakAuras.IsClassic = WeakAuras.BuildInfo == 11302
+WeakAuras.IsClassic = WeakAuras.BuildInfo < 20000
 
 WeakAuras.glow_action_types = {
   show = L["Show"],
