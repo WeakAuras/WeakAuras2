@@ -1112,23 +1112,6 @@ WeakAuras.load_prototype = {
   }
 };
 
-local function AddUnitChangeEvents(unit, t)
-  if (unit == "player" or unit == "multi") then
-
-  elseif (unit == "target") then
-    if not t.events then t.events = {} end
-    tinsert(t.events, "PLAYER_TARGET_CHANGED");
-  elseif (unit == "focus") then
-    if not t.events then t.events = {} end
-    tinsert(t.events, "PLAYER_FOCUS_CHANGED");
-  elseif (unit == "pet") then
-    if not t.unit_events then t.unit_events = {} end
-    tinsert(t.unit_events, "UNIT_PET")
-  else
-    -- Handled by WatchUnitChange
-  end
-end
-
 local function AddUnitChangeInternalEvents(unit, t)
   if (unit == "player" or unit == "multi" or unit == "target" or unit == "focus" or unit == "pet") then
     -- Handled by normal events
@@ -1139,7 +1122,7 @@ local function AddUnitChangeInternalEvents(unit, t)
 end
 
 local function AddUnitEventForEvents(result, unit, event)
-  if not WeakAuras.baseUnitId[unit] then
+  if not unit or not WeakAuras.baseUnitId[unit] then
     if not result.events then
       result.events = {}
     end
@@ -1152,6 +1135,20 @@ local function AddUnitEventForEvents(result, unit, event)
       result.unit_events[unit] = {}
     end
     tinsert(result.unit_events[unit], event)
+  end
+end
+
+local function AddUnitChangeEvents(unit, t)
+  if (unit == "player" or unit == "multi") then
+
+  elseif (unit == "target") then
+    AddUnitEventForEvents(t, nil, "PLAYER_TARGET_CHANGED")
+  elseif (unit == "focus") then
+    AddUnitEventForEvents(t, nil, "PLAYER_FOCUS_CHANGED")
+  elseif (unit == "pet") then
+    AddUnitEventForEvents(t, unit, "UNIT_PET")
+  else
+    -- Handled by WatchUnitChange
   end
 end
 
