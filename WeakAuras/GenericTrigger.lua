@@ -2386,7 +2386,9 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange = CreateFrame("FRAME");
     WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
-    watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    if not WeakAuras.IsClassic then
+      watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    end
     watchUnitChange:RegisterEvent("UNIT_TARGET");
     watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
     watchUnitChange:RegisterEvent("GROUP_ROSTER_UPDATE");
