@@ -1050,9 +1050,11 @@ function GenericTrigger.Add(data, region)
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
               trigger_unit_events = prototype.unit_events;
-              trigger_subevents = prototype.subevents;
-              if trigger_subevents and type(trigger_subevents) == "function" then
-                trigger_subevents = trigger_subevents(trigger, untrigger)
+              if prototype.subevents then
+                trigger_subevents = prototype.subevents
+                if trigger_subevents and type(trigger_subevents) == "function" then
+                  trigger_subevents = trigger_subevents(trigger, untrigger)
+                end
               end
               if (type(trigger_all_events) == "function") then
                 trigger_all_events = trigger_all_events(trigger, untrigger);
