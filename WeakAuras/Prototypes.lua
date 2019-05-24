@@ -3123,7 +3123,7 @@ WeakAuras.event_prototypes = {
                 end
               end
             end
-            local bar = WeakAuras.GetDBMTimer(triggerId, triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerDbmType, triggerCount)
+            local bar = WeakAuras.GetDBMTimer(triggerId, triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerDbmType, triggerCount)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
@@ -3359,7 +3359,7 @@ WeakAuras.event_prototypes = {
                 end
               end
             end
-            local bar = WeakAuras.GetBigWigsTimer(triggerTextOperator, triggerText, triggerSpellId, extendTimer, triggerEmphasized, triggerCount, triggerCast)
+            local bar = WeakAuras.GetBigWigsTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerEmphasized, triggerCount, triggerCast)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
