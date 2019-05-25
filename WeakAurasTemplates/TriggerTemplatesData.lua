@@ -4386,6 +4386,10 @@ local function enrichDatabase()
           use_class = true, class = { single = className, multi = {} },
           use_spec = true, spec = { single = specIndex, multi = {}}
         };
+        if WeakAuras.IsClassic then
+          loadCondition.use_spec = nil
+          loadCondition.spec = nil
+        end
         for itemIndex, item in pairs(section.args) do
           local handle = handleItem(item)
           if(handle) then
