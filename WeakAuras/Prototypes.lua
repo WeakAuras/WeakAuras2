@@ -792,24 +792,26 @@ local function valuesForTalentFunction(trigger)
     end
 
     local single_spec;
-    if (single_class) then
-      if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
-        local num_specs = 0;
-        for spec in pairs(trigger.spec.multi) do
-          single_spec = spec;
-          num_specs = num_specs + 1;
-        end
-        if (num_specs ~= 1) then
-          single_spec = nil;
+    if not WeakAuras.IsClassic then
+      if single_class then
+        if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
+          local num_specs = 0;
+          for spec in pairs(trigger.spec.multi) do
+            single_spec = spec;
+            num_specs = num_specs + 1;
+          end
+          if (num_specs ~= 1) then
+            single_spec = nil;
+          end
         end
       end
-    end
-    if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
-      single_spec = trigger.spec.single;
-    end
+      if ((not single_spec) and trigger.use_spec and trigger.spec and trigger.spec.single) then
+        single_spec = trigger.spec.single;
+      end
 
-    if (trigger.use_spec == nil) then
-      single_spec = not WeakAuras.IsClassic and GetSpecialization();
+      if (trigger.use_spec == nil) then
+        single_spec = GetSpecialization();
+      end
     end
 
     -- If a single specific class was found, load the specific list for it

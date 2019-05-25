@@ -548,7 +548,7 @@ end
 
 
 WeakAuras.talent_types = {}
-if not WeakAuras.IsClassic then -- WOWCLASSIC TO FIX
+if not WeakAuras.IsClassic then
   local spec_frame = CreateFrame("frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -565,6 +565,13 @@ if not WeakAuras.IsClassic then -- WOWCLASSIC TO FIX
       tier = tier + 1
     end
     tier = 1
+  end
+else
+  for tab = 1, 5 do
+    for num_talent = 1, 20 do
+      local talentId = (tab - 1)*20+num_talent
+      WeakAuras.talent_types[talentId] = L["Tab "]..tab.." - "..num_talent
+    end
   end
 end
 
