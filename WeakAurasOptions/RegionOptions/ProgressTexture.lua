@@ -821,4 +821,8 @@ local templates = {
   },
 }
 
+if WeakAuras.IsClassic then
+  table.remove(templates, 2)
+end
+
 WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);
