@@ -927,6 +927,30 @@ if BuildInfo <= 80100 then -- 8.1.5
   WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"
   WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
 end
+if BuildInfo < 20000 then -- Classic
+  WeakAuras.texture_types["Blizzard Alerts"] = nil
+  do
+    local beams = WeakAuras.texture_types["Beams"]
+    local beams_ids = {167096, 167097, 167098, 167099, 167100, 167101, 167102, 167103, 167104, 167105, 186192, 186193, 186194, 241098, 241099, 369749, 369750}
+    for _, v in ipairs(beams_ids) do
+      beams[tostring(v)] = nil
+    end
+  end
+  do
+    local icons = WeakAuras.texture_types["Icons"]
+    local icons_ids = {165605, 166036, 166680, 166948, 166989, 240925, 240961, 240972, 241049}
+    for _, v in ipairs(icons_ids) do
+      icons[tostring(v)] = nil
+    end
+  end
+  do
+    local runes = WeakAuras.texture_types["Runes"]
+    local runes_ids = {165633, 165885, 165922, 166340, 166753, 166754, 241003, 241004, 241005}
+    for _, v in ipairs(runes_ids) do
+      runes[tostring(v)] = nil
+    end
+  end
+end
 
 if(WeakAuras.PowerAurasPath ~= "") then
   WeakAuras.texture_types["PowerAuras Heads-Up"] = {
