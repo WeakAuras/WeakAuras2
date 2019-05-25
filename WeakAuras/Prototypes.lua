@@ -4856,13 +4856,12 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      if not WeakAuras.IsClassic then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+      if not WeakAuras.IsClassic or trigger.unit == "player" then
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
       end
-
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
