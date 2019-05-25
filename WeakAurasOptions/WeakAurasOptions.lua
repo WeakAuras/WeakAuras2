@@ -252,7 +252,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       options["button_" .. arg.name] = {
         type = "execute",
         width = 0.15,
-        name = L["Show Extra Options"],
+        name = function()
+          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
+        end,
         order = order,
         image = function()
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
@@ -2488,16 +2491,9 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
   }
   options[key .. "collapseButton"] = {
     type = "execute",
-    name = function()
-      local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
-      if isCollapsed then
-        return L["Expand"]
-      else
-        return L["Collapse"]
-      end
-    end,
+    name = title,
     order = order + 0.1,
-    width = 0.15,
+    width = WeakAuras.doubleWidth,
     func = function(info)
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
@@ -2507,15 +2503,7 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
     end,
-    control = "WeakAurasIcon"
-  }
-
-  options[key] = {
-    type = "description",
-    name = title,
-    order = order + 0.2,
-    width = WeakAuras.doubleWidth - 0.15,
-    fontSize = "large"
+    control = "WeakAurasExpand"
   }
   return function()
     return WeakAuras.IsCollapsed("collapse", "region", key, false)
@@ -3765,7 +3753,7 @@ function WeakAuras.GlowOptions(id, data, order)
       type = "execute",
       name = function()
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true)
-        return collapsed and L["Expand"] or L["Collapse"]
+        return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
       end,
       order = order + 1.01,
       width = 0.15,
