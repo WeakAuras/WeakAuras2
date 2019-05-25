@@ -50,6 +50,10 @@ local default = {
   frameStrata = 1,
   slantMode = "INSIDE"
 };
+if WeakAuras.IsClassic then
+  default.foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
+  default.backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
+end
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
 

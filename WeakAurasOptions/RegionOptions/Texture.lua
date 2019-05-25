@@ -166,6 +166,9 @@ local function createIcon()
     rotate = true;
     rotation = 0;
   };
+  if WeakAuras.IsClassic then
+    data.texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
+  end
 
   local thumbnail = createThumbnail(UIParent);
   modifyThumbnail(UIParent, thumbnail, data, nil, 50);
