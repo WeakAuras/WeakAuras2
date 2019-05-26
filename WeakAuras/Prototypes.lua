@@ -1464,6 +1464,7 @@ WeakAuras.event_prototypes = {
     events = function(trigger)
       local result = {}
       AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_MAXPOWER")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_DISPLAYPOWER")
       if trigger.use_showCost then
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
@@ -1641,6 +1642,8 @@ WeakAuras.event_prototypes = {
         else
           return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
         end
+      elseif (WeakAuras.IsClassic and powerType == 4) then -- combo points
+        return GetComboPoints(trigger.unit, "target"), UnitPowerMax(trigger.unit, 14), true
       end
       local powerTypeToCheck = trigger.powertype or UnitPowerType(trigger.unit);
       local pdm = WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);
