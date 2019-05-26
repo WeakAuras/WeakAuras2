@@ -4901,7 +4901,8 @@ WeakAuras.event_prototypes = {
         display = L["Spell Id"],
         type = "spell",
         enable = function(trigger) return not trigger.use_inverse end,
-        conditionType = "number"
+        conditionType = "number",
+        forceExactOption = true,
       },
       {
         name = "castType",

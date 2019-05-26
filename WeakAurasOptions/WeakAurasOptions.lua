@@ -721,9 +721,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                   return nil;
                 end
               elseif(arg.type == "spell") then
+                local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname]) or arg.forceExactOption
                 if(trigger["use_"..realname]) then
                   if (trigger[realname] and trigger[realname] ~= "") then
-                    if (arg.showExactOption and trigger["use_exact_"..realname]) then
+                    if useExactSpellId then
                       local spellId = tonumber(trigger[realname])
                       if (spellId and spellId ~= 0) then
                         return tostring(spellId);
@@ -735,7 +736,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                       end
                     end
                   end
-                  return arg.showExactOption and trigger["use_exact_"..realname] and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
+                  return useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
                 else
                   return nil;
                 end
