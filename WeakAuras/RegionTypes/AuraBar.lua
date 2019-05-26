@@ -526,7 +526,9 @@ local barPrototype = {
 
   ["SetAdditionalBarColor"] = function(self, id, color)
     self.additionalBarsColors[id] = color;
-    self.extraTextures[id]:SetVertexColor(unpack(color));
+    if self.extraTextures[id] then
+      self.extraTextures[id]:SetVertexColor(unpack(color));
+    end
   end,
 
   ["GetValue"] = function(self)
