@@ -170,9 +170,9 @@ local properties = {
     display = { WeakAuras.newFeatureString .. L["Glow"], L["Y-Offset"]},
     setter = "SetGlowYOffset",
     type = "number",
-    softMin = 1,
-    softMax = -100,
-    bigStep = 100,
+    softMin = -100,
+    softMax = 100,
+    bigStep = 1,
     default = 0
   },
   text1Color = {
