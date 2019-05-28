@@ -755,17 +755,29 @@ end
 
 function WeakAuras.GetNumSetItemsEquipped(setID)
   if not setID or not type(setID) == "number" then return end
-  local itemList = C_LootJournal.GetItemSetItems(setID)
-  if not itemList then return end
-  local setName = GetItemSetInfo(setID)
-  local max = #itemList
-  local equipped = 0
-  for _,v in ipairs(itemList) do
-    if IsEquippedItem(v.itemID) then
-      equipped = equipped + 1
+  if not WeakAuras.IsClassic then
+    local itemList = C_LootJournal.GetItemSetItems(setID)
+    if not itemList then return end
+    local setName = GetItemSetInfo(setID)
+    local max = #itemList
+    local equipped = 0
+    for _,v in ipairs(itemList) do
+      if IsEquippedItem(v.itemID) then
+        equipped = equipped + 1
+      end
     end
+   return equipped, max, setName
+  else
+    local equipped = 0
+    local setName = GetItemSetInfo(setID)
+    for i = 1, 18 do
+      local item = GetInventoryItemID("player", i)
+      if item and select(16, GetItemInfo(item)) == setID then
+        equipped = equipped + 1
+      end
+    end
+    return equipped, 18, setName
   end
-  return equipped, max, setName
 end
 
 local function valuesForTalentFunction(trigger)
@@ -4682,22 +4694,26 @@ WeakAuras.event_prototypes = {
         required = true,
         validate = WeakAuras.ValidateNumeric,
         desc = function()
-          local classFilter, specFilter = C_LootJournal.GetClassAndSpecFilters();
-          local currentClass = select(3, UnitClass("player"));
-          local specID = GetSpecializationInfo(GetSpecialization());
+          if not WeakAuras.IsClassic then
+            local classFilter, specFilter = C_LootJournal.GetClassAndSpecFilters();
+            local currentClass = select(3, UnitClass("player"));
+            local specID = GetSpecializationInfo(GetSpecialization());
 
-          C_LootJournal.SetClassAndSpecFilters(currentClass, specID);
-          local sets = C_LootJournal.GetFilteredItemSets();
-          C_LootJournal.SetClassAndSpecFilters(classFilter, specFilter);
+            C_LootJournal.SetClassAndSpecFilters(currentClass, specID);
+            local sets = C_LootJournal.GetFilteredItemSets();
+            C_LootJournal.SetClassAndSpecFilters(classFilter, specFilter);
 
-          local description = "";
-          for index, set in ipairs(sets) do
-            description = description .. set.name .. ": " .. set.setID .. "\n";
+            local description = "";
+            for index, set in ipairs(sets) do
+              description = description .. set.name .. ": " .. set.setID .. "\n";
+            end
+
+            description = description .. "\n" .. L["Older set IDs can be found on websites such as wowhead.com/item-sets"];
+
+            return description;
+          else
+            return L["Set IDs can be found on websites such as wowhead.com/item-sets"]
           end
-
-          description = description .. "\n" .. L["Older set IDs can be found on websites such as wowhead.com/item-sets"];
-
-          return description;
         end
       },
       {
