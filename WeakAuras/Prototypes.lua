@@ -5905,6 +5905,7 @@ if WeakAuras.IsClassic then
   WeakAuras.event_prototypes["Threat Situation"] = nil
   WeakAuras.event_prototypes["Death Knight Rune"] = nil
   WeakAuras.event_prototypes["Alternate Power"] = nil
+  WeakAuras.event_prototypes["Equipment Set"] = nil
 end
 
 WeakAuras.dynamic_texts = {
