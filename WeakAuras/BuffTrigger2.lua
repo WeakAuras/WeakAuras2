@@ -2966,7 +2966,9 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    if not WeakAuras.IsClassic then
+      multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     multiAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
