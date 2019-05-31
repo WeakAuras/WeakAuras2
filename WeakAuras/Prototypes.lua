@@ -2871,7 +2871,7 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = GetInventoryItemCooldown("player", trigger.itemSlot or 0);
+      local startTime, duration = WeakAuras.GetItemSlotCooldown(trigger.itemSlot or 0);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
