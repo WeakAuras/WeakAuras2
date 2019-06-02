@@ -1,4 +1,15 @@
+<<<<<<< HEAD
 ## Interface: 80200
+||||||| parent of 3843eae7... add new toc version packager replacements
+## Interface: 80100
+=======
+#@retail@
+## Interface: 80100
+#@end-retail@
+#@non-retail@
+# ## Interface: 11302
+#@end-non-retail@
+>>>>>>> 3843eae7... add new toc version packager replacements
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
