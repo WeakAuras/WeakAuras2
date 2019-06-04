@@ -2049,7 +2049,7 @@ function BuffTrigger.Add(data)
       if trigger.useName and trigger.auranames then
         names = {}
         for index, spellName in ipairs(trigger.auranames) do
-          local spellId = tonumber(spellName)
+          local spellId = WeakAuras.SafeToNumber(spellName)
           names[index] = GetSpellInfo(spellId) or spellName
         end
       end
@@ -2212,13 +2212,13 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
 
   if trigger.useName and trigger.auranames then
     for index, spellName in ipairs(trigger.auranames) do
-      local spellId = tonumber(spellName)
+      local spellId = WeakAuras.SafeToNumber(spellName)
       if spellId then
         name, _, icon = GetSpellInfo(spellName)
         if name and icon then
           return name, icon
         end
-      else
+      elseif not tonumber(spellName) then
         name, _, icon = GetSpellInfo(spellName)
         if (name and icon) then
           return name, icon
@@ -2993,7 +2993,7 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
         end
       end
       local icon
-      local spellId = tonumber(name)
+      local spellId = WeakAuras.SafeToNumber(name)
       if spellId then
         icon = select(3, GetSpellInfo(spellId))
       else

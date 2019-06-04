@@ -675,7 +675,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     aura_options["nameicon" .. i] = {
       type = "execute",
       name = function()
-        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i])
+        local spellId = trigger.auranames and trigger.auranames[i] and WeakAuras.SafeToNumber(trigger.auranames[i])
         if spellId then
           return getAuraMatchesLabel(GetSpellInfo(spellId))
         else
@@ -683,7 +683,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         end
       end,
       desc = function()
-        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i])
+        local spellId = trigger.auranames and trigger.auranames[i] and WeakAuras.SafeToNumber(trigger.auranames[i])
         if spellId then
           local name = GetSpellInfo(spellId)
           if name then
@@ -700,7 +700,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = 0.2,
       image = function()
         local icon
-        local spellId = trigger.auranames and trigger.auranames[i] and tonumber(trigger.auranames[i])
+        local spellId = trigger.auranames and trigger.auranames[i] and WeakAuras.SafeToNumber(trigger.auranames[i])
         if spellId then
           icon = select(3, GetSpellInfo(spellId))
         else
