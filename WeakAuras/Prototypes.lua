@@ -3702,7 +3702,7 @@ WeakAuras.event_prototypes = {
       local charges, maxCharges, spellCount = WeakAuras.GetSpellCharges(trigger.realSpellName);
       if maxCharges and maxCharges > 1 then
         return charges
-      elseif spellCount > 0 then
+      elseif spellCount and spellCount > 0 then
         return spellCount
       end
     end,
