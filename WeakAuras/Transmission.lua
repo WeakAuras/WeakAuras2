@@ -135,6 +135,7 @@ function CompressDisplay(data)
   copiedData.regionType = regionType
   copiedData.ignoreWagoUpdate = nil
   copiedData.skipWagoUpdate = nil
+  copiedData.tocversion = WeakAuras.BuildInfo
 
   return copiedData;
 end
