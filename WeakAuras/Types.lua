@@ -2072,9 +2072,11 @@ for i = 1, 4 do
   WeakAuras.baseUnitId["partypet"..i] = true
 end
 
-for i = 1, 5 do
-  WeakAuras.baseUnitId["arena"..i] = true
-  WeakAuras.baseUnitId["boss"..i] = true
+if not WeakAuras.IsClassic then
+  for i = 1, 5 do
+    WeakAuras.baseUnitId["arena"..i] = true
+    WeakAuras.baseUnitId["boss"..i] = true
+  end
 end
 
 for i = 1, 40 do

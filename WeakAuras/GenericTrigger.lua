@@ -896,18 +896,6 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
             end
           end
         end
-        if data.unit_events then
-          for unit, events in pairs(data.unit_events) do
-            for index, event in pairs(events) do
-              if (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
-                -- Already registered event
-              else
-                unitEventsToRegister[unit] = unitEventsToRegister[unit] or {};
-                unitEventsToRegister[unit][event] = true;
-              end
-            end
-          end
-        end
 
         LoadEvent(id, triggernum, data);
       end
@@ -1128,45 +1116,6 @@ function GenericTrigger.Add(data, region)
           else
             local rawEvents = WeakAuras.split(trigger.events);
             for index, event in pairs(rawEvents) do
-              -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
-              local trueEvent
-              local hasParam = false
-              local isCLEU = false
-              local isUnitEvent = false
-              for i in event:gmatch("[^:]+") do
-                if not trueEvent then
-                  trueEvent = string.upper(i)
-                  isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
-                elseif isCLEU then
-                  local subevent = string.upper(i)
-                  if WeakAuras.IsCLEUSubevent(subevent) then
-                    tinsert(trigger_subevents, subevent)
-                    hasParam = true
-                  end
-                elseif trueEvent:match("^UNIT_") then
-                  local unit = string.lower(i)
-                  if WeakAuras.baseUnitId[unit] then
-                    trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                    tinsert(trigger_unit_events[unit], trueEvent)
-                    isUnitEvent = true
-                  end
-                end
-              end
-              if isCLEU then
-                if hasParam then
-                  tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED")
-                else
-                  -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
-                  -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
-                  -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
-                  -- that are already in place. Replacing all those checks would be a pain in the ass.
-                  tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM")
-                end
-              elseif isUnitEvent then
-                -- not added to trigger_events
-              else
-                tinsert(trigger_events, event)
-              end
               -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
               local trueEvent
               local hasParam = false

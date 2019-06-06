@@ -1331,11 +1331,13 @@ WeakAuras.event_prototypes = {
       local result = {}
       AddUnitChangeEvents(trigger.unit, result)
       AddUnitEventForEvents(result, trigger.unit, "UNIT_HEALTH_FREQUENT")
-      if trigger.use_showAbsorb then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
-      end
-      if trigger.use_showIncomingHeal then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_HEAL_PREDICTION")
+      if not WeakAuras.IsClassic then
+        if trigger.use_showAbsorb then
+          AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
+        end
+        if trigger.use_showIncomingHeal then
+          AddUnitEventForEvents(result, trigger.unit, "UNIT_HEAL_PREDICTION")
+        end
       end
       return result
     end,
@@ -3671,9 +3673,6 @@ WeakAuras.event_prototypes = {
         ["player"] = { "UNIT_POWER_FREQUENT" }
       }
     },
-    unit_events = {
-      ["player"] = { "UNIT_POWER_FREQUENT" }
-    },
     internal_events = {
       "SPELL_COOLDOWN_CHANGED",
     },
@@ -3814,9 +3813,20 @@ WeakAuras.event_prototypes = {
   },
   ["Talent Known"] = {
     type = "status",
-    events = {
-      ["events"] = {"PLAYER_TALENT_UPDATE"}
-    },
+    events = function()
+      local events
+      if WeakAuras.IsClassic then
+        events = {
+          "CHARACTER_POINTS_CHANGED",
+          "SPELLS_CHANGED"
+        }
+      else
+        events = { "PLAYER_TALENT_UPDATE" }
+      end
+      return {
+        ["events"] = events
+      }
+    end,
     force_events = "PLAYER_TALENT_UPDATE",
     name = L["Talent Selected"],
     init = function(trigger)
@@ -4178,7 +4188,10 @@ WeakAuras.event_prototypes = {
   ["Stance/Form/Aura"] = {
     type = "status",
     events = {
-      ["events"] = {"UPDATE_SHAPESHIFT_FORM"}
+      ["events"] = {
+        "UPDATE_SHAPESHIFT_FORM",
+        "UPDATE_SHAPESHIFT_COOLDOWN"
+      }
     },
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD" },
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
@@ -5190,9 +5203,6 @@ WeakAuras.event_prototypes = {
         ["player"] = {"UNIT_STATS"}
       }
     },
-    unit_events = {
-      ["player"] = {"UNIT_STATS"}
-    },
     internal_events = {
       "WA_DELAYED_PLAYER_ENTERING_WORLD",
       "PLAYER_MOVING_UPDATE"
@@ -5553,25 +5563,9 @@ WeakAuras.event_prototypes = {
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       local unit_events = {}
-      if trigger.use_vehicle ~= nil then
+      if not WeakAuras.IsClassic and trigger.use_vehicle ~= nil then
         tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
         tinsert(unit_events, "UNIT_EXITED_VEHICLE")
-      end
-      if trigger.use_HasPet ~= nil then
-        tinsert(unit_events, "UNIT_PET")
-      end
-      return {
-        ["events"] = events,
-        ["unit_events"] = {
-          ["player"] = unit_events
-        }
-      }
-    end,
-    unit_events = function(trigger)
-      local result = {}
-      if not WeakAuras.IsClassic and trigger.use_vehicle ~= nil then
-        tinsert(result, "UNIT_ENTERED_VEHICLE")
-        tinsert(result, "UNIT_EXITED_VEHICLE")
       end
       if trigger.use_HasPet ~= nil then
         tinsert(unit_events, "UNIT_PET")
