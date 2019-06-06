@@ -1426,9 +1426,6 @@ do
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
   local ranged = WeakAuras.IsClassic and GetInventorySlotInfo("RangedSlot")
 
-  local autoshotname = GetSpellInfo(75)
-  local swingmode
-
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
   local swingDurationMain, swingDurationOff, swingDurationRange;
@@ -1524,7 +1521,21 @@ do
     if unit ~= "player" then return end
     WeakAuras.StartProfileSystem("generictrigger swing");
     if event == "UNIT_SPELLCAST_SUCCEEDED" then
-      if swingmode == 1 and GetSpellInfo(spell) == autoshotname then
+      if WeakAuras.reset_swing_spells[spell] then
+        local event;
+        local currentTime = GetTime();
+        local mainSpeed, offSpeed = UnitAttackSpeed("player");
+        lastSwingMain = currentTime;
+        swingDurationMain = mainSpeed;
+        if (lastSwingMain) then
+          timer:CancelTimer(mainTimer);
+          event = "SWING_TIMER_CHANGE";
+        else
+          event = "SWING_TIMER_START";
+        end
+        mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
+        WeakAuras.ScanEvents(event);
+      elseif WeakAuras.reset_ranged_swing_spells[spell] then
         local event;
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
@@ -1547,23 +1558,12 @@ do
     if not(swingTimerFrame) then
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-      swingTimerFrame:RegisterEvent("START_AUTOREPEAT_SPELL");
-      swingTimerFrame:RegisterEvent("STOP_AUTOREPEAT_SPELL");
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-      -- swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK", "player");
       swingTimerFrame:SetScript("OnEvent",
         function(_, event, ...)
           if event == "COMBAT_LOG_EVENT_UNFILTERED" then
             swingTimerCLEUCheck(CombatLogGetCurrentEventInfo())
-          elseif event == "START_AUTOREPEAT_SPELL" then
-            swingmode = 1
-          elseif event == "STOP_AUTOREPEAT_SPELL" then
-            if not swingmode or swingmode == 1 then
-              swingmode = nil
-            end
-          elseif event == "PLAYER_ENTER_COMBAT" then
-            swingmode = 0
           else
             swingTimerCheck(event, ...)
           end
