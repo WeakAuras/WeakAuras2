@@ -161,7 +161,8 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Abilities"],
       args = {
-        { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge
+        { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, classic = false}, -- Charge
+        { spell = 100, type = "ability", requiresTarget = true, classic = true}, -- Charge
         { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)", classic = false}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 845, type = "ability", talent = 15}, -- Cleave
