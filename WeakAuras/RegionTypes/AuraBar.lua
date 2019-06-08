@@ -341,10 +341,10 @@ local barPrototype = {
 
     -- Create statusbar illusion
     if (self.horizontal) then
-      local xProgress = self:GetWidth() * progress;
+      local xProgress = self:GetRealSize() * progress;
       self.fg:SetWidth(xProgress > 0.0001 and xProgress or 0.0001);
     else
-      local yProgress = self:GetHeight() * progress;
+      local yProgress = select(2, self:GetRealSize()) * progress;
       self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
     end
 
@@ -436,15 +436,16 @@ local barPrototype = {
 
           local xOffset = 0;
           local yOffset = 0;
+          local width, height = self:GetRealSize()
           if (self.horizontal) then
-            xOffset = startProgress * self:GetWidth();
-            local width = (endProgress - startProgress) * self:GetWidth();
+            xOffset = startProgress * width;
+            local width = (endProgress - startProgress) * width;
             extraTexture:SetWidth( width  );
-            extraTexture:SetHeight( self:GetHeight() );
+            extraTexture:SetHeight( height );
           else
-            yOffset = startProgress * self:GetHeight();
-            local height = (endProgress - startProgress) * self:GetHeight();
-            extraTexture:SetWidth( self:GetWidth()  );
+            yOffset = startProgress * height;
+            local height = (endProgress - startProgress) * height;
+            extraTexture:SetWidth( width );
             extraTexture:SetHeight( height );
           end
 
@@ -611,6 +612,10 @@ local barPrototype = {
     return self.fg:GetVertexColor();
   end,
 
+  ["GetRealSize"] = function(self)
+    return 0, 0
+  end,
+
   -- Internal variables
   ["min"] = 0,
   ["max"] = 1,
@@ -775,6 +780,25 @@ local function getRotateOffset(object, degrees, point)
   end
 end
 
+local GetRealSize = {
+  ["HORIZONTAL"] = {
+    [true] = function(self)
+      return self.totalWidth - self.iconWidth, self.totalHeight
+    end,
+    [false] = function(self)
+      return self.totalWidth, self.totalHeight
+    end
+  },
+  ["VERTICAL"] = {
+    [true] = function(self)
+      return self.totalWidth, self.totalHeight - self.iconWidth
+    end,
+    [false] = function(self)
+      return self.totalWidth, self.totalHeight
+    end
+  },
+}
+
 -- Orientation helper methods
 local function orientHorizontalInverse(region, data)
   -- Localize
@@ -784,6 +808,8 @@ local function orientHorizontalInverse(region, data)
   -- Reset
   icon:ClearAllPoints();
   bar:ClearAllPoints();
+
+  bar.GetRealSize = GetRealSize["HORIZONTAL"][data.icon or false]
 
   -- Align icon and bar
   if data.icon then
@@ -833,6 +859,8 @@ local function orientHorizontal(region, data)
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
   local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
 
+  bar.GetRealSize = GetRealSize["HORIZONTAL"][data.icon or false]
+
   -- Reset
   icon:ClearAllPoints();
   bar:ClearAllPoints();
@@ -879,10 +907,13 @@ local function orientHorizontal(region, data)
     text:SetJustifyH("CENTER");
   end
 end
+
 local function orientVerticalInverse(region, data)
   -- Localize
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
   local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
+
+  bar.GetRealSize = GetRealSize["VERTICAL"][data.icon or false]
 
   -- Reset
   icon:ClearAllPoints();
@@ -921,10 +952,13 @@ local function orientVerticalInverse(region, data)
   text:SetWidth(0);
   text:SetJustifyH("CENTER");
 end
+
 local function orientVertical(region, data)
   -- Localize
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
   local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
+
+  bar.GetRealSize = GetRealSize["VERTICAL"][data.icon or false]
 
   -- Reset
   icon:ClearAllPoints();
@@ -1042,6 +1076,9 @@ local function modify(parent, region, data)
   -- Adjust region size
   region:SetWidth(data.width);
   region:SetHeight(data.height);
+  region.bar.totalWidth = data.width
+  region.bar.totalHeight = data.height
+
   region.width = data.width;
   region.height = data.height;
   region.scalex = 1;
@@ -1235,6 +1272,8 @@ local function modify(parent, region, data)
     local iconsize = math.min(region.height, region.width);
     icon:SetWidth(iconsize);
     icon:SetHeight(iconsize);
+    region.bar.iconWidth = iconsize
+    region.bar.iconHeight = iconsize
     local texWidth = 0.25 * data.zoom;
     icon:SetTexCoord(GetTexCoordZoom(texWidth))
     icon:SetDesaturated(data.desaturate);
@@ -1262,6 +1301,8 @@ local function modify(parent, region, data)
     end
     --
   else
+    region.bar.iconWidth = 0
+    region.bar.iconHeight = 0
     stacks:Hide();
     icon:Hide();
   end
@@ -1368,7 +1409,10 @@ local function modify(parent, region, data)
     end
 
     -- Update width
-    self:SetWidth(region.width * scalex);
+    self.bar.totalWidth = region.width * scalex
+    self.bar.iconWidth = iconsize * scalex
+
+    self:SetWidth(self.bar.totalWidth);
     icon:SetWidth(iconsize * scalex);
 
     -- Re-orientate region
@@ -1396,8 +1440,10 @@ local function modify(parent, region, data)
     end
 
     -- Update height
-    self:SetHeight(region.height * scaley);
-    icon:SetHeight(iconsize * scaley);
+    self.bar.totalHeight = region.height * scaley
+    self.bar.iconWidth = iconsize * scaley
+    self:SetHeight(self.bar.totalHeight);
+    icon:SetHeight(self.bar.iconWidth);
   end
   --  region:Scale(1.0, 1.0);
 
