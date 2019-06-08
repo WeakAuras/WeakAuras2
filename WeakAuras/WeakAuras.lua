@@ -3833,7 +3833,9 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     else
       anim.x = anim.x or 0;
       anim.y = anim.y or 0;
-      selfPoint, anchor, anchorPoint, startX, startY = region:GetPoint(1);
+      if not region.SetOffsetAnim then
+        selfPoint, anchor, anchorPoint, startX, startY = region:GetPoint(1);
+      end
       anim.alpha = anim.alpha or 0;
       startAlpha = region:GetAlpha();
       anim.scalex = anim.scalex or 1;

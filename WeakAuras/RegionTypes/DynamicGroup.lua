@@ -32,18 +32,49 @@ local default = {
   columnSpace = 1
 }
 
+local controlPointFunctions = {
+  ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
+    self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = point, relativeFrame, relativePoint, offsetX, offsetY
+    self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
+    self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
+    if self.relativeFrame and self.relativePoint then
+      self:SetPoint(self.point, self.relativeFrame, self.relativePoint, self.totalOffsetX, self.totalOffsetY)
+    else
+      self:SetPoint(self.point, self.totalOffsetX, self.totalOffsetY)
+    end
+  end,
+  ["ClearAnchorPoint"] = function(self)
+    self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = nil, nil, nil, nil, nil
+    self:ClearAllPoints();
+  end,
+  ["SetOffsetAnim"] = function(self, x, y)
+    self.animOffsetX, self.animOffsetY = x, y
+    self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
+    self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
+    if not self.point then
+      -- Nothing to do
+    elseif self.relativeFrame and self.relativePoint then
+      self:SetPoint(self.point, self.relativeFrame, self.relativePoint, self.totalOffsetX, self.totalOffsetY)
+    else
+      self:SetPoint(self.point, self.totalOffsetX, self.totalOffsetY)
+    end
+  end
+}
+
 local function createControlPoint(self)
   local controlPoint = CreateFrame("FRAME", nil, self.parent)
+  Mixin(controlPoint, controlPointFunctions)
+
   controlPoint:SetWidth(16)
   controlPoint:SetHeight(16)
   controlPoint:Show()
-  controlPoint:SetPoint(self.parent.selfPoint)
+  controlPoint:SetAnchorPoint(self.parent.selfPoint)
   return controlPoint
 end
 
 local function releaseControlPoint(self, controlPoint)
   controlPoint:Hide()
-  controlPoint:ClearAllPoints()
+  controlPoint:ClearAnchorPoint()
   local regionData = controlPoint.regionData
   if regionData then
     controlPoint.regionData = nil
@@ -506,6 +537,14 @@ local function createGrowFunc(data)
   return grower(data)
 end
 
+local nullErrorHandler = function()
+end
+
+local function SafeGetPos(region, func)
+  local ok, value = xpcall(func, nullErrorHandler, region)
+  return ok and value or nil
+end
+
 local function modify(parent, region, data)
   WeakAuras.FixGroupChildrenOrderForGroup(data)
   -- Scale
@@ -782,8 +821,8 @@ local function modify(parent, region, data)
                       false
       end
       local controlPoint = regionData.controlPoint
-      controlPoint:ClearAllPoints()
-      controlPoint:SetPoint(data.selfPoint, self, data.selfPoint, x, y)
+      controlPoint:ClearAnchorPoint()
+      controlPoint:SetAnchorPoint(data.selfPoint, self, data.selfPoint, x, y)
       controlPoint:SetShown(show)
       controlPoint:SetWidth(regionData.data.width or regionData.region.width)
       controlPoint:SetHeight(regionData.data.height or regionData.region.height)
@@ -869,6 +908,7 @@ local function modify(parent, region, data)
     self:Resize()
   end
 
+
   function region:Resize()
     -- Resizes the dynamic group, for background and border purposes
     if not self:IsSuspended() then
@@ -880,7 +920,10 @@ local function modify(parent, region, data)
         if regionData.shown then
           numVisible = numVisible + 1
           local childRegion = regionData.region
-          local regionLeft, regionRight, regionTop, regionBottom = childRegion:GetLeft(), childRegion:GetRight(), childRegion:GetTop(), childRegion:GetBottom()
+          local regionLeft, regionRight, regionTop, regionBottom
+             = SafeGetPos(childRegion, childRegion.GetLeft), SafeGetPos(childRegion, childRegion.GetRight),
+               SafeGetPos(childRegion, childRegion.GetTop), SafeGetPos(childRegion, childRegion.GetBottom)
+
           if(regionLeft and regionRight and regionTop and regionBottom) then
             minX = minX and min(regionLeft, minX) or regionLeft
             maxX = maxX and max(regionRight, maxX) or regionRight
