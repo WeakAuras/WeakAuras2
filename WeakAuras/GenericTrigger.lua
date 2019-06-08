@@ -727,6 +727,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
       WeakAuras.CheckCooldownReady();
       WeakAuras.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
+      WeakAuras.PreShowModels()
     end,
     0.8);  -- Data not available
   end

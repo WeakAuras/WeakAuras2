@@ -254,5 +254,21 @@ local function modify(parent, region, data)
 
 end
 
+--- Work around for movies and world map hiding all models
+do
+  function WeakAuras.PreShowModels(self, event)
+    WeakAuras.StartProfileSystem("model");
+    for id, data in pairs(WeakAuras.regions) do
+      WeakAuras.StartProfileAura(id);
+      if (data.regionType == "model" and data.region.toShow) then
+        data.region:PreShow();
+      end
+      WeakAuras.StopProfileAura(id);
+    end
+    WeakAuras.StopProfileSystem("model");
+  end
+ end
+
+
 -- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties);
