@@ -1050,6 +1050,12 @@ WeakAuras.load_prototype = {
       init = "arg",
     },
     {
+      name = "effectiveLevel",
+      display = L["Player Effective Level"],
+      type = "number",
+      init = "arg",
+    },
+    {
       name = "zone",
       display = L["Zone Name"],
       type = "string",

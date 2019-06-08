@@ -1758,6 +1758,7 @@ local function scanForLoadsImpl(self, event, arg1, ...)
 
   local affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
   local warmodeActive = C_PvP.IsWarModeDesired();
+  local effectiveLevel = UnitEffectiveLevel("player")
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
@@ -1767,8 +1768,8 @@ local function scanForLoadsImpl(self, event, arg1, ...)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
-      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
 
       if(shouldBeLoaded and not loaded[id]) then
         changed = changed + 1;
