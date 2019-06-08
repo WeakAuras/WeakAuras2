@@ -4623,7 +4623,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
         state.expirationTime = GetTime() + state.duration;
         state.resort = true;
       end
-      if (record.expirationTime ~= state.expirationTime) then
+      if (record.expirationTime ~= state.expirationTime or record.state ~= state) then
         if (record.handle ~= nil) then
           timer:CancelTimer(record.handle);
         end
@@ -4638,6 +4638,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
           end,
           state.expirationTime - GetTime());
         record.expirationTime = state.expirationTime;
+        record.state = state
       end
     else -- no auto hide, delete timer
       if (timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
@@ -4647,6 +4648,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
         end
         record.handle = nil;
         record.expirationTime = nil;
+        record.state = nil
     end
     end
   else -- not shown
@@ -4657,6 +4659,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
       end
       record.handle = nil;
       record.expirationTime = nil;
+      record.state = nil
   end
   end
 end
