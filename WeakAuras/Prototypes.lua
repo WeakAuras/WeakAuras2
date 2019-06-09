@@ -4219,7 +4219,7 @@ WeakAuras.event_prototypes = {
       {
         name = "form",
         display = L["Form"],
-        type = "select",
+        type = "multiselect",
         values = "form_types",
         test = "inverse == (form ~= %s)",
         store = true,
