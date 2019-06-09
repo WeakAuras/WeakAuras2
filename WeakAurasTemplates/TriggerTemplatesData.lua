@@ -4194,6 +4194,28 @@ for i = 1, 4 do
     triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
   });
 end
+for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
+  local title, _, icon = GetSpellInfo(id)
+  if title then
+    for i = 1, 4 do
+      tinsert(templates.class.DRUID[i][8].args, {
+        title = title,
+        icon = icon,
+        triggers = {
+          [1] = {
+            trigger = {
+              type = "status",
+              event = "Stance/Form/Aura",
+              unevent = "auto",
+              use_form = true,
+              form = { single = j }
+            }
+          }
+        }
+      });
+    end
+  end
+end
 
 -- Astral Power
 tinsert(templates.class.DRUID[1][8].args, createSimplePowerTemplate(8));
