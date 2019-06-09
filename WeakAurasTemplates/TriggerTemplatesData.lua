@@ -196,6 +196,7 @@ templates.class.WARRIOR = {
       },
       icon = 132355
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -209,6 +210,7 @@ templates.class.WARRIOR = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -286,6 +288,7 @@ templates.class.WARRIOR = {
       },
       icon = 136012
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -298,6 +301,7 @@ templates.class.WARRIOR = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -384,6 +388,7 @@ templates.class.WARRIOR = {
       },
       icon = 134951
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -397,6 +402,7 @@ templates.class.WARRIOR = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -482,6 +488,7 @@ templates.class.PALADIN = {
       },
       icon = 135972
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -495,6 +502,7 @@ templates.class.PALADIN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -580,6 +588,7 @@ templates.class.PALADIN = {
       },
       icon = 135874
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -595,6 +604,7 @@ templates.class.PALADIN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -678,6 +688,7 @@ templates.class.PALADIN = {
       },
       icon = 135891
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -693,6 +704,7 @@ templates.class.PALADIN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -786,6 +798,7 @@ templates.class.HUNTER = {
       },
       icon = 135130
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -801,6 +814,7 @@ templates.class.HUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -889,6 +903,7 @@ templates.class.HUNTER = {
       },
       icon = 132329
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -902,6 +917,7 @@ templates.class.HUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1011,10 +1027,10 @@ templates.class.HUNTER = {
         { spell = 270335, type = "ability", talent = 20}, -- Shrapnel Bomb
         { spell = 271045, type = "ability", talent = 20}, -- Volatile Bomb
         { spell = 272678, type = "ability", buff = true}, -- Primal Rage
-
       },
       icon = 236184
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1030,6 +1046,7 @@ templates.class.HUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1131,6 +1148,7 @@ templates.class.ROGUE = {
       },
       icon = 132350
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1143,6 +1161,7 @@ templates.class.ROGUE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1236,6 +1255,7 @@ templates.class.ROGUE = {
       },
       icon = 135610
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1250,6 +1270,7 @@ templates.class.ROGUE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1344,6 +1365,7 @@ templates.class.ROGUE = {
       },
       icon = 236279
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1357,6 +1379,7 @@ templates.class.ROGUE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1441,6 +1464,7 @@ templates.class.PRIEST = {
       },
       icon = 136224
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1451,6 +1475,7 @@ templates.class.PRIEST = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1529,6 +1554,7 @@ templates.class.PRIEST = {
       },
       icon = 135937
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1539,6 +1565,7 @@ templates.class.PRIEST = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1621,6 +1648,7 @@ templates.class.PRIEST = {
       },
       icon = 136230
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1633,6 +1661,7 @@ templates.class.PRIEST = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1727,6 +1756,7 @@ templates.class.SHAMAN = {
       },
       icon = 135963
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1745,6 +1775,7 @@ templates.class.SHAMAN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1836,6 +1867,7 @@ templates.class.SHAMAN = {
       },
       icon = 1370984
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1854,6 +1886,7 @@ templates.class.SHAMAN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1940,6 +1973,7 @@ templates.class.SHAMAN = {
       },
       icon = 135127
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1957,6 +1991,7 @@ templates.class.SHAMAN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2039,6 +2074,7 @@ templates.class.MAGE = {
       },
       icon = 136075
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2049,6 +2085,7 @@ templates.class.MAGE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2127,6 +2164,7 @@ templates.class.MAGE = {
       },
       icon = 610633
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2138,6 +2176,7 @@ templates.class.MAGE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2223,6 +2262,7 @@ templates.class.MAGE = {
       },
       icon = 629077
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2234,6 +2274,7 @@ templates.class.MAGE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2345,6 +2386,7 @@ templates.class.WARLOCK = {
       },
       icon = 135808
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2357,6 +2399,7 @@ templates.class.WARLOCK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2464,6 +2507,7 @@ templates.class.WARLOCK = {
       },
       icon = 1378282
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2478,6 +2522,7 @@ templates.class.WARLOCK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2583,6 +2628,7 @@ templates.class.WARLOCK = {
       },
       icon = 135807
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2598,6 +2644,7 @@ templates.class.WARLOCK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2687,6 +2734,7 @@ templates.class.MONK = {
       },
       icon = 133701
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2700,6 +2748,7 @@ templates.class.MONK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2785,6 +2834,7 @@ templates.class.MONK = {
       },
       icon = 627485
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2798,6 +2848,7 @@ templates.class.MONK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2889,6 +2940,7 @@ templates.class.MONK = {
       },
       icon = 627606
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2900,6 +2952,7 @@ templates.class.MONK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3012,6 +3065,7 @@ templates.class.DRUID = {
       },
       icon = 132134
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3026,6 +3080,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3138,6 +3193,7 @@ templates.class.DRUID = {
       },
       icon = 236149
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3150,6 +3206,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3257,6 +3314,7 @@ templates.class.DRUID = {
       },
       icon = 236169
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3273,6 +3331,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3378,6 +3437,7 @@ templates.class.DRUID = {
       },
       icon = 236153
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3390,6 +3450,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3469,6 +3530,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 1305156
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3481,6 +3543,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3557,6 +3620,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 1344650
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3571,6 +3635,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3658,6 +3723,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 136120
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3668,6 +3734,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3748,6 +3815,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135372
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3756,6 +3824,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3843,6 +3912,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 136144
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3853,6 +3923,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -4112,6 +4183,34 @@ end
 -- Warrior
 for i = 1, 3 do
   tinsert(templates.class.WARRIOR[i][8].args, createSimplePowerTemplate(1));
+end
+
+if WeakAuras.IsClassic then
+  tinsert(templates.class.WARRIOR[1][8].args, {
+    title = L["Stance"],
+    icon = 132349,
+    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+  })
+  for j, id in ipairs({2457, 71, 2458}) do
+    local title, _, icon = GetSpellInfo(id)
+    if title then
+      tinsert(templates.class.WARRIOR[1][8].args, {
+        title = title,
+        icon = icon,
+        triggers = {
+          [1] = {
+            trigger = {
+              type = "status",
+              event = "Stance/Form/Aura",
+              unevent = "auto",
+              use_form = true,
+              form = { single = j }
+            }
+          }
+        }
+      });
+    end
+  end
 end
 
 -- Paladin
@@ -4413,7 +4512,7 @@ local function enrichDatabase()
           loadCondition.use_spec = nil
           loadCondition.spec = nil
         end
-        for itemIndex, item in pairs(section.args) do
+        for itemIndex, item in pairs(section.args or {}) do
           local handle = handleItem(item)
           if(handle) then
             waitingForItemInfo = true;
@@ -4517,9 +4616,9 @@ for regionType, regionData in pairs(WeakAuras.regionOptions) do
 end
 
 if WeakAuras.IsClassic then
-  -- consolidate talents from all specs in a new dummy "classic" spec, indexed by spell for no duplicate
+  -- consolidate talents from all specs in a new dummy "classic" spec, indexed by spell or title for no duplicate
   for className, class in pairs(templates.class) do
-    class["classic"] = {}
+    class["classic"] = class["classic"] or {}
     for specIndex, spec in pairs(class) do
       for sectionIndex, section in pairs(spec) do
         if not class["classic"][sectionIndex] then
@@ -4530,9 +4629,11 @@ if WeakAuras.IsClassic then
           }
         end
         local args = class["classic"][sectionIndex].args
-        for _, item in pairs(section.args) do
+        for itemIndex, item in pairs(section.args or {}) do
           if item.spell then
             args[item.spell] = item
+          else
+            args[itemIndex] = item
           end
         end
       end

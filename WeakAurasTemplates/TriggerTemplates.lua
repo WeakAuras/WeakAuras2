@@ -1399,7 +1399,9 @@ function WeakAuras.CreateTemplateView(frame)
   -- Creates a button + flyout (if the button is selected) for one section
   local function createTriggerButtons(templates, selectedItem, fullWidth)
     for k, section in ipairs(templates) do
-      createTriggerButton(section, selectedItem, fullWidth);
+      if section.args and next(section.args) then
+        createTriggerButton(section, selectedItem, fullWidth);
+      end
     end
   end
 
