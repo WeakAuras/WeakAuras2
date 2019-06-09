@@ -1102,7 +1102,8 @@ WeakAuras.load_prototype = {
       display = L["Player Effective Level"],
       type = "number",
       init = "arg",
-      desc = L["The effective level differs from the level in e.g. Time Walking dungeons."]
+      desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
+      hidden = WeakAuras.IsClassic
     },
     {
       name = "zone",
