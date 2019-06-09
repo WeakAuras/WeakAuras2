@@ -495,6 +495,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           name = arg.display,
           order = order,
           hidden = hidden,
+          desc = arg.desc,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
