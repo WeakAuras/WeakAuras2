@@ -18,4 +18,7 @@
   <Script file="Libs\LibDeflate\LibDeflate.lua"/>
   <Include file="Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
   <Script file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
+  <!--@non-retail@-->
+  <Include file="Libs\LibClassicDurations\LibClassicDurations.xml"/>
+  <!--@end-non-retail@-->
 </Ui>

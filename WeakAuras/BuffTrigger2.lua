@@ -61,6 +61,12 @@ Returns the potential conditions for a trigger
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 
+local LCD
+if WeakAuras.IsClassic then
+  LCD = LibStub("LibClassicDurations")
+  LCD:RegisterFrame("WeakAuras")
+end
+
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local timer = WeakAuras.timer
@@ -1104,6 +1110,15 @@ local function PrepareMatchData(unit, filter)
         break
       end
 
+      -- If we are on classic try to get duration from LibClassicDurations
+      if LCD then
+        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+        if duration == 0 and durationNew then
+            duration = durationNew
+            expirationTime = expirationTimeNew
+        end
+      end
+
       if debuffClass == nil then
         debuffClass = "none"
       elseif debuffClass == "" then
@@ -1193,6 +1208,15 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
     if not name then
       break
+    end
+
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
     end
 
     if debuffClass == nil then
@@ -2826,6 +2850,15 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
       return false
     end
 
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -2916,6 +2949,16 @@ local function CheckAurasMulti(base, unit, filter)
     if not name then
       return false
     end
+
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
