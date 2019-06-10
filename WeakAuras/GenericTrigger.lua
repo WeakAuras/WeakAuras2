@@ -1438,7 +1438,7 @@ do
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
-  local swingDurationMain, swingDurationOff, swingDurationRange;
+  local swingDurationMain, swingDurationOff, swingDurationRange, mainSwingOffset;
   local mainTimer, offTimer, rangeTimer;
   local selfGUID;
 
@@ -1447,7 +1447,7 @@ do
       local itemId = GetInventoryItemID("player", mh);
       local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingMain) then
-        return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
+        return swingDurationMain, lastSwingMain + swingDurationMain - mainSwingOffset, name, icon;
       elseif not WeakAuras.IsClassic and lastSwingRange then
         return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
       else
@@ -1476,7 +1476,7 @@ do
 
   local function swingEnd(hand)
     if(hand == "main") then
-      lastSwingMain, swingDurationMain = nil, nil;
+      lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil;
     elseif(hand == "off") then
       lastSwingOff, swingDurationOff = nil, nil;
     elseif(hand == "ranged") then
@@ -1498,6 +1498,7 @@ do
         if not(isOffHand) then
           lastSwingMain = currentTime;
           swingDurationMain = mainSpeed;
+          mainSwingOffset = 0;
           event = "SWING_TIMER_START";
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
@@ -1516,10 +1517,12 @@ do
         if (timeLeft > 0.6 * swingDurationMain) then
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.4 * swingDurationMain, "main");
+          mainSwingOffset = 0.4 * swingDurationMain
           WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
         elseif (timeLeft > 0.2 * swingDurationMain) then
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.2 * swingDurationMain, "main");
+          mainSwingOffset = 0.2 * swingDurationMain
           WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
         end
       end
@@ -1537,6 +1540,7 @@ do
         local mainSpeed, offSpeed = UnitAttackSpeed("player");
         lastSwingMain = currentTime;
         swingDurationMain = mainSpeed;
+        mainSwingOffset = 0;
         if (lastSwingMain) then
           timer:CancelTimer(mainTimer);
           event = "SWING_TIMER_CHANGE";
