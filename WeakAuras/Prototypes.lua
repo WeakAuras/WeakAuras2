@@ -1103,7 +1103,7 @@ WeakAuras.load_prototype = {
       type = "number",
       init = "arg",
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
-      hidden = WeakAuras.IsClassic
+      enable = not WeakAuras.IsClassic -- WOWCLASSIC TO FIX: hidding it makes an error
     },
     {
       name = "zone",
@@ -1149,6 +1149,7 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = "difficulty_types",
       init = "arg",
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -1157,6 +1158,7 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = "role_types",
       init = "arg",
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
     {
@@ -1166,6 +1168,7 @@ WeakAuras.load_prototype = {
       values = "mythic_plus_affixes",
       init = "arg",
       test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
+      enable = not WeakAuras.IsClassic,
       hidden = WeakAuras.IsClassic
     },
   }
@@ -5621,6 +5624,7 @@ WeakAuras.event_prototypes = {
         display = L["PvP Flagged"],
         type = "tristate",
         init = "UnitIsPVP('player')",
+        enable = not WeakAuras.IsClassic,
         hidden = WeakAuras.IsClassic
       },
       {
@@ -5634,6 +5638,7 @@ WeakAuras.event_prototypes = {
         display = L["In Vehicle"],
         type = "tristate",
         init = "not WeakAuras.IsClassic and UnitInVehicle('player')",
+        enable = not WeakAuras.IsClassic,
         hidden = WeakAuras.IsClassic
       },
       {

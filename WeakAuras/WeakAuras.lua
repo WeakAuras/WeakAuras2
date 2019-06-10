@@ -1781,11 +1781,11 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   end
 
 
-  local effectiveLevel = WeakAuras.IsClassic and UnitLevel("player") or UnitEffectiveLevel("player")
-  local affixes, warmodeActive = 0, false
+  local affixes, warmodeActive, effectiveLevel = 0, false, 0
   if not WeakAuras.IsClassic then
-    local affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
-    local warmodeActive = C_PvP.IsWarModeDesired();
+    effectiveLevel = UnitEffectiveLevel("player")
+    affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
+    warmodeActive = C_PvP.IsWarModeDesired();
   end
 
   local changed = 0;
