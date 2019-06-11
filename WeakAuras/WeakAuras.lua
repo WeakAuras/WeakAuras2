@@ -1994,6 +1994,7 @@ function WeakAuras.Delete(data)
       if parentData.sortHybridTable then
         parentData.sortHybridTable[id] = nil
       end
+      WeakAuras.ClearAuraEnvironment(data.parent);
     end
   end
 
@@ -3313,7 +3314,9 @@ local function pAdd(data)
 
   db.displays[id] = data;
   WeakAuras.ClearAuraEnvironment(id);
-
+  if data.parent then
+    WeakAuras.ClearAuraEnvironment(data.parent);
+  end
   if (data.controlledChildren) then
     WeakAuras.SetRegion(data);
   else

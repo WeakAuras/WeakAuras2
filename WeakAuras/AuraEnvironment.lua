@@ -124,6 +124,7 @@ end
 
 function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
   local data = WeakAuras.GetData(id)
+  local region = WeakAuras.GetRegion(id, cloneId)
   if not data then
     -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
     tremove(aura_env_stack)
@@ -132,27 +133,25 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
     if environment_initialized[id] then
       -- Point the current environment to the correct table
       current_aura_env = aura_environments[id]
+      current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)
     else
-      -- Reset the environment if we haven't completed init, i.e. if we add/update/replace a WeakAura
+      -- Either this aura environment has not yet been initialized, or it was reset via an edit in WeakaurasOptions
       environment_initialized[id] = true
       aura_environments[id] = {}
       current_aura_env = aura_environments[id]
-      -- Push the new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env)
+      current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
-      current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
+      current_aura_env.region = region
       if data.controlledChildren then
-        current_aura_env.configs = {}
         current_aura_env.child_envs = {}
         for dataIndex, childID in ipairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childID)
-          current_aura_env.configs[dataIndex] = CopyTable(childData.config)
           if childData then
             if not environment_initialized[childID] then
               WeakAuras.ActivateAuraEnvironment(childID)
@@ -164,17 +163,17 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       else
         current_aura_env.config = CopyTable(data.config)
       end
-      -- Run the init function if supplied
+      -- push new environment onto the stack
+      tinsert(aura_env_stack, current_aura_env)
+      -- Finally, un the init function if supplied
       local actions = data.actions.init
       if(actions and actions.do_custom and actions.custom) then
         local func = WeakAuras.customActionsFunctions[id]["init"]
         if func then
-          current_aura_env.id = id
           xpcall(func, geterrorhandler())
         end
       end
     end
-    current_aura_env.id = id
   end
 end
 
