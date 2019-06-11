@@ -2967,7 +2967,7 @@ WeakAuras.event_prototypes = {
   ["GTFO"] = {
     type = "event",
     events = {
-      "GTFO_DISPLAY"
+      ["events"] = {"GTFO_DISPLAY"}
     },
     name = L["GTFO Alert"],
     statesParameter = "one",
