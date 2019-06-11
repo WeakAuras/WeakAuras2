@@ -727,7 +727,7 @@ local function GetAllUnits(unit)
         i = 0
       end
     end
-  elseif unit == "boss" or unit == "arena" or "nameplate" then
+  elseif unit == "boss" or unit == "arena" or unit == "nameplate" then
     local i = 1
     local max
     if unit == "boss" then
