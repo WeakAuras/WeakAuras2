@@ -2030,7 +2030,7 @@ local function mergeOptions(mergedOptions, data, options, config, prepath)
       mergedOption.references[data.id] = {
         data = data,
         options = options,
-        index = nextInsert,
+        index = i,
         config = config,
         path = path
       }
@@ -2054,7 +2054,7 @@ local function mergeOptions(mergedOptions, data, options, config, prepath)
     else
       -- can't merge, should insert instead
       local newOption = CopyTable(nextToMerge)
-      initReferences(newOption, data, options, nextInsert, config, path)
+      initReferences(newOption, data, options, i, config, path)
       tinsert(mergedOptions, nextInsert, newOption)
     end
     -- never merge 2 options from the same child
