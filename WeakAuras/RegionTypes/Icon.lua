@@ -47,7 +47,7 @@ local default = {
   glowLines = 8,
   glowFrequency = 0.25,
   glowLength = 10,
-  glowThickness = 4,
+  glowThickness = 1,
   glowScale = 1,
   glowBorder = false,
   glowXOffset = 0,
@@ -140,7 +140,7 @@ local properties = {
     min = 1,
     softMax = 20,
     bigStep = 1,
-    default = 4
+    default = 1
   },
   glowScale = {
     display = { WeakAuras.newFeatureString .. L["Glow"], L["Scale"]},
