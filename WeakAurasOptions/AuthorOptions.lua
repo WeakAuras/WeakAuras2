@@ -1783,9 +1783,10 @@ local function addUserModeOption(options, args, data, order, prefix, i)
                 local childOption = optionData.options[optionData.index]
                 local childConfigList = optionData.config[childOption.key]
                 local childData = optionData.data
+                local page = getPage(id, optionData.path)
                 if #childConfigList ~= 0 then
-                  tremove(childConfigList)
-                  setPage(id, optionData.path, #childConfigList)
+                  tremove(childConfigList, page)
+                  setPage(id, optionData.path, min(#childConfigList, page))
                   WeakAuras.Add(childData)
                 end
               end
