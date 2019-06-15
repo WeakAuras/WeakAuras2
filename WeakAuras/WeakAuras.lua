@@ -5415,15 +5415,12 @@ local function ensurePRDFrame()
     self:ClearAllPoints();
     self:SetPoint("TOPLEFT", frameTL, "TOPLEFT");
     self:SetPoint("BOTTOMRIGHT", frameBR, "BOTTOMRIGHT");
+    self:Show()
   end
 
   personalRessourceDisplayFrame.Detach = function(self, frame)
-    local top, width, height = self:GetTop(), self:GetWidth(), self:GetHeight();
     self:ClearAllPoints();
-    self:SetParent(UIParent);
-    self:SetPoint("TOPLEFT", UIParent, "BOTTOM", -width / 2, top);
-    self:SetWidth(width);
-    self:SetHeight(height);
+    self:Hide()
   end
 
   personalRessourceDisplayFrame.OptionsOpened = function()
