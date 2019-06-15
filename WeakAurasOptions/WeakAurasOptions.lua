@@ -1404,6 +1404,15 @@ function WeakAuras.ShowOptions(msg)
   end
 
   frame:Show();
+
+  if (WeakAuras.mouseFrame) then
+    WeakAuras.mouseFrame:OptionsOpened();
+  end
+
+  if (WeakAuras.personalRessourceDisplayFrame) then
+    WeakAuras.personalRessourceDisplayFrame:OptionsOpened();
+  end
+
   if (frame.pickedDisplay) then
     if (WeakAuras.IsPickedMultiple()) then
       local children = {}
@@ -1430,13 +1439,6 @@ function WeakAuras.ShowOptions(msg)
 
   if (frame.window == "codereview") then
     frame.codereview:Close();
-  end
-
-  if (WeakAuras.mouseFrame) then
-    WeakAuras.mouseFrame:OptionsOpened();
-  end
-  if (WeakAuras.personalRessourceDisplayFrame) then
-    WeakAuras.personalRessourceDisplayFrame:OptionsOpened();
   end
 end
 
