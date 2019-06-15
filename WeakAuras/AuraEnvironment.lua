@@ -148,6 +148,9 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.region = region
+      -- push new environment onto the stack
+      tinsert(aura_env_stack, current_aura_env)
+
       if data.controlledChildren then
         current_aura_env.child_envs = {}
         for dataIndex, childID in ipairs(data.controlledChildren) do
@@ -163,8 +166,6 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       else
         current_aura_env.config = CopyTable(data.config)
       end
-      -- push new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env)
       -- Finally, un the init function if supplied
       local actions = data.actions.init
       if(actions and actions.do_custom and actions.custom) then
