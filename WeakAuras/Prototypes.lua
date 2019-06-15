@@ -12,6 +12,7 @@ local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePower
 local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
+local CastingInfo, ChannelInfo = CastingInfo, ChannelInfo
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
@@ -25,6 +26,31 @@ local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
 function WeakAuras.GetRange(unit, checkVisible)
   return LibRangeCheck:GetRange(unit, checkVisible);
+end
+
+local LibClassicCast
+if WeakAuras.IsClassic then
+  LibClassicCast = LibStub("LibClassicCast")
+end
+
+function WeakAuras.UnitCastingInfo(unit)
+  if not WeakAuras.IsClassic then
+    return UnitCastingInfo(unit)
+  elseif UnitIsUnit(unit, "player") then
+    return CastingInfo()
+  else
+    return LibClassicCast:UnitCastingInfo(unit)
+  end
+end
+
+function WeakAuras.UnitChannelInfo(unit)
+  if not WeakAuras.IsClassic then
+    return UnitCastingInfo(unit)
+  elseif UnitIsUnit(unit, "player") then
+    return ChannelInfo()
+  else
+    return LibClassicCast:UnitChannelInfo(unit)
+  end
 end
 
 function WeakAuras.CheckRange(unit, range, operator)
@@ -4892,33 +4918,38 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-      if not WeakAuras.IsClassic or trigger.unit == "player" then
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      if not (WeakAuras.IsClassic and trigger.unit ~= "player") then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      else
+        LibClassicCast:RegisterCallback("PLAYER_TARGET_CHANGED", WeakAuras.ScanEvents)
+        LibClassicCast:RegisterCallback("UNIT_SPELLCAST_START", WeakAuras.ScanEvents)
+        LibClassicCast:RegisterCallback("UNIT_SPELLCAST_DELAYED", WeakAuras.ScanEvents)
+        LibClassicCast:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanEvents)
       end
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
         AddUnitEventForEvents(result, trigger.destUnit, "UNIT_TARGET")
       end
       AddUnitChangeEvents(trigger.unit, result)
-      if WeakAuras.IsClassic and trigger.unit ~= "player" then
-        if not result.events then result.events = {} end
-        tinsert(result.events, "COMBAT_LOG_EVENT_UNFILTERED")
-      end
       return result
-    end,
-    subevents = function(trigger)
-      return WeakAuras.IsClassic and trigger.unit ~= "player" and {"SPELL_CAST_START"}
     end,
     internal_events = function(trigger)
       local result = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"}
+      if WeakAuras.IsClassic and trigger.unit ~= "player" then
+        tinsert(result, "PLAYER_TARGET_CHANGED")
+        tinsert(result, "UNIT_SPELLCAST_START")
+        tinsert(result, "UNIT_SPELLCAST_DELAYED")
+        tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
+      end
       AddUnitChangeInternalEvents(trigger.unit, result)
       return result
     end,
@@ -4928,8 +4959,7 @@ WeakAuras.event_prototypes = {
     name = L["Cast"],
     triggerFunction = function(trigger)
       local ret = [=[
-        return function(states, event, ...)
-          local sourceUnit = ...
+        return function(states, event, sourceUnit)
           local trigger_inverse = %s
           local trigger_unit = %q
           local trigger_spellName = %q
@@ -4941,12 +4971,6 @@ WeakAuras.event_prototypes = {
           local trigger_clone = %s
           local localizedSpellName = %q
           local cloneId = ""
-
-          if event == "COMBAT_LOG_EVENT_UNFILTERED"
-          and UnitGUID(trigger_unit) == select(4, ...)
-          then
-            sourceUnit = trigger_unit
-          end
 
           if trigger_clone and sourceUnit and UnitExists(sourceUnit) then
             cloneId = UnitGUID(sourceUnit)
@@ -4967,40 +4991,15 @@ WeakAuras.event_prototypes = {
             if event == "UNIT_SPELLCAST_STOP"
             or event == "UNIT_SPELLCAST_CHANNEL_STOP"
             or event == "UNIT_SPELLCAST_INTERRUPTED"
+            or event == "UNIT_SPELLCAST_FAILED"
             then
               show = false
             else
-              if WeakAuras.IsClassic then
-                if trigger_unit == "player" then
-                  spell, _, icon, startTime, endTime, _, _, interruptible, spellId = CastingInfo()
-                elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-                  spellId = select(12, ...)
-                  if spellId then
-                    spell, _, icon, castTime = GetSpellInfo(spellId)
-                    startTime = GetTime() * 1000
-                    endTime = startTime + castTime
-                  end
-                end
-              else
-                spell, _, icon, startTime, endTime, _, _, interruptible, spellId = UnitCastingInfo(sourceUnit)
-              end
+              spell, _, icon, startTime, endTime, _, _, interruptible, spellId = WeakAuras.UnitCastingInfo(sourceUnit)
               if spell then
                 castType = "cast"
               else
-                if WeakAuras.IsClassic then
-                  if trigger_unit == "player" then
-                    spell, _, icon, startTime, endTime, _, interruptible, spellId = ChannelInfo()
-                  elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-                    spellId = select(12, ...)
-                    if spellId then
-                      spell, _, icon, castTime = GetSpellInfo(spellId)
-                      startTime = GetTime() * 1000
-                      endTime = startTime + castTime
-                    end
-                  end
-                else
-                  spell, _, icon, startTime, endTime, _, interruptible, spellId = UnitChannelInfo(sourceUnit)
-                end
+                spell, _, icon, startTime, endTime, _, interruptible, spellId = WeakAuras.UnitChannelInfo(sourceUnit)
                 if spell then
                   castType = "channel"
                 end
@@ -5046,6 +5045,8 @@ WeakAuras.event_prototypes = {
                 inverse = castType == "cast",
                 resort = true
               }
+              local duration = trigger_inverse and 0 or (endTime - startTime)/1000
+              local expirationTime = trigger_inverse and math.huge or expirationTime
             else
               local state = states[cloneId]
               if state and state.show
@@ -5093,7 +5094,7 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         values = function(trigger)
-          if WeakAuras.IsClassic or trigger.use_inverse then
+          if trigger.use_inverse then
             return WeakAuras.actual_unit_types_with_specific
           else
             return WeakAuras.actual_unit_types_with_specific_and_multi

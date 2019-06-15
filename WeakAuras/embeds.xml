@@ -20,5 +20,6 @@
   <Script file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
   <!--@non-retail@-->
   <Include file="Libs\LibClassicDurations\LibClassicDurations.xml"/>
+  <Include file="Libs\LibClassicCast\lib.xml"/>
   <!--@end-non-retail@-->
 </Ui>
