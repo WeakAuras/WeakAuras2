@@ -333,7 +333,7 @@ local function importPendingData()
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
-  ItemRefTooltip:Hide()-- this also wipes pendingData as a side effect (not sure if still true)
+  ItemRefTooltip:Hide()-- this also wipes pendingData via the hook on L521
   buttonAnchor:Hide()
   thumbnailAnchor.currentThumbnail:Hide()
   thumbnailAnchor.currentThumbnail = nil
