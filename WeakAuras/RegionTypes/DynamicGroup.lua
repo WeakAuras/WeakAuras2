@@ -844,9 +844,10 @@ local function modify(parent, region, data)
               local translateFunc = [[
                                 function(progress, _, _, previousAngle, dAngle)
                                     local previousRadius, dRadius = %f, %f;
+                                    local targetX, targetY = %f, %f
                                     local radius = previousRadius + (1 - progress) * dRadius;
                                     local angle = previousAngle + (1 - progress) * dAngle;
-                                    return cos(angle) * radius, sin(angle) * radius;
+                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
                                 end
                             ]]
               anim = {
@@ -854,7 +855,7 @@ local function modify(parent, region, data)
                 duration = 0.2,
                 use_translate = true,
                 translateType = "custom",
-                translateFunc = translateFunc:format(radius1, radius2 - radius1),
+                translateFunc = translateFunc:format(radius1, radius2 - radius1, x, y),
                 x = previousAngle,
                 y = dAngle,
                 selfPoint = data.selfPoint,
@@ -865,8 +866,9 @@ local function modify(parent, region, data)
               local translateFunc = [[
                                 function(progress, _, _, previousAngle, dAngle)
                                     local radius = %f;
+                                    local targetX, targetY = %f, %f
                                     local angle = previousAngle + (1 - progress) * dAngle;
-                                    return cos(angle) * radius, sin(angle) * radius;
+                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
                                 end
                             ]]
               anim = {
@@ -874,7 +876,7 @@ local function modify(parent, region, data)
                 duration = 0.2,
                 use_translate = true,
                 translateType = "custom",
-                translateFunc = translateFunc:format(radius1),
+                translateFunc = translateFunc:format(radius1, x, y),
                 x = previousAngle,
                 y = dAngle,
                 selfPoint = data.selfPoint,
