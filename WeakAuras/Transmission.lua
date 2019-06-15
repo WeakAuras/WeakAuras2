@@ -333,7 +333,7 @@ local function importPendingData()
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
-  HideUIPanel(ItemRefTooltip) -- this also wipes pendingData as a side effect
+  ItemRefTooltip:Hide()-- this also wipes pendingData via the hook on L521
   buttonAnchor:Hide()
   thumbnailAnchor.currentThumbnail:Hide()
   thumbnailAnchor.currentThumbnail = nil
@@ -835,7 +835,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
 end
 
 function ShowTooltip(lines, linesFromTop, activeCategories)
-  ShowUIPanel(ItemRefTooltip);
+  ItemRefTooltip:Show();
   if not ItemRefTooltip:IsVisible() then
     ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE");
   end
