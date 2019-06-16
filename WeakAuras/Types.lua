@@ -370,6 +370,7 @@ WeakAuras.subevent_actual_prefix_types = {
 }
 
 WeakAuras.subevent_suffix_types = {
+  _ABSORBED = L["Absorbed"],
   _DAMAGE = L["Damage"],
   _MISSED = L["Missed"],
   _HEAL = L["Heal"],
