@@ -1677,9 +1677,30 @@ local function addUserModeOption(options, args, data, order, prefix, i)
     if not collapsed then
       local values = {}
       local firstChild = true
+      local menuDesc = {}
       for id, optionData in pairs(option.references) do
         local childOption = optionData.options[optionData.index]
         local childValues = optionData.config[childOption.key]
+        local menuKey
+        for _, subOption in ipairs(childOption.subOptions) do
+          if subOption.type == "input" and (
+            subOption.key == "desc" or subOption.key == "description" or
+            subOption.key == "spell" or subOption.key == "spellid"
+          )
+          then
+            menuKey = subOption.key
+            break
+          end
+        end
+        if menuKey then
+          for i, childValue in ipairs(childValues) do
+            local desc = childValue[menuKey]
+            if tonumber(desc) then
+              desc = GetSpellInfo(desc) or desc
+            end
+            menuDesc[i] = desc
+          end
+        end
         local i = 1
         while i <= #values or i <= #childValues do
           if firstChild then
@@ -1698,9 +1719,9 @@ local function addUserModeOption(options, args, data, order, prefix, i)
       else
         for i, v in pairs(values) do
           if v == conflict then
-            values[i] = conflictBlue .. L["Entry %i"]:format(i)
+            values[i] = conflictBlue .. menuDesc[i] or L["Entry %i"]:format(i)
           else
-            values[i] = L["Entry %i"]:format(i)
+            values[i] = menuDesc[i] or L["Entry %i"]:format(i)
           end
         end
       end
