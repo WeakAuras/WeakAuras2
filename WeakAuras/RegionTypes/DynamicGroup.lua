@@ -117,6 +117,7 @@ local function expirationTime(regionData)
   end
   return nil
 end
+WeakAuras.ExpirationTime = expirationTime
 
 local function compareExpirationTimes(regionDataA, regionDataB)
   local aExpires = expirationTime(regionDataA)
@@ -136,6 +137,7 @@ local function compareExpirationTimes(regionDataA, regionDataB)
   end
 
 end
+WeakAuras.CompareExpirationTimes = compareExpirationTimes
 
 local function noop() end
 
@@ -235,6 +237,7 @@ local sorters = {
     end
   end
 }
+WeakAuras.SortFunctions = sorters
 
 local function createSortFunc(data)
   local sorter = sorters[data.sort] or sorters.none
@@ -531,6 +534,7 @@ local growers = {
     end
   end
 }
+WeakAuras.GrowFunctions = growers
 
 local function createGrowFunc(data)
   local grower = growers[data.grow] or growers.DOWN
