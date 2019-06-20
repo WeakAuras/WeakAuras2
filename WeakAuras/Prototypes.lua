@@ -5386,7 +5386,7 @@ WeakAuras.event_prototypes = {
         ]]
         return ret:format(spellName, trigger.use_petspell and "true" or "false");
       else
-        local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName or "";
         local ret = [[
           local spellName = select(7, GetSpellInfo(%q));
           local usePet = %s;
