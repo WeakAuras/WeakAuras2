@@ -831,7 +831,7 @@ local function modify(parent, region, data)
       controlPoint:SetWidth(regionData.data.width or regionData.region.width)
       controlPoint:SetHeight(regionData.data.height or regionData.region.height)
       if animate then
-        WeakAuras.CancelAnimation(regionData.controlPoint)
+        WeakAuras.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
         local yPrev = regionData.yOffset or y
         local xDelta = xPrev - x
