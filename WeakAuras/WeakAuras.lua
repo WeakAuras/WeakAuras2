@@ -690,7 +690,10 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
         check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
       end
     elseif (ctype == "number" and op) then
-      check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. value;
+      local v = tonumber(value)
+      if (v) then
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. v;
+      end
     elseif (ctype == "timer" and op) then
       if (op == "==") then
         check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]." ..variable .. "- now -" .. value .. ") < 0.05";
@@ -723,6 +726,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
       recheckCode = recheckCode .. "  end\n"
     end
   end
+
   return check, recheckCode;
 end
 
