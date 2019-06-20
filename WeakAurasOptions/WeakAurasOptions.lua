@@ -2791,10 +2791,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          tremove(childData.triggers, optionTriggerChoices[childId])
-          WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
-          optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
-          WeakAuras.ReloadTriggerOptions(childData);
+          if #childData.triggers > 1 then
+            tremove(childData.triggers, optionTriggerChoices[childId])
+            WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
+            optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
+            WeakAuras.ReloadTriggerOptions(childData);
+          end
         end
       end
     else
