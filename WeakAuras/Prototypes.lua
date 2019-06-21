@@ -45,7 +45,7 @@ end
 
 function WeakAuras.UnitChannelInfo(unit)
   if not WeakAuras.IsClassic then
-    return UnitCastingInfo(unit)
+    return UnitChannelInfo(unit)
   elseif UnitIsUnit(unit, "player") then
     return ChannelInfo()
   else
