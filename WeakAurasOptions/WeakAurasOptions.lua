@@ -18,14 +18,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 local prettyPrint = WeakAuras.prettyPrint
-
-local ValidateNumeric = function(info, val)
-  if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
-    return false;
-  end
-  return true
-end
-WeakAuras.ValidateNumeric = ValidateNumeric;
+local ValidateNumeric = WeakAuras.ValidateNumeric;
 
 local dynFrame = WeakAuras.dynFrame;
 WeakAuras.transmitCache = {};
@@ -240,6 +233,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       hidden = isCollapsedFunctions[arg.collapse]
     end
     local name = arg.name;
+    local validate = arg.validate;
     local reloadOptions = arg.reloadOptions;
     if (name and arg.type == "collapse") then
       options["summary_" .. arg.name] = {
@@ -534,6 +528,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           name = arg.display,
           order = order,
           hidden = hidden,
+          validate = validate,
           desc = arg.desc,
           set = function(info, v)
             trigger[realname] = v;
@@ -618,6 +613,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           name = arg.display,
           order = order,
           hidden = hidden,
+          validate = validate,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
@@ -704,6 +700,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             name = arg.display,
             order = order,
             hidden = hidden,
+            validate = validate,
             disabled = function() return not trigger["use_"..realname]; end,
             get = function()
               if(arg.type == "item") then
