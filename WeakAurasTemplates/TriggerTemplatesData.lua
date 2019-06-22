@@ -628,6 +628,7 @@ templates.class.PALADIN = {
         { spell = 1044, type = "buff", unit = "group"}, -- Blessing of Freedom
         { spell = 209785, type = "buff", unit = "player", talent = 4}, -- Fires of Justice
         { spell = 223819, type = "buff", unit = "player", talent = 19}, -- Divine Purpose
+        { spell = 183436, type = "buff", unit = "player"}, -- Retribution
       },
       icon = 135993
     },
