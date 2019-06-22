@@ -653,6 +653,13 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
+function WeakAuras.ValidateNumeric(info, val)
+  if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
+    return false;
+  end
+  return true
+end
+
 function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
   if (not loadids or not currentId) or type(currentId) ~= "table" then
     return false
