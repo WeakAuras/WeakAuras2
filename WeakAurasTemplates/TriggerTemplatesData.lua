@@ -2276,9 +2276,13 @@ templates.class.WARLOCK = {
     [3] = {
       title = L["Abilities"],
       args = {
+        { spell = 172, type = "ability", requiresTarget = true, debuff = true}, -- Corruption
         { spell = 698, type = "ability"}, -- Ritual of Summoning
+        { spell = 710, type = "ability", requiresTarget = true, debuff = true}, -- Banish
+        { spell = 980, type = "ability", requiresTarget = true, debuff = true}, -- Agony
         { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
         { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+        { spell = 5782, type = "ability", requiresTarget = true, debuff = true}, -- Fear
         { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
         { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
         { spell = 6789, type = "ability", requiresTarget = true, talent = 15 }, -- Mortal Coil
@@ -2289,12 +2293,15 @@ templates.class.WARLOCK = {
         { spell = 19505, type = "ability", requiresTarget = true}, -- Devour Magic
         { spell = 19647, type = "ability", requiresTarget = true}, -- Spell Lock
         { spell = 20707, type = "ability"}, -- Soulstone
+        { spell = 27243, type = "ability", requiresTarget = true}, -- Seed of Corruption
         { spell = 29893, type = "ability"}, -- Create Soulwell
+        { spell = 30108, type = "ability", requiresTarget = true}, -- Unstable Affliction
         { spell = 30283, type = "ability"}, -- Shadowfury
         { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
         { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
         { spell = 48181, type = "ability", requiresTarget = true, debuff = true, talent = 17 }, -- Haunt
         { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
+        { spell = 63106, type = "ability", requiresTarget = true, debuff = true, talent = 6}, -- Siphon Life
         { spell = 89792, type = "ability" }, -- Flee
         { spell = 89808, type = "ability"}, -- Singe Magic
         { spell = 104773, type = "ability", buff = true}, -- Unending Resolve
@@ -2307,6 +2314,7 @@ templates.class.WARLOCK = {
         { spell = 205179, type = "ability", requiresTarget = true, debuff = true, talent = 11 }, -- Phantom Singularity
         { spell = 205180, type = "ability", totem = true}, -- Summon Darkglare
         { spell = 232670, type = "ability", requiresTarget = true, overlayGlow = true}, -- Shadow Bolt
+        { spell = 234153, type = "ability", requiresTarget = true}, -- Drain Life
         { spell = 264106, type = "ability", requiresTarget = true, talent = 3 }, -- Deathbolt
         { spell = 264993, type = "ability"}, -- Shadow Shield
         { spell = 278350, type = "ability", requiresTarget = true, talent = 12 }, -- Vile Taint
@@ -2386,8 +2394,11 @@ templates.class.WARLOCK = {
     [3] = {
       title = L["Abilities"],
       args = {
+        { spell = 686, type = "ability", requiresTarget = true}, -- Shadow Bolt
         { spell = 698, type = "ability"}, -- Ritual of Summoning
+        { spell = 710, type = "ability", requiresTarget = true, debuff = true}, -- Banish
         { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+        { spell = 5782, type = "ability", requiresTarget = true, debuff = true}, -- Fear
         { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
         { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
         { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
@@ -2410,6 +2421,7 @@ templates.class.WARLOCK = {
         { spell = 89808, type = "ability"}, -- Singe Magic
         { spell = 104316, type = "ability", requiresTarget = true, overlayGlow = true}, -- Call Dreadstalkers
         { spell = 104773, type = "ability", buff = true}, -- Unending Resolve
+        { spell = 105174, type = "ability", requiresTarget = true}, -- Hand of Gul'dan
         { spell = 108416, type = "ability", buff = true, talent = 9 }, -- Dark Pact
         { spell = 111771, type = "ability"}, -- Demonic Gateway
         { spell = 111898, type = "ability", requiresTarget = true, talent = 18 }, -- Grimoire: Felguard
@@ -2420,6 +2432,7 @@ templates.class.WARLOCK = {
         { spell = 264178, type = "ability", requiresTarget = true, overlayGlow = true}, -- Demonbolt
         { spell = 264993, type = "ability"}, -- Shadow Shield
         { spell = 265187, type = "ability"}, -- Summon Demonic Tyrant
+        { spell = 265412, type = "ability", requiresTarget = true, debuff = true, talent = 6}, -- Doom
         { spell = 267171, type = "ability", requiresTarget = true, talent = 2 }, -- Demonic Strength
         { spell = 267211, type = "ability", talent = 3 }, -- Bilescourge Bombers
         { spell = 267217, type = "ability", buff = true, talent = 21 }, -- Nether Portal
@@ -2503,10 +2516,14 @@ templates.class.WARLOCK = {
     [3] = {
       title = L["Abilities"],
       args = {
+        { spell = 348, type = "ability", requiresTarget = true, debuff = true}, -- Immolate
         { spell = 698, type = "ability"}, -- Ritual of Summoning
+        { spell = 710, type = "ability", requiresTarget = true, debuff = true}, -- Banish
         { spell = 1122, type = "ability", duration = 30}, -- Summon Infernal
         { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
         { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+        { spell = 5740, type = "ability"}, -- Rain of Fire
+        { spell = 5782, type = "ability", requiresTarget = true, debuff = true}, -- Fear
         { spell = 6353, type = "ability", talent = 3 }, -- Soul Fire
         { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
         { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
@@ -2518,6 +2535,7 @@ templates.class.WARLOCK = {
         { spell = 17962, type = "ability", requiresTarget = true, charges = true}, -- Conflagrate
         { spell = 19647, type = "ability", requiresTarget = true}, -- Spell Lock
         { spell = 20707, type = "ability"}, -- Soulstone
+        { spell = 29722, type = "ability", requiresTarget = true}, -- Incinerate
         { spell = 29893, type = "ability"}, -- Create Soulwell
         { spell = 30283, type = "ability"}, -- Shadowfury
         { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
@@ -2533,7 +2551,9 @@ templates.class.WARLOCK = {
         { spell = 112042, type = "ability"}, -- Threatening Presence
         { spell = 113858, type = "ability", buff = true, talent = 21 }, -- Dark Soul: Instability
         { spell = 152108, type = "ability", talent = 12 }, -- Cataclysm
+        { spell = 116858, type = "ability", requiresTarget = true}, -- Chaos Bolt
         { spell = 196447, type = "ability", usable = true, talent = 20 }, -- Channel Demonfire
+        { spell = 234153, type = "ability", requiresTarget = true}, -- Drain Life
         { spell = 264993, type = "ability"}, -- Shadow Shield
         { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
       },
