@@ -1101,14 +1101,20 @@ templates.class.ROGUE = {
       title = L["Abilities"],
       args = {
         { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
-        { spell = 703, type = "ability", requiresTarget = true}, -- Garrote
+        { spell = 703, type = "ability", requiresTarget = true, debuff = true}, -- Garrote
         { spell = 1725, type = "ability"}, -- Distract
+        { spell = 1752, type = "ability", requiresTarget = true}, -- Sinister Strike / Mutilate
         { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
         { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1833, type = "ability", usable = true, requiresTarget = true, debuff = true}, -- Cheap Shot
         { spell = 1856, type = "ability", buff = true}, -- Vanish
+        { spell = 1943, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Rupture
         { spell = 1966, type = "ability", buff = true}, -- Feint
         { spell = 2094, type = "ability", requiresTarget = true}, -- Blind
         { spell = 2983, type = "ability", buff = true}, -- Sprint
+        { spell = 51723, type = "ability"}, -- Fan of Knives
+        { spell = 57934, type = "ability", requiresTarget = true}, -- Tricks of the Trade
+        { spell = 6770, type = "ability", usable = true, requiresTarget = true, debuff = true}, -- Sap
         { spell = 5277, type = "ability", buff = true}, -- Evasion
         { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
         { spell = 36554, type = "ability", requiresTarget = true}, -- Shadowstep
@@ -1117,6 +1123,7 @@ templates.class.ROGUE = {
         { spell = 115191, type = "ability", buff = true}, -- Stealth
         { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
         { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 196819, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Envenom
         { spell = 200806, type = "ability", requiresTarget = true, usable = true, talent = 18}, -- Exsanguinate
         { spell = 245388, type = "ability", requiresTarget = true, talent = 17}, -- Toxic Blade
         { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
@@ -1198,21 +1205,27 @@ templates.class.ROGUE = {
       title = L["Abilities"],
       args = {
         { spell = 1725, type = "ability"}, -- Distract
+        { spell = 1752, type = "ability", requiresTarget = true}, -- Sinister Strike
         { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
         { spell = 1776, type = "ability", requiresTarget = true, debuff = true}, -- Gouge
         { spell = 1784, type = "ability", buff = true}, -- Stealth
         { spell = 1856, type = "ability", buff = true}, -- Vanish
         { spell = 1966, type = "ability", buff = true}, -- Feint
         { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
+        { spell = 2098, type = "ability", requiresTarget = true, usable = true}, -- Dispatch
         { spell = 2983, type = "ability", buff = true }, -- Sprint
+        { spell = 8676, type = "ability", requiresTarget = true, usable = true}, -- Shroud of Concealment
         { spell = 13750, type = "ability", buff = true}, -- Adrenaline Rush
         { spell = 13877, type = "ability", buff = true, charges = true}, -- Blade Flurry
         { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
         { spell = 51690, type = "ability", requiresTarget = true, talent = 21}, -- Killing Spree
+        { spell = 57934, type = "ability", requiresTarget = true}, -- Tricks of the Trade
         { spell = 79096, type = "ability"}, -- Restless Blades
         { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
         { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
         { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
+        { spell = 185763, type = "ability", requiresTarget = true}, -- Pistol Shot
+        { spell = 193316, type = "ability", requiresTarget = true, usable = true}, -- Roll the Bones
         { spell = 195457, type = "ability", requiresTarget = true}, -- Grappling Hook
         { spell = 196937, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Ghostly Strike
         { spell = 199754, type = "ability", buff = true}, -- Riposte
@@ -1295,23 +1308,33 @@ templates.class.ROGUE = {
     [3] = {
       title = L["Abilities"],
       args = {
+        { spell = 53, type = "ability", requiresTarget = true}, -- Backstab
         { spell = 408, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
         { spell = 1725, type = "ability"}, -- Distract
+        { spell = 1752, type = "ability", requiresTarget = true}, -- Sinister Strike
         { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
         { spell = 1784, type = "ability", buff = true}, -- Stealth
+        { spell = 1833, type = "ability", usable = true, requiresTarget = true, debuff = true}, -- Cheap Shot
         { spell = 1856, type = "ability", buff = true}, -- Vanish
         { spell = 1966, type = "ability", buff = true}, -- Feint
         { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
         { spell = 2983, type = "ability", buff = true}, -- Sprint
         { spell = 5277, type = "ability", buff = true}, -- Evasion
+        { spell = 57934, type = "ability", requiresTarget = true}, -- Tricks of the Trade
+        { spell = 6770, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Sap
         { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
         { spell = 36554, type = "ability", charges = true, requiresTarget = true}, -- Shadowstep
+        { spell = 114014, type = "ability", requiresTarget = true}, -- Shuriken Toss
         { spell = 114018, type = "ability", usable = true, buff = true}, -- Shroud of Concealment
         { spell = 115191, type = "ability", buff = true}, -- Stealth
         { spell = 121471, type = "ability", buff = true}, -- Shadow Blades
         { spell = 137619, type = "ability", requiresTarget = true, debuff = true, talent = 9}, -- Marked for Death
         { spell = 185311, type = "ability", buff = true}, -- Crimson Vial
         { spell = 185313, type = "ability", charges = true, buff = true}, -- Shadow Dance
+        { spell = 185438, type = "ability", requiresTarget = true, usable = true}, -- Kidney Shot
+        { spell = 195452, type = "ability", usable = true, requiresTarget = true, debuff = true}, -- Nightblade
+        { spell = 196819, type = "ability", usable = true, requiresTarget = true}, -- Eviscerate
+        { spell = 197835, type = "ability"}, -- Shuriken Storm
         { spell = 212283, type = "ability", buff = true}, -- Symbols of Death
         { spell = 277925, type = "ability", buff = true, talent = 21}, -- Shuriken Tornado
         { spell = 280719, type = "ability", requiresTarget = true, usable = true, debuff = true, talent = 20}, -- Secret Technique
