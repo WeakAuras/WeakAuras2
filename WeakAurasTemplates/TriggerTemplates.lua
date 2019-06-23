@@ -1322,7 +1322,7 @@ function WeakAuras.CreateTemplateView(frame)
     group:SetFullWidth(true);
     local subTypes = subTypesFor(item, newView.data.regionType);
     local subTypesButtons = {}
-    local firstButton = true;
+    local lastButton
     for k, subType in pairs(subTypes) do
       local button = AceGUI:Create("WeakAurasNewButton");
       subTypesButtons[k] = button;
@@ -1365,10 +1365,13 @@ function WeakAuras.CreateTemplateView(frame)
           WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
         end
       end);
-      if newView.batchStep and firstButton then
+      if newView.batchStep then
         button.frame:LockHighlight();
         newView.choosenItemBatchSubType[item] = subType;
-        firstButton = false;
+        if lastButton then
+          lastButton.frame:UnlockHighlight();
+        end
+        lastButton = button
       end
       group:AddChild(button);
     end
