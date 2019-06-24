@@ -11,7 +11,7 @@ WeakAuras.table_to_string = function(tbl, depth)
     return "{ ... }"
   end
   local str
-  for k,v in pairs(tbl) do
+  for k, v in pairs(tbl) do
     if type(v) ~= "userdata" then
       if type(v) == "table" then
         v = WeakAuras.table_to_string(v, (depth and depth + 1 or 1))
@@ -141,7 +141,7 @@ end
 local popup = ProfilePopup()
 
 local function StartProfiling(map, id)
-  if (not map[id]) then
+  if not map[id] then
     map[id] = {}
     map[id].count = 1
     map[id].start = debugprofilestop()
@@ -149,7 +149,7 @@ local function StartProfiling(map, id)
     return
   end
 
-  if (map[id].count == 0) then
+  if map[id].count == 0 then
     map[id].count = 1
     map[id].start = debugprofilestop()
   else
@@ -159,7 +159,7 @@ end
 
 local function StopProfiling(map, id)
   map[id].count = map[id].count - 1
-  if (map[id].count == 0) then
+  if map[id].count == 0 then
     map[id].elapsed = map[id].elapsed + debugprofilestop() - map[id].start
   end
 end
@@ -237,7 +237,7 @@ function WeakAuras.ToggleProfile()
 end
 
 local function PrintOneProfile(name, map, total)
-  if (map.count ~= 0) then
+  if map.count ~= 0 then
     popup:AddText(name .. "  ERROR: count is not zero:" .. " " .. map.count)
   end
   local percent = ""
@@ -269,12 +269,12 @@ local function TotalProfileTime(map)
 end
 
 function WeakAuras.PrintProfile()
-  if (not profileData.systems.time) then
+  if not profileData.systems.time then
     prettyPrint(L["No Profiling information saved."])
     return
   end
 
-  if (profileData.systems.time.count == 1) then
+  if profileData.systems.time.count == 1 then
     prettyPrint(L["Profiling still running, stop before trying to print."])
     return
   end
