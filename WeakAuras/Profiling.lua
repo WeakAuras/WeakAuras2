@@ -31,6 +31,51 @@ WeakAuras.table_to_string = function(tbl, depth)
   return (str or "{ ") .. " }"
 end
 
+local function CreateDecoration(frame)
+  local deco = CreateFrame("Frame", nil, frame)
+  deco:SetSize(17, 40)
+
+  local bg1 = deco:CreateTexture(nil, "BACKGROUND")
+  bg1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  bg1:SetTexCoord(0.31, 0.67, 0, 0.63)
+  bg1:SetAllPoints(deco)
+
+  local bg2 = deco:CreateTexture(nil, "BACKGROUND")
+  bg2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  bg2:SetTexCoord(0.235, 0.275, 0, 0.63)
+  bg2:SetPoint("RIGHT", bg1, "LEFT")
+  bg2:SetSize(10, 40)
+
+  local bg3 = deco:CreateTexture(nil, "BACKGROUND")
+  bg3:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  bg3:SetTexCoord(0.72, 0.76, 0, 0.63)
+  bg3:SetPoint("LEFT", bg1, "RIGHT")
+  bg3:SetSize(10, 40)
+
+  return deco
+end
+
+local function CreateDecorationWide(frame)
+  local deco1 = frame:CreateTexture(nil, "OVERLAY")
+  deco1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  deco1:SetTexCoord(0.31, 0.67, 0, 0.63)
+  deco1:SetSize(120, 40)
+
+  local deco2 = frame:CreateTexture(nil, "OVERLAY")
+  deco2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  deco2:SetTexCoord(0.21, 0.31, 0, 0.63)
+  deco2:SetPoint("RIGHT", deco1, "LEFT")
+  deco2:SetSize(30, 40)
+
+  local deco3 = frame:CreateTexture(nil, "OVERLAY")
+  deco3:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
+  deco3:SetTexCoord(0.67, 0.77, 0, 0.63)
+  deco3:SetPoint("LEFT", deco1, "RIGHT")
+  deco3:SetSize(30, 40)
+
+  return deco1
+end
+
 local profilePopup
 local function CreateProfilePopup()
   local popupFrame = CreateFrame("EditBox", "WADebugEditBox", UIParent)
@@ -40,14 +85,6 @@ local function CreateProfilePopup()
   popupFrame:SetFontObject(ChatFontNormal)
   popupFrame:SetSize(450, 300)
   popupFrame:Hide()
-
-  local closeButton = CreateFrame("Button", nil, popupFrame, "UIPanelButtonTemplate")
-  closeButton:SetSize(80, 22)
-  closeButton:SetText(L["Close"])
-  closeButton:SetPoint("TOPRIGHT", popupFrame, "TOPRIGHT", 0, 0);
-  closeButton:SetScript("OnClick", function()
-    popupFrame:Hide()
-  end)
 
   popupFrame.orig_Hide = popupFrame.Hide
   function popupFrame:Hide()
@@ -77,10 +114,7 @@ local function CreateProfilePopup()
   end
 
   popupFrame:SetScript("OnEscapePressed", function(self)
-    self:ClearFocus()
-    self:Hide()
-    self.ScrollFrame:Hide()
-    self.Background:Hide()
+    self:ClearFocus() -- TODO: Does not work
   end)
 
   local scrollFrame = CreateFrame("ScrollFrame", "WADebugEditBoxScrollFrame", UIParent, "UIPanelScrollFrameTemplate")
@@ -111,16 +145,35 @@ local function CreateProfilePopup()
   local bg = CreateFrame("Frame", nil, UIParent)
   bg:SetFrameStrata("DIALOG")
   bg:SetBackdrop({
-    bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-border",
-    edgeSize = 16,
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
     insets = { left = 4, right = 4, top = 4, bottom = 4 }
   })
-  bg:SetBackdropColor(.05, .05, .05, .8)
-  bg:SetBackdropBorderColor(.5, .5, .5)
-  bg:SetPoint("TOPLEFT", scrollFrame, -10, 10)
-  bg:SetPoint("BOTTOMRIGHT", scrollFrame, 30, -10)
+  bg:SetPoint("TOPLEFT", scrollFrame, -15, 15)
+  bg:SetPoint("BOTTOMRIGHT", scrollFrame, 35, -25)
   bg:Hide()
+
+  local titlebg = CreateDecorationWide(bg)
+  titlebg:SetPoint("TOP", 0, 12)
+
+  local title = CreateFrame("Frame", nil, bg)
+  title:EnableMouse(true)
+
+  local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
+  titletext:SetText(L["WeakAuras Profiling Data"])
+
+  local close = CreateDecoration(bg)
+  close:SetPoint("RIGHT", titlebg, 50, 0)
+
+  local closeButton = CreateFrame("Button", nil, close, "UIPanelCloseButton")
+  closeButton:SetPoint("CENTER", close, "CENTER", 1, -1)
+  closeButton:SetScript("OnClick", function()
+    popupFrame:Hide()
+  end)
 
   popupFrame.ScrollFrame = scrollFrame
   popupFrame.Background = bg
@@ -279,11 +332,9 @@ function WeakAuras.PrintProfile()
     return
   end
 
-  popup:AddText(L["|cff9900ffWeakAuras EXPERIMENTAL Profiling Data:|r"])
-  popup:AddText("")
   PrintOneProfile("|cff9900ffTotal time:|r", profileData.systems.time)
   PrintOneProfile("|cff9900ffTime inside WA:|r", profileData.systems.wa)
-  popup:AddText(string.format("|cff9900ff%% Time spent inside WA:|r %.2f", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
+  popup:AddText(string.format("|cff9900ffTime spent inside WA:|r %.2f%%", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
   popup:AddText("")
   popup:AddText("|cff9900ffSystems:|r")
 
