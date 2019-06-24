@@ -41,6 +41,14 @@ local function CreateProfilePopup()
   popupFrame:SetSize(450, 300)
   popupFrame:Hide()
 
+  local closeButton = CreateFrame("Button", nil, popupFrame, "UIPanelButtonTemplate")
+  closeButton:SetSize(80, 22)
+  closeButton:SetText(L["Close"])
+  closeButton:SetPoint("TOPRIGHT", popupFrame, "TOPRIGHT", 0, 0);
+  closeButton:SetScript("OnClick", function()
+    popupFrame:Hide()
+  end)
+
   popupFrame.orig_Hide = popupFrame.Hide
   function popupFrame:Hide()
     self:SetText("")
