@@ -1585,7 +1585,13 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
-
+      local isFirstUIDValidation = db.history == nil;
+      WeakAuras.ValidateUniqueDataIds(isFirstUIDValidation);
+      db.history = db.history or {};
+      if db.clearOldHistory ~= false and type(db.clearOldHistory) ~= "number" then
+        db.clearOldHistory = 30
+      end
+      WeakAuras.LoadHistory(db.history, db.clearOldHistory);
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
@@ -2159,6 +2165,16 @@ function WeakAuras.FinishLoadUnload()
   end
 end
 
+-- transient cache of uid => id
+-- eventually, the database will be migrated to index by uid
+-- and this mapping will become redundant
+-- this cache is loaded lazily via pAdd()
+local UIDtoID = {}
+
+function WeakAuras.GetDataByUID(uid)
+  return WeakAuras.GetData(UIDtoID[uid])
+end
+
 function WeakAuras.Delete(data)
   local id = data.id;
   if(data.parent) then
@@ -2176,6 +2192,7 @@ function WeakAuras.Delete(data)
     end
   end
 
+  UIDtoID[data.uid] = nil
   if(data.controlledChildren) then
     for index, childId in pairs(data.controlledChildren) do
       local childData = db.displays[childId];
@@ -2269,6 +2286,7 @@ function WeakAuras.Rename(data, newid)
     end
   end
 
+  UIDtoID[data.uid] = newid
   regions[newid] = regions[oldid];
   regions[oldid] = nil;
   regions[newid].region.id = newid;
@@ -3368,6 +3386,33 @@ function WeakAuras.Modernize(data)
   data.internalVersion = max(data.internalVersion or 0, internalVersion);
 end
 
+function WeakAuras.ValidateUniqueDataIds(silent)
+  -- ensure that there are no duplicated uids anywhere in the database
+  local seenUIDs = {}
+  for _, data in pairs(db.displays) do
+    if type(data.uid) == "string" then
+      if seenUIDs[data.uid] then
+        if not silent then
+          prettyPrint("duplicate uid \""..data.uid.."\" detected in saved variables between \""..data.id.."\" and \""..seenUIDs[data.uid].id.."\".")
+        end
+        data.uid = WeakAuras.GenerateUniqueID()
+        seenUIDs[data.uid] = data
+      else
+        seenUIDs[data.uid] = data
+      end
+    elseif data.uid ~= nil then
+      if not silent then
+        prettyPrint("invalid uid detected in saved variables for \""..data.id.."\"")
+      end
+      data.uid = WeakAuras.GenerateUniqueID()
+      seenUIDs[data.uid] = data
+    end
+  end
+  for uid, data in pairs(seenUIDs) do
+    UIDtoID[uid] = data.id
+  end
+end
+
 function WeakAuras.SyncParentChildRelationships(silent)
   local childToParent = {};
   local parentToChild = {};
@@ -3787,6 +3832,17 @@ local function pAdd(data)
   end
 
   db.displays[id] = data;
+
+  data.uid = data.uid or WeakAuras.GenerateUniqueID()
+  local otherID = UIDtoID[data.uid]
+  if not otherID then
+    UIDtoID[data.uid] = id
+  elseif otherID ~= id then
+    -- duplicate uid
+    data.uid = WeakAuras.GenerateUniqueID()
+    UIDtoID[data.uid] = id
+  end
+
   WeakAuras.ClearAuraEnvironment(id);
   if data.parent then
     WeakAuras.ClearAuraEnvironment(data.parent);

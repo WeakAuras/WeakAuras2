@@ -27,7 +27,8 @@ local fileList = {
         "WeakAuras/Transmission.lua",
         "WeakAuras/Types.lua",
         "WeakAuras/WeakAuras.lua",
-        "WeakAuras/SubRegionTypes/SubText.lua"
+        "WeakAuras/SubRegionTypes/SubText.lua",
+        "WeakAuras/History.lua"
     },
     WeakAuras_Options = {
         "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasDisplayButton.lua",
