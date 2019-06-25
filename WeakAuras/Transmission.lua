@@ -279,30 +279,41 @@ end
 setmetatable(keyToButton,{__index = function(_, key) return key and checkButtons.display end,})
 
 local function install(data, oldData, patch, mode, isParent)
-  -- install munches the provided data and adds, updates, or deletes as appropriate
-  -- returns the data which the SV knows about after it's done (if there is any)
+  -- munch the provided data and add, update, or delete as appropriate
+  -- return the data which the SV knows about afterwards (if there is any)
+  local installedUID, imported
   if mode == 1 then
+    -- always import as a new thing
     if data then
+      imported = CopyTable(data)
+      installedUID = data.uid
       data.id = WeakAuras.FindUnusedId(data.id)
       WeakAuras.Add(data)
     else
+      -- nothing to add
       return
     end
   elseif not oldData then
+    -- this is a new thing
     if not checkButtons.newchildren:GetChecked() then
+      -- user has chosen to not add new children, so do nothing
       return
     end
+    imported = CopyTable(data)
+    installedUID = data.uid
     data.id = WeakAuras.FindUnusedId(data.id)
     WeakAuras.Add(data)
   elseif not data then
+    -- this is an old thing
     if checkButtons.oldchildren:GetChecked() then
       WeakAuras.DeleteOption(oldData)
       return
     else
-      data = oldData
-      WeakAuras.Add(data);
+      -- user has chosen to not delete obsolete auras, so do nothing
+      return WeakAuras.GetDataByUID(oldData.uid)
     end
   else
+    -- something to update
     if patch then -- if there's no result from Diff, then there's nothing to do
       for key in pairs(patch) do
         local checkButton = keyToButton[key]
@@ -317,13 +328,16 @@ local function install(data, oldData, patch, mode, isParent)
         patch.id = WeakAuras.FindUnusedId(patch.id)
       end
     end
-    WeakAuras.Update(oldData, patch)
     if data.uid and data.uid ~= oldData.uid then
       oldData.uid = data.uid
     end
-    data = oldData
+    WeakAuras.Update(oldData, patch)
+    installedUID = oldData.uid
+    imported = data
   end
-  return WeakAuras.GetData(data.id)
+  -- if at this point, then some change has been made in the db. Update History to reflect the change
+  WeakAuras.SetHistory(installedUID, imported, "import")
+  return WeakAuras.GetDataByUID(installedUID)
 end
 
 local function importPendingData()

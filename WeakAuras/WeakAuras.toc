@@ -22,23 +22,28 @@
 ## SavedVariables: WeakAurasSaved
 ## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCast-1.0, LibGetFrame-1.0
 
-embeds.xml
-Init.lua
-
-locales.xml
-
 # If you add files here, you have to add them to babelfish.lua as well
 
+# external code + initialization
+embeds.xml
+Init.lua
+locales.xml
+
+# core files
 Prototypes.lua
 Types.lua
 Profiling.lua
 WeakAuras.lua
+History.lua
 Transmission.lua
+
+# trigger systems
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 AuraEnvironment.lua
 
+# region support
 RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua
 RegionTypes\Texture.lua
