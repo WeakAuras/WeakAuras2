@@ -3080,6 +3080,7 @@ function WeakAuras.Modernize(data)
 
   -- Version 16 was introduced May 2019 in BFA
   if data.internalVersion < 16 then
+    -- first conversion: attempt to migrate texture paths to file ids
     if data.regionType == "texture" and type(data.texture) == "string" then
       local textureId = GetFileIDFromPath(data.texture:gsub("\\\\", "\\"))
       if textureId and textureId > 0 then
@@ -3100,6 +3101,13 @@ function WeakAuras.Modernize(data)
         end
       end
     end
+    -- second conversion: migrate name/realm conditions to tristate
+    if data.load.use_name == false then
+      data.load.use_name = nil
+    end
+    if data.load.use_realm == false then
+      data.load.use_realm = nil
+    end
   end
 
   if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 then -- prepare for migration at 8.2
@@ -3117,16 +3125,6 @@ function WeakAuras.Modernize(data)
           data.model_fileId = tostring(modelId)
         end
       end
-    end
-  end
-
-  -- Version 15 was introduced in May 2019 in BFA
-  if data.internalVersion < 16 then
-    if data.load.use_name == false then
-      data.load.use_name = nil
-    end
-    if data.load.use_realm == false then
-      data.load.use_realm = nil
     end
   end
 
