@@ -3386,16 +3386,20 @@ function WeakAuras.ValidateUniqueDataIds(silent)
   -- ensure that there are no duplicated uids anywhere in the database
   local seenUIDs = {}
   for _, data in pairs(db.displays) do
-    if data.uid then
+    if type(data.uid) == "string" then
       if seenUIDs[data.uid] then
         if not silent then
-          prettyPrint("duplicate uid detected in saved variables between \""..data.id.."\" and \""..seenUIDs[data.uid].id.."\".")
+          prettyPrint("duplicate uid \""..data.uid.."\" detected in saved variables between \""..data.id.."\" and \""..seenUIDs[data.uid].id.."\".")
         end
         -- ! AddMany will eventually re-add new uids, so don't regenerate them yet
         seenUIDs[data.uid].uid = nil
         data.uid = nil
       else
         seenUIDs[data.uid] = data
+      end
+    elseif data.uid ~= nil then
+      if not silent then
+        prettyPrint("invalid uid detected in saved variables for \""..data.id.."\"")
       end
     end
   end
