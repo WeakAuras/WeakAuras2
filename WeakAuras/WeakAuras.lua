@@ -1582,6 +1582,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
       WeakAuras.ValidateUniqueDataIds();
+      db.history = db.history or {};
 
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
