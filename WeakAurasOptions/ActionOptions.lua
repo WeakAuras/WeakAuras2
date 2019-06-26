@@ -45,9 +45,9 @@ function WeakAuras.AddActionOption(id, data)
         data.actions[field][value] = v;
       end
       if(value == "sound" or value == "sound_path") then
-        PlaySoundFile(v, "Master");
+        pcall(PlaySoundFile, v, "Master");
       elseif(value == "sound_kit_id") then
-        PlaySound(v, "Master");
+        pcall(PlaySound, v, "Master");
       end
       WeakAuras.Add(data);
     end,
