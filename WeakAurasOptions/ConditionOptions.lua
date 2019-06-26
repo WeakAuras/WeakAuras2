@@ -204,9 +204,9 @@ local function wrapWithPlaySound(func, kit)
   return function(info, v)
     func(info, v);
     if (tonumber(v)) then
-      PlaySound(tonumber(v), "Master");
+      pcall(PlaySound, tonumber(v), "Master");
     else
-      PlaySoundFile(v, "Master");
+      pcall(PlaySoundFile, v, "Master");
     end
   end
 end
