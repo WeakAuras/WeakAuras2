@@ -6369,7 +6369,7 @@ function WeakAuras.RestoreFromHistory(uid)
 end
 
 function WeakAuras.ClearOldHistory(daysBack, includeNonDeleted)
-  local cutoffTime = time() - ((daysBack or 30) * 24 * 60 * 60)
+  local cutoffTime = time() - ((daysBack or 30) * 86400) -- eighty six, four hundred seconds in a day...
   for uid, history in pairs(db.history) do
     if (includeNonDeleted or not WeakAuras.GetDataByUID(uid))
     and (history.lastUpdate < cutoffTime) then
