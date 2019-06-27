@@ -1583,7 +1583,15 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.SyncParentChildRelationships();
       WeakAuras.ValidateUniqueDataIds();
       db.history = db.history or {};
-
+      -- setting to automatically clear out history which is too old
+      -- default is to clear out deleted data >30 days old
+      -- set to false to disable
+      if db.clearOldHistory == nil then
+        db.clearOldHistory = 30
+      end
+      if db.clearOldHistory then
+        WeakAuras.ClearOldHistory(db.clearOldHistory)
+      end
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
@@ -6325,6 +6333,7 @@ function WeakAuras.SetHistory(uid, data, fromAddon, addon)
     db.history[uid].source = fromAddon and "addon" or "import"
     db.history[uid].addon = fromAddon and (addon or "unknown") or nil
     db.history[uid].skippedVersions = db.history[uid].skippedVersions or {}
+    db.history[uid].lastUpdate = time()
   end
 end
 
@@ -6356,5 +6365,20 @@ function WeakAuras.RestoreFromHistory(uid)
   local history = WeakAuras.GetHistory(uid)
   if history and history.data then
     WeakAuras.Add(history.data)
+  end
+end
+
+local defaultOptions = {
+  daysBack = 30,
+  includeNonDeleted = false,
+}
+
+function WeakAuras.ClearOldHistory(daysBack, includeNonDeleted)
+  local cutoffTime = time() - ((daysBack or 30) * 24 * 60 * 60)
+  for uid, history in pairs(db.history) do
+    if (includeNonDeleted or not WeakAuras.GetDataByUID(uid))
+    and (history.lastUpdate < cutoffTime) then
+      db.history[uid] = nil
+    end
   end
 end
