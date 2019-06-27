@@ -545,8 +545,10 @@ local nullErrorHandler = function()
 end
 
 local function SafeGetPos(region, func)
-  local ok, value = xpcall(func, nullErrorHandler, region)
-  return ok and value or nil
+  local ok, value1, value2 = xpcall(func, nullErrorHandler, region)
+  if ok then
+    return value1, value2
+  end
 end
 
 local function modify(parent, region, data)
@@ -943,7 +945,7 @@ local function modify(parent, region, data)
         self:Show()
         minX, maxX, minY, maxY = (minX or 0), (maxX or 0), (minY or 0), (maxY or 0)
         if(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-          local originX, originY = region:GetCenter()
+          local originX, originY = SafeGetPos(region, region.GetCenter)
           originX = originX or 0
           originY = originY or 0
           if(originX - minX > maxX - originX) then
