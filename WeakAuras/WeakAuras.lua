@@ -6324,9 +6324,37 @@ function WeakAuras.SetHistory(uid, data, fromAddon, addon)
     db.history[uid].data = data
     db.history[uid].source = fromAddon and "addon" or "import"
     db.history[uid].addon = fromAddon and (addon or "unknown") or nil
+    db.history[uid].skippedVersions = db.history[uid].skippedVersions or {}
   end
 end
 
 function WeakAuras.GetHistory(uid)
   return uid and db.history[uid]
+end
+
+function WeakAuras.RemoveHistory(uid)
+  if uid then
+    db.history[uid] = nil
+  end
+end
+
+function WeakAuras.SkipVersion(uid, version)
+  local history = WeakAuras.GetHistory(uid)
+  if history then
+    history.skippedVersions[version] = true
+  end
+end
+
+function WeakAuras.IsVersionSkipped(uid, version)
+  local history = WeakAuras.GetHistory(uid)
+  if history then
+    return history.skippedVersions[version]
+  end
+end
+
+function WeakAuras.RestoreFromHistory(uid)
+  local history = WeakAuras.GetHistory(uid)
+  if history and history.data then
+    WeakAuras.Add(history.data)
+  end
 end
