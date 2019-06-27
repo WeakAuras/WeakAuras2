@@ -6317,3 +6317,16 @@ function WeakAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
 end
+
+function WeakAuras.SetHistory(uid, data, fromAddon, addon)
+  if uid and data then
+    db.history[uid] = db.history[uid] or {}
+    db.history[uid].data = data
+    db.history[uid].source = fromAddon and "addon" or "import"
+    db.history[uid].addon = fromAddon and (addon or "unknown") or nil
+  end
+end
+
+function WeakAuras.GetHistory(uid)
+  return uid and db.history[uid]
+end
