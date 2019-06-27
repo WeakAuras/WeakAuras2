@@ -6338,10 +6338,10 @@ function WeakAuras.RemoveHistory(uid)
   end
 end
 
-function WeakAuras.SkipVersion(uid, version)
+function WeakAuras.SkipVersion(uid, version, skip)
   local history = WeakAuras.GetHistory(uid)
   if history then
-    history.skippedVersions[version] = true
+    history.skippedVersions[version] = skip
   end
 end
 
