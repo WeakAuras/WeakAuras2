@@ -214,6 +214,7 @@ local function UpdatePosition(self)
 
   local xOffset = self.xOffset + (self.xOffsetAnim or 0);
   local yOffset = self.yOffset + (self.yOffsetAnim or 0);
+  self:ClearAllPoints();
 
   xpcall(self.SetPoint, geterrorhandler(), self, self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset);
 end
@@ -225,14 +226,10 @@ local function ResetPosition(self)
 end
 
 local function SetAnchor(self, anchorPoint, relativeTo, relativePoint)
-  local needsClearPoint = self.anchorPoint ~= anchorPoint or self.relativeTo ~= relativeTo or self.relativePoint ~= relativePoint;
   self.anchorPoint = anchorPoint;
   self.relativeTo = relativeTo;
   self.relativePoint = relativePoint;
 
-  if (needsClearPoint) then
-    self:ClearAllPoints();
-  end
 
   UpdatePosition(self);
 end
