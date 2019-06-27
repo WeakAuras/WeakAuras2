@@ -6368,11 +6368,6 @@ function WeakAuras.RestoreFromHistory(uid)
   end
 end
 
-local defaultOptions = {
-  daysBack = 30,
-  includeNonDeleted = false,
-}
-
 function WeakAuras.ClearOldHistory(daysBack, includeNonDeleted)
   local cutoffTime = time() - ((daysBack or 30) * 24 * 60 * 60)
   for uid, history in pairs(db.history) do
