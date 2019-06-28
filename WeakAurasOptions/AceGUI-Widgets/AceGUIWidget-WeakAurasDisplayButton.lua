@@ -926,6 +926,13 @@ local methods = {
       func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "desc") end
     });
 
+    if WeakAuras.GetHistory(data.uid) then
+      tinsert(self.menu, {
+        text = L["Restore from History"],
+        notCheckable = true,
+        func = function() WeakAuras.RestoreFromHistory(data.uid) end
+      })
+    end
 
     if (data.url and data.url ~= "") then
       tinsert(self.menu, {
