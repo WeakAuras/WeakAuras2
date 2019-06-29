@@ -1180,7 +1180,9 @@ WeakAuras.event_prototypes = {
       return result;
     end,
     internal_events = function(trigger)
-      local result = {}
+      local result = {
+        "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      }
       AddUnitChangeInternalEvents(trigger.unit, result)
       if trigger.unitisunit then
         AddUnitChangeInternalEvents(trigger.unitisunit, result)
