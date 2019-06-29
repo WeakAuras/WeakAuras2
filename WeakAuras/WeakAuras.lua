@@ -6157,7 +6157,12 @@ local function postponeAnchor(id)
   end
 end
 
-local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
+local HiddenFrames = CreateFrame("FRAME", "WeakAurasHiddenFrames")
+HiddenFrames:Hide()
+
+local function GetAnchorFrame(region, anchorFrameType, parent, anchorFrameFrame)
+  local id = region.id
+  if not id then return end
   if (personalRessourceDisplayFrame) then
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
   end
@@ -6200,14 +6205,32 @@ local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
       return parent;
     end
   end
+
+  if (anchorFrameType == "CUSTOM" and region.customAnchorFunc) then
+    WeakAuras.StartProfileSystem("custom region anchor")
+    WeakAuras.StartProfileAura(region.id)
+    WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state)
+    local ok, frame = xpcall(region.customAnchorFunc, geterrorhandler())
+    WeakAuras.ActivateAuraEnvironment()
+    WeakAuras.StopProfileSystem("custom region anchor")
+    WeakAuras.StopProfileAura(region.id)
+    if ok and frame then
+      return frame
+    elseif WeakAuras.IsOptionsOpen() then
+      return parent
+    else
+      return HiddenFrames
+    end
+  end
   -- Fallback
   return parent;
 end
 
 function WeakAuras.AnchorFrame(data, region, parent)
-  local anchorParent = GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
+  local anchorParent = GetAnchorFrame(region, data.anchorFrameType, parent, data.anchorFrameFrame);
+  if not anchorParent then return end
   if (data.anchorFrameParent or data.anchorFrameParent == nil
-      or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
+      or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or data.anchorFrameType == "CUSTOM") then
     local errorhandler = function(text)
       geterrorhandler()(L["'ERROR: Anchoring %s': \n"]:format(data.id) .. text)
     end

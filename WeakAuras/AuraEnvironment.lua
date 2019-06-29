@@ -59,6 +59,9 @@ local LCG = LibStub("LibCustomGlow-1.0")
 WeakAuras.ShowOverlayGlow = LCG.ButtonGlow_Start
 WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
 
+local LGF = LibStub("LibGetFrame-1.0")
+WeakAuras.GetUnitFrame = LGF.GetUnitFrame
+
 local function forbidden()
   prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])
 end

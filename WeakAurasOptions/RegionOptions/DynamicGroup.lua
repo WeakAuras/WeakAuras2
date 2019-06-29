@@ -95,6 +95,33 @@ local function createOptions(id, data)
         WeakAuras.ResetMoverSizer()
       end,
     },
+    useAnchorPerUnit = {
+      type = "toggle",
+      order = 1.5,
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString..L["Group by Frame"],
+      desc = L[
+[[Group and anchor each auras by frame.
+
+- Nameplates: attach to nameplates per unit.
+- Unit Frames: attach to unit frame buttons per unit.
+- Custom Frames: choose which frame each region should be anchored to.]]
+      ],
+      hidden = function() return data.grow == "CUSTOM" end,
+    },
+    anchorPerUnit = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString..L["Group by Frame"],
+      order = 1.6,
+      values = {
+        ["UNITFRAME"] = L["Unit Frames"],
+        ["NAMEPLATE"] = L["Nameplates"],
+        ["CUSTOM"] = L["Custom Frames"],
+      },
+      hidden = function() return data.grow == "CUSTOM" end,
+      disabled = function() return not data.useAnchorPerUnit end
+    },
     -- custom grow option added below
     align = {
       type = "select",
@@ -358,153 +385,38 @@ local function createOptions(id, data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
       end
-    },
+    }
   };
 
   WeakAuras.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", 2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
   WeakAuras.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", 21, function() return data.sort ~= "custom" end, {"customSort"}, nil, nil, nil, nil, nil, true)
+  WeakAuras.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", 1.7, function() return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM") end, {"customAnchorPerUnit"}, nil, nil, nil, nil, nil, true)
 
-  local borderHideFunc = function() return data.anchorFrameType == "NAMEPLATE" or data.anchorFrameType == "UNITFRAME" end
+  local borderHideFunc = function() return data.useAnchorPerUnit or data.grow == "CUSTOM" end
+  local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
   return {
     dynamicgroup = options,
-    position = WeakAuras.PositionOptions(id, data, nil, true, true),
+    position = WeakAuras.PositionOptions(id, data, nil, true, disableSelfPoint),
     border = WeakAuras.BorderOptions(id, data, nil, nil, borderHideFunc),
   };
 end
 
 local function createThumbnail(parent)
-  local borderframe = CreateFrame("FRAME", nil, parent);
-  borderframe:SetWidth(32);
-  borderframe:SetHeight(32);
+  local icon = parent:CreateTexture();
+  icon:SetTexture("interface\\icons\\petbattle_speed.blp");
 
-  local border = borderframe:CreateTexture(nil, "OVERLAY");
-  border:SetAllPoints(borderframe);
-  border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
-  border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
-
-  local region = WeakAuras.regionTypes["dynamicgroup"].create(borderframe);
-  borderframe.region = region;
-  return borderframe;
-end
-
-local function modifyThumbnail(parent, borderframe, data, fullModify, size)
-  local region = borderframe.region
-  borderframe:Hide()
-  size = size or 24
-  region.suspended = 1
-
-  -- i don't much like this hack. But i also want to be able to use the same code
-  -- for the thumbnail, without worrying about animations or anchors mucking it up.
-  local animate, anchorFrameType = data.animate, data.anchorFrameType
-  local grow = data.grow
-  local sort = data.sort
-  data.grow = data.grow == "CUSTOM" and "DOWN" or data.grow
-  data.sort = "none"
-  data.animate = nil
-  data.anchorFrameType = "SCREEN"
-  WeakAuras.regionTypes["dynamicgroup"].modify(borderframe, region, data)
-  data.animate = animate
-  data.anchorFrameType = anchorFrameType
-  data.grow = grow
-  data.sort = sort
-  local sortedChildren = region.sortedChildren
-  for _, regionData in ipairs(sortedChildren) do
-    regionData.region:Hide()
-  end
-  region.sortedChildren = {}
-  region.controlPoints:ReleaseAll()
-  for index, childId in pairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
-    if(childData) then
-      local regionData = sortedChildren[index] or {}
-      region.sortedChildren[index] = regionData
-      regionData.data = childData
-      regionData.controlPoint = region.controlPoints:Acquire()
-      regionData.id = childId
-      regionData.dataIndex = index
-      regionData.region = regionData.region or CreateFrame("FRAME", nil, regionData.controlPoint)
-      local childRegion = regionData.region
-      childRegion:Show()
-      childRegion:SetParent(regionData.controlPoint)
-      childRegion:SetPoint(data.selfPoint, regionData.controlPoint, data.selfPoint)
-      childRegion.texture = childRegion.texture or childRegion:CreateTexture()
-      childRegion.texture:SetAllPoints()
-      childRegion.width = childData.width or 16
-      childRegion.height = childData.height or 16
-      childRegion.toShow = true
-      local r, g, b
-      if(childData.color) then
-        r, g, b = childData.color[1], childData.color[2], childData.color[3]
-      elseif(childData.barColor) then
-        r, g, b = childData.barColor[1], childData.barColor[2], childData.barColor[3]
-      elseif(childData.foregroundColor) then
-        r, g, b = childData.foregroundColor[1], childData.foregroundColor[2], childData.foregroundColor[3]
-      end
-      r, g, b = r or 0.2, g or 0.8, b or 0.2
-
-      childRegion.texture:SetColorTexture(r, g, b)
-      childRegion:SetWidth((childData.width or childRegion.width or 16))
-      childRegion:SetHeight((childData.height or childRegion.height or 16))
-    end
-  end
-  region.background:Hide()
-  region:ClearAllPoints()
-  -- TODO: find a less hacky method of getting the right size for the thumbnail.
-  -- This is another hack. This time, it's due to the fact that a thumbnail isn't actually attached to anything
-  -- So, GetLeft and similar return nil in Resize. Workaround this by temporarily binding the region to UIParent
-  region:SetPoint("CENTER", UIParent, "CENTER")
-  region.needToReload = false
-  region.needToPosition = true
-  region:Resume()
-  region:ClearAllPoints()
-  region:SetAnchor("CENTER", borderframe, "CENTER")
-  region:SetOffset(0,0)
-  local width = region:GetWidth()
-  local height = region:GetHeight()
-  if width > height then
-    region:SetScale(size/width)
-  else
-    region:SetScale(size/height)
-  end
-
-  -- "guide" line
-  if not(region.guide) then
-    region.guide = CreateFrame("FRAME", nil, region)
-    region.guide.texture = region.guide:CreateTexture(nil, "OVERLAY")
-    region.guide.texture:SetAllPoints(region.guide)
-  end
-  region.guide.texture:SetColorTexture(1, 1, 1)
-  region.guide:ClearAllPoints()
-  region.guide:Show()
-  if(data.grow == "RIGHT" or data.grow == "LEFT" or data.grow == "HORIZONTAL") then
-    region.guide:SetWidth(region:GetWidth())
-    region.guide:SetHeight(1)
-    if(data.align == "LEFT") then
-      region.guide:SetPoint("CENTER", region, "TOP")
-    elseif(data.align == "RIGHT") then
-      region.guide:SetPoint("CENTER", region, "BOTTOM")
-    else
-      region.guide:SetPoint("CENTER", region, "CENTER")
-    end
-  elseif(data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL") then
-    region.guide:SetWidth(1)
-    region.guide:SetHeight(region:GetHeight())
-    if(data.align == "LEFT") then
-      region.guide:SetPoint("CENTER", region, "LEFT")
-    elseif(data.align == "RIGHT") then
-      region.guide:SetPoint("CENTER", region, "RIGHT")
-    else
-      region.guide:SetPoint("CENTER", region, "CENTER")
-    end
-  elseif(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
-    region.guide:SetWidth(1)
-    region.guide:SetHeight(1)
-    region.guide:SetPoint("CENTER", region, "CENTER")
-  end
+  return icon;
 end
 
 local function createIcon()
-  local thumbnail = createThumbnail(UIParent);
+  local thumbnail = CreateFrame("FRAME", nil, UIParent);
+  thumbnail:SetWidth(32);
+  thumbnail:SetHeight(32);
+
+  local border = thumbnail:CreateTexture(nil, "OVERLAY");
+  border:SetAllPoints(thumbnail);
+  border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
+  border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
   local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
   t1:SetWidth(24);
   t1:SetHeight(6);
@@ -546,4 +458,4 @@ local function createIcon()
   return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);
+WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createIcon, function() return end, L["A group that dynamically controls the positioning of its children"]);
