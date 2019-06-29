@@ -5101,6 +5101,10 @@ WeakAuras.event_prototypes = {
         LibClassicCast:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanEvents)
       end
       AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
+      if trigger.unit == "nameplate" then
+        AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
+        AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_REMOVED")
+      end
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
         AddUnitEventForEvents(result, trigger.destUnit, "UNIT_TARGET")
       end
