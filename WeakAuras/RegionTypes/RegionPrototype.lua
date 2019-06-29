@@ -412,6 +412,13 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
   region:SetOffsetAnim(0, 0);
+
+  if data.anchorFrameType == "CUSTOM" and data.customAnchor then
+    region.customAnchorFunc = WeakAuras.LoadFunction("return " .. data.customAnchor, data.id, "custom anchor")
+  else
+    region.customAnchorFunc = nil
+  end
+
   if not parent or parent.regionType ~= "dynamicgroup" then
     WeakAuras.AnchorFrame(data, region, parent);
   end
@@ -689,7 +696,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       region.toShow = true;
 
-      if (data.anchorFrameType == "SELECTFRAME") then
+      if (data.anchorFrameType == "SELECTFRAME" or data.anchorFrameType == "CUSTOM") then
         WeakAuras.AnchorFrame(data, region, parent);
       end
 

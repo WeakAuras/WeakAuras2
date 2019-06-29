@@ -321,7 +321,18 @@ WeakAuras.anchor_frame_types = {
   SCREEN = L["Screen/Parent Group"],
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
-  SELECTFRAME = L["Select Frame"]
+  SELECTFRAME = L["Select Frame"],
+  CUSTOM = WeakAuras.newFeatureString..L["Custom"]
+}
+
+WeakAuras.anchor_frame_types_dynamicgroup = {
+  SCREEN = L["Screen/Parent Group"],
+  PRD = L["Personal Resource Display"],
+  MOUSE = L["Mouse Cursor"],
+  SELECTFRAME = L["Select Frame"],
+  NAMEPLATE = WeakAuras.newFeatureString..L["Nameplates"],
+  UNITFRAME = WeakAuras.newFeatureString..L["Unit Frames"],
+  CUSTOM = WeakAuras.newFeatureString..L["Custom"]
 }
 
 WeakAuras.spark_rotation_types = {

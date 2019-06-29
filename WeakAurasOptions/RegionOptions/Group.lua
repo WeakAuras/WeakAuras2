@@ -656,4 +656,4 @@ local function createIcon()
 end
 
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail, L["Controls the positioning and configuration of multiple displays at the same time"]);
+WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createIcon, function() return end, L["Controls the positioning and configuration of multiple displays at the same time"]);

@@ -3698,16 +3698,16 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
           return L["To Screen's"]
         elseif (data.anchorFrameType == "PRD") then
           return L["To Personal Ressource Display's"];
-        elseif (data.anchorFrameType == "SELECTFRAME") then
+        elseif (data.anchorFrameType == "SELECTFRAME" or data.anchorFrameType == "CUSTOM") then
           return L["To Frame's"];
         end
       end,
       order = 75,
       hidden = function()
         if (data.parent) then
-          if (IsParentDynamicGroup()) then
-            return true;
-          end
+          --if (IsParentDynamicGroup()) then
+          --  return true;
+          --end
           return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
         else
           return data.anchorFrameType == "MOUSE";
@@ -3810,7 +3810,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       end
     },
   };
-
+  WeakAuras.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", 72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
   return positionOptions;
 end
 
