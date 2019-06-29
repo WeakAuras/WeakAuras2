@@ -246,6 +246,10 @@ local function modify(parent, region, data)
       model:ClearTransform();
       model:SetPosition(data.model_z, data.model_x, data.model_y);
     end
+
+    if data.modelIsUnit then
+      model:SetUnit(data.model_path);
+    end
   end
 
   function region:PreHide()
