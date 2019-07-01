@@ -1,4 +1,4 @@
-local internalVersion = 20;
+local internalVersion = 21;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3347,6 +3347,17 @@ function WeakAuras.Modernize(data)
         end
       end
 
+    end
+  end
+
+  if data.internalVersion < 21 then
+    if data.regionType == "dynamicgroup" then
+      data.border = data.background and data.background ~= "None"
+      data.borderEdge = data.border
+      data.borderBackdrop = data.background ~= "None" and data.background
+      data.borderInset = data.backgroundInset
+      data.background = nil
+      data.backgroundInset = nil
     end
   end
 

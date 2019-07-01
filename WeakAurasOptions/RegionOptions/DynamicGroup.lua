@@ -359,63 +359,16 @@ local function createOptions(id, data)
         WeakAuras.ResetMoverSizer();
       end
     },
-    -- border/background options
-    -- TODO: use Weakauras.BorderOptions for these instead
-    borderSpace = {
-      type = "header",
-      name = "",
-      order = 29
-    },
-    border = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      dialogControl = "LSM30_Border",
-      name = L["Border"],
-      order = 30,
-      values = AceGUIWidgetLSMlists.border
-    },
-    background = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      dialogControl = "LSM30_Background",
-      name = L["Background"],
-      order = 31,
-      values = function()
-        local list = {};
-        for i,v in pairs(AceGUIWidgetLSMlists.background) do
-          list[i] = v;
-        end
-        list["None"] = L["None"];
-
-        return list;
-      end
-    },
-    borderOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Border Offset"],
-      order = 32,
-      softMin = 0,
-      softMax = 32,
-      bigStep = 1
-    },
-    backgroundInset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Background Inset"],
-      order = 33,
-      softMin = 0,
-      softMax = 32,
-      bigStep = 1
-    },
   };
 
   WeakAuras.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", 2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
   WeakAuras.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", 21, function() return data.sort ~= "custom" end, {"customSort"}, nil, nil, nil, nil, nil, true)
 
+  local borderHideFunc = function() return data.anchorFrameType == "NAMEPLATE" or data.anchorFrameType == "UNITFRAME" end
   return {
     dynamicgroup = options,
     position = WeakAuras.PositionOptions(id, data, nil, true, true),
+    border = WeakAuras.BorderOptions(id, data, nil, nil, borderHideFunc),
   };
 end
 

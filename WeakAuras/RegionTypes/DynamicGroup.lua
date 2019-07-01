@@ -3,10 +3,14 @@ local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 local default = {
   controlledChildren = {},
-  border = "None",
-  borderOffset = 16,
-  background = "None",
-  backgroundInset = 0,
+  border = false,
+  borderColor = {0, 0, 0, 1},
+  backdropColor = {1, 1, 1, 0.5},
+  borderEdge = "1 Pixel",
+  borderOffset = 4,
+  borderInset = 1,
+  borderSize = 2,
+  borderBackdrop = "Blizzard Tooltip",
   grow = "DOWN",
   selfPoint = "TOP",
   align = "CENTER",
@@ -556,25 +560,36 @@ local function modify(parent, region, data)
   -- Scale
   region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
-  local background = region.background
 
-  local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or ""
-  local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or ""
-  background:SetBackdrop{
-    bgFile = bgFile,
-    edgeFile = edgeFile,
-    tile = false,
-    tileSize = 0,
-    edgeSize = 16,
-    insets = {
-      left = data.backgroundInset,
-      right = data.backgroundInset,
-      top = data.backgroundInset,
-      bottom = data.backgroundInset
-    }
-  }
-  background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset)
-  background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset)
+  function region:UpdateBorder(minXregion, maxXregion, maxYregion, minYregion, minLevel)
+    local background = region.background;
+    -- Apply border settings
+    if data.border and minXregion then
+      background:SetBackdrop({
+        edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
+        edgeSize = data.borderSize,
+        bgFile = data.borderBackdrop ~= "None" and SharedMedia:Fetch("background", data.borderBackdrop) or "",
+        insets = {
+          left = data.borderInset,
+          right = data.borderInset,
+          top = data.borderInset,
+          bottom  = data.borderInset,
+        },
+      });
+      background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
+      background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+
+      background:ClearAllPoints();
+      background:SetPoint("left", minXregion, -data.borderOffset, 0)
+      background:SetPoint("right", maxXregion, data.borderOffset, 0)
+      background:SetPoint("top", maxYregion, 0, data.borderOffset)
+      background:SetPoint("bottom", minYregion, 0, -data.borderOffset)
+      background:SetFrameLevel(minLevel - 1)
+      background:Show();
+    else
+      background:Hide();
+    end
+  end
 
   function region:IsSuspended()
     return not WeakAuras.IsLoginFinished() or self.suspended > 0
@@ -924,6 +939,7 @@ local function modify(parent, region, data)
       WeakAuras.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY = 0
+      local minXregion, maxXregion, maxYregion, minYregion, minLevel
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
           numVisible = numVisible + 1
@@ -931,12 +947,18 @@ local function modify(parent, region, data)
           local regionLeft, regionRight, regionTop, regionBottom
              = SafeGetPos(childRegion, childRegion.GetLeft), SafeGetPos(childRegion, childRegion.GetRight),
                SafeGetPos(childRegion, childRegion.GetTop), SafeGetPos(childRegion, childRegion.GetBottom)
+          local frameLevel = childRegion:GetFrameLevel()
 
-          if(regionLeft and regionRight and regionTop and regionBottom) then
+          if(regionLeft and regionRight and regionTop and regionBottom and frameLevel) then
             minX = minX and min(regionLeft, minX) or regionLeft
             maxX = maxX and max(regionRight, maxX) or regionRight
             minY = minY and min(regionBottom, minY) or regionBottom
             maxY = maxY and max(regionTop, maxY) or regionTop
+            minLevel = minLevel and min(frameLevel, minLevel) or frameLevel
+            minXregion = (minX == regionLeft and childRegion) or minXregion
+            minYregion = (minY == regionBottom and childRegion) or minYregion
+            maxXregion = (maxX == regionRight and childRegion) or maxXregion
+            maxYregion = (maxY == regionTop and childRegion) or maxYregion
           end
         end
       end
@@ -968,8 +990,10 @@ local function modify(parent, region, data)
         self:SetHeight(height)
         self.currentWidth = width
         self.currentHeight = height
+        self:UpdateBorder(minXregion, maxXregion, maxYregion, minYregion, minLevel)
       else
         self:Hide()
+        self:UpdateBorder()
       end
       if WeakAuras.IsOptionsOpen() then
         WeakAuras.OptionsFrame().moversizer:ReAnchor()
