@@ -1,4 +1,4 @@
-local internalVersion = 16;
+local internalVersion = 18;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2984,6 +2984,24 @@ function WeakAuras.Modernize(data)
     end
     if data.load.use_realm == false then
       data.load.use_realm = nil
+    end
+  end
+
+  -- Version 18 was introduced in Jully 2019 for Classic
+  if data.internalVersion < 18 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        -- Stance/Form/Aura form field type changed from type="select" to type="multiselect"
+        if trigger and trigger.type == "status" and trigger.event == "Stance/Form/Aura" then
+          local value = trigger.form
+          if trigger.use_form == false then
+            trigger.form = { multi = { [value] = true } }
+          elseif trigger.use_form then
+            trigger.form = { single = value }
+          end
+        end
+      end
     end
   end
 

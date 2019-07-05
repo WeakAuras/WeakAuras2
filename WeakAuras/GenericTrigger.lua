@@ -149,14 +149,6 @@ end
 function TestForMultiSelect(trigger, arg)
   local name = arg.name;
   local test;
-  if trigger[name] and type(trigger[name]) ~= "table" then -- lazy migration for type converted from select to multiselect
-    local value = trigger[name]
-    if trigger["use_"..name] == false then
-      trigger[name] = { multi = { [value] = true } }
-    elseif trigger["use_"..name] then
-      trigger[name] = { single = value }
-    end
-  end
   if(trigger["use_"..name] == false) then -- multi selection
     test = "(";
     local any = false;
