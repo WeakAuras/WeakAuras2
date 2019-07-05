@@ -2995,10 +2995,12 @@ function WeakAuras.Modernize(data)
         -- Stance/Form/Aura form field type changed from type="select" to type="multiselect"
         if trigger and trigger.type == "status" and trigger.event == "Stance/Form/Aura" then
           local value = trigger.form
-          if trigger.use_form == false then
-            trigger.form = { multi = { [value] = true } }
-          elseif trigger.use_form then
-            trigger.form = { single = value }
+          if type(value) ~= "table" then
+            if trigger.use_form == false then
+              trigger.form = { multi = { [value] = true } }
+            elseif trigger.use_form then
+              trigger.form = { single = value }
+            end
           end
         end
       end
