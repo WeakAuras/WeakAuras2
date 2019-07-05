@@ -10,6 +10,7 @@ History:
   data: snapshot of data as it was at last import, or nil if source == "user", and the user has not chosen to save their changes to history
   addon: if source == "addon", then this string indicates which addon supplied the last import
   skippedVersions: record of versions that the user has indicated they don't wish to see update notifications for
+  allowUpdates: if false, then WeakAuras will ignore any addon-sourced update requests
   lastUpdate: UNIX timestamp of the last time the user completed an import for this display
 --]]
 
@@ -48,13 +49,17 @@ function WeakAuras.RemoveHistory(uid)
   end
 end
 
+function WeakAuras.AllowUpdates(uid, allowed)
+  local hist = WeakAuras.Gethistory(uid)
+  if hist then
+    hist.allowUpdates = allowed ~= false
+  end
+end
+
 function WeakAuras.SkipVersion(uid, version, skip)
   local hist = WeakAuras.GetHistory(uid)
-  if skip == nil then
-    skip = true
-  end
   if hist then
-    hist.skippedVersions[version] = skip
+    hist.skippedVersions[version] = skip ~= false
   end
 end
 
