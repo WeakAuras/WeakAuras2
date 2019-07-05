@@ -48,7 +48,7 @@ end
 function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if not WeakAuras.IsLoginFinished() then
-      prettyPrint(L["Options will finish loading after the login process has completed."])
+      prettyPrint(WeakAuras.LoginMessage())
       loginQueue[#loginQueue + 1] = WeakAuras.OpenOptions
     elseif InCombatLockdown() then
       -- inform the user and queue ooc
@@ -69,7 +69,7 @@ function WeakAuras.LoadOptions(msg)
 end
 
 function WeakAuras.OpenOptions(msg)
-  if (WeakAuras.LoadOptions(msg)) then
+  if (WeakAuras.IsLoginFinished() and WeakAuras.LoadOptions(msg)) then
     WeakAuras.ToggleOptions(msg);
   end
 end
@@ -1485,7 +1485,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
-local loginFinished = false
+local loginFinished, loginMessage = false, L["Options will finish loading after the login process has completed."]
 
 local loginThread = coroutine.create(function()
   WeakAuras.Pause();
@@ -1543,6 +1543,10 @@ function WeakAuras.IsLoginFinished()
   return loginFinished
 end
 
+function WeakAuras.LoginMessage()
+  return loginMessage
+end
+
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = frame;
 frame:SetAllPoints(UIParent);
@@ -1598,6 +1602,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.dynFrame:AddAction('login', loginThread)
     end
     if not ok then
+    loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
+      .. "\nMessage:" .. msg
       geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
