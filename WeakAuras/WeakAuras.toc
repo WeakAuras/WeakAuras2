@@ -33,6 +33,7 @@ Prototypes.lua
 Types.lua
 Profiling.lua
 WeakAuras.lua
+History.lua
 Transmission.lua
 BuffTrigger.lua
 BuffTrigger2.lua
