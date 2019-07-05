@@ -923,7 +923,7 @@ if BuildInfo <= 80100 then -- 8.1.5
   WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"
   WeakAuras.texture_types.Sparks["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
 end
-if BuildInfo < 20000 then -- Classic
+if WeakAuras.IsClassic() then -- Classic
   WeakAuras.texture_types["Blizzard Alerts"] = nil
   do
     local beams = WeakAuras.texture_types["Beams"]
