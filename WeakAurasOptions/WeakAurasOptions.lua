@@ -4179,6 +4179,33 @@ function WeakAuras.ConvertDisplay(data, newType)
   WeakAuras.ResetMoverSizer();
 end
 
+function WeakAuras.RestoreDisplay(uid)
+  local data = WeakAuras.GetDataByUID(uid)
+  local id = data.id -- TODO: migrate thumbnails, displaybuttons, and displayOptions to use UID
+
+  local oldThumbnail = thumbnails[id]
+  if oldThumbnail then
+    thumbnails[id].region:Hide()
+    thumbnails[id] = nil
+  end
+
+  local displayButton = displayButtons[id] -- TODO: use EnsureDisplayButton for when this is an undelete?
+
+  local visibility = displayButton:GetVisibility()
+  displayButton:PriorityHide(0)
+
+  WeakAuras.RestoreFromHistory(uid)
+  displayButton:SetViewRegion(WeakAuras.regions[id].region)
+  displayButton:Initialize()
+  displayButton:PriorityShow(visibility)
+  displayOptions[id] = nil
+  WeakAuras.AddOption(id, data)
+  frame:FillOptions(displayOptions[id])
+  WeakAuras.UpdateDisplayButton(data)
+  frame.mover.moving.region = WeakAuras.GetRegion(id)
+  WeakAuras.ResetMoverSizer()
+end
+
 function WeakAuras.NewDisplayButton(data)
   local id = data.id;
   WeakAuras.ScanForLoads();

@@ -930,7 +930,10 @@ local methods = {
       tinsert(self.menu, {
         text = L["Restore from History"],
         notCheckable = true,
-        func = function() WeakAuras.RestoreFromHistory(data.uid) end
+        func = function()
+          WeakAuras.RestoreDisplay(data.uid)
+          WeakAuras_DropDownMenu:Hide()
+        end
       })
     end
 
