@@ -34,12 +34,12 @@ Profiling.lua
 WeakAuras.lua
 History.lua
 Transmission.lua
+AuraEnvironment.lua
 
 # trigger systems
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
-AuraEnvironment.lua
 
 # region support
 RegionTypes\RegionPrototype.lua
