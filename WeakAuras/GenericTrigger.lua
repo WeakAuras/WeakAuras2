@@ -736,7 +736,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
       WeakAuras.CheckCooldownReady();
       WeakAuras.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
-      if not WeakAuras.IsClassic then
+      if not WeakAuras.IsClassic() then
         WeakAuras.PreShowModels() -- models are disabled for classic
       end
     end,
@@ -1434,7 +1434,7 @@ end
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
-  local ranged = WeakAuras.IsClassic and GetInventorySlotInfo("RangedSlot")
+  local ranged = WeakAuras.IsClassic() and GetInventorySlotInfo("RangedSlot")
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -1448,7 +1448,7 @@ do
       local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingMain) then
         return swingDurationMain, lastSwingMain + swingDurationMain - mainSwingOffset, name, icon;
-      elseif not WeakAuras.IsClassic and lastSwingRange then
+      elseif not WeakAuras.IsClassic() and lastSwingRange then
         return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
       else
         return 0, math.huge, name, icon;
@@ -1635,7 +1635,7 @@ do
   local function CheckGCD()
     local event;
     local startTime, duration
-    if WeakAuras.IsClassic then
+    if WeakAuras.IsClassic() then
       startTime, duration = GetSpellCooldown(29515);
     else
       startTime, duration = GetSpellCooldown(61304);
@@ -1763,7 +1763,7 @@ do
   function WeakAuras.InitCooldownReady()
     cdReadyFrame = CreateFrame("FRAME");
     WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
-    if not WeakAuras.IsClassic then
+    if not WeakAuras.IsClassic() then
       cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
       cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
       cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
@@ -2354,7 +2354,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange = CreateFrame("FRAME");
     WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
-    if not WeakAuras.IsClassic then
+    if not WeakAuras.IsClassic() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     watchUnitChange:RegisterEvent("UNIT_TARGET");

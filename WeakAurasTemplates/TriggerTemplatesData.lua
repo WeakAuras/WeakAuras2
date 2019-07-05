@@ -3977,7 +3977,7 @@ tinsert(templates.general.args, {
 );
 
 -- Items section
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   templates.items[1] = {
     title = L["Enchants"],
     args = {
@@ -4159,7 +4159,7 @@ for _, class in pairs(templates.class) do
 end
 ]]--
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   for _, class in pairs(templates.class) do
     for _, spec in pairs(class) do
       spec[4] = {
@@ -4185,7 +4185,7 @@ for i = 1, 3 do
   tinsert(templates.class.WARRIOR[i][8].args, createSimplePowerTemplate(1));
 end
 
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   tinsert(templates.class.WARRIOR[1][8].args, {
     title = L["Stance"],
     icon = 132349,
@@ -4419,7 +4419,7 @@ local function handleItem(item)
       name, _, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
-        if not WeakAuras.IsClassic then
+        if not WeakAuras.IsClassic() then
           print ("Error: Unknown spell", item.spell);
         else
           item.classic = false
@@ -4508,7 +4508,7 @@ local function enrichDatabase()
           use_class = true, class = { single = className, multi = {} },
           use_spec = true, spec = { single = specIndex, multi = {}}
         };
-        if WeakAuras.IsClassic then
+        if WeakAuras.IsClassic() then
           loadCondition.use_spec = nil
           loadCondition.spec = nil
         end
@@ -4518,8 +4518,8 @@ local function enrichDatabase()
             waitingForItemInfo = true;
           end
           -- item.classic is a tristate property, true = show only on classic, false = show only on retail, nil = show for both
-          if (WeakAuras.IsClassic and item.classic == false)
-          or (not WeakAuras.IsClassic and item.classic)
+          if (WeakAuras.IsClassic() and item.classic == false)
+          or (not WeakAuras.IsClassic() and item.classic)
           then
             section.args[itemIndex] = nil
           else
@@ -4583,7 +4583,7 @@ local function fixupIcons()
   end
 end
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   local fixupIconsFrame = CreateFrame("frame");
   fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
   fixupIconsFrame:SetScript("OnEvent", fixupIcons);
@@ -4615,7 +4615,7 @@ for regionType, regionData in pairs(WeakAuras.regionOptions) do
   end
 end
 
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   -- consolidate talents from all specs in a new dummy "classic" spec, indexed by spell or title for no duplicate
   for className, class in pairs(templates.class) do
     class["classic"] = class["classic"] or {}

@@ -8,10 +8,6 @@ local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetS
 local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
 local WrapTextInColorCode, GetClassColor = WrapTextInColorCode, GetClassColor -- for Classic
 
--- shouldn't have to redeclare this here because it's already in Init.lua but it wasnt working ...
-WeakAuras.BuildInfo = select(4, GetBuildInfo())
-WeakAuras.IsClassic = WeakAuras.BuildInfo < 20000
-
 WeakAuras.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
@@ -192,7 +188,7 @@ WeakAuras.class_color_types = {} -- TODO: it should be removed together with Buf
 for classID = 1, 20 do
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
   if classInfo then
-    if WeakAuras.IsClassic then
+    if WeakAuras.IsClassic() then
       WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, select(4, GetClassColor(classInfo.classFile)))
       WeakAuras.class_color_types[classInfo.classFile] = select(4, GetClassColor(classInfo.classFile))
     else
@@ -548,7 +544,7 @@ end
 
 
 WeakAuras.talent_types = {}
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   local spec_frame = CreateFrame("frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -575,7 +571,7 @@ else
   end
 end
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   WeakAuras.pvp_talent_types = {
     select(2, GetPvpTalentInfoByID(3589)),
     select(2, GetPvpTalentInfoByID(3588)),
@@ -1145,7 +1141,7 @@ WeakAuras.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   WeakAuras.swing_types["ranged"] = RANGEDSLOT
 end
 
@@ -1559,7 +1555,7 @@ WeakAuras.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   WeakAuras.pet_spec_types = {
     [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
     [2] = select(2, GetSpecializationInfoByID(81)), -- Tenacity
@@ -1683,7 +1679,7 @@ WeakAuras.mythic_plus_affixes = {
   [117] = true -- Reaping
 }
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   for k in pairs(WeakAuras.mythic_plus_affixes) do
     WeakAuras.mythic_plus_affixes[k] = C_ChallengeMode.GetAffixInfo(k);
   end
@@ -2072,7 +2068,7 @@ for i = 1, 4 do
   WeakAuras.baseUnitId["partypet"..i] = true
 end
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   for i = 1, 5 do
     WeakAuras.baseUnitId["arena"..i] = true
     WeakAuras.baseUnitId["boss"..i] = true
@@ -2113,7 +2109,7 @@ WeakAuras.EJIcons = {
 WeakAuras.reset_swing_spells = {}
 WeakAuras.reset_ranged_swing_spells = {}
 
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
   WeakAuras.baseUnitId.vehicle = nil
   WeakAuras.unit_types.focus = nil

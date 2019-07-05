@@ -1150,7 +1150,7 @@ function WeakAuras.CreateTalentCache()
 
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassic then
+  if WeakAuras.IsClassic() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
@@ -1417,7 +1417,7 @@ loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
   loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 else
@@ -1725,13 +1725,13 @@ local function scanForLoadsImpl(self, event, arg1, ...)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, spec, zone = UnitName("player"), GetRealmName(), WeakAuras.IsClassic and 1 or GetSpecialization(), GetRealZoneText();
+  local player, realm, spec, zone = UnitName("player"), GetRealmName(), WeakAuras.IsClassic() and 1 or GetSpecialization(), GetRealZoneText();
   local zoneId = C_Map.GetBestMapForUnit("player")
   local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
-  local role = WeakAuras.IsClassic and "none" or select(5, GetSpecializationInfo(spec));
+  local role = WeakAuras.IsClassic() and "none" or select(5, GetSpecializationInfo(spec));
 
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
@@ -1740,7 +1740,7 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inencounter = encounter_id ~= 0;
   local inpetbattle, vehicle, vehicleUi = false, false, false
-  if not WeakAuras.IsClassic then
+  if not WeakAuras.IsClassic() then
     inpetbattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
@@ -1782,7 +1782,7 @@ local function scanForLoadsImpl(self, event, arg1, ...)
 
 
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
-  if not WeakAuras.IsClassic then
+  if not WeakAuras.IsClassic() then
     effectiveLevel = UnitEffectiveLevel("player")
     affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
     warmodeActive = C_PvP.IsWarModeDesired();
@@ -1863,7 +1863,7 @@ WeakAuras.frames["Display Load Handling"] = loadFrame;
 loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
 
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
@@ -1890,7 +1890,7 @@ WeakAuras.loadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
@@ -4309,7 +4309,7 @@ function WeakAuras.CorrectSpellName(input)
     else
       return nil;
     end
-  elseif WeakAuras.IsClassic and input then
+  elseif WeakAuras.IsClassic() and input then
     local name, _, _, _, _, _, spellId = GetSpellInfo(input)
     if spellId then
       return spellId
@@ -4324,7 +4324,7 @@ function WeakAuras.CorrectSpellName(input)
     if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
       return tonumber(itemId);
-    elseif not WeakAuras.IsClassic then
+    elseif not WeakAuras.IsClassic() then
       for tier = 1, MAX_TALENT_TIERS do
         for column = 1, NUM_TALENT_COLUMNS do
           local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
@@ -5734,7 +5734,7 @@ function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayIn
   elseif isUnit then
     pcall(function() frame:SetUnit(data) end)
   else
-    if WoW82 or WeakAuras.IsClassic then
+    if WoW82 or WeakAuras.IsClassic() then
       pcall(function() frame:SetModel(tonumber(data)) end)
     else
       pcall(function() frame:SetModel(data) end)

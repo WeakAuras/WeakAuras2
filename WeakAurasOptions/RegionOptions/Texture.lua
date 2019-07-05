@@ -166,7 +166,7 @@ local function createIcon()
     rotate = true;
     rotation = 0;
   };
-  if WeakAuras.IsClassic then
+  if WeakAuras.IsClassic() then
     data.texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
   end
 
@@ -224,7 +224,7 @@ local templates = {
   },
 }
 
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   table.remove(templates, 2)
 end
 

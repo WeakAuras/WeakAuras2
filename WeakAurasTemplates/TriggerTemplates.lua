@@ -1541,7 +1541,7 @@ function WeakAuras.CreateTemplateView(frame)
       local classSelector = createDropdown("class", WeakAuras.class_types);
       newViewScroll:AddChild(classSelector);
 
-      if not WeakAuras.IsClassic then
+      if not WeakAuras.IsClassic() then
         local specSelector = createDropdown("spec", WeakAuras.spec_types_specific[newView.class]);
         newViewScroll:AddChild(specSelector);
         newViewScroll:AddChild(createSpacer());
@@ -1556,7 +1556,7 @@ function WeakAuras.CreateTemplateView(frame)
       createTriggerButton(WeakAuras.triggerTemplates.general, selectedItem);
 
       -- Items
-      if not WeakAuras.IsClassic then
+      if not WeakAuras.IsClassic() then
         local itemHeader = AceGUI:Create("Heading");
         itemHeader:SetFullWidth(true);
         newViewScroll:AddChild(itemHeader);
@@ -1729,7 +1729,7 @@ function WeakAuras.CreateTemplateView(frame)
       newView.choosenItemBatch = {};
     end
     newView.class = select(2, UnitClass("player"));
-    if not WeakAuras.IsClassic then
+    if not WeakAuras.IsClassic() then
       newView.spec = GetSpecialization() or 1;
     else
       newView.spec = "classic"

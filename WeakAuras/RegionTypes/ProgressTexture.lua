@@ -1,5 +1,5 @@
 local L = WeakAuras.L;
-local GetAtlasInfo = WeakAuras.IsClassic and GetAtlasInfo or C_Texture.GetAtlasInfo
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 -- Credit to CommanderSirow for taking the time to properly craft the TransformPoint function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown
@@ -50,7 +50,7 @@ local default = {
   frameStrata = 1,
   slantMode = "INSIDE"
 };
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   default.foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
   default.backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
 end

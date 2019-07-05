@@ -1543,10 +1543,10 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
       tinsert(tooltip, {1, L["It might not work correctly with your version!"], 1, 0, 0})
     end
 
-    if tocbuild and WeakAuras.IsClassic and tocbuild > 20000 then
+    if tocbuild and WeakAuras.IsClassic() and tocbuild > 20000 then
       tinsert(tooltip, {1, L["This aura was created with the retail version of World of Warcraft."], 1, 0, 0})
       tinsert(tooltip, {1, L["It might not work correctly on Classic!"], 1, 0, 0})
-    elseif tocbuild and not WeakAuras.IsClassic and tocbuild < 20000 then
+    elseif tocbuild and not WeakAuras.IsClassic() and tocbuild < 20000 then
       tinsert(tooltip, {1, L["This aura was created with the Classic version of World of Warcraft."], 1, 0, 0})
       tinsert(tooltip, {1, L["It might not work correctly on Retail!"], 1, 0, 0})
     end

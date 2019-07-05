@@ -21,7 +21,15 @@ WeakAuras.buildTime = buildTime
 WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
-WeakAuras.IsClassic = WeakAuras.BuildInfo < 20000
+
+local isClassic = false
+--@non-retail@
+isClassic = WeakAuras.BuildInfo < 20000
+--@end-non-retail@
+
+function WeakAuras.IsClassic()
+  return isClassic
+end
 
 WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)

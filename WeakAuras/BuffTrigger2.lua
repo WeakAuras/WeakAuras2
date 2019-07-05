@@ -62,7 +62,7 @@ local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 
 local LCD
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   LCD = LibStub("LibClassicDurations")
   LCD:RegisterFrame("WeakAuras")
 end
@@ -73,7 +73,7 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
-local UnitGroupRolesAssigned = not WeakAuras.IsClassic and UnitGroupRolesAssigned or function() return "DAMAGER" end
+local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -1468,7 +1468,7 @@ local frame = CreateFrame("FRAME")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterUnitEvent("UNIT_PET", "player")
-if not WeakAuras.IsClassic then
+if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
   frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
@@ -3009,7 +3009,7 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    if not WeakAuras.IsClassic then
+    if not WeakAuras.IsClassic() then
       multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")

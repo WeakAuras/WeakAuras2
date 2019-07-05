@@ -1,5 +1,5 @@
 local L = WeakAuras.L;
-local GetAtlasInfo = WeakAuras.IsClassic and GetAtlasInfo or C_Texture.GetAtlasInfo
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 local function createOptions(id, data)
   local options = {
     __title = L["Progress Texture Settings"],
@@ -732,7 +732,7 @@ local function createIcon()
     foregroundColor = {1, 1, 1, 1},
     backgroundColor = {0.5, 0.5, 0.5, 0.5}
   };
-  if WeakAuras.IsClassic then
+  if WeakAuras.IsClassic() then
     data.foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
     data.backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
   end
@@ -821,7 +821,7 @@ local templates = {
   },
 }
 
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   table.remove(templates, 2)
 end
 

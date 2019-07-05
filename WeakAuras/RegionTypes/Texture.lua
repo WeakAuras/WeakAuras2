@@ -21,7 +21,7 @@ local default = {
   yOffset = 0,
   frameStrata = 1
 };
-if WeakAuras.IsClassic then
+if WeakAuras.IsClassic() then
   default.texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
 end
 
