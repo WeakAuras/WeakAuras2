@@ -185,7 +185,7 @@ WeakAuras.unit_threat_situation_types = {
 
 WeakAuras.class_types = {}
 WeakAuras.class_color_types = {} -- TODO: it should be removed together with Bufftrigger (unused)
-for classID = 1, 20 do
+for classID = 1, 20 do -- 20 is for GetNumClasses() but that function doesn't exists on Classic
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
   if classInfo then
     if WeakAuras.IsClassic() then
