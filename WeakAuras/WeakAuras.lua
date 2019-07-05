@@ -2987,7 +2987,7 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 18 was introduced in Jully 2019 for Classic
+  -- Version 18 was introduced in July 2019 for Classic
   if data.internalVersion < 18 then
     if data.triggers then
       for triggerId, triggerData in ipairs(data.triggers) do
