@@ -13,7 +13,8 @@ History:
   lastUpdate: UNIX timestamp of the last time the user completed an import for this display
 --]]
 
-local history
+local WeakAuras = WeakAuras
+local history -- history db upvalue
 
 function WeakAuras.LoadHistory(historydb)
   history = historydb
