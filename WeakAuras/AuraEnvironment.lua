@@ -150,6 +150,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.region = region
       -- push new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)
+
       if data.controlledChildren then
         current_aura_env.child_envs = {}
         for dataIndex, childID in ipairs(data.controlledChildren) do
