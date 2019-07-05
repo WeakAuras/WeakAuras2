@@ -30,7 +30,7 @@ end
 
 local LibClassicCast
 if WeakAuras.IsClassic then
-  LibClassicCast = LibStub("LibClassicCast")
+  LibClassicCast = LibStub("LibClassicCast-1.0")
 end
 
 function WeakAuras.UnitCastingInfo(unit)
