@@ -1583,15 +1583,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.SyncParentChildRelationships();
       WeakAuras.ValidateUniqueDataIds();
       db.history = db.history or {};
-      -- setting to automatically clear out history which is too old
-      -- default is to clear out deleted data >30 days old
-      -- set to false to disable
-      if db.clearOldHistory == nil then
-        db.clearOldHistory = 30
-      end
-      if db.clearOldHistory then
-        WeakAuras.ClearOldHistory(db.clearOldHistory)
-      end
+      WeakAuras.LoadHistory(db.history);
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
