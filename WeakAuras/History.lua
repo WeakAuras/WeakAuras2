@@ -26,13 +26,13 @@ function WeakAuras.LoadHistory(historydb)
   end
 end
 
-function WeakAuras.SetHistory(uid, data, fromAddon, addon)
+function WeakAuras.SetHistory(uid, data, source, addon)
   if uid and data then
     history[uid] = history[uid] or {}
     local hist = history[uid]
     hist.data = data
-    hist.source = fromAddon and "addon" or "import"
-    hist.addon = fromAddon and (addon or "unknown") or nil
+    hist.source = source
+    hist.addon = source == "addon" and (addon or "unknown") or nil
     hist.skippedVersions = hist.skippedVersions or {}
     hist.lastUpdate = time()
   end
