@@ -3400,9 +3400,8 @@ function WeakAuras.ValidateUniqueDataIds(silent)
         if not silent then
           prettyPrint("duplicate uid \""..data.uid.."\" detected in saved variables between \""..data.id.."\" and \""..seenUIDs[data.uid].id.."\".")
         end
-        -- ! AddMany will eventually re-add new uids, so don't regenerate them yet
-        seenUIDs[data.uid].uid = nil
-        data.uid = nil
+        data.uid = WeakAuras.GenerateUniqueID()
+        seenUIDs[data.uid] = data
       else
         seenUIDs[data.uid] = data
       end
@@ -3410,7 +3409,12 @@ function WeakAuras.ValidateUniqueDataIds(silent)
       if not silent then
         prettyPrint("invalid uid detected in saved variables for \""..data.id.."\"")
       end
+      data.uid = WeakAuras.GenerateUniqueID()
+      seenUIDs[data.uid] = data
     end
+  end
+  for uid, data in pairs(seenUIDs) do
+    UIDtoID[uid] = data.id
   end
 end
 
