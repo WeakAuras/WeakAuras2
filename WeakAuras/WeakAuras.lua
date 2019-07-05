@@ -6349,6 +6349,9 @@ end
 
 function WeakAuras.SkipVersion(uid, version, skip)
   local history = WeakAuras.GetHistory(uid)
+  if skip == nil then
+    skip = true
+  end
   if history then
     history.skippedVersions[version] = skip
   end
