@@ -8,7 +8,9 @@ History:
     "import": aura was imported via WeakAuras.Import (i.e. pasted string or addon channel transmission)
     "addon": aura was imported via WeakAuras.RegisterDisplay (i.e. an addon requested the addition)
   data: snapshot of data as it was at last import, or nil if source == "user", and the user has not chosen to save their changes to history
-
+  addon: if source == "addon", then this string indicates which addon supplied the last import
+  skippedVersions: record of versions that the user has indicated they don't wish to see update notifications for
+  lastUpdate: UNIX timestamp of the last time the user completed an import for this display
 --]]
 
 function WeakAuras.SetHistory(uid, data, fromAddon, addon)
