@@ -6367,7 +6367,7 @@ end
 function WeakAuras.RestoreFromHistory(uid)
   local history = WeakAuras.GetHistory(uid)
   if history and history.data then
-    WeakAuras.Add(history.data)
+    WeakAuras.Add(CopyTable(history.data))
   end
 end
 
