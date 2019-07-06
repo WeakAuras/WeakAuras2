@@ -444,6 +444,8 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
     local enable = arg.type ~= "collpase";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
+    elseif type(arg.enable) == "boolean" then
+      enable = arg.enable
     end
     if(enable) then
       local name = arg.name;

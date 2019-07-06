@@ -1131,7 +1131,8 @@ WeakAuras.load_prototype = {
       type = "number",
       init = "arg",
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
-      enable = not WeakAuras.IsClassic() -- WOWCLASSIC TO FIX: hidding it makes an error
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
     },
     {
       name = "zone",
@@ -1145,7 +1146,9 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_zoneId_list,
-      test = "WeakAuras.CheckNumericIds(%q, zoneId)", -- WOWCLASSIC TO FIX: hidding it makes an error
+      test = "WeakAuras.CheckNumericIds(%q, zoneId)",
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
     },
     {
       name = "zonegroupId",
@@ -1153,7 +1156,9 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_zoneGroupId_list,
-      test = "WeakAuras.CheckNumericIds(%q, zonegroupId)", -- WOWCLASSIC TO FIX: hidding it makes an error
+      test = "WeakAuras.CheckNumericIds(%q, zonegroupId)",
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
     },
     {
       name = "encounterid",
@@ -1161,7 +1166,9 @@ WeakAuras.load_prototype = {
       type = "string",
       init = "arg",
       desc = get_encounters_list,
-      test = "WeakAuras.CheckNumericIds(%q, encounterid)", -- WOWCLASSIC TO FIX: hidden it make error
+      test = "WeakAuras.CheckNumericIds(%q, encounterid)",
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
     },
     {
       name = "size",
