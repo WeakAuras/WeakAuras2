@@ -5754,7 +5754,7 @@ function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayIn
   elseif isUnit then
     pcall(function() frame:SetUnit(data) end)
   else
-    if WoW82 or WeakAuras.IsClassic() then
+    if WoW82 then
       pcall(function() frame:SetModel(tonumber(data)) end)
     else
       pcall(function() frame:SetModel(data) end)
