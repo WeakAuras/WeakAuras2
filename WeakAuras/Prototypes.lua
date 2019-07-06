@@ -1569,12 +1569,7 @@ WeakAuras.event_prototypes = {
       if (canEnableShowCost and trigger.use_showCost) then
         ret = ret .. [[
           if (event == "UNIT_SPELLCAST_START" and unit == "player") then
-            local spellID;
-            if WeakAuras.IsClassic() then
-              spellID = select(9, CastingInfo());
-            else
-              spellID = select(9, UnitCastingInfo("player"));
-            end
+            local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
             if spellID then
               local costTable = GetSpellPowerCost(spellID);
               for _, costInfo in pairs(costTable) do
