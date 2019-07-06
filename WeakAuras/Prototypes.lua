@@ -33,13 +33,15 @@ if WeakAuras.IsClassic() then
   LibClassicCast = LibStub("LibClassicCast-1.0")
 end
 
-function WeakAuras.UnitCastingInfo(unit)
-  if not WeakAuras.IsClassic() then
-    return UnitCastingInfo(unit)
-  elseif UnitIsUnit(unit, "player") then
-    return CastingInfo()
-  else
-    return LibClassicCast:UnitCastingInfo(unit)
+if not WeakAuras.IsClassic() then
+  WeakAuras.UnitCastingInfo = UnitCastingInfo
+else
+  WeakAuras.UnitCastingInfo = function(unit)
+    if UnitIsUnit(unit, "player") then
+      return CastingInfo()
+    else
+      return LibClassicCast:UnitCastingInfo(unit)
+    end
   end
 end
 
