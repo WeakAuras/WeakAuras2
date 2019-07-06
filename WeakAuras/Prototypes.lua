@@ -4759,7 +4759,7 @@ WeakAuras.event_prototypes = {
 
             return description;
           else
-            return L["Set IDs can be found on websites such as wowhead.com/item-sets"]
+            return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
           end
         end
       },
