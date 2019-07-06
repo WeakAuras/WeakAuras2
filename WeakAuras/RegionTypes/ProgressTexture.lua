@@ -16,8 +16,8 @@ local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtla
 --   region.full_rotation (false) - Allow full rotation [bool]
 
 local default = {
-  foregroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
-  backgroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+  foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+  backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturateBackground = false,
   desaturateForeground = false,
   sameTexture = true,
@@ -50,10 +50,6 @@ local default = {
   frameStrata = 1,
   slantMode = "INSIDE"
 };
-if WeakAuras.IsClassic() then
-  default.foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
-  default.backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
-end
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
 

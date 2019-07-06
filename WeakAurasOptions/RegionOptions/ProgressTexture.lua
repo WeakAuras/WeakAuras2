@@ -721,7 +721,8 @@ end
 
 local function createIcon()
   local data = {
-    foregroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+    foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+    backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
     sameTexture = true,
     backgroundOffset = 2,
     blendMode = "BLEND",
@@ -732,10 +733,6 @@ local function createIcon()
     foregroundColor = {1, 1, 1, 1},
     backgroundColor = {0.5, 0.5, 0.5, 0.5}
   };
-  if WeakAuras.IsClassic() then
-    data.foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
-    data.backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
-  end
 
   local thumbnail = createThumbnail(UIParent);
   modifyThumbnail(UIParent, thumbnail, data, nil, 32);

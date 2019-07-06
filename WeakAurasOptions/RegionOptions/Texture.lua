@@ -160,15 +160,12 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+    texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
     color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
     rotation = 0;
   };
-  if WeakAuras.IsClassic() then
-    data.texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3"
-  end
 
   local thumbnail = createThumbnail(UIParent);
   modifyThumbnail(UIParent, thumbnail, data, nil, 50);

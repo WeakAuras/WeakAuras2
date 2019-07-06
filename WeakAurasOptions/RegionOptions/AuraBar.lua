@@ -889,11 +889,7 @@ local function createIcon()
   -- Create and configure thumbnail
   local thumbnail = createThumbnail(UIParent);
   modifyThumbnail(UIParent, thumbnail, data, nil, 32, 18);
-  if WeakAuras.IsClassic() then
-    thumbnail:SetIcon("Interface\\Icons\\INV_Sword_62");
-  else
-    thumbnail:SetIcon("Interface\\Icons\\INV_Sword_122");
-  end
+  thumbnail:SetIcon("Interface\\Icons\\INV_Sword_62");
 
   -- Return thumbnail
   return thumbnail;
