@@ -734,10 +734,12 @@ function HandleEvent(frame, event, arg1, arg2, ...)
     end,
     0.8);  -- Data not available
 
-    timer:ScheduleTimer(function()
-      WeakAuras.PreShowModels()
-    end,
-    4);  -- Data not available
+    if not WeakAuras.IsClassic() then
+      timer:ScheduleTimer(function()
+        WeakAuras.PreShowModels()
+      end,
+      4);  -- Data not available
+    end
   end
   WeakAuras.StopProfileSystem("generictrigger " .. event);
 end
