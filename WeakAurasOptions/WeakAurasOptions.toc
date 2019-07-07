@@ -31,7 +31,9 @@ RegionOptions\Icon.lua
 RegionOptions\Text.lua
 RegionOptions\Group.lua
 RegionOptions\DynamicGroup.lua
+#@retail@
 RegionOptions\Model.lua
+#@end-retail@
 RegionOptions\ProgressTexture.lua
 
 Cache.lua
@@ -52,7 +54,9 @@ OptionsFrames\OptionsFrame.lua
 OptionsFrames\CodeReview.lua
 OptionsFrames\IconPicker.lua
 OptionsFrames\ImportExport.lua
+#@retail@
 OptionsFrames\ModelPicker.lua
+#@end-retail@
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
 # -- misc Frames
