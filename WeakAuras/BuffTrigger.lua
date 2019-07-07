@@ -61,6 +61,7 @@ local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 local BUFF_MAX_DISPLAY = 255 -- Do tell when you find the real value.
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -1362,7 +1363,9 @@ end
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+if not WeakAuras.IsClassic() then
+  frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+end
 frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 frame:RegisterEvent("UNIT_AURA");

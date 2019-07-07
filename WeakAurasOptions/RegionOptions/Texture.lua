@@ -160,7 +160,7 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+    texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
     color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
@@ -220,5 +220,9 @@ local templates = {
     }
   },
 }
+
+if WeakAuras.IsClassic() then
+  table.remove(templates, 2)
+end
 
 WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates);

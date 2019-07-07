@@ -61,11 +61,19 @@ Returns the potential conditions for a trigger
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 
+local LCD
+if WeakAuras.IsClassic() then
+  LCD = LibStub("LibClassicDurations")
+  LCD:RegisterFrame("WeakAuras")
+end
+
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
+
+local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -1102,6 +1110,15 @@ local function PrepareMatchData(unit, filter)
         break
       end
 
+      -- If we are on classic try to get duration from LibClassicDurations
+      if LCD then
+        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+        if duration == 0 and durationNew then
+            duration = durationNew
+            expirationTime = expirationTimeNew
+        end
+      end
+
       if debuffClass == nil then
         debuffClass = "none"
       elseif debuffClass == "" then
@@ -1191,6 +1208,15 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
     if not name then
       break
+    end
+
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
     end
 
     if debuffClass == nil then
@@ -1442,17 +1468,19 @@ local frame = CreateFrame("FRAME")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterUnitEvent("UNIT_PET", "player")
-frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+if not WeakAuras.IsClassic() then
+  frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+  frame:RegisterEvent("UNIT_EXITED_VEHICLE")
+end
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 frame:RegisterEvent("ENCOUNTER_START")
 frame:RegisterEvent("ENCOUNTER_END")
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
-frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
@@ -2822,6 +2850,15 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
       return false
     end
 
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -2912,6 +2949,16 @@ local function CheckAurasMulti(base, unit, filter)
     if not name then
       return false
     end
+
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -2962,7 +3009,9 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    if not WeakAuras.IsClassic() then
+      multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     multiAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD")

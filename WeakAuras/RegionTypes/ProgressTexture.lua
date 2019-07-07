@@ -1,5 +1,5 @@
 local L = WeakAuras.L;
-
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 -- Credit to CommanderSirow for taking the time to properly craft the TransformPoint function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown
@@ -16,8 +16,8 @@ local L = WeakAuras.L;
 --   region.full_rotation (false) - Allow full rotation [bool]
 
 local default = {
-  foregroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
-  backgroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+  foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+  backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturateBackground = false,
   desaturateForeground = false,
   sameTexture = true,
@@ -693,7 +693,7 @@ local function createTexture(region, layer, drawlayer)
   local  OrgSetTexture = texture.SetTexture;
   -- WORKAROUND, setting the same texture with a different wrap mode does not change the wrap mode
   texture.SetTexture = function(self, texture, horWrapMode, verWrapMode)
-    if (C_Texture.GetAtlasInfo(texture)) then
+    if (GetAtlasInfo(texture)) then
       self:SetAtlas(texture);
     else
       local needToClear = (self.horWrapMode and self.horWrapMode ~= horWrapMode) or (self.verWrapMode and self.verWrapMode ~= verWrapMode);

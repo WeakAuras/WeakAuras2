@@ -242,6 +242,8 @@ function ConstructFunction(prototype, trigger, inverse)
     local enable = arg.type ~= "description";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
+    elseif type(arg.enable) == "boolean" then
+      enable = arg.enable
     end
     if(enable) then
       local name = arg.name;
@@ -271,7 +273,6 @@ function ConstructFunction(prototype, trigger, inverse)
     end
   end
   local ret = "return function("..tconcat(input, ", ")..")\n";
-
   ret = ret..(init or "");
 
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
@@ -727,14 +728,18 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
       WeakAuras.CheckCooldownReady();
       WeakAuras.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
-      WeakAuras.PreShowModels()
+      if not WeakAuras.IsClassic() then
+        WeakAuras.PreShowModels() -- models are disabled for classic
+      end
     end,
     0.8);  -- Data not available
 
-    timer:ScheduleTimer(function()
-      WeakAuras.PreShowModels()
-    end,
-    4);  -- Data not available
+    if not WeakAuras.IsClassic() then
+      timer:ScheduleTimer(function()
+        WeakAuras.PreShowModels()
+      end,
+      4);  -- Data not available
+    end
   end
   WeakAuras.StopProfileSystem("generictrigger " .. event);
 end
@@ -1423,10 +1428,11 @@ end
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
+  local ranged = WeakAuras.IsClassic() and GetInventorySlotInfo("RangedSlot")
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
-  local swingDurationMain, swingDurationOff, swingDurationRange;
+  local swingDurationMain, swingDurationOff, swingDurationRange, mainSwingOffset;
   local mainTimer, offTimer, rangeTimer;
   local selfGUID;
 
@@ -1435,8 +1441,8 @@ do
       local itemId = GetInventoryItemID("player", mh);
       local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
       if(lastSwingMain) then
-        return swingDurationMain, lastSwingMain + swingDurationMain, name, icon;
-      elseif (lastSwingRange) then
+        return swingDurationMain, lastSwingMain + swingDurationMain - mainSwingOffset, name, icon;
+      elseif not WeakAuras.IsClassic() and lastSwingRange then
         return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
       else
         return 0, math.huge, name, icon;
@@ -1449,6 +1455,14 @@ do
       else
         return 0, math.huge, name, icon;
       end
+    elseif(hand == "ranged") then
+      local itemId = GetInventoryItemID("player", ranged);
+      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      if (lastSwingRange) then
+        return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
+      else
+        return 0, math.huge, name, icon;
+      end
     end
 
     return 0, math.huge;
@@ -1456,16 +1470,16 @@ do
 
   local function swingEnd(hand)
     if(hand == "main") then
-      lastSwingMain, swingDurationMain = nil, nil;
+      lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil;
     elseif(hand == "off") then
       lastSwingOff, swingDurationOff = nil, nil;
-    elseif(hand == "range") then
+    elseif(hand == "ranged") then
       lastSwingRange, swingDurationRange = nil, nil;
     end
     WeakAuras.ScanEvents("SWING_TIMER_END");
   end
 
-  local function swingTimerCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
+  local function swingTimerCLEUCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
     WeakAuras.StartProfileSystem("generictrigger swing");
     if(sourceGUID == selfGUID) then
       if(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
@@ -1478,6 +1492,7 @@ do
         if not(isOffHand) then
           lastSwingMain = currentTime;
           swingDurationMain = mainSpeed;
+          mainSwingOffset = 0;
           event = "SWING_TIMER_START";
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
@@ -1488,9 +1503,47 @@ do
           timer:CancelTimer(offTimer);
           offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off");
         end
-
         WeakAuras.ScanEvents(event);
-      elseif(event == "RANGE_DAMAGE" or event == "RANGE_MISSED") then
+      end
+    elseif (destGUID == selfGUID and (select(1, ...) == "PARRY" or select(4, ...) == "PARRY")) then
+      if (lastSwingMain) then
+        local timeLeft = lastSwingMain + swingDurationMain - GetTime();
+        if (timeLeft > 0.6 * swingDurationMain) then
+          timer:CancelTimer(mainTimer);
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.4 * swingDurationMain, "main");
+          mainSwingOffset = 0.4 * swingDurationMain
+          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
+        elseif (timeLeft > 0.2 * swingDurationMain) then
+          timer:CancelTimer(mainTimer);
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.2 * swingDurationMain, "main");
+          mainSwingOffset = 0.2 * swingDurationMain
+          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
+        end
+      end
+    end
+    WeakAuras.StopProfileSystem("generictrigger swing");
+  end
+
+  local function swingTimerCheck(event, unit, guid, spell)
+    if unit ~= "player" then return end
+    WeakAuras.StartProfileSystem("generictrigger swing");
+    if event == "UNIT_SPELLCAST_SUCCEEDED" then
+      if WeakAuras.reset_swing_spells[spell] then
+        local event;
+        local currentTime = GetTime();
+        local mainSpeed, offSpeed = UnitAttackSpeed("player");
+        lastSwingMain = currentTime;
+        swingDurationMain = mainSpeed;
+        mainSwingOffset = 0;
+        if (lastSwingMain) then
+          timer:CancelTimer(mainTimer);
+          event = "SWING_TIMER_CHANGE";
+        else
+          event = "SWING_TIMER_START";
+        end
+        mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
+        WeakAuras.ScanEvents(event);
+      elseif WeakAuras.reset_ranged_swing_spells[spell] then
         local event;
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
@@ -1502,22 +1555,8 @@ do
         end
         lastSwingRange = currentTime;
         swingDurationRange = speed;
-        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "range");
-
+        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged");
         WeakAuras.ScanEvents(event);
-      end
-    elseif (destGUID == selfGUID and (select(1, ...) == "PARRY" or select(4, ...) == "PARRY")) then
-      if (lastSwingMain) then
-        local timeLeft = lastSwingMain + swingDurationMain - GetTime();
-        if (timeLeft > 0.6 * swingDurationMain) then
-          timer:CancelTimer(mainTimer);
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.4 * swingDurationMain, "main");
-          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
-        elseif (timeLeft > 0.2 * swingDurationMain) then
-          timer:CancelTimer(mainTimer);
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.2 * swingDurationMain, "main");
-          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
-        end
       end
     end
     WeakAuras.StopProfileSystem("generictrigger swing");
@@ -1527,9 +1566,15 @@ do
     if not(swingTimerFrame) then
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+      swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
+      swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
       swingTimerFrame:SetScript("OnEvent",
-        function()
-          swingTimerCheck(CombatLogGetCurrentEventInfo())
+        function(_, event, ...)
+          if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            swingTimerCLEUCheck(CombatLogGetCurrentEventInfo())
+          else
+            swingTimerCheck(event, ...)
+          end
         end);
       selfGUID = UnitGUID("player");
     end
@@ -1583,7 +1628,12 @@ do
 
   local function CheckGCD()
     local event;
-    local startTime, duration = GetSpellCooldown(61304);
+    local startTime, duration
+    if WeakAuras.IsClassic() then
+      startTime, duration = GetSpellCooldown(29515);
+    else
+      startTime, duration = GetSpellCooldown(61304);
+    end
     if(duration and duration > 0) then
       if not(gcdStart) then
         event = "GCD_START";
@@ -1707,12 +1757,14 @@ do
   function WeakAuras.InitCooldownReady()
     cdReadyFrame = CreateFrame("FRAME");
     WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
+    if not WeakAuras.IsClassic() then
+      cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
+      cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+      cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+    end
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
-    cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-    cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-    cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
     cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
@@ -2296,7 +2348,9 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange = CreateFrame("FRAME");
     WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
-    watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    if not WeakAuras.IsClassic() then
+      watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    end
     watchUnitChange:RegisterEvent("UNIT_TARGET");
     watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
     watchUnitChange:RegisterEvent("GROUP_ROSTER_UPDATE");
@@ -3151,7 +3205,13 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
       local found = false;
       local additional = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
       for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
-        if (v.store and v.name and v.display) then
+        local enable = true
+        if(type(v.enable) == "function") then
+          enable = v.enable(trigger)
+        elseif type(v.enable) == "boolean" then
+          enable = v.enable
+        end
+        if (enable and v.store and v.name and v.display) then
           found = true;
           additional = additional .. "|cFFFF0000%" .. v.name .. "|r - " .. v.display .. "\n";
         end
@@ -3223,7 +3283,11 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
         if (v.conditionType and v.name and v.display) then
           local enable = true;
           if (v.enable) then
-            enable = v.enable(trigger);
+            if type(v.enable) == "function" then
+              enable = v.enable(trigger);
+            elseif type(v.enable) == "boolean" then
+              enable = v.enable
+            end
           end
 
           if (enable) then

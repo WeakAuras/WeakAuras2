@@ -1,4 +1,4 @@
-local internalVersion = 16;
+local internalVersion = 18;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -13,6 +13,7 @@ local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInPar
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown, GetFileIDFromPath = debugstack, IsSpellKnown, GetFileIDFromPath
+local GetNumTalentTabs, GetNumTalents = GetNumTalentTabs, GetNumTalents
 
 local ADDON_NAME = "WeakAuras"
 local WeakAuras = WeakAuras
@@ -43,8 +44,6 @@ local queueshowooc;
 function WeakAuras.InternalVersion()
   return internalVersion;
 end
-
-WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
 function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
@@ -445,6 +444,8 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
     local enable = arg.type ~= "collpase";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
+    elseif type(arg.enable) == "boolean" then
+      enable = arg.enable
     end
     if(enable) then
       local name = arg.name;
@@ -1150,17 +1151,30 @@ function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
 
   WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
-  local spec = GetSpecialization()
-  WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
 
-  for tier = 1, MAX_TALENT_TIERS do
-    for column = 1, NUM_TALENT_COLUMNS do
-      -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
-      local talentId = (tier-1)*3+column
-      -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
-      if (talentName and talentIcon) then
-        WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+  if WeakAuras.IsClassic() then
+    for tab = 1, GetNumTalentTabs() do
+      for num_talent = 1, GetNumTalents(tab) do
+        local talentName, talentIcon = GetTalentInfo(tab, num_talent);
+        local talentId = (tab - 1)*20+num_talent
+        if (talentName and talentIcon) then
+          WeakAuras.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
+        end
+      end
+   end
+  else
+    local spec = GetSpecialization()
+    WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
+
+    for tier = 1, MAX_TALENT_TIERS do
+      for column = 1, NUM_TALENT_COLUMNS do
+        -- Get name and icon info for the current talent of the current class and save it
+        local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
+        local talentId = (tier-1)*3+column
+        -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
+        if (talentName and talentIcon) then
+          WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+        end
       end
     end
   end
@@ -1405,8 +1419,13 @@ loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
-loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+if not WeakAuras.IsClassic() then
+  loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+  loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+else
+  loadedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED");
+  loadedFrame:RegisterEvent("SPELLS_CHANGED");
+end
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
     if(addon == ADDON_NAME) then
@@ -1467,7 +1486,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = WeakAuras.CreatePvPTalentCache;
-    elseif(event == "ACTIVE_TALENT_GROUP_CHANGED") then
+    elseif(event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED") then
       callback = WeakAuras.CreateTalentCache;
     elseif(event == "PLAYER_REGEN_ENABLED") then
       callback = function()
@@ -1708,13 +1727,13 @@ local function scanForLoadsImpl(self, event, arg1, ...)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, spec, zone = UnitName("player"), GetRealmName(), GetSpecialization(), GetRealZoneText();
+  local player, realm, spec, zone = UnitName("player"), GetRealmName(), WeakAuras.IsClassic() and 1 or GetSpecialization(), GetRealZoneText();
   local zoneId = C_Map.GetBestMapForUnit("player")
   local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
-  local role = select(5, GetSpecializationInfo(spec));
+  local role = WeakAuras.IsClassic() and "none" or select(5, GetSpecializationInfo(spec));
 
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
@@ -1722,9 +1741,12 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inencounter = encounter_id ~= 0;
-  local inpetbattle = C_PetBattles.IsInBattle()
-  local vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
-  local vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
+  local inpetbattle, vehicle, vehicleUi = false, false, false
+  if not WeakAuras.IsClassic() then
+    inpetbattle = C_PetBattles.IsInBattle()
+    vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
+    vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
+  end
 
   local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
   if (inInstance) then
@@ -1760,9 +1782,13 @@ local function scanForLoadsImpl(self, event, arg1, ...)
     group = "solo";
   end
 
-  local affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
-  local warmodeActive = C_PvP.IsWarModeDesired();
-  local effectiveLevel = UnitEffectiveLevel("player")
+
+  local affixes, warmodeActive, effectiveLevel = 0, false, 0
+  if not WeakAuras.IsClassic() then
+    effectiveLevel = UnitEffectiveLevel("player")
+    affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
+    warmodeActive = C_PvP.IsWarModeDesired();
+  end
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
@@ -1839,35 +1865,37 @@ WeakAuras.frames["Display Load Handling"] = loadFrame;
 loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
 
-loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+if not WeakAuras.IsClassic() then
+  loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+  loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+  loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
+  loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
+  loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
+  loadFrame:RegisterEvent("VEHICLE_UPDATE");
+  loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
+  loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+  loadFrame:RegisterEvent("CHALLENGE_MODE_START")
+end
 loadFrame:RegisterEvent("ZONE_CHANGED");
 loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
 loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
 loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
-
 loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
-loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
-loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
-loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
-loadFrame:RegisterEvent("VEHICLE_UPDATE");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
-loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
-
-loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
-loadFrame:RegisterEvent("CHALLENGE_MODE_START")
 
 local unitLoadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
-unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
+if not WeakAuras.IsClassic() then
+  unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
+  unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
+end
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(...)
@@ -2958,6 +2986,26 @@ function WeakAuras.Modernize(data)
     end
     if data.load.use_realm == false then
       data.load.use_realm = nil
+    end
+  end
+
+  -- Version 18 was introduced in July 2019 for Classic
+  if data.internalVersion < 18 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        -- Stance/Form/Aura form field type changed from type="select" to type="multiselect"
+        if trigger and trigger.type == "status" and trigger.event == "Stance/Form/Aura" then
+          local value = trigger.form
+          if type(value) ~= "table" then
+            if trigger.use_form == false then
+              trigger.form = { multi = { [value] = true } }
+            elseif trigger.use_form then
+              trigger.form = { single = value }
+            end
+          end
+        end
+      end
     end
   end
 
@@ -4316,6 +4364,11 @@ function WeakAuras.CorrectSpellName(input)
     else
       return nil;
     end
+  elseif WeakAuras.IsClassic() and input then
+    local name, _, _, _, _, _, spellId = GetSpellInfo(input)
+    if spellId then
+      return spellId
+    end
   elseif(input) then
     local link;
     if(input:sub(1,1) == "\124") then
@@ -4326,7 +4379,7 @@ function WeakAuras.CorrectSpellName(input)
     if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
       return tonumber(itemId);
-    else
+    elseif not WeakAuras.IsClassic() then
       for tier = 1, MAX_TALENT_TIERS do
         for column = 1, NUM_TALENT_COLUMNS do
           local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
@@ -5729,18 +5782,12 @@ function WeakAuras.FindUnusedId(prefix)
 end
 
 function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
-  local WoW82 = WeakAuras.BuildInfo > 80100
-  local data = WoW82 and model_fileId or model_path
   if isDisplayInfo then
-    pcall(function() frame:SetDisplayInfo(tonumber(data)) end)
+    pcall(function() frame:SetDisplayInfo(tonumber(model_fileId)) end)
   elseif isUnit then
-    pcall(function() frame:SetUnit(data) end)
+    pcall(function() frame:SetUnit(model_fileId) end)
   else
-    if WoW82 then
-      pcall(function() frame:SetModel(tonumber(data)) end)
-    else
-      pcall(function() frame:SetModel(data) end)
-    end
+    pcall(function() frame:SetModel(tonumber(model_fileId)) end)
   end
 end
 

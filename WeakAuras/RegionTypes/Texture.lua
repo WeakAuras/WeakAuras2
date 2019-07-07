@@ -4,7 +4,7 @@ local root2 = math.sqrt(2);
 local halfroot2 = root2/2;
 
 local default = {
-  texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+  texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturate = false,
   width = 200,
   height = 200,

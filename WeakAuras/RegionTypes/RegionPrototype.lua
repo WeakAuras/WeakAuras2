@@ -1,5 +1,6 @@
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 
 WeakAuras.regionPrototype = {};
 
@@ -623,7 +624,7 @@ function WeakAuras.regionPrototype.SetTextOnText(text, str)
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  if type(path) == "string" and C_Texture.GetAtlasInfo(path) then
+  if type(path) == "string" and GetAtlasInfo(path) then
     texture:SetAtlas(path);
   else
     texture:SetTexture(path, wrapModeH, wrapModeV);

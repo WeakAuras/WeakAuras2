@@ -141,7 +141,7 @@ templates.class.WARRIOR = {
         { spell = 97463, type = "buff", unit = "player"}, -- Rallying Cry
         { spell = 260708, type = "buff", unit = "player"}, -- Sweeping Strikes
       },
-      icon = 458972
+      icon = 132333
     },
     [2] = {
       title = L["Debuffs"],
@@ -156,13 +156,14 @@ templates.class.WARRIOR = {
         { spell = 262115, type = "debuff", unit = "target"}, -- Deep Wounds
         { spell = 132169, type = "debuff", unit = "target", talent = 6}, -- Storm Bolt
       },
-      icon = 464973
+      icon = 132366
     },
     [3] = {
       title = L["Abilities"],
       args = {
-        { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge
-        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
+        { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, classic = false}, -- Charge
+        { spell = 100, type = "ability", requiresTarget = true, classic = true}, -- Charge
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)", classic = false}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 845, type = "ability", talent = 15}, -- Cleave
         { spell = 1464, type = "ability", requiresTarget = true}, -- Slam
@@ -173,7 +174,7 @@ templates.class.WARRIOR = {
         { spell = 6552, type = "ability", requiresTarget = true}, -- Pummel
         { spell = 6673, type = "ability"}, -- Battle Shout
         { spell = 7384, type = "ability", requiresTarget = true, overlayGlow = true, talent = {19,21}}, -- Overpower
-        { spell = 7384, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 20, titleSuffix=" (2 Charges)"}, -- Overpower
+        { spell = 7384, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 20, titleSuffix=" (2 Charges)", classic = false}, -- Overpower
         { spell = 12294, type = "ability", requiresTarget = true}, -- Mortal Strike
         { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
         { spell = 34428, type = "ability", usable = true, requiresTarget = true}, -- Victory Rush
@@ -195,6 +196,7 @@ templates.class.WARRIOR = {
       },
       icon = 132355
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -208,6 +210,7 @@ templates.class.WARRIOR = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -258,7 +261,7 @@ templates.class.WARRIOR = {
       title = L["Abilities"],
       args = {
         { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}}, -- Charge    !!TODO: add prefix or name or something when 2 times same talent
-        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4}, -- Charge
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, classic = false}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
         { spell = 1719, type = "ability", buff = true}, -- Recklessness
         { spell = 5246, type = "ability"}, -- Intimidating Shout
@@ -285,6 +288,7 @@ templates.class.WARRIOR = {
       },
       icon = 136012
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -297,6 +301,7 @@ templates.class.WARRIOR = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -383,6 +388,7 @@ templates.class.WARRIOR = {
       },
       icon = 134951
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -396,6 +402,7 @@ templates.class.WARRIOR = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -436,7 +443,7 @@ templates.class.PALADIN = {
         { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
         { spell = 223306, type = "buff", unit = "target", talent = 2}, -- Bestow Faith
       },
-      icon = 236254
+      icon = 135964
     },
     [2] = {
       title = L["Debuffs"],
@@ -481,6 +488,7 @@ templates.class.PALADIN = {
       },
       icon = 135972
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -494,6 +502,7 @@ templates.class.PALADIN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -579,6 +588,7 @@ templates.class.PALADIN = {
       },
       icon = 135874
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -594,6 +604,7 @@ templates.class.PALADIN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -677,6 +688,7 @@ templates.class.PALADIN = {
       },
       icon = 135891
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -692,6 +704,7 @@ templates.class.PALADIN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -783,8 +796,9 @@ templates.class.HUNTER = {
         { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
         { spell = 264265, type = "ability"}, -- Spirit Shock
       },
-      icon = 132176
+      icon = 135130
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -800,6 +814,7 @@ templates.class.HUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -888,6 +903,7 @@ templates.class.HUNTER = {
       },
       icon = 132329
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -901,6 +917,7 @@ templates.class.HUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1010,10 +1027,10 @@ templates.class.HUNTER = {
         { spell = 270335, type = "ability", talent = 20}, -- Shrapnel Bomb
         { spell = 271045, type = "ability", talent = 20}, -- Volatile Bomb
         { spell = 272678, type = "ability", buff = true}, -- Primal Rage
-
       },
       icon = 236184
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1029,6 +1046,7 @@ templates.class.HUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1128,8 +1146,9 @@ templates.class.ROGUE = {
         { spell = 245388, type = "ability", requiresTarget = true, talent = 17}, -- Toxic Blade
         { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
       },
-      icon = 458726
+      icon = 132350
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1142,6 +1161,7 @@ templates.class.ROGUE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1235,6 +1255,7 @@ templates.class.ROGUE = {
       },
       icon = 135610
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1249,6 +1270,7 @@ templates.class.ROGUE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1343,6 +1365,7 @@ templates.class.ROGUE = {
       },
       icon = 236279
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1356,6 +1379,7 @@ templates.class.ROGUE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1394,7 +1418,7 @@ templates.class.PRIEST = {
         { spell = 111759, type = "buff", unit = "player"}, -- Levitate
         { spell = 45243, type = "buff", unit = "player" }, -- Focused Will
       },
-      icon = 458720
+      icon = 135940
     },
     [2] = {
       title = L["Debuffs"],
@@ -1438,8 +1462,9 @@ templates.class.PRIEST = {
         { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
       },
-      icon = 253400
+      icon = 136224
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1450,6 +1475,7 @@ templates.class.PRIEST = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1528,6 +1554,7 @@ templates.class.PRIEST = {
       },
       icon = 135937
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1538,6 +1565,7 @@ templates.class.PRIEST = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1620,6 +1648,7 @@ templates.class.PRIEST = {
       },
       icon = 136230
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1632,6 +1661,7 @@ templates.class.PRIEST = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1677,7 +1707,7 @@ templates.class.SHAMAN = {
         { spell = 157348, type = "buff", unit = "pet", talent = {11,17}}, -- Call Lightning
 
       },
-      icon = 451169
+      icon = 135863
     },
     [2] = {
       title = L["Debuffs"],
@@ -1724,8 +1754,9 @@ templates.class.SHAMAN = {
         { spell = 198103, type = "ability", duration = 60}, -- Earth Elemental
         { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 18}, -- Icefury
       },
-      icon = 135790
+      icon = 135963
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1744,6 +1775,7 @@ templates.class.SHAMAN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1835,6 +1867,7 @@ templates.class.SHAMAN = {
       },
       icon = 1370984
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1853,6 +1886,7 @@ templates.class.SHAMAN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -1939,6 +1973,7 @@ templates.class.SHAMAN = {
       },
       icon = 135127
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -1956,6 +1991,7 @@ templates.class.SHAMAN = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2038,6 +2074,7 @@ templates.class.MAGE = {
       },
       icon = 136075
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2048,6 +2085,7 @@ templates.class.MAGE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2126,6 +2164,7 @@ templates.class.MAGE = {
       },
       icon = 610633
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2137,6 +2176,7 @@ templates.class.MAGE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2222,6 +2262,7 @@ templates.class.MAGE = {
       },
       icon = 629077
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2233,6 +2274,7 @@ templates.class.MAGE = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2269,7 +2311,7 @@ templates.class.WARLOCK = {
         { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
         { spell = 755, type = "buff", unit = "pet"}, -- Health Funnel
       },
-      icon = 136150
+      icon = 136210
     },
     [2] = {
       title = L["Debuffs"],
@@ -2342,8 +2384,9 @@ templates.class.WARLOCK = {
         { spell = 264993, type = "ability"}, -- Shadow Shield
         { spell = 278350, type = "ability", requiresTarget = true, talent = 12 }, -- Vile Taint
       },
-      icon = 615103
+      icon = 135808
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2356,6 +2399,7 @@ templates.class.WARLOCK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2463,6 +2507,7 @@ templates.class.WARLOCK = {
       },
       icon = 1378282
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2477,6 +2522,7 @@ templates.class.WARLOCK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2582,6 +2628,7 @@ templates.class.WARLOCK = {
       },
       icon = 135807
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2597,6 +2644,7 @@ templates.class.WARLOCK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2686,6 +2734,7 @@ templates.class.MONK = {
       },
       icon = 133701
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2699,6 +2748,7 @@ templates.class.MONK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2784,6 +2834,7 @@ templates.class.MONK = {
       },
       icon = 627485
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2797,6 +2848,7 @@ templates.class.MONK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2888,6 +2940,7 @@ templates.class.MONK = {
       },
       icon = 627606
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -2899,6 +2952,7 @@ templates.class.MONK = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -2942,7 +2996,7 @@ templates.class.DRUID = {
         { spell = 5215, type = "buff", unit = "player"}, -- Prowl
         { spell = 29166, type = "buff", unit = "group"}, -- Innervate
       },
-      icon = 535045
+      icon = 136097
     },
     [2] = {
       title = L["Debuffs"],
@@ -2962,7 +3016,7 @@ templates.class.DRUID = {
         { spell = 81261, type = "debuff", unit = "target"}, -- Solar Beam
         { spell = 2637, type = "debuff", unit = "multi"}, -- Hibernate
       },
-      icon = 236216
+      icon = 132114
     },
     [3] = {
       title = L["Abilities"],
@@ -3009,8 +3063,9 @@ templates.class.DRUID = {
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
         { spell = 274281, type = "ability", requiresTarget = true, charges = true, target = true, talent = 21 }, -- New Moon
       },
-      icon = 136060
+      icon = 132134
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3025,6 +3080,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3137,6 +3193,7 @@ templates.class.DRUID = {
       },
       icon = 236149
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3149,6 +3206,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3256,6 +3314,7 @@ templates.class.DRUID = {
       },
       icon = 236169
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3272,6 +3331,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3377,6 +3437,7 @@ templates.class.DRUID = {
       },
       icon = 236153
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3389,6 +3450,7 @@ templates.class.DRUID = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3468,6 +3530,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 1305156
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3480,6 +3543,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3556,6 +3620,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 1344650
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3570,6 +3635,7 @@ templates.class.DEMONHUNTER = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3657,6 +3723,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 136120
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3667,6 +3734,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3747,6 +3815,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135372
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3755,6 +3824,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3842,6 +3912,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 136144
     },
+    [4] = {},
     [5] = {
       title = L["Specific Azerite Traits"],
       args = {
@@ -3852,6 +3923,7 @@ templates.class.DEATHKNIGHT = {
       },
       icon = 135349
     },
+    [6] = {},
     [7] = {
       title = L["PvP Talents"],
       args = {
@@ -3905,160 +3977,162 @@ tinsert(templates.general.args, {
 );
 
 -- Items section
-templates.items[1] = {
-  title = L["Enchants"],
-  args = {
-    { spell = 268905, type = "buff", unit = "player"}, --Deadly Navigation
-    { spell = 267612, type = "buff", unit = "player"}, --Gale-Force Striking
-    { spell = 268899, type = "buff", unit = "player"}, --Masterful Navigation
-    { spell = 268887, type = "buff", unit = "player"}, --Quick Navigation
-    { spell = 268911, type = "buff", unit = "player"}, --Stalwart Navigation
-    { spell = 267685, type = "buff", unit = "player"}, --Torrent of Elements
-    { spell = 268854, type = "buff", unit = "player"}, --Versatile Navigation
+if not WeakAuras.IsClassic() then
+  templates.items[1] = {
+    title = L["Enchants"],
+    args = {
+      { spell = 268905, type = "buff", unit = "player"}, --Deadly Navigation
+      { spell = 267612, type = "buff", unit = "player"}, --Gale-Force Striking
+      { spell = 268899, type = "buff", unit = "player"}, --Masterful Navigation
+      { spell = 268887, type = "buff", unit = "player"}, --Quick Navigation
+      { spell = 268911, type = "buff", unit = "player"}, --Stalwart Navigation
+      { spell = 267685, type = "buff", unit = "player"}, --Torrent of Elements
+      { spell = 268854, type = "buff", unit = "player"}, --Versatile Navigation
+    }
   }
-}
 
-templates.items[2] = {
-  title = L["On Use Trinkets (Aura)"],
-  args = {
-    { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
-    { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
-    { spell = 278227, type = "buff", unit = "player", titleItemPrefix = 161411},
-    { spell = 278086, type = "buff", unit = "player", titleItemPrefix = 160649}, --heal
-    { spell = 278317, type = "buff", unit = "player", titleItemPrefix = 161462},
-    { spell = 278364, type = "buff", unit = "player", titleItemPrefix = 161463},
-    { spell = 281543, type = "buff", unit = "player", titleItemPrefix = 163936},
-    { spell = 265954, type = "buff", unit = "player", titleItemPrefix = 158319},
-    { spell = 266018, type = "buff", unit = "target", titleItemPrefix = 158320}, --heal
-    { spell = 271054, type = "buff", unit = "player", titleItemPrefix = 158368}, --heal
-    { spell = 268311, type = "buff", unit = "player", titleItemPrefix = 159614}, --heal
-    { spell = 271115, type = "buff", unit = "player", titleItemPrefix = 159615},
-    { spell = 271107, type = "buff", unit = "player", titleItemPrefix = 159617},
-    { spell = 265946, type = "buff", unit = "player", titleItemPrefix = 159618}, --tank
-    { spell = 271465, type = "debuff", unit = "target", titleItemPrefix = 159624},
-    { spell = 268836, type = "buff", unit = "player", titleItemPrefix = 159625},
-    { spell = 266047, type = "buff", unit = "player", titleItemPrefix = 159627},
-    { spell = 268998, type = "buff", unit = "player", titleItemPrefix = 159630},
-    { spell = 273935, type = "buff", unit = "player", titleItemPrefix = 158162},
-    { spell = 273955, type = "buff", unit = "player", titleItemPrefix = 158163},
-    { spell = 273942, type = "buff", unit = "player", titleItemPrefix = 158164},
-    { spell = 268550, type = "buff", unit = "player", titleItemPrefix = 158215},
-    { spell = 274472, type = "buff", unit = "player", titleItemPrefix = 161117},
-    { spell = 288267, type = "buff", unit = "player", titleItemPrefix = 165574},
-    { spell = 291170, type = "debuff", unit = "player", titleItemPrefix = 165578}, --heal
-    { spell = 288156, type = "buff", unit = "player", titleItemPrefix = 165580},
-    { spell = 287568, type = "buff", unit = "player", titleItemPrefix = 165569}, --tank
+  templates.items[2] = {
+    title = L["On Use Trinkets (Aura)"],
+    args = {
+      { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
+      { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
+      { spell = 278227, type = "buff", unit = "player", titleItemPrefix = 161411},
+      { spell = 278086, type = "buff", unit = "player", titleItemPrefix = 160649}, --heal
+      { spell = 278317, type = "buff", unit = "player", titleItemPrefix = 161462},
+      { spell = 278364, type = "buff", unit = "player", titleItemPrefix = 161463},
+      { spell = 281543, type = "buff", unit = "player", titleItemPrefix = 163936},
+      { spell = 265954, type = "buff", unit = "player", titleItemPrefix = 158319},
+      { spell = 266018, type = "buff", unit = "target", titleItemPrefix = 158320}, --heal
+      { spell = 271054, type = "buff", unit = "player", titleItemPrefix = 158368}, --heal
+      { spell = 268311, type = "buff", unit = "player", titleItemPrefix = 159614}, --heal
+      { spell = 271115, type = "buff", unit = "player", titleItemPrefix = 159615},
+      { spell = 271107, type = "buff", unit = "player", titleItemPrefix = 159617},
+      { spell = 265946, type = "buff", unit = "player", titleItemPrefix = 159618}, --tank
+      { spell = 271465, type = "debuff", unit = "target", titleItemPrefix = 159624},
+      { spell = 268836, type = "buff", unit = "player", titleItemPrefix = 159625},
+      { spell = 266047, type = "buff", unit = "player", titleItemPrefix = 159627},
+      { spell = 268998, type = "buff", unit = "player", titleItemPrefix = 159630},
+      { spell = 273935, type = "buff", unit = "player", titleItemPrefix = 158162},
+      { spell = 273955, type = "buff", unit = "player", titleItemPrefix = 158163},
+      { spell = 273942, type = "buff", unit = "player", titleItemPrefix = 158164},
+      { spell = 268550, type = "buff", unit = "player", titleItemPrefix = 158215},
+      { spell = 274472, type = "buff", unit = "player", titleItemPrefix = 161117},
+      { spell = 288267, type = "buff", unit = "player", titleItemPrefix = 165574},
+      { spell = 291170, type = "debuff", unit = "player", titleItemPrefix = 165578}, --heal
+      { spell = 288156, type = "buff", unit = "player", titleItemPrefix = 165580},
+      { spell = 287568, type = "buff", unit = "player", titleItemPrefix = 165569}, --tank
+    }
   }
-}
 
-templates.items[3] = {
-  title = L["On Use Trinkets (CD)"],
-  args = {
-    { spell = 161377, type = "item"},
-    { spell = 161379, type = "item"},
-    { spell = 161411, type = "item"},
-    { spell = 160649, type = "item"}, --heal
-    { spell = 161462, type = "item"},
-    { spell = 161463, type = "item"},
-    { spell = 163936, type = "item"},
-    { spell = 158319, type = "item"},
-    { spell = 158320, type = "item"}, --heal
-    { spell = 158368, type = "item"}, --heal
-    { spell = 159614, type = "item"}, --heal
-    { spell = 159615, type = "item"},
-    { spell = 159617, type = "item"},
-    { spell = 159618, type = "item"}, --tank
-    { spell = 159624, type = "item"},
-    { spell = 159625, type = "item"},
-    { spell = 159627, type = "item"},
-    { spell = 159630, type = "item"},
-    { spell = 159611, type = "item"},
-    { spell = 158367, type = "item"},
-    { spell = 158162, type = "item"},
-    { spell = 158163, type = "item"},
-    { spell = 158164, type = "item"},
-    { spell = 158215, type = "item"},
-    { spell = 158216, type = "item"},
-    { spell = 158224, type = "item"},
-    { spell = 161117, type = "item"},
-    { spell = 165574, type = "item"},
-    { spell = 165568, type = "item"},
-    { spell = 165578, type = "item"}, --heal
-    { spell = 165580, type = "item"},
-    { spell = 165576, type = "item"},
-    { spell = 165572, type = "item"},
-    { spell = 165569, type = "item"}, --tank
+  templates.items[3] = {
+    title = L["On Use Trinkets (CD)"],
+    args = {
+      { spell = 161377, type = "item"},
+      { spell = 161379, type = "item"},
+      { spell = 161411, type = "item"},
+      { spell = 160649, type = "item"}, --heal
+      { spell = 161462, type = "item"},
+      { spell = 161463, type = "item"},
+      { spell = 163936, type = "item"},
+      { spell = 158319, type = "item"},
+      { spell = 158320, type = "item"}, --heal
+      { spell = 158368, type = "item"}, --heal
+      { spell = 159614, type = "item"}, --heal
+      { spell = 159615, type = "item"},
+      { spell = 159617, type = "item"},
+      { spell = 159618, type = "item"}, --tank
+      { spell = 159624, type = "item"},
+      { spell = 159625, type = "item"},
+      { spell = 159627, type = "item"},
+      { spell = 159630, type = "item"},
+      { spell = 159611, type = "item"},
+      { spell = 158367, type = "item"},
+      { spell = 158162, type = "item"},
+      { spell = 158163, type = "item"},
+      { spell = 158164, type = "item"},
+      { spell = 158215, type = "item"},
+      { spell = 158216, type = "item"},
+      { spell = 158224, type = "item"},
+      { spell = 161117, type = "item"},
+      { spell = 165574, type = "item"},
+      { spell = 165568, type = "item"},
+      { spell = 165578, type = "item"}, --heal
+      { spell = 165580, type = "item"},
+      { spell = 165576, type = "item"},
+      { spell = 165572, type = "item"},
+      { spell = 165569, type = "item"}, --tank
+    }
   }
-}
 
-templates.items[4] = {
-  title = L["On Procc Trinkets (Aura)"],
-  args = {
-    { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
-    { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
-    { spell = 278110, type = "debuff", unit = "multi", titleItemPrefix = 160655}, --debuff?
-    { spell = 278155, type = "buff", unit = "player", titleItemPrefix = 160656},
-    { spell = 278379, type = "buff", unit = "player", titleItemPrefix = 161376},
-    { spell = 278381, type = "buff", unit = "player", titleItemPrefix = 161378},
-    { spell = 278862, type = "buff", unit = "player", titleItemPrefix = 161380},
-    { spell = 278388, type = "buff", unit = "player", titleItemPrefix = 161381},
-    { spell = 278225, type = "buff", unit = "player", titleItemPrefix = 161412},
-    { spell = 278288, type = "buff", unit = "player", titleItemPrefix = 161419},
-    { spell = 278359, type = "buff", unit = "player", titleItemPrefix = 161461},
-    { spell = 281546, type = "buff", unit = "player", titleItemPrefix = 163935},
-    { spell = 276132, type = "debuff", unit = "target", titleItemPrefix = 159126}, --debuff?
-    { spell = 267325, type = "buff", unit = "player", titleItemPrefix = 155881},
-    { spell = 267327, type = "buff", unit = "player", titleItemPrefix = 155881},
-    { spell = 267330, type = "buff", unit = "player", titleItemPrefix = 155881},
-    { spell = 267179, type = "buff", unit = "player", titleItemPrefix = 158374},
-    { spell = 271103, type = "buff", unit = "player", titleItemPrefix = 158712},
-    { spell = 268439, type = "buff", unit = "player", titleItemPrefix = 159612},
-    { spell = 271105, type = "buff", unit = "player", titleItemPrefix = 159616},
-    { spell = 268194, type = "debuff", unit = "multi", titleItemPrefix = 159619}, --debuff?
-    { spell = 271071, type = "buff", unit = "player", titleItemPrefix = 159620},
-    { spell = 268756, type = "debuff", unit = "multi", titleItemPrefix = 159623}, --debuff?
-    { spell = 268062, type = "buff", unit = "player", titleItemPrefix = 159626},
-    { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
-    { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
-    { spell = 268518, type = "buff", unit = "player", titleItemPrefix = 155568},
-    { spell = 273992, type = "buff", unit = "player", titleItemPrefix = 158154},
-    { spell = 273988, type = "buff", unit = "player", titleItemPrefix = 158155},
-    { spell = 268532, type = "buff", unit = "player", titleItemPrefix = 158218}, --tank
-    { spell = 268528, type = "buff", unit = "player", titleItemPrefix = 158556},
-    { spell = 273974, type = "buff", unit = "player", titleItemPrefix = 158153},
-    { spell = 274430, type = "buff", unit = "player",  spellIds = {274430, 274431}, titleItemPrefix = 161113},
-    { spell = 274459, type = "buff", unit = "player", titleItemPrefix = 161115},
-    { spell = 288194, type = "debuff", unit = "player", titleItemPrefix = 165577}, --tank
-    { spell = 288305, type = "buff", unit = "player", titleItemPrefix = 165581},
-    { spell = 288024, type = "buff", unit = "player", titleItemPrefix = 165573}, --tank
-    { spell = 289526, type = "debuff", unit = "target", titleItemPrefix = 165570},
-    { spell = 289524, type = "buff", unit = "player", titleItemPrefix = 165571},
-    { spell = 289523, type = "buff", unit = "player", titleItemPrefix = 165571},
-    { spell = 288330, type = "debuff", unit = "target", titleItemPrefix = 165579},
-    { spell = 290042, type = "buff", unit = "player", titleItemPrefix = 165572},
+  templates.items[4] = {
+    title = L["On Procc Trinkets (Aura)"],
+    args = {
+      { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
+      { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
+      { spell = 278110, type = "debuff", unit = "multi", titleItemPrefix = 160655}, --debuff?
+      { spell = 278155, type = "buff", unit = "player", titleItemPrefix = 160656},
+      { spell = 278379, type = "buff", unit = "player", titleItemPrefix = 161376},
+      { spell = 278381, type = "buff", unit = "player", titleItemPrefix = 161378},
+      { spell = 278862, type = "buff", unit = "player", titleItemPrefix = 161380},
+      { spell = 278388, type = "buff", unit = "player", titleItemPrefix = 161381},
+      { spell = 278225, type = "buff", unit = "player", titleItemPrefix = 161412},
+      { spell = 278288, type = "buff", unit = "player", titleItemPrefix = 161419},
+      { spell = 278359, type = "buff", unit = "player", titleItemPrefix = 161461},
+      { spell = 281546, type = "buff", unit = "player", titleItemPrefix = 163935},
+      { spell = 276132, type = "debuff", unit = "target", titleItemPrefix = 159126}, --debuff?
+      { spell = 267325, type = "buff", unit = "player", titleItemPrefix = 155881},
+      { spell = 267327, type = "buff", unit = "player", titleItemPrefix = 155881},
+      { spell = 267330, type = "buff", unit = "player", titleItemPrefix = 155881},
+      { spell = 267179, type = "buff", unit = "player", titleItemPrefix = 158374},
+      { spell = 271103, type = "buff", unit = "player", titleItemPrefix = 158712},
+      { spell = 268439, type = "buff", unit = "player", titleItemPrefix = 159612},
+      { spell = 271105, type = "buff", unit = "player", titleItemPrefix = 159616},
+      { spell = 268194, type = "debuff", unit = "multi", titleItemPrefix = 159619}, --debuff?
+      { spell = 271071, type = "buff", unit = "player", titleItemPrefix = 159620},
+      { spell = 268756, type = "debuff", unit = "multi", titleItemPrefix = 159623}, --debuff?
+      { spell = 268062, type = "buff", unit = "player", titleItemPrefix = 159626},
+      { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
+      { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
+      { spell = 268518, type = "buff", unit = "player", titleItemPrefix = 155568},
+      { spell = 273992, type = "buff", unit = "player", titleItemPrefix = 158154},
+      { spell = 273988, type = "buff", unit = "player", titleItemPrefix = 158155},
+      { spell = 268532, type = "buff", unit = "player", titleItemPrefix = 158218}, --tank
+      { spell = 268528, type = "buff", unit = "player", titleItemPrefix = 158556},
+      { spell = 273974, type = "buff", unit = "player", titleItemPrefix = 158153},
+      { spell = 274430, type = "buff", unit = "player",  spellIds = {274430, 274431}, titleItemPrefix = 161113},
+      { spell = 274459, type = "buff", unit = "player", titleItemPrefix = 161115},
+      { spell = 288194, type = "debuff", unit = "player", titleItemPrefix = 165577}, --tank
+      { spell = 288305, type = "buff", unit = "player", titleItemPrefix = 165581},
+      { spell = 288024, type = "buff", unit = "player", titleItemPrefix = 165573}, --tank
+      { spell = 289526, type = "debuff", unit = "target", titleItemPrefix = 165570},
+      { spell = 289524, type = "buff", unit = "player", titleItemPrefix = 165571},
+      { spell = 289523, type = "buff", unit = "player", titleItemPrefix = 165571},
+      { spell = 288330, type = "debuff", unit = "target", titleItemPrefix = 165579},
+      { spell = 290042, type = "buff", unit = "player", titleItemPrefix = 165572},
+    }
   }
-}
 
-templates.items[5] = {
-  title = L["PVP Trinkets (Aura)"],
-  args = {
-    { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
-    { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
-    { spell = 278819, type = "buff", unit = "player", titleItemPrefix = 161474}, -- on use
-    { spell = 277179, type = "buff", unit = "player", titleItemPrefix = 161674}, -- on use
-    { spell = 277181, type = "buff", unit = "player", titleItemPrefix = 161676},
-    { spell = 277187, type = "buff", unit = "player", titleItemPrefix = 161675},-- on use
+  templates.items[5] = {
+    title = L["PVP Trinkets (Aura)"],
+    args = {
+      { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
+      { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},
+      { spell = 278819, type = "buff", unit = "player", titleItemPrefix = 161474}, -- on use
+      { spell = 277179, type = "buff", unit = "player", titleItemPrefix = 161674}, -- on use
+      { spell = 277181, type = "buff", unit = "player", titleItemPrefix = 161676},
+      { spell = 277187, type = "buff", unit = "player", titleItemPrefix = 161675},-- on use
+    }
   }
-}
 
-templates.items[6] = {
-  title = L["PVP Trinkets (CD)"],
-  args = {
-    { spell = 161474, type = "item"}, --on use
-    { spell = 161674, type = "item"}, --on use
-    { spell = 161675, type = "item"}, --on use
+  templates.items[6] = {
+    title = L["PVP Trinkets (CD)"],
+    args = {
+      { spell = 161474, type = "item"}, --on use
+      { spell = 161674, type = "item"}, --on use
+      { spell = 161675, type = "item"}, --on use
+    }
   }
-}
+end
 
 -- Meta template for Power triggers
 local function createSimplePowerTemplate(powertype)
@@ -4075,6 +4149,7 @@ end
 -- PVP Talents
 -------------------------------
 
+--[[
 for _, class in pairs(templates.class) do
   for _, spec in pairs(class) do
   -- TODO 8.0
@@ -4082,19 +4157,22 @@ for _, class in pairs(templates.class) do
   -- tinsert(spec[5].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
   end
 end
+]]--
 
-for _, class in pairs(templates.class) do
-  for _, spec in pairs(class) do
-    spec[4] = {
-      title = L["General Azerite Traits"],
-      args = CopyTable(generalAzeriteTraits),
-      icon = 2065624
-    }
-    spec[6] = {
-      title = L["PvP Azerite Traits"],
-      args = CopyTable(pvpAzeriteTraits),
-      icon = 236396
-    }
+if not WeakAuras.IsClassic() then
+  for _, class in pairs(templates.class) do
+    for _, spec in pairs(class) do
+      spec[4] = {
+        title = L["General Azerite Traits"],
+        args = CopyTable(generalAzeriteTraits),
+        icon = 2065624
+      }
+      spec[6] = {
+        title = L["PvP Azerite Traits"],
+        args = CopyTable(pvpAzeriteTraits),
+        icon = 236396
+      }
+    end
   end
 end
 
@@ -4105,6 +4183,34 @@ end
 -- Warrior
 for i = 1, 3 do
   tinsert(templates.class.WARRIOR[i][8].args, createSimplePowerTemplate(1));
+end
+
+if WeakAuras.IsClassic() then
+  tinsert(templates.class.WARRIOR[1][8].args, {
+    title = L["Stance"],
+    icon = 132349,
+    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+  })
+  for j, id in ipairs({2457, 71, 2458}) do
+    local title, _, icon = GetSpellInfo(id)
+    if title then
+      tinsert(templates.class.WARRIOR[1][8].args, {
+        title = title,
+        icon = icon,
+        triggers = {
+          [1] = {
+            trigger = {
+              type = "status",
+              event = "Stance/Form/Aura",
+              unevent = "auto",
+              use_form = true,
+              form = { single = j }
+            }
+          }
+        }
+      });
+    end
+  end
 end
 
 -- Paladin
@@ -4186,6 +4292,28 @@ for i = 1, 4 do
     icon = 132276,
     triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
   });
+end
+for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
+  local title, _, icon = GetSpellInfo(id)
+  if title then
+    for i = 1, 4 do
+      tinsert(templates.class.DRUID[i][8].args, {
+        title = title,
+        icon = icon,
+        triggers = {
+          [1] = {
+            trigger = {
+              type = "status",
+              event = "Stance/Form/Aura",
+              unevent = "auto",
+              use_form = true,
+              form = { single = j }
+            }
+          }
+        }
+      });
+    end
+  end
 end
 
 -- Astral Power
@@ -4291,14 +4419,18 @@ local function handleItem(item)
       name, _, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
-        print ("Error: Unknown spell", item.spell);
+        if not WeakAuras.IsClassic() then
+          print ("Error: Unknown spell", item.spell);
+        else
+          item.classic = false
+        end
       end
     end
     if (icon and not item.icon) then
       item.icon = icon;
     end
 
-    item.title = item.overideTitle or name;
+    item.title = item.overideTitle or name or "";
     if (item.titleSuffix) then
       item.title = item.title .. " " .. item.titleSuffix;
     end
@@ -4376,11 +4508,23 @@ local function enrichDatabase()
           use_class = true, class = { single = className, multi = {} },
           use_spec = true, spec = { single = specIndex, multi = {}}
         };
-        for _, item in pairs(section.args) do
-          if(handleItem(item)) then
+        if WeakAuras.IsClassic() then
+          loadCondition.use_spec = nil
+          loadCondition.spec = nil
+        end
+        for itemIndex, item in pairs(section.args or {}) do
+          local handle = handleItem(item)
+          if(handle) then
             waitingForItemInfo = true;
           end
-          addLoadCondition(item, loadCondition);
+          -- item.classic is a tristate property, true = show only on classic, false = show only on retail, nil = show for both
+          if (WeakAuras.IsClassic() and item.classic == false)
+          or (not WeakAuras.IsClassic() and item.classic)
+          then
+            section.args[itemIndex] = nil
+          else
+            addLoadCondition(item, loadCondition);
+          end
         end
       end
     end
@@ -4391,10 +4535,13 @@ local function enrichDatabase()
       use_race = true, race = { single = raceName, multi = {} }
     };
     for _, item in pairs(race) do
-      if (handleItem(item)) then
+      local handle = handleItem(item)
+      if handle then
         waitingForItemInfo = true;
       end
-      addLoadCondition(item, loadCondition);
+      if handle ~= nil then
+        addLoadCondition(item, loadCondition);
+      end
     end
   end
 
@@ -4436,9 +4583,11 @@ local function fixupIcons()
   end
 end
 
-local fixupIconsFrame = CreateFrame("frame");
-fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
-fixupIconsFrame:SetScript("OnEvent", fixupIcons);
+if not WeakAuras.IsClassic() then
+  local fixupIconsFrame = CreateFrame("frame");
+  fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+  fixupIconsFrame:SetScript("OnEvent", fixupIcons);
+end
 
 enrichDatabase();
 
@@ -4460,6 +4609,32 @@ for regionType, regionData in pairs(WeakAuras.regionOptions) do
       for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
         if (item.data[k] == nil) then
           item.data[k] = v;
+        end
+      end
+    end
+  end
+end
+
+if WeakAuras.IsClassic() then
+  -- consolidate talents from all specs in a new dummy "classic" spec, indexed by spell or title for no duplicate
+  for className, class in pairs(templates.class) do
+    class["classic"] = class["classic"] or {}
+    for specIndex, spec in pairs(class) do
+      for sectionIndex, section in pairs(spec) do
+        if not class["classic"][sectionIndex] then
+          class["classic"][sectionIndex] = {
+            icon = section.icon,
+            title = section.title,
+            args = {}
+          }
+        end
+        local args = class["classic"][sectionIndex].args
+        for itemIndex, item in pairs(section.args or {}) do
+          if item.spell then
+            args[item.spell] = item
+          else
+            args[itemIndex] = item
+          end
         end
       end
     end

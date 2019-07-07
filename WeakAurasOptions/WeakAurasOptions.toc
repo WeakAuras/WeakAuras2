@@ -1,4 +1,9 @@
+#@retail@
 ## Interface: 80200
+#@end-retail@
+#@non-retail@
+# ## Interface: 11302
+#@end-non-retail@
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
 ## Version: @project-version@

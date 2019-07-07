@@ -17,6 +17,7 @@ after_success:
   - ./generate_changelog.sh
   - sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
   - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.2 -m .pkgmeta-classic -w 24944; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
 
 after_script: if [[ "$TRAVIS_TEST_RESULT" == 1 ]]; then curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL; fi
 
