@@ -5456,8 +5456,8 @@ function WeakAuras.RunCustomTextFunc(region, customFunc)
       expirationTime = state.expirationTime
       duration = state.duration
     else
-      expirationTime = state.value
-      duration = state.total
+      expirationTime = state.total
+      duration = state.value
     end
   end
 
