@@ -216,18 +216,14 @@ do
     [35] = true
   }
   local raceID = 1
-  local stop
-  repeat
+  local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
+  while raceInfo do
     if not unplayableRace[raceID] then
-      local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
-      if raceInfo then
-        WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName
-      else
-        stop = true
-      end
+      WeakAuras.race_types[raceInfo.clientFileString] = raceInfo.raceName
     end
     raceID = raceID + 1
-  until stop
+    raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
+  end
 end
 
 WeakAuras.faction_group = {
