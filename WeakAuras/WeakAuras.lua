@@ -1,4 +1,4 @@
-local internalVersion = 18;
+local internalVersion = 19;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3004,6 +3004,17 @@ function WeakAuras.Modernize(data)
               trigger.form = { single = value }
             end
           end
+        end
+      end
+    end
+  end
+
+  -- Version 19 were introduced in July 2019 in BFA
+  if data.internalVersion < 19 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        if triggerData.trigger.type == "status" and triggerData.trigger.event == "Cast" and triggerData.trigger.unit == "multi" then
+          triggerData.trigger.unit = "nameplate"
         end
       end
     end

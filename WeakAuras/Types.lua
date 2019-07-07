@@ -152,13 +152,16 @@ WeakAuras.actual_unit_types_with_specific = {
   member = L["Specific Unit"]
 }
 
-WeakAuras.actual_unit_types_with_specific_and_multi = {
+WeakAuras.actual_unit_types_cast = {
   player = L["Player"],
   target = L["Target"],
   focus = L["Focus"],
+  group = L["Group"],
+  boss = L["Boss"],
+  arena = L["Arena"],
+  nameplate = L["Nameplate"],
   pet = L["Pet"],
   member = L["Specific Unit"],
-  multi = L["Multi-target"]
 }
 
 WeakAuras.actual_unit_types = {
@@ -2111,7 +2114,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.unit_types.focus = nil
   WeakAuras.unit_types_bufftrigger_2.focus = nil
   WeakAuras.actual_unit_types_with_specific.focus = nil
-  WeakAuras.actual_unit_types_with_specific_and_multi.focus = nil
+  WeakAuras.actual_unit_types_cast.focus = nil
   WeakAuras.actual_unit_types.focus = nil
   WeakAuras.item_slot_types[0] = AMMOSLOT
   WeakAuras.item_slot_types[16] = MAINHANDSLOT
