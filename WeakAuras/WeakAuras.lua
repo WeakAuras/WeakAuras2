@@ -3066,58 +3066,91 @@ function WeakAuras.AddMany(table)
   end
 end
 
-local function validateUserConfig(options, config)
-  local authorOptionKeys = {}
+local function customOptionIsValid(option)
+  if not option.type then
+    return false
+  elseif WeakAuras.author_option_classes[option.type] == "simple" then
+    if not option.key
+    or not option.name
+    or not option.default == nil then
+      return false
+    end
+  elseif WeakAuras.author_option_classes[option.type] == "group" then
+    if not option.key
+    or not option.name
+    or not option.default == nil
+    or not option.subOptions then
+      return false
+    end
+  end
+  return true
+end
+
+local function validateUserConfig(data, options, config)
+  local authorOptionKeys, corruptOptions = {}, {}
   for index, option in ipairs(options) do
-    local optionClass = WeakAuras.author_option_classes[option.type]
-    if optionClass == "simple" then
-      authorOptionKeys[option.key] = index
-      if config[option.key] == nil then
-        if type(option.default) ~= "table" then
-          config[option.key] = option.default
+    if not customOptionIsValid(option) then
+      prettyPrint(data.id .. " Custom Option #" .. index .. " in " .. data.id .. " has been detected as corrupt, and has been deleted.")
+      corruptOptions[index] = true
+    else
+      local optionClass = WeakAuras.author_option_classes[option.type]
+      if optionClass == "simple" then
+        if not option.key then
+          option.key = WeakAuras.GenerateUniqeID()
+        end
+        authorOptionKeys[option.key] = index
+        if config[option.key] == nil then
+          if type(option.default) ~= "table" then
+            config[option.key] = option.default
+          else
+            config[option.key] = CopyTable(option.default)
+          end
+        end
+      elseif optionClass == "group" then
+        authorOptionKeys[option.key] = "group"
+        local subOptions = option.subOptions
+        if type(config[option.key]) ~= "table" then
+          config[option.key] = {}
+        end
+        local subConfig = config[option.key]
+        if option.groupType == "array" then
+          for k, v in pairs(subConfig) do
+            if type(k) ~= "number" or type(v) ~= "table" then
+              -- if k was not a number, then this was a simple group before
+              -- if v is not a table, then this was likely a color option
+              wipe(subConfig) -- second iteration will fill table with defaults
+              break
+            end
+          end
+          if option.limitType == "fixed" then
+            for i = #subConfig + 1, option.size do
+              -- add missing entries
+              subConfig[i] = {}
+            end
+          end
+          if option.limitType ~= "none" then
+            for i = option.size + 1, #subConfig do
+              -- remove excess entries
+              subConfig[i] = nil
+            end
+          end
+          for _, toValidate in pairs(subConfig) do
+            validateUserConfig(data, subOptions, toValidate)
+          end
         else
-          config[option.key] = CopyTable(option.default)
+          if type(next(subConfig)) ~= "string" then
+            -- either there are no sub options, in which case this is a noop
+            -- or this group was previously an array, in which case we need to wipe
+            wipe(subConfig)
+          end
+          validateUserConfig(data, subOptions, subConfig)
         end
       end
-    elseif optionClass == "group" then
-      authorOptionKeys[option.key] = "group"
-      local subOptions = option.subOptions
-      if type(config[option.key]) ~= "table" then
-        config[option.key] = {}
-      end
-      local subConfig = config[option.key]
-      if option.groupType == "array" then
-        for k, v in pairs(subConfig) do
-          if type(k) ~= "number" or type(v) ~= "table" then
-            -- if k was not a number, then this was a simple group before
-            -- if v is not a table, then this was likely a color option
-            wipe(subConfig) -- second iteration will fill table with defaults
-            break
-          end
-        end
-        if option.limitType == "fixed" then
-          for i = #subConfig + 1, option.size do
-            -- add missing entries
-            subConfig[i] = {}
-          end
-        end
-        if option.limitType ~= "none" then
-          for i = option.size + 1, #subConfig do
-            -- remove excess entries
-            subConfig[i] = nil
-          end
-        end
-        for _, toValidate in pairs(subConfig) do
-          validateUserConfig(subOptions, toValidate)
-        end
-      else
-        if type(next(subConfig)) ~= "string" then
-          -- either there are no sub options, in which case this is a noop
-          -- or this group was previously an array, in which case we need to wipe
-          wipe(subConfig)
-        end
-        validateUserConfig(subOptions, subConfig)
-      end
+    end
+  end
+  for i = #options, 1, -1 do
+    if corruptOptions[i] then
+      tremove(options, i)
     end
   end
   for key, value in pairs(config) do
@@ -3307,7 +3340,7 @@ function WeakAuras.PreAdd(data)
   end
   WeakAuras.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
-  validateUserConfig(data.authorOptions, data.config)
+  validateUserConfig(data, data.authorOptions, data.config)
   removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil
