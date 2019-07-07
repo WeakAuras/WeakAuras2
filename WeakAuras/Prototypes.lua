@@ -1219,7 +1219,25 @@ local function AddUnitChangeInternalEvents(unit, t)
 end
 
 local function AddUnitEventForEvents(result, unit, event)
-  if not unit or not WeakAuras.baseUnitId[unit] then
+  -- recursion for handling meta units
+  if unit == "boss" or unit == "arena" then
+    for i = 1, 5 do
+      AddUnitEventForEvents(result, unit .. i, event)
+    end
+  elseif unit == "nameplate" then
+    for i = 1, 40 do
+      AddUnitEventForEvents(result, "nameplate" .. i, event)
+    end
+  elseif unit == "group" then
+    AddUnitEventForEvents(result, "player", event)
+    for i = 1, 40 do
+      AddUnitEventForEvents(result, "raid" .. i, event)
+    end
+    for i = 1, 4 do
+      AddUnitEventForEvents(result, "party" .. i, event)
+    end
+  -- normal units
+  elseif not unit or not WeakAuras.baseUnitId[unit] then
     if not result.events then
       result.events = {}
     end
@@ -4967,6 +4985,10 @@ WeakAuras.event_prototypes = {
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      if trigger.unit == "nameplate" then
+        AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
+        AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_REMOVED")
+      end
       if not (WeakAuras.IsClassic() and trigger.unit ~= "player") then
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
@@ -5017,7 +5039,8 @@ WeakAuras.event_prototypes = {
           local localizedSpellName = %q
           local cloneId = ""
 
-          if trigger_clone and sourceUnit and UnitExists(sourceUnit) then
+          local multi_unit = trigger_unit == "nameplate" or trigger_unit == "group" or trigger_unit == "arena" or trigger_unit == "boss" and true or false
+          if multi_unit and trigger_clone and sourceUnit and UnitExists(sourceUnit) then
             cloneId = UnitGUID(sourceUnit)
           end
 
@@ -5030,13 +5053,14 @@ WeakAuras.event_prototypes = {
           local destUnit = sourceUnit and sourceUnit .. "-target"
           local sourceGUID = sourceUnit and UnitGUID(sourceUnit)
 
-          if sourceUnit and UnitExists(sourceUnit) and (trigger_unit == "multi" or UnitIsUnit(sourceUnit, trigger_unit)) then
+          if sourceUnit and UnitExists(sourceUnit) and (multi_unit or UnitIsUnit(sourceUnit, trigger_unit)) then
             local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining
 
             if event == "UNIT_SPELLCAST_STOP"
             or event == "UNIT_SPELLCAST_CHANNEL_STOP"
             or event == "UNIT_SPELLCAST_INTERRUPTED"
             or event == "UNIT_SPELLCAST_FAILED"
+            or event == "NAME_PLATE_UNIT_REMOVED"
             then
               show = false
             else
@@ -5077,6 +5101,7 @@ WeakAuras.event_prototypes = {
                 progressType = "timed",
                 autoHide = true,
                 interruptible = interruptible,
+                unit = sourceUnit,
                 sourceUnit = sourceUnit,
                 sourceName = sourceUnit and UnitName(sourceUnit) or "",
                 sourceGUID = sourceGUID,
@@ -5096,8 +5121,8 @@ WeakAuras.event_prototypes = {
               local state = states[cloneId]
               if state and state.show
               and (
-                trigger_unit ~= "multi"
-                or (trigger_unit == "multi" and state.sourceGUID == sourceGUID)
+                not multi_unit
+                or (multi_unit and state.sourceGUID == sourceGUID)
               )
               then
                 state.show = false
@@ -5126,7 +5151,7 @@ WeakAuras.event_prototypes = {
         trigger.use_castType and trigger.castType or "",
         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
         trigger.use_destUnit and trigger.destUnit or "",
-        trigger.unit == "multi" and trigger.use_clone and "true" or "false",
+        trigger.use_clone and "true" or "false",
         L["Spell Name"],
         trigger.remaining_operator or "<"
       )
@@ -5142,7 +5167,7 @@ WeakAuras.event_prototypes = {
           if trigger.use_inverse then
             return WeakAuras.actual_unit_types_with_specific
           else
-            return WeakAuras.actual_unit_types_with_specific_and_multi
+            return WeakAuras.actual_unit_types_cast
           end
         end,
         required = true,
@@ -5229,7 +5254,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         test = "true",
         init = "false",
-        enable = function(trigger) return not trigger.use_inverse and trigger.unit == "multi" end,
+        enable = function(trigger) return not trigger.use_inverse and (trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "boss" or trigger.unit == "group" ) end,
       },
       {
         name = "inverse",
