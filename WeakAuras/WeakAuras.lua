@@ -3244,8 +3244,8 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 17 was introduced May 2019 in BFA
-  if data.internalVersion < 1 then
+  -- Version 20 was introduced May 2019 in BFA
+  if data.internalVersion < 20 then
     if data.regionType == "aurabar" then
       local orientationToPostion = {
         HORIZONTAL_INVERSE = { "INNER_LEFT", "INNER_RIGHT" },
