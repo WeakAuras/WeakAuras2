@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
       - luarocks
+      - realpath
 
 git:
   depth: 150
