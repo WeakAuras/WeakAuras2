@@ -3915,6 +3915,8 @@ WeakAuras.event_prototypes = {
             end
             local ret2 = [[
               if (not active) then
+                tier = %s
+                column = %s
                 if WeakAuras.IsClassic() then
                   local name, icon, _, _, rank  = GetTalentInfo(tier, column)
                   if rank > 0 then
@@ -3923,7 +3925,7 @@ WeakAuras.event_prototypes = {
                     activeIcon = icon;
                   end
                 else
-                  local _, name, icon, selected, _, _, _, _, _, _n, known  = GetTalentInfo(%s, %s, 1)
+                  local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
                   if (selected or known) then
                     active = true;
                     activeName = name;
@@ -4231,22 +4233,61 @@ WeakAuras.event_prototypes = {
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Stance/Form/Aura"],
     init = function(trigger)
+      local inverse = trigger.use_inverse;
       local ret = [[
-      local form
-      if WeakAuras.IsClassic() then
-        for i=1, GetNumShapeshiftForms() do
-          local texture, isActive, isCastable = GetShapeshiftFormInfo(i);
-          if isActive then
-            form = i
+        local form
+        local active = false
+      ]]
+      if trigger.use_form and trigger.form.single then
+        -- Single selection
+        ret = ret .. [[
+          if WeakAuras.IsClassic() then
+            for i=1, GetNumShapeshiftForms() do
+              local _, isActive = GetShapeshiftFormInfo(i)
+              if isActive then
+                form = i
+                active = i == %d
+              end
+            end
+          else
+            form = GetShapeshiftForm()
+            active = form == %d
           end
+        ]]
+        if inverse then
+          ret = ret .. [[
+            active = not active
+          ]]
         end
-      else
-        form = GetShapeshiftForm();
+        return ret:format(trigger.form.single)
+      elseif trigger.use_form == false and trigger.form.multi then
+        for index in pairs(trigger.form.multi) do
+          local ret2 = [[
+            if not active then
+              local index = %d
+              if WeakAuras.IsClassic() then
+                local _, isActive = GetShapeshiftFormInfo(index)
+                if isActive then
+                  form = index
+                  active = true
+                end
+              else
+                if GetShapeshiftForm() == index then
+                  form = index
+                  active = true
+                end
+              end
+            end
+          ]]
+          ret = ret .. ret2:format(index)
+        end
+        if inverse then
+          ret = ret .. [[
+            active = not active
+          ]]
+        end
+        return ret
       end
-      local inverse = %s;
-    ]];
-
-      return ret:format(trigger.use_inverse and "true" or "false");
     end,
     statesParameter = "one",
     args = {
@@ -4255,7 +4296,7 @@ WeakAuras.event_prototypes = {
         display = L["Form"],
         type = "multiselect",
         values = "form_types",
-        test = "inverse == (form ~= %s)",
+        test = "active",
         store = true,
         conditionType = "select"
       },
@@ -4264,7 +4305,7 @@ WeakAuras.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return trigger.use_form end
+        enable = function(trigger) return type(trigger.use_form) == "boolean" end
       },
     },
     nameFunc = function(trigger)
@@ -4289,7 +4330,7 @@ WeakAuras.event_prototypes = {
       local icon = "136116"
       if WeakAuras.IsClassic() then
         for i=1, GetNumShapeshiftForms() do
-          local texture, isActive, isCastable = GetShapeshiftFormInfo(i);
+          local texture, isActive = GetShapeshiftFormInfo(i)
           if isActive then
             icon = texture
           end
