@@ -47,4 +47,6 @@ RegionTypes\Icon.lua
 RegionTypes\Text.lua
 RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
+#@retail@
 RegionTypes\Model.lua
+#@end-retail@
