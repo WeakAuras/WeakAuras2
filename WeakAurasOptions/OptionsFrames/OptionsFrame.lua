@@ -396,7 +396,9 @@ function WeakAuras.CreateFrame()
 
   frame.texturePicker = WeakAuras.TexturePicker(frame)
   frame.iconPicker = WeakAuras.IconPicker(frame)
-  frame.modelPicker = WeakAuras.ModelPicker(frame)
+  if not WeakAuras.IsClassic() then
+    frame.modelPicker = WeakAuras.ModelPicker(frame)
+  end
   frame.importexport = WeakAuras.ImportExport(frame)
   frame.texteditor = WeakAuras.TextEditor(frame)
   frame.codereview = WeakAuras.CodeReview(frame);
