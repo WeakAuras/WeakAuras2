@@ -213,18 +213,12 @@ function WeakAuras.CreateFrame()
   local close = CreateDecoration(frame)
   close:SetPoint("TOPRIGHT", -30, 12)
 
-  local closebutton = CreateFrame("BUTTON", nil, close)
-  closebutton:SetWidth(30);
-  closebutton:SetHeight(30);
+  local closebutton = CreateFrame("BUTTON", nil, close, "UIPanelCloseButton")
   closebutton:SetPoint("CENTER", close, "CENTER", 1, -1);
-  closebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Up.blp");
-  closebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Down.blp");
-  closebutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
   closebutton:SetScript("OnClick", WeakAuras.HideOptions);
 
   local import = CreateDecoration(frame)
   import:SetPoint("TOPRIGHT", -100, 12)
-  --import:Hide()
 
   local importbutton = CreateFrame("CheckButton", nil, import, "OptionsCheckButtonTemplate")
   importbutton:SetWidth(30);
