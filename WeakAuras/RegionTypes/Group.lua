@@ -85,6 +85,7 @@ local function modify(parent, region, data)
 
   -- Get overall bounding box
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
+  local minLevel
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
     local childRegion = WeakAuras.GetRegion(childId)
@@ -94,6 +95,10 @@ local function modify(parent, region, data)
       rightest = math.max(rightest, trx);
       lowest = math.min(lowest, bly);
       highest = math.max(highest, try);
+      local frameLevel = childRegion and childRegion:GetFrameLevel()
+      if frameLevel then
+        minLevel = minLevel and math.min(minLevel, frameLevel) or frameLevel
+      end
     end
   end
   region.blx = leftest;
@@ -142,7 +147,9 @@ local function modify(parent, region, data)
         border:ClearAllPoints();
         border:SetPoint("bottomleft", region, "bottomleft", leftest-data.borderOffset, lowest-data.borderOffset);
         border:SetPoint("topright",   region, "topright",   rightest+data.borderOffset, highest+data.borderOffset);
-
+        if minLevel then
+          border:SetFrameLevel(minLevel - 1)
+        end
         border:Show();
       else
         border:Hide();
