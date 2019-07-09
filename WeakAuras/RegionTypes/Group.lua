@@ -2,21 +2,21 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 
 -- Default settings
 local default = {
-  controlledChildren     = {},
-  anchorPoint         = "CENTER",
-  anchorFrameType     = "SCREEN",
-  xOffset             = 0,
-  yOffset             = 0,
-  frameStrata         = 1,
-  border                = false,
-  borderColor         = {1.0, 1.0, 1.0, 0.5},
-  backdropColor        = {1.0, 1.0, 1.0, 0.5},
-  borderEdge            = "None",
-  borderOffset         = 5,
-  borderInset            = 11,
-  borderSize            = 16,
-  borderBackdrop        = "Blizzard Tooltip",
-  scale                 = 1,
+  controlledChildren = {},
+  anchorPoint = "CENTER",
+  anchorFrameType = "SCREEN",
+  xOffset = 0,
+  yOffset = 0,
+  frameStrata = 1,
+  border = false,
+  borderColor = { 0, 0, 0, 1 },
+  backdropColor = { 1, 1, 1, 0.5 },
+  borderEdge = "1 Pixel",
+  borderOffset = 4,
+  borderInset = 1,
+  borderSize = 2,
+  borderBackdrop = "Blizzard Tooltip",
+  scale = 1,
 };
 
 -- Called when first creating a new region/display
