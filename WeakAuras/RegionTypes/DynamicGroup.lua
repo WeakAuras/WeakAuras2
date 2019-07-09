@@ -561,7 +561,7 @@ local function modify(parent, region, data)
   region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
-  function region:UpdateBorder(minXregion, maxXregion, maxYregion, minYregion)
+  function region:UpdateBorder(minXregion, maxXregion, maxYregion, minYregion, minLevel)
     local background = region.background;
     -- Apply border settings
     if data.border and minXregion then
@@ -584,6 +584,7 @@ local function modify(parent, region, data)
       background:SetPoint("right", maxXregion, data.borderOffset, 0)
       background:SetPoint("top", maxYregion, 0, data.borderOffset)
       background:SetPoint("bottom", minYregion, 0, -data.borderOffset)
+      background:SetFrameLevel(minLevel - 1)
       background:Show();
     else
       background:Hide();
@@ -938,7 +939,7 @@ local function modify(parent, region, data)
       WeakAuras.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY = 0
-      local minXregion, maxXregion, maxYregion, minYregion
+      local minXregion, maxXregion, maxYregion, minYregion, minLevel
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
           numVisible = numVisible + 1
@@ -946,12 +947,14 @@ local function modify(parent, region, data)
           local regionLeft, regionRight, regionTop, regionBottom
              = SafeGetPos(childRegion, childRegion.GetLeft), SafeGetPos(childRegion, childRegion.GetRight),
                SafeGetPos(childRegion, childRegion.GetTop), SafeGetPos(childRegion, childRegion.GetBottom)
+          local frameLevel = childRegion:GetFrameLevel()
 
-          if(regionLeft and regionRight and regionTop and regionBottom) then
+          if(regionLeft and regionRight and regionTop and regionBottom and frameLevel) then
             minX = minX and min(regionLeft, minX) or regionLeft
             maxX = maxX and max(regionRight, maxX) or regionRight
             minY = minY and min(regionBottom, minY) or regionBottom
             maxY = maxY and max(regionTop, maxY) or regionTop
+            minLevel = minLevel and min(frameLevel, minLevel) or frameLevel
             minXregion = (minX == regionLeft and childRegion) or minXregion
             minYregion = (minY == regionBottom and childRegion) or minYregion
             maxXregion = (maxX == regionRight and childRegion) or maxXregion
@@ -987,7 +990,7 @@ local function modify(parent, region, data)
         self:SetHeight(height)
         self.currentWidth = width
         self.currentHeight = height
-        self:UpdateBorder(minXregion, maxXregion, maxYregion, minYregion)
+        self:UpdateBorder(minXregion, maxXregion, maxYregion, minYregion, minLevel)
       else
         self:Hide()
         self:UpdateBorder()
