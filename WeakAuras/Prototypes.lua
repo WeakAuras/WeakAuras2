@@ -4494,7 +4494,7 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       local ret = [[
         if (event:find('LEADER')) then
-          event = event:sub(0, -8);
+          event = event:sub(1, -8);
         end
         if (event == 'CHAT_MSG_TEXT_EMOTE') then
           event = 'CHAT_MSG_EMOTE';

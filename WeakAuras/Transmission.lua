@@ -588,7 +588,7 @@ end);
 
 local OriginalSetItemRef = SetItemRef
 function SetItemRef(link, ...)
-  if(link and link:sub(0, 9) == "weakauras") then
+  if(link and link:sub(1, 9) == "weakauras") then
     return;
   end
   return OriginalSetItemRef(link, ...);
