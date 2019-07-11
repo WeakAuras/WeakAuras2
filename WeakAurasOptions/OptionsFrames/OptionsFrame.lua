@@ -324,7 +324,7 @@ function WeakAuras.CreateFrame()
         frame.texturePicker.frame:Show()
       elseif frame.window == "icon" then
         frame.iconPicker.frame:Show()
-      elseif frame.window == "model" then
+      elseif frame.window == "model" and not WeakAuras.IsClassic() then
         frame.modelPicker.frame:Show()
       elseif frame.window == "importexport" then
         frame.importexport.frame:Show()
@@ -343,7 +343,9 @@ function WeakAuras.CreateFrame()
       frame.buttonsContainer.frame:Hide()
       frame.texturePicker.frame:Hide()
       frame.iconPicker.frame:Hide()
+      if not WeakAuras.IsClassic() then
       frame.modelPicker.frame:Hide()
+      end
       frame.importexport.frame:Hide()
       frame.texteditor.frame:Hide()
       frame.codereview.frame:Hide()
