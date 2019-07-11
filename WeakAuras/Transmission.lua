@@ -586,20 +586,12 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
   end
 end);
 
-local OriginalSetHyperlink = ItemRefTooltip.SetHyperlink
-function ItemRefTooltip:SetHyperlink(link, ...)
+local OriginalSetItemRef = SetItemRef
+function SetItemRef(link, ...)
   if(link and link:sub(0, 9) == "weakauras") then
     return;
   end
-  return OriginalSetHyperlink(self, link, ...);
-end
-
-local OriginalHandleModifiedItemClick = HandleModifiedItemClick
-function HandleModifiedItemClick(link, ...)
-  if(link and link:find("|Hweakauras|h")) then
-    return;
-  end
-  return OriginalHandleModifiedItemClick(link, ...);
+  return OriginalSetItemRef(link, ...);
 end
 
 function TableToString(inTable, forChat)
