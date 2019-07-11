@@ -495,7 +495,7 @@ function WeakAuras.ParseNumber(numString)
       return nil;
     end
   elseif(numString:sub(-1) == "%") then
-    local percent = tonumber(numString:sub(0, -2));
+    local percent = tonumber(numString:sub(1, -2));
     if(percent) then
       return percent / 100, "percent";
     else
@@ -595,7 +595,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
                   any = true;
                 end
                 if(any) then
-                  test = test:sub(0, -5);
+                  test = test:sub(1, -5);
                 else
                   test = "(false";
                 end

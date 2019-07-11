@@ -163,7 +163,7 @@ function TestForMultiSelect(trigger, arg)
       end
     end
     if(any) then
-      test = test:sub(0, -5);
+      test = test:sub(1, -5);
     else
       test = "(false";
     end

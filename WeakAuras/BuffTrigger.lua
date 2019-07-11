@@ -432,17 +432,17 @@ function WeakAuras.ScanAuras(unit)
   -- Link corresponding display (and aura cache)
   local aura_object;
   wipe(aura_lists);
-  if(unit:sub(0, 4) == "raid") then
+  if(unit:sub(1, 4) == "raid") then
     if(aura_cache.players[uGUID]) then
       aura_lists[1] = loaded_auras["group"];
       aura_object = aura_cache;
     end
-  elseif(unit:sub(0, 5) == "party") then
+  elseif(unit:sub(1, 5) == "party") then
     aura_lists[1] = loaded_auras["group"];
     aura_object = aura_cache;
   elseif(specificBosses[unit]) then
     aura_lists[1] = loaded_auras["boss"];
-  elseif(unit:sub(0,5) == "arena") then
+  elseif(unit:sub(1,5) == "arena") then
     aura_lists[1] = loaded_auras["arena"];
   else
     if(unit == "player" and loaded_auras["group"]) then
@@ -762,13 +762,13 @@ function WeakAuras.ScanAuras(unit)
                       name = "";
                       for affected_name, _ in pairs(affected) do
                         local space = affected_name:find(" ");
-                        name = name..(space and affected_name:sub(0, space - 1).."*" or affected_name)..", ";
+                        name = name..(space and affected_name:sub(1, space - 1).."*" or affected_name)..", ";
                         num = num + 1;
                       end
                       if(num == 0) then
                         name = WeakAuras.L["None"];
                       else
-                        name = name:sub(0, -3);
+                        name = name:sub(1, -3);
                       end
                       -- Process unaffected players
                     elseif(data.name_info == "nonplayers") then
@@ -777,13 +777,13 @@ function WeakAuras.ScanAuras(unit)
                       name = "";
                       for unaffected_name, _ in pairs(unaffected) do
                         local space = unaffected_name:find(" ");
-                        name = name..(space and unaffected_name:sub(0, space - 1).."*" or unaffected_name)..", ";
+                        name = name..(space and unaffected_name:sub(1, space - 1).."*" or unaffected_name)..", ";
                         num = num + 1;
                       end
                       if(num == 0) then
                         name = WeakAuras.L["None"];
                       else
-                        name = name:sub(0, -3);
+                        name = name:sub(1, -3);
                       end
                     end
 
@@ -1303,10 +1303,10 @@ end
 local function LoadAura(id, triggernum, data)
   local unit;
   if(data.specificUnit) then
-    if(data.unit:lower():sub(0,4) == "boss") then
+    if(data.unit:lower():sub(1,4) == "boss") then
       specificBosses[data.unit] = true;
       unit = "boss";
-    elseif(data.unit:lower():sub(0,5) == "arena") then
+    elseif(data.unit:lower():sub(1,5) == "arena") then
       unit = "arena";
     else
       specificUnits[data.unit] = true;
@@ -1391,18 +1391,18 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       or (
       loaded_auras["group"]
       and (
-      arg1:sub(0, 4) == "raid"
-      or arg1:sub(0, 5) == "party"
+      arg1:sub(1, 4) == "raid"
+      or arg1:sub(1, 5) == "party"
       or arg1 == "player"
       )
       )
       or (
       loaded_auras["boss"]
-      and arg1:sub(0,4) == "boss"
+      and arg1:sub(1,4) == "boss"
       )
       or (
       loaded_auras["arena"]
-      and arg1:sub(0,5) == "arena"
+      and arg1:sub(1,5) == "arena"
       )
       ) then
       -- This throttles aura scans to only happen at most once per frame per unit
@@ -1758,9 +1758,9 @@ function BuffTrigger.SetToolTip(trigger, state)
           local _,space,class,classColor;
           for playerName, _ in pairs(players) do
             space = playerName:find(" ");
-            _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
+            _, class = UnitClass((space and playerName:sub(1, space - 1) or playerName));
             classColor = WeakAuras.class_color_types[class];
-            playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
+            playersString = playersString..(classColor or "")..(space and playerName:sub(1, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
           end
           GameTooltip:AddLine(playersString);
         end
@@ -1770,9 +1770,9 @@ function BuffTrigger.SetToolTip(trigger, state)
         local _,space,class,classColor;
         for playerName, _ in pairs(playerList) do
           space = playerName:find(" ");
-          _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
+          _, class = UnitClass((space and playerName:sub(1, space - 1) or playerName));
           classColor = WeakAuras.class_color_types[class];
-          playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
+          playersString = playersString..(classColor or "")..(space and playerName:sub(1, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
           num = num + 1;
         end
         GameTooltip:AddLine(playersString);

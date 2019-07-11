@@ -874,8 +874,8 @@ local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
       unaffected = unaffected .. (GetUnitName(unit, false) or unit) .. ", "
     end
   end
-  unaffected = unaffected == "" and L["None"] or unaffected:sub(0, -3)
-  affected = affected == "" and L["None"] or affected:sub(0, -3)
+  unaffected = unaffected == "" and L["None"] or unaffected:sub(1, -3)
+  affected = affected == "" and L["None"] or affected:sub(1, -3)
 
   return affected, unaffected
 end
