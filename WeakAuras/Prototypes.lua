@@ -4985,7 +4985,6 @@ WeakAuras.event_prototypes = {
       local result = {}
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
       if trigger.unit == "nameplate" then
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
@@ -5061,7 +5060,6 @@ WeakAuras.event_prototypes = {
             if event == "UNIT_SPELLCAST_STOP"
             or event == "UNIT_SPELLCAST_CHANNEL_STOP"
             or event == "UNIT_SPELLCAST_INTERRUPTED"
-            or event == "UNIT_SPELLCAST_FAILED"
             or event == "NAME_PLATE_UNIT_REMOVED"
             then
               show = false
