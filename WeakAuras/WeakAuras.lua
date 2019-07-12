@@ -3591,6 +3591,11 @@ local function validateUserConfig(data, options, config)
             multiselect[i] = nil
           end
         end
+        for i, v in ipairs(option.default) do
+          if type(multiselect[i]) ~= "boolean" then
+            multiselect[i] = v
+          end
+        end
       elseif option.type == "color" then
         for i = 1, 4 do
           local c = config[key][i]
