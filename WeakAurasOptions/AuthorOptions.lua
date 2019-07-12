@@ -1503,7 +1503,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
             local newKey = "option" .. i
             local existingKeys = {}
             for index, option in pairs(optionData.options) do
-              if index ~= optionData.index then
+              if index ~= optionData.index and option.key then
                 existingKeys[option.key] = true
               end
             end
