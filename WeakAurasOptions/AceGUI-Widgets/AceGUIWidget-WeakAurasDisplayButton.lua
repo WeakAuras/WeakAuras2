@@ -26,6 +26,11 @@ local ignoreForCopyingDisplay = {
   uid = true,
   authorOptions = true,
   config = true,
+  url = true,
+  semver = true,
+  version = true,
+  internalVersion = true,
+  tocbuild = true
 }
 
 local function copyAuraPart(source, destination, part)
