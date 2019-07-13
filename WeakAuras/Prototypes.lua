@@ -5631,6 +5631,7 @@ WeakAuras.event_prototypes = {
       if trigger.use_incombat ~= nil then
         tinsert(events, "PLAYER_REGEN_ENABLED")
         tinsert(events, "PLAYER_REGEN_DISABLED")
+        tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       if trigger.use_pvpflagged ~= nil then
         tinsert(events, "PLAYER_FLAGS_CHANGED")
@@ -5642,6 +5643,7 @@ WeakAuras.event_prototypes = {
       end
       if trigger.use_resting ~= nil then
         tinsert(events, "PLAYER_UPDATE_RESTING")
+        tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       if trigger.use_mounted ~= nil then
         tinsert(events, "PLAYER_MOUNT_DISPLAY_CHANGED")
@@ -5651,6 +5653,7 @@ WeakAuras.event_prototypes = {
       if not WeakAuras.IsClassic() and trigger.use_vehicle ~= nil then
         tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
         tinsert(unit_events, "UNIT_EXITED_VEHICLE")
+        tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       if trigger.use_HasPet ~= nil then
         tinsert(unit_events, "UNIT_PET")
