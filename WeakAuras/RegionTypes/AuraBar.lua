@@ -597,7 +597,17 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
       anchorPoint = "CENTER"
     end
 
-    subRegion:SetPoint(selfPoint or "CENTER", anchorRegion, anchorPoint, anchorXOffset, anchorYOffset)
+    selfPoint = selfPoint or "CENTER"
+
+    if not WeakAuras.point_types[selfPoint] then
+      selfPoint = "CENTER"
+    end
+
+    if not WeakAuras.point_types[anchorPoint] then
+      anchorPoint = "CENTER"
+    end
+
+    subRegion:SetPoint(selfPoint, anchorRegion, anchorPoint, anchorXOffset, anchorYOffset)
   end
 end
 
