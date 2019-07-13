@@ -716,6 +716,8 @@ local function modify(parent, region, data)
 
   if(data.cooldown) then
     function region:SetValue(value, total)
+      cooldown.duration = 0
+      cooldown.expirationTime = math.huge
       cooldown:Hide();
     end
 
