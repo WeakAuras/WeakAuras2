@@ -5945,12 +5945,14 @@ local function ensurePRDFrame()
   personalRessourceDisplayFrame.Detach = function(self, frame)
     self:ClearAllPoints();
     self:Hide()
+    self:SetParent(UIParent)
   end
 
   personalRessourceDisplayFrame.OptionsOpened = function()
     personalRessourceDisplayFrame:Detach();
     personalRessourceDisplayFrame:SetScript("OnEvent", nil);
     personalRessourceDisplayFrame:ClearAllPoints();
+    personalRessourceDisplayFrame:Show()
     local xOffset, yOffset;
     if (db.personalRessourceDisplayFrame) then
       xOffset = db.personalRessourceDisplayFrame.xOffset;
