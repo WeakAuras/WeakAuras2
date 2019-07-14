@@ -2922,10 +2922,10 @@ do
   function WeakAuras.WatchForPetDeath()
     if not(petFrame) then
       petFrame = CreateFrame("frame");
-      petFrame:RegisterUnitEvent("UNIT_HEALTH", "pet");
-      petFrame:SetScript("OnEvent", function()
+      petFrame:RegisterUnitEvent("UNIT_PET", "player")
+      petFrame:SetScript("OnEvent", function(event, unit)
         WeakAuras.StartProfileSystem("generictrigger")
-        WeakAuras.ScanEvents("PET_UPDATE");
+        WeakAuras.ScanEvents("PET_UPDATE", "pet")
         WeakAuras.StopProfileSystem("generictrigger")
       end)
     end
