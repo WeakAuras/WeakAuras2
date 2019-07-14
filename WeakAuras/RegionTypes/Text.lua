@@ -75,6 +75,7 @@ local function modify(parent, region, data)
     text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline);
   end
   if text:GetFont() then
+    text:SetText("")
     WeakAuras.regionPrototype.SetTextOnText(text, data.displayText);
   end
   text.displayText = data.displayText;
