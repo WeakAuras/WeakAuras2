@@ -4233,6 +4233,10 @@ WeakAuras.event_prototypes = {
       local count = GetItemCount(trigger.itemName, trigger.use_includeBank, trigger.use_includeCharges);
       return count, 0, true;
     end,
+    stacksFunc = function(trigger)
+      local count = GetItemCount(trigger.itemName, trigger.use_includeBank, trigger.use_includeCharges);
+      return count, 0, true;
+    end,
     nameFunc = function(trigger)
       return trigger.itemName;
     end,
