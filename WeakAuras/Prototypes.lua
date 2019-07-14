@@ -1212,8 +1212,11 @@ WeakAuras.load_prototype = {
 };
 
 local function AddUnitChangeInternalEvents(unit, t)
-  if (unit == "player" or unit == "multi" or unit == "target" or unit == "focus" or unit == "pet") then
+  if (unit == "player" or unit == "multi" or unit == "target" or unit == "focus") then
     -- Handled by normal events
+  elseif unit == "pet" then
+    WeakAuras.WatchForPetDeath();
+    tinsert(t, "PET_UPDATE")
   else
     WeakAuras.WatchUnitChange(unit)
     tinsert(t, "UNIT_CHANGED_" .. string.upper(unit))
@@ -1262,8 +1265,6 @@ local function AddUnitChangeEvents(unit, t)
     AddUnitEventForEvents(t, nil, "PLAYER_TARGET_CHANGED")
   elseif (unit == "focus") then
     AddUnitEventForEvents(t, nil, "PLAYER_FOCUS_CHANGED")
-  elseif (unit == "pet") then
-    AddUnitEventForEvents(t, unit, "UNIT_PET")
   else
     -- Handled by WatchUnitChange
   end
@@ -1401,7 +1402,7 @@ WeakAuras.event_prototypes = {
       return result
     end,
     internal_events = function(trigger)
-      local result = { "WA_UNIT_PET", "WA_DELAYED_PLAYER_ENTERING_WORLD" }
+      local result = { "WA_DELAYED_PLAYER_ENTERING_WORLD" }
       AddUnitChangeInternalEvents(trigger.unit, result)
       return result
     end,
@@ -5650,39 +5651,40 @@ WeakAuras.event_prototypes = {
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       local unit_events = {}
+      local pet_unit_events = {}
       if not WeakAuras.IsClassic() and trigger.use_vehicle ~= nil then
         tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
         tinsert(unit_events, "UNIT_EXITED_VEHICLE")
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       if trigger.use_HasPet ~= nil then
-        tinsert(unit_events, "UNIT_PET")
+        tinsert(pet_unit_events, "UNIT_HEALTH")
       end
       return {
         ["events"] = events,
         ["unit_events"] = {
-          ["player"] = unit_events
+          ["player"] = unit_events,
+          ["pet"] = pet_unit_events
         }
       }
     end,
     internal_events = function(trigger, untrigger)
       local events = { "CONDITIONS_CHECK"};
 
-      if (trigger.use_HasPet ~= nil) then
-        tinsert(events, "PET_UPDATE");
-      end
-
       if (trigger.use_ismoving ~= nil) then
         tinsert(events, "PLAYER_MOVING_UPDATE");
       end
+
+      if (trigger.use_HasPet ~= nil) then
+        AddUnitChangeInternalEvents("pet", events)
+      end
+
       return events;
     end,
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
     loadFunc = function(trigger)
-      if (trigger.use_HasPet ~= nil) then
-        WeakAuras.WatchForPetDeath();
-      end
+
       if (trigger.use_ismoving ~= nil) then
         WeakAuras.WatchForPlayerMoving();
       end
