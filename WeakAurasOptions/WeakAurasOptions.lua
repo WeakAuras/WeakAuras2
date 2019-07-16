@@ -4656,8 +4656,8 @@ function WeakAuras.OpenTexturePicker(data, field, textures, stopMotion)
   frame.texturePicker:Open(data, field, textures, stopMotion);
 end
 
-function WeakAuras.OpenIconPicker(data, field)
-  frame.iconPicker:Open(data, field);
+function WeakAuras.OpenIconPicker(data, field, groupIcon)
+  frame.iconPicker:Open(data, field, groupIcon);
 end
 
 function WeakAuras.OpenModelPicker(data, field)

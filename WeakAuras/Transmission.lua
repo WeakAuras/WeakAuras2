@@ -1642,11 +1642,15 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
   if not IsAddOnLoaded('WeakAurasOptions') then
     LoadAddOn('WeakAurasOptions')
   end
-
-  local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail, thumbnailAnchor, regionTypes[regionType].create);
+  if thumbnailAnchor.currentThumbnail then
+    thumbnailAnchor.currentThumbnail:Hide()
+    thumbnailAnchor.currentThumbnail = nil
+  end
+  local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail, thumbnailAnchor);
   if not ok then
     error("Error creating thumbnail", 2)
   end
+  pcall(regionOptions[regionType].modifyThumbnail, thumbnailAnchor, thumbnail, data)
   thumbnailAnchor.currentThumbnail = thumbnail
   thumbnail:SetAllPoints(thumbnailAnchor);
   if (thumbnail.SetIcon) then
@@ -1658,6 +1662,8 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
     end
     if (i) then
       thumbnail:SetIcon(i);
+    else
+      thumbnail:SetIcon();
     end
   end
   WeakAuras.GetData = RegularGetData or WeakAuras.GetData
