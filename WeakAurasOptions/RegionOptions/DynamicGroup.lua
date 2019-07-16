@@ -75,6 +75,29 @@ local function createOptions(id, data)
   local options = {
     __title = L["Dynamic Group Settings"],
     __order = 1,
+    groupIcon = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString..L["Group Icon"],
+      desc = L["Set Thumbnail Icon"],
+      order = 0.5,
+      get = function()
+        return data.groupIcon and tostring(data.groupIcon) or ""
+      end,
+      set = function(info, v)
+        data.groupIcon = v
+        WeakAuras.Add(data)
+        WeakAuras.SetThumbnail(data)
+        WeakAuras.SetIconNames(data)
+      end
+    },
+    chooseIcon = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Choose"],
+      order = 0.51,
+      func = function() WeakAuras.OpenIconPicker(data, "groupIcon", true) end
+    },
     -- grow options
     grow = {
       type = "select",
@@ -411,60 +434,103 @@ local function createOptions(id, data)
 end
 
 local function createThumbnail(parent)
-  local icon = parent:CreateTexture();
-  icon:SetTexture("interface\\icons\\petbattle_speed.blp");
-
-  return icon;
-end
-
-local function createIcon()
-  local thumbnail = CreateFrame("FRAME", nil, UIParent);
+  -- frame
+  local thumbnail = CreateFrame("FRAME", nil, parent);
   thumbnail:SetWidth(32);
   thumbnail:SetHeight(32);
 
+  -- border
   local border = thumbnail:CreateTexture(nil, "OVERLAY");
   border:SetAllPoints(thumbnail);
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
-  local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+
+  return thumbnail
+end
+
+local function defaultIconAnimation(self, elapsed)
+  self.elapsed = self.elapsed + elapsed
+  if(self.elapsed < 0.5) then
+    self.t2:SetPoint("TOP", self.t1, "BOTTOM", 0, -2 + (28 * self.elapsed))
+    self.t2:SetAlpha(1 - (2 * self.elapsed))
+  elseif(self.elapsed < 1.5) then
+  -- do nothing
+  elseif(self.elapsed < 2) then
+    self.t2:SetPoint("TOP", self.t1, "BOTTOM", 0, -2 + (28 * (2 - self.elapsed)))
+    self.t2:SetAlpha((2 * self.elapsed) - 3)
+  elseif(self.elapsed < 3) then
+  -- do nothing
+  else
+    self.elapsed = self.elapsed - 3
+  end
+end
+
+local function createAnimatedDefaultIcon(parent)
+  local defaultIcon = CreateFrame("FRAME", nil, parent);
+  parent.defaultIcon = defaultIcon;
+
+  local t1 = defaultIcon:CreateTexture(nil, "ARTWORK");
   t1:SetWidth(24);
   t1:SetHeight(6);
   t1:SetColorTexture(0.8, 0, 0);
-  t1:SetPoint("TOP", thumbnail, "TOP", 0, -6);
-  local t2 = thumbnail:CreateTexture(nil, "ARTWORK");
+  t1:SetPoint("TOP", parent, "TOP", 0, -6);
+  local t2 = defaultIcon:CreateTexture(nil, "ARTWORK");
   t2:SetWidth(12);
   t2:SetHeight(12);
   t2:SetColorTexture(0.2, 0.8, 0.2);
   t2:SetPoint("TOP", t1, "BOTTOM", 0, -2);
-  local t3 = thumbnail:CreateTexture(nil, "ARTWORK");
+  local t3 = defaultIcon:CreateTexture(nil, "ARTWORK");
   t3:SetWidth(30);
   t3:SetHeight(4);
   t3:SetColorTexture(0.1, 0.25, 1);
   t3:SetPoint("TOP", t2, "BOTTOM", 0, -2);
-  local t4 = thumbnail:CreateTexture(nil, "OVERLAY");
+  local t4 = defaultIcon:CreateTexture(nil, "OVERLAY");
   t4:SetWidth(1);
   t4:SetHeight(36);
   t4:SetColorTexture(1, 1, 1);
-  t4:SetPoint("CENTER", thumbnail, "CENTER");
+  t4:SetPoint("CENTER", parent, "CENTER");
 
-  thumbnail.elapsed = 0;
-  thumbnail:SetScript("OnUpdate", function(self, elapsed)
-    self.elapsed = self.elapsed + elapsed;
-    if(self.elapsed < 0.5) then
-      t2:SetPoint("TOP", t1, "BOTTOM", 0, -2 + (28 * self.elapsed));
-      t2:SetAlpha(1 - (2 * self.elapsed));
-    elseif(self.elapsed < 1.5) then
-    -- do nothing
-    elseif(self.elapsed < 2) then
-      t2:SetPoint("TOP", t1, "BOTTOM", 0, -2 + (28 * (2 - self.elapsed)));
-      t2:SetAlpha((2 * self.elapsed) - 3);
-    elseif(self.elapsed < 3) then
-    -- do nothing
-    else
-      self.elapsed = self.elapsed - 3;
-    end
-  end);
-  return thumbnail;
+  defaultIcon.t1 = t1
+  defaultIcon.t2 = t2
+
+  defaultIcon.elapsed = 0;
+  defaultIcon:SetScript("OnUpdate", defaultIconAnimation)
+  defaultIcon:SetScript("OnHide", function(self) self:SetScript("OnUpdate", nil) end)
+  defaultIcon:SetScript("OnShow", function(self) self:SetScript("OnUpdate", defaultIconAnimation) end)
+
+  return defaultIcon
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createIcon, function() return end, L["A group that dynamically controls the positioning of its children"]);
+-- Modify preview thumbnail
+local function modifyThumbnail(parent, frame, data)
+  function frame:SetIcon(path)
+    if not frame.icon then
+      local icon = frame:CreateTexture(nil, "OVERLAY")
+      icon:SetAllPoints(frame)
+      frame.icon = icon
+    end
+    local success = frame.icon:SetTexture(path or data.groupIcon) and (path or data.groupIcon)
+    if success then
+      if frame.defaultIcon then
+        frame.defaultIcon:Hide()
+      end
+      frame.icon:Show()
+    else
+      if frame.icon then
+        frame.icon:Hide()
+      end
+      if not frame.defaultIcon then
+        frame.defaultIcon = createAnimatedDefaultIcon(frame)
+      end
+      frame.defaultIcon:Show()
+    end
+  end
+end
+
+local function createIcon()
+  local thumbnail = createThumbnail(UIParent)
+  thumbnail.defaultIcon = createAnimatedDefaultIcon(thumbnail)
+  return thumbnail
+end
+
+WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);

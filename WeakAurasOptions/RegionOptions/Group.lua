@@ -40,6 +40,29 @@ local function createOptions(id, data)
   local options = {
     __title = L["Group Settings"],
     __order = 1,
+    groupIcon = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString..L["Group Icon"],
+      desc = L["Set Thumbnail Icon"],
+      order = 0.50,
+      get = function()
+        return data.groupIcon and tostring(data.groupIcon) or ""
+      end,
+      set = function(info, v)
+        data.groupIcon = v
+        WeakAuras.Add(data)
+        WeakAuras.SetThumbnail(data)
+        WeakAuras.SetIconNames(data)
+      end
+    },
+    chooseIcon = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Choose"],
+      order = 0.51,
+      func = function() WeakAuras.OpenIconPicker(data, "groupIcon", true) end
+    },
     align_h = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -549,119 +572,77 @@ local function createOptions(id, data)
   };
 end
 
--- Create preview thumbnail
 local function createThumbnail(parent)
-  -- Preview frame
-  local borderframe = CreateFrame("FRAME", nil, parent);
-  borderframe:SetWidth(32);
-  borderframe:SetHeight(32);
+  -- frame
+  local thumbnail = CreateFrame("FRAME", nil, parent);
+  thumbnail:SetWidth(32);
+  thumbnail:SetHeight(32);
 
-  -- Preview border
-  local border = borderframe:CreateTexture(nil, "OVERLAY");
-  border:SetAllPoints(borderframe);
+  -- border
+  local border = thumbnail:CreateTexture(nil, "OVERLAY");
+  border:SetAllPoints(thumbnail);
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
 
-  -- Main region
-  local region = CreateFrame("FRAME", nil, borderframe);
-  borderframe.region = region;
-
-  -- Preview children
-  region.children = {};
-
-  -- Return preview
-  return borderframe;
+  return thumbnail
 end
 
--- Modify preview thumbnail
-local function modifyThumbnail(parent, borderframe, data, fullModify, size)
-  local region = borderframe.region;
-  size = size or 24;
+local function createDefaultIcon(parent)
+  -- default Icon
+  local defaultIcon = CreateFrame("FRAME", nil, parent);
+  parent.defaultIcon = defaultIcon;
 
-  local leftest, rightest, lowest, highest = 0, 0, 0, 0;
-  for index, childId in ipairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
-    if(childData) then
-      local blx, bly, trx, try = getRect(childData);
-      leftest = math.min(leftest, blx);
-      rightest = math.max(rightest, trx);
-      lowest = math.min(lowest, bly);
-      highest = math.max(highest, try);
-    end
-  end
-
-  local maxWidth, maxHeight = rightest - leftest, highest - lowest;
-
-  local scale=1;
-  if maxHeight > 0 and (maxHeight > maxWidth) then
-    scale = size / maxHeight;
-  elseif maxWidth > 0 and (maxWidth >= maxHeight) then
-    scale = size / maxWidth;
-  end
-
-  region:SetPoint("CENTER", borderframe, "CENTER");
-  region:SetWidth(maxWidth * scale);
-  region:SetHeight(maxHeight * scale);
-
-  for index, childId in pairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
-    if(childData) then
-      if not(region.children[index]) then
-        region.children[index] = CreateFrame("FRAME", nil, region);
-        region.children[index].texture = region.children[index]:CreateTexture(nil, "ARTWORK");
-        region.children[index].texture:SetAllPoints(region.children[index]);
-      end
-      local childRegion = region.children[index]
-      childRegion:Show();
-      local r, g, b;
-      if(childData.color) then
-        r, g, b = childData.color[1], childData.color[2], childData.color[3];
-      end
-      if(childData.barColor and not(r and g and b)) then
-        r, g, b = childData.barColor[1], childData.barColor[2], childData.barColor[3];
-      end
-      if(childData.foregroundColor and not(r and g and b)) then
-        r, g, b = childData.foregroundColor[1], childData.foregroundColor[2], childData.foregroundColor[3];
-      end
-      if not(r and g and b) then
-        r, g, b = 0.2, 0.8, 0.2;
-      end
-      childRegion.texture:SetColorTexture(r, g, b, 0.5);
-
-      local blx, bly, trx, try = getRect(childData);
-
-      childRegion:ClearAllPoints();
-      childRegion:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", (blx - leftest) * scale, (bly - lowest) * scale);
-      childRegion:SetWidth((childData.width or childRegion.width or 0) * scale);
-      childRegion:SetHeight((childData.height or childRegion.height or 0) * scale);
-    end
-  end
-  for i=#data.controlledChildren+1,#region.children do
-    region.children[i]:Hide();
-  end
-end
-
--- Create "new region" preview
-local function createIcon()
-  local thumbnail = createThumbnail(UIParent);
-  local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
+  local t1 = defaultIcon:CreateTexture(nil, "ARTWORK");
   t1:SetWidth(24);
   t1:SetHeight(8);
   t1:SetColorTexture(0.8, 0, 0, 0.5);
-  t1:SetPoint("TOP", thumbnail, "TOP", 0, -6);
-  local t2 = thumbnail:CreateTexture(nil, "ARTWORK");
+  t1:SetPoint("TOP", parent, "TOP", 0, -6);
+  local t2 = defaultIcon:CreateTexture(nil, "ARTWORK");
   t2:SetWidth(20);
   t2:SetHeight(20);
   t2:SetColorTexture(0.2, 0.8, 0.2, 0.5);
   t2:SetPoint("TOP", t1, "BOTTOM", 0, 5);
-  local t3 = thumbnail:CreateTexture(nil, "ARTWORK");
+  local t3 = defaultIcon:CreateTexture(nil, "ARTWORK");
   t3:SetWidth(20);
   t3:SetHeight(12);
   t3:SetColorTexture(0.1, 0.25, 1, 0.5);
   t3:SetPoint("TOP", t2, "BOTTOM", -5, 8);
 
-  return thumbnail;
+  return defaultIcon
+end
+
+-- Modify preview thumbnail
+local function modifyThumbnail(parent, frame, data)
+  function frame:SetIcon(path)
+    if not frame.icon then
+      local icon = frame:CreateTexture(nil, "OVERLAY")
+      icon:SetAllPoints(frame)
+      frame.icon = icon
+    end
+    local success = frame.icon:SetTexture(path or data.groupIcon) and (path or data.groupIcon)
+    if success then
+      if frame.defaultIcon then
+        frame.defaultIcon:Hide()
+      end
+      frame.icon:Show()
+    else
+      if frame.icon then
+        frame.icon:Hide()
+      end
+      if not frame.defaultIcon then
+        frame.defaultIcon = createDefaultIcon(frame)
+      end
+      frame.defaultIcon:Show()
+    end
+  end
+end
+
+-- Create "new region" preview
+local function createIcon()
+  local thumbnail = createThumbnail(UIParent)
+  thumbnail.defaultIcon = createDefaultIcon(thumbnail)
+  return thumbnail
 end
 
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createIcon, function() return end, L["Controls the positioning and configuration of multiple displays at the same time"]);
+WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail, L["Controls the positioning and configuration of multiple displays at the same time"]);
