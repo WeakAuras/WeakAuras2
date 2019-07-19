@@ -684,8 +684,8 @@ local function modify(parent, region, data)
       if (not region.__WAGlowFrame) then
         region.__WAGlowFrame = CreateFrame("Frame", nil, region);
         region.__WAGlowFrame:SetAllPoints();
-        region.__WAGlowFrame:SetSize(region.width, region.height);
       end
+      region.__WAGlowFrame:SetSize(region.width * math.abs(region.scalex), region.height * math.abs(region.scaley));
       glowStart(region.__WAGlowFrame);
     else
       if (region.__WAGlowFrame) then
