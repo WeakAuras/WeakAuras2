@@ -376,27 +376,6 @@ local function addDefaultsForNewAura(data)
 
       rotateText = "NONE",
     });
-
-    tinsert(data.subRegions, {
-      ["type"] = "subtext",
-      text_text = "%s",
-      text_color = {1, 1, 1, 1},
-      text_font = "Friz Quadrata TT",
-      text_fontSize = 12,
-      text_fontType = "None",
-      text_visible = true,
-
-      text_selfPoint = "AUTO",
-      text_anchorPoint = "ICON_CENTER",
-      anchorXOffset = 0,
-      anchorYOffset = 0,
-
-      text_shadowColor = { 0, 0, 0, 1},
-      text_shadowXOffset = 1,
-      text_shadowYOffset = -1,
-
-      rotateText = "NONE",
-    });
   elseif data.regionType == "icon" then
     tinsert(data.subRegions, {
       ["type"] = "subtext",
