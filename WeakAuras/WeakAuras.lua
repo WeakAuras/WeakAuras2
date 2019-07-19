@@ -3192,6 +3192,8 @@ function WeakAuras.Modernize(data)
         text_shadowYOffset = 0,
       }
 
+      local usetext2 = data.text2Enabled
+
       local text2 = {
         ["type"] = "subtext",
         text_visible = data.text2Enabled or false,
@@ -3235,7 +3237,9 @@ function WeakAuras.Modernize(data)
       }
 
       tinsert(data.subRegions, text1)
-      tinsert(data.subRegions, text2)
+      if (usetext2) then
+        tinsert(data.subRegions, text2)
+      end
 
       if (data.conditions) then
         for conditionIndex, condition in ipairs(data.conditions) do
