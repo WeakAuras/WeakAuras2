@@ -4700,7 +4700,7 @@ function WeakAuras.GetTriggerConditions(data)
         display = L["Active"],
         type = "bool",
         test = function(state, needle)
-          return (state and state.show or false) == (needle == 1);
+          return (state and triggerState[state.id].triggers[i] or false) == (needle == 1);
         end
       }
     end
