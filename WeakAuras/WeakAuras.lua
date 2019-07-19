@@ -3995,10 +3995,13 @@ end
 
 function WeakAuras.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local changed = false
   for id, state in pairs(triggerState) do
+    changed = changed or state.show
     state.show = false;
     state.changed = true;
   end
+  return changed
 end
 
 function WeakAuras.SetAllStatesHiddenExcept(id, triggernum, list)
@@ -5128,10 +5131,13 @@ do
 
   function WeakAuras.SetFakeStates()
     for id, states in pairs(triggerState) do
+      local changed
       for triggernum in ipairs(states) do
-        WeakAuras.SetAllStatesHidden(id, triggernum)
+        changed = WeakAuras.SetAllStatesHidden(id, triggernum) or changed
       end
-      WeakAuras.UpdatedTriggerState(id)
+      if changed then
+        WeakAuras.UpdatedTriggerState(id)
+      end
     end
     UpdateFakeTimesHandle = timer:ScheduleRepeatingTimer(UpdateFakeTimers, 1)
   end
@@ -5165,10 +5171,13 @@ do
     else
       visibleFakeStates[id] = false
       if triggerState[id] then
+        local changed = false
         for triggernum, state in ipairs(triggerState[id]) do
-          WeakAuras.SetAllStatesHidden(id, triggernum)
+          changed = WeakAuras.SetAllStatesHidden(id, triggernum) or changed
         end
-        WeakAuras.UpdatedTriggerState(id)
+        if changed then
+          WeakAuras.UpdatedTriggerState(id)
+        end
       end
       RestoreAlpha(WeakAuras.regions[id].region)
     end
