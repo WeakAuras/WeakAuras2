@@ -541,14 +541,20 @@ WeakAuras.spec_types_2 = {
 }
 
 WeakAuras.spec_types_specific = {}
+WeakAuras.spec_types_all = {}
 local function update_specs()
   for classFileName, classID in pairs(WeakAuras.class_ids) do
     WeakAuras.spec_types_specific[classFileName] = {}
+    local classTexcoords = CLASS_ICON_TCOORDS[classFileName]
     local numSpecs = GetNumSpecializationsForClassID(classID)
     for i=1, numSpecs do
-      local _, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
+      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
+        WeakAuras.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
+         .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
+         .. ":0|t"
+         .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
       end
     end
   end

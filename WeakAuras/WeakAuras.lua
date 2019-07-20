@@ -1864,6 +1864,7 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   end
 
   local player, realm, spec, zone = UnitName("player"), GetRealmName(), WeakAuras.IsClassic() and 1 or GetSpecialization(), GetRealZoneText();
+  local specId = GetSpecializationInfo(spec)
   local zoneId = C_Map.GetBestMapForUnit("player")
   local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
   local _, race = UnitRace("player")
@@ -1938,8 +1939,8 @@ local function scanForLoadsImpl(self, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, group, player, realm, class, spec, race, faction, playerLevel, zone, size);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, group, player, realm, class, spec, race, faction, playerLevel, zone, size);
       else
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
