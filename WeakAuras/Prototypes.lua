@@ -1013,6 +1013,15 @@ WeakAuras.load_prototype = {
       hidden = WeakAuras.IsClassic()
     },
     {
+      name = "class_and_spec",
+      display = L["Class and Specialization"],
+      type = "multiselect",
+      values = "spec_types_all",
+      init = "arg",
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic()
+    },
+    {
       name = "talent",
       display = L["Talent selected"],
       type = "multiselect",
