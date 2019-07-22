@@ -483,7 +483,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.expirationTime ~= bestMatch.expirationTime then
       state.expirationTime = bestMatch.expirationTime
-      state.resort = true
       changed = true
     end
 
@@ -626,7 +625,6 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
 
     if state.expirationTime ~= math.huge then
       state.expirationTime = math.huge
-      state.resort = true
       changed = true
     end
 

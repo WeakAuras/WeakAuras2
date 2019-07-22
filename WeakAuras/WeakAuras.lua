@@ -239,8 +239,6 @@ local triggerTypesOptions = WeakAuras.triggerTypesOptions;
 --  progressType: Either "timed", "static"
 --    duration: The duration if the progressType is timed
 --    expirationTime: The expirationTime if the progressType is timed
---    resort: Should be set to true by the trigger system the parent needs
---            to be resorted. The glue code resets this.
 --    autoHide: If the aura should be hidden on expiring
 --    value: The value if the progressType is static
 --    total: The total if the progressType is static
@@ -5212,7 +5210,6 @@ local function startStopTimers(id, cloneId, triggernum, state)
       local record = timers[id][triggernum][cloneId];
       if (state.expirationTime == nil) then
         state.expirationTime = GetTime() + state.duration;
-        state.resort = true;
       end
       if (record.expirationTime ~= state.expirationTime or record.state ~= state) then
         if (record.handle ~= nil) then
@@ -5266,8 +5263,7 @@ local function ApplyStateToRegion(id, cloneId, region, state, parent)
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
-  if state.resort and parent and parent.ActivateChild then
-    state.resort = false;
+  if parent and parent.ActivateChild then
     parent:ActivateChild(id, cloneId)
   end
 end

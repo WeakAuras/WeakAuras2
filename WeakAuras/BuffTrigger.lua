@@ -339,7 +339,6 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, buffShowOn, unitEx
     end
 
     if (state.expirationTime ~= expirationTime) then
-      state.resort = true;
       state.expirationTime = expirationTime;
       state.changed = true;
     end
@@ -987,7 +986,6 @@ do
       end
 
       if (state.expirationTime ~= auradata.expirationTime) then
-        state.resort = state.expirationTime ~= auradata.expirationTime;
         state.expirationTime = auradata.expirationTime;
         state.changed = true;
       end
