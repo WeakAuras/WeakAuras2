@@ -2376,12 +2376,10 @@ WeakAuras.event_prototypes = {
         ret = ret .. [=[
           if (state.expirationTime ~= expirationTime) then
             state.expirationTime = expirationTime;
-            state.resort = true;
             state.changed = true;
           end
           if (state.duration ~= duration) then
             state.duration = duration;
-            state.resort = true;
             state.changed = true;
           end
           state.progressType = 'timed';
@@ -2392,12 +2390,10 @@ WeakAuras.event_prototypes = {
           if (charges < trackedCharge) then
             if (state.value ~= duration) then
               state.value = duration;
-              state.resort = true;
               state.changed = true;
             end
             if (state.total ~= duration) then
               state.total = duration;
-              state.resort = true;
               state.changed = true;
             end
 
@@ -2407,12 +2403,10 @@ WeakAuras.event_prototypes = {
           elseif (charges > trackedCharge) then
             if (state.expirationTime ~= 0) then
               state.expirationTime = 0;
-              state.resort = true;
               state.changed = true;
             end
             if (state.duration ~= 0) then
               state.duration = 0;
-              state.resort = true;
               state.changed = true;
             end
             state.value = nil;
@@ -2422,12 +2416,10 @@ WeakAuras.event_prototypes = {
             if (state.expirationTime ~= expirationTime) then
               state.expirationTime = expirationTime;
               state.changed = true;
-              state.resort = true;
               state.changed = true;
             end
             if (state.duration ~= duration) then
               state.duration = duration;
-              state.resort = true;
               state.changed = true;
             end
             state.value = nil;
@@ -5127,7 +5119,6 @@ WeakAuras.event_prototypes = {
                 show = true,
                 changed = true,
                 inverse = castType == "cast",
-                resort = true
               }
               local duration = trigger_inverse and 0 or (endTime - startTime)/1000
               local expirationTime = trigger_inverse and math.huge or expirationTime
@@ -5141,7 +5132,6 @@ WeakAuras.event_prototypes = {
               then
                 state.show = false
                 state.changed = true
-                state.resort = true
               end
             end
           else

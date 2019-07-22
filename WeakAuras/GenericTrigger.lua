@@ -382,7 +382,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)
   if (data.duration) then
     local expirationTime = GetTime() + data.duration;
     if (state.expirationTime ~= expirationTime) then
-      state.resort = state.expirationTime ~= expirationTime;
       state.expirationTime = expirationTime;
       changed = true;
     end
@@ -422,7 +421,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)
         changed = true;
       end
       if (state.expirationTime) then
-        state.resort = state.expirationTime ~= nil;
         state.expirationTime = nil;
         changed = true;
       end
@@ -450,7 +448,6 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)
         state.duration = arg1;
       end
       if (state.expirationTime ~= arg2) then
-        state.resort = state.expirationTime ~= arg2;
         state.expirationTime = arg2;
         changed = true;
       end
@@ -2590,7 +2587,6 @@ do
     state.name = bar.message
     state.expirationTime = bar.expirationTime + extendTimer
     state.progressType = 'timed'
-    state.resort = true
     state.duration = bar.duration + extendTimer
     state.timerType = bar.timerType
     state.spellId = bar.spellId
@@ -2749,7 +2745,6 @@ do
     state.emphasized = bar.emphasized
     state.count = bar.count
     state.cast = bar.cast
-    state.resort = true
     state.progressType = "timed"
     state.icon = bar.icon
     state.extend = extendTimer
@@ -3449,7 +3444,6 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.progressType = "timed";
       state.duration = 0;
       state.expirationTime = math.huge;
-      state.resort = nil;
       state.value = nil;
       state.total = nil;
       return;
@@ -3468,7 +3462,6 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     if (arg3) then
       state.progressType = "static";
       state.duration = nil;
-      state.resort = state.expirationTime ~= nil;
       state.expirationTime = nil;
       state.value = arg1;
       state.total = arg2;
@@ -3476,7 +3469,6 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     else
       state.progressType = "timed";
       state.duration = arg1;
-      state.resort = state.expirationTime ~= arg2;
       state.expirationTime = arg2;
       state.autoHide = nil;
       state.value = nil;
@@ -3487,7 +3479,6 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     state.progressType = "timed";
     state.duration = 0;
     state.expirationTime = math.huge;
-    state.resort = nil;
     state.value = nil;
     state.total = nil;
   end
