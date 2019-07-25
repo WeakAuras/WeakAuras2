@@ -3152,6 +3152,7 @@ templates.class.DRUID = {
         { spell = 339, type = "ability", requiresTarget = true, overlayGlow = true}, -- Entangling Roots
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
+        { spell = 2637, type = "ability"}, -- Hibernate
         { spell = 1822, type = "ability", debuff = true, requiresTarget = true}, -- Rake
         { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
@@ -3276,6 +3277,7 @@ templates.class.DRUID = {
         { spell = 99, type = "ability"}, -- Incapacitating Roar
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
+        { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
         { spell = 1850, type = "ability", buff = true}, -- Dash
         { spell = 2782, type = "ability"}, -- Remove Corruption
         { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
@@ -3408,6 +3410,7 @@ templates.class.DRUID = {
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 783, type = "ability"}, -- Travel Form
         { spell = 1850, type = "ability", buff = true}, -- Dash
+        { spell = 2637, type = "ability", requiresTarget = true}, -- Hibernate
         { spell = 2908, type = "ability", requiresTarget = true}, -- Soothe
         { spell = 5211, type = "ability", requiresTarget = true, talent = 10 }, -- Mighty Bash
         { spell = 5215, type = "ability", buff = true}, -- Prowl
@@ -3422,6 +3425,7 @@ templates.class.DRUID = {
         { spell = 33917, type = "ability", requiresTarget = true}, -- Mangle
         { spell = 48438, type = "ability"}, -- Wild Growth
         { spell = 77758, type = "ability", talent = 9 }, -- Thrash
+        { spell = 88423, type = "ability"}, -- Nature's Cure
         { spell = 102342, type = "ability"}, -- Ironbark
         { spell = 102351, type = "ability", talent = 3 }, -- Cenarion Ward
         { spell = 102359, type = "ability", requiresTarget = true, talent = 11 }, -- Mass Entanglement
