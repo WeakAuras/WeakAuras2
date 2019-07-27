@@ -385,7 +385,12 @@ local function createOptions(id, data)
         WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
       end
-    }
+    },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
 
   WeakAuras.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", 2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
@@ -396,7 +401,7 @@ local function createOptions(id, data)
   local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
   return {
     dynamicgroup = options,
-    position = WeakAuras.PositionOptions(id, data, nil, true, disableSelfPoint),
+    position = WeakAuras.PositionOptions(id, data, nil, true, disableSelfPoint, true),
     border = WeakAuras.BorderOptions(id, data, nil, nil, borderHideFunc),
   };
 end

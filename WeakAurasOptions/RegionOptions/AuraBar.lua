@@ -85,15 +85,15 @@ local function createOptions(id, data)
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
       order = 38
     },
-    symbol_header = {
+    icon_header = {
       type = "header",
-      name = L["Symbol Settings"],
+      name = L["Icon Settings"],
       order = 38.01
     },
     icon = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Icon"],
+      name = L["Show Icon"],
       order = 38.1,
     },
     auto = {
@@ -135,7 +135,7 @@ local function createOptions(id, data)
     icon_side = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = L["Icon"],
+      name = L["Icon Position"],
       values = WeakAuras.icon_side_types,
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
       order = 38.6,
@@ -143,7 +143,7 @@ local function createOptions(id, data)
     icon_side2 = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = L["Icon"],
+      name = L["Icon Position"],
       values = WeakAuras.rotated_icon_side_types,
       hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
       order = 38.7,
@@ -167,7 +167,7 @@ local function createOptions(id, data)
     icon_color = {
       type = "color",
       width = WeakAuras.normalWidth,
-      name = L["Icon Color"],
+      name = L["Color"],
       hasAlpha = true,
       order = 38.9,
       hidden = function() return not data.icon end,
@@ -220,7 +220,7 @@ local function createOptions(id, data)
     spark = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Spark"],
+      name = L["Show Spark"],
       order = 43
     },
     sparkTexture = {
@@ -357,6 +357,11 @@ local function createOptions(id, data)
       order = 45.3,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
+    },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
     },
   };
 

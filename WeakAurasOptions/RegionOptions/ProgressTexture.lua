@@ -272,6 +272,11 @@ local function createOptions(id, data)
       name = "",
       order = 56
     },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
   options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
 

@@ -44,68 +44,21 @@ local function createOptions(id, data)
       order = 4,
       func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
     },
-    desaturate = {
-      type = "toggle",
+    alpha = {
+      type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Desaturate"],
+      name = L["Alpha"],
       order = 5,
-    },
-    cooldownHeader = {
-      type = "header",
-      order = 6,
-      name = L["Cooldown Settings"],
-    },
-    cooldown = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Cooldown"],
-      order = 6.1,
-      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
-    },
-    inverse = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Inverse"],
-      order = 6.2,
-      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
-      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
-      hidden = function() return not data.cooldown end
-    },
-    cooldownSwipe = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Cooldown Swipe"],
-      order = 6.3,
-      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
-      hidden = function() return not data.cooldown end,
-    },
-    cooldownEdge = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Cooldown Edge"],
-      order = 6.4,
-      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
-      hidden = function() return not data.cooldown end,
-    },
-    cooldownTextDisabled = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Hide Cooldown Text"],
-      order = 6.5,
-      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      hidden = function() return not data.cooldown end,
-    },
-    otherHeader = {
-      type = "header",
-      order = 48,
-      name = "",
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
     },
     zoom = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Zoom"],
-      order = 49,
+      order = 6,
       min = 0,
       max = 1,
       bigStep = 0.01,
@@ -115,7 +68,7 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Icon Inset"],
-      order = 49.1,
+      order = 7,
       min = 0,
       max = 1,
       bigStep = 0.01,
@@ -128,28 +81,75 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Keep Aspect Ratio"],
-      order = 49.1
+      order = 8
+    },
+    desaturate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Desaturate"],
+      order = 9,
     },
     useTooltip = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
-      order = 49.5
+      order = 10
     },
-    alpha = {
-      type = "range",
+    cooldownHeader = {
+      type = "header",
+      order = 11,
+      name = L["Cooldown Settings"],
+    },
+    cooldown = {
+      type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Icon Alpha"],
-      order = 49.6,
-      min = 0,
-      max = 1,
-      bigStep = 0.01,
-      isPercent = true
+      name = L["Show Cooldown"],
+      order = 11.1,
+      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
+      get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
+    },
+    inverse = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Inverse"],
+      order = 11.2,
+      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
+      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
+      hidden = function() return not data.cooldown end
+    },
+    cooldownSwipe = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Cooldown Swipe"],
+      order = 11.3,
+      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
+      hidden = function() return not data.cooldown end,
+    },
+    cooldownEdge = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Cooldown Edge"],
+      order = 11.4,
+      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
+      hidden = function() return not data.cooldown end,
+    },
+    cooldownTextDisabled = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Hide Cooldown Text"],
+      order = 11.5,
+      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
+      hidden = function() return not data.cooldown end,
+    },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
     },
   };
 
-  for k, v in pairs(WeakAuras.GlowOptions(id, data, 10)) do
+  for k, v in pairs(WeakAuras.GlowOptions(id, data, 12)) do
     options[k] = v
   end
 

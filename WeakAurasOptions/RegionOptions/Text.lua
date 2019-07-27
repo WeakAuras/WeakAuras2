@@ -128,13 +128,18 @@ local function createOptions(id, data)
       order = 48,
       values = WeakAuras.font_flags
     },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   return {
     text = options;
-    position = WeakAuras.PositionOptions(id, data, nil, true);
+    position = WeakAuras.PositionOptions(id, data, nil, true, nil, true);
   };
 end
 

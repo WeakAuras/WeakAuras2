@@ -3614,7 +3614,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   options.args.region.args = regionOption;
 end
 
-function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
+function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, noEndHeader)
   local metaOrder = 100
   local function IsParentDynamicGroup()
     return data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup";
@@ -3810,6 +3810,13 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       end
     },
   };
+  if not noEndHeader then
+    positionOptions["endHeader"] = {
+      type = "header",
+      order = 100,
+      name = ""
+    }
+  end
   WeakAuras.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", 72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
   return positionOptions;
 end
@@ -3830,7 +3837,7 @@ function WeakAuras.GlowOptions(id, data, order)
     glow = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Show Glow Effect"],
+      name = L["Show Glow"],
       order = order + 0.02,
     },
     glowType = {
@@ -4052,7 +4059,7 @@ function WeakAuras.BorderOptions(id, data, _, showBackDropOptions, hiddenFunc)
     border = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
-      name = L["Enable"],
+      name = L["Show Border"],
       order = 46.05,
       hidden = hiddenFunc,
     },
@@ -4142,6 +4149,11 @@ function WeakAuras.BorderOptions(id, data, _, showBackDropOptions, hiddenFunc)
       order = 46.8,
       disabled = function() return not data.border end,
       hidden = hiddenFunc,
+    },
+    endHeader = {
+      type = "header",
+      order = 46.9,
+      name = "",
     },
   }
 

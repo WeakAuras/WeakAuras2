@@ -532,12 +532,17 @@ local function createOptions(id, data)
         WeakAuras.ResetMoverSizer();
       end
     },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
 
   return {
     group = options,
     border = WeakAuras.BorderOptions(id, data);
-    position = WeakAuras.PositionOptions(id, data, nil, true, true),
+    position = WeakAuras.PositionOptions(id, data, nil, true, true, true),
   };
 end
 
