@@ -6,6 +6,8 @@ local profileData = {}
 profileData.systems = {}
 profileData.auras = {}
 
+WeakAuras.profileData = profileData
+
 WeakAuras.table_to_string = function(tbl, depth)
   if depth and depth >= 3 then
     return "{ ... }"
