@@ -89,6 +89,11 @@ local function createOptions(id, data)
       order = 35,
       hidden = function() return data.rotate end
     },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
 
   return {
