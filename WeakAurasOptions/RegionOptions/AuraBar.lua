@@ -408,9 +408,12 @@ local function createOptions(id, data)
 
   end
 
+  for k, v in pairs(WeakAuras.BorderOptions(id, data, true, nil, 70)) do
+    options[k] = v
+  end
+
   return {
     aurabar = options,
-    border = WeakAuras.BorderOptions(id, data, nil, true);
     position = WeakAuras.PositionOptions(id, data),
   };
 end

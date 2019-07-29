@@ -3638,11 +3638,57 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Height"],
-      order = 65,
+      order = 61,
       min = 1,
       softMax = screenHeight,
       bigStep = 1,
       hidden = hideWidthHeight,
+    },
+    xOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["X Offset"],
+      order = 62,
+      softMin = (-1 * screenWidth),
+      softMax = screenWidth,
+      bigStep = 10,
+      get = function() return data.xOffset end,
+      set = function(info, v)
+        data.xOffset = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer();
+        if(data.parent) then
+          local parentData = WeakAuras.GetData(data.parent);
+          if(parentData) then
+            WeakAuras.Add(parentData);
+            WeakAuras.SetThumbnail(parentData);
+          end
+        end
+      end
+    },
+    yOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Y Offset"],
+      order = 63,
+      softMin = (-1 * screenHeight),
+      softMax = screenHeight,
+      bigStep = 10,
+      get = function() return data.yOffset end,
+      set = function(info, v)
+        data.yOffset = v;
+        WeakAuras.Add(data);
+        WeakAuras.SetThumbnail(data);
+        WeakAuras.ResetMoverSizer();
+        if(data.parent) then
+          local parentData = WeakAuras.GetData(data.parent);
+          if(parentData) then
+            WeakAuras.Add(parentData);
+            WeakAuras.SetThumbnail(parentData);
+          end
+        end
+      end
     },
     selfPoint = {
       type = "select",
@@ -3719,7 +3765,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       type = "select",
       width = WeakAuras.normalWidth,
       name = function() return L["to group's"] end,
-      order = 75,
+      order = 76,
       hidden = function()
         if (data.anchorFrameType ~= "SCREEN") then
           return true;
@@ -3761,52 +3807,6 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       image = function() return "", 0, 0 end,
       hidden = function()
         return not (data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup());
-      end
-    },
-    xOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["X Offset"],
-      order = 80,
-      softMin = (-1 * screenWidth),
-      softMax = screenWidth,
-      bigStep = 10,
-      get = function() return data.xOffset end,
-      set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
-      end
-    },
-    yOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y Offset"],
-      order = 85,
-      softMin = (-1 * screenHeight),
-      softMax = screenHeight,
-      bigStep = 10,
-      get = function() return data.yOffset end,
-      set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
-        WeakAuras.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
-          end
-        end
       end
     },
   };
@@ -4050,17 +4050,19 @@ function WeakAuras.GlowOptions(id, data, order)
 end
 
 -- TODO: update this function to not have an unused parameter
-function WeakAuras.BorderOptions(id, data, _, showBackDropOptions, hiddenFunc)
-  local metaOrder = 99
+function WeakAuras.BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
   local borderOptions = {
-    __title = L["Border Settings"],
-    __order = metaOrder,
-    __hidden = hiddenFunc,
+    borderHeader = {
+      type = "header",
+      order = order,
+      name = L["Border Settings"],
+      hidden = hiddenFunc,
+    },
     border = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = L["Show Border"],
-      order = 46.05,
+      order = order + 0.1,
       hidden = hiddenFunc,
     },
     borderEdge = {
@@ -4068,92 +4070,85 @@ function WeakAuras.BorderOptions(id, data, _, showBackDropOptions, hiddenFunc)
       width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Border",
       name = L["Border Style"],
-      order = 46.1,
+      order = order + 0.2,
       values = AceGUIWidgetLSMlists.border,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
     },
     borderBackdrop = {
       type = "select",
       width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Background",
       name = L["Backdrop Style"],
-      order = 46.2,
+      order = order + 0.3,
       values = AceGUIWidgetLSMlists.background,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
     },
     borderOffset = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Border Offset"],
-      order = 46.3,
+      order = order + 0.3,
       softMin = 0,
       softMax = 32,
       bigStep = 1,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
     },
     borderSize = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Border Size"],
-      order = 46.4,
+      order = order + 0.4,
       softMin = 1,
       softMax = 64,
       bigStep = 1,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
     },
     borderInset = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Border Inset"],
-      order = 46.5,
+      order = order + 0.5,
       softMin = 1,
       softMax = 32,
       bigStep = 1,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+    },
+    border_spacer = {
+      type = "description",
+      name = "",
+      width = WeakAuras.normalWidth,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      order = order + 0.6
     },
     borderColor = {
       type = "color",
       width = WeakAuras.normalWidth,
       name = L["Border Color"],
       hasAlpha = true,
-      order = 46.6,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      order = order + 0.7,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
     },
     borderInFront  = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Border in Front"],
-      order = 46.7,
-      disabled = function() return not data.border end,
-      hidden = function() return hiddenFunc and hiddenFunc() or not showBackDropOptions end,
-    },
-    backdropInFront  = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Backdrop in Front"],
-      order = 46.75,
-      disabled = function() return not data.border end,
-      hidden = function() return hiddenFunc and hiddenFunc() or not showBackDropOptions end,
+      order = order + 0.8,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions end,
     },
     backdropColor = {
       type = "color",
       width = WeakAuras.normalWidth,
       name = L["Backdrop Color"],
       hasAlpha = true,
-      order = 46.8,
-      disabled = function() return not data.border end,
-      hidden = hiddenFunc,
+      order = order + 0.9,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
     },
-    endHeader = {
-      type = "header",
-      order = 46.9,
-      name = "",
+    backdropInFront  = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Backdrop in Front"],
+      order = order + 1,
+      hidden = function() return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions end,
     },
   }
 

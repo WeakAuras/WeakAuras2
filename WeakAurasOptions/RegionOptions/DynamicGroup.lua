@@ -399,10 +399,14 @@ local function createOptions(id, data)
 
   local borderHideFunc = function() return data.useAnchorPerUnit or data.grow == "CUSTOM" end
   local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
+
+  for k, v in pairs(WeakAuras.BorderOptions(id, data, nil, borderHideFunc, 70)) do
+    options[k] = v
+  end
+
   return {
     dynamicgroup = options,
     position = WeakAuras.PositionOptions(id, data, nil, true, disableSelfPoint, true),
-    border = WeakAuras.BorderOptions(id, data, nil, nil, borderHideFunc),
   };
 end
 
