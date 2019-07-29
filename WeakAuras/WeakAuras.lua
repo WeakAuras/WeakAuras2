@@ -5599,7 +5599,19 @@ end
 
 function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
   return ContainsPlaceHolders(textStr, function(symbol)
-    return symbol:len() == 1 and toCheck:find(symbol, 1, true)
+    if symbol:len() == 1 and toCheck:find(symbol, 1, true) then
+     return true
+    end
+
+   local _, last = symbol:find("^%d+%.")
+   if not last then
+     return false
+   end
+
+   symbol = symbol:sub(last + 1)
+   if symbol:len() == 1 and toCheck:find(symbol, 1, true) then
+     return true
+   end
   end)
 end
 
