@@ -2,6 +2,11 @@ local Masque = LibStub("Masque", true)
 local L = WeakAuras.L
 
 local function createOptions(id, data)
+  local hiddenIconExtra = function()
+    return WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
+  end
+  local indentWidth = 0.15
+
   local options = {
     __title = L["Icon Settings"],
     __order = 1,
@@ -44,57 +49,113 @@ local function createOptions(id, data)
       order = 4,
       func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
     },
-    alpha = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Alpha"],
-      order = 5,
-      min = 0,
-      max = 1,
-      bigStep = 0.01,
-      isPercent = true
-    },
-    zoom = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Zoom"],
-      order = 6,
-      min = 0,
-      max = 1,
-      bigStep = 0.01,
-      isPercent = true
-    },
-    iconInset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Icon Inset"],
-      order = 7,
-      min = 0,
-      max = 1,
-      bigStep = 0.01,
-      isPercent = true,
-      hidden = function()
-        return not Masque;
-      end
-    },
-    keepAspectRatio = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Keep Aspect Ratio"],
-      order = 8
-    },
     desaturate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Desaturate"],
-      order = 9,
+      order = 5,
     },
     useTooltip = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
-      order = 10
+      order = 6
+    },
+    iconExtraDescription = {
+      type = "description",
+      name = function()
+        local line = L["|cFFffcc00Extra:|r"]
+        if data.alpha ~= 1 then
+          line = L["%s Alpha: %.01f"]:format(line, data.alpha)
+        end
+        if data.zoom ~= 0 then
+          line = L["%s Zoom: %.01f"]:format(line, data.zoom)
+        end
+        if data.keepAspectRatio then
+          line = L["%s Keep Aspect Ratio"]:format(line)
+        end
+        return line
+      end,
+      width = WeakAuras.doubleWidth - 0.15,
+      order = 7,
+      fontSize = "medium"
+    },
+    iconExtraExpand = {
+      type = "execute",
+      name = function()
+        local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true)
+        return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
+      end,
+      order = 7.01,
+      width = 0.15,
+      image = function()
+        local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
+        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      func = function()
+        local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
+        WeakAuras.SetCollapsed("icon", "icon", "iconextra", not collapsed);
+      end,
+      control = "WeakAurasIcon"
+    },
+    iconExtra_space1 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = 7.02,
+      hidden = hiddenIconExtra,
+    },
+    alpha = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Alpha"],
+      order = 7.03,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true,
+      hidden = hiddenIconExtra,
+    },
+    zoom = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Zoom"],
+      order = 7.04,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true,
+      hidden = hiddenIconExtra,
+    },
+    iconExtra_space2 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = 7.05,
+      hidden = hiddenIconExtra,
+    },
+    iconInset = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Icon Inset"],
+      order = 7.06,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true,
+      hidden = function()
+        return not Masque or hiddenIconExtra();
+      end
+    },
+    keepAspectRatio = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Keep Aspect Ratio"],
+      order = 7.07,
+      hidden = hiddenIconExtra,
     },
     cooldownHeader = {
       type = "header",
