@@ -1864,12 +1864,21 @@ do
     return spellCharges[id], spellChargesMax[id], spellCounts[id];
   end
 
-  function WeakAuras.GetItemCooldown(id)
+  function WeakAuras.GetItemCooldown(id, showgcd)
+    local startTime, duration, enabled, gcdCooldown;
     if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
-      return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id], itemCdEnabled[id];
+      startTime, duration, enabled = itemCdExps[id] - itemCdDurs[id], itemCdDurs[id], itemCdEnabled[id];
     else
-      return 0, 0, itemCdEnabled[id] or 1;
+      startTime, duration, enabled = 0, 0, itemCdEnabled[id] or 1;
     end
+    if (showgcd) then
+      if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        startTime = gcdStart;
+        duration = gcdDuration;
+        gcdCooldown = true;
+      end
+    end
+    return startTime, duration, enabled, gcdCooldown;
   end
 
   function WeakAuras.GetGCDInfo()
@@ -1888,12 +1897,22 @@ do
     return gcdSpellName;
   end
 
-  function WeakAuras.GetItemSlotCooldown(id)
+  function WeakAuras.GetItemSlotCooldown(id, showgcd)
+    local startTime, duration, enabled, gcdCooldown;
     if(itemSlots[id] and itemSlotsCdExps[id] and itemSlotsCdDurs[id]) then
-      return itemSlotsCdExps[id] - itemSlotsCdDurs[id], itemSlotsCdDurs[id], itemSlotsEnable[id];
+      startTime, duration, enabled = itemSlotsCdExps[id] - itemSlotsCdDurs[id], itemSlotsCdDurs[id], itemSlotsEnable[id];
     else
-      return 0, 0, itemSlotsEnable[id];
+      startTime, duration, enabled = 0, 0, itemSlotsEnable[id];
     end
+
+    if (showgcd) then
+      if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        startTime = gcdStart;
+        duration = gcdDuration;
+        gcdCooldown = true;
+      end
+    end
+    return startTime, duration, enabled, gcdCooldown;
   end
 
   local function RuneCooldownFinished(id)
