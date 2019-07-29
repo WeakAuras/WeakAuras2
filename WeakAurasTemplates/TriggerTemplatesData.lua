@@ -3992,6 +3992,23 @@ if not WeakAuras.IsClassic() then
       { spell = 268911, type = "buff", unit = "player"}, --Stalwart Navigation
       { spell = 267685, type = "buff", unit = "player"}, --Torrent of Elements
       { spell = 268854, type = "buff", unit = "player"}, --Versatile Navigation
+      -- Machinist's Brilliance
+      { spell = 300693, type = "buff", unit = "player"}, -- Int
+      { spell = 300761, type = "buff", unit = "player"}, -- Haste
+      { spell = 300762, type = "buff", unit = "player"}, -- Mastery
+      { spell = 298431, type = "buff", unit = "player"}, -- Crit
+      -- Force Multiplier
+      { spell = 300809, type = "buff", unit = "player"}, -- Mastery
+      { spell = 300802, type = "buff", unit = "player"}, -- Haste
+      { spell = 300801, type = "buff", unit = "player"}, -- Crit
+      { spell = 300691, type = "buff", unit = "player"}, -- Strength
+      { spell = 300893, type = "buff", unit = "player"}, -- Agility
+      -- Oceanic Restoration
+      { spell = 298512, type = "buff", unit = "player"},
+      -- Naga Hide
+      { spell = 298466, type = "buff", unit = "player"}, -- Agility
+      { spell = 298461, type = "buff", unit = "player"}, -- Absorb
+      { spell = 300800, type = "buff", unit = "player"}, -- Strength
     }
   }
 
