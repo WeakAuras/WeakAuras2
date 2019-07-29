@@ -2825,18 +2825,29 @@ WeakAuras.event_prototypes = {
   ["Cooldown Progress (Item)"] = {
     type = "status",
     events = {},
-    internal_events = {
-      "ITEM_COOLDOWN_READY",
-      "ITEM_COOLDOWN_CHANGED",
-      "ITEM_COOLDOWN_STARTED",
-      "COOLDOWN_REMAINING_CHECK",
-    },
+    internal_events = function(trigger, untrigger)
+      local events = {
+        "ITEM_COOLDOWN_READY",
+        "ITEM_COOLDOWN_CHANGED",
+        "ITEM_COOLDOWN_STARTED",
+        "COOLDOWN_REMAINING_CHECK",
+      }
+      if (trigger.use_showgcd) then
+        tinsert(events, "GCD_START");
+        tinsert(events, "GCD_CHANGE");
+        tinsert(events, "GCD_END");
+      end
+      return events
+    end,
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Item)"],
     loadFunc = function(trigger)
       trigger.itemName = trigger.itemName or 0;
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       WeakAuras.WatchItemCooldown(trigger.itemName);
+      if (trigger.use_showgcd) then
+        WeakAuras.WatchGCD();
+      end
     end,
     init = function(trigger)
       --trigger.itemName = WeakAuras.CorrectItemName(trigger.itemName) or 0;
@@ -2844,7 +2855,8 @@ WeakAuras.event_prototypes = {
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or "[["..trigger.itemName.."]]";
       local ret = [=[
         local itemname = %s;
-        local startTime, duration, enabled = WeakAuras.GetItemCooldown(itemname);
+        local showgcd = %s
+        local startTime, duration, enabled, gcdCooldown = WeakAuras.GetItemCooldown(itemname, showgcd);
         local genericShowOn = %s
         state.itemname = itemname;
       ]=];
@@ -2859,7 +2871,9 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(itemName,  "[[" .. (trigger.genericShowOn or "") .. "]]");
+      return ret:format(itemName,
+                        trigger.use_showgcd and "true" or "false",
+                        "[[" .. (trigger.genericShowOn or "") .. "]]");
     end,
     statesParameter = "one",
     args = {
@@ -2876,6 +2890,30 @@ WeakAuras.event_prototypes = {
         type = "number",
         enable = function(trigger) return (trigger.genericShowOn ~= "showOnReady") end,
         init = "remaining"
+      },
+      {
+        name = "extra Cooldown Progress (Item)",
+        display = function(trigger)
+          return function()
+            local text = "";
+            if trigger.use_showgcd then
+              if text ~= "" then text = text .. "; " end
+              text = text .. L["Show GCD"]
+            end
+            if text == "" then
+              return L["Extra Options: none"]
+            end
+            return L["Extra Options: %s"]:format(text)
+          end
+        end,
+        type = "collapse",
+      },
+      {
+        name = "showgcd",
+        display = L["Show Global Cooldown"],
+        type = "toggle",
+        test = "true",
+        collapse = "extra Cooldown Progress (Item)"
       },
       {
         name = "genericShowOn",
@@ -2899,7 +2937,7 @@ WeakAuras.event_prototypes = {
         display = L["On Cooldown"],
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0) == (needle == 1)
+          return state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0) == (needle == 1)
         end,
       },
       {
@@ -2918,13 +2956,19 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(genericShowOn == \"showOnReady\" and startTime == 0 and enabled == 1) " ..
-        "or (genericShowOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0)) " ..
+        name = "gcdCooldown",
+        store = true,
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 and enabled == 1 or gcdCooldown))" ..
+        "or (genericShowOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0) and not gcdCooldown) " ..
         "or (genericShowOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = WeakAuras.GetItemCooldown(type(trigger.itemName) == "number" and trigger.itemName or 0);
+      local startTime, duration = WeakAuras.GetItemCooldown(type(trigger.itemName) == "number" and trigger.itemName or 0, trigger.use_showgcd);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
@@ -2948,22 +2992,36 @@ WeakAuras.event_prototypes = {
   ["Cooldown Progress (Equipment Slot)"] = {
     type = "status",
     events = {},
-    internal_events = {
-      "ITEM_SLOT_COOLDOWN_STARTED",
-      "ITEM_SLOT_COOLDOWN_CHANGED",
-      "COOLDOWN_REMAINING_CHECK",
-      "ITEM_SLOT_COOLDOWN_ITEM_CHANGED",
-      "ITEM_SLOT_COOLDOWN_READY",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
+    internal_events = function(trigger, untrigger)
+      local events = {
+        "ITEM_SLOT_COOLDOWN_STARTED",
+        "ITEM_SLOT_COOLDOWN_CHANGED",
+        "COOLDOWN_REMAINING_CHECK",
+        "ITEM_SLOT_COOLDOWN_ITEM_CHANGED",
+        "ITEM_SLOT_COOLDOWN_READY",
+        "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      }
+
+      if (trigger.use_showgcd) then
+        tinsert(events, "GCD_START");
+        tinsert(events, "GCD_CHANGE");
+        tinsert(events, "GCD_END");
+      end
+
+      return events
+    end,
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],
     loadFunc = function(trigger)
       WeakAuras.WatchItemSlotCooldown(trigger.itemSlot);
+      if (trigger.use_showgcd) then
+        WeakAuras.WatchGCD();
+      end
     end,
     init = function(trigger)
       local ret = [[
-        local startTime, duration, enable = WeakAuras.GetItemSlotCooldown(%s);
+        local showgcd = %s
+        local startTime, duration, enable, gcdCooldown = WeakAuras.GetItemSlotCooldown(%s, showgcd);
         local genericShowOn = %s
         local remaining = startTime + duration - GetTime();
       ]];
@@ -2978,8 +3036,11 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(trigger.itemSlot or "0",  "[[" .. (trigger.genericShowOn or "") .. "]]");
+      return ret:format(trigger.use_showgcd and "true" or "false",
+                        trigger.itemSlot or "0",
+                        "[[" .. (trigger.genericShowOn or "") .. "]]");
     end,
+    statesParameter = "one",
     args = {
       {
         name = "itemSlot",
@@ -2988,6 +3049,30 @@ WeakAuras.event_prototypes = {
         type = "select",
         values = "item_slot_types",
         test = "true"
+      },
+      {
+        name = "extra Cooldown Progress (Equipment Slot)",
+        display = function(trigger)
+          return function()
+            local text = "";
+            if trigger.use_showgcd then
+              if text ~= "" then text = text .. "; " end
+              text = text .. L["Show GCD"]
+            end
+            if text == "" then
+              return L["Extra Options: none"]
+            end
+            return L["Extra Options: %s"]:format(text)
+          end
+        end,
+        type = "collapse",
+      },
+      {
+        name = "showgcd",
+        display = L["Show Global Cooldown"],
+        type = "toggle",
+        test = "true",
+        collapse = "extra Cooldown Progress (Equipment Slot)"
       },
       {
         name = "remaining",
@@ -3018,18 +3103,24 @@ WeakAuras.event_prototypes = {
         display = L["On Cooldown"],
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (needle == 1);
+          return state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (needle == 1);
         end,
       },
       {
         hidden = true,
-        test = "(genericShowOn == \"showOnReady\" and startTime == 0) " ..
-        "or (genericShowOn == \"showOnCooldown\" and startTime > 0) " ..
+        name = "gcdCooldown",
+        store = true,
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " ..
+        "or (genericShowOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " ..
         "or (genericShowOn == \"showAlways\")"
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = WeakAuras.GetItemSlotCooldown(trigger.itemSlot or 0);
+      local startTime, duration = WeakAuras.GetItemSlotCooldown(trigger.itemSlot or 0, trigger.use_showgcd);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
