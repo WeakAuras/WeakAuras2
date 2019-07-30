@@ -213,7 +213,7 @@ local function modify(parent, region, parentData, data, first)
   end
 
   local Update
-  if first and parent.customTextFunc and parentData.customTextUpdate ~= "update" then
+  if first and parent.customTextFunc then
     if UpdateText then
       Update = function()
         parent.values.custom = WeakAuras.RunCustomTextFunc(parent, parent.customTextFunc)
