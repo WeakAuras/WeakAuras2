@@ -6200,7 +6200,7 @@ local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
         return WeakAuras.GetSanitizedGlobal(anchorFrameFrame);
       end
       postponeAnchor(id);
-      return  parent;
+      return parent;
     end
   end
   -- Fallback
