@@ -262,10 +262,13 @@ local function ResetPosition(self)
 end
 
 local function SetAnchor(self, anchorPoint, relativeTo, relativePoint)
+  if self.anchorPoint == anchorPoint and self.relativeTo == relativeTo and self.relativePoint == relativePoint then
+    return
+  end
+
   self.anchorPoint = anchorPoint;
   self.relativeTo = relativeTo;
   self.relativePoint = relativePoint;
-
 
   UpdatePosition(self);
 end
