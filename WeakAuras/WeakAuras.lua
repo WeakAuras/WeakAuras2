@@ -3116,24 +3116,6 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  if data.regionType == "model" and WeakAuras.BuildInfo <= 80100 then -- prepare for migration at 8.2
-    data.modelDisplayInfo = false
-    if data.modelIsUnit then
-      data.model_fileId = data.model_path
-    else
-      if tonumber(data.model_path) then
-        data.modelDisplayInfo = true
-        data.model_fileId = data.model_path
-      else
-        WeakAuras.SetModel(modelMigration, data.model_path, data.model_fileId)
-        local modelId = modelMigration:GetModelFileID()
-        if modelId then
-          data.model_fileId = tostring(modelId)
-        end
-      end
-    end
-  end
-
   -- Version 18 was introduced in July 2019 for Classic
   if data.internalVersion < 18 then
     if data.triggers then
