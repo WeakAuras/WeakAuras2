@@ -154,7 +154,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       newMsg = newMsg..remaining:sub(1, start-1);
-      newMsg = newMsg.."|Hweakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
+      newMsg = newMsg.."|Hgarrmission:weakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
       remaining = remaining:sub(finish + 1);
     else
       done = true;
@@ -546,10 +546,10 @@ local Comm = LibStub:GetLibrary("AceComm-3.0");
 local tooltipLoading;
 local receivedData;
 
-hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
+hooksecurefunc("SetItemRef", function(link, text)
   buttonAnchor:Hide()
-  if(link == "weakauras") then
-    local _, _, characterName, displayName = text:find("|Hweakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
+  if(link == "garrmission:weakauras") then
+    local _, _, characterName, displayName = text:find("|Hgarrmission:weakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
@@ -585,14 +585,6 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
     end
   end
 end);
-
-local OriginalSetItemRef = SetItemRef
-function SetItemRef(link, ...)
-  if(link and link:sub(1, 9) == "weakauras") then
-    return;
-  end
-  return OriginalSetItemRef(link, ...);
-end
 
 function TableToString(inTable, forChat)
   local serialized = Serializer:Serialize(inTable)
