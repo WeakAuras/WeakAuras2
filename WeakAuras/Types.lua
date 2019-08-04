@@ -2078,7 +2078,13 @@ WeakAuras.baseUnitId = {
   ["pet"] = true,
   ["focus"] = true,
   ["vehicle"] = true
-  -- ["mouseover"] = true
+}
+
+WeakAuras.multiUnitId = {
+  ["nameplate"] = true,
+  ["boss"] = true,
+  ["arena"] = true,
+  ["group"] = true,
 }
 
 for i = 1, 4 do

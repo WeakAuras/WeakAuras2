@@ -841,6 +841,29 @@ function GenericTrigger.Rename(oldid, newid)
   WeakAuras.EveryFrameUpdateRename(oldid, newid)
 end
 
+local function MultiUnitLoop(Func, unit, ...)
+  unit = string.lower(unit)
+  if unit == "boss" or unit == "arena" then
+    for i = 1, 5 do
+      Func(unit..i, ...)
+    end
+  elseif unit == "nameplate" then
+    for i = 1, 40 do
+      Func(unit..i, ...)
+    end
+  elseif unit == "group" then
+    Func("player", ...)
+    for i = 1, 4 do
+      Func("party"..i, ...)
+    end
+    for i = 1, 40 do
+      Func("raid"..i, ...)
+    end
+  elseif WeakAuras.baseUnitId[unit] then
+    Func(unit, ...)
+  end
+end
+
 function LoadEvent(id, triggernum, data)
   if data.events then
     for index, event in pairs(data.events) do
@@ -868,10 +891,14 @@ function LoadEvent(id, triggernum, data)
     for unit, events in pairs(data.unit_events) do
       unit = string.lower(unit)
       for index, event in pairs(events) do
-        loaded_unit_events[unit] = loaded_unit_events[unit] or {};
-        loaded_unit_events[unit][event] = loaded_unit_events[unit][event] or {};
-        loaded_unit_events[unit][event][id] = loaded_unit_events[unit][event][id] or {}
-        loaded_unit_events[unit][event][id][triggernum] = data;
+        MultiUnitLoop(
+          function(unit)
+            loaded_unit_events[unit] = loaded_unit_events[unit] or {};
+            loaded_unit_events[unit][event] = loaded_unit_events[unit][event] or {};
+            loaded_unit_events[unit][event][id] = loaded_unit_events[unit][event][id] or {}
+            loaded_unit_events[unit][event][id][triggernum] = data;
+          end, unit
+        )
       end
     end
   end
@@ -913,12 +940,14 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
         if data.unit_events then
           for unit, events in pairs(data.unit_events) do
             for index, event in pairs(events) do
-              if (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
-                -- Already registered event
-              else
-                unitEventsToRegister[unit] = unitEventsToRegister[unit] or {};
-                unitEventsToRegister[unit][event] = true;
-              end
+              MultiUnitLoop(
+                function (unit)
+                  if not (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
+                    unitEventsToRegister[unit] = unitEventsToRegister[unit] or {}
+                    unitEventsToRegister[unit][event] = true
+                  end
+                end, unit
+              )
             end
           end
         end
@@ -1158,12 +1187,13 @@ function GenericTrigger.Add(data, region)
                     hasParam = true
                   end
                 elseif trueEvent:match("^UNIT_") then
-                  local unit = string.lower(i)
-                  if WeakAuras.baseUnitId[unit] then
-                    trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                    tinsert(trigger_unit_events[unit], trueEvent)
-                    isUnitEvent = true
-                  end
+                  MultiUnitLoop(
+                    function(unit)
+                      trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                      tinsert(trigger_unit_events[unit], trueEvent)
+                      isUnitEvent = true
+                    end, i
+                  )
                 end
               end
               if isCLEU then

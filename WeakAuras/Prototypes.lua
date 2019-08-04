@@ -1233,25 +1233,7 @@ local function AddUnitChangeInternalEvents(unit, t)
 end
 
 local function AddUnitEventForEvents(result, unit, event)
-  -- recursion for handling meta units
-  if unit == "boss" or unit == "arena" then
-    for i = 1, 5 do
-      AddUnitEventForEvents(result, unit .. i, event)
-    end
-  elseif unit == "nameplate" then
-    for i = 1, 40 do
-      AddUnitEventForEvents(result, "nameplate" .. i, event)
-    end
-  elseif unit == "group" then
-    AddUnitEventForEvents(result, "player", event)
-    for i = 1, 40 do
-      AddUnitEventForEvents(result, "raid" .. i, event)
-    end
-    for i = 1, 4 do
-      AddUnitEventForEvents(result, "party" .. i, event)
-    end
-  -- normal units
-  elseif not unit or not WeakAuras.baseUnitId[unit] then
+  if not unit or not (WeakAuras.baseUnitId[unit] or WeakAuras.multiUnitId[unit]) then
     if not result.events then
       result.events = {}
     end
@@ -5141,11 +5123,10 @@ WeakAuras.event_prototypes = {
           local localizedSpellName = %q
           local cloneId = ""
 
-          local multi_unit = trigger_unit == "nameplate" or trigger_unit == "group" or trigger_unit == "arena" or trigger_unit == "boss" and true or false
+          local multi_unit = WeakAuras.multiUnitId[trigger_unit] and true or false
           if multi_unit and trigger_clone and sourceUnit and UnitExists(sourceUnit) then
             cloneId = UnitGUID(sourceUnit)
           end
-
           if event == "PLAYER_TARGET_CHANGED"
           or event == "PLAYER_FOCUS_CHANGED"
           or (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" and trigger_inverse)
