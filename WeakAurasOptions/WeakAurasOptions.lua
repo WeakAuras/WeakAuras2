@@ -3826,7 +3826,7 @@ function WeakAuras.GlowOptions(id, data, order)
     return WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
   end
 
-  local indentWidth = 0.1
+  local indentWidth = 0.15
 
   local glowOptions = {
     glowHeader = {
