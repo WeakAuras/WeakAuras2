@@ -65,14 +65,18 @@ local function createOptions(id, data)
     iconExtraDescription = {
       type = "description",
       name = function()
-        local line = L["|cFFffcc00Extra:|r"]
+        local line = L["|cFFffcc00Extra Options:|r"]
         local changed = false
         if data.alpha ~= 1 then
-          line = L["%s Alpha: %.01f"]:format(line, data.alpha)
+          line = L["%s Alpha: %d%%"]:format(line, data.alpha*100)
           changed = true
         end
         if data.zoom ~= 0 then
-          line = L["%s Zoom: %.01f"]:format(line, data.zoom)
+          line = L["%s Zoom: %d%%"]:format(line, data.zoom*100)
+          changed = true
+        end
+        if data.iconInset and data.iconInset ~= 0 then
+          line = L["%s Inset: %d%%"]:format(line, data.iconInset*100)
           changed = true
         end
         if data.keepAspectRatio then
