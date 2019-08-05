@@ -2577,7 +2577,7 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
   local result = {}
   local order = 1
   result.__order = 300
-  result.__title = L["Add Sub Regions"]
+  result.__title = L["Add Extra Elements"]
   for subRegionType in pairs(supported) do
     result[subRegionType .. "space"] = {
       type = "description",
