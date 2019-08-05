@@ -84,7 +84,7 @@ local function createOptions(id, data)
           changed = true
         end
         if not changed then
-          line = L["%s No Texture Tweaks"]:format(line)
+          line = L["%s Default Alpha, Zoom, Icon Inset, Aspect Ratio"]:format(line)
         end
         return line
       end,
