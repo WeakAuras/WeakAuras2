@@ -2473,9 +2473,9 @@ WeakAuras.event_prototypes = {
               end
             end
             if text == "" then
-              return L["Extra Options: none"]
+              return L["|cFFffcc00Extra Options:|r None"]
             end
-            return L["Extra Options: %s"]:format(text)
+            return L["|cFFffcc00Extra Options:|r %s"]:format(text)
           end
         end,
         type = "collapse",
@@ -2883,9 +2883,9 @@ WeakAuras.event_prototypes = {
               text = text .. L["Show GCD"]
             end
             if text == "" then
-              return L["Extra Options: none"]
+              return L["|cFFffcc00Extra Options:|r None"]
             end
-            return L["Extra Options: %s"]:format(text)
+            return L["|cFFffcc00Extra Options:|r %s"]:format(text)
           end
         end,
         type = "collapse",
@@ -3042,9 +3042,9 @@ WeakAuras.event_prototypes = {
               text = text .. L["Show GCD"]
             end
             if text == "" then
-              return L["Extra Options: none"]
+              return L["|cFFffcc00Extra Options:|r None"]
             end
-            return L["Extra Options: %s"]:format(text)
+            return L["|cFFffcc00Extra Options:|r %s"]:format(text)
           end
         end,
         type = "collapse",
