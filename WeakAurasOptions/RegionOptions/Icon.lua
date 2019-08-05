@@ -66,14 +66,21 @@ local function createOptions(id, data)
       type = "description",
       name = function()
         local line = L["|cFFffcc00Extra:|r"]
+        local changed = false
         if data.alpha ~= 1 then
           line = L["%s Alpha: %.01f"]:format(line, data.alpha)
+          changed = true
         end
         if data.zoom ~= 0 then
           line = L["%s Zoom: %.01f"]:format(line, data.zoom)
+          changed = true
         end
         if data.keepAspectRatio then
           line = L["%s Keep Aspect Ratio"]:format(line)
+          changed = true
+        end
+        if not changed then
+          line = L["%s None"]:format(line)
         end
         return line
       end,
