@@ -84,7 +84,7 @@ local function createOptions(id, data)
           changed = true
         end
         if not changed then
-          line = L["%s None"]:format(line)
+          line = L["%s No Texture Tweaks"]:format(line)
         end
         return line
       end,
