@@ -56,7 +56,7 @@ local function createOptions(parentData, data, index)
     return WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true);
   end
 
-  local indentWidth = 0.1
+  local indentWidth = 0.15
 
   local options = {
     __title = L["%s. Text"]:format(index),
