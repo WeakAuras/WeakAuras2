@@ -59,7 +59,7 @@ local function createOptions(parentData, data, index)
   local indentWidth = 0.15
 
   local options = {
-    __title = L["%s. Text"]:format(index),
+    __title = L["Text %s"]:format(index),
     __order = 1,
     __up = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionUp, index, "subtext")) then
