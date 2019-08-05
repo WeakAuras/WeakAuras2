@@ -80,7 +80,7 @@ local function createOptions(parentData, data, index)
       type = "toggle",
       width = WeakAuras.halfWidth,
       order = 9,
-      name = L["Visible"],
+      name = L["Show Text"],
     },
     text_color = {
       type = "color",
