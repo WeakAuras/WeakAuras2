@@ -85,23 +85,52 @@ local function createOptions(id, data)
       hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
       order = 38
     },
+    bar_header = {
+      type = "header",
+      name = L["Bar Color Settings"],
+      order = 39
+    },
+    barColor = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = L["Bar Color"],
+      hasAlpha = true,
+      order = 39.1
+    },
+    backgroundColor = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = L["Background Color"],
+      hasAlpha = true,
+      order = 39.2
+    },
+    alpha = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Bar Alpha"],
+      order = 39.3,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
+    },
     icon_header = {
       type = "header",
       name = L["Icon Settings"],
-      order = 38.01
+      order = 40.1
     },
     icon = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Show Icon"],
-      order = 38.1,
+      order = 40.2,
     },
     auto = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Auto"],
       desc = L["Choose whether the displayed icon is automatic or defined manually"],
-      order = 38.2,
+      order = 40.3,
       disabled = function() return not WeakAuras.CanHaveAuto(data); end,
       get = function() return WeakAuras.CanHaveAuto(data) and data.auto end,
       hidden = function() return not data.icon end,
@@ -112,7 +141,7 @@ local function createOptions(id, data)
       name = L["Display Icon"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
-      order = 38.3,
+      order = 40.4,
       get = function()
         return data.displayIcon and tostring(data.displayIcon) or "";
       end,
@@ -129,7 +158,7 @@ local function createOptions(id, data)
       name = L["Choose"],
       hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
-      order = 38.5,
+      order = 40.5,
       func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
     },
     icon_side = {
@@ -138,7 +167,7 @@ local function createOptions(id, data)
       name = L["Icon Position"],
       values = WeakAuras.icon_side_types,
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
-      order = 38.6,
+      order = 40.6,
     },
     icon_side2 = {
       type = "select",
@@ -146,7 +175,7 @@ local function createOptions(id, data)
       name = L["Icon Position"],
       values = WeakAuras.rotated_icon_side_types,
       hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
-      order = 38.7,
+      order = 40.7,
       get = function()
         return data.icon_side;
       end,
@@ -161,7 +190,7 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Desaturate"],
-      order = 38.8,
+      order = 40.8,
       hidden = function() return not data.icon end,
     },
     icon_color = {
@@ -169,48 +198,19 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
-      order = 38.9,
+      order = 40.9,
       hidden = function() return not data.icon end,
     },
     zoom = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Zoom"],
-      order = 38.91,
+      order = 40.91,
       min = 0,
       max = 1,
       bigStep = 0.01,
       isPercent = true,
       hidden = function() return not data.icon end,
-    },
-    bar_header = {
-      type = "header",
-      name = L["Bar Color Settings"],
-      order = 39
-    },
-    barColor = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Bar Color"],
-      hasAlpha = true,
-      order = 39.5
-    },
-    backgroundColor = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Background Color"],
-      hasAlpha = true,
-      order = 40
-    },
-    alpha = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Bar Alpha"],
-      order = 41,
-      min = 0,
-      max = 1,
-      bigStep = 0.01,
-      isPercent = true
     },
     spark_header = {
       type = "header",
