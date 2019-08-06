@@ -513,7 +513,11 @@ local methods = {
         if(editbox) then
           if (not fullName) then
             local name, realm = UnitFullName("player")
-            fullName = name.."-"..realm
+            if realm then
+              fullName = name.."-"..realm
+            else
+              fullName = name
+            end
           end
           editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
         elseif not data.controlledChildren then
