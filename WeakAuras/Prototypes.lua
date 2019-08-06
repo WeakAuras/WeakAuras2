@@ -4340,17 +4340,18 @@ WeakAuras.event_prototypes = {
       if trigger.use_form and trigger.form.single then
         -- Single selection
         ret = ret .. [[
+          local triggger_form = %d
           if WeakAuras.IsClassic() then
             for i=1, GetNumShapeshiftForms() do
               local _, isActive = GetShapeshiftFormInfo(i)
               if isActive then
                 form = i
-                active = i == %d
+                active = i == triggger_form
               end
             end
           else
             form = GetShapeshiftForm()
-            active = form == %d
+            active = form == triggger_form
           end
         ]]
         if inverse then
