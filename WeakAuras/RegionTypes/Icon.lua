@@ -69,7 +69,7 @@ local properties = {
     default = 32
   },
   glow = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Show Glow"] },
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Show Glow"], true },
     setter = "SetGlow",
     type = "bool"
   },
@@ -169,7 +169,7 @@ local properties = {
     type = "bool"
   },
   cooldownSwipe = {
-    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Swipe"]},
+    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Swipe"], true},
     setter = "SetCooldownSwipe",
     type = "bool",
   },

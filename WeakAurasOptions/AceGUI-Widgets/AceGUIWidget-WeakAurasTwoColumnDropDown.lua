@@ -1,4 +1,4 @@
-local Type, Version = "WeakAurasTwoColumnDropdown", 2
+local Type, Version = "WeakAurasTwoColumnDropdown", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -55,6 +55,7 @@ local methods = {
     secondDropDown:SetRelativeWidth(0.5)
     secondDropDown:SetLabel(" ")
     secondDropDown:SetPulloutWidth(200)
+    secondDropDown.userdata.defaultSelection = {}
 
     widget.firstDropdown = firstDropdown
     widget.secondDropDown = secondDropDown
@@ -100,7 +101,17 @@ local methods = {
             widget:Fire("OnValueChanged", v)
           end
         else
-          widget.secondDropDown:SetValue(nil)
+          local default = widget.secondDropDown.userdata.defaultSelection[displayName]
+          if default then
+            local index = tIndexOf(secondList, default)
+            widget.secondDropDown:SetValue(index)
+            local v = widget:GetValue()
+            if (v) then
+              widget:Fire("OnValueChanged", v)
+            end
+          else
+            widget.secondDropDown:SetValue()
+          end
         end
       else
         widget.firstDropdown:SetRelativeWidth(1)
@@ -180,6 +191,9 @@ local methods = {
         local suffix = displayName[2]
         tree[base] = tree[base] or {}
         tree[base][suffix] = key
+        if displayName[3] == true then
+          self.secondDropDown.userdata.defaultSelection[base] = suffix
+        end
       else
         tree[displayName] = key
       end
