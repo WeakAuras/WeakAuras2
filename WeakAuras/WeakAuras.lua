@@ -1868,7 +1868,7 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   end
 
   local player, realm, spec, zone = UnitName("player"), GetRealmName(), WeakAuras.IsClassic() and 1 or GetSpecialization(), GetRealZoneText();
-  local specId = GetSpecializationInfo(spec)
+  local specId = not WeakAuras.IsClassic() and GetSpecializationInfo(spec)
   local zoneId = C_Map.GetBestMapForUnit("player")
   local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
   local _, race = UnitRace("player")
