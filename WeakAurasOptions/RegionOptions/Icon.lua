@@ -386,35 +386,35 @@ local anchorPoints = {
     type = "point"
   },
   OUTER_BOTTOMLEFT = {
-    display = { L["Outter"], L["Bottom Left"] },
+    display = { L["Outer"], L["Bottom Left"] },
     type = "point"
   },
   OUTER_BOTTOM = {
-    display = { L["Outter"], L["Bottom"] },
+    display = { L["Outer"], L["Bottom"] },
     type = "point"
   },
   OUTER_BOTTOMRIGHT = {
-    display = { L["Outter"], L["Bottom Right"] },
+    display = { L["Outer"], L["Bottom Right"] },
     type = "point"
   },
   OUTER_RIGHT = {
-    display = { L["Outter"], L["Right"] },
+    display = { L["Outer"], L["Right"] },
     type = "point"
   },
   OUTER_TOPRIGHT = {
-    display = { L["Outter"], L["Top Right"] },
+    display = { L["Outer"], L["Top Right"] },
     type = "point"
   },
   OUTER_TOP = {
-    display = { L["Outter"], L["Top"] },
+    display = { L["Outer"], L["Top"] },
     type = "point"
   },
   OUTER_TOPLEFT = {
-    display = { L["Outter"], L["Top Left"] },
+    display = { L["Outer"], L["Top Left"] },
     type = "point"
   },
   OUTER_LEFT = {
-    display = { L["Outter"], L["Left"] },
+    display = { L["Outer"], L["Left"] },
     type = "point"
   },
   ALL = {
