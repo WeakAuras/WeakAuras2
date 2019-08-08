@@ -95,6 +95,13 @@ local function parseFile(filename)
     return strings
 end
 
+-- escape < and > for import
+local function getJsonFormattedString(s)
+    s = string.gsub(s, "<", "\\<")
+    s = string.gsub(s, ">", "\\>")
+    return s
+end
+
 -- extract data from specified lua files
 for _, namespace in ipairs(ordered) do
     print(namespace)
@@ -109,7 +116,7 @@ for _, namespace in ipairs(ordered) do
         table.sort(sorted)
         if #sorted > 0 then
             for _, v in ipairs(sorted) do
-                ns_file:write(string.format("L[\"%s\"] = true\n", v))
+                ns_file:write(string.format("L[\"%s\"] = true\n", getJsonFormattedString(v)))
             end
         end
         print("  (" .. #sorted .. ") " .. file)
