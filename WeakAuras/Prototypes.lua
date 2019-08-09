@@ -6061,6 +6061,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.event_prototypes["Alternate Power"] = nil
   WeakAuras.event_prototypes["Equipment Set"] = nil
   WeakAuras.event_prototypes["Range Check"] = nil
+  WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
 end
 
 WeakAuras.dynamic_texts = {
