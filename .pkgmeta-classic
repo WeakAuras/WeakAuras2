@@ -18,7 +18,6 @@ externals:
  WeakAuras/Libs/LibCustomGlow-1.0: https://repos.curseforge.com/wow/libcustomglow
  WeakAuras/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
  WeakAuras/Libs/LibClassicDurations: git://github.com/rgd87/LibClassicDurations.git
- WeakAuras/Libs/LibClassicCast: git://github.com/joev/LibClassicCast.git
  WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
 
 enable-nolib-creation: no
