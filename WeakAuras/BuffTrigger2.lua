@@ -1110,7 +1110,7 @@ local function PrepareMatchData(unit, filter)
 
       -- If we are on classic try to get duration from LibClassicDurations
       if LCD then
-        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
         if duration == 0 and durationNew then
             duration = durationNew
             expirationTime = expirationTimeNew
@@ -1210,7 +1210,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
 
     -- If we are on classic try to get duration from LibClassicDurations
     if LCD then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
       if duration == 0 and durationNew then
           duration = durationNew
           expirationTime = expirationTimeNew
@@ -2853,7 +2853,7 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
 
     -- If we are on classic try to get duration from LibClassicDurations
     if LCD then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
       if duration == 0 and durationNew then
           duration = durationNew
           expirationTime = expirationTimeNew
@@ -2953,7 +2953,7 @@ local function CheckAurasMulti(base, unit, filter)
 
     -- If we are on classic try to get duration from LibClassicDurations
     if LCD then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster)
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
       if duration == 0 and durationNew then
           duration = durationNew
           expirationTime = expirationTimeNew
