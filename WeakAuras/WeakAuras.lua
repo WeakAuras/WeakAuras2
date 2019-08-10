@@ -5039,8 +5039,7 @@ function WeakAuras.ApplyFrameLevel(region, frameLevel)
   region:SetFrameLevel(frameLevel)
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
-      -- The +5 is the right magic so that e.g. texts appear in front of progress bars
-      subRegion:SetFrameLevel(frameLevel + index + 5)
+      subRegion:SetFrameLevel(frameLevel + index + 1)
     end
   end
 end
