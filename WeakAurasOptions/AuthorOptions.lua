@@ -58,6 +58,8 @@
       bigStep (optional) -> step size of the slider. Defaults to 0.05
       step (optional) -> like bigStep, but applies to number input as well
 ]]
+if not WeakAuras.IsCorrectVersion() then return end
+
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

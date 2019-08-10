@@ -1,6 +1,8 @@
 --[[-----------------------------------------------------------------------------
 Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
+if not WeakAuras.IsCorrectVersion() then return end
+
 local Type, Version = "WeakAurasExpand", 1
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)

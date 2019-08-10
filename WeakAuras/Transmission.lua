@@ -21,6 +21,7 @@ Imports an aura from a table, which may or may not be encoded as a B64 string.
 If target is installed data, or is a uid which points to installed data, then the import will be an update to that aura
 
 ]]--
+if not WeakAuras.IsCorrectVersion() then return end
 
 -- Lua APIs
 local tinsert = table.insert

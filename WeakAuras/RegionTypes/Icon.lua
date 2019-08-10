@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local MSQ = LibStub("Masque", true);
 local LCG = LibStub("LibCustomGlow-1.0")

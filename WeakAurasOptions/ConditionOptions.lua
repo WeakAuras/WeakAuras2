@@ -44,7 +44,7 @@
 --   - setter: The setter function, called both on activating and deactivating a property change
 ---  - action: The action function, called on activating a condition
 --   - type: The type
-
+if not WeakAuras.IsCorrectVersion() then return end
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;

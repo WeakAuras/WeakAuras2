@@ -86,6 +86,10 @@ end
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
+  if not WeakAuras.IsCorrectVersion() then
+    prettyPrint(WeakAuras.wrongTargetMessage)
+    return
+  end
   msg = string.lower(msg)
   if msg then
     if msg == "pstart" then
@@ -107,6 +111,7 @@ function SlashCmdList.WEAKAURAS(msg)
   end
   WeakAuras.OpenOptions(msg);
 end
+if not WeakAuras.IsCorrectVersion() then return end
 
 function WeakAuras.ApplyToDataOrChildData(data, func, ...)
   if data.controlledChildren then

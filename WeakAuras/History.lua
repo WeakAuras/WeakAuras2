@@ -13,6 +13,7 @@ History:
   allowUpdates: if false, then WeakAuras will ignore any addon-sourced update requests
   lastUpdate: UNIX timestamp of the last time the user completed an import for this display
 --]]
+if not WeakAuras.IsCorrectVersion() then return end
 
 local WeakAuras = WeakAuras
 local history -- history db upvalue
