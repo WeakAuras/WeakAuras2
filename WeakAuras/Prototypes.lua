@@ -870,7 +870,8 @@ WeakAuras.load_prototype = {
       type = "tristate",
       width = WeakAuras.normalWidth,
       init = "arg",
-      optional = true
+      optional = true,
+      events = {"PLAYER_REGEN_DISABLED", "PLAYER_REGEN_ENABLED"}
     },
     {
       name = "encounter",
@@ -878,7 +879,8 @@ WeakAuras.load_prototype = {
       type = "tristate",
       width = WeakAuras.normalWidth,
       init = "arg",
-      optional = true
+      optional = true,
+      events = {"ENCOUNTER_START", "ENCOUNTER_END"}
     },
     {
       name = "warmode",
@@ -888,14 +890,15 @@ WeakAuras.load_prototype = {
       width = WeakAuras.doubleWidth,
       optional = true,
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"UNIT_FLAGS"}
     },
     {
       name = "never",
       display = L["Never"],
       type = "toggle",
       width = WeakAuras.normalWidth,
-      init = "false"
+      init = "false",
     },
     {
       name = "petbattle",
@@ -905,7 +908,8 @@ WeakAuras.load_prototype = {
       width = WeakAuras.normalWidth,
       optional = true,
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"PET_BATTLE_OPENING_START", "PET_BATTLE_CLOSE"}
     },
     {
       name = "vehicle",
@@ -915,7 +919,8 @@ WeakAuras.load_prototype = {
       width = WeakAuras.normalWidth,
       optional = true,
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR"}
     },
     {
       name = "vehicleUi",
@@ -925,7 +930,8 @@ WeakAuras.load_prototype = {
       width = WeakAuras.normalWidth,
       optional = true,
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR"}
     },
     {
       name = "ingroup",
@@ -934,6 +940,7 @@ WeakAuras.load_prototype = {
       width = WeakAuras.normalWidth,
       init = "arg",
       values = "group_types",
+      events = {"GROUP_LEFT", "GROUP_JOINED"}
     },
     {
       name = "name",
@@ -1003,7 +1010,8 @@ WeakAuras.load_prototype = {
       end,
       init = "arg",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "class_and_spec",
@@ -1012,7 +1020,8 @@ WeakAuras.load_prototype = {
       values = "spec_types_all",
       init = "arg",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "talent",
@@ -1020,6 +1029,7 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d)",
+      events = {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "talent2",
@@ -1030,6 +1040,7 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
       end,
+      events = {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "talent3",
@@ -1040,6 +1051,7 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return (trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil;
       end,
+      events = {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "pvptalent",
@@ -1101,13 +1113,15 @@ WeakAuras.load_prototype = {
       end,
       test = "WeakAuras.CheckPvpTalentByIndex(%d)",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"PLAYER_PVP_TALENT_UPDATE"}
     },
     {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
       test = "WeakAuras.IsSpellKnown(%s)",
+      events = {"SPELLS_CHANGED"}
     },
     {
       name = "race",
@@ -1128,6 +1142,7 @@ WeakAuras.load_prototype = {
       display = L["Player Level"],
       type = "number",
       init = "arg",
+      events = {"PLAYER_LEVEL_UP"}
     },
     {
       name = "effectiveLevel",
@@ -1137,12 +1152,14 @@ WeakAuras.load_prototype = {
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
+      events = {"PLAYER_LEVEL_UP", "UNIT_FLAGS", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
       name = "zone",
       display = L["Zone Name"],
       type = "string",
       init = "arg",
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
       name = "zoneId",
@@ -1153,6 +1170,7 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckNumericIds(%q, zoneId)",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
       name = "zonegroupId",
@@ -1163,6 +1181,7 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckNumericIds(%q, zonegroupId)",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
       name = "encounterid",
@@ -1173,6 +1192,7 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckNumericIds(%q, encounterid)",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
+      events = {"ENCOUNTER_START", "ENCOUNTER_END"}
     },
     {
       name = "size",
@@ -1181,6 +1201,7 @@ WeakAuras.load_prototype = {
       values = "instance_types",
       init = "arg",
       control = "WeakAurasSortedDropdown",
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
       name = "difficulty",
@@ -1189,7 +1210,8 @@ WeakAuras.load_prototype = {
       values = "difficulty_types",
       init = "arg",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
       name = "role",
@@ -1198,7 +1220,8 @@ WeakAuras.load_prototype = {
       values = "role_types",
       init = "arg",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"PLAYER_ROLES_ASSIGNED"}
     },
     {
       name = "affixes",
@@ -1208,7 +1231,8 @@ WeakAuras.load_prototype = {
       init = "arg",
       test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassic(),
+      events = {"CHALLENGE_MODE_START", "CHALLENGE_MODE_COMPLETED"}
     },
   }
 };
