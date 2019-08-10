@@ -19,9 +19,9 @@ end
 --@end-debug@
 
 local intendedWoWProject = WOW_PROJECT_MAINLINE
---@non-retail@
+--[===[@non-retail@
 intendedWoWProject = WOW_PROJECT_CLASSIC
---@end-non-retail@
+--@end-non-retail@]===]
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
