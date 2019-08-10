@@ -1234,6 +1234,13 @@ WeakAuras.load_prototype = {
       hidden = WeakAuras.IsClassic(),
       events = {"CHALLENGE_MODE_START", "CHALLENGE_MODE_COMPLETED"}
     },
+    {
+      name = "itemequiped",
+      display = L["Item Equipped"],
+      type = "item",
+      test = "IsEquippedItem(%s)",
+      events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
+    }
   }
 };
 

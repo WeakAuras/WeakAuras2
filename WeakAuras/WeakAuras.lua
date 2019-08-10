@@ -2061,6 +2061,8 @@ loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("GROUP_JOINED");
 loadFrame:RegisterEvent("GROUP_LEFT");
+loadFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
+loadFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 
 local unitLoadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = unitLoadFrame;
