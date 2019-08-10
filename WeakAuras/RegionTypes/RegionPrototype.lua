@@ -252,7 +252,7 @@ local function UpdatePosition(self)
 
   local xOffset = self.xOffset + (self.xOffsetAnim or 0);
   local yOffset = self.yOffset + (self.yOffsetAnim or 0);
-  self:ClearAllPoints();
+  self:RealClearAllPoints();
 
   xpcall(self.SetPoint, geterrorhandler(), self, self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset);
 end
@@ -381,6 +381,11 @@ function WeakAuras.regionPrototype.create(region)
   region.GetXOffset = GetXOffset;
   region.GetYOffset = GetYOffset;
   region.ResetPosition = ResetPosition;
+  region.RealClearAllPoints = region.ClearAllPoints;
+  region.ClearAllPoints = function()
+    region:RealClearAllPoints();
+    region:ResetPosition();
+  end
   region.SetRegionAlpha = SetRegionAlpha;
   region.GetRegionAlpha = GetRegionAlpha;
   region.SetAnimAlpha = SetAnimAlpha;
