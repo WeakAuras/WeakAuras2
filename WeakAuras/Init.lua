@@ -9,12 +9,19 @@ local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
 local versionString = "@project-version@"
 local buildTime = "@build-time@"
 
+local isDevVersion = false
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
+  isDevVersion = true
 end
 --@end-debug@
+
+local intendedWoWProject = WOW_PROJECT_MAINLINE
+--@non-retail@
+intendedWoWProject = WOW_PROJECT_CLASSIC
+--@end-non-retail@
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
@@ -22,13 +29,12 @@ WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
-local isClassic = false
---@non-retail@
-isClassic = WeakAuras.BuildInfo < 20000
---@end-non-retail@
-
 function WeakAuras.IsClassic()
-  return isClassic
+  return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+end
+
+function WeakAuras.IsCorrectVersion()
+  return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
 end
 
 WeakAuras.prettyPrint = function(msg)
@@ -37,6 +43,15 @@ end
 
 WeakAuras.versionMismatchPrint = function()
   WeakAuras.prettyPrint("You need to restart your game client to complete the WeakAuras update!")
+end
+
+WeakAuras.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " ..
+                              (intendedWoWProject == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
+                              ". Please install the " .. (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
+                              " version instead."
+
+if not WeakAuras.IsCorrectVersion() then
+  C_Timer.After(1, function() WeakAuras.prettyPrint(WeakAuras.wrongTargetMessage) end)
 end
 
 if versionString ~= versionStringFromToc and versionStringFromToc ~= "Dev" then
@@ -66,4 +81,19 @@ function WeakAuras.StopProfileSystem()
 end
 
 function WeakAuras.StopProfileAura()
+end
+
+-- if weakauras shuts down due to being installed on the wrong target, keep the bindings from erroring
+function WeakAuras.StartProfile()
+end
+
+function WeakAuras.StopProfile()
+end
+
+function WeakAuras.PrintProfile()
+end
+
+function WeakAuras.CountWagoUpdates()
+  -- XXX this is to work around the Companion app trying to use our stuff!
+  return 0
 end

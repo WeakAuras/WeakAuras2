@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 -- Lua APIs
 local wipe = wipe
 local pairs, next, type = pairs, next, type

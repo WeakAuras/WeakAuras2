@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
 local pairs, type, error = pairs, type, error

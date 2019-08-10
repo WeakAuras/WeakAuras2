@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 --[[-----------------------------------------------------------------------------
 WeakAurasTemplateGroup Container
 Simple container that is used in the template selection

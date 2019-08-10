@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local L = WeakAuras.L;
 if WeakAuras.IsClassic() then return end -- Models disabled for classic
 

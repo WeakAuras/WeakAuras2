@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 -- Special layout for the New Aura Trigger template page
 
 local AceGUI = LibStub("AceGUI-3.0");
