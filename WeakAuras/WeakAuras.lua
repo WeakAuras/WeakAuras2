@@ -168,6 +168,8 @@ local in_loading_screen = false;
 local loadFuncs = {};
 -- Load functions for the Options window that ignore various load options
 local loadFuncsForOptions = {};
+-- Mapping of events to ids, contains true if a aura should be checked for a certain event
+local loadEvents = {}
 
 -- Check Conditions Functions, keyed on id
 local checkConditions = {};
@@ -532,6 +534,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
   local required = {};
   local tests = {};
   local debug = {};
+  local events = {}
   local init;
   if(prototype.init) then
     init = prototype.init(trigger);
@@ -634,6 +637,13 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
           else
             tinsert(tests, test);
           end
+
+          if test and arg.events then
+            for index, event in ipairs(arg.events) do
+              events[event] = true
+            end
+          end
+
           if(arg.debug) then
             tinsert(debug, arg.debug:format(trigger[name]));
           end
@@ -654,7 +664,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
   end
   ret = ret.."return true else return false end end";
 
-  return ret;
+  return ret, events;
 end
 
 function WeakAuras.GetActiveConditions(id, cloneId)
@@ -1841,10 +1851,13 @@ end
 
 local toLoad = {}
 local toUnload = {};
-local function scanForLoadsImpl(self, event, arg1, ...)
+local function scanForLoadsImpl(toCheck, event, arg1, ...)
   if (WeakAuras.IsOptionsProcessingPaused()) then
     return;
   end
+
+  toCheck = toCheck or loadEvents[event or "SCAN_ALL"]
+
   -- PET_BATTLE_CLOSE fires twice at the end of a pet battle. IsInBattle evaluates to TRUE during the
   -- first firing, and FALSE during the second. I am not sure if this check is necessary, but the
   -- following IF statement limits the impact of the PET_BATTLE_CLOSE event to the second one.
@@ -1865,6 +1878,10 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   elseif (event == "ENCOUNTER_END") then
     encounter_id = 0
     WeakAuras.DestroyEncounterTable()
+  end
+
+  if toCheck == nil or next(toCheck) == nil then
+    return
   end
 
   local player, realm, spec, zone = UnitName("player"), GetRealmName(), WeakAuras.IsClassic() and 1 or GetSpecialization(), GetRealZoneText();
@@ -1923,7 +1940,6 @@ local function scanForLoadsImpl(self, event, arg1, ...)
     group = "solo";
   end
 
-
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
   if not WeakAuras.IsClassic() then
     effectiveLevel = UnitEffectiveLevel("player")
@@ -1935,7 +1951,9 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   local shouldBeLoaded, couldBeLoaded;
   wipe(toLoad);
   wipe(toUnload);
-  for id, data in pairs(db.displays) do
+
+  for id in pairs(toCheck) do
+    local data = WeakAuras.GetData(id)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
@@ -1997,11 +2015,11 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   wipe(toUnload)
 end
 
-function WeakAuras.ScanForLoads(self, event, arg1, ...)
+function WeakAuras.ScanForLoads(toCheck, event, arg1, ...)
   if not WeakAuras.IsLoginFinished() then
     return
   end
-  scanForLoadsImpl(self, event, arg1, ...)
+  scanForLoadsImpl(toCheck, event, arg1, ...)
 end
 
 local loadFrame = CreateFrame("FRAME");
@@ -2044,16 +2062,16 @@ if not WeakAuras.IsClassic() then
 end
 
 function WeakAuras.RegisterLoadEvents()
-  loadFrame:SetScript("OnEvent", function(...)
+  loadFrame:SetScript("OnEvent", function(frame, ...)
     WeakAuras.StartProfileSystem("load");
-    WeakAuras.ScanForLoads(...)
+    WeakAuras.ScanForLoads(nil, ...)
     WeakAuras.StopProfileSystem("load");
   end);
 
-  unitLoadFrame:SetScript("OnEvent", function(s, e, arg1, ...)
+  unitLoadFrame:SetScript("OnEvent", function(frame, e, arg1, ...)
     WeakAuras.StartProfileSystem("load");
     if (arg1 == "player") then
-      WeakAuras.ScanForLoads(...)
+      WeakAuras.ScanForLoads(nil, e, arg1, ...)
     end
     WeakAuras.StopProfileSystem("load");
   end);
@@ -2214,6 +2232,9 @@ function WeakAuras.Delete(data)
   loaded[id] = nil;
   loadFuncs[id] = nil;
   loadFuncsForOptions[id] = nil;
+  for event, eventData in pairs(loadEvents) do
+    eventData[id] = nil
+  end
   checkConditions[id] = nil;
   conditionChecksTimers.recheckTime[id] = nil;
   if (conditionChecksTimers.recheckHandle[id]) then
@@ -2284,6 +2305,11 @@ function WeakAuras.Rename(data, newid)
 
   loadFuncsForOptions[newid] = loadFuncsForOptions[oldid]
   loadFuncsForOptions[oldid] = nil;
+
+  for event, eventData in pairs(loadEvents) do
+    eventData[newid] = eventData[oldid]
+    eventData[oldid] = nil
+  end
 
   checkConditions[newid] = checkConditions[oldid];
   checkConditions[oldid] = nil;
@@ -3798,12 +3824,21 @@ local function pAdd(data)
       data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
     end
 
-
     for _, triggerSystem in pairs(triggerSystems) do
       triggerSystem.Add(data);
     end
 
-    local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
+    local loadFuncStr, events = WeakAuras.ConstructFunction(load_prototype, data.load);
+    for event, eventData in pairs(loadEvents) do
+      eventData[id] = nil
+    end
+    for event in pairs(events) do
+      loadEvents[event] = loadEvents[event] or {}
+      loadEvents[event][id] = true
+    end
+    loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
+    loadEvents["SCAN_ALL"][id] = true
+
     local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
     local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
@@ -3857,7 +3892,7 @@ local function pAdd(data)
 
     if not(paused) then
       region:Collapse();
-      WeakAuras.ScanForLoads();
+      WeakAuras.ScanForLoads({[id] = true});
     end
   end
 
