@@ -1959,11 +1959,17 @@ WeakAuras.event_prototypes = {
         type = "string",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
+          return not WeakAuras.IsClassic() and trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end,
+        hidden = WeakAuras.IsClassic(),
         store = true,
         conditionType = "number"
       },
+      {
+        enable = function()
+          return WeakAuras.IsClassic()
+        end
+      }, -- spellId ignored on classic
       {
         name = "spellName",
         display = L["Spell Name"],
