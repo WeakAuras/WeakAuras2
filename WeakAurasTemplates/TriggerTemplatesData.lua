@@ -1083,7 +1083,7 @@ templates.class.ROGUE = {
         { spell = 185311, type = "buff", unit = "player"}, -- Crimson Vial
         { spell = 270070, type = "buff", unit = "player", talent = 20}, -- Hidden Blades
         { spell = 256735, type = "buff", unit = "player", talent = 6}, -- Master Assassin
-        { spell = 1966, type = "buff", unit = "player"}, -- Feint
+        { spell = 1966, type = "buff", unit = "player", classic = false}, -- Feint
         { spell = 1784, type = "buff", unit = "player"}, -- Stealth
         { spell = 31224, type = "buff", unit = "player"}, -- Cloak of Shadows
         { spell = 11327, type = "buff", unit = "player"}, -- Vanish
@@ -1112,7 +1112,7 @@ templates.class.ROGUE = {
         { spell = 121411, type = "debuff", unit = "target", talent = 21}, -- Crimson Tempest
         { spell = 79140, type = "debuff", unit = "target"}, -- Vendetta
         { spell = 1943, type = "debuff", unit = "target"}, -- Rupture
-        { spell = 8680, type = "debuff", unit = "target"}, -- Wound Poison
+        { spell = 8680, type = "debuff", unit = "target", classic = false}, -- Wound Poison
         { spell = 45181, type = "debuff", unit = "player", talent = 11 }, -- Cheated Death
       },
       icon = 132302
@@ -1194,7 +1194,7 @@ templates.class.ROGUE = {
         { spell = 199754, type = "buff", unit = "player"}, -- Riposte
         { spell = 185311, type = "buff", unit = "player"}, -- Crimson Vial
         { spell = 2983, type = "buff", unit = "player"}, -- Sprint
-        { spell = 1966, type = "buff", unit = "player"}, -- Feint
+        { spell = 1966, type = "buff", unit = "player", classic = false}, -- Feint
         { spell = 193538, type = "buff", unit = "player", talent = 17}, -- Alacrity
         { spell = 1784, type = "buff", unit = "player"}, -- Stealth
         { spell = 31224, type = "buff", unit = "player"}, -- Cloak of Shadows
@@ -1300,7 +1300,7 @@ templates.class.ROGUE = {
         { spell = 257506, type = "buff", unit = "player"}, -- Shot in the Dark
         { spell = 185311, type = "buff", unit = "player"}, -- Crimson Vial
         { spell = 277925, type = "buff", unit = "player", talent = 21}, -- Shuriken Tornado
-        { spell = 1966, type = "buff", unit = "player"}, -- Feint
+        { spell = 1966, type = "buff", unit = "player", classic = false}, -- Feint
         { spell = 193538, type = "buff", unit = "player", talent = 17}, -- Alacrity
         { spell = 1784, type = "buff", unit = "player"}, -- Stealth
         { spell = 31224, type = "buff", unit = "player"}, -- Cloak of Shadows
