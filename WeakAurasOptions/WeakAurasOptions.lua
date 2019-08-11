@@ -321,7 +321,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -371,7 +371,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -420,7 +420,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -461,7 +461,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               if (reloadOptions) then
                 WeakAuras.ScheduleReloadOptions(data);
               end
-              WeakAuras.ScanForLoads();
+              WeakAuras.ScanForLoads({[data.id] = true});
               WeakAuras.SetThumbnail(data);
               WeakAuras.SetIconNames(data);
               WeakAuras.UpdateDisplayButton(data);
@@ -476,7 +476,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               if (reloadOptions) then
                 WeakAuras.ScheduleReloadOptions(data);
               end
-              WeakAuras.ScanForLoads();
+              WeakAuras.ScanForLoads({[data.id] = true});
               WeakAuras.SortDisplayButtons();
             end
           elseif(arg.required and triggertype == "untrigger") then
@@ -501,7 +501,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -516,7 +516,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
         elseif(arg.required and triggertype == "untrigger") then
@@ -539,7 +539,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -563,7 +563,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
         elseif(arg.required and triggertype == "untrigger") then
@@ -587,7 +587,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -602,7 +602,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
         elseif(arg.required and triggertype == "untrigger") then
@@ -625,7 +625,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -640,7 +640,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
         elseif(arg.required and triggertype == "untrigger") then
@@ -663,7 +663,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               set = function(info, v)
                 trigger["use_exact_"..realname] = v;
                 WeakAuras.Add(data);
-                WeakAuras.ScanForLoads();
+                WeakAuras.ScanForLoads({[data.id] = true});
                 WeakAuras.SetThumbnail(data);
                 WeakAuras.SetIconNames(data);
                 WeakAuras.UpdateDisplayButton(data);
@@ -759,7 +759,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               if (reloadOptions) then
                 WeakAuras.ScheduleReloadOptions(data);
               end
-              WeakAuras.ScanForLoads();
+              WeakAuras.ScanForLoads({[data.id] = true});
               WeakAuras.SetThumbnail(data);
               WeakAuras.SetIconNames(data);
               WeakAuras.UpdateDisplayButton(data);
@@ -811,7 +811,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -836,7 +836,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -910,7 +910,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -925,7 +925,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -958,7 +958,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -981,7 +981,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             if (reloadOptions) then
               WeakAuras.ScheduleReloadOptions(data);
             end
-            WeakAuras.ScanForLoads();
+            WeakAuras.ScanForLoads({[data.id] = true});
             WeakAuras.SetThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
@@ -2739,7 +2739,7 @@ function WeakAuras.AddOption(id, data)
           data.load[info[#info]] = (v ~= "" and v) or nil;
           WeakAuras.Add(data);
           WeakAuras.SetThumbnail(data);
-          WeakAuras.ScanForLoads();
+          WeakAuras.ScanForLoads({[data.id] = true});
           WeakAuras.SortDisplayButtons();
         end,
         args = {}
@@ -4228,7 +4228,7 @@ end
 
 function WeakAuras.NewDisplayButton(data)
   local id = data.id;
-  WeakAuras.ScanForLoads();
+  WeakAuras.ScanForLoads({[id] = true});
   WeakAuras.EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateDisplayButton(db.displays[id]);
   if(WeakAuras.regions[id].region.SetStacks) then
