@@ -4640,23 +4640,25 @@ end
 
 if WeakAuras.IsClassic() then
   -- consolidate talents from all specs in a new dummy "classic" spec, indexed by spell or title for no duplicate
-  for className, class in pairs(templates.class) do
+  for _, class in pairs(templates.class) do
     class["classic"] = class["classic"] or {}
     for specIndex, spec in pairs(class) do
-      for sectionIndex, section in pairs(spec) do
-        if not class["classic"][sectionIndex] then
-          class["classic"][sectionIndex] = {
-            icon = section.icon,
-            title = section.title,
-            args = {}
-          }
-        end
-        local args = class["classic"][sectionIndex].args
-        for itemIndex, item in pairs(section.args or {}) do
-          if item.spell then
-            args[item.spell] = item
-          else
-            args[itemIndex] = item
+      if specIndex ~= "classic" then
+        for sectionIndex, section in pairs(spec) do
+          if not class["classic"][sectionIndex] then
+            class["classic"][sectionIndex] = {
+              icon = section.icon,
+              title = section.title,
+              args = {}
+            }
+          end
+          local args = class["classic"][sectionIndex].args
+          for itemIndex, item in pairs(section.args or {}) do
+            if item.spell then
+              args[item.spell] = item
+            else
+              args[itemIndex] = item
+            end
           end
         end
       end
