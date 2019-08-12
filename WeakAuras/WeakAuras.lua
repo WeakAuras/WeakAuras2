@@ -3447,50 +3447,87 @@ function WeakAuras.ValidateUniqueDataIds(silent)
 end
 
 function WeakAuras.SyncParentChildRelationships(silent)
-  local childToParent = {};
-  local parentToChild = {};
+  -- 1. Find all auras where data.parent ~= nil or data.controlledChildren ~= nil
+  --    If an aura has both, then remove data.parent
+  --    If an aura has data.parent which doesn't exist, then remove data.parent
+  --    If an aura has data.parent which doesn't have data.controledChildren, then remove data.parent
+  -- 2. For each aura with data.controlledChildren, iterate through the list of children and remove entries where:
+  --    The child doesn't exist in the database
+  --    The child ID is duplicated in data.controlledChildren (only the first will be kept)
+  --    The child's data.parent points to a different parent
+  --    Otherwise, mark the child as having a valid parent relationship
+  -- 3. For each aura with data.parent, remove data.parent if it was not marked to have a valid relationship in 2.
+  local parents = {}
+  local children = {}
+  local childHasParent = {}
   for id, data in pairs(db.displays) do
-    if(data.parent) then
-      if(data.controlledChildren) then
-        if not(silent) then
-          print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has both child and parent");
+    if data.parent then
+      if data.controlledChildren then
+        if not silent then
+          prettyPrint("detected corruption in saved variables: "..id.." has both child and parent.")
         end
         -- A display cannot have both children and a parent
-        data.parent = nil;
-      elseif(db.displays[data.parent] and db.displays[data.parent].controlledChildren) then
-        childToParent[id] = data.parent;
-        parentToChild[data.parent] = parentToChild[data.parent] or {};
-        parentToChild[data.parent][id] = true;
-      else
+        data.parent = nil
+      elseif not db.displays[data.parent] then
         if not(silent) then
-          print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "has a nonexistent parent");
+          prettyPrint("detected corruption in saved variables: "..id.." has a nonexistent parent.")
         end
-        data.parent = nil;
+        data.parent = nil
+      elseif not db.displays[data.parent].controlledChildren then
+        if not silent then
+          prettyPrint("detected corruption in saved variables: "..id.." thinks "..data.parent..
+                      " controls it, but "..data.parent.." is not a group.")
+        end
+        data.parent = nil
+      else
+        children[id] = data
+      end
+    elseif data.controlledChildren then
+      parents[id] = data
+    end
+  end
+
+  for id, data in pairs(parents) do
+    local groupChildren = {}
+    local childrenToRemove = {}
+    for index, childID in ipairs(data.controlledChildren) do
+      local child = children[childID]
+      if not child then
+        if not silent then
+          prettyPrint("detected corruption in saved variables: "..id.." thinks it controls "..childID.." which doesn't exist.")
+        end
+        childrenToRemove[index] = true
+      elseif child.parent ~= id then
+        if not silent then
+          prettyPrint("detected corruption in saved variables: "..id.." thinks it controls "..childID.." which it does not.")
+        end
+        childrenToRemove[index] = true
+      elseif groupChildren[childID] then
+        if not silent then
+          prettyPrint("detected corruption in saved variables: "..id.." has "..childID.." as a child in multiple positions.")
+        end
+        childrenToRemove[index] = true
+      else
+        groupChildren[childID] = index
+        childHasParent[childID] = true
+      end
+    end
+    if next(childrenToRemove) ~= nil then
+      for i = #data.controlledChildren, 1, -1 do
+        if childrenToRemove[i] then
+          tremove(data.controlledChildren, i)
+        end
       end
     end
   end
 
-  for id, data in pairs(db.displays) do
-    if(data.controlledChildren) then
-      for index, childId in pairs(data.controlledChildren) do
-        if not(childToParent[childId] and childToParent[childId] == id) then
-          if not(silent) then
-            print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "thinks it controls", childId, "but does not");
-          end
-          tremove(data.controlledChildren, index);
-        end
+  for id, data in pairs(children) do
+    if not childHasParent[id] then
+      if not silent then
+        prettyPrint("detected corruption in saved variables: "..id.." should be controlled by "..data.parent.." but isn't.")
       end
-
-      if(parentToChild[id]) then
-        for childId, _ in pairs(parentToChild[id]) do
-          if not(tContains(data.controlledChildren, childId)) then
-            if not(silent) then
-              print("|cFF8800FFWeakAuras|r detected desynchronization in saved variables:", id, "does not control", childId, "but should");
-            end
-            tinsert(data.controlledChildren, childId);
-          end
-        end
-      end
+      local parent = parents[data.parent]
+      tinsert(parent.controlledChildren, id)
     end
   end
 end
