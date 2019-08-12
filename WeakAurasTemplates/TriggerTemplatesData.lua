@@ -1065,6 +1065,43 @@ templates.class.HUNTER = {
 }
 
 templates.class.ROGUE = {
+  ["classic"] = {
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 14177, type = "buff", unit = "player"}, -- Cold Blood
+        { spell = 14149, type = "buff", unit = "player"}, -- Remorseless
+        { spell = 14278, type = "buff", unit = "player"}, -- Ghostly Strike
+      },
+      icon = 132290
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 14251, type = "debuff", unit = "target", talent = 9}, -- Riposte
+        { spell = 11198, type = "debuff", unit = "target", talent = 9}, -- Expose Armor
+        { spell = 18425, type = "debuff", unit = "target", talent = 9}, -- Kick - Silenced
+        { spell = 17348, type = "debuff", unit = "target", talent = 9}, -- Hemorrhage
+        { spell = 14183, type = "debuff", unit = "target", talent = 9}, -- Premeditation
+      },
+      icon = 132302
+    },
+    [3] = {
+      title = L["Abilities"],
+      args = {
+        { spell = 11198, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Expose Armor
+        { spell = 6774, type = "ability", requiresTarget = true, usable = true, buff = true}, -- Slice and Dice
+        { spell = 14177, type = "ability", buff = true}, -- Cold Blood
+        { spell = 14251, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Riposte
+        { spell = 17348, type = "ability", requiresTarget = true, debuff = true}, -- Hemorrhage
+        { spell = 14185, type = "ability"}, -- Preparation
+        { spell = 921, type = "ability", requiresTarget = true, usable = true}, -- Pick Pocket
+        { spell = 14183, type = "ability", requiresTarget = true, debuff = true}, -- Premeditation
+        { spell = 14278, type = "ability", requiresTarget = true, buff = true}, -- Ghostly Strike
+      },
+      icon = 132350
+    },
+  },
   [1] = { -- Assassination
     [1] = {
       title = L["Buffs"],
