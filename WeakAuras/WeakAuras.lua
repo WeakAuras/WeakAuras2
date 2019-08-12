@@ -3464,10 +3464,11 @@ function WeakAuras.SyncParentChildRelationships(silent)
     if data.parent then
       if data.controlledChildren then
         if not silent then
-          prettyPrint("detected corruption in saved variables: "..id.." has both child and parent.")
+          prettyPrint("detected corruption in saved variables: "..id.." is a group that thinks it's a parent.")
         end
         -- A display cannot have both children and a parent
         data.parent = nil
+        parents[id] = data
       elseif not db.displays[data.parent] then
         if not(silent) then
           prettyPrint("detected corruption in saved variables: "..id.." has a nonexistent parent.")
