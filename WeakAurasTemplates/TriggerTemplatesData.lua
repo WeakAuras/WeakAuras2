@@ -1078,11 +1078,11 @@ templates.class.ROGUE = {
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 14251, type = "debuff", unit = "target", talent = 9}, -- Riposte
-        { spell = 11198, type = "debuff", unit = "target", talent = 9}, -- Expose Armor
-        { spell = 18425, type = "debuff", unit = "target", talent = 9}, -- Kick - Silenced
-        { spell = 17348, type = "debuff", unit = "target", talent = 9}, -- Hemorrhage
-        { spell = 14183, type = "debuff", unit = "target", talent = 9}, -- Premeditation
+        { spell = 14251, type = "debuff", unit = "target"}, -- Riposte
+        { spell = 11198, type = "debuff", unit = "target"}, -- Expose Armor
+        { spell = 18425, type = "debuff", unit = "target"}, -- Kick - Silenced
+        { spell = 17348, type = "debuff", unit = "target"}, -- Hemorrhage
+        { spell = 14183, type = "debuff", unit = "target"}, -- Premeditation
       },
       icon = 132302
     },
@@ -1134,7 +1134,7 @@ templates.class.ROGUE = {
       title = L["Debuffs"],
       args = {
         { spell = 137619, type = "debuff", unit = "target", talent = 9}, -- Marked for Death
-        { spell = 1330, type = "debuff", unit = "target"}, -- Garrote - Silence
+        { spell = 1330, type = "debuff", unit = "target", classic = false}, -- Garrote - Silence
         { spell = 256148, type = "debuff", unit = "target", talent = 14}, -- Iron Wire
         { spell = 154953, type = "debuff", unit = "target", talent = 13}, -- Internal Bleeding
         { spell = 1833, type = "debuff", unit = "target"}, -- Cheap Shot
