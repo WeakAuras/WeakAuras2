@@ -287,9 +287,9 @@ local function install(data, oldData, patch, mode, isParent)
     -- always import as a new thing
     if data then
       imported = CopyTable(data)
-      installedUID = data.uid
       data.id = WeakAuras.FindUnusedId(data.id)
       WeakAuras.Add(data)
+      installedUID = data.uid
     else
       -- nothing to add
       return
@@ -301,9 +301,9 @@ local function install(data, oldData, patch, mode, isParent)
       return
     end
     imported = CopyTable(data)
-    installedUID = data.uid
     data.id = WeakAuras.FindUnusedId(data.id)
     WeakAuras.Add(data)
+    installedUID = data.uid
   elseif not data then
     -- this is an old thing
     if checkButtons.oldchildren:GetChecked() then
