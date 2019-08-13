@@ -1,4 +1,4 @@
-local internalVersion = 21;
+local internalVersion = 22;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3410,6 +3410,48 @@ function WeakAuras.Modernize(data)
       data.borderInset = data.backgroundInset
       data.background = nil
       data.backgroundInset = nil
+    end
+  end
+
+  if data.internalVersion < 22 then
+    if data.regionType == "aurabar" then
+      local border = {
+        ["type"] = "subborder",
+        border_visible = data.border,
+        border_color = data.borderColor,
+        border_edge = data.borderEdge,
+        border_offset = data.borderOffset,
+        border_inset = data.borderInset,
+        border_size = data.borderSize,
+      }
+
+      data.border = nil
+      data.borderColor = nil
+      data.borderEdge = nil
+      data.borderOffset = nil
+      data.borderInset = nil
+      data.borderSize = nil
+      data.backdropColor = nil
+      data.borderBackdrop = nil
+      data.backdropInFront = nil
+      data.borderInFront = nil
+
+      data.subRegions = data.subRegions or {}
+      tinsert(data.subRegions, border)
+
+      local propertyRenames = {
+        borderColor  = "sub.".. #data.subRegions..".border_color",
+      }
+
+      if (data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
     end
   end
 
