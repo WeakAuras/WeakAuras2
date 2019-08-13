@@ -373,7 +373,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   end
 end
 
-function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties)
+function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, maxElements)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -415,6 +415,7 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
 
     subRegionTypes[name] = {
       displayName = displayName,
+      maxElements = maxElements,
       supports = supportFunction,
       modify = modifyFunction,
       default = default,
