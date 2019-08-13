@@ -97,15 +97,6 @@ local function createOptions(parentData, data, index)
       softMax = 64,
       bigStep = 1,
     },
-    border_inset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Border Inset"],
-      order = order + 0.6,
-      softMin = 1,
-      softMax = 32,
-      bigStep = 1,
-    },
   }
 
   return options

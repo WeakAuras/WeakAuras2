@@ -3421,7 +3421,6 @@ function WeakAuras.Modernize(data)
         border_color = data.borderColor,
         border_edge = data.borderEdge,
         border_offset = data.borderOffset,
-        border_inset = data.borderInset,
         border_size = data.borderSize,
       }
 

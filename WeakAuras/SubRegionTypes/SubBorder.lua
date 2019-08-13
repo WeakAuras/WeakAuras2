@@ -9,7 +9,6 @@ local default = function(parentType)
     border_color = {1, 1, 1, 1},
     border_edge = "1 Pixel",
     border_offset = 0,
-    border_inset = 0,
     border_size = 2,
   }
 end
@@ -48,12 +47,6 @@ local function modify(parent, region, parentData, data, first)
       edgeFile = SharedMedia:Fetch("border", data.border_edge) or "",
       edgeSize = data.border_size,
       bgFile = nil,
-      insets = {
-        left = data.border_inset,
-        right = data.border_inset,
-        top = data.border_inset,
-        bottom = data.border_inset,
-      },
     });
     region:ClearAllPoints()
     region:SetPoint("bottomleft", parent, "bottomleft", -data.border_offset, -data.border_offset)
