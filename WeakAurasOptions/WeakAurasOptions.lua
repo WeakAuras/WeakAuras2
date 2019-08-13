@@ -2600,8 +2600,10 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
         local max = WeakAuras.subRegionTypes[subRegionType].maxElements
         if max then
           local count = 0
-          for _, subData in pairs(data.subRegions) do
-            if subData.type == subRegionType then count = count + 1 end
+          if data.subRegions then
+            for _, subData in pairs(data.subRegions) do
+              if subData.type == subRegionType then count = count + 1 end
+            end
           end
           return count >= max
         end
