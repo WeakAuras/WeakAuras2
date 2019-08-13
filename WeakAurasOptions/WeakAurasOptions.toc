@@ -35,6 +35,7 @@ RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
 
 SubRegionOptions\SubText.lua
+SubRegionOptions\SubBorder.lua
 
 Cache.lua
 
