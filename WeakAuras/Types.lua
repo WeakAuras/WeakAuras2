@@ -1947,6 +1947,7 @@ WeakAuras.author_option_fields = {
     default = "",
     useLength = false,
     length = 10,
+    multiline = false,
   },
   toggle = {
     default = false,
