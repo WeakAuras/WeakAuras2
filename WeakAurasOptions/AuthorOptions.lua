@@ -530,6 +530,15 @@ typeControlAdders = {
         return not option.useLength
       end
     }
+    args["prefix" .. "multiline"] = {
+      type = "toggle",
+      width = WeakAuras.doubleWidth,
+      name = name(option, "multiline", L["Large Input"]),
+      desc = desc(option, "multiline", L["If checked, then the user will see a multi line edit box. This is useful for inputting large amounts of text."]),
+      order = order(),
+      get = get(option, "multiline"),
+      set = set(data, option, "multiline"),
+    }
   end,
   number = function(options, args, data, order, prefix, i)
     local option = options[i]
@@ -1887,6 +1896,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
       userOption.type = "input"
       userOption.get = getUserNumAsString(option)
       userOption.set = setUserNum(data, option, true)
+      userOption.multiline = option.multiline
     elseif optionType == "range" then
       userOption.softMax = option.softMax
       userOption.softMin = option.softMin
