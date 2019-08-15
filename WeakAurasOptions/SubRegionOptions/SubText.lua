@@ -51,7 +51,7 @@ local self_point_types = {
   AUTO = L["Automatic"]
 }
 
-local function createOptions(parentData, data, index)
+local function createOptions(parentData, data, index, subIndex)
   -- The toggles for font flags is intentionally not keyed on the id
   -- So that all auras share the state of that toggle
   local hiddenFontExtra = function()
@@ -61,7 +61,7 @@ local function createOptions(parentData, data, index)
   local indentWidth = 0.15
 
   local options = {
-    __title = L["Text %s"]:format(index),
+    __title = L["Text %s"]:format(subIndex),
     __order = 1,
     __up = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionUp, index, "subtext")) then

@@ -38,10 +38,10 @@ local function MoveSubRegionDown(data, index, regionType)
   end
 end
 
-local function createOptions(parentData, data, index)
+local function createOptions(parentData, data, index, subIndex)
   local order = 9
   local options = {
-    __title = L["Border %s"]:format(index),
+    __title = L["Border %s"]:format(subIndex),
     __order = 1,
     __up = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionUp, index, "subborder")) then

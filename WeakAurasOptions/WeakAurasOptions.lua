@@ -2609,10 +2609,12 @@ function WeakAuras.AddOption(id, data)
     regionOption = regionOptions[data.regionType].create(id, data);
 
     if data.subRegions then
+      local subIndex = {}
       for index, subRegionData in ipairs(data.subRegions) do
         local subRegionType = subRegionData.type
         if WeakAuras.subRegionOptions[subRegionType] then
-          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index)
+          subIndex[subRegionType] = subIndex[subRegionType] and subIndex[subRegionType] + 1 or 1
+          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index, subIndex[subRegionType])
           options.__order = 200 + index
           regionOption["sub." .. index .. "." .. subRegionType] = options
           commonOption[subRegionType] = common
