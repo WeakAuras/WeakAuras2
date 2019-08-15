@@ -47,12 +47,19 @@ if not WeakAuras.IsClassic() then
   end
 end
 
+local LibClassicCasterino
+if WeakAuras.IsClassic() then
+  LibClassicCasterino = LibStub("LibClassicCasterino")
+end
+
 if not WeakAuras.IsClassic() then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 else
   WeakAuras.UnitCastingInfo = function(unit)
     if UnitIsUnit(unit, "player") then
       return CastingInfo()
+    else
+      return LibClassicCasterino:UnitCastingInfo(unit)
     end
   end
 end
@@ -62,6 +69,8 @@ function WeakAuras.UnitChannelInfo(unit)
     return UnitChannelInfo(unit)
   elseif UnitIsUnit(unit, "player") then
     return ChannelInfo()
+  else
+    return LibClassicCasterino:UnitChannelInfo(unit)
   end
 end
 
@@ -5100,17 +5109,20 @@ WeakAuras.event_prototypes = {
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_REMOVED")
       end
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
-      if trigger.unit == "nameplate" then
-        AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
-        AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_REMOVED")
+      if not (WeakAuras.IsClassic() and trigger.unit ~= "player") then
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      else
+        LibClassicCasterino:RegisterCallback("PLAYER_TARGET_CHANGED", WeakAuras.ScanEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_START", WeakAuras.ScanEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_DELAYED", WeakAuras.ScanEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanEvents)
       end
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
         AddUnitEventForEvents(result, trigger.destUnit, "UNIT_TARGET")
       end
@@ -5268,14 +5280,10 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         values = function(trigger)
-          if WeakAuras.IsClassic() then
-            return { player = L["Player"] }
+          if trigger.use_inverse then
+            return WeakAuras.actual_unit_types_with_specific
           else
-            if trigger.use_inverse then
-              return WeakAuras.actual_unit_types_with_specific
-            else
-              return WeakAuras.actual_unit_types_cast
-            end
+            return WeakAuras.actual_unit_types_cast
           end
         end,
         required = true,

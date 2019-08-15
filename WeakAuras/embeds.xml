@@ -22,6 +22,7 @@
   <Script file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
   <!--@non-retail@
   <Include file="Libs\LibClassicDurations\LibClassicDurations.xml"/>
+  <Script file="Libs\LibClassicCasterino\LibClassicCasterino.lua"/>
   @end-non-retail@-->
   <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
 </Ui>
