@@ -97,6 +97,19 @@ local function createOptions(parentData, data, index)
       softMax = 64,
       bigStep = 1,
     },
+    border_anchor = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Border Anchor"],
+      order = order + 0.6,
+      values = {
+        icon = L["Icon"],
+        fg = L["Foreground"],
+        bg = L["Background"],
+        bar = L["Bar"],
+      },
+      hidden = function() return parentData.regionType ~= "aurabar" end
+    }
   }
 
   return options
