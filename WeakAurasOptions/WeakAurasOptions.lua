@@ -2596,18 +2596,6 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
       func = function()
         AddSubRegion(data, subRegionType)
       end,
-      hidden = function()
-        local max = WeakAuras.subRegionTypes[subRegionType].maxElements
-        if max then
-          local count = 0
-          if data.subRegions then
-            for _, subData in pairs(data.subRegions) do
-              if subData.type == subRegionType then count = count + 1 end
-            end
-          end
-          return count >= max
-        end
-      end,
     }
     order = order + 1
   end

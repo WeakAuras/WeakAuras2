@@ -85,4 +85,4 @@ local function supports(regionType)
          or regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subborder", L["Border"], supports, create, modify, onAcquire, onRelease, default, nil, properties, 1);
+WeakAuras.RegisterSubRegionType("subborder", L["Border"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
