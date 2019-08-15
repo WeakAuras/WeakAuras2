@@ -1006,6 +1006,7 @@ function WeakAuras.GetProperties(data)
   end
 
   if data.subRegions then
+    local subIndex = {}
     for index, subRegion in ipairs(data.subRegions) do
       local subRegionTypeData = WeakAuras.subRegionTypes[subRegion.type];
       local propertiesFunction = subRegionTypeData and subRegionTypeData.properties
@@ -1018,7 +1019,8 @@ function WeakAuras.GetProperties(data)
 
       if subProperties then
         for key, property in pairs(subProperties) do
-          property.display = { index .. ". " .. subRegionTypeData.displayName, property.display }
+          subIndex[key] = subIndex[key] and subIndex[key] + 1 or 1
+          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName, property.display }
           properties["sub." .. index .. "." .. key ] = property;
         end
       end
