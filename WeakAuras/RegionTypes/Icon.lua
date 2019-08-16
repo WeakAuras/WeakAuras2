@@ -71,23 +71,23 @@ local properties = {
     default = 32
   },
   glow = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Show Glow"], true },
+    display = { L["Glow"], L["Show Glow"], true },
     setter = "SetGlow",
     type = "bool"
   },
   glowType = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Type"] },
+    display = { L["Glow"], L["Type"] },
     setter = "SetGlowType",
     type = "list",
     values = WeakAuras.glow_types,
   },
   useGlowColor = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Use Custom Color"] },
+    display = { L["Glow"], L["Use Custom Color"] },
     setter = "SetUseGlowColor",
     type = "bool"
   },
   glowColor = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Color"]},
+    display = { L["Glow"], L["Color"]},
     setter = "SetGlowColor",
     type = "color"
   },
@@ -171,12 +171,12 @@ local properties = {
     type = "bool"
   },
   cooldownSwipe = {
-    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Swipe"], true},
+    display = { L["Cooldown"], L["Swipe"], true},
     setter = "SetCooldownSwipe",
     type = "bool",
   },
   cooldownEdge = {
-    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Edge"]},
+    display = { L["Cooldown"], L["Edge"]},
     setter = "SetCooldownEdge",
     type = "bool",
   },

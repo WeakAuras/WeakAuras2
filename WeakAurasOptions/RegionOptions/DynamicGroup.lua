@@ -212,7 +212,7 @@ local function createOptions(id, data)
     arcLength = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Arc Length"],
+      name = L["Arc Length"],
       order = 7,
       min = 0,
       max = 360,
