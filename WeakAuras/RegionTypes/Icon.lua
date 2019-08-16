@@ -92,7 +92,7 @@ local properties = {
     type = "color"
   },
   glowLines = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Lines & Particles"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Lines & Particles"]},
     setter = "SetGlowLines",
     type = "number",
     min = 1,
@@ -101,7 +101,7 @@ local properties = {
     default = 4
   },
   glowFrequency = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Frequency"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Frequency"]},
     setter = "SetGlowFrequency",
     type = "number",
     softMin = -2,
@@ -110,7 +110,7 @@ local properties = {
     default = 0.25
   },
   glowLength = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Length"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Length"]},
     setter = "SetGlowLength",
     type = "number",
     min = 1,
@@ -119,7 +119,7 @@ local properties = {
     default = 10
   },
   glowThickness = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Thickness"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Thickness"]},
     setter = "SetGlowThickness",
     type = "number",
     min = 1,
@@ -128,7 +128,7 @@ local properties = {
     default = 1
   },
   glowScale = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Scale"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Scale"]},
     setter = "SetGlowScale",
     type = "number",
     min = 0.05,
@@ -138,12 +138,12 @@ local properties = {
     isPercent = true
   },
   glowBorder = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Border"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Border"]},
     setter = "SetGlowBorder",
     type = "bool"
   },
   glowXOffset = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["X-Offset"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["X-Offset"]},
     setter = "SetGlowXOffset",
     type = "number",
     softMin = -100,
@@ -152,7 +152,7 @@ local properties = {
     default = 0
   },
   glowYOffset = {
-    display = { WeakAuras.newFeatureString .. L["Glow"], L["Y-Offset"]},
+    display = { L["Glow"], WeakAuras.newFeatureString .. L["Y-Offset"]},
     setter = "SetGlowYOffset",
     type = "number",
     softMin = -100,
