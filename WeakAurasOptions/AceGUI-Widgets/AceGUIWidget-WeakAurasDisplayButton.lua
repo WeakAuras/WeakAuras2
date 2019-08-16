@@ -4,7 +4,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 50
+local Type, Version = "WeakAurasDisplayButton", 51
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -229,8 +229,8 @@ local function UpdateClipboardMenuEntry(data)
     clipboard.copyLoadEntry.text = L["Load"];
     clipboard.copyActionsEntry.text = L["Actions"];
     clipboard.copyAnimationsEntry.text = L["Animations"];
-    clipboard.copyAuthorOptionsEntry = WeakAuras.newFeatureString .. L["Author Options"];
-    clipboard.copyUserConfigEntry = WeakAuras.newFeatureString .. L["Custom Configuration"];
+    clipboard.copyAuthorOptionsEntry = L["Author Options"];
+    clipboard.copyUserConfigEntry = L["Custom Configuration"];
     clipboard.copyGroupEntry.text = nil;
   end
 end

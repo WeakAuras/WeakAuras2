@@ -132,7 +132,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     use_debuffClass = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString..L["Debuff Type"],
+      name = L["Debuff Type"],
       order = 11.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
     },
