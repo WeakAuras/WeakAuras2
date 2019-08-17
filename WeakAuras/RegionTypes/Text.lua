@@ -164,7 +164,7 @@ local function modify(parent, region, data)
 
   local customTextFunc = nil
   if(WeakAuras.ContainsCustomPlaceHolder(data.displayText) and data.customText) then
-    customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id)
+    customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id, "custom text")
   end
 
   local Update

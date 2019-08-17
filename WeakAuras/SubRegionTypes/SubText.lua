@@ -195,7 +195,7 @@ local function modify(parent, region, parentData, data, first)
     end
 
     if containsCustomText and parentData.customText and parentData.customText ~= "" then
-      parent.customTextFunc = WeakAuras.LoadFunction("return "..parentData.customText, parentData.id)
+      parent.customTextFunc = WeakAuras.LoadFunction("return "..parentData.customText, parentData.id, "custom text")
     else
       parent.customTextFunc = nil
     end

@@ -966,30 +966,30 @@ function WeakAuras.LoadCustomActionFunctions(data)
 
   if (data.actions) then
     if (data.actions.init and data.actions.init.do_custom and data.actions.init.custom) then
-      local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end", id);
+      local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end", id, "initialization");
       WeakAuras.customActionsFunctions[id]["init"] = func;
     end
 
     if (data.actions.start) then
       if (data.actions.start.do_custom and data.actions.start.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(data.actions.start.custom).."\n end", id);
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.start.custom).."\n end", id, "show action");
         WeakAuras.customActionsFunctions[id]["start"] = func;
       end
 
       if (data.actions.start.do_message and data.actions.start.message_custom) then
-        local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_custom), id);
+        local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_custom), id, "show message");
         WeakAuras.customActionsFunctions[id]["start_message"] = func;
       end
     end
 
     if (data.actions.finish) then
       if (data.actions.finish.do_custom and data.actions.finish.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(data.actions.finish.custom).."\n end", id);
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.finish.custom).."\n end", id, "hide action");
         WeakAuras.customActionsFunctions[id]["finish"] = func;
       end
 
       if (data.actions.finish.do_message and data.actions.finish.message_custom) then
-        local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_custom), id);
+        local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_custom), id, "hide message");
         WeakAuras.customActionsFunctions[id]["finish_message"] = func;
       end
     end
@@ -3941,8 +3941,8 @@ local function pAdd(data)
     loadEvents["SCAN_ALL"][id] = true
 
     local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
-    local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
-    local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
+    local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
+    local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
     local triggerLogicFunc;
     if data.triggers.disjunctive == "custom" then
       triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
@@ -3950,7 +3950,7 @@ local function pAdd(data)
     WeakAuras.LoadCustomActionFunctions(data);
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
-    local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id);
+    local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id, "condition checks");
     debug(id.." - Load", 1);
     debug(loadFuncStr);
 
@@ -4517,7 +4517,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.translateFunc = anim_function_strings[anim.translateType]
       end
       if (anim.translateFunc) then
-        translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
+        translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id, "translate animation");
       else
         if (region.SetOffsetAnim) then
           region:SetOffsetAnim(0, 0);
@@ -4538,7 +4538,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.alphaFunc = anim_function_strings[anim.alphaType]
       end
       if (anim.alphaFunc) then
-        alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
+        alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id, "alpha animation");
       else
         if (region.SetAnimAlpha) then
           region:SetAnimAlpha(nil);
@@ -4559,7 +4559,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.scaleFunc = anim_function_strings[anim.scaleType]
       end
       if (anim.scaleFunc) then
-        scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id);
+        scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id, "scale animation");
       else
         region:Scale(1, 1);
       end
@@ -4572,7 +4572,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.rotateFunc = anim_function_strings[anim.rotateType]
       end
       if (anim.rotateFunc) then
-        rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id);
+        rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id, "rotate animation");
       else
         region:Rotate(startRotation);
       end
@@ -4585,7 +4585,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.colorFunc = anim_function_strings[anim.colorType]
       end
       if (anim.colorFunc) then
-        colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
+        colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id, "color animation");
       else
         region:ColorAnim(nil);
       end
