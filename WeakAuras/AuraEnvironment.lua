@@ -54,6 +54,8 @@ local WA_ClassColorName = function(unit)
       local coloredName = ("c|%s%s|r"):format(classData.colorStr, name)
       return coloredName
     end
+  else
+    return "" -- ¯\_(ツ)_/¯
   end
 end
 
