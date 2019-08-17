@@ -44,9 +44,17 @@ end
 
 -- Wrapping a unit's name in its class colour is very common in custom Auras
 local WA_ClassColorName = function(unit)
-  local _, class = UnitClass(unit)
-  if not class then return end
-  return RAID_CLASS_COLORS[class]:WrapTextInColorCode(UnitName(unit))
+  if unit and UnitExists(unit) then
+    local name = UnitName(unit)
+    local _, class = UnitClass(unit)
+    if not class then
+      return name
+    else
+      local classData = RAID_CLASS_COLORS[class]
+      local coloredName = ("c|%s%s|r"):format(classData.colorStr, name)
+      return name
+    end
+  end
 end
 
 local helperFunctions = {
