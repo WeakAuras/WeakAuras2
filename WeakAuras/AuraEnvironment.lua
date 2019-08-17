@@ -52,7 +52,7 @@ local WA_ClassColorName = function(unit)
     else
       local classData = RAID_CLASS_COLORS[class]
       local coloredName = ("c|%s%s|r"):format(classData.colorStr, name)
-      return name
+      return coloredName
     end
   end
 end
