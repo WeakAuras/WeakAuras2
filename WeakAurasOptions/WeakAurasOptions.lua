@@ -3587,10 +3587,12 @@ function WeakAuras.ReloadGroupRegionOptions(data)
       end
     end
     if childData.subRegions then
+      local subIndex = {}
       for index, subRegionData in ipairs(childData.subRegions) do
         local subRegionType = subRegionData.type
         if WeakAuras.subRegionOptions[subRegionType] then
-          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index)
+          subIndex[subRegionType] = subIndex[subRegionType] and subIndex[subRegionType] + 1 or 1
+          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index, subIndex[subRegionType])
           options.__order = 200 + index
           allOptions["sub." .. index .. "." .. subRegionType] = options
           commonOption[subRegionType] = common
