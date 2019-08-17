@@ -5612,8 +5612,10 @@ function WeakAuras.RunCustomTextFunc(region, customFunc)
       duration = state.value
     end
   end
-
-  local custom = {select(2, xpcall(customFunc, geterrorhandler(), expirationTime or math.huge, duration or 0, progress, dur, name, icon, stacks))}
+  local errorhandler = function(text)
+    geterrorhandler()(L["ERROR in Custom text function in '%s': \n"]:format(region.id) .. text)
+  end
+  local custom = {select(2, xpcall(customFunc, errorhandler, expirationTime or math.huge, duration or 0, progress, dur, name, icon, stacks))}
   WeakAuras.ActivateAuraEnvironment(nil)
   return custom
 end
