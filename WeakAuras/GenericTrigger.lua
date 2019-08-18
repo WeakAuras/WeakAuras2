@@ -715,6 +715,9 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
         updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event.force_events) or updateTriggerState;
       elseif (type(event.force_events) == "boolean" and event.force_events) then
         for i, eventName in pairs(event.events) do
+          if eventName == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" then
+            eventName = "COMBAT_LOG_EVENT_UNFILTERED"
+          end
           updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
         end
       end
