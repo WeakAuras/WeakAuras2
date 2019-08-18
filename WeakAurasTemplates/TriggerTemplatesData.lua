@@ -216,6 +216,15 @@ templates.class.WARRIOR = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 236273, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Duel
+        { spell = 236273, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Duel
+        { spell = 216890, type="ability", pvptalent = 6},-- Spell Reflection
+        { spell = 236077, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Disarm
+        { spell = 236077, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Disarm
+        { spell = 236320, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- War Banner
+        { spell = 236321, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- War Banner
+        { spell = 198817, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Sharpen Blade
+        { spell = 198817, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Sharpen Blade
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -307,6 +316,15 @@ templates.class.WARRIOR = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 280746, type="buff", unit = "player", pvptalent = 5},-- Barbarian
+        { spell = 213858, type="buff", unit = "player", pvptalent = 6},-- Battle Trance
+        { spell = 199203, type="buff", unit = "player", pvptalent = 7},-- Thirst for Battle
+        { spell = 199261, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Death Wish
+        { spell = 199261, type="buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]},-- Death Wish
+        { spell = 236077, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Disarm
+        { spell = 236077, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Disarm
+        { spell = 216890, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Spell Reflection
+        { spell = 216890, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Spell Reflection
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -408,6 +426,16 @@ templates.class.WARRIOR = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 213871, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Bodyguard
+        { spell = 213871, type="buff", unit = "group", pvptalent = 6, titleSuffix = L["buff"]},-- Bodyguard
+        { spell = 198912, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Shield Bash
+        { spell = 198912, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Shield Bash
+        { spell = 205800, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Oppressor
+        { spell = 206891, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Oppressor
+        { spell = 199085, type="debuff", unit = "target", pvptalent = 10},-- Warpath
+        { spell = 206572, type="ability", pvptalent = 11},-- Dragon Charge
+        { spell = 236077, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Disarm
+        { spell = 236077, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Disarm
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -508,6 +536,11 @@ templates.class.PALADIN = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 199507, type="buff", unit = "group", pvptalent = 4},-- Spreading the Word
+        { spell = 216328, type="buff", unit = "target", pvptalent = 5},-- Light's Grace
+        { spell = 210294, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Divine Favor
+        { spell = 210294, type="buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]},-- Divine Favor
+        { spell = 210391, type="buff", unit = "player", pvptalent = 13},-- Darkest before the Dawn
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -610,6 +643,14 @@ templates.class.PALADIN = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 228049, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Guardian of the Forgotten Queen
+        { spell = 228050, type="buff", unit = "group", pvptalent = 5, titleSuffix = L["buff"]},-- Guardian of the Forgotten Queen
+        { spell = 216857, type="buff", unit = "target", pvptalent = 6},-- Guarded by the Light
+        { spell = 236186, type="ability", pvptalent = 9},-- Cleansing Light
+        { spell = 215652, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Shield of Virtue
+        { spell = 217824, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Shield of Virtue
+        { spell = 207028, type="ability", pvptalent = 15, titleSuffix = L["cooldown"]},-- Inquisition
+        { spell = 206891, type="debuff", unit = "target", pvptalent = 15, titleSuffix = L["buff"]},-- Inquisition
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -710,6 +751,14 @@ templates.class.PALADIN = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 236186, type="ability", pvptalent = 4},-- Cleansing Light
+        { spell = 247675, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Hammer of Reckoning
+        { spell = 247675, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Hammer of Reckoning
+        { spell = 210323, type="buff", unit = "target", pvptalent = 9},-- Vengeance Aura
+        { spell = 210256, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Blessing of Sanctuary
+        { spell = 210256, type="buff", unit = "target", pvptalent = 10, titleSuffix = L["buff"]},-- Blessing of Sanctuary
+        { spell = 287947, type="buff", unit = "player", pvptalent = 11},-- Ultimate Retribution
+        { spell = 246807, type="buff", unit = "target", pvptalent = 12},-- Lawbringer
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -820,6 +869,20 @@ templates.class.HUNTER = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 204205, type="buff", unit = "player", pvptalent = 4},-- Wild Protector
+        { spell = 208652, type="ability", pvptalent = 5},-- Dire Beast: Hawk
+        { spell = 205691, type="ability", pvptalent = 6},-- Dire Beast: Basilisk
+        { spell = 248518, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Interlope
+        { spell = 248519, type="buff", unit = "group", pvptalent = 7, titleSuffix = L["buff"]},-- Interlope
+        { spell = 53480, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
+        { spell = 53480, type="buff", unit = "group", pvptalent = 10, titleSuffix = L["buff"]},-- Roar of Sacrifice
+        { spell = 236776, type="ability", pvptalent = 11},-- Hi-Explosive Trap
+        { spell = 202900, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Scorpid Sting
+        { spell = 202900, type="debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]},-- Scorpid Sting
+        { spell = 202914, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Spider Sting
+        { spell = 202914, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Spider Sting
+        { spell = 202797, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Viper Sting
+        { spell = 202797, type="debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]},-- Viper Sting
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -923,6 +986,19 @@ templates.class.HUNTER = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 202797, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Viper Sting
+        { spell = 202797, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Viper Sting
+        { spell = 202900, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scorpid Sting
+        { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Scorpid Sting
+        { spell = 202914, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Spider Sting
+        { spell = 202914, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Spider Sting
+        { spell = 53480, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
+        { spell = 53480, type="buff", unit = "group", pvptalent = 9, titleSuffix = L["buff"]},-- Roar of Sacrifice
+        { spell = 203155, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Sniper Shot
+        { spell = 203155, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Sniper Shot
+        { spell = 213691, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Scatter Shot
+        { spell = 213691, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Scatter Shot
+        { spell = 236776, type="ability", pvptalent = 15},-- Hi-Explosive Trap
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1052,6 +1128,19 @@ templates.class.HUNTER = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 202914, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Spider Sting
+        { spell = 202914, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Spider Sting
+        { spell = 202900, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scorpid Sting
+        { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuiff"]},-- Scorpid Sting
+        { spell = 212638, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Tracker's Net
+        { spell = 212638, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Tracker's Net
+        { spell = 202797, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Viper Sting
+        { spell = 202797, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Viper Sting
+        { spell = 212640, type="ability", pvptalent = 11},-- Mending Bandage
+        { spell = 53480, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
+        { spell = 53480, type="buff", unit = "group", pvptalent = 12, titleSuffix = L["buff"]},-- Roar of Sacrifice
+        { spell = 203268, type="debuff", unit = "target", pvptalent = 13},-- Sticky Tar
+        { spell = 236776, type="ability", pvptalent = 15},-- Hi-Explosive Trap
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1204,6 +1293,17 @@ templates.class.ROGUE = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 269513, type="ability", pvptalent = 4},-- Death from Above
+        { spell = 197003, type="buff", unit = "target", pvptalent = 5},-- Maneuverability
+        { spell = 248744, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Shiv
+        { spell = 248744, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Shiv
+        { spell = 197051, type="debuff", unit = "target", pvptalent = 8},-- Mind-Numbing Poison
+        { spell = 198222, type="debuff", unit = "target", pvptalent = 9},-- System Shock
+        { spell = 206328, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Neurotoxin
+        { spell = 197091, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Neurotoxin
+        { spell = 198097, type="debuff", unit = "target", pvptalent = 13},-- Creeping Venom
+        { spell = 212182, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Smoke Bomb
+        { spell = 212183, type="debuff", unit = "player", pvptalent = 14, titleSuffix = L["buff"]},-- Smoke Bomb
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1313,6 +1413,21 @@ templates.class.ROGUE = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 207777, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Dismantle
+        { spell = 207777, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Dismantle
+        { spell = 198368, type="buff", unit = "player", pvptalent = 5},-- Take Your Cut
+        { spell = 212210, type="ability", pvptalent = 6},-- Drink Up Me Hearties
+        { spell = 269513, type="ability", pvptalent = 7},-- Death from Above
+        { spell = 197003, type="buff", unit = "target", pvptalent = 8},-- Maneuverability
+        { spell = 209754, type="buff", unit = "player", pvptalent = 9},-- Boarding Party
+        { spell = 212182, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Smoke Bomb
+        { spell = 212183, type="debuff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Smoke Bomb
+        { spell = 198027, type="buff", unit = "player", pvptalent = 12},-- Turn the Tables
+        { spell = 198529, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Plunder Armor
+        { spell = 198529, type="buff", unit = "player", pvptalent = 14, titleSuffix = L["debuff"]},-- Plunder Armor
+        { spell = 248744, type="debuff", unit = "target", pvptalent = 15},-- Shiv
+        { spell = 213995, type="buff", unit = "player", pvptalent = 16, titleSuffix = L["buff"]},-- Cheap Tricks
+        { spell = 212150, type="debuff", unit = "target", pvptalent = 16, titleSuffix = L["debuff"]},-- Cheap Tricks
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1400,7 +1515,6 @@ templates.class.ROGUE = {
         { spell = 277925, type = "ability", buff = true, talent = 21}, -- Shuriken Tornado
         { spell = 280719, type = "ability", requiresTarget = true, usable = true, debuff = true, talent = 20}, -- Secret Technique
         { spell = 57934, type = "ability", requiresTarget = true, debuff = true}, -- Tricks of the Trade
-
       },
       icon = 236279
     },
@@ -1422,6 +1536,17 @@ templates.class.ROGUE = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 198688, type="debuff", unit = "target", pvptalent = 5},-- Dagger in the Dark
+        { spell = 212182, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Smoke Bomb
+        { spell = 212183, type="debuff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Smoke Bomb
+        { spell = 207736, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Shadowy Duel
+        { spell = 207736, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Shadowy Duel
+        { spell = 213981, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Cold Blood
+        { spell = 213981, type="buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]},-- Cold Blood
+        { spell = 197003, type="buff", unit = "player", pvptalent = 10},-- Maneuverability
+        { spell = 248744, type="debuff", unit = "target", pvptalent = 11},-- Shiv
+        { spell = 269513, type="ability", pvptalent = 13},-- Death from Above
+        { spell = 199027, type="buff", unit = "player", pvptalent = 14},-- Veil of Midnight
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1518,6 +1643,11 @@ templates.class.PRIEST = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 197871, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Dark Archangel
+        { spell = 197871, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Dark Archangel
+        { spell = 305498, type="ability", pvptalent = 12},-- Premonition
+        { spell = 197862, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Archangel
+        { spell = 197862, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Archangel
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1608,6 +1738,15 @@ templates.class.PRIEST = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 215982, type="ability", pvptalent = 6},-- Spirit of the Redeemer
+        { spell = 197268, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Ray of Hope
+        { spell = 232707, type="buff", unit = "target", pvptalent = 7, titleSuffix = L["buff"]},-- Ray of Hope
+        { spell = 213610, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Holy Ward
+        { spell = 213610, type="buff", unit = "target", pvptalent = 9, titleSuffix = L["buff"]},-- Holy Ward
+        { spell = 289657, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Holy Word: Concentration
+        { spell = 289655, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Holy Word: Concentration
+        { spell = 213602, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Greater Fade
+        { spell = 213602, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Greater Fade
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1704,6 +1843,12 @@ templates.class.PRIEST = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 211522, type="ability", pvptalent = 7},-- Psyfiend
+        { spell = 199412, type="buff", unit = "player", pvptalent = 8},-- Edge of Insanity
+        { spell = 108968, type="ability", pvptalent = 11},-- Void Shift
+        { spell = 247776, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Mind Trauma
+        { spell = 247777, type="debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]},-- Mind Trauma
+        { spell = 213602, type="buff", unit = "target", pvptalent = 13},-- Greater Fade
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1818,6 +1963,15 @@ templates.class.SHAMAN = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 305483, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Lightning Lasso
+        { spell = 305485, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Lightning Lasso
+        { spell = 236746, type="buff", unit = "player", pvptalent = 8},-- Control of Lava
+        { spell = 204330, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Skyfury Totem
+        { spell = 208963, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Skyfury Totem
+        { spell = 204336, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Grounding Totem
+        { spell = 8178, type="buff", unit = "target", pvptalent = 12, titleSuffix = L["buff"]},-- Grounding Totem
+        { spell = 204331, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Counterstrike Totem
+        { spell = 208997, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Counterstrike Totem
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -1929,6 +2083,16 @@ templates.class.SHAMAN = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 204366, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Thundercharge
+        { spell = 204366, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Thundercharge
+        { spell = 210918, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Ethereal Form
+        { spell = 210918, type="buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Ethereal Form
+        { spell = 204330, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Skyfury Totem
+        { spell = 208963, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Skyfury Totem
+        { spell = 204331, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Counterstrike Totem
+        { spell = 208997, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Counterstrike Totem
+        { spell = 204336, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Grounding Totem
+        { spell = 8178, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["debuff"]},-- Grounding Totem
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2034,6 +2198,17 @@ templates.class.SHAMAN = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 290254, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Ancestral Gift
+        { spell = 290641, type="buff", unit = "player", pvptalent = 4, titleSuffix = L["buff"]},-- Ancestral Gift
+        { spell = 206647, type="debuff", unit = "target", pvptalent = 5},-- Electrocute
+        { spell = 204293, type="buff", unit = "target", pvptalent = 6},-- Spirit Link
+        { spell = 236502, type="buff", unit = "player", pvptalent = 7},-- Tidebringer
+        { spell = 204336, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Grounding Totem
+        { spell = 8178, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Grounding Totem
+        { spell = 204330, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Skyfury Totem
+        { spell = 208963, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Skyfury Totem
+        { spell = 204331, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Counterstrike Totem
+        { spell = 208997, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Counterstrike Totem
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2128,6 +2303,11 @@ templates.class.MAGE = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 198111, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Temporal Shield
+        { spell = 198111, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Temporal Shield
+        { spell = 198065, type="buff", unit = "player", pvptalent = 9},-- Prismatic Cloak
+        { spell = 198158, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Mass Invisibility
+        { spell = 198158, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Mass Invisibility
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2219,6 +2399,11 @@ templates.class.MAGE = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 198111, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Temporal Shield
+        { spell = 198111, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Temporal Shield
+        { spell = 203285, type="buff", unit = "target", pvptalent = 7},-- Flamecannon
+        { spell = 203277, type="buff", unit = "player", pvptalent = 13},-- Tinder
+        { spell = 198065, type="buff", unit = "player", pvptalent = 14},-- Prismatic Cloak
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2317,6 +2502,13 @@ templates.class.MAGE = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 198065, type="buff", unit = "player", pvptalent = 5},-- Prismatic Cloak
+        { spell = 206432, type="buff", unit = "player", pvptalent = 7},-- Burst of Cold
+        { spell = 198144, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Ice Form
+        { spell = 198144, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Ice Form
+        { spell = 198111, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Temporal Shield
+        { spell = 198111, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Temporal Shield
+        { spell = 198121, type="debuff", unit = "target", pvptalent = 13},-- Frostbite
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2442,6 +2634,23 @@ templates.class.WARLOCK = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 199890, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Curse of Tongues
+        { spell = 199890, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Curse of Tongues
+        { spell = 285933, type="buff", unit = "player", pvptalent = 5},-- Demon Armor
+        { spell = 221715, type="debuff", unit = "target", pvptalent = 6},-- Essence Drain
+        { spell = 221703, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Casting Circle
+        { spell = 221705, type="buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Casting Circle
+        { spell = 212356, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Soulshatter
+        { spell = 236471, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Soulshatter
+        { spell = 199892, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Curse of Weakness
+        { spell = 199892, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Curse of Weakness
+        { spell = 199954, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Curse of Fragility
+        { spell = 199954, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Curse of Fragility
+        { spell = 305388, type="debuff", unit = "target", pvptalent = 11},-- Endless Affliction
+        { spell = 212295, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Nether Ward
+        { spell = 212295, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Nether Ward
+        { spell = 234877, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Curse of Shadows
+        { spell = 234877, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Curse of Shadows
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2565,6 +2774,21 @@ templates.class.WARLOCK = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 201996, type="ability", pvptalent = 4},-- Call Observer
+        { spell = 212295, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Nether Ward
+        { spell = 212295, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Nether Ward
+        { spell = 221715, type="debuff", unit = "target", pvptalent = 6},-- Essence Drain
+        { spell = 221703, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Casting Circle
+        { spell = 221705, type="buff", unit = "target", pvptalent = 7, titleSuffix = L["buff"]},-- Casting Circle
+        { spell = 199890, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Curse of Tongues
+        { spell = 199890, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Curse of Tongues
+        { spell = 199954, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Curse of Fragility
+        { spell = 199954, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Curse of Fragility
+        { spell = 199892, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Curse of Weakness
+        { spell = 199892, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Curse of Weakness
+        { spell = 212623, type="ability", pvptalent = 11},-- Singe Magic
+        { spell = 212619, type="ability", pvptalent = 12},-- Call Felhunter
+        { spell = 212459, type="ability", pvptalent = 14},-- Call Fel Lord
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2687,6 +2911,22 @@ templates.class.WARLOCK = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 200587, type="debuff", unit = "target", pvptalent = 5},-- Fel Fissure
+        { spell = 233582, type="debuff", unit = "target", pvptalent = 6},-- Entrenched in Flame
+        { spell = 285933, type="buff", unit = "target", pvptalent = 7},-- Demon Armor
+        { spell = 200546, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Bane of Havoc
+        { spell = 200548, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Bane of Havoc
+        { spell = 199954, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Curse of Fragility
+        { spell = 199954, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Curse of Fragility
+        { spell = 199890, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Curse of Tongues
+        { spell = 199890, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Curse of Tongues
+        { spell = 199892, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Curse of Weakness
+        { spell = 199892, type="buff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Curse of Weakness
+        { spell = 212295, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Nether Ward
+        { spell = 212295, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Nether Ward
+        { spell = 221715, type="debuff", unit = "target", pvptalent = 13},-- Essence Drain
+        { spell = 221703, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Casting Circle
+        { spell = 221705, type="buff", unit = "target", pvptalent = 14, titleSuffix = L["buff"]},-- Casting Circle
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2791,6 +3031,16 @@ templates.class.MONK = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 202370, type="ability", pvptalent = 5},-- Mighty Ox Kick
+        { spell = 202335, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Double Barrel
+        { spell = 202335, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Double Barrel
+        { spell = 213658, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Craft: Nimble Brew
+        { spell = 213664, type="buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Craft: Nimble Brew
+        { spell = 202162, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Avert Harm
+        { spell = 202162, type="buff", unit = "group", pvptalent = 8, titleSuffix = L["buff"]},-- Avert Harm
+        { spell = 207025, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Admonishment
+        { spell = 206891, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Admonishment
+        { spell = 202274, type="debuff", unit = "target", pvptalent = 14},-- Incendiary Breath
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2891,6 +3141,14 @@ templates.class.MONK = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 216113, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Way of the Crane
+        { spell = 216113, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Way of the Crane
+        { spell = 233759, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Grapple Weapon
+        { spell = 233759, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Grapple Weapon
+        { spell = 205234, type="ability", pvptalent = 8},-- Healing Sphere
+        { spell = 227344, type="buff", unit = "target", pvptalent = 9},-- Surging Mist
+        { spell = 209584, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Zen Focus Tea
+        { spell = 209584, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Zen Focus Tea
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -2995,6 +3253,18 @@ templates.class.MONK = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 233759, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Grapple Weapon
+        { spell = 233759, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Grapple Weapon
+        { spell = 287504, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Alpha Tiger
+        { spell = 290512, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Alpha Tiger
+        { spell = 201787, type="debuff", unit = "target", pvptalent = 7},-- Turbo Fists
+        { spell = 287771, type="ability", pvptalent = 9},-- Reverse Harm
+        { spell = 201447, type="buff", unit = "player", pvptalent = 11},-- Ride the Wind
+        { spell = 201318, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Fortifying Brew
+        { spell = 201318, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Fortifying Brew
+        { spell = 247483, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Tigereye Brew
+        { spell = 248646, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Tigereye Brew
+        { spell = 247483, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Tigereye Brew
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3123,6 +3393,15 @@ templates.class.DRUID = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 305497, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Thorns
+        { spell = 305497, type="buff", unit = "target", pvptalent = 4, titleSuffix = L["buff"]},-- Thorns
+        { spell = 209731, type="buff", unit = "player", pvptalent = 5},-- Protector of the Grove
+        { spell = 209749, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Faerie Swarm
+        { spell = 209749, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Faerie Swarm
+        { spell = 209753, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Cyclone
+        { spell = 209753, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Cyclone
+        { spell = 234084, type="buff", unit = "player", pvptalent = 14},-- Moon and Stars
+        { spell = 209746, type="buff", unit = "player", pvptalent = 15},-- Moonkin Aura
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3250,6 +3529,15 @@ templates.class.DRUID = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 203059, type="buff", unit = "player", pvptalent = 5},-- King of the Jungle
+        { spell = 236021, type="debuff", unit = "target", pvptalent = 6},-- Ferocious Wound
+        { spell = 203242, type="ability", pvptalent = 8},-- Rip and Tear
+        { spell = 202636, type="buff", unit = "player", pvptalent = 9},-- Leader of the Pack
+        { spell = 209731, type="buff", unit = "player", pvptalent = 10},-- Heart of the Wild
+        { spell = 33786, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Cyclone
+        { spell = 33786, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Cyclone
+        { spell = 305497, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Thorns
+        { spell = 305497, type="buff", unit = "group", pvptalent = 14, titleSuffix = L["buff"]},-- Thorns
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3376,6 +3664,15 @@ templates.class.DRUID = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 279943, type="buff", unit = "target", pvptalent = 4},-- Sharpened Claws
+        { spell = 201664, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Demoralizing Roar
+        { spell = 201664, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Demoralizing Roar
+        { spell = 236187, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Master Shapeshifter
+        { spell = 236185, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Master Shapeshifter
+        { spell = 207017, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Alpha Challenge
+        { spell = 206891, type="debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]},-- Alpha Challenge
+        { spell = 202246, type="ability", pvptalent = 16, titleSuffix = L["cooldown"]},-- Overrun
+        { spell = 202244, type="debuff", unit = "target", pvptalent = 16, titleSuffix = L["debuff"]},-- Overrun
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3497,6 +3794,19 @@ templates.class.DRUID = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 289022, type="ability", pvptalent = 4},-- Nourish
+        { spell = 203407, type="buff", unit = "target", pvptalent = 5},-- Revitalize
+        { spell = 247563, type="buff", unit = "group", pvptalent = 6},-- Entangling Bark
+        { spell = 305497, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Thorns
+        { spell = 305497, type="buff", unit = "group", pvptalent = 7, titleSuffix = L["buff"]},-- Thorns
+        { spell = 203554, type="buff", unit = "target", pvptalent = 9},-- Focused Growth
+        { spell = 200947, type="debuff", unit = "target", pvptalent = 10},-- Encroaching Vines
+        { spell = 203651, type="ability", pvptalent = 11},-- Overgrowth
+        { spell = 290213, type="buff", unit = "target", pvptalent = 12},-- Early Spring
+        { spell = 33786, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Cyclone
+        { spell = 33786, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Cyclone
+        { spell = 236187, type="buff", unit = "player", pvptalent = 14},-- Master Shapeshifter
+        { spell = 289318, type="buff", unit = "group", pvptalent = 15},-- Mark of the Wild
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3590,6 +3900,15 @@ templates.class.DEMONHUNTER = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 205604, type="ability", pvptalent = 5},-- Reverse Magic
+        { spell = 206649, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Eye of Leotheras
+        { spell = 206649, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Eye of Leotheras
+        { spell = 235903, type="ability", pvptalent = 7},-- Mana Rift
+        { spell = 203704, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Mana Break
+        { spell = 203704, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Mana Break
+        { spell = 211510, type="buff", unit = "target", pvptalent = 13},-- Solitude
+        { spell = 206803, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Rain from Above
+        { spell = 206803, type="buff", unit = "player", pvptalent = 14, titleSuffix = L["buff"]},-- Rain from Above
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3682,6 +4001,14 @@ templates.class.DEMONHUNTER = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 205629, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Demonic Trample
+        { spell = 213491, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Demonic Trample
+        { spell = 208769, type="buff", unit = "player", pvptalent = 7},-- Everlasting Hunt
+        { spell = 207029, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Tormentor
+        { spell = 206891, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Tormentor
+        { spell = 211510, type="buff", unit = "target", pvptalent = 12},-- Solitude
+        { spell = 205630, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Illidan's Grasp
+        { spell = 205630, type="debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]},-- Illidan's Grasp
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3781,6 +4108,22 @@ templates.class.DEATHKNIGHT = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 203173, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Death Chain
+        { spell = 203173, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["buff"]},-- Death Chain
+        { spell = 233411, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Blood for Blood
+        { spell = 233411, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Blood for Blood
+        { spell = 207018, type="ability", pvptalent = 7},-- Murderous Intent
+        { spell = 206891, type="debuff", unit = "target", pvptalent = 7},-- Murderous Intent
+        { spell = 47476, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Strangulate
+        { spell = 47476, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["buff"]},-- Strangulate
+        { spell = 212610, type="debuff", unit = "target", pvptalent = 9},-- Walking Dead
+        { spell = 214968, type="debuff", unit = "target", pvptalent = 11},-- Necrotic Aura
+        { spell = 199721, type="debuff", unit = "target", pvptalent = 12},-- Decomposing Aura
+        { spell = 51052, type="ability", pvptalent = 13, titleSuffix = L["Cooldown"]},-- Anti-Magic Zone
+        { spell = 145629, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Anti-Magic Zone
+        { spell = 77606, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Dark Simulacrum
+        { spell = 77606, type="debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]},-- Dark Simulacrum
+        { spell = 77616, type="buff", unit = "player", pvptalent = 14, titleSuffix = L["buff"]},-- Dark Simulacrum
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3871,6 +4214,24 @@ templates.class.DEATHKNIGHT = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 213726, type="debuff", unit = "player", pvptalent = 4},-- Cadaverous Pallor
+        { spell = 77606, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Dark Simulacrum
+        { spell = 77606, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Dark Simulacrum
+        { spell = 77616, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Dark Simulacrum
+        { spell = 51052, type="ability", pvptalent = 6, titleSuffix = L["Cooldown"]},-- Anti-Magic Zone
+        { spell = 145629, type="buff", unit = "target", pvptalent = 6, titleSuffix = L["buff"]},-- Anti-Magic Zone
+        { spell = 214968, type="debuff", unit = "target", pvptalent = 7},-- Necrotic Aura
+        { spell = 289959, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["slow debuff"]},-- Dead of Winter
+        { spell = 287254, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["stun debuff"]},-- Dead of Winter
+        { spell = 228579, type="buff", unit = "target", pvptalent = 9},-- Heartstop Aura
+        { spell = 287081, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Lichborne
+        { spell = 287081, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Lichborne
+        { spell = 288977, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Transfusion
+        { spell = 288977, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Transfusion
+        { spell = 233395, type="debuff", unit = "target", pvptalent = 12},-- Deathchill
+        { spell = 233397, type="debuff", unit = "target", pvptalent = 13},-- Delirium
+        { spell = 305392, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Chill Streak
+        { spell = 204206, type="debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]},-- Chill Streak
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -3970,6 +4331,22 @@ templates.class.DEATHKNIGHT = {
     [7] = {
       title = L["PvP Talents"],
       args = {
+        { spell = 210128, type="ability", pvptalent = 4},-- Reanimation
+        { spell = 288977, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Transfusion
+        { spell = 288977, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Transfusion
+        { spell = 77606, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Dark Simulacrum
+        { spell = 77606, type="debuff", unit = "target", pvptalent = 7, titleSuffix = L["debuff"]},-- Dark Simulacrum
+        { spell = 77616, type="buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Dark Simulacrum
+        { spell = 288849, type="debuff", unit = "target", pvptalent = 8},-- Necromancer's Bargain
+        { spell = 214968, type="buff", unit = "target", pvptalent = 9},-- Necrotic Aura
+        { spell = 51052, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Anti-Magic Zone
+        { spell = 145629, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Anti-Magic Zone
+        { spell = 223929, type="debuff", unit = "target", pvptalent = 11},-- Necrotic Strike
+        { spell = 213726, type="debuff", unit = "player", pvptalent = 12},-- Cadaverous Pallor
+        { spell = 288853, type="ability", pvptalent = 13},-- Raise Abomination
+        { spell = 287081, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Lichborne
+        { spell = 287081, type="buff", unit = "player", pvptalent = 14, titleSuffix = L["buff"]},-- Lichborne
+        { spell = 199721, type="debuff", unit = "target", pvptalent = 15},-- Decomposing Aura
       },
       icon = "Interface\\Icons\\Achievement_BG_winWSG",
     },
@@ -4209,15 +4586,14 @@ end
 -- PVP Talents
 -------------------------------
 
---[[
+
 for _, class in pairs(templates.class) do
   for _, spec in pairs(class) do
-  -- TODO 8.0
-  -- tinsert(spec[5].args, { spell = 195710, type = "ability"}) -- Honorable Medallion
-  -- tinsert(spec[5].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
+    if spec[7] and spec[7].args then
+      tinsert(spec[7].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
+    end
   end
 end
-]]--
 
 if not WeakAuras.IsClassic() then
   for _, class in pairs(templates.class) do
@@ -4415,7 +4791,7 @@ tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L
 tinsert(templates.race.Dwarf, { spell = 65116, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- Shadow Meld
 tinsert(templates.race.NightElf, { spell = 58984, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["Buff"]});
+tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["buff"]});
 -- Escape Artist
 tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
 -- Gift of the Naaru
