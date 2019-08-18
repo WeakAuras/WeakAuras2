@@ -4479,10 +4479,10 @@ local function handleItem(item)
       name, _, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
-        if not WeakAuras.IsClassic() then
-          print ("Error: Unknown spell", item.spell);
-        else
+        if WeakAuras.IsClassic() then
           item.classic = false
+        else
+          item.classic = true
         end
       end
     end
