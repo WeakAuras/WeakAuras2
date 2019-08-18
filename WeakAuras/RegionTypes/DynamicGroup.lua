@@ -952,7 +952,7 @@ local function modify(parent, region, data)
       controlPoint:ClearAnchorPoint()
       controlPoint:SetAnchorPoint(
         data.selfPoint,
-        frame == "" and self:GetParent() or frame,
+        frame == "" and self.relativeTo or frame,
         data.anchorPoint,
         x + data.xOffset, y + data.yOffset
       )
