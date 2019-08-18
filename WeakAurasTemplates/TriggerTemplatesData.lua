@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if WeakAuras.IsClassic() then return end
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
