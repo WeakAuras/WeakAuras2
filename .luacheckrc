@@ -301,6 +301,7 @@ globals = {
 	"C_AuthChallenge.OnTabPressed",
 	"C_AuthChallenge.SetFrame",
 	"C_AuthChallenge.Submit",
+	"C_BattleNet",
 	"C_BlackMarket",
 	"C_BlackMarket.Close",
 	"C_BlackMarket.GetHotItem",
