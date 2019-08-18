@@ -294,19 +294,21 @@ local function ConstructTextEditor(frame)
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         local text = valueFromPath(childData, multipath and path[childId] or path);
-        if not(singleText) then
-          singleText = text;
-        else
-          if not(singleText == text) then
-            sameTexts = false;
+        if text then
+          if not(singleText) then
+            singleText = text;
+          else
+            if not(singleText == text) then
+              sameTexts = false;
+            end
           end
-        end
-        if not(combinedText == "") then
-          combinedText = combinedText.."\n\n";
-        end
+          if not(combinedText == "") then
+            combinedText = combinedText.."\n\n";
+          end
 
-        combinedText = combinedText.. L["-- Do not remove this comment, it is part of this trigger: "] .. childId .. "\n";
-        combinedText = combinedText..(text or "");
+          combinedText = combinedText.. L["-- Do not remove this comment, it is part of this trigger: "] .. childId .. "\n";
+          combinedText = combinedText..(text or "");
+        end
       end
       if(sameTexts) then
         editor:SetText(singleText or "");

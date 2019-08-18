@@ -5109,6 +5109,9 @@ function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps,
 end
 
 function WeakAuras.ValueFromPath(data, path)
+  if not data then
+    return nil
+  end
   if(#path == 1) then
     return data[path[1]];
   else
@@ -5121,6 +5124,9 @@ function WeakAuras.ValueFromPath(data, path)
 end
 
 function WeakAuras.ValueToPath(data, path, value)
+  if not data then
+    return
+  end
   if(#path == 1) then
     data[path[1]] = value;
   else
