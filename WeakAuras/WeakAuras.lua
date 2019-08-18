@@ -5318,6 +5318,10 @@ do
   end
 
   function WeakAuras.SetFakeStates()
+    if UpdateFakeTimesHandle then
+      return
+    end
+
     for id, states in pairs(triggerState) do
       local changed
       for triggernum in ipairs(states) do
