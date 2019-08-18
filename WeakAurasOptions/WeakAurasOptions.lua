@@ -2403,9 +2403,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   local hasDelete = input.__delete
   local hasUp = input.__up
   local hasDown = input.__down
+  local hasDuplicate = input.__duplicate
   local hiddenFunc = input.__hidden
 
-  local titleWidth = WeakAuras.doubleWidth - (hasDelete and 0.15 or 0) - (hasUp and 0.15 or 0) - (hasDown and 0.15 or 0)
+  local titleWidth = WeakAuras.doubleWidth - (hasDelete and 0.15 or 0) - (hasUp and 0.15 or 0) - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
     type = "description",
@@ -2460,11 +2461,25 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     }
   end
 
+  if hasDuplicate then
+    options[key .. "duplicateButton"] = {
+      type = "execute",
+      name = "",
+      order = order + 0.5,
+      width = 0.15,
+      func = input.__duplicate,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
+      imageWidth = 24,
+      imageHeight = 24,
+      hidden = hiddenFunc
+    }
+  end
+
   if hasDelete then
     options[key .. "deleteButton"] = {
       type = "execute",
       name = "",
-      order = order + 0.5,
+      order = order + 0.6,
       width = 0.15,
       func = input.__delete,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",

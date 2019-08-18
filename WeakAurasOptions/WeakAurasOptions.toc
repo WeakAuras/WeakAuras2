@@ -34,6 +34,7 @@ RegionOptions\Model.lua
 #@end-retail@
 RegionOptions\ProgressTexture.lua
 
+SubRegionOptions\SubRegionCommon.lua
 SubRegionOptions\SubText.lua
 SubRegionOptions\Border.lua
 

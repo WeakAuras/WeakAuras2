@@ -5,56 +5,28 @@ local L = WeakAuras.L;
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
-local function DeleteSubRegion(data, index, regionType)
-  if not data.subRegions then
-    return
-  end
-  if data.subRegions[index] and data.subRegions[index].type == regionType then
-    tremove(data.subRegions, index)
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
-  end
-end
-
-local function MoveSubRegionUp(data, index, regionType)
-  if not data.subRegions or index <= 1 then
-    return
-  end
-  if data.subRegions[index] and data.subRegions[index].type == regionType then
-    data.subRegions[index - 1], data.subRegions[index] = data.subRegions[index], data.subRegions[index - 1]
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
-  end
-end
-
-local function MoveSubRegionDown(data, index, regionType)
-  if not data.subRegions then
-    return
-  end
-  if data.subRegions[index] and data.subRegions[index].type == regionType and data.subRegions[index + 1] then
-    data.subRegions[index], data.subRegions[index + 1] = data.subRegions[index + 1], data.subRegions[index]
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
-  end
-end
-
 local function createOptions(parentData, data, index, subIndex)
   local order = 9
   local options = {
     __title = L["Border %s"]:format(subIndex),
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionUp, index, "subborder")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subborder")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionDown, index, "subborder")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subborder")) then
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
+    end,
+    __duplicate = function()
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DuplicateSubRegion, index, "subtext")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
     __delete = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, DeleteSubRegion, index, "subborder")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subborder")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
