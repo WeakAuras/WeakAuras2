@@ -67,9 +67,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "input",
       width = WeakAuras.normalWidth,
       desc = function()
-        local ret = L["Dynamic text tooltip"];
-        ret = ret .. WeakAuras.GetAdditionalProperties(parentData);
-        return ret
+        return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(parentData)
       end,
       name = L["Display Text"],
       order = 11,

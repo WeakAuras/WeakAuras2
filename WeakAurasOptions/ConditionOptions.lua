@@ -636,10 +636,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= WeakAuras.tempGroup) then
-      local additionalProperties = WeakAuras.GetAdditionalProperties(data);
-      if (additionalProperties) then
-        descMessage = L["Dynamic text tooltip"] .. additionalProperties;
-      end
+      descMessage = L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
     end
 
     args["condition" .. i .. "value" .. j .. "message"] = {

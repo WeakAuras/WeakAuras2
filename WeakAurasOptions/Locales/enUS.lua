@@ -162,7 +162,10 @@ There are several special codes available to make this text dynamic:
 |cFFFF0000%i|r - Icon - The icon associated with the display
 |cFFFF0000%s|r - Stacks - The number of stacks of an aura (usually)
 |cFFFF0000%c|r - Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc.
-|cFFFF0000%%|r - % - To show a percent sign]=]
+|cFFFF0000%%|r - % - To show a percent sign
+
+By default these show the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p.
+]=]
 L["Enabled"] = "Enabled"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Event Type"] = "Event Type"
