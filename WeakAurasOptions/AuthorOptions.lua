@@ -1960,7 +1960,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
       if not option.variableWidth then
         userOption.width = "full"
       end
-      if option.useHeight and option.height > 1 then
+      if option.useHeight and (option.height or 1) > 1 then
         userOption.name = string.rep("\n", option.height - 1)
       else
         userOption.name = " "
