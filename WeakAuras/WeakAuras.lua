@@ -3431,10 +3431,6 @@ function WeakAuras.Modernize(data)
       data.borderOffset = nil
       data.borderInset = nil
       data.borderSize = nil
-      data.backdropColor = nil
-      data.borderBackdrop = nil
-      data.backdropInFront = nil
-      data.borderInFront = nil
 
       data.subRegions = data.subRegions or {}
       tinsert(data.subRegions, border)
