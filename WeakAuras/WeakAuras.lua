@@ -4848,10 +4848,33 @@ WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
 WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
-WeakAuras.GetAdditionalProperties = wrapTriggerSystemFunction("GetAdditionalProperties", "firstValue");
 WeakAuras.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
 
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
+
+WeakAuras.GetAdditionalProperties = function(data, triggernum, ...)
+  local additionalProperties = ""
+  for i = 1, #data.triggers do
+    local triggerSystem = WeakAuras.GetTriggerSystem(data, i);
+    if (triggerSystem) then
+      local add = triggerSystem.GetAdditionalProperties(data, i)
+      if (add and add ~= "") then
+        if additionalProperties ~= "" then
+          additionalProperties = additionalProperties .. "\n"
+        end
+        additionalProperties = additionalProperties .. add;
+      end
+    end
+  end
+
+  if additionalProperties ~= "" then
+    additionalProperties = "\n\n"
+                  .. L["Additional Trigger Replacements"] .. "\n"
+                  .. additionalProperties .. "\n\n"
+                  .. L["The trigger number is optional, and uses the trigger providing dynamic information if not specified."]
+  end
+  return additionalProperties
+end
 
 function WeakAuras.GetOverlayInfo(data, triggernum)
   local overlayInfo;

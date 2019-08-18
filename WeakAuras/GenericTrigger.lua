@@ -3276,7 +3276,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
       local found = false;
-      local additional = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
+      local additional = ""
       for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
         local enable = true
         if(type(v.enable) == "function") then
@@ -3286,7 +3286,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         end
         if (enable and v.store and v.name and v.display) then
           found = true;
-          additional = additional .. "|cFFFF0000%" .. v.name .. "|r - " .. v.display .. "\n";
+          additional = additional .. "|cFFFF0000%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
         end
       end
 

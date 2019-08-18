@@ -13,9 +13,7 @@ local function createOptions(id, data)
       type = "input",
       width = WeakAuras.doubleWidth,
       desc = function()
-        local ret = L["Dynamic text tooltip"];
-        ret = ret .. WeakAuras.GetAdditionalProperties(data);
-        return ret
+        return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
       end,
       multiline = true,
       name = L["Display Text"],

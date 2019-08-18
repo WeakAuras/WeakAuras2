@@ -131,9 +131,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 5,
         disabled = function() return not data.actions.start.do_message end,
         desc = function()
-          local ret = L["Dynamic text tooltip"];
-          ret = ret .. WeakAuras.GetAdditionalProperties(data);
-          return ret
+          return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
         end,
       },
       -- texteditor added later
@@ -338,9 +336,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 25,
         disabled = function() return not data.actions.finish.do_message end,
         desc = function()
-          local ret = L["Dynamic text tooltip"];
-          ret = ret .. WeakAuras.GetAdditionalProperties(data);
-          return ret
+          return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
         end,
       },
       -- texteditor added below
