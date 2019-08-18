@@ -2152,7 +2152,11 @@ local function replaceNameDescFuncs(intable, data)
                         local selectValues = type(intable.values) == "table" and intable.values or intable.values(info);
                         local key = childOptionTable[i].get(info);
                         local display = key and selectValues[key] or L["None"];
-                        tinsert(values, "|cFFE0E000"..childId..": |r"..display);
+                        if intable.dialogControl == "LSM30_Font" then
+                          tinsert(values, "|cFFE0E000"..childId..": |r" .. key);
+                        else
+                          tinsert(values, "|cFFE0E000"..childId..": |r"..display);
+                        end
                       elseif(intable.type == "multiselect") then
                         local selectedValues = {};
                         for k, v in pairs(combinedKeys) do
