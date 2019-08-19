@@ -5,77 +5,20 @@ local filePrefix = ""
 
 -- luacheck: globals io
 
--- find . -name "*.lua" | grep -v Locales
+local function generateFileList(dir)
+    local fileTable = {}
+    local p = io.popen('find "'.. dir ..'" -name "*.lua" -not -path "*/Locales/*" -not -path "*/Libs/*"')
+    for file in p:lines() do
+        table.insert(fileTable, file)
+    end
+
+    return fileTable
+end
+
 local fileList = {
-    WeakAuras_Main = {
-        "WeakAuras/RegionTypes/AuraBar.lua",
-        "WeakAuras/RegionTypes/DynamicGroup.lua",
-        "WeakAuras/RegionTypes/Group.lua",
-        "WeakAuras/RegionTypes/Icon.lua",
-        "WeakAuras/RegionTypes/Model.lua",
-        "WeakAuras/RegionTypes/ProgressTexture.lua",
-        "WeakAuras/RegionTypes/RegionPrototype.lua",
-        "WeakAuras/RegionTypes/Text.lua",
-        "WeakAuras/RegionTypes/Texture.lua",
-        "WeakAuras/AuraEnvironment.lua",
-        "WeakAuras/BuffTrigger.lua",
-        "WeakAuras/BuffTrigger2.lua",
-        "WeakAuras/GenericTrigger.lua",
-        "WeakAuras/Init.lua",
-        "WeakAuras/Profiling.lua",
-        "WeakAuras/Prototypes.lua",
-        "WeakAuras/Transmission.lua",
-        "WeakAuras/Types.lua",
-        "WeakAuras/WeakAuras.lua",
-        "WeakAuras/SubRegionTypes/SubText.lua",
-        "WeakAuras/History.lua"
-    },
-    WeakAuras_Options = {
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasDisplayButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasIconButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasImportButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasLoadedHeaderButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasMultiLineEditBox.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasNewButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasNewHeaderButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasSortedDropDown.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasTextureButton.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIContainer-WeakAurasTreeGroup.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasIcon.lua",
-        "WeakAurasOptions/AceGUI-Widgets/AceGUIWidget-WeakAurasExpand.lua",
-        "WeakAurasOptions/OptionsFrames/CodeReview.lua",
-        "WeakAurasOptions/OptionsFrames/FrameChooser.lua",
-        "WeakAurasOptions/OptionsFrames/IconPicker.lua",
-        "WeakAurasOptions/OptionsFrames/ImportExport.lua",
-        "WeakAurasOptions/OptionsFrames/ModelPicker.lua",
-        "WeakAurasOptions/OptionsFrames/MoverSizer.lua",
-        "WeakAurasOptions/OptionsFrames/OptionsFrame.lua",
-        "WeakAurasOptions/OptionsFrames/TextEditor.lua",
-        "WeakAurasOptions/OptionsFrames/TexturePicker.lua",
-        "WeakAurasOptions/RegionOptions/AuraBar.lua",
-        "WeakAurasOptions/RegionOptions/DynamicGroup.lua",
-        "WeakAurasOptions/RegionOptions/Group.lua",
-        "WeakAurasOptions/RegionOptions/Icon.lua",
-        "WeakAurasOptions/RegionOptions/Model.lua",
-        "WeakAurasOptions/RegionOptions/ProgressTexture.lua",
-        "WeakAurasOptions/RegionOptions/Text.lua",
-        "WeakAurasOptions/RegionOptions/Texture.lua",
-        "WeakAurasOptions/ActionOptions.lua",
-        "WeakAurasOptions/AnimationOptions.lua",
-        "WeakAurasOptions/BuffTrigger.lua",
-        "WeakAurasOptions/BuffTrigger2.lua",
-        "WeakAurasOptions/Cache.lua",
-        "WeakAurasOptions/ConditionOptions.lua",
-        "WeakAurasOptions/ExternalAddons.lua",
-        "WeakAurasOptions/GenericTrigger.lua",
-        "WeakAurasOptions/WeakAurasOptions.lua",
-        "WeakAurasOptions/AuthorOptions.lua",
-        "WeakAurasOptions/SubRegionOptions/SubText.lua"
-    },
-    WeakAuras_Templates = {
-        "WeakAurasTemplates/TriggerTemplates.lua",
-        "WeakAurasTemplates/TriggerTemplatesData.lua",
-    },
+    WeakAuras_Main = generateFileList("WeakAuras"),
+    WeakAuras_Options = generateFileList("WeakAurasOptions"),
+    WeakAuras_Templates = generateFileList("WeakAurasTemplates"),
 }
 
 local ordered = {
