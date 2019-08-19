@@ -36,6 +36,11 @@ local default = {
   icon_color = {1.0, 1.0, 1.0, 1.0},
   frameStrata = 1,
   zoom = 0,
+  subRegions = {
+    [1] = {
+      ["type"] = "aurabar_bar"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
@@ -644,8 +649,7 @@ local function create(parent)
   function region.SetFrameLevel(self, frameLevel)
     oldSetFrameLevel(self, frameLevel);
 
-    iconFrame:SetFrameLevel(frameLevel + 2);
-    bar:SetFrameLevel(frameLevel + 2);
+    iconFrame:SetFrameLevel(frameLevel);
 
     if (self.__WAGlowFrame) then
       self.__WAGlowFrame:SetFrameLevel(frameLevel + 5);
@@ -1182,3 +1186,28 @@ end
 
 -- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);
+
+local function subSupports(regionType)
+  return regionType == "aurabar"
+end
+
+local function noop()
+end
+
+local function SetFrameLevel(self, level)
+  self.parent.bar:SetFrameLevel(level)
+end
+
+local function subCreate()
+  local result = {}
+  result.Update = noop
+  result.UpdateAnchor = noop
+  result.SetFrameLevel = SetFrameLevel
+  return result
+end
+
+local function subModify(parent, region)
+  region.parent = parent
+end
+
+WeakAuras.RegisterSubRegionType("aurabar_bar", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);

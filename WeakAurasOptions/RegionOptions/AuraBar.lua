@@ -743,5 +743,27 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
+local function subCreateOptions(parentData, data, index, subIndex)
+  local order = 9
+  local options = {
+    __title = L["Foreground"],
+    __order = 1,
+    __up = function()
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "aurabar_bar")) then
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
+    end,
+    __down = function()
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "aurabar_bar")) then
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
+    end,
+    __nooptions = true
+  }
+  return options
+end
+
 -- Register new region type options with WeakAuras
 WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates, GetAnchors);
+
+WeakAuras.RegisterSubRegionOptions("aurabar_bar", subCreateOptions, L["Foreground"]);

@@ -373,7 +373,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   end
 end
 
-function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties)
+function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -420,6 +420,7 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
       default = default,
       addDefaultsForNewAura = addDefaultsForNewAura,
       properties = properties,
+      supportsAdd = supportsAdd == nil and true or supportsAdd,
       acquire = function()
         local subRegion = pool:Acquire()
         onAcquire(subRegion)
@@ -3416,6 +3417,8 @@ function WeakAuras.Modernize(data)
 
   if data.internalVersion < 22 then
     if data.regionType == "aurabar" then
+      data.subRegions = data.subRegions or {}
+
       local border = {
         ["type"] = "subborder",
         border_visible = data.border,
@@ -3431,9 +3434,12 @@ function WeakAuras.Modernize(data)
       data.borderOffset = nil
       data.borderInset = nil
       data.borderSize = nil
-
-      data.subRegions = data.subRegions or {}
-      tinsert(data.subRegions, border)
+      -- TODO test this conversion code
+      if data.borderInFront then
+        tinsert(data.subRegions, border)
+      else
+        tinsert(data.subRegions, 1, border)
+      end
 
       local propertyRenames = {
         borderColor  = "sub.".. #data.subRegions..".border_color",
