@@ -1184,8 +1184,20 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
+local function ValidateRegion(data)
+  data.subRegions = data.subRegions or {}
+  for index, subRegionData in ipairs(data.subRegions) do
+    if subRegionData.type == "aurabar_bar" then
+      return
+    end
+  end
+  tinsert(data.subRegions, 1, {
+    ["type"] = "aurabar_bar"
+  })
+end
+
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties, ValidateRegion);
 
 local function subSupports(regionType)
   return regionType == "aurabar"

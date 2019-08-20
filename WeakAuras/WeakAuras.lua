@@ -342,7 +342,7 @@ function WeakAuras.validate(input, default)
   end
 end
 
-function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties)
+function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties, validate)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -368,6 +368,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
       create = createFunction,
       modify = modifyFunction,
       default = default,
+      validate = validate,
       properties = properties,
     };
   end
@@ -420,7 +421,7 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
       default = default,
       addDefaultsForNewAura = addDefaultsForNewAura,
       properties = properties,
-      supportsAdd = supportsAdd == nil and true or supportsAdd,
+      supportsAdd = supportsAdd == nil or supportsAdd,
       acquire = function()
         local subRegion = pool:Acquire()
         onAcquire(subRegion)
@@ -3903,6 +3904,11 @@ function WeakAuras.PreAdd(data)
   local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
   if default then
     WeakAuras.validate(data, default)
+  end
+
+  local regionValidate = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].validate
+  if regionValidate then
+    regionValidate(data)
   end
 
   if data.subRegions then
