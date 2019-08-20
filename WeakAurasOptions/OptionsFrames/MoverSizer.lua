@@ -385,7 +385,7 @@ local function ConstructMoverSizer(parent)
     insets = {left = 0, right = 0, top = 0, bottom = 0}
   })
   frame:EnableMouse()
-  frame:SetFrameStrata("HIGH")
+  frame:SetFrameStrata("TOOLTIP")
 
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
@@ -404,6 +404,7 @@ local function ConstructMoverSizer(parent)
   local mover = CreateFrame("FRAME", nil, frame)
   mover:RegisterEvent("PLAYER_REGEN_DISABLED")
   mover:EnableMouse()
+  mover:SetFrameStrata("TOOLTIP")
   mover.moving = {}
   mover.interims = {}
   mover.selfPointIcon = mover:CreateTexture()
