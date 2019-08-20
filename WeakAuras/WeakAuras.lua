@@ -3435,7 +3435,6 @@ function WeakAuras.Modernize(data)
       data.borderOffset = nil
       data.borderInset = nil
       data.borderSize = nil
-      -- TODO test this conversion code
       if data.borderInFront then
         tinsert(data.subRegions, border)
       else
