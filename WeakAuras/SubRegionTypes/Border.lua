@@ -4,13 +4,17 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
 local default = function(parentType)
-  return {
+  local options = {
     border_visible = true,
     border_color = {1, 1, 1, 1},
     border_edge = "1 Pixel",
     border_offset = 0,
     border_size = 2,
   }
+  if parentType == "aurabar" then
+    options["border_anchor"] = "bar"
+  end
+  return options
 end
 
 local properties = {
