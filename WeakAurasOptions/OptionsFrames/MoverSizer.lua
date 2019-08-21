@@ -385,7 +385,6 @@ local function ConstructMoverSizer(parent)
     insets = {left = 0, right = 0, top = 0, bottom = 0}
   })
   frame:EnableMouse()
-  frame:SetFrameStrata("TOOLTIP")
 
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
@@ -404,7 +403,6 @@ local function ConstructMoverSizer(parent)
   local mover = CreateFrame("FRAME", nil, frame)
   mover:RegisterEvent("PLAYER_REGEN_DISABLED")
   mover:EnableMouse()
-  mover:SetFrameStrata("TOOLTIP")
   mover.moving = {}
   mover.interims = {}
   mover.selfPointIcon = mover:CreateTexture()
@@ -481,6 +479,12 @@ local function ConstructMoverSizer(parent)
     frame:SetPoint("BOTTOMLEFT", mover, "BOTTOMLEFT", -8, -8)
     frame:SetPoint("TOPRIGHT", mover, "TOPRIGHT", 8, 8)
     frame:ScaleCorners(region:GetWidth(), region:GetHeight())
+    local regionStrata = region:GetFrameStrata()
+    if regionStrata then
+      local strata = math.min(tIndexOf(WeakAuras.frame_strata_types, regionStrata) + 1, 9)
+      frame:SetFrameStrata(WeakAuras.frame_strata_types[strata])
+      mover:SetFrameStrata(WeakAuras.frame_strata_types[strata])
+    end
 
     local db = savedVars.db
     mover.startMoving = function()
