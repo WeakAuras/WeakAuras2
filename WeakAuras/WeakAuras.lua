@@ -3427,6 +3427,7 @@ function WeakAuras.Modernize(data)
         border_edge = data.borderEdge,
         border_offset = data.borderOffset,
         border_size = data.borderSize,
+        border_anchor = "bar",
       }
 
       data.border = nil
