@@ -8,9 +8,6 @@ local default = {
   icon = true,
   desaturate = false,
   auto = true,
-  borderInFront = true,
-  backdropInFront = false,
-  border = false,
   texture = "Blizzard",
   width = 200,
   height = 15,
@@ -29,13 +26,6 @@ local default = {
   sparkRotationMode = "AUTO",
   sparkRotation = 0,
   sparkHidden = "NEVER",
-  borderColor = {1.0, 1.0, 1.0, 0.5},
-  backdropColor = {1.0, 1.0, 1.0, 0.5},
-  borderEdge = "None",
-  borderOffset = 5,
-  borderInset = 11,
-  borderSize = 16,
-  borderBackdrop = "Blizzard Tooltip",
   selfPoint = "CENTER",
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -46,6 +36,11 @@ local default = {
   icon_color = {1.0, 1.0, 1.0, 1.0},
   frameStrata = 1,
   zoom = 0,
+  subRegions = {
+    [1] = {
+      ["type"] = "aurabar_bar"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
@@ -94,16 +89,6 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1
-  },
-  borderColor = {
-    display = L["Border Color"],
-    setter = "SetBorderColor",
-    type = "color"
-  },
-  backdropColor = {
-    display = L["Backdrop Color"],
-    setter = "SetBackdropColor",
-    type = "color"
   },
   width = {
     display = L["Width"],
@@ -664,24 +649,7 @@ local function create(parent)
   function region.SetFrameLevel(self, frameLevel)
     oldSetFrameLevel(self, frameLevel);
 
-    iconFrame:SetFrameLevel(frameLevel + 2);
-    bar:SetFrameLevel(frameLevel + 2);
-
-    if (region.border) then
-      if (region.borderInFront) then
-        region.border:SetFrameLevel(frameLevel + 4);
-      else
-        region.border:SetFrameLevel(frameLevel + 1);
-      end
-    end
-
-    if (region.backdrop) then
-      if (region.backdropInFront) then
-        region.backdrop:SetFrameLevel(frameLevel + 3);
-      else
-        region.backdrop:SetFrameLevel(frameLevel + 0);
-      end
-    end
+    iconFrame:SetFrameLevel(frameLevel);
 
     if (self.__WAGlowFrame) then
       self.__WAGlowFrame:SetFrameLevel(frameLevel + 5);
@@ -893,64 +861,6 @@ local function modify(parent, region, data)
     WeakAuras.DeepCopy(data.overlays, region.overlays);
   end
 
-  -- Update border
-  if data.border then
-    -- Create border
-    if (not region.border) then
-      local border = CreateFrame("frame", nil, region);
-      region.border = border;
-    end
-
-    if (not region.backdrop) then
-      local backdrop = CreateFrame("frame", nil, region);
-      region.backdrop = backdrop;
-    end
-
-    local border = region.border;
-    local backdrop = region.backdrop;
-    border:SetBackdrop({
-      edgeFile = SharedMedia:Fetch("border", data.borderEdge) or "",
-      edgeSize = data.borderSize,
-      bgFile = nil,
-      insets = {
-        left = data.borderInset,
-        right = data.borderInset,
-        top = data.borderInset,
-        bottom = data.borderInset,
-      },
-    });
-    border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
-    border:SetPoint("topright",   region, "topright",    data.borderOffset,  data.borderOffset);
-    border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
-    border:SetBackdropColor(0, 0, 0, 0);
-
-    backdrop:SetBackdrop({
-      edgeFile = nil,
-      edgeSize = data.borderSize,
-      bgFile = SharedMedia:Fetch("background", data.borderBackdrop) or "",
-      insets = {
-        left = data.borderInset,
-        right = data.borderInset,
-        top = data.borderInset,
-        bottom = data.borderInset,
-      },
-    });
-    backdrop:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
-    backdrop:SetPoint("topright",   region, "topright",    data.borderOffset,  data.borderOffset);
-    backdrop:SetBackdropBorderColor(0, 0, 0, 0);
-    backdrop:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
-
-    border:Show();
-    backdrop:Show();
-  else
-    if (region.border) then
-      region.border:Hide();
-    end
-    if (region.backdrop) then
-      region.backdrop:Hide();
-    end
-  end
-
   -- Update texture settings
   local texturePath = SharedMedia:Fetch("statusbar", data.texture) or "";
   bar:SetStatusBarTexture(texturePath);
@@ -974,25 +884,6 @@ local function modify(parent, region, data)
 
   iconFrame:SetFrameLevel(frameLevel + 2);
   bar:SetFrameLevel(frameLevel + 2);
-
-  if (region.border) then
-    if (data.borderInFront) then
-      region.border:SetFrameLevel(frameLevel + 4);
-    else
-      region.border:SetFrameLevel(frameLevel + 1);
-    end
-  end
-
-  if (region.backdrop) then
-    if (data.backdropInFront) then
-      region.backdrop:SetFrameLevel(frameLevel + 3);
-    else
-      region.backdrop:SetFrameLevel(frameLevel + 0);
-    end
-  end
-
-  region.borderInFront = data.borderInFront;
-  region.backdropInFront = data.backdropInFront;
 
   -- Color update function
   region.Color = region.Color or function(self, r, g, b, a)
@@ -1248,18 +1139,6 @@ local function modify(parent, region, data)
     self.bar.spark:SetWidth(width);
   end
 
-  function region:SetBorderColor(r, g, b, a)
-    if (self.border) then
-      self.border:SetBackdropBorderColor(r, g, b, a);
-    end
-  end
-
-  function region:SetBackdropColor(r, g, b, a)
-    if (self.backdrop) then
-      self.backdrop:SetBackdropColor(r, g, b, a);
-    end
-  end
-
   function region:SetRegionWidth(width)
     self.width = width;
     self:Scale(self.scalex, self.scaley);
@@ -1305,5 +1184,42 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
+local function ValidateRegion(data)
+  data.subRegions = data.subRegions or {}
+  for index, subRegionData in ipairs(data.subRegions) do
+    if subRegionData.type == "aurabar_bar" then
+      return
+    end
+  end
+  tinsert(data.subRegions, 1, {
+    ["type"] = "aurabar_bar"
+  })
+end
+
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties, ValidateRegion);
+
+local function subSupports(regionType)
+  return regionType == "aurabar"
+end
+
+local function noop()
+end
+
+local function SetFrameLevel(self, level)
+  self.parent.bar:SetFrameLevel(level)
+end
+
+local function subCreate()
+  local result = {}
+  result.Update = noop
+  result.UpdateAnchor = noop
+  result.SetFrameLevel = SetFrameLevel
+  return result
+end
+
+local function subModify(parent, region)
+  region.parent = parent
+end
+
+WeakAuras.RegisterSubRegionType("aurabar_bar", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);

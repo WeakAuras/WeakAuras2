@@ -1,4 +1,4 @@
-local internalVersion = 21;
+local internalVersion = 22;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -342,7 +342,7 @@ function WeakAuras.validate(input, default)
   end
 end
 
-function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties)
+function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties, validate)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -368,12 +368,13 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
       create = createFunction,
       modify = modifyFunction,
       default = default,
+      validate = validate,
       properties = properties,
     };
   end
 end
 
-function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties)
+function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -420,6 +421,7 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
       default = default,
       addDefaultsForNewAura = addDefaultsForNewAura,
       properties = properties,
+      supportsAdd = supportsAdd == nil or supportsAdd,
       acquire = function()
         local subRegion = pool:Acquire()
         onAcquire(subRegion)
@@ -1006,6 +1008,7 @@ function WeakAuras.GetProperties(data)
   end
 
   if data.subRegions then
+    local subIndex = {}
     for index, subRegion in ipairs(data.subRegions) do
       local subRegionTypeData = WeakAuras.subRegionTypes[subRegion.type];
       local propertiesFunction = subRegionTypeData and subRegionTypeData.properties
@@ -1018,7 +1021,8 @@ function WeakAuras.GetProperties(data)
 
       if subProperties then
         for key, property in pairs(subProperties) do
-          property.display = { index .. ". " .. subRegionTypeData.displayName, property.display }
+          subIndex[key] = subIndex[key] and subIndex[key] + 1 or 1
+          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName, property.display }
           properties["sub." .. index .. "." .. key ] = property;
         end
       end
@@ -3412,6 +3416,47 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if data.internalVersion < 22 then
+    if data.regionType == "aurabar" then
+      data.subRegions = data.subRegions or {}
+
+      local border = {
+        ["type"] = "subborder",
+        border_visible = data.border,
+        border_color = data.borderColor,
+        border_edge = data.borderEdge,
+        border_offset = data.borderOffset,
+        border_size = data.borderSize,
+      }
+
+      data.border = nil
+      data.borderColor = nil
+      data.borderEdge = nil
+      data.borderOffset = nil
+      data.borderInset = nil
+      data.borderSize = nil
+      if data.borderInFront then
+        tinsert(data.subRegions, border)
+      else
+        tinsert(data.subRegions, 1, border)
+      end
+
+      local propertyRenames = {
+        borderColor  = "sub.".. #data.subRegions..".border_color",
+      }
+
+      if (data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -3858,6 +3903,11 @@ function WeakAuras.PreAdd(data)
   local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
   if default then
     WeakAuras.validate(data, default)
+  end
+
+  local regionValidate = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].validate
+  if regionValidate then
+    regionValidate(data)
   end
 
   if data.subRegions then

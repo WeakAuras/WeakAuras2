@@ -5,39 +5,6 @@ local L = WeakAuras.L;
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
-local function DeleteSubRegion(data, index, regionType)
-  if not data.subRegions then
-    return
-  end
-  if data.subRegions[index] and data.subRegions[index].type == regionType then
-    tremove(data.subRegions, index)
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
-  end
-end
-
-local function MoveSubRegionUp(data, index, regionType)
-  if not data.subRegions or index <= 1 then
-    return
-  end
-  if data.subRegions[index] and data.subRegions[index].type == regionType then
-    data.subRegions[index - 1], data.subRegions[index] = data.subRegions[index], data.subRegions[index - 1]
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
-  end
-end
-
-local function MoveSubRegionDown(data, index, regionType)
-  if not data.subRegions then
-    return
-  end
-  if data.subRegions[index] and data.subRegions[index].type == regionType and data.subRegions[index + 1] then
-    data.subRegions[index], data.subRegions[index + 1] = data.subRegions[index + 1], data.subRegions[index]
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
-  end
-end
-
 local self_point_types = {
   BOTTOMLEFT = L["Bottom Left"],
   BOTTOM = L["Bottom"],
@@ -51,7 +18,7 @@ local self_point_types = {
   AUTO = L["Automatic"]
 }
 
-local function createOptions(parentData, data, index)
+local function createOptions(parentData, data, index, subIndex)
   -- The toggles for font flags is intentionally not keyed on the id
   -- So that all auras share the state of that toggle
   local hiddenFontExtra = function()
@@ -61,20 +28,25 @@ local function createOptions(parentData, data, index)
   local indentWidth = 0.15
 
   local options = {
-    __title = L["Text %s"]:format(index),
+    __title = L["Text %s"]:format(subIndex),
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionUp, index, "subtext")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subtext")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, MoveSubRegionDown, index, "subtext")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subtext")) then
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
+    end,
+    __duplicate = function()
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DuplicateSubRegion, index, "subtext")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
     __delete = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, DeleteSubRegion, index, "subtext")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subtext")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,

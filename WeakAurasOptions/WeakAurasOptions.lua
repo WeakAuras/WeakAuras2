@@ -2403,9 +2403,11 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   local hasDelete = input.__delete
   local hasUp = input.__up
   local hasDown = input.__down
+  local hasDuplicate = input.__duplicate
   local hiddenFunc = input.__hidden
+  local nooptions = input.__nooptions
 
-  local titleWidth = WeakAuras.doubleWidth - (hasDelete and 0.15 or 0) - (hasUp and 0.15 or 0) - (hasDown and 0.15 or 0)
+  local titleWidth = WeakAuras.doubleWidth - (hasDelete and 0.15 or 0) - (hasUp and 0.15 or 0) - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
     type = "description",
@@ -2420,13 +2422,19 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     order = order + 0.1,
     width = titleWidth,
     func = function(info)
-      local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
-      WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
-      WeakAuras.RefillOptions()
+      if not nooptions then
+        local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
+        WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
+        WeakAuras.RefillOptions()
+      end
     end,
     image = function()
-      local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
-      return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+      if nooptions then
+        return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\bullet1", 18, 18
+      else
+        local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
+        return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+      end
     end,
     control = "WeakAurasExpand",
     hidden = hiddenFunc
@@ -2460,11 +2468,25 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     }
   end
 
+  if hasDuplicate then
+    options[key .. "duplicateButton"] = {
+      type = "execute",
+      name = "",
+      order = order + 0.5,
+      width = 0.15,
+      func = input.__duplicate,
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
+      imageWidth = 24,
+      imageHeight = 24,
+      hidden = hiddenFunc
+    }
+  end
+
   if hasDelete then
     options[key .. "deleteButton"] = {
       type = "execute",
       name = "",
-      order = order + 0.5,
+      order = order + 0.6,
       width = 0.15,
       func = input.__delete,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
@@ -2581,23 +2603,25 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
   result.__order = 300
   result.__title = L["Add Extra Elements"]
   for subRegionType in pairs(supported) do
-    result[subRegionType .. "space"] = {
-      type = "description",
-      width = WeakAuras.doubleWidth,
-      name = "",
-      order = order,
-    }
-    order = order + 1
-    result[subRegionType] = {
-      type = "execute",
-      width = WeakAuras.normalWidth,
-      name = string.format(L["Add %s"], WeakAuras.subRegionTypes[subRegionType].displayName),
-      order = order,
-      func = function()
-        AddSubRegion(data, subRegionType)
-      end
-    }
-    order = order + 1
+    if WeakAuras.subRegionTypes[subRegionType].supportsAdd then
+      result[subRegionType .. "space"] = {
+        type = "description",
+        width = WeakAuras.doubleWidth,
+        name = "",
+        order = order,
+      }
+      order = order + 1
+      result[subRegionType] = {
+        type = "execute",
+        width = WeakAuras.normalWidth,
+        name = string.format(L["Add %s"], WeakAuras.subRegionTypes[subRegionType].displayName),
+        order = order,
+        func = function()
+          AddSubRegion(data, subRegionType)
+        end,
+      }
+      order = order + 1
+    end
   end
   regionOption["sub"] = result;
 end
@@ -2609,10 +2633,12 @@ function WeakAuras.AddOption(id, data)
     regionOption = regionOptions[data.regionType].create(id, data);
 
     if data.subRegions then
+      local subIndex = {}
       for index, subRegionData in ipairs(data.subRegions) do
         local subRegionType = subRegionData.type
         if WeakAuras.subRegionOptions[subRegionType] then
-          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index)
+          subIndex[subRegionType] = subIndex[subRegionType] and subIndex[subRegionType] + 1 or 1
+          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index, subIndex[subRegionType])
           options.__order = 200 + index
           regionOption["sub." .. index .. "." .. subRegionType] = options
           commonOption[subRegionType] = common
@@ -3585,10 +3611,12 @@ function WeakAuras.ReloadGroupRegionOptions(data)
       end
     end
     if childData.subRegions then
+      local subIndex = {}
       for index, subRegionData in ipairs(childData.subRegions) do
         local subRegionType = subRegionData.type
         if WeakAuras.subRegionOptions[subRegionType] then
-          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index)
+          subIndex[subRegionType] = subIndex[subRegionType] and subIndex[subRegionType] + 1 or 1
+          local options, common = WeakAuras.subRegionOptions[subRegionType].create(data, subRegionData, index, subIndex[subRegionType])
           options.__order = 200 + index
           allOptions["sub." .. index .. "." .. subRegionType] = options
           commonOption[subRegionType] = common
