@@ -649,8 +649,6 @@ local function create(parent)
   function region.SetFrameLevel(self, frameLevel)
     oldSetFrameLevel(self, frameLevel);
 
-    iconFrame:SetFrameLevel(frameLevel);
-
     if (self.__WAGlowFrame) then
       self.__WAGlowFrame:SetFrameLevel(frameLevel + 5);
     end
@@ -878,12 +876,6 @@ local function modify(parent, region, data)
   bar.spark.sparkRotationMode = data.sparkRotationMode;
   bar.spark.sparkRotation = data.sparkRotation;
   bar.spark.sparkMirror = data.sparkMirror;
-
-  -- Bar or Border (+Backdrop) in front
-  local frameLevel = region:GetFrameLevel();
-
-  iconFrame:SetFrameLevel(frameLevel + 2);
-  bar:SetFrameLevel(frameLevel + 2);
 
   -- Color update function
   region.Color = region.Color or function(self, r, g, b, a)
@@ -1208,6 +1200,7 @@ end
 
 local function SetFrameLevel(self, level)
   self.parent.bar:SetFrameLevel(level)
+  self.parent.iconFrame:SetFrameLevel(level)
 end
 
 local function subCreate()
