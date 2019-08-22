@@ -3708,7 +3708,7 @@ WeakAuras.event_prototypes = {
       {
         name = "cast",
         display = L["Cast Bar"],
-        desc = L["Filter messages with format < message >"],
+        desc = L["Filter messages with format <message>"],
         type = "tristate",
         test = "true",
         init = "false",
