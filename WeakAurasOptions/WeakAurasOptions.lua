@@ -1799,6 +1799,7 @@ WeakAuras.getAll = getAll
 
 local function setAll(data, info, ...)
   WeakAuras.pauseOptionsProcessing(true);
+  WeakAuras.PauseAllDynamicGroups()
   local before = getAll(data, info, ...)
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
@@ -1827,10 +1828,10 @@ local function setAll(data, info, ...)
     end
   end
 
+  WeakAuras.ResumeAllDynamicGroups()
   WeakAuras.pauseOptionsProcessing(false);
   WeakAuras.ScanForLoads();
   WeakAuras.SortDisplayButtons();
-
 end
 WeakAuras.setAll = setAll
 
