@@ -139,7 +139,7 @@ local function createOptions(id, data)
 
   return {
     text = options;
-    position = WeakAuras.PositionOptions(id, data, nil, true, nil, true);
+    position = WeakAuras.PositionOptions(id, data, nil, true);
   };
 end
 
