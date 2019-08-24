@@ -4735,7 +4735,7 @@ function WeakAuras.OpenIconPicker(data, field, groupIcon)
   frame.iconPicker:Open(data, field, groupIcon);
 end
 
-function WeakAuras.OpenModelPicker(data, field)
+function WeakAuras.OpenModelPicker(data, field, parentData)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
@@ -4745,7 +4745,7 @@ function WeakAuras.OpenModelPicker(data, field)
     end
     frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
   end
-  frame.modelPicker:Open(data, field);
+  frame.modelPicker:Open(data, field, parentData);
 end
 
 function WeakAuras.OpenCodeReview(data)

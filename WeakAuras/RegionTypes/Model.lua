@@ -124,8 +124,7 @@ local function modify(parent, region, data)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-      data.model_st_us / 1000);
+      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz), data.model_st_us / 1000);
   else
     model:ClearTransform();
     model:SetPosition(data.model_z, data.model_x, data.model_y);
@@ -269,14 +268,16 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
---- Work around for movies and world map hiding all models
+-- Work around for movies and world map hiding all models
 do
   function WeakAuras.PreShowModels(self, event)
     WeakAuras.StartProfileSystem("model");
     for id, data in pairs(WeakAuras.regions) do
       WeakAuras.StartProfileAura(id);
-      if (data.regionType == "model" and data.region.toShow) then
-        data.region:PreShow();
+      if data.region.toShow then
+        if (data.regionType == "model") then
+          data.region:PreShow();
+        end
       end
       WeakAuras.StopProfileAura(id);
     end
