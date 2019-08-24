@@ -425,6 +425,7 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
       acquire = function()
         local subRegion = pool:Acquire()
         onAcquire(subRegion)
+        subRegion.type = name
         return subRegion
       end,
       release = function(subRegion)

@@ -57,3 +57,4 @@ RegionTypes\Model.lua
 # sub region support
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
+SubRegionTypes\BarModel.lua

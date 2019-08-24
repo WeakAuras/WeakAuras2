@@ -665,6 +665,15 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if(region.PreShow) then
         region:PreShow();
       end
+
+      if region.subRegions then
+        for index, subRegion in pairs(region.subRegions) do
+          if subRegion.PreShow then
+            subRegion:PreShow()
+          end
+        end
+      end
+
       region.justCreated = nil;
       WeakAuras.ApplyFrameLevel(region)
       region:Show();
@@ -711,6 +720,15 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if(region.PreShow) then
         region:PreShow();
       end
+
+      if region.subRegions then
+        for index, subRegion in pairs(region.subRegions) do
+          if subRegion.PreShow then
+            subRegion:PreShow()
+          end
+        end
+      end
+
       WeakAuras.ApplyFrameLevel(region)
       region:Show();
       WeakAuras.PerformActions(data, "start", region);
