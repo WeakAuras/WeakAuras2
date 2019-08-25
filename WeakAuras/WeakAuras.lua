@@ -3181,7 +3181,9 @@ function WeakAuras.Modernize(data)
           local value = trigger.form
           if type(value) ~= "table" then
             if trigger.use_form == false then
-              trigger.form = { multi = { [value] = true } }
+              if value then
+                trigger.form = { multi = { [value] = true } }
+              end
             elseif trigger.use_form then
               trigger.form = { single = value }
             end

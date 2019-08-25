@@ -4399,7 +4399,7 @@ WeakAuras.event_prototypes = {
           ]]
         end
         return ret:format(trigger.form.single)
-      elseif trigger.use_form == false and trigger.form.multi then
+      elseif trigger.use_form == false and trigger.form and trigger.form.multi then
         for index in pairs(trigger.form.multi) do
           local ret2 = [[
             if not active then
