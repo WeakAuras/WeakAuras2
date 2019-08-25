@@ -1049,7 +1049,12 @@ local function modify(parent, region, data)
       local max = #newPositions
       for index = 1, max do
         if newPositions[index] then
-          newPositions[self.sortedChildren[index]] = newPositions[index]
+          local data = self.sortedChildren[index]
+          if data then
+            newPositions[data] = newPositions[index]
+          else
+            geterrorhandler()(("Error in '%s', Grow function return position for an invalid region"):format(region.id))
+          end
           newPositions[index] = nil
         end
       end
