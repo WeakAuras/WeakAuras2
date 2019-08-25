@@ -1890,7 +1890,7 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed";
   state.duration = 0;
   state.expirationTime = math.huge;
-  local name, icon = BuffTrigger.GetNameAndIcon(data, triggernum)
+  local name, icon = GetNameAndIconFromTrigger(data, triggernum)
   state.name = name
   state.icon = icon
 end
