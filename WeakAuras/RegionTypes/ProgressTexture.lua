@@ -781,7 +781,7 @@ end
 local function ensureExtraSpinners(region, count)
   local parent = region:GetParent();
   for i = #region.extraSpinners + 1, count do
-    local extraSpinner = createSpinner(region, "OVERLAY", parent:GetFrameLevel() + 3, min(i, 7));
+    local extraSpinner = createSpinner(region, "OVERLAY", min(i, 7));
     extraSpinner:SetTexture(region.currentTexture);
     extraSpinner:SetBlendMode(region.foreground:GetBlendMode());
     region.extraSpinners[i] = extraSpinner;
@@ -981,8 +981,8 @@ local function create(parent)
   local foreground = createTexture(region, "ARTWORK", 0);
   region.foreground = foreground;
 
-  region.foregroundSpinner = createSpinner(region, "ARTWORK", parent:GetFrameLevel() + 2, 1);
-  region.backgroundSpinner = createSpinner(region, "BACKGROUND", parent:GetFrameLevel() + 1, 1);
+  region.foregroundSpinner = createSpinner(region, "ARTWORK", 1);
+  region.backgroundSpinner = createSpinner(region, "BACKGROUND", 1);
 
   region.extraTextures = {};
   region.extraSpinners = {};
