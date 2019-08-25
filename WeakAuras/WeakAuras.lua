@@ -3217,7 +3217,7 @@ function WeakAuras.Modernize(data)
 
       local text1 = {
         ["type"] = "subtext",
-        text_visible = data.text1Enabled or true,
+        text_visible = data.text1Enabled ~= false,
         text_color = data.text1Color,
         text_text = data.text1,
         text_font = data.text1Font,
