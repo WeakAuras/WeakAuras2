@@ -1627,9 +1627,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       WeakAuras.dynFrame:AddAction('login', loginThread)
     end
     if not ok then
-    loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
-      .. "\nMessage:" .. msg
-      geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
+      loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
+        .. "\nMessage:" .. msg
+        geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
