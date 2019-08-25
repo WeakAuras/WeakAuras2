@@ -1,4 +1,4 @@
-local internalVersion = 22;
+local internalVersion = 23;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3171,27 +3171,7 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- Version 18 was introduced in July 2019 for Classic
-  if data.internalVersion < 18 then
-    if data.triggers then
-      for triggerId, triggerData in ipairs(data.triggers) do
-        local trigger = triggerData.trigger
-        -- Stance/Form/Aura form field type changed from type="select" to type="multiselect"
-        if trigger and trigger.type == "status" and trigger.event == "Stance/Form/Aura" then
-          local value = trigger.form
-          if type(value) ~= "table" then
-            if trigger.use_form == false then
-              if value then
-                trigger.form = { multi = { [value] = true } }
-              end
-            elseif trigger.use_form then
-              trigger.form = { single = value }
-            end
-          end
-        end
-      end
-    end
-  end
+  -- Version 18 was a migration for stance/form trigger, but deleted later because of migration issue
 
   -- Version 19 were introduced in July 2019 in BFA
   if data.internalVersion < 19 then
@@ -3453,6 +3433,29 @@ function WeakAuras.Modernize(data)
           for changeIndex, change in ipairs(condition.changes) do
             if propertyRenames[change.property] then
               change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 23 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        -- Stance/Form/Aura form field type changed from type="select" to type="multiselect"
+        if trigger and trigger.type == "status" and trigger.event == "Stance/Form/Aura" then
+          local value = trigger.form
+          if type(value) ~= "table" then
+            if trigger.use_form == false then
+              if value then
+                trigger.form = { multi = { [value] = true } }
+              else
+                trigger.form = { multi = { } }
+              end
+            elseif trigger.use_form then
+              trigger.form = { single = value }
             end
           end
         end
