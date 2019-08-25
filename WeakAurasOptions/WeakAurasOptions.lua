@@ -4218,6 +4218,9 @@ function WeakAuras.ConvertDisplay(data, newType)
   local visibility = displayButtons[id]:GetVisibility();
   displayButtons[id]:PriorityHide(0);
 
+  WeakAuras.regions[id].region:Collapse();
+  WeakAuras.CollapseAllClones(id);
+
   WeakAuras.Convert(data, newType);
   displayButtons[id]:SetViewRegion(WeakAuras.regions[id].region);
   displayButtons[id]:Initialize();
