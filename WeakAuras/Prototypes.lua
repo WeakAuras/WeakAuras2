@@ -3356,7 +3356,7 @@ WeakAuras.event_prototypes = {
                 end
               end
             elseif event == "DBM_TimerStop" and state then
-              local bar_remainingTime = GetTime() - state.expirationTime + state.extend
+              local bar_remainingTime = GetTime() - state.expirationTime + (state.extend or 0)
               if state.extend == 0 or bar_remainingTime > 0.2 then
                 state.show = false
                 state.changed = true
@@ -3368,7 +3368,7 @@ WeakAuras.event_prototypes = {
                 else
                   local state = states[id]
                   if state then
-                    local bar_remainingTime = GetTime() - state.expirationTime + state.extend
+                    local bar_remainingTime = GetTime() - state.expirationTime + (state.extend or 0)
                     if state.extend == 0 or bar_remainingTime > 0.2 then
                       state.show = false
                       state.changed = true
@@ -3403,7 +3403,7 @@ WeakAuras.event_prototypes = {
               end
             else
               if state and state.show then
-                local bar_remainingTime = GetTime() - state.expirationTime + state.extend
+                local bar_remainingTime = GetTime() - state.expirationTime + (state.extend or 0)
                 if state.extend == 0 or bar_remainingTime > 0.2 then
                   state.show = false
                   state.changed = true
@@ -3601,7 +3601,7 @@ WeakAuras.event_prototypes = {
                 end
               end
             elseif event == "BigWigs_StopBar" and state then
-              local bar_remainingTime = GetTime() - state.expirationTime + state.extend
+              local bar_remainingTime = GetTime() - state.expirationTime + (state.extend or 0)
               if state.extend == 0 or bar_remainingTime > 0.2 then
                 state.show = false
                 state.changed = true
@@ -3639,7 +3639,7 @@ WeakAuras.event_prototypes = {
               end
             else
               if state and state.show then
-                local bar_remainingTime = GetTime() - state.expirationTime + state.extend
+                local bar_remainingTime = GetTime() - state.expirationTime + (state.extend or 0)
                 if state.extend == 0 or bar_remainingTime > 0.2 then
                   state.show = false
                   state.changed = true
