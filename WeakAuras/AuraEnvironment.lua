@@ -137,7 +137,7 @@ function WeakAuras.ClearAuraEnvironment(id)
   environment_initialized[id] = false;
 end
 
-function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states)
+function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, skipChildren)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
   if not data then
@@ -168,7 +168,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states)
       -- push new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)
 
-      if data.controlledChildren then
+      if data.controlledChildren and not skipChildren then
         current_aura_env.child_envs = {}
         for dataIndex, childID in ipairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childID)
