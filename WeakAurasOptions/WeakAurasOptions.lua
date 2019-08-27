@@ -2667,6 +2667,8 @@ function WeakAuras.AddOption(id, data)
   else
     regionOption = {
       [data.regionType] = {
+        __title = "|cFFFFFF00" .. data.regionType,
+        __order = 1,
         unsupported = {
           type = "description",
           name = L["This region of type \"%s\" is not supported."]:format(data.regionType),
@@ -3388,6 +3390,8 @@ function WeakAuras.ReloadTriggerOptions(data)
     else
       regionOption = {
         [data.regionType] = {
+          __title = "|cFFFFFF00" .. data.regionType,
+          __order = 1,
           unsupported = {
             type = "description",
             name = L["This region of type \"%s\" is not supported."]:format(data.regionType)
