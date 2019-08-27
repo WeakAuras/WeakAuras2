@@ -257,6 +257,8 @@ local function fallbackmodify(parent, region, data)
   region:SetWidth(text:GetWidth());
   region:SetHeight(text:GetStringHeight());
 
+  region.Update = function() end
+
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
