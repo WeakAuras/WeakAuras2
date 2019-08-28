@@ -2922,7 +2922,7 @@ do
 
       local function tenchUpdate()
         WeakAuras.StartProfileSystem("generictrigger");
-        local _, mh_rem, _, _, oh_rem = GetWeaponEnchantInfo();
+        local _, mh_rem, _, _, _, oh_rem = GetWeaponEnchantInfo();
         local time = GetTime();
         local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
         local oh_exp_new = oh_rem and (time + (oh_rem / 1000));
