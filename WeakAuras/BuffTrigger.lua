@@ -1268,7 +1268,9 @@ do
       combatAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       combatAuraFrame:RegisterEvent("UNIT_TARGET");
       combatAuraFrame:RegisterEvent("UNIT_AURA");
-      combatAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+      if not WeakAuras.IsClassic() then
+        combatAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+      end
       combatAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED");
       combatAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
       combatAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD");
