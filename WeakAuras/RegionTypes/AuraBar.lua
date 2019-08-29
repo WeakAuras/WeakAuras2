@@ -31,7 +31,6 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  stickyDuration = false,
   icon_side = "RIGHT",
   icon_color = {1.0, 1.0, 1.0, 1.0},
   frameStrata = 1,
