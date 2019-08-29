@@ -4014,12 +4014,12 @@ WeakAuras.event_prototypes = {
         local ret = [[
           local tier = %s;
           local column = %s;
-          local active
+          local active, _, activeName, activeIcon, selected, known, rank
           if WeakAuras.IsClassic() then
-            local _, _, _, _, rank  = GetTalentInfo(tier, column)
+            _, _, _, _, rank  = GetTalentInfo(tier, column)
             active = rank > 0
           else
-            local _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
             active = selected or known;
           end
         ]]
