@@ -2009,7 +2009,7 @@ WeakAuras.event_prototypes = {
       },
       {
         enable = function(trigger)
-          return WeakAuras.IsClassic() and not (trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE")))
+          return WeakAuras.IsClassic() and trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end
       }, -- spellId ignored on classic
       {
