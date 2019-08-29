@@ -561,7 +561,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
     -- In that case we also need to overwrite TimerTick
     region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
       self.duration = self.duration or 0
-      if duration <= 0 or duration > self.duration then
+      if duration <= 0 or duration > self.duration or true then
         self.duration = duration;
       end
       self.expirationTime = expirationTime;
