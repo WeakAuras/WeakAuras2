@@ -45,3 +45,5 @@ jobs:
     - name: Notify on Failure
       if: failure()
       run: curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL;
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
