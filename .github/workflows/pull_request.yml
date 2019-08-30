@@ -43,5 +43,5 @@ jobs:
         path: .release/
 
     - name: Notify on Failure
-      if:  ${{ job.status }} == 'failure'
+      if: failure()
       run: curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL; fi
