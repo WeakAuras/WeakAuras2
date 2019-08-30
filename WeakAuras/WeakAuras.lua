@@ -1003,8 +1003,10 @@ function WeakAuras.GetProperties(data)
   local propertiesFunction = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
   if (type(propertiesFunction) == "function") then
     properties = propertiesFunction(data);
-  else
+  elseif propertiesFunction then
     properties = CopyTable(propertiesFunction);
+  else
+    properties = {}
   end
 
   if data.subRegions then
