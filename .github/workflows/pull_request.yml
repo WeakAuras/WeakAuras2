@@ -41,3 +41,9 @@ jobs:
       with:
         name: WeakAuras-PR-${{ github.base_ref }}-classic
         path: .release/
+
+  notify:
+    steps:
+    - name: Notify on Failure
+      if: failure()
+      run: curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL; fi

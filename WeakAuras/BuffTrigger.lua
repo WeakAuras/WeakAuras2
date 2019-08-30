@@ -66,7 +66,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+locl L = WeakAuras.L;
 local BuffTrigger = {};
 
 local timer = WeakAuras.timer;
