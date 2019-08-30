@@ -4376,7 +4376,7 @@ WeakAuras.event_prototypes = {
         local form
         local active = false
       ]]
-      if trigger.use_form and trigger.form.single then
+      if trigger.use_form and trigger.form and trigger.form.single then
         -- Single selection
         ret = ret .. [[
           local trigger_form = %d
