@@ -2923,7 +2923,7 @@ do
 
       local function tenchUpdate()
         WeakAuras.StartProfileSystem("generictrigger");
-        local mh_rem, oh_rem
+        local _, mh_rem, oh_rem
         _, mh_rem, mh_charges, _, _, oh_rem, oh_charges = GetWeaponEnchantInfo();
         local time = GetTime();
         local mh_exp_new = mh_rem and (time + (mh_rem / 1000));
@@ -2932,7 +2932,7 @@ do
           mh_exp = mh_exp_new;
           mh_dur = mh_rem and mh_rem / 1000;
           mh_name = mh_exp and getTenchName(mh) or "None";
-          mh_icon = GetInventoryItemTexture("player", mh)        
+          mh_icon = GetInventoryItemTexture("player", mh)
         end
         if(math.abs((oh_exp or 0) - (oh_exp_new or 0)) > 1) then
           oh_exp = oh_exp_new;

@@ -4598,8 +4598,8 @@ WeakAuras.event_prototypes = {
       end
       return icon;
     end,
-    stacksFunc = function(trigger)      
-      local charges;
+    stacksFunc = function(trigger)
+      local _, charges;
       if(trigger.weapon == "main") then
         _, _, _, _, charges = WeakAuras.GetMHTenchInfo();
       elseif(trigger.weapon == "off") then
