@@ -23,12 +23,15 @@ local WA_GetUnitAura = function(unit, spell, filter)
 end
 
 if WeakAuras.IsClassic() then
+  local WA_GetUnitAuraBase = WA_GetUnitAura
   WA_GetUnitAura = function(unit, spell, filter)
-    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAura(unit, spell, filter)
-    local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, source, name)
-    if duration == 0 and durationNew then
-        duration = durationNew
-        expirationTime = expirationTimeNew
+    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
+    if spellId then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, source, name)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
     end
     return name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
   end
