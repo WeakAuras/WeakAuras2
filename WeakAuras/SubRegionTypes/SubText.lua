@@ -13,6 +13,7 @@ local default = function(parentType)
       text_fontSize = 12,
       text_fontType = "OUTLINE",
       text_visible = true,
+      text_justify = "CENTER",
 
       text_selfPoint = "AUTO",
       text_anchorPoint = "CENTER",
@@ -33,6 +34,7 @@ local default = function(parentType)
       text_fontSize = 12,
       text_fontType = "None",
       text_visible = true,
+      text_justify = "CENTER",
 
       text_selfPoint = "AUTO",
       text_anchorPoint = parentType == "aurabar" and "INNER_RIGHT" or "BOTTOMLEFT",
@@ -178,6 +180,7 @@ local function modify(parent, region, parentData, data, first)
 
   text:SetShadowColor(unpack(data.text_shadowColor))
   text:SetShadowOffset(data.text_shadowXOffset, data.text_shadowYOffset)
+  text:SetJustifyH(data.text_justify)
 
   if first then
     -- Certain data is stored directly on the parent, because it's shared between multiple texts
@@ -344,6 +347,7 @@ local function addDefaultsForNewAura(data)
       text_font = "Friz Quadrata TT",
       text_fontSize = 12,
       text_fontType = "None",
+      text_justify = "CENTER",
       text_visible = true,
 
       text_selfPoint = "AUTO",
@@ -365,6 +369,7 @@ local function addDefaultsForNewAura(data)
       text_font = "Friz Quadrata TT",
       text_fontSize = 12,
       text_fontType = "None",
+      text_justify = "CENTER",
       text_visible = true,
 
       text_selfPoint = "AUTO",
@@ -386,6 +391,7 @@ local function addDefaultsForNewAura(data)
       text_font = "Friz Quadrata TT",
       text_fontSize = 12,
       text_fontType = "OUTLINE",
+      text_justify = "CENTER",
       text_visible = true,
 
       text_selfPoint = "AUTO",

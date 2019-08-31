@@ -83,14 +83,23 @@ local function createOptions(parentData, data, index, subIndex)
                              data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255,
                              data.text_shadowColor[2] * 255, data.text_shadowColor[3]*255)
 
-        local textRotate = "";
-        if data.rotateText == "LEFT" then
-          textRotate = L["rotated left"]
-        elseif data.rotateText == "RIGHT" then
-          textRotate = L["rotated right"]
+        local textJustify = ""
+        if data.text_justify == "CENTER" then
+
+        elseif data.text_justify == "LEFT" then
+          textJustify = " " .. L["and aligned left"]
+        elseif data.text_justify == "RIGHT" then
+          textJustify = " " ..  L["and aligned right"]
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r %s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate)
+        local textRotate = "";
+        if data.rotateText == "LEFT" then
+          textRotate = " " .. L["and rotated left"]
+        elseif data.rotateText == "RIGHT" then
+          textRotate = " " .. L["and rotated right"]
+        end
+
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify)
 
         return firstLine .. "\n" .. secondline
       end,
@@ -210,6 +219,14 @@ local function createOptions(parentData, data, index, subIndex)
       order = 53,
       hidden = hiddenFontExtra
     },
+    text_justify = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Alignment"],
+      values = WeakAuras.justify_types,
+      order = 53.5,
+      hidden = hiddenFontExtra
+    }
   };
 
   -- Note: Anchor Options need to be generalized once there are multiple sub regions
