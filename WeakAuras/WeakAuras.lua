@@ -1503,7 +1503,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
-local loginFinished, loginMessage = false, L["Options will finish loading after the login process has completed."]
+local loginFinished, loginMessage = false, L["Options will open after the login process has completed."]
 
 function WeakAuras.IsLoginFinished()
   return loginFinished
@@ -1522,6 +1522,8 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     WeakAuras.Pause();
     local toAdd = {};
+    loginFinished = false
+    loginMessage = L["Options will open after the login process has completed."]
     for id, data in pairs(db.displays) do
       if(id ~= data.id) then
         print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
@@ -2630,7 +2632,7 @@ function WeakAuras.ResolveCollisions(onFinished)
     end);
     popup.editBox:SetText(currentId);
     popup.text:SetJustifyH("left");
-    popup.icon:SetTexture("Interface\\Aweddons\\WeakAuras\\Media\\Textures\\icon.blp");
+    popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp");
     popup.icon:SetVertexColor(0.833, 0, 1);
 
     UpdateText(popup);
