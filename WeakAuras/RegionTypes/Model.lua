@@ -179,14 +179,14 @@ local function modify(parent, region, data)
   -- Enable model animation
   if(data.advance) then
     local elapsed = 0;
-    model.FrameTick = function(self, elaps)
+    model:SetScript("OnUpdate", function(self, elaps)
       WeakAuras.StartProfileSystem("model");
       elapsed = elapsed + (elaps * 1000);
       model:SetSequenceTime(data.sequence, elapsed);
       WeakAuras.StopProfileSystem("model");
-    end
+    end)
   else
-    model.FrameTick = nil
+    model:SetScript("OnUpdate", nil)
   end
 
   -- Rescale model display
