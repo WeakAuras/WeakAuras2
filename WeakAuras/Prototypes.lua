@@ -4488,39 +4488,43 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = {},
     internal_events = {
-      "MAINHAND_TENCH_UPDATE",
-      "OFFHAND_TENCH_UPDATE"
+      "TENCH_UPDATE",
     },
-    force_events = "MAINHAND_TENCH_UPDATE",
-    name = L["Fishing Lure / Weapon Enchant (Old)"],
+    force_events = "TENCH_UPDATE",
+    name = WeakAuras.IsClassic() and L["Weapon Enchant"] or L["Fishing Lure / Weapon Enchant (Old)"],
     init = function(trigger)
       WeakAuras.TenchInit();
+
       local ret = [[
-        local exists, _, name
-        local inverse
+        local triggerWeaponType = %q
+        local triggerName = %q
+        local triggerStack = %s
+        local triggerRemaining = %s
+        local triggerShowOn = %q
+        local expirationTime, duration, name
+        local stack
+
+        if triggerWeaponType == "main" then
+          expirationTime, duration, name, _, stack = WeakAuras.GetMHTenchInfo()
+        else
+          expirationTime, duration, name, _, stack = WeakAuras.GetOHTenchInfo()
+        end
+
+        local remaining = expirationTime and expirationTime - GetTime()
+
+        local nameCheck = triggerName == "" or triggerName == name
+        local stackCheck = not triggerStack or stack and stack and stack %s triggerStack
+        local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
+        local found = expirationTime and nameCheck and stackCheck and remainingCheck
       ]];
-      if(trigger.weapon == "main") then
-        ret = ret .. [[
-          exists, _, name = WeakAuras.GetMHTenchInfo()
-        ]];
-      elseif(trigger.weapon == "off") then
-        ret = ret .. [[
-          exists, _, name = WeakAuras.GetOHTenchInfo()
-        ]];
-      end
 
-      if(trigger.use_inverse) then
-        ret = ret..[[
-          inverse = true;
-        ]];
-      end
-
-      if(trigger.use_enchant and trigger.enchant and trigger.enchant ~= "") then
-        ret = ret .. [[
-          exists = name == ']] .. trigger.enchant .. [[';
-        ]]
-      end
-      return ret;
+      return ret:format(trigger.weapon or "main",
+      trigger.use_enchant and trigger.enchant or "",
+      trigger.use_stack and tonumber(trigger.stack or 0) or "nil",
+      trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+      trigger.showOn or "ShowOnActive",
+      trigger.stack_operator or "<",
+      trigger.remaining_operator or "<")
     end,
     args = {
       {
@@ -4528,7 +4532,9 @@ WeakAuras.event_prototypes = {
         display = L["Weapon"],
         type = "select",
         values = "weapon_types",
-        test = "(inverse and not exists) or (not inverse and exists)"
+        test = "true",
+        default = "main",
+        required = true
       },
       {
         name = "enchant",
@@ -4537,11 +4543,29 @@ WeakAuras.event_prototypes = {
         test = "true"
       },
       {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
+        name = "stack",
+        display = L["Stack Count"],
+        type = "number",
+        test = "true",
+        hidden = not WeakAuras.IsClassic()
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
         test = "true"
-      }
+      },
+      {
+        name = "showOn",
+        display = L["Show On"],
+        type = "select",
+        values = "weapon_enchant_types",
+        test = "(triggerShowOn == \"showOnActive\" and found) " ..
+        "or (triggerShowOn == \"showOnMissing\" and not found) "  ..
+        "or (triggerShowOn == \"showAlways\")",
+        default = "showOnActive",
+        required = true
+      },
     },
     durationFunc = function(trigger)
       local expirationTime, duration;
@@ -4573,6 +4597,15 @@ WeakAuras.event_prototypes = {
         _, _, _, icon = WeakAuras.GetOHTenchInfo();
       end
       return icon;
+    end,
+    stacksFunc = function(trigger)      
+      local charges;
+      if(trigger.weapon == "main") then
+        _, _, _, _, charges = WeakAuras.GetMHTenchInfo();
+      elseif(trigger.weapon == "off") then
+        _, _, _, _, charges = WeakAuras.GetOHTenchInfo();
+      end
+      return charges;
     end,
     automaticrequired = true
   },

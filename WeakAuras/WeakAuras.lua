@@ -1,3 +1,4 @@
+-- TODO: Bump the internal version
 local internalVersion = 23;
 
 -- WoW APIs
@@ -3464,6 +3465,8 @@ function WeakAuras.Modernize(data)
       end
     end
   end
+
+  -- TODO: Migrate tench inverse to tench showOn
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
