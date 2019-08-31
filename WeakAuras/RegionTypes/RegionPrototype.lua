@@ -569,12 +569,15 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
 
       if customValue then
         SetProgressValue(region, duration, expirationTime);
+        region.TimerTick = nil
+        region:UpdateRegionHasTimerTick()
       else
         local adjustMin = region.adjustedMin or 0;
         region:SetTime((duration ~= 0 and region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
-      end
 
-      region.TimerTick = TimerTick
+        region.TimerTick = TimerTick
+        region:UpdateRegionHasTimerTick()
+      end
     end
   elseif (region.generatedSetDurationInfo) then
     region.generatedSetDurationInfo = nil;
