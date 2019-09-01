@@ -109,6 +109,15 @@ local matchDataByTrigger = {}
 
 local matchDataChanged = {}
 
+local nameplateExists = {}
+
+local function UnitExistsFixed(unit)
+  if #unit > 9 and unit:sub(1, 9) == "nameplate" then
+    return nameplateExists[unit]
+  end
+  return UnitExists(unit)
+end
+
 local function GetOrCreateSubTable(base, next, ...)
   if not next then
     return base
@@ -762,7 +771,7 @@ local function GetAllUnits(unit)
     end
     return function()
       local ret = unit .. i
-      while not UnitExists(ret) do
+      while not UnitExistsFixed(ret) do
         i = i + 1
         if i > max then
           i = 1
@@ -788,7 +797,7 @@ local function UpdateGroupCountFor(unit, event)
   if unit == "boss" then
     local count = 0
     for i = 1, 4 do
-      if UnitExists("boss" .. i) then
+      if UnitExistsFixed("boss" .. i) then
         count = count + 1
       end
     end
@@ -859,7 +868,7 @@ local function MaxUnitCount(triggerInfo)
       UpdateGroupCountFor("boss")
     end
 
-    return groupCount[triggerInfo.unit] or UnitExists(triggerInfo.unit) and 1 or 0
+    return groupCount[triggerInfo.unit] or UnitExistsFixed(triggerInfo.unit) and 1 or 0
   end
 end
 
@@ -1191,7 +1200,8 @@ end
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
   scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup,
   scanFuncName, scanFuncSpellId, scanFuncGeneral,
-  resetMatchDataByTrigger, invalidUnit)
+  resetMatchDataByTrigger)
+
   if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral and not scanFuncNameGroup and not scanFuncSpellIdGroup and not scanFuncGeneralGroup then
     if matchDataUpToDate[unit] then
       matchDataUpToDate[unit][filter] = nil
@@ -1201,40 +1211,43 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
   end
 
   local index = 1
-  while not invalidUnit do
-    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
-    if not name then
-      break
-    end
 
-    -- If we are on classic try to get duration from LibClassicDurations
-    if LCD then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
-      if duration == 0 and durationNew then
-          duration = durationNew
-          expirationTime = expirationTimeNew
+  if UnitExistsFixed(unit) then
+    while true do
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
+      if not name then
+        break
       end
-    end
 
-    if debuffClass == nil then
-      debuffClass = "none"
-    elseif debuffClass == "" then
-      debuffClass = "enrage"
-    else
-      debuffClass = string.lower(debuffClass)
-    end
+      -- If we are on classic try to get duration from LibClassicDurations
+      if LCD then
+        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
+        if duration == 0 and durationNew then
+            duration = durationNew
+            expirationTime = expirationTimeNew
+        end
+      end
 
-    local updatedMatchData = UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      if debuffClass == nil then
+        debuffClass = "none"
+      elseif debuffClass == "" then
+        debuffClass = "enrage"
+      else
+        debuffClass = string.lower(debuffClass)
+      end
 
-    if updatedMatchData then -- Aura data changed, check against triggerInfos
-      CheckScanFuncs(scanFuncName and scanFuncName[name], unit, filter, index)
-      CheckScanFuncs(scanFuncNameGroup and scanFuncNameGroup[name], unit, filter, index)
-      CheckScanFuncs(scanFuncSpellId and scanFuncSpellId[spellId], unit, filter, index)
-      CheckScanFuncs(scanFuncSpellIdGroup and scanFuncSpellIdGroup[spellId], unit, filter, index)
-      CheckScanFuncs(scanFuncGeneral, unit, filter, index)
-      CheckScanFuncs(scanFuncGeneralGroup, unit, filter, index)
+      local updatedMatchData = UpdateMatchData(time, matchDataChanged, resetMatchDataByTrigger, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+
+      if updatedMatchData then -- Aura data changed, check against triggerInfos
+        CheckScanFuncs(scanFuncName and scanFuncName[name], unit, filter, index)
+        CheckScanFuncs(scanFuncNameGroup and scanFuncNameGroup[name], unit, filter, index)
+        CheckScanFuncs(scanFuncSpellId and scanFuncSpellId[spellId], unit, filter, index)
+        CheckScanFuncs(scanFuncSpellIdGroup and scanFuncSpellIdGroup[spellId], unit, filter, index)
+        CheckScanFuncs(scanFuncGeneral, unit, filter, index)
+        CheckScanFuncs(scanFuncGeneralGroup, unit, filter, index)
+      end
+      index = index + 1
     end
-    index = index + 1
   end
 
   CleanUpOutdatedMatchData(time, unit, filter)
@@ -1300,8 +1313,8 @@ local function FilterGeneralScanFuncs(input, unit, isSelf, role)
   return result
 end
 
-local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchDataByTrigger, invalidUnit)
-  local unitExists = UnitExists(unit)
+local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchDataByTrigger)
+  local unitExists = UnitExistsFixed(unit)
   if existingUnits[unit] ~= unitExists then
     existingUnits[unit] = unitExists
 
@@ -1333,8 +1346,7 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
       scanFuncName[unit]["HELPFUL"],
       scanFuncSpellId[unit]["HELPFUL"],
       scanFuncGeneral[unit]["HELPFUL"],
-      resetMatchDataByTrigger,
-      invalidUnit)
+      resetMatchDataByTrigger)
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
       unitType and scanFuncName[unitType]["HARMFUL"],
@@ -1343,8 +1355,7 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
       scanFuncName[unit]["HARMFUL"],
       scanFuncSpellId[unit]["HARMFUL"],
       scanFuncGeneral[unit]["HARMFUL"],
-      resetMatchDataByTrigger,
-      invalidUnit)
+      resetMatchDataByTrigger)
   else
     scanFuncNameGroup[unit] = scanFuncNameGroup[unit] or {}
     scanFuncSpellIdGroup[unit] = scanFuncSpellIdGroup[unit] or {}
@@ -1357,8 +1368,7 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
       scanFuncName[unit]["HELPFUL"],
       scanFuncSpellId[unit]["HELPFUL"],
       scanFuncGeneral[unit]["HELPFUL"],
-      resetMatchDataByTrigger,
-      invalidUnit)
+      resetMatchDataByTrigger)
 
     ScanUnitWithFilter(matchDataChanged, time, unit, "HARMFUL",
       scanFuncNameGroup[unit]["HARMFUL"],
@@ -1367,8 +1377,7 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit, resetMatchD
       scanFuncName[unit]["HARMFUL"],
       scanFuncSpellId[unit]["HARMFUL"],
       scanFuncGeneral[unit]["HARMFUL"],
-      resetMatchDataByTrigger,
-      invalidUnit)
+      resetMatchDataByTrigger)
   end
 end
 
@@ -1396,7 +1405,7 @@ local function UpdatePerGroupUnitScanFuncs()
     scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit, true, role)
     for i = 1, 4 do
       unit = WeakAuras.partyUnits[i]
-      if not UnitExists(unit) then
+      if not UnitExistsFixed(unit) then
         scanFuncNameGroup[unit] = nil
         scanFuncSpellIdGroup[unit] = nil
         scanFuncGeneralGroup[unit] = nil
@@ -1492,9 +1501,14 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     ScanGroupUnit(time, matchDataChanged, nil, "focus")
   elseif event == "UNIT_PET" then
     ScanGroupUnit(time, matchDataChanged, nil, "pet")
-  elseif event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
+  elseif event == "NAME_PLATE_UNIT_ADDED" then
+    nameplateExists[arg1] = true
     UpdateGroupCountFor("nameplate", event)
-    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1, nil, event == "NAME_PLATE_UNIT_REMOVED")
+    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1, nil)
+  elseif event == "NAME_PLATE_UNIT_REMOVED" then
+    nameplateExists[arg1] = false
+    UpdateGroupCountFor("nameplate", event)
+    ScanGroupUnit(time, matchDataChanged, "nameplate", arg1, nil)
   elseif event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
     UpdateGroupCountFor("boss")
     ScanAllBoss(time, matchDataChanged)
@@ -1684,7 +1698,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     if IsInRaid() then
       for i = 1, 40 do
         local unit = WeakAuras.raidUnits[i]
-        if UnitExists(unit) then
+        if UnitExistsFixed(unit) then
           local isSelf = UnitIsUnit("player", unit)
           local role = UnitGroupRolesAssigned(unit)
           if TriggerInfoApplies(triggerInfo, isSelf, role) then
@@ -1700,7 +1714,7 @@ local function LoadAura(id, triggernum, triggerInfo)
       end
       for i = 1, 4 do
         unit = WeakAuras.partyUnits[i]
-        if UnitExists(unit) then
+        if UnitExistsFixed(unit) then
           local isSelf = UnitIsUnit("player", unit)
           local role = UnitGroupRolesAssigned(unit)
           if TriggerInfoApplies(triggerInfo, isSelf, role) then
@@ -1722,7 +1736,7 @@ local function LoadAura(id, triggernum, triggerInfo)
     tinsert(unitExistScanFunc[triggerInfo.unit][id], triggerInfo)
 
     if existingUnits[triggerInfo.unit] == nil then
-      existingUnits[triggerInfo.unit] = UnitExists(triggerInfo.unit)
+      existingUnits[triggerInfo.unit] = UnitExistsFixed(triggerInfo.unit)
     end
   end
   if triggerInfo.groupCountFunc or triggerInfo.perUnitMode == "unaffected" or triggerInfo.perUnitMode == "all" then
