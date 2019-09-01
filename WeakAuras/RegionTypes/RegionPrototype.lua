@@ -560,7 +560,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
     -- WeakAuras no longer calls SetDurationInfo, but some people do that,
     -- In that case we also need to overwrite TimerTick
     region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
-      self.duration = self.duration or 0
+      self.duration = duration or 0
       self.expirationTime = expirationTime;
       self.inverse = inverse;
 
