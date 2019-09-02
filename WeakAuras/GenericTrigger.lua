@@ -2947,7 +2947,7 @@ do
       tenchFrame:SetScript("OnEvent", function(self, event, arg1)
         WeakAuras.StartProfileSystem("generictrigger");
         if (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") then
-          tenchUpdate()
+          timer:ScheduleTimer(tenchUpdate, 0.1);
         end
         WeakAuras.StopProfileSystem("generictrigger");
       end);

@@ -4513,7 +4513,7 @@ WeakAuras.event_prototypes = {
         local remaining = expirationTime and expirationTime - GetTime()
 
         local nameCheck = triggerName == "" or triggerName == name
-        local stackCheck = not triggerStack or stack and stack and stack %s triggerStack
+        local stackCheck = not triggerStack or stack and stack %s triggerStack
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
       ]];
@@ -4522,7 +4522,7 @@ WeakAuras.event_prototypes = {
       trigger.use_enchant and trigger.enchant or "",
       trigger.use_stack and tonumber(trigger.stack or 0) or "nil",
       trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
-      trigger.showOn or "ShowOnActive",
+      trigger.showOn or "showOnActive",
       trigger.stack_operator or "<",
       trigger.remaining_operator or "<")
     end,
@@ -4547,6 +4547,7 @@ WeakAuras.event_prototypes = {
         display = L["Stack Count"],
         type = "number",
         test = "true",
+        enable = WeakAuras.IsClassic(),
         hidden = not WeakAuras.IsClassic()
       },
       {
@@ -4560,12 +4561,16 @@ WeakAuras.event_prototypes = {
         display = L["Show On"],
         type = "select",
         values = "weapon_enchant_types",
-        test = "(triggerShowOn == \"showOnActive\" and found) " ..
-        "or (triggerShowOn == \"showOnMissing\" and not found) "  ..
-        "or (triggerShowOn == \"showAlways\")",
+        test = 'true',
         default = "showOnActive",
         required = true
       },
+      {
+        hidden = true,
+        test = "(triggerShowOn == 'showOnActive' and found) " ..
+        "or (triggerShowOn == 'showOnMissing' and not found) "  ..
+        "or (triggerShowOn == 'showAlways')"
+      }
     },
     durationFunc = function(trigger)
       local expirationTime, duration;
