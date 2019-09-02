@@ -221,28 +221,20 @@ local function ConstructModelPicker(frame)
   end
 
   function group.Pick(self, model_path, model_fileId, model_z, model_x, model_y)
-    if self.field then
-      self.model:ClearTransform()
-      self.model:SetPosition(0, 0, 0, 0)
-      self.model:SetFacing(0)
-      self.model:SetModel(model_fileId or self.originalData)
-      self.data[self.field] = model_fileId or self.originalData
-
-      WeakAuras.Add(self.parentData)
-      return
-    end
-
     model_path = model_path or self.data.model_path;
     model_fileId = model_fileId or self.data.model_fileId;
+
     model_z = model_z or self.data.model_z;
     model_x = model_x or self.data.model_x;
     model_y = model_y or self.data.model_y;
 
     WeakAuras.SetModel(self.model, model_path, model_fileId)
+
     self.model:ClearTransform();
     self.model:SetPosition(model_z, model_x, model_y);
     self.model:SetFacing(rad(self.data.rotation));
-    if(self.data.controlledChildren) then
+
+    if(not self.parentData and self.data.controlledChildren) then
       for index, childId in pairs(self.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
@@ -262,38 +254,22 @@ local function ConstructModelPicker(frame)
       self.data.model_z = model_z;
       self.data.model_x = model_x;
       self.data.model_y = model_y;
-      WeakAuras.Add(self.data);
-      WeakAuras.SetThumbnail(self.data);
-      WeakAuras.SetIconNames(self.data);
+
+      if self.parentData then
+        WeakAuras.Add(self.parentData)
+      else
+        WeakAuras.Add(self.data);
+        WeakAuras.SetThumbnail(self.data);
+        WeakAuras.SetIconNames(self.data);
+      end
     end
   end
 
-  function group.Open(self, data, field, parentData)
+  function group.Open(self, data, parentData)
     self.data = data;
-    self.field = field
     self.parentData = parentData
-    if field then
-      self.model:SetModel(data[field])
-    else
-      WeakAuras.SetModel(self.model, data.model_path, data.model_fileId)
-    end
-    if field then
-      self.model:ClearTransform();
-      self.model:SetPosition(0, 0, 0);
-      self.model:SetFacing(0);
-
-      modelPickerZ.frame:Hide();
-      modelPickerY.frame:Hide();
-      modelPickerX.frame:Hide();
-
-      modelPickerTX.frame:Hide();
-      modelPickerTY.frame:Hide();
-      modelPickerTZ.frame:Hide();
-      modelPickerRX.frame:Hide();
-      modelPickerRY.frame:Hide();
-      modelPickerRZ.frame:Hide();
-      modelPickerUS.frame:Hide();
-    elseif (data.api) then
+    WeakAuras.SetModel(self.model, data.model_path, data.model_fileId)
+    if (data.api) then
       self.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
         data.model_st_us / 1000);
@@ -351,9 +327,7 @@ local function ConstructModelPicker(frame)
       modelPickerUS.frame:Hide();
     end
 
-    if field then
-      self.originalData = data[field]
-    elseif(data.controlledChildren) then
+    if(not parentData and data.controlledChildren) then
       self.givenModel = {};
       self.givenApi = {};
       self.givenZ = {};
@@ -420,9 +394,7 @@ local function ConstructModelPicker(frame)
   end
 
   function group.CancelClose(self)
-    if group.field then
-      group:Pick(nil, group.originalData)
-    elseif(group.data.controlledChildren) then
+    if(not group.parentData and group.data.controlledChildren) then
       for index, childId in pairs(group.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
