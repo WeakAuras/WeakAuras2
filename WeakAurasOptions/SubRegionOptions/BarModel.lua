@@ -3,6 +3,8 @@ if not WeakAuras.IsCorrectVersion() then return end
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
+if WeakAuras.IsClassic() then return end -- Models disabled for classic
+
 local function createOptions(parentData, data, index, subIndex)
   local order = 9
   local options = {
