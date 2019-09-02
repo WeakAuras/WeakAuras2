@@ -4501,18 +4501,17 @@ WeakAuras.event_prototypes = {
         local triggerStack = %s
         local triggerRemaining = %s
         local triggerShowOn = %q
-        local expirationTime, duration, name
-        local stack
+        local _, expirationTime, duration, name, stack, enchantID
 
         if triggerWeaponType == "main" then
-          expirationTime, duration, name, _, stack = WeakAuras.GetMHTenchInfo()
+          expirationTime, duration, name, shortenedName, _, stack, enchantID = WeakAuras.GetMHTenchInfo()
         else
-          expirationTime, duration, name, _, stack = WeakAuras.GetOHTenchInfo()
+          expirationTime, duration, name, shortenedName, _, stack, enchantID = WeakAuras.GetOHTenchInfo()
         end
 
         local remaining = expirationTime and expirationTime - GetTime()
 
-        local nameCheck = triggerName == "" or triggerName == name
+        local nameCheck = triggerName == "" or name and triggerName == name or shortenedName and triggerName == shortenedName or enchantID and triggerName == enchantID
         local stackCheck = not triggerStack or stack and stack %s triggerStack
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
@@ -4597,18 +4596,18 @@ WeakAuras.event_prototypes = {
     iconFunc = function(trigger)
       local _, icon;
       if(trigger.weapon == "main") then
-        _, _, _, icon = WeakAuras.GetMHTenchInfo();
+        _, _, _, _, icon = WeakAuras.GetMHTenchInfo();
       elseif(trigger.weapon == "off") then
-        _, _, _, icon = WeakAuras.GetOHTenchInfo();
+        _, _, _, _, icon = WeakAuras.GetOHTenchInfo();
       end
       return icon;
     end,
     stacksFunc = function(trigger)
       local _, charges;
       if(trigger.weapon == "main") then
-        _, _, _, _, charges = WeakAuras.GetMHTenchInfo();
+        _, _, _, _, _, charges = WeakAuras.GetMHTenchInfo();
       elseif(trigger.weapon == "off") then
-        _, _, _, _, charges = WeakAuras.GetOHTenchInfo();
+        _, _, _, _, _, charges = WeakAuras.GetOHTenchInfo();
       end
       return charges;
     end,
