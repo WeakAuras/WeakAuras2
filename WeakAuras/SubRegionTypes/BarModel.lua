@@ -75,12 +75,15 @@ local function modify(parent, region, parentData, data, first)
   end
   region.model:SetAllPoints(parent.bar)
 
-  region.model:SetModel(tonumber(data.model))
+  local model = tonumber(data.model)
+  if model then
+    region.model:SetModel(model)
+  end
 
   region.PreShow = function(self)
-    if not self.model:GetKeepModelOnHide() then
+    if not self.model:GetKeepModelOnHide() and model then
       C_Timer.After(0, function()
-          self.model:SetModel(tonumber(data.model))
+          self.model:SetModel(model)
           self.model:SetKeepModelOnHide(true)
         end)
     end
