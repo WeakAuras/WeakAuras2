@@ -37,7 +37,9 @@ RegionOptions\ProgressTexture.lua
 SubRegionOptions\SubRegionCommon.lua
 SubRegionOptions\SubText.lua
 SubRegionOptions\Border.lua
+#@retail@
 SubRegionOptions\BarModel.lua
+#@end-retail@
 
 Cache.lua
 
