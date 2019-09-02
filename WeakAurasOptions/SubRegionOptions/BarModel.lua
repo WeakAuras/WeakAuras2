@@ -6,7 +6,6 @@ local L = WeakAuras.L;
 if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 local function createOptions(parentData, data, index, subIndex)
-  local order = 9
   local options = {
     __title = L["Model %s"]:format(subIndex),
     __order = 1,
@@ -34,38 +33,166 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = L["Show Model"],
-      order = order + 0.1,
+      order = 9,
     },
-    model = {
+    model_fileId = {
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Model"],
-      order = order + 1
+      order =  10
     },
     chooseModel = {
       type = "execute",
       width = WeakAuras.normalWidth,
       name = L["Choose"],
-      order = order + 2,
+      order =  11,
       func = function()
-        WeakAuras.OpenModelPicker(data, "model", parentData);
+        WeakAuras.OpenModelPicker(data, parentData);
       end,
     },
     bar_model_clip = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Clipped by Progress"],
-      order = order + 3,
+      order = 12,
     },
     bar_model_alpha = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],
-      order = order + 4,
+      order = 13,
       min = 0,
       max = 1,
       bigStep = 0.1
-    }
+    },
+    api = {
+      type = "toggle",
+      name = L["Use SetTransform"],
+      order = 14,
+      width = WeakAuras.normalWidth
+    },
+    model_z = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Z Offset"],
+      softMin = -20,
+      softMax = 20,
+      step = .001,
+      bigStep = 0.05,
+      order = 20,
+      hidden = function() return data.api end
+    },
+    model_x = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["X Offset"],
+      softMin = -20,
+      softMax = 20,
+      step = .001,
+      bigStep = 0.05,
+      order = 30,
+      hidden = function() return data.api end
+    },
+    model_y = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Y Offset"],
+      softMin = -20,
+      softMax = 20,
+      step = .001,
+      bigStep = 0.05,
+      order = 40,
+      hidden = function() return data.api end
+    },
+    rotation = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Rotation"],
+      min = 0,
+      max = 360,
+      step = 1,
+      bigStep = 3,
+      order = 45,
+      hidden = function() return data.api end
+    },
+    -- New Settings
+    model_st_tx = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["X Offset"],
+      softMin = -1000,
+      softMax = 1000,
+      step = 1,
+      bigStep = 5,
+      order = 20,
+      hidden = function() return not data.api end
+    },
+    model_st_ty = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Y Offset"],
+      softMin = -1000,
+      softMax = 1000,
+      step = 1,
+      bigStep = 5,
+      order = 21,
+      hidden = function() return not data.api end
+    },
+    model_st_tz = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Z Offset"],
+      softMin = -1000,
+      softMax = 1000,
+      step = 1,
+      bigStep = 5,
+      order = 22,
+      hidden = function() return not data.api end
+    },
+    model_st_rx = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["X Rotation"],
+      min = 0,
+      max = 360,
+      step = 1,
+      bigStep = 3,
+      order = 23,
+      hidden = function() return not data.api end
+    },
+    model_st_ry = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Y Rotation"],
+      min = 0,
+      max = 360,
+      step = 1,
+      bigStep = 3,
+      order = 24,
+      hidden = function() return not data.api end
+    },
+    model_st_rz = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Z Rotation"],
+      min = 0,
+      max = 360,
+      step = 1,
+      bigStep = 3,
+      order = 25,
+      hidden = function() return not data.api end
+    },
+    model_st_us = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Scale"],
+      min = 5,
+      max = 1000,
+      step = 0.1,
+      bigStep = 5,
+      order = 26,
+      hidden = function() return not data.api end
+    },
   }
   return options
 end

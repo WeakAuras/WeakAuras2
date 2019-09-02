@@ -10,7 +10,20 @@ local default = function(parentType)
     bar_model_visible = true,
     bar_model_alpha = 1,
     api = false,
-    model = "235338",
+    model_x = 0,
+    model_y = 0,
+    model_z = 0,
+    rotation = 0,
+    -- SetTransform
+    model_st_tx = 0,
+    model_st_ty = 0,
+    model_st_tz = 0,
+    model_st_rx = 270,
+    model_st_ry = 0,
+    model_st_rz = 0,
+    model_st_us = 40,
+
+    model_fileId = "235338",
     bar_model_clip = true
   }
 end
@@ -75,9 +88,17 @@ local function modify(parent, region, parentData, data, first)
   end
   region.model:SetAllPoints(parent.bar)
 
-  local model = tonumber(data.model)
+  local model = tonumber(data.model_fileId)
   if model then
     region.model:SetModel(model)
+  end
+
+  if (data.api) then
+    region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz), data.model_st_us / 1000);
+  else
+    region.model:ClearTransform();
+    region.model:SetPosition(data.model_z, data.model_x, data.model_y);
   end
 
   region.PreShow = function(self)
@@ -85,6 +106,17 @@ local function modify(parent, region, parentData, data, first)
       C_Timer.After(0, function()
           self.model:SetModel(model)
           self.model:SetKeepModelOnHide(true)
+
+          if (data.api) then
+            region.model:ClearTransform();
+            region.model:SetPosition(0, 0, 0);
+            region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+              rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+              data.model_st_us / 1000);
+          else
+            region.model:ClearTransform();
+            region.model:SetPosition(data.model_z, data.model_x, data.model_y);
+          end
         end)
     end
   end
