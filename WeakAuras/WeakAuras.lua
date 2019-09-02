@@ -1,5 +1,4 @@
--- TODO: Bump the internal version
-local internalVersion = 23;
+local internalVersion = 24;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3466,7 +3465,26 @@ function WeakAuras.Modernize(data)
     end
   end
 
-  -- TODO: Migrate tench inverse to tench showOn
+  if data.internalVersion < 24 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "status" and trigger.event == "Weapon Enchant" then
+          print("Found a Weapon Enchant")
+          if trigger.use_inverse then
+            trigger.showOn = "showOnMissing"
+          else
+            trigger.showOn = "showOnActive"
+          end
+          trigger.use_inverse = nil
+          if not trigger.use_weapon then
+            trigger.use_weapon = "true"
+            trigger.weapon = "main"
+          end
+        end
+      end
+    end
+  end
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
