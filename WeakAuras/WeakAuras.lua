@@ -1,4 +1,4 @@
-local internalVersion = 23;
+local internalVersion = 24;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3460,6 +3460,26 @@ function WeakAuras.Modernize(data)
             elseif trigger.use_form then
               trigger.form = { single = value }
             end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 24 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "status" and trigger.event == "Weapon Enchant" then
+          if trigger.use_inverse then
+            trigger.showOn = "showOnMissing"
+          else
+            trigger.showOn = "showOnActive"
+          end
+          trigger.use_inverse = nil
+          if not trigger.use_weapon then
+            trigger.use_weapon = "true"
+            trigger.weapon = "main"
           end
         end
       end

@@ -2132,6 +2132,12 @@ WeakAuras.dbm_types = {
   [7] = L["Important"]
 }
 
+WeakAuras.weapon_enchant_types = {
+  showOnActive = L["Enchant Found"],
+  showOnMissing = L["Enchant Missing"],
+  showAlways = L["Always"],
+}
+
 WeakAuras.EJIcons = {
   tank =      "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:7:25:7:25|t",
   dps =       "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:39:57:7:25|t",
