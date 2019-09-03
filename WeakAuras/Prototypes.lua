@@ -5143,7 +5143,7 @@ WeakAuras.event_prototypes = {
       AddUnitChangeInternalEvents(trigger.unit, result)
       return result
     end,
-    force_events = "CAST_REMAINING_CHECK",
+    force_events = {"CAST_REMAINING_CHECK", "WA_DELAYED_PLAYER_ENTERING_WORLD"},
     canHaveAuto = true,
     canHaveDuration = "timed",
     name = L["Cast"],
