@@ -4538,7 +4538,7 @@ WeakAuras.event_prototypes = {
       {
         name = "enchant",
         display = L["Weapon Enchant"],
-        desc = L["Enchant name or Enchant ID"],
+        desc = L["Enchant Name or ID"],
         type = "string",
         test = "true"
       },
