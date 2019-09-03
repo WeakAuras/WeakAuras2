@@ -4511,7 +4511,7 @@ WeakAuras.event_prototypes = {
 
         local remaining = expirationTime and expirationTime - GetTime()
 
-        local nameCheck = triggerName == "" or name and triggerName == name or shortenedName and triggerName == shortenedName or enchantID and triggerName == enchantID
+        local nameCheck = triggerName == "" or name and triggerName == name or shortenedName and triggerName == shortenedName or tonumber(triggerName) and enchantID and tonumber(triggerName) == enchantID
         local stackCheck = not triggerStack or stack and stack %s triggerStack
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
@@ -4538,6 +4538,7 @@ WeakAuras.event_prototypes = {
       {
         name = "enchant",
         display = L["Weapon Enchant"],
+        desc = L["Enchant name or Enchant ID"],
         type = "string",
         test = "true"
       },
