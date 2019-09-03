@@ -2181,4 +2181,6 @@ if WeakAuras.IsClassic() then
   WeakAuras.reset_ranged_swing_spells[2764] = true -- Throw
   WeakAuras.reset_ranged_swing_spells[5019] = true -- Shoot Wands
   WeakAuras.reset_ranged_swing_spells[75] = true -- Auto Shot
+
+  WeakAuras.glow_types.ACShine = nil
 end
