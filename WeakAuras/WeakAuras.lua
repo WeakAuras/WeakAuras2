@@ -3470,7 +3470,6 @@ function WeakAuras.Modernize(data)
       for triggerId, triggerData in ipairs(data.triggers) do
         local trigger = triggerData.trigger
         if trigger and trigger.type == "status" and trigger.event == "Weapon Enchant" then
-          print("Found a Weapon Enchant")
           if trigger.use_inverse then
             trigger.showOn = "showOnMissing"
           else
