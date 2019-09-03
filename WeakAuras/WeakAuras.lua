@@ -6453,25 +6453,37 @@ local function GetAnchorFrame(region, anchorFrameType, parent, anchorFrameFrame)
   return parent;
 end
 
+local anchorFrameDeferred = {}
+
 function WeakAuras.AnchorFrame(data, region, parent)
-  local anchorParent = GetAnchorFrame(region, data.anchorFrameType, parent, data.anchorFrameFrame);
-  if not anchorParent then return end
-  if (data.anchorFrameParent or data.anchorFrameParent == nil
-      or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or data.anchorFrameType == "CUSTOM") then
-    local errorhandler = function(text)
-      geterrorhandler()(L["'ERROR: Anchoring %s': \n"]:format(data.id) .. text)
+  if data.anchorFrameType == "CUSTOM"
+  and (data.regionType == "group" or data.regionType == "dynamicgroup")
+  and not WeakAuras.IsLoginFinished()
+  and not anchorFrameDeferred[data.id]
+  then
+    loginQueue[#loginQueue + 1] = {WeakAuras.AnchorFrame, {data, region, parent}}
+    anchorFrameDeferred[data.id] = true
+  else
+    local anchorParent = GetAnchorFrame(region, data.anchorFrameType, parent, data.anchorFrameFrame);
+    if not anchorParent then return end
+    if (data.anchorFrameParent or data.anchorFrameParent == nil
+        or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or data.anchorFrameType == "CUSTOM") then
+      local errorhandler = function(text)
+        geterrorhandler()(L["'ERROR: Anchoring %s': \n"]:format(data.id) .. text)
+      end
+      xpcall(region.SetParent, errorhandler, region, anchorParent);
+    else
+      region:SetParent(frame);
     end
-    xpcall(region.SetParent, errorhandler, region, anchorParent);
-  else
-    region:SetParent(frame);
-  end
 
-  region:SetAnchor(data.selfPoint, anchorParent, data.anchorPoint);
+    region:SetAnchor(data.selfPoint, anchorParent, data.anchorPoint);
 
-  if(data.frameStrata == 1) then
-    region:SetFrameStrata(region:GetParent():GetFrameStrata());
-  else
-    region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    if(data.frameStrata == 1) then
+      region:SetFrameStrata(region:GetParent():GetFrameStrata());
+    else
+      region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+    end
+    anchorFrameDeferred[data.id] = nil
   end
 end
 
