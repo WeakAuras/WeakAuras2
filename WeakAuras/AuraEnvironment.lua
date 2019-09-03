@@ -137,10 +137,6 @@ function WeakAuras.ClearAuraEnvironment(id)
   environment_initialized[id] = false;
 end
 
--- environment_initialized can have the values:
--- * false/nil => not initialized
--- * 1 => initialized without children
--- * 2 => initialized with children
 function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, skipChildren)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
@@ -149,7 +145,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, skipChild
     tremove(aura_env_stack)
     current_aura_env = aura_env_stack[#aura_env_stack] or nil
   else
-    if environment_initialized[id] == 2 or (environment_initialized[id] == 1 and skipChildren) then
+    if environment_initialized[id] then
       -- Point the current environment to the correct table
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
@@ -161,8 +157,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, skipChild
       tinsert(aura_env_stack, current_aura_env)
     else
       -- Either this aura environment has not yet been initialized, or it was reset via an edit in WeakaurasOptions
-      -- or it wasn't yet initialized to the full extent needed
-      environment_initialized[id] = skipChildren and 1 or 2
+      environment_initialized[id] = true
       aura_environments[id] = {}
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
