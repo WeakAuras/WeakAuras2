@@ -1564,6 +1564,9 @@ end)
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
+-- register plain white border
+LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
+
 WeakAuras.duration_types = {
   seconds = L["Seconds"],
   relative = L["Relative"]
