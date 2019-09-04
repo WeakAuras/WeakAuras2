@@ -1591,9 +1591,10 @@ WeakAuras.event_prototypes = {
         local unitPowerType = UnitPowerType(concernedUnit);
         local powerTypeToCheck = powerType or unitPowerType;
         local powerThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck);
+        if WeakAuras.IsClassic() and powerType == 99 then powerType = 1 end
       ]=];
       ret = ret:format(trigger.unit, trigger.unit, trigger.use_powertype and trigger.powertype or "nil");
-      if (trigger.use_powertype and trigger.powertype == 99) then
+      if (trigger.use_powertype and trigger.powertype == 99 and not WeakAuras.IsClassic()) then
         ret = ret .. [[
           local UnitPower = UnitStagger;
           local UnitPowerMax = UnitHealthMax;
@@ -1671,7 +1672,7 @@ WeakAuras.event_prototypes = {
         name = "powertype",
         display = L["Power Type"],
         type = "select",
-        values = "power_types_with_stagger",
+        values = function() return WeakAuras.IsClassic() and WeakAuras.power_types_with_stagger or WeakAuras.power_types end,
         init = "unitPowerType",
         test = "true",
         store = true,
@@ -1729,7 +1730,8 @@ WeakAuras.event_prototypes = {
     },
     durationFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
-      if (powerType == 99) then
+      if powerType == 99 then
+        if WeakAuras.IsClassic() then return end
         if trigger.use_scaleStagger and trigger.scaleStagger then
           return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit) * trigger.scaleStagger), "fastUpdate";
         else
@@ -1760,7 +1762,8 @@ WeakAuras.event_prototypes = {
     },
     stacksFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
-      if (powerType == 99) then
+      if powerType == 99 then
+        if WeakAuras.IsClassic() then return end
         return UnitStagger(trigger.unit);
       end
       local powerTypeToCheck = trigger.powertype or UnitPowerType(trigger.unit);
