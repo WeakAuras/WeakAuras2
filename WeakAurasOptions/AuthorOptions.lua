@@ -581,6 +581,16 @@ typeControlAdders = {
   end,
   range = function(options, args, data, order, prefix, i)
     local option = options[i]
+    local min, max, softMin, softMax, step, bigStep
+    softMax = option.softMax
+    softMin = option.softMin
+    bigStep = option.bigStep
+    min = option.min
+    max = option.max
+    if max and min then
+      max = math.max(min, max)
+    end
+    step = option.step
     args[prefix .. "default"] = {
       type = "range",
       width = WeakAuras.normalWidth,
@@ -588,7 +598,13 @@ typeControlAdders = {
       desc = desc(option, "default"),
       order = order(),
       get = get(option, "default"),
-      set = set(data, option, "default")
+      set = set(data, option, "default"),
+      min = min,
+      max = max,
+      step = step,
+      softMin = softMin,
+      softMax = softMax,
+      bigStep = bigStep,
     }
 
     args[prefix .. "min"] = {
