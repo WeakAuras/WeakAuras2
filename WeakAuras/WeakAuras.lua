@@ -6487,7 +6487,7 @@ function WeakAuras.AnchorFrame(data, region, parent)
     local anchorParent = GetAnchorFrame(region, data.anchorFrameType, parent, data.anchorFrameFrame);
     if not anchorParent then return end
     if (data.anchorFrameParent or data.anchorFrameParent == nil
-        or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or data.anchorFrameType == "CUSTOM") then
+        or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
       local errorhandler = function(text)
         geterrorhandler()(L["'ERROR: Anchoring %s': \n"]:format(data.id) .. text)
       end
