@@ -2308,7 +2308,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       type = "execute",
       width = WeakAuras.normalWidth,
       name = L["Enter Author Mode"],
-      desc = L["Configure what options appear on this pannel."],
+      desc = L["Configure what options appear on this panel."],
       order = order(),
       func = function()
         if data.controlledChildren then
