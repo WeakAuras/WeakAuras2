@@ -72,12 +72,26 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Display Text"],
       order = 11,
     },
-
+    text_font = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      dialogControl = "LSM30_Font",
+      name = L["Font"],
+      order = 12,
+      values = AceGUIWidgetLSMlists.font,
+    },
+    text_fontSize = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Size"],
+      order = 13,
+      min = 6,
+      softMax = 72,
+      step = 1,
+    },
     text_fontFlagsDescription = {
       type = "description",
       name = function()
-        local firstLine = L["|cFFffcc00Font:|r %s %s"]:format(data.text_font, data.text_fontSize)
-
         local textFlags = WeakAuras.font_flags[data.text_fontType]
         local color = format("%02x%02x%02x%02x",
                              data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255,
@@ -101,7 +115,7 @@ local function createOptions(parentData, data, index, subIndex)
 
         local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify)
 
-        return firstLine .. "\n" .. secondline
+        return secondline
       end,
       width = WeakAuras.doubleWidth - 0.15,
       order = 44,
@@ -131,39 +145,12 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = hiddenFontExtra,
       width = indentWidth
     },
-    text_font = {
-      type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
-      dialogControl = "LSM30_Font",
-      name = L["Font"],
-      order = 46,
-      values = AceGUIWidgetLSMlists.font,
-      hidden = hiddenFontExtra
-    },
-    text_fontSize = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Size"],
-      order = 47,
-      min = 6,
-      softMax = 72,
-      step = 1,
-      hidden = hiddenFontExtra
-    },
-
-    text_font_space2 = {
-      type = "description",
-      name = "",
-      order = 48,
-      hidden = hiddenFontExtra,
-      width = indentWidth
-    },
 
     text_fontType = {
       type = "select",
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Outline"],
-      order = 49,
+      order = 46,
       values = WeakAuras.font_flags,
       hidden = hiddenFontExtra
     },
@@ -172,14 +159,14 @@ local function createOptions(parentData, data, index, subIndex)
       hasAlpha = true,
       width = WeakAuras.normalWidth,
       name = L["Shadow Color"],
-      order = 50,
+      order = 47,
       hidden = hiddenFontExtra
     },
 
     text_font_space3 = {
       type = "description",
       name = "",
-      order = 50.5,
+      order = 47.5,
       hidden = hiddenFontExtra,
       width = indentWidth
     },
@@ -190,7 +177,7 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -15,
       softMax = 15,
       bigStep = 1,
-      order = 51,
+      order = 48,
       hidden = hiddenFontExtra
     },
     text_shadowYOffset = {
@@ -200,14 +187,14 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -15,
       softMax = 15,
       bigStep = 1,
-      order = 52,
+      order = 49,
       hidden = hiddenFontExtra
     },
 
     text_font_space4 = {
       type = "description",
       name = "",
-      order = 52.5,
+      order = 49.5,
       hidden = hiddenFontExtra,
       width = indentWidth
     },
@@ -216,7 +203,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Rotate Text"],
       values = WeakAuras.text_rotate_types,
-      order = 53,
+      order = 50,
       hidden = hiddenFontExtra
     },
     text_justify = {
@@ -224,10 +211,10 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Alignment"],
       values = WeakAuras.justify_types,
-      order = 53.5,
+      order = 50.5,
       hidden = hiddenFontExtra
     }
-  };
+  }
 
   -- Note: Anchor Options need to be generalized once there are multiple sub regions
   -- While every sub region will have anchor options, the initial
