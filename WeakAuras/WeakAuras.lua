@@ -1513,11 +1513,6 @@ function WeakAuras.LoginMessage()
   return loginMessage
 end
 
-local isDatabaseUpgrade = false
-function WeakAuras.IsDatabaseUpgrade()
-  return isDatabaseUpgrade
-end
-
 function WeakAuras.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     WeakAuras.Pause();
@@ -1533,15 +1528,13 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
     end
     coroutine.yield();
 
-    isDatabaseUpgrade = takeNewSnapshots;
-    WeakAuras.AddMany(toAdd);
+    WeakAuras.AddMany(toAdd, takeNewSnapshots);
     coroutine.yield();
     WeakAuras.AddManyFromAddons(from_files);
     WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
     coroutine.yield();
     WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
     coroutine.yield();
-    isDatabaseUpgrade = false;
 
     for _, triggerSystem in pairs(triggerSystems) do
       if (triggerSystem.AllAdded) then
@@ -3671,7 +3664,7 @@ function WeakAuras.SyncParentChildRelationships(silent)
   end
 end
 
-function WeakAuras.AddMany(table)
+function WeakAuras.AddMany(table, takeSnapshots)
   local idtable = {};
   for _, data in ipairs(table) do
     idtable[data.id] = data;
@@ -3698,7 +3691,7 @@ function WeakAuras.AddMany(table)
       end
     end
     if not(loaded[id]) then
-      WeakAuras.Add(data);
+      WeakAuras.Add(data, takeSnapshots);
       coroutine.yield();
       loaded[id] = true;
     end
@@ -4142,8 +4135,8 @@ local function pAdd(data)
 
 end
 
-function WeakAuras.Add(data)
-  if WeakAuras.IsDatabaseUpgrade() then
+function WeakAuras.Add(data, takeSnapshot)
+  if takeSnapshot then
     WeakAuras.SetMigrationSnapshot(data.uid, CopyTable(data))
   end
   WeakAuras.PreAdd(data)
