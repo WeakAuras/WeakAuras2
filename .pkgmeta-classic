@@ -36,8 +36,8 @@ ignore:
  - WeakAuras/RegionTypes/Model.lua
  - WeakAurasOptions/RegionOptions/Model.lua
  - WeakAuras/WeakAurasTemplates
+ - WeakAuras/WeakAurasModelPaths
 
 move-folders:
  WeakAuras/WeakAuras: WeakAuras
  WeakAuras/WeakAurasOptions: WeakAurasOptions
- WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
