@@ -1,4 +1,4 @@
-local internalVersion = 24;
+local internalVersion = 25;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3586,6 +3586,84 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if data.internalVersion < 25 then
+    if data.regionType == "icon" then
+      data.subRegions = data.subRegions or {}
+      -- Need to check if glow is needed
+
+      local prefix = "sub.".. #data.subRegions + 1 .. "."
+      -- For Conditions
+      local propertyRenames = {
+        glow = prefix .. "glow",
+        useglowColor = prefix .. "useGlowColor",
+        glowColor = prefix .. "glowColor",
+        glowType = prefix .. "glowType",
+        glowLines = prefix .. "glowLines",
+        glowFrequency = prefix .. "glowFrequency",
+        glowLength = prefix .. "glowLength",
+        glowThickness = prefix .. "glowThickness",
+        glowScale = prefix .. "glowScale",
+        glowBorder = prefix .. "glowBorder",
+        glowXOffset = prefix .. "glowXOffset",
+        glowYOffset = prefix .. "glowYOffset",
+      }
+
+      local needsGlow = data.glow
+      if (not needsGlow and data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              needsGlow = true
+              break
+            end
+          end
+        end
+      end
+
+      if needsGlow then
+        local glow = {
+          ["type"] = "subglow",
+          glow = data.glow,
+          useglowColor = data.useGlowColor,
+          glowColor = data.glowColor,
+          glowType = data.glowType,
+          glowLines = data.glowLines,
+          glowFrequency = data.glowFrequency,
+          glowLength = data.glowLength,
+          glowThickness = data.glowThickness,
+          glowScale = data.glowScale,
+          glowBorder = data.glowBorder,
+          glowXOffset = data.glowXOffset,
+          glowYOffset = data.glowYOffset,
+        }
+        tinsert(data.subRegions, glow)
+      end
+
+      data.glow = nil
+      data.useglowColor = nil
+      data.glowColor = nil
+      data.glowType = nil
+      data.glowLines = nil
+      data.glowFrequency = nil
+      data.glowLength = nil
+      data.glowThickness = nil
+      data.glowScale = nil
+      data.glowBorder = nil
+      data.glowXOffset = nil
+      data.glowYOffset = nil
+
+      if (data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -5608,11 +5686,7 @@ end
 local function ApplyStateToRegion(id, cloneId, region, parent)
   region:Update();
 
-  if region.subRegions then
-    for index, subRegion in ipairs(region.subRegions) do
-      subRegion:Update()
-    end
-  end
+  region.subRegionEvents:Notify("Update")
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();

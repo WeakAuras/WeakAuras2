@@ -72,8 +72,6 @@ local function modify(parent, region, parentData, data, first)
   end
 
   region:SetVisible(data.border_visible)
-
-  region.Update = function() end
 end
 
 local function supports(regionType)
