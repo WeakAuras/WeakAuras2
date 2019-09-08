@@ -40,6 +40,7 @@ local default = {
 
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
+    self:ClearAllPoints();
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = point, relativeFrame, relativePoint, offsetX, offsetY
     self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
     self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
@@ -51,7 +52,6 @@ local controlPointFunctions = {
   end,
   ["ClearAnchorPoint"] = function(self)
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = nil, nil, nil, nil, nil
-    self:ClearAllPoints();
   end,
   ["SetOffsetAnim"] = function(self, x, y)
     self.animOffsetX, self.animOffsetY = x, y

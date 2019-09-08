@@ -231,7 +231,7 @@ local function modify(parent, region, parentData, data, first)
       end
     end
   else
-    Update = UpdateText or function() end
+    Update = UpdateText
   end
 
   local TimerTick
@@ -262,6 +262,18 @@ local function modify(parent, region, parentData, data, first)
   region.Update = Update
   region.FrameTick = FrameTick
   region.TimerTick = TimerTick
+
+  if Update then
+    parent.subRegionEvents:AddSubscriber("Update", region)
+  end
+
+  if FrameTick then
+    parent.subRegionEvents:AddSubscriber("FrameTick", region)
+  end
+
+  if TimerTick then
+    parent.subRegionEvents:AddSubscriber("TimerTick", region)
+  end
 
   if not UpdateText then
     if text:GetFont() then

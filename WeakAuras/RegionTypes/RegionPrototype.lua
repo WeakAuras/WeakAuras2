@@ -6,8 +6,46 @@ local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtla
 
 WeakAuras.regionPrototype = {};
 
--- Alpha
 
+local SubRegionEventSystem =
+{
+  ClearSubscribers = function(self)
+    self.events = {}
+  end,
+
+  AddSubscriber = function(self, event, subRegion)
+    if not subRegion[event] then
+      print("Can't register subregion for ", event, " ", subRegion.type)
+      return
+    end
+
+    self.events[event] = self.events[event] or {}
+    tinsert(self.events[event], subRegion)
+  end,
+
+  RemoveSubscriber = function(self, event, subRegion)
+    tremove(self.events[event], subRegion)
+  end,
+
+  Notify = function(self, event, ...)
+    if self.events[event] then
+      for _, subRegion in ipairs(self.events[event]) do
+        subRegion[event](subRegion, ...)
+      end
+    end
+  end
+}
+
+local function CreateSubRegionEventSystem()
+  local system = {}
+  for f, func in pairs(SubRegionEventSystem) do
+    system[f] = func
+    system.events = {}
+  end
+  return system
+end
+
+-- Alpha
 function WeakAuras.regionPrototype.AddAlphaToDefault(default)
   default.alpha = 1.0;
 end
@@ -396,11 +434,16 @@ function WeakAuras.regionPrototype.create(region)
   region.SetTriggerProvidesTimer = SetTriggerProvidesTimer
   region.UpdateRegionHasTimerTick = UpdateRegionHasTimerTick
   region.UpdateTimerTick = UpdateTimerTick
+
+  region.subRegionEvents = CreateSubRegionEventSystem()
+
+  region:SetPoint("CENTER", UIParent, "CENTER")
 end
 
 -- SetDurationInfo
 
 function WeakAuras.regionPrototype.modify(parent, region, data)
+  region.subRegionEvents:ClearSubscribers()
 
   local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
   if (defaultsForRegion and defaultsForRegion.alpha) then
@@ -480,13 +523,8 @@ function WeakAuras.TimerTick(region)
   if region.TimerTick then
     region:TimerTick();
   end
-  if (region.subRegions) then
-    for index, subRegion in pairs(region.subRegions) do
-      if subRegion.TimerTick then
-        subRegion:TimerTick()
-      end
-    end
-  end
+
+  region.subRegionEvents:Notify("TimerTick")
   WeakAuras.StopProfileAura(region.id);
   WeakAuras.StopProfileSystem("timer tick")
 end
@@ -538,13 +576,7 @@ function WeakAuras.FrameTick()
     if region.FrameTick then
       region.FrameTick()
     end
-    if (region.subRegions) then
-      for index, subRegion in pairs(region.subRegions) do
-        if subRegion.FrameTick then
-          subRegion:FrameTick()
-        end
-      end
-    end
+    region.subRegionEvents:Notify("FrameTick")
     WeakAuras.StopProfileAura(region.id);
   end
   WeakAuras.StopProfileSystem("frame tick")
@@ -670,13 +702,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         region:PreShow();
       end
 
-      if region.subRegions then
-        for index, subRegion in pairs(region.subRegions) do
-          if subRegion.PreShow then
-            subRegion:PreShow()
-          end
-        end
-      end
+      region.subRegionEvents:Notify("PreShow")
 
       region.justCreated = nil;
       WeakAuras.ApplyFrameLevel(region)
@@ -686,6 +712,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         startMainAnimation();
       end
       parent:ActivateChild(data.id, cloneId);
+
       WeakAuras.RegisterForFrameTick(region)
     end
   elseif not(data.controlledChildren) then
@@ -726,13 +753,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         region:PreShow();
       end
 
-      if region.subRegions then
-        for index, subRegion in pairs(region.subRegions) do
-          if subRegion.PreShow then
-            subRegion:PreShow()
-          end
-        end
-      end
+      region.subRegionEvents:Notify("PreShow")
 
       WeakAuras.ApplyFrameLevel(region)
       region:Show();
