@@ -2680,7 +2680,6 @@ function WeakAuras.RepairDatabase(loginAfter)
     WeakAuras.SetImporting(true)
     -- set db version to current code version
     db.dbVersion = WeakAuras.InternalVersion()
-    db.lastUpgrade = time()
     -- reinstall snapshots from history
     for id, data in pairs(db.displays) do
       local snapshot = WeakAuras.GetMigrationSnapshot(data.uid)
