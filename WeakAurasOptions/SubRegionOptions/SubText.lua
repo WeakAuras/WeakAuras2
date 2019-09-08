@@ -1,9 +1,9 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local SharedMedia = LibStub("LibSharedMedia-3.0")
+local L = WeakAuras.L
 
-local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
+local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
 local self_point_types = {
   BOTTOMLEFT = L["Bottom Left"],
@@ -22,7 +22,7 @@ local function createOptions(parentData, data, index, subIndex)
   -- The toggles for font flags is intentionally not keyed on the id
   -- So that all auras share the state of that toggle
   local hiddenFontExtra = function()
-    return WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true);
+    return WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
   end
 
   local indentWidth = 0.15
@@ -106,7 +106,7 @@ local function createOptions(parentData, data, index, subIndex)
           textJustify = " " ..  L["and aligned right"]
         end
 
-        local textRotate = "";
+        local textRotate = ""
         if data.rotateText == "LEFT" then
           textRotate = " " .. L["and rotated left"]
         elseif data.rotateText == "RIGHT" then
@@ -127,14 +127,14 @@ local function createOptions(parentData, data, index, subIndex)
       order = 44.1,
       width = 0.15,
       image = function()
-        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true);
+        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
         return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
       end,
       imageWidth = 24,
       imageHeight = 24,
       func = function()
-        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true);
-        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed);
+        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
+        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
       end
     },
 
@@ -424,9 +424,9 @@ local function createOptions(parentData, data, index, subIndex)
     },
   }
 
-  WeakAuras.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", 4,  hideCustomTextOption, {"customText"}, false);
+  WeakAuras.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", 4,  hideCustomTextOption, {"customText"}, false)
 
   return options, commonTextOptions
 end
 
-WeakAuras.RegisterSubRegionOptions("subtext", createOptions, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"]);
+WeakAuras.RegisterSubRegionOptions("subtext", createOptions, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"])
