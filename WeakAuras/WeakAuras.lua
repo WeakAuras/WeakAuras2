@@ -69,7 +69,9 @@ function WeakAuras.LoadOptions(msg)
 end
 
 function WeakAuras.OpenOptions(msg)
-  if (WeakAuras.IsLoginFinished() and WeakAuras.LoadOptions(msg)) then
+  if WeakAuras.NeedToRepairDatabase() then
+    StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
+  elseif (WeakAuras.IsLoginFinished() and WeakAuras.LoadOptions(msg)) then
     WeakAuras.ToggleOptions(msg);
   end
 end
@@ -81,6 +83,7 @@ function WeakAuras.PrintHelp()
   print(L["/wa pstart - Start profiling"])
   print(L["/wa pstop - Finish profiling"])
   print(L["/wa pprint - Show the results from the most recent profiling"])
+  print(L["/wa repair - Repair tool"])
   print(L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/wa2!"])
 end
 
@@ -91,25 +94,21 @@ function SlashCmdList.WEAKAURAS(msg)
     return
   end
   msg = string.lower(msg)
-  if msg then
-    if msg == "pstart" then
-      WeakAuras.StartProfile();
-      return;
-    elseif msg == "pstop" then
-      WeakAuras.StopProfile();
-      return;
-    elseif msg == "pprint" then
-      WeakAuras.PrintProfile();
-      return;
-    elseif msg == "minimap" then
-      WeakAuras.ToggleMinimap();
-      return;
-    elseif msg == "help" then
-      WeakAuras.PrintHelp();
-      return;
-    end
+  if msg == "pstart" then
+    WeakAuras.StartProfile();
+  elseif msg == "pstop" then
+    WeakAuras.StopProfile();
+  elseif msg == "pprint" then
+    WeakAuras.PrintProfile();
+  elseif msg == "minimap" then
+    WeakAuras.ToggleMinimap();
+  elseif msg == "help" then
+    WeakAuras.PrintHelp();
+  elseif msg == "repair" then
+    StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
+  else
+    WeakAuras.OpenOptions(msg);
   end
-  WeakAuras.OpenOptions(msg);
 end
 if not WeakAuras.IsCorrectVersion() then return end
 
@@ -1507,59 +1506,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
-local loginFinished, loginMessage = false, L["Options will finish loading after the login process has completed."]
-
-local loginThread = coroutine.create(function()
-  WeakAuras.Pause();
-  local toAdd = {};
-  for id, data in pairs(db.displays) do
-    if(id ~= data.id) then
-      print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
-      data.id = id;
-    end
-    tinsert(toAdd, data);
-  end
-  coroutine.yield();
-
-  WeakAuras.AddMany(toAdd);
-  coroutine.yield();
-  WeakAuras.AddManyFromAddons(from_files);
-  WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
-  coroutine.yield();
-  WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
-  coroutine.yield();
-
-  for _, triggerSystem in pairs(triggerSystems) do
-    if (triggerSystem.AllAdded) then
-      triggerSystem.AllAdded();
-      coroutine.yield();
-    end
-  end
-
-  -- check in case of a disconnect during an encounter.
-  if (db.CurrentEncounter) then
-    WeakAuras.CheckForPreviousEncounter()
-  end
-  coroutine.yield();
-  WeakAuras.RegisterLoadEvents();
-  WeakAuras.Resume();
-  coroutine.yield();
-
-  local nextCallback = loginQueue[1];
-  while nextCallback do
-    tremove(loginQueue, 1);
-    if type(nextCallback) == 'table' then
-      nextCallback[1](unpack(nextCallback[2]))
-    else
-      nextCallback()
-    end
-    coroutine.yield();
-    nextCallback = loginQueue[1];
-  end
-
-  loginFinished = true
-  WeakAuras.ResumeAllDynamicGroups();
-end)
+local loginFinished, loginMessage = false, L["Options will open after the login process has completed."]
 
 function WeakAuras.IsLoginFinished()
   return loginFinished
@@ -1567,6 +1514,83 @@ end
 
 function WeakAuras.LoginMessage()
   return loginMessage
+end
+
+function WeakAuras.Login(initialTime, takeNewSnapshots)
+  local loginThread = coroutine.create(function()
+    WeakAuras.Pause();
+    local toAdd = {};
+    loginFinished = false
+    loginMessage = L["Options will open after the login process has completed."]
+    for id, data in pairs(db.displays) do
+      if(id ~= data.id) then
+        print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+        data.id = id;
+      end
+      tinsert(toAdd, data);
+    end
+    coroutine.yield();
+
+    WeakAuras.AddMany(toAdd, takeNewSnapshots);
+    coroutine.yield();
+    WeakAuras.AddManyFromAddons(from_files);
+    WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
+    coroutine.yield();
+    WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+    coroutine.yield();
+
+    for _, triggerSystem in pairs(triggerSystems) do
+      if (triggerSystem.AllAdded) then
+        triggerSystem.AllAdded();
+        coroutine.yield();
+      end
+    end
+
+    -- check in case of a disconnect during an encounter.
+    if (db.CurrentEncounter) then
+      WeakAuras.CheckForPreviousEncounter()
+    end
+    coroutine.yield();
+    WeakAuras.RegisterLoadEvents();
+    WeakAuras.Resume();
+    coroutine.yield();
+
+    local nextCallback = loginQueue[1];
+    while nextCallback do
+      tremove(loginQueue, 1);
+      if type(nextCallback) == 'table' then
+        nextCallback[1](unpack(nextCallback[2]))
+      else
+        nextCallback()
+      end
+      coroutine.yield();
+      nextCallback = loginQueue[1];
+    end
+
+    loginFinished = true
+    WeakAuras.ResumeAllDynamicGroups();
+  end)
+
+  if initialTime then
+    local startTime = debugprofilestop()
+    local finishTime = debugprofilestop()
+    local ok, msg
+    -- hard limit seems to be 19 seconds. We'll do 15 for now.
+    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 15000 do
+      ok, msg = coroutine.resume(loginThread)
+      finishTime = debugprofilestop()
+    end
+    if coroutine.status(loginThread) ~= 'dead' then
+      WeakAuras.dynFrame:AddAction('login', loginThread)
+    end
+    if not ok then
+      loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
+        .. "\nMessage:" .. msg
+        geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
+    end
+  else
+    WeakAuras.dynFrame:AddAction('login', loginThread)
+  end
 end
 
 local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
@@ -1618,21 +1642,26 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
   elseif(event == "PLAYER_LOGIN") then
-    local startTime = debugprofilestop()
-    local finishTime = debugprofilestop()
-    local ok, msg
-    -- hard limit seems to be 19 seconds. We'll do 15 for now.
-    while coroutine.status(loginThread) ~= 'dead' and finishTime - startTime < 15000 do
-      ok, msg = coroutine.resume(loginThread)
-      finishTime = debugprofilestop()
+    local dbIsValid, takeNewSnapshots
+    if not db.dbVersion or db.dbVersion < internalVersion then
+      -- db is out of date, will run any necessary migrations in AddMany
+      db.dbVersion = internalVersion
+      db.lastUpgrade = time()
+      dbIsValid = true
+      takeNewSnapshots = true
+    elseif db.dbVersion > internalVersion then
+      -- user has downgraded past a forwards-incompatible migration
+      dbIsValid = false
+    else
+      -- db has same version as code, can commit to login
+      dbIsValid = true
     end
-    if coroutine.status(loginThread) ~= 'dead' then
-      WeakAuras.dynFrame:AddAction('login', loginThread)
-    end
-    if not ok then
-    loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
-      .. "\nMessage:" .. msg
-      geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
+    if dbIsValid then
+      -- run login thread for up to 15 seconds, then defer to dynFrame
+      WeakAuras.Login(15000, takeNewSnapshots)
+    else
+      -- db isn't valid. Request permission to run repair tool before logging in
+      StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;
@@ -2606,6 +2635,60 @@ function WeakAuras.ResolveCollisions(onFinished)
   elseif(onFinished) then
     onFinished();
   end
+end
+
+StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
+  text = "",
+  button1 = L["Run the repair tool"],
+  button2 = L["Continue Without Repairing"],
+  OnAccept = function(self)
+     WeakAuras.RepairDatabase()
+  end,
+  OnShow = function(self)
+    if self.data.reason == "user" then
+      self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
+      self.button2:SetText(L["Cancel"])
+    else
+      self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
+    end
+  end,
+  OnCancel = function(self)
+    if self.data.reason ~= "user" then
+      WeakAuras.Login()
+    end
+  end,
+  whileDead = true,
+  showAlert = true,
+  timeout = 0,
+  preferredindex = STATICPOPUP_NUMDIALOGS
+}
+
+function WeakAuras.LastUpgrade()
+  return db.lastUpgrade and date(nil, db.lastUpgrade) or "unknown"
+end
+
+function WeakAuras.NeedToRepairDatabase()
+  return db.dbVersion and db.dbVersion > WeakAuras.InternalVersion()
+end
+
+function WeakAuras.RepairDatabase(loginAfter)
+  local coro = coroutine.create(function()
+    WeakAuras.SetImporting(true)
+    -- set db version to current code version
+    db.dbVersion = WeakAuras.InternalVersion()
+    -- reinstall snapshots from history
+    for id, data in pairs(db.displays) do
+      local snapshot = WeakAuras.GetMigrationSnapshot(data.uid)
+      if snapshot then
+        db.displays[id] = CopyTable(snapshot)
+        coroutine.yield()
+      end
+    end
+    WeakAuras.SetImporting(false)
+    -- finally, login
+    WeakAuras.Login()
+  end)
+  WeakAuras.dynFrame:AddAction("repair", coro)
 end
 
 local function ModernizeAnimation(animation)
@@ -3607,7 +3690,7 @@ function WeakAuras.SyncParentChildRelationships(silent)
   end
 end
 
-function WeakAuras.AddMany(table)
+function WeakAuras.AddMany(table, takeSnapshots)
   local idtable = {};
   for _, data in ipairs(table) do
     idtable[data.id] = data;
@@ -3634,7 +3717,7 @@ function WeakAuras.AddMany(table)
       end
     end
     if not(loaded[id]) then
-      WeakAuras.Add(data);
+      WeakAuras.Add(data, takeSnapshots);
       coroutine.yield();
       loaded[id] = true;
     end
@@ -4078,7 +4161,10 @@ local function pAdd(data)
 
 end
 
-function WeakAuras.Add(data)
+function WeakAuras.Add(data, takeSnapshot)
+  if takeSnapshot then
+    WeakAuras.SetMigrationSnapshot(data.uid, CopyTable(data))
+  end
   WeakAuras.PreAdd(data)
   pAdd(data);
 end
