@@ -314,7 +314,7 @@ function WeakAuras.CreateFrame()
     if frame.minimized then
       frame.minimized = nil
       if db.frame then
-        if db.frame.height < 240 then
+        if not db.frame.height or db.frame.height < 240 then
           db.frame.height = 500
         end
       end
