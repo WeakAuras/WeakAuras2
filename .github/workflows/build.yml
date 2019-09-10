@@ -32,7 +32,7 @@ jobs:
       run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
     - name: Create Retail Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh;
+      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash;
       env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
