@@ -19,8 +19,5 @@ indent_size = 4
 indent_style = tab
 indent_size = 4
 
-[*.sh]
-end_of_line = lf
-
-[.mailmap]
+[{.mailmap,.env,*.sh}]
 end_of_line = lf
