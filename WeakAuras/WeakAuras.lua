@@ -6606,11 +6606,11 @@ end
 
 function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
   if isDisplayInfo then
-    pcall(function() frame:SetDisplayInfo(tonumber(model_fileId)) end)
+    pcall(frame.SetDisplayInfo, frame, tonumber(model_fileId))
   elseif isUnit then
-    pcall(function() frame:SetUnit(model_fileId) end)
+    pcall(frame.SetUnit, frame, model_fileId)
   else
-    pcall(function() frame:SetModel(tonumber(model_fileId)) end)
+    pcall(frame.SetModel, frame, tonumber(model_fileId))
   end
 end
 
