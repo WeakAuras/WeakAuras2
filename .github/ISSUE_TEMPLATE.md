@@ -10,6 +10,10 @@
 **Which version of WeakAuras are you using?**
 <!-- You can see the current version in the title bar of the options window, if the options do not open, check the Twitch app or the `## Version:` field in the WeakAuras.toc file -->
 
+**Are you on World of Warcraft Classic or Retail?**
+- [ ] Classic
+- [ ] Retail
+
 **Was it working in a previous version? If yes, which was the last good one?**
 <!-- You can always find older versions of WeakAuras to test with at https://www.wowace.com/projects/weakauras-2/files -->
 
