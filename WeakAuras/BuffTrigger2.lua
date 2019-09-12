@@ -1763,10 +1763,10 @@ local function LoadAura(id, triggernum, triggerInfo)
             if (not triggerInfo.auranames and not triggerInfo.auraspellids)
                 or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
                 or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId)) then
+              if triggerInfo.fetchTooltip then
+                matchData[unit][filter][index]:UpdateTooltip(time)
+              end
               if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][index]) then
-                if triggerInfo.fetchTooltip then
-                  matchData[unit][filter][index]:UpdateTooltip(time)
-                end
                 ReferenceMatchData(id, triggernum, unit, filter, index)
               end
             end
@@ -1781,10 +1781,10 @@ local function LoadAura(id, triggernum, triggerInfo)
         if (not triggerInfo.auranames and not triggerInfo.auraspellids
             or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
             or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))) then
+          if triggerInfo.fetchTooltip then
+            matchData[triggerInfo.unit][filter][index]:UpdateTooltip(time)
+          end
           if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[triggerInfo.unit][filter][index]) then
-            if triggerInfo.fetchTooltip then
-              matchData[triggerInfo.unit][filter][index]:UpdateTooltip(time)
-            end
             ReferenceMatchData(id, triggernum, triggerInfo.unit, filter, index)
           end
         end
