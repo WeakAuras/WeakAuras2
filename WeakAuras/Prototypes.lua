@@ -6208,7 +6208,9 @@ WeakAuras.dynamic_texts = {
         -- Format a duration time string
         local durationStr     = "";
         local duration = state.duration
-        if duration > 60 then
+        if math.abs(duration) == math.huge or tostring(duration) == "nan" then
+          durationStr = " ";
+        elseif duration > 60 then
           durationStr     = string.format("%i:", math.floor(duration / 60));
           duration       = duration % 60;
           durationStr     = durationStr..string.format("%02i", duration);
