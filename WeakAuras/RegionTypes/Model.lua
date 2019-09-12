@@ -132,15 +132,15 @@ local function modify(parent, region, data)
 
   if data.modelIsUnit then
     model:RegisterEvent("UNIT_MODEL_CHANGED");
-    if (data.model_path == "target") then
+    if (data.model_fileId == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
-    elseif (data.model_path == "focus") then
+    elseif (data.model_fileId == "focus") then
       model:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", function(self, event, unitId)
       WeakAuras.StartProfileSystem("model");
-      if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, data.model_path)) then
-        model:SetUnit(data.model_path);
+      if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, data.model_fileId)) then
+        WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
       end
       WeakAuras.StopProfileSystem("model");
     end
@@ -254,10 +254,6 @@ local function modify(parent, region, data)
     else
       model:ClearTransform();
       model:SetPosition(data.model_z, data.model_x, data.model_y);
-    end
-
-    if data.modelIsUnit then
-      model:SetUnit(data.model_path);
     end
   end
 
