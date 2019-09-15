@@ -3941,7 +3941,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
+          return state and state.show and (UnitExists('target') and state.spellname and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
         end,
         conditionEvents = {
           "PLAYER_TARGET_CHANGED",
