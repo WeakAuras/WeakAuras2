@@ -91,7 +91,6 @@ local function modify(parent, region, parentData, data, first)
 
   region:SetVisible(data.border_visible)
 
-  region.UpdateAnchor = function() end
   region.Update = function() end
 end
 

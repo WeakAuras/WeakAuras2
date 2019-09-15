@@ -76,7 +76,6 @@ local funcs = {
   SetAlpha = function(self, alpha)
     self.model:SetModelAlpha(alpha)
   end,
-  UpdateAnchor = noop,
   Update = noop
 }
 
