@@ -1,6 +1,8 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
+local LCG = LibStub("LibCustomGlow-1.0")
+local L = WeakAuras.L
 local MSQ, MSQ_Version = LibStub("Masque", true);
 if MSQ then
   if MSQ_Version <= 80100 then
@@ -10,8 +12,6 @@ if MSQ then
     MSQ:AddType("WA_Aura", {"Icon", "Cooldown"})
   end
 end
-local LCG = LibStub("LibCustomGlow-1.0")
-local L = WeakAuras.L
 
 -- WoW API
 local _G = _G
