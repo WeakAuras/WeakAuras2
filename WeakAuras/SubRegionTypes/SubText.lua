@@ -53,7 +53,8 @@ local properties = {
   text_visible = {
     display = L["Visibility"],
     setter = "SetVisible",
-    type = "bool"
+    type = "bool",
+    defaultProperty = true
   },
   text_color = {
     display = L["Color"],
