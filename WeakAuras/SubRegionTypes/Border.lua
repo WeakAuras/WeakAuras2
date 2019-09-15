@@ -21,7 +21,8 @@ local properties = {
   border_visible = {
     display = L["Show Border"],
     setter = "SetVisible",
-    type = "bool"
+    type = "bool",
+    defaultProperty = true
   },
   border_color = {
     display = L["Border Color"],

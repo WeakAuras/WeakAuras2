@@ -32,7 +32,8 @@ local properties = {
   bar_model_visible = {
     display = L["Visibility"],
     setter = "SetVisible",
-    type = "bool"
+    type = "bool",
+    defaultProperty = true
   },
   bar_model_alpha = {
     display = L["Alpha"],

@@ -1024,7 +1024,7 @@ function WeakAuras.GetProperties(data)
       if subProperties then
         for key, property in pairs(subProperties) do
           subIndex[key] = subIndex[key] and subIndex[key] + 1 or 1
-          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName, property.display }
+          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName, property.display, property.defaultProperty }
           properties["sub." .. index .. "." .. key ] = property;
         end
       end
