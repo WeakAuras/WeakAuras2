@@ -3135,7 +3135,7 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
     if (trigger.custom_type == "stateupdate") then
       local count = 0;
       local variables = events[data.id][triggernum].tsuConditionVariables;
-      if (variables) then
+      if (type(variables) == "table") then
         if (type(variables.additionalProgress) == "table") then
           count = #variables.additionalProgress;
         elseif (type(variables.additionalProgress) == "number") then
