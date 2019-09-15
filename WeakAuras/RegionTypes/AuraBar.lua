@@ -550,8 +550,23 @@ local barPrototype = {
 }
 
 local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
-  if type == "area" then
-    WeakAuras.regionPrototype.AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+  if anchorType == "area" then
+    local anchor = self
+    if selfPoint == "bar" then
+      anchor = self
+    elseif selfPoint == "icon" then
+      anchor = self.icon
+    elseif selfPoint == "fg" then
+      anchor = self.bar.fg
+    elseif selfPoint == "bg" then
+      anchor = self.bar.bg
+    end
+
+    anchorXOffset = anchorXOffset or 0
+    anchorYOffset = anchorYOffset or 0
+    subRegion:ClearAllPoints()
+    subRegion:SetPoint("bottomleft", anchor, "bottomleft", -anchorXOffset, -anchorYOffset)
+    subRegion:SetPoint("topright", anchor, "topright", anchorXOffset,  anchorYOffset)
   else
     subRegion:ClearAllPoints()
     anchorPoint = anchorPoint or "CENTER"

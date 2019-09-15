@@ -107,7 +107,10 @@ function WeakAuras.regionPrototype:AnchorSubRegion(subRegion, anchorType, selfPo
                        self, WeakAuras.point_types[anchorPoint] and anchorPoint or "CENTER",
                        xOffset, yOffset)
   else
-    subRegion:SetAllPoints(self)
+    anchorXOffset = anchorXOffset or 0
+    anchorYOffset = anchorYOffset or 0
+    subRegion:SetPoint("bottomleft", self, "bottomleft", -anchorXOffset, -anchorYOffset)
+    subRegion:SetPoint("topright", self, "topright", anchorXOffset,  anchorYOffset)
   end
 end
 
