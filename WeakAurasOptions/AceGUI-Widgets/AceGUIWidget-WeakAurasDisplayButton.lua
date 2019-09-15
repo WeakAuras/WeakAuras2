@@ -106,7 +106,7 @@ clipboard.pasteMenuEntry = {
     WeakAuras.SortDisplayButtons();
     WeakAuras.PickDisplay(clipboard.current.id);
     WeakAuras.UpdateDisplayButton(clipboard.current.id);
-    WeakAuras.ReloadOptions(clipboard.current.id);
+    WeakAuras.ReloadOptions2(clipboard.current.id, clipboard.current);
   end
 }
 
