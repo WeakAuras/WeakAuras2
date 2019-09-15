@@ -1669,12 +1669,14 @@ do
   local runeCdExps = {};
   local runeCdHandles = {};
 
-  local gcdReference;
   local gcdStart;
   local gcdDuration;
   local gcdSpellName;
   local gcdSpellIcon;
   local gcdEndCheck;
+
+  local shootStart
+  local shootDuration
 
   local function GetRuneDuration()
     local runeDuration = -100;
@@ -1691,6 +1693,7 @@ do
     local startTime, duration
     if WeakAuras.IsClassic() then
       startTime, duration = GetSpellCooldown(29515);
+      shootStart, shootDuration = GetSpellCooldown(5019)
     else
       startTime, duration = GetSpellCooldown(61304);
     end
@@ -1768,16 +1771,21 @@ do
       duration = 0
       endTime = 0
     end
-    if duration > 0 and startTime == gcdStart and duration == gcdDuration then
-      -- GCD cooldown, this could mean that the spell reset!
-      if self.expirationTime[id] and self.expirationTime[id] > startTime + duration and self.expirationTime[id] ~= 0 then
-        self.duration[id] = 0
-        self.expirationTime[id] = 0
-        changed = true
-        nowReady = true
+
+    if duration > 0 then
+      if (startTime == gcdStart and duration == gcdDuration)
+          or (WeakAuras.IsClassic() and duration == shootDuration and startTime == shootStart)
+      then
+        -- GCD cooldown, this could mean that the spell reset!
+        if self.expirationTime[id] and self.expirationTime[id] > endTime and self.expirationTime[id] ~= 0 then
+          self.duration[id] = 0
+          self.expirationTime[id] = 0
+          changed = true
+          nowReady = true
+        end
+        RecheckHandles:Schedule(endTime, id)
+        return changed, nowReady
       end
-      RecheckHandles:Schedule(endTime, id)
-      return changed, nowReady
     end
 
     if self.duration[id] ~= duration then
