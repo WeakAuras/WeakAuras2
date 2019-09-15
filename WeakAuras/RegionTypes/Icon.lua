@@ -229,7 +229,7 @@ local function GetTexCoord(region, texWidth, aspectRatio)
 end
 
 local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
-  if type == "area" then
+  if anchorType == "area" then
     WeakAuras.regionPrototype.AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   else
     subRegion:ClearAllPoints()

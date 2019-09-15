@@ -307,6 +307,13 @@ WeakAuras.default_types_for_anchor["ALL"] = {
   type = "area"
 }
 
+WeakAuras.aurabar_anchor_areas = {
+  icon = L["Icon"],
+  fg = L["Foreground"],
+  bg = L["Background"],
+  bar = L["Bar"],
+}
+
 WeakAuras.inverse_point_types = {
   BOTTOMLEFT = "TOPRIGHT",
   BOTTOM = "TOP",

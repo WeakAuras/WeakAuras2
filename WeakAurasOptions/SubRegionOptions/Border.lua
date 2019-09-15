@@ -74,12 +74,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Border Anchor"],
       order = order + 0.6,
-      values = {
-        icon = L["Icon"],
-        fg = L["Foreground"],
-        bg = L["Background"],
-        bar = L["Bar"],
-      },
+      values = WeakAuras.aurabar_anchor_areas,
       hidden = function() return parentData.regionType ~= "aurabar" end
     }
   }
