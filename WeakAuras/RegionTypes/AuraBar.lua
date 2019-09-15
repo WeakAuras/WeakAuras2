@@ -1205,7 +1205,6 @@ end
 local function subCreate()
   local result = {}
   result.Update = noop
-  result.UpdateAnchor = noop
   result.SetFrameLevel = SetFrameLevel
   return result
 end
