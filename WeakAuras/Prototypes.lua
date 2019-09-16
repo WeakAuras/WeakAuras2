@@ -1539,7 +1539,7 @@ WeakAuras.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return trigger.use_showAbsorb;
+          return not WeakAuras.IsClassic() and trigger.use_showAbsorb;
         end
       },
       {
@@ -1551,7 +1551,7 @@ WeakAuras.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return trigger.use_showIncomingHeal;
+          return not WeakAuras.IsClassic() and trigger.use_showIncomingHeal;
         end
       }
     },
