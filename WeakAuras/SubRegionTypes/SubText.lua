@@ -181,7 +181,7 @@ local function modify(parent, region, parentData, data, first)
 
   text:SetShadowColor(unpack(data.text_shadowColor))
   text:SetShadowOffset(data.text_shadowXOffset, data.text_shadowYOffset)
-  text:SetJustifyH(data.text_justify)
+  text:SetJustifyH(data.text_justify or "CENTER")
 
   if first then
     -- Certain data is stored directly on the parent, because it's shared between multiple texts
