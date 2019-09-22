@@ -3274,7 +3274,7 @@ function WeakAuras.Modernize(data)
   if data.internalVersion < 20 then
     if data.regionType == "icon" then
       local convertPoint = function(containment, point)
-        if point == "CENTER" then
+        if not point or point == "CENTER" then
           return "CENTER"
         elseif containment == "INSIDE" then
           return "INNER_" .. point
