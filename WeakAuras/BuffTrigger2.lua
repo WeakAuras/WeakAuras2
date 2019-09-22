@@ -954,7 +954,7 @@ local function UpdateTriggerState(time, id, triggernum)
       if bestMatch then
         updated = UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCount, affected, unaffected)
       else
-        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, nil, 0, 0, 0, 0, affected, unaffected)
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, nil, 0, 0, maxUnitCount, 0, affected, unaffected)
       end
     else
       updated = RemoveState(triggerStates, cloneId)
@@ -1016,7 +1016,7 @@ local function UpdateTriggerState(time, id, triggernum)
       end
 
       if matchCount == 0 then
-        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", nil, 0, 0, 0, 0, affected, unaffected) or updated
+        updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", nil, 0, 0, maxUnitCount, 0, affected, unaffected) or updated
       end
     end
 
