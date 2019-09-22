@@ -1230,7 +1230,7 @@ WeakAuras.load_prototype = {
       init = "arg",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
-      events = {"PLAYER_ROLES_ASSIGNED"}
+      events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
       name = "affixes",
