@@ -2132,6 +2132,14 @@ function WeakAuras.ReloadAll()
 end
 
 function WeakAuras.UnloadAll()
+  -- Even though auras are collapsed, their finish animation can be running
+  for id in pairs(loaded) do
+    WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    for cloneId, region in pairs(clones[id]) do
+      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+    end
+  end
+
   for _, v in pairs(triggerState) do
     for i = 1, v.numTriggers do
       if (v[i]) then
@@ -2187,6 +2195,12 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
   end
 
   for id in pairs(toUnload) do
+    -- Even though auras are collapsed, their finish animation can be running
+    WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    for cloneId, region in pairs(clones[id]) do
+      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+    end
+
     for i = 1, triggerState[id].numTriggers do
       if (triggerState[id][i]) then
         wipe(triggerState[id][i]);
