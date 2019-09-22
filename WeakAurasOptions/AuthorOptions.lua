@@ -1908,11 +1908,12 @@ local function addUserModeOption(options, args, data, order, prefix, i)
   -- convert from weakauras option type to ace option type
   if optionClass == "simple" then
     -- toggle and input don't need any extra love
-    if optionType == "number" then
+    if optionType == "input" then
+      userOption.multiline = option.multiline
+    elseif optionType == "number" then
       userOption.type = "input"
       userOption.get = getUserNumAsString(option)
       userOption.set = setUserNum(data, option, true)
-      userOption.multiline = option.multiline
     elseif optionType == "range" then
       userOption.softMax = option.softMax
       userOption.softMin = option.softMin
