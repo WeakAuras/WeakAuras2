@@ -2135,8 +2135,10 @@ function WeakAuras.UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
     WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
-    for cloneId, region in pairs(clones[id]) do
-      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+    if clones[id] then
+      for cloneId, region in pairs(clones[id]) do
+        WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+      end
     end
   end
 
