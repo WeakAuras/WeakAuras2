@@ -1608,14 +1608,22 @@ do
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
         if(lastSwingRange) then
-          timer:CancelTimer(rangeTimer, true);
+          if WeakAuras.IsClassic() then
+            timer:CancelTimer(rangeTimer, true)
+          else
+            timer:CancelTimer(mainTimer, true)
+          end
           event = "SWING_TIMER_CHANGE";
         else
           event = "SWING_TIMER_START";
         end
         lastSwingRange = currentTime;
         swingDurationRange = speed;
-        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged");
+        if WeakAuras.IsClassic() then
+          rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged");
+        else
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, speed, "main");
+        end
         WeakAuras.ScanEvents(event);
       end
     end

@@ -2154,7 +2154,14 @@ WeakAuras.EJIcons = {
 }
 
 WeakAuras.reset_swing_spells = {}
-WeakAuras.reset_ranged_swing_spells = {}
+WeakAuras.reset_ranged_swing_spells = {
+  [2480] = true, -- Shoot Bow
+  [7919] = true, -- Shoot Crossbow
+  [7918] = true, -- Shoot Gun
+  [2764] = true, -- Throw
+  [5019] = true, -- Shoot Wands
+  [75] = true, -- Auto Shot
+}
 
 if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
@@ -2180,13 +2187,6 @@ if WeakAuras.IsClassic() then
   for i, spellid in ipairs(reset_swing_spell_list) do
     WeakAuras.reset_swing_spells[spellid] = true
   end
-
-  WeakAuras.reset_ranged_swing_spells[2480] = true -- Shoot Bow
-  WeakAuras.reset_ranged_swing_spells[7919] = true -- Shoot Crossbow
-  WeakAuras.reset_ranged_swing_spells[7918] = true -- Shoot Gun
-  WeakAuras.reset_ranged_swing_spells[2764] = true -- Throw
-  WeakAuras.reset_ranged_swing_spells[5019] = true -- Shoot Wands
-  WeakAuras.reset_ranged_swing_spells[75] = true -- Auto Shot
 
   WeakAuras.glow_types.ACShine = nil
 end
