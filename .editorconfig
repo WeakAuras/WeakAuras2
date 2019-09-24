@@ -21,3 +21,7 @@ indent_size = 4
 
 [{.mailmap,.env,*.sh}]
 end_of_line = lf
+
+[{*.pkgmeta,*.pkgmeta-classic}]
+indent_style = space
+indent_size = 2

@@ -1,43 +1,43 @@
 package-as: WeakAuras
 
 externals:
- WeakAuras/Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
- WeakAuras/Libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
- WeakAuras/Libs/AceConfig-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
- WeakAuras/Libs/AceConsole-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
- WeakAuras/Libs/AceGUI-3.0: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
- WeakAuras/Libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
- WeakAuras/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.wowace.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
- WeakAuras/Libs/AceTimer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
- WeakAuras/Libs/AceSerializer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
- WeakAuras/Libs/AceComm-3.0: https://repos.wowace.com/wow/ace3/trunk/AceComm-3.0
- WeakAuras/Libs/LibSharedMedia-3.0: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
- WeakAuras/Libs/LibDataBroker-1.1: git://github.com/tekkub/libdatabroker-1-1.git
- WeakAuras/Libs/LibCompress: https://repos.wowace.com/wow/libcompress/trunk
- WeakAuras/Libs/LibSpellRange-1.0: git://github.com/ascott18/LibSpellRange-1.0.git
- WeakAuras/Libs/LibCustomGlow-1.0: git://github.com/Stanzilla/LibCustomGlow.git
- WeakAuras/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
- WeakAuras/Libs/LibClassicDurations: git://github.com/rgd87/LibClassicDurations.git
- WeakAuras/Libs/LibClassicCasterino: git://github.com/rgd87/LibClassicCasterino.git
- WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
+  WeakAuras/Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+  WeakAuras/Libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+  WeakAuras/Libs/AceConfig-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
+  WeakAuras/Libs/AceConsole-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
+  WeakAuras/Libs/AceGUI-3.0: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
+  WeakAuras/Libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
+  WeakAuras/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.wowace.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
+  WeakAuras/Libs/AceTimer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
+  WeakAuras/Libs/AceSerializer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
+  WeakAuras/Libs/AceComm-3.0: https://repos.wowace.com/wow/ace3/trunk/AceComm-3.0
+  WeakAuras/Libs/LibSharedMedia-3.0: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
+  WeakAuras/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
+  WeakAuras/Libs/LibCompress: https://repos.wowace.com/wow/libcompress/trunk
+  WeakAuras/Libs/LibSpellRange-1.0: https://github.com/ascott18/LibSpellRange-1.0
+  WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
+  WeakAuras/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
+  WeakAuras/Libs/LibClassicDurations: https://github.com/rgd87/LibClassicDurations
+  WeakAuras/Libs/LibClassicCasterino: https://github.com/rgd87/LibClassicCasterino
+  WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
 
 enable-nolib-creation: no
 
 manual-changelog:
- filename: CHANGELOG.md
- markup-type: markdown
+  filename: CHANGELOG.md
+  markup-type: markdown
 
 ignore:
- - README.md
- - CONTRIBUTING.md
- - babelfish.lua
- - wowace_translations.sh
- - generate_changelog.sh
- - WeakAuras/RegionTypes/Model.lua
- - WeakAurasOptions/RegionOptions/Model.lua
- - WeakAuras/WeakAurasTemplates
- - WeakAuras/WeakAurasModelPaths
+  - README.md
+  - CONTRIBUTING.md
+  - babelfish.lua
+  - wowace_translations.sh
+  - generate_changelog.sh
+  - WeakAuras/RegionTypes/Model.lua
+  - WeakAurasOptions/RegionOptions/Model.lua
+  - WeakAuras/WeakAurasTemplates
+  - WeakAuras/WeakAurasModelPaths
 
 move-folders:
- WeakAuras/WeakAuras: WeakAuras
- WeakAuras/WeakAurasOptions: WeakAurasOptions
+  WeakAuras/WeakAuras: WeakAuras
+  WeakAuras/WeakAurasOptions: WeakAurasOptions
