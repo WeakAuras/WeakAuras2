@@ -32,21 +32,22 @@ jobs:
       run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
     - name: Create Retail Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash;
+      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
       env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
         WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 
     - name: Create Classic Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.2 -m .pkgmeta-classic -w 24944;
+      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.2 -m .pkgmeta-classic -w 24944
       env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
         WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 
-    #- name: Notify on Failure
-    #  if: failure()
-    #  run: curl -s https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh | bash -s -- failure $WEBHOOK_URL;
-    #  env:
-    #    WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+    - name: Notify on Failure
+      if: failure()
+      env:
+        BUILD_STATUS: ${{ job.status }}
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      run: curl -s https://raw.githubusercontent.com/nebularg/actions-discord-webhook/master/send.sh | bash
