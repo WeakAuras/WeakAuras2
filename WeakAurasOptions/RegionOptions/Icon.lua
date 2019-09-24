@@ -223,10 +223,6 @@ local function createOptions(id, data)
     },
   };
 
-  for k, v in pairs(WeakAuras.GlowOptions(id, data, 12)) do
-    options[k] = v
-  end
-
   return {
     icon = options,
     position = WeakAuras.PositionOptions(id, data),
