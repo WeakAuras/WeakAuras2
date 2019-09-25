@@ -3394,7 +3394,11 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
               if (v.conditionValues) then
                 result[v.name].values = WeakAuras[v.conditionValues];
               else
-                result[v.name].values = WeakAuras[v.values];
+                if type(v.values) == "function" then
+                  result[v.name].values = v.values()
+                else
+                  result[v.name].values = WeakAuras[v.values];
+                end
               end
             end
             if (v.conditionTest) then
