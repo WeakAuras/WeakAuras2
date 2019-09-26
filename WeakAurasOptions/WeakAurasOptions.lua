@@ -868,7 +868,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             type = "input",
             width = WeakAuras.normalWidth,
             name = L["Specific Unit"],
-            desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
+            desc = L["Can be a UID (e.g., party1)."],
             order = order,
             hidden = function() return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
             get = function() return trigger[realname] end,
