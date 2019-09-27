@@ -250,7 +250,7 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
   if function_cache[string] then
     return function_cache[string]
   else
-    local loadedFunction, errorString = loadstring("--[[ Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."' ]] " .. string)
+    local loadedFunction, errorString = loadstring("--[==[ Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."' ]==] " .. string)
     if errorString then
       print(errorString)
     else
