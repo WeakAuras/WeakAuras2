@@ -2176,7 +2176,9 @@ do
       duration = duration or 0;
       local time = GetTime();
 
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      -- We check against 1.5 and not gcdDuration, as apparently the durations might not match exactly.
+      -- But there shouldn't be any trinket with a actual cd of less than 1.5 anyway
+      if(duration > 0 and duration > 1.5) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -2225,7 +2227,9 @@ do
       duration = duration or 0;
       local time = GetTime();
 
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      -- We check against 1.5 and not gcdDuration, as apparently the durations might not match exactly.
+      -- But there shouldn't be any trinket with a actual cd of less than 1.5 anyway
+      if(duration > 0 and duration > 1.5) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -2364,7 +2368,7 @@ do
         startTime, duration = 0, 0
       end
       itemCdEnabled[id] = enabled;
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      if(duration > 0 and duration > 1.5) then
         local time = GetTime();
         local endTime = startTime + duration;
         itemCdDurs[id] = duration;
@@ -2387,7 +2391,7 @@ do
       itemSlots[id] = GetInventoryItemID("player", id);
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
-      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
+      if(duration > 0 and duration > 1.5) then
         local time = GetTime();
         local endTime = startTime + duration;
         itemSlotsCdDurs[id] = duration;
