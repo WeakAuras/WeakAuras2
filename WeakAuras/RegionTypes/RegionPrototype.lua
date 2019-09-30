@@ -645,6 +645,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         return;
       end
       region.toShow = false;
+      region:SetScript("OnUpdate", nil)
 
       WeakAuras.PerformActions(data, "finish", region);
       if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
@@ -690,6 +691,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         return;
       end
       region.toShow = false;
+      region:SetScript("OnUpdate", nil)
 
       WeakAuras.PerformActions(data, "finish", region);
       if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
