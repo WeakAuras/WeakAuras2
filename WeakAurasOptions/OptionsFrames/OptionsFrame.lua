@@ -339,6 +339,8 @@ function WeakAuras.CreateFrame()
       end
       minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
       minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
+
+      frame.buttonsScroll:DoLayout()
     else
       frame.minimized = true
       frame:SetHeight(40)
