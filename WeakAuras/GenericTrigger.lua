@@ -1855,6 +1855,7 @@ do
         WeakAuras.CheckCooldownReady();
       elseif(event == "SPELLS_CHANGED") then
         WeakAuras.CheckSpellKnown();
+        WeakAuras.CheckCooldownReady();
       elseif(event == "UNIT_SPELLCAST_SENT") then
         local unit, guid, castGUID, name = ...;
         if(unit == "player") then
