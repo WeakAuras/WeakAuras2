@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/WeakAuras/WeakAuras2/workflows/CI/badge.svg)](https://github.com/WeakAuras/WeakAuras2/actions/CI)
+[![Build Status](https://github.com/WeakAuras/WeakAuras2/workflows/CI/badge.svg)](https://github.com/WeakAuras/WeakAuras2/actions?workflow=CI)
 [![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.gg/wa2) [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/weakauras)
 
 # WeakAuras 2
