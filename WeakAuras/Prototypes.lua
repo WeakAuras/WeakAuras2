@@ -5147,22 +5147,23 @@ WeakAuras.event_prototypes = {
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_REMOVED")
       end
-      if not (WeakAuras.IsClassic() and trigger.unit ~= "player") then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
-      else
-        LibClassicCasterino:RegisterCallback("PLAYER_TARGET_CHANGED", WeakAuras.ScanEvents)
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
+      if WeakAuras.IsClassic() and trigger.unit ~= "player" then
         LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_START", WeakAuras.ScanEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_DELAYED", WeakAuras.ScanEvents) -- only for player
         LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_STOP", WeakAuras.ScanEvents)
         LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_FAILED", WeakAuras.ScanEvents)
         LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_UPDATE", WeakAuras.ScanEvents) -- only for player
         LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanEvents)
         LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanEvents)
       end
@@ -5220,6 +5221,7 @@ WeakAuras.event_prototypes = {
             local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining
 
             if event == "UNIT_SPELLCAST_STOP"
+            or event == "UNIT_SPELLCAST_FAILED"
             or event == "UNIT_SPELLCAST_CHANNEL_STOP"
             or event == "UNIT_SPELLCAST_INTERRUPTED"
             or event == "NAME_PLATE_UNIT_REMOVED"
