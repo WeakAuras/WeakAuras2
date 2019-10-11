@@ -723,6 +723,7 @@ function WeakAuras.CheckChargesDirection(direction, triggerDirection)
 end
 
 function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
+  if type(flags) ~= "number" then return end
   if (flagToCheck == "InGroup") then
     return bit.band(flags, 7) > 0;
   elseif (flagToCheck == "NotInGroup") then
