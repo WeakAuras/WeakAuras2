@@ -1029,8 +1029,8 @@ local function UpdateTriggerState(time, id, triggernum)
     local matches = {}
     if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum] then
       for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
-        local bestMatch, matchCountPerUnit, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
-        matchCount = matchCount + matchCountPerUnit
+        local bestMatch, countPerUnit, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
+        matchCount = matchCount + countPerUnit
         if bestMatch then
           unitCount = unitCount + 1
           matchedUnits[unit] = true
@@ -1042,6 +1042,7 @@ local function UpdateTriggerState(time, id, triggernum)
           nextCheck = min(nextCheck, nextCheckForMatch)
         end
         matches[unit] = bestMatch
+        matchCountPerUnit[unit] = countPerUnit
       end
     end
 
