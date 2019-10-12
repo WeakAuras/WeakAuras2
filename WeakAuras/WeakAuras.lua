@@ -4374,7 +4374,13 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
         pcall(function() SendChatMessage(message, "PARTY") end)
       end
     else
-      pcall(function() SendChatMessage(message, "SAY") end)
+      if WeakAuras.IsClassic() or IsInInstance() then
+        pcall(function() SendChatMessage(message, "SAY") end)
+      end
+    end
+  elseif(message_type == "SAY" or message_type == "YELL") then
+    if WeakAuras.IsClassic() or IsInInstance() then
+      pcall(function() SendChatMessage(message, message_type, nil, nil) end)
     end
   else
     pcall(function() SendChatMessage(message, message_type, nil, nil) end);

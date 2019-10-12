@@ -6,6 +6,17 @@ local L = WeakAuras.L
 local send_chat_message_types = WeakAuras.send_chat_message_types;
 local sound_types = WeakAuras.sound_types;
 
+local RestrictedChannelCheck
+if WeakAuras.IsClassic() then
+  RestrictedChannelCheck = function()
+    return false
+  end
+else
+  RestrictedChannelCheck = function(data)
+    return data.message_type == "SAY" or data.message_type == "YELL" or data.message_type == "SMARTRAID"
+  end
+end
+
 function WeakAuras.AddActionOption(id, data)
   local action = {
     type = "group",
@@ -84,6 +95,13 @@ function WeakAuras.AddActionOption(id, data)
         values = send_chat_message_types,
         disabled = function() return not data.actions.start.do_message end,
         control = "WeakAurasSortedDropdown"
+      },
+      start_message_warning = {
+        type = "description",
+        width = WeakAuras.doubleWidth,
+        name = L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."],
+        order = 2.5,
+        hidden = function() return not RestrictedChannelCheck(data.actions.start) end
       },
       start_message_space = {
         type = "execute",
@@ -289,6 +307,13 @@ function WeakAuras.AddActionOption(id, data)
         values = send_chat_message_types,
         disabled = function() return not data.actions.finish.do_message end,
         control = "WeakAurasSortedDropdown"
+      },
+      finish_message_warning = {
+        type = "description",
+        width = WeakAuras.doubleWidth,
+        name = L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."],
+        order = 22.5,
+        hidden = function() return not RestrictedChannelCheck(data.actions.finish) end
       },
       finish_message_space = {
         type = "execute",
