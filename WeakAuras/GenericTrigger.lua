@@ -1495,6 +1495,7 @@ do
   local swingDurationMain, swingDurationOff, swingDurationRange, mainSwingOffset;
   local mainTimer, offTimer, rangeTimer;
   local selfGUID;
+  local mainSpeed, offSpeed = UnitAttackSpeed("player")
 
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
@@ -1547,7 +1548,7 @@ do
 
         local event;
         local currentTime = GetTime();
-        local mainSpeed, offSpeed = UnitAttackSpeed("player");
+        mainSpeed, offSpeed = UnitAttackSpeed("player");
         offSpeed = offSpeed or 0;
         if not(isOffHand) then
           lastSwingMain = currentTime;
@@ -1587,12 +1588,34 @@ do
   local function swingTimerCheck(event, unit, guid, spell)
     if unit ~= "player" then return end
     WeakAuras.StartProfileSystem("generictrigger swing");
-    if event == "UNIT_SPELLCAST_SUCCEEDED" then
+    if event == "UNIT_ATTACK_SPEED" then
+      local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
+      if lastSwingMain then
+        if mainSpeedNew ~= mainSpeed then
+          timer:CancelTimer(mainTimer)
+          local multiplier = mainSpeedNew / mainSpeed
+          local timeLeft = (lastSwingMain + swingDurationMain - GetTime()) * multiplier
+          swingDurationMain = mainSpeedNew
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "main")
+          WeakAuras.ScanEvents("SWING_TIMER_CHANGE")
+        end
+      end
+      if lastSwingOff then
+        if offSpeedNew ~= offSpeed then
+          timer:CancelTimer(offTimer)
+          local multiplier = offSpeedNew / mainSpeed
+          local timeLeft = (lastSwingOff + swingDurationOff - GetTime()) * multiplier
+          swingDurationOff = offSpeedNew
+          offTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "off")
+          WeakAuras.ScanEvents("SWING_TIMER_CHANGE")
+        end
+      end
+      mainSpeed, offSpeed = mainSpeedNew, offSpeedNew
+    elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
       if WeakAuras.reset_swing_spells[spell] then
         local event;
-        local currentTime = GetTime();
-        local mainSpeed, offSpeed = UnitAttackSpeed("player");
-        lastSwingMain = currentTime;
+        mainSpeed, offSpeed = UnitAttackSpeed("player");
+        lastSwingMain = GetTime();
         swingDurationMain = mainSpeed;
         mainSwingOffset = 0;
         if (lastSwingMain) then
@@ -1635,6 +1658,7 @@ do
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
+      swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
       swingTimerFrame:SetScript("OnEvent",
         function(_, event, ...)
