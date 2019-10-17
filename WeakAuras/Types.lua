@@ -1985,8 +1985,23 @@ WeakAuras.author_option_fields = {
     collapse = false,
     limitType = "none",
     size = 10,
+    nameSource = 0,
+    entryNames = nil, -- handled as a special case in code
     subOptions = {},
   }
+}
+
+WeakAuras.array_entry_name_types = {
+  [-1] = L["Fixed Names"],
+  [0] = L["Entry Order"],
+  -- the rest is auto-populated with indices which are valid entry name sources
+}
+
+WeakAuras.name_source_option_types = {
+  -- option types which can be used to generate entry names on arrays
+  input = true,
+  number = true,
+  range = true,
 }
 
 WeakAuras.group_limit_types = {
