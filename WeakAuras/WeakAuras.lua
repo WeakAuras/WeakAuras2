@@ -5690,9 +5690,6 @@ local function ApplyStateToRegion(id, cloneId, region, parent)
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
-  if parent and parent.ActivateChild then
-    parent:ActivateChild(id, cloneId)
-  end
 end
 
 -- Fallbacks if the states are empty
