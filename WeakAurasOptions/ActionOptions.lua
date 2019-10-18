@@ -487,13 +487,20 @@ function WeakAuras.AddActionOption(id, data)
     },
   }
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "init", 0.011, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true);
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Actions",
+                          0.011, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true);
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start_message", 5.1, function() return not (data.actions.start.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start", 13, function() return not data.actions.start.do_custom end, {"actions", "start", "custom"}, true);
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Text-Replacements",
+                          5.1, function() return not (data.actions.start.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", 26, function() return not (data.actions.finish.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish", 32, function() return not data.actions.finish.do_custom end, {"actions", "finish", "custom"}, true);
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Actions",
+                          13, function() return not data.actions.start.do_custom end, {"actions", "start", "custom"}, true);
+
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Text-Replacements",
+                          26, function() return not (data.actions.finish.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
+
+  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Actions",
+                          32, function() return not data.actions.finish.do_custom end, {"actions", "finish", "custom"}, true);
 
   return action;
 end
