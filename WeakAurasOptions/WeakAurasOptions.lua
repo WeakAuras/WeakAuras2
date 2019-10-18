@@ -2310,12 +2310,12 @@ end
 -- TODO: find a paradigm which doesn't have five million flags for AddCodeOption so that calls to it don't always go off the screen
 -- a table of settings is the obvious option to pack the flags.
 -- alternatively, we could create a "code" type option which then gets processed before sending to AceConfig
-function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
+function WeakAuras.AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
   extraFunctions = extraFunctions or {};
   tinsert(extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function()
-      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent)
+      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
     end
   });
 
@@ -3340,7 +3340,8 @@ function WeakAuras.ReloadTriggerOptions(data)
   local function hideTriggerCombiner()
     return not (data.triggers.disjunctive == "custom")
   end
-  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", 0.1, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
+  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", "https://github.com/WeakAuras/WeakAuras2/wiki/Aura-Activation-and-Deactivation",
+                          0.1, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
 
   local order = 81;
 
@@ -3889,7 +3890,8 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       end
     },
   };
-  WeakAuras.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", 72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
+  WeakAuras.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Anchor",
+                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
   return positionOptions;
 end
 

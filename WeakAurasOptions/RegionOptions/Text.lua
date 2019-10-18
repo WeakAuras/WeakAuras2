@@ -135,7 +135,8 @@ local function createOptions(id, data)
     },
   };
 
-  WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
+  WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Text-Replacements",
+                          37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   return {
     text = options;
