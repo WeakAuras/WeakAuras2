@@ -3016,7 +3016,11 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Equipment Slot)"] = {
     type = "status",
-    events = {},
+    events = {
+      ["unit_events"] = {
+        ["player"] = {"UNIT_INVENTORY_CHANGED"}
+      }
+    },
     internal_events = function(trigger, untrigger)
       local events = {
         "ITEM_SLOT_COOLDOWN_STARTED",
@@ -3155,6 +3159,13 @@ WeakAuras.event_prototypes = {
       if (item) then
         return GetItemInfo(item);
       end
+    end,
+    stacksFunc = function(trigger)
+      local count = GetInventoryItemCount("player", trigger.itemSlot or 0)
+      if ((count == 1) and (not GetInventoryItemTexture("player", trigger.itemSlot or 0))) then
+        count = 0
+      end
+      return count
     end,
     iconFunc = function(trigger)
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
