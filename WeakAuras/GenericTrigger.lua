@@ -1590,6 +1590,7 @@ do
     WeakAuras.StartProfileSystem("generictrigger swing");
     if event == "UNIT_ATTACK_SPEED" then
       local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
+      offSpeedNew = offSpeedNew or 0
       if lastSwingMain then
         if mainSpeedNew ~= mainSpeed then
           timer:CancelTimer(mainTimer)
