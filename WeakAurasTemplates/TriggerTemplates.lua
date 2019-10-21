@@ -1747,7 +1747,7 @@ function WeakAuras.CreateTemplateView(frame)
     frame.container.frame:Show();
     frame.window = "default";
     if (not self.data) then
-      frame:PickOption("New");
+      frame:NewAura();
     end
   end
 
