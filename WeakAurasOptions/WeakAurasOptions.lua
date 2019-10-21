@@ -1427,7 +1427,7 @@ function WeakAuras.ShowOptions(msg)
       WeakAuras.PickDisplay(frame.pickedDisplay);
     end
   else
-    frame:PickOption("New");
+    frame:NewAura();
   end
   if not(firstLoad) then
     -- Show what was last shown
@@ -1528,9 +1528,7 @@ function WeakAuras.GetSortedOptionsLists()
 end
 
 function WeakAuras.BuildOptions(list, callback)
-  frame.loadProgress:Show();
-  frame.filterInput:Hide();
-  frame.filterInputClear:Hide();
+  frame:SetLoadProgressVisible(true)
 
   local total = 0;
   for _,_ in pairs(list) do
@@ -1552,9 +1550,7 @@ function WeakAuras.BuildOptions(list, callback)
     end
 
     callback();
-    frame.loadProgress:Hide();
-    frame.filterInput:Show();
-    frame.filterInputClear:Show();
+    frame:SetLoadProgressVisible(false)
   end
 
   local co = coroutine.create(func);
@@ -1569,11 +1565,11 @@ function WeakAuras.LayoutDisplayButtons(msg)
 
   local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
 
-  frame.loadProgress:Show();
-  frame.buttonsScroll:AddChild(frame.newButton);
-  if(frame.addonsButton) then
-    frame.buttonsScroll:AddChild(frame.addonsButton);
-  end
+  frame:SetLoadProgressVisible(true)
+  --frame.buttonsScroll:AddChild(frame.newButton);
+  --if(frame.addonsButton) then
+  --  frame.buttonsScroll:AddChild(frame.addonsButton);
+  --end
   frame.buttonsScroll:AddChild(frame.loadedButton);
   frame.buttonsScroll:AddChild(frame.unloadedButton);
 
@@ -1622,9 +1618,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
     end
     WeakAuras.ResumeAllDynamicGroups();
 
-    frame.loadProgress:Hide();
-    frame.filterInput:Show();
-    frame.filterInputClear:Show();
+    frame:SetLoadProgressVisible(false)
   end
 
   local func1 = function()
@@ -4091,10 +4085,10 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   filter = filter:lower();
 
   wipe(frame.buttonsScroll.children);
-  tinsert(frame.buttonsScroll.children, frame.newButton);
-  if(frame.addonsButton) then
-    tinsert(frame.buttonsScroll.children, frame.addonsButton);
-  end
+  --tinsert(frame.buttonsScroll.children, frame.newButton);
+  --if(frame.addonsButton) then
+  --  tinsert(frame.buttonsScroll.children, frame.addonsButton);
+  --end
   tinsert(frame.buttonsScroll.children, frame.loadedButton);
   local numLoaded = 0;
   local to_sort = {};

@@ -256,7 +256,7 @@ function WeakAuras.CreateFrame()
   importbutton:SetScript("OnLeave", GameTooltip_Hide)
 
   local titlebg = CreateDecorationWide(frame)
-  titlebg:SetPoint("TOP", 0, 12)
+  titlebg:SetPoint("TOP", 0, 24)
 
   local title = CreateFrame("Frame", nil, frame)
 
@@ -393,6 +393,7 @@ function WeakAuras.CreateFrame()
     end)
   end
 
+  -- Right Side Container
   local container = AceGUI:Create("InlineGroup")
   container.frame:SetParent(frame)
   container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12)
@@ -413,30 +414,17 @@ function WeakAuras.CreateFrame()
 
   frame.moversizer, frame.mover = WeakAuras.MoverSizer(frame)
 
-  local buttonsContainer = AceGUI:Create("InlineGroup")
-  buttonsContainer:SetWidth(170)
-  buttonsContainer.frame:SetParent(frame)
-  buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
-  buttonsContainer.frame:SetPoint("TOP", frame, "TOP", 0, -14)
-  buttonsContainer.frame:SetPoint("right", container.frame, "left", -17)
-  buttonsContainer.frame:Show()
-  frame.buttonsContainer = buttonsContainer
-
-  local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
-  loadProgress:SetText(L["Creating options: "].."0/0")
-  frame.loadProgress = loadProgress
-
-  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", buttonsContainer.frame, "InputBoxTemplate")
-
+  -- filter line
+  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "InputBoxTemplate")
   filterInput:SetAutoFocus(false)
   filterInput:SetScript("OnTextChanged", function(...) WeakAuras.SortDisplayButtons(filterInput:GetText()) end)
   filterInput:SetScript("OnEnterPressed", function(...) filterInput:ClearFocus() end)
   filterInput:SetScript("OnEscapePressed", function(...) filterInput:SetText("") filterInput:ClearFocus() end)
-  filterInput:SetWidth(150)
-  filterInput:SetPoint("BOTTOMLEFT", buttonsContainer.frame, "TOPLEFT", 6, -14)
-  filterInput:SetPoint("TOPLEFT", buttonsContainer.frame, "TOPLEFT", 6, -2)
-  filterInput:SetTextInsets(16, 0, 0, 0)
+  filterInput:SetHeight(15)
+  filterInput:SetPoint("TOP", frame, "TOP", 0, -34)
+  filterInput:SetPoint("LEFT", frame, "LEFT", 24, 0)
+  filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
+  filterInput:SetTextInsets(16, 16, 0, 0)
 
   local searchIcon = filterInput:CreateTexture(nil, "overlay")
   searchIcon:SetTexture("Interface\\Common\\UI-Searchbox-Icon")
@@ -448,15 +436,69 @@ function WeakAuras.CreateFrame()
   frame.filterInput = filterInput
   filterInput:Hide()
 
-  local filterInputClear = CreateFrame("BUTTON", nil, buttonsContainer.frame)
+  local filterInputClear = CreateFrame("BUTTON", nil, filterInput)
   frame.filterInputClear = filterInputClear
   filterInputClear:SetWidth(12)
   filterInputClear:SetHeight(12)
-  filterInputClear:SetPoint("left", filterInput, "right", 4, -1)
+  filterInputClear:SetPoint("RIGHT", filterInput, "RIGHT", -4, -1)
   filterInputClear:SetNormalTexture("Interface\\Common\\VoiceChat-Muted")
   filterInputClear:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
   filterInputClear:SetScript("OnClick", function() filterInput:SetText("") filterInput:ClearFocus() end)
   filterInputClear:Hide()
+
+  -- Left Side Container
+  local buttonsContainer = AceGUI:Create("InlineGroup")
+  buttonsContainer:SetWidth(170)
+  buttonsContainer.frame:SetParent(frame)
+  buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
+  buttonsContainer.frame:SetPoint("TOP", frame, "TOP", 0, -34)
+  buttonsContainer.frame:SetPoint("RIGHT", container.frame, "LEFT", -17)
+  buttonsContainer.frame:Show()
+  frame.buttonsContainer = buttonsContainer
+
+  -- Toolbar
+  local toolbarContainer = AceGUI:Create("SimpleGroup")
+  toolbarContainer.frame:SetParent(buttonsContainer.frame)
+  toolbarContainer.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -10)
+  toolbarContainer.frame:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -17, -10)
+  toolbarContainer.frame:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 20, -32)
+  toolbarContainer:SetLayout("Flow")
+
+  -- TODO use a different button
+  local newButton = AceGUI:Create("WeakAurasToolButton")
+  newButton:SetText(L["New Aura"])
+  newButton:SetTexture(237537)
+  toolbarContainer:AddChild(newButton)
+  frame.toolbarContainer = toolbarContainer
+
+  newButton:SetCallback("OnClick", function()
+    frame:NewAura()
+  end)
+
+  local importButton = AceGUI:Create("WeakAurasToolButton")
+  importButton:SetText(L["Import"])
+  importButton:SetTexture(134938)
+  importButton:SetCallback("OnClick", WeakAuras.ImportFromString)
+  toolbarContainer:AddChild(importButton)
+
+  local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
+  loadProgress:SetText(L["Creating options: "].."0/0")
+  frame.loadProgress = loadProgress
+
+  frame.SetLoadProgressVisible = function(self, visible)
+    if visible then
+      self.loadProgress:Show()
+      self.toolbarContainer.frame:Hide()
+      self.filterInput:Hide();
+      self.filterInputClear:Hide();
+    else
+      self.loadProgress:Hide()
+      self.toolbarContainer.frame:Show()
+      self.filterInput:Show();
+      self.filterInputClear:Show();
+    end
+  end
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")
@@ -513,13 +555,6 @@ function WeakAuras.CreateFrame()
 
     status.scrollvalue = status.offset / ((height - viewheight) / 1000.0)
   end
-
-  local newButton = AceGUI:Create("WeakAurasNewHeaderButton")
-  newButton:SetText(L["New"])
-  newButton:SetClick(function()
-    frame:PickOption("New")
-  end)
-  frame.newButton = newButton
 
   local numAddons = 0
 
@@ -686,7 +721,7 @@ function WeakAuras.CreateFrame()
     for id, button in pairs(displayButtons) do
       button:ClearPick(noHide)
     end
-    newButton:ClearPick(noHide)
+    --newButton:ClearPick(noHide)
     if frame.addonsButton then
       frame.addonsButton:ClearPick(noHide)
     end
@@ -710,6 +745,129 @@ function WeakAuras.CreateFrame()
     return targetId
   end
 
+  frame.NewAura = function(self, fromGroup)
+    local targetId = GetTarget(self.pickedDisplay)
+    self:ClearPicks()
+    if targetId then
+      local pickedButton = WeakAuras.GetDisplayButton(targetId)
+      if pickedButton then
+        pickedButton:Pick()
+      end
+    end
+    self.moversizer:Hide()
+    self.pickedOption = "New"
+
+    local containerScroll = AceGUI:Create("ScrollFrame")
+    containerScroll:SetLayout("flow")
+    container:SetLayout("fill")
+    container:AddChild(containerScroll)
+
+    if GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0 then
+      local simpleLabel = AceGUI:Create("Label")
+      simpleLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
+      simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+      simpleLabel:SetText(L["Simple"])
+      simpleLabel:SetFullWidth(true)
+      containerScroll:AddChild(simpleLabel)
+
+      local button = AceGUI:Create("WeakAurasNewButton")
+      button:SetTitle(L["From Template"])
+      button:SetDescription(L["Offer a guided way to create auras for your character"])
+      button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
+      button:SetClick(function()
+        WeakAuras.OpenTriggerTemplate(nil, targetId)
+      end)
+      containerScroll:AddChild(button)
+
+      local spacer1Label = AceGUI:Create("Label")
+      spacer1Label:SetText("")
+      containerScroll:AddChild(spacer1Label)
+
+      local advancedLabel = AceGUI:Create("Label")
+      advancedLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
+      advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+      advancedLabel:SetText(L["Advanced"])
+      advancedLabel:SetFullWidth(true)
+      containerScroll:AddChild(advancedLabel)
+    end
+
+    local regionTypesSorted = {}
+    for regionType, regionData in pairs(regionOptions) do
+      tinsert(regionTypesSorted, regionType)
+    end
+
+    table.sort(regionTypesSorted, function(a, b)
+      return regionOptions[a].displayName < regionOptions[b].displayName
+    end)
+
+    for index, regionType in ipairs(regionTypesSorted) do
+      local regionData = regionOptions[regionType]
+      if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
+        local button = AceGUI:Create("WeakAurasNewButton")
+        button:SetTitle(regionData.displayName)
+        if(type(regionData.icon) == "string") then
+          button:SetIcon(regionData.icon)
+        elseif(type(regionData.icon) == "function") then
+          button:SetIcon(regionData.icon())
+        end
+        button:SetDescription(regionData.description)
+        button:SetClick(function()
+          WeakAuras.NewAura(nil, regionType, targetId)
+        end)
+        containerScroll:AddChild(button)
+      end
+    end
+
+    local spacer2Label = AceGUI:Create("Label")
+    spacer2Label:SetText("")
+    containerScroll:AddChild(spacer2Label)
+
+    local externalLabel = AceGUI:Create("Label")
+    externalLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
+    externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+    externalLabel:SetText(L["External"])
+    externalLabel:SetFullWidth(true)
+    containerScroll:AddChild(externalLabel)
+
+    local spacer3Label = AceGUI:Create("Label")
+    spacer3Label:SetText("")
+    containerScroll:AddChild(spacer3Label)
+
+    -- Import
+    local importButton = AceGUI:Create("WeakAurasNewButton")
+    importButton:SetTitle(L["Import"])
+
+    local data = {
+      outline = false,
+      color = {1, 1, 1, 1},
+      justify = "CENTER",
+      font = "Friz Quadrata TT",
+      fontSize = 8,
+      displayText = [[
+        b4vmErLxtfM
+        xu5fDEn1CEn
+        vmUmJyZ4hyY
+        DtnEnvBEnfz
+        EnfzErLxtjx
+        zNL2BUrvEWv
+        MxtfwDYfMyH
+        jNxtLgzEnLt
+        LDNx051u25L
+        tXmdmY4fDE5
+      ]]
+    }
+
+    local thumbnail = regionOptions["text"].createThumbnail(UIParent)
+    regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data)
+    thumbnail.mask:SetPoint("BOTTOMLEFT", thumbnail, "BOTTOMLEFT", 3, 3)
+    thumbnail.mask:SetPoint("TOPRIGHT", thumbnail, "TOPRIGHT", -3, -3)
+
+    importButton:SetIcon(thumbnail)
+    importButton:SetDescription(L["Import a display from an encoded string"])
+    importButton:SetClick(WeakAuras.ImportFromString)
+    containerScroll:AddChild(importButton)
+  end
+
   frame.PickOption = function(self, option, fromGroup)
     local targetId = GetTarget(self.pickedDisplay)
     self:ClearPicks()
@@ -721,106 +879,7 @@ function WeakAuras.CreateFrame()
     end
     self.moversizer:Hide()
     self.pickedOption = option
-    if option == "New" then
-      local containerScroll = AceGUI:Create("ScrollFrame")
-      containerScroll:SetLayout("flow")
-      container:SetLayout("fill")
-      container:AddChild(containerScroll)
-
-      if GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0 then
-        local simpleLabel = AceGUI:Create("Label")
-        simpleLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
-        simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-        simpleLabel:SetText(L["Simple"])
-        simpleLabel:SetFullWidth(true)
-        containerScroll:AddChild(simpleLabel)
-
-        local button = AceGUI:Create("WeakAurasNewButton")
-        button:SetTitle(L["From Template"])
-        button:SetDescription(L["Offer a guided way to create auras for your character"])
-        button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
-        button:SetClick(function()
-          WeakAuras.OpenTriggerTemplate(nil, targetId)
-        end)
-        containerScroll:AddChild(button)
-
-        local spacer1Label = AceGUI:Create("Label")
-        spacer1Label:SetText("")
-        containerScroll:AddChild(spacer1Label)
-
-        local advancedLabel = AceGUI:Create("Label")
-        advancedLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
-        advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-        advancedLabel:SetText(L["Advanced"])
-        advancedLabel:SetFullWidth(true)
-        containerScroll:AddChild(advancedLabel)
-      end
-
-      for regionType, regionData in pairs(regionOptions) do
-        if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
-          local button = AceGUI:Create("WeakAurasNewButton")
-          button:SetTitle(regionData.displayName)
-          if(type(regionData.icon) == "string") then
-            button:SetIcon(regionData.icon)
-          elseif(type(regionData.icon) == "function") then
-            button:SetIcon(regionData.icon())
-          end
-          button:SetDescription(regionData.description)
-          button:SetClick(function()
-            WeakAuras.NewAura(nil, regionType, targetId)
-          end)
-          containerScroll:AddChild(button)
-        end
-      end
-
-      local spacer2Label = AceGUI:Create("Label")
-      spacer2Label:SetText("")
-      containerScroll:AddChild(spacer2Label)
-
-      local externalLabel = AceGUI:Create("Label")
-      externalLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
-      externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-      externalLabel:SetText(L["External"])
-      externalLabel:SetFullWidth(true)
-      containerScroll:AddChild(externalLabel)
-
-      local spacer3Label = AceGUI:Create("Label")
-      spacer3Label:SetText("")
-      containerScroll:AddChild(spacer3Label)
-
-      local importButton = AceGUI:Create("WeakAurasNewButton")
-      importButton:SetTitle(L["Import"])
-
-      local data = {
-        outline = false,
-        color = {1, 1, 1, 1},
-        justify = "CENTER",
-        font = "Friz Quadrata TT",
-        fontSize = 8,
-        displayText = [[
-          b4vmErLxtfM
-          xu5fDEn1CEn
-          vmUmJyZ4hyY
-          DtnEnvBEnfz
-          EnfzErLxtjx
-          zNL2BUrvEWv
-          MxtfwDYfMyH
-          jNxtLgzEnLt
-          LDNx051u25L
-          tXmdmY4fDE5
-        ]]
-      }
-
-      local thumbnail = regionOptions["text"].createThumbnail(UIParent)
-      regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data)
-      thumbnail.mask:SetPoint("BOTTOMLEFT", thumbnail, "BOTTOMLEFT", 3, 3)
-      thumbnail.mask:SetPoint("TOPRIGHT", thumbnail, "TOPRIGHT", -3, -3)
-
-      importButton:SetIcon(thumbnail)
-      importButton:SetDescription(L["Import a display from an encoded string"])
-      importButton:SetClick(WeakAuras.ImportFromString)
-      containerScroll:AddChild(importButton)
-    elseif option == "Addons" then
+    if option == "Addons" then
       frame.addonsButton:Pick()
 
       local containerScroll = AceGUI:Create("ScrollFrame")
@@ -900,7 +959,7 @@ function WeakAuras.CreateFrame()
       finishPicking()
       if data.controlledChildren and #data.controlledChildren == 0 then
         WeakAurasOptions.pickedDisplay = data.id
-        WeakAurasOptions:PickOption("New", true)
+        WeakAurasOptions:NewAura(true)
         WeakAurasOptions.pickedDisplay = data.id
       end
     end
