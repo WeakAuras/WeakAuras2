@@ -2981,13 +2981,21 @@ do
         if(math.abs((mh_exp or 0) - (mh_exp_new or 0)) > 1) then
           mh_exp = mh_exp_new;
           mh_dur = mh_rem and mh_rem / 1000;
-          mh_name, mh_shortenedName = mh_exp and getTenchName(mh) or "None", "None";
+          if mh_exp then
+            mh_name, mh_shortenedName = getTenchName(mh)
+          else
+            mh_name, mh_shortenedName = "None", "None"
+          end
           mh_icon = GetInventoryItemTexture("player", mh)
         end
         if(math.abs((oh_exp or 0) - (oh_exp_new or 0)) > 1) then
           oh_exp = oh_exp_new;
           oh_dur = oh_rem and oh_rem / 1000;
-          oh_name, oh_shortenedName = oh_exp and getTenchName(oh) or "None", "None";
+          if oh_exp then
+            oh_name, oh_shortenedName = getTenchName(oh)
+          else
+            oh_name, oh_shortenedName = "None", "None"
+          end
           oh_icon = GetInventoryItemTexture("player", oh)
         end
         WeakAuras.ScanEvents("TENCH_UPDATE");
