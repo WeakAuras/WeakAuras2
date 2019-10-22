@@ -27,7 +27,7 @@ jobs:
 
     - uses: actions/upload-artifact@master
       with:
-        name: WeakAuras-PR-${{ github.head_ref }}
+        name: WeakAuras-PR
         path: .release/
 
     - name: Create Classic Package
@@ -39,7 +39,7 @@ jobs:
 
     - uses: actions/upload-artifact@master
       with:
-        name: WeakAuras-PR-${{ github.head_ref }}-classic
+        name: WeakAuras-PR-classic
         path: .release/
 
     - name: Notify on Failure
