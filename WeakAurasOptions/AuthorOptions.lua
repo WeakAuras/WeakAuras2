@@ -1196,6 +1196,20 @@ typeControlAdders = {
         end,
         disabled = function() return option.limitType == "none" end,
       }
+      args[prefix .. "hideReorder"] = {
+        type = "toggle",
+        name = name(option, "hideReorder", L["Disallow Entry Reordering"]),
+        desc = desc(option, "hideReorder"),
+        order = order(),
+        width = WeakAuras.normalWidth,
+        get = function()
+          return option.hideReorder or option.nameSource == -1
+        end,
+        set = set(data, option, "hideReorder"),
+        disabled = function()
+          return option.nameSource == -1
+        end,
+      }
       local nameSources = CopyTable(WeakAuras.array_entry_name_types)
       local validNameSourceTypes = WeakAuras.name_source_option_types
       if option.limitType ~= "fixed" then
@@ -1355,7 +1369,6 @@ local function down(data, options, index)
     WeakAuras.ReloadTriggerOptions(data)
   end
 end
-
 
 local function duplicate(data, options, index)
   local option = options[index]
@@ -1924,7 +1937,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
         if option.limitType == "fixed" then
           buttonWidth = buttonWidth - 0.30
         end
-        if option.nameSource == -1 then
+        if option.hideReorder or option.nameSource == -1 then
           buttonWidth = buttonWidth - 0.30
         end
         args[prefix .. "entryChoice"] = {
@@ -2022,7 +2035,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             control = "WeakAurasIcon"
           }
         end
-        if option.nameSource ~= -1 then
+        if option.nameSource ~= -1 and not option.hideReorder then
           args[prefix .. "moveEntryUp"] = {
             type = "execute",
             name = L["Move Entry Up"],

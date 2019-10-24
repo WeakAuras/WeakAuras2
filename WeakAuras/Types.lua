@@ -1986,6 +1986,7 @@ WeakAuras.author_option_fields = {
     limitType = "none",
     size = 10,
     nameSource = 0,
+    hideReorder = true,
     entryNames = nil, -- handled as a special case in code
     subOptions = {},
   }
