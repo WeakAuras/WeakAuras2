@@ -306,6 +306,43 @@ local function modify(parent, region, parentData, data, first)
   parent.subRegionEvents:AddSubscriber("UpdateSize", region)
 end
 
+function WeakAuras.getDefaultGlow(regionType)
+  if regionType == "aurabar" then
+    return {
+      ["type"] = "subglow",
+      glow = false,
+      useglowColor = false,
+      glowColor = {1, 1, 1, 1},
+      glowType = "Pixel",
+      glowLines = 8,
+      glowFrequency = 0.25,
+      glowLength = 10,
+      glowThickness = 1,
+      glowScale = 1,
+      glowBorder = false,
+      glowXOffset = 0,
+      glowYOffset = 0,
+      glow_anchor = "bar"
+    }
+  elseif regionType == "icon" then
+    return {
+      ["type"] = "subglow",
+      glow = false,
+      useglowColor = false,
+      glowColor = {1, 1, 1, 1},
+      glowType = "buttonOverlay",
+      glowLines = 8,
+      glowFrequency = 0.25,
+      glowLength = 10,
+      glowThickness = 1,
+      glowScale = 1,
+      glowBorder = false,
+      glowXOffset = 0,
+      glowYOffset = 0,
+    }
+  end
+end
+
 local function supports(regionType)
   return regionType == "icon"
          or regionType == "aurabar"
