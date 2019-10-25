@@ -14,11 +14,9 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
 
-#@retail@
 locales.xml
 
 TriggerTemplates.lua
 TriggerTemplatesData.lua
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
-#@end-retail@
