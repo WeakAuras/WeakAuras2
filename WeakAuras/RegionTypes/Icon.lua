@@ -487,13 +487,32 @@ local function modify(parent, region, data)
       if state.progressType == "timed" then
         local expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
         local duration = state.duration or 0
-        local adjustMin = region.adjustedMin or 0;
-        region:SetTime((duration ~= 0 and region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, state.inverse);
+        if region.adjustedMinRelPercent then
+          region.adjustedMinRel = region.adjustedMinRelPercent * duration
+        end
+        local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+
+        local max
+        if duration == 0 then
+          max = 0
+        elseif region.adjustedMax then
+          max = region.adjustedMax
+        elseif region.adjustedMaxRelPercent then
+          region.adjustedMaxRel = region.adjustedMaxRelPercent * duration
+          max = region.adjustedMaxRel
+        else
+          max = duration
+        end
+
+        region:SetTime(max - adjustMin, expirationTime - adjustMin, state.inverse);
       elseif state.progressType == "static" then
         local value = state.value or 0;
         local total = state.total or 0;
-        local adjustMin = region.adjustedMin or 0;
-        local max = region.adjustedMax or total;
+        if region.adjustedMinRelPercent then
+          region.adjustedMinRel = region.adjustedMinRelPercent * total
+        end
+        local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+        local max = region.adjustedMax or region.adjustedMaxRel or total;
         region:SetValue(value - adjustMin, max - adjustMin);
       else
         region:SetTime(0, math.huge)

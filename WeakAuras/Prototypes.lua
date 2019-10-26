@@ -704,6 +704,17 @@ function WeakAuras.ValidateNumeric(info, val)
   return true
 end
 
+function WeakAuras.ValidateNumericOrPercent(info, val)
+  if val ~= nil and val ~= "" then
+    local percent = string.match(val, "(%d+)%%")
+    local number = percent and tonumber(percent) or tonumber(val)
+    if(not number or number >= 2^31) then
+      return false;
+    end
+  end
+  return true
+end
+
 function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
   if (not loadids or not currentId) or type(currentId) ~= "table" then
     return false
