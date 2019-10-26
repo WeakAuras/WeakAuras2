@@ -2930,6 +2930,34 @@ do
   end
 end
 
+function WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemOperator)
+  if not totemName or totemName == "" then
+    return false
+  end
+
+  if triggerTotemName and #triggerTotemName > 0 and triggerTotemName ~= totemName then
+    return false
+  end
+
+  if triggerTotemPattern and #triggerTotemPattern > 0 then
+    if triggerTotemOperator == "==" then
+      if totemName ~= triggerTotemPattern then
+        return false
+      end
+    elseif triggerTotemOperator == "find('%s')" then
+      if not totemName:find(triggerTotemPattern, 1, true) then
+        return false
+      end
+    elseif triggerTotemOperator == "match('%s')" then
+      if not totemName:match(triggerTotemPattern) then
+        return false
+      end
+    end
+  end
+
+  return true
+end
+
 -- Weapon Enchants
 do
   local mh = GetInventorySlotInfo("MainHandSlot")

@@ -4158,7 +4158,9 @@ WeakAuras.event_prototypes = {
       local ret = [[return
       function (states)
         local totemType = %s;
-        local triggerTotemName = %s
+        local triggerTotemName = %q
+        local triggerTotemPattern = %q
+        local triggerTotemPatternOperator = %q
         local clone = %s
         local inverse = %s
         local remainingCheck = %s
@@ -4170,11 +4172,11 @@ WeakAuras.event_prototypes = {
         if (totemType) then -- Check a specific totem slot
           local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
           active = (startTime and startTime ~= 0);
-          if (triggerTotemName) then
-            if (triggerTotemName ~= totemName) then
-              active = false;
-            end
+
+          if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+            active = false;
           end
+
           if (inverse) then
             active = not active;
             if (triggerTotemName) then
@@ -4204,7 +4206,9 @@ WeakAuras.event_prototypes = {
           local found = false;
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
-            if ((startTime and startTime ~= 0) and triggerTotemName == totemName) then
+            if ((startTime and startTime ~= 0) and
+                WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
+            ) then
               found = true;
             end
           end
@@ -4222,10 +4226,9 @@ WeakAuras.event_prototypes = {
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
-            if (triggerTotemName) then
-              if (triggerTotemName ~= totemName) then
-                active = false;
-              end
+
+            if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+              active = false;
             end
             if (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
@@ -4259,7 +4262,9 @@ WeakAuras.event_prototypes = {
       ]];
       local totemName = tonumber(trigger.totemName) and GetSpellInfo(tonumber(trigger.totemName)) or trigger.totemName;
       ret = ret:format(trigger.use_totemType and tonumber(trigger.totemType) or "nil",
-        trigger.use_totemName and "[[" .. (totemName or "")  .. "]]" or "nil",
+        trigger.use_totemName and totemName or "",
+        trigger.use_totemNamePattern and trigger.totemNamePattern or "",
+        trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "",
         trigger.use_clones and "true" or "false",
         trigger.use_inverse and "true" or "false",
         trigger.use_remaining and trigger.remaining or "nil",
@@ -4281,6 +4286,11 @@ WeakAuras.event_prototypes = {
         store = true
       },
       {
+        name = "totemNamePattern",
+        display = L["Totem Name Pattern Match"],
+        type = "longstring",
+      },
+      {
         name = "clones",
         display = L["Clone per Match"],
         type = "toggle",
@@ -4298,7 +4308,7 @@ WeakAuras.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return trigger.use_totemName and not trigger.use_clones end
+        enable = function(trigger) return (trigger.use_totemName or trigger.use_totemNamePattern) and not trigger.use_clones end
       }
     },
     automaticrequired = true
