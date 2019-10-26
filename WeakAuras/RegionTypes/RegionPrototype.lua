@@ -67,14 +67,13 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
   };
 
   options.adjustedMin = {
-    type = "range",
+    type = "input",
+    validate = WeakAuras.ValidateNumericOrPercent,
     width = WeakAuras.normalWidth,
-    min = 0,
-    softMax = 200,
-    bigStep = 1,
     order = order + 0.01,
     name = L["Minimum"],
     hidden = function() return not data.useAdjustededMin end,
+    desc = L["Enter static or relative values with %"]
   };
 
   options.useAdjustedMinSpacer = {
@@ -94,14 +93,13 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
   };
 
   options.adjustedMax = {
-    type = "range",
+    type = "input",
     width = WeakAuras.normalWidth,
-    min = 0,
-    softMax = 200,
-    bigStep = 1,
+    validate = WeakAuras.ValidateNumericOrPercent,
     order = order + 0.04,
     name = L["Maximum"],
     hidden = function() return not data.useAdjustededMax end,
+    desc = L["Enter static or relative values with %"]
   };
 
   options.useAdjustedMaxSpacer = {
@@ -449,18 +447,33 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   if (defaultsForRegion and defaultsForRegion.alpha) then
     region:SetRegionAlpha(data.alpha);
   end
-  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin;
-  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax;
+  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin
+        and data.adjustedMin;
+  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax
+        and data.adjustedMax;
+
+  region.adjustedMin = nil
+  region.adjustedMinRel = nil
+  region.adjustedMinRelPercent = nil
+  region.adjustedMax = nil
+  region.adjustedMaxRel = nil
+  region.adjustedMaxRelPercent = nil
 
   if (hasAdjustedMin) then
-    region.adjustedMin = data.adjustedMin and data.adjustedMin >= 0 and data.adjustedMin;
-  else
-    region.adjustedMin = nil;
+    local percent = string.match(data.adjustedMin, "(%d+)%%")
+    if percent then
+      region.adjustedMinRelPercent = tonumber(percent) / 100
+    else
+      region.adjustedMin = tonumber(data.adjustedMin);
+    end
   end
   if (hasAdjustedMax) then
-    region.adjustedMax = data.adjustedMax and data.adjustedMax >= 0 and data.adjustedMax;
-  else
-    region.adjustedMax = nil;
+    local percent = string.match(data.adjustedMax, "(%d+)%%")
+    if percent then
+      region.adjustedMaxRelPercent = tonumber(percent) / 100
+    else
+      region.adjustedMax = tonumber(data.adjustedMax)
+    end
   end
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
@@ -585,7 +598,17 @@ end
 local function TimerTick(self)
   local duration = self.duration
   local adjustMin = self.adjustedMin or 0;
-  self:SetTime((duration ~= 0 and self.adjustedMax or duration) - adjustMin, self.expirationTime - adjustMin, self.inverse);
+
+  local max
+  if duration == 0 then
+    max = 0
+  elseif self.adjustedMax then
+    max = self.adjustedMax
+  else
+    max = duration
+  end
+
+  self:SetTime(max - adjustMin, self.expirationTime - adjustMin, self.inverse);
 end
 
 function WeakAuras.regionPrototype.AddSetDurationInfo(region)
