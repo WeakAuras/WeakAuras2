@@ -2657,15 +2657,14 @@ end
 
 StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
   text = "",
-  button1 = L["Run the repair tool"],
-  button2 = L["Continue Without Repairing"],
+  button1 = L["Repair"],
+  button2 = L["Cancel"],
   OnAccept = function(self)
      WeakAuras.RepairDatabase()
   end,
   OnShow = function(self)
     if self.data.reason == "user" then
       self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
-      self.button2:SetText(L["Cancel"])
     else
       self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
     end
