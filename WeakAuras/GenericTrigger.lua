@@ -357,6 +357,9 @@ local function RunOverlayFuncs(event, state)
         additionalProgress.max = b;
         changed = true;
       end
+      if additionalProgress.direction then
+        changed = true
+      end
       additionalProgress.direction = nil;
       additionalProgress.width = nil;
       additionalProgress.offset = nil;
