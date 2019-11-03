@@ -737,6 +737,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       parent:ActivateChild(data.id, cloneId);
 
       WeakAuras.RegisterForFrameTick(region)
+      region:UpdateTimerTick()
     end
   elseif not(data.controlledChildren) then
     function region:Collapse()
@@ -790,6 +791,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       WeakAuras.RegisterForFrameTick(region)
+      region:UpdateTimerTick()
     end
   end
   -- Stubs that allow for polymorphism
