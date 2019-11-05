@@ -4441,6 +4441,22 @@ WeakAuras.event_prototypes = {
           ]]
         end
         return ret
+      elseif trigger.use_form == nil then
+        ret = ret .. [[
+          if WeakAuras.IsClassic() then
+            for i=1, GetNumShapeshiftForms() do
+              local _, isActive = GetShapeshiftFormInfo(i)
+              if isActive then
+                form = i
+                break
+              end
+            end
+          else
+            form = GetShapeshiftForm()
+          end
+          active = true
+        ]]
+        return ret
       end
     end,
     statesParameter = "one",
