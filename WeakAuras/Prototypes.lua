@@ -754,6 +754,21 @@ function WeakAuras.CheckRaidFlags(flags, flagToCheck)
   end
 end
 
+function WeakAuras.IsSpellKnownForLoad(spell, exact)
+  local result = WeakAuras.IsSpellKnown(spell)
+  if exact or result then
+    return result
+  end
+  -- Dance through the spellname to the current spell id
+  spell = GetSpellInfo(spell)
+  if (spell) then
+    spell = select(7, GetSpellInfo(spell))
+  end
+  if spell then
+    return WeakAuras.IsSpellKnown(spell)
+  end
+end
+
 function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
     return IsSpellKnown(spell, pet);
@@ -1141,8 +1156,9 @@ WeakAuras.load_prototype = {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
-      test = "WeakAuras.IsSpellKnown(%s)",
-      events = {"SPELLS_CHANGED"}
+      test = "WeakAuras.IsSpellKnownForLoad(%s, %s)",
+      events = {"SPELLS_CHANGED"},
+      showExactOption = true
     },
     {
       name = "race",

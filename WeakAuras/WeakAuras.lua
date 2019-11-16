@@ -625,6 +625,13 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
                 test = name;
               end
             end
+          elseif (arg.type == "spell") then
+            if arg.showExactOption then
+              test = "("..arg.test:format(trigger[name], tostring(trigger["use_exact_" .. name]) or "false") ..")";
+              print("test ", test)
+            else
+              test = "("..arg.test:format(trigger[name])..")";
+            end
           elseif(arg.test) then
             test = "("..arg.test:format(trigger[name])..")";
           elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
