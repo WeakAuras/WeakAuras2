@@ -135,6 +135,14 @@ local function create()
   local text = region:CreateFontString(nil, "OVERLAY");
   region.text = text;
 
+  -- WOW's layout system works best if frames and all their parents are anchored
+  -- In this case, it appears that a text doesn't get the right size on the initial
+  -- load with a custom font. (Though it works if the font is non-custom or after
+  -- a reloadui). Just moving the normal AnchorSubRegion to the start of modify was not enough
+  -- But anchoring the text to UIParent before reanchoring it correctly does seem to fix
+  -- the issue. Also see #1778
+  text:SetPoint("CENTER", UIParent, "CENTER")
+
   return region;
 end
 
