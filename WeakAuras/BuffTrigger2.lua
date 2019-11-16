@@ -66,8 +66,8 @@ local UnitAura = UnitAura
 local LCD
 if WeakAuras.IsClassic() then
   LCD = LibStub("LibClassicDurations")
-  LCD:RegisterFrame("WeakAuras")
-  UnitAura = LCD.UnitAuraDirect
+  LCD:Register("WeakAuras")
+  UnitAura = LCD.UnitAuraWithBuffs
 end
 
 local WeakAuras = WeakAuras
@@ -1519,7 +1519,7 @@ if not WeakAuras.IsClassic() then
   frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
   frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 else
-  LCD:RegisterCallback("UNIT_BUFF", function(event, unit)
+  LCD.RegisterCallback("WeakAuras", "UNIT_BUFF", function(event, unit)
     EventHandler(frame, "UNIT_AURA", unit)
   end)
 end
