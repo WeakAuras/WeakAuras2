@@ -742,6 +742,17 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
   end
 end
 
+function WeakAuras.CheckCombatLogFlagsReaction(flags, flagToCheck)
+  if type(flags) ~= "number" then return end
+  if (flagToCheck == "Hostile") then
+    return bit.band(flags, 64) ~= 0;
+  elseif (flagToCheck == "Neutral") then
+    return bit.band(flags, 32) ~= 0;
+  elseif (flagToCheck == "Friendly") then
+    return bit.band(flags, 16) ~= 0;
+  end
+end
+
 function WeakAuras.CheckRaidFlags(flags, flagToCheck)
   flagToCheck = tonumber(flagToCheck)
   if not flagToCheck then return end --bailout
@@ -1928,6 +1939,17 @@ WeakAuras.event_prototypes = {
         end
       },
       {
+        name = "sourceFlags2",
+        display = L["Source Reaction"],
+        type = "select",
+        values = "combatlog_flags_check_reaction",
+        test = "WeakAuras.CheckCombatLogFlagsReaction(sourceFlags, %q)",
+        conditionType = "select",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.sourceFlags, needle);
+        end
+      },
+      {
         name = "sourceRaidFlags",
         display = L["Source Raid Mark"],
         type = "select",
@@ -1995,6 +2017,20 @@ WeakAuras.event_prototypes = {
         conditionType = "select",
         conditionTest = function(state, needle)
           return state and state.show and WeakAuras.CheckCombatLogFlags(state.destFlags, needle);
+        end,
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
+      {
+        name = "destFlags2",
+        display = L["Destination Reaction"],
+        type = "select",
+        values = "combatlog_flags_check_reaction",
+        test = "WeakAuras.CheckCombatLogFlagsReaction(destFlags, %q)",
+        conditionType = "select",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
