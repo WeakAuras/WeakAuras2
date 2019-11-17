@@ -1909,14 +1909,25 @@ local function createScanFunc(trigger)
   local use_debuffClass = not isSingleMissing and not isMulti and trigger.use_debuffClass
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
+  local use_total = not isSingleMissing and not isMulti and trigger.useTotal and trigger.total
 
-  if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern then
+  if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil
+       and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total then
     return nil
   end
 
   local ret = [[
     return function(time, matchData)
   ]]
+
+  if use_total then
+    local ret2 = [[
+      if not(matchData.duration %s %s) then
+        return false
+      end
+    ]]
+    ret = ret .. ret2:format(trigger.totalOperator or ">=", tonumber(trigger.total) or 0)
+  end
 
   if useStacks then
     local ret2 = [[

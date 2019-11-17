@@ -282,6 +282,39 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 61.3,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.useRem) end
     },
+    useTotal = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Total Time"],
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end,
+      order = 61.4
+    },
+    totalOperator = {
+      type = "select",
+      name = L["Operator"],
+      order = 61.5,
+      width = WeakAuras.halfWidth,
+      values = operator_types,
+      disabled = function() return not trigger.useTotal end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTotal) end,
+      get = function() return trigger.useTotal and trigger.totalOperator or nil end
+    },
+    total = {
+      type = "input",
+      name = L["Total Time"],
+      validate = ValidateNumeric,
+      order = 61.6,
+      width = WeakAuras.halfWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTotal) end,
+      get = function() return trigger.useTotal and trigger.total or nil end
+    },
+    useTotalSpace = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = 61.7,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.useTotal) end
+    },
     fetchTooltip = {
       type = "toggle",
       name = L["Use Tooltip Information"],
