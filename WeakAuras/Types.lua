@@ -513,6 +513,12 @@ WeakAuras.combatlog_flags_check_type = {
   NotInGroup = L["Not in Group"]
 }
 
+WeakAuras.combatlog_flags_check_reaction = {
+  Hostile = L["Hostile"],
+  Neutral = L["Neutral"],
+  Friendly = L["Friendly"]
+}
+
 WeakAuras.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
