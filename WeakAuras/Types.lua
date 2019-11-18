@@ -2074,7 +2074,7 @@ WeakAuras.difficulty_info = {
     size = "scenario",
     difficulty = "normal",
   },
-  nil, -- 13 is unused
+  -- 13 is unused
   [14] = {
     size = "flexible",
     difficulty = "normal",
