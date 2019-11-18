@@ -72,6 +72,17 @@ local properties = {
   }
 }
 
+local textSymbols = {
+  ["{rt1}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
+  ["{rt2}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t ",
+  ["{rt3}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t ",
+  ["{rt4}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t ",
+  ["{rt5}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t ",
+  ["{rt6}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t ",
+  ["{rt7}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t ",
+  ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
+}
+
 -- Rotate object around its origin
 local function animRotate(object, degrees, anchor)
   if (not anchor) then
@@ -154,6 +165,28 @@ local function onRelease(subRegion)
   subRegion:Hide()
 end
 
+local function ReplaceRaidMarkerSymbols(txt)
+  local start = 1
+
+  while true do
+    local firstChar = txt:find("{", start, true)
+    if not firstChar then
+      return txt
+    end
+    local lastChar = txt:find("}", firstChar, true)
+    if not lastChar then
+      return txt
+    end
+    local replace = textSymbols[txt:sub(firstChar, lastChar)]
+    if replace then
+      txt = txt:sub(1, firstChar -1) .. replace .. txt:sub(lastChar +1)
+      start = firstChar + #replace
+    else
+      start = lastChar
+    end
+  end
+end
+
 local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
   local text = region.text;
@@ -182,7 +215,7 @@ local function modify(parent, region, parentData, data, first)
     text:SetFont(STANDARD_TEXT_FONT, data.text_fontSize, data.text_fontType);
   end
   if text:GetFont() then
-    text:SetText(data.text_text);
+    text:SetText(ReplaceRaidMarkerSymbols(data.text_text));
   end
 
   text:SetTextHeight(data.text_fontSize);
@@ -220,7 +253,7 @@ local function modify(parent, region, parentData, data, first)
       textStr = WeakAuras.ReplacePlaceHolders(textStr, parent, nil)
 
       if text:GetFont() then
-        WeakAuras.regionPrototype.SetTextOnText(text, textStr)
+        WeakAuras.regionPrototype.SetTextOnText(text, ReplaceRaidMarkerSymbols(textStr))
       end
       region:UpdateAnchor()
     end
@@ -285,7 +318,7 @@ local function modify(parent, region, parentData, data, first)
 
   if not UpdateText then
     if text:GetFont() then
-      WeakAuras.regionPrototype.SetTextOnText(text, data.text_text);
+      WeakAuras.regionPrototype.SetTextOnText(text, ReplaceRaidMarkerSymbols(data.text_text))
     end
   end
 
