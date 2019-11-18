@@ -5919,6 +5919,24 @@ WeakAuras.event_prototypes = {
       if trigger.use_HasPet ~= nil then
         tinsert(pet_unit_events, "UNIT_HEALTH")
       end
+      if trigger.use_ingroup ~= nil then
+        tinsert(events, "GROUP_LEFT")
+        tinsert(events, "GROUP_JOINED")
+      end
+
+      if trigger.use_instance_size then
+        tinsert(events, "ZONE_CHANGED")
+        tinsert(events, "ZONE_CHANGED_INDOORS")
+        tinsert(events, "ZONE_CHANGED_NEW_AREA")
+      end
+
+      if trigger.use_instance_difficulty then
+        tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
+        tinsert(events, "ZONE_CHANGED")
+        tinsert(events, "ZONE_CHANGED_INDOORS")
+        tinsert(events, "ZONE_CHANGED_NEW_AREA")
+      end
+
       return {
         ["events"] = events,
         ["unit_events"] = {
@@ -6009,7 +6027,32 @@ WeakAuras.event_prototypes = {
         display = L["Is Moving"],
         type = "tristate",
         init = "IsPlayerMoving()"
-      }
+      },
+      {
+        name = "ingroup",
+        display = L["In Group"],
+        type = "multiselect",
+        values = "group_types",
+        init = "WeakAuras.GroupType()"
+      },
+      {
+        name = "instance_size",
+        display = L["Instance Type"],
+        type = "multiselect",
+        values = "instance_types",
+        init = "WeakAuras.InstanceType()",
+        control = "WeakAurasSortedDropdown",
+        events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+      },
+      {
+        name = "instance_difficulty",
+        display = L["Instance Difficulty"],
+        type = "multiselect",
+        values = "difficulty_types",
+        init = "WeakAuras.InstanceDifficulty()",
+        enable = not WeakAuras.IsClassic(),
+        hidden = WeakAuras.IsClassic(),
+      },
     },
     automaticrequired = true
   },

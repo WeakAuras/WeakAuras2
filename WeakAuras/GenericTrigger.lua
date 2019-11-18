@@ -3664,4 +3664,6 @@ function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
   end
 end
 
+
+
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

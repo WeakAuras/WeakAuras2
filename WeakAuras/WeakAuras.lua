@@ -1902,6 +1902,39 @@ function WeakAuras.IsOptionsProcessingPaused()
   return pausedOptionsProcessing;
 end
 
+function WeakAuras.GroupType()
+  if (IsInRaid()) then
+    return "raid";
+  end
+  if (IsInGroup()) then
+    return "group";
+  end
+  return "solo";
+end
+
+local function GetInstanceTypeAndSize()
+  local size, difficulty
+  local inInstance, Type = IsInInstance()
+  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
+  if (inInstance) then
+    size = Type
+    local difficultyInfo = WeakAuras.difficulty_info[difficultyIndex]
+    if difficultyInfo then
+      size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
+    end
+    return size, difficulty, instanceType, ZoneMapID
+  end
+  return "none", "none", nil, nil
+end
+
+function WeakAuras.InstanceType()
+  return GetInstanceTypeAndSize(), nil
+end
+
+function WeakAuras.InstanceDifficulty()
+  return select(2, GetInstanceTypeAndSize())
+end
+
 local toLoad = {}
 local toUnload = {};
 local function scanForLoadsImpl(toCheck, event, arg1, ...)
@@ -1947,9 +1980,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local role = WeakAuras.IsClassic() and "none" or select(5, GetSpecializationInfo(spec));
 
   local _, class = UnitClass("player");
-  -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
-  local inInstance, Type = IsInInstance()
-  local size, difficulty
+
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inencounter = encounter_id ~= 0;
   local inpetbattle, vehicle, vehicleUi = false, false, false
@@ -1959,19 +1990,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
   end
 
-  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
-  if (inInstance) then
-    WeakAuras.UpdateCurrentInstanceType(instanceType)
-    size = Type
-    local difficultyInfo = WeakAuras.difficulty_info[difficultyIndex]
-    if difficultyInfo then
-      size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
-    end
-  else
-    WeakAuras.UpdateCurrentInstanceType();
-    size = "none"
-    difficulty = "none"
-  end
+  local size, difficulty, instanceType, ZoneMapID = GetInstanceTypeAndSize()
+  WeakAuras.UpdateCurrentInstanceType(instanceType)
 
   if (WeakAuras.CurrentEncounter) then
     if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not incombat) then
@@ -1984,14 +2004,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     WeakAuras.LoadEncounterInitScripts();
   end
 
-  local group = nil;
-  if (IsInRaid()) then
-    group = "raid";
-  elseif (IsInGroup()) then
-    group = "group";
-  else
-    group = "solo";
-  end
+  local group = WeakAuras.GroupType()
 
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
   if not WeakAuras.IsClassic() then
