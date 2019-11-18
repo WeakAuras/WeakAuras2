@@ -67,7 +67,7 @@ local LCD
 if WeakAuras.IsClassic() then
   LCD = LibStub("LibClassicDurations")
   LCD:RegisterFrame("WeakAuras")
-  UnitAura = LCD.UnitAura
+  UnitAura = LCD.UnitAuraDirect
 end
 
 local WeakAuras = WeakAuras
