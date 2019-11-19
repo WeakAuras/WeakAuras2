@@ -5206,13 +5206,13 @@ WeakAuras.event_prototypes = {
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
       if WeakAuras.IsClassic() and trigger.unit ~= "player" then
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_STOP", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_UPDATE", WeakAuras.ScanUnitEvents) -- only for player
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_STOP", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_UPDATE", WeakAuras.ScanUnitEvents) -- only for player
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
       end
       AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then
