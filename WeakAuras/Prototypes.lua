@@ -1607,6 +1607,7 @@ WeakAuras.event_prototypes = {
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
         AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
+        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_SUCCEEDED")
       end
       if trigger.use_powertype and trigger.powertype == 99 then
         AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
@@ -1687,7 +1688,7 @@ WeakAuras.event_prototypes = {
               end
             end
             state.changed = true;
-          elseif ( (event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED") and unit == "player") then
+          elseif ( (event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and unit == "player") then
             state.cost = nil;
             state.changed = true;
           end
