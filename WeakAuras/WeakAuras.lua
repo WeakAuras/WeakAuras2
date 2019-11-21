@@ -6754,3 +6754,36 @@ function WeakAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
 end
+
+local textSymbols = {
+  ["{rt1}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
+  ["{rt2}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t ",
+  ["{rt3}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t ",
+  ["{rt4}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t ",
+  ["{rt5}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t ",
+  ["{rt6}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t ",
+  ["{rt7}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t ",
+  ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
+}
+
+function WeakAuras.ReplaceRaidMarkerSymbols(txt)
+  local start = 1
+
+  while true do
+    local firstChar = txt:find("{", start, true)
+    if not firstChar then
+      return txt
+    end
+    local lastChar = txt:find("}", firstChar, true)
+    if not lastChar then
+      return txt
+    end
+    local replace = textSymbols[txt:sub(firstChar, lastChar)]
+    if replace then
+      txt = txt:sub(1, firstChar -1) .. replace .. txt:sub(lastChar +1)
+      start = firstChar + #replace
+    else
+      start = lastChar
+    end
+  end
+end
