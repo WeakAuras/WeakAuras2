@@ -84,7 +84,7 @@ local function Constructor()
 	icon:SetWidth(16)
 
 	local text = frame:CreateFontString()
-	text:SetFontObject(GameFontNormal)
+	text:SetFontObject("GameFontNormal")
 	text:ClearAllPoints()
 	text:SetPoint("TOPLEFT", 20, -1)
 	text:SetPoint("BOTTOMRIGHT", -4, 1)
