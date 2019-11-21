@@ -78,7 +78,7 @@ local function modify(parent, region, data)
   end
   if text:GetFont() then
     text:SetText("")
-    WeakAuras.regionPrototype.SetTextOnText(text, data.displayText);
+    WeakAuras.regionPrototype.SetTextOnText(text, WeakAuras.ReplaceRaidMarkerSymbols(data.displayText));
   end
   text.displayText = data.displayText;
   text:SetJustifyH(data.justify);
@@ -112,7 +112,7 @@ local function modify(parent, region, data)
     region.width = data.fixedWidth;
     SetText = function(textStr)
       if text:GetFont() then
-        text:SetText(textStr);
+        text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr));
       end
 
       local height = text:GetStringHeight();
@@ -132,7 +132,7 @@ local function modify(parent, region, data)
     SetText = function(textStr)
       if(textStr ~= text.displayText) then
         if text:GetFont() then
-          WeakAuras.regionPrototype.SetTextOnText(text, textStr);
+          WeakAuras.regionPrototype.SetTextOnText(text, WeakAuras.ReplaceRaidMarkerSymbols(textStr));
         end
       end
       local width = text:GetWidth();
