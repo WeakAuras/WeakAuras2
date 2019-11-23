@@ -1713,10 +1713,8 @@ function WeakAuras.CreateTemplateView(frame)
   newViewCancel:SetText(L["Cancel"]);
 
   function newView.Open(self, data)
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "newView";
+    frame:UpdateFrameVisible()
     if (data) then
       self.data = data;
       newView.existingAura = true;
@@ -1742,10 +1740,8 @@ function WeakAuras.CreateTemplateView(frame)
   end
 
   function newView.CancelClose(self)
-    newView.frame:Hide();
-    frame.buttonsContainer.frame:Show();
-    frame.container.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
     if (not self.data) then
       frame:NewAura();
     end

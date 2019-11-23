@@ -43,10 +43,8 @@ local function ConstructImportExport(frame)
     elseif(frame.window == "model") then
       frame.modelPicker:CancelClose();
     end
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "importexport";
+    frame:UpdateFrameVisible()
     if(mode == "export" or mode == "table") then
       if(id) then
         local displayStr;
@@ -100,10 +98,8 @@ local function ConstructImportExport(frame)
 
   function group.Close(self)
     input:ClearFocus();
-    self.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
   end
 
   return group

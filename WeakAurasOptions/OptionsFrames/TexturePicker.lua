@@ -155,10 +155,8 @@ local function ConstructTexturePicker(frame)
         blendMode = data.blendMode or "ADD"
       };
     end
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "texture";
+    frame:UpdateFrameVisible()
     local picked = false;
     local _, givenPath
     if type(self.givenPath) == "string" then
@@ -188,10 +186,8 @@ local function ConstructTexturePicker(frame)
   end
 
   function group.Close()
-    group.frame:Hide();
-    frame.buttonsContainer.frame:Show();
-    frame.container.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
     AceConfigDialog:Open("WeakAuras", frame.container);
   end
 
