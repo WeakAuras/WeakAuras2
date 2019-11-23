@@ -755,7 +755,7 @@ end
 
 function WeakAuras.CheckRaidFlags(flags, flagToCheck)
   flagToCheck = tonumber(flagToCheck)
-  if not flagToCheck then return end --bailout
+  if not flagToCheck or not flags then return end --bailout
   if flagToCheck == 0 then --no raid mark
     return bit.band(flags, COMBATLOG_OBJECT_RAIDTARGET_MASK) == 0
   elseif flagToCheck == 9 then --any raid mark
