@@ -71,6 +71,11 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       name = L["Display Text"],
       order = 11,
+      set = function(info, v)
+        data.text_text = WeakAuras.ReplaceLocalizedRaidMarkers(v)
+        WeakAuras.Add(parentData)
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
     },
     text_font = {
       type = "select",

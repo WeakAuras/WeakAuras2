@@ -6780,10 +6780,36 @@ function WeakAuras.ReplaceRaidMarkerSymbols(txt)
     end
     local replace = textSymbols[txt:sub(firstChar, lastChar)]
     if replace then
-      txt = txt:sub(1, firstChar -1) .. replace .. txt:sub(lastChar +1)
+      txt = txt:sub(1, firstChar - 1) .. replace .. txt:sub(lastChar + 1)
       start = firstChar + #replace
     else
       start = lastChar
+    end
+  end
+end
+
+function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
+  local start = 1
+
+  while true do
+    local firstChar = txt:find("{", start, true)
+    if not firstChar then
+      return txt
+    end
+    local lastChar = txt:find("}", firstChar, true)
+    if not lastChar then
+      return txt
+    end
+
+    local symbol = strlower(txt:sub(firstChar + 1, lastChar - 1))
+    if ICON_TAG_LIST[symbol] then
+      local replace = "rt" .. ICON_TAG_LIST[symbol]
+      if replace then
+        txt = txt:sub(1, firstChar) .. replace .. txt:sub(lastChar)
+        start = firstChar + #replace
+      else
+        start = lastChar
+      end
     end
   end
 end

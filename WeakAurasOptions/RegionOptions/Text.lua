@@ -22,7 +22,7 @@ local function createOptions(id, data)
         return data.displayText;
       end,
       set = function(info, v)
-        data.displayText = v;
+        data.displayText = WeakAuras.ReplaceLocalizedRaidMarkers(v);
         WeakAuras.Add(data);
         WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
