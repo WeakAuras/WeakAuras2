@@ -102,25 +102,16 @@ local function ConstructCodeReview(frame)
     end
 
     self.data = data;
-
     self.codeTree:SetTree(data);
-    self.codebox.frame:Show();
 
     WeakAuras.ShowOptions();
-
-    frame.importexport.frame:Hide();
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "codereview";
+    frame:UpdateFrameVisible()
   end
 
   function group.Close()
-    group.frame:Hide();
-    codebox.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
   end
 
   return group

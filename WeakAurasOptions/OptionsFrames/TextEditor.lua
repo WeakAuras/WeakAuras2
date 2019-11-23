@@ -303,10 +303,8 @@ local function ConstructTextEditor(frame)
     elseif(frame.window == "icon") then
       frame.iconPicker:CancelClose();
     end
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "texteditor";
+    frame:UpdateFrameVisible()
     local title = (type(data.id) == "string" and data.id or L["Temporary Group"]).." -";
     if (not multipath) then
       for index, field in pairs(path) do
@@ -381,10 +379,8 @@ local function ConstructTextEditor(frame)
   function group.CancelClose(self)
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();
-    self.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
   end
 
   local function extractTexts(input, ids)
@@ -447,10 +443,8 @@ local function ConstructTextEditor(frame)
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();
-    self.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
 
     frame:RefreshPick();
   end

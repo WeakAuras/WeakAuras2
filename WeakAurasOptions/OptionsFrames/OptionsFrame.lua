@@ -303,6 +303,99 @@ function WeakAuras.CreateFrame()
   local minimize = CreateDecoration(frame)
   minimize:SetPoint("TOPRIGHT", -65, 12)
 
+  frame.UpdateFrameVisible = function(self)
+    if self.minimized then
+      self.buttonsContainer.frame:Hide()
+      self.texturePicker.frame:Hide()
+      self.iconPicker.frame:Hide()
+      if not WeakAuras.IsClassic() then
+        self.modelPicker.frame:Hide()
+      end
+      self.importexport.frame:Hide()
+      self.texteditor.frame:Hide()
+      self.codereview.frame:Hide()
+      if self.newView then
+        self.newView.frame:Hide()
+      end
+      self.container.frame:Hide()
+
+      self.loadProgress:Hide()
+      self.toolbarContainer.frame:Hide()
+      self.filterInput:Hide();
+      self.filterInputClear:Hide();
+    else
+      if self.window == "default" then
+        self.buttonsContainer.frame:Show()
+        self.container.frame:Show()
+      else
+        self.buttonsContainer.frame:Hide()
+        self.container.frame:Hide()
+      end
+
+      if self.window == "texture" then
+        self.texturePicker.frame:Show()
+      else
+        self.texturePicker.frame:Hide()
+      end
+
+      if self.window == "icon" then
+        self.iconPicker.frame:Show()
+      else
+        self.iconPicker.frame:Hide()
+      end
+
+      if self.window == "model" and not WeakAuras.IsClassic() then
+        self.modelPicker.frame:Show()
+      else
+        self.modelPicker.frame:Hide()
+      end
+
+      if self.window == "importexport" then
+        self.importexport.frame:Show()
+      else
+        self.importexport.frame:Hide()
+      end
+
+      if self.window == "texteditor" then
+        self.texteditor.frame:Show()
+      else
+        self.texteditor.frame:Hide()
+      end
+
+      if self.window == "codereview" then
+        self.codereview.frame:Show()
+      else
+        self.codereview.frame:Hide()
+      end
+      if self.window == "newView" then
+        self.newView.frame:Show()
+      else
+        if self.newView then
+          self.newView.frame:Hide()
+        end
+      end
+
+      if self.window == "default" then
+        if self.loadProgessVisible then
+          self.loadProgress:Show()
+          self.toolbarContainer.frame:Hide()
+          self.filterInput:Hide();
+          self.filterInputClear:Hide();
+        else
+          self.loadProgress:Hide()
+          self.toolbarContainer.frame:Show()
+          self.filterInput:Show();
+          self.filterInputClear:Show();
+        end
+      else
+        self.loadProgress:Hide()
+        self.toolbarContainer.frame:Hide()
+        self.filterInput:Hide();
+        self.filterInputClear:Hide();
+      end
+    end
+  end
+
   local minimizebutton = CreateFrame("BUTTON", nil, minimize)
   minimizebutton:SetWidth(30)
   minimizebutton:SetHeight(30)
@@ -319,24 +412,6 @@ function WeakAuras.CreateFrame()
         end
       end
       frame:SetHeight(db.frame and db.frame.height or 500)
-      if frame.window == "default" then
-        frame.buttonsContainer.frame:Show()
-        frame.container.frame:Show()
-      elseif frame.window == "texture" then
-        frame.texturePicker.frame:Show()
-      elseif frame.window == "icon" then
-        frame.iconPicker.frame:Show()
-      elseif frame.window == "model" and not WeakAuras.IsClassic() then
-        frame.modelPicker.frame:Show()
-      elseif frame.window == "importexport" then
-        frame.importexport.frame:Show()
-      elseif frame.window == "texteditor" then
-        frame.texteditor.frame:Show()
-      elseif frame.window == "codereview" then
-        frame.codereview.frame:Show()
-      elseif frame.window == "newView" then
-        frame.newView.frame:Show()
-      end
       minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
       minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
 
@@ -344,22 +419,10 @@ function WeakAuras.CreateFrame()
     else
       frame.minimized = true
       frame:SetHeight(40)
-      frame.buttonsContainer.frame:Hide()
-      frame.texturePicker.frame:Hide()
-      frame.iconPicker.frame:Hide()
-      if not WeakAuras.IsClassic() then
-      frame.modelPicker.frame:Hide()
-      end
-      frame.importexport.frame:Hide()
-      frame.texteditor.frame:Hide()
-      frame.codereview.frame:Hide()
-      if frame.newView then
-        frame.newView.frame:Hide()
-      end
-      frame.container.frame:Hide()
       minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp")
       minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp")
     end
+    frame:UpdateFrameVisible()
   end)
 
   local _, _, _, enabled, loadable = GetAddOnInfo("WeakAurasTutorials")
@@ -487,18 +550,10 @@ function WeakAuras.CreateFrame()
   frame.loadProgress = loadProgress
 
   frame.SetLoadProgressVisible = function(self, visible)
-    if visible then
-      self.loadProgress:Show()
-      self.toolbarContainer.frame:Hide()
-      self.filterInput:Hide();
-      self.filterInputClear:Hide();
-    else
-      self.loadProgress:Hide()
-      self.toolbarContainer.frame:Show()
-      self.filterInput:Show();
-      self.filterInputClear:Show();
-    end
+    self.loadProgessVisible = visible
+    self:UpdateFrameVisible()
   end
+
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")

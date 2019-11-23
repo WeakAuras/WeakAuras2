@@ -147,18 +147,14 @@ local function ConstructIconPicker(frame)
       self.givenPath = self.data[self.field];
     end
     -- group:Pick(self.givenPath);
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "icon";
+    frame:UpdateFrameVisible()
     input:SetText("");
   end
 
   function group.Close()
-    group.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
     AceConfigDialog:Open("WeakAuras", frame.container);
   end
 

@@ -379,17 +379,13 @@ local function ConstructModelPicker(frame)
         self.givenY = data.model_y;
       end
     end
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "model";
+    frame:UpdateFrameVisible()
   end
 
   function group.Close()
-    group.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
-    frame.window = "default";
+    frame.window = "default"
+    frame:UpdateFrameVisible()
     AceConfigDialog:Open("WeakAuras", frame.container);
   end
 
