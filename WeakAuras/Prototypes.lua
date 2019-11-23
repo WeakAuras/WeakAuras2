@@ -2798,8 +2798,8 @@ WeakAuras.event_prototypes = {
         spellName = trigger.spellName;
       else
         spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
-        spellName = string.format("%q", spellName or "");
       end
+      spellName = string.format("%q", spellName or "");
       return string.format("local spell = %s;\n", spellName);
     end,
     statesParameter = "one",
