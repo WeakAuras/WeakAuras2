@@ -128,7 +128,7 @@ end
 
 local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   if anchorType == "area" then
-    WeakAuras.regionPrototype.AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+    WeakAuras.regionPrototype.AnchorSubRegion(self.icon, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   else
     subRegion:ClearAllPoints()
     anchorPoint = anchorPoint or "CENTER"
