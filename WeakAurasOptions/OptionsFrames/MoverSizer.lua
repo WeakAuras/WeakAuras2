@@ -43,13 +43,13 @@ local function moveOnePxl(direction)
         data.xOffset = data.xOffset + 1
       end
       WeakAuras.Add(data)
-      WeakAuras.SetThumbnail(data)
+      WeakAuras.UpdateThumbnail(data)
       WeakAuras.ResetMoverSizer()
       if data.parent then
         local parentData = WeakAuras.GetData(data.parent)
         if parentData then
           WeakAuras.Add(parentData)
-          WeakAuras.SetThumbnail(parentData)
+          WeakAuras.UpdateThumbnail(parentData)
         end
       end
       WeakAuras.ReloadOptions(data.id)
@@ -581,7 +581,7 @@ local function ConstructMoverSizer(parent)
       end
       region:ResetPosition()
       WeakAuras.Add(data)
-      WeakAuras.SetThumbnail(data)
+      WeakAuras.UpdateThumbnail(data)
       local xOff, yOff
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
       mover:ClearAllPoints()
@@ -598,7 +598,7 @@ local function ConstructMoverSizer(parent)
         local parentData = db.displays[data.parent]
         if parentData then
           WeakAuras.Add(parentData)
-          WeakAuras.SetThumbnail(parentData)
+          WeakAuras.UpdateThumbnail(parentData)
         end
       end
       AceConfigDialog:Open("WeakAuras", parent.container)
@@ -699,7 +699,7 @@ local function ConstructMoverSizer(parent)
 
         region:ResetPosition()
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.UpdateThumbnail(data)
 
         frame:ScaleCorners(region:GetWidth(), region:GetHeight())
         local xOff, yOff

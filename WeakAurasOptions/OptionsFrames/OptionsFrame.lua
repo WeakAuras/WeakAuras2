@@ -531,7 +531,6 @@ function WeakAuras.CreateFrame()
   toolbarContainer.frame:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 20, -32)
   toolbarContainer:SetLayout("Flow")
 
-  -- TODO use a different button
   local newButton = AceGUI:Create("WeakAurasToolbarButton")
   newButton:SetText(L["New Aura"])
   newButton:SetTexture(237537)
@@ -864,10 +863,8 @@ function WeakAuras.CreateFrame()
       if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
-        if(type(regionData.icon) == "string") then
+        if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
           button:SetIcon(regionData.icon)
-        elseif(type(regionData.icon) == "function") then
-          button:SetIcon(regionData.icon())
         end
         button:SetDescription(regionData.description)
         button:SetClick(function()
@@ -916,12 +913,15 @@ function WeakAuras.CreateFrame()
       ]]
     }
 
-    local thumbnail = regionOptions["text"].createThumbnail(UIParent)
-    regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data)
-    thumbnail.mask:SetPoint("BOTTOMLEFT", thumbnail, "BOTTOMLEFT", 3, 3)
-    thumbnail.mask:SetPoint("TOPRIGHT", thumbnail, "TOPRIGHT", -3, -3)
+    if not frame.importThumbnail then
+      local thumbnail = regionOptions["text"].createThumbnail(UIParent)
+      regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data)
+      thumbnail.mask:SetPoint("BOTTOMLEFT", thumbnail, "BOTTOMLEFT", 3, 3)
+      thumbnail.mask:SetPoint("TOPRIGHT", thumbnail, "TOPRIGHT", -3, -3)
+      frame.importThumbnail = thumbnail
+    end
 
-    importButton:SetIcon(thumbnail)
+    importButton:SetIcon(frame.importThumbnail)
     importButton:SetDescription(L["Import a display from an encoded string"])
     importButton:SetClick(WeakAuras.ImportFromString)
     containerScroll:AddChild(importButton)

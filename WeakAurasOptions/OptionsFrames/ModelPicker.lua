@@ -196,7 +196,7 @@ local function ConstructModelPicker(frame)
           childData.model_st_rz = model_rz;
           childData.model_st_us = model_us;
           WeakAuras.Add(childData);
-          WeakAuras.SetThumbnail(childData);
+          WeakAuras.UpdateThumbnail(childData);
           WeakAuras.SetIconNames(childData);
         end
       end
@@ -214,7 +214,7 @@ local function ConstructModelPicker(frame)
         WeakAuras.Add(self.parentData);
       else
         WeakAuras.Add(self.data);
-        WeakAuras.SetThumbnail(self.data);
+        WeakAuras.UpdateThumbnail(self.data);
         WeakAuras.SetIconNames(self.data);
       end
     end
@@ -244,7 +244,7 @@ local function ConstructModelPicker(frame)
           childData.model_x = model_x;
           childData.model_y = model_y;
           WeakAuras.Add(childData);
-          WeakAuras.SetThumbnail(childData);
+          WeakAuras.UpdateThumbnail(childData);
           WeakAuras.SetIconNames(childData);
         end
       end
@@ -259,7 +259,7 @@ local function ConstructModelPicker(frame)
         WeakAuras.Add(self.parentData)
       else
         WeakAuras.Add(self.data);
-        WeakAuras.SetThumbnail(self.data);
+        WeakAuras.UpdateThumbnail(self.data);
         WeakAuras.SetIconNames(self.data);
       end
     end
@@ -411,7 +411,7 @@ local function ConstructModelPicker(frame)
             childData.model_y = group.givenY[childId];
           end
           WeakAuras.Add(childData);
-          WeakAuras.SetThumbnail(childData);
+          WeakAuras.UpdateThumbnail(childData);
           WeakAuras.SetIconNames(childData);
         end
       end

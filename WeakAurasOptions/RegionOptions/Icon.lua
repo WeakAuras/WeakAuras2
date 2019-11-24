@@ -39,7 +39,7 @@ local function createOptions(id, data)
       set = function(info, v)
         data.displayIcon = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
       end
     },
@@ -229,22 +229,30 @@ local function createOptions(id, data)
   };
 end
 
-local function createThumbnail(parent)
-  local icon = parent:CreateTexture();
+local function createThumbnail()
+  local frame = CreateFrame("FRAME", nil, UIParent)
+  local icon = frame:CreateTexture();
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-
-  return icon;
+  icon:SetAllPoints(frame)
+  frame.icon = icon
+  return frame;
 end
 
-local function modifyThumbnail(parent, icon, data, fullModify)
+local function modifyThumbnail(parent, frame, data)
   local texWidth = 0.25 * data.zoom;
-  icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
+  frame.icon:SetTexCoord(texWidth, 1 - texWidth, texWidth, 1 - texWidth);
+  frame:SetParent(parent)
 
-  function icon:SetIcon(path)
-    local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
+  function frame:SetIcon(path)
+    local success = self.icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
     if not(success) then
-      icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
+      self.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
     end
+  end
+
+  if data then
+    local name, icon = WeakAuras.GetNameAndIcon(data);
+    frame:SetIcon(icon)
   end
 end
 

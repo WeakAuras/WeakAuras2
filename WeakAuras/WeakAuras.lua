@@ -457,12 +457,34 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   elseif(regionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
+    if (type(icon) == "function") then
+      -- We only want to create one icon and reparent it as needed
+      icon = icon()
+      icon:Hide()
+    end
+
+    local acquireThumbnail, releaseThumbnail
+    if createThumbnail and modifyThumbnail then
+      local thumbnailPool = CreateObjectPool(createThumbnail)
+      acquireThumbnail = function(parent, data)
+        local thumbnail, newObject = thumbnailPool:Acquire()
+        thumbnail:Show()
+        modifyThumbnail(parent, thumbnail, data)
+        return thumbnail
+      end
+      releaseThumbnail = function(thumbnail)
+        thumbnail:Hide()
+        thumbnailPool:Release(thumbnail)
+      end
+    end
     regionOptions[name] = {
       create = createFunction,
       icon = icon,
       displayName = displayName,
       createThumbnail = createThumbnail,
       modifyThumbnail = modifyThumbnail,
+      acquireThumbnail = acquireThumbnail,
+      releaseThumbnail = releaseThumbnail,
       description = description,
       templates = templates,
       getAnchors = getAnchors
@@ -2301,16 +2323,23 @@ function WeakAuras.Delete(data)
     end
   end
 
-  animations[tostring(regions[id].region)] = nil
 
   regions[id].region:Collapse()
+  WeakAuras.CollapseAllClones(id);
+
+  WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+
+  if clones[id] then
+    for cloneId, region in pairs(clones[id]) do
+      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+    end
+  end
 
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:SetScript("OnShow", nil);
   regions[id].region:SetScript("OnHide", nil);
   regions[id].region:Hide();
 
-  WeakAuras.CollapseAllClones(id);
   db.registered[id] = nil;
   if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
     local button = WeakAuras.importDisplayButtons[id];
@@ -4347,7 +4376,7 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       end
       local loginFinished = WeakAuras.IsLoginFinished();
-      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true);
+      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);
