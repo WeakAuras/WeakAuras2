@@ -113,14 +113,14 @@ local function ConstructIconPicker(frame)
         if(childData) then
           childData[self.field] = texturePath;
           WeakAuras.Add(childData);
-          WeakAuras.SetThumbnail(childData);
+          WeakAuras.UpdateThumbnail(childData);
           WeakAuras.SetIconNames(childData);
         end
       end
     else
       self.data[self.field] = texturePath;
       WeakAuras.Add(self.data);
-      WeakAuras.SetThumbnail(self.data);
+      WeakAuras.UpdateThumbnail(self.data);
       WeakAuras.SetIconNames(self.data);
     end
     local success = icon:SetTexture(texturePath) and texturePath;
@@ -165,7 +165,7 @@ local function ConstructIconPicker(frame)
         if(childData) then
           childData[group.field] = group.givenPath[childId] or childData[group.field];
           WeakAuras.Add(childData);
-          WeakAuras.SetThumbnail(childData);
+          WeakAuras.UpdateThumbnail(childData);
           WeakAuras.SetIconNames(childData);
         end
       end

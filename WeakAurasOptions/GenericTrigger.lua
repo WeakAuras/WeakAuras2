@@ -77,7 +77,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.custom_type = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
         WeakAuras.ReloadOptions(data.id);
@@ -97,7 +96,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.check = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end
@@ -116,7 +114,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.check = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end
@@ -134,7 +131,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.events = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end
@@ -150,7 +146,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.events = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end
@@ -223,7 +218,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.custom_hide = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end
@@ -239,7 +233,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.custom_hide = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end
@@ -253,7 +246,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
       set = function(info, v)
         trigger.dynamicDuration = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
         WeakAuras.ReloadOptions(data.id);
@@ -311,7 +303,6 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
   };
 
   local function extraSetFunction()
-    WeakAuras.SetThumbnail(data);
     WeakAuras.SetIconNames(data);
     WeakAuras.UpdateDisplayButton(data);
   end

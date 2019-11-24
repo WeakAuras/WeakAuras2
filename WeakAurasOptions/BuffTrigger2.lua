@@ -765,7 +765,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         end
 
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.UpdateThumbnail(data)
         WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
         WeakAuras.ReloadTriggerOptions(data)
@@ -821,7 +821,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           trigger.auraspellids[i] = v
         end
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.UpdateThumbnail(data)
         WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
         WeakAuras.ReloadTriggerOptions(data)
