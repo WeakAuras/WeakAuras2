@@ -80,7 +80,7 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasMultiLineEditBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropDown.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasToolButon.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasToolbarButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasTwoColumnDropDown.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 

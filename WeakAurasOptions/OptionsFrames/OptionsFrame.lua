@@ -528,7 +528,7 @@ function WeakAuras.CreateFrame()
   toolbarContainer:SetLayout("Flow")
 
   -- TODO use a different button
-  local newButton = AceGUI:Create("WeakAurasToolButton")
+  local newButton = AceGUI:Create("WeakAurasToolbarButton")
   newButton:SetText(L["New Aura"])
   newButton:SetTexture(237537)
   toolbarContainer:AddChild(newButton)
@@ -538,7 +538,7 @@ function WeakAuras.CreateFrame()
     frame:NewAura()
   end)
 
-  local importButton = AceGUI:Create("WeakAurasToolButton")
+  local importButton = AceGUI:Create("WeakAurasToolbarButton")
   importButton:SetText(L["Import"])
   importButton:SetTexture(134938)
   importButton:SetCallback("OnClick", WeakAuras.ImportFromString)
