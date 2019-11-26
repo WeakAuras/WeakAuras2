@@ -344,10 +344,12 @@ function WeakAuras.CreateFrame()
         self.iconPicker.frame:Hide()
       end
 
-      if self.window == "model" and not WeakAuras.IsClassic() then
-        self.modelPicker.frame:Show()
-      else
-        self.modelPicker.frame:Hide()
+      if not WeakAuras.IsClassic() then
+        if self.window == "model" then
+          self.modelPicker.frame:Show()
+        else
+          self.modelPicker.frame:Hide()
+        end
       end
 
       if self.window == "importexport" then
