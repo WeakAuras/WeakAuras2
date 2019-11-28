@@ -2,7 +2,12 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local LCG = LibStub("LibCustomGlow-1.0")
-local MSQ = LibStub("Masque", true);
+local MSQ, MSQ_Version = LibStub("Masque", true);
+if MSQ then
+  if MSQ_Version <= 80100 then
+    MSQ = nil
+  end
+end
 local L = WeakAuras.L;
 
 local default = function(parentType)
