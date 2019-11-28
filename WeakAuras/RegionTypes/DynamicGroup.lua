@@ -762,6 +762,11 @@ local function modify(parent, region, data)
     region.controlledChildren[childID] = region.controlledChildren[childID] or {}
     region.controlledChildren[childID][cloneID] = controlPoint
     childRegion:SetAnchor(data.selfPoint, controlPoint, data.selfPoint)
+    if(childData.frameStrata == 1) then
+      childRegion:SetFrameStrata(region:GetFrameStrata());
+    else
+      childRegion:SetFrameStrata(WeakAuras.frame_strata_types[childData.frameStrata]);
+    end
     return regionData
   end
 
