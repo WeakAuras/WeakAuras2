@@ -26,6 +26,7 @@
 embeds.xml
 Init.lua
 locales.xml
+ArchiveTypes\Repository.lua
 
 # core files
 Prototypes.lua

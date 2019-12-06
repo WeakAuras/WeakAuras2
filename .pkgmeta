@@ -19,6 +19,7 @@ externals:
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
+  WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
 
 enable-nolib-creation: no
 
@@ -38,3 +39,4 @@ move-folders:
   WeakAuras/WeakAurasOptions: WeakAurasOptions
   WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
   WeakAuras/WeakAurasTemplates: WeakAurasTemplates
+  WeakAuras/WeakAurasArchive: WeakAurasArchive

@@ -23,6 +23,7 @@ externals:
   WeakAuras/Libs/!LibTotemInfo: https://github.com/SwimmingTiger/LibTotemInfo
   WeakAuras/Libs/LibRangeCheck-2.0: https://repos.wowace.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
   WeakAuras/Libs/LibClassicSpellActionCount-1.0: https://github.com/Ennea/LibClassicSpellActionCount-1.0
+  WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
 
 enable-nolib-creation: no
 
@@ -44,3 +45,4 @@ ignore:
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
   WeakAuras/WeakAurasOptions: WeakAurasOptions
+  WeakAuras/WeakAurasArchive: WeakAurasArchive
