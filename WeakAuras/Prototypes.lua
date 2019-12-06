@@ -24,26 +24,24 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
 end
 
-if not WeakAuras.IsClassic() then
-  local LibRangeCheck = LibStub("LibRangeCheck-2.0")
+local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
-  function WeakAuras.GetRange(unit, checkVisible)
-    return LibRangeCheck:GetRange(unit, checkVisible);
+function WeakAuras.GetRange(unit, checkVisible)
+  return LibRangeCheck:GetRange(unit, checkVisible);
+end
+
+function WeakAuras.CheckRange(unit, range, operator)
+  local min, max = LibRangeCheck:GetRange(unit, true);
+  if (type(range) ~= "number") then
+    range = tonumber(range);
   end
-
-  function WeakAuras.CheckRange(unit, range, operator)
-    local min, max = LibRangeCheck:GetRange(unit, true);
-    if (type(range) ~= "number") then
-      range = tonumber(range);
-    end
-    if (not range) then
-      return
-    end
-    if (operator == "<=") then
-      return (max or 999) <= range;
-    else
-      return (min or 0) >= range;
-    end
+  if (not range) then
+    return
+  end
+  if (operator == "<=") then
+    return (max or 999) <= range;
+  else
+    return (min or 0) >= range;
   end
 end
 
@@ -6343,7 +6341,6 @@ if WeakAuras.IsClassic() then
   WeakAuras.event_prototypes["Death Knight Rune"] = nil
   WeakAuras.event_prototypes["Alternate Power"] = nil
   WeakAuras.event_prototypes["Equipment Set"] = nil
-  WeakAuras.event_prototypes["Range Check"] = nil
   WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
   WeakAuras.event_prototypes["Totem"] = nil
 else
