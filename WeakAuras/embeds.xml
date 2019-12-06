@@ -25,4 +25,5 @@
   <Script file="Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua"/>
   @end-non-retail@-->
   <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
+  <Include file="Libs\Archivist\Archivist.xml"/>
 </Ui>
