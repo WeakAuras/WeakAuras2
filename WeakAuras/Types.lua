@@ -1602,6 +1602,11 @@ WeakAuras.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
+if WeakAuras.IsClassic() then
+  WeakAuras.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
+  WeakAuras.pet_behavior_types.assist = nil
+end
+
 if not WeakAuras.IsClassic() then
   WeakAuras.pet_spec_types = {
     [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
