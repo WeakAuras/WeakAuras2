@@ -470,7 +470,11 @@ local function subTypesFor(item, regionType)
   local subglow = WeakAuras.getDefaultGlow(regionType)
   local subglowindex = (regionType == "icon" or regionType == "aurabar") and 1
   local data = {}
-  local dataGlow = {}
+  local dataGlow = {
+    subRegions = {
+      [subglowindex] = subglow
+    }
+  }
   if (item.type == "ability") then
     tinsert(types, {
       icon = icon.cd,
