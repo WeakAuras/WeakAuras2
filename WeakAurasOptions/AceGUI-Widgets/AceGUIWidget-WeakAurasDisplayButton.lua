@@ -966,11 +966,13 @@ local methods = {
       notClickable = true,
       notCheckable = true,
     });
-    tinsert(self.menu, {
-      text = L["Delete"],
-      notCheckable = true,
-      func = self.callbacks.OnDeleteClick
-    });
+    if not data.controlledChildren then
+      tinsert(self.menu, {
+        text = L["Delete"],
+        notCheckable = true,
+        func = self.callbacks.OnDeleteClick
+      });
+    end
 
     if (data.controlledChildren) then
       tinsert(self.menu, {
