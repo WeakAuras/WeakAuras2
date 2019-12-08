@@ -6153,11 +6153,18 @@ WeakAuras.event_prototypes = {
                 activeIcon = _G[i];
               end
               index = index + 1
-              if(name == "PET_MODE_ASSIST" and active == true) then
-                behavior = "assist"
-              elseif(name == "PET_MODE_DEFENSIVE" and active == true) then
+              if WeakAuras.IsClassic() then
+                if name == "PET_MODE_AGGRESSIVE" and active == true then
+                  behavior = "aggressive"
+                end
+              else
+                if name == "PET_MODE_ASSIST" and active == true then
+                  behavior = "assist"
+                end
+              end
+              if name == "PET_MODE_DEFENSIVE" and active == true then
                 behavior = "defensive"
-              elseif(name == "PET_MODE_PASSIVE" and active == true) then
+              elseif name == "PET_MODE_PASSIVE" and active == true then
                 behavior = "passive"
               end
             until index == 12
