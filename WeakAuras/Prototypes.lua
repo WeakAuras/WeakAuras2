@@ -6215,6 +6215,47 @@ WeakAuras.event_prototypes = {
     automaticrequired = true
   },
 
+  ["Queued Action"] = {
+    type = "status",
+    events = {
+      ["events"] = {"ACTIONBAR_UPDATE_STATE"}
+    },
+    internal_events = {
+      "ACTIONBAR_SLOT_CHANGED",
+      "ACTIONBAR_PAGE_CHANGED"
+    },
+    name = L["Queued Action"],
+    init = function(trigger)
+      local ret = [=[
+        local spellid = select(7, GetSpellInfo(%q))
+        local button
+        if spellid then
+            local slotList = C_ActionBar.FindSpellActionButtons(spellid)
+            button = slotList and slotList[1]
+        end
+      ]=]
+      return ret:format(trigger.spellName or "")
+    end,
+    args = {
+      {
+        name = "spellName",
+        required = true,
+        display = L["Spell"],
+        type = "spell",
+        test = "true",
+      },
+      {
+        hidden = true,
+        test = "button and IsCurrentAction(button)";
+      },
+    },
+    iconFunc = function(trigger)
+      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
+      return icon;
+    end,
+    automaticrequired = true
+  },
+
   ["Range Check"] = {
     type = "status",
     events = {
@@ -6304,6 +6345,8 @@ if WeakAuras.IsClassic() then
   WeakAuras.event_prototypes["Equipment Set"] = nil
   WeakAuras.event_prototypes["Range Check"] = nil
   WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
+else
+  WeakAuras.event_prototypes["Queued Action"] = nil
 end
 
 WeakAuras.dynamic_texts = {
