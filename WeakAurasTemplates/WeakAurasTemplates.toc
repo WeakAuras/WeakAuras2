@@ -2,7 +2,7 @@
 ## Interface: 80205
 #@end-retail@
 #@non-retail@
-# ## Interface: 11302
+# ## Interface: 11303
 #@end-non-retail@
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
