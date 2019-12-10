@@ -1820,7 +1820,7 @@ else
           { spell = 202914, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Spider Sting
           { spell = 202914, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Spider Sting
           { spell = 202900, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scorpid Sting
-          { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuiff"]},-- Scorpid Sting
+          { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Scorpid Sting
           { spell = 212638, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Tracker's Net
           { spell = 212638, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Tracker's Net
           { spell = 202797, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Viper Sting
