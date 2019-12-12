@@ -114,6 +114,7 @@ local function modify(parent, region, parentData, data, first)
             region.model:ClearTransform();
             region.model:SetPosition(data.model_z, data.model_x, data.model_y);
           end
+          region:SetAlpha(data.bar_model_alpha)
         end)
     end
   end
