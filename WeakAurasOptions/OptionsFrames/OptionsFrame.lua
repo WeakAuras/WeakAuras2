@@ -48,11 +48,11 @@ local function CreateDecoration(frame)
   return deco
 end
 
-local function CreateDecorationWide(frame)
+local function CreateDecorationWide(frame, width)
   local deco1 = frame:CreateTexture(nil, "OVERLAY")
   deco1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
   deco1:SetTexCoord(0.31, 0.67, 0, 0.63)
-  deco1:SetSize(120, 40)
+  deco1:SetSize(width, 40)
 
   local deco2 = frame:CreateTexture(nil, "OVERLAY")
   deco2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
@@ -255,10 +255,16 @@ function WeakAuras.CreateFrame()
   end)
   importbutton:SetScript("OnLeave", GameTooltip_Hide)
 
-  local titlebg = CreateDecorationWide(frame)
-  titlebg:SetPoint("TOP", 0, 24)
-
   local title = CreateFrame("Frame", nil, frame)
+
+  local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+
+  titletext:SetText("WeakAuras " .. WeakAuras.versionString)
+
+  local titlebg = CreateDecorationWide(frame, max(120, titletext:GetWidth()))
+  titlebg:SetPoint("TOP", 0, 24)
+  titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
+
 
   local function commitWindowChanges()
     local xOffset = frame:GetRight() - GetScreenWidth()
@@ -292,10 +298,6 @@ function WeakAuras.CreateFrame()
   end)
   title:SetPoint("BOTTOMLEFT", titlebg, "BOTTOMLEFT", -25, 0)
   title:SetPoint("TOPRIGHT", titlebg, "TOPRIGHT", 25, 0)
-
-  local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
-  titletext:SetText("WeakAuras " .. WeakAuras.versionString)
 
   CreateFrameSizer(frame, commitWindowChanges, "BOTTOMLEFT")
   CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
