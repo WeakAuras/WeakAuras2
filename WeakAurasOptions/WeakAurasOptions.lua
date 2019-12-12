@@ -4029,7 +4029,7 @@ function WeakAuras.ConvertDisplay(data, newType)
   WeakAuras.AddOption(id, data);
   frame:FillOptions(displayOptions[id]);
   WeakAuras.UpdateDisplayButton(data);
-  frame.mover.moving.region = WeakAuras.regions[id].region;
+  WeakAuras.SetMoverSizer(id)
   WeakAuras.ResetMoverSizer();
 end
 
@@ -4539,6 +4539,21 @@ function WeakAuras.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end
+end
+
+function WeakAuras.SetMoverSizer(id)
+  if WeakAuras.regions[id].region.toShow then
+    frame.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id])
+  else
+    if WeakAuras.clones[id] then
+      local cloneId, clone = next(WeakAuras.clones[id])
+      frame.moversizer:SetToRegion(clone, db.displays[id])
+    end
+  end
+end
+
+function WeakAuras.GetMoverSizerId()
+  return frame.moversizer:GetCurrentId()
 end
 
 function WeakAuras.ShowCloneDialog(data)

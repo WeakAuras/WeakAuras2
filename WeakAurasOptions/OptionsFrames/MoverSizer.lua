@@ -459,7 +459,12 @@ local function ConstructMoverSizer(parent)
     end
   end
 
+  frame.GetCurrentId = function(self)
+    return self.currentId
+  end
+
   frame.SetToRegion = function(self, region, data)
+    frame.currentId = data.id
     local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
     mover.moving.region = region
     mover.moving.data = data

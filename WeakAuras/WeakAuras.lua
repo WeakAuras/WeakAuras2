@@ -2525,12 +2525,16 @@ function WeakAuras.Convert(data, newType)
   regions[id].region:Hide();
   WeakAuras.EndEvent(id, 0, true);
 
+  WeakAuras.FakeStatesFor(id, false)
+
   regions[id].region = nil;
   regions[id] = nil;
 
   data.regionType = newType;
   WeakAuras.Add(data);
   WeakAuras.ResetCollapsed(id)
+
+  WeakAuras.FakeStatesFor(id, true)
 
   local parentRegion = WeakAuras.GetRegion(data.parent)
   if parentRegion and parentRegion.ReloadControlledChildren then
@@ -4246,6 +4250,17 @@ local function pAdd(data)
   if (data.controlledChildren) then
     WeakAuras.SetRegion(data);
   else
+    local visible
+    if (WeakAuras.IsOptionsOpen()) then
+      visible = WeakAuras.FakeStatesFor(id, false)
+    else
+      if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
+        WeakAuras.regions[id].region:Collapse()
+      else
+        WeakAuras.CollapseAllClones(id)
+      end
+    end
+
     if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
       data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
     end
@@ -4295,6 +4310,8 @@ local function pAdd(data)
       timers[id] = nil;
     end
 
+    local region = WeakAuras.SetRegion(data);
+
     triggerState[id] = {
       disjunctive = data.triggers.disjunctive or "all",
       numTriggers = #data.triggers,
@@ -4305,23 +4322,16 @@ local function pAdd(data)
       activatedConditions = {},
     };
 
-    local region = WeakAuras.SetRegion(data);
-    if (WeakAuras.clones[id]) then
-      for cloneId, _ in pairs(WeakAuras.clones[id]) do
-        WeakAuras.SetRegion(data, cloneId);
-      end
-    end
-
     WeakAuras.LoadEncounterInitScripts(id);
 
-    WeakAuras.UpdateFakeStatesFor(id)
+    if (WeakAuras.IsOptionsOpen()) then
+      WeakAuras.FakeStatesFor(id, visible)
+    end
 
     if not(paused) then
-      region:Collapse();
       WeakAuras.ScanForLoads({[id] = true});
     end
   end
-
 end
 
 function WeakAuras.Add(data, takeSnapshot)
@@ -5661,11 +5671,14 @@ do
 
   function WeakAuras.FakeStatesFor(id, visible)
     if visibleFakeStates[id] == visible then
-      return
+      return visibleFakeStates[id]
     end
     if visible then
       visibleFakeStates[id] = true
       WeakAuras.UpdateFakeStatesFor(id)
+      if WeakAuras.GetMoverSizerId() == id then
+        WeakAuras.SetMoverSizer(id)
+      end
     else
       visibleFakeStates[id] = false
       if triggerState[id] then
@@ -5677,8 +5690,11 @@ do
           WeakAuras.UpdatedTriggerState(id)
         end
       end
-      RestoreAlpha(WeakAuras.regions[id].region)
+      if WeakAuras.regions[id] and WeakAuras.regions[id].region then
+        RestoreAlpha(WeakAuras.regions[id].region)
+      end
     end
+    return not visibleFakeStates[id]
   end
 
   function WeakAuras.UpdateFakeStatesFor(id)
@@ -5693,8 +5709,13 @@ do
           end
         end
         WeakAuras.UpdatedTriggerState(id)
+        if WeakAuras.GetMoverSizerId() == id then
+          WeakAuras.SetMoverSizer(id)
+        end
 
-        ApplyFakeAlpha(WeakAuras.regions[id].region)
+        if WeakAuras.regions[id] and WeakAuras.regions[id].region then
+          ApplyFakeAlpha(WeakAuras.regions[id].region)
+        end
       end
     end
   end
