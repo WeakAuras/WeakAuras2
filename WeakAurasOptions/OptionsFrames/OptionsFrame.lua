@@ -1000,9 +1000,9 @@ function WeakAuras.CreateFrame()
 
       WeakAuras.ReloadTriggerOptions(data)
       self:FillOptions(displayOptions[id], tab) -- TODO: remove tab parametter once legacy aura trigger is removed
-      WeakAuras.regions[id].region:Collapse()
-      WeakAuras.regions[id].region:Expand()
-      self.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id])
+
+      WeakAuras.SetMoverSizer(id)
+
       local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1)
       if not yOffset then
         yOffset = displayButtons[id].frame.yOffset
