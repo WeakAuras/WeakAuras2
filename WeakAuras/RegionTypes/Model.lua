@@ -99,27 +99,28 @@ local function create(parent)
 end
 
 local function CreateModel()
-  return CreateFrame("PlayerModel", nil, UIParent);
+  return CreateFrame("PlayerModel", nil, UIParent)
 end
 
 local pool = CreateObjectPool(CreateModel)
 
 local function AcquireModel(region, data)
   local model = pool:Acquire()
+
+  model:ClearAllPoints()
   model:SetAllPoints(region);
   model:SetParent(region)
-  model:SetCamera(1);
   model:SetKeepModelOnHide(true)
   model:Show()
 
   -- Adjust model
   WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
+  model:ClearTransform()
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
   else
-    model:ClearTransform();
     model:SetPosition(data.model_z, data.model_x, data.model_y);
     model:SetFacing(rad(region.rotation));
   end
