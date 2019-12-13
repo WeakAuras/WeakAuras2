@@ -514,41 +514,41 @@ if WeakAuras.IsClassic() then
           { spell = 546, type = "ability", buff = true, usable = true}, -- Water Walking
           { spell = 556, type = "ability"}, -- Astral Recall
           { spell = 1064, type = "ability"}, -- Chain Heal
-          { spell = 1535, type = "ability", totem = true}, -- Fire Nova Totem
+          { spell = 1535, type = "ability"}, -- Fire Nova Totem
           { spell = 2008, type = "ability"}, -- Ancestral Spirit
-          { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
+          { spell = 2484, type = "ability"}, -- Earthbind Totem
           { spell = 2645, type = "ability", buff = true}, -- Ghost Wolf
           { spell = 2825, type = "ability", buff = true}, -- Bloodlust
-          { spell = 3599, type = "ability", totem = true}, -- Searing Totem
-          { spell = 5394, type = "ability", totem = true}, -- Healing Stream Totem
-          { spell = 5675, type = "ability", totem = true}, -- Mana Spring Totem
-          { spell = 5730, type = "ability", totem = true}, -- Stoneclaw Totem
-          { spell = 6495, type = "ability", totem = true}, -- Sentry Totem
+          { spell = 3599, type = "ability"}, -- Searing Totem
+          { spell = 5394, type = "ability"}, -- Healing Stream Totem
+          { spell = 5675, type = "ability"}, -- Mana Spring Totem
+          { spell = 5730, type = "ability"}, -- Stoneclaw Totem
+          { spell = 6495, type = "ability"}, -- Sentry Totem
           { spell = 8142, type = "ability", requireTarget = true}, -- Earth Shock
           { spell = 8143, type = "ability", requireTarget = true, debuff = true}, -- Frost Shock
           { spell = 8017, type = "ability", weaponBuff = true}, -- Rockbiter Weapon -- !! weaponBuff is not supported yet
           { spell = 8024, type = "ability", weaponBuff = true}, -- Flametongue Weapon
           { spell = 8033, type = "ability", weaponBuff = true}, -- Frostbrand Weapon
           { spell = 8050, type = "ability", requireTarget = true, debuff = true}, -- Flame Shock
-          { spell = 8071, type = "ability", totem = true}, -- Stoneskin Totem
-          { spell = 8075, type = "ability", totem = true}, -- Strength of Earth Totem
-          { spell = 8143, type = "ability", totem = true}, -- Tremor Totem
-          { spell = 8166, type = "ability", totem = true}, -- Poison Cleansing Totem
-          { spell = 8170, type = "ability", totem = true}, -- Disease Cleansing Totem
-          { spell = 8177, type = "ability", totem = true}, -- Grounding Totem
-          { spell = 8181, type = "ability", totem = true}, -- Frost Resistance Totem
-          { spell = 8184, type = "ability", totem = true}, -- Fire Resistance Totem
-          { spell = 8190, type = "ability", totem = true}, -- Magma Totem
-          { spell = 8227, type = "ability", totem = true}, -- Flametongue Totem
-          { spell = 8514, type = "ability", totem = true}, -- Windfury Totem
-          { spell = 8835, type = "ability", totem = true}, -- Grace of Air Totem
-          { spell = 10595, type = "ability", totem = true}, -- Nature Resistance Totem
-          { spell = 15107, type = "ability", totem = true}, -- Windwall Totem
+          { spell = 8071, type = "ability"}, -- Stoneskin Totem
+          { spell = 8075, type = "ability"}, -- Strength of Earth Totem
+          { spell = 8143, type = "ability"}, -- Tremor Totem
+          { spell = 8166, type = "ability"}, -- Poison Cleansing Totem
+          { spell = 8170, type = "ability"}, -- Disease Cleansing Totem
+          { spell = 8177, type = "ability"}, -- Grounding Totem
+          { spell = 8181, type = "ability"}, -- Frost Resistance Totem
+          { spell = 8184, type = "ability"}, -- Fire Resistance Totem
+          { spell = 8190, type = "ability"}, -- Magma Totem
+          { spell = 8227, type = "ability"}, -- Flametongue Totem
+          { spell = 8514, type = "ability"}, -- Windfury Totem
+          { spell = 8835, type = "ability"}, -- Grace of Air Totem
+          { spell = 10595, type = "ability"}, -- Nature Resistance Totem
+          { spell = 15107, type = "ability"}, -- Windwall Totem
           { spell = 16188, type = "ability", buff = true, talent = 53}, -- Nature Swiftness
-          { spell = 16190, type = "ability", totem = true, talent = 55}, -- Mana Tide Totem
+          { spell = 16190, type = "ability", talent = 55}, -- Mana Tide Totem
           { spell = 17364, type = "ability", debuff = true, talent = 36}, -- Stormstrike
           { spell = 20608, type = "ability"}, -- Reincarnation
-          { spell = 25908, type = "ability", totem = true}, -- Tranquil Air Totem
+          { spell = 25908, type = "ability"}, -- Tranquil Air Totem
         },
         icon = 135963
       },
