@@ -6345,6 +6345,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.event_prototypes["Equipment Set"] = nil
   WeakAuras.event_prototypes["Range Check"] = nil
   WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
+  WeakAuras.event_prototypes["Totem"] = nil
 else
   WeakAuras.event_prototypes["Queued Action"] = nil
 end
