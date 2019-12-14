@@ -22,6 +22,7 @@ externals:
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
   WeakAuras/Libs/!LibTotemInfo: https://github.com/SwimmingTiger/LibTotemInfo
   WeakAuras/Libs/LibRangeCheck-2.0: https://repos.wowace.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
+  WeakAuras/Libs/LibClassicSpellActionCount-1.0: https://github.com/Ennea/LibClassicSpellActionCount-1.0
 
 enable-nolib-creation: no
 
