@@ -24,8 +24,14 @@ WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
 WeakAuras.maxTimerDuration = 604800; -- A week, in seconds
+WeakAuras.maxUpTime = 4294967; -- 2^32 / 1000
+
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < WeakAuras.maxTimerDuration) then
+    if delay + GetTime() > WeakAuras.maxUpTime then
+      WeakAuras.prettyPrint(WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft Bug with high computer uptime. (Uptime: %i). Please restart your Computer."]:format(delay, GetTime()))
+      return
+    end
     return self:ScheduleTimer(func, delay, ...);
   end
 end
