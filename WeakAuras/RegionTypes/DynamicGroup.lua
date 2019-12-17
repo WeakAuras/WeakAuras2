@@ -2,6 +2,7 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local WeakAuras = WeakAuras
 local SharedMedia = LibStub("LibSharedMedia-3.0")
+local LGF = LibStub("LibGetFrame-1.0")
 
 local default = {
   controlledChildren = {},
@@ -945,6 +946,12 @@ local function modify(parent, region, data)
     else
       self.needToPosition = true
     end
+  end
+
+  if data.useAnchorPerUnit and data.anchorPerUnit == "UNITFRAME" then
+    LGF.RegisterCallback("WeakAuras", "GETFRAME_REFRESH", function()
+      region:PositionChildren()
+    end)
   end
 
   function region:DoPositionChildrenPerFrame(frame, positions)
