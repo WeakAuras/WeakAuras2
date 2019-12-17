@@ -50,6 +50,9 @@ end
 local LibClassicCasterino
 if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
+  WeakAuras.GetTotemInfo = LibStub("LibTotemInfo-1.0").GetTotemInfo
+else
+  WeakAuras.GetTotemInfo = GetTotemInfo
 end
 
 if not WeakAuras.IsClassic() then
@@ -4234,7 +4237,7 @@ WeakAuras.event_prototypes = {
         end
 
         if (totemType) then -- Check a specific totem slot
-          local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
+          local _, totemName, startTime, duration, icon = WeakAuras.GetTotemInfo(totemType);
           active = (startTime and startTime ~= 0);
 
           if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
@@ -4269,7 +4272,7 @@ WeakAuras.event_prototypes = {
         elseif inverse then -- inverse without a specific slot
           local found = false;
           for i = 1, 5 do
-            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            local _, totemName, startTime, duration, icon = WeakAuras.GetTotemInfo(i);
             if ((startTime and startTime ~= 0) and
                 WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
             ) then
@@ -4288,7 +4291,7 @@ WeakAuras.event_prototypes = {
           end
         else -- check all slots
           for i = 1, 5 do
-            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            local _, totemName, startTime, duration, icon = WeakAuras.GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
 
             if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
@@ -6345,7 +6348,6 @@ if WeakAuras.IsClassic() then
   WeakAuras.event_prototypes["Equipment Set"] = nil
   WeakAuras.event_prototypes["Range Check"] = nil
   WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
-  WeakAuras.event_prototypes["Totem"] = nil
 else
   WeakAuras.event_prototypes["Queued Action"] = nil
 end
