@@ -112,6 +112,15 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       desc = L["A Unit ID (e.g., party1)."],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member") end
     },
+    warnSpecifcUnit = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = function()
+        return L["|cFFFF0000Note:|r The unit '%s' is not a trackable unit."]:format(trigger.specificUnit or "")
+      end,
+      order = 10.4,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member" and WeakAuras.UntrackableUnit(trigger.specificUnit)) end
+    },
     useDebuffType = {
       type = "toggle",
       width = WeakAuras.normalWidth,
