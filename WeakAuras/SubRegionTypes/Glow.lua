@@ -125,41 +125,49 @@ local properties = {
   },
 }
 
+local function glowStart(self, frame, color)
+
+  if frame:GetWidth() < 1 or frame:GetHeight() < 1 then
+    self.glowStop(frame)
+    return
+  end
+
+  if self.glowType == "buttonOverlay" then
+    self.glowStart(frame, color, self.glowFrequency, 0)
+  elseif self.glowType == "Pixel" then
+    self.glowStart(
+      frame,
+      color,
+      self.glowLines,
+      self.glowFrequency,
+      self.glowLength,
+      self.glowThickness,
+      self.glowXOffset,
+      self.glowYOffset,
+      self.glowBorder,
+      nil,
+      0
+    )
+  elseif self.glowType == "ACShine" then
+    self.glowStart(
+      frame,
+      color,
+      self.glowLines,
+      self.glowFrequency,
+      self.glowScale,
+      self.glowXOffset,
+      self.glowYOffset,
+      nil,
+      0
+    )
+  end
+end
+
 local funcs = {
   SetVisible = function(self, visible)
     local color
-    local function glowStart(frame, shape)
-      if self.glowType == "buttonOverlay" then
-        self.glowStart(frame, color, self.glowFrequency, 0, shape)
-      elseif self.glowType == "Pixel" then
-        self.glowStart(
-          frame,
-          color,
-          self.glowLines,
-          self.glowFrequency,
-          self.glowLength,
-          self.glowThickness,
-          self.glowXOffset,
-          self.glowYOffset,
-          self.glowBorder,
-          nil,
-          0
-        )
-      elseif self.glowType == "ACShine" then
-        self.glowStart(
-          frame,
-          color,
-          self.glowLines,
-          self.glowFrequency,
-          self.glowScale,
-          self.glowXOffset,
-          self.glowYOffset,
-          nil,
-          0
-        )
-      end
-    end
     self.glow = visible
+
     if self.useGlowColor then
       color = self.glowColor
     end
@@ -167,16 +175,15 @@ local funcs = {
     if MSQ and self.parentType == "icon" then
       if (visible) then
         self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
-        glowStart(self);
+        glowStart(self, self, color);
       else
         self.glowStop(self);
       end
     elseif (visible) then
-      glowStart(self);
+      glowStart(self, self, color);
     else
       self.glowStop(self);
     end
-
     if visible then
       self:Show()
     else
@@ -266,8 +273,10 @@ local funcs = {
       self:SetVisible(true)
     end
   end,
-  UpdateSize = function(self)
-    self:SetVisible(true)
+  UpdateSize = function(self, ...)
+    if self.glow then
+      self:SetVisible(true)
+    end
   end
 }
 
@@ -308,7 +317,7 @@ local function modify(parent, region, parentData, data, first)
   region:SetGlowType(data.glowType)
   region:SetVisible(data.glow)
 
-  parent.subRegionEvents:AddSubscriber("UpdateSize", region)
+  region:SetScript("OnSizeChanged", region.UpdateSize)
 end
 
 function WeakAuras.getDefaultGlow(regionType)
