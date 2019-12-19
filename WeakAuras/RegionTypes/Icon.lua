@@ -290,8 +290,6 @@ local function modify(parent, region, data)
       button:SetAllPoints();
     end
     region:UpdateTexCoords();
-
-    region.subRegionEvents:Notify("UpdateSize")
   end
 
   function region:UpdateTexCoords()
