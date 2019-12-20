@@ -6317,7 +6317,7 @@ WeakAuras.event_prototypes = {
         name = "note",
         type = "description",
         display = "",
-        text = L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate."],
+        text = function() return L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "") end
       },
       {
         name = "unit",
@@ -6357,12 +6357,6 @@ WeakAuras.event_prototypes = {
         conditionTest = function(state, needle, needle2)
           return state and state.show and WeakAuras.CheckRange(state.unit, needle, needle2);
         end,
-      },
-      {
-        name = "rangeList",
-        type = "description",
-        display = "",
-        text = function() return L["Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "") end
       },
       {
         hidden = true,
