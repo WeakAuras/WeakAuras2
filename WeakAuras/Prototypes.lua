@@ -53,15 +53,15 @@ local function RangeCacheUpdate()
   for range in LibRangeCheck:GetFriendCheckers() do
     tinsert(friend, range)
   end
-  tsort(friend, RangeTableSort)
+  tsort(friend)
   for range in LibRangeCheck:GetHarmCheckers() do
     tinsert(harm, range)
   end
-  tsort(harm, RangeTableSort)
+  tsort(harm)
   for range in LibRangeCheck:GetMiscCheckers() do
     tinsert(misc, range)
   end
-  tsort(misc, RangeTableSort)
+  tsort(misc)
 
   for _, key in pairs(friend) do
     friendString = (friendString and (friendString .. ", ") or "") .. key
