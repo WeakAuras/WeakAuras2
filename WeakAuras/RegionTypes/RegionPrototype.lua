@@ -183,6 +183,22 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     softMax = screenHeight,
     bigStep = 1
   }
+  properties["xOffsetRelative"] = {
+    display = WeakAuras.newFeatureString .. L["Relative X-Offset"],
+    setter = "SetXOffsetRelative",
+    type = "number",
+    softMin = -screenWidth,
+    softMax = screenWidth,
+    bigStep = 1
+  }
+  properties["yOffsetRelative"] = {
+    display = WeakAuras.newFeatureString .. L["Relative Y-Offset"],
+    setter = "SetYOffsetRelative",
+    type = "number",
+    softMin = -screenHeight,
+    softMax = screenHeight,
+    bigStep = 1
+  }
 
   if (defaultsForRegion and defaultsForRegion.alpha) then
     properties["alpha"] = {
@@ -289,8 +305,8 @@ local function UpdatePosition(self)
     return;
   end
 
-  local xOffset = self.xOffset + (self.xOffsetAnim or 0);
-  local yOffset = self.yOffset + (self.yOffsetAnim or 0);
+  local xOffset = self.xOffset + (self.xOffsetAnim or 0) + (self.xOffsetRelative or 0)
+  local yOffset = self.yOffset + (self.yOffsetAnim or 0) + (self.yOffsetRelative or 0)
   self:RealClearAllPoints();
 
   xpcall(self.SetPoint, geterrorhandler(), self, self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset);
@@ -337,6 +353,31 @@ end
 
 local function GetYOffset(self)
   return self.yOffset;
+end
+
+local function SetOffsetRelative(self, xOffsetRelative, yOffsetRelative)
+  if (self.xOffsetRelative == xOffsetRelative and self.yOffsetRelative == yOffsetRelative) then
+    return
+  end
+  self.xOffsetRelative = xOffsetRelative
+  self.yOffsetRelative = yOffsetRelative
+  UpdatePosition(self)
+end
+
+local function SetXOffsetRelative(self, xOffsetRelative)
+  self:SetOffsetRelative(xOffsetRelative, self:GetYOffsetRelative())
+end
+
+local function SetYOffsetRelative(self, yOffsetRelative)
+  self:SetOffsetRelative(self:GetXOffsetRelative(), yOffsetRelative)
+end
+
+local function GetXOffsetRelative(self)
+  return self.xOffsetRelative
+end
+
+local function GetYOffsetRelative(self)
+  return self.yOffsetRelative
 end
 
 local function SetOffsetAnim(self, xOffset, yOffset)
@@ -416,9 +457,14 @@ function WeakAuras.regionPrototype.create(region)
   region.SetOffset = SetOffset;
   region.SetXOffset = SetXOffset;
   region.SetYOffset = SetYOffset;
-  region.SetOffsetAnim = SetOffsetAnim;
   region.GetXOffset = GetXOffset;
   region.GetYOffset = GetYOffset;
+  region.SetOffsetRelative = SetOffsetRelative
+  region.SetXOffsetRelative = SetXOffsetRelative
+  region.SetYOffsetRelative = SetYOffsetRelative
+  region.GetXOffsetRelative = GetXOffsetRelative
+  region.GetYOffsetRelative = GetYOffsetRelative
+  region.SetOffsetAnim = SetOffsetAnim;
   region.ResetPosition = ResetPosition;
   region.RealClearAllPoints = region.ClearAllPoints;
   region.ClearAllPoints = function()
