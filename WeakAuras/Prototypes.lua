@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 -- Lua APIs
-local tinsert = table.insert
+local tinsert, twipe, tsort = table.insert, table.wipe, table.sort
 local tostring = tostring
 local select, pairs, type = select, pairs, type
 local ceil, min = ceil, min
@@ -44,6 +44,54 @@ function WeakAuras.CheckRange(unit, range, operator)
     return (min or 0) >= range;
   end
 end
+
+local RangeCacheRawData = {friend = {}, harm = {}, misc = {}}
+local RangeCacheStrings = {friend = "", harm = "", misc = ""}
+local RangeTableSort = function(a, b) return a < b end
+local function RangeCacheUpdate()
+  local friend, harm, misc = RangeCacheRawData.friend, RangeCacheRawData.harm, RangeCacheRawData.misc
+  local lastvalue, friendString, harmString, miscString
+
+  twipe(friend)
+  for range in LibRangeCheck:GetFriendCheckers() do
+    tinsert(friend, range)
+  end
+  tsort(friend, RangeTableSort)
+  twipe(harm)
+  for range in LibRangeCheck:GetHarmCheckers() do
+    tinsert(harm, range)
+  end
+  tsort(harm, RangeTableSort)
+  twipe(misc)
+  for range in LibRangeCheck:GetMiscCheckers() do
+    tinsert(misc, range)
+  end
+  tsort(misc, RangeTableSort)
+
+  for _, key in pairs(friend) do
+    if lastvalue then
+      friendString = (friendString and (friendString .. ", ") or "") .. (lastvalue .. "-" .. key)
+    end
+    lastvalue = key
+  end
+  lastvalue = nil
+  for _, key in pairs(harm) do
+    if lastvalue then
+      harmString = (harmString and (harmString .. ", ") or "") .. (lastvalue .. "-" .. key)
+    end
+    lastvalue = key
+  end
+  lastvalue = nil
+  for _, key in pairs(misc) do
+    if lastvalue then
+      miscString = (miscString and (miscString .. ", ") or "") .. (lastvalue .. "-" .. key)
+    end
+    lastvalue = key
+  end
+  RangeCacheStrings.friend, RangeCacheStrings.harm, RangeCacheStrings.misc = friendString, harmString, miscString
+end
+
+LibRangeCheck:RegisterCallback(LibRangeCheck.CHECKERS_CHANGED, RangeCacheUpdate)
 
 local LibClassicCasterino
 if WeakAuras.IsClassic() then
@@ -6325,6 +6373,12 @@ WeakAuras.event_prototypes = {
         conditionTest = function(state, needle, needle2)
           return state and state.show and WeakAuras.CheckRange(state.unit, needle, needle2);
         end,
+      },
+      {
+        name = "rangeList",
+        type = "description",
+        display = "|cFFFFA500It is only possible to check if a unit is within the following ranges:",
+        text = function() return L["|cFFAAFFAAFriendly Units:|r|n%s|n|cFFFFAAAAHarmful Units:|r|n%s|n|cFFAAAAFFMiscellanous Units:|r|n%s|n|nThis list is based on your current character."]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "") end
       },
       {
         hidden = true,
