@@ -1,4 +1,4 @@
-local internalVersion = 25;
+local internalVersion = 26;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3681,7 +3681,9 @@ function WeakAuras.Modernize(data)
         end
       end
     end
+  end
 
+  if data.internalVersion < 26 then
     if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
         for changeIndex, change in ipairs(condition.changes) do
