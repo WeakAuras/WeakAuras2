@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 -- Lua APIs
-local tinsert, twipe, tsort = table.insert, table.wipe, table.sort
+local tinsert, tsort = table.insert, table.sort
 local tostring = tostring
 local select, pairs, type = select, pairs, type
 local ceil, min = ceil, min
@@ -45,48 +45,32 @@ function WeakAuras.CheckRange(unit, range, operator)
   end
 end
 
-local RangeCacheRawData = {friend = {}, harm = {}, misc = {}}
 local RangeCacheStrings = {friend = "", harm = "", misc = ""}
-local RangeTableSort = function(a, b) return a < b end
 local function RangeCacheUpdate()
-  local friend, harm, misc = RangeCacheRawData.friend, RangeCacheRawData.harm, RangeCacheRawData.misc
-  local lastvalue, friendString, harmString, miscString
+  local friend, harm, misc = {}, {}, {}
+  local friendString, harmString, miscString
 
-  twipe(friend)
   for range in LibRangeCheck:GetFriendCheckers() do
     tinsert(friend, range)
   end
   tsort(friend, RangeTableSort)
-  twipe(harm)
   for range in LibRangeCheck:GetHarmCheckers() do
     tinsert(harm, range)
   end
   tsort(harm, RangeTableSort)
-  twipe(misc)
   for range in LibRangeCheck:GetMiscCheckers() do
     tinsert(misc, range)
   end
   tsort(misc, RangeTableSort)
 
   for _, key in pairs(friend) do
-    if lastvalue then
-      friendString = (friendString and (friendString .. ", ") or "") .. (lastvalue .. "-" .. key)
-    end
-    lastvalue = key
+    friendString = (friendString and (friendString .. ", ") or "") .. key
   end
-  lastvalue = nil
   for _, key in pairs(harm) do
-    if lastvalue then
-      harmString = (harmString and (harmString .. ", ") or "") .. (lastvalue .. "-" .. key)
-    end
-    lastvalue = key
+    harmString = (harmString and (harmString .. ", ") or "") .. key
   end
-  lastvalue = nil
   for _, key in pairs(misc) do
-    if lastvalue then
-      miscString = (miscString and (miscString .. ", ") or "") .. (lastvalue .. "-" .. key)
-    end
-    lastvalue = key
+      miscString = (miscString and (miscString .. ", ") or "") .. key
   end
   RangeCacheStrings.friend, RangeCacheStrings.harm, RangeCacheStrings.misc = friendString, harmString, miscString
 end
@@ -6377,8 +6361,8 @@ WeakAuras.event_prototypes = {
       {
         name = "rangeList",
         type = "description",
-        display = "|cFFFFA500It is only possible to check if a unit is within the following ranges:",
-        text = function() return L["|cFFAAFFAAFriendly Units:|r|n%s|n|cFFFFAAAAHarmful Units:|r|n%s|n|cFFAAAAFFMiscellanous Units:|r|n%s|n|nThis list is based on your current character."]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "") end
+        display = "",
+        text = function() return L["Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "") end
       },
       {
         hidden = true,
