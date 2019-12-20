@@ -6341,7 +6341,7 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "unit",
-        values = "actual_unit_types_with_specific",
+        values = "unit_types_range_check",
         test = "true",
         store = true
       },
