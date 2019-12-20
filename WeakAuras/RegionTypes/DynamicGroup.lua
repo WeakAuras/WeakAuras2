@@ -949,9 +949,11 @@ local function modify(parent, region, data)
   end
 
   if data.useAnchorPerUnit and data.anchorPerUnit == "UNITFRAME" then
-    LGF.RegisterCallback("WeakAuras", "GETFRAME_REFRESH", function()
+    LGF.RegisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH", function()
       region:PositionChildren()
     end)
+  else
+    LGF.UnregisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH")
   end
 
   function region:DoPositionChildrenPerFrame(frame, positions)
