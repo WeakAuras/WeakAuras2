@@ -3681,6 +3681,17 @@ function WeakAuras.Modernize(data)
         end
       end
     end
+
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "xOffset" or change.property == "yOffset" then
+            change.value = (change.value or 0) - (data[change.property] or 0)
+            change.property = change.property .. "Relative"
+          end
+        end
+      end
+    end
   end
 
   for _, triggerSystem in pairs(triggerSystems) do

@@ -167,24 +167,8 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     action = "RunCode",
     type = "customcode"
   }
-  properties["xOffset"] = {
-    display = L["Absolute X-Offset"],
-    setter = "SetXOffset",
-    type = "number",
-    softMin = -screenWidth,
-    softMax = screenWidth,
-    bigStep = 1
-  }
-  properties["yOffset"] = {
-    display = L["Absolute Y-Offset"],
-    setter = "SetYOffset",
-    type = "number",
-    softMin = -screenHeight,
-    softMax = screenHeight,
-    bigStep = 1
-  }
   properties["xOffsetRelative"] = {
-    display = WeakAuras.newFeatureString .. L["Relative X-Offset"],
+    display = L["Relative X-Offset"],
     setter = "SetXOffsetRelative",
     type = "number",
     softMin = -screenWidth,
@@ -192,7 +176,7 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     bigStep = 1
   }
   properties["yOffsetRelative"] = {
-    display = WeakAuras.newFeatureString .. L["Relative Y-Offset"],
+    display = L["Relative Y-Offset"],
     setter = "SetYOffsetRelative",
     type = "number",
     softMin = -screenHeight,
