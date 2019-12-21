@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 -- Lua APIs
-local tinsert = table.insert
+local tinsert, tsort = table.insert, table.sort
 local tostring = tostring
 local select, pairs, type = select, pairs, type
 local ceil, min = ceil, min
@@ -24,28 +24,58 @@ function WeakAuras.IsSpellInRange(spellId, unit)
   return SpellRange.IsSpellInRange(spellId, unit)
 end
 
-if not WeakAuras.IsClassic() then
-  local LibRangeCheck = LibStub("LibRangeCheck-2.0")
+local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
-  function WeakAuras.GetRange(unit, checkVisible)
-    return LibRangeCheck:GetRange(unit, checkVisible);
+function WeakAuras.GetRange(unit, checkVisible)
+  return LibRangeCheck:GetRange(unit, checkVisible);
+end
+
+function WeakAuras.CheckRange(unit, range, operator)
+  local min, max = LibRangeCheck:GetRange(unit, true);
+  if (type(range) ~= "number") then
+    range = tonumber(range);
   end
-
-  function WeakAuras.CheckRange(unit, range, operator)
-    local min, max = LibRangeCheck:GetRange(unit, true);
-    if (type(range) ~= "number") then
-      range = tonumber(range);
-    end
-    if (not range) then
-      return
-    end
-    if (operator == "<=") then
-      return (max or 999) <= range;
-    else
-      return (min or 0) >= range;
-    end
+  if (not range) then
+    return
+  end
+  if (operator == "<=") then
+    return (max or 999) <= range;
+  else
+    return (min or 0) >= range;
   end
 end
+
+local RangeCacheStrings = {friend = "", harm = "", misc = ""}
+local function RangeCacheUpdate()
+  local friend, harm, misc = {}, {}, {}
+  local friendString, harmString, miscString
+
+  for range in LibRangeCheck:GetFriendCheckers() do
+    tinsert(friend, range)
+  end
+  tsort(friend)
+  for range in LibRangeCheck:GetHarmCheckers() do
+    tinsert(harm, range)
+  end
+  tsort(harm)
+  for range in LibRangeCheck:GetMiscCheckers() do
+    tinsert(misc, range)
+  end
+  tsort(misc)
+
+  for _, key in pairs(friend) do
+    friendString = (friendString and (friendString .. ", ") or "") .. key
+  end
+  for _, key in pairs(harm) do
+    harmString = (harmString and (harmString .. ", ") or "") .. key
+  end
+  for _, key in pairs(misc) do
+      miscString = (miscString and (miscString .. ", ") or "") .. key
+  end
+  RangeCacheStrings.friend, RangeCacheStrings.harm, RangeCacheStrings.misc = friendString, harmString, miscString
+end
+
+LibRangeCheck:RegisterCallback(LibRangeCheck.CHECKERS_CHANGED, RangeCacheUpdate)
 
 local LibClassicCasterino
 if WeakAuras.IsClassic() then
@@ -6287,7 +6317,7 @@ WeakAuras.event_prototypes = {
         name = "note",
         type = "description",
         display = "",
-        text = L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate."],
+        text = function() return L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "") end
       },
       {
         name = "unit",
@@ -6295,7 +6325,7 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "unit",
-        values = "actual_unit_types_with_specific",
+        values = "unit_types_range_check",
         test = "true",
         store = true
       },
@@ -6343,7 +6373,6 @@ if WeakAuras.IsClassic() then
   WeakAuras.event_prototypes["Death Knight Rune"] = nil
   WeakAuras.event_prototypes["Alternate Power"] = nil
   WeakAuras.event_prototypes["Equipment Set"] = nil
-  WeakAuras.event_prototypes["Range Check"] = nil
   WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
   WeakAuras.event_prototypes["Totem"] = nil
 else
