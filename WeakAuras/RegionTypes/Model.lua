@@ -88,13 +88,6 @@ local function create(parent)
   local border = CreateFrame("frame", nil, region);
   region.border = border;
 
-  -- Model display
-  local model = CreateFrame("PlayerModel", nil, region);
-  model:SetAllPoints(region);
-  model:SetCamera(1);
-
-  region.model = model;
-
   WeakAuras.regionPrototype.create(region);
 
   for k, v in pairs (regionFunctions) do
@@ -105,29 +98,31 @@ local function create(parent)
   return region;
 end
 
--- Modify a given region/display
-local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
-  -- Localize
-  local model, border = region.model, region.border;
+local function CreateModel()
+  return CreateFrame("PlayerModel", nil, UIParent)
+end
 
-  -- Reset position and size
-  region:SetWidth(data.width);
-  region:SetHeight(data.height);
-  region.width = data.width;
-  region.height = data.height;
-  region.scalex = 1;
-  region.scaley = 1;
+local pool = CreateObjectPool(CreateModel)
+
+local function AcquireModel(region, data)
+  local model = pool:Acquire()
+
+  model:ClearAllPoints()
+  model:SetAllPoints(region);
+  model:SetParent(region)
+  model:SetKeepModelOnHide(true)
+  model:Show()
 
   -- Adjust model
   WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
+  model:ClearTransform()
   if (data.api) then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz), data.model_st_us / 1000);
+      rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
   else
-    model:ClearTransform();
     model:SetPosition(data.model_z, data.model_x, data.model_y);
+    model:SetFacing(rad(region.rotation));
   end
 
   if data.modelIsUnit then
@@ -152,6 +147,50 @@ local function modify(parent, region, data)
     model:SetScript("OnEvent", nil);
   end
 
+  -- Enable model animation
+  if(data.advance) then
+    local elapsed = 0;
+    model:SetScript("OnUpdate", function(self, elaps)
+      WeakAuras.StartProfileSystem("model");
+      elapsed = elapsed + (elaps * 1000);
+      model:SetSequenceTime(data.sequence, elapsed);
+      WeakAuras.StopProfileSystem("model");
+    end)
+  else
+    model:SetScript("OnUpdate", nil)
+  end
+  return model
+end
+
+local function ReleaseModel(model)
+  model:SetKeepModelOnHide(false)
+  model:Hide()
+  model:UnregisterEvent("UNIT_MODEL_CHANGED");
+  model:UnregisterEvent("PLAYER_TARGET_CHANGED");
+  model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+  model:SetScript("OnEvent", nil);
+  pool:Release(model)
+end
+
+-- Modify a given region/display
+local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
+  -- Localize
+  local border = region.border;
+
+  if region.model then
+    ReleaseModel(region.model)
+    region.model = AcquireModel(region, data)
+  end
+
+  -- Reset position and size
+  region:SetWidth(data.width);
+  region:SetHeight(data.height);
+  region.width = data.width;
+  region.height = data.height;
+  region.scalex = 1;
+  region.scaley = 1;
+
   -- Update border
   if data.border then
     border:SetBackdrop({
@@ -175,20 +214,6 @@ local function modify(parent, region, data)
   else
     border:Hide();
   end
-
-  -- Enable model animation
-  if(data.advance) then
-    local elapsed = 0;
-    model:SetScript("OnUpdate", function(self, elaps)
-      WeakAuras.StartProfileSystem("model");
-      elapsed = elapsed + (elaps * 1000);
-      model:SetSequenceTime(data.sequence, elapsed);
-      WeakAuras.StopProfileSystem("model");
-    end)
-  else
-    model:SetScript("OnUpdate", nil)
-  end
-
   -- Rescale model display
   function region:Scale(scalex, scaley)
     if(scalex < 0) then
@@ -220,14 +245,16 @@ local function modify(parent, region, data)
   -- Roate model
   function region:Rotate(degrees)
     region.rotation = degrees;
-    if (data.api) then
-      model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-        rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees),
-        data.model_st_us / 1000);
-    else
-      model:SetFacing(rad(region.rotation));
+    if region.model then
+      if (data.api) then
+        region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+          rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000);
+      else
+        region.model:SetFacing(rad(region.rotation));
+      end
     end
   end
+
   if (data.api) then
     region:Rotate(data.model_st_rz);
   else
@@ -240,25 +267,16 @@ local function modify(parent, region, data)
   end
 
   function region:PreShow()
-    model:SetKeepModelOnHide(true)
-    model:ClearTransform();
-
-    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
-    model:SetPortraitZoom(data.portraitZoom and 1 or 0);
-    if (data.api) then
-      model:ClearTransform();
-      model:SetPosition(0, 0, 0);
-      model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-        rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-        data.model_st_us / 1000);
-    else
-      model:ClearTransform();
-      model:SetPosition(data.model_z, data.model_x, data.model_y);
+    if not region.model then
+      region.model = AcquireModel(self, data)
     end
   end
 
   function region:PreHide()
-    model:SetKeepModelOnHide(false)
+    if region.model then
+      ReleaseModel(region.model)
+      region.model = nil
+    end
   end
 
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);

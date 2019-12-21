@@ -1105,9 +1105,6 @@ local function modify(parent, region, data)
     self.bar.iconWidth = iconsize * scaley
     self:SetHeight(self.bar.totalHeight);
     icon:SetHeight(self.bar.iconWidth);
-
-    self.subRegionEvents:Notify("UpdateSize")
-
   end
   --  region:Scale(1.0, 1.0);
   if data.smoothProgress then

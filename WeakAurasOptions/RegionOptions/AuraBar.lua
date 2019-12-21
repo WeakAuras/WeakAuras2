@@ -62,7 +62,7 @@ local function createOptions(id, data)
 
         data.orientation = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.ResetMoverSizer();
       end
@@ -150,7 +150,7 @@ local function createOptions(id, data)
       set = function(info, v)
         data.displayIcon = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
       end
     },
@@ -184,7 +184,7 @@ local function createOptions(id, data)
       set = function(info, v)
         data.icon_side = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
       end
     },
@@ -417,9 +417,9 @@ local function createOptions(id, data)
 end
 
 -- Create preview thumbnail
-local function createThumbnail(parent)
+local function createThumbnail()
   -- Preview frame
-  local borderframe = CreateFrame("FRAME", nil, parent);
+  local borderframe = CreateFrame("FRAME", nil, UIParent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
 
@@ -456,6 +456,8 @@ end
 local function modifyThumbnail(parent, borderframe, data, fullModify, width, height)
   -- Localize
   local region, bar, texture, icon = borderframe.region, borderframe.bar, borderframe.texture, borderframe.icon;
+
+  borderframe:SetParent(parent)
 
   -- Defaut size
   width  = width or 26;
@@ -565,6 +567,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
         icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
       end
     end
+
     icon:Show();
   else
     icon:Hide();

@@ -24,8 +24,14 @@ WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
 WeakAuras.maxTimerDuration = 604800; -- A week, in seconds
+WeakAuras.maxUpTime = 4294967; -- 2^32 / 1000
+
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < WeakAuras.maxTimerDuration) then
+    if delay + GetTime() > WeakAuras.maxUpTime then
+      WeakAuras.prettyPrint(WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft Bug with high computer uptime. (Uptime: %i). Please restart your Computer."]:format(delay, GetTime()))
+      return
+    end
     return self:ScheduleTimer(func, delay, ...);
   end
 end
@@ -457,12 +463,34 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   elseif(regionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
+    if (type(icon) == "function") then
+      -- We only want to create one icon and reparent it as needed
+      icon = icon()
+      icon:Hide()
+    end
+
+    local acquireThumbnail, releaseThumbnail
+    if createThumbnail and modifyThumbnail then
+      local thumbnailPool = CreateObjectPool(createThumbnail)
+      acquireThumbnail = function(parent, data)
+        local thumbnail, newObject = thumbnailPool:Acquire()
+        thumbnail:Show()
+        modifyThumbnail(parent, thumbnail, data)
+        return thumbnail
+      end
+      releaseThumbnail = function(thumbnail)
+        thumbnail:Hide()
+        thumbnailPool:Release(thumbnail)
+      end
+    end
     regionOptions[name] = {
       create = createFunction,
       icon = icon,
       displayName = displayName,
       createThumbnail = createThumbnail,
       modifyThumbnail = modifyThumbnail,
+      acquireThumbnail = acquireThumbnail,
+      releaseThumbnail = releaseThumbnail,
       description = description,
       templates = templates,
       getAnchors = getAnchors
@@ -2301,16 +2329,23 @@ function WeakAuras.Delete(data)
     end
   end
 
-  animations[tostring(regions[id].region)] = nil
 
   regions[id].region:Collapse()
+  WeakAuras.CollapseAllClones(id);
+
+  WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+
+  if clones[id] then
+    for cloneId, region in pairs(clones[id]) do
+      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+    end
+  end
 
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:SetScript("OnShow", nil);
   regions[id].region:SetScript("OnHide", nil);
   regions[id].region:Hide();
 
-  WeakAuras.CollapseAllClones(id);
   db.registered[id] = nil;
   if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
     local button = WeakAuras.importDisplayButtons[id];
@@ -4347,7 +4382,7 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       end
       local loginFinished = WeakAuras.IsLoginFinished();
-      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true);
+      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);
@@ -6812,4 +6847,33 @@ function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
       end
     end
   end
+end
+
+local trackableUnits = {}
+trackableUnits["player"] = true
+trackableUnits["target"] = true
+trackableUnits["focus"] = true
+trackableUnits["pet"] = true
+trackableUnits["vehicle"] = true
+
+for i = 1, 5 do
+  trackableUnits["arena" .. i] = true
+  trackableUnits["arenapet" .. i] = true
+end
+
+for i = 1, 4 do
+  trackableUnits["boss" .. i] = true
+  trackableUnits["party" .. i] = true
+  trackableUnits["partypet" .. i] = true
+end
+
+for i = 1, 40 do
+  trackableUnits["raid" .. i] = true
+  trackableUnits["raidpet" .. i] = true
+  trackableUnits["nameplate" .. i] = true
+end
+
+
+function WeakAuras.UntrackableUnit(unit)
+  return not trackableUnits[unit]
 end

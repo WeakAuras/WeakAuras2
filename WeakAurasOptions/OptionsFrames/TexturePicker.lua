@@ -108,7 +108,7 @@ local function ConstructTexturePicker(frame)
     if(type(self.data.id) == "string") then
       WeakAuras.Add(self.data);
       WeakAuras.SetIconNames(self.data);
-      WeakAuras.SetThumbnail(self.data);
+      WeakAuras.UpdateThumbnail(self.data);
     end
     group:UpdateList();
     local status = dropdown.status or dropdown.localstatus
@@ -198,7 +198,7 @@ local function ConstructTexturePicker(frame)
         if(childData) then
           childData[group.field] = group.givenPath[childId];
           WeakAuras.Add(childData);
-          WeakAuras.SetThumbnail(childData);
+          WeakAuras.UpdateThumbnail(childData);
           WeakAuras.SetIconNames(childData);
         end
       end

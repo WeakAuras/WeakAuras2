@@ -362,7 +362,7 @@ local function importPendingData()
   ItemRefTooltip:Hide()-- this also wipes pendingData via the hook on L521
   buttonAnchor:Hide()
   if thumbnailAnchor.currentThumbnail then
-    thumbnailAnchor.currentThumbnail:Hide()
+    regionOptions[thumbnailAnchor.currentThumbnailType].releaseThumbnail(thumbnailAnchor.currentThumbnail)
     thumbnailAnchor.currentThumbnail = nil
   end
   if imports and WeakAuras.LoadOptions() then
@@ -1670,16 +1670,16 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
     LoadAddOn('WeakAurasOptions')
   end
   if thumbnailAnchor.currentThumbnail then
-    thumbnailAnchor.currentThumbnail:Hide()
+    regionOptions[thumbnailAnchor.currentThumbnailType].releaseThumbnail(thumbnailAnchor.currentThumbnail)
     thumbnailAnchor.currentThumbnail = nil
   end
   if regionOptions[regionType] then
-    local ok,thumbnail = pcall(regionOptions[regionType].createThumbnail, thumbnailAnchor);
+    local ok, thumbnail = pcall(regionOptions[regionType].acquireThumbnail, thumbnailAnchor, data);
     if not ok then
       error("Error creating thumbnail", 2)
     end
-    pcall(regionOptions[regionType].modifyThumbnail, thumbnailAnchor, thumbnail, data)
     thumbnailAnchor.currentThumbnail = thumbnail
+    thumbnailAnchor.currentThumbnailType = regionType
     thumbnail:SetAllPoints(thumbnailAnchor);
     if (thumbnail.SetIcon) then
       local i;

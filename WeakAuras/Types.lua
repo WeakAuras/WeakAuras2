@@ -180,6 +180,13 @@ WeakAuras.threat_unit_types = {
   none = L["At Least One Enemy"]
 }
 
+WeakAuras.unit_types_range_check = {
+  target = L["Target"],
+  focus = L["Focus"],
+  pet = L["Pet"],
+  member = L["Specific Unit"]
+}
+
 WeakAuras.unit_threat_situation_types = {
   [-1] = L["Not On Threat Table"],
   [0] = "|cFFB0B0B0"..L["Lower Than Tank"],
@@ -2205,6 +2212,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.actual_unit_types_with_specific.focus = nil
   WeakAuras.actual_unit_types_cast.focus = nil
   WeakAuras.actual_unit_types.focus = nil
+  WeakAuras.unit_types_range_check.focus = nil
   WeakAuras.item_slot_types[0] = AMMOSLOT
   WeakAuras.item_slot_types[16] = MAINHANDSLOT
   WeakAuras.item_slot_types[17] = SECONDARYHANDSLOT

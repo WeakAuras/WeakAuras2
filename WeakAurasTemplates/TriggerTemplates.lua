@@ -424,7 +424,7 @@ local function subTypesFor(item, regionType)
   local types = {};
   local icon = {
     target = function()
-      local thumbnail = createThumbnail(UIParent);
+      local thumbnail = createThumbnail();
       local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
       t1:SetTexture(134376);
       t1:SetAllPoints(thumbnail);
@@ -445,7 +445,7 @@ local function subTypesFor(item, regionType)
       return thumbnail;
     end, -- 132212,
     glow = function()
-      local thumbnail = createThumbnail(UIParent);
+      local thumbnail = createThumbnail();
       local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
       t1:SetTexture(134376);
       t1:SetAllPoints(thumbnail);
@@ -453,7 +453,7 @@ local function subTypesFor(item, regionType)
       return thumbnail;
     end, -- 571554
     charges = function()
-      local thumbnail = createThumbnail(UIParent);
+      local thumbnail = createThumbnail();
       local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
       t1:SetTexture(134376);
       t1:SetAllPoints(thumbnail);
@@ -1190,10 +1190,8 @@ function WeakAuras.CreateTemplateView(frame)
   local function createRegionButton(regionType, regionData, selectedItem)
     local button = AceGUI:Create("WeakAurasNewButton");
     button:SetTitle(regionData.displayName);
-    if(type(regionData.icon) == "string") then
+    if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
       button:SetIcon(regionData.icon);
-    elseif(type(regionData.icon) == "function") then
-      button:SetIcon(regionData.icon());
     end
     button:SetDescription(regionData.description);
     button:SetFullWidth(true);
@@ -1215,9 +1213,7 @@ function WeakAuras.CreateTemplateView(frame)
       if (item.icon) then
         templateButton:SetIcon(item.icon);
       else
-        local thumbnail = regionData.createThumbnail(templateButton.frame, regionData.create);
-        regionData.modifyThumbnail(templateButton.frame, thumbnail, item.data, true, regionData.modify)
-        templateButton:SetIcon(thumbnail);
+        templateButton:SetThumbnail(regionType, item.data)
       end
 
       templateButton:SetTitle(item.title);
@@ -1447,7 +1443,7 @@ function WeakAuras.CreateTemplateView(frame)
       newView:CancelClose();
       WeakAuras.Add(data);
       WeakAuras.NewDisplayButton(data);
-      WeakAuras.SetThumbnail(data);
+      WeakAuras.UpdateThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
     end
@@ -1473,7 +1469,7 @@ function WeakAuras.CreateTemplateView(frame)
       newView:CancelClose();
       WeakAuras.Add(data);
       WeakAuras.NewDisplayButton(data);
-      WeakAuras.SetThumbnail(data);
+      WeakAuras.UpdateThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
     end

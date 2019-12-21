@@ -89,7 +89,7 @@ local function createOptions(id, data)
       set = function(info, v)
         data.groupIcon = v
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.UpdateThumbnail(data)
         WeakAuras.SetIconNames(data)
       end
     },
@@ -116,7 +116,6 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
-        WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer()
       end,
     },
@@ -163,7 +162,6 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
-        WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer()
       end,
       hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
@@ -186,7 +184,6 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ReloadTriggerOptions(data)
-        WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer()
       end,
     },
@@ -241,7 +238,6 @@ local function createOptions(id, data)
         data.selfPoint = gridSelfPoints[value]
         data.gridType = value
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer()
       end,
     },
@@ -407,7 +403,6 @@ local function createOptions(id, data)
         data.yOffset = data.yOffset/(1-change)
         data.scale = v
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
         WeakAuras.ResetMoverSizer();
       end
     },
@@ -438,9 +433,9 @@ local function createOptions(id, data)
   };
 end
 
-local function createThumbnail(parent)
+local function createThumbnail()
   -- frame
-  local thumbnail = CreateFrame("FRAME", nil, parent);
+  local thumbnail = CreateFrame("FRAME", nil, UIParent);
   thumbnail:SetWidth(32);
   thumbnail:SetHeight(32);
 
@@ -530,6 +525,7 @@ local function modifyThumbnail(parent, frame, data)
       frame.defaultIcon:Show()
     end
   end
+  frame:SetIcon()
 end
 
 local function createIcon()

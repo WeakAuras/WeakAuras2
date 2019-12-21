@@ -4,7 +4,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 51
+local Type, Version = "WeakAurasDisplayButton", 52
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -497,6 +497,7 @@ local methods = {
   ["OnAcquire"] = function(self)
     self:SetWidth(1000);
     self:SetHeight(32);
+    self.hasThumbnail = false
   end,
   ["Initialize"] = function(self)
     local data = self.data;
@@ -789,8 +790,6 @@ local methods = {
         WeakAuras.Rename(data, newid);
         WeakAuras.Add(data);
 
-        WeakAuras.thumbnails[newid] = WeakAuras.thumbnails[oldid];
-        WeakAuras.thumbnails[oldid] = nil;
         WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
         WeakAuras.displayButtons[newid]:SetData(data)
         WeakAuras.displayButtons[oldid] = nil;
@@ -1049,6 +1048,8 @@ local methods = {
         error("Display \""..data.id.."\" thinks it is a member of group \""..data.parent.."\" which does not control it");
       end
     end
+
+    self.frame:Hide()
   end,
   ["SetNormalTooltip"] = function(self)
     local data = self.data;
@@ -1313,32 +1314,6 @@ local methods = {
   end,
   ["SetDescription"] = function(self, ...)
     self.frame.description = {...};
-  end,
-  ["SetIcon"] = function(self, icon)
-    self.orgIcon = icon;
-    if(type(icon) == "string" or type(icon) == "number") then
-      self.icon:SetTexture(icon);
-      self.icon:Show();
-      if(self.iconRegion and self.iconRegion.Hide) then
-        self.iconRegion:Hide();
-      end
-    else
-      self.iconRegion = icon;
-      icon:SetAllPoints(self.icon);
-      icon:SetParent(self.frame);
-      self.iconRegion:Show();
-      self.icon:Hide();
-    end
-  end,
-  ["OverrideIcon"] = function(self)
-    self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
-    self.icon:Show()
-    if(self.iconRegion and self.iconRegion.Hide) then
-      self.iconRegion:Hide();
-    end
-  end,
-  ["RestoreIcon"] = function(self)
-    self:SetIcon(self.orgIcon);
   end,
   ["SetViewRegion"] = function(self, region)
     self.view.region = region;
@@ -1695,6 +1670,7 @@ local methods = {
     return self.frame:IsEnabled();
   end,
   ["OnRelease"] = function(self)
+    self:ReleaseThumnail()
     self:SetViewRegion();
     self:Enable();
     self:SetGroup();
@@ -1712,7 +1688,85 @@ local methods = {
     self.frame:Hide();
     self.frame = nil;
     self.data = nil;
-  end
+  end,
+  ["UpdateThumbnail"] = function(self)
+    if not self.hasThumbnail then
+      return
+    end
+
+    if self.data.regionType ~= self.thumbnailType then
+      self:ReleaseThumnail()
+      self:AcquireThumnail()
+    else
+      local option = WeakAuras.regionOptions[self.thumbnailType]
+      if option and option.modifyThumbnail then
+        option.modifyThumbnail(self.frame, self.thumbnail, self.data)
+      end
+    end
+  end,
+  ["ReleaseThumnail"] = function(self)
+    if not self.hasThumbnail then
+      return
+    end
+    self.hasThumbnail = false
+
+    if self.thumbnail then
+      local regionType = self.thumbnailType
+      local option = WeakAuras.regionOptions[regionType]
+      option.releaseThumbnail(self.thumbnail)
+      self.thumbnail = nil
+    end
+  end,
+  ["AcquireThumnail"] = function(self)
+    if self.hasThumbnail then
+      return
+    end
+
+    if not self.data then
+      return
+    end
+
+    self.hasThumbnail = true
+
+    local button = self.frame
+    local regionType = self.data.regionType
+    self.thumbnailType = regionType
+
+    local option = WeakAuras.regionOptions[regionType]
+    if option and option.acquireThumbnail then
+      self.thumbnail = option.acquireThumbnail(button, self.data)
+      self:SetIcon(self.thumbnail)
+    else
+      self:SetIcon("Interface\\Icons\\INV_Misc_QuestionMark")
+    end
+  end,
+  ["SetIcon"] = function(self, icon)
+    self.orgIcon = icon;
+    if(type(icon) == "string" or type(icon) == "number") then
+      self.icon:SetTexture(icon);
+      self.icon:Show();
+      if(self.iconRegion and self.iconRegion.Hide) then
+        self.iconRegion:Hide();
+      end
+    else
+      self.iconRegion = icon;
+      icon:SetAllPoints(self.icon);
+      icon:SetParent(self.frame);
+      icon:Show()
+      self.iconRegion:Show();
+      self.icon:Hide();
+    end
+  end,
+  ["OverrideIcon"] = function(self)
+    self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
+    self.icon:Show()
+    if(self.iconRegion and self.iconRegion.Hide) then
+      self.iconRegion:Hide();
+    end
+  end,
+  ["RestoreIcon"] = function(self)
+    self:SetIcon(self.orgIcon);
+  end,
 }
 
 --[[-----------------------------------------------------------------------------
@@ -2032,12 +2086,8 @@ local function Constructor()
     frame = button,
     title = title,
     icon = icon,
-    --delete = delete, -- There is no variable called delete?
-    --copy = copy, -- There is no variable called copy?
     view = view,
-    --rename = rename, -- There is no variable called rename?
     renamebox = renamebox,
-    --descbox = descbox, -- There is no variable called descbox?
     group = group,
     ungroup = ungroup,
     upgroup = upgroup,
