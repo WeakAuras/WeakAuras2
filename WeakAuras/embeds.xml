@@ -21,6 +21,7 @@
   <!--@non-retail@
   <Include file="Libs\LibClassicDurations\LibClassicDurations.xml"/>
   <Script file="Libs\LibClassicCasterino\LibClassicCasterino.lua"/>
+  <Include file="Libs\!LibTotemInfo\embeds.xml"/>
   @end-non-retail@-->
   <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
 </Ui>
