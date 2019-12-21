@@ -507,6 +507,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   end
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
+  region:SetOffsetRelative(0, 0)
   region:SetOffsetAnim(0, 0);
 
   if data.anchorFrameType == "CUSTOM" and data.customAnchor then
