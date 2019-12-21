@@ -1,4 +1,4 @@
-local internalVersion = 25;
+local internalVersion = 26;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3712,6 +3712,19 @@ function WeakAuras.Modernize(data)
             if propertyRenames[change.property] then
               change.property = propertyRenames[change.property]
             end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 26 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "xOffset" or change.property == "yOffset" then
+            change.value = (change.value or 0) - (data[change.property] or 0)
+            change.property = change.property .. "Relative"
           end
         end
       end
