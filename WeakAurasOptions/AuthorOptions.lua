@@ -196,7 +196,7 @@ local function descType(option)
     L["Used in Auras:"]
   }
   for id, optionData in pairs(option.references) do
-    tinsert(desc, ("%s - Option %i"):format(id, optionData.path[#optionData.path]))
+    tinsert(desc, ("%s - Option #%i"):format(id, optionData.path[#optionData.path]))
   end
   return tconcat(desc, "\n")
 end
@@ -1305,7 +1305,7 @@ typeControlAdders = {
           childOption.subOptions[j] = {
             type = "toggle",
             key = "subOption" .. j,
-            name = L["Sub Option %i"]:format(j),
+            name = L["Sub Option #%i"]:format(j),
             default = false,
             width = 1,
             useDesc = false,
@@ -1696,7 +1696,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i, isSubOption)
           -- mostly because it would have a very non-intuitive effect
           -- the names and keys would likely not match anymore, and so
           -- the merged display would basically explode into a bunch of separate options
-          childOption.name = childOption.name or ("Option %i"):format(i)
+          childOption.name = childOption.name or ("Option #%i"):format(i)
           if not childOption.key then
             local newKey = "option" .. i
             local existingKeys = {}
@@ -2468,7 +2468,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
             childData.authorOptions[i] = {
               type = "toggle",
               key = "option" .. i,
-              name = L["Option %i"]:format(i),
+              name = L["Option #%i"]:format(i),
               default = false,
               width = 1,
               useDesc = false,
@@ -2481,7 +2481,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
           data.authorOptions[i] = {
             type = "toggle",
             key = "option" .. i,
-            name = L["Option %i"]:format(i),
+            name = L["Option #%i"]:format(i),
             default = false,
             width = 1,
             useDesc = false,
