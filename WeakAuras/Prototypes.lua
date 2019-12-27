@@ -144,6 +144,19 @@ WeakAuras.encounter_table = {
   [2359] = 2311, -- The Queen's Court
   [2349] = 2293, -- Za'qul, Herald of N'zoth
   [2361] = 2299, -- Queen Azshara
+  -- Ny'alotha, the Waking City
+  [2368] = 2329, -- Wrathion, the Black Emperor
+  [2365] = 2327, -- Maut
+  [2369] = 2334, -- The Prophet Skitra
+  [2377] = 2328, -- Dark Inquisitor Xanesh
+  [2372] = 2333, -- The Hivemind
+  [2367] = 2335, --	Shad'har the Insatiable
+  [2373] = 2343, -- Drest'agath
+  [2374] = 2345, -- Il'gynoth, Corruption Reborn
+  [2370] = 2336, -- Vexiona
+  [2364] = 2331, -- Ra-den the Despoiled
+  [2366] = 2337, -- Carapace of N'Zoth
+  [2375] = 2344, -- N'Zoth the Corruptor
 }
 
 local function get_encounters_list()
