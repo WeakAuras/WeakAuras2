@@ -533,7 +533,7 @@ function WeakAuras.CreateFrame()
 
   local newButton = AceGUI:Create("WeakAurasToolbarButton")
   newButton:SetText(L["New Aura"])
-  newButton:SetTexture(237537)
+  newButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\newaura")
   toolbarContainer:AddChild(newButton)
   frame.toolbarContainer = toolbarContainer
 
@@ -543,9 +543,28 @@ function WeakAuras.CreateFrame()
 
   local importButton = AceGUI:Create("WeakAurasToolbarButton")
   importButton:SetText(L["Import"])
-  importButton:SetTexture(134938)
+  importButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\importsmall")
   importButton:SetCallback("OnClick", WeakAuras.ImportFromString)
   toolbarContainer:AddChild(importButton)
+
+  local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
+  magnetButton:SetText(L["Magnetically Align"])
+  magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
+  magnetButton:SetStrongHighlight(true)
+  magnetButton:SetCallback("OnClick", function(self)
+    if WeakAurasOptionsSaved.magnetAlign then
+      magnetButton:UnlockHighlight()
+      WeakAurasOptionsSaved.magnetAlign = false
+    else
+      magnetButton:LockHighlight()
+      WeakAurasOptionsSaved.magnetAlign = true
+    end
+  end)
+
+  if WeakAurasOptionsSaved.magnetAlign then
+    magnetButton:LockHighlight()
+  end
+  toolbarContainer:AddChild(magnetButton)
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)

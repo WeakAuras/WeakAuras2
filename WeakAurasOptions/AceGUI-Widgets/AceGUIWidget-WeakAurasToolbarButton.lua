@@ -2,7 +2,7 @@
 ToolbarButton Widget, based on AceGUI Button
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasToolbarButton", 1
+local Type, Version = "WeakAurasToolbarButton", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -40,6 +40,7 @@ local methods = {
 		self:SetWidth(32)
 		self:SetDisabled(false)
 		self:SetText()
+		self.htex:SetVertexColor(1, 1, 1, 0.1)
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -60,7 +61,21 @@ local methods = {
 
 	["SetTexture"] = function(self, path)
 		self.icon:SetTexture(path)
+	end,
+	["LockHighlight"] = function(self)
+		self.frame:LockHighlight()
+	end,
+	["UnlockHighlight"] = function(self)
+		self.frame:UnlockHighlight()
+	end,
+	["SetStrongHighlight"] = function(self, enable)
+		if enable then
+			self.htex:SetVertexColor(1, 1, 1, 0.3)
+		else
+			self.htex:SetVertexColor(1, 1, 1, 0.1)
+		end
 	end
+
 }
 
 --[[-----------------------------------------------------------------------------
@@ -99,6 +114,7 @@ local function Constructor()
 	local htex = frame:CreateTexture()
 	htex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
 	htex:SetVertexColor(1, 1, 1, 0.1)
+
 	htex:SetAllPoints()
 	frame:SetHighlightTexture(htex)
 
@@ -113,7 +129,8 @@ local function Constructor()
 		text  = text,
 		icon = icon,
 		frame = frame,
-		type  = Type
+		type  = Type,
+		htex = htex
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func
