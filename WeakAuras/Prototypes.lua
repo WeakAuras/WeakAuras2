@@ -6155,6 +6155,9 @@ WeakAuras.event_prototypes = {
         test = "spellName and WeakAuras.IsSpellKnown(spellName, usePet)";
       }
     },
+    nameFunc = function(trigger)
+      return GetSpellInfo(trigger.spellName or 0)
+    end,
     iconFunc = function(trigger)
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
