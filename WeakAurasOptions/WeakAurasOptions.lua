@@ -1103,6 +1103,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
           end
         end
       end
+
+      if odb.magnetAlign == nil then
+        odb.magnetAlign = true
+      end
+
       savedVars.db = db;
       savedVars.odb = odb;
     end
