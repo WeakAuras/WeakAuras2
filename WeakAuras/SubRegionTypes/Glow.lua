@@ -13,7 +13,7 @@ local L = WeakAuras.L;
 local default = function(parentType)
   local options = {
     glow = false,
-    useglowColor = false,
+    useGlowColor = false,
     glowColor = {1, 1, 1, 1},
     glowType = "buttonOverlay",
     glowLines = 8,
@@ -325,7 +325,7 @@ function WeakAuras.getDefaultGlow(regionType)
     return {
       ["type"] = "subglow",
       glow = false,
-      useglowColor = false,
+      useGlowColor = false,
       glowColor = {1, 1, 1, 1},
       glowType = "Pixel",
       glowLines = 8,
@@ -342,7 +342,7 @@ function WeakAuras.getDefaultGlow(regionType)
     return {
       ["type"] = "subglow",
       glow = false,
-      useglowColor = false,
+      useGlowColor = false,
       glowColor = {1, 1, 1, 1},
       glowType = "buttonOverlay",
       glowLines = 8,

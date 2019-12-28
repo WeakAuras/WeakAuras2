@@ -3649,7 +3649,7 @@ function WeakAuras.Modernize(data)
       -- For Conditions
       local propertyRenames = {
         glow = prefix .. "glow",
-        useglowColor = prefix .. "useGlowColor",
+        useGlowColor = prefix .. "useGlowColor",
         glowColor = prefix .. "glowColor",
         glowType = prefix .. "glowType",
         glowLines = prefix .. "glowLines",
@@ -3678,7 +3678,7 @@ function WeakAuras.Modernize(data)
         local glow = {
           ["type"] = "subglow",
           glow = data.glow,
-          useglowColor = data.useGlowColor,
+          useGlowColor = data.useGlowColor,
           glowColor = data.glowColor,
           glowType = data.glowType,
           glowLines = data.glowLines,
@@ -3695,6 +3695,7 @@ function WeakAuras.Modernize(data)
 
       data.glow = nil
       data.useglowColor = nil
+      data.useGlowColor = nil
       data.glowColor = nil
       data.glowType = nil
       data.glowLines = nil
