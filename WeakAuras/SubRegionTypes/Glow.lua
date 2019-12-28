@@ -296,6 +296,8 @@ end
 
 local function onRelease(subRegion)
   subRegion:Hide()
+  subRegion:ClearAllPoints()
+  subRegion:SetParent(UIParent)
 end
 
 local function modify(parent, region, parentData, data, first)
