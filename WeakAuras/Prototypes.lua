@@ -1339,6 +1339,9 @@ WeakAuras.load_prototype = {
 };
 
 local function AddUnitChangeInternalEvents(unit, t)
+  if (unit == nil) then
+    return
+  end
   if (unit == "player" or unit == "multi" or unit == "target" or unit == "focus") then
     -- Handled by normal events
   elseif unit == "pet" then
