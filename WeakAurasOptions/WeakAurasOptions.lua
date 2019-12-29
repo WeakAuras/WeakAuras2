@@ -4038,10 +4038,6 @@ function WeakAuras.NewDisplayButton(data)
   WeakAuras.ScanForLoads({[id] = true});
   WeakAuras.EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateDisplayButton(db.displays[id]);
-
-  if(WeakAuras.regions[id].region.SetStacks) then
-    WeakAuras.regions[id].region:SetStacks(1);
-  end
   frame.buttonsScroll:AddChild(displayButtons[id]);
   WeakAuras.AddOption(id, data);
   WeakAuras.SetIconNames(data);
