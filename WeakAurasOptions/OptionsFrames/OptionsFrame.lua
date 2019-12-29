@@ -1015,6 +1015,7 @@ function WeakAuras.CreateFrame()
           displayButtons[childId]:PriorityShow(1)
         end
       end
+
       WeakAuras.ResumeAllDynamicGroups()
     end
 
