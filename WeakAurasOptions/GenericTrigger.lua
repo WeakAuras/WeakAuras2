@@ -384,13 +384,13 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
   end
 
   WeakAuras.AddCodeOption(customOptions, data, L["Name Info"], "custom_name", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers",
-                          18, hideIfTriggerStateUpdate, appendToTriggerPath("customName"), false, true, extraSetFunction);
+                          18, hideIfTriggerStateUpdate, appendToTriggerPath("customName"), false, true, extraSetFunctionReload);
   WeakAuras.AddCodeOption(customOptions, data, L["Icon Info"], "custom_icon", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers",
                           20, hideIfTriggerStateUpdate, appendToTriggerPath("customIcon"), false, true, extraSetFunction);
   WeakAuras.AddCodeOption(customOptions, data, L["Texture Info"], "custom_texture", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers",
                           22, hideIfTriggerStateUpdate, appendToTriggerPath("customTexture"), false, true, extraSetFunction);
   WeakAuras.AddCodeOption(customOptions, data, L["Stack Info"], "custom_stacks", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers",
-                          23, hideIfTriggerStateUpdate, appendToTriggerPath("customStacks"), false, true, extraSetFunction);
+                          23, hideIfTriggerStateUpdate, appendToTriggerPath("customStacks"), false, true, extraSetFunctionReload);
 
   return customOptions;
 end
