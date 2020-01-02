@@ -3410,6 +3410,10 @@ local commonConditions = {
   stacks = {
     display = L["Stacks"],
     type = "number"
+  },
+  name = {
+    display = L["Name"],
+    type = "string"
   }
 }
 
@@ -3441,6 +3445,10 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
 
       if (WeakAuras.event_prototypes[trigger.event].stacksFunc) then
         result.stacks = commonConditions.stacks;
+      end
+
+      if (WeakAuras.event_prototypes[trigger.event].nameFunc) then
+        result.name = commonConditions.name;
       end
 
       for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
@@ -3508,6 +3516,10 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
 
       if (trigger.customStacks and trigger.customStacks ~= "") then
         result.stacks = commonConditions.stacks;
+      end
+
+      if (trigger.customName and trigger.customName ~= "") then
+        result.name = commonConditions.name;
       end
 
       return result;
