@@ -799,6 +799,21 @@ function WeakAuras.CheckCombatLogFlagsReaction(flags, flagToCheck)
   end
 end
 
+local objectTypeToBit = {
+  Object = 16384,
+  Guardian = 8192,
+  Pet = 4096,
+  NPC = 2048,
+  Player = 1024,
+}
+
+function WeakAuras.CheckCombatLogFlagsObjectType(flags, flagToCheck)
+  if type(flags) ~= "number" then return end
+  local bitToCheck = objectTypeToBit[flagToCheck]
+  if not bitToCheck then return end
+  return bit.band(flags, bitToCheck) ~= 0;
+end
+
 function WeakAuras.CheckRaidFlags(flags, flagToCheck)
   flagToCheck = tonumber(flagToCheck)
   if not flagToCheck or not flags then return end --bailout
@@ -2000,6 +2015,17 @@ WeakAuras.event_prototypes = {
         end
       },
       {
+        name = "sourceFlags3",
+        display = L["Source Object Type"],
+        type = "select",
+        values = "combatlog_flags_check_object_type",
+        test = "WeakAuras.CheckCombatLogFlagsObjectType(sourceFlags, %q)",
+        conditionType = "select",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckCombatLogFlagsObjectType(state.sourceFlags, needle);
+        end
+      },
+      {
         name = "sourceRaidFlags",
         display = L["Source Raid Mark"],
         type = "select",
@@ -2081,6 +2107,20 @@ WeakAuras.event_prototypes = {
         conditionType = "select",
         conditionTest = function(state, needle)
           return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.destFlags, needle);
+        end,
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
+      },
+      {
+        name = "destFlags3",
+        display = L["Destination Object Type"],
+        type = "select",
+        values = "combatlog_flags_check_object_type",
+        test = "WeakAuras.CheckCombatLogFlagsObjectType(destFlags, %q)",
+        conditionType = "select",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckCombatLogFlagsObjectType(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");

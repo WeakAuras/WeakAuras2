@@ -526,6 +526,14 @@ WeakAuras.combatlog_flags_check_reaction = {
   Friendly = L["Friendly"]
 }
 
+WeakAuras.combatlog_flags_check_object_type = {
+  Object = L["Object"],
+  Guardian = L["Guardian"],
+  Pet = L["Pet"],
+  NPC = L["NPC"],
+  Player = L["Player"]
+}
+
 WeakAuras.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
