@@ -1452,7 +1452,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
   end
   local optionClass = optionClasses[option.type]
   local optionName = optionClass == "noninteractive" and WeakAuras.author_option_types[option.type]
-                     or option.name or L["Option #%i"]:format(i)
+                     or option.name
 
   args[prefix .. "collapse"] = {
     type = "execute",
