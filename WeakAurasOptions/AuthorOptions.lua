@@ -1280,14 +1280,14 @@ typeControlAdders = {
     end
     args[prefix .. "groupStart"] = {
       type = "header",
-      name = L["Start of %s"]:format(option.name ~= "" and option.name or L["Option #%i"]:format(i)),
+      name = L["Start of %s"]:format(option.name),
       order = order()
     }
     local subPrefix = prefix .. "option"
     for subIndex, subOption in ipairs(option.subOptions) do
       local addControlsForType = typeControlAdders[subOption.type]
       if addControlsForType then
-        addAuthorModeOption(option.subOptions, args, data, order, subPrefix .. subIndex, subIndex, true)
+        addAuthorModeOption(option.subOptions, args, data, order, subPrefix .. subIndex, subIndex)
       end
     end
     args[prefix .. "addSubOption"] = {
@@ -1318,7 +1318,7 @@ typeControlAdders = {
     }
     args[prefix .. "groupEnd"] = {
       type = "header",
-      name = L["End of %s"]:format(option.name ~= "" and option.name or L["Option #%i"]:format(i)),
+      name = L["End of %s"]:format(option.name),
       order = order()
     }
   end
@@ -1420,7 +1420,7 @@ local function ensureNonDuplicateKey(option)
   end
 end
 
-function addAuthorModeOption(options, args, data, order, prefix, i, isSubOption)
+function addAuthorModeOption(options, args, data, order, prefix, i)
   -- add header controls
   local option = options[i]
 
@@ -1452,7 +1452,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i, isSubOption)
   end
   local optionClass = optionClasses[option.type]
   local optionName = optionClass == "noninteractive" and WeakAuras.author_option_types[option.type]
-                     or option.name ~= "" and option.name or (isSubOption and L["Sub Option #%i"] or L["Option #%i"]):format(i)
+                     or option.name or L["Option #%i"]:format(i)
 
   args[prefix .. "collapse"] = {
     type = "execute",
