@@ -592,7 +592,7 @@ typeControlAdders = {
         return not option.useLength
       end
     }
-    args["prefix" .. "multiline"] = {
+    args[prefix .. "multiline"] = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = name(option, "multiline", L["Large Input"]),
