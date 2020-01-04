@@ -1681,6 +1681,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
     thumbnailAnchor.currentThumbnail = thumbnail
     thumbnailAnchor.currentThumbnailType = regionType
     thumbnail:SetAllPoints(thumbnailAnchor);
+    thumbnail:SetParent(thumbnailAnchor)
     if (thumbnail.SetIcon) then
       local i;
       if(icon) then
