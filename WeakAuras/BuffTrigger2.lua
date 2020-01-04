@@ -2892,7 +2892,6 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
   if scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId] then
     ScheduleMultiCleanUp(destGUID, time + 60)
     matchDataMulti[destGUID] = matchDataMulti[destGUID] or {}
-    matchDataMulti[destGUID][sourceGUID] = matchDataMulti[destGUID][sourceGUID] or {}
 
     if scanFuncsSpellId and scanFuncsSpellId[spellId] then
       local updatedSpellId = UpdateMatchDataMulti(time, matchDataMulti[destGUID], spellId, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
@@ -3039,6 +3038,13 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     ReleaseUID(unit)
     unit = unit.."target"
     ReleaseUID(unit)
+  elseif event == "UNIT_AURA" then
+    local unit = ...
+    local guid = UnitGUID(unit)
+    if matchDataMulti[guid] then
+      CheckAurasMulti(matchDataMulti[guid], unit, "HELPFUL")
+      CheckAurasMulti(matchDataMulti[guid], unit, "HARMFUL")
+    end
   elseif event == "PLAYER_LEAVING_WORLD" then
     -- Remove everything..
     for GUID, GUIDData  in pairs(matchDataMulti) do
