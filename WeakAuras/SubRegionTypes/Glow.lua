@@ -303,6 +303,7 @@ local function onAcquire(subRegion)
 end
 
 local function onRelease(subRegion)
+  subRegion.glowType = nil
   subRegion:Hide()
   subRegion:ClearAllPoints()
   subRegion:SetParent(UIParent)
@@ -312,6 +313,8 @@ local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
   if parentData.regionType == "aurabar" then
     parent:AnchorSubRegion(region, "area", data.glow_anchor)
+  else
+    parent:AnchorSubRegion(region, "area", data.glowType == "buttonOverlay" and "region")
   end
 
   region.parent = parent
