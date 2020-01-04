@@ -4231,8 +4231,6 @@ local function pAdd(data)
     return;
   end
 
-  db.displays[id] = data;
-
   data.uid = data.uid or WeakAuras.GenerateUniqueID()
   local otherID = UIDtoID[data.uid]
   if not otherID then
@@ -4248,6 +4246,7 @@ local function pAdd(data)
     WeakAuras.ClearAuraEnvironment(data.parent);
   end
   if (data.controlledChildren) then
+    db.displays[id] = data;
     WeakAuras.SetRegion(data);
   else
     local visible
@@ -4260,6 +4259,8 @@ local function pAdd(data)
         WeakAuras.CollapseAllClones(id)
       end
     end
+
+    db.displays[id] = data;
 
     if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
       data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
