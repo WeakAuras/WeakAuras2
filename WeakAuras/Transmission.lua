@@ -108,6 +108,16 @@ function GenerateUniqueID()
 end
 WeakAuras.GenerateUniqueID = GenerateUniqueID
 
+local function stripNonTransmissableFields(datum, fieldMap)
+  for k, v in pairs(fieldMap) do
+    if type(v) == "table" and type(datum[k]) == "table" then
+      stripNonTransmissableFields(datum[k], v)
+    elseif v == true then
+      datum[k] = nil
+    end
+  end
+end
+
 function CompressDisplay(data)
   -- Clean up custom trigger fields that are unused
   -- Those can contain lots of unnecessary data.
@@ -128,16 +138,11 @@ function CompressDisplay(data)
       end
     end
   end
-  local copiedData = {};
-  WeakAuras.DeepCopy(data, copiedData);
-  copiedData.controlledChildren = nil;
-  copiedData.parent = nil;
-  local regionType = copiedData.regionType
-  copiedData.regionType = regionType
-  copiedData.ignoreWagoUpdate = nil
-  copiedData.skipWagoUpdate = nil
-  copiedData.tocversion = WeakAuras.BuildInfo
 
+  local copiedData = {}
+  WeakAuras.DeepCopy(data, copiedData)
+  stripNonTransmissableFields(copiedData, WeakAuras.non_transmissable_fields)
+  copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;
 end
 
@@ -294,12 +299,16 @@ local function install(data, oldData, patch, mode, isParent)
   -- return the data which the SV knows about afterwards (if there is any)
   local installedUID, imported
   if mode == 1 then
-    -- always import as a new thing
+    -- always import as a new thing, set preferToUpdate = false
     if data then
       imported = CopyTable(data)
       data.id = WeakAuras.FindUnusedId(data.id)
       WeakAuras.Add(data)
       installedUID = data.uid
+      data.preferToUpdate = false
+      if oldData then
+        oldData.preferToUpdate = false
+      end
     else
       -- nothing to add
       return
@@ -312,6 +321,7 @@ local function install(data, oldData, patch, mode, isParent)
     end
     imported = CopyTable(data)
     data.id = WeakAuras.FindUnusedId(data.id)
+    data.preferToUpdate = true
     WeakAuras.Add(data)
     installedUID = data.uid
   elseif not data then
@@ -343,6 +353,7 @@ local function install(data, oldData, patch, mode, isParent)
       oldData.uid = data.uid
     end
     WeakAuras.Update(oldData, patch)
+    oldData.preferToUpdate = true
     installedUID = oldData.uid
     imported = data
   end
@@ -815,7 +826,7 @@ local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
     for i, button in ipairs(radioButtons) do
       button:Show()
       button:Enable()
-      button:SetChecked(i == 1)
+      button:SetChecked(i == pendingData.mode)
       button:SetPoint("TOPLEFT", radioButtonAnchor, "TOPLEFT", 0, -20 * (i - .7))
     end
     local checkButtonAnchor = radioButtons[#radioButtons]
@@ -1064,7 +1075,7 @@ local function scamCheck(codes, data)
   end
 end
 
-local ignoredForDiffChecking = WeakAuras.internal_fields
+local ignoredForDiffChecking = CreateFromMixins(WeakAuras.internal_fields, WeakAuras.non_transmissable_fields)
 local deleted = {} -- magic value
 local function recurseDiff(ours, theirs)
   local diff, seen, same = {}, {}, true
@@ -1182,6 +1193,7 @@ function WeakAuras.MatchInfo(data, children, target)
   if not oldParent then return nil end
   -- setup
   local info = {
+    mode = 1,
     unmodified = 0,
     modified = 0,
     added = 0,
@@ -1197,6 +1209,9 @@ function WeakAuras.MatchInfo(data, children, target)
   }
 
   info.oldData[0] = oldParent
+  if info.oldData[0].preferToUpdate then
+    info.mode = 2
+  end
   info.newData[0] = data
   info.diffs[0] = WeakAuras.diff(oldParent, data)
   if info.diffs[0] then
@@ -1436,7 +1451,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
     if matchInfo ~= nil then
       -- we know of at least one match
       tinsert(tooltip, {1, " "})
-      pendingData.mode = 1
       if type(matchInfo) ~= "table" then
         -- there is no difference whatsoever
         tinsert(tooltip, {1, L["You already have this group/aura. Importing will create a duplicate."], 1, 0.82, 0,})

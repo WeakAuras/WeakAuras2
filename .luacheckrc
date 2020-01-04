@@ -64,6 +64,7 @@ globals = {
 	"CombatLogGetCurrentEventInfo",
 	"CombatText_AddMessage",
 	"CooldownFrame_Set",
+	"CreateFromMixins",
 	"CreateObjectPool",
 	"DEFAULT_CHAT_FRAME",
 	"GameTooltip_Hide",
