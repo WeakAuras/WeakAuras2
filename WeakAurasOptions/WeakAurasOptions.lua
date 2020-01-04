@@ -1108,6 +1108,10 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         odb.magnetAlign = true
       end
 
+      if db.import_disabled then
+        db.import_disabled = nil
+      end
+
       savedVars.db = db;
       savedVars.odb = odb;
     end

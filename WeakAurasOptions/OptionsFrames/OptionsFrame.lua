@@ -228,33 +228,6 @@ function WeakAuras.CreateFrame()
   closebutton:SetPoint("CENTER", close, "CENTER", 1, -1)
   closebutton:SetScript("OnClick", WeakAuras.HideOptions)
 
-  local import = CreateDecoration(frame)
-  import:SetPoint("TOPRIGHT", -100, 12)
-
-  local importbutton = CreateFrame("CheckButton", nil, import, "OptionsCheckButtonTemplate")
-  importbutton:SetWidth(30)
-  importbutton:SetHeight(30)
-  importbutton:SetPoint("CENTER", import, "CENTER", 1, -1)
-  importbutton:SetHitRectInsets(0, 0, 0, 0)
-  importbutton:SetChecked(db.import_disabled)
-  importbutton.SetValue = function(importbutton)
-    if importbutton:GetChecked() then
-      PlaySound(856)
-      db.import_disabled = true
-    else
-      PlaySound(857)
-      db.import_disabled = nil
-    end
-    WeakAuras.RefreshTooltipButtons()
-  end
-  importbutton:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-    GameTooltip:SetText(L["Disable Import"])
-    GameTooltip:AddLine(L["If this option is enabled, you are no longer able to import auras."], 1, 1, 1)
-    GameTooltip:Show()
-  end)
-  importbutton:SetScript("OnLeave", GameTooltip_Hide)
-
   local title = CreateFrame("Frame", nil, frame)
 
   local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
