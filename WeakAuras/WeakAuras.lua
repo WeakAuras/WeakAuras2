@@ -5845,7 +5845,7 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
           triggerState = state
         else
           local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
-          triggerState = triggerStates[cloneId] or triggerStates[""]
+          triggerState = triggerStates[cloneId] or triggerStates[""] or {}
         end
         applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
         region.states[triggernum] = triggerState
