@@ -1866,15 +1866,24 @@ WeakAuras.update_categories = {
   },
 }
 
+-- fields that are handled as special cases when importing
+-- mismatch of internal fields is not counted as a difference
 WeakAuras.internal_fields = {
   uid = true,
-  controlledChildren = true,
-  parent = true,
   internalVersion = true,
   sortHybridTable = true,
+}
+
+-- fields that are not included in exported data
+-- these represent information which is only meaningful inside the db,
+-- or are represented in other ways in exported
+WeakAuras.non_transmissable_fields = {
+  controlledChildren = true,
+  parent = true,
   authorMode = true,
   skipWagoUpdate = true,
-  ignoreWagoUpdate = true
+  ignoreWagoUpdate = true,
+  preferToUpdate = true,
 }
 
 WeakAuras.data_stub = {
