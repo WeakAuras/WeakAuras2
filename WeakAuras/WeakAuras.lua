@@ -5880,7 +5880,7 @@ function WeakAuras.UpdatedTriggerState(id)
     local anyStateShown = false;
 
     for cloneId, state in pairs(triggerState[id][triggernum]) do
-      state.trigger = db.displays[id].triggers[triggernum].trigger;
+      state.trigger = db.displays[id].triggers[triggernum] and db.displays[id].triggers[triggernum].trigger;
       state.triggernum = triggernum;
       state.id = id;
 
