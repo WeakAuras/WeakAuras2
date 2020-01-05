@@ -4035,6 +4035,7 @@ function WeakAuras.ConvertDisplay(data, newType)
   WeakAuras.UpdateDisplayButton(data);
   WeakAuras.SetMoverSizer(id)
   WeakAuras.ResetMoverSizer();
+  WeakAuras.SortDisplayButtons()
 end
 
 function WeakAuras.NewDisplayButton(data)
@@ -4089,6 +4090,9 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   local to_sort = {};
   local children = {};
   local containsFilter = false;
+
+  local visibleTopLevel = {}
+
   for id, child in pairs(displayButtons) do
     containsFilter = not filter or filter == "";
     local data = WeakAuras.GetData(id);
@@ -4107,6 +4111,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
         frame.loadedButton:GetExpanded()
         and (not filter or id:lower():find(filter, 1, true) or containsFilter)
         ) then
+
         local group = child:GetGroup();
         --child.frame:Show();
         if(group) then
@@ -4122,23 +4127,15 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
           end
         else
           -- Top Level
-          child.frame:Show();
-          if child.AcquireThumnail then
-            child:AcquireThumnail()
-          end
           if(loaded[id] ~= nil) then
             if(loaded[id]) then
               child:EnableLoaded();
             else
               child:DisableLoaded();
             end
+            visibleTopLevel[id] = true
             tinsert(to_sort, child);
           end
-        end
-      else
-        child.frame:Hide();
-        if child.ReleaseThumnail then
-          child:ReleaseThumnail()
         end
       end
     end
@@ -4166,6 +4163,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
     end
   end
 
+  -- Now handle unloaded auras
   tinsert(frame.buttonsScroll.children, frame.unloadedButton);
   local numUnloaded = 0;
   wipe(to_sort);
@@ -4197,19 +4195,11 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
           tinsert(children[group], child);
         end
       else
-        child.frame:Show();
-        if child.AcquireThumnail then
-          child:AcquireThumnail()
-        end
         if(loaded[id] == nil) then
           child:DisableLoaded();
+          visibleTopLevel[id] = true
           tinsert(to_sort, child);
         end
-      end
-    else
-      child.frame:Hide();
-      if child.ReleaseThumnail then
-        child:ReleaseThumnail()
       end
     end
   end
@@ -4231,6 +4221,24 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
           if groupchild.ReleaseThumnail then
             groupchild:ReleaseThumnail()
           end
+        end
+      end
+    end
+  end
+
+  -- Show/Hide buttons as needed
+  for id, child in pairs(displayButtons) do
+    local group = child:GetGroup();
+    if not group then
+      if(visibleTopLevel[id]) then
+        child.frame:Show();
+        if child.AcquireThumnail then
+          child:AcquireThumnail()
+        end
+      else
+        child.frame:Hide();
+        if child.ReleaseThumnail then
+          child:ReleaseThumnail()
         end
       end
     end
