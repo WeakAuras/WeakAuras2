@@ -42,14 +42,13 @@ local function moveOnePxl(direction)
       elseif direction == "right" then
         data.xOffset = data.xOffset + 1
       end
-      WeakAuras.Add(data)
+      WeakAuras.Add(data, nil, true)
       WeakAuras.UpdateThumbnail(data)
       WeakAuras.ResetMoverSizer()
       if data.parent then
         local parentData = WeakAuras.GetData(data.parent)
         if parentData then
           WeakAuras.Add(parentData)
-          WeakAuras.UpdateThumbnail(parentData)
         end
       end
       WeakAuras.ReloadOptions(data.id)
@@ -590,7 +589,7 @@ local function ConstructMoverSizer(parent)
         data.yOffset = dY / scale
       end
       region:ResetPosition()
-      WeakAuras.Add(data)
+      WeakAuras.Add(data, nil, true)
       WeakAuras.UpdateThumbnail(data)
       local xOff, yOff
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -608,7 +607,6 @@ local function ConstructMoverSizer(parent)
         local parentData = db.displays[data.parent]
         if parentData then
           WeakAuras.Add(parentData)
-          WeakAuras.UpdateThumbnail(parentData)
         end
       end
       AceConfigDialog:Open("WeakAuras", parent.container)
@@ -664,7 +662,7 @@ local function ConstructMoverSizer(parent)
             end
           end
           region:ResetPosition()
-          WeakAuras.Add(data)
+          WeakAuras.Add(data, nil, true)
           frame:ScaleCorners(region:GetWidth(), region:GetHeight())
           AceConfigDialog:Open("WeakAuras", parent.container)
         end)
@@ -711,7 +709,7 @@ local function ConstructMoverSizer(parent)
         data.height = height
 
         region:ResetPosition()
-        WeakAuras.Add(data)
+        WeakAuras.Add(data, nil, true)
         WeakAuras.UpdateThumbnail(data)
 
         frame:ScaleCorners(region:GetWidth(), region:GetHeight())

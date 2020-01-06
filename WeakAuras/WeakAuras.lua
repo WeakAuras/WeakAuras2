@@ -4224,7 +4224,7 @@ function WeakAuras.PreAdd(data)
   data.expanded = nil
 end
 
-local function pAdd(data)
+local function pAdd(data, simpleChange)
   local id = data.id;
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
@@ -4241,106 +4241,111 @@ local function pAdd(data)
     UIDtoID[data.uid] = id
   end
 
-  WeakAuras.ClearAuraEnvironment(id);
-  if data.parent then
-    WeakAuras.ClearAuraEnvironment(data.parent);
-  end
-  if (data.controlledChildren) then
-    db.displays[id] = data;
-    WeakAuras.SetRegion(data);
+  if simpleChange then
+    db.displays[id] = data
+    WeakAuras.SetRegion(data)
   else
-    local visible
-    if (WeakAuras.IsOptionsOpen()) then
-      visible = WeakAuras.FakeStatesFor(id, false)
+    WeakAuras.ClearAuraEnvironment(id);
+    if data.parent then
+      WeakAuras.ClearAuraEnvironment(data.parent);
+    end
+    if (data.controlledChildren) then
+      db.displays[id] = data;
+      WeakAuras.SetRegion(data);
     else
-      if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
-        WeakAuras.regions[id].region:Collapse()
+      local visible
+      if (WeakAuras.IsOptionsOpen()) then
+        visible = WeakAuras.FakeStatesFor(id, false)
       else
-        WeakAuras.CollapseAllClones(id)
-      end
-    end
-
-    db.displays[id] = data;
-
-    if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
-      data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
-    end
-
-    for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.Add(data);
-    end
-
-    local loadFuncStr, events = WeakAuras.ConstructFunction(load_prototype, data.load);
-    for event, eventData in pairs(loadEvents) do
-      eventData[id] = nil
-    end
-    for event in pairs(events) do
-      loadEvents[event] = loadEvents[event] or {}
-      loadEvents[event][id] = true
-    end
-    loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
-    loadEvents["SCAN_ALL"][id] = true
-
-    local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
-    local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
-    local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
-    local triggerLogicFunc;
-    if data.triggers.disjunctive == "custom" then
-      triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
-    end
-    WeakAuras.LoadCustomActionFunctions(data);
-    WeakAuras.LoadConditionPropertyFunctions(data);
-    local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
-    local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id, "condition checks");
-    debug(id.." - Load", 1);
-    debug(loadFuncStr);
-
-    loadFuncs[id] = loadFunc;
-    loadFuncsForOptions[id] = loadForOptionsFunc;
-    checkConditions[id] = checkCondtionsFunc;
-    clones[id] = clones[id] or {};
-
-    if (timers[id]) then
-      for _, trigger in pairs(timers[id]) do
-        for _, record in pairs(trigger) do
-          if (record.handle) then
-            timer:CancelTimer(record.handle);
-          end
+        if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
+          WeakAuras.regions[id].region:Collapse()
+        else
+          WeakAuras.CollapseAllClones(id)
         end
       end
-      timers[id] = nil;
-    end
 
-    local region = WeakAuras.SetRegion(data);
+      db.displays[id] = data;
 
-    triggerState[id] = {
-      disjunctive = data.triggers.disjunctive or "all",
-      numTriggers = #data.triggers,
-      activeTriggerMode = data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active,
-      triggerLogicFunc = triggerLogicFunc,
-      triggers = {},
-      triggerCount = 0,
-      activatedConditions = {},
-    };
+      if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
+        data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+      end
 
-    WeakAuras.LoadEncounterInitScripts(id);
+      for _, triggerSystem in pairs(triggerSystems) do
+        triggerSystem.Add(data);
+      end
 
-    if (WeakAuras.IsOptionsOpen()) then
-      WeakAuras.FakeStatesFor(id, visible)
-    end
+      local loadFuncStr, events = WeakAuras.ConstructFunction(load_prototype, data.load);
+      for event, eventData in pairs(loadEvents) do
+        eventData[id] = nil
+      end
+      for event in pairs(events) do
+        loadEvents[event] = loadEvents[event] or {}
+        loadEvents[event][id] = true
+      end
+      loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
+      loadEvents["SCAN_ALL"][id] = true
 
-    if not(paused) then
-      WeakAuras.ScanForLoads({[id] = true});
+      local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
+      local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
+      local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
+      local triggerLogicFunc;
+      if data.triggers.disjunctive == "custom" then
+        triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
+      end
+      WeakAuras.LoadCustomActionFunctions(data);
+      WeakAuras.LoadConditionPropertyFunctions(data);
+      local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
+      local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id, "condition checks");
+      debug(id.." - Load", 1);
+      debug(loadFuncStr);
+
+      loadFuncs[id] = loadFunc;
+      loadFuncsForOptions[id] = loadForOptionsFunc;
+      checkConditions[id] = checkCondtionsFunc;
+      clones[id] = clones[id] or {};
+
+      if (timers[id]) then
+        for _, trigger in pairs(timers[id]) do
+          for _, record in pairs(trigger) do
+            if (record.handle) then
+              timer:CancelTimer(record.handle);
+            end
+          end
+        end
+        timers[id] = nil;
+      end
+
+      local region = WeakAuras.SetRegion(data);
+
+      triggerState[id] = {
+        disjunctive = data.triggers.disjunctive or "all",
+        numTriggers = #data.triggers,
+        activeTriggerMode = data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active,
+        triggerLogicFunc = triggerLogicFunc,
+        triggers = {},
+        triggerCount = 0,
+        activatedConditions = {},
+      };
+
+      WeakAuras.LoadEncounterInitScripts(id);
+
+      if (WeakAuras.IsOptionsOpen()) then
+        WeakAuras.FakeStatesFor(id, visible)
+      end
+
+      if not(paused) then
+        WeakAuras.ScanForLoads({[id] = true});
+      end
     end
   end
 end
 
-function WeakAuras.Add(data, takeSnapshot)
+function WeakAuras.Add(data, takeSnapshot, simpleChange)
   if takeSnapshot then
     WeakAuras.SetMigrationSnapshot(data.uid, CopyTable(data))
   end
   WeakAuras.PreAdd(data)
-  pAdd(data);
+  pAdd(data, simpleChange);
 end
 
 function WeakAuras.SetRegion(data, cloneId)
