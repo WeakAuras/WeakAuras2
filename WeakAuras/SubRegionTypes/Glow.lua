@@ -203,15 +203,21 @@ local funcs = {
     if newType == "buttonOverlay" then
       self.glowStart = LCG.ButtonGlow_Start
       self.glowStop = LCG.ButtonGlow_Stop
-      self.parent:AnchorSubRegion(self, "area", "region")
+      if self.parentRegionType ~= "aurabar" then
+        self.parent:AnchorSubRegion(self, "area", "region")
+      end
     elseif newType == "ACShine" then
       self.glowStart = LCG.AutoCastGlow_Start
       self.glowStop = LCG.AutoCastGlow_Stop
-      self.parent:AnchorSubRegion(self, "area")
+      if self.parentRegionType ~= "aurabar" then
+        self.parent:AnchorSubRegion(self, "area")
+      end
     elseif newType == "Pixel" then
       self.glowStart = LCG.PixelGlow_Start
       self.glowStop = LCG.PixelGlow_Stop
-      self.parent:AnchorSubRegion(self, "area")
+      if self.parentRegionType ~= "aurabar" then
+        self.parent:AnchorSubRegion(self, "area")
+      end
     end
     self.glowType = newType
     if isGlowing then
@@ -311,6 +317,7 @@ end
 
 local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
+  region.parentRegionType = parentData.regionType
   if parentData.regionType == "aurabar" then
     parent:AnchorSubRegion(region, "area", data.glow_anchor)
   else
