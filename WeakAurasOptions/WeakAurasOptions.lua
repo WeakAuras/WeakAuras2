@@ -4091,7 +4091,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   local children = {};
   local containsFilter = false;
 
-  local visibleTopLevel = {}
+  local visible = {}
 
   for id, child in pairs(displayButtons) do
     containsFilter = not filter or filter == "";
@@ -4113,7 +4113,6 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
         ) then
 
         local group = child:GetGroup();
-        --child.frame:Show();
         if(group) then
           -- In a Group
           if(loaded[group]) then
@@ -4123,7 +4122,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
               child:DisableLoaded();
             end
             children[group] = children[group] or {};
-            tinsert(children[group], child);
+            visible[id] = true
+            tinsert(children[group], id);
           end
         else
           -- Top Level
@@ -4133,7 +4133,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
             else
               child:DisableLoaded();
             end
-            visibleTopLevel[id] = true
+            visible[id] = true
             tinsert(to_sort, child);
           end
         end
@@ -4141,23 +4141,23 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
     end
   end
   table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
+
   for _, child in ipairs(to_sort) do
+    child.frame:Show();
+    if child.AcquireThumnail then
+      child:AcquireThumnail()
+    end
     tinsert(frame.buttonsScroll.children, child);
     local controlledChildren = children[child:GetTitle()];
     if(controlledChildren) then
-      table.sort(controlledChildren, function(a, b) return a:GetGroupOrder() < b:GetGroupOrder(); end);
+      table.sort(controlledChildren, function(a, b) return displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
       for _, groupchild in ipairs(controlledChildren) do
-        if(child:GetExpanded()) then
-          groupchild.frame:Show();
-          if groupchild.AcquireThumnail then
-            groupchild:AcquireThumnail()
+        if(child:GetExpanded() and visible[groupchild]) then
+          displayButtons[groupchild].frame:Show();
+          if displayButtons[groupchild].AcquireThumnail then
+            displayButtons[groupchild]:AcquireThumnail()
           end
-          tinsert(frame.buttonsScroll.children, groupchild);
-        else
-          groupchild.frame:Hide();
-          if groupchild.ReleaseThumnail then
-            groupchild:ReleaseThumnail()
-          end
+          tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
         end
       end
     end
@@ -4168,6 +4168,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   local numUnloaded = 0;
   wipe(to_sort);
   wipe(children);
+
   for id, child in pairs(displayButtons) do
     containsFilter = not filter or filter == "";
     local data = WeakAuras.GetData(id);
@@ -4192,54 +4193,49 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
             child:DisableLoaded();
           end
           children[group] = children[group] or {};
-          tinsert(children[group], child);
+          visible[id] = true
+          tinsert(children[group], id);
         end
       else
         if(loaded[id] == nil) then
           child:DisableLoaded();
-          visibleTopLevel[id] = true
+          visible[id] = true
           tinsert(to_sort, child);
         end
       end
     end
   end
   table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
+
   for _, child in ipairs(to_sort) do
+    child.frame:Show();
+    if child.AcquireThumnail then
+      child:AcquireThumnail()
+    end
     tinsert(frame.buttonsScroll.children, child);
     local controlledChildren = children[child:GetTitle()];
     if(controlledChildren) then
-      table.sort(controlledChildren, function(a, b) return a:GetGroupOrder() < b:GetGroupOrder(); end);
+      table.sort(controlledChildren, function(a, b) return  displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
       for _, groupchild in ipairs(controlledChildren) do
-        if(child:GetExpanded()) then
-          groupchild.frame:Show();
-          if groupchild.AcquireThumnail then
-            groupchild:AcquireThumnail()
+        if(child:GetExpanded() and visible[groupchild]) then
+          displayButtons[groupchild].frame:Show();
+          if displayButtons[groupchild].AcquireThumnail then
+            displayButtons[groupchild]:AcquireThumnail()
           end
-          tinsert(frame.buttonsScroll.children, groupchild);
-        else
-          groupchild.frame:Hide();
-          if groupchild.ReleaseThumnail then
-            groupchild:ReleaseThumnail()
-          end
+          tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
         end
       end
     end
   end
 
-  -- Show/Hide buttons as needed
+  -- Hiding the other buttons
   for id, child in pairs(displayButtons) do
     local group = child:GetGroup();
-    if not group then
-      if(visibleTopLevel[id]) then
-        child.frame:Show();
-        if child.AcquireThumnail then
-          child:AcquireThumnail()
-        end
-      else
-        child.frame:Hide();
-        if child.ReleaseThumnail then
-          child:ReleaseThumnail()
-        end
+    local groupVisible = not group or visible[group] and displayButtons[group]:GetExpanded()
+    if(not groupVisible or not visible[id]) then
+      child.frame:Hide();
+      if child.ReleaseThumnail then
+        child:ReleaseThumnail()
       end
     end
   end
