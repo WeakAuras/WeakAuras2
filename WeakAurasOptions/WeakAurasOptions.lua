@@ -4550,12 +4550,14 @@ function WeakAuras.ResetMoverSizer()
 end
 
 function WeakAuras.SetMoverSizer(id)
-  if WeakAuras.regions[id].region.toShow then
-    frame.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id])
-  else
-    if WeakAuras.clones[id] then
-      local cloneId, clone = next(WeakAuras.clones[id])
-      frame.moversizer:SetToRegion(clone, db.displays[id])
+  if db.displays[id] then
+    if WeakAuras.regions[id].region.toShow then
+      frame.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id])
+    else
+      if WeakAuras.clones[id] then
+        local cloneId, clone = next(WeakAuras.clones[id])
+        frame.moversizer:SetToRegion(clone, db.displays[id])
+      end
     end
   end
 end
