@@ -1421,6 +1421,17 @@ function WeakAuras.ShowOptions(msg)
     WeakAuras.personalRessourceDisplayFrame:OptionsOpened();
   end
 
+  if not(firstLoad) then
+    -- Show what was last shown
+    WeakAuras.PauseAllDynamicGroups();
+    for id, button in pairs(displayButtons) do
+      if (button:GetVisibility() > 0) then
+        button:PriorityShow(button:GetVisibility());
+      end
+    end
+    WeakAuras.ResumeAllDynamicGroups();
+  end
+
   if (frame.pickedDisplay) then
     if (WeakAuras.IsPickedMultiple()) then
       local children = {}
@@ -1433,16 +1444,6 @@ function WeakAuras.ShowOptions(msg)
     end
   else
     frame:NewAura();
-  end
-  if not(firstLoad) then
-    -- Show what was last shown
-    WeakAuras.PauseAllDynamicGroups();
-    for id, button in pairs(displayButtons) do
-      if (button:GetVisibility() > 0) then
-        button:PriorityShow(button:GetVisibility());
-      end
-    end
-    WeakAuras.ResumeAllDynamicGroups();
   end
 
   if (frame.window == "codereview") then
@@ -4555,7 +4556,9 @@ function WeakAuras.SetMoverSizer(id)
   else
     if WeakAuras.clones[id] then
       local cloneId, clone = next(WeakAuras.clones[id])
-      frame.moversizer:SetToRegion(clone, db.displays[id])
+      if clone then
+        frame.moversizer:SetToRegion(clone, db.displays[id])
+      end
     end
   end
 end

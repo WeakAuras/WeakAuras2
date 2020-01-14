@@ -5682,9 +5682,6 @@ do
     if visible then
       visibleFakeStates[id] = true
       WeakAuras.UpdateFakeStatesFor(id)
-      if WeakAuras.GetMoverSizerId() == id then
-        WeakAuras.SetMoverSizer(id)
-      end
     else
       visibleFakeStates[id] = false
       if triggerState[id] then
