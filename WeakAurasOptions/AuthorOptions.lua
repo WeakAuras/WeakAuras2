@@ -592,7 +592,7 @@ typeControlAdders = {
         return not option.useLength
       end
     }
-    args["prefix" .. "multiline"] = {
+    args[prefix .. "multiline"] = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = name(option, "multiline", L["Large Input"]),
@@ -1451,8 +1451,8 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
     buttonWidth = buttonWidth + 0.15
   end
   local optionClass = optionClasses[option.type]
-  local optionName = option.class == "noninteractive" and WeakAuras.author_option_types[option.type]
-                     or option.name or L["Option #%i"]:format(i)
+  local optionName = optionClass == "noninteractive" and WeakAuras.author_option_types[option.type]
+                     or option.name
 
   args[prefix .. "collapse"] = {
     type = "execute",
