@@ -294,10 +294,14 @@ local function ConstructTextEditor(frame)
     self.reloadOptions = reloadOptions;
     self.setOnParent = setOnParent;
     self.url = url
-    urlText:SetText(url)
+    urlText:SetText(url or "")
     urlText:Hide()
     urlCopyLabel:Hide()
-    helpButton:Show()
+    if url then
+      helpButton:Show()
+    else
+      helpButton:Hide()
+    end
     if(frame.window == "texture") then
       frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
@@ -331,7 +335,9 @@ local function ConstructTextEditor(frame)
         if errorString then
           urlText:Hide()
           urlCopyLabel:Hide()
-          helpButton:Show()
+          if self.url then
+            helpButton:Show()
+          end
           editorError:Show()
           editorError:SetText(errorString);
         else
