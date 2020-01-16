@@ -6886,6 +6886,8 @@ function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
       else
         start = lastChar
       end
+    else
+      start  = lastChar
     end
   end
 end
