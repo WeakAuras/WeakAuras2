@@ -191,6 +191,7 @@ local funcs = {
     end
   end,
   SetGlowType = function(self, newType)
+    newType = newType or "buttonOverlay"
     if newType == self.glowType then
       return
     end
