@@ -1753,7 +1753,7 @@ WeakAuras.event_prototypes = {
             end
             state.changed = true;
           elseif ( (event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and unit == "player") then
-            state.cost = nil;
+            state.cost = "";
             state.changed = true;
           end
         ]]
@@ -1857,7 +1857,7 @@ WeakAuras.event_prototypes = {
       {
         name = L["Spell Cost"],
         func = function(trigger, state)
-          return "back", state.cost;
+          return "back", type(state.cost) == "number" and state.cost;
         end,
         enable = function(trigger)
           return trigger.use_showCost and (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
