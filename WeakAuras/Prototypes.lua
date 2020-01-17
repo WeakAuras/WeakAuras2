@@ -107,58 +107,6 @@ function WeakAuras.UnitChannelInfo(unit)
   end
 end
 
--- encounterJournalID => encounterID
-WeakAuras.encounter_table = {
-  -- Uldir
-  [2168] = 2144, -- Taloc the Corrupted
-  [2167] = 2141, -- MOTHER
-  [2146] = 2128, -- Fetid Devourer
-  [2169] = 2136, -- Zek'voz, Herald of N'zoth
-  [2195] = 2145, -- Zul, Reborn
-  [2194] = 2135, -- Mythrax the Unraveler
-  [2166] = 2134, -- Vectis
-  [2147] = 2122, -- G'huun
-  [2344] = 2265, -- Champion of the Light
-  -- Battle for Dazar'alor
-  --[2344] = 2265, -- Champion of the Light (A)
-  [2333] = 2265, -- Champion of the Light (H)
-  [2340] = 2284, -- Grong, the Revenant (A)
-  [2325] = 2263, -- Grong, the Jungle Lord (H)
-  [2323] = 2285, -- Jadefire Masters (A)
-  [2341] = 2266, -- Jadefire Masters (H)
-  [2342] = 2271, -- Opulence
-  [2330] = 2268, -- Conclave of the Chosen
-  [2334] = 2276, -- High Tinker Mekkatorque
-  [2335] = 2272, -- King Rastakhan
-  [2337] = 2280, -- Stormwall Blockade
-  [2343] = 2281, -- Lady Jaina Proudmoore
-  -- Crucible of Storms
-  [2328] = 2269, -- The Restless Cabal
-  [2332] = 2273, -- Uu'nat, Harbinger of the Void
-  -- The Eternal Palace
-  [2352] = 2298, -- Abyssal Commander Sivara
-  [2353] = 2305, -- Radiance of Ashara
-  [2347] = 2289, -- Blackwater Behemoth
-  [2354] = 2304, -- Lady Ashvane
-  [2351] = 2303, -- The Hatchery (Orgozoa)
-  [2359] = 2311, -- The Queen's Court
-  [2349] = 2293, -- Za'qul, Herald of N'zoth
-  [2361] = 2299, -- Queen Azshara
-  -- Ny'alotha, the Waking City
-  [2368] = 2329, -- Wrathion, the Black Emperor
-  [2365] = 2327, -- Maut
-  [2369] = 2334, -- The Prophet Skitra
-  [2377] = 2328, -- Dark Inquisitor Xanesh
-  [2372] = 2333, -- The Hivemind
-  [2367] = 2335, --	Shad'har the Insatiable
-  [2373] = 2343, -- Drest'agath
-  [2374] = 2345, -- Il'gynoth, Corruption Reborn
-  [2370] = 2336, -- Vexiona
-  [2364] = 2331, -- Ra-den the Despoiled
-  [2366] = 2337, -- Carapace of N'Zoth
-  [2375] = 2344, -- N'Zoth the Corruptor
-}
-
 local function get_encounters_list()
   if WeakAuras.IsClassic() then return "" end
   local encounter_list = ""
@@ -170,17 +118,17 @@ local function get_encounters_list()
     EJ_SelectInstance(instance_id)
     local name = EJ_GetInstanceInfo()
     local ej_index = 1
-    local boss, _, ej_id = EJ_GetEncounterInfoByIndex(ej_index)
+    local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index)
     while boss do
-      local encounter_id = WeakAuras.encounter_table[ej_id]
       if encounter_id then
-        if ej_index == 1 then
+        if name then
           encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, name)
+          name = nil -- Only add it once per section
         end
-        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, WeakAuras.encounter_table[ej_id])
+        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
       end
       ej_index = ej_index + 1
-      boss, _, ej_id = EJ_GetEncounterInfoByIndex(ej_index)
+      boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index)
     end
     instance_index = instance_index + 1
     instance_id = EJ_GetInstanceByIndex(instance_index, true)
