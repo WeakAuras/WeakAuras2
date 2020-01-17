@@ -1838,6 +1838,7 @@ WeakAuras.event_prototypes = {
       AddUnitChangeInternalEvents(trigger.unit, result)
       return result
     end,
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = L["Alternate Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
