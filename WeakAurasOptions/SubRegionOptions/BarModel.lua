@@ -55,6 +55,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Clipped by Progress"],
       order = 12,
+      hidden = function() return parentData.regionType ~= "aurabar" end
     },
     bar_model_alpha = {
       type = "range",
