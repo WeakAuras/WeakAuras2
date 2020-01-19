@@ -312,7 +312,7 @@ local function createOptions(id, data)
     -- sort options
     sort = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth,
       name = L["Sort"],
       order = 20,
       values = WeakAuras.group_sort_types
