@@ -58,14 +58,13 @@ local storeMethods = {
     return subStore, data
   end,
   Set = function(self, id, data)
-    if not self.stores[id] and data ~= nil then
-      self.stores[id] = {}
-      for name, method in pairs(subStoreMethods) do
-        self.stores[id][name] = method
+    if data ~= nil and type(id) == "string" then
+      if not self.stores[id] then
+        self.stores[id] = Mixin({}, subStoreMethods)
       end
+      self.stores[id]:Set(data)
+      return self.stores[id]
     end
-    self.stores[id]:Set(data)
-    return self.stores[id]
   end,
   Clean = function(self, cutoff)
     for id, subStore in pairs(self.stores) do
@@ -91,22 +90,16 @@ local prototype = {
     if type(store.stores) ~= "table" then
       store.stores = {}
     end
-    for name, method in pairs(storeMethods) do
-      store[name] = method
-    end
+    Mixin(store, storeMethods)
     store:Validate()
     return store, store
   end,
   Update = nil, -- This is the initial version! No need for Update yet.
   Open = function(self, image)
     local store = image
-    for name, method in pairs(storeMethods) do
-      store[name] = method
-    end
+    Mixin(store, storeMethods)
     for _, subStore in pairs(store.stores) do
-      for name, method in pairs(subStoreMethods) do
-        subStore[name] = method
-      end
+      Mixin(subStore, subStoreMethods)
     end
     store:Validate()
     return store
