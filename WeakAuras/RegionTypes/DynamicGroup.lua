@@ -247,8 +247,8 @@ local function noop() end
 local sorters = {
   none = function(data)
     return WeakAuras.ComposeSorts(
-      WeakAuras.CompareRegionData({"dataIndex"}),
-      WeakAuras.CompareRegionData({"region", "state", "index"})
+      WeakAuras.SortAscending({"dataIndex"}),
+      WeakAuras.SortAscending({"region", "state", "index"})
     )
   end,
   hybrid = function(data)
@@ -270,25 +270,28 @@ local sorters = {
         return nil
       end
     end
+    local sortExpirationTime
+    if hybridSortAscending then
+      sortExpirationTime = WeakAuras.SortAscending({"region", "state", "expirationTime"})
+    else
+      sortExpirationTime = WeakAuras.SortDescending({"region", "state", "expirationTime"})
+    end
     return WeakAuras.ComposeSorts(
       compareHybridStatus,
-      WeakAuras.CompareRegionData(
-        {"region", "state", "expirationTime"},
-        WeakAuras.ComposeSorts(WeakAuras.SortNilFirst, hybridSortAscending and WeakAuras.SortGreaterLast or WeakAuras.SortGreaterFirst)
-      ),
-      WeakAuras.CompareRegionData({"dataIndex"})
+      sortExpirationTime,
+      WeakAuras.SortAscending({"dataIndex"})
     )
   end,
   ascending = function(data)
     return WeakAuras.ComposeSorts(
       WeakAuras.SortAscending({"region", "state", "expirationTime"}),
-      WeakAuras.CompareRegionData({"dataIndex"}, WeakAuras.SortGreaterLast)
+      WeakAuras.SortAscending({"dataIndex"})
     )
   end,
   descending = function(data)
     return WeakAuras.ComposeSorts(
       WeakAuras.SortDescending({"region", "state", "expirationTime"}),
-      WeakAuras.CompareRegionData({"dataIndex"}, WeakAuras.SortGreaterFirst)
+      WeakAuras.SortAscending({"dataIndex"})
     )
   end,
   custom = function(data)
