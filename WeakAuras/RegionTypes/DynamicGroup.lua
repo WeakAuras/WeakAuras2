@@ -189,15 +189,15 @@ end
 
 WeakAuras.SortGreaterFirst = WeakAuras.InvertSort(WeakAuras.SortGreaterLast)
 
-function WeakAuras.CompareRegionData(path, compareFunc)
+function WeakAuras.SortRegionData(path, sortFunc)
   -- takes an array-like table, and a function that takes 2 values and returns true/false/nil
-  -- creates function that accesses the value indicated by path, and compares using compareFunc
+  -- creates function that accesses the value indicated by path, and compares using sortFunc
   if type(path) ~= "table" then
     path = {}
   end
-  if type(compareFunc) ~= "function" then
-    -- if compareFunc not provided, compare by default as "<"
-    compareFunc = WeakAuras.SortGreaterLast
+  if type(sortFunc) ~= "function" then
+    -- if sortFunc not provided, compare by default as "<"
+    sortFunc = WeakAuras.SortGreaterLast
   end
   return function(a, b)
     local aValue, bValue = a, b
@@ -206,12 +206,12 @@ function WeakAuras.CompareRegionData(path, compareFunc)
       if type(bValue) ~= "table" then return nil end
       aValue, bValue = aValue[key], bValue[key]
     end
-    return compareFunc(aValue, bValue)
+    return sortFunc(aValue, bValue)
   end
 end
 
 function WeakAuras.SortAscending(path)
-  return WeakAuras.CompareRegionData(path, WeakAuras.ComposeSorts(WeakAuras.SortNilFirst, WeakAuras.SortGreaterLast))
+  return WeakAuras.SortRegionData(path, WeakAuras.ComposeSorts(WeakAuras.SortNilFirst, WeakAuras.SortGreaterLast))
 end
 
 function WeakAuras.SortDescending(path)
@@ -255,7 +255,7 @@ local sorters = {
     local sortHybridTable = data.sortHybridTable or {}
     local hybridSortAscending = data.hybridSortMode == "ascending"
     local hybridFirst = data.hybridPosition == "hybridFirst"
-    local function compareHybridStatus(a, b)
+    local function sortHybridStatus(a, b)
       if not b then return true end
       if not a then return false end
 
@@ -277,7 +277,7 @@ local sorters = {
       sortExpirationTime = WeakAuras.SortDescending({"region", "state", "expirationTime"})
     end
     return WeakAuras.ComposeSorts(
-      compareHybridStatus,
+      sortHybridStatus,
       sortExpirationTime,
       WeakAuras.SortAscending({"dataIndex"})
     )
