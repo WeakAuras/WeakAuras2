@@ -78,12 +78,17 @@ local funcs = {
 
 local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
-  if data.bar_model_clip then
-    region:SetAllPoints(parent.bar.fg)
+  if parentData.regionType == "aurabar" then
+    if data.bar_model_clip then
+      region:SetAllPoints(parent.bar.fg)
+    else
+      region:SetAllPoints(parent.bar)
+    end
+    region.model:SetAllPoints(parent.bar)
   else
-    region:SetAllPoints(parent.bar)
+    region:SetAllPoints(parent)
+    region.model:SetAllPoints(parent)
   end
-  region.model:SetAllPoints(parent.bar)
 
   local model = tonumber(data.model_fileId)
   if model then
@@ -130,7 +135,7 @@ local function modify(parent, region, parentData, data, first)
 end
 
 local function supports(regionType)
-  return regionType == "aurabar"
+  return regionType == "aurabar" or regionType == "icon"
 end
 
 WeakAuras.RegisterSubRegionType("subbarmodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
