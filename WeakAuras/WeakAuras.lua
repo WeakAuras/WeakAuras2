@@ -4283,6 +4283,7 @@ local function pAdd(data, simpleChange)
   if simpleChange then
     db.displays[id] = data
     WeakAuras.SetRegion(data)
+    WeakAuras.UpdatedTriggerState(id)
   else
     if (data.controlledChildren) then
       WeakAuras.ClearAuraEnvironment(id);
