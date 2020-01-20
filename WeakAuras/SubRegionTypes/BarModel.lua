@@ -45,12 +45,86 @@ local properties = {
   }
 }
 
+local function CreateModel()
+  return CreateFrame("PlayerModel", nil, UIParent)
+end
+
+-- Keep the two model apis separate
+local poolOldApi = CreateObjectPool(CreateModel)
+local poolNewApi = CreateObjectPool(CreateModel)
+
+local function UpdateModel(region)
+  local data = region.data
+  local model = region.model
+
+  if not model then
+    return
+  end
+
+  -- Adjust model
+  local modelId = tonumber(data.model_fileId)
+  if modelId and model then
+    model:SetModel(modelId)
+  end
+
+  model:ClearTransform()
+  if (data.api) then
+    model:MakeCurrentCameraCustom()
+    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+      data.model_st_us / 1000);
+  else
+    model:SetPosition(data.model_z, data.model_x, data.model_y);
+    model:SetFacing(0);
+  end
+  model:SetModelAlpha(region.alpha)
+end
+
+local function AcquireModel(region, data)
+  local pool = data.api and poolNewApi or poolOldApi
+  local model = pool:Acquire()
+  model.api = data.api
+
+  model:ClearAllPoints()
+
+  if region.parentType == "aurabar" then
+    model:SetAllPoints(region.parent.bar)
+  else
+    model:SetAllPoints(region.parent)
+  end
+  model:SetParent(region)
+  model:SetKeepModelOnHide(true)
+  model:Show()
+
+  -- Adjust model
+  local modelId = tonumber(data.model_fileId)
+  if modelId then
+    model:SetModel(modelId)
+  end
+
+  model:ClearTransform()
+  if (data.api) then
+    model:MakeCurrentCameraCustom()
+    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+      data.model_st_us / 1000);
+  else
+    model:SetPosition(data.model_z, data.model_x, data.model_y);
+    model:SetFacing(0);
+  end
+  return model
+end
+
+local function ReleaseModel(model)
+  model:SetKeepModelOnHide(false)
+  model:Hide()
+  local pool = model.api and poolNewApi or poolOldApi
+  pool:Release(model)
+end
+
 local function create()
   local subRegion = CreateFrame("FRAME", nil, UIParent)
   subRegion:SetClipsChildren(true)
-
-  local model = CreateFrame("PlayerModel", nil, subRegion)
-  subRegion.model = model
 
   return subRegion
 end
@@ -65,73 +139,60 @@ end
 
 local funcs = {
   SetVisible = function(self, visible)
+    self.visible = visible
     if visible then
+      if not self.model then
+        self.model = AcquireModel(self, self.data)
+        self.model:SetModelAlpha(self.alpha)
+        C_Timer.After(0, function()
+          UpdateModel(self)
+        end)
+      end
       self:Show()
     else
       self:Hide()
+      if self.model then
+        ReleaseModel(self.model)
+        self.model = nil
+      end
     end
   end,
   SetAlpha = function(self, alpha)
-    self.model:SetModelAlpha(alpha)
+    if self.model then
+      self.model:SetModelAlpha(alpha)
+    end
+    self.alpha = alpha
   end,
 }
 
 local function modify(parent, region, parentData, data, first)
+  if region.model then
+    ReleaseModel(region.model)
+    region.model = nil
+  end
+
+  region.data = data
+  region.parentType = parentData.regionType
+  region.parent = parent
+
   region:SetParent(parent)
+
   if parentData.regionType == "aurabar" then
     if data.bar_model_clip then
       region:SetAllPoints(parent.bar.fg)
     else
       region:SetAllPoints(parent.bar)
     end
-    region.model:SetAllPoints(parent.bar)
   else
     region:SetAllPoints(parent)
-    region.model:SetAllPoints(parent)
-  end
-
-  local model = tonumber(data.model_fileId)
-  if model then
-    region.model:SetModel(model)
-  end
-
-  if (data.api) then
-    region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz), data.model_st_us / 1000);
-  else
-    region.model:ClearTransform();
-    region.model:SetPosition(data.model_z, data.model_x, data.model_y);
-  end
-
-  region.PreShow = function(self)
-    if not self.model:GetKeepModelOnHide() and model then
-      C_Timer.After(0, function()
-          self.model:SetModel(model)
-          self.model:SetKeepModelOnHide(true)
-
-          if (data.api) then
-            region.model:ClearTransform();
-            region.model:SetPosition(0, 0, 0);
-            region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-              rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-              data.model_st_us / 1000);
-          else
-            region.model:ClearTransform();
-            region.model:SetPosition(data.model_z, data.model_x, data.model_y);
-          end
-          region:SetAlpha(data.bar_model_alpha)
-        end)
-    end
   end
 
   for k, v in pairs(funcs) do
     region[k] = v
   end
 
-  region:SetVisible(data.bar_model_visible)
   region:SetAlpha(data.bar_model_alpha)
-
-  parent.subRegionEvents:AddSubscriber("PreShow", region)
+  region:SetVisible(data.bar_model_visible)
 end
 
 local function supports(regionType)
