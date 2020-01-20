@@ -372,6 +372,18 @@ WeakAuras.spark_hide_types = {
   BOTH  = L["Full/Empty"]
 }
 
+WeakAuras.tick_placement_modes = {
+  AUTO = L["Automatic"],
+  STATIC = L["Static"]
+}
+
+--[[WeakAuras.tick_hide_types = {
+  NEVER = L["Never"],
+  FULL  = L["Full"],
+  EMPTY = L["Empty"],
+  AUTO  = L["Automatic"],
+}]]--
+
 WeakAuras.containment_types = {
   OUTSIDE = L["Outside"],
   INSIDE = L["Inside"]
