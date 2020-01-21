@@ -106,7 +106,7 @@ local funcs = {
         offset = (tonumber(percent) / 100) * width
       else
         local pixels = width / (self.parent.state.duration or self.parent.state.total or 1)
-        offset = tonumber(placement) * pixels
+        offset = math.max((tonumber(placement) * pixels), width)
       end
     end
 
