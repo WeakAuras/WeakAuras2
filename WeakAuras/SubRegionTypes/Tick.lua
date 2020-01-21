@@ -12,7 +12,7 @@ local default = function(parentType)
     automatic_height = true,
     tick_width = 2,
     tick_height = 30,
-    --tick_hide_mode = "NEVER",
+    tick_hide_mode = "NEVER",
   }
 end
 
@@ -21,12 +21,18 @@ local properties = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
-    defaultProperty = true
+    defaultProperty = true,
   },
   tick_color = {
     display = L["Color"],
     setter = "SetTickColor",
-    type = "color"
+    type = "color",
+  },
+  tick_placement_mode = {
+    display = L["Placement Mode"],
+    setter = "SetTickPlacementMode",
+    type = "select",
+    values = WeakAuras.tick_placement_modes,
   },
   tick_placement = {
     display = L["Placement"],
@@ -49,7 +55,12 @@ local properties = {
     min = 0,
     bigStep = 1,
     default = 30,
-    --hidden = function() return data.automatic_height end,
+  },
+  tick_hide_mode = {
+    display = L["Placement Mode"],
+    setter = "SetTickPlacementMode",
+    type = "select",
+    values = WeakAuras.tick_hide_modes,
   },
 }
 
