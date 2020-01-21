@@ -103,14 +103,14 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       disabled = function() return data.automatic_height end,
     },
-    --[[tick_hide_mode = {
+    tick_hide_mode = {
       type = "select",
       name = L["Hide On"],
       width = WeakAuras.normalWidth - indentWidth,
       order = order + 1.52,
-      values = WeakAuras.tick_hide_types,
+      values = WeakAuras.tick_hide_modes,
       hidden = hiddenTickExtra,
-    },]]--
+    },
   }
   return options
 end

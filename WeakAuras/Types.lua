@@ -377,12 +377,13 @@ WeakAuras.tick_placement_modes = {
   STATIC = L["Static"]
 }
 
---[[WeakAuras.tick_hide_modes = {
+WeakAuras.tick_hide_modes = {
   NEVER = L["Never"],
   FULL  = L["Full"],
   EMPTY = L["Empty"],
+  BOTH  = L["Empty"],
   AUTO  = L["Automatic"],
-}]]--
+}
 
 WeakAuras.containment_types = {
   OUTSIDE = L["Outside"],

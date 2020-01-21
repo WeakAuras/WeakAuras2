@@ -31,13 +31,13 @@ local properties = {
   tick_placement_mode = {
     display = L["Placement Mode"],
     setter = "SetTickPlacementMode",
-    type = "select",
+    type = "list",
     values = WeakAuras.tick_placement_modes,
   },
   tick_placement = {
     display = L["Placement"],
     setter = "SetTickPlacement",
-    type = "input",
+    type = "string",
     validate = WeakAuras.ValidateNumericOrPercent,
   },
   tick_width = {
@@ -59,7 +59,7 @@ local properties = {
   tick_hide_mode = {
     display = L["Placement Mode"],
     setter = "SetTickPlacementMode",
-    type = "select",
+    type = "list",
     values = WeakAuras.tick_hide_modes,
   },
 }
@@ -184,6 +184,7 @@ local function modify(parent, region, parentData, data, first)
   region:SetTickHeight(data.tick_height)
 
   parent.subRegionEvents:AddSubscriber("Update", region)
+  --parent.subRegionEvents:AddSubscriber("FrameTick", region)
 end
 
 local function supports(regionType)
