@@ -1753,6 +1753,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         end
         WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
         WeakAuras.UpdateCurrentInstanceType();
+        WeakAuras.InitializeEncounterAndZoneLists()
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = WeakAuras.CreatePvPTalentCache;
