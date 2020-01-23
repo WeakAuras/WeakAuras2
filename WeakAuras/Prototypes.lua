@@ -107,71 +107,80 @@ function WeakAuras.UnitChannelInfo(unit)
   end
 end
 
-local function get_encounters_list()
-  if WeakAuras.IsClassic() then return "" end
-  local encounter_list = ""
 
+
+local encounter_list = ""
+local zoneId_list = ""
+local zoneGroupId_list = ""
+function WeakAuras.InitializeEncounterAndZoneLists()
+  if WeakAuras.IsClassic() then return "" end
   EJ_SelectTier(EJ_GetNumTiers())
-  local instance_index = 1
-  local instance_id = EJ_GetInstanceByIndex(instance_index, true)
-  while instance_id do
-    EJ_SelectInstance(instance_id)
-    local name = EJ_GetInstanceInfo()
-    local ej_index = 1
-    local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index)
-    while boss do
-      if encounter_id then
-        if name then
-          encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, name)
-          name = nil -- Only add it once per section
+
+  for _, inRaid in ipairs({false, true}) do
+    local instance_index = 1
+    local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+
+    local title = inRaid and L["Raids"] or L["Dungeons"]
+    zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
+    zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
+
+    while instance_id do
+      EJ_SelectInstance(instance_id)
+      local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
+      local ej_index = 1
+      local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+
+      -- zone ids and zone group ids
+      if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
+        local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
+        if mapGroupId then
+          zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, instance_name, mapGroupId)
+          local maps = ""
+          for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
+            if map.mapID then
+              maps = maps .. map.mapID .. ", "
+            end
+          end
+          maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
+          zoneId_list = ("%s%s: %s\n"):format(zoneId_list, instance_name, maps)
+        else
+          zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, dungeonAreaMapID)
         end
-        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
       end
-      ej_index = ej_index + 1
-      boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index)
+
+      -- Encounter ids
+      if inRaid then
+        while boss do
+          if encounter_id then
+            if instance_name then
+              encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
+              instance_name = nil -- Only add it once per section
+            end
+            encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
+          end
+          ej_index = ej_index + 1
+          boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+        end
+        encounter_list = encounter_list .. "\n"
+      end
+      instance_index = instance_index + 1
+      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
     end
-    instance_index = instance_index + 1
-    instance_id = EJ_GetInstanceByIndex(instance_index, true)
-    encounter_list = encounter_list .. "\n"
+    zoneId_list = zoneId_list .. "\n"
+    zoneGroupId_list = zoneGroupId_list .. "\n"
   end
 
-  return encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
+  encounter_list = encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
+end
+
+local function get_encounters_list()
+  if WeakAuras.IsClassic() then return "" end
+
+  return encounter_list
 end
 
 local function get_zoneId_list()
   if WeakAuras.IsClassic() then return "" end
-  local zoneId_list = ""
-  EJ_SelectTier(EJ_GetNumTiers())
-  for _,inRaid in ipairs({false, true}) do
-    local instance_index = 1
-    local instance_id
-    local title = inRaid and L["Raids"] or L["Dungeons"]
-    zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
-    repeat
-      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
-      instance_index = instance_index + 1
-      if instance_id then
-        EJ_SelectInstance(instance_id)
-        local iname,_,_, _,_,_,dungeonAreaMapID = EJ_GetInstanceInfo();
-        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
-          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
-          if mapGroupId then
-            local maps = ""
-            for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
-              if map.mapID then
-                maps = maps .. map.mapID .. ", "
-              end
-            end
-            maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
-            zoneId_list = ("%s%s: %s\n"):format(zoneId_list, iname, maps)
-          else
-            zoneId_list = ("%s%s: %d\n"):format(zoneId_list, iname, dungeonAreaMapID)
-          end
-        end
-      end
-    until not instance_id
-    zoneId_list = zoneId_list .. "\n"
-  end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
@@ -196,29 +205,6 @@ end
 
 local function get_zoneGroupId_list()
   if WeakAuras.IsClassic() then return "" end
-  local zoneGroupId_list = ""
-  EJ_SelectTier(EJ_GetNumTiers())
-  for _,inRaid in ipairs({false, true}) do
-    local instance_index = 1
-    local instance_id
-    local title = inRaid and L["Raids"] or L["Dungeons"]
-    zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
-    repeat
-      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
-      instance_index = instance_index + 1
-      if instance_id then
-        EJ_SelectInstance(instance_id)
-        local iname,_,_, _,_,_,dungeonAreaMapID = EJ_GetInstanceInfo();
-        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
-          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
-          if mapGroupId then
-            zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, iname, mapGroupId)
-          end
-        end
-      end
-    until not instance_id
-    zoneGroupId_list = zoneGroupId_list .. "\n"
-  end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name
