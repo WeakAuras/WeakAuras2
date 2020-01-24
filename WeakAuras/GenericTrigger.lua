@@ -3116,7 +3116,7 @@ local itemCountWatchFrame;
 function WeakAuras.RegisterItemCountWatch()
   if not(itemCountWatchFrame) then
     itemCountWatchFrame = CreateFrame("frame");
-    itemCountWatchFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+    itemCountWatchFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
     itemCountWatchFrame:SetScript("OnEvent", function()
       WeakAuras.StartProfileSystem("generictrigger");
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
