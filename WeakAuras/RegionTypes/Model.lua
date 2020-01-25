@@ -102,13 +102,17 @@ local function CreateModel()
   return CreateFrame("PlayerModel", nil, UIParent)
 end
 
-local pool = CreateObjectPool(CreateModel)
+-- Keep the two model apis separate
+local poolOldApi = CreateObjectPool(CreateModel)
+local poolNewApi = CreateObjectPool(CreateModel)
 
 local function AcquireModel(region, data)
+  local pool = data.api and poolNewApi or poolOldApi
   local model = pool:Acquire()
+  model.api = data.api
 
   model:ClearAllPoints()
-  model:SetAllPoints(region);
+  model:SetAllPoints(region)
   model:SetParent(region)
   model:SetKeepModelOnHide(true)
   model:Show()
@@ -118,6 +122,7 @@ local function AcquireModel(region, data)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   model:ClearTransform()
   if (data.api) then
+    model:MakeCurrentCameraCustom()
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
   else
@@ -169,6 +174,7 @@ local function ReleaseModel(model)
   model:UnregisterEvent("PLAYER_TARGET_CHANGED");
   model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
   model:SetScript("OnEvent", nil);
+  local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)
 end
 
@@ -180,7 +186,6 @@ local function modify(parent, region, data)
 
   if region.model then
     ReleaseModel(region.model)
-    region.model = AcquireModel(region, data)
   end
 
   -- Reset position and size
