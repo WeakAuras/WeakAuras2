@@ -224,8 +224,7 @@ do
     [20] = true,
     [21] = true,
     [23] = true,
-    [33] = true,
-    [35] = true
+    [33] = true
   }
   local raceID = 1
   local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
