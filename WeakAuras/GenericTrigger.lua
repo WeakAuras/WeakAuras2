@@ -3603,7 +3603,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   end
 
   if (event.stacksFunc) then
-    local ok, stacks = event.stacksFunc(firstTrigger);
+    local ok, stacks = xpcall(event.stacksFunc, geterrorhandler(), firstTrigger);
     state.stacks = ok and stacks or nil;
   end
 
