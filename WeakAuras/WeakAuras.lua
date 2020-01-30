@@ -1,5 +1,8 @@
 local internalVersion = 29;
 
+-- Lua APIs
+local insert = table.insert
+
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
@@ -87,7 +90,7 @@ function WeakAuras.PrintHelp()
   print(L["Usage:"])
   print(L["/wa help - Show this message"])
   print(L["/wa minimap - Toggle the minimap icon"])
-  print(L["/wa pstart - Start profiling"])
+  print(L["/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."])
   print(L["/wa pstop - Finish profiling"])
   print(L["/wa pprint - Show the results from the most recent profiling"])
   print(L["/wa repair - Repair tool"])
@@ -95,18 +98,27 @@ function WeakAuras.PrintHelp()
 end
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
-function SlashCmdList.WEAKAURAS(msg)
+function SlashCmdList.WEAKAURAS(input)
   if not WeakAuras.IsCorrectVersion() then
     prettyPrint(WeakAuras.wrongTargetMessage)
     return
   end
-  msg = string.lower(msg)
+  local args, msg = {}
+  for v in string.gmatch(input, "%S+") do
+    if not msg then
+      msg = v
+    else
+      insert(args, v)
+    end
+  end
   if msg == "pstart" then
-    WeakAuras.StartProfile();
+    WeakAuras.StartProfile(args[1]);
   elseif msg == "pstop" then
     WeakAuras.StopProfile();
   elseif msg == "pprint" then
-    WeakAuras.PrintProfile();
+    WeakAuras.PrintProfile(args[1]);
+  elseif msg == "pcancel" then
+    WeakAuras.CancelScheduledProfile()
   elseif msg == "minimap" then
     WeakAuras.ToggleMinimap();
   elseif msg == "help" then
