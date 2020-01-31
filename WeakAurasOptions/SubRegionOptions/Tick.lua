@@ -75,33 +75,33 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = order + 0.20,
     },
-    automatic_height = {
+    automatic_length = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Automatic Height"],
+      name = L["Automatic length"],
       order = order + 0.21,
-      desc = L["Matches the height setting of the bar."],
+      desc = L["Matches the height setting of a horizontal bar or width for a vertical bar."],
     },
-    tick_width = {
+    tick_thickness = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Width"],
+      name = L["Thickness"],
       order = order + 0.30,
       min = 0,
       --softMin = 0,
       softMax = 20,
       step = 1,
     },
-    tick_height = {
+    tick_length = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Height"],
+      name = L["Length"],
       order = order + 0.31,
       min = 0,
       --softMin = 0,
       softMax = 50,
       step = 1,
-      disabled = function() return data.automatic_height end,
+      disabled = function() return data.automatic_length end,
     },
     tick_hide_mode = {
       type = "select",

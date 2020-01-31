@@ -10,8 +10,8 @@ local default = function(parentType)
     tick_placement_mode = "STATIC",
     tick_placement = "50%",
     automatic_height = true,
-    tick_width = 2,
-    tick_height = 30,
+    tick_thickness = 2,
+    tick_length = 30,
     tick_hide_mode = "NEVER",
   }
 end
@@ -40,9 +40,9 @@ local properties = {
     type = "string",
     validate = WeakAuras.ValidateNumericOrPercent,
   },
-  tick_width = {
-    display = L["Width"],
-    setter = "SetTickWidth",
+  tick_thickness = {
+    display = L["Thickness"],
+    setter = "SetTickThickness",
     type = "number",
     min = 0,
     bigStep = 1,
@@ -134,11 +134,11 @@ local funcs = {
     self:ClearAllPoints()
     self:SetPoint("CENTER", self.parent.bar, side[self.parentOrientation], offsetx, offsety)
   end,
-  SetTickWidth = function(self, width)
+  SetTickThickness = function(self, thickness)
     if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
-      self:SetHeight(width)
+      self:SetHeight(thickness)
     else
-      self:SetWidth(width)
+      self:SetWidth(thickness)
     end
   end,
   SetTickHeight = function(self, height)
@@ -174,13 +174,13 @@ local function modify(parent, region, parentData, data, first)
   region.tick_placement_mode = data.tick_placement_mode
   region.tick_placement = data.tick_placement
   region.automatic_height = data.automatic_height
-  region.tick_width = data.tick_width
+  region.tick_thickness = data.tick_thickness
   region.tick_height = data.tick_height
 
 
   region:SetVisible(data.tick_visible)
   region:SetTickColor(unpack(data.tick_color))
-  region:SetTickWidth(data.tick_width)
+  region:SetTickThickness(data.tick_thickness)
   region:SetTickHeight(data.tick_height)
 
   parent.subRegionEvents:AddSubscriber("Update", region)
