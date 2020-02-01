@@ -982,7 +982,7 @@ WeakAuras.load_prototype = {
       width = WeakAuras.normalWidth,
       init = "arg",
       values = "group_types",
-      events = {"GROUP_LEFT", "GROUP_JOINED"}
+      events = {"GROUP_ROSTER_UPDATE"}
     },
     {
       name = "name",
@@ -5945,8 +5945,7 @@ WeakAuras.event_prototypes = {
         tinsert(pet_unit_events, "UNIT_HEALTH")
       end
       if trigger.use_ingroup ~= nil then
-        tinsert(events, "GROUP_LEFT")
-        tinsert(events, "GROUP_JOINED")
+        tinsert(events, "GROUP_ROSTER_UPDATE")
       end
 
       if trigger.use_instance_size then
@@ -6058,7 +6057,8 @@ WeakAuras.event_prototypes = {
         display = L["In Group"],
         type = "multiselect",
         values = "group_types",
-        init = "WeakAuras.GroupType()"
+        init = "WeakAuras.GroupType()",
+        events = {"GROUP_ROSTER_UPDATE"}
       },
       {
         name = "instance_size",
