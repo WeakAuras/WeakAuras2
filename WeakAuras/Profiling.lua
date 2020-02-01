@@ -8,6 +8,8 @@ local profileData = {}
 profileData.systems = {}
 profileData.auras = {}
 
+local RealTimeProfilingWindow
+
 WeakAuras.profileData = profileData
 
 WeakAuras.table_to_string = function(tbl, depth)
@@ -266,6 +268,8 @@ function WeakAuras.StartProfile()
   WeakAuras.StopProfileSystem = StopProfileSystem
   WeakAuras.StopProfileAura = StopProfileAura
   popup:SetText("")
+
+  RealTimeProfilingWindow:Start()
 end
 
 local function doNothing()
@@ -286,6 +290,8 @@ function WeakAuras.StopProfile()
   WeakAuras.StartProfileAura = doNothing
   WeakAuras.StopProfileSystem = doNothing
   WeakAuras.StopProfileAura = doNothing
+
+  RealTimeProfilingWindow:Stop()
 end
 
 function WeakAuras.ToggleProfile()
@@ -359,4 +365,149 @@ function WeakAuras.PrintProfile()
     PrintOneProfile(k, profileData.auras[k], total)
   end
   popup:Show()
+end
+
+RealTimeProfilingWindow = CreateFrame("Frame", nil, UIParent)
+RealTimeProfilingWindow.width = 400
+RealTimeProfilingWindow.height = 300
+RealTimeProfilingWindow.barHeight = 20
+RealTimeProfilingWindow.titleHeight = 15
+RealTimeProfilingWindow.bars = {}
+RealTimeProfilingWindow:SetMovable(true)
+
+local texture = "Interface\\DialogFrame\\UI-DialogBox-Background"
+function RealTimeProfilingWindow:AddBar(num, name, map, total)
+  local bar = self.bars[name]
+
+  -- hide bar if it's going to be out of background window
+  if self.titleHeight + self.barHeight * num > self.height then
+    if bar then
+      bar:Hide()
+    end
+    return
+  end
+
+  local pct = 100 * map.elapsed / total
+
+  if not bar then
+    bar = CreateFrame("FRAME", nil, self)
+    self.bars[name] = bar
+    Mixin(bar, SmoothStatusBarMixin)
+
+    local fg = bar:CreateTexture(nil, "ARTWORK")
+    fg:SetSnapToPixelGrid(false)
+    fg:SetTexelSnappingBias(0)
+    fg:SetTexture(texture)
+    fg:SetDrawLayer("ARTWORK", 0)
+    fg:Show()
+    bar.fg = fg
+
+    local bg = bar:CreateTexture(nil, "ARTWORK")
+    bg:SetSnapToPixelGrid(false)
+    bg:SetTexelSnappingBias(0)
+    bg:SetTexture(texture)
+    bg:SetDrawLayer("ARTWORK", -1)
+    bg:SetAllPoints()
+    bg:Show()
+    bar.bg = bg
+
+    bar:SetSize(self.width, self.barHeight)
+    if not bar.txtName then
+      local txtName = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+      bar.txtName = txtName
+      txtName:SetPoint("TOPLEFT", bar, "TOPLEFT")
+      txtName:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -30)
+      txtName:SetJustifyH("LEFT")
+    end
+    if not bar.txtPct then
+      local txtPct = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+      bar.txtPct = txtPct
+      txtPct:SetPoint("TOPLEFT", bar, "TOPRIGHT", -50, 0)
+      txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
+      txtPct:SetJustifyH("RIGHT")
+    end
+    bar:Show()
+  end
+  bar:ClearAllPoints()
+  bar:SetPoint("TOPLEFT", self, "TOPLEFT", 0, - (num - 1) * self.barHeight - self.titleHeight)
+  bar.fg:ClearAllPoints()
+  bar.fg:SetPoint("TOPLEFT", bar)
+  bar.fg:SetSize(self.width / 100 * pct, self.barHeight)
+  bar.txtName:SetText(("%s (%.2fms)"):format(name, map.elapsed))
+  bar.txtPct:SetText(("%.2f%%"):format(pct))
+  bar:Show()
+  return bar
+end
+
+function RealTimeProfilingWindow:RefreshBars()
+  if not profileData.systems.time then
+    return
+  end
+
+  local total = TotalProfileTime(WeakAuras.profileData.auras)
+  for i, k in ipairs(SortProfileMap(WeakAuras.profileData.auras)) do
+    if (k ~= "time" and k ~= "wa") then
+      local bar = self:AddBar(i, k, profileData.auras[k], total)
+      if bar then
+        if i % 2 == 0 then
+          bar.fg:SetColorTexture(1, 1, 1, 0.7)
+          bar.bg:SetColorTexture(0, 0, 0, 0.2)
+        else
+          bar.fg:SetColorTexture(1, 1, 1, 0.9)
+          bar.bg:SetColorTexture(0, 0, 0, 0.4)
+        end
+      end
+    end
+  end
+end
+
+function RealTimeProfilingWindow:Start()
+  self:ClearAllPoints()
+  self:SetSize(self.width, self.height)
+  --self:SetVertexColor(1, 1, 1, 0.2)
+  self:SetClampedToScreen(true)
+  self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
+  self:Show()
+  if not self.title then
+    self.title = CreateFrame("Frame", nil, self)
+    self.title:SetSize(self.width, self.titleHeight)
+    self.title:SetPoint("TOPLEFT", self)
+    self.title:Show()
+    self.titleText = self.title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    self.titleText:SetText(L["WeakAuras Profiling"])
+    self.titleText:SetPoint("CENTER", self.title)
+  end
+  if not self.bg then
+    local bg = self:CreateTexture(nil, "BACKGROUND")
+    self.bg = bg
+    bg:SetTexture(texture)
+    bg:SetAllPoints()
+    bg:Show()
+  end
+
+  self:SetScript("OnMouseDown", function(self, button)
+    if button == "LeftButton" and not self.is_moving then
+      self:StartMoving()
+      self.is_moving = true
+    elseif button == "RightButton" then
+      self:Stop()
+    end
+  end)
+
+  self:SetScript("OnMouseUp", function(self, button)
+    if button == "LeftButton" and self.is_moving then
+      self:StopMovingOrSizing()
+      self.is_moving = nil
+    end
+  end)
+
+  self:SetScript("OnUpdate", self.RefreshBars)
+end
+
+function RealTimeProfilingWindow:Stop()
+  self:Hide()
+  self:SetScript("OnUpdate", nil)
+  for k, v in pairs(self.bars) do
+    v:Hide()
+  end
 end
