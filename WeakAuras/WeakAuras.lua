@@ -1109,7 +1109,7 @@ local globalConditions =
   ["hastarget"] = {
     display = L["Has Target"],
     type = "bool",
-    events = {"PLAYER_TARGET_CHANGED"},
+    events = {"PLAYER_TARGET_CHANGED", "PLAYER_ENTERING_WORLD"},
     globalStateUpdate = function(state)
       state.hastarget = UnitExists("target");
     end
