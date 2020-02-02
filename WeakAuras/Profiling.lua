@@ -459,23 +459,26 @@ function RealTimeProfilingWindow:RefreshBars()
       end
     end
   end
+  local timespent = debugprofilestop() - profileData.systems.time.start
+  self.statsFrameText:SetText(("Time in WeakAuras: %.2f%%"):format(100 * profileData.systems.wa.elapsed / timespent))
 end
 
 function RealTimeProfilingWindow:Start()
   self:ClearAllPoints()
   self:SetSize(self.width, self.height)
-  --self:SetVertexColor(1, 1, 1, 0.2)
   self:SetClampedToScreen(true)
   self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
   self:Show()
-  if not self.title then
-    self.title = CreateFrame("Frame", nil, self)
-    self.title:SetSize(self.width, self.titleHeight)
-    self.title:SetPoint("TOPLEFT", self)
-    self.title:Show()
-    self.titleText = self.title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    self.titleText:SetText(L["WeakAuras Profiling"])
-    self.titleText:SetPoint("CENTER", self.title)
+  if not self.titleFrame then
+    local titleFrame = CreateFrame("Frame", nil, self)
+    self.titleFrame = titleFrame
+    titleFrame:SetSize(self.width, self.titleHeight)
+    titleFrame:SetPoint("TOPLEFT", self)
+    titleFrame:Show()
+    local titleText = self.titleFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    self.titleFrameText = titleText
+    titleText:SetText(L["WeakAuras Profiling"])
+    titleText:SetPoint("CENTER", self.titleFrame)
   end
   if not self.bg then
     local bg = self:CreateTexture(nil, "BACKGROUND")
@@ -484,7 +487,16 @@ function RealTimeProfilingWindow:Start()
     bg:SetAllPoints()
     bg:Show()
   end
-
+  if not self.statsFrame then
+    local statsFrame = CreateFrame("Frame", nil, self)
+    self.statsFrame = statsFrame
+    statsFrame:SetSize(self.width, self.titleHeight)
+    statsFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+    statsFrame:Show()
+    local statsFrameText = self.statsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    self.statsFrameText = statsFrameText
+    statsFrameText:SetPoint("LEFT", self.statsFrame)
+  end
   self:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and not self.is_moving then
       self:StartMoving()
