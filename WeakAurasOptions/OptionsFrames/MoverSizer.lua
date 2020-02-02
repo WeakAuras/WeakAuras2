@@ -467,8 +467,13 @@ local function ConstructMoverSizer(parent)
     local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
     mover.moving.region = region
     mover.moving.data = data
-    local xOff, yOff
-    mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
+    local ok, selfPoint, anchor, anchorPoint, xOff, yOff = pcall(region.GetPoint, region, 1)
+    if not ok then
+      return
+    end
+
+    mover.selfPoint, mover.anchor, mover.anchorPoint = selfPoint, anchor, anchorPoint
+
     xOff = xOff or 0
     yOff = yOff or 0
     mover:ClearAllPoints()
