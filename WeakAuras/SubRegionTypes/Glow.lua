@@ -50,7 +50,7 @@ local properties = {
     type = "bool"
   },
   glowColor = {
-    display = L["Color"],
+    display = L["Custom Color"],
     setter = "SetGlowColor",
     type = "color"
   },
