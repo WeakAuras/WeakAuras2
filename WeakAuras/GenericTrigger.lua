@@ -3346,6 +3346,9 @@ function GenericTrigger.SetToolTip(trigger, state)
     if (state.spellId) then
       GameTooltip:SetSpellByID(state.spellId);
       return true
+    elseif (state.link) then
+      GameTooltip:SetHyperlink(state.link);
+      return true
     elseif (state.itemId) then
       GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
       return true
