@@ -687,7 +687,7 @@ local GetRealSize = {
   },
   ["VERTICAL"] = {
     [true] = function(self)
-      return self.totalWidth, self.totalHeight - self.iconWidth
+      return self.totalWidth, self.totalHeight - self.iconHeight
     end,
     [false] = function(self)
       return self.totalWidth, self.totalHeight
@@ -723,7 +723,7 @@ local function orientHorizontalInverse(region, data)
   end
 
   -- Save orientation
-  bar:SetOrientation(region.orientation);
+  bar:SetOrientation(region.effectiveOrientation);
 end
 
 local function orientHorizontal(region, data)
@@ -753,7 +753,7 @@ local function orientHorizontal(region, data)
   end
 
   -- Save orientation
-  bar:SetOrientation(region.orientation);
+  bar:SetOrientation(region.effectiveOrientation);
 end
 
 local function orientVerticalInverse(region, data)
@@ -819,15 +819,7 @@ end
 local function orient(region, data, orientation)
   -- Apply correct orientation
   region.orientation = orientation;
-  if orientation == "HORIZONTAL_INVERSE" then
-    orientHorizontalInverse(region, data);
-  elseif orientation == "HORIZONTAL" then
-    orientHorizontal(region, data);
-  elseif orientation == "VERTICAL_INVERSE" then
-    orientVerticalInverse(region, data);
-  elseif orientation == "VERTICAL" then
-    orientVertical(region, data);
-  end
+  region:UpdateEffectiveOrientation()
 end
 
 local function GetTexCoordZoom(texWidth)
@@ -865,6 +857,9 @@ local function modify(parent, region, data)
   region.height = data.height;
   region.scalex = 1;
   region.scaley = 1;
+  region.flipX = false
+  region.flipY = false
+  region.orientation = data.orientation
 
   region.overlayclip = data.overlayclip;
 
@@ -940,8 +935,40 @@ local function modify(parent, region, data)
 
   region.inverseDirection = data.inverse;
 
+  region.UpdateEffectiveOrientation = function()
+    local orientation = region.orientation
+
+    if region.flipX then
+      if region.orientation == "HORIZONTAL" then
+        orientation = "HORIZONTAL_INVERSE"
+      elseif region.orientation == "HORIZONTAL_INVERSE" then
+        orientation = "HORIZONTAL"
+      end
+    end
+    if region.flipY then
+      if region.orientation == "VERTICAL" then
+        orientation = "VERTICAL_INVERSE"
+      elseif region.orientation == "VERTICAL_INVERSE" then
+        orientation = "VERTICAL"
+      end
+    end
+
+    if orientation ~= region.effectiveOrientation then
+      region.effectiveOrientation = orientation
+      if region.effectiveOrientation == "HORIZONTAL_INVERSE" then
+        orientHorizontalInverse(region, data);
+      elseif region.effectiveOrientation == "HORIZONTAL" then
+        orientHorizontal(region, data);
+      elseif region.effectiveOrientation == "VERTICAL_INVERSE" then
+        orientVerticalInverse(region, data);
+      elseif region.effectiveOrientation == "VERTICAL" then
+        orientVertical(region, data);
+      end
+    end
+  end
+
   -- Apply orientation alignment
-  orient(region, data, data.orientation);
+  region:UpdateEffectiveOrientation()
 
   -- Update tooltip availability
   local tooltipType = WeakAuras.CanHaveTooltip(data);
@@ -1048,25 +1075,9 @@ local function modify(parent, region, data)
     -- Re-orientate region
     if scalex < 0 then
       scalex = -scalex;
-      if data.orientation == "HORIZONTAL" then
-        if self.orientation ~= "HORIZONTAL_INVERSE" then
-          orientHorizontalInverse(self, data);
-        end
-      elseif data.orientation == "HORIZONTAL_INVERSE" then
-        if self.orientation ~= "HORIZONTAL" then
-          orientHorizontal(self, data);
-        end
-      end
+      region.flipX = true
     else
-      if data.orientation == "HORIZONTAL" then
-        if self.orientation ~= "HORIZONTAL" then
-          orientHorizontal(self, data);
-        end
-      elseif data.orientation == "HORIZONTAL_INVERSE" then
-        if self.orientation ~= "HORIZONTAL_INVERSE" then
-          orientHorizontalInverse(self, data);
-        end
-      end
+      region.flipX = false
     end
 
     -- Update width
@@ -1074,37 +1085,23 @@ local function modify(parent, region, data)
     self.bar.iconWidth = iconsize * scalex
 
     self:SetWidth(self.bar.totalWidth);
-    icon:SetWidth(iconsize * scalex);
+    icon:SetWidth(self.bar.iconWidth);
 
     -- Re-orientate region
     if scaley < 0 then
       scaley = -scaley;
-      if data.orientation == "VERTICAL" then
-        if self.orientation ~= "VERTICAL_INVERSE" then
-          orientVerticalInverse(self, data);
-        end
-      elseif data.orientation == "VERTICAL_INVERSE" then
-        if self.orientation ~= "VERTICAL" then
-          orientVertical(self, data);
-        end
-      end
+      region.flipY = true
     else
-      if data.orientation == "VERTICAL" then
-        if self.orientation ~= "VERTICAL" then
-          orientVertical(self, data);
-        end
-      elseif data.orientation == "VERTICAL_INVERSE" then
-        if self.orientation ~= "VERTICAL_INVERSE" then
-          orientVerticalInverse(self, data);
-        end
-      end
+      region.flipY = false
     end
+
+    region:UpdateEffectiveOrientation()
 
     -- Update height
     self.bar.totalHeight = region.height * scaley
-    self.bar.iconWidth = iconsize * scaley
+    self.bar.iconHeight = iconsize * scaley
     self:SetHeight(self.bar.totalHeight);
-    icon:SetHeight(self.bar.iconWidth);
+    icon:SetHeight(self.bar.iconHeight);
   end
   --  region:Scale(1.0, 1.0);
   if data.smoothProgress then
