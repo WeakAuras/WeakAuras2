@@ -66,7 +66,7 @@ local function createOptions(parentData, data, index, subIndex)
         local line = L["|cFFffcc00Extra Options:|r"]
         local color = L["Default Color"]
         if data.useGlowColor then
-          color = L["|c%02x%02x%02x%02xColor|r"]:format(
+          color = L["|c%02x%02x%02x%02xCustom Color|r"]:format(
             data.glowColor[4] * 255,
             data.glowColor[1] * 255,
             data.glowColor[2] * 255,
@@ -138,7 +138,7 @@ local function createOptions(parentData, data, index, subIndex)
     useGlowColor = {
       type = "toggle",
       width = WeakAuras.normalWidth - indentWidth,
-      name = L["Color"],
+      name = L["Use Custom Color"],
       desc = L["If unchecked, then a default color will be used (usually yellow)"],
       order = order + 1.11,
       hidden = hiddenGlowExtra
@@ -146,7 +146,7 @@ local function createOptions(parentData, data, index, subIndex)
     glowColor = {
       type = "color",
       width = WeakAuras.normalWidth,
-      name = L["Color"],
+      name = L["Custom Color"],
       order = order + 1.12,
       disabled = function() return not data.useGlowColor end,
       hidden = hiddenGlowExtra
