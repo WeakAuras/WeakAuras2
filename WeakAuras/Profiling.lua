@@ -445,8 +445,8 @@ function RealTimeProfilingWindow:RefreshBars()
     return
   end
 
-  local total = TotalProfileTime(WeakAuras.profileData.auras)
-  for i, k in ipairs(SortProfileMap(WeakAuras.profileData.auras)) do
+  local total = TotalProfileTime(profileData.auras)
+  for i, k in ipairs(SortProfileMap(profileData.auras)) do
     if (k ~= "time" and k ~= "wa") then
       local bar = self:AddBar(i, k, profileData.auras[k], total)
       if bar then
