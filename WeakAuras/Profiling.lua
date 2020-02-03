@@ -460,8 +460,10 @@ function RealTimeProfilingWindow:RefreshBars()
       end
     end
   end
-  local timespent = debugprofilestop() - profileData.systems.time.start
-  self.statsFrameText:SetText(("Time in WeakAuras: %.2f%%"):format(100 * profileData.systems.wa.elapsed / timespent))
+  if profileData.systems.wa then
+    local timespent = debugprofilestop() - profileData.systems.time.start
+    self.statsFrameText:SetText(("Time in WeakAuras: %.2f%%"):format(100 * profileData.systems.wa.elapsed / timespent))
+  end
 end
 
 function RealTimeProfilingWindow:Start()
