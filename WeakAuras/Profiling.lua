@@ -368,6 +368,7 @@ function WeakAuras.PrintProfile()
 end
 
 RealTimeProfilingWindow = CreateFrame("Frame", nil, UIParent)
+WeakAuras.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
 RealTimeProfilingWindow.width = 400
 RealTimeProfilingWindow.height = 300
 RealTimeProfilingWindow.barHeight = 20

@@ -290,8 +290,6 @@ local animations = WeakAuras.animations;
 WeakAuras.pending_controls = {};
 local pending_controls = WeakAuras.pending_controls;
 
-WeakAuras.frames = {};
-
 WeakAuras.raidUnits = {};
 WeakAuras.partyUnits = {};
 do
