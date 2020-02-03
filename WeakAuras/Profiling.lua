@@ -378,29 +378,26 @@ RealTimeProfilingWindow.bars = {}
 RealTimeProfilingWindow:SetMovable(true)
 
 local texture = "Interface\\DialogFrame\\UI-DialogBox-Background"
-function RealTimeProfilingWindow:AddBar(num, name, map, total)
-  local bar = self.bars[name]
 
-  -- hide bar if it's going to be out of background window
-  if self.barHeight * num > self.height - self.titleHeight - self.statsHeight then
-    if bar then
-      bar:Hide()
-    end
-    return
-  end
-
-  local pct = 100 * map.elapsed / total
-
-  if not bar then
-    bar = CreateFrame("FRAME", nil, self.barsFrame)
+function RealTimeProfilingWindow:GetBar(name)
+  if self.bars[name] then
+    return self.bars[name]
+  else
+    local bar = CreateFrame("FRAME", nil, self.barsFrame)
     self.bars[name] = bar
     Mixin(bar, SmoothStatusBarMixin)
+    bar.name = name
+    bar.parent = self
+    bar:SetSize(self.width, self.barHeight)
 
     local fg = bar:CreateTexture(nil, "ARTWORK")
     fg:SetSnapToPixelGrid(false)
     fg:SetTexelSnappingBias(0)
     fg:SetTexture(texture)
     fg:SetDrawLayer("ARTWORK", 0)
+    fg:ClearAllPoints()
+    fg:SetPoint("TOPLEFT", bar)
+    fg:SetHeight(self.barHeight)
     fg:Show()
     bar.fg = fg
 
@@ -413,32 +410,43 @@ function RealTimeProfilingWindow:AddBar(num, name, map, total)
     bg:Show()
     bar.bg = bg
 
-    bar:SetSize(self.width, self.barHeight)
-    if not bar.txtName then
-      local txtName = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-      bar.txtName = txtName
-      txtName:SetPoint("TOPLEFT", bar, "TOPLEFT")
-      txtName:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -30)
-      txtName:SetJustifyH("LEFT")
+    local txtName = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    bar.txtName = txtName
+    txtName:SetPoint("TOPLEFT", bar, "TOPLEFT")
+    txtName:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -30)
+    txtName:SetJustifyH("LEFT")
+
+    local txtPct = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    bar.txtPct = txtPct
+    txtPct:SetPoint("TOPLEFT", bar, "TOPRIGHT", -50, 0)
+    txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
+    txtPct:SetJustifyH("RIGHT")
+
+    function bar:SetValue(time, pct)
+      self.fg:SetWidth(self.parent.width / 100 * pct)
+      self.txtName:SetText(("%s (%.2fms)"):format(self.name, time))
+      self.txtPct:SetText(("%.2f%%"):format(pct))
     end
-    if not bar.txtPct then
-      local txtPct = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-      bar.txtPct = txtPct
-      txtPct:SetPoint("TOPLEFT", bar, "TOPRIGHT", -50, 0)
-      txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
-      txtPct:SetJustifyH("RIGHT")
+
+    function bar:SetPosition(pos)
+      if self.parent.barHeight * pos > self.parent.height - self.parent.titleHeight - self.parent.statsHeight then
+        self:Hide()
+      else
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", self.parent.barsFrame, "TOPLEFT", 0, - (pos - 1) * self.parent.barHeight)
+        if pos % 2 == 0 then
+          bar.fg:SetColorTexture(1, 1, 1, 0.7)
+          bar.bg:SetColorTexture(0, 0, 0, 0.2)
+        else
+          bar.fg:SetColorTexture(1, 1, 1, 0.9)
+          bar.bg:SetColorTexture(0, 0, 0, 0.4)
+        end
+        self:Show()
+      end
     end
-    bar:Show()
+
+    return bar
   end
-  bar:ClearAllPoints()
-  bar:SetPoint("TOPLEFT", self.barsFrame, "TOPLEFT", 0, - (num - 1) * self.barHeight)
-  bar.fg:ClearAllPoints()
-  bar.fg:SetPoint("TOPLEFT", bar)
-  bar.fg:SetSize(self.width / 100 * pct, self.barHeight)
-  bar.txtName:SetText(("%s (%.2fms)"):format(name, map.elapsed))
-  bar.txtPct:SetText(("%.2f%%"):format(pct))
-  bar:Show()
-  return bar
 end
 
 function RealTimeProfilingWindow:RefreshBars()
@@ -447,18 +455,12 @@ function RealTimeProfilingWindow:RefreshBars()
   end
 
   local total = TotalProfileTime(profileData.auras)
-  for i, k in ipairs(SortProfileMap(profileData.auras)) do
-    if (k ~= "time" and k ~= "wa") then
-      local bar = self:AddBar(i, k, profileData.auras[k], total)
-      if bar then
-        if i % 2 == 0 then
-          bar.fg:SetColorTexture(1, 1, 1, 0.7)
-          bar.bg:SetColorTexture(0, 0, 0, 0.2)
-        else
-          bar.fg:SetColorTexture(1, 1, 1, 0.9)
-          bar.bg:SetColorTexture(0, 0, 0, 0.4)
-        end
-      end
+  for i, name in ipairs(SortProfileMap(profileData.auras)) do
+    if (name ~= "time" and name ~= "wa") then
+      local bar = self:GetBar(name)
+      local value = profileData.auras[name].elapsed
+      bar:SetPosition(i)
+      bar:SetValue(value, 100 * value / total)
     end
   end
   if profileData.systems.wa then
@@ -467,47 +469,45 @@ function RealTimeProfilingWindow:RefreshBars()
   end
 end
 
-function RealTimeProfilingWindow:Start()
+function RealTimeProfilingWindow:Init()
   self:ClearAllPoints()
   self:SetSize(self.width, self.height)
   self:SetClampedToScreen(true)
   self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
   self:Show()
-  if not self.bg then
-    local bg = self:CreateTexture(nil, "BACKGROUND")
-    self.bg = bg
-    bg:SetTexture(texture)
-    bg:SetAllPoints()
-    bg:Show()
-  end
-  if not self.titleFrame then
-    local titleFrame = CreateFrame("Frame", nil, self)
-    self.titleFrame = titleFrame
-    titleFrame:SetSize(self.width, self.titleHeight)
-    titleFrame:SetPoint("TOPLEFT", self)
-    titleFrame:Show()
-    local titleText = self.titleFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    self.titleFrameText = titleText
-    titleText:SetText(L["WeakAuras Profiling"])
-    titleText:SetPoint("CENTER", self.titleFrame)
-  end
-  if not self.barsFrame then
-    local barsFrame = CreateFrame("Frame", nil, self)
-    self.barsFrame = barsFrame
-    barsFrame:SetSize(self.width, self.height - self.titleHeight - self.statsHeight)
-    barsFrame:SetPoint("TOPLEFT", self.titleFrame, "BOTTOMLEFT")
-    barsFrame:Show()
-  end
-  if not self.statsFrame then
-    local statsFrame = CreateFrame("Frame", nil, self)
-    self.statsFrame = statsFrame
-    statsFrame:SetSize(self.width, self.statsHeight)
-    statsFrame:SetPoint("TOPLEFT", self.barsFrame, "BOTTOMLEFT")
-    statsFrame:Show()
-    local statsFrameText = self.statsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    self.statsFrameText = statsFrameText
-    statsFrameText:SetPoint("LEFT", self.statsFrame)
-  end
+
+  local bg = self:CreateTexture(nil, "BACKGROUND")
+  self.bg = bg
+  bg:SetTexture(texture)
+  bg:SetAllPoints()
+  bg:Show()
+
+  local titleFrame = CreateFrame("Frame", nil, self)
+  self.titleFrame = titleFrame
+  titleFrame:SetSize(self.width, self.titleHeight)
+  titleFrame:SetPoint("TOPLEFT", self)
+  titleFrame:Show()
+
+  local titleText = self.titleFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  self.titleFrameText = titleText
+  titleText:SetText(L["WeakAuras Profiling"])
+  titleText:SetPoint("CENTER", self.titleFrame)
+
+  local barsFrame = CreateFrame("Frame", nil, self)
+  self.barsFrame = barsFrame
+  barsFrame:SetSize(self.width, self.height - self.titleHeight - self.statsHeight)
+  barsFrame:SetPoint("TOPLEFT", self.titleFrame, "BOTTOMLEFT")
+  barsFrame:Show()
+
+  local statsFrame = CreateFrame("Frame", nil, self)
+  self.statsFrame = statsFrame
+  statsFrame:SetSize(self.width, self.statsHeight)
+  statsFrame:SetPoint("TOPLEFT", self.barsFrame, "BOTTOMLEFT")
+  statsFrame:Show()
+
+  local statsFrameText = self.statsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  self.statsFrameText = statsFrameText
+  statsFrameText:SetPoint("LEFT", self.statsFrame)
 
   self:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and not self.is_moving then
@@ -526,6 +526,14 @@ function RealTimeProfilingWindow:Start()
   end)
 
   self:SetScript("OnUpdate", self.RefreshBars)
+  self.init = true
+end
+
+function RealTimeProfilingWindow:Start()
+  if not self.init then
+    self:Init()
+  end
+  self:Show()
 end
 
 function RealTimeProfilingWindow:Stop()
