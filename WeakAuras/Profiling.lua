@@ -373,6 +373,7 @@ RealTimeProfilingWindow.width = 400
 RealTimeProfilingWindow.height = 300
 RealTimeProfilingWindow.barHeight = 20
 RealTimeProfilingWindow.titleHeight = 15
+RealTimeProfilingWindow.statsHeight = 15
 RealTimeProfilingWindow.bars = {}
 RealTimeProfilingWindow:SetMovable(true)
 
@@ -381,7 +382,7 @@ function RealTimeProfilingWindow:AddBar(num, name, map, total)
   local bar = self.bars[name]
 
   -- hide bar if it's going to be out of background window
-  if self.titleHeight + self.barHeight * num > self.height then
+  if self.barHeight * num > self.height - self.titleHeight - self.statsHeight then
     if bar then
       bar:Hide()
     end
@@ -391,7 +392,7 @@ function RealTimeProfilingWindow:AddBar(num, name, map, total)
   local pct = 100 * map.elapsed / total
 
   if not bar then
-    bar = CreateFrame("FRAME", nil, self)
+    bar = CreateFrame("FRAME", nil, self.barsFrame)
     self.bars[name] = bar
     Mixin(bar, SmoothStatusBarMixin)
 
@@ -430,7 +431,7 @@ function RealTimeProfilingWindow:AddBar(num, name, map, total)
     bar:Show()
   end
   bar:ClearAllPoints()
-  bar:SetPoint("TOPLEFT", self, "TOPLEFT", 0, - (num - 1) * self.barHeight - self.titleHeight)
+  bar:SetPoint("TOPLEFT", self.barsFrame, "TOPLEFT", 0, - (num - 1) * self.barHeight)
   bar.fg:ClearAllPoints()
   bar.fg:SetPoint("TOPLEFT", bar)
   bar.fg:SetSize(self.width / 100 * pct, self.barHeight)
@@ -472,6 +473,13 @@ function RealTimeProfilingWindow:Start()
   self:SetClampedToScreen(true)
   self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
   self:Show()
+  if not self.bg then
+    local bg = self:CreateTexture(nil, "BACKGROUND")
+    self.bg = bg
+    bg:SetTexture(texture)
+    bg:SetAllPoints()
+    bg:Show()
+  end
   if not self.titleFrame then
     local titleFrame = CreateFrame("Frame", nil, self)
     self.titleFrame = titleFrame
@@ -483,23 +491,24 @@ function RealTimeProfilingWindow:Start()
     titleText:SetText(L["WeakAuras Profiling"])
     titleText:SetPoint("CENTER", self.titleFrame)
   end
-  if not self.bg then
-    local bg = self:CreateTexture(nil, "BACKGROUND")
-    self.bg = bg
-    bg:SetTexture(texture)
-    bg:SetAllPoints()
-    bg:Show()
+  if not self.barsFrame then
+    local barsFrame = CreateFrame("Frame", nil, self)
+    self.barsFrame = barsFrame
+    barsFrame:SetSize(self.width, self.height - self.titleHeight - self.statsHeight)
+    barsFrame:SetPoint("TOPLEFT", self.titleFrame, "BOTTOMLEFT")
+    barsFrame:Show()
   end
   if not self.statsFrame then
     local statsFrame = CreateFrame("Frame", nil, self)
     self.statsFrame = statsFrame
-    statsFrame:SetSize(self.width, self.titleHeight)
-    statsFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+    statsFrame:SetSize(self.width, self.statsHeight)
+    statsFrame:SetPoint("TOPLEFT", self.barsFrame, "BOTTOMLEFT")
     statsFrame:Show()
     local statsFrameText = self.statsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     self.statsFrameText = statsFrameText
     statsFrameText:SetPoint("LEFT", self.statsFrame)
   end
+
   self:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and not self.is_moving then
       self:StartMoving()
