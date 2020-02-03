@@ -519,8 +519,4 @@ end
 
 function RealTimeProfilingWindow:Stop()
   self:Hide()
-  self:SetScript("OnUpdate", nil)
-  for k, v in pairs(self.bars) do
-    v:Hide()
-  end
 end
