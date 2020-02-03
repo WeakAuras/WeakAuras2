@@ -422,10 +422,26 @@ function RealTimeProfilingWindow:GetBar(name)
     txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
     txtPct:SetJustifyH("RIGHT")
 
-    function bar:SetValue(time, pct)
-      self.fg:SetWidth(self.parent.width / 100 * pct)
+    function bar:SetValue(value)
+      self.fg:SetWidth(self.parent.width / 100 * value)
+    end
+
+    function bar:SetText(time, pct)
       self.txtName:SetText(("%s (%.2fms)"):format(self.name, time))
       self.txtPct:SetText(("%.2f%%"):format(pct))
+    end
+
+    function bar:GetMinMaxValues()
+      return 0, 100
+    end
+
+    function bar:GetValue()
+      return self.value
+    end
+
+    function bar:SetProgress(value)
+      self.value = value
+      self:SetSmoothedValue(value)
     end
 
     function bar:SetPosition(pos)
@@ -458,9 +474,11 @@ function RealTimeProfilingWindow:RefreshBars()
   for i, name in ipairs(SortProfileMap(profileData.auras)) do
     if (name ~= "time" and name ~= "wa") then
       local bar = self:GetBar(name)
-      local value = profileData.auras[name].elapsed
+      local elapsed = profileData.auras[name].elapsed
+      local pct = 100 * elapsed / total
       bar:SetPosition(i)
-      bar:SetValue(value, 100 * value / total)
+      bar:SetProgress(pct)
+      bar:SetText(elapsed, pct)
     end
   end
   if profileData.systems.wa then
@@ -538,4 +556,7 @@ end
 
 function RealTimeProfilingWindow:Stop()
   self:Hide()
+  for k, v in pairs(self.bars) do
+    v:Hide()
+  end
 end
