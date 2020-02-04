@@ -268,8 +268,6 @@ function WeakAuras.StartProfile()
   WeakAuras.StopProfileSystem = StopProfileSystem
   WeakAuras.StopProfileAura = StopProfileAura
   popup:SetText("")
-
-  RealTimeProfilingWindow:Start()
 end
 
 local function doNothing()
@@ -290,8 +288,6 @@ function WeakAuras.StopProfile()
   WeakAuras.StartProfileAura = doNothing
   WeakAuras.StopProfileSystem = doNothing
   WeakAuras.StopProfileAura = doNothing
-
-  RealTimeProfilingWindow:Stop()
 end
 
 function WeakAuras.ToggleProfile()
@@ -372,10 +368,12 @@ WeakAuras.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
 RealTimeProfilingWindow.width = 400
 RealTimeProfilingWindow.height = 300
 RealTimeProfilingWindow.barHeight = 20
-RealTimeProfilingWindow.titleHeight = 15
+RealTimeProfilingWindow.titleHeight = 20
 RealTimeProfilingWindow.statsHeight = 15
 RealTimeProfilingWindow.bars = {}
 RealTimeProfilingWindow:SetMovable(true)
+RealTimeProfilingWindow:Hide()
+WeakAuras.RealTimeProfilingWindow = RealTimeProfilingWindow
 
 local texture = "Interface\\DialogFrame\\UI-DialogBox-Background"
 
@@ -487,6 +485,12 @@ function RealTimeProfilingWindow:RefreshBars()
   end
 end
 
+function RealTimeProfilingWindow:ResetBars()
+  for k, v in pairs(self.bars) do
+    v:Hide()
+  end
+end
+
 function RealTimeProfilingWindow:Init()
   self:ClearAllPoints()
   self:SetSize(self.width, self.height)
@@ -527,6 +531,45 @@ function RealTimeProfilingWindow:Init()
   self.statsFrameText = statsFrameText
   statsFrameText:SetPoint("LEFT", self.statsFrame)
 
+  local closeButton = CreateFrame("Button", nil, self, "UIPanelCloseButton")
+  closeButton:SetPoint("TOPRIGHT", self, "TOPRIGHT", 1, 5)
+  closeButton:SetScript("OnClick", function(self)
+    self:GetParent():Stop()
+  end)
+
+  local toggleButton = CreateFrame("Button", nil, statsFrame, "UIPanelButtonTemplate")
+  self.toggleButton = toggleButton
+  toggleButton:SetPoint("BOTTOMRIGHT", statsFrame, "BOTTOMRIGHT", -1, 1)
+  toggleButton:SetFrameLevel(statsFrame:GetFrameLevel() + 1)
+  toggleButton:SetHeight(20)
+  toggleButton:SetWidth(100)
+  toggleButton:SetText(L["Start"])
+  toggleButton.parent = self
+  toggleButton:SetScript("OnClick", function(self)
+    if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
+      self.parent:ResetBars()
+      WeakAuras.StartProfile()
+      self:SetText(L["Stop"])
+      self.parent.reportButton:Hide()
+    else
+      WeakAuras.StopProfile()
+      self:SetText(L["Start"])
+      self.parent.reportButton:Show()
+    end
+  end)
+
+  local reportButton = CreateFrame("Button", nil, statsFrame, "UIPanelButtonTemplate")
+  self.reportButton = reportButton
+  reportButton:SetPoint("BOTTOMRIGHT", statsFrame, "BOTTOMRIGHT", -110, 1)
+  reportButton:SetFrameLevel(statsFrame:GetFrameLevel() + 1)
+  reportButton:SetHeight(20)
+  reportButton:SetWidth(100)
+  reportButton:SetText(L["Report"])
+  reportButton:SetScript("OnClick", function(self)
+    WeakAuras.PrintProfile()
+  end)
+  reportButton:Hide()
+
   self:SetScript("OnMouseDown", function(self, button)
     if button == "LeftButton" and not self.is_moving then
       self:StartMoving()
@@ -555,8 +598,17 @@ function RealTimeProfilingWindow:Start()
 end
 
 function RealTimeProfilingWindow:Stop()
+  self.reportButton:Show()
   self:Hide()
-  for k, v in pairs(self.bars) do
-    v:Hide()
+  self:ResetBars()
+  WeakAuras.StopProfile()
+  self.toggleButton:SetText(L["Start"])
+end
+
+function RealTimeProfilingWindow:Toggle()
+  if self:IsShown() then
+    self:Stop()
+  else
+    self:Start()
   end
 end
