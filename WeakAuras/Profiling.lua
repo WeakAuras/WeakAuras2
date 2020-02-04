@@ -537,6 +537,31 @@ function RealTimeProfilingWindow:Init()
     self:GetParent():Stop()
   end)
 
+  local minimizeButton = CreateFrame("Button", nil, self)
+  minimizeButton.parent = self
+  minimizeButton:SetSize(30, 30)
+  minimizeButton:SetPoint("TOPRIGHT", self, "TOPRIGHT", -25, 5)
+  minimizeButton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
+  minimizeButton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
+  minimizeButton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
+  minimizeButton:SetScript("OnClick", function(self)
+    if self.parent.minimized then
+      self.parent.minimized = nil
+      self.parent.barsFrame:Show()
+      self.parent.statsFrame:Show()
+      self.parent:SetHeight(self.parent.height)
+      self:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp")
+      self:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp")
+    else
+      self.parent.minimized = true
+      self.parent.barsFrame:Hide()
+      self.parent.statsFrame:Hide()
+      self.parent:SetHeight(self.parent.titleHeight)
+      self:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
+      self:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
+    end
+  end)
+
   local toggleButton = CreateFrame("Button", nil, statsFrame, "UIPanelButtonTemplate")
   self.toggleButton = toggleButton
   toggleButton:SetPoint("BOTTOMRIGHT", statsFrame, "BOTTOMRIGHT", -1, 1)
