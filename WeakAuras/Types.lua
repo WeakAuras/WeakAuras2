@@ -976,14 +976,14 @@ WeakAuras.texture_types = {
     ["bonusobjectives-bar-spark"] = "Bonus Objectives Spark"
   },
   ["Raid Marks"] = {
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_1"] = "Star",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_2"] = "Circle",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_3"] = "Diamond",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_4"] = "Triangle",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_5"] = "Moon",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_6"] = "Square",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"] = "Cross",
-    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"] = "Skull",
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_1"] = RAID_TARGET_1,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_2"] = RAID_TARGET_2,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_3"] = RAID_TARGET_3,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_4"] = RAID_TARGET_4,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_5"] = RAID_TARGET_5,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_6"] = RAID_TARGET_6,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"] = RAID_TARGET_7,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"] = RAID_TARGET_8,
   }
 }
 local BuildInfo = select(4, GetBuildInfo())
