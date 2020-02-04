@@ -65,7 +65,7 @@ local function CreateDecorationWide(frame)
   local deco1 = frame:CreateTexture(nil, "OVERLAY")
   deco1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
   deco1:SetTexCoord(0.31, 0.67, 0, 0.63)
-  deco1:SetSize(120, 40)
+  deco1:SetSize(140, 40)
 
   local deco2 = frame:CreateTexture(nil, "OVERLAY")
   deco2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
