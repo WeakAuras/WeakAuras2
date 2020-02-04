@@ -2,7 +2,7 @@
   <Binding name="WEAKAURASTOGGLE" header="WEAKAURAS" Category="ADDONS">
     WeakAuras.OpenOptions()
   </Binding>
-  <Binding name="WEAKAURASSTARTPROFILING" Category="ADDONS">
+  <Binding name="WEAKAURASPROFILINGTOGGLE" Category="ADDONS">
     WeakAuras.RealTimeProfilingWindow:Toggle()
   </Binding>
 </Bindings>
