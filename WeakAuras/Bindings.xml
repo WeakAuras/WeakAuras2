@@ -5,11 +5,4 @@
   <Binding name="WEAKAURASSTARTPROFILING" Category="ADDONS">
     WeakAuras.RealTimeProfilingWindow:Toggle()
   </Binding>
-  <Binding name="WEAKAURASSTOPPROFILING" Category="ADDONS">
-    WeakAuras.StopProfile()
-  </Binding>
-  <Binding name="WEAKAURASPRINTPROFILING" Category="ADDONS">
-    WeakAuras.PrintProfile()
-  </Binding>
-
 </Bindings>
