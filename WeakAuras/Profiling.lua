@@ -495,7 +495,7 @@ function RealTimeProfilingWindow:Init()
   self:ClearAllPoints()
   self:SetSize(self.width, self.height)
   self:SetClampedToScreen(true)
-  self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
+  self:SetPoint("TOPLEFT", "UIParent", "TOPLEFT")
   self:Show()
 
   local bg = self:CreateTexture(nil, "BACKGROUND")
@@ -531,34 +531,34 @@ function RealTimeProfilingWindow:Init()
   self.statsFrameText = statsFrameText
   statsFrameText:SetPoint("LEFT", self.statsFrame)
 
-  local closeButton = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-  closeButton:SetPoint("TOPRIGHT", self, "TOPRIGHT", 1, 5)
+  local closeButton = CreateFrame("Button", nil, self.titleFrame, "UIPanelCloseButton")
+  closeButton:SetPoint("TOPRIGHT", self.titleFrame, "TOPRIGHT", 1, 5)
   closeButton:SetScript("OnClick", function(self)
-    self:GetParent():Stop()
+    self:GetParent():GetParent():Stop()
   end)
 
-  local minimizeButton = CreateFrame("Button", nil, self)
-  minimizeButton.parent = self
+  local minimizeButton = CreateFrame("Button", nil, self.titleFrame)
   minimizeButton:SetSize(30, 30)
-  minimizeButton:SetPoint("TOPRIGHT", self, "TOPRIGHT", -25, 5)
+  minimizeButton:SetPoint("TOPRIGHT", self.titleFrame, "TOPRIGHT", -25, 5)
   minimizeButton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
   minimizeButton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
   minimizeButton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
   minimizeButton:SetScript("OnClick", function(self)
-    if self.parent.minimized then
-      self.parent.minimized = nil
-      self.parent.barsFrame:Show()
-      self.parent.statsFrame:Show()
-      self.parent:SetHeight(self.parent.height)
-      self:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp")
-      self:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp")
-    else
-      self.parent.minimized = true
-      self.parent.barsFrame:Hide()
-      self.parent.statsFrame:Hide()
-      self.parent:SetHeight(self.parent.titleHeight)
+    local parent = self:GetParent():GetParent()
+    if parent.minimized then
+      parent.minimized = nil
+      parent.barsFrame:Show()
+      parent.statsFrame:Show()
+      parent:SetHeight(parent.height)
       self:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
       self:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
+    else
+      parent.minimized = true
+      parent.barsFrame:Hide()
+      parent.statsFrame:Hide()
+      parent:SetHeight(parent.titleHeight)
+      self:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp")
+      self:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp")
     end
   end)
 
@@ -569,17 +569,17 @@ function RealTimeProfilingWindow:Init()
   toggleButton:SetHeight(20)
   toggleButton:SetWidth(100)
   toggleButton:SetText(L["Start"])
-  toggleButton.parent = self
   toggleButton:SetScript("OnClick", function(self)
+    local parent = self:GetParent():GetParent()
     if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
-      self.parent:ResetBars()
+      parent:ResetBars()
       WeakAuras.StartProfile()
       self:SetText(L["Stop"])
-      self.parent.reportButton:Hide()
+      parent.reportButton:Hide()
     else
       WeakAuras.StopProfile()
       self:SetText(L["Start"])
-      self.parent.reportButton:Show()
+      parent.reportButton:Show()
     end
   end)
 
