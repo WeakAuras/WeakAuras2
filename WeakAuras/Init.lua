@@ -62,8 +62,9 @@ end
 WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
 WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
 
--- force enable WeakAurasCompanion because some addon managers interfere with it
+-- force enable WeakAurasCompanion and Archive because some addon managers interfere with it
 EnableAddOn("WeakAurasCompanion")
+EnableAddOn("WeakAurasArchive")
 
 --These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 function WeakAuras.RegisterRegionType()
